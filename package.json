@@ -27,13 +27,25 @@
   "eslintConfig": {
     "extends": [
       "react-app",
+      "airbnb",
       "plugin:prettier/recommended"
-    ]
+    ],
+    "rules": {
+      "react/jsx-filename-extension": [
+        1,
+        {
+          "extensions": [
+            ".js",
+            ".jsx"
+          ]
+        }
+      ]
+    }
   },
   "prettier": {
     "printWidth": 90,
     "trailingComma": "es5",
-    "singleQuote": true,
+    "singleQuote": false,
     "jsxSingleQuote": true
   },
   "husky": {
