@@ -45,7 +45,7 @@
   "prettier": {
     "printWidth": 90,
     "trailingComma": "es5",
-    "singleQuote": false,
+    "singleQuote": true,
     "jsxSingleQuote": true
   },
   "husky": {
