@@ -1,9 +1,15 @@
-.create-class-container {
-  padding: 10px;
-  margin-top: 20px !important;
+@import '../../../assets/styles/variables';
 
-  .create__class-textfield {
-    width: 100%;
+.create__class {
+  width: 98%;
+  margin: 0 auto;
+
+  .create-class-container {
+    padding: 10px;
+    margin-top: 20px !important;
+
+    .create__class-textfield {
+      width: 100%;
+    }
   }
 }
-

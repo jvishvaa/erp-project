@@ -10,7 +10,7 @@ const ViewClassStudent = () => {
           {/*  */}
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <Typography variant='h5' gutterBottom color='secondary'>
+              <Typography variant='h5' gutterBottom color='primary'>
                 Bedtime Stories For Kids.
               </Typography>
             </Grid>
@@ -18,7 +18,7 @@ const ViewClassStudent = () => {
               <Typography
                 variant='h6'
                 gutterBottom
-                color='primary'
+                color='secondary'
                 className='responsive__align'
               >
                 Starts In: 0d 0h 30m 17s
@@ -28,10 +28,10 @@ const ViewClassStudent = () => {
           {/*  */}
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <Typography variant='h6' gutterBottom color='primary'>
+              <Typography variant='h6' gutterBottom color='secondary'>
                 English
               </Typography>
-              <Typography variant='h6' gutterBottom color='primary'>
+              <Typography variant='h6' gutterBottom color='secondary'>
                 24 may 2020 07:00 Am
               </Typography>
             </Grid>
@@ -39,7 +39,7 @@ const ViewClassStudent = () => {
               <Typography
                 variant='h6'
                 gutterBottom
-                color='primary'
+                color='secondary'
                 className='responsive__align'
               >
                 Join limit
@@ -47,7 +47,7 @@ const ViewClassStudent = () => {
               <Typography
                 variant='h6'
                 gutterBottom
-                color='primary'
+                color='secondary'
                 className='responsive__align'
               >
                 33
@@ -57,10 +57,10 @@ const ViewClassStudent = () => {
           {/*  */}
           <Grid container spacing={2}>
             <Grid item xs={8}>
-              <Typography variant='h5' gutterBottom color='primary'>
+              <Typography variant='h5' gutterBottom color='secondary'>
                 Class For parents
               </Typography>
-              <Typography variant='subtitle1' gutterBottom color='primary'>
+              <Typography variant='subtitle1' gutterBottom color='secondary'>
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
                 quibusdam eligendi incidunt aliquid.
               </Typography>
@@ -73,7 +73,7 @@ const ViewClassStudent = () => {
               <Button
                 className='viewclass__student-btn'
                 variant='outlined'
-                color='secondary'
+                color='primary'
               >
                 Set reminder
               </Button>
@@ -82,7 +82,7 @@ const ViewClassStudent = () => {
               <Button
                 className='viewclass__student-btn'
                 variant='contained'
-                color='secondary'
+                color='primary'
                 disabled
               >
                 Join Class
@@ -92,7 +92,7 @@ const ViewClassStudent = () => {
               <Button
                 className='viewclass__student-btn'
                 variant='contained'
-                color='secondary'
+                color='primary'
               >
                 Resources
               </Button>
@@ -101,7 +101,7 @@ const ViewClassStudent = () => {
               <Button
                 className='viewclass__student-btn'
                 variant='outlined'
-                color='secondary'
+                color='primary'
               >
                 Homework
               </Button>

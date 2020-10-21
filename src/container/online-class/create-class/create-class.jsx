@@ -22,7 +22,7 @@ const CreateClass = () => {
   ];
 
   return (
-    <div>
+    <div className='create__class'>
       <Grid container className='create-class-container' spacing={2}>
         <Grid item xs={12} sm={2}>
           <TextField
@@ -30,10 +30,12 @@ const CreateClass = () => {
             id='class-title'
             label='Title'
             variant='outlined'
+            size='small'
           />
         </Grid>
         <Grid item xs={12} sm={2}>
           <Autocomplete
+            size='small'
             multiple
             id='tags-outlined'
             options={top100Films}
@@ -42,6 +44,7 @@ const CreateClass = () => {
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
+                size='small'
                 className='create__class-textfield'
                 {...params}
                 variant='outlined'
@@ -53,6 +56,7 @@ const CreateClass = () => {
         </Grid>
         <Grid item xs={12} sm={2}>
           <TextField
+            size='small'
             className='create__class-textfield'
             id='class-duration'
             label='Duration (minutes)'
@@ -61,6 +65,7 @@ const CreateClass = () => {
         </Grid>
         <Grid item xs={12} sm={2}>
           <TextField
+            size='small'
             className='create__class-textfield'
             id='class-join-limit'
             label='Join limit'
@@ -70,6 +75,7 @@ const CreateClass = () => {
         <MuiPickersUtilsProvider utils={MomentUtils}>
           <Grid item xs={12} sm={2}>
             <KeyboardDatePicker
+              size='small'
               disableToolbar
               variant='inline'
               format='dddd'
@@ -85,6 +91,7 @@ const CreateClass = () => {
           </Grid>
           <Grid item xs={12} sm={2}>
             <KeyboardTimePicker
+              size='small'
               margin='none'
               id='time-picker'
               label='Start time'
@@ -99,7 +106,7 @@ const CreateClass = () => {
       </Grid>
       <hr />
       <Grid container className='create-class-container' spacing={2}>
-        <Grid item xs={12} sm={1}>
+        <Grid item xs={12} sm={2}>
           <h2>Assign to</h2>
         </Grid>
         <FormControlLabel
@@ -172,7 +179,7 @@ const CreateClass = () => {
             setHosts([...hosts, {}]);
           }}
           variant='outlined'
-          color='secondary'
+          color='primary'
           size='large'
           startIcon={<AddIcon />}
         >
@@ -180,12 +187,7 @@ const CreateClass = () => {
         </Button>
       </Grid>
       <Grid container className='create-class-container' spacing={2}>
-        <Button
-          variant='contained'
-          color='secondary'
-          size='large'
-          startIcon={<AddIcon />}
-        >
+        <Button variant='contained' color='primary' size='large' startIcon={<AddIcon />}>
           Create class
         </Button>
       </Grid>

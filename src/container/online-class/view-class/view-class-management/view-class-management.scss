@@ -1,8 +1,20 @@
+@import '../../../../assets/styles/variables';
+
 .viewclass__management-container {
   // filter component
   .filters__container {
+    padding: 50px 0;
+    
     .viewclass__management-btn {
       width: 100%;
+    }
+
+    svg {
+        fill: $primary-color
+    }
+
+    .MuiTextField-root {
+        width: 100%;
     }
   }
 
@@ -13,7 +25,7 @@
     .viewclass__table-head {
       th {
         font-weight: bold;
-        color: #014B7E;
+        color: $secondary-color;
       }
 
       th:not(:last-child) {
@@ -28,12 +40,18 @@
         right: 0;
         top: 50%;
         transform: translateY(-50%);
-        background-color: #FF6B6B;
+        background-color: $primary-color;
       }
     }
 
+    .viewclass__table-body {
+        td {
+            color: $secondary-color;
+        }
+    }
+
     .pagination__container {
-        margin-top: 20px;
+      margin-top: 20px;
     }
   }
 }

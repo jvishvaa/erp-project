@@ -25,6 +25,7 @@ const ViewClassManagementFilters = () => {
             getOptionLabel={(option) => option.title}
             // defaultValue={[top100Films[1]]}
             filterSelectedOptions
+            size='small'
             renderInput={(params) => (
               <TextField
                 className='create__class-textfield'
@@ -33,6 +34,7 @@ const ViewClassManagementFilters = () => {
                 variant='outlined'
                 label='Subject'
                 placeholder='Subject'
+                color='primary'
               />
             )}
           />
@@ -40,6 +42,8 @@ const ViewClassManagementFilters = () => {
         <MuiPickersUtilsProvider utils={MomentUtils}>
           <Grid item xs={12} sm={2}>
             <KeyboardDatePicker
+              size='small'
+              color='primary'
               disableToolbar
               variant='inline'
               format='dddd'
@@ -55,6 +59,7 @@ const ViewClassManagementFilters = () => {
           </Grid>
           <Grid item xs={12} sm={2}>
             <KeyboardDatePicker
+              size='small'
               disableToolbar
               variant='inline'
               format='dddd'
@@ -78,7 +83,7 @@ const ViewClassManagementFilters = () => {
           <Button
             className='viewclass__management-btn'
             variant='contained'
-            color='secondary'
+            color='primary'
           >
             get classes
           </Button>
@@ -88,7 +93,7 @@ const ViewClassManagementFilters = () => {
             className='viewclass__management-btn'
             startIcon={<GetAppIcon />}
             variant='outlined'
-            color='secondary'
+            color='primary'
           >
             bulk excel
           </Button>

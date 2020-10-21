@@ -4,15 +4,15 @@ import ViewClassStudent from './view-class-student';
 
 const ViewClassStudentCollection = () => {
   return (
-    <div>
+    <div className='viewclass__student-collection'>
       <Grid container>
         <Grid item xs={12} sm={6}>
           <Tabs
             value={0}
             //   onChange={handleChange}
             variant='fullWidth'
-            indicatorColor='secondary'
-            textColor='secondary'
+            indicatorColor='primary'
+            textColor='primary'
             aria-label='icon label tabs example'
           >
             <Tab label={<Typography variant='h6'>Upcoming</Typography>} />

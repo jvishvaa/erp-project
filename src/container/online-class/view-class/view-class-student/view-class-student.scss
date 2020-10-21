@@ -1,9 +1,16 @@
+@import '../../../../assets/styles/variables';
+
 // View class student collection
+.viewclass__student-collection {
+  width: 95%;
+  margin: 20px auto 0px auto;
+}
 
 // View class student
 .viewclass__student-container {
-  border: 2px solid #ff6b6b;
-  margin: 20px 0;
+  width: 95%;
+  border: 2px solid $primary-color;
+  margin: 20px auto;
   padding: 15px;
   border-radius: 5px;
 

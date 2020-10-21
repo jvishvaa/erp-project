@@ -7,11 +7,12 @@ import {
   TableBody,
   TableContainer,
   Grid,
+  Button,
 } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 
 const ViewClassManagementTable = () => {
-  const rows = [{ name: 'hemanth', calories: 100, fat: 100, carbs: 100, protein: 100 }];
+  const rows = [{}, {}, {}];
   return (
     <div className='viewclass__management-table'>
       <TableContainer>
@@ -29,18 +30,22 @@ const ViewClassManagementTable = () => {
               <TableCell align='center'>Attended</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {rows.map((row) => (
+          <TableBody className='viewclass__table-body'>
+            {rows.map((row, index) => (
               <TableRow key={row.name}>
-                <TableCell align='center'>{row.name}</TableCell>
-                <TableCell align='center'>{row.calories}</TableCell>
-                <TableCell align='center'>{row.fat}</TableCell>
-                <TableCell align='center'>{row.carbs}</TableCell>
-                <TableCell align='center'>{row.protein}</TableCell>
-                <TableCell align='center'>{row.calories}</TableCell>
-                <TableCell align='center'>{row.fat}</TableCell>
-                <TableCell align='center'>{row.carbs}</TableCell>
-                <TableCell align='center'>{row.protein}</TableCell>
+                <TableCell align='center'>{index + 1}</TableCell>
+                <TableCell align='center'>Numeracy</TableCell>
+                <TableCell align='center'>Numeracy</TableCell>
+                <TableCell align='center'>2020 - 10 - 15 15 : 22</TableCell>
+                <TableCell align='center'>222</TableCell>
+                <TableCell align='center'>80</TableCell>
+                <TableCell align='center'>zoom110@orchids .edu.in</TableCell>
+                <TableCell align='center'>
+                  <Button variant='contained' color='primary'>
+                    Join
+                  </Button>
+                </TableCell>
+                <TableCell align='center'>Attended</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -54,7 +59,7 @@ const ViewClassManagementTable = () => {
         justify='center'
       >
         <Grid item xs={12}>
-          <Pagination count={10} color='secondary' />
+          <Pagination count={10} color='primary' />
         </Grid>
       </Grid>
     </div>
