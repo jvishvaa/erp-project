@@ -1,0 +1,39 @@
+.viewclass__management-container {
+  // filter component
+  .filters__container {
+    .viewclass__management-btn {
+      width: 100%;
+    }
+  }
+
+  // table component
+  .viewclass__management-table {
+    margin-top: 20px;
+
+    .viewclass__table-head {
+      th {
+        font-weight: bold;
+        color: #014B7E;
+      }
+
+      th:not(:last-child) {
+        position: relative;
+      }
+
+      th:not(:last-child)::after {
+        content: '';
+        height: 50%;
+        width: 2px;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: #FF6B6B;
+      }
+    }
+
+    .pagination__container {
+        margin-top: 20px;
+    }
+  }
+}

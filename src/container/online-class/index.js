@@ -1,11 +1,13 @@
 import React from 'react';
 import OnlineclassProvider from './online-class-context/online-class-state';
-import ViewClassStudentCollection from './view-class/view-class-student/view-class-student-collection';
+import ViewClassManagement from './view-class/view-class-management/view-class-management';
+// import ViewClassStudentCollection from './view-class/view-class-student/view-class-student-collection';
 
 const OnlineClass = () => {
   return (
     <OnlineclassProvider>
-      <ViewClassStudentCollection />
+      {/* <ViewClassStudentCollection /> */}
+      <ViewClassManagement />
     </OnlineclassProvider>
   );
 };
