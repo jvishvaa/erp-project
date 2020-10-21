@@ -25,7 +25,12 @@ const CreateClass = () => {
     <div>
       <Grid container className='create-class-container' spacing={2}>
         <Grid item xs={12} sm={2}>
-          <TextField id='class-title' label='Title' variant='outlined' />
+          <TextField
+            className='create__class-textfield'
+            id='class-title'
+            label='Title'
+            variant='outlined'
+          />
         </Grid>
         <Grid item xs={12} sm={2}>
           <Autocomplete
@@ -37,6 +42,7 @@ const CreateClass = () => {
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
+                className='create__class-textfield'
                 {...params}
                 variant='outlined'
                 label='Subject'
@@ -46,10 +52,20 @@ const CreateClass = () => {
           />
         </Grid>
         <Grid item xs={12} sm={2}>
-          <TextField id='class-duration' label='Duration (minutes)' variant='outlined' />
+          <TextField
+            className='create__class-textfield'
+            id='class-duration'
+            label='Duration (minutes)'
+            variant='outlined'
+          />
         </Grid>
         <Grid item xs={12} sm={2}>
-          <TextField id='class-join-limit' label='Join limit' variant='outlined' />
+          <TextField
+            className='create__class-textfield'
+            id='class-join-limit'
+            label='Join limit'
+            variant='outlined'
+          />
         </Grid>
         <MuiPickersUtilsProvider utils={MomentUtils}>
           <Grid item xs={12} sm={2}>
@@ -81,6 +97,7 @@ const CreateClass = () => {
           </Grid>
         </MuiPickersUtilsProvider>
       </Grid>
+      <hr />
       <Grid container className='create-class-container' spacing={2}>
         <Grid item xs={12} sm={1}>
           <h2>Assign to</h2>
@@ -102,9 +119,15 @@ const CreateClass = () => {
           label='Mark as optional'
         />
       </Grid>
+      <hr />
       <Grid container className='create-class-container' spacing={2}>
-        <Grid item xs={12} sm={6}>
-          <TextField id='class-tutor-email' label='Tutor email' variant='outlined' />
+        <Grid item xs={12} sm={4}>
+          <TextField
+            className='create__class-textfield'
+            id='class-tutor-email'
+            label='Tutor email'
+            variant='outlined'
+          />
         </Grid>
       </Grid>
       <Grid container className='create-class-container' spacing={2}>
@@ -118,6 +141,7 @@ const CreateClass = () => {
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
+                className='create__class-textfield'
                 {...params}
                 variant='outlined'
                 label='Branch'
@@ -127,6 +151,7 @@ const CreateClass = () => {
           />
         </Grid>
       </Grid>
+      <hr />
       <Grid container className='create-class-container' spacing={2}>
         <h2>Co-Host</h2>
         {hosts.map(() => (
