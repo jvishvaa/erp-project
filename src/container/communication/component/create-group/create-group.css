@@ -1,0 +1,60 @@
+.creategroup__page{
+	background-color: #F9F9F9;
+	height: 45vw;
+}
+.creategroup_heading{
+	color: #014B7E;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+.creategroup_firstrow{
+	display: flex;
+    justify-content: space-around;
+    padding: 2% 22% 2% 2%;
+    margin-left: 2%;
+    width: 65%;
+    border-bottom: 2px solid #dcdcdc;
+}
+.group_name{
+	width: 350px;
+    height: 37px;
+    border: none !important;
+    margin-top: 1% !important;
+}
+.MuiOutlinedInput-input {
+	padding: 9.5px 14px !important;
+}
+.MuiOutlinedInput-root{
+	border-radius: 10px !important;
+}
+.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: rgb(0 0 0 / 18%) !important;
+}
+.MuiFormLabel-root{
+	color: #014B7E !important;
+	font-size: 1rem !important;
+    font-weight: 600 !important;
+}
+.button_wrapper{
+	position: fixed;
+    top: 50%;
+    margin: 2%;
+    display: flex;
+    justify-content: space-between;
+    width: 20%;
+}
+.custom_button{
+	font-size: 0.9rem;
+    padding: 3% 15%;
+    border: none;
+	border-radius: 5px;
+	text-transform: uppercase;
+}
+.addgroup_next_button{
+	color: white;
+	background-color: #FF6B6B;
+}
+.addgroup_back_button{
+	color: grey;
+	background-color: #dcdcdc;
+}
