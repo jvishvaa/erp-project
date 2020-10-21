@@ -29,7 +29,6 @@ const ViewClassManagementFilters = () => {
             renderInput={(params) => (
               <TextField
                 className='create__class-textfield'
-                // eslint-disable-next-line react/jsx-props-no-spreading
                 {...params}
                 variant='outlined'
                 label='Subject'

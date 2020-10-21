@@ -1,5 +1,4 @@
 import React, { useReducer } from 'react';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import PropTypes from 'prop-types';
 import OnlineclassContext from './online-class-context';
 import onlineclassReducer from './online-class-reducer';
