@@ -30,7 +30,7 @@ const CreateClass = () => {
 
   const handleGrade = (event, value) => {
     if (value.length) {
-      const ids = value.map((el) => el.id);
+      const ids = value.map((el) => el.grade_id);
       setGradeIds(ids);
       dispatch(listSectionsCreateClass(ids));
     } else {
