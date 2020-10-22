@@ -4,5 +4,5 @@ import academicMappingReducer from './academic-mapping-reducer';
 
 export default combineReducers({
   auth,
-  academicMappingReducer,
+  academic: academicMappingReducer,
 });

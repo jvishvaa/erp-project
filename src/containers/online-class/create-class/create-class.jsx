@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Grid, TextField, Checkbox, FormControlLabel, Button } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
@@ -9,17 +9,34 @@ import {
 } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 import AddIcon from '@material-ui/icons/Add';
+import { useSelector } from 'react-redux';
+import { OnlineclassContext } from '../online-class-context/online-class-state';
 import './create-class.scss';
 
 const CreateClass = () => {
   const [hosts, setHosts] = useState([{}]);
-  const top100Films = [
-    { title: 'The Shawshank Redemption', year: 1994 },
-    { title: 'The Godfather', year: 1972 },
-    { title: 'The Godfather: Part II', year: 1974 },
-    { title: 'The Dark Knight', year: 2008 },
-    { title: '12 Angry Men', year: 1957 },
-  ];
+  const [gradeIds, setGradeIds] = useState([]);
+  const { subjects = [] } = useSelector((state) => state.academic);
+  const {
+    listGradesCreateClass,
+    listSectionsCreateClass,
+    dispatch,
+    createOnlineClass: { grades = [], sections = [] },
+  } = useContext(OnlineclassContext);
+
+  useEffect(() => {
+    dispatch(listGradesCreateClass());
+  }, []);
+
+  const handleGrade = (event, value) => {
+    if (value.length) {
+      const ids = value.map((el) => el.id);
+      setGradeIds(ids);
+      dispatch(listSectionsCreateClass(ids));
+    } else {
+      setGradeIds([]);
+    }
+  };
 
   return (
     <div className='create__class'>
@@ -36,11 +53,9 @@ const CreateClass = () => {
         <Grid item xs={12} sm={2}>
           <Autocomplete
             size='small'
-            multiple
-            id='tags-outlined'
-            options={top100Films}
-            getOptionLabel={(option) => option.title}
-            // defaultValue={[top100Films[1]]}
+            id='create__class-subject'
+            options={subjects}
+            getOptionLabel={(option) => option.subject_name}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -138,24 +153,47 @@ const CreateClass = () => {
         </Grid>
       </Grid>
       <Grid container className='create-class-container' spacing={2}>
-        <Grid item xs={12} sm={2}>
+        <Grid item xs={12} sm={3}>
           <Autocomplete
             multiple
-            id='tags-outlined'
-            options={top100Films}
-            getOptionLabel={(option) => option.title}
-            // defaultValue={[top100Films[1]]}
+            onChange={handleGrade}
+            id='create__class-branch'
+            options={grades}
+            getOptionLabel={(option) => option.grade__grade_name}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
                 className='create__class-textfield'
                 {...params}
                 variant='outlined'
-                label='Branch'
-                placeholder='Branch'
+                label='Grades'
+                placeholder='Grades'
               />
             )}
           />
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          {gradeIds.length ? (
+            <Autocomplete
+              multiple
+              onChange={handleGrade}
+              id='create__class-branch'
+              options={sections}
+              getOptionLabel={(option) => option.section__section_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  className='create__class-textfield'
+                  {...params}
+                  variant='outlined'
+                  label='Sections'
+                  placeholder='Sections'
+                />
+              )}
+            />
+          ) : (
+            ''
+          )}
         </Grid>
       </Grid>
       <hr />

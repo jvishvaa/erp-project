@@ -6,10 +6,10 @@ function request(type) {
   return { type: mappingConstants[type] };
 }
 function success(data, type) {
-  return { type: mappingConstants[type], data };
+  return { type: mappingConstants[type], payload: data };
 }
 function failure(error, type) {
-  return { type: mappingConstants[type], error };
+  return { type: mappingConstants[type], payload: error };
 }
 
 export const listSubjects = () => {
