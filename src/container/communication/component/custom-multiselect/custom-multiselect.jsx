@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 /* eslint-disable no-console */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React from 'react';
@@ -13,7 +14,7 @@ import './custom-multiselect.css';
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 350,
+    minWidth: 300,
     maxWidth: 400,
   },
   chips: {

@@ -1,0 +1,29 @@
+.view_groups_header{
+	color: #FF6B6B !important;
+}
+.MuiTableCell-head{
+	color: #FF6B6B !important;
+	font-weight: 600 !important;
+	text-align: center !important;
+}
+.MuiTableCell-body{
+	color: #014B7E !important;
+	font-weight: 500 !important;
+	text-align: center !important;
+}
+.MuiTableCell-stickyHeader{
+	background-color: #f3e8e8 !important;
+}
+.group_view_activate_button{
+	background-color: green;
+	color: white;
+}
+.group_view_deactivate_button{
+	background-color: red;
+	color: white;
+}
+.group_view_button{
+	margin-left: 1%;
+	margin-right: 1%;
+	outline: none;
+}

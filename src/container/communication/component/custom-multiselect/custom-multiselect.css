@@ -39,6 +39,6 @@ label + .MuiInput-formControl{
 .MuiInputLabel-outlined.MuiInputLabel-shrink{
 	transform: translate(14px, -6px) scale(0.75) !important;
 }
-.MuiPaper-root{
-	margin-top: 4%;
+.MuiPaper-elevation8{
+	margin-top: 6%;
 }
