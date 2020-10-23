@@ -1,6 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useContext, useEffect, useState } from 'react';
-import { Grid, TextField, Checkbox, FormControlLabel, Button } from '@material-ui/core';
+import {
+  Grid,
+  TextField,
+  Checkbox,
+  FormControlLabel,
+  Button,
+  SwipeableDrawer,
+} from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
   MuiPickersUtilsProvider,
@@ -10,19 +17,26 @@ import {
 import MomentUtils from '@date-io/moment';
 import AddIcon from '@material-ui/icons/Add';
 import { useSelector } from 'react-redux';
-import { OnlineclassContext } from '../online-class-context/online-class-state';
+import { CreateclassContext } from './create-class-context/create-class-state';
+import FilterStudents from './filter-students';
+// import endpoints from '../../../config/endpoints';
 import './create-class.scss';
 
-const CreateClass = () => {
+const CreateClassForm = () => {
   const [hosts, setHosts] = useState([{}]);
   const [gradeIds, setGradeIds] = useState([]);
+  const [sectionIds, setSectionIds] = useState([]);
+  const [sectionSelectorKey, setSectionSelectorKey] = useState(new Date());
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { subjects = [] } = useSelector((state) => state.academic);
   const {
     listGradesCreateClass,
     listSectionsCreateClass,
+    listStudents,
     dispatch,
-    createOnlineClass: { grades = [], sections = [] },
-  } = useContext(OnlineclassContext);
+    grades = [],
+    sections = [],
+  } = useContext(CreateclassContext);
 
   useEffect(() => {
     dispatch(listGradesCreateClass());
@@ -36,6 +50,34 @@ const CreateClass = () => {
     } else {
       setGradeIds([]);
     }
+    setSectionIds([]);
+    setSectionSelectorKey(new Date());
+  };
+
+  const handleSection = (event, value) => {
+    if (value.length) {
+      const ids = value.map((el) => el.section_id);
+      setSectionIds(ids);
+    } else {
+      setSectionIds([]);
+    }
+  };
+
+  useEffect(() => {
+    let listStudentUrl = `branch_id=1`;
+    if (gradeIds.length && !sectionIds.length) {
+      listStudentUrl += `&grade_id=${gradeIds.join(',')}`;
+    } else if (gradeIds.length && sectionIds.length) {
+      listStudentUrl += `&grade_id=${gradeIds.join(',')}&section_id=${sectionIds.join(
+        ','
+      )}`;
+    }
+    dispatch(listStudents(listStudentUrl));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gradeIds, sectionIds]);
+
+  const toggleDrawer = () => {
+    setIsDrawerOpen((prevState) => !prevState);
   };
 
   return (
@@ -153,13 +195,14 @@ const CreateClass = () => {
         </Grid>
       </Grid>
       <Grid container className='create-class-container' spacing={2}>
-        <Grid item xs={12} sm={3}>
+        <Grid item>
           <Autocomplete
             multiple
+            size='small'
             onChange={handleGrade}
             id='create__class-branch'
             options={grades}
-            getOptionLabel={(option) => option.grade__grade_name}
+            getOptionLabel={(option) => option?.grade__grade_name}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -172,15 +215,18 @@ const CreateClass = () => {
             )}
           />
         </Grid>
-        <Grid item xs={12} sm={3}>
+        <Grid item>
           {gradeIds.length ? (
             <Autocomplete
+              key={sectionSelectorKey}
+              size='small'
               multiple
-              onChange={handleGrade}
-              id='create__class-branch'
+              onChange={handleSection}
+              id='create__class-section'
               options={sections}
               getOptionLabel={(option) => option.section__section_name}
               filterSelectedOptions
+              // value={[]}
               renderInput={(params) => (
                 <TextField
                   className='create__class-textfield'
@@ -195,12 +241,27 @@ const CreateClass = () => {
             ''
           )}
         </Grid>
+        <Grid item>
+          <Button variant='contained' color='primary' onClick={toggleDrawer}>
+            Filter students
+          </Button>
+        </Grid>
+      </Grid>
+      <Grid container>
+        <SwipeableDrawer
+          anchor='right'
+          open={isDrawerOpen}
+          onClose={toggleDrawer}
+          onOpen={toggleDrawer}
+        >
+          <FilterStudents />
+        </SwipeableDrawer>
       </Grid>
       <hr />
       <Grid container className='create-class-container' spacing={2}>
         <h2>Co-Host</h2>
-        {hosts.map(() => (
-          <Grid item xs={12} sm={12}>
+        {hosts.map((el) => (
+          <Grid item xs={12} sm={12} key={el}>
             <TextField
               id='class-title'
               label='Host name'
@@ -233,4 +294,4 @@ const CreateClass = () => {
   );
 };
 
-export default CreateClass;
+export default CreateClassForm;

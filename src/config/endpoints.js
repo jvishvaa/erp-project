@@ -8,4 +8,7 @@ export default {
     grades: '/erp_user/grademapping/',
     sections: '/erp_user/sectionmapping/',
   },
+  onlineClass: {
+    filterStudent: '/erp_user/student_filter/',
+  },
 };
