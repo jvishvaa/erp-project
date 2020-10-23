@@ -17,49 +17,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 import './create-class.scss';
 import { CreateclassContext } from './create-class-context/create-class-state';
 
-const rows = [
-  {
-    id: 13,
-    contact: '+91 3240263235',
-    erp_id: '1506172827033',
-    gender: '1',
-    profile: 'no-img.jpg',
-    is_active: true,
-    is_delete: false,
-    created_at: '2020-10-21T08:28:54.170739Z',
-    updated_at: '2020-10-21T09:04:13.448922Z',
-    roles: 1,
-    user: 184,
-    academic_year: null,
-    created_by: null,
-    updated_by: null,
-    branch: [],
-    grade: [6],
-    mapping_bgs: [2],
-    mapping_subject: [],
-  },
-  {
-    id: 12,
-    contact: '09464 198947',
-    erp_id: '1098765422999',
-    gender: '1',
-    profile: 'no-img.jpg',
-    is_active: true,
-    is_delete: false,
-    created_at: '2020-10-21T08:28:53.490665Z',
-    updated_at: '2020-10-21T09:04:13.985003Z',
-    roles: 1,
-    user: 183,
-    academic_year: null,
-    created_by: null,
-    updated_by: null,
-    branch: [],
-    grade: [6],
-    mapping_bgs: [2],
-    mapping_subject: [],
-  },
-];
-
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -144,7 +101,6 @@ function EnhancedTableHead(props) {
 }
 
 EnhancedTableHead.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
   classes: PropTypes.object.isRequired,
   numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
