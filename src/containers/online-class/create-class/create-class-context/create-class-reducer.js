@@ -8,6 +8,10 @@ import {
   LIST_STUDENT_FAILURE,
   LIST_STUDENT_REQUEST,
   LIST_STUDENT_SUCCESS,
+  VERIFY_TUTOREMAIL_FAILURE,
+  VERIFY_TUTOREMAIL_REQUEST,
+  VERIFY_TUTOREMAIL_SUCCESS,
+  CLEAR_VALIDATION,
 } from './create-class-constants';
 
 const createClassReducer = (state, action) => {
@@ -66,6 +70,31 @@ const createClassReducer = (state, action) => {
         ...state,
         loadingStudents: false,
         errorLoadingStudents: action.payload,
+      };
+
+    // validating tutor email
+    case VERIFY_TUTOREMAIL_REQUEST:
+      return {
+        ...state,
+        isValidatingTutorEmail: true,
+      };
+    case VERIFY_TUTOREMAIL_SUCCESS:
+      return {
+        ...state,
+        isValidatingTutorEmail: false,
+        isTutorEmailValid: true,
+      };
+    case VERIFY_TUTOREMAIL_FAILURE:
+      return {
+        ...state,
+        isValidatingTutorEmail: false,
+        isTutorEmailValid: false,
+      };
+    case CLEAR_VALIDATION:
+      return {
+        ...state,
+        isValidatingTutorEmail: null,
+        isTutorEmailValid: null,
       };
 
     default:

@@ -1,5 +1,4 @@
 import React, { useReducer, createContext } from 'react';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import PropTypes from 'prop-types';
 import createClassReducer from './create-class-reducer';
 import {
@@ -12,9 +11,14 @@ import {
   LIST_STUDENT_FAILURE,
   LIST_STUDENT_REQUEST,
   LIST_STUDENT_SUCCESS,
+  VERIFY_TUTOREMAIL_REQUEST,
+  VERIFY_TUTOREMAIL_SUCCESS,
+  VERIFY_TUTOREMAIL_FAILURE,
+  CLEAR_VALIDATION,
 } from './create-class-constants';
 import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
+import { getFormatedTime } from '../utils';
 
 export const CreateclassContext = createContext();
 
@@ -26,6 +30,8 @@ const CreateclassProvider = (props) => {
     studentList: [],
     errorLoadingStudents: '',
     loadingStudents: false,
+    isTutorEmailValid: null,
+    isValidatingTutorEmail: null,
   };
 
   const [state, dispatch] = useReducer(createClassReducer, initalState);
@@ -86,6 +92,26 @@ const CreateclassProvider = (props) => {
     }
   };
 
+  const clearTutorEmailValidation = () => {
+    return { type: CLEAR_VALIDATION };
+  };
+
+  const verifyTutorEmail = async (tutorEmail, selectedDate, selectedTime, duration) => {
+    const startTime = `${selectedDate} ${getFormatedTime(selectedTime)}`;
+    dispatch(request(VERIFY_TUTOREMAIL_REQUEST));
+    try {
+      const { data } = await axiosInstance.get(
+        `${endpoints.onlineClass.teacherAvailability}?tutor_email=${tutorEmail}&start_time=${startTime}&duration=${duration}`
+      );
+      if (data.status === 'success') dispatch(success('', VERIFY_TUTOREMAIL_SUCCESS));
+    } catch (error) {
+      const { response } = error || {};
+      if (response?.data) window.alert(response.data.message);
+      else window.alert(error.message);
+      dispatch(failure(error, VERIFY_TUTOREMAIL_FAILURE));
+    }
+  };
+
   return (
     <CreateclassContext.Provider
       value={{
@@ -94,6 +120,8 @@ const CreateclassProvider = (props) => {
         listStudents,
         listGradesCreateClass,
         listSectionsCreateClass,
+        verifyTutorEmail,
+        clearTutorEmailValidation,
       }}
     >
       {children}

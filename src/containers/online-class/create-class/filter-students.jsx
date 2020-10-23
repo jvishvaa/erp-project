@@ -1,5 +1,4 @@
-import React from 'react';
-// eslint-disable-next-line import/no-extraneous-dependencies
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { lighten, makeStyles } from '@material-ui/core/styles';
@@ -15,8 +14,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
-// import { CreateclassContext } from './create-class-context/create-class-state';
 import './create-class.scss';
+import { CreateclassContext } from './create-class-context/create-class-state';
 
 const rows = [
   {
@@ -201,7 +200,7 @@ const EnhancedTableToolbar = (props) => {
           id='tableTitle'
           component='div'
         >
-          Filter students
+          Filter student
         </Typography>
       )}
     </Toolbar>
@@ -245,7 +244,9 @@ export default function FilterStudents() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  // const { rows } = useContext(CreateclassContext);
+  const {
+    studentList: { result: students = [] },
+  } = useContext(CreateclassContext);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -255,7 +256,7 @@ export default function FilterStudents() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.erp_id);
+      const newSelecteds = students.map((n) => n.erp_id);
       setSelected(newSelecteds);
       return;
     }
@@ -293,7 +294,8 @@ export default function FilterStudents() {
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  const emptyRows =
+    rowsPerPage - Math.min(rowsPerPage, students.length - page * rowsPerPage);
 
   return (
     <div className={classes.root}>
@@ -312,10 +314,10 @@ export default function FilterStudents() {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={students.length}
             />
             <TableBody className='styled__table-body'>
-              {stableSort(rows, getComparator(order, orderBy))
+              {stableSort(students, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.erp_id);
@@ -339,7 +341,7 @@ export default function FilterStudents() {
                       </TableCell>
                       <TableCell align='center'>{index + 1}</TableCell>
                       <TableCell align='center'>{row.erp_id}</TableCell>
-                      <TableCell align='center'>{row.fat}</TableCell>
+                      <TableCell align='center'>{row.user.first_name}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -354,7 +356,7 @@ export default function FilterStudents() {
         <TablePagination
           rowsPerPageOptions={[]}
           component='div'
-          count={rows.length}
+          count={students.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}

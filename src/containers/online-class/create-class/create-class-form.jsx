@@ -3,10 +3,9 @@ import React, { useContext, useEffect, useState } from 'react';
 import {
   Grid,
   TextField,
-  Checkbox,
-  FormControlLabel,
   Button,
   SwipeableDrawer,
+  CircularProgress,
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
@@ -16,16 +15,30 @@ import {
 } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 import AddIcon from '@material-ui/icons/Add';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import { useSelector } from 'react-redux';
+import moment from 'moment';
+
 import { CreateclassContext } from './create-class-context/create-class-state';
 import FilterStudents from './filter-students';
-// import endpoints from '../../../config/endpoints';
 import './create-class.scss';
+import { emailRegExp } from './utils';
 
 const CreateClassForm = () => {
-  const [hosts, setHosts] = useState([{}]);
-  const [gradeIds, setGradeIds] = useState([]);
-  const [sectionIds, setSectionIds] = useState([]);
+  const [onlineClass, setOnlineClass] = useState({
+    title: '',
+    subject: '',
+    duration: '',
+    joinLimit: '',
+    startDate: '',
+    startTime: '',
+    tutorEmail: '',
+    gradeIds: [],
+    sectionIds: [],
+    selectedDate: moment(new Date()).format('YYYY-MM-DD'),
+    selectedTime: new Date(),
+    coHosts: [{}],
+  });
   const [sectionSelectorKey, setSectionSelectorKey] = useState(new Date());
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { subjects = [] } = useSelector((state) => state.academic);
@@ -34,6 +47,10 @@ const CreateClassForm = () => {
     listSectionsCreateClass,
     listStudents,
     dispatch,
+    verifyTutorEmail,
+    clearTutorEmailValidation,
+    isTutorEmailValid,
+    isValidatingTutorEmail,
     grades = [],
     sections = [],
   } = useContext(CreateclassContext);
@@ -45,26 +62,28 @@ const CreateClassForm = () => {
   const handleGrade = (event, value) => {
     if (value.length) {
       const ids = value.map((el) => el.grade_id);
-      setGradeIds(ids);
+      setOnlineClass((prevState) => ({ ...prevState, gradeIds: ids }));
       dispatch(listSectionsCreateClass(ids));
     } else {
-      setGradeIds([]);
+      setOnlineClass((prevState) => ({ ...prevState, gradeIds: [] }));
     }
-    setSectionIds([]);
+    setOnlineClass((prevState) => ({ ...prevState, sectionIds: [] }));
+
     setSectionSelectorKey(new Date());
   };
 
   const handleSection = (event, value) => {
     if (value.length) {
       const ids = value.map((el) => el.section_id);
-      setSectionIds(ids);
+      setOnlineClass((prevState) => ({ ...prevState, sectionIds: ids }));
     } else {
-      setSectionIds([]);
+      setOnlineClass((prevState) => ({ ...prevState, sectionIds: [] }));
     }
   };
 
   useEffect(() => {
-    let listStudentUrl = `branch_id=1`;
+    let listStudentUrl = `branch_id=1&page_number=1&page_size=5`;
+    const { gradeIds, sectionIds } = onlineClass;
     if (gradeIds.length && !sectionIds.length) {
       listStudentUrl += `&grade_id=${gradeIds.join(',')}`;
     } else if (gradeIds.length && sectionIds.length) {
@@ -73,11 +92,48 @@ const CreateClassForm = () => {
       )}`;
     }
     dispatch(listStudents(listStudentUrl));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gradeIds, sectionIds]);
+  }, [onlineClass.gradeIds, onlineClass.sectionIds]);
 
   const toggleDrawer = () => {
     setIsDrawerOpen((prevState) => !prevState);
+  };
+
+  const handleTutorEmail = (event) => {
+    const { value } = event.target;
+    setOnlineClass((prevState) => ({ ...prevState, tutorEmail: value }));
+  };
+
+  const handleBlur = (e) => {
+    const isValidEmail = e.target.value.match(emailRegExp);
+    if (!isValidEmail || onlineClass.tutorEmail === '') {
+      window.alert('Invalid email address');
+    } else {
+      const { tutorEmail, selectedDate, selectedTime, duration } = onlineClass;
+      verifyTutorEmail(tutorEmail, selectedDate, selectedTime, duration);
+    }
+  };
+
+  const handleDateChange = (event, value) => {
+    dispatch(clearTutorEmailValidation());
+    setOnlineClass((prevState) => ({
+      ...prevState,
+      selectedDate: value,
+      tutorEmail: '',
+    }));
+  };
+  const handleTimeChange = (event) => {
+    const time = new Date(event);
+    dispatch(clearTutorEmailValidation());
+    setOnlineClass((prevState) => ({ ...prevState, selectedTime: time, tutorEmail: '' }));
+  };
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    if (name === 'duration') {
+      dispatch(clearTutorEmailValidation());
+      setOnlineClass((prevState) => ({ ...prevState, [name]: value, tutorEmail: '' }));
+    }
+    setOnlineClass((prevState) => ({ ...prevState, [name]: value }));
   };
 
   return (
@@ -90,6 +146,8 @@ const CreateClassForm = () => {
             label='Title'
             variant='outlined'
             size='small'
+            name='title'
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={12} sm={2}>
@@ -118,6 +176,9 @@ const CreateClassForm = () => {
             id='class-duration'
             label='Duration (minutes)'
             variant='outlined'
+            type='number'
+            name='duration'
+            onChange={handleChange}
           />
         </Grid>
         <Grid item xs={12} sm={2}>
@@ -127,6 +188,9 @@ const CreateClassForm = () => {
             id='class-join-limit'
             label='Join limit'
             variant='outlined'
+            type='number'
+            name='joinLimit'
+            onChange={handleChange}
           />
         </Grid>
         <MuiPickersUtilsProvider utils={MomentUtils}>
@@ -135,12 +199,13 @@ const CreateClassForm = () => {
               size='small'
               disableToolbar
               variant='inline'
-              format='dddd'
+              format='YYYY-MM-DD'
               margin='none'
               id='date-picker-inline'
               label='Start date'
-              //   value={selectedDate}
-              //   onChange={handleDateChange}
+              value={onlineClass.selectedDate}
+              minDate={new Date()}
+              onChange={handleDateChange}
               KeyboardButtonProps={{
                 'aria-label': 'change date',
               }}
@@ -152,8 +217,8 @@ const CreateClassForm = () => {
               margin='none'
               id='time-picker'
               label='Start time'
-              //   value={selectedDate}
-              //   onChange={handleDateChange}
+              value={onlineClass.selectedTime}
+              onChange={handleTimeChange}
               KeyboardButtonProps={{
                 'aria-label': 'change time',
               }}
@@ -163,35 +228,31 @@ const CreateClassForm = () => {
       </Grid>
       <hr />
       <Grid container className='create-class-container' spacing={2}>
-        <Grid item xs={12} sm={2}>
-          <h2>Assign to</h2>
-        </Grid>
-        <FormControlLabel
-          control={<Checkbox checked name='checkedA' />}
-          label='Parents'
-        />
-        <FormControlLabel
-          control={<Checkbox checked name='checkedA' />}
-          label='All branches, grades and section'
-        />
-        <FormControlLabel
-          control={<Checkbox checked name='checkedA' />}
-          label='Students'
-        />
-        <FormControlLabel
-          control={<Checkbox checked={false} name='checkedA' />}
-          label='Mark as optional'
-        />
-      </Grid>
-      <hr />
-      <Grid container className='create-class-container' spacing={2}>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={11} sm={7} md={4}>
           <TextField
             className='create__class-textfield'
             id='class-tutor-email'
             label='Tutor email'
             variant='outlined'
+            size='small'
+            onChange={handleTutorEmail}
+            onBlur={handleBlur}
+            disabled={!onlineClass.duration}
+            value={onlineClass.tutorEmail}
           />
+          {onlineClass.tutorEmail && !onlineClass.tutorEmail.match(emailRegExp) ? (
+            <span className='alert__email'>Please enter a valid email</span>
+          ) : (
+            ''
+          )}
+        </Grid>
+        <Grid item xs={1} sm={4}>
+          {isTutorEmailValid ? (
+            <CheckCircleIcon style={{ fill: 'green', marginTop: 8 }} />
+          ) : (
+            ''
+          )}
+          {isValidatingTutorEmail ? <CircularProgress color='secondary' /> : ''}
         </Grid>
       </Grid>
       <Grid container className='create-class-container' spacing={2}>
@@ -216,7 +277,7 @@ const CreateClassForm = () => {
           />
         </Grid>
         <Grid item>
-          {gradeIds.length ? (
+          {onlineClass.gradeIds.length ? (
             <Autocomplete
               key={sectionSelectorKey}
               size='small'
@@ -260,22 +321,31 @@ const CreateClassForm = () => {
       <hr />
       <Grid container className='create-class-container' spacing={2}>
         <h2>Co-Host</h2>
-        {hosts.map((el) => (
+        {onlineClass.coHosts.map((el) => (
           <Grid item xs={12} sm={12} key={el}>
             <TextField
-              id='class-title'
+              id='class-cohost-name'
               label='Host name'
               variant='outlined'
               style={{ marginRight: 10 }}
+              size='small'
             />
-            <TextField id='class-title' label='Host email id' variant='outlined' />
+            <TextField
+              size='small'
+              id='class-cohost-email'
+              label='Host email id'
+              variant='outlined'
+            />
           </Grid>
         ))}
       </Grid>
       <Grid container className='create-class-container' spacing={2}>
         <Button
           onClick={() => {
-            setHosts([...hosts, {}]);
+            setOnlineClass((prevState) => ({
+              ...prevState,
+              coHosts: [...prevState.coHosts, {}],
+            }));
           }}
           variant='outlined'
           color='primary'

@@ -17,6 +17,13 @@
   svg {
     fill: $primary-color;
   }
+
+  .alert__email {
+    display: inline-block;
+    color: red;
+    padding: 5px;
+    text-transform: capitalize;
+  }
 }
 
 .styled__table {
