@@ -200,9 +200,7 @@ export default function FilterStudents() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  const {
-    studentList: { result: students = [] },
-  } = useContext(CreateclassContext);
+  const { studentList: students = [] } = useContext(CreateclassContext);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -253,6 +251,10 @@ export default function FilterStudents() {
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, students.length - page * rowsPerPage);
 
+  const addIndex = () => {
+    return students.map((student, index) => ({ ...student, sl: index + 1 }));
+  };
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -273,7 +275,7 @@ export default function FilterStudents() {
               rowCount={students.length}
             />
             <TableBody className='styled__table-body'>
-              {stableSort(students, getComparator(order, orderBy))
+              {stableSort(addIndex(students), getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.erp_id);
@@ -295,7 +297,7 @@ export default function FilterStudents() {
                           inputProps={{ 'aria-labelledby': labelId }}
                         />
                       </TableCell>
-                      <TableCell align='center'>{index + 1}</TableCell>
+                      <TableCell align='center'>{row.sl}</TableCell>
                       <TableCell align='center'>{row.erp_id}</TableCell>
                       <TableCell align='center'>{row.user.first_name}</TableCell>
                     </TableRow>

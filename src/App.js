@@ -30,6 +30,7 @@ function App() {
     <div className='App'>
       <Router>
         <Switch>
+<<<<<<< Updated upstream
           <AlertNotificationProvider>
             <ThemeProvider theme={theme}>
               <Layout>
@@ -37,6 +38,13 @@ function App() {
               </Layout>
             </ThemeProvider>
           </AlertNotificationProvider>
+=======
+          <ThemeProvider theme={theme}>
+            <Layout>
+              <Route path='/'><OnlineClass /> </Route>
+            </Layout>
+          </ThemeProvider>
+>>>>>>> Stashed changes
         </Switch>
       </Router>
     </div>

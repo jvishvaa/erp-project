@@ -85,7 +85,7 @@ const CreateClassForm = () => {
   };
 
   useEffect(() => {
-    let listStudentUrl = `branch_id=1&page_number=1&page_size=5`;
+    let listStudentUrl = `branch_id=1`;
     const { gradeIds, sectionIds } = onlineClass;
     if (gradeIds.length && !sectionIds.length) {
       listStudentUrl += `&grade_id=${gradeIds.join(',')}`;
