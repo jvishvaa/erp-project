@@ -4,6 +4,7 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
 import Layout from './containers/Layout';
 import store from './redux/store';
+import AlertNotificationProvider from './context-api/alert-context/alert-state';
 import './assets/styles/styles.scss';
 
 const theme = createMuiTheme({
@@ -28,11 +29,13 @@ function App() {
     <div className='App'>
       <Router>
         <Switch>
-          <ThemeProvider theme={theme}>
-            <Layout>
-              <Route path='/'>{() => <div>Landing page</div>}</Route>
-            </Layout>
-          </ThemeProvider>
+          <AlertNotificationProvider>
+            <ThemeProvider theme={theme}>
+              <Layout>
+                <Route path='/'>{() => <div>Landing page</div>}</Route>
+              </Layout>
+            </ThemeProvider>
+          </AlertNotificationProvider>
         </Switch>
       </Router>
     </div>
