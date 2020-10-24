@@ -24,6 +24,22 @@
     padding: 5px;
     text-transform: capitalize;
   }
+
+  #time-picker {
+    pointer-events: none !important;
+  }
+
+  .MuiTextField-root {
+      width: 100%;
+  }
+
+  .co_host-title {
+    margin: 0 !important;
+  }
+
+  .btn-addmore {
+    margin-left: 10px;
+  }
 }
 
 .styled__table {

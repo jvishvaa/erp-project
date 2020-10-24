@@ -6,6 +6,7 @@ import Layout from './containers/Layout';
 import store from './redux/store';
 import AlertNotificationProvider from './context-api/alert-context/alert-state';
 import './assets/styles/styles.scss';
+import OnlineClass from './containers/online-class';
 
 const theme = createMuiTheme({
   palette: {
@@ -32,7 +33,7 @@ function App() {
           <AlertNotificationProvider>
             <ThemeProvider theme={theme}>
               <Layout>
-                <Route path='/'>{() => <div>Landing page</div>}</Route>
+                <Route path='/'><OnlineClass /></Route>
               </Layout>
             </ThemeProvider>
           </AlertNotificationProvider>

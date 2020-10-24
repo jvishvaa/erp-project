@@ -6,3 +6,16 @@ export const getFormatedTime = (time) => {
 };
 
 export const emailRegExp = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+
+export const isBetweenNonSchedulingTime = (value) => {
+  const nonSchedulingStartTime = '21:00:00';
+  const nonSchedulingEndTime = '05:59:00';
+  const hours = value.getHours();
+  const minutes = value.getMinutes();
+  const selectedTime = `${`00${hours}`.slice(-2)}:${`00${minutes}`.slice(-2)}:` + `00`;
+
+  if (selectedTime < nonSchedulingStartTime && selectedTime > nonSchedulingEndTime) {
+    return false;
+  }
+  return true;
+};
