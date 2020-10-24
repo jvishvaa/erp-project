@@ -16,8 +16,8 @@ export const listSubjects = () => {
   return async (dispatch) => {
     dispatch(request(mappingConstants.SUBJECT_REQUEST));
     try {
-      const response = await axiosInstance(endpoints.academics.subjects);
-      dispatch(success(response.data, mappingConstants.SUBJECT_SUCCESS));
+      const { data } = await axiosInstance(endpoints.academics.subjects);
+      dispatch(success(data.data, mappingConstants.SUBJECT_SUCCESS));
     } catch (error) {
       dispatch(failure(error, mappingConstants.SUBJECT_FAILURE));
     }

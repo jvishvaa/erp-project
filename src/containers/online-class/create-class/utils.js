@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const getFormatedTime = (time) => {
   const date = time;
   const dateStr =
@@ -6,6 +8,21 @@ export const getFormatedTime = (time) => {
 };
 
 export const emailRegExp = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+
+export const initialFormStructure = {
+  title: '',
+  subject: '',
+  duration: '',
+  joinLimit: '',
+  startDate: '',
+  startTime: '',
+  tutorEmail: '',
+  gradeIds: [],
+  sectionIds: [],
+  selectedDate: moment(new Date()).format('YYYY-MM-DD'),
+  selectedTime: new Date(),
+  coHosts: [{ email: '' }],
+};
 
 export const isBetweenNonSchedulingTime = (value) => {
   const nonSchedulingStartTime = '21:00:00';

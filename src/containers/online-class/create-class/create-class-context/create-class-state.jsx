@@ -1,4 +1,4 @@
-import React, { useReducer, createContext } from 'react';
+import React, { useReducer, createContext, useContext } from 'react';
 import PropTypes from 'prop-types';
 import createClassReducer from './create-class-reducer';
 import {
@@ -15,23 +15,34 @@ import {
   VERIFY_TUTOREMAIL_SUCCESS,
   VERIFY_TUTOREMAIL_FAILURE,
   CLEAR_VALIDATION,
+  CLEAR_FILERED_STUDENTS,
+  LIST_FILTERED_STUDENTS,
+  CREATE_NEW_CLASS_REQUEST,
+  CREATE_NEW_CLASS_SUCCESS,
+  CREATE_NEW_CLASS_FAILURE,
+  RESET_CREATE_CLASS_CONTEXT,
 } from './create-class-constants';
 import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
 import { getFormatedTime } from '../utils';
+import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 
 export const CreateclassContext = createContext();
 
 const CreateclassProvider = (props) => {
   const { children } = props;
+  const { setAlert } = useContext(AlertNotificationContext);
   const initalState = {
     grades: [],
     sections: [],
     studentList: [],
+    filteredStudents: [],
     errorLoadingStudents: '',
     loadingStudents: false,
     isTutorEmailValid: null,
     isValidatingTutorEmail: null,
+    creatingOnlineClass: false,
+    isCreated: false,
   };
 
   const [state, dispatch] = useReducer(createClassReducer, initalState);
@@ -106,10 +117,40 @@ const CreateclassProvider = (props) => {
       if (data.status === 'success') dispatch(success('', VERIFY_TUTOREMAIL_SUCCESS));
     } catch (error) {
       const { response } = error || {};
-      if (response?.data) window.alert(response.data.message);
-      else window.alert(error.message);
+      if (response?.data) setAlert('error', response.data.message);
+      else setAlert('error', error.message);
       dispatch(failure(error, VERIFY_TUTOREMAIL_FAILURE));
     }
+  };
+
+  const createNewOnlineClass = async (formdata) => {
+    dispatch(request(CREATE_NEW_CLASS_REQUEST));
+    try {
+      const { data } = await axiosInstance.post(
+        `${endpoints.onlineClass.createClass}`,
+        formdata
+      );
+      if (data.status === 'success')
+        dispatch(success(initalState, CREATE_NEW_CLASS_SUCCESS));
+    } catch (error) {
+      const { response } = error || {};
+      if (response?.data && response.data.message)
+        setAlert('error', response.data.message);
+      else setAlert('error', error.message);
+      dispatch(failure(error, CREATE_NEW_CLASS_FAILURE));
+    }
+  };
+
+  const clearFilteredStudents = () => {
+    return { type: CLEAR_FILERED_STUDENTS };
+  };
+
+  const listFilteredStudents = (students) => {
+    return { type: LIST_FILTERED_STUDENTS, payload: students };
+  };
+
+  const resetContext = () => {
+    return { type: RESET_CREATE_CLASS_CONTEXT, payload: initalState };
   };
 
   return (
@@ -122,6 +163,10 @@ const CreateclassProvider = (props) => {
         listSectionsCreateClass,
         verifyTutorEmail,
         clearTutorEmailValidation,
+        clearFilteredStudents,
+        listFilteredStudents,
+        createNewOnlineClass,
+        resetContext,
       }}
     >
       {children}

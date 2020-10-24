@@ -12,6 +12,12 @@ import {
   VERIFY_TUTOREMAIL_REQUEST,
   VERIFY_TUTOREMAIL_SUCCESS,
   CLEAR_VALIDATION,
+  CLEAR_FILERED_STUDENTS,
+  LIST_FILTERED_STUDENTS,
+  CREATE_NEW_CLASS_REQUEST,
+  CREATE_NEW_CLASS_SUCCESS,
+  CREATE_NEW_CLASS_FAILURE,
+  RESET_CREATE_CLASS_CONTEXT,
 } from './create-class-constants';
 
 const createClassReducer = (state, action) => {
@@ -96,6 +102,30 @@ const createClassReducer = (state, action) => {
         isValidatingTutorEmail: null,
         isTutorEmailValid: null,
       };
+
+    case CLEAR_FILERED_STUDENTS:
+      return {
+        ...state,
+        filteredStudents: [],
+      };
+
+    case LIST_FILTERED_STUDENTS:
+      return {
+        ...state,
+        filteredStudents: action.payload,
+      };
+
+    // create new online class
+    case CREATE_NEW_CLASS_REQUEST:
+      return { ...state, creatingOnlineClass: true };
+    case CREATE_NEW_CLASS_SUCCESS:
+      return { ...state, creatingOnlineClass: false, isCreated: true };
+    case CREATE_NEW_CLASS_FAILURE:
+      return { ...state, creatingOnlineClass: false };
+
+    // reset context
+    case RESET_CREATE_CLASS_CONTEXT:
+      return { ...state, ...action.payload };
 
     default:
       return { ...state };

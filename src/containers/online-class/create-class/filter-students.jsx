@@ -200,7 +200,12 @@ export default function FilterStudents() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  const { studentList: students = [] } = useContext(CreateclassContext);
+  const {
+    studentList: students = [],
+    filteredStudents = [],
+    listFilteredStudents,
+    dispatch,
+  } = useContext(CreateclassContext);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -212,8 +217,10 @@ export default function FilterStudents() {
     if (event.target.checked) {
       const newSelecteds = students.map((n) => n.erp_id);
       setSelected(newSelecteds);
+      dispatch(listFilteredStudents(newSelecteds));
       return;
     }
+    dispatch(listFilteredStudents([]));
     setSelected([]);
   };
 
@@ -233,7 +240,7 @@ export default function FilterStudents() {
         selected.slice(selectedIndex + 1)
       );
     }
-
+    dispatch(listFilteredStudents(newSelected));
     setSelected(newSelected);
   };
 
@@ -246,7 +253,8 @@ export default function FilterStudents() {
     setPage(0);
   };
 
-  const isSelected = (name) => selected.indexOf(name) !== -1;
+  const isSelected = (name) =>
+    selected.indexOf(name) !== -1 || filteredStudents.indexOf(name) !== -1;
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, students.length - page * rowsPerPage);
