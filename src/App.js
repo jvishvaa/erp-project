@@ -5,6 +5,7 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import Layout from './containers/layout';
 import RoleManagement from './containers/role-management';
 import store from './redux/store';
+import AlertNotificationProvider from './context-api/alert-context/alert-state';
 import './assets/styles/styles.scss';
 
 const theme = createMuiTheme({
@@ -36,22 +37,22 @@ function App() {
 
   return (
     <div className='App'>
-      <ThemeProvider theme={theme}>
-        <Router>
-          <Layout>
-            <Switch>
-              <Route path='/role-management'>
-                {({ match }) => <RoleManagement match={match} />}
-              </Route>
-              <Route exact path='/'>
-                {() => {
-                  return <div>Landing page</div>;
-                }}
-              </Route>
-            </Switch>
-          </Layout>
-        </Router>
-      </ThemeProvider>
+      <Router>
+        <AlertNotificationProvider>
+          <ThemeProvider theme={theme}>
+            <Layout>
+              <Switch>
+                <Route path='/role-management'>
+                  {({ match }) => <RoleManagement match={match} />}
+                </Route>
+                <Route exact path='/'>
+                  {() => <div>Landing page</div>}
+                </Route>
+              </Switch>
+            </Layout>
+          </ThemeProvider>
+        </AlertNotificationProvider>
+      </Router>
     </div>
   );
 }
