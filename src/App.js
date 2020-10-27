@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import CreateGroup from './container/communication/component/create-group/create-group';
 import ViewGroup from './container/communication/component/view-group/view-group';
+import MessageCredit from './container/communication/component/message-credit/message-credit';
 import Layout from './containers/Layout';
 import store from './redux/store';
 import './assets/styles/styles.scss';
@@ -37,6 +38,9 @@ function App() {
               <Route exact path='/addgroup'>
                 {() => <CreateGroup />}
               </Route>
+              {/* <Route exact path='/smscredit'>
+                {() => <MessageCredit />}
+              </Route> */}
               {/* <Route exact path='/viewgroup'>
                 {() => <ViewGroup />}
               </Route> */}

@@ -1,0 +1,17 @@
+.sms_credit_table_header{
+	color: #ff6b6b;
+    border-right: 1px solid;
+}
+.sms_credit_table{
+	width: 95%;
+    margin: auto;
+}
+.sms_credit_table_cells{
+	text-align: center;
+	color: #014B7E;
+}
+.add_sms_credit_box{
+	width: 50px;
+    height: 25px;
+    border: 1px solid gray;
+}
