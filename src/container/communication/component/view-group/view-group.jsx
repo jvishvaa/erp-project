@@ -79,7 +79,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
   };
   const handleStatusChange = async (id, index) => {
     try {
-      const statusChange = await axios.delete(
+      const statusChange = await axios.put(
         `http://13.234.252.195:443/communication/${id}/change-group-status/`
       );
       if (statusChange.status === 200) {
@@ -88,6 +88,25 @@ const ViewGroup = withRouter(({ history, ...props }) => {
         tempGroupData[index].active = groupsData[index].active
           ? !groupsData[index].active
           : true;
+        setGroupsData(tempGroupData);
+      } else {
+        console.log('error');
+        // dispatch(setAlert('error', result.data.message));
+      }
+    } catch (error) {
+      console.log('error');
+      // dispatch(setAlert('error', error.message));
+    }
+  };
+  const handleDelete = async (id, index) => {
+    try {
+      const statusChange = await axios.delete(
+        `http://13.234.252.195:443/communication/${id}/delete-group/`
+      );
+      if (statusChange.status === 200) {
+        console.log(statusChange.data.message);
+        const tempGroupData = groupsData.slice();
+        tempGroupData.splice(index, 1);
         setGroupsData(tempGroupData);
       } else {
         console.log('error');
@@ -198,7 +217,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                     <span
                       className='group_view_button group_view_delete_button'
                       title='Delete'
-                      // onClick={(e) => actionHandler(e, book.id, 3, i)}
+                      onClick={() => handleDelete(items.groupId, i)}
                     >
                       <DeleteIcon />
                     </span>

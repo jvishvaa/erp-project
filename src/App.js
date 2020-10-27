@@ -35,15 +35,15 @@ function App() {
               {/* <Route exact path='/'>
                 {() => <div>Landing page</div>}
               </Route> */}
-              <Route exact path='/addgroup'>
+              {/* <Route exact path='/addgroup'>
                 {() => <CreateGroup />}
-              </Route>
+              </Route> */}
               {/* <Route exact path='/smscredit'>
                 {() => <MessageCredit />}
               </Route> */}
-              {/* <Route exact path='/viewgroup'>
+              <Route exact path='/viewgroup'>
                 {() => <ViewGroup />}
-              </Route> */}
+              </Route>
             </Layout>
           </ThemeProvider>
         </Switch>
