@@ -49,12 +49,58 @@ export default function CustomSelectionTable(props) {
     setSelectedUsers,
     completeData,
     selectedUsers,
+    pageno,
   } = props || {};
-  const rowSelection = (e) => {
-    if (e.rows.length !== selectedUsers.length && e.rows.length) {
-      const usersId = [];
-      e.rows.map((items) => usersId.push(items.id));
-      setSelectedUsers(usersId);
+  //   const rowSelection = (e) => {
+  //     if (
+  //       !edit &&
+  //       selectedUsers.length &&
+  //       e.rows.length !== selectedUsers[pageno - 1].selected.length &&
+  //       e.rows.length
+  //     ) {
+  //       debugger;
+  //       const usersId = [{ pageNo: pageno, selected: [] }];
+  //       e.rows.map((items) => usersId[0].selected.push(items.id));
+  //       let tempSelection = [];
+  //       tempSelection = selectedUsers;
+  //       tempSelection.splice(pageno - 1, 1, usersId[0]);
+  //       setSelectedUsers(tempSelection);
+  //     }
+  //     if (
+  //       !edit &&
+  //       selectedUsers.length &&
+  //       e.rows.length !== selectedUsers[pageno - 1].selected.length &&
+  //       selectedUsers[pageno - 1].selected.length
+  //     ) {
+  //       debugger;
+  //       const usersId = [{ pageNo: pageno, selected: [] }];
+  //       let tempSelection = [];
+  //       tempSelection = selectedUsers;
+  //       tempSelection.splice(pageno - 1, 1, usersId[0]);
+  //       setSelectedUsers(tempSelection);
+  //     }
+  //   };
+  const selectRow = (e) => {
+    if (
+      selectedUsers.length &&
+      !e.isSelected &&
+      selectedUsers[pageno - 1].selected.includes(e.data.id)
+    ) {
+      let tempSelection = [];
+      tempSelection = selectedUsers;
+      tempSelection[pageno - 1].selected.splice(
+        tempSelection[pageno - 1].selected.indexOf(e.data.id),
+        1
+      );
+      setSelectedUsers(tempSelection);
+      console.log(tempSelection);
+    }
+    if (selectedUsers.length && e.isSelected) {
+      let tempSelection = [];
+      tempSelection = selectedUsers;
+      tempSelection[pageno - 1].selected.push(e.data.id);
+      console.log(tempSelection);
+      setSelectedUsers(tempSelection);
     }
   };
   const pageChange = (e) => {
@@ -77,14 +123,12 @@ export default function CustomSelectionTable(props) {
         pageSize={5}
         rowCount={totalRows}
         checkboxSelection
-        onSelectionChange={rowSelection}
+        // onSelectionChange={rowSelection}
         onPageChange={pageChange}
         paginationMode='server'
         ref={(input) => (apiRef = input)}
         {...data}
-        onRowSelected={() => {
-          console.log('onRowSelected');
-        }}
+        onRowSelected={selectRow}
         selectRows={() => {
           console.log('selectRows');
         }}

@@ -15,6 +15,11 @@
     width: 95%;
     border-bottom: 2px solid #dcdcdc;
 }
+.create_group_error_span{
+	display: block;
+    text-align: center;
+    color: red;
+}
 .group_name{
 	width: 350px;
     height: 37px;

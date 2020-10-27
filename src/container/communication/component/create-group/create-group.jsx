@@ -32,15 +32,19 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   const [gradeList, setGradeList] = useState([]);
   const [sectionList, setSectionList] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [roleError, setRoleError] = useState('');
+  const [groupNameError, setGroupNameError] = useState('');
+  const [gradeError, setGradeError] = useState('');
+  const [branchError, setBranchError] = useState('');
 
   const getRoleApi = async () => {
     try {
       const result = await axios.get('http://13.234.252.195:443/erp_user/roles/');
       const resultOptions = [];
       if (result.status === 200) {
-        result.data.map((items) => resultOptions.push(items.role_name));
+        result.data.result.map((items) => resultOptions.push(items.role_name));
         setRoles([...roles, ...resultOptions]);
-        setRoleList(result.data);
+        setRoleList(result.data.result);
       } else {
         console.log('error');
         // dispatch(setAlert('error', result.data.message));
@@ -52,6 +56,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   };
 
   const getBranchApi = async () => {
+    setBranch(['All']);
     try {
       const result = await axios.get('http://13.234.252.195:443/erp_user/branch/');
       const resultOptions = [];
@@ -210,13 +215,22 @@ const CreateGroup = withRouter(({ history, ...props }) => {
               gender: items.gender,
               contact: items.contact,
             },
-            selected: selectedUsers.includes(items.id),
+            selected: selectedUsers.length
+              ? selectedUsers[pageno - 1].selected.includes(items.id)
+              : false,
           });
         });
 
         setUsersRow(rows);
         setCompleteData(selectionRows);
         setTotalPage(result.data.count);
+        if (!selectedUsers.length) {
+          const tempSelectedUser = [];
+          for (let page = 1; page <= result.data.total_pages; page += 1) {
+            tempSelectedUser.push({ pageNo: page, selected: [] });
+          }
+          setSelectedUsers(tempSelectedUser);
+        }
       } else {
         console.log('error');
         // dispatch(setAlert('error', result.data.message));
@@ -252,23 +266,41 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         });
     }
     const createGroupApi = 'http://13.234.252.195:443/communication/communication-group/';
-    const formData = new FormData();
-    formData.set('group_name', groupName);
-    formData.set('role', rolesId[0]);
+    // const formData = new FormData();
+    const gradeArray = [];
+    const sectionArray = [];
+    const selectionArray = [];
+    // formData.set('group_name', groupName);
+    // formData.set('role', rolesId[0]);
     gradesId.forEach((item) => {
-      formData.append('grade', item);
+      gradeArray.push(item);
     });
     sectionsId.forEach((item) => {
-      formData.append('mapping_bgs', item);
+      sectionArray.push(item);
     });
     selectedUsers.forEach((item) => {
-        formData.append('erp_users', item);
+      item.selected.forEach((ids) => {
+        selectionArray.push(ids);
+      });
     });
-    const response = await axios({
-      method: 'post',
-      url: createGroupApi,
-      data: formData,
-    });
+    const response = await axios.post(
+      createGroupApi,
+      {
+        group_name: groupName,
+        role: rolesId[0],
+        grade: gradeArray,
+        mapping_bgs: sectionArray,
+        erp_users: selectionArray,
+      },
+      {
+        headers: {
+          // 'application/json' is the modern content-type for JSON, but some
+          // older servers may use 'text/json'.
+          // See: http://bit.ly/text-json
+          'content-type': 'application/json',
+        },
+      }
+    );
     const { message } = response.data;
     if (message === 'Group created successfully') {
       alert(message);
@@ -286,6 +318,37 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     setGroupName(e.target.value);
   };
 
+  const handleback = () => {
+    setSelectedUsers([]);
+    setNext(false);
+  };
+  const handlenext = () => {
+    if (!groupName) {
+      setGroupNameError('Please select a group name');
+      return;
+    }
+    if (!selectedRoles.length) {
+      setGroupNameError('');
+      setRoleError('Please select a role');
+      return;
+    }
+    if (!selectedBranch.length) {
+      setRoleError('');
+      setBranchError('Please select a branch');
+      return;
+    }
+    if (!selectedGrades.length) {
+      setBranchError('');
+      setGradeError('Please select a grade');
+      return;
+    }
+    setGroupNameError('');
+    setRoleError('');
+    setBranchError('');
+    setGradeError('');
+    setNext(true);
+  };
+
   useEffect(() => {
     getRoleApi();
     getBranchApi();
@@ -293,6 +356,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
 
   useEffect(() => {
     if (selectedBranch.length && !selectedBranch.includes('All')) {
+      setGrade(['All']);
       getGradeApi();
     }
   }, [selectedBranch]);
@@ -323,34 +387,46 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       ) : (
         <>
           <div className='creategroup_firstrow'>
-            <CustomInput
-              className='group_name'
-              onChange={addGroupName}
-              value={groupName}
-              name='Group name'
-            />
-            <CustomMultiSelect
-              selections={selectedRoles}
-              setSelections={setSelectedRoles}
-              nameOfDropdown='User Role'
-              optionNames={roles}
-            />
+            <div>
+              <CustomInput
+                className='group_name'
+                onChange={addGroupName}
+                value={groupName}
+                name='Group name'
+              />
+              <span className='create_group_error_span'>{groupNameError}</span>
+            </div>
+            <div>
+              <CustomMultiSelect
+                selections={selectedRoles}
+                setSelections={setSelectedRoles}
+                nameOfDropdown='User Role'
+                optionNames={roles}
+              />
+              <span className='create_group_error_span'>{roleError}</span>
+            </div>
           </div>
           {selectedRoles.length && !selectedRoles.includes('All') ? (
             <div className='creategroup_firstrow'>
-              <CustomMultiSelect
-                selections={selectedBranch}
-                setSelections={setSelectedBranch}
-                nameOfDropdown='Branch'
-                optionNames={branch}
-              />
-              {selectedBranch.length && !selectedBranch.includes('All') ? (
+              <div>
                 <CustomMultiSelect
-                  selections={selectedGrades}
-                  setSelections={setSelectedGrades}
-                  nameOfDropdown='Grade'
-                  optionNames={grade}
+                  selections={selectedBranch}
+                  setSelections={setSelectedBranch}
+                  nameOfDropdown='Branch'
+                  optionNames={branch}
                 />
+                <span className='create_group_error_span'>{branchError}</span>
+              </div>
+              {selectedBranch.length && !selectedBranch.includes('All') ? (
+                <div>
+                  <CustomMultiSelect
+                    selections={selectedGrades}
+                    setSelections={setSelectedGrades}
+                    nameOfDropdown='Grade'
+                    optionNames={grade}
+                  />
+                  <span className='create_group_error_span'>{gradeError}</span>
+                </div>
               ) : null}
               {selectedGrades.length && !selectedGrades.includes('All') ? (
                 <CustomMultiSelect
@@ -368,7 +444,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         <input
           className='custom_button addgroup_back_button'
           type='button'
-          onClick={() => setNext(false)}
+          onClick={handleback}
           value='back'
         />
         {next ? (
@@ -382,7 +458,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
           <input
             className='custom_button addgroup_next_button'
             type='button'
-            onClick={() => setNext(true)}
+            onClick={handlenext}
             value='next'
           />
         )}

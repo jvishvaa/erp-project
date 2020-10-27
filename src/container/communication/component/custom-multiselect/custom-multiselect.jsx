@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable no-debugger */
 /* eslint-disable no-console */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
@@ -78,9 +79,9 @@ const CustomMultiSelect = (props) => {
           input={<Input id='select-multiple-chip' />}
           renderValue={(selected) => (
             <div className={classes.chips}>
-              {selected.map((value) => (
+              {selected.map((value, index) => (
                 <Chip
-                  key={value}
+                  key={`${value}_${index}`}
                   label={value}
                   className={classes.chip}
                   onDelete={() => handelRemove(value)}
@@ -93,8 +94,12 @@ const CustomMultiSelect = (props) => {
           )}
           MenuProps={MenuProps}
         >
-          {optionNames.map((name) => (
-            <MenuItem key={name} value={name} style={getStyles(name, selections, theme)}>
+          {optionNames.map((name, index) => (
+            <MenuItem
+              key={`${name}_${index}`}
+              value={name}
+              style={getStyles(name, selections, theme)}
+            >
               {name}
             </MenuItem>
           ))}
