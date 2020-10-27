@@ -1,9 +1,25 @@
 @import '../../../../assets/styles/variables';
+@import '../../../../assets/styles/mixins';
 
 // View class student collection
 .viewclass__student-collection {
   width: 95%;
   margin: 20px auto 0px auto;
+
+  .not-found-alert {
+    margin-top: 100px;
+    color: $primary-color;
+  }
+
+  .progress-center {
+    position: absolute;
+    left: 50%;
+    margin-top: 100px;
+  }
+
+  .student-view-pagination {
+    margin-top: 40px;
+  }
 }
 
 // View class student

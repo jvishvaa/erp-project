@@ -1,31 +1,101 @@
-import React from 'react';
-import { Tabs, Tab, Typography, Grid } from '@material-ui/core';
+import React, { useContext, useEffect, useState } from 'react';
+import { Tabs, Tab, Typography, Grid, CircularProgress } from '@material-ui/core';
+import { Pagination } from '@material-ui/lab';
 import ViewClassStudent from './view-class-student';
+import { OnlineclassViewContext } from '../../online-class-context/online-class-state';
+import './view-class-student.scss';
 
 const ViewClassStudentCollection = () => {
+  const {
+    studentView: {
+      studentOnlineClasses = [],
+      currentPage,
+      totalPages,
+      loadingStudentOnlineClasses,
+    },
+    listOnlineClassesStudentView,
+    dispatch,
+  } = useContext(OnlineclassViewContext);
+  const [currentTab, setCurrentTab] = useState(0);
+
+  useEffect(() => {
+    const isCompleted = !!currentTab;
+    dispatch(listOnlineClassesStudentView(15, isCompleted, 1, 10));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTab]);
+
+  const handleTabChange = (event, tab) => {
+    setCurrentTab(tab);
+  };
+
+  const handlePagination = (event, page) => {
+    const isCompleted = !!currentTab;
+
+    if (page !== currentPage) {
+      dispatch(listOnlineClassesStudentView(15, isCompleted, page, 10));
+    }
+  };
+
+  const renderUI = () => {
+    if (loadingStudentOnlineClasses) {
+      return <CircularProgress className='progress-center' />;
+    }
+    if (!studentOnlineClasses.length) {
+      return (
+        <Typography variant='h5' align='center' className='not-found-alert'>
+          Sorry! No classes were found at this moment
+        </Typography>
+      );
+    }
+
+    return (
+      <>
+        {studentOnlineClasses.map((onlineClass) => (
+          <ViewClassStudent key={onlineClass.id} data={onlineClass} />
+        ))}
+      </>
+    );
+  };
+
   return (
     <div className='viewclass__student-collection'>
       <Grid container>
         <Grid item xs={12} sm={6}>
           <Tabs
-            value={0}
-            //   onChange={handleChange}
+            value={currentTab}
+            onChange={handleTabChange}
             variant='fullWidth'
             indicatorColor='primary'
             textColor='primary'
             aria-label='icon label tabs example'
           >
-            <Tab label={<Typography variant='h6'>Upcoming</Typography>} />
-            <Tab label={<Typography variant='h6'>Completed</Typography>} />
+            <Tab
+              disabled={loadingStudentOnlineClasses}
+              label={<Typography variant='h6'>Upcoming</Typography>}
+            />
+            <Tab
+              disabled={loadingStudentOnlineClasses}
+              label={<Typography variant='h6'>Completed</Typography>}
+            />
           </Tabs>
         </Grid>
       </Grid>
-
-      <ViewClassStudent />
-      <ViewClassStudent />
-      <ViewClassStudent />
-      <ViewClassStudent />
-      <ViewClassStudent />
+      {renderUI()}
+      <Grid container spacing={0} direction='column' alignItems='center' justify='center'>
+        <Grid item xs={12}>
+          {studentOnlineClasses.length && !loadingStudentOnlineClasses ? (
+            <Pagination
+              className='student-view-pagination'
+              count={totalPages}
+              color='secondary'
+              onChange={handlePagination}
+              page={currentPage}
+            />
+          ) : (
+            ''
+          )}
+        </Grid>
+      </Grid>
     </div>
   );
 };

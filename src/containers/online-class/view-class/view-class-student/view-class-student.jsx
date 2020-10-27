@@ -1,8 +1,90 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Grid, Typography, Button } from '@material-ui/core';
-import './view-class-student.scss';
+import moment from 'moment';
 
-const ViewClassStudent = () => {
+import Countdown from '../../../../components/countdown/countdown';
+import './view-class-student.scss';
+import { OnlineclassViewContext } from '../../online-class-context/online-class-state';
+
+const ViewClassStudent = (props) => {
+  const {
+    data: {
+      is_accepted: isAccepted,
+      join_time: joinTime,
+      id: meetingId,
+      zoom_meeting: {
+        online_class: {
+          start_time: startTime,
+          end_time: endTime,
+          title = '',
+          description = '',
+          subject = {},
+          join_limit: joinLimit,
+          is_assigned_to_parent: isParentClass,
+        },
+      } = {},
+    },
+  } = props || {};
+
+  const {
+    handleAccept,
+    dispatch,
+    handleJoin,
+    studentView: { currentServerTime },
+  } = useContext(OnlineclassViewContext);
+
+  const [hasClassStarted, setHasClassStarted] = useState(false);
+  const [hasClassEnded, setHasClassEnded] = useState(false);
+  const [isJoinTime, setIsJoinTime] = useState(false);
+
+  useEffect(() => {
+    const now = new Date(currentServerTime);
+    if (startTime) {
+      const difference = new Date(startTime) - now;
+      setTimeout(() => {
+        setHasClassStarted(true);
+      }, difference);
+    }
+
+    if (joinTime) {
+      const difference = new Date(joinTime) - now;
+      setTimeout(() => {
+        setIsJoinTime(true);
+      }, difference);
+    }
+
+    if (endTime) {
+      const difference = new Date(endTime) - now;
+      setTimeout(() => {
+        setHasClassStarted(false);
+        setHasClassEnded(true);
+        setIsJoinTime(false);
+      }, difference);
+    }
+  }, []);
+
+  const getClassOngoingStatus = () => {
+    if (hasClassEnded) {
+      return <>Class has ended</>;
+    }
+    if (hasClassStarted) {
+      return <>Class is ongoing</>;
+    }
+    return (
+      <>
+        <Countdown startTime={startTime} />
+      </>
+    );
+  };
+
+  const handleClassAccept = () => {
+    dispatch(handleAccept(meetingId));
+  };
+
+  const handleClassJoin = () => {
+    dispatch(handleJoin(meetingId));
+  };
+
   return (
     <div className='viewclass__student-container'>
       <Grid container spacing={3}>
@@ -11,7 +93,7 @@ const ViewClassStudent = () => {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <Typography variant='h5' gutterBottom color='primary'>
-                Bedtime Stories For Kids.
+                {title}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -21,7 +103,7 @@ const ViewClassStudent = () => {
                 color='secondary'
                 className='responsive__align'
               >
-                Starts In: 0d 0h 30m 17s
+                {getClassOngoingStatus()}
               </Typography>
             </Grid>
           </Grid>
@@ -29,10 +111,10 @@ const ViewClassStudent = () => {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <Typography variant='h6' gutterBottom color='secondary'>
-                English
+                {subject.subject_name}
               </Typography>
               <Typography variant='h6' gutterBottom color='secondary'>
-                24 may 2020 07:00 Am
+                {moment(startTime).format('MMMM Do YYYY, h:mm:ss a')}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -50,19 +132,22 @@ const ViewClassStudent = () => {
                 color='secondary'
                 className='responsive__align'
               >
-                33
+                {joinLimit}
               </Typography>
             </Grid>
           </Grid>
           {/*  */}
           <Grid container spacing={2}>
             <Grid item xs={8}>
-              <Typography variant='h5' gutterBottom color='secondary'>
-                Class For parents
-              </Typography>
+              {isParentClass ? (
+                <Typography variant='h5' gutterBottom color='secondary'>
+                  Class For parents
+                </Typography>
+              ) : (
+                ''
+              )}
               <Typography variant='subtitle1' gutterBottom color='secondary'>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis
-                quibusdam eligendi incidunt aliquid.
+                {description}
               </Typography>
             </Grid>
           </Grid>
@@ -79,14 +164,27 @@ const ViewClassStudent = () => {
               </Button>
             </Grid>
             <Grid item xs={6}>
-              <Button
-                className='viewclass__student-btn'
-                variant='contained'
-                color='primary'
-                disabled
-              >
-                Join Class
-              </Button>
+              {!isAccepted ? (
+                <Button
+                  className='viewclass__student-btn'
+                  variant='contained'
+                  color='primary'
+                  disabled={isAccepted || !!hasClassEnded}
+                  onClick={handleClassAccept}
+                >
+                  Accept Class
+                </Button>
+              ) : (
+                <Button
+                  className='viewclass__student-btn'
+                  variant='contained'
+                  color='primary'
+                  disabled={!isJoinTime}
+                  onClick={handleClassJoin}
+                >
+                  Join Class
+                </Button>
+              )}
             </Grid>
             <Grid item xs={6}>
               <Button

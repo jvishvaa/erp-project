@@ -215,7 +215,7 @@ export default function FilterStudents() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = students.map((n) => n.erp_id);
+      const newSelecteds = students.map((n) => n.id);
       setSelected(newSelecteds);
       dispatch(listFilteredStudents(newSelecteds));
       return;
@@ -286,17 +286,17 @@ export default function FilterStudents() {
               {stableSort(addIndex(students), getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.erp_id);
+                  const isItemSelected = isSelected(row.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.erp_id)}
+                      onClick={(event) => handleClick(event, row.id)}
                       role='checkbox'
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.erp_id}
+                      key={row.id}
                       selected={isItemSelected}
                     >
                       <TableCell padding='checkbox'>

@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import React, { useContext, useEffect, useState } from 'react';
 import {
   Grid,
@@ -105,16 +104,15 @@ const CreateClassForm = () => {
   };
 
   useEffect(() => {
-    let listStudentUrl = `branch_id=1`;
+    let listStudentUrl = `branch_ids=1`;
     const { gradeIds, sectionIds } = onlineClass;
     if (gradeIds.length && !sectionIds.length) {
-      listStudentUrl += `&grade_id=${gradeIds.join(',')}`;
+      listStudentUrl = `branch_ids=1&grade_ids=${gradeIds.join(',')}`;
     } else if (gradeIds.length && sectionIds.length) {
-      listStudentUrl += `&grade_id=${gradeIds.join(',')}&section_id=${sectionIds.join(
-        ','
-      )}`;
+      listStudentUrl = `section_mapping_ids=${sectionIds.join(',')}`;
     }
     dispatch(listStudents(listStudentUrl));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onlineClass.gradeIds, onlineClass.sectionIds]);
 
   const toggleDrawer = () => {
@@ -418,8 +416,9 @@ const CreateClassForm = () => {
                 onChange={handleSection}
                 id='create__class-section'
                 options={sections}
-                getOptionLabel={(option) =>
-                  `${option.grade__grade_name} ${option.section__section_name}`}
+                getOptionLabel={(option) => {
+                  return `${option.grade__grade_name} ${option.section__section_name}`;
+                }}
                 filterSelectedOptions
                 // value={[]}
                 renderInput={(params) => (
