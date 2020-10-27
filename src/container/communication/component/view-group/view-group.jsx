@@ -1,7 +1,9 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable no-debugger */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
-/* eslint-disable react/button-has-type */
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -11,7 +13,11 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import Pagination from '@material-ui/lab/Pagination';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import TableRow from '@material-ui/core/TableRow';
+import axios from 'axios';
+import EditGroup from '../edit-group/edit-group';
 import './view-group.css';
 
 const useStyles = makeStyles((theme) => ({
@@ -31,15 +37,102 @@ const useStyles = makeStyles((theme) => ({
 // eslint-disable-next-line no-unused-vars
 const ViewGroup = withRouter(({ history, ...props }) => {
   const classes = useStyles();
-  // const [groups, setGroups] = useState([]);
-  const book = [
-    { book_status: '2' },
-    { book_status: '2' },
-    { book_status: '2' },
-    { book_status: '2' },
-  ];
+  const [groupsData, setGroupsData] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [editGroupId, setEditGroupId] = useState(0);
+  const [editGroupName, setEditGroupName] = useState('');
+  const [editGroupGrades, setEditGroupGrades] = useState([]);
+  const [editGroupSections, setEditGroupSections] = useState([]);
+  const [editGroupRole, setEditGroupRole] = useState('');
+  const [editing, setEditing] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const getGroupsData = async () => {
+    try {
+      const result = await axios.get(
+        `http://13.234.252.195:443/communication/communication-group/?page=${currentPage}`
+      );
+      const resultGroups = [];
+      if (result.status === 200) {
+        result.data.data.results.map((items) =>
+          resultGroups.push({
+            groupId: items.id,
+            groupName: items.group_name,
+            roleType: items.role.role_name,
+            grades: items.grade,
+            sections: items.mapping_bgs,
+            active: items.is_active,
+          })
+        );
+        setGroupsData(resultGroups);
+        setTotalPages(result.data.data.total_pages);
+      } else {
+        console.log('error');
+        // dispatch(setAlert('error', result.data.message));
+      }
+    } catch (error) {
+      console.log('error');
+      // dispatch(setAlert('error', error.message));
+    }
+  };
+  const handlePagination = (event, page) => {
+    setCurrentPage(page);
+  };
+  const handleStatusChange = async (id, index) => {
+    try {
+      const statusChange = await axios.delete(
+        `http://13.234.252.195:443/communication/${id}/change-group-status/`
+      );
+      if (statusChange.status === 200) {
+        console.log(statusChange.data.message);
+        const tempGroupData = groupsData.slice();
+        tempGroupData[index].active = groupsData[index].active
+          ? !groupsData[index].active
+          : true;
+        setGroupsData(tempGroupData);
+      } else {
+        console.log('error');
+        // dispatch(setAlert('error', result.data.message));
+      }
+    } catch (error) {
+      console.log('error');
+      // dispatch(setAlert('error', error.message));
+    }
+  };
+  const handleEdit = (id, index) => {
+    setEditGroupId(id);
+    setEditGroupName(groupsData[index].groupName);
+    setEditGroupRole(groupsData[index].roleType);
+    setEditGroupGrades(groupsData[index].grades);
+    setEditGroupSections(groupsData[index].sections);
+    setEditing(true);
+  };
+  useEffect(() => {
+    getGroupsData();
+  }, [currentPage]);
+  useEffect(() => {
+    if (!editing && editGroupId) {
+      setEditGroupId(0);
+      setEditGroupName('');
+      setEditGroupRole('');
+      setEditGroupGrades([]);
+      setEditGroupSections([]);
+      getGroupsData();
+    }
+  }, [editing]);
   return (
     <div className='creategroup__page'>
+      <div className='viewgroup_heading'>Communication &gt; View Group</div>
+      {editing ? (
+        <EditGroup
+          editId={editGroupId}
+          editClose={setEditing}
+          groupName={editGroupName}
+          groupRole={editGroupRole}
+          groupGrades={editGroupGrades}
+          groupSections={editGroupSections}
+          setGroupName={setEditGroupName}
+        />
+      ) : null}
       <Paper className={classes.root}>
         <TableContainer className={`table table-shadow ${classes.container}`}>
           <Table stickyHeader aria-label='sticky table'>
@@ -55,96 +148,83 @@ const ViewGroup = withRouter(({ history, ...props }) => {
               </TableRow>
             </TableHead>
             <TableBody className='view_groups_body'>
-              {book.map((items, i) => {
-                return items.book_status !== '3' ? (
-                  <TableRow
-                    hover
-                    role='checkbox'
-                    tabIndex={-1}
-                    key={`group_table_index${i}`}
-                  >
-                    <TableCell>test1</TableCell>
-                    <TableCell>test2</TableCell>
-                    <TableCell>test3</TableCell>
-                    <TableCell>test4</TableCell>
-                    <TableCell>
-                      {items.book_status === '0' ? (
-                        <div className='text-primary h6'>Pending</div>
-                      ) : items.book_status === '1' ? (
-                        <div className='text-success h6'>Activated</div>
-                      ) : items.book_status === '2' ? (
-                        <div className='text-danger h6'>Deactivated</div>
-                      ) : null}
-                    </TableCell>
-                    <TableCell>
-                      {book.book_status === '1' ? (
-                        <button
-                          className='group_view_activate_button'
-                          title='Activated'
-                          disabled
-                        >
-                          A
-                        </button>
-                      ) : (
-                        <button
-                          className='group_view_activate_button group_view_button'
-                          title='Activate'
-                          // onClick={(e) => actionHandler(e, book.id, 1, i)}
-                        >
-                          A
-                        </button>
-                      )}
-                      {book.book_status === '2' ? (
-                        <button
-                          className='group_view_deactivate_button group_view_button'
-                          title='Deactivated'
-                          disabled
-                        >
-                          D
-                        </button>
-                      ) : (
-                        <button
-                          className='group_view_deactivate_button group_view_button'
-                          title='Deactivate'
-                          // onClick={(e) => actionHandler(e, book.id, 2, i)}
-                        >
-                          D
-                        </button>
-                      )}
+              {groupsData.map((items, i) => (
+                <TableRow
+                  hover
+                  role='checkbox'
+                  tabIndex={-1}
+                  key={`group_table_index${i}`}
+                >
+                  <TableCell>{items.groupName}</TableCell>
+                  <TableCell>{items.roleType}</TableCell>
+                  <TableCell>
+                    {items.grades.length
+                      ? items.grades.map((grades) => grades.grade_name)
+                      : null}
+                  </TableCell>
+                  <TableCell>
+                    {items.sections.length
+                      ? items.sections.map((sections) => sections.section__section_name)
+                      : null}
+                  </TableCell>
+                  <TableCell>
+                    {items.active ? (
+                      <div style={{ color: 'green' }}>Activated</div>
+                    ) : (
+                      <div style={{ color: 'red' }}>Deactivated</div>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {items.active ? (
                       <button
-                        className='btn btn-outline-danger'
-                        title='Delete'
-                        // onClick={(e) => actionHandler(e, book.id, 3, i)}
+                        type='submit'
+                        className='group_view_deactivate_button group_view_button'
+                        title='Deactivate'
+                        onClick={() => handleStatusChange(items.groupId, i)}
                       >
-                        Dlt
+                        D
                       </button>
-                    </TableCell>
-                    <TableCell>
+                    ) : (
                       <button
-                        className='btn btn-link'
-                        title='Edit the book'
-                        onClick={() => {}}
+                        type='submit'
+                        className='group_view_activate_button group_view_button'
+                        title='Activate'
+                        onClick={() => handleStatusChange(items.groupId, i)}
                       >
-                        Edit
+                        A
                       </button>
-                    </TableCell>
-                  </TableRow>
-                ) : null;
-              })}
+                    )}
+
+                    <span
+                      className='group_view_button group_view_delete_button'
+                      title='Delete'
+                      // onClick={(e) => actionHandler(e, book.id, 3, i)}
+                    >
+                      <DeleteIcon />
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <span
+                      className='group_view_button group_view_delete_button'
+                      title='Edit'
+                      onClick={() => handleEdit(items.groupId, i)}
+                    >
+                      <EditIcon />
+                    </span>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
 
         <div className={`${classes.root} pagenation_view_groups`}>
           <Pagination
-            className='p-3 w-100'
-            count={10}
-            color='primary'
-            rowsPerPage={20}
-            showFirstButton
-            showLastButton
-            page={1}
-            // onChange={handleChangePage}
+            page={Number(currentPage)}
+            size='large'
+            className='books__pagination'
+            onChange={handlePagination}
+            count={totalPages}
           />
         </div>
       </Paper>
