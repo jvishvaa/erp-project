@@ -6,6 +6,7 @@ import ViewGroup from './container/communication/component/view-group/view-group
 import MessageCredit from './container/communication/component/message-credit/message-credit';
 import Layout from './containers/Layout';
 import store from './redux/store';
+import AlertNotificationProvider from './context-api/alert-context/alert-state';
 import './assets/styles/styles.scss';
 
 const theme = createMuiTheme({
@@ -30,22 +31,24 @@ function App() {
     <div className='App'>
       <Router>
         <Switch>
-          <ThemeProvider theme={theme}>
-            <Layout>
-              {/* <Route exact path='/'>
+          <AlertNotificationProvider>
+            <ThemeProvider theme={theme}>
+              <Layout>
+                {/* <Route exact path='/'>
                 {() => <div>Landing page</div>}
               </Route> */}
-              {/* <Route exact path='/addgroup'>
+                {/* <Route exact path='/addgroup'>
                 {() => <CreateGroup />}
               </Route> */}
-              {/* <Route exact path='/smscredit'>
+                {/* <Route exact path='/smscredit'>
                 {() => <MessageCredit />}
               </Route> */}
-              <Route exact path='/viewgroup'>
-                {() => <ViewGroup />}
-              </Route>
-            </Layout>
-          </ThemeProvider>
+                <Route exact path='/viewgroup'>
+                  {() => <ViewGroup />}
+                </Route>
+              </Layout>
+            </ThemeProvider>
+          </AlertNotificationProvider>
         </Switch>
       </Router>
     </div>

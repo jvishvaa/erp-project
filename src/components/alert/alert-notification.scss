@@ -1,0 +1,8 @@
+.alert__container {
+  z-index: 10000 !important;
+  position: fixed;
+  left: 50%;
+  top: 3vh;
+  transform: translateX(-50%);
+  font-weight: bold !important;
+}
