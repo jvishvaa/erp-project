@@ -16,6 +16,17 @@ const theme = createMuiTheme({
     secondary: {
       main: '#014b7e',
     },
+    text: {
+      default: '#014b7e',
+    },
+    background: {
+      primary: '#ffffff',
+      secondary: '#f9f9f9',
+    },
+  },
+  typography: {
+    fontSize: 16,
+    color: '#014b7e',
   },
 
   overrides: {

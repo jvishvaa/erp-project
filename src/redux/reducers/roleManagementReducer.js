@@ -11,7 +11,7 @@ const INITIAL_STATE = {
   grades: [],
   sections: [],
   modulePermissionsRequestData: [], // for keeping the request data format for module permissions when creating and editing a role
-  fetchingRoleDataByName: false,
+  fetchingRoleDataById: false,
   editRoleModulePermissionsState: [], // for keeping state when editing
 };
 export default function reducer(state = INITIAL_STATE, action) {
@@ -46,14 +46,18 @@ export default function reducer(state = INITIAL_STATE, action) {
       return { ...state, modulePermissionsRequestData: action.data };
 
     case roleManagementActions.FETCH_BRANCHES_REQUEST:
-      return { ...state, fetchingRoleDataByName: true };
+      return { ...state };
+    case roleManagementActions.FETCH_ROLE_DATA_BY_ID_REQUEST:
+      return { ...state, fetchingRoleDataById: true };
     case roleManagementActions.FETCH_ROLE_DATA_BY_ID_SUCCESS:
       return {
         ...state,
-        fetchingRoleDataByName: false,
+        fetchingRoleDataById: false,
         editRoleModulePermissionsState: action.modulePermissions,
         modulePermissionsRequestData: [], // for reseting the request data
       };
+    case roleManagementActions.FETCH_ROLE_DATA_BY_ID_FAILURE:
+      return { ...state, fetchingRoleDataById: false };
 
     default:
       return state;

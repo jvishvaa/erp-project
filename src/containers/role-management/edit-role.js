@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withStyles } from '@material-ui/core/styles';
+
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import { Skeleton } from '@material-ui/lab';
 import {
   fetchRoleDataById,
   fetchBranches,
@@ -12,6 +15,8 @@ import {
   editRole,
   setModulePermissionsRequestData,
 } from '../../redux/actions';
+import styles from './useStyles';
+
 import ModuleCard from '../../components/module-card';
 
 class EditRole extends Component {
@@ -28,10 +33,8 @@ class EditRole extends Component {
       fetchRoleDataById,
       fetchBranches,
     } = this.props;
-    console.log('fetch role data with id ', id);
 
     if (id) {
-      console.log('fetch role data with id ', id);
       fetchRoleDataById(id);
     }
 
@@ -47,40 +50,55 @@ class EditRole extends Component {
   };
 
   handleEditRole = () => {
-    const { modulePermissionsRequestData, selectedRole, editRole } = this.props;
+    const { modulePermissionsRequestData, editRole, modules, history } = this.props;
     const reqObj = {
-      role_name: selectedRole.role_name || 'customrole_101',
+      role_name: modules[0]?.role_name,
       Module: modulePermissionsRequestData,
     };
-    editRole(reqObj);
+    editRole(reqObj)
+      .then(() => {
+        history.push('/role-management');
+      })
+      .catch(() => {});
   };
 
   render() {
     const {
-      selectedRole,
+      fetchingRoleDataById,
       modules,
       branches,
       modulePermissionsRequestData,
       setModulePermissionsRequestData,
+      classes,
     } = this.props;
+    let roleName;
+    if (modules) {
+      if (modules.length > 0) {
+        roleName = modules[0].role_name;
+      }
+    }
     return (
-      <div>
+      <div className={classes.root}>
         <Grid container spacing={2} alignItems='center' style={{ padding: '2rem 0' }}>
           <Grid item>
-            <TextField
-              id='outlined-helperText'
-              label='Role name'
-              defaultValue=''
-              variant='outlined'
-              value={selectedRole?.role_name}
-              disabled
-            />
+            {fetchingRoleDataById ? (
+              <Skeleton />
+            ) : (
+              <TextField
+                id='outlined-helperText'
+                label='Role name'
+                defaultValue=''
+                variant='outlined'
+                value={roleName}
+                disabled
+              />
+            )}
           </Grid>
           <Grid item>
             <Button onClick={this.handleEditRole}>Update Role</Button>
           </Grid>
         </Grid>
-        <Typography>Number of modules</Typography>
+        <Typography className={classes.sectionHeader}>Number of modules</Typography>
         <Divider />
         <Grid container spacing={4} style={{ padding: '2rem 0' }}>
           {modules &&
@@ -106,6 +124,7 @@ const mapStateToProps = (state) => ({
   branches: state.roleManagement.branches,
   modulePermissionsRequestData: state.roleManagement.modulePermissionsRequestData,
   roles: state.roleManagement.roles,
+  fetchingRoleDataById: state.roleManagement.fetchingRoleDataById,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -122,7 +141,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(setModulePermissionsRequestData(params));
   },
   editRole: (params) => {
-    dispatch(editRole(params));
+    return dispatch(editRole(params));
   },
 });
-export default connect(mapStateToProps, mapDispatchToProps)(EditRole);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(EditRole));

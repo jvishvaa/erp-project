@@ -10,16 +10,38 @@ import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import Chip from '@material-ui/core/Chip';
-import Input from '@material-ui/core/Input';
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import { fetchGrades, fetchSections } from '../../redux/actions';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
+  },
+  subTitle: {
+    fontSize: '1rem',
+    textAlign: 'center',
+    position: 'relative',
+    '&:before': {
+      position: 'absolute',
+      top: '51%',
+      overflow: 'hidden',
+      width: '50%',
+      height: '1px',
+      content: '""',
+      backgroundColor: '#ccc',
+      marginLeft: '-51%',
+    },
+    '&:after': {
+      position: 'absolute',
+      top: '51%',
+      overflow: 'hidden',
+      width: '50%',
+      height: '1px',
+      content: '""',
+      backgroundColor: '#ccc',
+      marginLeft: '1%',
+    },
   },
   chips: {
     display: 'flex',
@@ -31,12 +53,19 @@ const useStyles = makeStyles((theme) => ({
   noLabel: {
     marginTop: theme.spacing(3),
   },
+  actionButtonContainer: {
+    justifyContent: 'center',
+  },
 }));
 
 const styles = (theme) => ({
   root: {
     margin: 0,
     padding: theme.spacing(2),
+    color: theme.palette.secondary.main,
+  },
+  title: {
+    textAlign: 'center',
   },
   closeButton: {
     position: 'absolute',
@@ -50,7 +79,9 @@ const DialogTitle = withStyles(styles)((props) => {
   const { children, classes, onClose, ...other } = props;
   return (
     <MuiDialogTitle disableTypography className={classes.root} {...other}>
-      <Typography variant='h6'>{children}</Typography>
+      <Typography variant='h6' className={classes.title}>
+        {children}
+      </Typography>
       {onClose ? (
         <IconButton aria-label='close' className={classes.closeButton} onClick={onClose}>
           <CloseIcon color='primary' />
@@ -73,18 +104,14 @@ const DialogActions = withStyles((theme) => ({
   },
 }))(MuiDialogActions);
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
-
-const CustomScopeModal = ({ open, handleClose, branches, onChange, customScope }) => {
+const CustomScopeModal = ({
+  open,
+  handleClose,
+  branches,
+  onChange,
+  customScope,
+  subModule,
+}) => {
   const [grades, setGrades] = useState([]);
   const [sections, setSections] = useState([]);
   const classes = useStyles();
@@ -95,13 +122,22 @@ const CustomScopeModal = ({ open, handleClose, branches, onChange, customScope }
 
   const handleChangeBranch = (values) => {
     const customScopeObj = {
-      custom_branch: [values],
+      custom_branch: [...values],
       custom_grade: [],
       custom_section: [],
     };
     onCustomScopeChange('custom_branch', customScopeObj);
+    setGrades([]);
+    setSections([]);
+
     fetchGrades(values).then((data) => {
-      setGrades(data);
+      const transformedData = data
+        ? data.map((grade) => ({
+            id: grade.grade_id,
+            grade_name: grade.grade__grade_name,
+          }))
+        : [];
+      setGrades(transformedData);
     });
   };
 
@@ -112,8 +148,16 @@ const CustomScopeModal = ({ open, handleClose, branches, onChange, customScope }
       custom_section: [],
     };
     onCustomScopeChange('custom_grade', customScopeObj);
+    setSections([]);
+
     fetchSections(customScope.custom_branch, values).then((data) => {
-      setSections(data);
+      const transformedData = data
+        ? data.map((section) => ({
+            id: section.section_id,
+            section_name: `${section.grade__grade_name}__${section.section__section_name}`,
+          }))
+        : [];
+      setSections(transformedData);
     });
   };
   const handleChangeSection = (values) => {
@@ -123,8 +167,6 @@ const CustomScopeModal = ({ open, handleClose, branches, onChange, customScope }
       custom_section: values,
     };
     onCustomScopeChange('custom_section', customScopeObj);
-
-    // setSelectedSections(values);
   };
 
   return (
@@ -137,100 +179,94 @@ const CustomScopeModal = ({ open, handleClose, branches, onChange, customScope }
     >
       <DialogTitle id='customized-dialog-title' onClose={handleClose}>
         Custom Scope
+        <p className={classes.subTitle}>{subModule}</p>
       </DialogTitle>
-      <DialogContent dividers>
+      <DialogContent>
         <Grid container alignItems='center' direction='column'>
           <Grid item sm={12}>
             <FormControl className={classes.formControl}>
-              <InputLabel id='demo-mutiple-chip-label'>Select branch</InputLabel>
-              <Select
-                labelId='demo-mutiple-chip-label'
-                id='demo-mutiple-chip'
-                value={customScope.custom_branch ? customScope.custom_branch[0] : ''}
+              <Autocomplete
+                options={branches}
                 style={{ width: 400 }}
-                input={<Input variant='outlined' />}
-                onChange={(e) => {
-                  handleChangeBranch(e.target.value);
+                value={customScope.custom_branch[0]}
+                getOptionLabel={(option) => option.branch_name}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Branches'
+                    placeholder='Branches'
+                  />
+                )}
+                onChange={(e, value) => {
+                  const transformedValue = value
+                    ? [{ id: value.id, branch_name: value.branch_name }]
+                    : [];
+
+                  handleChangeBranch(transformedValue);
                 }}
-                renderValue={(selected) => <>{selected.branch_name}</>}
-                MenuProps={MenuProps}
-              >
-                {branches &&
-                  branches.map((branch) => (
-                    <MenuItem value={branch}>{branch.branch_name}</MenuItem>
-                  ))}
-              </Select>
+                getOptionSelected={(option, value) => value && option.id == value.id}
+              />
             </FormControl>
           </Grid>
           <Grid item sm={12}>
             <FormControl className={classes.formControl}>
-              <InputLabel id='demo-mutiple-chip-label'>Select Grades</InputLabel>
-              <Select
-                labelId='demo-mutiple-chip-label'
-                id='demo-mutiple-chip'
+              <Autocomplete
                 multiple
+                limitTags={2}
+                id='multiple-limit-tags'
+                options={grades}
+                style={{ width: 400 }}
                 value={customScope.custom_grade}
-                style={{ width: 400 }}
-                onChange={(e) => {
-                  handleChangeGrade(e.target.value);
-                }}
-                renderValue={(selected) => (
-                  <div className={classes.chips}>
-                    {selected.map((value) => (
-                      <Chip
-                        key={value.grade_id}
-                        label={value.grade__grade_name}
-                        className={classes.chip}
-                      />
-                    ))}
-                  </div>
+                getOptionLabel={(option) => option.grade_name}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Grades'
+                    placeholder='grades'
+                  />
                 )}
-                MenuProps={MenuProps}
-              >
-                {grades &&
-                  grades.map((grade) => (
-                    <MenuItem value={grade}>{grade.grade__grade_name}</MenuItem>
-                  ))}
-              </Select>
+                onChange={(e, value) => {
+                  const filteredValues = value.filter((value) => value);
+                  handleChangeGrade(filteredValues);
+                }}
+                getOptionSelected={(option, value) => option.id == value.id}
+              />
             </FormControl>
           </Grid>
           <Grid item sm={12}>
             <FormControl className={classes.formControl}>
-              <InputLabel id='demo-mutiple-chip-label'>Select Sections</InputLabel>
-              <Select
-                labelId='demo-mutiple-chip-label'
-                id='demo-mutiple-chip'
+              <Autocomplete
                 multiple
-                value={customScope.custom_section}
+                limitTags={2}
+                id='multiple-limit-tags'
+                options={sections}
                 style={{ width: 400 }}
-                onChange={(e) => {
-                  handleChangeSection(e.target.value);
-                }}
-                renderValue={(selected) => (
-                  <div className={classes.chips}>
-                    {selected.map((value) => (
-                      <Chip
-                        key={`${value.grade_id}-${value.section_id}`}
-                        label={value.section__section_name}
-                        className={classes.chip}
-                      />
-                    ))}
-                  </div>
+                value={customScope.custom_section}
+                getOptionLabel={(option) => option.section_name}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Sections'
+                    placeholder='Sections'
+                  />
                 )}
-                MenuProps={MenuProps}
-              >
-                {sections &&
-                  sections.map((section) => (
-                    <MenuItem value={section}>{section.section__section_name}</MenuItem>
-                  ))}
-              </Select>
+                onChange={(e, value) => {
+                  const filteredValues = value.filter((value) => value);
+
+                  handleChangeSection(filteredValues);
+                }}
+                getOptionSelected={(option, value) => option.id == value.id}
+              />
             </FormControl>
           </Grid>
         </Grid>
       </DialogContent>
-      <DialogActions>
+      <DialogActions className={classes.actionButtonContainer}>
         <Button autoFocus onClick={handleClose}>
-          Save changes
+          Confirm
         </Button>
       </DialogActions>
     </Dialog>

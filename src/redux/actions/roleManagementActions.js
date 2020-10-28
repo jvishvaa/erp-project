@@ -23,6 +23,9 @@ export const roleManagementActions = {
   CREATE_ROLES_REQUEST: 'CREATE_ROLES_REQUEST',
   CREATE_ROLES_SUCCESS: 'CREATE_ROLES_SUCCESS',
   CREATE_ROLES_FAILURE: 'CREATE_ROLES_FAILURE',
+  DELETE_ROLE_REQUEST: 'DELETE_ROLE_REQUEST',
+  DELETE_ROLE_SUCCESS: 'DELETE_ROLE_SUCCESS',
+  DELETE_ROLE_FAILURE: 'DELETE_ROLE_FAILURE',
 };
 
 const {
@@ -48,6 +51,9 @@ const {
   CREATE_ROLES_REQUEST,
   CREATE_ROLES_SUCCESS,
   CREATE_ROLES_FAILURE,
+  DELETE_ROLE_REQUEST,
+  DELETE_ROLE_SUCCESS,
+  DELETE_ROLE_FAILURE,
 } = roleManagementActions;
 
 export const scopes = {
@@ -124,39 +130,43 @@ export const setCreateRolePermissionsState = (params) => ({
 
 export const fetchGrades = (branches) => {
   // const branchIds = branches.map((branch) => branch.id).join(',');
-  const branchIds = branches.id;
+  const branchIds = branches.length > 0 ? branches[0].id : '';
+
+  if (!branchIds) {
+    return Promise.resolve(null);
+  }
 
   return axios
     .get(`/erp_user/grademapping/?branch_id=${branchIds}`)
     .then((response) => {
       return response.data.data;
     })
-    .catch((error) => console.log('error in fetching grades', error));
+    .catch(() => {
+      return [];
+    });
 };
 
 export const fetchSections = (branches, grades) => {
   const branchIds = branches.map((branch) => branch.id).join(',');
   //   const branchIds = branches.id;
-  const gradeIds = grades.map((grade) => grade.grade_id).join(',');
+  const gradeIds = grades.map((grade) => grade.id).join(',');
 
   return axios
     .get(`/erp_user/sectionmapping/?branch_id=${branchIds}&grade_id=${gradeIds}`)
     .then((response) => {
       return response.data.data;
     })
-    .catch((error) => console.log('error in fetching sections', error));
+    .catch(() => {});
 };
 
 export const createRole = (params) => (dispatch) => {
   dispatch({ type: CREATE_ROLES_REQUEST });
-  axios
+  return axios
     .post('/erp_user/create_role/', params)
-    .then((response) => {
-      console.log(response.data);
+    .then(() => {
       dispatch({ type: CREATE_ROLES_SUCCESS });
     })
-    .catch((error) => {
-      console.log('error role in creation ', error);
+    .catch(() => {
       dispatch({ type: CREATE_ROLES_FAILURE });
     });
 };
@@ -189,14 +199,25 @@ export const setEditRolePermissionsState = (params) => ({
 
 export const editRole = (params) => (dispatch) => {
   dispatch({ type: EDIT_ROLES_REQUEST });
-  console.log('edit role', params);
   return axios
     .post('/erp_user/create_role/', params)
     .then(() => {
       dispatch({ type: EDIT_ROLES_SUCCESS });
     })
-    .catch((error) => {
+    .catch(() => {
       dispatch({ type: EDIT_ROLES_FAILURE });
-      console.log('error role edit ', error);
+    });
+};
+
+export const deleteRole = (params) => (dispatch) => {
+  dispatch({ type: DELETE_ROLE_REQUEST });
+  return axios
+    .post(`/erp_user/delete_role/`, params)
+    .then(() => {
+      dispatch({ type: DELETE_ROLE_SUCCESS });
+      dispatch(fetchRoles());
+    })
+    .catch(() => {
+      dispatch({ type: DELETE_ROLE_FAILURE });
     });
 };

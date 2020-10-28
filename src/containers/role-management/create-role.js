@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
@@ -13,6 +14,7 @@ import {
   createRole,
   setModulePermissionsRequestData,
 } from '../../redux/actions';
+import styles from './useStyles';
 
 import ModuleCard from '../../components/module-card';
 
@@ -44,13 +46,18 @@ class CreateRole extends Component {
 
   handleCreateRole = () => {
     // eslint-disable-next-line camelcase
-    const { roleName: role_name } = this.state;
+    const { history } = this.props;
+    const { roleName } = this.state;
     const { modulePermissionsRequestData, createRole } = this.props;
     const reqObj = {
-      role_name,
+      role_name: roleName,
       Module: modulePermissionsRequestData,
     };
-    createRole(reqObj);
+    createRole(reqObj)
+      .then(() => {
+        history.push('/role-management');
+      })
+      .catch(() => {});
   };
 
   render() {
@@ -60,6 +67,7 @@ class CreateRole extends Component {
       branches,
       modulePermissionsRequestData,
       setModulePermissionsRequestData,
+      classes,
     } = this.props;
     const modulesListing = () => {
       if (fetchingModules) return 'Loading.....';
@@ -79,7 +87,7 @@ class CreateRole extends Component {
       return 'No modules';
     };
     return (
-      <div>
+      <div className={classes.root}>
         <Grid container spacing={2} alignItems='center' style={{ padding: '2rem 0' }}>
           <Grid item>
             <TextField
@@ -88,13 +96,14 @@ class CreateRole extends Component {
               defaultValue=''
               variant='outlined'
               onChange={this.handleRoleNameChange}
+              color='secondary'
             />
           </Grid>
           <Grid item>
             <Button onClick={this.handleCreateRole}>Add Role</Button>
           </Grid>
         </Grid>
-        <Typography>Number of modules</Typography>
+        <Typography className={classes.sectionHeader}>Number of modules</Typography>
         <Divider />
 
         <Grid container spacing={4} style={{ padding: '2rem 0' }}>
@@ -126,7 +135,10 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(setModulePermissionsRequestData(params));
   },
   createRole: (params) => {
-    dispatch(createRole(params));
+    return dispatch(createRole(params));
   },
 });
-export default connect(mapStateToProps, mapDispatchToProps)(CreateRole);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(CreateRole));

@@ -12,7 +12,7 @@ const RoutesIndex = () => {
     <div>
       <Switch>
         <Route path={`${match.url}/create-role`}>
-          <CreateRole />
+          {({ match, history }) => <CreateRole match={match} history={history} />}
         </Route>
         <Route path={`${match.url}/edit-role/:id`}>
           {({ match, history }) => <EditRole match={match} history={history} />}

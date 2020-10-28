@@ -4,7 +4,10 @@ import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import Checkbox from '@material-ui/core/Checkbox';
 import Switch from '@material-ui/core/Switch';
+import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
 import CustomScopeModal from '../custom-scope-modal';
+import useStyles from './useStyles';
 
 const SubModule = ({
   subModule,
@@ -14,43 +17,54 @@ const SubModule = ({
   onChangeCustomScope,
 }) => {
   const [modalOpen, setModalState] = useState(false);
+  const classes = useStyles();
 
-  const handleModalStateChange = (e) => {
-    if (e.target.checked) {
-      setModalState(true);
-    } else {
-      setModalState(false);
-    }
+  const handleOpenModal = () => {
+    setModalState(true);
   };
 
   const handleCloseModal = () => {
     setModalState(false);
   };
+
+  const customScopeApplied =
+    subModule.custom_branch.length > 0 ||
+    subModule.custom_grade.length > 0 ||
+    subModule.custom_section.length > 0;
   return (
     <TableRow hover role='checkbox' tabIndex={-1} key={subModule.module_child_id}>
       {columns.map((column) => {
         const value = subModule[column.id];
         if (column.id === 'module_child_name') {
           return (
-            <TableCell key={column.id} align={column.align}>
+            <TableCell className={classes.tableCell} key={column.id} align={column.align}>
               {value}
             </TableCell>
           );
         }
         if (column.id === 'custom') {
           return (
-            <TableCell key={column.id} align={column.align}>
+            <TableCell
+              className={classes.tableCell}
+              key={column.id}
+              align={column.align}
+              colSpan={5}
+            >
               <Switch
-                checked={modalOpen}
-                onChange={handleModalStateChange}
+                size='small'
+                checked={customScopeApplied}
                 name='custom-popup-trigger'
                 inputProps={{ 'aria-label': 'custom-popup-trigger' }}
+                color='primary'
               />
+              <IconButton onClick={handleOpenModal}>
+                <EditIcon color='primary' />
+              </IconButton>
             </TableCell>
           );
         }
         return (
-          <TableCell key={column.id} align={column.align}>
+          <TableCell className={classes.tableCell} key={column.id} align={column.align}>
             <Checkbox
               onChange={(e) => {
                 onCheckPermission(
@@ -85,6 +99,7 @@ const SubModule = ({
           custom_grade: subModule.custom_grade,
           custom_section: subModule.custom_section,
         }}
+        subModule={subModule.module_child_name}
       />
     </TableRow>
   );

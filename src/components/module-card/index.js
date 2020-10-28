@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -13,34 +12,18 @@ import TableRow from '@material-ui/core/TableRow';
 import Checkbox from '@material-ui/core/Checkbox';
 import SubModule from '../sub-module';
 import { scopes } from '../../redux/actions';
-
-const useStyles = makeStyles({
-  root: {
-    minWidth: 275,
-  },
-  bullet: {
-    display: 'inline-block',
-    margin: '0 2px',
-    transform: 'scale(0.8)',
-  },
-  title: {
-    fontSize: 14,
-  },
-  pos: {
-    marginBottom: 12,
-  },
-});
+import useStyles from './useStyles';
 
 const columns = [
   { id: 'module_child_name', label: '', minWidth: 120 },
-  { id: 'my_branch', label: 'My Branch', minWidth: 80 },
-  { id: 'my_grade', label: 'My Grade', minWidth: 80 },
-  { id: 'my_section', label: 'My Section', minWidth: 80 },
+  { id: 'my_branch', label: 'Branch', minWidth: 80 },
+  { id: 'my_grade', label: 'Grade', minWidth: 80 },
+  { id: 'my_section', label: 'Section', minWidth: 80 },
   {
     id: 'custom',
     label: 'Custom',
-    minWidth: 100,
-    align: 'right',
+    minWidth: 130,
+    align: 'center',
   },
 ];
 
@@ -54,12 +37,42 @@ function findAndApplyScope(subModules, id, scope, checked) {
   return { clonedArray, index };
 }
 
-function findAndApplyCustomScope(subModules, id, customScopeObj) {
+function union(arra1, arra2) {
+  if (arra1 == null || arra2 == null) return [];
+
+  const obj = {};
+  arra1.forEach((item) => {
+    obj[item.id] = item;
+  });
+
+  arra2.forEach((item) => {
+    obj[item.id] = item;
+  });
+
+  const res = [];
+
+  Object.keys(obj).forEach((key) => res.push(obj[key]));
+
+  return res;
+}
+
+function findAndApplyCustomScope(subModules, id, customScopeObj, applyUnion) {
   const clonedArray = JSON.parse(JSON.stringify(subModules));
   const index = clonedArray.findIndex((obj) => obj.module_child_id == id);
+  const customBranch = clonedArray[index].custom_branch;
+  const customGrade = clonedArray[index].custom_grade;
+  const customSection = clonedArray[index].custom_section;
+  let scopeObj = { ...customScopeObj };
+  if (applyUnion) {
+    scopeObj = {
+      custom_branch: union(customBranch, customScopeObj.custom_branch),
+      custom_grade: union(customGrade, customScopeObj.custom_grade),
+      custom_section: union(customSection, customScopeObj.custom_section),
+    };
+  }
   clonedArray[index] = {
     ...clonedArray[index],
-    ...customScopeObj,
+    ...scopeObj,
   };
   return { clonedArray, index };
 }
@@ -129,25 +142,31 @@ export default function ModuleCard({
       moduleObj.module_child = clonedArray;
     } else {
       // check if dependency is not selected
-      unCheckDependency.forEach((depId) => {
+      const safeToUnsetValues = unCheckDependency.every((depId) => {
         const subModuleIndex = subModules.findIndex(
           (obj) => obj.module_child_id == depId
         );
         if (subModuleIndex) {
           if (!subModules[subModuleIndex][scope]) {
-            const { clonedArray, index } = findAndApplyScope(
-              subModules,
-              subModuleId,
-              scope,
-              checked
-            );
-            changedModuleIndices.push(index);
-            moduleObj.module_child = clonedArray;
-          } else {
-            console.log('not safe to uncheck');
+            return true;
           }
+
+          return false;
         }
+        return true;
       });
+      if (safeToUnsetValues) {
+        const { clonedArray, index } = findAndApplyScope(
+          subModules,
+          subModuleId,
+          scope,
+          checked
+        );
+        changedModuleIndices.push(index);
+        moduleObj.module_child = clonedArray;
+      } else {
+        console.log('not safe to uncheck dependency');
+      }
     }
 
     const modulePermissions = changedModuleIndices.map((index) => {
@@ -175,6 +194,7 @@ export default function ModuleCard({
     unCheckDependency,
     scope
   ) => {
+    console.log('custom scope obj ', customScopeObj);
     const moduleObj = JSON.parse(JSON.stringify(module));
     const subModules = module.module_child;
     const changedModuleIndices = [];
@@ -191,7 +211,8 @@ export default function ModuleCard({
         const { clonedArray, index } = findAndApplyCustomScope(
           moduleObj.module_child,
           dependencySubModule,
-          customScopeObj
+          customScopeObj,
+          true
         );
         moduleObj.module_child = clonedArray;
         changedModuleIndices.push(index);
@@ -270,9 +291,7 @@ export default function ModuleCard({
   return (
     <Card className={classes.root}>
       <CardContent>
-        <Typography variant='h5' component='h2'>
-          {module.module_parent}
-        </Typography>
+        <Typography className={classes.cardHeader}>{module.module_parent}</Typography>
         <TableContainer className={classes.container}>
           <Table stickyHeader aria-label='sticky table'>
             <TableHead>
@@ -282,6 +301,7 @@ export default function ModuleCard({
                     key={column.id}
                     align={column.align}
                     style={{ minWidth: column.minWidth }}
+                    className={classes.columnHeader}
                   >
                     {column.label}
                   </TableCell>
@@ -292,13 +312,19 @@ export default function ModuleCard({
               <TableRow hover role='checkbox' tabIndex={-1} id='select-all'>
                 {columns.map((column) => {
                   if (column.id !== 'module_child_name' && column.id !== 'custom') {
+                    const checkAll = module.module_child.every((subModule) => {
+                      if (subModule[column.id]) {
+                        return true;
+                      }
+                      return false;
+                    });
                     return (
-                      <TableCell>
+                      <TableCell className={classes.tableCell}>
                         <Checkbox
                           onChange={(e) => {
                             onCheckAll(e.target.checked, column.id);
                           }}
-                          checked={scopesObj[column.id]}
+                          checked={scopesObj[column.id] || checkAll}
                           color='primary'
                         />
                       </TableCell>
