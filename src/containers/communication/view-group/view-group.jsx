@@ -16,7 +16,8 @@ import Pagination from '@material-ui/lab/Pagination';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import TableRow from '@material-ui/core/TableRow';
-import axios from 'axios';
+import axiosInstance from '../../../config/axios';
+import endpoints from '../../../config/endpoints';
 import EditGroup from '../edit-group/edit-group';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './view-group.css';
@@ -50,8 +51,8 @@ const ViewGroup = withRouter(({ history, ...props }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const getGroupsData = async () => {
     try {
-      const result = await axios.get(
-        `http://13.234.252.195:443/communication/communication-group/?page=${currentPage}`
+      const result = await axiosInstance.get(
+        `${endpoints.communication.getGroups}?page=${currentPage}`
       );
       const resultGroups = [];
       if (result.status === 200) {
@@ -79,8 +80,8 @@ const ViewGroup = withRouter(({ history, ...props }) => {
   };
   const handleStatusChange = async (id, index) => {
     try {
-      const statusChange = await axios.put(
-        `http://13.234.252.195:443/communication/${id}/change-group-status/`
+      const statusChange = await axiosInstance.put(
+        `${endpoints.communication.editGroup}${id}/change-group-status/`
       );
       if (statusChange.status === 200) {
         setAlert('success', statusChange.data.message);
@@ -98,8 +99,8 @@ const ViewGroup = withRouter(({ history, ...props }) => {
   };
   const handleDelete = async (id, index) => {
     try {
-      const statusChange = await axios.delete(
-        `http://13.234.252.195:443/communication/${id}/delete-group/`
+      const statusChange = await axiosInstance.delete(
+        `${endpoints.communication.editGroup}${id}/delete-group/`
       );
       if (statusChange.status === 200) {
         setAlert('success', statusChange.data.message);

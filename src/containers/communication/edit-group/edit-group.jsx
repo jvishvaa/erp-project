@@ -3,9 +3,10 @@
 /* eslint-disable no-debugger */
 import React, { useContext, useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
-import axios from 'axios';
 import Chip from '@material-ui/core/Chip';
 import CloseIcon from '@material-ui/icons/Close';
+import axiosInstance from '../../../config/axios';
+import endpoints from '../../../config/endpoints';
 import CustomInput from '../custom-inputfield/custom-input';
 import CustomSelectionTable from '../custom-selection-table/custom-selection-table';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -34,14 +35,14 @@ const EditGroup = withRouter(({ history, ...props }) => {
   };
   const editGroup = async () => {
     try {
-      const editGroupApiUrl = `http://13.234.252.195:443/communication/${editId}/retrieve-update-group/`;
+      const editGroupApiUrl = `${endpoints.communication.editGroup}${editId}/retrieve-update-group/`;
       const selectionArray = [];
       selectedUsers.forEach((item) => {
         item.selected.forEach((ids) => {
           selectionArray.push(ids);
         });
       });
-      const response = await axios.put(
+      const response = await axiosInstance.put(
         editGroupApiUrl,
         {
           group_name: groupName,
@@ -68,9 +69,9 @@ const EditGroup = withRouter(({ history, ...props }) => {
     }
   };
   const getEditGroupsData = async () => {
-    const getEditGroupsDataUrl = `http://13.234.252.195:443/communication/${editId}/retrieve-update-group/?page=${pageno}`;
+    const getEditGroupsDataUrl = `${endpoints.communication.editGroup}${editId}/retrieve-update-group/?page=${pageno}`;
     try {
-      const result = await axios.get(getEditGroupsDataUrl);
+      const result = await axiosInstance.get(getEditGroupsDataUrl);
       if (result.status === 200) {
         setHeaders([
           { field: 'id', headerName: 'ID', width: 100 },

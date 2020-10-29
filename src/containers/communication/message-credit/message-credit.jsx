@@ -4,13 +4,14 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useContext, useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
-import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import axiosInstance from '../../../config/axios';
+import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './message-credit.css';
 
@@ -33,12 +34,12 @@ const MessageCredit = withRouter(({ history, ...props }) => {
   const [branchList, setBranchList] = useState([]);
   const [testData, setTestData] = useState([]);
   const handleSubmit = async (index) => {
-    const addSmsCreditUrl = `http://13.234.252.195:443/communication/${smsCreditId}/sms-credits/`;
+    const addSmsCreditUrl = `${endpoints.communication.editGroup}${smsCreditId}/sms-credits/`;
     try {
       const request = {
         sms_credit_amount: testData[index].AmountAdded,
       };
-      const response = await axios.put(addSmsCreditUrl, request, {
+      const response = await axiosInstance.put(addSmsCreditUrl, request, {
         headers: {
           // 'application/json' is the modern content-type for JSON, but some
           // older servers may use 'text/json'.
@@ -73,7 +74,7 @@ const MessageCredit = withRouter(({ history, ...props }) => {
   };
   const getBranchApi = async () => {
     try {
-      const result = await axios.get('http://13.234.252.195:443/erp_user/branch/');
+      const result = await axiosInstance.get(endpoints.communication.branches);
       if (result.status === 200) {
         setBranchList(result.data.data);
       } else {
@@ -85,11 +86,11 @@ const MessageCredit = withRouter(({ history, ...props }) => {
   };
   const getSmsCreditApi = async () => {
     try {
-      let smsCreditUrl = 'http://13.234.252.195:443/communication/sms-credits/';
+      let smsCreditUrl = endpoints.communication.getSmsCredit;
       if (selectedBranch && selectedBranch !== 0) {
         smsCreditUrl += `?branch=${selectedBranch}`;
       }
-      const result = await axios.get(smsCreditUrl);
+      const result = await axiosInstance.get(smsCreditUrl);
       const resultOptions = [];
       if (result.status === 200) {
         result.data.data.map((items) =>

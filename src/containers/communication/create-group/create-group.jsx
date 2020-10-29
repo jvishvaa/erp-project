@@ -4,7 +4,8 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useContext, useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
-import axios from 'axios';
+import axiosInstance from '../../../config/axios';
+import endpoints from '../../../config/endpoints';
 import CustomMultiSelect from '../custom-multiselect/custom-multiselect';
 import CustomInput from '../custom-inputfield/custom-input';
 import CustomSelectionTable from '../custom-selection-table/custom-selection-table';
@@ -42,7 +43,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
 
   const getRoleApi = async () => {
     try {
-      const result = await axios.get('http://13.234.252.195:443/erp_user/roles/');
+      const result = await axiosInstance.get(endpoints.communication.roles);
       const resultOptions = [];
       if (result.status === 200) {
         result.data.result.map((items) => resultOptions.push(items.role_name));
@@ -58,7 +59,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
 
   const getBranchApi = async () => {
     try {
-      const result = await axios.get('http://13.234.252.195:443/erp_user/branch/');
+      const result = await axiosInstance.get(endpoints.communication.branches);
       const resultOptions = [];
       if (result.status === 200) {
         result.data.data.map((items) => resultOptions.push(items.branch_name));
@@ -80,8 +81,8 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         branchesId.push(items.id);
       });
     try {
-      const result = await axios.get(
-        `http://13.234.252.195:443/erp_user/grademapping/?branch_id=${branchesId.toString()}`
+      const result = await axiosInstance.get(
+        `${endpoints.communication.grades}?branch_id=${branchesId.toString()}`
       );
       const resultOptions = [];
       if (result.status === 200) {
@@ -114,8 +115,10 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         .forEach((items) => {
           gradesId.push(items.grade_id);
         });
-      const result = await axios.get(
-        `http://13.234.252.195:443/erp_user/sectionmapping/?branch_id=${branchesId.toString()}&grade_id=${gradesId.toString()}`
+      const result = await axiosInstance.get(
+        `${
+          endpoints.communication.sections
+        }?branch_id=${branchesId.toString()}&grade_id=${gradesId.toString()}`
       );
       const resultOptions = [];
       if (result.status === 200) {
@@ -139,7 +142,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     const gradesId = [];
     const sectionsId = [];
     setNext(true);
-    let getUserListUrl = `http://13.234.252.195:443/communication/erp-user-info/?page=${pageno}`;
+    let getUserListUrl = `${endpoints.communication.userList}?page=${pageno}`;
     if (selectedRoles.length && !selectedRoles.includes('All')) {
       roleList
         .filter((item) => selectedRoles.includes(item['role_name']))
@@ -172,7 +175,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     }
 
     try {
-      const result = await axios.get(getUserListUrl);
+      const result = await axiosInstance.get(getUserListUrl);
       if (result.status === 200) {
         setHeaders([
           { field: 'id', headerName: 'ID', width: 100 },
@@ -273,7 +276,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
           sectionsId.push(items.id);
         });
     }
-    const createGroupApi = 'http://13.234.252.195:443/communication/communication-group/';
+    const createGroupApi = endpoints.communication.createGroup;
     const branchArray = [];
     const gradeArray = [];
     const sectionArray = [];
@@ -298,7 +301,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     }
     setSelectectUserError('');
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         createGroupApi,
         {
           group_name: groupName,

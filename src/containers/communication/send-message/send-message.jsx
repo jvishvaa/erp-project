@@ -8,7 +8,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useContext, useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import axios from 'axios';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import { TextareaAutosize } from '@material-ui/core';
@@ -18,6 +17,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
+import axiosInstance from '../../../config/axios';
+import endpoints from '../../../config/endpoints';
 import HeaderSection from './components/header-section';
 import CustomMultiSelect from '../custom-multiselect/custom-multiselect';
 import CustomSelectionTable from '../custom-selection-table/custom-selection-table';
@@ -82,7 +83,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
   };
   const getRoleApi = async () => {
     try {
-      const result = await axios.get('http://13.234.252.195:443/erp_user/roles/');
+      const result = await axiosInstance.get(endpoints.communication.roles);
       const resultOptions = [];
       if (result.status === 200) {
         result.data.result.map((items) => resultOptions.push(items.role_name));
@@ -100,7 +101,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
 
   const getBranchApi = async () => {
     try {
-      const result = await axios.get('http://13.234.252.195:443/erp_user/branch/');
+      const result = await axiosInstance.get(endpoints.communication.branches);
       const resultOptions = [];
       if (result.status === 200) {
         result.data.data.map((items) => resultOptions.push(items.branch_name));
@@ -115,9 +116,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
   };
   const getGroupApi = async () => {
     try {
-      const result = await axios.get(
-        'http://13.234.252.195:443/communication/groups-list/'
-      );
+      const result = await axiosInstance.get(endpoints.communication.groupList);
       const resultOptions = [];
       if (result.status === 200) {
         result.data.data.map((items) => resultOptions.push(items.group_name));
@@ -139,8 +138,8 @@ const SendMessage = withRouter(({ history, ...props }) => {
         branchesId.push(items.id);
       });
     try {
-      const result = await axios.get(
-        `http://13.234.252.195:443/erp_user/grademapping/?branch_id=${branchesId.toString()}`
+      const result = await axiosInstance.get(
+        `${endpoints.communication.grades}?branch_id=${branchesId.toString()}`
       );
       const resultOptions = [];
       if (result.status === 200) {
@@ -173,8 +172,10 @@ const SendMessage = withRouter(({ history, ...props }) => {
         .forEach((items) => {
           gradesId.push(items.grade_id);
         });
-      const result = await axios.get(
-        `http://13.234.252.195:443/erp_user/sectionmapping/?branch_id=${branchesId.toString()}&grade_id=${gradesId.toString()}`
+      const result = await axiosInstance.get(
+        `${
+          endpoints.communication.sections
+        }?branch_id=${branchesId.toString()}&grade_id=${gradesId.toString()}`
       );
       const resultOptions = [];
       if (result.status === 200) {
@@ -199,7 +200,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       const rolesId = [];
       const gradesId = [];
       const sectionsId = [];
-      getUserListUrl = `http://13.234.252.195:443/communication/erp-user-info/?page=${pageno}`;
+      getUserListUrl = `${endpoints.communication.userList}?page=${pageno}`;
       if (selectedRoles.length && !selectedRoles.includes('All')) {
         roleList
           .filter((item) => selectedRoles.includes(item['role_name']))
@@ -232,7 +233,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       }
     } else {
       const groupId = [];
-      getUserListUrl = `http://13.234.252.195:443/communication/erp-user-info/?page=${pageno}`;
+      getUserListUrl = `${endpoints.communication.userList}?page=${pageno}`;
       if (selectedGroup.length && !selectedGroup.includes('All')) {
         groupList
           .filter((item) => selectedGroup.includes(item['group_name']))
@@ -245,7 +246,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       }
     }
     try {
-      const result = await axios.get(getUserListUrl);
+      const result = await axiosInstance.get(getUserListUrl);
       if (result.status === 200) {
         setHeaders([
           { field: 'id', headerName: 'ID', width: 100 },
@@ -410,9 +411,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
   };
   const getSmsTypeApi = async () => {
     try {
-      const result = await axios.get(
-        'http://13.234.252.195:443/communication/message-types/'
-      );
+      const result = await axiosInstance.get(endpoints.communication.getMessageTypes);
       if (result.status === 200) {
         setSmsTypeList(result.data.data);
       } else {
@@ -434,7 +433,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
     setTextMessageError('');
     setMessageTypeError('');
     try {
-      const sendMessageApi = 'http://13.234.252.195:443/communication/send-messages/';
+      const sendMessageApi = endpoints.communication.sendMessage;
       const selectionArray = [];
       selectedUsers.forEach((item) => {
         item.selected.forEach((ids) => {
@@ -546,7 +545,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
           };
         }
       }
-      const response = await axios.post(sendMessageApi, request, {
+      const response = await axiosInstance.post(sendMessageApi, request, {
         headers: {
           // 'application/json' is the modern content-type for JSON, but some
           // older servers may use 'text/json'.
