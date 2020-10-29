@@ -18,6 +18,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import TableRow from '@material-ui/core/TableRow';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
+import Layout from '../../layout';
 import EditGroup from '../edit-group/edit-group';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './view-group.css';
@@ -136,115 +137,117 @@ const ViewGroup = withRouter(({ history, ...props }) => {
     }
   }, [editing]);
   return (
-    <div className='creategroup__page'>
-      <div className='viewgroup_heading'>Communication &gt; View Group</div>
-      {editing ? (
-        <EditGroup
-          editId={editGroupId}
-          editClose={setEditing}
-          groupName={editGroupName}
-          groupRole={editGroupRole}
-          groupGrades={editGroupGrades}
-          groupSections={editGroupSections}
-          setGroupName={setEditGroupName}
-        />
-      ) : null}
-      <Paper className={classes.root}>
-        <TableContainer className={`table table-shadow ${classes.container}`}>
-          <Table stickyHeader aria-label='sticky table'>
-            <TableHead className='view_groups_header'>
-              <TableRow>
-                <TableCell>Group Name</TableCell>
-                <TableCell>Role Type</TableCell>
-                <TableCell>Grades</TableCell>
-                <TableCell>Sections</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Action</TableCell>
-                <TableCell>Edit</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody className='view_groups_body'>
-              {groupsData.map((items, i) => (
-                <TableRow
-                  hover
-                  role='checkbox'
-                  tabIndex={-1}
-                  key={`group_table_index${i}`}
-                >
-                  <TableCell>{items.groupName}</TableCell>
-                  <TableCell>{items.roleType}</TableCell>
-                  <TableCell>
-                    {items.grades.length
-                      ? items.grades.map((grades) => grades.grade_name)
-                      : null}
-                  </TableCell>
-                  <TableCell>
-                    {items.sections.length
-                      ? items.sections.map((sections) => sections.section__section_name)
-                      : null}
-                  </TableCell>
-                  <TableCell>
-                    {items.active ? (
-                      <div style={{ color: 'green' }}>Activated</div>
-                    ) : (
-                      <div style={{ color: 'red' }}>Deactivated</div>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {items.active ? (
-                      <button
-                        type='submit'
-                        className='group_view_deactivate_button group_view_button'
-                        title='Deactivate'
-                        onClick={() => handleStatusChange(items.groupId, i)}
-                      >
-                        D
-                      </button>
-                    ) : (
-                      <button
-                        type='submit'
-                        className='group_view_activate_button group_view_button'
-                        title='Activate'
-                        onClick={() => handleStatusChange(items.groupId, i)}
-                      >
-                        A
-                      </button>
-                    )}
-
-                    <span
-                      className='group_view_button group_view_delete_button'
-                      title='Delete'
-                      onClick={() => handleDelete(items.groupId, i)}
-                    >
-                      <DeleteIcon />
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <span
-                      className='group_view_button group_view_delete_button'
-                      title='Edit'
-                      onClick={() => handleEdit(items.groupId, i)}
-                    >
-                      <EditIcon />
-                    </span>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-
-        <div className={`${classes.root} pagenation_view_groups`}>
-          <Pagination
-            page={Number(currentPage)}
-            size='large'
-            className='books__pagination'
-            onChange={handlePagination}
-            count={totalPages}
+    <Layout>
+      <div className='creategroup__page'>
+        <div className='viewgroup_heading'>Communication &gt; View Group</div>
+        {editing ? (
+          <EditGroup
+            editId={editGroupId}
+            editClose={setEditing}
+            groupName={editGroupName}
+            groupRole={editGroupRole}
+            groupGrades={editGroupGrades}
+            groupSections={editGroupSections}
+            setGroupName={setEditGroupName}
           />
-        </div>
-      </Paper>
-    </div>
+        ) : null}
+        <Paper className={classes.root}>
+          <TableContainer className={`table table-shadow ${classes.container}`}>
+            <Table stickyHeader aria-label='sticky table'>
+              <TableHead className='view_groups_header'>
+                <TableRow>
+                  <TableCell>Group Name</TableCell>
+                  <TableCell>Role Type</TableCell>
+                  <TableCell>Grades</TableCell>
+                  <TableCell>Sections</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>Action</TableCell>
+                  <TableCell>Edit</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody className='view_groups_body'>
+                {groupsData.map((items, i) => (
+                  <TableRow
+                    hover
+                    role='checkbox'
+                    tabIndex={-1}
+                    key={`group_table_index${i}`}
+                  >
+                    <TableCell>{items.groupName}</TableCell>
+                    <TableCell>{items.roleType}</TableCell>
+                    <TableCell>
+                      {items.grades.length
+                        ? items.grades.map((grades) => grades.grade_name)
+                        : null}
+                    </TableCell>
+                    <TableCell>
+                      {items.sections.length
+                        ? items.sections.map((sections) => sections.section__section_name)
+                        : null}
+                    </TableCell>
+                    <TableCell>
+                      {items.active ? (
+                        <div style={{ color: 'green' }}>Activated</div>
+                      ) : (
+                        <div style={{ color: 'red' }}>Deactivated</div>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {items.active ? (
+                        <button
+                          type='submit'
+                          className='group_view_deactivate_button group_view_button'
+                          title='Deactivate'
+                          onClick={() => handleStatusChange(items.groupId, i)}
+                        >
+                          D
+                        </button>
+                      ) : (
+                        <button
+                          type='submit'
+                          className='group_view_activate_button group_view_button'
+                          title='Activate'
+                          onClick={() => handleStatusChange(items.groupId, i)}
+                        >
+                          A
+                        </button>
+                      )}
+
+                      <span
+                        className='group_view_button group_view_delete_button'
+                        title='Delete'
+                        onClick={() => handleDelete(items.groupId, i)}
+                      >
+                        <DeleteIcon />
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <span
+                        className='group_view_button group_view_delete_button'
+                        title='Edit'
+                        onClick={() => handleEdit(items.groupId, i)}
+                      >
+                        <EditIcon />
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          <div className={`${classes.root} pagenation_view_groups`}>
+            <Pagination
+              page={Number(currentPage)}
+              size='large'
+              className='books__pagination'
+              onChange={handlePagination}
+              count={totalPages}
+            />
+          </div>
+        </Paper>
+      </div>
+    </Layout>
   );
 });
 
