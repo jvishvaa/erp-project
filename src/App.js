@@ -7,6 +7,7 @@ import RoleManagement from './containers/role-management';
 import store from './redux/store';
 import AlertNotificationProvider from './context-api/alert-context/alert-state';
 import './assets/styles/styles.scss';
+import UserManagement from './containers/user-management';
 
 const theme = createMuiTheme({
   palette: {
@@ -55,6 +56,9 @@ function App() {
               <Switch>
                 <Route path='/role-management'>
                   {({ match }) => <RoleManagement match={match} />}
+                </Route>
+                <Route path='/user-management'>
+                  {({ match }) => <UserManagement match={match} />}
                 </Route>
                 <Route exact path='/'>
                   {() => <div>Landing page</div>}

@@ -105,13 +105,14 @@ export const fetchModules = () => (dispatch) => {
 
 export const fetchBranches = () => (dispatch) => {
   dispatch({ type: FETCH_BRANCHES_REQUEST });
-  axios
+  return axios
     .get('/erp_user/branch/')
     .then((response) => {
       dispatch({
         type: FETCH_BRANCHES_SUCCESS,
         data: response.data.data,
       });
+      return response.data.data;
     })
     .catch(() => {
       dispatch({ type: FETCH_BRANCHES_FAILURE });
@@ -129,8 +130,10 @@ export const setCreateRolePermissionsState = (params) => ({
 });
 
 export const fetchGrades = (branches) => {
+  console.log('fetching grades for branches ', branches);
   // const branchIds = branches.map((branch) => branch.id).join(',');
-  const branchIds = branches.length > 0 ? branches[0].id : '';
+
+  const branchIds = branches && branches.length > 0 ? branches[0].id : '';
 
   if (!branchIds) {
     return Promise.resolve(null);
@@ -144,6 +147,7 @@ export const fetchGrades = (branches) => {
     .catch(() => {
       return [];
     });
+  // return Promise.resolve([]);
 };
 
 export const fetchSections = (branches, grades) => {
