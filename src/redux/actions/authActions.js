@@ -19,6 +19,14 @@ export const login = (params) => (dispatch) => {
         userDetails: response.data.result.user_details,
         navigationData: response.data.result.navigation_data,
       });
+      localStorage.setItem(
+        'userDetails',
+        JSON.stringify(response.data.result.user_details)
+      );
+      localStorage.setItem(
+        'navigationData',
+        JSON.stringify(response.data.result.navigation_data)
+      );
     })
     .catch(() => {
       dispatch({ type: LOGIN_FAILURE });
