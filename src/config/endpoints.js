@@ -14,5 +14,7 @@ export default {
     createClass: '/erp_user/online_class/',
     studentOnlineclasses: '/erp_user/student_online_class/',
     acceptOrJoinClass: '/erp_user/onlineclass_accept_join/',
+    managementOnlineClass: '/erp_user/teacher_online_class/',
+    cancelClass: '/erp_user/cancel-online-class/',
   },
 };

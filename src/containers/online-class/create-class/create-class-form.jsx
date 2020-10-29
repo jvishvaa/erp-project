@@ -417,7 +417,7 @@ const CreateClassForm = () => {
                 id='create__class-section'
                 options={sections}
                 getOptionLabel={(option) => {
-                  return `${option.grade__grade_name} ${option.section__section_name}`;
+                  return `${option.section__section_name}`;
                 }}
                 filterSelectedOptions
                 // value={[]}

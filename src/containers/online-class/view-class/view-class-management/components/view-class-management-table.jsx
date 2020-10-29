@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   Table,
   TableHead,
@@ -7,12 +7,23 @@ import {
   TableBody,
   TableContainer,
   Grid,
-  Button,
+  CircularProgress,
 } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 
+import onlineClasses from '../sample.json';
+import ViewClassTableCell from './view-class-table-cell';
+import { OnlineclassViewContext } from '../../../online-class-context/online-class-state';
+
 const ViewClassManagementTable = () => {
-  const rows = [{}, {}, {}];
+  const {
+    managementView: {
+      managementOnlineClasses = [],
+      totalPages,
+      loadingManagementOnlineClasses,
+    },
+  } = useContext(OnlineclassViewContext);
+
   return (
     <div className='viewclass__management-table'>
       <TableContainer>
@@ -26,29 +37,21 @@ const ViewClassManagementTable = () => {
               <TableCell align='center'>Attended</TableCell>
               <TableCell align='center'>Not attended</TableCell>
               <TableCell align='center'>Zoom email</TableCell>
-              <TableCell align='center'>Join class</TableCell>
-              <TableCell align='center'>Attended</TableCell>
+              <TableCell align='center'>Host/ Audit class</TableCell>
+              <TableCell align='center'>Cancel class</TableCell>
+              <TableCell align='center'>Attendee list</TableCell>
+              <TableCell align='center'>Tutor email</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody className='viewclass__table-body'>
-            {rows.map((row, index) => (
-              <TableRow key={row.name}>
-                <TableCell align='center'>{index + 1}</TableCell>
-                <TableCell align='center'>Numeracy</TableCell>
-                <TableCell align='center'>Numeracy</TableCell>
-                <TableCell align='center'>2020 - 10 - 15 15 : 22</TableCell>
-                <TableCell align='center'>222</TableCell>
-                <TableCell align='center'>80</TableCell>
-                <TableCell align='center'>zoom110@orchids .edu.in</TableCell>
-                <TableCell align='center'>
-                  <Button variant='contained' color='primary'>
-                    Join
-                  </Button>
-                </TableCell>
-                <TableCell align='center'>Attended</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
+          {loadingManagementOnlineClasses ? (
+            <CircularProgress className='progress-center' />
+          ) : (
+            <TableBody className='viewclass__table-body'>
+              {managementOnlineClasses.map((row, index) => (
+                <ViewClassTableCell data={row} key={row.id} index={index} />
+              ))}
+            </TableBody>
+          )}
         </Table>
       </TableContainer>
       <Grid
@@ -59,7 +62,11 @@ const ViewClassManagementTable = () => {
         justify='center'
       >
         <Grid item xs={12}>
-          <Pagination count={10} color='primary' />
+          {!loadingManagementOnlineClasses ? (
+            <Pagination count={totalPages} color='primary' />
+          ) : (
+            ''
+          )}
         </Grid>
       </Grid>
     </div>

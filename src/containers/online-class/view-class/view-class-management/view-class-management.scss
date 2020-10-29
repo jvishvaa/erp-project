@@ -3,24 +3,38 @@
 .viewclass__management-container {
   // filter component
   .filters__container {
-    padding: 50px 0;
-    
+    padding: 50px 0 0 0;
+
+    .managementview-tabs {
+      margin-top: 20px;
+    }
+
     .viewclass__management-btn {
       width: 100%;
     }
 
+    .cancelled-class-check {
+      margin-top: 20px;
+    }
+
     svg {
-        fill: $primary-color
+      fill: $primary-color;
     }
 
     .MuiTextField-root {
-        width: 100%;
+      width: 100%;
     }
   }
 
   // table component
   .viewclass__management-table {
     margin-top: 20px;
+
+    .progress-center {
+      position: absolute;
+      left: 50%;
+      margin-top: 100px;
+    }
 
     .viewclass__table-head {
       th {
@@ -45,9 +59,9 @@
     }
 
     .viewclass__table-body {
-        td {
-            color: $secondary-color;
-        }
+      td {
+        color: $secondary-color;
+      }
     }
 
     .pagination__container {

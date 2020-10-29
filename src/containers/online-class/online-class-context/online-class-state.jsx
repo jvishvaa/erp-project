@@ -9,6 +9,16 @@ import {
   STUDENT_ONLINECLASS_SUCCESS,
   CLASS_ACCEPT_SUCCESS,
   CLASS_JOIN_SUCCESS,
+  MANAGEMENT_ONLINECLASS_REQUEST,
+  MANAGEMENT_ONLINECLASS_FAILURE,
+  MANAGEMENT_ONLINECLASS_SUCCESS,
+  LIST_GRADE_REQUEST,
+  LIST_GRADE_FAILURE,
+  LIST_GRADE_SUCCESS,
+  LIST_SECTION_FAILURE,
+  LIST_SECTION_REQUEST,
+  LIST_SECTION_SUCCESS,
+  CANCEL_CLASS,
 } from './online-class-constants';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
@@ -28,7 +38,16 @@ const OnlineclassViewProvider = (props) => {
       errorLoadingStudentOnlineClasses: '',
       currentServerTime: new Date(),
     },
-    managementView: {},
+    managementView: {
+      currentPage: 1,
+      totalPages: 1,
+      managementOnlineClasses: [],
+      loadingManagementOnlineClasses: false,
+      errorLoadingManagementOnlineClasses: '',
+      currentServerTime: new Date(),
+    },
+    grades: [],
+    sections: [],
   };
 
   const [state, dispatch] = useReducer(onlineClassReducer, initalState);
@@ -64,6 +83,18 @@ const OnlineclassViewProvider = (props) => {
     }
   };
 
+  const listOnlineClassesManagementView = async (url) => {
+    dispatch(request(MANAGEMENT_ONLINECLASS_REQUEST));
+    try {
+      const { data } = await axiosInstance.get(
+        `${endpoints.onlineClass.managementOnlineClass}?${url}`
+      );
+      dispatch(success(data, MANAGEMENT_ONLINECLASS_SUCCESS));
+    } catch (error) {
+      dispatch(failure(error, MANAGEMENT_ONLINECLASS_FAILURE));
+    }
+  };
+
   const handleAccept = async (meetingId) => {
     try {
       const formData = new FormData();
@@ -92,14 +123,60 @@ const OnlineclassViewProvider = (props) => {
     }
   };
 
+  const listGrades = async () => {
+    dispatch(request(LIST_GRADE_REQUEST));
+    try {
+      const { data } = await axiosInstance.get(
+        `${endpoints.academics.grades}?branch_id=1`
+      );
+      if (data.status === 'success') dispatch(success(data.data, LIST_GRADE_SUCCESS));
+      else throw new Error(data.message);
+    } catch (error) {
+      dispatch(failure(error, LIST_GRADE_FAILURE));
+    }
+  };
+
+  const listSections = async (gradeId) => {
+    dispatch(request(LIST_SECTION_REQUEST));
+    try {
+      const { data } = await axiosInstance.get(
+        `${endpoints.academics.sections}?branch_id=1&grade_id=${gradeId}`
+      );
+      if (data.status === 'success') {
+        dispatch(success(data.data, LIST_SECTION_SUCCESS));
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (error) {
+      dispatch(failure(error, LIST_SECTION_FAILURE));
+    }
+  };
+
+  const cancelClass = async (id) => {
+    try {
+      dispatch(success(id, CANCEL_CLASS));
+      const formData = { zoom_meeting_id: id, is_canceled: 'true' };
+      const { data } = await axiosInstance.put(
+        `${endpoints.onlineClass.cancelClass}`,
+        formData
+      );
+    } catch (error) {
+      setAlert('error', 'Failed to cancel class');
+    }
+  };
+
   return (
     <OnlineclassViewContext.Provider
       value={{
         ...state,
         dispatch,
         listOnlineClassesStudentView,
+        listOnlineClassesManagementView,
         handleAccept,
         handleJoin,
+        listGrades,
+        listSections,
+        cancelClass,
       }}
     >
       {children}

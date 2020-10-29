@@ -115,6 +115,7 @@ const CreateclassProvider = (props) => {
         `${endpoints.onlineClass.teacherAvailability}?tutor_email=${tutorEmail}&start_time=${startTime}&duration=${duration}`
       );
       if (data.status === 'success') dispatch(success('', VERIFY_TUTOREMAIL_SUCCESS));
+      else throw new Error(data.message);
     } catch (error) {
       const { response } = error || {};
       if (response?.data) setAlert('error', response.data.message);

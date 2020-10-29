@@ -154,7 +154,7 @@ const ViewClassStudent = (props) => {
         </Grid>
         <Grid item xs={12} sm={12} md={4}>
           <Grid container spacing={3}>
-            <Grid item xs={6}>
+            {/* <Grid item xs={6}>
               <Button
                 className='viewclass__student-btn'
                 variant='outlined'
@@ -162,7 +162,7 @@ const ViewClassStudent = (props) => {
               >
                 Set reminder
               </Button>
-            </Grid>
+            </Grid> */}
             <Grid item xs={6}>
               {!isAccepted ? (
                 <Button
@@ -195,7 +195,7 @@ const ViewClassStudent = (props) => {
                 Resources
               </Button>
             </Grid>
-            <Grid item xs={6}>
+            {/* <Grid item xs={6}>
               <Button
                 className='viewclass__student-btn'
                 variant='outlined'
@@ -203,7 +203,7 @@ const ViewClassStudent = (props) => {
               >
                 Homework
               </Button>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Grid>
       </Grid>

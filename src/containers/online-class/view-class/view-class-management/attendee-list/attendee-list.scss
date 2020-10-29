@@ -1,0 +1,6 @@
+
+@import '../../../../../assets/styles/mixins';
+
+.attendee__management-table {
+    @include styledTable;
+}

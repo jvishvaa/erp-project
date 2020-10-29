@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ViewClassManagementFilters from './components/view-class-management-filters';
 import ViewClassManagementTable from './components/view-class-management-table';
 import './view-class-management.scss';
