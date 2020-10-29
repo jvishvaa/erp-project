@@ -4,6 +4,7 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import CreateGroup from './container/communication/component/create-group/create-group';
 import ViewGroup from './container/communication/component/view-group/view-group';
 import MessageCredit from './container/communication/component/message-credit/message-credit';
+import SendMessage from './container/communication/component/send-message/send-message';
 import Layout from './containers/Layout';
 import store from './redux/store';
 import AlertNotificationProvider from './context-api/alert-context/alert-state';
@@ -40,12 +41,15 @@ function App() {
                 {/* <Route exact path='/addgroup'>
                 {() => <CreateGroup />}
               </Route> */}
-                {/* <Route exact path='/smscredit'>
-                {() => <MessageCredit />}
-              </Route> */}
-                <Route exact path='/viewgroup'>
-                  {() => <ViewGroup />}
+                <Route exact path='/smscredit'>
+                  {() => <MessageCredit />}
                 </Route>
+                {/* <Route exact path='/viewgroup'>
+                  {() => <ViewGroup />}
+                </Route> */}
+                {/* <Route exact path='/sendmessage'>
+                  {() => <SendMessage />}
+                </Route> */}
               </Layout>
             </ThemeProvider>
           </AlertNotificationProvider>

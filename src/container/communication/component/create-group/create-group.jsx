@@ -88,7 +88,11 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       const resultOptions = [];
       if (result.status === 200) {
         result.data.data.map((items) => resultOptions.push(items.grade__grade_name));
-        setGrade([...grade, ...resultOptions]);
+        if (selectedBranch.length > 1) {
+          setGrade([...grade, ...resultOptions]);
+        } else {
+          setGrade(['All', ...resultOptions]);
+        }
         setGradeList(result.data.data);
       } else {
         console.log('error');
@@ -120,7 +124,11 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       const resultOptions = [];
       if (result.status === 200) {
         result.data.data.map((items) => resultOptions.push(items.section__section_name));
-        setSection([...section, ...resultOptions]);
+        if (selectedGrades.length > 1) {
+          setSection([...section, ...resultOptions]);
+        } else {
+          setSection(['All', ...resultOptions]);
+        }
         setSectionList(result.data.data);
       } else {
         console.log('error');
