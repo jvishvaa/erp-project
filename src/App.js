@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-
-import Layout from './containers/Layout';
+import RoleManagement from './containers/role-management';
 import store from './redux/store';
 import AlertNotificationProvider from './context-api/alert-context/alert-state';
 import './assets/styles/styles.scss';
-import OnlineClass from './containers/online-class';
+import UserManagement from './containers/user-management';
+import Login from './containers/login';
+import Dashboard from './containers/dashboard';
 
 const theme = createMuiTheme({
   palette: {
@@ -16,9 +17,29 @@ const theme = createMuiTheme({
     secondary: {
       main: '#014b7e',
     },
+    text: {
+      default: '#014b7e',
+    },
+    background: {
+      primary: '#ffffff',
+      secondary: '#f9f9f9',
+    },
+  },
+  typography: {
+    fontSize: 16,
+    color: '#014b7e',
   },
 
-  overrides: {},
+  overrides: {
+    MuiButton: {
+      // Name of the rule
+      root: {
+        // Some CSS
+        color: '#ffffff',
+        backgroundColor: ' #ff6b6b',
+      },
+    },
+  },
 });
 
 function App() {
@@ -29,23 +50,24 @@ function App() {
   return (
     <div className='App'>
       <Router>
-        <Switch>
-<<<<<<< Updated upstream
-          <AlertNotificationProvider>
-            <ThemeProvider theme={theme}>
-              <Layout>
-                <Route path='/'><OnlineClass /></Route>
-              </Layout>
-            </ThemeProvider>
-          </AlertNotificationProvider>
-=======
+        <AlertNotificationProvider>
           <ThemeProvider theme={theme}>
-            <Layout>
-              <Route path='/'><OnlineClass /> </Route>
-            </Layout>
+            <Switch>
+              <Route path='/role-management'>
+                {({ match }) => <RoleManagement match={match} />}
+              </Route>
+              <Route path='/user-management'>
+                {({ match }) => <UserManagement match={match} />}
+              </Route>
+              <Route path='/dashboard'>
+                {({ match }) => <Dashboard match={match} />}
+              </Route>
+              <Route exact path='/'>
+                {({ match, history }) => <Login match={match} history={history} />}
+              </Route>
+            </Switch>
           </ThemeProvider>
->>>>>>> Stashed changes
-        </Switch>
+        </AlertNotificationProvider>
       </Router>
     </div>
   );
