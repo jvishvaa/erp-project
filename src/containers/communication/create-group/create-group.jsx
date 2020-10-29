@@ -10,6 +10,7 @@ import CustomMultiSelect from '../custom-multiselect/custom-multiselect';
 import CustomInput from '../custom-inputfield/custom-input';
 import CustomSelectionTable from '../custom-selection-table/custom-selection-table';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import Layout from '../../layout';
 import './create-group.css';
 
 // eslint-disable-next-line no-unused-vars
@@ -396,102 +397,104 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     }
   }, [next, pageno]);
   return (
-    <div className='creategroup__page'>
-      <div className='creategroup_heading'>Communication &gt; Create Group</div>
-      {next ? (
-        <>
-          <span className='create_group_error_span'>{selectectUserError}</span>
-          <CustomSelectionTable
-            header={headers}
-            rows={usersRow}
-            completeData={completeData}
-            totalRows={totalPage}
-            pageno={pageno}
-            selectedUsers={selectedUsers}
-            changePage={setPageno}
-            setSelectedUsers={setSelectedUsers}
-          />
-        </>
-      ) : (
-        <>
-          <div className='creategroup_firstrow'>
-            <div className='group_name_wrapper'>
-              <CustomInput
-                className='group_name'
-                onChange={addGroupName}
-                value={groupName}
-                name='Group name'
-              />
-              <span className='create_group_error_span'>{groupNameError}</span>
-            </div>
-            <div>
-              <CustomMultiSelect
-                selections={selectedRoles}
-                setSelections={setSelectedRoles}
-                nameOfDropdown='User Role'
-                optionNames={roles}
-              />
-              <span className='create_group_error_span'>{roleError}</span>
-            </div>
-          </div>
-          {selectedRoles.length && !selectedRoles.includes('All') ? (
+    <Layout>
+      <div className='creategroup__page'>
+        <div className='creategroup_heading'>Communication &gt; Create Group</div>
+        {next ? (
+          <>
+            <span className='create_group_error_span'>{selectectUserError}</span>
+            <CustomSelectionTable
+              header={headers}
+              rows={usersRow}
+              completeData={completeData}
+              totalRows={totalPage}
+              pageno={pageno}
+              selectedUsers={selectedUsers}
+              changePage={setPageno}
+              setSelectedUsers={setSelectedUsers}
+            />
+          </>
+        ) : (
+          <>
             <div className='creategroup_firstrow'>
+              <div className='group_name_wrapper'>
+                <CustomInput
+                  className='group_name'
+                  onChange={addGroupName}
+                  value={groupName}
+                  name='Group name'
+                />
+                <span className='create_group_error_span'>{groupNameError}</span>
+              </div>
               <div>
                 <CustomMultiSelect
-                  selections={selectedBranch}
-                  setSelections={setSelectedBranch}
-                  nameOfDropdown='Branch'
-                  optionNames={branch}
+                  selections={selectedRoles}
+                  setSelections={setSelectedRoles}
+                  nameOfDropdown='User Role'
+                  optionNames={roles}
                 />
-                <span className='create_group_error_span'>{branchError}</span>
+                <span className='create_group_error_span'>{roleError}</span>
               </div>
-              {selectedBranch.length && !selectedBranch.includes('All') ? (
+            </div>
+            {selectedRoles.length && !selectedRoles.includes('All') ? (
+              <div className='creategroup_firstrow'>
                 <div>
                   <CustomMultiSelect
-                    selections={selectedGrades}
-                    setSelections={setSelectedGrades}
-                    nameOfDropdown='Grade'
-                    optionNames={grade}
+                    selections={selectedBranch}
+                    setSelections={setSelectedBranch}
+                    nameOfDropdown='Branch'
+                    optionNames={branch}
                   />
-                  <span className='create_group_error_span'>{gradeError}</span>
+                  <span className='create_group_error_span'>{branchError}</span>
                 </div>
-              ) : null}
-              {selectedGrades.length && !selectedGrades.includes('All') ? (
-                <CustomMultiSelect
-                  selections={selectedSections}
-                  setSelections={setSelectedSections}
-                  nameOfDropdown='Section'
-                  optionNames={section}
-                />
-              ) : null}
-            </div>
-          ) : null}
-        </>
-      )}
-      <div className='button_wrapper'>
-        <input
-          className='custom_button addgroup_back_button'
-          type='button'
-          onClick={handleback}
-          value='back'
-        />
-        {next ? (
-          <input
-            className='custom_button addgroup_next_button'
-            type='button'
-            onClick={createGroup}
-            value='create group'
-          />
-        ) : (
-          <input
-            className='custom_button addgroup_next_button'
-            type='button'
-            onClick={handlenext}
-            value='next'
-          />
+                {selectedBranch.length && !selectedBranch.includes('All') ? (
+                  <div>
+                    <CustomMultiSelect
+                      selections={selectedGrades}
+                      setSelections={setSelectedGrades}
+                      nameOfDropdown='Grade'
+                      optionNames={grade}
+                    />
+                    <span className='create_group_error_span'>{gradeError}</span>
+                  </div>
+                ) : null}
+                {selectedGrades.length && !selectedGrades.includes('All') ? (
+                  <CustomMultiSelect
+                    selections={selectedSections}
+                    setSelections={setSelectedSections}
+                    nameOfDropdown='Section'
+                    optionNames={section}
+                  />
+                ) : null}
+              </div>
+            ) : null}
+          </>
         )}
+        <div className='button_wrapper'>
+          <input
+            className='custom_button addgroup_back_button'
+            type='button'
+            onClick={handleback}
+            value='back'
+          />
+          {next ? (
+            <input
+              className='custom_button addgroup_next_button'
+              type='button'
+              onClick={createGroup}
+              value='create group'
+            />
+          ) : (
+            <input
+              className='custom_button addgroup_next_button'
+              type='button'
+              onClick={handlenext}
+              value='next'
+            />
+          )}
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 });
 

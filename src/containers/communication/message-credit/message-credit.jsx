@@ -13,6 +13,7 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import Layout from '../../layout';
 import './message-credit.css';
 
 const useStyles = makeStyles((theme) => ({
@@ -120,83 +121,85 @@ const MessageCredit = withRouter(({ history, ...props }) => {
     }
   }, []);
   return (
-    <div className='message_credit__page'>
-      <div className='add_credit_message_title'>Communication &gt; Add SMS credit</div>
-      <div className='sms_credit_branch'>
-        <FormControl variant='outlined' className={classes.formControl}>
-          <InputLabel id='demo-simple-select-outlined-label'>Branch</InputLabel>
-          <Select
-            labelId='demo-simple-select-outlined-label'
-            id='demo-simple-select-outlined'
-            value={selectedBranch}
-            onChange={(e) => setSelectedBranch(e.target.value)}
-            label='Branch'
-          >
-            <MenuItem value={0}>
-              <em>All</em>
-            </MenuItem>
-            {branchList.map((items, index) => (
-              <MenuItem key={`sms_type_${index}`} value={items.id}>
-                {items.branch_name}
+    <Layout>
+      <div className='message_credit__page'>
+        <div className='add_credit_message_title'>Communication &gt; Add SMS credit</div>
+        <div className='sms_credit_branch'>
+          <FormControl variant='outlined' className={classes.formControl}>
+            <InputLabel id='demo-simple-select-outlined-label'>Branch</InputLabel>
+            <Select
+              labelId='demo-simple-select-outlined-label'
+              id='demo-simple-select-outlined'
+              value={selectedBranch}
+              onChange={(e) => setSelectedBranch(e.target.value)}
+              label='Branch'
+            >
+              <MenuItem value={0}>
+                <em>All</em>
               </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </div>
-      <table className='sms_credit_table'>
-        <thead>
-          <tr>
-            <th className='sms_credit_table_header'>Branch</th>
-            <th className='sms_credit_table_header'>Available SMS Credit</th>
-            <th className='sms_credit_table_header'>Used SMS Credit</th>
-            <th className='sms_credit_table_header'>Amount to be Added</th>
-            <th className='sms_credit_table_header'>Add SMS Credit</th>
-          </tr>
-        </thead>
-        <tbody>
-          {testData.map((items, index) => (
-            <tr key={`message_credit_table_${index}`}>
-              <td className='sms_credit_table_cells'>{items.BranchName}</td>
-              <td className='sms_credit_table_cells'>{items.AvailableSMS}</td>
-              <td className='sms_credit_table_cells'>{items.useSMS}</td>
-              <td className='sms_credit_table_cells'>
-                {items.Adding ? (
-                  <input
-                    type='number'
-                    className='add_sms_credit_box'
-                    value={Number(items.AmountAdded).toString()}
-                    onChange={(e) => handleAddingSms(e, index)}
-                  />
-                ) : (
-                  <input
-                    type='number'
-                    className='add_sms_credit_box'
-                    value={items.AmountAdded}
-                    readOnly
-                  />
-                )}
-              </td>
-              <td className='sms_credit_table_cells'>
-                {items.Adding ? (
-                  <input
-                    type='submit'
-                    className='add_credit_save_button'
-                    onClick={() => handleSubmit(index)}
-                    value='Save'
-                  />
-                ) : (
-                  <AddCircleIcon
-                    style={{ color: '#005c99' }}
-                    variant='contained'
-                    onClick={() => handleStatusChange(index)}
-                  />
-                )}
-              </td>
+              {branchList.map((items, index) => (
+                <MenuItem key={`sms_type_${index}`} value={items.id}>
+                  {items.branch_name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
+        <table className='sms_credit_table'>
+          <thead>
+            <tr>
+              <th className='sms_credit_table_header'>Branch</th>
+              <th className='sms_credit_table_header'>Available SMS Credit</th>
+              <th className='sms_credit_table_header'>Used SMS Credit</th>
+              <th className='sms_credit_table_header'>Amount to be Added</th>
+              <th className='sms_credit_table_header'>Add SMS Credit</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {testData.map((items, index) => (
+              <tr key={`message_credit_table_${index}`}>
+                <td className='sms_credit_table_cells'>{items.BranchName}</td>
+                <td className='sms_credit_table_cells'>{items.AvailableSMS}</td>
+                <td className='sms_credit_table_cells'>{items.useSMS}</td>
+                <td className='sms_credit_table_cells'>
+                  {items.Adding ? (
+                    <input
+                      type='number'
+                      className='add_sms_credit_box'
+                      value={Number(items.AmountAdded).toString()}
+                      onChange={(e) => handleAddingSms(e, index)}
+                    />
+                  ) : (
+                    <input
+                      type='number'
+                      className='add_sms_credit_box'
+                      value={items.AmountAdded}
+                      readOnly
+                    />
+                  )}
+                </td>
+                <td className='sms_credit_table_cells'>
+                  {items.Adding ? (
+                    <input
+                      type='submit'
+                      className='add_credit_save_button'
+                      onClick={() => handleSubmit(index)}
+                      value='Save'
+                    />
+                  ) : (
+                    <AddCircleIcon
+                      style={{ color: '#005c99' }}
+                      variant='contained'
+                      onClick={() => handleStatusChange(index)}
+                    />
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Layout>
   );
 });
 

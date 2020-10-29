@@ -22,6 +22,7 @@ import endpoints from '../../../config/endpoints';
 import HeaderSection from './components/header-section';
 import CustomMultiSelect from '../custom-multiselect/custom-multiselect';
 import CustomSelectionTable from '../custom-selection-table/custom-selection-table';
+import Layout from '../../layout';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './send-message.css';
 
@@ -632,195 +633,197 @@ const SendMessage = withRouter(({ history, ...props }) => {
   }, [textMessage]);
 
   return (
-    <div className='send_message_wrapper'>
-      <HeaderSection
-        firstStep={firstStep}
-        secondStep={secondStep}
-        thirdStep={thirdStep}
-        currentStep={currentStep}
-      />
-      {firstStep ? (
-        <>
-          <div className='send_message_type_wrapper'>
-            <div className='send_message_group_select_lebel'>Group Select</div>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={customSelect}
-                  onChange={handleCustomChange}
-                  name='checkedA'
-                />
-              }
-              label='Custom select'
-            />
-          </div>
+    <Layout>
+      <div className='send_message_wrapper'>
+        <HeaderSection
+          firstStep={firstStep}
+          secondStep={secondStep}
+          thirdStep={thirdStep}
+          currentStep={currentStep}
+        />
+        {firstStep ? (
+          <>
+            <div className='send_message_type_wrapper'>
+              <div className='send_message_group_select_lebel'>Group Select</div>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={customSelect}
+                    onChange={handleCustomChange}
+                    name='checkedA'
+                  />
+                }
+                label='Custom select'
+              />
+            </div>
 
-          <div>
-            {customSelect ? (
-              <>
-                <div className='creategroup_firstrow'>
-                  <div>
-                    <CustomMultiSelect
-                      selections={selectedRoles}
-                      setSelections={setSelectedRoles}
-                      nameOfDropdown='User Role'
-                      optionNames={roles}
-                    />
-                    <span className='create_group_error_span'>{roleError}</span>
-                  </div>
-                </div>
-                {selectedRoles.length && !selectedRoles.includes('All') ? (
+            <div>
+              {customSelect ? (
+                <>
                   <div className='creategroup_firstrow'>
                     <div>
                       <CustomMultiSelect
-                        selections={selectedBranch}
-                        setSelections={setSelectedBranch}
-                        nameOfDropdown='Branch'
-                        optionNames={branch}
+                        selections={selectedRoles}
+                        setSelections={setSelectedRoles}
+                        nameOfDropdown='User Role'
+                        optionNames={roles}
                       />
-                      <span className='create_group_error_span'>{branchError}</span>
+                      <span className='create_group_error_span'>{roleError}</span>
                     </div>
-                    {selectedBranch.length && !selectedBranch.includes('All') ? (
+                  </div>
+                  {selectedRoles.length && !selectedRoles.includes('All') ? (
+                    <div className='creategroup_firstrow'>
                       <div>
                         <CustomMultiSelect
-                          selections={selectedGrades}
-                          setSelections={setSelectedGrades}
-                          nameOfDropdown='Grade'
-                          optionNames={grade}
+                          selections={selectedBranch}
+                          setSelections={setSelectedBranch}
+                          nameOfDropdown='Branch'
+                          optionNames={branch}
                         />
-                        <span className='create_group_error_span'>{gradeError}</span>
+                        <span className='create_group_error_span'>{branchError}</span>
                       </div>
-                    ) : null}
-                    {selectedGrades.length && !selectedGrades.includes('All') ? (
-                      <CustomMultiSelect
-                        selections={selectedSections}
-                        setSelections={setSelectedSections}
-                        nameOfDropdown='Section'
-                        optionNames={section}
-                      />
-                    ) : null}
-                  </div>
-                ) : null}
-              </>
-            ) : (
-              <div className='creategroup_firstrow'>
-                <CustomMultiSelect
-                  selections={selectedGroup}
-                  setSelections={setSelectedGroup}
-                  nameOfDropdown='Group'
-                  optionNames={group}
-                />
-                <span className='create_group_error_span'>{groupError}</span>
-              </div>
-            )}
-          </div>
-        </>
-      ) : null}
-      {secondStep ? (
-        <div className='send_message_table_wrapper'>
-          <span className='create_group_error_span'>{selectUsersError}</span>
-          <CustomSelectionTable
-            header={headers}
-            rows={usersRow}
-            completeData={completeData}
-            totalRows={totalPage}
-            pageno={pageno}
-            selectedUsers={selectedUsers}
-            changePage={setPageno}
-            setSelectedUsers={setSelectedUsers}
-          />
-        </div>
-      ) : null}
-      {thirdStep ? (
-        <div className='message_sending_screen_wrapper'>
-          <div className='message_type_block_wrapper'>
-            <div
-              className={`message_type_block ${
-                isEmail ? null : 'message_type_block_selected'
-              }`}
-              onClick={() => setIsEmail(false)}
-            >
-              SMS
+                      {selectedBranch.length && !selectedBranch.includes('All') ? (
+                        <div>
+                          <CustomMultiSelect
+                            selections={selectedGrades}
+                            setSelections={setSelectedGrades}
+                            nameOfDropdown='Grade'
+                            optionNames={grade}
+                          />
+                          <span className='create_group_error_span'>{gradeError}</span>
+                        </div>
+                      ) : null}
+                      {selectedGrades.length && !selectedGrades.includes('All') ? (
+                        <CustomMultiSelect
+                          selections={selectedSections}
+                          setSelections={setSelectedSections}
+                          nameOfDropdown='Section'
+                          optionNames={section}
+                        />
+                      ) : null}
+                    </div>
+                  ) : null}
+                </>
+              ) : (
+                <div className='creategroup_firstrow'>
+                  <CustomMultiSelect
+                    selections={selectedGroup}
+                    setSelections={setSelectedGroup}
+                    nameOfDropdown='Group'
+                    optionNames={group}
+                  />
+                  <span className='create_group_error_span'>{groupError}</span>
+                </div>
+              )}
             </div>
-            <div
-              className={`message_type_block ${
-                isEmail ? 'message_type_block_selected' : null
-              }`}
-              onClick={() => setIsEmail(true)}
-            >
-              Mail
-            </div>
+          </>
+        ) : null}
+        {secondStep ? (
+          <div className='send_message_table_wrapper'>
+            <span className='create_group_error_span'>{selectUsersError}</span>
+            <CustomSelectionTable
+              header={headers}
+              rows={usersRow}
+              completeData={completeData}
+              totalRows={totalPage}
+              pageno={pageno}
+              selectedUsers={selectedUsers}
+              changePage={setPageno}
+              setSelectedUsers={setSelectedUsers}
+            />
           </div>
-          <div className='message_type_wrapper'>
-            <FormControl variant='outlined' className={classes.formControl}>
-              <InputLabel id='demo-simple-select-outlined-label'>
-                {isEmail ? 'Email Type' : 'SMS Type'}
-              </InputLabel>
-              <Select
-                labelId='demo-simple-select-outlined-label'
-                id='demo-simple-select-outlined'
-                value={selectedSmsType}
-                onChange={(e) => setSelectedSmsType(e.target.value)}
-                label={isEmail ? 'Email Type' : 'SMS Type'}
-              >
-                <MenuItem value=''>
-                  <em>None</em>
-                </MenuItem>
-                {smsTypeList.map((items, index) => (
-                  <MenuItem key={`sms_type_${index}`} value={items.id}>
-                    {items.category_name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </div>
-          <span className='create_group_error_span'>{messageTypeError}</span>
-          {isEmail ? (
-            <div className='email_subject_wrapper'>
-              <TextField
-                id='email_subject'
-                label='Email Subject'
-                value={emailSubject}
-                onChange={(e) => setEmailSubject(e.target.value)}
-              />
-            </div>
-          ) : null}
-          <div className='send_message_message_tag'>Message</div>
-          <TextareaAutosize
-            className='textFields_message'
-            aria-label='minimum height'
-            rowsMin={6}
-            onChange={handleMessageChange}
-            value={textMessage}
-          />
-          <span className='text_message_word_count'>{`Word count : ${wordcount} words left`}</span>
-          <span className='create_group_error_span'>{textMessageError}</span>
-        </div>
-      ) : null}
-      <div className='send_message_button_wrapper'>
-        <input
-          className='custom_button addgroup_back_button'
-          type='button'
-          onClick={handleback}
-          value='back'
-        />
+        ) : null}
         {thirdStep ? (
+          <div className='message_sending_screen_wrapper'>
+            <div className='message_type_block_wrapper'>
+              <div
+                className={`message_type_block ${
+                  isEmail ? null : 'message_type_block_selected'
+                }`}
+                onClick={() => setIsEmail(false)}
+              >
+                SMS
+              </div>
+              <div
+                className={`message_type_block ${
+                  isEmail ? 'message_type_block_selected' : null
+                }`}
+                onClick={() => setIsEmail(true)}
+              >
+                Mail
+              </div>
+            </div>
+            <div className='message_type_wrapper'>
+              <FormControl variant='outlined' className={classes.formControl}>
+                <InputLabel id='demo-simple-select-outlined-label'>
+                  {isEmail ? 'Email Type' : 'SMS Type'}
+                </InputLabel>
+                <Select
+                  labelId='demo-simple-select-outlined-label'
+                  id='demo-simple-select-outlined'
+                  value={selectedSmsType}
+                  onChange={(e) => setSelectedSmsType(e.target.value)}
+                  label={isEmail ? 'Email Type' : 'SMS Type'}
+                >
+                  <MenuItem value=''>
+                    <em>None</em>
+                  </MenuItem>
+                  {smsTypeList.map((items, index) => (
+                    <MenuItem key={`sms_type_${index}`} value={items.id}>
+                      {items.category_name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
+            <span className='create_group_error_span'>{messageTypeError}</span>
+            {isEmail ? (
+              <div className='email_subject_wrapper'>
+                <TextField
+                  id='email_subject'
+                  label='Email Subject'
+                  value={emailSubject}
+                  onChange={(e) => setEmailSubject(e.target.value)}
+                />
+              </div>
+            ) : null}
+            <div className='send_message_message_tag'>Message</div>
+            <TextareaAutosize
+              className='textFields_message'
+              aria-label='minimum height'
+              rowsMin={6}
+              onChange={handleMessageChange}
+              value={textMessage}
+            />
+            <span className='text_message_word_count'>{`Word count : ${wordcount} words left`}</span>
+            <span className='create_group_error_span'>{textMessageError}</span>
+          </div>
+        ) : null}
+        <div className='send_message_button_wrapper'>
           <input
-            className='custom_button addgroup_next_button'
+            className='custom_button addgroup_back_button'
             type='button'
-            onClick={handleSendMessage}
-            value='Send Message'
+            onClick={handleback}
+            value='back'
           />
-        ) : (
-          <input
-            className='custom_button addgroup_next_button'
-            type='button'
-            onClick={handlenext}
-            value='next'
-          />
-        )}
+          {thirdStep ? (
+            <input
+              className='custom_button addgroup_next_button'
+              type='button'
+              onClick={handleSendMessage}
+              value='Send Message'
+            />
+          ) : (
+            <input
+              className='custom_button addgroup_next_button'
+              type='button'
+              onClick={handlenext}
+              value='next'
+            />
+          )}
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 });
 
