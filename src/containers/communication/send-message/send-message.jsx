@@ -6,7 +6,7 @@
 /* eslint-disable no-debugger */
 /* eslint-disable no-console */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -17,9 +17,11 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import TextField from '@material-ui/core/TextField';
 import HeaderSection from './components/header-section';
 import CustomMultiSelect from '../custom-multiselect/custom-multiselect';
 import CustomSelectionTable from '../custom-selection-table/custom-selection-table';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './send-message.css';
 
 const useStyles = makeStyles((theme) => ({
@@ -34,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
 
 const SendMessage = withRouter(({ history, ...props }) => {
   const classes = useStyles();
+  const { setAlert } = useContext(AlertNotificationContext);
   const [customSelect, setCustomSelect] = useState(false);
   const [firstStep, setFirstStep] = useState(true);
   const [secondStep, setSecondStep] = useState(false);
@@ -66,6 +69,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
   const [groupError, setGroupError] = useState('');
   const [selectUsersError, setSelectUsersError] = useState('');
   const [textMessage, setTextMessage] = useState('');
+  const [emailSubject, setEmailSubject] = useState('');
   const [wordcount, setWordcount] = useState(11);
   const [isEmail, setIsEmail] = useState(false);
   const [smsTypeList, setSmsTypeList] = useState([]);
@@ -95,7 +99,6 @@ const SendMessage = withRouter(({ history, ...props }) => {
   };
 
   const getBranchApi = async () => {
-    setBranch(['All']);
     try {
       const result = await axios.get('http://13.234.252.195:443/erp_user/branch/');
       const resultOptions = [];
@@ -104,12 +107,10 @@ const SendMessage = withRouter(({ history, ...props }) => {
         setBranch([...branch, ...resultOptions]);
         setBranchList(result.data.data);
       } else {
-        console.log('error');
-        // dispatch(setAlert('error', result.data.message));
+        setAlert('error', result.data.message);
       }
     } catch (error) {
-      console.log('error');
-      // dispatch(setAlert('error', error.message));
+      setAlert('error', error.message);
     }
   };
   const getGroupApi = async () => {
@@ -123,12 +124,10 @@ const SendMessage = withRouter(({ history, ...props }) => {
         setGroup([...group, ...resultOptions]);
         setGroupList(result.data.data);
       } else {
-        console.log('error');
-        // dispatch(setAlert('error', result.data.message));
+        setAlert('error', result.data.message);
       }
     } catch (error) {
-      console.log('error');
-      // dispatch(setAlert('error', error.message));
+      setAlert('error', error.message);
     }
   };
 
@@ -153,12 +152,10 @@ const SendMessage = withRouter(({ history, ...props }) => {
         }
         setGradeList(result.data.data);
       } else {
-        console.log('error');
-        // dispatch(setAlert('error', result.data.message));
+        setAlert('error', result.data.message);
       }
     } catch (error) {
-      console.log('error');
-      // dispatch(setAlert('error', error.message));
+      setAlert('error', error.message);
     }
   };
 
@@ -189,12 +186,10 @@ const SendMessage = withRouter(({ history, ...props }) => {
         }
         setSectionList(result.data.data);
       } else {
-        console.log('error');
-        // dispatch(setAlert('error', result.data.message));
+        setAlert('error', result.data.message);
       }
     } catch (error) {
-      console.log('error');
-      // dispatch(setAlert('error', error.message));
+      setAlert('error', error.message);
     }
   };
 
@@ -311,12 +306,10 @@ const SendMessage = withRouter(({ history, ...props }) => {
           setSelectedUsers(tempSelectedUser);
         }
       } else {
-        console.log('error');
-        // dispatch(setAlert('error', result.data.message));
+        setAlert('error', result.data.message);
       }
     } catch (error) {
-      console.log('error');
-      // dispatch(setAlert('error', error.message));
+      setAlert('error', error.message);
     }
   };
 
@@ -348,6 +341,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       setCurrentStep(1);
       setTextMessageError('');
       setMessageTypeError('');
+      setEmailSubject('');
     }
   };
   const handlenext = () => {
@@ -422,15 +416,14 @@ const SendMessage = withRouter(({ history, ...props }) => {
       if (result.status === 200) {
         setSmsTypeList(result.data.data);
       } else {
-        console.log('error');
-        // dispatch(setAlert('error', result.data.message));
+        setAlert('error', result.data.message);
       }
     } catch (error) {
-      console.log('error');
-      // dispatch(setAlert('error', error.message));
+      setAlert('error', error.message);
     }
   };
   const handleSendMessage = async () => {
+    debugger;
     if (!textMessage) {
       setTextMessageError('Please enter a message');
       return;
@@ -459,17 +452,31 @@ const SendMessage = withRouter(({ history, ...props }) => {
               groupId.push(items.id);
             });
         }
-        request = {
-          communicate_type: selectedSmsType,
-          message_content: textMessage,
-          group_type: '1',
-          message_type: isEmail ? '1' : '2',
-          group: groupId[0],
-          erp_users: selectionArray,
-        };
+        if (isEmail) {
+          request = {
+            communicate_type: selectedSmsType,
+            email_body: textMessage,
+            email_subject: emailSubject,
+            group_type: '1',
+            message_type: '1',
+            group: groupId[0],
+            erp_users: selectionArray,
+          };
+        }
+        if (!isEmail) {
+          request = {
+            communicate_type: selectedSmsType,
+            message_content: textMessage,
+            group_type: '1',
+            message_type: '2',
+            group: groupId[0],
+            erp_users: selectionArray,
+          };
+        }
       }
       if (customSelect) {
         const rolesId = [];
+        const branchId = [];
         const gradesId = [];
         const sectionsId = [];
         if (selectedRoles.length && !selectedRoles.includes('All')) {
@@ -477,6 +484,13 @@ const SendMessage = withRouter(({ history, ...props }) => {
             .filter((item) => selectedRoles.includes(item['role_name']))
             .forEach((items) => {
               rolesId.push(items.id);
+            });
+        }
+        if (selectedBranch.length && !selectedBranch.includes('All')) {
+          branchList
+            .filter((item) => selectedBranch.includes(item['branch_name']))
+            .forEach((items) => {
+              branchId.push(items.id);
             });
         }
         if (selectedGrades.length && !selectedGrades.includes('All')) {
@@ -493,6 +507,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
               sectionsId.push(items.id);
             });
         }
+        const branchArray = [];
         const gradeArray = [];
         const sectionArray = [];
         gradesId.forEach((item) => {
@@ -501,16 +516,36 @@ const SendMessage = withRouter(({ history, ...props }) => {
         sectionsId.forEach((item) => {
           sectionArray.push(item);
         });
-        request = {
-          communicate_type: selectedSmsType,
-          message_content: textMessage,
-          group_type: '2',
-          message_type: isEmail ? '1' : '2',
-          role: rolesId[0],
-          grade: gradeArray,
-          mapping_bgs: sectionArray,
-          erp_users: selectionArray,
-        };
+        branchId.forEach((item) => {
+          branchArray.push(item);
+        });
+        if (isEmail) {
+          request = {
+            communicate_type: selectedSmsType,
+            email_body: textMessage,
+            email_subject: emailSubject,
+            group_type: '2',
+            message_type: '1',
+            role: rolesId[0],
+            branch: branchArray,
+            grade: gradeArray,
+            mapping_bgs: sectionArray,
+            erp_users: selectionArray,
+          };
+        }
+        if (!isEmail) {
+          request = {
+            communicate_type: selectedSmsType,
+            message_content: textMessage,
+            group_type: '2',
+            message_type: '2',
+            role: rolesId[0],
+            branch: branchArray,
+            grade: gradeArray,
+            mapping_bgs: sectionArray,
+            erp_users: selectionArray,
+          };
+        }
       }
       const response = await axios.post(sendMessageApi, request, {
         headers: {
@@ -522,7 +557,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       });
       const { message } = response.data;
       if (response.data.status_code === 200) {
-        alert(message);
+        setAlert('success', message);
         setSelectedUsers([]);
         setHeaders([]);
         setUsersRow([]);
@@ -533,6 +568,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
         setSecondStep(false);
         setThirdStep(false);
         setCurrentStep(1);
+        setSelectedGroup([]);
         setSelectedBranch([]);
         setSelectedGrades([]);
         setSelectedRoles([]);
@@ -542,15 +578,14 @@ const SendMessage = withRouter(({ history, ...props }) => {
         setIsEmail(false);
         setSmsTypeList([]);
         setSelectedSmsType('');
+        setEmailSubject('');
         setThirdStep(false);
         setCurrentStep(1);
       } else {
-        console.log('error');
-        // dispatch(setAlert('error', result.data.message));
+        setAlert('error', response.data.message);
       }
     } catch (error) {
-      console.log('error');
-      // dispatch(setAlert('error', error.message));
+      setAlert('error', error.message);
     }
   };
   useEffect(() => {
@@ -718,28 +753,40 @@ const SendMessage = withRouter(({ history, ...props }) => {
               Mail
             </div>
           </div>
-          <FormControl variant='outlined' className={classes.formControl}>
-            <InputLabel id='demo-simple-select-outlined-label'>
-              {isEmail ? 'Email Type' : 'SMS Type'}
-            </InputLabel>
-            <Select
-              labelId='demo-simple-select-outlined-label'
-              id='demo-simple-select-outlined'
-              value={selectedSmsType}
-              onChange={(e) => setSelectedSmsType(e.target.value)}
-              label={isEmail ? 'Email Type' : 'SMS Type'}
-            >
-              <MenuItem value=''>
-                <em>None</em>
-              </MenuItem>
-              {smsTypeList.map((items, index) => (
-                <MenuItem key={`sms_type_${index}`} value={items.id}>
-                  {items.category_name}
+          <div className='message_type_wrapper'>
+            <FormControl variant='outlined' className={classes.formControl}>
+              <InputLabel id='demo-simple-select-outlined-label'>
+                {isEmail ? 'Email Type' : 'SMS Type'}
+              </InputLabel>
+              <Select
+                labelId='demo-simple-select-outlined-label'
+                id='demo-simple-select-outlined'
+                value={selectedSmsType}
+                onChange={(e) => setSelectedSmsType(e.target.value)}
+                label={isEmail ? 'Email Type' : 'SMS Type'}
+              >
+                <MenuItem value=''>
+                  <em>None</em>
                 </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+                {smsTypeList.map((items, index) => (
+                  <MenuItem key={`sms_type_${index}`} value={items.id}>
+                    {items.category_name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
           <span className='create_group_error_span'>{messageTypeError}</span>
+          {isEmail ? (
+            <div className='email_subject_wrapper'>
+              <TextField
+                id='email_subject'
+                label='Email Subject'
+                value={emailSubject}
+                onChange={(e) => setEmailSubject(e.target.value)}
+              />
+            </div>
+          ) : null}
           <div className='send_message_message_tag'>Message</div>
           <TextareaAutosize
             className='textFields_message'

@@ -26,16 +26,21 @@
     border: none !important;
     margin-top: 1% !important;
 }
-.MuiOutlinedInput-input {
+.group_name_wrapper .MuiOutlinedInput-input {
 	padding: 9.5px 14px !important;
 }
-.MuiOutlinedInput-root{
+.group_name_wrapper .MuiOutlinedInput-root{
 	border-radius: 10px !important;
 }
-.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+.group_name_wrapper .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
     border-color: rgb(0 0 0 / 18%) !important;
 }
-.MuiFormLabel-root{
+.custom_multiselect_wrapper .MuiFormLabel-root{
+	color: #014B7E !important;
+	font-size: 1rem !important;
+    font-weight: 600 !important;
+}
+.group_name_wrapper .MuiFormLabel-root{
 	color: #014B7E !important;
 	font-size: 1rem !important;
     font-weight: 600 !important;

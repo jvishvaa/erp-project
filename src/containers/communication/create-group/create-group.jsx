@@ -2,16 +2,18 @@
 /* eslint-disable no-debugger */
 /* eslint-disable no-console */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 import CustomMultiSelect from '../custom-multiselect/custom-multiselect';
 import CustomInput from '../custom-inputfield/custom-input';
 import CustomSelectionTable from '../custom-selection-table/custom-selection-table';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './create-group.css';
 
 // eslint-disable-next-line no-unused-vars
 const CreateGroup = withRouter(({ history, ...props }) => {
+  const { setAlert } = useContext(AlertNotificationContext);
   const [selectedRoles, setSelectedRoles] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [selectedGrades, setSelectedGrades] = useState([]);
@@ -46,17 +48,14 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         setRoles([...roles, ...resultOptions]);
         setRoleList(result.data.result);
       } else {
-        console.log('error');
-        // dispatch(setAlert('error', result.data.message));
+        setAlert('error', result.data.message);
       }
     } catch (error) {
-      console.log('error');
-      // dispatch(setAlert('error', error.message));
+      setAlert('error', error.message);
     }
   };
 
   const getBranchApi = async () => {
-    setBranch(['All']);
     try {
       const result = await axios.get('http://13.234.252.195:443/erp_user/branch/');
       const resultOptions = [];
@@ -65,12 +64,10 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         setBranch([...branch, ...resultOptions]);
         setBranchList(result.data.data);
       } else {
-        console.log('error');
-        // dispatch(setAlert('error', result.data.message));
+        setAlert('error', result.data.message);
       }
     } catch (error) {
-      console.log('error');
-      // dispatch(setAlert('error', error.message));
+      setAlert('error', error.message);
     }
   };
 
@@ -95,12 +92,10 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         }
         setGradeList(result.data.data);
       } else {
-        console.log('error');
-        // dispatch(setAlert('error', result.data.message));
+        setAlert('error', result.data.message);
       }
     } catch (error) {
-      console.log('error');
-      // dispatch(setAlert('error', error.message));
+      setAlert('error', error.message);
     }
   };
 
@@ -131,12 +126,10 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         }
         setSectionList(result.data.data);
       } else {
-        console.log('error');
-        // dispatch(setAlert('error', result.data.message));
+        setAlert('error', result.data.message);
       }
     } catch (error) {
-      console.log('error');
-      // dispatch(setAlert('error', error.message));
+      setAlert('error', error.message);
     }
   };
 
@@ -240,16 +233,15 @@ const CreateGroup = withRouter(({ history, ...props }) => {
           setSelectedUsers(tempSelectedUser);
         }
       } else {
-        console.log('error');
-        // dispatch(setAlert('error', result.data.message));
+        setAlert('error', result.data.message);
       }
     } catch (error) {
-      console.log('error');
-      // dispatch(setAlert('error', error.message));
+      setAlert('error', error.message);
     }
   };
   const createGroup = async () => {
     const rolesId = [];
+    const branchId = [];
     const gradesId = [];
     const sectionsId = [];
     if (selectedRoles.length && !selectedRoles.includes('All')) {
@@ -257,6 +249,13 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         .filter((item) => selectedRoles.includes(item['role_name']))
         .forEach((items) => {
           rolesId.push(items.id);
+        });
+    }
+    if (selectedBranch.length && !selectedBranch.includes('All')) {
+      branchList
+        .filter((item) => selectedBranch.includes(item['branch_name']))
+        .forEach((items) => {
+          branchId.push(items.id);
         });
     }
     if (selectedGrades.length && !selectedGrades.includes('All')) {
@@ -275,6 +274,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     }
     const createGroupApi = 'http://13.234.252.195:443/communication/communication-group/';
     // const formData = new FormData();
+    const branchArray = [];
     const gradeArray = [];
     const sectionArray = [];
     const selectionArray = [];
@@ -282,6 +282,9 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     // formData.set('role', rolesId[0]);
     gradesId.forEach((item) => {
       gradeArray.push(item);
+    });
+    branchId.forEach((item) => {
+      branchArray.push(item);
     });
     sectionsId.forEach((item) => {
       sectionArray.push(item);
@@ -291,35 +294,41 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         selectionArray.push(ids);
       });
     });
-    const response = await axios.post(
-      createGroupApi,
-      {
-        group_name: groupName,
-        role: rolesId[0],
-        grade: gradeArray,
-        mapping_bgs: sectionArray,
-        erp_users: selectionArray,
-      },
-      {
-        headers: {
-          // 'application/json' is the modern content-type for JSON, but some
-          // older servers may use 'text/json'.
-          // See: http://bit.ly/text-json
-          'content-type': 'application/json',
+    try {
+      const response = await axios.post(
+        createGroupApi,
+        {
+          group_name: groupName,
+          role: rolesId[0],
+          branch: branchArray,
+          grade: gradeArray,
+          mapping_bgs: sectionArray,
+          erp_users: selectionArray,
         },
+        {
+          headers: {
+            // 'application/json' is the modern content-type for JSON, but some
+            // older servers may use 'text/json'.
+            // See: http://bit.ly/text-json
+            'content-type': 'application/json',
+          },
+        }
+      );
+      const { message } = response.data;
+      if (message === 'Group created successfully') {
+        setAlert('success', message);
+        setNext(false);
+        setSelectedUsers([]);
+        setSelectedRoles([]);
+        setSelectedSections([]);
+        setSelectedGrades([]);
+        setGroupName('');
+      } else {
+        setAlert('error', response.data.message);
       }
-    );
-    const { message } = response.data;
-    if (message === 'Group created successfully') {
-      alert(message);
-      setNext(false);
-      setSelectedUsers([]);
-      setSelectedRoles([]);
-      setSelectedSections([]);
-      setSelectedGrades([]);
-      setGroupName('');
+    } catch (error) {
+      setAlert('error', error.message);
     }
-    console.log(selectedUsers);
   };
 
   const addGroupName = (e) => {
@@ -395,7 +404,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       ) : (
         <>
           <div className='creategroup_firstrow'>
-            <div>
+            <div className='group_name_wrapper'>
               <CustomInput
                 className='group_name'
                 onChange={addGroupName}

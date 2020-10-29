@@ -118,7 +118,10 @@ export default function CustomSelectionTable(props) {
   }, [data]);
 
   return (
-    <div style={{ height: 400, width: '100%' }}>
+    <div
+      className='custom_selection_table_wrapper'
+      style={{ height: 400, width: '100%' }}
+    >
       <DataGrid
         pageSize={5}
         rowCount={totalRows}

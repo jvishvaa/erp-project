@@ -1,13 +1,14 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable no-debugger */
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 import Chip from '@material-ui/core/Chip';
 import CloseIcon from '@material-ui/icons/Close';
 import CustomInput from '../custom-inputfield/custom-input';
 import CustomSelectionTable from '../custom-selection-table/custom-selection-table';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './edit-group.css';
 
 // eslint-disable-next-line no-unused-vars
@@ -21,6 +22,7 @@ const EditGroup = withRouter(({ history, ...props }) => {
     groupSections,
     setGroupName,
   } = props || {};
+  const { setAlert } = useContext(AlertNotificationContext);
   const [pageno, setPageno] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const [headers, setHeaders] = useState([]);
@@ -39,7 +41,6 @@ const EditGroup = withRouter(({ history, ...props }) => {
           selectionArray.push(ids);
         });
       });
-      console.log(selectionArray);
       const response = await axios.put(
         editGroupApiUrl,
         {
@@ -57,15 +58,13 @@ const EditGroup = withRouter(({ history, ...props }) => {
       );
       const { message, status_code: statusCode } = response.data;
       if (statusCode === 200) {
-        alert(message);
+        setAlert('success', message);
         editClose(false);
       } else {
-        console.log('error');
-        // dispatch(setAlert('error', result.data.message));
+        setAlert('error', response.data.message);
       }
     } catch (error) {
-      console.log('error');
-      // dispatch(setAlert('error', error.message));
+      setAlert('error', error.message);
     }
   };
   const getEditGroupsData = async () => {
@@ -134,12 +133,10 @@ const EditGroup = withRouter(({ history, ...props }) => {
           setSelectedUsers(tempSelectedUser);
         }
       } else {
-        console.log('error');
-        // dispatch(setAlert('error', result.data.message));
+        setAlert('error', result.data.message);
       }
     } catch (error) {
-      console.log('error');
-      // dispatch(setAlert('error', error.message));
+      setAlert('error', error.message);
     }
   };
   useEffect(() => {

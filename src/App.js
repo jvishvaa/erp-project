@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-import CreateGroup from './container/communication/component/create-group/create-group';
-import ViewGroup from './container/communication/component/view-group/view-group';
-import MessageCredit from './container/communication/component/message-credit/message-credit';
-import SendMessage from './container/communication/component/send-message/send-message';
+import CreateGroup from './containers/communication/create-group/create-group';
+import ViewGroup from './containers/communication/view-group/view-group';
+import MessageCredit from './containers/communication/message-credit/message-credit';
+import SendMessage from './containers/communication/send-message/send-message';
 import Layout from './containers/Layout';
 import store from './redux/store';
 import AlertNotificationProvider from './context-api/alert-context/alert-state';
@@ -39,17 +39,17 @@ function App() {
                 {() => <div>Landing page</div>}
               </Route> */}
                 {/* <Route exact path='/addgroup'>
-                {() => <CreateGroup />}
-              </Route> */}
-                <Route exact path='/smscredit'>
+                  {() => <CreateGroup />}
+                </Route> */}
+                {/* <Route exact path='/smscredit'>
                   {() => <MessageCredit />}
-                </Route>
+                </Route> */}
                 {/* <Route exact path='/viewgroup'>
                   {() => <ViewGroup />}
                 </Route> */}
-                {/* <Route exact path='/sendmessage'>
+                <Route exact path='/sendmessage'>
                   {() => <SendMessage />}
-                </Route> */}
+                </Route>
               </Layout>
             </ThemeProvider>
           </AlertNotificationProvider>

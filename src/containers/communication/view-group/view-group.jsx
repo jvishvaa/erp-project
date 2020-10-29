@@ -3,7 +3,7 @@
 /* eslint-disable no-debugger */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -18,6 +18,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import TableRow from '@material-ui/core/TableRow';
 import axios from 'axios';
 import EditGroup from '../edit-group/edit-group';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './view-group.css';
 
 const useStyles = makeStyles((theme) => ({
@@ -37,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
 // eslint-disable-next-line no-unused-vars
 const ViewGroup = withRouter(({ history, ...props }) => {
   const classes = useStyles();
+  const { setAlert } = useContext(AlertNotificationContext);
   const [groupsData, setGroupsData] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [editGroupId, setEditGroupId] = useState(0);
@@ -66,12 +68,10 @@ const ViewGroup = withRouter(({ history, ...props }) => {
         setGroupsData(resultGroups);
         setTotalPages(result.data.data.total_pages);
       } else {
-        console.log('error');
-        // dispatch(setAlert('error', result.data.message));
+        setAlert('error', result.data.message);
       }
     } catch (error) {
-      console.log('error');
-      // dispatch(setAlert('error', error.message));
+      setAlert('error', error.message);
     }
   };
   const handlePagination = (event, page) => {
@@ -83,19 +83,17 @@ const ViewGroup = withRouter(({ history, ...props }) => {
         `http://13.234.252.195:443/communication/${id}/change-group-status/`
       );
       if (statusChange.status === 200) {
-        console.log(statusChange.data.message);
+        setAlert('success', statusChange.data.message);
         const tempGroupData = groupsData.slice();
         tempGroupData[index].active = groupsData[index].active
           ? !groupsData[index].active
           : true;
         setGroupsData(tempGroupData);
       } else {
-        console.log('error');
-        // dispatch(setAlert('error', result.data.message));
+        setAlert('error', statusChange.data.message);
       }
     } catch (error) {
-      console.log('error');
-      // dispatch(setAlert('error', error.message));
+      setAlert('error', error.message);
     }
   };
   const handleDelete = async (id, index) => {
@@ -104,17 +102,15 @@ const ViewGroup = withRouter(({ history, ...props }) => {
         `http://13.234.252.195:443/communication/${id}/delete-group/`
       );
       if (statusChange.status === 200) {
-        console.log(statusChange.data.message);
+        setAlert('success', statusChange.data.message);
         const tempGroupData = groupsData.slice();
         tempGroupData.splice(index, 1);
         setGroupsData(tempGroupData);
       } else {
-        console.log('error');
-        // dispatch(setAlert('error', result.data.message));
+        setAlert('error', statusChange.data.message);
       }
     } catch (error) {
-      console.log('error');
-      // dispatch(setAlert('error', error.message));
+      setAlert('error', error.message);
     }
   };
   const handleEdit = (id, index) => {
