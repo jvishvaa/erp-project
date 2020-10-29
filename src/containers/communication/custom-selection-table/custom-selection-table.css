@@ -1,0 +1,21 @@
+.custom_selection_table_wrapper  .MuiDataGrid-root{
+	color: #014B7E !important;
+}
+.custom_selection_table_wrapper  .MuiDataGrid-colCellTitle{
+	font-weight: 600 !important;
+}
+.custom_selection_table_wrapper  .MuiDataGrid-iconSeparator {
+	color: #FF6B6B !important;
+}
+.custom_selection_table_wrapper  .MuiDataGrid-cell{
+	text-align: center;
+}
+.custom_selection_table_wrapper  .MuiDataGrid-colCell{
+	text-align: center;
+}
+.custom_selection_table_wrapper  .MuiDataGrid-colCell-draggable{
+	justify-content: center !important;
+}
+.custom_selection_table_wrapper{
+	margin-top: 2%;
+}
