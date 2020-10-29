@@ -11,7 +11,6 @@ import {
 } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 
-import onlineClasses from '../sample.json';
 import ViewClassTableCell from './view-class-table-cell';
 import { OnlineclassViewContext } from '../../../online-class-context/online-class-state';
 

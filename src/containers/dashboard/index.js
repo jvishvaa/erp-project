@@ -1,11 +1,12 @@
 import React from 'react';
-import Layout from '../layout';
+import Layout from '../Layout';
+import OnlineClass from '../online-class';
 
 const Dashboard = () => {
   return (
     <Layout>
       <div>
-        <h4> Dashboard </h4>
+        <OnlineClass />
       </div>
     </Layout>
   );

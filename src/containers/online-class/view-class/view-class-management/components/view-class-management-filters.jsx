@@ -78,7 +78,7 @@ const ViewClassManagementFilters = () => {
     }
 
     if (sectionIds.length) {
-      url += `&section_mapping_ids${sectionIds.join(',')}`;
+      url += `&section_mapping_ids=${sectionIds.join(',')}`;
     } else if (gradeIds.length) {
       url += `&grade_ids=${gradeIds.join(',')}`;
     }

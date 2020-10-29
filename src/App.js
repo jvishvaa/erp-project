@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { useDispatch } from 'react-redux';
 import RoleManagement from './containers/role-management';
 import store from './redux/store';
 import AlertNotificationProvider from './context-api/alert-context/alert-state';
@@ -8,6 +9,7 @@ import './assets/styles/styles.scss';
 import UserManagement from './containers/user-management';
 import Login from './containers/login';
 import Dashboard from './containers/dashboard';
+import { listSubjects } from './redux/actions/academic-mapping-actions';
 
 const theme = createMuiTheme({
   palette: {
@@ -43,8 +45,10 @@ const theme = createMuiTheme({
 });
 
 function App() {
+  const dispatch = useDispatch();
   useEffect(() => {
     store.dispatch({ type: 'SAMPLE_ACTION' });
+    dispatch(listSubjects());
   }, []);
 
   return (

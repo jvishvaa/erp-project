@@ -16,5 +16,6 @@ export default {
     acceptOrJoinClass: '/erp_user/onlineclass_accept_join/',
     managementOnlineClass: '/erp_user/teacher_online_class/',
     cancelClass: '/erp_user/cancel-online-class/',
+    attendeeList: '/erp_user/onlineclass_attendeelist/',
   },
 };

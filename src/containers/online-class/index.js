@@ -11,8 +11,8 @@ const OnlineClass = () => {
     <OnlineclassViewProvider>
       {/* <CreateClass /> */}
       {/* <ViewClassManagement /> */}
-      <ViewClassStudentCollection />
-      {/* <AttendeeList /> */}
+      {/* <ViewClassStudentCollection /> */}
+      <AttendeeList />
     </OnlineclassViewProvider>
   );
 };

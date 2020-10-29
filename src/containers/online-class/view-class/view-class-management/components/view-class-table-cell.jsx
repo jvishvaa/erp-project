@@ -33,7 +33,6 @@ const ViewClassTableCell = (props) => {
     const now = new Date();
 
     if (joinTime) {
-      debugger;
       const difference = new Date(joinTime) - now;
       setTimeout(() => {
         setIsJoinTime(true);

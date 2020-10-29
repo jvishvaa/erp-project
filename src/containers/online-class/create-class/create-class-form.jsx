@@ -485,10 +485,9 @@ const CreateClassForm = () => {
           <Button
             onClick={handleAddCohosts}
             className='btn-addmore'
-            variant='outlined'
+            variant='contained'
             color='primary'
             size='small'
-            startIcon={<AddIcon />}
           >
             Add another
           </Button>
