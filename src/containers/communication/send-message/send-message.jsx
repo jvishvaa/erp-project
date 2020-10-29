@@ -423,7 +423,6 @@ const SendMessage = withRouter(({ history, ...props }) => {
     }
   };
   const handleSendMessage = async () => {
-    debugger;
     if (!textMessage) {
       setTextMessageError('Please enter a message');
       return;

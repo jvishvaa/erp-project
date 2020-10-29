@@ -38,6 +38,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   const [groupNameError, setGroupNameError] = useState('');
   const [gradeError, setGradeError] = useState('');
   const [branchError, setBranchError] = useState('');
+  const [selectectUserError, setSelectectUserError] = useState('');
 
   const getRoleApi = async () => {
     try {
@@ -273,13 +274,10 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         });
     }
     const createGroupApi = 'http://13.234.252.195:443/communication/communication-group/';
-    // const formData = new FormData();
     const branchArray = [];
     const gradeArray = [];
     const sectionArray = [];
     const selectionArray = [];
-    // formData.set('group_name', groupName);
-    // formData.set('role', rolesId[0]);
     gradesId.forEach((item) => {
       gradeArray.push(item);
     });
@@ -294,6 +292,11 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         selectionArray.push(ids);
       });
     });
+    if (!selectionArray.length) {
+      setSelectectUserError('Please select some users');
+      return;
+    }
+    setSelectectUserError('');
     try {
       const response = await axios.post(
         createGroupApi,
@@ -323,6 +326,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         setSelectedSections([]);
         setSelectedGrades([]);
         setGroupName('');
+        setSelectectUserError('');
       } else {
         setAlert('error', response.data.message);
       }
@@ -338,6 +342,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   const handleback = () => {
     setSelectedUsers([]);
     setNext(false);
+    setSelectectUserError('');
   };
   const handlenext = () => {
     if (!groupName) {
@@ -391,16 +396,19 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     <div className='creategroup__page'>
       <div className='creategroup_heading'>Communication &gt; Create Group</div>
       {next ? (
-        <CustomSelectionTable
-          header={headers}
-          rows={usersRow}
-          completeData={completeData}
-          totalRows={totalPage}
-          pageno={pageno}
-          selectedUsers={selectedUsers}
-          changePage={setPageno}
-          setSelectedUsers={setSelectedUsers}
-        />
+        <>
+          <span className='create_group_error_span'>{selectectUserError}</span>
+          <CustomSelectionTable
+            header={headers}
+            rows={usersRow}
+            completeData={completeData}
+            totalRows={totalPage}
+            pageno={pageno}
+            selectedUsers={selectedUsers}
+            changePage={setPageno}
+            setSelectedUsers={setSelectedUsers}
+          />
+        </>
       ) : (
         <>
           <div className='creategroup_firstrow'>
