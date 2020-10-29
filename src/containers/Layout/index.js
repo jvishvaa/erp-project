@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -18,18 +18,28 @@ import SearchIcon from '@material-ui/icons/Search';
 import Badge from '@material-ui/core/Badge';
 import NotificationsNoneOutlinedIcon from '@material-ui/icons/NotificationsNoneOutlined';
 import clsx from 'clsx';
-import './styles.scss';
+import { withRouter } from 'react-router-dom';
 
 import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import MainListItems from './listItems';
+import DrawerMenu from '../../components/drawer-menu';
 import useStyles from './useStyles';
+import './styles.scss';
+
 import logo from '../../assets/images/logo.png';
 
-const Layout = ({ children }) => {
+const Layout = ({ children, history }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [navigationData, setNavigationData] = useState(false);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+
+  useEffect(() => {
+    const navigationData = localStorage.getItem('navigationData');
+    if (navigationData) {
+      setNavigationData(JSON.parse(navigationData));
+    }
+  }, []);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -54,7 +64,7 @@ const Layout = ({ children }) => {
   const classes = useStyles();
 
   const menuId = 'primary-search-account-menu';
-  const renderMenu = (
+  const renderMenu = () => (
     <Menu
       anchorEl={anchorEl}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
@@ -101,6 +111,55 @@ const Layout = ({ children }) => {
       </MenuItem>
     </Menu>
   );
+
+  const handleRouting = (name) => {
+    console.log('name ', name);
+    switch (name) {
+      case 'Take Class': {
+        history.push('/take-class');
+        break;
+      }
+      case 'View Class': {
+        history.push('/view-class');
+        break;
+      }
+      case 'Create Class': {
+        history.push('/online-class/create-class');
+        break;
+      }
+      case 'Online Class': {
+        history.push('/create-class');
+        break;
+      }
+      case 'Communication': {
+        history.push('/communication');
+        break;
+      }
+      case 'Add Group': {
+        history.push('/add-group');
+        break;
+      }
+      case 'View&Edit Group': {
+        history.push('/view-edit-group');
+        break;
+      }
+      case 'Send Message': {
+        history.push('/send-message');
+        break;
+      }
+      case 'Add SMS Credit': {
+        history.push('/add-sms-credit');
+        break;
+      }
+      case 'SMS&Email Log': {
+        history.push('/sms-email-log');
+        break;
+      }
+
+      default:
+        break;
+    }
+  };
 
   return (
     <div className='layout-container'>
@@ -204,7 +263,9 @@ const Layout = ({ children }) => {
             </ListItemIcon>
             <ListItemText className={classes.menuItemText}>Menu</ListItemText>
           </ListItem>
-          <MainListItems />
+          {navigationData && navigationData.length > 0 && (
+            <DrawerMenu navigationItems={navigationData} onClick={handleRouting} />
+          )}
         </List>
       </Drawer>
       <main className={classes.content}>
@@ -215,4 +276,4 @@ const Layout = ({ children }) => {
   );
 };
 
-export default Layout;
+export default withRouter(Layout);
