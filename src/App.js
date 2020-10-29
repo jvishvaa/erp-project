@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-
-import Layout from './containers/layout';
 import RoleManagement from './containers/role-management';
 import store from './redux/store';
 import AlertNotificationProvider from './context-api/alert-context/alert-state';
 import './assets/styles/styles.scss';
 import UserManagement from './containers/user-management';
+import Login from './containers/login';
+import Dashboard from './containers/dashboard';
 
 const theme = createMuiTheme({
   palette: {
@@ -52,19 +52,20 @@ function App() {
       <Router>
         <AlertNotificationProvider>
           <ThemeProvider theme={theme}>
-            <Layout>
-              <Switch>
-                <Route path='/role-management'>
-                  {({ match }) => <RoleManagement match={match} />}
-                </Route>
-                <Route path='/user-management'>
-                  {({ match }) => <UserManagement match={match} />}
-                </Route>
-                <Route exact path='/'>
-                  {() => <div>Landing page</div>}
-                </Route>
-              </Switch>
-            </Layout>
+            <Switch>
+              <Route path='/role-management'>
+                {({ match }) => <RoleManagement match={match} />}
+              </Route>
+              <Route path='/user-management'>
+                {({ match }) => <UserManagement match={match} />}
+              </Route>
+              <Route path='/dashboard'>
+                {({ match }) => <Dashboard match={match} />}
+              </Route>
+              <Route exact path='/'>
+                {({ match, history }) => <Login match={match} history={history} />}
+              </Route>
+            </Switch>
           </ThemeProvider>
         </AlertNotificationProvider>
       </Router>
