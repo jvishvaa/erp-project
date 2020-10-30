@@ -35,7 +35,7 @@ class CreateUser extends Component {
         gender: '',
         profile: '',
         parent: {
-          father_first_name: 'Babu',
+          father_first_name: '',
           father_last_name: '',
           mother_first_name: '',
           mother_last_name: '',
