@@ -98,7 +98,6 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
     },
     validationSchema,
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
       onSubmit(values);
     },
   });

@@ -1,0 +1,12 @@
+.assign_role_button{
+	font-size: 0.9rem;
+    padding: 2% 4%;
+    border: none;
+    border-radius: 5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    outline: none !important;
+    color: white;
+	background-color: #FF6B6B;
+	margin: 2% 0%;
+}

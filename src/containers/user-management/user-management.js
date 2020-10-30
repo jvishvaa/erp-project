@@ -1,10 +1,9 @@
-import React, { Component, useContext } from 'react';
+import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import { Checkbox, FormControlLabel, Grid, Input, TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import axiosInstance from '../../config/axios';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
 class UserManagement extends Component {
   constructor(props) {
@@ -59,7 +58,7 @@ class UserManagement extends Component {
       formData.append('file', file);
       formData.append('academic_year', year);
       formData.append('branch', branch);
-      const data = await axiosInstance.post('/erp_user/upload_bulk_user/', formData);
+      await axiosInstance.post('/erp_user/upload_bulk_user/', formData);
       this.setState({ checked: false, file: null, branch: null, year: null });
       window.alert('File uploaded successfully');
     } catch (error) {
