@@ -57,9 +57,11 @@ function SignIn({ onLogin, history }) {
       username,
       password,
     };
-    onLogin(params).then(() => {
-      history.push('/dashboard');
-    });
+    if (username && password) {
+      onLogin(params).then(() => {
+        history.push('/dashboard');
+      });
+    }
   };
 
   return (
@@ -72,7 +74,12 @@ function SignIn({ onLogin, history }) {
         <Typography component='h1' variant='h5'>
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        <form
+          className={classes.form}
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+        >
           <TextField
             variant='outlined'
             margin='normal'
@@ -109,10 +116,13 @@ function SignIn({ onLogin, history }) {
           />
           <Button
             fullWidth
+            type='submit'
             variant='contained'
             color='primary'
             className={classes.submit}
-            onClick={handleLogin}
+            onClick={() => {
+              handleLogin();
+            }}
           >
             Sign In
           </Button>
