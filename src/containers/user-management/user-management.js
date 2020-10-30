@@ -97,11 +97,8 @@ class UserManagement extends Component {
         </div>
         <div style={{ marginTop: 20 }}>
           {this.state.checked ? (
-            <Grid container spacing={2}>
-              <Grid item xs={4}>
-                <Input type='file' onChange={this.handleFile} />
-              </Grid>
-              <Grid item xs={4}>
+            <Grid container spacing={2} style={{ marginBottom: 20 }}>
+              <Grid item xs={3}>
                 <Autocomplete
                   size='small'
                   id='create__class-subject'
@@ -122,7 +119,7 @@ class UserManagement extends Component {
                   )}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={3}>
                 <Autocomplete
                   size='small'
                   id='create__class-subject'
@@ -143,7 +140,10 @@ class UserManagement extends Component {
                   )}
                 />
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={3}>
+                <Input type='file' onChange={this.handleFile} />
+              </Grid>
+              <Grid item xs={3}>
                 <Button style={{ marginLeft: 20 }} onClick={this.handleUpload}>
                   Upload
                 </Button>
