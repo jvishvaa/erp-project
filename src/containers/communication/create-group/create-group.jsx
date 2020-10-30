@@ -10,12 +10,13 @@ import CustomMultiSelect from '../custom-multiselect/custom-multiselect';
 import CustomInput from '../custom-inputfield/custom-input';
 import CustomSelectionTable from '../custom-selection-table/custom-selection-table';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-import Layout from '../../layout';
+import Layout from '../../Layout';
 import './create-group.css';
 
 // eslint-disable-next-line no-unused-vars
 const CreateGroup = withRouter(({ history, ...props }) => {
   const { setAlert } = useContext(AlertNotificationContext);
+  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [selectedRoles, setSelectedRoles] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [selectedGrades, setSelectedGrades] = useState([]);
@@ -44,7 +45,11 @@ const CreateGroup = withRouter(({ history, ...props }) => {
 
   const getRoleApi = async () => {
     try {
-      const result = await axiosInstance.get(endpoints.communication.roles);
+      const result = await axiosInstance.get(endpoints.communication.roles, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const resultOptions = [];
       if (result.status === 200) {
         result.data.result.map((items) => resultOptions.push(items.role_name));
@@ -60,7 +65,11 @@ const CreateGroup = withRouter(({ history, ...props }) => {
 
   const getBranchApi = async () => {
     try {
-      const result = await axiosInstance.get(endpoints.communication.branches);
+      const result = await axiosInstance.get(endpoints.communication.branches, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const resultOptions = [];
       if (result.status === 200) {
         result.data.data.map((items) => resultOptions.push(items.branch_name));
@@ -83,7 +92,12 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       });
     try {
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?branch_id=${branchesId.toString()}`
+        `${endpoints.communication.grades}?branch_id=${branchesId.toString()}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       const resultOptions = [];
       if (result.status === 200) {
@@ -119,7 +133,12 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       const result = await axiosInstance.get(
         `${
           endpoints.communication.sections
-        }?branch_id=${branchesId.toString()}&grade_id=${gradesId.toString()}`
+        }?branch_id=${branchesId.toString()}&grade_id=${gradesId.toString()}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       const resultOptions = [];
       if (result.status === 200) {
@@ -176,7 +195,11 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     }
 
     try {
-      const result = await axiosInstance.get(getUserListUrl);
+      const result = await axiosInstance.get(getUserListUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (result.status === 200) {
         setHeaders([
           { field: 'id', headerName: 'ID', width: 100 },
@@ -318,6 +341,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
             // older servers may use 'text/json'.
             // See: http://bit.ly/text-json
             'content-type': 'application/json',
+            Authorization: `Bearer ${token}`,
           },
         }
       );

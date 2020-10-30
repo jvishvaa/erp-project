@@ -13,7 +13,7 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-import Layout from '../../layout';
+import Layout from '../../Layout';
 import './message-credit.css';
 
 const useStyles = makeStyles((theme) => ({
