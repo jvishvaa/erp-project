@@ -2,7 +2,7 @@ import React from 'react';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import UserManagement from './user-management';
 import CreateUser from './create-user';
-import Layout from '../Layout';
+import Layout from '../layout';
 
 const RoutesIndex = () => {
   const match = useRouteMatch();

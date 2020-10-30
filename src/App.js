@@ -14,6 +14,10 @@ import UserManagement from './containers/user-management';
 import Login from './containers/login';
 import Dashboard from './containers/dashboard';
 import { listSubjects } from './redux/actions/academic-mapping-actions';
+import OnlineclassViewProvider from './containers/online-class/online-class-context/online-class-state';
+import CreateClass from './containers/online-class/create-class';
+import ViewClassManagement from './containers/online-class/view-class/view-class-management/view-class-management';
+import AttendeeList from './containers/online-class/view-class/view-class-management/attendee-list/attendee-list';
 
 const theme = createMuiTheme({
   palette: {
@@ -59,34 +63,45 @@ function App() {
     <div className='App'>
       <Router>
         <AlertNotificationProvider>
-          <ThemeProvider theme={theme}>
-            <Switch>
-              <Route path='/role-management'>
-                {({ match }) => <RoleManagement match={match} />}
-              </Route>
-              <Route path='/user-management'>
-                {({ match }) => <UserManagement match={match} />}
-              </Route>
-              <Route path='/dashboard'>
-                {({ match }) => <Dashboard match={match} />}
-              </Route>
-              <Route exact path='/'>
-                {({ match, history }) => <Login match={match} history={history} />}
-              </Route>
-              <Route exact path='/addgroup'>
-                {({ match }) => <CreateGroup match={match} />}
-              </Route>
-              <Route exact path='/smscredit'>
-                {({ match }) => <MessageCredit match={match} />}
-              </Route>
-              <Route exact path='/viewgroup'>
-                {({ match }) => <ViewGroup match={match} />}
-              </Route>
-              <Route exact path='/sendmessage'>
-                {({ match }) => <SendMessage match={match} />}
-              </Route>
-            </Switch>
-          </ThemeProvider>
+          <OnlineclassViewProvider>
+            <ThemeProvider theme={theme}>
+              <Switch>
+                <Route path='/role-management'>
+                  {({ match }) => <RoleManagement match={match} />}
+                </Route>
+                <Route path='/user-management'>
+                  {({ match }) => <UserManagement match={match} />}
+                </Route>
+                <Route path='/dashboard'>
+                  {({ match }) => <Dashboard match={match} />}
+                </Route>
+                <Route exact path='/'>
+                  {({ match, history }) => <Login match={match} history={history} />}
+                </Route>
+                <Route exact path='/addgroup'>
+                  {({ match }) => <CreateGroup match={match} />}
+                </Route>
+                <Route exact path='/smscredit'>
+                  {({ match }) => <MessageCredit match={match} />}
+                </Route>
+                <Route exact path='/viewgroup'>
+                  {({ match }) => <ViewGroup match={match} />}
+                </Route>
+                <Route exact path='/sendmessage'>
+                  {({ match }) => <SendMessage match={match} />}
+                </Route>
+                <Route exact path='/online-class/create-class'>
+                  {({ match }) => <CreateClass match={match} />}
+                </Route>
+                <Route exact path='/online-class/view-class'>
+                  {({ match }) => <ViewClassManagement match={match} />}
+                </Route>
+                <Route exact path='/online-class/attendee-list/:id'>
+                  {({ match }) => <AttendeeList match={match} />}
+                </Route>
+              </Switch>
+            </ThemeProvider>
+          </OnlineclassViewProvider>
         </AlertNotificationProvider>
       </Router>
     </div>

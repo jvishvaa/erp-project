@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Button, TableCell, TableRow } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 import { OnlineclassViewContext } from '../../../online-class-context/online-class-state';
 
 const ViewClassTableCell = (props) => {
@@ -28,6 +29,8 @@ const ViewClassTableCell = (props) => {
   const [hasClassEnded, setHasClassEnded] = useState(false);
   const [isJoinTime, setIsJoinTime] = useState(false);
   const [isHost, setIsHost] = useState(true);
+
+  const history = useHistory();
 
   useEffect(() => {
     const now = new Date();
@@ -58,6 +61,10 @@ const ViewClassTableCell = (props) => {
 
   const handleCancel = (classId) => {
     dispatch(cancelClass(classId));
+  };
+
+  const handleAttendee = () => {
+    history.push(`/online-class/attendee-list/${id}`);
   };
 
   return (
@@ -96,7 +103,7 @@ const ViewClassTableCell = (props) => {
         </Button>
       </TableCell>
       <TableCell>
-        <Button variant='contained' color='primary'>
+        <Button variant='contained' color='primary' onClick={handleAttendee}>
           Attendee list
         </Button>
       </TableCell>

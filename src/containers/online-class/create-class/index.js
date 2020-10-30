@@ -1,13 +1,16 @@
 import React from 'react';
+import Layout from '../../layout';
 import CreateclassProvider from './create-class-context/create-class-state';
 import CreateClassForm from './create-class-form';
 
 const CreateClass = () => {
   return (
     <div>
-      <CreateclassProvider>
-        <CreateClassForm />
-      </CreateclassProvider>
+      <Layout>
+        <CreateclassProvider>
+          <CreateClassForm />
+        </CreateclassProvider>
+      </Layout>
     </div>
   );
 };
