@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -18,7 +19,7 @@ class CreateUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeStep: 1,
+      activeStep: 0,
       user: {
         first_name: '',
         middle_name: '',
@@ -34,7 +35,7 @@ class CreateUser extends Component {
         gender: '',
         profile: '',
         parent: {
-          father_first_name: '',
+          father_first_name: 'Babu',
           father_last_name: '',
           mother_first_name: '',
           mother_last_name: '',
@@ -75,6 +76,7 @@ class CreateUser extends Component {
     console.log('user details!!', details);
 
     this.setState((prevState) => ({ user: { ...prevState.user, ...details } }));
+    this.handleNext();
   };
 
   onSubmitGuardianDetails = (details) => {
@@ -92,7 +94,76 @@ class CreateUser extends Component {
 
   onCreateUser = () => {
     const { user } = this.state;
+    const { createUser, history } = this.props;
     console.log('user ', user);
+    let requestObj = JSON.parse(JSON.stringify(user));
+    const {
+      academic_year,
+      branch,
+      grade,
+      section,
+      subjects,
+      first_name,
+      middle_name,
+      last_name,
+      gender,
+      date_of_birth,
+      address,
+      contact,
+      email,
+      profile,
+      parent,
+    } = requestObj;
+    const {
+      father_first_name,
+      father_middle_name,
+      father_last_name,
+      father_email,
+      father_mobile,
+      father_photo,
+      address: parent_address,
+      mother_first_name,
+      mother_middle_name,
+      mother_last_name,
+      mother_email,
+      mother_mobile,
+      mother_photo,
+    } = parent;
+    requestObj = {
+      academic_year: academic_year.id,
+      branch: branch.id,
+      grade: grade.id,
+      section: section.id,
+      subjects: subjects.map((sub) => sub.id),
+      first_name,
+      middle_name,
+      last_name,
+      gender,
+      date_of_birth,
+      address,
+      contact,
+      email,
+      profile,
+      parent: {
+        father_first_name,
+        father_middle_name,
+        father_last_name,
+        father_email,
+        father_mobile,
+        father_photo,
+        address: parent_address,
+        mother_first_name,
+        mother_middle_name,
+        mother_last_name,
+        mother_email,
+        mother_mobile,
+        mother_photo,
+      },
+    };
+
+    createUser(requestObj).then(() => history.push('/user-management'));
+
+    console.log('req ', requestObj);
   };
 
   onSubmitForm = (details) => {
@@ -117,10 +188,18 @@ class CreateUser extends Component {
             <SchoolDetailsForm onSubmit={this.onSubmitSchoolDetails} details={user} />
           )}
           {activeStep === 1 && (
-            <UserDetailsForm onSubmit={this.onSubmitUserDetails} details={user} />
+            <UserDetailsForm
+              onSubmit={this.onSubmitUserDetails}
+              details={user}
+              handleBack={this.handleBack}
+            />
           )}
           {activeStep === 2 && (
-            <GuardianDetailsForm onSubmit={this.onSubmitGuardianDetails} details={user} />
+            <GuardianDetailsForm
+              onSubmit={this.onSubmitGuardianDetails}
+              details={user.parent}
+              handleBack={this.handleBack}
+            />
           )}
         </div>
         {/* <div>
@@ -148,7 +227,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   createUser: (params) => {
-    dispatch(createUser(params));
+    return dispatch(createUser(params));
   },
 });
 

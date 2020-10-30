@@ -151,9 +151,11 @@ export const fetchGrades = (branches) => {
 };
 
 export const fetchSections = (branches, grades) => {
-  const branchIds = branches.map((branch) => branch.id).join(',');
+  const branchIds =
+    branches && branches.length > 0 ? branches.map((branch) => branch.id).join(',') : '';
   //   const branchIds = branches.id;
-  const gradeIds = grades.map((grade) => grade.id).join(',');
+  const gradeIds =
+    grades && grades.length > 0 ? grades.map((grade) => grade.id).join(',') : '';
 
   return axios
     .get(`/erp_user/sectionmapping/?branch_id=${branchIds}&grade_id=${gradeIds}`)

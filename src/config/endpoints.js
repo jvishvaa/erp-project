@@ -18,5 +18,6 @@ export default {
     getMessageTypes: '/communication/message-types/',
     sendMessage: '/communication/send-messages/',
     getSmsCredit: '/communication/sms-credits/',
+    assignRole: '/erp_user/assign_role/',
   },
 };

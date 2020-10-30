@@ -119,7 +119,11 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'View Class': {
-        history.push('/view-class');
+        history.push('/online-class/view-class');
+        break;
+      }
+      case 'Attend Online Class': {
+        history.push('/online-class/attend-class');
         break;
       }
       case 'Create Class': {
