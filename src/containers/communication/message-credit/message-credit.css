@@ -11,18 +11,26 @@
     border: 1px solid;
     padding: 2% 3%;
 }
+.sms_credit_table {
+	width: 95%;
+	margin: 2% auto;
+	line-height: 2.5;
+	border-spacing: 0px;
+	border: 1px solid #c3bdbd;
+}
+.sms_credit_table_header_wrapper{
+	background-color: antiquewhite;
+}
 .sms_credit_table_header {
   color: #ff6b6b;
-  border-right: 1px solid;
-}
-.sms_credit_table {
-  width: 95%;
-  margin: 2% auto;
+  border: 1px solid;
 }
 .sms_credit_table_cells {
   text-align: center;
   color: #014b7e;
 }
+.sms_credit_body_wrapper tr:nth-child(even) {background-color: #f2f2f2;}
+.sms_credit_body_wrapper tr:nth-child(odd) {background-color: #e4e4e4;}
 .add_sms_credit_box {
 	width: 50px;
     height: 25px;
