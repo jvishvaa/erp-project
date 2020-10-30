@@ -192,7 +192,7 @@ const AssignRole = (props) => {
   }, [pageno]);
 
   return (
-    <Layout>
+    // <Layout>
       <div className='assign_role_wrapper'>
         <div className='assign_role_roles'>
           <span className='create_group_error_span'>{roleError}</span>
@@ -245,7 +245,6 @@ const AssignRole = (props) => {
           </>
         )}
       </div>
-    </Layout>
   );
 };
 

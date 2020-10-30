@@ -1,59 +1,162 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
-import { connect } from 'react-redux';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
-import { DataGrid } from '@material-ui/data-grid';
-
-import { fetchUsers } from '../../redux/actions';
+import { Checkbox, FormControlLabel, Grid, Input, TextField } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
+import axiosInstance from '../../config/axios';
+import AssignRole from '../communication/assign-role/assign-role';
 
 class UserManagement extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      checked: false,
+      file: null,
+      branches: [],
+      years: [],
+      branch: null,
+      year: null,
+    };
   }
 
   componentDidMount() {
-    const { fetchUsers } = this.props;
-    fetchUsers();
+    this.getBranches();
+    this.getYears();
   }
 
+  getBranches = async () => {
+    try {
+      const data = await axiosInstance.get('erp_user/branch/');
+      this.setState({ branches: data.data.data });
+    } catch (error) {
+      window.alert('Failed to load branches');
+    }
+  };
+
+  getYears = async () => {
+    try {
+      const data = await axiosInstance.get('erp_user/list-academic_year/');
+      this.setState({ years: data.data.data });
+    } catch (error) {
+      window.alert('Failed to load branches');
+    }
+  };
+
+  handleChange = (data, checked) => {
+    this.setState({ checked });
+  };
+
+  handleFile = (event) => {
+    const { files } = event.target;
+    const file = files[0];
+    this.setState({ file });
+  };
+
+  handleUpload = async () => {
+    try {
+      const { file, branch, year } = this.state;
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('academic_year', year);
+      formData.append('branch', branch);
+      await axiosInstance.post('/erp_user/upload_bulk_user/', formData);
+      this.setState({ checked: false, file: null, branch: null, year: null });
+      window.alert('File uploaded successfully');
+    } catch (error) {
+      window.alert('Failed to upload');
+    }
+  };
+
+  handleBranch = (event, data) => {
+    this.setState({ branch: data.id });
+  };
+
+  handleYear = (event, data) => {
+    this.setState({ year: data.id });
+  };
+
   render() {
-    const { match, users } = this.props;
-    const columns = [
-      { field: 'id', headerName: 'ID' },
-      { field: 'erp_id', headerName: 'ERP_ID' },
-      { field: 'first_name', headerName: 'First name', width: 130 },
-      { field: 'last_name', headerName: 'Last name' },
-      { field: 'email', headerName: 'Email' },
-      { field: 'roles', headerName: 'Roles' },
-      { field: 'gender', headerName: 'Gender' },
-      { field: 'contact', headerName: 'Contact' },
-    ];
+    const { match } = this.props;
     return (
-      <div>
-        <Button
-          startIcon={<AddOutlinedIcon />}
-          href={`${match.url}/create-user`}
-          style={{ marginTop: '3rem', marginBottom: '3rem' }}
-        >
-          Add user
-        </Button>
-        <div style={{ height: '70vh', width: '100%' }}>
-          <DataGrid rows={users} columns={columns} pageSize={10} checkboxSelection />
+      <>
+        <div>
+          <Button startIcon={<AddOutlinedIcon />} href={`${match.url}/create-user`}>
+            Add user
+          </Button>
+          <span style={{ margin: '0px 20px' }}>or</span>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={this.state.checked}
+                onChange={this.handleChange}
+                name='checked'
+              />
+            }
+            label='Upload excel'
+          />
         </div>
-      </div>
+        <div style={{ marginTop: 20 }}>
+          {this.state.checked ? (
+            <Grid container spacing={2}>
+              <Grid item xs={4}>
+                <Input type='file' onChange={this.handleFile} />
+              </Grid>
+              <Grid item xs={4}>
+                <Autocomplete
+                  size='small'
+                  id='create__class-subject'
+                  options={this.state.branches}
+                  getOptionLabel={(option) => option.branch_name}
+                  filterSelectedOptions
+                  onChange={this.handleBranch}
+                  renderInput={(params) => (
+                    <TextField
+                      size='small'
+                      className='create__class-textfield'
+                      {...params}
+                      variant='outlined'
+                      label='Branch'
+                      placeholder='Branch'
+                      required
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <Autocomplete
+                  size='small'
+                  id='create__class-subject'
+                  options={this.state.years}
+                  getOptionLabel={(option) => option.session_year}
+                  filterSelectedOptions
+                  onChange={this.handleYear}
+                  renderInput={(params) => (
+                    <TextField
+                      size='small'
+                      className='create__class-textfield'
+                      {...params}
+                      variant='outlined'
+                      label='Academic year'
+                      placeholder='Academic year'
+                      required
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <Button style={{ marginLeft: 20 }} onClick={this.handleUpload}>
+                  Upload
+                </Button>
+              </Grid>
+            </Grid>
+          ) : (
+            ''
+          )}
+          <AssignRole />
+        </div>
+      </>
     );
   }
 }
-const mapStateToProps = (state) => ({
-  users: state.userManagement.users,
-  current_page: state.userManagement.current_page,
-  total_pages: state.userManagement.total_pages,
-  count: state.userManagement.count,
-});
-const mapDispatchToProps = (dispatch) => ({
-  fetchUsers: () => {
-    return dispatch(fetchUsers());
-  },
-});
-export default connect(mapStateToProps, mapDispatchToProps)(UserManagement);
+
+export default UserManagement;
