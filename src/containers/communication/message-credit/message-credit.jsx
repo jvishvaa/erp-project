@@ -146,7 +146,7 @@ const MessageCredit = withRouter(({ history, ...props }) => {
           </FormControl>
         </div>
         <table className='sms_credit_table'>
-          <thead>
+          <thead className='sms_credit_table_header_wrapper'>
             <tr>
               <th className='sms_credit_table_header'>Branch</th>
               <th className='sms_credit_table_header'>Available SMS Credit</th>
@@ -155,7 +155,7 @@ const MessageCredit = withRouter(({ history, ...props }) => {
               <th className='sms_credit_table_header'>Add SMS Credit</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className='sms_credit_body_wrapper'>
             {testData.map((items, index) => (
               <tr key={`message_credit_table_${index}`}>
                 <td className='sms_credit_table_cells'>{items.BranchName}</td>
