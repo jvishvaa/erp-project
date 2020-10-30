@@ -7,7 +7,7 @@ import * as React from 'react';
 import { DataGrid } from '@material-ui/data-grid';
 import './custom-selection-table.css';
 
-export default function CustomSelectionTable(props) {
+export default function CustomSelectionTable({ pageSize, ...props }) {
   const {
     header,
     rows,
@@ -61,7 +61,7 @@ export default function CustomSelectionTable(props) {
       style={{ height: 400, width: '100%' }}
     >
       <DataGrid
-        pageSize={5}
+        pageSize={pageSize || 5}
         rowCount={totalRows}
         checkboxSelection
         onPageChange={pageChange}

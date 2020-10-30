@@ -70,7 +70,6 @@ const AssignRole = (props) => {
       });
       if (result.status === 200) {
         setHeaders([
-          { field: 'id', headerName: 'ID', width: 100 },
           { field: 'firstName', headerName: 'First name', width: 150 },
           { field: 'lastName', headerName: 'Last name', width: 150 },
           { field: 'email', headerName: 'Email Id', width: 200 },
@@ -78,19 +77,15 @@ const AssignRole = (props) => {
           { field: 'gender', headerName: 'Gender', width: 100 },
           { field: 'contact', headerName: 'Contact', width: 150 },
           {
-            field: 'fullName',
-            headerName: 'Full name',
-            description: 'This column has a value getter and is not sortable.',
-            sortable: false,
-            width: 250,
-            valueGetter: (params) =>
-              `${params.getValue('firstName') || ''} ${
-                params.getValue('lastName') || ''
-              }`,
+            field: 'role',
+            headerName: 'Role',
+            width: 150,
           },
         ]);
         const rows = [];
         const selectionRows = [];
+        console.log('results ', result.data.results);
+
         result.data.results.forEach((items) => {
           rows.push({
             id: items.id,
@@ -100,6 +95,7 @@ const AssignRole = (props) => {
             erp_id: items.erp_id,
             gender: items.gender,
             contact: items.contact,
+            role: items.roles?.role_name,
           });
           selectionRows.push({
             id: items.id,
@@ -111,6 +107,7 @@ const AssignRole = (props) => {
               erp_id: items.erp_id,
               gender: items.gender,
               contact: items.contact,
+              role: items.roles?.role_name,
             },
             selected: selectedUsers.length
               ? selectedUsers[pageno - 1].selected.includes(items.id)
@@ -193,58 +190,59 @@ const AssignRole = (props) => {
 
   return (
     // <Layout>
-      <div className='assign_role_wrapper'>
-        <div className='assign_role_roles'>
-          <span className='create_group_error_span'>{roleError}</span>
-          <FormControl variant='outlined' className={classes.formControl}>
-            <InputLabel id='demo-simple-select-outlined-label'>Roles</InputLabel>
-            <Select
-              labelId='demo-simple-select-outlined-label'
-              id='demo-simple-select-outlined'
-              value={selectedRole}
-              onChange={(e) => setSelectedRole(e.target.value)}
-              label='Roles'
-            >
-              <MenuItem>
-                <em>None</em>
+    <div className='assign_role_wrapper'>
+      <div className='assign_role_roles'>
+        <span className='create_group_error_span'>{roleError}</span>
+        <FormControl variant='outlined' className={classes.formControl}>
+          <InputLabel id='demo-simple-select-outlined-label'>Roles</InputLabel>
+          <Select
+            labelId='demo-simple-select-outlined-label'
+            id='demo-simple-select-outlined'
+            value={selectedRole}
+            onChange={(e) => setSelectedRole(e.target.value)}
+            label='Roles'
+          >
+            <MenuItem>
+              <em>None</em>
+            </MenuItem>
+            {roles.map((items, index) => (
+              <MenuItem key={`roles_assign_${index}`} value={items.id}>
+                {items.role_name}
               </MenuItem>
-              {roles.map((items, index) => (
-                <MenuItem key={`roles_assign_${index}`} value={items.id}>
-                  {items.role_name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </div>
-        {assignedRole ? (
+            ))}
+          </Select>
+        </FormControl>
+      </div>
+      {assignedRole ? (
+        <input
+          className='assign_role_button'
+          type='button'
+          onClick={() => setAssigenedRole(false)}
+          value='Assign New Role'
+        />
+      ) : (
+        <>
+          <span className='create_group_error_span'>{selectectUserError}</span>
+          <CustomSelectionTable
+            header={headers}
+            rows={usersRow}
+            completeData={completeData}
+            totalRows={totalPage}
+            pageno={pageno}
+            selectedUsers={selectedUsers}
+            changePage={setPageno}
+            setSelectedUsers={setSelectedUsers}
+            pageSize={5}
+          />
           <input
             className='assign_role_button'
             type='button'
-            onClick={() => setAssigenedRole(false)}
-            value='Assign New Role'
+            onClick={assignRole}
+            value='Assign Role'
           />
-        ) : (
-          <>
-            <span className='create_group_error_span'>{selectectUserError}</span>
-            <CustomSelectionTable
-              header={headers}
-              rows={usersRow}
-              completeData={completeData}
-              totalRows={totalPage}
-              pageno={pageno}
-              selectedUsers={selectedUsers}
-              changePage={setPageno}
-              setSelectedUsers={setSelectedUsers}
-            />
-            <input
-              className='assign_role_button'
-              type='button'
-              onClick={assignRole}
-              value='Assign Role'
-            />
-          </>
-        )}
-      </div>
+        </>
+      )}
+    </div>
   );
 };
 
