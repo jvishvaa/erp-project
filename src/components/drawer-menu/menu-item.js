@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useState } from 'react';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -5,6 +6,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import Collapse from '@material-ui/core/Collapse';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
 import useStyles from './useStyles';
 import menuIcon from './menu-icon';
 
@@ -28,6 +31,15 @@ const MenuItem = ({ item, onClick }) => {
           {menuIcon(item.parent_modules)}
         </ListItemIcon>
         <ListItemText primary={item.parent_modules} className={classes.menuItemText} />
+        {item.child_module && item.child_module.length > 0 ? (
+          menuOpen ? (
+            <ExpandLess style={{ marginLeft: '2rem' }} />
+          ) : (
+            <ExpandMore style={{ marginLeft: '2rem' }} />
+          )
+        ) : (
+          ''
+        )}
       </ListItem>
       {item.child_module && item.child_module.length > 0 && (
         <Collapse in={menuOpen}>
