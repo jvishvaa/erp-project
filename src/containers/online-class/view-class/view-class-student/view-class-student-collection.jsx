@@ -4,6 +4,7 @@ import { Pagination } from '@material-ui/lab';
 import ViewClassStudent from './view-class-student';
 import { OnlineclassViewContext } from '../../online-class-context/online-class-state';
 import './view-class-student.scss';
+import Layout from '../../../Layout';
 
 const ViewClassStudentCollection = () => {
   const {
@@ -18,9 +19,11 @@ const ViewClassStudentCollection = () => {
   } = useContext(OnlineclassViewContext);
   const [currentTab, setCurrentTab] = useState(0);
 
+  const { role_details: roleDetails } = JSON.parse(localStorage.getItem('userDetails'));
+
   useEffect(() => {
     const isCompleted = !!currentTab;
-    dispatch(listOnlineClassesStudentView(15, isCompleted, 1, 10));
+    dispatch(listOnlineClassesStudentView(roleDetails.erp_user_id, isCompleted, 1, 10));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTab]);
 
@@ -32,7 +35,9 @@ const ViewClassStudentCollection = () => {
     const isCompleted = !!currentTab;
 
     if (page !== currentPage) {
-      dispatch(listOnlineClassesStudentView(15, isCompleted, page, 10));
+      dispatch(
+        listOnlineClassesStudentView(roleDetails.erp_user_id, isCompleted, page, 10)
+      );
     }
   };
 
@@ -58,45 +63,53 @@ const ViewClassStudentCollection = () => {
   };
 
   return (
-    <div className='viewclass__student-collection'>
-      <Grid container>
-        <Grid item xs={12} sm={6}>
-          <Tabs
-            value={currentTab}
-            onChange={handleTabChange}
-            variant='fullWidth'
-            indicatorColor='primary'
-            textColor='primary'
-            aria-label='icon label tabs example'
-          >
-            <Tab
-              disabled={loadingStudentOnlineClasses}
-              label={<Typography variant='h6'>Upcoming</Typography>}
-            />
-            <Tab
-              disabled={loadingStudentOnlineClasses}
-              label={<Typography variant='h6'>Completed</Typography>}
-            />
-          </Tabs>
+    <Layout>
+      <div className='viewclass__student-collection'>
+        <Grid container>
+          <Grid item xs={12} sm={6}>
+            <Tabs
+              value={currentTab}
+              onChange={handleTabChange}
+              variant='fullWidth'
+              indicatorColor='primary'
+              textColor='primary'
+              aria-label='icon label tabs example'
+            >
+              <Tab
+                disabled={loadingStudentOnlineClasses}
+                label={<Typography variant='h6'>Upcoming</Typography>}
+              />
+              <Tab
+                disabled={loadingStudentOnlineClasses}
+                label={<Typography variant='h6'>Completed</Typography>}
+              />
+            </Tabs>
+          </Grid>
         </Grid>
-      </Grid>
-      {renderUI()}
-      <Grid container spacing={0} direction='column' alignItems='center' justify='center'>
-        <Grid item xs={12}>
-          {studentOnlineClasses.length && !loadingStudentOnlineClasses ? (
-            <Pagination
-              className='student-view-pagination'
-              count={totalPages}
-              color='secondary'
-              onChange={handlePagination}
-              page={currentPage}
-            />
-          ) : (
-            ''
-          )}
+        {renderUI()}
+        <Grid
+          container
+          spacing={0}
+          direction='column'
+          alignItems='center'
+          justify='center'
+        >
+          <Grid item xs={12}>
+            {studentOnlineClasses.length && !loadingStudentOnlineClasses ? (
+              <Pagination
+                className='student-view-pagination'
+                count={totalPages}
+                color='secondary'
+                onChange={handlePagination}
+                page={currentPage}
+              />
+            ) : (
+              ''
+            )}
+          </Grid>
         </Grid>
-      </Grid>
-    </div>
+      </div>
+    </Layout>
   );
 };
 

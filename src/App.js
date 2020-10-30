@@ -18,6 +18,7 @@ import OnlineclassViewProvider from './containers/online-class/online-class-cont
 import CreateClass from './containers/online-class/create-class';
 import ViewClassManagement from './containers/online-class/view-class/view-class-management/view-class-management';
 import AttendeeList from './containers/online-class/view-class/view-class-management/attendee-list/attendee-list';
+import ViewClassStudentCollection from './containers/online-class/view-class/view-class-student/view-class-student-collection';
 
 const theme = createMuiTheme({
   palette: {
@@ -98,6 +99,9 @@ function App() {
                 </Route>
                 <Route exact path='/online-class/attendee-list/:id'>
                   {({ match }) => <AttendeeList match={match} />}
+                </Route>
+                <Route exact path='/online-class/attend-class'>
+                  {({ match }) => <ViewClassStudentCollection match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>
