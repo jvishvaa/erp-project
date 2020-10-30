@@ -60,19 +60,7 @@
     "singleQuote": true,
     "jsxSingleQuote": true
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged --allow-empty"
-    }
-  },
-  "lint-staged": {
-    "*.+(js|jsx)": [
-      "eslint --fix"
-    ],
-    "*.+(json|css|md)": [
-      "prettier --write"
-    ]
-  },
+  
   "browserslist": {
     "production": [
       ">0.2%",

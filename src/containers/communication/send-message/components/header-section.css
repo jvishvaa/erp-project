@@ -1,0 +1,41 @@
+.send_message_title{
+	color: #014B7E;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+.send_message_header{
+	margin: 1% 5%;
+}
+.send_message_header_icon_wrapper{
+	display: inline-block;
+}
+.send_message_header_title{
+	color: #FF6B6B;
+	text-align: center;
+}
+.step_completed{
+	color: #FFFFFF !important;
+    background-color: #FF6B6B !important;
+}
+.send_message_header_circle{
+	width: 40px;
+    height: 32px;
+    margin: auto;
+    border-radius: 50%;
+    background-color: #FFFFFF;
+    color: #FF6B6B;
+    padding: 6% 1.5%;
+    text-align: center;
+}
+.send_message_header_border_circle{
+	border: 1px solid #FF6B6B;
+}
+.send_message_header_bar{
+	display: inline-block;
+    vertical-align: top;
+    width: 10%;
+    margin: 1%;
+    height: 13px;
+    background-repeat: no-repeat;
+	background-image: url(../../../../assets/images/Group-8088.svg);
+}

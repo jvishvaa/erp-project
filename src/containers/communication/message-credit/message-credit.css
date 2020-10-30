@@ -1,0 +1,76 @@
+.add_credit_message_title {
+  color: #014b7e;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 1% 5%;
+}
+.add_credit_save_button{
+	color: #014b7e;
+    font-weight: 600;
+    outline: none;
+    border: 1px solid;
+    padding: 2% 3%;
+}
+.sms_credit_table {
+	width: 95%;
+	margin: 2% auto;
+	line-height: 2.5;
+	border-spacing: 0px;
+	border: 1px solid #c3bdbd;
+}
+.sms_credit_table_header_wrapper{
+	background-color: antiquewhite;
+}
+.sms_credit_table_header {
+  color: #ff6b6b;
+  border: 1px solid;
+}
+.sms_credit_table_cells {
+  text-align: center;
+  color: #014b7e;
+}
+.sms_credit_body_wrapper tr:nth-child(even) {background-color: #f2f2f2;}
+.sms_credit_body_wrapper tr:nth-child(odd) {background-color: #e4e4e4;}
+.add_sms_credit_box {
+	width: 50px;
+    height: 25px;
+    border: 1px solid #a29999;
+    text-align: center;
+}
+.sms_credit_branch .MuiFormControl-root {
+  border: 1px solid #d4cbcb !important;
+  border-radius: 10px;
+}
+.sms_credit_branch .MuiInput-underline:before {
+  border: none !important;
+}
+.sms_credit_branch .MuiInput-underline:after {
+  border: none !important;
+}
+.sms_credit_branch .MuiSelect-select:focus {
+  background-color: #f9f9f9 !important;
+  border-radius: 10px !important;
+}
+.sms_credit_branch .MuiSelect-select {
+  border-radius: 5px !important;
+}
+.sms_credit_branch label + .MuiInput-formControl {
+  margin-top: 3px !important;
+}
+.sms_credit_branch .MuiSelect-icon {
+  color: #ff6b6b !important;
+}
+.sms_credit_branch .MuiInputLabel-outlined {
+  transform: translate(14px, 10px) scale(1) !important;
+}
+.sms_credit_branch .MuiInputLabel-outlined.MuiInputLabel-shrink {
+  transform: translate(14px, -6px) scale(0.75) !important;
+}
+.sms_credit_branch .MuiPaper-elevation8 {
+  margin-top: 6%;
+}
+.sms_credit_branch .MuiFormLabel-root {
+  color: #014b7e !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+}
