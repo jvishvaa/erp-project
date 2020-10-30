@@ -24,6 +24,7 @@ const EditGroup = withRouter(({ history, ...props }) => {
     setGroupName,
   } = props || {};
   const { setAlert } = useContext(AlertNotificationContext);
+  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [pageno, setPageno] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const [headers, setHeaders] = useState([]);
@@ -53,6 +54,7 @@ const EditGroup = withRouter(({ history, ...props }) => {
             // 'application/json' is the modern content-type for JSON, but some
             // older servers may use 'text/json'.
             // See: http://bit.ly/text-json
+            Authorization: `Bearer ${token}`,
             'content-type': 'application/json',
           },
         }
@@ -71,7 +73,11 @@ const EditGroup = withRouter(({ history, ...props }) => {
   const getEditGroupsData = async () => {
     const getEditGroupsDataUrl = `${endpoints.communication.editGroup}${editId}/retrieve-update-group/?page=${pageno}`;
     try {
-      const result = await axiosInstance.get(getEditGroupsDataUrl);
+      const result = await axiosInstance.get(getEditGroupsDataUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (result.status === 200) {
         setHeaders([
           { field: 'id', headerName: 'ID', width: 100 },

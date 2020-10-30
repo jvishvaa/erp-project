@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
 const SendMessage = withRouter(({ history, ...props }) => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
+  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [customSelect, setCustomSelect] = useState(false);
   const [firstStep, setFirstStep] = useState(true);
   const [secondStep, setSecondStep] = useState(false);
@@ -84,7 +85,11 @@ const SendMessage = withRouter(({ history, ...props }) => {
   };
   const getRoleApi = async () => {
     try {
-      const result = await axiosInstance.get(endpoints.communication.roles);
+      const result = await axiosInstance.get(endpoints.communication.roles, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const resultOptions = [];
       if (result.status === 200) {
         result.data.result.map((items) => resultOptions.push(items.role_name));
@@ -102,7 +107,11 @@ const SendMessage = withRouter(({ history, ...props }) => {
 
   const getBranchApi = async () => {
     try {
-      const result = await axiosInstance.get(endpoints.communication.branches);
+      const result = await axiosInstance.get(endpoints.communication.branches, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const resultOptions = [];
       if (result.status === 200) {
         result.data.data.map((items) => resultOptions.push(items.branch_name));
@@ -117,7 +126,11 @@ const SendMessage = withRouter(({ history, ...props }) => {
   };
   const getGroupApi = async () => {
     try {
-      const result = await axiosInstance.get(endpoints.communication.groupList);
+      const result = await axiosInstance.get(endpoints.communication.groupList, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const resultOptions = [];
       if (result.status === 200) {
         result.data.data.map((items) => resultOptions.push(items.group_name));
@@ -140,7 +153,12 @@ const SendMessage = withRouter(({ history, ...props }) => {
       });
     try {
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?branch_id=${branchesId.toString()}`
+        `${endpoints.communication.grades}?branch_id=${branchesId.toString()}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       const resultOptions = [];
       if (result.status === 200) {
@@ -176,7 +194,12 @@ const SendMessage = withRouter(({ history, ...props }) => {
       const result = await axiosInstance.get(
         `${
           endpoints.communication.sections
-        }?branch_id=${branchesId.toString()}&grade_id=${gradesId.toString()}`
+        }?branch_id=${branchesId.toString()}&grade_id=${gradesId.toString()}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       const resultOptions = [];
       if (result.status === 200) {
@@ -247,7 +270,11 @@ const SendMessage = withRouter(({ history, ...props }) => {
       }
     }
     try {
-      const result = await axiosInstance.get(getUserListUrl);
+      const result = await axiosInstance.get(getUserListUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (result.status === 200) {
         setHeaders([
           { field: 'id', headerName: 'ID', width: 100 },
@@ -412,7 +439,11 @@ const SendMessage = withRouter(({ history, ...props }) => {
   };
   const getSmsTypeApi = async () => {
     try {
-      const result = await axiosInstance.get(endpoints.communication.getMessageTypes);
+      const result = await axiosInstance.get(endpoints.communication.getMessageTypes, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (result.status === 200) {
         setSmsTypeList(result.data.data);
       } else {
@@ -551,6 +582,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
           // 'application/json' is the modern content-type for JSON, but some
           // older servers may use 'text/json'.
           // See: http://bit.ly/text-json
+          Authorization: `Bearer ${token}`,
           'content-type': 'application/json',
         },
       });
