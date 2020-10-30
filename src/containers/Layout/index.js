@@ -11,6 +11,8 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/More';
+import Collapse from '@material-ui/core/Collapse';
+import Divider from '@material-ui/core/Divider';
 
 import InputBase from '@material-ui/core/InputBase';
 import Paper from '@material-ui/core/Paper';
@@ -19,7 +21,9 @@ import Badge from '@material-ui/core/Badge';
 import NotificationsNoneOutlinedIcon from '@material-ui/icons/NotificationsNoneOutlined';
 import clsx from 'clsx';
 import { withRouter } from 'react-router-dom';
-
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import PeopleIcon from '@material-ui/icons/People';
 import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import DrawerMenu from '../../components/drawer-menu';
 import useStyles from './useStyles';
@@ -30,6 +34,8 @@ import logo from '../../assets/images/logo.png';
 const Layout = ({ children, history }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [navigationData, setNavigationData] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [superUser, setSuperUser] = useState(false);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -38,6 +44,12 @@ const Layout = ({ children, history }) => {
     const navigationData = localStorage.getItem('navigationData');
     if (navigationData) {
       setNavigationData(JSON.parse(navigationData));
+    }
+    let userDetails = localStorage.getItem('userDetails');
+    if (userDetails) {
+      userDetails = JSON.parse(userDetails);
+      const { is_superuser } = userDetails;
+      setSuperUser(is_superuser);
     }
   }, []);
 
@@ -257,15 +269,70 @@ const Layout = ({ children, history }) => {
       >
         <Toolbar className={classes.toolbar} />
         <List>
-          <ListItem>
-            <ListItemIcon
-              onClick={() => setDrawerOpen((prevState) => !prevState)}
-              className={classes.menuItemIcon}
-            >
+          <ListItem onClick={() => setDrawerOpen((prevState) => !prevState)}>
+            <ListItemIcon className={classes.menuItemIcon}>
               {drawerOpen ? <CloseIcon /> : <MenuIcon />}
             </ListItemIcon>
             <ListItemText className={classes.menuItemText}>Menu</ListItemText>
           </ListItem>
+          {superUser && (
+            <>
+              <ListItem
+                button
+                onClick={() => {
+                  setUserMenuOpen((prevState) => !prevState);
+                }}
+              >
+                <ListItemIcon className={classes.menuItemIcon}>
+                  <PeopleIcon />
+                </ListItemIcon>
+                <ListItemText className={classes.menuItemText}>
+                  User Management
+                </ListItemText>
+                {userMenuOpen ? (
+                  <ExpandLess style={{ marginLeft: '2rem' }} />
+                ) : (
+                  <ExpandMore style={{ marginLeft: '2rem' }} />
+                )}
+              </ListItem>
+              <Collapse in={userMenuOpen}>
+                <Divider />
+                <List>
+                  <ListItem
+                    button
+                    onClick={() => {
+                      history.push('/user-management/create-user');
+                    }}
+                  >
+                    <ListItemIcon className={classes.menuItemIcon}>
+                      {/* <MenuIcon name={child.child_name} /> */}
+                      {/* {menuIcon(child.child_name)} */}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={`Create User`}
+                      className={classes.menuItemText}
+                    />
+                  </ListItem>
+                  <ListItem
+                    button
+                    onClick={() => {
+                      history.push('/user-management');
+                    }}
+                  >
+                    <ListItemIcon className={classes.menuItemIcon}>
+                      {/* <MenuIcon name={child.child_name} /> */}
+                      {/* {menuIcon(child.child_name)} */}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={`Assign Role`}
+                      className={classes.menuItemText}
+                    />
+                  </ListItem>
+                </List>
+              </Collapse>
+            </>
+          )}
+
           {navigationData && navigationData.length > 0 && (
             <DrawerMenu navigationItems={navigationData} onClick={handleRouting} />
           )}

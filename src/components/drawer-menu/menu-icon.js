@@ -15,7 +15,7 @@ const menuIcon = (name) => {
       break;
     }
     case 'View Class': {
-      icon = '';
+      icon = <ClassIcon />;
       break;
     }
     case 'Create Class': {
