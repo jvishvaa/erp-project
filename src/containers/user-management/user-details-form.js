@@ -14,12 +14,13 @@ import Checkbox from '@material-ui/core/Checkbox';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/moment';
 import { useFormik } from 'formik';
-// import { FormHelperText } from '@material-ui/core';
+import moment from 'moment';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Radio from '@material-ui/core/Radio';
-// import validationSchema from './schemas/user-details';
+import validationSchema from './schemas/user-details';
 
-const UserDetailsForm = ({ details, onSubmit }) => {
+const UserDetailsForm = ({ details, onSubmit, handleBack }) => {
   const formik = useFormik({
     initialValues: {
       first_name: details.first_name,
@@ -29,12 +30,15 @@ const UserDetailsForm = ({ details, onSubmit }) => {
       profile: details.profile,
       contact: details.contact,
       email: details.email,
+      date_of_birth: details.date_of_birth,
     },
+    validationSchema,
     onSubmit: (values) => {
       alert(JSON.stringify(values, null, 2));
       onSubmit(values);
     },
   });
+  console.log('dob error', formik.values.date_of_birth, formik.errors.date_of_birth);
   return (
     <Grid container spacing={4}>
       <Grid container item xs={12}>
@@ -53,6 +57,9 @@ const UserDetailsForm = ({ details, onSubmit }) => {
             label='First name'
             autoFocus
           />
+          <FormHelperText style={{ color: 'red' }}>
+            {formik.errors.first_name ? formik.errors.first_name : ''}
+          </FormHelperText>
         </FormControl>
       </Grid>
       <Grid item md={4}>
@@ -65,6 +72,9 @@ const UserDetailsForm = ({ details, onSubmit }) => {
             value={formik.values.middle_name}
             label='Middle name'
           />
+          <FormHelperText style={{ color: 'red' }}>
+            {formik.errors.middle_name ? formik.errors.middle_name : ''}
+          </FormHelperText>
         </FormControl>
       </Grid>
       <Grid item md={4}>
@@ -77,42 +87,15 @@ const UserDetailsForm = ({ details, onSubmit }) => {
             value={formik.values.last_name}
             label='Last name'
           />
+          <FormHelperText style={{ color: 'red' }}>
+            {formik.errors.last_name ? formik.errors.last_name : ''}
+          </FormHelperText>
         </FormControl>
       </Grid>
       <Grid container item xs={12} spacing={8}>
         <Grid item md={4}>
           <FormControl component='fieldset' fullWidth>
             <FormLabel component='legend'>Gender</FormLabel>
-            {/* <FormGroup row>
-              <FormControlLabel
-                control={
-                  <Checkbox checked={formik.values.gender == 1} onChange={() => {}} name='gilad' color='primary' />
-                }
-                label='Male'
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={formik.values.gender == 2}
-                    onChange={() => {}}
-                    name='jason'
-                    color='primary'
-                  />
-                }
-                label='Female'
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={false}
-                    onChange={() => {}}
-                    name='antoine'
-                    color='primary'
-                  />
-                }
-                label='Other'
-              />
-            </FormGroup> */}
             <RadioGroup
               id='gender'
               name='gender'
@@ -136,18 +119,30 @@ const UserDetailsForm = ({ details, onSubmit }) => {
                 label='Other'
               />
             </RadioGroup>
+            <FormHelperText style={{ color: 'red' }}>
+              {formik.errors.gender ? formik.errors.gender : ''}
+            </FormHelperText>
           </FormControl>
         </Grid>
         <Grid item md={4}>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <DatePicker
-              value={new Date()}
-              onChange={() => {}}
+              value={formik.values.date_of_birth || new Date()}
+              onChange={(value) => {
+                console.log('date ', value);
+                console.log(moment(value).format('YYYY-MM-DD'));
+                formik.setFieldValue('date_of_birth', moment(value).format('YYYY-MM-DD'));
+              }}
               inputVariant='outlined'
               fullWidth
               label='Date of birth'
+              disabled={false}
+              format='YYYY-MM-DD'
             />
           </MuiPickersUtilsProvider>
+          <FormHelperText style={{ color: 'red' }}>
+            {formik.errors.date_of_birth ? formik.errors.date_of_birth : ''}
+          </FormHelperText>
         </Grid>
       </Grid>
       <Grid container item xs={12} spacing={4}>
@@ -161,6 +156,9 @@ const UserDetailsForm = ({ details, onSubmit }) => {
               value={formik.values.contact}
               label='Mobile no.'
             />
+            <FormHelperText style={{ color: 'red' }}>
+              {formik.errors.contact ? formik.errors.contact : ''}
+            </FormHelperText>
           </FormControl>
         </Grid>
         <Grid item md={4}>
@@ -173,6 +171,9 @@ const UserDetailsForm = ({ details, onSubmit }) => {
               value={formik.values.email}
               label='Email'
             />
+            <FormHelperText style={{ color: 'red' }}>
+              {formik.errors.email ? formik.errors.email : ''}
+            </FormHelperText>
           </FormControl>
         </Grid>
       </Grid>
@@ -206,7 +207,7 @@ const UserDetailsForm = ({ details, onSubmit }) => {
         <Divider />
       </Grid>
       <Grid item md={4}>
-        <FormControl component='fieldset' fullWidth>
+        <FormControl component='fieldset' fullWidth disabled>
           <FormLabel component='legend'>Parent/Guardian</FormLabel>
           <FormGroup row>
             <FormControlLabel
@@ -228,6 +229,24 @@ const UserDetailsForm = ({ details, onSubmit }) => {
             />
           </FormGroup>
         </FormControl>
+      </Grid>
+      <Grid container item xs={12}>
+        <Grid item md='1'>
+          <Button variant='contained' color='primary' onClick={handleBack}>
+            Back
+          </Button>
+        </Grid>
+        <Grid item md='1'>
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={() => {
+              formik.handleSubmit();
+            }}
+          >
+            Next
+          </Button>
+        </Grid>
       </Grid>
     </Grid>
   );
