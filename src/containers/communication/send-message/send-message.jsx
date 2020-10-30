@@ -72,7 +72,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
   const [selectUsersError, setSelectUsersError] = useState('');
   const [textMessage, setTextMessage] = useState('');
   const [emailSubject, setEmailSubject] = useState('');
-  const [wordcount, setWordcount] = useState(11);
+  const [wordcount, setWordcount] = useState(641);
   const [isEmail, setIsEmail] = useState(false);
   const [smsTypeList, setSmsTypeList] = useState([]);
   const [selectedSmsType, setSelectedSmsType] = useState('');
@@ -334,7 +334,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
     if (!firstStep && !secondStep && thirdStep) {
       setSelectedUsers([]);
       setTextMessage('');
-      setWordcount(11);
+      setWordcount(641);
       setIsEmail(false);
       setSmsTypeList([]);
       setSelectedSmsType('');
@@ -573,7 +573,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
         setSelectedRoles([]);
         setSelectedSections([]);
         setTextMessage('');
-        setWordcount(11);
+        setWordcount(641);
         setIsEmail(false);
         setSmsTypeList([]);
         setSelectedSmsType('');
@@ -628,7 +628,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
   useEffect(() => {
     const count = wordCount(textMessage);
     if (count) {
-      setWordcount(11 - count);
+      setWordcount(641 - count);
     }
   }, [textMessage]);
 
