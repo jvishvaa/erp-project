@@ -5,6 +5,7 @@ import CreateGroup from './containers/communication/create-group/create-group';
 import ViewGroup from './containers/communication/view-group/view-group';
 import MessageCredit from './containers/communication/message-credit/message-credit';
 import SendMessage from './containers/communication/send-message/send-message';
+import AssignRole from './containers/communication/assign-role/assign-role';
 import RoleManagement from './containers/role-management';
 import store from './redux/store';
 import AlertNotificationProvider from './context-api/alert-context/alert-state';
@@ -80,6 +81,9 @@ function App() {
               </Route>
               <Route exact path='/sendmessage'>
                 {({ match }) => <SendMessage match={match} />}
+              </Route>
+              <Route exact path='/assignrole'>
+                {({ match }) => <AssignRole match={match} />}
               </Route>
             </Switch>
           </ThemeProvider>
