@@ -25,6 +25,7 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import PeopleIcon from '@material-ui/icons/People';
 import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import DrawerMenu from '../../components/drawer-menu';
 import useStyles from './useStyles';
 import './styles.scss';
@@ -330,6 +331,19 @@ const Layout = ({ children, history }) => {
                   </ListItem>
                 </List>
               </Collapse>
+              <ListItem
+                button
+                onClick={() => {
+                  history.push('/role-management');
+                }}
+              >
+                <ListItemIcon className={classes.menuItemIcon}>
+                  <AssignmentIndIcon />
+                </ListItemIcon>
+                <ListItemText className={classes.menuItemText}>
+                  Role management
+                </ListItemText>
+              </ListItem>
             </>
           )}
 
