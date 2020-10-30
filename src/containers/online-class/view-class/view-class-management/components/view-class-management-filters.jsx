@@ -70,8 +70,16 @@ const ViewClassManagementFilters = () => {
   };
 
   const handleGetClasses = () => {
+    const { role_details: roleDetails, is_superuser: isSuperUser } = JSON.parse(
+      localStorage.getItem('userDetails')
+    );
     const isCompleted = !!currentTab;
-    let url = `page_number=1&page_size=10&branch_ids=1&is_completed=${isCompleted}&user_id=60&is_cancelled=${isCancelSelected}&start_date=${startDate}&end_date=${endDate}`;
+    let url = '';
+    if (isSuperUser) {
+      url += `page_number=1&page_size=10&branch_ids=1&is_completed=${isCompleted}&is_cancelled=${isCancelSelected}&start_date=${startDate}&end_date=${endDate}`;
+    } else {
+      url += `page_number=1&page_size=10&branch_ids=1&is_completed=${isCompleted}&user_id=${roleDetails.erp_user_id}&is_cancelled=${isCancelSelected}&start_date=${startDate}&end_date=${endDate}`;
+    }
 
     if (subjectIds.length) {
       url += `&subject_id=${subjectIds.join(',')}`;
