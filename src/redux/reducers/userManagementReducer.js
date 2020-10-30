@@ -2,6 +2,11 @@ import { userManagementActions } from '../actions';
 
 const INITIAL_STATE = {
   creatingUser: false,
+  fetchingUsers: false,
+  users: [],
+  current_page: 1,
+  limit: 10,
+  count: 0,
 };
 
 export default function reducer(state = INITIAL_STATE, action) {
@@ -12,6 +17,12 @@ export default function reducer(state = INITIAL_STATE, action) {
       return { ...state, creatingUser: false };
     case userManagementActions.CREATE_USER_FAILURE:
       return { ...state, creatingUser: false };
+    case userManagementActions.FETCH_USERS_REQUEST:
+      return { ...state, fetchingUsers: true };
+    case userManagementActions.FETCH_USERS_SUCCESS:
+      return { ...state, fetchingUsers: false, users: action.data };
+    case userManagementActions.FETCH_USERS_FAILURE:
+      return { ...state, fetchingUsers: false };
     default:
       return state;
   }
