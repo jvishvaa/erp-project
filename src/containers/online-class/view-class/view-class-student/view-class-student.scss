@@ -1,0 +1,48 @@
+@import '../../../../assets/styles/variables';
+@import '../../../../assets/styles/mixins';
+
+// View class student collection
+.viewclass__student-collection {
+  width: 95%;
+  margin: 20px auto 0px auto;
+
+  .not-found-alert {
+    margin-top: 100px;
+    color: $primary-color;
+  }
+
+  .progress-center {
+    position: absolute;
+    left: 50%;
+    margin-top: 100px;
+  }
+
+  .student-view-pagination {
+    margin-top: 40px;
+  }
+}
+
+// View class student
+.viewclass__student-container {
+  width: 95%;
+  border: 2px solid $primary-color;
+  margin: 20px auto;
+  padding: 15px;
+  border-radius: 5px;
+
+  .viewclass__student-btn {
+    width: 100%;
+  }
+
+  .responsive__align {
+    text-align: right;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .viewclass__student-container {
+    .responsive__align {
+      text-align: left;
+    }
+  }
+}

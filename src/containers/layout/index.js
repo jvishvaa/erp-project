@@ -120,7 +120,7 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'View Class': {
-        history.push('/view-class');
+        history.push('/online-class/view-class');
         break;
       }
       case 'Create Class': {

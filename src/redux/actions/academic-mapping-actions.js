@@ -1,0 +1,27 @@
+import axiosInstance from '../../config/axios';
+import endpoints from '../../config/endpoints';
+import mappingConstants from '../constants/academic-mapping-constants';
+
+function request(type) {
+  return { type: mappingConstants[type] };
+}
+function success(data, type) {
+  return { type: mappingConstants[type], payload: data };
+}
+function failure(error, type) {
+  return { type: mappingConstants[type], payload: error };
+}
+
+export const listSubjects = () => {
+  return async (dispatch) => {
+    dispatch(request(mappingConstants.SUBJECT_REQUEST));
+    try {
+      const { data } = await axiosInstance(endpoints.academics.subjects);
+      dispatch(success(data.data, mappingConstants.SUBJECT_SUCCESS));
+    } catch (error) {
+      dispatch(failure(error, mappingConstants.SUBJECT_FAILURE));
+    }
+  };
+};
+
+export const listGrades = () => {};
