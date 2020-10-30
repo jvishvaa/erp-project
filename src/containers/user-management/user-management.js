@@ -4,6 +4,7 @@ import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import { Checkbox, FormControlLabel, Grid, Input, TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import axiosInstance from '../../config/axios';
+import AssignRole from '../communication/assign-role/assign-role';
 
 class UserManagement extends Component {
   constructor(props) {
@@ -151,6 +152,7 @@ class UserManagement extends Component {
           ) : (
             ''
           )}
+          <AssignRole />
         </div>
       </>
     );
