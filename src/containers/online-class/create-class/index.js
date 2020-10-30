@@ -1,5 +1,5 @@
 import React from 'react';
-import Layout from '../../layout';
+import Layout from '../../Layout';
 import CreateclassProvider from './create-class-context/create-class-state';
 import CreateClassForm from './create-class-form';
 
