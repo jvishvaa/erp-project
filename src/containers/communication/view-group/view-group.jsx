@@ -41,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
 const ViewGroup = withRouter(({ history, ...props }) => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
+  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [groupsData, setGroupsData] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [editGroupId, setEditGroupId] = useState(0);
@@ -53,7 +54,12 @@ const ViewGroup = withRouter(({ history, ...props }) => {
   const getGroupsData = async () => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.communication.getGroups}?page=${currentPage}`
+        `${endpoints.communication.getGroups}?page=${currentPage}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       const resultGroups = [];
       if (result.status === 200) {
@@ -82,7 +88,12 @@ const ViewGroup = withRouter(({ history, ...props }) => {
   const handleStatusChange = async (id, index) => {
     try {
       const statusChange = await axiosInstance.put(
-        `${endpoints.communication.editGroup}${id}/change-group-status/`
+        `${endpoints.communication.editGroup}${id}/change-group-status/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       if (statusChange.status === 200) {
         setAlert('success', statusChange.data.message);
@@ -101,7 +112,12 @@ const ViewGroup = withRouter(({ history, ...props }) => {
   const handleDelete = async (id, index) => {
     try {
       const statusChange = await axiosInstance.delete(
-        `${endpoints.communication.editGroup}${id}/delete-group/`
+        `${endpoints.communication.editGroup}${id}/delete-group/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       if (statusChange.status === 200) {
         setAlert('success', statusChange.data.message);
