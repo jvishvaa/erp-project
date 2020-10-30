@@ -3,7 +3,7 @@ import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import RoleManagement from './role-management';
 import CreateRole from './create-role';
 import EditRole from './edit-role';
-import Layout from '../layout';
+import Layout from '../Layout';
 // import { withStyles } from '@material-ui/core/styles';
 
 const RoutesIndex = () => {

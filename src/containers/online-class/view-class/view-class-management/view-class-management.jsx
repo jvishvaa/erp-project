@@ -1,5 +1,5 @@
 import React from 'react';
-import Layout from '../../../layout';
+import Layout from '../../../Layout';
 import ViewClassManagementFilters from './components/view-class-management-filters';
 import ViewClassManagementTable from './components/view-class-management-table';
 import './view-class-management.scss';

@@ -14,7 +14,7 @@ import { Pagination } from '@material-ui/lab';
 import axiosInstance from '../../../../../config/axios';
 import endpoints from '../../../../../config/endpoints';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
-import Layout from '../../../../layout';
+import Layout from '../../../../Layout';
 
 const AttendeeList = (props) => {
   const [totalPages, setTotalPages] = useState(0);
