@@ -113,7 +113,6 @@ const Layout = ({ children, history }) => {
   );
 
   const handleRouting = (name) => {
-    console.log('name ', name);
     switch (name) {
       case 'Take Class': {
         history.push('/take-class');
@@ -136,19 +135,19 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Add Group': {
-        history.push('/add-group');
+        history.push('/addgroup');
         break;
       }
       case 'View&Edit Group': {
-        history.push('/view-edit-group');
+        history.push('/viewgroup');
         break;
       }
       case 'Send Message': {
-        history.push('/send-message');
+        history.push('/sendmessage');
         break;
       }
       case 'Add SMS Credit': {
-        history.push('/add-sms-credit');
+        history.push('/smscredit');
         break;
       }
       case 'SMS&Email Log': {

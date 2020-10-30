@@ -22,7 +22,7 @@ import endpoints from '../../../config/endpoints';
 import HeaderSection from './components/header-section';
 import CustomMultiSelect from '../custom-multiselect/custom-multiselect';
 import CustomSelectionTable from '../custom-selection-table/custom-selection-table';
-import Layout from '../../layout';
+import Layout from '../../Layout';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './send-message.css';
 

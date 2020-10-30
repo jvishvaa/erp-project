@@ -18,7 +18,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import TableRow from '@material-ui/core/TableRow';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
-import Layout from '../../layout';
+import Layout from '../../Layout';
 import EditGroup from '../edit-group/edit-group';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './view-group.css';
