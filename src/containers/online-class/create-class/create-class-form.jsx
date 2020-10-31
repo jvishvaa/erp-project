@@ -306,6 +306,7 @@ const CreateClassForm = () => {
               name='duration'
               onChange={handleChange}
               required
+              InputProps={{ inputProps: { min: 0 } }}
             />
           </Grid>
           <Grid item xs={12} sm={2}>
@@ -321,6 +322,7 @@ const CreateClassForm = () => {
               onChange={handleChange}
               placeholder='Maximum 300'
               required
+              InputProps={{ inputProps: { min: 0 } }}
             />
           </Grid>
           <MuiPickersUtilsProvider utils={MomentUtils}>

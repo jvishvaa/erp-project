@@ -109,10 +109,11 @@ const CreateclassProvider = (props) => {
 
   const verifyTutorEmail = async (tutorEmail, selectedDate, selectedTime, duration) => {
     const startTime = `${selectedDate} ${getFormatedTime(selectedTime)}`;
+    const { role_details: roleDetails } = JSON.parse(localStorage.getItem('userDetails'));
     dispatch(request(VERIFY_TUTOREMAIL_REQUEST));
     try {
       const { data } = await axiosInstance.get(
-        `${endpoints.onlineClass.teacherAvailability}?tutor_email=${tutorEmail}&start_time=${startTime}&duration=${duration}`
+        `${endpoints.onlineClass.teacherAvailability}?erp_user_id=${roleDetails.erp_user_id}&tutor_email=${tutorEmail}&start_time=${startTime}&duration=${duration}`
       );
       if (data.status === 'success') dispatch(success('', VERIFY_TUTOREMAIL_SUCCESS));
       else throw new Error(data.message);
