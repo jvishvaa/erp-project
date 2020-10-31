@@ -25,6 +25,7 @@ const ViewClassManagementFilters = () => {
   const [gradeIds, setGradeIds] = useState([]);
   const [sectionIds, setSectionIds] = useState([]);
   const [subjectIds, setSubjectIds] = useState([]);
+  const [clearKey, setClearKey] = useState(new Date());
 
   const { subjects = [] } = useSelector((state) => state.academic);
 
@@ -98,17 +99,28 @@ const ViewClassManagementFilters = () => {
     setSubjectIds(ids);
   };
 
+  const handleClear = () => {
+    setGradeIds([]);
+    setSectionIds([]);
+    setSubjectIds([]);
+    setIsCancelSelected(false);
+    setStartDate(moment().format('YYYY-MM-DD'));
+    setEndDate(moment().format('YYYY-MM-DD'));
+    setClearKey(new Date());
+  };
+
   useEffect(() => {
     handleGetClasses();
     dispatch(listGrades());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentTab]);
+  }, [currentTab, clearKey]);
 
   return (
     <div className='filters__container'>
       <Grid container spacing={3}>
         <Grid item>
           <Autocomplete
+            key={clearKey}
             multiple
             size='small'
             onChange={handleGrade}
@@ -130,6 +142,7 @@ const ViewClassManagementFilters = () => {
         <Grid item>
           {gradeIds.length ? (
             <Autocomplete
+              key={clearKey}
               size='small'
               multiple
               onChange={handleSection}
@@ -139,7 +152,6 @@ const ViewClassManagementFilters = () => {
                 return `${option.section__section_name}`;
               }}
               filterSelectedOptions
-              // value={[]}
               renderInput={(params) => (
                 <TextField
                   className='create__class-textfield'
@@ -156,6 +168,7 @@ const ViewClassManagementFilters = () => {
         </Grid>
         <Grid item xs={12} sm={4}>
           <Autocomplete
+            key={clearKey}
             multiple
             id='tags-outlined'
             options={subjects}
@@ -216,7 +229,12 @@ const ViewClassManagementFilters = () => {
           </Grid>
         </MuiPickersUtilsProvider>
         <Grid item xs={12} sm={2}>
-          <Button className='viewclass__management-btn' variant='contained' disabled>
+          <Button
+            className='viewclass__management-btn'
+            variant='contained'
+            onClick={handleClear}
+            disabled={!gradeIds.length && !subjectIds.length}
+          >
             Clear all
           </Button>
         </Grid>
@@ -252,14 +270,8 @@ const ViewClassManagementFilters = () => {
             aria-label='icon label tabs example'
             className='managementview-tabs'
           >
-            <Tab
-              // disabled={loadingStudentOnlineClasses}
-              label={<Typography variant='h6'>Upcoming</Typography>}
-            />
-            <Tab
-              // disabled={loadingStudentOnlineClasses}
-              label={<Typography variant='h6'>Completed</Typography>}
-            />
+            <Tab label={<Typography variant='h6'>Upcoming</Typography>} />
+            <Tab label={<Typography variant='h6'>Completed</Typography>} />
           </Tabs>
         </Grid>
         <Grid item xs={12} sm={6}>
