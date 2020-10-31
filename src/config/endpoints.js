@@ -20,4 +20,14 @@ export default {
     getSmsCredit: '/communication/sms-credits/',
     assignRole: '/erp_user/assign_role/',
   },
+  onlineClass: {
+    filterStudent: '/erp_user/student_filter/',
+    teacherAvailability: '/erp_user/tutor_availability_check/',
+    createClass: '/erp_user/online_class/',
+    studentOnlineclasses: '/erp_user/student_online_class/',
+    acceptOrJoinClass: '/erp_user/onlineclass_accept_join/',
+    managementOnlineClass: '/erp_user/teacher_online_class/',
+    cancelClass: '/erp_user/cancel-online-class/',
+    attendeeList: '/erp_user/onlineclass_attendeelist/',
+  },
 };
