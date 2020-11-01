@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
+import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import { login } from '../../redux/actions';
 
 function Copyright() {
@@ -51,6 +52,7 @@ function SignIn({ onLogin, history }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const classes = useStyles();
+  const { setAlert } = useContext(AlertNotificationContext);
 
   const handleLogin = () => {
     const params = {
@@ -58,8 +60,12 @@ function SignIn({ onLogin, history }) {
       password,
     };
     if (username && password) {
-      onLogin(params).then(() => {
-        history.push('/dashboard');
+      onLogin(params).then((response) => {
+        if (response.isLogin) {
+          history.push('/dashboard');
+        } else {
+          setAlert('error', response.message);
+        }
       });
     }
   };

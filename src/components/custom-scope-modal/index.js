@@ -12,7 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { fetchGrades, fetchSections } from '../../redux/actions';
+import { fetchGrades, fetchSections, fetchSubjects } from '../../redux/actions';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -114,6 +114,7 @@ const CustomScopeModal = ({
 }) => {
   const [grades, setGrades] = useState([]);
   const [sections, setSections] = useState([]);
+  const [subjects, setSubjects] = useState([]);
   const classes = useStyles();
 
   const onCustomScopeChange = (scope, value) => {
@@ -139,6 +140,15 @@ const CustomScopeModal = ({
         : [];
       setGrades(transformedData);
     });
+    fetchSubjects().then((data) => {
+      const transformedData = data
+        ? data.map((subject) => ({
+            id: subject.id,
+            subject_name: subject.subject_name,
+          }))
+        : [];
+      setSubjects(transformedData);
+    });
   };
 
   const handleChangeGrade = (values) => {
@@ -154,7 +164,7 @@ const CustomScopeModal = ({
       const transformedData = data
         ? data.map((section) => ({
             id: section.section_id,
-            section_name: `${section.grade__grade_name}__${section.section__section_name}`,
+            section_name: `${section.section__section_name}`,
           }))
         : [];
       setSections(transformedData);
@@ -165,6 +175,15 @@ const CustomScopeModal = ({
       custom_branch: customScope.custom_branch,
       custom_grade: customScope.custom_grade,
       custom_section: values,
+    };
+    onCustomScopeChange('custom_section', customScopeObj);
+  };
+  const handleChangeSubject = (values) => {
+    const customScopeObj = {
+      custom_branch: customScope.custom_branch,
+      custom_grade: customScope.custom_grade,
+      custom_section: customScope.custom_section,
+      custom_subject: values,
     };
     onCustomScopeChange('custom_section', customScopeObj);
   };
@@ -257,6 +276,33 @@ const CustomScopeModal = ({
                   const filteredValues = value.filter((value) => value);
 
                   handleChangeSection(filteredValues);
+                }}
+                getOptionSelected={(option, value) => option.id == value.id}
+              />
+            </FormControl>
+          </Grid>
+          <Grid item sm={12}>
+            <FormControl className={classes.formControl}>
+              <Autocomplete
+                multiple
+                limitTags={2}
+                id='multiple-limit-tags'
+                options={subjects}
+                style={{ width: 400 }}
+                value={customScope.custom_subject}
+                getOptionLabel={(option) => option.subject_name}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Subjects'
+                    placeholder='Subjects'
+                  />
+                )}
+                onChange={(e, value) => {
+                  const filteredValues = value.filter((value) => value);
+
+                  handleChangeSubject(filteredValues);
                 }}
                 getOptionSelected={(option, value) => option.id == value.id}
               />

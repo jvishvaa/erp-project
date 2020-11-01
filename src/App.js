@@ -7,6 +7,7 @@ import ViewGroup from './containers/communication/view-group/view-group';
 import MessageCredit from './containers/communication/message-credit/message-credit';
 import SendMessage from './containers/communication/send-message/send-message';
 import AssignRole from './containers/communication/assign-role/assign-role';
+import MessageLog from './containers/communication/message-log/message-log';
 import RoleManagement from './containers/role-management';
 import store from './redux/store';
 import AlertNotificationProvider from './context-api/alert-context/alert-state';
@@ -103,6 +104,9 @@ function App() {
                 </Route>
                 <Route exact path='/online-class/attendee-list/:id'>
                   {({ match }) => <AttendeeList match={match} />}
+                </Route>
+                <Route exact path='/messageLog'>
+                  {({ match }) => <MessageLog match={match} />}
                 </Route>
                 <Route exact path='/online-class/attend-class'>
                   {({ match }) => <ViewClassStudentCollection match={match} />}

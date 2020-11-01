@@ -103,7 +103,7 @@ class EditRole extends Component {
         <Grid container spacing={4} style={{ padding: '2rem 0' }}>
           {modules &&
             modules.map((module) => (
-              <Grid item xs={12} sm={6} lg={4}>
+              <Grid item xs={12} sm={6} lg={12}>
                 <ModuleCard
                   module={module}
                   alterCreateRolePermissions={this.alterEditRolePermissions}

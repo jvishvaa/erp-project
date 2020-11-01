@@ -10,6 +10,7 @@ const INITIAL_STATE = {
   branches: [],
   grades: [],
   sections: [],
+  subjects: [],
   modulePermissionsRequestData: [], // for keeping the request data format for module permissions when creating and editing a role
   fetchingRoleDataById: false,
   editRoleModulePermissionsState: [], // for keeping state when editing
