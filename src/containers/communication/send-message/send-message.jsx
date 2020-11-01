@@ -47,7 +47,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedGroup, setSelectedGroup] = useState([]);
   const [selectedRoles, setSelectedRoles] = useState([]);
-  const [selectedBranch, setSelectedBranch] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState(null);
   const [selectedGrades, setSelectedGrades] = useState([]);
   const [selectedSections, setSelectedSections] = useState([]);
   const [pageno, setPageno] = useState(1);
@@ -79,6 +79,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
   const [selectedSmsType, setSelectedSmsType] = useState('');
   const [textMessageError, setTextMessageError] = useState('');
   const [messageTypeError, setMessageTypeError] = useState('');
+  const [messageSending, setMessageSending] = useState(false);
 
   const handleCustomChange = () => {
     setCustomSelect(!customSelect);
@@ -145,15 +146,9 @@ const SendMessage = withRouter(({ history, ...props }) => {
   };
 
   const getGradeApi = async () => {
-    const branchesId = [];
-    branchList
-      .filter((item) => item['branch_name'] === selectedBranch[0])
-      .forEach((items) => {
-        branchesId.push(items.id);
-      });
     try {
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?branch_id=${branchesId.toString()}`,
+        `${endpoints.communication.grades}?branch_id=${selectedBranch}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -163,9 +158,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       const resultOptions = [];
       if (result.status === 200) {
         result.data.data.map((items) => resultOptions.push(items.grade__grade_name));
-        if (selectedBranch.length > 1) {
-          setGrade([...grade, ...resultOptions]);
-        } else {
+        if (selectedBranch) {
           setGrade(['All', ...resultOptions]);
         }
         setGradeList(result.data.data);
@@ -179,12 +172,6 @@ const SendMessage = withRouter(({ history, ...props }) => {
 
   const getSectionApi = async () => {
     try {
-      const branchesId = [];
-      branchList
-        .filter((item) => item['branch_name'] === selectedBranch[0])
-        .forEach((items) => {
-          branchesId.push(items.id);
-        });
       const gradesId = [];
       gradeList
         .filter((item) => selectedGrades.includes(item['grade__grade_name']))
@@ -194,7 +181,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       const result = await axiosInstance.get(
         `${
           endpoints.communication.sections
-        }?branch_id=${branchesId.toString()}&grade_id=${gradesId.toString()}`,
+        }?branch_id=${selectedBranch}&grade_id=${gradesId.toString()}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -204,11 +191,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       const resultOptions = [];
       if (result.status === 200) {
         result.data.data.map((items) => resultOptions.push(items.section__section_name));
-        if (selectedGrades.length > 1) {
-          setSection([...section, ...resultOptions]);
-        } else {
-          setSection(['All', ...resultOptions]);
-        }
+        setSection(['All', ...resultOptions]);
         setSectionList(result.data.data);
       } else {
         setAlert('error', result.data.message);
@@ -278,31 +261,18 @@ const SendMessage = withRouter(({ history, ...props }) => {
       if (result.status === 200) {
         setHeaders([
           { field: 'id', headerName: 'ID', width: 100 },
-          { field: 'firstName', headerName: 'First name', width: 150 },
-          { field: 'lastName', headerName: 'Last name', width: 150 },
+          { field: 'fullName', headerName: 'Name', width: 250 },
           { field: 'email', headerName: 'Email Id', width: 200 },
           { field: 'erp_id', headerName: 'Erp Id', width: 150 },
           { field: 'gender', headerName: 'Gender', width: 100 },
           { field: 'contact', headerName: 'Contact', width: 150 },
-          {
-            field: 'fullName',
-            headerName: 'Full name',
-            description: 'This column has a value getter and is not sortable.',
-            sortable: false,
-            width: 250,
-            valueGetter: (params) =>
-              `${params.getValue('firstName') || ''} ${
-                params.getValue('lastName') || ''
-              }`,
-          },
         ]);
         const rows = [];
         const selectionRows = [];
         result.data.results.forEach((items) => {
           rows.push({
             id: items.id,
-            lastName: items.user.last_name,
-            firstName: items.user.first_name,
+            fullName: `${items.user.first_name} ${items.user.last_name}`,
             email: items.user.email,
             erp_id: items.erp_id,
             gender: items.gender,
@@ -312,8 +282,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
             id: items.id,
             data: {
               id: items.id,
-              lastName: items.user.last_name,
-              firstName: items.user.first_name,
+              fullName: `${items.user.first_name} ${items.user.last_name}`,
               email: items.user.email,
               erp_id: items.erp_id,
               gender: items.gender,
@@ -380,7 +349,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
           setRoleError('Please select a role');
           return;
         }
-        if (!selectedBranch.length) {
+        if (!selectedBranch) {
           setRoleError('');
           setBranchError('Please select a branch');
           return;
@@ -462,161 +431,163 @@ const SendMessage = withRouter(({ history, ...props }) => {
       setMessageTypeError('Please select a message type');
       return;
     }
-    setTextMessageError('');
-    setMessageTypeError('');
-    try {
-      const sendMessageApi = endpoints.communication.sendMessage;
-      const selectionArray = [];
-      selectedUsers.forEach((item) => {
-        item.selected.forEach((ids) => {
-          selectionArray.push(ids);
+    if (!messageSending) {
+      setTextMessageError('');
+      setMessageTypeError('');
+      setMessageSending(true);
+      try {
+        const sendMessageApi = endpoints.communication.sendMessage;
+        const selectionArray = [];
+        selectedUsers.forEach((item) => {
+          item.selected.forEach((ids) => {
+            selectionArray.push(ids);
+          });
         });
-      });
-      let request = {};
-      if (!customSelect) {
-        const groupId = [];
-        if (selectedGroup.length && !selectedGroup.includes('All')) {
-          groupList
-            .filter((item) => selectedGroup.includes(item['group_name']))
-            .forEach((items) => {
-              groupId.push(items.id);
-            });
+        let request = {};
+        if (!customSelect) {
+          const groupId = [];
+          if (selectedGroup.length && !selectedGroup.includes('All')) {
+            groupList
+              .filter((item) => selectedGroup.includes(item['group_name']))
+              .forEach((items) => {
+                groupId.push(items.id);
+              });
+          }
+          if (isEmail) {
+            request = {
+              communicate_type: selectedSmsType,
+              email_body: textMessage,
+              email_subject: emailSubject,
+              group_type: '1',
+              message_type: '1',
+              group: groupId[0],
+              erp_users: selectionArray,
+            };
+          }
+          if (!isEmail) {
+            request = {
+              communicate_type: selectedSmsType,
+              message_content: textMessage,
+              group_type: '1',
+              message_type: '2',
+              group: groupId[0],
+              erp_users: selectionArray,
+            };
+          }
         }
-        if (isEmail) {
-          request = {
-            communicate_type: selectedSmsType,
-            email_body: textMessage,
-            email_subject: emailSubject,
-            group_type: '1',
-            message_type: '1',
-            group: groupId[0],
-            erp_users: selectionArray,
-          };
+        if (customSelect) {
+          const rolesId = [];
+          const branchId = [];
+          const gradesId = [];
+          const sectionsId = [];
+          if (selectedRoles.length && !selectedRoles.includes('All')) {
+            roleList
+              .filter((item) => selectedRoles.includes(item['role_name']))
+              .forEach((items) => {
+                rolesId.push(items.id);
+              });
+          }
+          if (selectedBranch) {
+            branchId.push(selectedBranch);
+          }
+          if (selectedGrades.length && !selectedGrades.includes('All')) {
+            gradeList
+              .filter((item) => selectedGrades.includes(item['grade__grade_name']))
+              .forEach((items) => {
+                gradesId.push(items.grade_id);
+              });
+          }
+          if (selectedSections.length && !selectedSections.includes('All')) {
+            sectionList
+              .filter((item) => selectedSections.includes(item['section__section_name']))
+              .forEach((items) => {
+                sectionsId.push(items.id);
+              });
+          }
+          const branchArray = [];
+          const gradeArray = [];
+          const sectionArray = [];
+          gradesId.forEach((item) => {
+            gradeArray.push(item);
+          });
+          sectionsId.forEach((item) => {
+            sectionArray.push(item);
+          });
+          branchId.forEach((item) => {
+            branchArray.push(item);
+          });
+          if (isEmail) {
+            request = {
+              communicate_type: selectedSmsType,
+              email_body: textMessage,
+              email_subject: emailSubject,
+              group_type: '2',
+              message_type: '1',
+              role: rolesId[0],
+              branch: branchArray,
+              grade: gradeArray,
+              mapping_bgs: sectionArray,
+              erp_users: selectionArray,
+            };
+          }
+          if (!isEmail) {
+            request = {
+              communicate_type: selectedSmsType,
+              message_content: textMessage,
+              group_type: '2',
+              message_type: '2',
+              role: rolesId[0],
+              branch: branchArray,
+              grade: gradeArray,
+              mapping_bgs: sectionArray,
+              erp_users: selectionArray,
+            };
+          }
         }
-        if (!isEmail) {
-          request = {
-            communicate_type: selectedSmsType,
-            message_content: textMessage,
-            group_type: '1',
-            message_type: '2',
-            group: groupId[0],
-            erp_users: selectionArray,
-          };
+        const response = await axiosInstance.post(sendMessageApi, request, {
+          headers: {
+            // 'application/json' is the modern content-type for JSON, but some
+            // older servers may use 'text/json'.
+            // See: http://bit.ly/text-json
+            Authorization: `Bearer ${token}`,
+            'content-type': 'application/json',
+          },
+        });
+        const { message } = response.data;
+        if (response.data.status_code === 200) {
+          setAlert('success', message);
+          setSelectedUsers([]);
+          setHeaders([]);
+          setUsersRow([]);
+          setCompleteData([]);
+          setTotalPage(0);
+          setFirstStep(true);
+          setCustomSelect(false);
+          setSecondStep(false);
+          setThirdStep(false);
+          setCurrentStep(1);
+          setSelectedGroup([]);
+          setSelectedBranch(null);
+          setSelectedGrades([]);
+          setSelectedRoles([]);
+          setSelectedSections([]);
+          setTextMessage('');
+          setWordcount(641);
+          setIsEmail(false);
+          setSmsTypeList([]);
+          setSelectedSmsType('');
+          setEmailSubject('');
+          setThirdStep(false);
+          setCurrentStep(1);
+          setMessageSending(false);
+        } else {
+          setAlert('error', response.data.message);
+          setMessageSending(false);
         }
+      } catch (error) {
+        setAlert('error', error.message);
+        setMessageSending(false);
       }
-      if (customSelect) {
-        const rolesId = [];
-        const branchId = [];
-        const gradesId = [];
-        const sectionsId = [];
-        if (selectedRoles.length && !selectedRoles.includes('All')) {
-          roleList
-            .filter((item) => selectedRoles.includes(item['role_name']))
-            .forEach((items) => {
-              rolesId.push(items.id);
-            });
-        }
-        if (selectedBranch.length && !selectedBranch.includes('All')) {
-          branchList
-            .filter((item) => selectedBranch.includes(item['branch_name']))
-            .forEach((items) => {
-              branchId.push(items.id);
-            });
-        }
-        if (selectedGrades.length && !selectedGrades.includes('All')) {
-          gradeList
-            .filter((item) => selectedGrades.includes(item['grade__grade_name']))
-            .forEach((items) => {
-              gradesId.push(items.grade_id);
-            });
-        }
-        if (selectedSections.length && !selectedSections.includes('All')) {
-          sectionList
-            .filter((item) => selectedSections.includes(item['section__section_name']))
-            .forEach((items) => {
-              sectionsId.push(items.id);
-            });
-        }
-        const branchArray = [];
-        const gradeArray = [];
-        const sectionArray = [];
-        gradesId.forEach((item) => {
-          gradeArray.push(item);
-        });
-        sectionsId.forEach((item) => {
-          sectionArray.push(item);
-        });
-        branchId.forEach((item) => {
-          branchArray.push(item);
-        });
-        if (isEmail) {
-          request = {
-            communicate_type: selectedSmsType,
-            email_body: textMessage,
-            email_subject: emailSubject,
-            group_type: '2',
-            message_type: '1',
-            role: rolesId[0],
-            branch: branchArray,
-            grade: gradeArray,
-            mapping_bgs: sectionArray,
-            erp_users: selectionArray,
-          };
-        }
-        if (!isEmail) {
-          request = {
-            communicate_type: selectedSmsType,
-            message_content: textMessage,
-            group_type: '2',
-            message_type: '2',
-            role: rolesId[0],
-            branch: branchArray,
-            grade: gradeArray,
-            mapping_bgs: sectionArray,
-            erp_users: selectionArray,
-          };
-        }
-      }
-      const response = await axiosInstance.post(sendMessageApi, request, {
-        headers: {
-          // 'application/json' is the modern content-type for JSON, but some
-          // older servers may use 'text/json'.
-          // See: http://bit.ly/text-json
-          Authorization: `Bearer ${token}`,
-          'content-type': 'application/json',
-        },
-      });
-      const { message } = response.data;
-      if (response.data.status_code === 200) {
-        setAlert('success', message);
-        setSelectedUsers([]);
-        setHeaders([]);
-        setUsersRow([]);
-        setCompleteData([]);
-        setTotalPage(0);
-        setFirstStep(true);
-        setCustomSelect(false);
-        setSecondStep(false);
-        setThirdStep(false);
-        setCurrentStep(1);
-        setSelectedGroup([]);
-        setSelectedBranch([]);
-        setSelectedGrades([]);
-        setSelectedRoles([]);
-        setSelectedSections([]);
-        setTextMessage('');
-        setWordcount(641);
-        setIsEmail(false);
-        setSmsTypeList([]);
-        setSelectedSmsType('');
-        setEmailSubject('');
-        setThirdStep(false);
-        setCurrentStep(1);
-      } else {
-        setAlert('error', response.data.message);
-      }
-    } catch (error) {
-      setAlert('error', error.message);
     }
   };
   useEffect(() => {
@@ -642,7 +613,10 @@ const SendMessage = withRouter(({ history, ...props }) => {
   }, [isEmail]);
 
   useEffect(() => {
-    if (selectedBranch.length && !selectedBranch.includes('All')) {
+    if (selectedBranch) {
+      setGrade(['All']);
+      setSelectedGrades([]);
+      setSelectedSections([]);
       getGradeApi();
     }
   }, [selectedBranch]);
@@ -706,15 +680,33 @@ const SendMessage = withRouter(({ history, ...props }) => {
                   {selectedRoles.length && !selectedRoles.includes('All') ? (
                     <div className='creategroup_firstrow'>
                       <div>
-                        <CustomMultiSelect
-                          selections={selectedBranch}
-                          setSelections={setSelectedBranch}
-                          nameOfDropdown='Branch'
-                          optionNames={branch}
-                        />
+                        <FormControl variant='outlined' className={classes.formControl}>
+                          <InputLabel id='demo-simple-select-outlined-label'>
+                            Branch
+                          </InputLabel>
+                          <Select
+                            labelId='demo-simple-select-outlined-label'
+                            id='demo-simple-select-outlined'
+                            value={selectedBranch}
+                            onChange={(e) => setSelectedBranch(e.target.value)}
+                            label='Branch'
+                          >
+                            <MenuItem value=''>
+                              <em>None</em>
+                            </MenuItem>
+                            {branchList.map((items, index) => (
+                              <MenuItem
+                                key={`branch_create_group_${index}`}
+                                value={items.id}
+                              >
+                                {items.branch_name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
                         <span className='create_group_error_span'>{branchError}</span>
                       </div>
-                      {selectedBranch.length && !selectedBranch.includes('All') ? (
+                      {selectedBranch ? (
                         <div>
                           <CustomMultiSelect
                             selections={selectedGrades}
@@ -832,18 +824,20 @@ const SendMessage = withRouter(({ history, ...props }) => {
           </div>
         ) : null}
         <div className='send_message_button_wrapper'>
-          <input
-            className='custom_button addgroup_back_button'
-            type='button'
-            onClick={handleback}
-            value='back'
-          />
+          {!firstStep ? (
+            <input
+              className='custom_button addgroup_back_button'
+              type='button'
+              onClick={handleback}
+              value='back'
+            />
+          ) : null}
           {thirdStep ? (
             <input
               className='custom_button addgroup_next_button'
               type='button'
               onClick={handleSendMessage}
-              value='Send Message'
+              value={messageSending ? 'Sending Message' : 'Send Message'}
             />
           ) : (
             <input

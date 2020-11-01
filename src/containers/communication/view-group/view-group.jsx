@@ -45,6 +45,9 @@ const ViewGroup = withRouter(({ history, ...props }) => {
   const [groupsData, setGroupsData] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [editGroupId, setEditGroupId] = useState(0);
+  const [deleteId, setDeleteId] = useState(null);
+  const [deleteIndex, setDeleteIndex] = useState(null);
+  const [deleteAlert, setDeleteAlert] = useState(false);
   const [editGroupName, setEditGroupName] = useState('');
   const [editGroupGrades, setEditGroupGrades] = useState([]);
   const [editGroupSections, setEditGroupSections] = useState([]);
@@ -110,9 +113,14 @@ const ViewGroup = withRouter(({ history, ...props }) => {
     }
   };
   const handleDelete = async (id, index) => {
+    setDeleteId(id);
+    setDeleteIndex(index);
+    setDeleteAlert(true);
+  };
+  const handleDeleteConfirm = async () => {
     try {
       const statusChange = await axiosInstance.delete(
-        `${endpoints.communication.editGroup}${id}/delete-group/`,
+        `${endpoints.communication.editGroup}${deleteId}/delete-group/`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -122,14 +130,22 @@ const ViewGroup = withRouter(({ history, ...props }) => {
       if (statusChange.status === 200) {
         setAlert('success', statusChange.data.message);
         const tempGroupData = groupsData.slice();
-        tempGroupData.splice(index, 1);
+        tempGroupData.splice(deleteIndex, 1);
         setGroupsData(tempGroupData);
+        setDeleteId(null);
+        setDeleteIndex(null);
+        setDeleteAlert(false);
       } else {
         setAlert('error', statusChange.data.message);
       }
     } catch (error) {
       setAlert('error', error.message);
     }
+  };
+  const handleDeleteCancel = () => {
+    setDeleteId(null);
+    setDeleteIndex(null);
+    setDeleteAlert(false);
   };
   const handleEdit = (id, index) => {
     setEditGroupId(id);
@@ -166,6 +182,27 @@ const ViewGroup = withRouter(({ history, ...props }) => {
             groupSections={editGroupSections}
             setGroupName={setEditGroupName}
           />
+        ) : null}
+        {deleteAlert ? (
+          <div className='view_group_delete_alert_wrapper'>
+            <span className='view_group_delete_alert_tag'>
+              Do you want to Delete the Group
+            </span>
+            <div className='view_group_delete_alert_button_wrapper'>
+              <input
+                className='view_group_delete_alert_button'
+                type='button'
+                onClick={handleDeleteConfirm}
+                value='Delete'
+              />
+              <input
+                className='view_group_delete_alert_button'
+                type='button'
+                onClick={handleDeleteCancel}
+                value='cancel'
+              />
+            </div>
+          </div>
         ) : null}
         <Paper className={classes.root}>
           <TableContainer className={`table table-shadow ${classes.container}`}>

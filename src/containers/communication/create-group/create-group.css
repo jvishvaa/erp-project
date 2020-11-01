@@ -74,6 +74,19 @@
 	background-color: #FF6B6B;
 }
 .addgroup_back_button{
-	color: grey;
-	background-color: #dcdcdc;
+	color: white;
+	background-color: #FF6B6B;
+}
+.create_group_branch_wrapper .MuiSelect-icon{
+	color: #FF6B6B !important;
+}
+.create_group_branch_wrapper .MuiInputLabel-outlined{
+	color: #014B7E !important;
+	font-size: 1rem !important;
+    font-weight: 600 !important;
+}
+.create_group_branch_wrapper .MuiFormControl-root .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline{
+	border: rgba(0, 0, 0, 0.23) !important;
+	border-radius: 10px !important;
+	outline: 1px solid #d4cbcb;
 }

@@ -1,9 +1,15 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable dot-notation */
 /* eslint-disable no-debugger */
 /* eslint-disable no-console */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useContext, useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CustomMultiSelect from '../custom-multiselect/custom-multiselect';
@@ -13,12 +19,23 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import Layout from '../../Layout';
 import './create-group.css';
 
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 250,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
+}));
+
 // eslint-disable-next-line no-unused-vars
 const CreateGroup = withRouter(({ history, ...props }) => {
+  const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [selectedRoles, setSelectedRoles] = useState([]);
-  const [selectedBranch, setSelectedBranch] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState(null);
   const [selectedGrades, setSelectedGrades] = useState([]);
   const [selectedSections, setSelectedSections] = useState([]);
   const [groupName, setGroupName] = useState('');
@@ -84,15 +101,9 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   };
 
   const getGradeApi = async () => {
-    const branchesId = [];
-    branchList
-      .filter((item) => item['branch_name'] === selectedBranch[0])
-      .forEach((items) => {
-        branchesId.push(items.id);
-      });
     try {
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?branch_id=${branchesId.toString()}`,
+        `${endpoints.communication.grades}?branch_id=${selectedBranch}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -102,9 +113,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       const resultOptions = [];
       if (result.status === 200) {
         result.data.data.map((items) => resultOptions.push(items.grade__grade_name));
-        if (selectedBranch.length > 1) {
-          setGrade([...grade, ...resultOptions]);
-        } else {
+        if (selectedBranch) {
           setGrade(['All', ...resultOptions]);
         }
         setGradeList(result.data.data);
@@ -118,22 +127,16 @@ const CreateGroup = withRouter(({ history, ...props }) => {
 
   const getSectionApi = async () => {
     try {
-      const branchesId = [];
-      branchList
-        .filter((item) => item['branch_name'] === selectedBranch[0])
-        .forEach((items) => {
-          branchesId.push(items.id);
-        });
       const gradesId = [];
       gradeList
-        .filter((item) => item['grade__grade_name'] === selectedGrades[0])
+        .filter((item) => selectedGrades.includes(item['grade__grade_name']))
         .forEach((items) => {
           gradesId.push(items.grade_id);
         });
       const result = await axiosInstance.get(
         `${
           endpoints.communication.sections
-        }?branch_id=${branchesId.toString()}&grade_id=${gradesId.toString()}`,
+        }?branch_id=${selectedBranch}&grade_id=${gradesId.toString()}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -143,11 +146,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       const resultOptions = [];
       if (result.status === 200) {
         result.data.data.map((items) => resultOptions.push(items.section__section_name));
-        if (selectedGrades.length > 1) {
-          setSection([...section, ...resultOptions]);
-        } else {
-          setSection(['All', ...resultOptions]);
-        }
+        setSection(['All', ...resultOptions]);
         setSectionList(result.data.data);
       } else {
         setAlert('error', result.data.message);
@@ -203,31 +202,18 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       if (result.status === 200) {
         setHeaders([
           { field: 'id', headerName: 'ID', width: 100 },
-          { field: 'firstName', headerName: 'First name', width: 150 },
-          { field: 'lastName', headerName: 'Last name', width: 150 },
+          { field: 'fullName', headerName: 'Name', width: 250 },
           { field: 'email', headerName: 'Email Id', width: 200 },
           { field: 'erp_id', headerName: 'Erp Id', width: 150 },
           { field: 'gender', headerName: 'Gender', width: 100 },
           { field: 'contact', headerName: 'Contact', width: 150 },
-          {
-            field: 'fullName',
-            headerName: 'Full name',
-            description: 'This column has a value getter and is not sortable.',
-            sortable: false,
-            width: 250,
-            valueGetter: (params) =>
-              `${params.getValue('firstName') || ''} ${
-                params.getValue('lastName') || ''
-              }`,
-          },
         ]);
         const rows = [];
         const selectionRows = [];
         result.data.results.forEach((items) => {
           rows.push({
             id: items.id,
-            lastName: items.user.last_name,
-            firstName: items.user.first_name,
+            fullName: `${items.user.first_name} ${items.user.last_name}`,
             email: items.user.email,
             erp_id: items.erp_id,
             gender: items.gender,
@@ -237,8 +223,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
             id: items.id,
             data: {
               id: items.id,
-              lastName: items.user.last_name,
-              firstName: items.user.first_name,
+              fullName: `${items.user.first_name} ${items.user.last_name}`,
               email: items.user.email,
               erp_id: items.erp_id,
               gender: items.gender,
@@ -279,12 +264,8 @@ const CreateGroup = withRouter(({ history, ...props }) => {
           rolesId.push(items.id);
         });
     }
-    if (selectedBranch.length && !selectedBranch.includes('All')) {
-      branchList
-        .filter((item) => selectedBranch.includes(item['branch_name']))
-        .forEach((items) => {
-          branchId.push(items.id);
-        });
+    if (selectedBranch) {
+      branchId.push(selectedBranch);
     }
     if (selectedGrades.length && !selectedGrades.includes('All')) {
       gradeList
@@ -382,7 +363,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       setRoleError('Please select a role');
       return;
     }
-    if (!selectedBranch.length) {
+    if (!selectedBranch) {
       setRoleError('');
       setBranchError('Please select a branch');
       return;
@@ -405,13 +386,16 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   }, []);
 
   useEffect(() => {
-    if (selectedBranch.length && !selectedBranch.includes('All')) {
+    if (selectedBranch) {
       setGrade(['All']);
+      setSelectedGrades([]);
+      setSelectedSections([]);
       getGradeApi();
     }
   }, [selectedBranch]);
   useEffect(() => {
     if (selectedGrades.length && !selectedGrades.includes('All')) {
+      setSelectedSections([]);
       getSectionApi();
     }
   }, [selectedGrades]);
@@ -463,15 +447,32 @@ const CreateGroup = withRouter(({ history, ...props }) => {
             {selectedRoles.length && !selectedRoles.includes('All') ? (
               <div className='creategroup_firstrow'>
                 <div>
-                  <CustomMultiSelect
-                    selections={selectedBranch}
-                    setSelections={setSelectedBranch}
-                    nameOfDropdown='Branch'
-                    optionNames={branch}
-                  />
+                  <div className='create_group_branch_wrapper'>
+                    <FormControl variant='outlined' className={classes.formControl}>
+                      <InputLabel id='demo-simple-select-outlined-label'>
+                        Branch
+                      </InputLabel>
+                      <Select
+                        labelId='demo-simple-select-outlined-label'
+                        id='demo-simple-select-outlined'
+                        value={selectedBranch}
+                        onChange={(e) => setSelectedBranch(e.target.value)}
+                        label='Branch'
+                      >
+                        <MenuItem value=''>
+                          <em>None</em>
+                        </MenuItem>
+                        {branchList.map((items, index) => (
+                          <MenuItem key={`branch_create_group_${index}`} value={items.id}>
+                            {items.branch_name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </div>
                   <span className='create_group_error_span'>{branchError}</span>
                 </div>
-                {selectedBranch.length && !selectedBranch.includes('All') ? (
+                {selectedBranch ? (
                   <div>
                     <CustomMultiSelect
                       selections={selectedGrades}
@@ -495,12 +496,14 @@ const CreateGroup = withRouter(({ history, ...props }) => {
           </>
         )}
         <div className='button_wrapper'>
-          <input
-            className='custom_button addgroup_back_button'
-            type='button'
-            onClick={handleback}
-            value='back'
-          />
+          {next ? (
+            <input
+              className='custom_button addgroup_back_button'
+              type='button'
+              onClick={handleback}
+              value='back'
+            />
+          ) : null}
           {next ? (
             <input
               className='custom_button addgroup_next_button'
