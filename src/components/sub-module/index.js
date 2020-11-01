@@ -98,6 +98,7 @@ const SubModule = ({
           custom_branch: subModule.custom_branch,
           custom_grade: subModule.custom_grade,
           custom_section: subModule.custom_section,
+          custon_subject: subModule.custom_subject,
         }}
         subModule={subModule.module_child_name}
       />

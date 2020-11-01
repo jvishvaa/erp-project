@@ -1,5 +1,7 @@
+/* eslint-disable no-debugger */
 /* eslint-disable no-nested-ternary */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { withRouter } from 'react-router-dom';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -11,8 +13,30 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import useStyles from './useStyles';
 import menuIcon from './menu-icon';
 
-const MenuItem = ({ item, onClick }) => {
+const MenuItem = withRouter(({ history, ...props }) => {
+  const { item, onClick } = props || {};
+  const [selectedIndex, setSelectedIndex] = useState(null);
+  const menuSelectionArray = [
+    { name: 'Take Class', Path: '/take-class' },
+    { name: 'View Class', Path: '/online-class/view-class' },
+    { name: 'Attend Online Class', Path: '/online-class/attend-class' },
+    { name: 'Create Class', Path: '/online-class/create-class' },
+    { name: 'Online Class', Path: '/create-class' },
+    { name: 'Communication', Path: '/communication' },
+    { name: 'Add Group', Path: '/addgroup' },
+    { name: 'View&Edit Group', Path: '/viewgroup' },
+    { name: 'Send Message', Path: '/sendmessage' },
+    { name: 'Add SMS Credit', Path: '/smscredit' },
+    { name: 'SMS&Email Log', Path: '/sms-email-log' },
+  ];
   const [menuOpen, setMenuOpen] = useState(false);
+  useEffect(() => {
+    menuSelectionArray.forEach((items, index) => {
+      if (items.Path === history.location.pathname) {
+        setSelectedIndex(index);
+      }
+    });
+  }, [history.location.pathname]);
   const classes = useStyles();
   return (
     <>
@@ -48,6 +72,12 @@ const MenuItem = ({ item, onClick }) => {
             {item.child_module.map((child) => (
               <ListItem
                 button
+                className={
+                  selectedIndex &&
+                  child.child_name === menuSelectionArray[selectedIndex].name
+                    ? 'menu_selection'
+                    : null
+                }
                 onClick={() => {
                   onClick(child.child_name);
                 }}
@@ -67,6 +97,6 @@ const MenuItem = ({ item, onClick }) => {
       )}
     </>
   );
-};
+});
 
 export default MenuItem;

@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 /* eslint-disable no-nested-ternary */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -17,12 +18,15 @@ import {
 import styles from './useStyles';
 
 import ModuleCard from '../../components/module-card';
+import { AssignmentReturned } from '@material-ui/icons';
 
 class CreateRole extends Component {
   constructor(props) {
     super(props);
     this.state = {
       roleName: '',
+      roleNameError: '',
+      selectionError: '',
     };
   }
 
@@ -53,6 +57,17 @@ class CreateRole extends Component {
       role_name: roleName,
       Module: modulePermissionsRequestData,
     };
+    if (!reqObj.role_name) {
+      this.setState({ roleNameError: 'Please enter a role name' });
+      return;
+    }
+    if (!reqObj.Module.length) {
+      this.setState({ roleNameError: '' });
+      this.setState({ selectionError: 'Please select some role' });
+      return;
+    }
+
+    this.setState({ selectionError: '' });
     createRole(reqObj)
       .then(() => {
         history.push('/role-management');
@@ -69,11 +84,12 @@ class CreateRole extends Component {
       setModulePermissionsRequestData,
       classes,
     } = this.props;
+    const { roleNameError, selectionError } = this.state;
     const modulesListing = () => {
       if (fetchingModules) return 'Loading.....';
       if (modules?.length > 0) {
         return modules.map((module) => (
-          <Grid item xs={12} sm={6} lg={4}>
+          <Grid item xs={12} sm={6} lg={12}>
             <ModuleCard
               module={module}
               alterCreateRolePermissions={this.alterCreateRolePermissions}
@@ -90,14 +106,17 @@ class CreateRole extends Component {
       <div className={classes.root}>
         <Grid container spacing={2} alignItems='center' style={{ padding: '2rem 0' }}>
           <Grid item>
-            <TextField
-              id='outlined-helperText'
-              label='Role name'
-              defaultValue=''
-              variant='outlined'
-              onChange={this.handleRoleNameChange}
-              color='secondary'
-            />
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span style={{ color: 'red' }}>{roleNameError}</span>
+              <TextField
+                id='outlined-helperText'
+                label='Role name'
+                defaultValue=''
+                variant='outlined'
+                onChange={this.handleRoleNameChange}
+                color='secondary'
+              />
+            </div>
           </Grid>
           <Grid item>
             <Button onClick={this.handleCreateRole}>Add Role</Button>
@@ -105,7 +124,7 @@ class CreateRole extends Component {
         </Grid>
         <Typography className={classes.sectionHeader}>Number of modules</Typography>
         <Divider />
-
+        <span style={{ color: 'red' }}>{selectionError}</span>
         <Grid container spacing={4} style={{ padding: '2rem 0' }}>
           {modulesListing()}
         </Grid>

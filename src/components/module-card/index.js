@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 import React, { useState } from 'react';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -19,6 +20,7 @@ const columns = [
   { id: 'my_branch', label: 'Branch', minWidth: 80 },
   { id: 'my_grade', label: 'Grade', minWidth: 80 },
   { id: 'my_section', label: 'Section', minWidth: 80 },
+  { id: 'my_subject', label: 'Subject', minWidth: 80 },
   {
     id: 'custom',
     label: 'Custom',
@@ -62,12 +64,14 @@ function findAndApplyCustomScope(subModules, id, customScopeObj, applyUnion) {
   const customBranch = clonedArray[index].custom_branch;
   const customGrade = clonedArray[index].custom_grade;
   const customSection = clonedArray[index].custom_section;
+  const customSubject = clonedArray[index].custom_subject;
   let scopeObj = { ...customScopeObj };
   if (applyUnion) {
     scopeObj = {
       custom_branch: union(customBranch, customScopeObj.custom_branch),
       custom_grade: union(customGrade, customScopeObj.custom_grade),
       custom_section: union(customSection, customScopeObj.custom_section),
+      custom_subject: union(customSubject, customScopeObj.custom_subject),
     };
   }
   clonedArray[index] = {
@@ -86,7 +90,6 @@ export default function ModuleCard({
 }) {
   const [scopesObj, setScopes] = useState(scopes);
   const classes = useStyles();
-
   const constructModulePermissionsRequestData = (reqObjArr) => {
     const data = JSON.parse(JSON.stringify(modulePermissionsRequestData));
     reqObjArr.forEach((reqObj) => {
@@ -176,9 +179,11 @@ export default function ModuleCard({
         my_branch: changedSubModule.my_branch,
         my_grade: changedSubModule.my_grade,
         my_section: changedSubModule.my_section,
+        my_subject: changedSubModule.my_subject,
         custom_grade: changedSubModule.custom_grade.map((grade) => grade.id),
         custom_section: changedSubModule.custom_section.map((section) => section.id),
         custom_branch: changedSubModule.custom_branch.map((branch) => branch.id),
+        custom_subject: changedSubModule.custom_subject.map((subject) => subject.id),
       };
       return reqObj;
     });
@@ -257,6 +262,7 @@ export default function ModuleCard({
         custom_grade: changedSubModule.custom_grade.map((grade) => grade.id),
         custom_section: changedSubModule.custom_section.map((section) => section.id),
         custom_branch: changedSubModule.custom_branch.map((branch) => branch.id),
+        custom_subject: changedSubModule.custom_subject.map((subject) => subject.id),
       };
       return reqObj;
     });
@@ -274,9 +280,11 @@ export default function ModuleCard({
         my_branch: obj.my_branch,
         my_grade: obj.my_grade,
         my_section: obj.my_section,
+        my_subject: obj.my_subject,
         custom_grade: obj.custom_grade.map((grade) => grade.id),
         custom_section: obj.custom_section.map((section) => section.id),
         custom_branch: obj.custom_branch.map((branch) => branch.id),
+        custom_subject: obj.custom_subject.map((subject) => subject.id),
       };
       reqObj = { ...reqObj, [scope]: checked };
       modulePermissions.push(reqObj);

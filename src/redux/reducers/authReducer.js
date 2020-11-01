@@ -17,6 +17,13 @@ export default function reducer(state = INITIAL_STATE, action) {
         userDetails: action.userDetails,
         navigationData: action.navigationData,
       };
+    case authActions.LOGOUT_REQUEST:
+      return {
+        ...state,
+        loginInProgress: false,
+        userDetails: {},
+        navigationData: {},
+      };
     default:
       return state;
   }

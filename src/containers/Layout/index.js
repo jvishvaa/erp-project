@@ -1,5 +1,7 @@
+/* eslint-disable no-debugger */
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -21,11 +23,13 @@ import Badge from '@material-ui/core/Badge';
 import NotificationsNoneOutlinedIcon from '@material-ui/icons/NotificationsNoneOutlined';
 import clsx from 'clsx';
 import { withRouter } from 'react-router-dom';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import PeopleIcon from '@material-ui/icons/People';
 import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import { logout } from '../../redux/actions';
 import DrawerMenu from '../../components/drawer-menu';
 import useStyles from './useStyles';
 import './styles.scss';
@@ -33,7 +37,9 @@ import './styles.scss';
 import logo from '../../assets/images/logo.png';
 
 const Layout = ({ children, history }) => {
+  const dispatch = useDispatch();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isLogout, setIsLogout] = useState(false);
   const [navigationData, setNavigationData] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [superUser, setSuperUser] = useState(false);
@@ -47,6 +53,9 @@ const Layout = ({ children, history }) => {
       setNavigationData(JSON.parse(navigationData));
     }
     let userDetails = localStorage.getItem('userDetails');
+    if (!userDetails) {
+      history.push('/');
+    }
     if (userDetails) {
       userDetails = JSON.parse(userDetails);
       const { is_superuser } = userDetails;
@@ -54,11 +63,23 @@ const Layout = ({ children, history }) => {
     }
   }, []);
 
+  useEffect(() => {
+    if (isLogout) {
+      history.push('/');
+      setIsLogout(false);
+    }
+  }, [isLogout]);
+
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    setIsLogout(true);
   };
 
   const handleMobileMenuClose = () => {
@@ -236,6 +257,16 @@ const Layout = ({ children, history }) => {
             >
               <AccountCircle color='primary' style={{ fontSize: '2rem' }} />
             </IconButton>
+            <IconButton
+              edge='end'
+              aria-label='logout button'
+              aria-controls={menuId}
+              aria-haspopup='false'
+              onClick={handleLogout}
+              color='inherit'
+            >
+              <ExitToAppIcon color='primary' style={{ fontSize: '2rem' }} />
+            </IconButton>
           </div>
           <div className={classes.sectionMobile}>
             <IconButton
@@ -276,7 +307,7 @@ const Layout = ({ children, history }) => {
             </ListItemIcon>
             <ListItemText className={classes.menuItemText}>Menu</ListItemText>
           </ListItem>
-          {superUser && (
+          {superUser && drawerOpen && (
             <>
               <ListItem
                 button
@@ -301,6 +332,11 @@ const Layout = ({ children, history }) => {
                 <List>
                   <ListItem
                     button
+                    className={
+                      history.location.pathname === '/user-management/create-user'
+                        ? 'menu_selection'
+                        : null
+                    }
                     onClick={() => {
                       history.push('/user-management/create-user');
                     }}
@@ -316,6 +352,11 @@ const Layout = ({ children, history }) => {
                   </ListItem>
                   <ListItem
                     button
+                    className={
+                      history.location.pathname === '/user-management'
+                        ? 'menu_selection'
+                        : null
+                    }
                     onClick={() => {
                       history.push('/user-management');
                     }}
@@ -333,6 +374,11 @@ const Layout = ({ children, history }) => {
               </Collapse>
               <ListItem
                 button
+                className={
+                  history.location.pathname === '/role-management'
+                    ? 'menu_selection'
+                    : null
+                }
                 onClick={() => {
                   history.push('/role-management');
                 }}
@@ -347,7 +393,7 @@ const Layout = ({ children, history }) => {
             </>
           )}
 
-          {navigationData && navigationData.length > 0 && (
+          {navigationData && drawerOpen && navigationData.length > 0 && (
             <DrawerMenu navigationItems={navigationData} onClick={handleRouting} />
           )}
         </List>

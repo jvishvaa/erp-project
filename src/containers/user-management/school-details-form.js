@@ -74,7 +74,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
       const transformedData = data
         ? data.map((section) => ({
             id: section.section_id,
-            section_name: `${section.grade__grade_name}__${section.section__section_name}`,
+            section_name: `${section.section__section_name}`,
           }))
         : [];
       setSections(transformedData);

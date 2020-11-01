@@ -60,9 +60,11 @@ export const scopes = {
   my_branch: false,
   my_grade: false,
   my_section: false,
+  my_subject: false,
   custom_branch: [],
   custom_grade: [],
   custom_section: [],
+  custom_subject: [],
 };
 
 function transformModules(module, obj) {
@@ -148,6 +150,15 @@ export const fetchGrades = (branches) => {
       return [];
     });
   // return Promise.resolve([]);
+};
+
+export const fetchSubjects = () => {
+  return axios
+    .get(`/erp_user/subject/`)
+    .then((response) => {
+      return response.data.data;
+    })
+    .catch(() => {});
 };
 
 export const fetchSections = (branches, grades) => {
