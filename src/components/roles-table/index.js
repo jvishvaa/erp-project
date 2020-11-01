@@ -13,7 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import useStyles from './useStyles';
 
 const columns = [
-  { id: 'id', label: 'Id', minWidth: 170 },
+  //   { id: 'id', label: 'Id', minWidth: 170 },
   { id: 'role_name', label: 'Role', minWidth: 100 },
   {
     id: 'actions',

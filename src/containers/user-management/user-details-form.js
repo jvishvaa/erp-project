@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import AttachFileIcon from '@material-ui/icons/AttachFile';
+// import AttachFileIcon from '@material-ui/icons/AttachFile';
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -24,7 +24,6 @@ const UserDetailsForm = ({ details, onSubmit, handleBack }) => {
   const formik = useFormik({
     initialValues: {
       first_name: details.first_name,
-      middle_name: details.middle_name,
       last_name: details.last_name,
       gender: details.gender,
       profile: details.profile,
@@ -42,7 +41,7 @@ const UserDetailsForm = ({ details, onSubmit, handleBack }) => {
     <Grid container spacing={4}>
       <Grid container item xs={12}>
         <Grid item md={4}>
-          <Button startIcon={<AttachFileIcon />}>Attach Image</Button>
+          {/* <Button startIcon={<AttachFileIcon />}>Attach Image</Button> */}
         </Grid>
       </Grid>
       <Grid item md={4}>
@@ -71,9 +70,6 @@ const UserDetailsForm = ({ details, onSubmit, handleBack }) => {
             value={formik.values.middle_name}
             label='Middle name'
           />
-          <FormHelperText style={{ color: 'red' }}>
-            {formik.errors.middle_name ? formik.errors.middle_name : ''}
-          </FormHelperText>
         </FormControl>
       </Grid>
       <Grid item md={4}>
