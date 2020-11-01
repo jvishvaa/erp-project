@@ -32,5 +32,6 @@ export default {
     managementOnlineClass: '/erp_user/teacher_online_class/',
     cancelClass: '/erp_user/cancel-online-class/',
     attendeeList: '/erp_user/onlineclass_attendeelist/',
+    coHostValidation: '/erp_user/co-host-validation/',
   },
 };

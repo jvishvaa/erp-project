@@ -13,9 +13,9 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
-import AddIcon from '@material-ui/icons/Add';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
+import CancelIcon from '@material-ui/icons/Cancel';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 
@@ -29,6 +29,8 @@ import {
 } from './utils';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './create-class.scss';
+import axiosInstance from '../../../config/axios';
+import endpoints from '../../../config/endpoints';
 
 const CreateClassForm = () => {
   const [onlineClass, setOnlineClass] = useState(initialFormStructure);
@@ -222,6 +224,13 @@ const CreateClassForm = () => {
       coHosts,
     } = onlineClass;
 
+    for (let i = 0; i < coHosts.length; i++) {
+      if (!coHosts[i].isValid === true) {
+        setAlert('error', 'Cohost email is not valid');
+        return;
+      }
+    }
+
     if (isBetweenNonSchedulingTime(selectedTime)) {
       setAlert(
         'error',
@@ -256,6 +265,22 @@ const CreateClassForm = () => {
       formdata.append('student_ids', filteredStudents.join(','));
 
     dispatch(createNewOnlineClass(formdata));
+  };
+
+  const handleCoHostBlur = async (index) => {
+    try {
+      const info = { email: [onlineClass.coHosts[index].email] };
+      const { data } = await axiosInstance.post(
+        endpoints.onlineClass.coHostValidation,
+        info
+      );
+      const stateCopy = onlineClass;
+      const hosts = stateCopy.coHosts;
+      hosts[index].isValid = data.data[0].status;
+      setOnlineClass((prevState) => ({ ...prevState, coHosts: hosts }));
+    } catch (error) {
+      setAlert('error', 'Something went wrong');
+    }
   };
 
   return (
@@ -470,9 +495,30 @@ const CreateClassForm = () => {
                   onChange={(event) => {
                     handleCohostEmail(event, index);
                   }}
+                  onBlur={() => {
+                    handleCoHostBlur(index);
+                  }}
                 />
               </Grid>
               <Grid item xs={1} key={el}>
+                {onlineClass.coHosts[index].isValid &&
+                onlineClass.coHosts[index].isValid !== false ? (
+                  <CheckCircleIcon
+                    style={{ fill: 'green', marginTop: 8 }}
+                    onClick={() => {
+                      removeCohost(index);
+                    }}
+                  />
+                ) : onlineClass.coHosts[index].isValid === false ? (
+                  <CancelIcon
+                    style={{ fill: 'red', marginTop: 8 }}
+                    onClick={() => {
+                      removeCohost(index);
+                    }}
+                  />
+                ) : (
+                  ''
+                )}
                 <RemoveCircleIcon
                   style={{ marginTop: 8 }}
                   onClick={() => {
