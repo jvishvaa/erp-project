@@ -11,10 +11,15 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import IconButton from '@material-ui/core/IconButton';
 import useStyles from './useStyles';
+import TablePagination from '@material-ui/core/TablePagination';
+import moment from 'moment';
 
 const columns = [
   //   { id: 'id', label: 'Id', minWidth: 170 },
+  { id: 'sl-no', label: 'SL_NO.', minWidth: 100 },
   { id: 'role_name', label: 'Role', minWidth: 100 },
+  { id: 'created_at', label: 'Created at', minWidth: 100 },
+  { id: 'created_by', label: 'Created by', minWidth: 100 },
   {
     id: 'actions',
     label: 'Actions',
@@ -24,7 +29,7 @@ const columns = [
   },
 ];
 
-const RolesTable = ({ roles, onEdit, onDelete }) => {
+const RolesTable = ({ roles, onEdit, onDelete, count, limit, page, onChangePage }) => {
   const classes = useStyles();
   // const [page, setPage] = React.useState(0);
   // const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -57,11 +62,15 @@ const RolesTable = ({ roles, onEdit, onDelete }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {roles.map((role) => {
+            {roles.map((role, index) => {
+              const transformedRole = {
+                'sl-no': (page - 1) * limit + index + 1,
+                ...role,
+              };
               return (
                 <TableRow hover role='checkbox' tabIndex={-1} key={role.id}>
                   {columns.map((column) => {
-                    const value = role[column.id];
+                    const value = transformedRole[column.id];
                     if (column.id === 'actions') {
                       return (
                         <TableCell
@@ -73,6 +82,7 @@ const RolesTable = ({ roles, onEdit, onDelete }) => {
                             onClick={() => {
                               onEdit(role);
                             }}
+                            title='Edit role'
                           >
                             <EditOutlinedIcon color='primary' />
                           </IconButton>
@@ -80,9 +90,21 @@ const RolesTable = ({ roles, onEdit, onDelete }) => {
                             onClick={() => {
                               onDelete(role);
                             }}
+                            title='Delete role'
                           >
                             <DeleteOutlinedIcon color='primary' />
                           </IconButton>
+                        </TableCell>
+                      );
+                    }
+                    if (column.id === 'created_at') {
+                      return (
+                        <TableCell
+                          className={classes.tableCell}
+                          key={column.id}
+                          align={column.align}
+                        >
+                          {value ? moment(value).format('DD-MM-YYYY') : ''}
                         </TableCell>
                       );
                     }
@@ -95,7 +117,7 @@ const RolesTable = ({ roles, onEdit, onDelete }) => {
                       >
                         {column.format && typeof value === 'number'
                           ? column.format(value)
-                          : value}
+                          : value || '--'}
                       </TableCell>
                     );
                   })}
@@ -105,15 +127,16 @@ const RolesTable = ({ roles, onEdit, onDelete }) => {
           </TableBody>
         </Table>
       </TableContainer>
-      {/* <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
+      <TablePagination
         component='div'
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      /> */}
+        count={count}
+        rowsPerPage={limit}
+        page={page - 1}
+        onChangePage={(e, pageNo) => {
+          onChangePage(pageNo + 1);
+        }}
+        rowsPerPageOptions={false}
+      />
     </Paper>
   );
 };

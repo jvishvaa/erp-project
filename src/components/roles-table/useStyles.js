@@ -5,7 +5,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
   },
   container: {
-    maxHeight: 440,
+    maxHeight: '70vh',
   },
   columnHeader: {
     color: theme.palette.secondary.main,
