@@ -16,6 +16,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import TableRow from '@material-ui/core/TableRow';
+import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import Layout from '../../Layout';
@@ -171,7 +172,10 @@ const ViewGroup = withRouter(({ history, ...props }) => {
   return (
     <Layout>
       <div className='creategroup__page'>
-        <div className='viewgroup_heading'>Communication &gt; View Group</div>
+        <CommonBreadcrumbs
+          componentName='Communication'
+          childComponentName='View Group'
+        />
         {editing ? (
           <EditGroup
             editId={editGroupId}

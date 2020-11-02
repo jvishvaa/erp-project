@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable dot-notation */
@@ -80,6 +81,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
   const [textMessageError, setTextMessageError] = useState('');
   const [messageTypeError, setMessageTypeError] = useState('');
   const [messageSending, setMessageSending] = useState(false);
+  const [selectAll, setSelectAll] = useState(false);
 
   const handleCustomChange = () => {
     setCustomSelect(!customSelect);
@@ -207,7 +209,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       const rolesId = [];
       const gradesId = [];
       const sectionsId = [];
-      getUserListUrl = `${endpoints.communication.userList}?page=${pageno}`;
+      getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15`;
       if (selectedRoles.length && !selectedRoles.includes('All')) {
         roleList
           .filter((item) => selectedRoles.includes(item['role_name']))
@@ -240,7 +242,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       }
     } else {
       const groupId = [];
-      getUserListUrl = `${endpoints.communication.userList}?page=${pageno}`;
+      getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15`;
       if (selectedGroup.length && !selectedGroup.includes('All')) {
         groupList
           .filter((item) => selectedGroup.includes(item['group_name']))
@@ -288,7 +290,9 @@ const SendMessage = withRouter(({ history, ...props }) => {
               gender: items.gender,
               contact: items.contact,
             },
-            selected: selectedUsers.length
+            selected: selectAll
+              ? true
+              : selectedUsers.length
               ? selectedUsers[pageno - 1].selected.includes(items.id)
               : false,
           });
@@ -314,6 +318,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
   const handleback = () => {
     if (!firstStep && secondStep && !thirdStep) {
       setSelectedUsers([]);
+      setSelectAll(false);
       setHeaders([]);
       setUsersRow([]);
       setCompleteData([]);
@@ -379,11 +384,16 @@ const SendMessage = withRouter(({ history, ...props }) => {
     }
     if (!firstStep && secondStep && !thirdStep) {
       const selectionArray = [];
-      selectedUsers.forEach((item) => {
-        item.selected.forEach((ids) => {
-          selectionArray.push(ids);
+      if (!selectAll) {
+        selectedUsers.forEach((item) => {
+          item.selected.forEach((ids) => {
+            selectionArray.push(ids);
+          });
         });
-      });
+      }
+      if (selectAll) {
+        selectionArray.push(0);
+      }
       if (!selectionArray.length) {
         setSelectUsersError('Please select a user');
         return;
@@ -405,6 +415,17 @@ const SendMessage = withRouter(({ history, ...props }) => {
       return wordarray.length;
     }
     return 0;
+  };
+  const handleSelectAll = () => {
+    setSelectAll(!selectAll);
+    const testclick = document.querySelectorAll('[class*="PrivateSwitchBase-input-"]');
+    if (!selectAll) {
+      testclick[0].click();
+    } else {
+      for (let i = 1; i < testclick.length; i += 1) {
+        testclick[i].click();
+      }
+    }
   };
   const getSmsTypeApi = async () => {
     try {
@@ -438,11 +459,16 @@ const SendMessage = withRouter(({ history, ...props }) => {
       try {
         const sendMessageApi = endpoints.communication.sendMessage;
         const selectionArray = [];
-        selectedUsers.forEach((item) => {
-          item.selected.forEach((ids) => {
-            selectionArray.push(ids);
+        if (!selectAll) {
+          selectedUsers.forEach((item) => {
+            item.selected.forEach((ids) => {
+              selectionArray.push(ids);
+            });
           });
-        });
+        }
+        if (selectAll) {
+          selectionArray.push(0);
+        }
         let request = {};
         if (!customSelect) {
           const groupId = [];
@@ -574,6 +600,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
           setTextMessage('');
           setWordcount(641);
           setIsEmail(false);
+          setSelectAll(false);
           setSmsTypeList([]);
           setSelectedSmsType('');
           setEmailSubject('');
@@ -744,12 +771,24 @@ const SendMessage = withRouter(({ history, ...props }) => {
         ) : null}
         {secondStep ? (
           <div className='send_message_table_wrapper'>
+            {usersRow.length ? (
+              <div className='send_message_select_all_wrapper'>
+                <input
+                  type='checkbox'
+                  className='send_message_select_all_checkbox'
+                  checked={selectAll}
+                  onChange={handleSelectAll}
+                />
+                <span>Select All</span>
+              </div>
+            ) : null}
             <span className='create_group_error_span'>{selectUsersError}</span>
             <CustomSelectionTable
               header={headers}
               rows={usersRow}
               completeData={completeData}
               totalRows={totalPage}
+              setSelectAll={setSelectAll}
               pageno={pageno}
               selectedUsers={selectedUsers}
               changePage={setPageno}
