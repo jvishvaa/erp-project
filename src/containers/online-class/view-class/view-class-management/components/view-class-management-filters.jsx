@@ -36,10 +36,12 @@ const ViewClassManagementFilters = () => {
     listSections,
     grades,
     sections,
+    setCurrentTabs,
   } = useContext(OnlineclassViewContext);
 
   const handleTabChange = (event, tab) => {
     setCurrentTab(tab);
+    setCurrentTabs(tab);
   };
 
   const handleCancel = (event, data) => {

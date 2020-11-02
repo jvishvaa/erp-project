@@ -19,6 +19,7 @@ import {
   LIST_SECTION_REQUEST,
   LIST_SECTION_SUCCESS,
   CANCEL_CLASS,
+  SET_TAB,
 } from './online-class-constants';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
@@ -45,6 +46,7 @@ const OnlineclassViewProvider = (props) => {
       loadingManagementOnlineClasses: false,
       errorLoadingManagementOnlineClasses: '',
       currentServerTime: new Date(),
+      currentManagementTab: 0,
     },
     grades: [],
     sections: [],
@@ -165,6 +167,10 @@ const OnlineclassViewProvider = (props) => {
     }
   };
 
+  const setCurrentTabs = (tab) => {
+    dispatch(success(tab, SET_TAB));
+  };
+
   return (
     <OnlineclassViewContext.Provider
       value={{
@@ -177,6 +183,7 @@ const OnlineclassViewProvider = (props) => {
         listGrades,
         listSections,
         cancelClass,
+        setCurrentTabs,
       }}
     >
       {children}
