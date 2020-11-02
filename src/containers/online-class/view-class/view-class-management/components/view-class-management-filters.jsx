@@ -95,7 +95,7 @@ const ViewClassManagementFilters = () => {
   };
 
   const handleSubject = (event, value) => {
-    const ids = value.map((el) => el.id);
+    const ids = value.map((el) => el.subject__id);
     setSubjectIds(ids);
   };
 
@@ -173,7 +173,7 @@ const ViewClassManagementFilters = () => {
             id='tags-outlined'
             options={subjects}
             onChange={handleSubject}
-            getOptionLabel={(option) => option.subject_name}
+            getOptionLabel={(option) => option.subject__subject_name}
             filterSelectedOptions
             size='small'
             renderInput={(params) => (
