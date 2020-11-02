@@ -2,6 +2,11 @@ import { roleManagementActions } from '../actions';
 
 const INITIAL_STATE = {
   roles: [],
+  page: 1,
+  limit: 10,
+  count: 0,
+  roleId: '',
+  roleName: '',
   fetchingRoles: false,
   selectedRole: null,
   modules: [],
@@ -22,7 +27,14 @@ export default function reducer(state = INITIAL_STATE, action) {
     case roleManagementActions.FETCH_ROLES_FAILURE:
       return { ...state, fetchingRoles: false };
     case roleManagementActions.FETCH_ROLES_SUCCESS:
-      return { ...state, roles: action.data, fetchingRoles: false };
+      return {
+        ...state,
+        roles: action.data,
+        fetchingRoles: false,
+        page: action.page,
+        limit: action.limit,
+        count: action.count,
+      };
     case roleManagementActions.SET_SELECTED_ROLE:
       return { ...state, selectedRole: action.data };
     case roleManagementActions.FETCH_MODULES_REQUEST:
@@ -56,9 +68,13 @@ export default function reducer(state = INITIAL_STATE, action) {
         fetchingRoleDataById: false,
         editRoleModulePermissionsState: action.modulePermissions,
         modulePermissionsRequestData: [], // for reseting the request data
+        roleId: action.roleId,
+        roleName: action.roleName,
       };
     case roleManagementActions.FETCH_ROLE_DATA_BY_ID_FAILURE:
       return { ...state, fetchingRoleDataById: false };
+    case roleManagementActions.SET_ROLE_NAME:
+      return { ...state, roleName: action.data };
 
     default:
       return state;

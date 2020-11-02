@@ -1,5 +1,5 @@
 /* eslint-disable no-debugger */
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -14,6 +14,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import SubModule from '../sub-module';
 import { scopes } from '../../redux/actions';
 import useStyles from './useStyles';
+import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
 const columns = [
   { id: 'module_child_name', label: '', minWidth: 120 },
@@ -32,9 +33,38 @@ const columns = [
 function findAndApplyScope(subModules, id, scope, checked) {
   const clonedArray = JSON.parse(JSON.stringify(subModules));
   const index = clonedArray.findIndex((obj) => obj.module_child_id == id);
+  let objToApply = {
+    [scope]: checked,
+  };
+
+  switch (scope) {
+    case 'my_branch':
+      objToApply = {
+        ...objToApply,
+        my_grade: checked,
+        my_section: checked,
+        my_subject: checked,
+      };
+      break;
+    case 'my_grade':
+      objToApply = {
+        ...objToApply,
+        my_section: checked,
+        my_subject: checked,
+      };
+      break;
+    case 'my_section':
+      objToApply = {
+        ...objToApply,
+        my_subject: checked,
+      };
+      break;
+    default:
+      break;
+  }
   clonedArray[index] = {
     ...clonedArray[index],
-    [scope]: checked,
+    ...objToApply,
   };
   return { clonedArray, index };
 }
@@ -88,8 +118,8 @@ export default function ModuleCard({
   modulePermissionsRequestData,
   setModulePermissionsRequestData,
 }) {
-  const [scopesObj, setScopes] = useState(scopes);
   const classes = useStyles();
+  const { setAlert } = useContext(AlertNotificationContext);
   const constructModulePermissionsRequestData = (reqObjArr) => {
     const data = JSON.parse(JSON.stringify(modulePermissionsRequestData));
     reqObjArr.forEach((reqObj) => {
@@ -121,7 +151,7 @@ export default function ModuleCard({
         checked
       );
 
-      changedModuleIndices.push(index);
+      changedModuleIndices.push(index); //changed submodules  eg Create class Edit class etc
 
       moduleObj.module_child = clonedArray;
       if (dependencySubModule) {
@@ -169,6 +199,7 @@ export default function ModuleCard({
         moduleObj.module_child = clonedArray;
       } else {
         console.log('not safe to uncheck dependency');
+        setAlert('error', 'Uncheck the dependency modules first');
       }
     }
 
@@ -249,6 +280,7 @@ export default function ModuleCard({
         changedModuleIndices.push(index);
       } else {
         console.log('not safe to uncheck');
+        setAlert('error', 'Uncheck the dependency to modules first');
       }
     }
 
@@ -274,6 +306,9 @@ export default function ModuleCard({
   const onCheckAll = (checked, scope) => {
     const moduleObj = JSON.parse(JSON.stringify(module));
     const modulePermissions = [];
+    let objToApply = {
+      [scope]: checked,
+    };
     const subModules = module.module_child.map((obj) => {
       let reqObj = {
         modules_id: obj.module_child_id,
@@ -286,14 +321,39 @@ export default function ModuleCard({
         custom_branch: obj.custom_branch.map((branch) => branch.id),
         custom_subject: obj.custom_subject.map((subject) => subject.id),
       };
-      reqObj = { ...reqObj, [scope]: checked };
-      modulePermissions.push(reqObj);
-      return { ...obj, [scope]: checked };
+
+      switch (scope) {
+        case 'my_branch':
+          objToApply = {
+            ...objToApply,
+            my_grade: checked,
+            my_section: checked,
+            my_subject: checked,
+          };
+          break;
+        case 'my_grade':
+          objToApply = {
+            ...objToApply,
+            my_section: checked,
+            my_subject: checked,
+          };
+          break;
+        case 'my_section':
+          objToApply = {
+            ...objToApply,
+            my_subject: checked,
+          };
+          break;
+        default:
+          break;
+      }
+      reqObj = { ...reqObj, ...objToApply };
+      modulePermissions.push(reqObj); // creating req obj for module permissions
+      return { ...obj, ...objToApply };
     });
     moduleObj.module_child = subModules;
     constructModulePermissionsRequestData(modulePermissions);
     alterCreateRolePermissions(moduleObj);
-    setScopes((prevScope) => ({ ...prevScope, [scope]: checked }));
   };
 
   return (
@@ -332,7 +392,7 @@ export default function ModuleCard({
                           onChange={(e) => {
                             onCheckAll(e.target.checked, column.id);
                           }}
-                          checked={scopesObj[column.id] || checkAll}
+                          checked={checkAll}
                           color='primary'
                         />
                       </TableCell>

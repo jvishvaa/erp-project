@@ -140,11 +140,11 @@ const CustomScopeModal = ({
         : [];
       setGrades(transformedData);
     });
-    fetchSubjects().then((data) => {
+    fetchSubjects(values, customScope.custom_grade).then((data) => {
       const transformedData = data
         ? data.map((subject) => ({
-            id: subject.id,
-            subject_name: subject.subject_name,
+            id: subject.subject__id,
+            subject_subject_name: `${subject.subject_subject_name}`,
           }))
         : [];
       setSubjects(transformedData);
@@ -169,6 +169,15 @@ const CustomScopeModal = ({
         : [];
       setSections(transformedData);
     });
+    fetchSubjects(customScope.custom_branch, values).then((data) => {
+      const transformedData = data
+        ? data.map((subject) => ({
+            id: subject.subject__id,
+            subject_subject_name: `${subject.subject_subject_name}`,
+          }))
+        : [];
+      setSubjects(transformedData);
+    });
   };
   const handleChangeSection = (values) => {
     const customScopeObj = {
@@ -177,6 +186,7 @@ const CustomScopeModal = ({
       custom_section: values,
     };
     onCustomScopeChange('custom_section', customScopeObj);
+    setSubjects([]);
   };
   const handleChangeSubject = (values) => {
     const customScopeObj = {

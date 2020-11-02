@@ -60,7 +60,6 @@
     "singleQuote": true,
     "jsxSingleQuote": true
   },
-  
   "browserslist": {
     "production": [
       ">0.2%",
