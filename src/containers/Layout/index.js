@@ -311,6 +311,21 @@ const Layout = ({ children, history }) => {
             <>
               <ListItem
                 button
+                className={
+                  history.location.pathname === '/dashboard' ? 'menu_selection' : null
+                }
+                onClick={() => {
+                  history.push('/dashboard');
+                }}
+              >
+                {' '}
+                <ListItemIcon className={classes.menuItemIcon}>
+                  <AssignmentIndIcon />
+                </ListItemIcon>
+                <ListItemText className={classes.menuItemText}>Dashboard</ListItemText>
+              </ListItem>
+              <ListItem
+                button
                 onClick={() => {
                   setUserMenuOpen((prevState) => !prevState);
                 }}

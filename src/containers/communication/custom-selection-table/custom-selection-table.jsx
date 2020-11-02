@@ -17,8 +17,10 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
     completeData,
     selectedUsers,
     pageno,
+    setSelectAll,
   } = props || {};
   const selectRow = (e) => {
+    setSelectAll(false);
     if (
       selectedUsers.length &&
       !e.isSelected &&
@@ -31,13 +33,11 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
         1
       );
       setSelectedUsers(tempSelection);
-      console.log(tempSelection);
     }
     if (selectedUsers.length && e.isSelected) {
       let tempSelection = [];
       tempSelection = selectedUsers;
       tempSelection[pageno - 1].selected.push(e.data.id);
-      console.log(tempSelection);
       setSelectedUsers(tempSelection);
     }
   };
@@ -61,7 +61,7 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
       style={{ height: 400, width: '100%' }}
     >
       <DataGrid
-        pageSize={pageSize || 5}
+        pageSize={pageSize || 15}
         rowCount={totalRows}
         checkboxSelection
         onPageChange={pageChange}

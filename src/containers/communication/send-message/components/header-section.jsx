@@ -1,15 +1,21 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-debugger */
 /* eslint-disable no-console */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React from 'react';
+import { withRouter } from 'react-router-dom';
+import CommonBreadcrumbs from '../../../../components/common-breadcrumbs/breadcrumbs';
 import './header-section.css';
 
-const HeaderSection = (props) => {
+const HeaderSection = withRouter(({ history, ...props }) => {
   const { firstStep, secondStep, thirdStep, currentStep } = props || {};
   return (
     <div className='send_message_heading_wrapper'>
-      <div className='send_message_title'>Communication &gt; send sms/mail</div>
+      <CommonBreadcrumbs
+        componentName='Communication'
+        childComponentName='send sms/mail'
+      />
       <div className='send_message_header'>
         <div className='send_message_header_icon_wrapper'>
           <div
@@ -46,6 +52,6 @@ const HeaderSection = (props) => {
       </div>
     </div>
   );
-};
+});
 
 export default HeaderSection;

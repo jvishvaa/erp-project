@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-debugger */
 /* eslint-disable no-console */
@@ -12,7 +14,7 @@ import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CustomSelectionTable from '../custom-selection-table/custom-selection-table';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-import Layout from '../../Layout';
+// import Layout from '../../Layout';
 import './assign-role.css';
 
 const useStyles = makeStyles((theme) => ({
@@ -40,6 +42,7 @@ const AssignRole = (props) => {
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [roleError, setRoleError] = useState('');
   const [selectectUserError, setSelectectUserError] = useState('');
+  const [selectAll, setSelectAll] = useState(false);
 
   const getRoleApi = async () => {
     try {
@@ -60,8 +63,7 @@ const AssignRole = (props) => {
     }
   };
   const displayUsersList = async () => {
-    const getUserListUrl = `${endpoints.communication.userList}?page=${pageno}`;
-
+    const getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15`;
     try {
       const result = await axiosInstance.get(getUserListUrl, {
         headers: {
@@ -70,8 +72,7 @@ const AssignRole = (props) => {
       });
       if (result.status === 200) {
         setHeaders([
-          { field: 'firstName', headerName: 'First name', width: 150 },
-          { field: 'lastName', headerName: 'Last name', width: 150 },
+          { field: 'fullName', headerName: 'Name', width: 250 },
           { field: 'email', headerName: 'Email Id', width: 200 },
           { field: 'erp_id', headerName: 'Erp Id', width: 150 },
           { field: 'gender', headerName: 'Gender', width: 100 },
@@ -89,8 +90,7 @@ const AssignRole = (props) => {
         result.data.results.forEach((items) => {
           rows.push({
             id: items.id,
-            lastName: items.user.last_name,
-            firstName: items.user.first_name,
+            fullName: `${items.user.first_name} ${items.user.last_name}`,
             email: items.user.email,
             erp_id: items.erp_id,
             gender: items.gender,
@@ -101,15 +101,16 @@ const AssignRole = (props) => {
             id: items.id,
             data: {
               id: items.id,
-              lastName: items.user.last_name,
-              firstName: items.user.first_name,
+              fullName: `${items.user.first_name} ${items.user.last_name}`,
               email: items.user.email,
               erp_id: items.erp_id,
               gender: items.gender,
               contact: items.contact,
               role: items.roles?.role_name,
             },
-            selected: selectedUsers.length
+            selected: selectAll
+              ? true
+              : selectedUsers.length
               ? selectedUsers[pageno - 1].selected.includes(items.id)
               : false,
           });
@@ -132,6 +133,19 @@ const AssignRole = (props) => {
       setAlert('error', error.message);
     }
   };
+
+  const handleSelectAll = () => {
+    setSelectAll(!selectAll);
+    const testclick = document.querySelectorAll('[class*="PrivateSwitchBase-input-"]');
+    if (!selectAll) {
+      testclick[1].click();
+    } else {
+      for (let i = 2; i < testclick.length; i += 1) {
+        testclick[i].click();
+      }
+    }
+  };
+
   const assignRole = async () => {
     const assignRoleApi = endpoints.communication.assignRole;
     const selectionArray = [];
@@ -154,7 +168,7 @@ const AssignRole = (props) => {
         assignRoleApi,
         {
           role_id: selectedRole,
-          user_id: selectionArray,
+          user_id: selectAll ? 'All' : selectionArray,
         },
         {
           headers: {
@@ -172,6 +186,7 @@ const AssignRole = (props) => {
         setSelectedUsers([]);
         setRoleError('');
         setSelectedRole('');
+        setSelectAll(false);
         setSelectectUserError('');
         setAssigenedRole(true);
       } else {
@@ -186,7 +201,10 @@ const AssignRole = (props) => {
   }, []);
   useEffect(() => {
     displayUsersList();
-  }, [pageno]);
+    if (assignedRole) {
+      setAssigenedRole(false);
+    }
+  }, [pageno, assignedRole]);
 
   return (
     // <Layout>
@@ -214,14 +232,20 @@ const AssignRole = (props) => {
         </FormControl>
       </div>
       {assignedRole ? (
-        <input
-          className='assign_role_button'
-          type='button'
-          onClick={() => setAssigenedRole(false)}
-          value='Assign New Role'
-        />
+        <div>Please Wait ...</div>
       ) : (
         <>
+          {usersRow.length ? (
+            <div className='assign_role_select_all_wrapper'>
+              <input
+                type='checkbox'
+                className='assign_role_select_all_checkbox'
+                checked={selectAll}
+                onChange={handleSelectAll}
+              />
+              <span>Select All</span>
+            </div>
+          ) : null}
           <span className='create_group_error_span'>{selectectUserError}</span>
           <CustomSelectionTable
             header={headers}
@@ -229,10 +253,11 @@ const AssignRole = (props) => {
             completeData={completeData}
             totalRows={totalPage}
             pageno={pageno}
+            setSelectAll={setSelectAll}
             selectedUsers={selectedUsers}
             changePage={setPageno}
             setSelectedUsers={setSelectedUsers}
-            pageSize={5}
+            pageSize={15}
           />
           <input
             className='assign_role_button'
