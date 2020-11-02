@@ -102,7 +102,8 @@ const CreateClassForm = () => {
   };
 
   const handleSubject = (event, value) => {
-    if (value) setOnlineClass((prevState) => ({ ...prevState, subject: value.id }));
+    if (value)
+      setOnlineClass((prevState) => ({ ...prevState, subject: value.subject__id }));
   };
 
   useEffect(() => {
@@ -304,7 +305,7 @@ const CreateClassForm = () => {
               size='small'
               id='create__class-subject'
               options={subjects}
-              getOptionLabel={(option) => option.subject_name}
+              getOptionLabel={(option) => option.subject__subject_name}
               filterSelectedOptions
               onChange={handleSubject}
               renderInput={(params) => (
