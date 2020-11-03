@@ -44,11 +44,11 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
     });
   };
 
-  const fetchSubjects = () => {
-    getSubjects().then((data) => {
+  const fetchSubjects = (branch, grade) => {
+    getSubjects(branch, grade).then((data) => {
       const transformedData = data.map((obj) => ({
-        id: obj.id,
-        subject_name: obj.subject_name,
+        id: obj.subject__id,
+        subject_name: obj.subject__subject_name,
       }));
       setSubjects(transformedData);
     });
@@ -70,21 +70,25 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
 
   const handleChangeGrade = (values, branch) => {
     setSections([]);
-    fetchSections(branch, values).then((data) => {
-      const transformedData = data
-        ? data.map((section) => ({
-            id: section.section_id,
-            section_name: `${section.section__section_name}`,
-          }))
-        : [];
-      setSections(transformedData);
-    });
+    if (branch && branch.length > 0 && values && values.length > 0) {
+      fetchSections(branch, values).then((data) => {
+        const transformedData = data
+          ? data.map((section) => ({
+              id: section.section_id,
+              section_name: `${section.section__section_name}`,
+            }))
+          : [];
+        setSections(transformedData);
+      });
+      fetchSubjects(branch, values);
+    } else {
+      setSections([]);
+    }
   };
 
   useEffect(() => {
     fetchAcademicYears();
     fetchBranches();
-    fetchSubjects();
   }, []);
 
   const classes = useStyles();
@@ -100,6 +104,8 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
     onSubmit: (values) => {
       onSubmit(values);
     },
+    validateOnChange: false,
+    validateOnBlur: false,
   });
   return (
     <Grid container spacing={4}>
