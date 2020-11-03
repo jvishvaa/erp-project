@@ -239,11 +239,13 @@ export const editRole = (params) => (dispatch) => {
   dispatch({ type: EDIT_ROLES_REQUEST });
   return axios
     .post('/erp_user/update_role_module/', params)
-    .then(() => {
+    .then((response) => {
       dispatch({ type: EDIT_ROLES_SUCCESS });
+      return response.data;
     })
-    .catch(() => {
+    .catch((error) => {
       dispatch({ type: EDIT_ROLES_FAILURE });
+      throw error;
     });
 };
 
