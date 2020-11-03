@@ -11,7 +11,10 @@ import SchoolDetailsForm from './school-details-form';
 import GuardianDetailsForm from './guardian-details-form';
 import { createUser } from '../../redux/actions';
 
-function getSteps() {
+function getSteps(showParentOrGuardian) {
+  if (!showParentOrGuardian) {
+    return ['School details', 'User details'];
+  }
   return ['School details', 'User details', 'Parents/Guardian details'];
 }
 
@@ -19,7 +22,9 @@ class CreateUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeStep: 0,
+      activeStep: 1,
+      showParentForm: false,
+      showGuardianForm: false,
       user: {
         first_name: '',
         middle_name: '',
@@ -34,6 +39,7 @@ class CreateUser extends Component {
         date_of_birth: '',
         gender: '',
         profile: '',
+        address: '',
         parent: {
           father_first_name: '',
           father_last_name: '',
@@ -48,10 +54,23 @@ class CreateUser extends Component {
           mother_photo: '',
           father_photo: '',
           address: '',
+          guardian_first_name: '',
+          guardian_middle_name: '',
+          guardian_last_name: '',
+          guardian_email: '',
+          guardian_mobile: '',
         },
       },
     };
   }
+
+  toggleParentForm = (e) => {
+    this.setState({ showParentForm: e.target.checked });
+  };
+
+  toggleGuardianForm = (e) => {
+    this.setState({ showGuardianForm: e.target.checked });
+  };
 
   handleReset = () => {
     this.setState({ activeStep: 0 });
@@ -74,9 +93,13 @@ class CreateUser extends Component {
 
   onSubmitUserDetails = (details) => {
     console.log('user details!!', details);
-
+    const { showParentForm, showGuardianForm } = this.state;
     this.setState((prevState) => ({ user: { ...prevState.user, ...details } }));
-    this.handleNext();
+    if (showParentForm || showGuardianForm) {
+      this.handleNext();
+    } else {
+      this.onCreateUser(false);
+    }
   };
 
   onSubmitGuardianDetails = (details) => {
@@ -87,12 +110,12 @@ class CreateUser extends Component {
         user: { ...prevState.user, parent: { ...prevState.user.parent, ...details } },
       }),
       () => {
-        this.onCreateUser();
+        this.onCreateUser(true);
       }
     );
   };
 
-  onCreateUser = () => {
+  onCreateUser = (requestWithParentorGuradianDetails) => {
     const { user } = this.state;
     const { createUser, history } = this.props;
     console.log('user ', user);
@@ -128,6 +151,11 @@ class CreateUser extends Component {
       mother_email,
       mother_mobile,
       mother_photo,
+      guardian_first_name,
+      guardian_middle_name,
+      guardian_last_name,
+      guardian_email,
+      guardian_mobile,
     } = parent;
     requestObj = {
       academic_year: academic_year.id,
@@ -158,12 +186,20 @@ class CreateUser extends Component {
         mother_email,
         mother_mobile,
         mother_photo,
+        guardian_first_name,
+        guardian_middle_name,
+        guardian_last_name,
+        guardian_email,
+        guardian_mobile,
       },
     };
 
-    createUser(requestObj).then(() => history.push('/user-management'));
+    if (!requestWithParentorGuradianDetails) {
+      delete requestObj.parent;
+    }
 
-    console.log('req ', requestObj);
+    console.log('requestObject ', requestObj);
+    // createUser(requestObj).then(() => history.push('/user-management'));
   };
 
   onSubmitForm = (details) => {
@@ -171,8 +207,9 @@ class CreateUser extends Component {
   };
 
   render() {
-    const steps = getSteps();
-    const { activeStep, user } = this.state;
+    const { activeStep, user, showParentForm, showGuardianForm } = this.state;
+    const showParentOrGuardianForm = showParentForm || showGuardianForm;
+    const steps = getSteps(showParentOrGuardianForm);
     const { classes } = this.props;
     return (
       <div>
@@ -192,6 +229,10 @@ class CreateUser extends Component {
               onSubmit={this.onSubmitUserDetails}
               details={user}
               handleBack={this.handleBack}
+              toggleParentForm={this.toggleParentForm}
+              toggleGuardianForm={this.toggleGuardianForm}
+              showParentForm={showParentForm}
+              showGuardianForm={showGuardianForm}
             />
           )}
           {activeStep === 2 && (
@@ -199,6 +240,8 @@ class CreateUser extends Component {
               onSubmit={this.onSubmitGuardianDetails}
               details={user.parent}
               handleBack={this.handleBack}
+              showParentForm={showParentForm}
+              showGuardianForm={showGuardianForm}
             />
           )}
         </div>

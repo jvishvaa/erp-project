@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-wrap-multilines */
-import React from 'react';
+import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
-// import AttachFileIcon from '@material-ui/icons/AttachFile';
+import AttachFileIcon from '@material-ui/icons/AttachFile';
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -19,8 +19,20 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Radio from '@material-ui/core/Radio';
 import validationSchema from './schemas/user-details';
+import { Label } from '@material-ui/icons';
+import { useStyles } from './useStyles';
 
-const UserDetailsForm = ({ details, onSubmit, handleBack }) => {
+const UserDetailsForm = ({
+  details,
+  onSubmit,
+  handleBack,
+  toggleParentForm,
+  toggleGuardianForm,
+  showParentForm,
+  showGuardianForm,
+}) => {
+  const [imagePreview, setImagePreview] = useState(null);
+  const classes = useStyles();
   const formik = useFormik({
     initialValues: {
       first_name: details.first_name,
@@ -42,8 +54,48 @@ const UserDetailsForm = ({ details, onSubmit, handleBack }) => {
   return (
     <Grid container spacing={4}>
       <Grid container item xs={12}>
-        <Grid item md={4}>
-          {/* <Button startIcon={<AttachFileIcon />}>Attach Image</Button> */}
+        <Grid container item md={4} alignItems='center' spacing={3}>
+          <input
+            style={{ visibility: 'hidden', position: 'absolute' }}
+            type='file'
+            id='profile'
+            name='profile'
+            onChange={(e) => {
+              console.log('file ', e.target.files[0]);
+              if (e.target.files && e.target.files[0]) {
+                setImagePreview(URL.createObjectURL(e.target.files[0]));
+                formik.setFieldValue('profile', e.target.files[0]);
+              }
+            }}
+          />
+          <Grid item>
+            <img
+              src={
+                imagePreview
+                  ? imagePreview
+                  : `https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png`
+              }
+              alt='profilepic'
+              style={{ width: '100px', height: '100px', borderRadius: '50px' }}
+            />
+          </Grid>
+          <Grid item>
+            {formik.values.profile ? (
+              <label
+                className={classes.imageUploadBtn}
+                onClick={() => {
+                  formik.setFieldValue('profile', '');
+                  setImagePreview(false);
+                }}
+              >
+                Delete Image
+              </label>
+            ) : (
+              <label htmlFor='profile' className={classes.imageUploadBtn}>
+                Attach Image
+              </label>
+            )}
+          </Grid>
         </Grid>
       </Grid>
       <Grid item md={4}>
@@ -204,20 +256,25 @@ const UserDetailsForm = ({ details, onSubmit, handleBack }) => {
         <Divider />
       </Grid>
       <Grid item md={4}>
-        <FormControl component='fieldset' fullWidth disabled>
+        <FormControl component='fieldset' fullWidth>
           <FormLabel component='legend'>Parent/Guardian</FormLabel>
           <FormGroup row>
             <FormControlLabel
               control={
-                <Checkbox checked onChange={() => {}} name='gilad' color='primary' />
+                <Checkbox
+                  checked={showParentForm}
+                  onChange={toggleParentForm}
+                  name='gilad'
+                  color='primary'
+                />
               }
               label='Parent'
             />
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={false}
-                  onChange={() => {}}
+                  checked={showGuardianForm}
+                  onChange={toggleGuardianForm}
                   name='jason'
                   color='primary'
                 />
@@ -241,7 +298,7 @@ const UserDetailsForm = ({ details, onSubmit, handleBack }) => {
               formik.handleSubmit();
             }}
           >
-            Next
+            {showParentForm || showGuardianForm ? 'Next' : 'Submit'}
           </Button>
         </Grid>
       </Grid>
