@@ -22,7 +22,7 @@ class CreateUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeStep: 1,
+      activeStep: 0,
       showParentForm: false,
       showGuardianForm: false,
       user: {
@@ -199,7 +199,7 @@ class CreateUser extends Component {
     }
 
     console.log('requestObject ', requestObj);
-    // createUser(requestObj).then(() => history.push('/user-management'));
+    createUser(requestObj).then(() => history.push('/user-management'));
   };
 
   onSubmitForm = (details) => {

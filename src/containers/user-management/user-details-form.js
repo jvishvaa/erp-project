@@ -21,6 +21,7 @@ import Radio from '@material-ui/core/Radio';
 import validationSchema from './schemas/user-details';
 import { Label } from '@material-ui/icons';
 import { useStyles } from './useStyles';
+import ImageUpload from '../../components/image-upload';
 
 const UserDetailsForm = ({
   details,
@@ -31,8 +32,6 @@ const UserDetailsForm = ({
   showParentForm,
   showGuardianForm,
 }) => {
-  const [imagePreview, setImagePreview] = useState(null);
-  const classes = useStyles();
   const formik = useFormik({
     initialValues: {
       first_name: details.first_name,
@@ -50,53 +49,16 @@ const UserDetailsForm = ({
     validateOnChange: false,
     validateOnBlur: false,
   });
-  console.log('dob error', formik.values.date_of_birth, formik.errors.date_of_birth);
   return (
     <Grid container spacing={4}>
       <Grid container item xs={12}>
-        <Grid container item md={4} alignItems='center' spacing={3}>
-          <input
-            style={{ visibility: 'hidden', position: 'absolute' }}
-            type='file'
-            id='profile'
-            name='profile'
-            onChange={(e) => {
-              console.log('file ', e.target.files[0]);
-              if (e.target.files && e.target.files[0]) {
-                setImagePreview(URL.createObjectURL(e.target.files[0]));
-                formik.setFieldValue('profile', e.target.files[0]);
-              }
-            }}
-          />
-          <Grid item>
-            <img
-              src={
-                imagePreview
-                  ? imagePreview
-                  : `https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png`
-              }
-              alt='profilepic'
-              style={{ width: '100px', height: '100px', borderRadius: '50px' }}
-            />
-          </Grid>
-          <Grid item>
-            {formik.values.profile ? (
-              <label
-                className={classes.imageUploadBtn}
-                onClick={() => {
-                  formik.setFieldValue('profile', '');
-                  setImagePreview(false);
-                }}
-              >
-                Delete Image
-              </label>
-            ) : (
-              <label htmlFor='profile' className={classes.imageUploadBtn}>
-                Attach Image
-              </label>
-            )}
-          </Grid>
-        </Grid>
+        <ImageUpload
+          value={formik.values.profile}
+          onChange={(value) => {
+            console.log(value);
+            formik.setFieldValue('profile', value);
+          }}
+        />
       </Grid>
       <Grid item md={4}>
         <FormControl variant='outlined' fullWidth>
@@ -284,7 +246,7 @@ const UserDetailsForm = ({
           </FormGroup>
         </FormControl>
       </Grid>
-      <Grid container item xs={12}>
+      <Grid container item xs={12} style={{ marginTop: '20px' }}>
         <Grid item md='1'>
           <Button variant='contained' color='primary' onClick={handleBack}>
             Back

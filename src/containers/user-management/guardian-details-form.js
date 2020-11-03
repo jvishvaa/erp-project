@@ -12,6 +12,7 @@ import { useFormik } from 'formik';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import { useStyles } from './useStyles';
 import resolveValidationSchema from './schemas/guardian-details';
+import ImageUpload from '../../components/image-upload';
 
 const GuardianDetailsForm = ({
   details,
@@ -22,7 +23,6 @@ const GuardianDetailsForm = ({
 }) => {
   const classes = useStyles();
   const validationSchema = resolveValidationSchema(showParentForm, showGuardianForm);
-  console.log('validation schema ', JSON.stringify(validationSchema));
   const formik = useFormik({
     initialValues: {
       father_first_name: details.father_first_name,
@@ -179,7 +179,12 @@ const GuardianDetailsForm = ({
                 </FormControl>
               </Grid>
               <Grid item md={4}>
-                <Button startIcon={<AttachFileIcon />}>Attach Image</Button>
+                <ImageUpload
+                  value={formik.values.father_photo}
+                  onChange={(value) => {
+                    formik.setFieldValue('father_photo', value);
+                  }}
+                />
               </Grid>
             </Grid>
           </div>
@@ -305,7 +310,12 @@ const GuardianDetailsForm = ({
               </Grid>
 
               <Grid item md={4}>
-                <Button startIcon={<AttachFileIcon />}>Attach Image</Button>
+                <ImageUpload
+                  value={formik.values.mother_photo}
+                  onChange={(value) => {
+                    formik.setFieldValue('mother_photo', value);
+                  }}
+                />
               </Grid>
             </Grid>
           </div>
@@ -437,15 +447,15 @@ const GuardianDetailsForm = ({
                 </FormControl>
               </Grid>
 
-              <Grid item md={4}>
+              {/* <Grid item md={4}>
                 <Button startIcon={<AttachFileIcon />}>Attach Image</Button>
-              </Grid>
+              </Grid> */}
             </Grid>
           </div>
         </>
       )}
 
-      <Grid container item xs={12}>
+      <Grid container item xs={12} style={{ marginTop: '20px' }}>
         <Grid item md='1'>
           <Button variant='contained' color='primary' onClick={handleBack}>
             Back

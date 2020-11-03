@@ -252,7 +252,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
           </FormHelperText>
         </FormControl>
       </Grid>
-      <Grid container item xs={12}>
+      <Grid container item xs={12} style={{ marginTop: '20px' }}>
         <Grid md='4'>
           <Button
             variant='contained'
