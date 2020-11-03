@@ -228,6 +228,7 @@ const EditGroup = withRouter(({ history, ...props }) => {
         rows={usersRow}
         completeData={completeData}
         totalRows={totalPage}
+        setSelectAll={setSelectAll}
         edit
         pageno={pageno}
         selectedUsers={selectedUsers}
