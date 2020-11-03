@@ -73,12 +73,16 @@ const AttendeeList = (props) => {
     setIsUpdating(true);
     const { match } = props;
     try {
-      const data = {
-        zoom_meeting_id: match.params.id,
-        student_id: student.user.id,
-        is_attended: checked,
-      };
-      await axiosInstance.put('/erp_user/mark_attendance/', data);
+      const formData = new FormData();
+      formData.append('zoom_meeting_id', match.params.id * 1);
+      formData.append('student_id', student.user.id);
+      formData.append('is_attended', checked);
+      // const data = {
+      //   zoom_meeting_id: match.params.id * 1,
+      //   student_id: student.user.id,
+      //   is_attended: checked,
+      // };
+      await axiosInstance.put('/erp_user/mark_attendance/', formData);
       const stateCopy = attendeeList;
       const copy = stateCopy.map((el, ind) => {
         if (ind === index) {

@@ -260,7 +260,7 @@ const CreateClassForm = () => {
     else if (gradeIds.length) {
       formdata.append('grade_ids', gradeIds);
       formdata.append('branch_ids', 1);
-    } else formdata.append('branch_ids', 1);
+    } else formdata.append('branch_ids', 2);
 
     if (filteredStudents.length)
       formdata.append('student_ids', filteredStudents.join(','));
