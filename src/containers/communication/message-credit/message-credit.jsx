@@ -10,6 +10,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -123,7 +124,10 @@ const MessageCredit = withRouter(({ history, ...props }) => {
   return (
     <Layout>
       <div className='message_credit__page'>
-        <div className='add_credit_message_title'>Communication &gt; Add SMS credit</div>
+        <CommonBreadcrumbs
+          componentName='Communication'
+          childComponentName='Add SMS credit'
+        />
         <div className='sms_credit_branch'>
           <FormControl variant='outlined' className={classes.formControl}>
             <InputLabel id='demo-simple-select-outlined-label'>Branch</InputLabel>

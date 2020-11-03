@@ -35,6 +35,8 @@ const GuardianDetailsForm = ({ details, onSubmit, handleBack }) => {
     onSubmit: (values) => {
       onSubmit(values);
     },
+    validateOnBlur: false,
+    validateOnChange: false,
   });
   return (
     <>

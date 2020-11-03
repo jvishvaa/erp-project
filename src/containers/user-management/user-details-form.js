@@ -35,6 +35,8 @@ const UserDetailsForm = ({ details, onSubmit, handleBack }) => {
     onSubmit: (values) => {
       onSubmit(values);
     },
+    validateOnChange: false,
+    validateOnBlur: false,
   });
   console.log('dob error', formik.values.date_of_birth, formik.errors.date_of_birth);
   return (

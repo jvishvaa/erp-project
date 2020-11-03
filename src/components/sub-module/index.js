@@ -30,7 +30,8 @@ const SubModule = ({
   const customScopeApplied =
     subModule.custom_branch.length > 0 ||
     subModule.custom_grade.length > 0 ||
-    subModule.custom_section.length > 0;
+    subModule.custom_section.length > 0 ||
+    subModule.custom_subject.length > 0;
   return (
     <TableRow hover role='checkbox' tabIndex={-1} key={subModule.module_child_id}>
       {columns.map((column) => {
@@ -56,8 +57,11 @@ const SubModule = ({
                 name='custom-popup-trigger'
                 inputProps={{ 'aria-label': 'custom-popup-trigger' }}
                 color='primary'
+                title={
+                  customScopeApplied ? 'Custom scope applied' : 'No custom scope applied'
+                }
               />
-              <IconButton onClick={handleOpenModal}>
+              <IconButton onClick={handleOpenModal} title='Add/Edit custom scope'>
                 <EditIcon color='primary' />
               </IconButton>
             </TableCell>
@@ -98,7 +102,7 @@ const SubModule = ({
           custom_branch: subModule.custom_branch,
           custom_grade: subModule.custom_grade,
           custom_section: subModule.custom_section,
-          custon_subject: subModule.custom_subject,
+          custom_subject: subModule.custom_subject,
         }}
         subModule={subModule.module_child_name}
       />

@@ -19,8 +19,8 @@ class RoleManagement extends Component {
   }
 
   componentDidMount() {
-    const { fetchRoles } = this.props;
-    fetchRoles();
+    const { fetchRoles, limit } = this.props;
+    fetchRoles({ page: 1, limit });
   }
 
   editRole = (role) => {
@@ -48,9 +48,16 @@ class RoleManagement extends Component {
     this.setState({ selectedRole: null });
   };
 
+  handlePageChange = (page) => {
+    const { limit, fetchRoles } = this.props;
+    console.log('page change ', page);
+    fetchRoles({ page, limit });
+  };
+
   render() {
-    const { match, roles, fetchingRoles, classes } = this.props;
+    const { match, roles, fetchingRoles, classes, page, limit, count } = this.props;
     const { openDeleteModal, selectedRole } = this.state;
+
     return (
       <div>
         <div className={classes.buttonContainer}>
@@ -65,6 +72,10 @@ class RoleManagement extends Component {
             loading={fetchingRoles}
             onEdit={this.editRole}
             onDelete={this.handleOpenDeleteModal}
+            page={page}
+            limit={limit}
+            count={count}
+            onChangePage={this.handlePageChange}
           />
         </div>
         <Dialog
@@ -94,6 +105,9 @@ class RoleManagement extends Component {
 
 const mapStateToProps = (state) => ({
   roles: state.roleManagement.roles,
+  page: state.roleManagement.page,
+  limit: state.roleManagement.limit,
+  count: state.roleManagement.count,
   fetchingRoles: state.roleManagement.fetchingRoles,
   selectedRole: state.roleManagement.selectedRole,
 });

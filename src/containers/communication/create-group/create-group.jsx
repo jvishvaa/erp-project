@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable dot-notation */
 /* eslint-disable no-debugger */
@@ -15,6 +17,7 @@ import endpoints from '../../../config/endpoints';
 import CustomMultiSelect from '../custom-multiselect/custom-multiselect';
 import CustomInput from '../custom-inputfield/custom-input';
 import CustomSelectionTable from '../custom-selection-table/custom-selection-table';
+import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import Layout from '../../Layout';
 import './create-group.css';
@@ -59,6 +62,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   const [gradeError, setGradeError] = useState('');
   const [branchError, setBranchError] = useState('');
   const [selectectUserError, setSelectectUserError] = useState('');
+  const [selectAll, setSelectAll] = useState(false);
 
   const getRoleApi = async () => {
     try {
@@ -161,7 +165,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     const gradesId = [];
     const sectionsId = [];
     setNext(true);
-    let getUserListUrl = `${endpoints.communication.userList}?page=${pageno}`;
+    let getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15`;
     if (selectedRoles.length && !selectedRoles.includes('All')) {
       roleList
         .filter((item) => selectedRoles.includes(item['role_name']))
@@ -229,7 +233,9 @@ const CreateGroup = withRouter(({ history, ...props }) => {
               gender: items.gender,
               contact: items.contact,
             },
-            selected: selectedUsers.length
+            selected: selectAll
+              ? true
+              : selectedUsers.length
               ? selectedUsers[pageno - 1].selected.includes(items.id)
               : false,
           });
@@ -295,11 +301,15 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     sectionsId.forEach((item) => {
       sectionArray.push(item);
     });
-    selectedUsers.forEach((item) => {
-      item.selected.forEach((ids) => {
-        selectionArray.push(ids);
+    if (selectAll) {
+      selectionArray.push(0);
+    } else {
+      selectedUsers.forEach((item) => {
+        item.selected.forEach((ids) => {
+          selectionArray.push(ids);
+        });
       });
-    });
+    }
     if (!selectionArray.length) {
       setSelectectUserError('Please select some users');
       return;
@@ -336,6 +346,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         setSelectedGrades([]);
         setGroupName('');
         setSelectectUserError('');
+        setSelectAll(false);
       } else {
         setAlert('error', response.data.message);
       }
@@ -348,9 +359,22 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     setGroupName(e.target.value);
   };
 
+  const handleSelectAll = () => {
+    setSelectAll(!selectAll);
+    const testclick = document.querySelectorAll('[class*="PrivateSwitchBase-input-"]');
+    if (!selectAll) {
+      testclick[0].click();
+    } else {
+      for (let i = 1; i < testclick.length; i += 1) {
+        testclick[i].click();
+      }
+    }
+  };
+
   const handleback = () => {
     setSelectedUsers([]);
     setNext(false);
+    setSelectAll(false);
     setSelectectUserError('');
   };
   const handlenext = () => {
@@ -407,9 +431,23 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   return (
     <Layout>
       <div className='creategroup__page'>
-        <div className='creategroup_heading'>Communication &gt; Create Group</div>
+        <CommonBreadcrumbs
+          componentName='Communication'
+          childComponentName='Create Group'
+        />
         {next ? (
           <>
+            {usersRow.length ? (
+              <div className='create_group_select_all_wrapper'>
+                <input
+                  type='checkbox'
+                  className='create_group_select_all_checkbox'
+                  checked={selectAll}
+                  onChange={handleSelectAll}
+                />
+                <span>Select All</span>
+              </div>
+            ) : null}
             <span className='create_group_error_span'>{selectectUserError}</span>
             <CustomSelectionTable
               header={headers}
@@ -417,6 +455,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
               completeData={completeData}
               totalRows={totalPage}
               pageno={pageno}
+              setSelectAll={setSelectAll}
               selectedUsers={selectedUsers}
               changePage={setPageno}
               setSelectedUsers={setSelectedUsers}

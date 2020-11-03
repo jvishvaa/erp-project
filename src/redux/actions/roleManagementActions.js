@@ -26,6 +26,7 @@ export const roleManagementActions = {
   DELETE_ROLE_REQUEST: 'DELETE_ROLE_REQUEST',
   DELETE_ROLE_SUCCESS: 'DELETE_ROLE_SUCCESS',
   DELETE_ROLE_FAILURE: 'DELETE_ROLE_FAILURE',
+  SET_ROLE_NAME: 'SET_ROLE_NAME',
 };
 
 const {
@@ -54,6 +55,7 @@ const {
   DELETE_ROLE_REQUEST,
   DELETE_ROLE_SUCCESS,
   DELETE_ROLE_FAILURE,
+  SET_ROLE_NAME,
 } = roleManagementActions;
 
 export const scopes = {
@@ -74,12 +76,24 @@ function transformModules(module, obj) {
   return clonedModule;
 }
 
-export const fetchRoles = () => (dispatch) => {
+export const setRoleName = (data) => ({
+  type: SET_ROLE_NAME,
+  data,
+});
+
+export const fetchRoles = (params) => (dispatch) => {
   dispatch({ type: FETCH_ROLES_REQUEST });
   axios
-    .get('/erp_user/roles/')
+    .get(`/erp_user/roles/?page=${params.page}&page_size=${params.limit}`)
     .then((response) => {
-      dispatch({ type: FETCH_ROLES_SUCCESS, data: response.data.result });
+      const { result, current_page, limit, count } = response.data;
+      dispatch({
+        type: FETCH_ROLES_SUCCESS,
+        data: result,
+        page: current_page,
+        limit,
+        count,
+      });
     })
     .catch(() => {
       dispatch({ type: FETCH_ROLES_FAILURE });
@@ -152,9 +166,14 @@ export const fetchGrades = (branches) => {
   // return Promise.resolve([]);
 };
 
-export const fetchSubjects = () => {
+export const fetchSubjects = (branches, grades) => {
+  const branchIds =
+    branches && branches.length > 0 ? branches.map((branch) => branch.id).join(',') : '';
+  //   const branchIds = branches.id;
+  const gradeIds =
+    grades && grades.length > 0 ? grades.map((grade) => grade.id).join(',') : '';
   return axios
-    .get(`/erp_user/subject/`)
+    .get(`/erp_user/subject/?branch=${branchIds}&grade=${gradeIds}`)
     .then((response) => {
       return response.data.data;
     })
@@ -201,6 +220,8 @@ export const fetchRoleDataById = (params) => (dispatch) => {
       dispatch({
         type: FETCH_ROLE_DATA_BY_ID_SUCCESS,
         modulePermissions: response.data.result,
+        roleName: response.data.role_name,
+        roleId: response.data.role,
         data: response.data.result,
       });
     })
@@ -217,12 +238,14 @@ export const setEditRolePermissionsState = (params) => ({
 export const editRole = (params) => (dispatch) => {
   dispatch({ type: EDIT_ROLES_REQUEST });
   return axios
-    .post('/erp_user/create_role/', params)
-    .then(() => {
+    .post('/erp_user/update_role_module/', params)
+    .then((response) => {
       dispatch({ type: EDIT_ROLES_SUCCESS });
+      return response.data;
     })
-    .catch(() => {
+    .catch((error) => {
       dispatch({ type: EDIT_ROLES_FAILURE });
+      throw error;
     });
 };
 

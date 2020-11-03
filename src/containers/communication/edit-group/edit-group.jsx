@@ -31,6 +31,7 @@ const EditGroup = withRouter(({ history, ...props }) => {
   const [usersRow, setUsersRow] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [completeData, setCompleteData] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
   const addGroupName = (e) => {
     setGroupName(e.target.value);
   };
@@ -63,6 +64,7 @@ const EditGroup = withRouter(({ history, ...props }) => {
       if (statusCode === 200) {
         setAlert('success', message);
         editClose(false);
+        setSelectAll(false);
       } else {
         setAlert('error', response.data.message);
       }
@@ -71,7 +73,7 @@ const EditGroup = withRouter(({ history, ...props }) => {
     }
   };
   const getEditGroupsData = async () => {
-    const getEditGroupsDataUrl = `${endpoints.communication.editGroup}${editId}/retrieve-update-group/?page=${pageno}`;
+    const getEditGroupsDataUrl = `${endpoints.communication.editGroup}${editId}/retrieve-update-group/?page=${pageno}&page_size=15`;
     try {
       const result = await axiosInstance.get(getEditGroupsDataUrl, {
         headers: {
@@ -146,6 +148,19 @@ const EditGroup = withRouter(({ history, ...props }) => {
       setAlert('error', error.message);
     }
   };
+
+  const handleSelectAll = () => {
+    setSelectAll(!selectAll);
+    const testclick = document.querySelectorAll('[class*="PrivateSwitchBase-input-"]');
+    if (!selectAll) {
+      testclick[0].click();
+    } else {
+      for (let i = 1; i < testclick.length; i += 1) {
+        testclick[i].click();
+      }
+    }
+  };
+
   useEffect(() => {
     getEditGroupsData();
   }, [pageno]);
@@ -197,6 +212,17 @@ const EditGroup = withRouter(({ history, ...props }) => {
           ))}
         </div>
       </div>
+      {usersRow.length ? (
+        <div className='create_group_select_all_wrapper'>
+          <input
+            type='checkbox'
+            className='create_group_select_all_checkbox'
+            checked={selectAll}
+            onChange={handleSelectAll}
+          />
+          <span>Select All</span>
+        </div>
+      ) : null}
       <CustomSelectionTable
         header={headers}
         rows={usersRow}

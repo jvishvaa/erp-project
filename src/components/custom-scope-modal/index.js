@@ -12,7 +12,11 @@ import Grid from '@material-ui/core/Grid';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { fetchGrades, fetchSections, fetchSubjects } from '../../redux/actions';
+import {
+  fetchGrades,
+  fetchSections,
+  fetchSubjects as getSubjects,
+} from '../../redux/actions';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -121,15 +125,29 @@ const CustomScopeModal = ({
     onChange(scope, value);
   };
 
+  const fetchSubjects = (branches, grades) => {
+    getSubjects(branches, grades).then((data) => {
+      const transformedData = data
+        ? data.map((subject) => ({
+            id: subject.subject__id,
+            subject_name: `${subject.subject__subject_name}`,
+          }))
+        : [];
+      setSubjects(transformedData);
+    });
+  };
+
   const handleChangeBranch = (values) => {
     const customScopeObj = {
       custom_branch: [...values],
       custom_grade: [],
       custom_section: [],
+      custom_subject: [],
     };
     onCustomScopeChange('custom_branch', customScopeObj);
     setGrades([]);
     setSections([]);
+    setSubjects([]);
 
     fetchGrades(values).then((data) => {
       const transformedData = data
@@ -140,15 +158,6 @@ const CustomScopeModal = ({
         : [];
       setGrades(transformedData);
     });
-    fetchSubjects().then((data) => {
-      const transformedData = data
-        ? data.map((subject) => ({
-            id: subject.id,
-            subject_name: subject.subject_name,
-          }))
-        : [];
-      setSubjects(transformedData);
-    });
   };
 
   const handleChangeGrade = (values) => {
@@ -156,19 +165,23 @@ const CustomScopeModal = ({
       custom_branch: customScope.custom_branch,
       custom_grade: values,
       custom_section: [],
+      custom_subject: [],
     };
     onCustomScopeChange('custom_grade', customScopeObj);
     setSections([]);
-
-    fetchSections(customScope.custom_branch, values).then((data) => {
-      const transformedData = data
-        ? data.map((section) => ({
-            id: section.section_id,
-            section_name: `${section.section__section_name}`,
-          }))
-        : [];
-      setSections(transformedData);
-    });
+    setSubjects([]);
+    if (customScope.custom_branch.length > 0 && values && values.length > 0) {
+      fetchSections(customScope.custom_branch, values).then((data) => {
+        const transformedData = data
+          ? data.map((section) => ({
+              id: section.section_id,
+              section_name: `${section.section__section_name}`,
+            }))
+          : [];
+        setSections(transformedData);
+      });
+      fetchSubjects(customScope.custom_branch, values);
+    }
   };
   const handleChangeSection = (values) => {
     const customScopeObj = {

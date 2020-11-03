@@ -19,3 +19,6 @@
 .custom_selection_table_wrapper{
 	margin-top: 2%;
 }
+.custom_selection_table_wrapper .MuiDataGrid-colCellWrapper .MuiIconButton-label{
+	visibility: hidden !important;
+}

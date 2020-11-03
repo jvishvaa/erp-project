@@ -97,3 +97,14 @@
 	font-size: 1rem !important;
     font-weight: 600 !important;
 }
+.send_message_select_all_wrapper{
+	color: #014B7E;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 2%;
+    margin-bottom: -2%;
+}
+.send_message_select_all_checkbox{
+	transform: scale(1.5);
+	margin-right: 1%;
+}

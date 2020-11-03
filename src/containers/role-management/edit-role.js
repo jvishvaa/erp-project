@@ -1,19 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
-
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { Skeleton } from '@material-ui/lab';
+import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import {
   fetchRoleDataById,
   fetchBranches,
   setEditRolePermissionsState,
   editRole,
   setModulePermissionsRequestData,
+  setRoleName,
 } from '../../redux/actions';
 import styles from './useStyles';
 
@@ -50,16 +51,33 @@ class EditRole extends Component {
   };
 
   handleEditRole = () => {
-    const { modulePermissionsRequestData, editRole, modules, history } = this.props;
+    const {
+      modulePermissionsRequestData,
+      editRole,
+      history,
+      roleId,
+      roleName,
+    } = this.props;
     const reqObj = {
-      role_name: modules[0]?.role_name,
+      role_id: roleId,
+      role_name: roleName,
       Module: modulePermissionsRequestData,
     };
     editRole(reqObj)
       .then(() => {
         history.push('/role-management');
       })
-      .catch(() => {});
+      .catch((error) => {
+        console.log('update role error ', error);
+        const { setAlert } = this.context;
+        setAlert('error', 'Update failed');
+      });
+  };
+
+  onChangeRoleName = (e) => {
+    // this.setState({ roleName: e.target.value });
+    const { setRoleName } = this.props;
+    setRoleName(e.target.value);
   };
 
   render() {
@@ -71,12 +89,8 @@ class EditRole extends Component {
       setModulePermissionsRequestData,
       classes,
     } = this.props;
-    let roleName;
-    if (modules) {
-      if (modules.length > 0) {
-        roleName = modules[0].role_name;
-      }
-    }
+
+    const { roleName } = this.props;
     return (
       <div className={classes.root}>
         <Grid container spacing={2} alignItems='center' style={{ padding: '2rem 0' }}>
@@ -90,7 +104,7 @@ class EditRole extends Component {
                 defaultValue=''
                 variant='outlined'
                 value={roleName}
-                disabled
+                onChange={this.onChangeRoleName}
               />
             )}
           </Grid>
@@ -125,6 +139,8 @@ const mapStateToProps = (state) => ({
   modulePermissionsRequestData: state.roleManagement.modulePermissionsRequestData,
   roles: state.roleManagement.roles,
   fetchingRoleDataById: state.roleManagement.fetchingRoleDataById,
+  roleName: state.roleManagement.roleName,
+  roleId: state.roleManagement.roleId,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -143,5 +159,10 @@ const mapDispatchToProps = (dispatch) => ({
   editRole: (params) => {
     return dispatch(editRole(params));
   },
+  setRoleName: (params) => {
+    return dispatch(setRoleName(params));
+  },
 });
+EditRole.contextType = AlertNotificationContext;
+
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(EditRole));
