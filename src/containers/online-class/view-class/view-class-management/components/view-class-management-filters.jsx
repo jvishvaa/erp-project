@@ -79,9 +79,9 @@ const ViewClassManagementFilters = () => {
     const isCompleted = !!currentTab;
     let url = '';
     if (isSuperUser) {
-      url += `page_number=1&page_size=10&branch_ids=2&is_completed=${isCompleted}&is_cancelled=${isCancelSelected}&start_date=${startDate}&end_date=${endDate}`;
+      url += `page_number=1&page_size=10&branch_ids=5&is_completed=${isCompleted}&is_cancelled=${isCancelSelected}&start_date=${startDate}&end_date=${endDate}`;
     } else {
-      url += `page_number=1&page_size=10&branch_ids=2&is_completed=${isCompleted}&user_id=${roleDetails.erp_user_id}&is_cancelled=${isCancelSelected}&start_date=${startDate}&end_date=${endDate}`;
+      url += `page_number=1&page_size=10&branch_ids=5&is_completed=${isCompleted}&user_id=${roleDetails.erp_user_id}&is_cancelled=${isCancelSelected}&start_date=${startDate}&end_date=${endDate}`;
     }
 
     if (subjectIds.length) {
