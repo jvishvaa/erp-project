@@ -8,6 +8,9 @@ export default {
     grades: '/erp_user/grademapping/',
     sections: '/erp_user/sectionmapping/',
   },
+  profile: {
+    userDetails: '/erp_user/user-data/',
+  },
   communication: {
     roles: '/erp_user/roles/',
     branches: '/erp_user/branch/',
@@ -22,6 +25,7 @@ export default {
     sendMessage: '/communication/send-messages/',
     getSmsCredit: '/communication/sms-credits/',
     assignRole: '/erp_user/assign_role/',
+    userStatusChange: '/erp_user/',
   },
   onlineClass: {
     filterStudent: '/erp_user/student_filter/',
