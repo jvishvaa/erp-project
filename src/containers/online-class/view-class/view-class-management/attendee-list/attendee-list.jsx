@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-wrap-multilines */
+/* eslint-disable no-nested-ternary */
 import React, { useContext, useEffect, useState } from 'react';
 import {
   CircularProgress,
@@ -72,7 +74,7 @@ const AttendeeList = (props) => {
     const { match } = props;
     try {
       const data = {
-        online_class_id: match.params.id,
+        zoom_meeting_id: match.params.id,
         student_id: student.user.id,
         is_attended: checked,
       };
@@ -96,11 +98,21 @@ const AttendeeList = (props) => {
     const { match } = props;
     try {
       const { data } = await axiosInstance.get(
-        `${endpoints.onlineClass.attendeeList}?zoom_meeting_id=${match.params.id}&type=excel`
+        `${endpoints.onlineClass.attendeeList}?zoom_meeting_id=${match.params.id}&type=excel`,
+        {
+          responseType: 'arraybuffer',
+        }
       );
-      debugger;
+      const blob = new Blob([data], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = 'online_class_attendance_report.xlsx';
+      link.click();
+      link.remove();
     } catch (error) {
-      setAlert('error', 'Failed to load attendee list');
+      setAlert('error', 'Failed to download attendee list');
     }
   };
 
@@ -155,40 +167,59 @@ const AttendeeList = (props) => {
                 <TableCell align='center'>Attended status</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody className='styled__table-body'>
-              {attendeeList.map((el, index) => {
-                return (
-                  <TableRow key={el.id}>
-                    <TableCell align='center'>{index + 1}</TableCell>
-                    <TableCell align='center'>{el.user.user.first_name}</TableCell>
-                    <TableCell align='center'>{el.user.erp_id}</TableCell>
-                    <TableCell align='center'>
-                      {el.is_accepted ? 'Accepted' : 'Not accepted'}
-                    </TableCell>
-                    <TableCell align='center'>
-                      {isEdit ? (
-                        <Switch
-                          disabled={isUpdating}
-                          checked={el.is_attended}
-                          onChange={(event, checked) => {
-                            handleCheck(index, checked, el);
-                          }}
-                          name='checked'
-                          inputProps={{ 'aria-label': 'secondary checkbox' }}
-                        />
-                      ) : el.is_attended ? (
-                        'Attended'
-                      ) : (
-                        'Not attended'
-                      )}
-                      {}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
+            {!loading ? (
+              <TableBody className='styled__table-body'>
+                {attendeeList.map((el, index) => {
+                  return (
+                    <TableRow key={el.id}>
+                      <TableCell align='center'>{index + 1}</TableCell>
+                      <TableCell align='center'>{el.user.user.first_name}</TableCell>
+                      <TableCell align='center'>{el.user.erp_id}</TableCell>
+                      <TableCell align='center'>
+                        {el.is_accepted ? 'Accepted' : 'Not accepted'}
+                      </TableCell>
+                      <TableCell align='center'>
+                        {isEdit ? (
+                          <Switch
+                            disabled={isUpdating}
+                            checked={el.is_attended}
+                            onChange={(event, checked) => {
+                              handleCheck(index, checked, el);
+                            }}
+                            name='checked'
+                            inputProps={{ 'aria-label': 'secondary checkbox' }}
+                          />
+                        ) : el.is_attended ? (
+                          'Attended'
+                        ) : (
+                          'Not attended'
+                        )}
+                        {}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            ) : (
+              ''
+            )}
           </Table>
         </TableContainer>
+        {loading ? (
+          <Grid
+            container
+            spacing={0}
+            direction='column'
+            alignItems='center'
+            justify='center'
+          >
+            <Grid item xs={3}>
+              <CircularProgress style={{ marginTop: 20 }} />
+            </Grid>
+          </Grid>
+        ) : (
+          ''
+        )}
         <Grid
           className='pagination__container'
           container
@@ -197,13 +228,17 @@ const AttendeeList = (props) => {
           justify='center'
         >
           <Grid item xs={12}>
-            <Pagination
-              onChange={handlePagination}
-              style={{ marginTop: 25 }}
-              count={totalPages}
-              color='primary'
-              page={currentPage}
-            />
+            {!loading ? (
+              <Pagination
+                onChange={handlePagination}
+                style={{ marginTop: 25 }}
+                count={totalPages}
+                color='primary'
+                page={currentPage}
+              />
+            ) : (
+              ''
+            )}
           </Grid>
         </Grid>
       </div>
