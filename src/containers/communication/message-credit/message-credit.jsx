@@ -64,9 +64,12 @@ const MessageCredit = withRouter(({ history, ...props }) => {
     }
   };
   const handleAddingSms = (e, index) => {
-    const tempData = testData.slice();
-    tempData[index].AmountAdded = Number(e.target.value);
-    setTestData(tempData);
+    const creditToadd = Number(e.target.value);
+    if (creditToadd > 0) {
+      const tempData = testData.slice();
+      tempData[index].AmountAdded = creditToadd;
+      setTestData(tempData);
+    }
   };
   const handleStatusChange = (index) => {
     const tempData = testData.slice();

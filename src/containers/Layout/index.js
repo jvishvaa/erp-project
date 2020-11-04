@@ -368,6 +368,24 @@ const Layout = ({ children, history }) => {
                   <ListItem
                     button
                     className={
+                      history.location.pathname === '/view-users'
+                        ? 'menu_selection'
+                        : null
+                    }
+                    onClick={() => {
+                      history.push('/view-users');
+                    }}
+                  >
+                    <ListItemIcon className={classes.menuItemIcon}>
+                      {/* <MenuIcon name={child.child_name} /> */}
+                      {/* {menuIcon(child.child_name)} */}
+                    </ListItemIcon>
+                    <ListItemText primary='View User' className={classes.menuItemText} />
+                  </ListItem>
+
+                  <ListItem
+                    button
+                    className={
                       history.location.pathname === '/user-management'
                         ? 'menu_selection'
                         : null

@@ -20,6 +20,7 @@ const ViewClassManagementTable = () => {
       managementOnlineClasses = [],
       totalPages,
       loadingManagementOnlineClasses,
+      currentManagementTab,
     },
   } = useContext(OnlineclassViewContext);
 
@@ -37,7 +38,11 @@ const ViewClassManagementTable = () => {
               <TableCell align='center'>Not attended</TableCell>
               <TableCell align='center'>Zoom email</TableCell>
               <TableCell align='center'>Host/ Audit class</TableCell>
-              <TableCell align='center'>Cancel class</TableCell>
+              {currentManagementTab === 0 ? (
+                <TableCell align='center'>Cancel class</TableCell>
+              ) : (
+                ''
+              )}
               <TableCell align='center'>Attendee list</TableCell>
               <TableCell align='center'>Tutor email</TableCell>
             </TableRow>

@@ -1,0 +1,137 @@
+.view_users_filter_wrapper{
+	display: flex;
+    justify-content: space-around;
+    padding: 2% 15% 2% 2%;
+    margin-left: 2%;
+    width: 95%;
+    border-bottom: 2px solid #dcdcdc;
+}
+.user_details_role_wrapper .MuiSelect-icon{
+	color: #FF6B6B !important;
+}
+.user_details_role_wrapper .MuiInputLabel-outlined{
+	color: #014B7E !important;
+	font-size: 1rem !important;
+    font-weight: 600 !important;
+}
+.user_details_role_wrapper .MuiFormControl-root .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline{
+	border: rgba(0, 0, 0, 0.23) !important;
+	border-radius: 10px !important;
+	outline: 1px solid #d4cbcb;
+}
+.user_details_branch_wrapper .MuiSelect-icon{
+	color: #FF6B6B !important;
+}
+.user_details_branch_wrapper .MuiInputLabel-outlined{
+	color: #014B7E !important;
+	font-size: 1rem !important;
+    font-weight: 600 !important;
+}
+.user_details_branch_wrapper .MuiFormControl-root .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline{
+	border: rgba(0, 0, 0, 0.23) !important;
+	border-radius: 10px !important;
+	outline: 1px solid #d4cbcb;
+}
+.MuiTableCell-head{
+	color: #FF6B6B !important;
+	font-weight: 600 !important;
+	text-align: center !important;
+}
+.MuiTableCell-body{
+	color: #014B7E !important;
+	font-weight: 500 !important;
+	text-align: center !important;
+}
+.MuiTableCell-stickyHeader{
+	background-color: #f3e8e8 !important;
+}
+.group_view_activate_button{
+	background-color: green;
+	color: white;
+}
+.group_view_deactivate_button{
+	background-color: red;
+	color: white;
+}
+.group_view_button{
+	margin-left: 1%;
+    margin-right: 1%;
+    outline: none;
+    border: none;
+    width: 30%;
+    height: 30px;
+    vertical-align: bottom;
+}
+.group_view_button:hover{
+	transform: scale(1.1);
+	box-shadow: 1px 3px 5px 1px rgba(0, 0, 0, 0.3);
+	cursor: pointer;
+}
+.group_view_delete_button:hover{
+	transform: none;
+	box-shadow: none;
+}
+.books__pagination {
+    width: 100%;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    background-color: white;
+    box-shadow: none;
+}
+
+.books__pagination  * {
+    color: #013E56 !important;
+    fill: #013E56 !important;
+}
+
+.books__pagination .MuiPaginationItem-page.Mui-selected {
+    background-color: #013E56;
+    color: white !important;
+    box-shadow: 0.5px 2px 3px 2px rgba(0, 0, 0, 0.295) ;
+}
+.view_users_delete_alert_wrapper{
+	position: fixed;
+    left: 50%;
+    top: 50%;
+	transform: translate(-50%, -50%);
+	background: #fdfdfde0;
+    border: 12px solid #d2cdcd;
+    border-radius: 5px;
+    z-index: 10;
+	padding: 4%;
+}
+.view_users_delete_alert_tag{
+	color: #014B7E !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+}
+.view_users_delete_alert_button_wrapper{
+	text-align: center;
+    display: flex;
+	justify-content: space-between;
+	margin-top: 5%;
+}
+.view_users_delete_alert_button{
+	font-size: 0.9rem;
+    padding: 3% 10%;
+    border: none;
+	border-radius: 5px;
+	text-transform: uppercase;
+	cursor: pointer;
+	outline: none !important;
+	color: white;
+	background-color: #FF6B6B;
+}
+.view_users__reset_icon{
+	float: right;
+    margin-right: 20%;
+	color: #ff6b6b;
+	cursor: pointer;
+}
+.user_search_wrapper{
+	margin-left: 5%;
+}
+.user_search_wrapper .MuiTextField-root{
+	width: 50%;
+}
