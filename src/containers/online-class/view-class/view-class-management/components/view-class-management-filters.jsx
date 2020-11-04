@@ -43,7 +43,8 @@ const ViewClassManagementFilters = () => {
 
   const { setAlert } = useContext(AlertNotificationContext);
 
-  const { role_details: roleDetails } = JSON.parse(localStorage.getItem('userDetails'));
+  const { role_details: roleDetails } =
+    JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const handleTabChange = (event, tab) => {
     setCurrentTab(tab);
@@ -95,9 +96,8 @@ const ViewClassManagementFilters = () => {
   };
 
   const handleGetClasses = () => {
-    const { role_details: roleDetails, is_superuser: isSuperUser } = JSON.parse(
-      localStorage.getItem('userDetails')
-    );
+    const { role_details: roleDetails, is_superuser: isSuperUser } =
+      JSON.parse(localStorage.getItem('userDetails')) || {};
     const isCompleted = !!currentTab;
     let url = '';
     if (isSuperUser) {

@@ -47,7 +47,8 @@ const CreateclassProvider = (props) => {
 
   const [state, dispatch] = useReducer(createClassReducer, initalState);
 
-  const { role_details: roleDetails } = JSON.parse(localStorage.getItem('userDetails'));
+  const { role_details: roleDetails } =
+    JSON.parse(localStorage.getItem('userDetails')) || {};
 
   // all the actions related
 
@@ -119,7 +120,8 @@ const CreateclassProvider = (props) => {
     info
   ) => {
     const startTime = `${selectedDate} ${getFormatedTime(selectedTime)}`;
-    const { role_details: roleDetails } = JSON.parse(localStorage.getItem('userDetails'));
+    const { role_details: roleDetails } =
+      JSON.parse(localStorage.getItem('userDetails')) || {};
     dispatch(request(VERIFY_TUTOREMAIL_REQUEST));
     try {
       let url = `${endpoints.onlineClass.teacherAvailability}?erp_user_id=${roleDetails.erp_user_id}&tutor_email=${tutorEmail}&start_time=${startTime}&duration=${duration}`;
