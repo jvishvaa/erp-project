@@ -52,13 +52,15 @@ const UserDetailsForm = ({
   return (
     <Grid container spacing={4}>
       <Grid container item xs={12}>
-        <ImageUpload
-          value={formik.values.profile}
-          onChange={(value) => {
-            console.log(value);
-            formik.setFieldValue('profile', value);
-          }}
-        />
+        <Grid item xs={4}>
+          <ImageUpload
+            value={formik.values.profile}
+            onChange={(value) => {
+              console.log(value);
+              formik.setFieldValue('profile', value);
+            }}
+          />
+        </Grid>
       </Grid>
       <Grid item md={4}>
         <FormControl variant='outlined' fullWidth>
@@ -138,7 +140,8 @@ const UserDetailsForm = ({
         <Grid item md={4}>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <DatePicker
-              value={formik.values.date_of_birth || new Date()}
+              value={formik.values.date_of_birth || null}
+              defaultValue={formik.values.date_of_birth || null}
               onChange={(value) => {
                 console.log('date ', value);
                 console.log(moment(value).format('YYYY-MM-DD'));

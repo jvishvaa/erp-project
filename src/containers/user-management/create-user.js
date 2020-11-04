@@ -22,8 +22,8 @@ class CreateUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeStep: 0,
-      showParentForm: false,
+      activeStep: 1,
+      showParentForm: true,
       showGuardianForm: false,
       user: {
         first_name: '',

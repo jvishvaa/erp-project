@@ -13,48 +13,46 @@ const ImageUpload = ({ value, onChange }) => {
     }
   }, [value]);
   return (
-    <Grid container item xs={12}>
-      <Grid container item md={4} alignItems='center' spacing={3}>
-        <Grid item>
-          <img
-            src={
-              image ||
-              value ||
-              `https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png`
-            }
-            alt=''
-            style={{ width: '100px', height: '100px', borderRadius: '50px' }}
-          />
-        </Grid>
-        <Grid item>
-          {image ? (
-            <button
-              type='button'
-              onClick={() => {
-                onChange('');
+    <Grid container item xs={12} alignItems='center'>
+      <Grid item xs={3}>
+        <img
+          src={
+            image ||
+            value ||
+            `https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png`
+          }
+          alt=''
+          style={{ width: '100px', height: '100px', borderRadius: '50px' }}
+        />
+      </Grid>
+      <Grid item xs={3}>
+        {image ? (
+          <button
+            type='button'
+            onClick={() => {
+              onChange('');
+            }}
+            className={classes.imageUploadBtn}
+          >
+            Delete Image
+          </button>
+        ) : (
+          <label htmlFor='image' className={classes.imageUploadBtn}>
+            Attach Image
+            <input
+              style={{ visibility: 'hidden', position: 'absolute' }}
+              type='file'
+              id='image'
+              name='image'
+              onChange={(e) => {
+                e.persist();
+                if (e.target.files && e.target.files[0]) {
+                  onChange(e.target.files[0]);
+                }
               }}
-              className={classes.imageUploadBtn}
-            >
-              Delete Image
-            </button>
-          ) : (
-            <label htmlFor='image' className={classes.imageUploadBtn}>
-              Attach Image
-              <input
-                style={{ visibility: 'hidden', position: 'absolute' }}
-                type='file'
-                id='image'
-                name='image'
-                onChange={(e) => {
-                  e.persist();
-                  if (e.target.files && e.target.files[0]) {
-                    onChange(e.target.files[0]);
-                  }
-                }}
-              />
-            </label>
-          )}
-        </Grid>
+            />
+          </label>
+        )}
       </Grid>
     </Grid>
   );
