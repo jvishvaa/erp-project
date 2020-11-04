@@ -23,13 +23,7 @@ const OnlineClassResourceTable = () => {
       loadingManagementOnlineClasses,
       currentManagementTab,
     },
-    listOnlineClassesManagementView,
   } = useContext(OnlineclassViewContext);
-
-  useEffect(() => {
-    const url = `page_number=1&page_size=10&branch_ids=5&is_completed=${false}&is_cancelled=${false}&start_date=2020-11-03&end_date=2020-11-03`;
-    listOnlineClassesManagementView(url);
-  }, []);
 
   return (
     <div className='viewclass__management-table'>
