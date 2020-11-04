@@ -177,6 +177,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
               formik.setFieldValue('section', '');
               handleChangeGrade(value ? [value] : null, [formik.values.branch]);
             }}
+            multiple
             value={formik.values.grade}
             options={grades}
             getOptionLabel={(option) => option.grade_name || ''}
@@ -204,6 +205,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
             }}
             value={formik.values.section}
             options={sections}
+            multiple
             getOptionLabel={(option) => option.section_name || ''}
             renderInput={(params) => (
               <TextField
