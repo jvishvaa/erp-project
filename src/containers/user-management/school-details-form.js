@@ -146,8 +146,8 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
             name='branch'
             onChange={(e, value) => {
               formik.setFieldValue('branch', value);
-              formik.setFieldValue('grade', '');
-              formik.setFieldValue('section', '');
+              formik.setFieldValue('grade', []);
+              formik.setFieldValue('section', []);
               handleChangeBranch(value ? [value] : null);
             }}
             value={formik.values.branch}
@@ -174,9 +174,10 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
             name='grade'
             onChange={(e, value) => {
               formik.setFieldValue('grade', value);
-              formik.setFieldValue('section', '');
-              handleChangeGrade(value ? [value] : null, [formik.values.branch]);
+              formik.setFieldValue('section', []);
+              handleChangeGrade(value || null, [formik.values.branch]);
             }}
+            multiple
             value={formik.values.grade}
             options={grades}
             getOptionLabel={(option) => option.grade_name || ''}
@@ -188,6 +189,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
                 placeholder='Grade'
               />
             )}
+            getOptionSelected={(option, value) => option.id == value.id}
           />
           <FormHelperText style={{ color: 'red' }}>
             {formik.errors.grade ? formik.errors.grade : ''}
@@ -204,6 +206,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
             }}
             value={formik.values.section}
             options={sections}
+            multiple
             getOptionLabel={(option) => option.section_name || ''}
             renderInput={(params) => (
               <TextField
@@ -213,6 +216,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
                 placeholder='Section'
               />
             )}
+            getOptionSelected={(option, value) => option.id == value.id}
           />
           <FormHelperText style={{ color: 'red' }}>
             {formik.errors.section ? formik.errors.section : ''}
@@ -255,6 +259,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
       <Grid container item xs={12} style={{ marginTop: '20px' }}>
         <Grid md='4'>
           <Button
+            className={classes.formActionButton}
             variant='contained'
             color='primary'
             onClick={() => {
