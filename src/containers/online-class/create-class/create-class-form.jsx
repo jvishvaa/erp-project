@@ -58,7 +58,8 @@ const CreateClassForm = () => {
   } = useContext(CreateclassContext);
   const { setAlert } = useContext(AlertNotificationContext);
 
-  const { role_details: roleDetails } = JSON.parse(localStorage.getItem('userDetails'));
+  const { role_details: roleDetails } =
+    JSON.parse(localStorage.getItem('userDetails')) || {};
 
   useEffect(() => {
     dispatch(listGradesCreateClass());
