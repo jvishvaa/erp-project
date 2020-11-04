@@ -331,7 +331,7 @@ const CreateClassForm = () => {
         if (acadinfo.branchId) info.branch_id = acadinfo.branchId;
         if (acadinfo.gradeId) info.grade_id = acadinfo.gradeId;
         if (acadinfo.sectionIds) info.section_id = acadinfo.sectionIds;
-        if (acadinfo.subjectId) info.subject_id = acadinfo.subjectId;
+        if (acadinfo.subjectId) info.subject_id = acadinfo.subjectId.toString();
         const { data } = await axiosInstance.post(
           endpoints.onlineClass.coHostValidation,
           info
