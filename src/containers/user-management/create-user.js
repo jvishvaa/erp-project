@@ -119,7 +119,7 @@ class CreateUser extends Component {
     const { user } = this.state;
     const { createUser, history } = this.props;
     console.log('user ', user);
-    let requestObj = JSON.parse(JSON.stringify(user));
+    let requestObj = user;
     const {
       academic_year,
       branch,
@@ -137,6 +137,7 @@ class CreateUser extends Component {
       profile,
       parent,
     } = requestObj;
+    console.log('profile ', profile);
     const {
       father_first_name,
       father_middle_name,
