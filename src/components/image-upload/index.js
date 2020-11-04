@@ -13,8 +13,8 @@ const ImageUpload = ({ value, onChange }) => {
     }
   }, [value]);
   return (
-    <Grid container item xs={12} alignItems='center'>
-      <Grid item xs={3}>
+    <Grid container item xs={12} alignItems='center' spacing={2}>
+      <Grid item>
         <img
           src={
             image ||
@@ -25,7 +25,7 @@ const ImageUpload = ({ value, onChange }) => {
           style={{ width: '100px', height: '100px', borderRadius: '50px' }}
         />
       </Grid>
-      <Grid item xs={3}>
+      <Grid item>
         {image ? (
           <button
             type='button'

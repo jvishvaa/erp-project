@@ -29,6 +29,9 @@ const styles = (theme) => ({
     borderRadius: '5px',
     cursor: 'pointer',
   },
+  formActionButton: {
+    color: '#ffffff',
+  },
 });
 
 const useStyles = makeStyles(styles);

@@ -10,6 +10,7 @@ import UserDetailsForm from './user-details-form';
 import SchoolDetailsForm from './school-details-form';
 import GuardianDetailsForm from './guardian-details-form';
 import { createUser } from '../../redux/actions';
+import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
 function getSteps(showParentOrGuardian) {
   if (!showParentOrGuardian) {
@@ -198,9 +199,17 @@ class CreateUser extends Component {
     if (!requestWithParentorGuradianDetails) {
       delete requestObj.parent;
     }
+    const { setAlert } = this.context;
 
     console.log('requestObject ', requestObj);
-    createUser(requestObj).then(() => history.push('/user-management'));
+    createUser(requestObj)
+      .then(() => {
+        history.push('/user-management');
+        setAlert('success', 'User creatied');
+      })
+      .catch(() => {
+        setAlert('error', 'User creation failed');
+      });
   };
 
   onSubmitForm = (details) => {
@@ -211,7 +220,7 @@ class CreateUser extends Component {
     const { activeStep, user, showParentForm, showGuardianForm } = this.state;
     const showParentOrGuardianForm = showParentForm || showGuardianForm;
     const steps = getSteps(showParentOrGuardianForm);
-    const { classes } = this.props;
+    const { classes, creatingUser } = this.props;
     return (
       <div>
         <Stepper activeStep={activeStep} alternativeLabel>
@@ -234,6 +243,7 @@ class CreateUser extends Component {
               toggleGuardianForm={this.toggleGuardianForm}
               showParentForm={showParentForm}
               showGuardianForm={showGuardianForm}
+              isSubmitting={creatingUser}
             />
           )}
           {activeStep === 2 && (
@@ -243,6 +253,7 @@ class CreateUser extends Component {
               handleBack={this.handleBack}
               showParentForm={showParentForm}
               showGuardianForm={showGuardianForm}
+              isSubmitting={creatingUser}
             />
           )}
         </div>
@@ -264,6 +275,8 @@ class CreateUser extends Component {
     );
   }
 }
+
+CreateUser.contextType = AlertNotificationContext;
 
 const mapStateToProps = (state) => ({
   creatingUser: state.userManagement.creatingUser,
