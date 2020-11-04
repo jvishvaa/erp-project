@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-wrap-multilines */
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import Button from '@material-ui/core/Button';
@@ -22,6 +22,7 @@ import validationSchema from './schemas/user-details';
 import { Label } from '@material-ui/icons';
 import { useStyles } from './useStyles';
 import ImageUpload from '../../components/image-upload';
+import { createMuiTheme, ThemeProvider, useTheme } from '@material-ui/core/styles';
 
 const UserDetailsForm = ({
   details,
@@ -31,7 +32,9 @@ const UserDetailsForm = ({
   toggleGuardianForm,
   showParentForm,
   showGuardianForm,
+  isSubmitting,
 }) => {
+  const themeContext = useTheme();
   const formik = useFormik({
     initialValues: {
       first_name: details.first_name,
@@ -50,10 +53,26 @@ const UserDetailsForm = ({
     validateOnChange: false,
     validateOnBlur: false,
   });
+  const classes = useStyles();
+  const theme = createMuiTheme({
+    ...themeContext,
+    flatButton: {
+      primaryTextColor: '#ffffff',
+    },
+    overrides: {
+      MuiButton: {
+        // Name of the rule
+        root: {
+          // Some CSS
+          color: '#ffffff',
+        },
+      },
+    },
+  });
   return (
     <Grid container spacing={4}>
       <Grid container item xs={12}>
-        <Grid item xs={4}>
+        <Grid item md={4}>
           <ImageUpload
             value={formik.values.profile}
             onChange={(value) => {
@@ -140,20 +159,25 @@ const UserDetailsForm = ({
         </Grid>
         <Grid item md={4}>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <DatePicker
-              value={formik.values.date_of_birth || null}
-              defaultValue={formik.values.date_of_birth || null}
-              onChange={(value) => {
-                console.log('date ', value);
-                console.log(moment(value).format('YYYY-MM-DD'));
-                formik.setFieldValue('date_of_birth', moment(value).format('YYYY-MM-DD'));
-              }}
-              inputVariant='outlined'
-              fullWidth
-              label='Date of birth'
-              disabled={false}
-              format='YYYY-MM-DD'
-            />
+            <ThemeProvider theme={theme}>
+              <DatePicker
+                value={formik.values.date_of_birth || null}
+                defaultValue={formik.values.date_of_birth || null}
+                onChange={(value) => {
+                  console.log('date ', value);
+                  console.log(moment(value).format('YYYY-MM-DD'));
+                  formik.setFieldValue(
+                    'date_of_birth',
+                    moment(value).format('YYYY-MM-DD')
+                  );
+                }}
+                inputVariant='outlined'
+                fullWidth
+                label='Date of birth'
+                disabled={false}
+                format='YYYY-MM-DD'
+              />
+            </ThemeProvider>
           </MuiPickersUtilsProvider>
           <FormHelperText style={{ color: 'red' }}>
             {formik.errors.date_of_birth ? formik.errors.date_of_birth : ''}
@@ -255,17 +279,24 @@ const UserDetailsForm = ({
       </Grid>
       <Grid container item xs={12} style={{ marginTop: '20px' }}>
         <Grid item md='1'>
-          <Button variant='contained' color='primary' onClick={handleBack}>
+          <Button
+            className={classes.formActionButton}
+            variant='contained'
+            color='primary'
+            onClick={handleBack}
+          >
             Back
           </Button>
         </Grid>
         <Grid item md='1'>
           <Button
+            className={classes.formActionButton}
             variant='contained'
             color='primary'
             onClick={() => {
               formik.handleSubmit();
             }}
+            disabled={isSubmitting}
           >
             {showParentForm || showGuardianForm ? 'Next' : 'Submit'}
           </Button>

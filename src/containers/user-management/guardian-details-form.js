@@ -20,6 +20,7 @@ const GuardianDetailsForm = ({
   handleBack,
   showParentForm,
   showGuardianForm,
+  isSubmitting,
 }) => {
   const classes = useStyles();
   const validationSchema = resolveValidationSchema(showParentForm, showGuardianForm);
@@ -139,7 +140,7 @@ const GuardianDetailsForm = ({
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item md={4}>
+              {/* <Grid item md={4}>
                 <FormControl variant='outlined' fullWidth disabled>
                   <InputLabel htmlFor='component-outlined'>
                     Alternate mobile no.
@@ -151,7 +152,7 @@ const GuardianDetailsForm = ({
                     label='Name'
                   />
                 </FormControl>
-              </Grid>
+              </Grid> */}
               <Grid item md={4}>
                 <FormControl variant='outlined' fullWidth>
                   <InputLabel htmlFor='component-outlined'>Address line 1.</InputLabel>
@@ -167,7 +168,7 @@ const GuardianDetailsForm = ({
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item md={4}>
+              {/* <Grid item md={4}>
                 <FormControl variant='outlined' fullWidth disabled>
                   <InputLabel htmlFor='component-outlined'>Address line 2</InputLabel>
                   <OutlinedInput
@@ -176,8 +177,8 @@ const GuardianDetailsForm = ({
                     onChange={() => {}}
                     label='Name'
                   />
-                </FormControl>
-              </Grid>
+                </FormControl> 
+                    </Grid> */}
               <Grid item md={4}>
                 <ImageUpload
                   value={formik.values.father_photo}
@@ -273,7 +274,7 @@ const GuardianDetailsForm = ({
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item md={4}>
+              {/* <Grid item md={4}>
                 <FormControl variant='outlined' fullWidth disabled>
                   <InputLabel htmlFor='component-outlined'>
                     Alternate mobile no.
@@ -285,8 +286,8 @@ const GuardianDetailsForm = ({
                     label='Name'
                   />
                 </FormControl>
-              </Grid>
-              <Grid item md={4}>
+              </Grid> */}
+              {/* <Grid item md={4}>
                 <FormControl variant='outlined' fullWidth disabled>
                   <InputLabel htmlFor='component-outlined'>Address line 1</InputLabel>
                   <OutlinedInput
@@ -307,7 +308,7 @@ const GuardianDetailsForm = ({
                     label='Name'
                   />
                 </FormControl>
-              </Grid>
+              </Grid> */}
 
               <Grid item md={4}>
                 <ImageUpload
@@ -411,7 +412,7 @@ const GuardianDetailsForm = ({
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item md={4}>
+              {/* <Grid item md={4}>
                 <FormControl variant='outlined' fullWidth disabled>
                   <InputLabel htmlFor='component-outlined'>
                     Alternate mobile no.
@@ -423,8 +424,8 @@ const GuardianDetailsForm = ({
                     label='Name'
                   />
                 </FormControl>
-              </Grid>
-              <Grid item md={4}>
+              </Grid> */}
+              {/* <Grid item md={4}>
                 <FormControl variant='outlined' fullWidth disabled>
                   <InputLabel htmlFor='component-outlined'>Address line 1</InputLabel>
                   <OutlinedInput
@@ -445,7 +446,7 @@ const GuardianDetailsForm = ({
                     label='Name'
                   />
                 </FormControl>
-              </Grid>
+              </Grid> */}
 
               {/* <Grid item md={4}>
                 <Button startIcon={<AttachFileIcon />}>Attach Image</Button>
@@ -457,17 +458,24 @@ const GuardianDetailsForm = ({
 
       <Grid container item xs={12} style={{ marginTop: '20px' }}>
         <Grid item md='1'>
-          <Button variant='contained' color='primary' onClick={handleBack}>
+          <Button
+            className={classes.formActionButton}
+            variant='contained'
+            color='primary'
+            onClick={handleBack}
+          >
             Back
           </Button>
         </Grid>
         <Grid item md='1'>
           <Button
+            className={classes.formActionButton}
             variant='contained'
             color='primary'
             onClick={() => {
               formik.handleSubmit();
             }}
+            disabled={isSubmitting}
           >
             Submit
           </Button>

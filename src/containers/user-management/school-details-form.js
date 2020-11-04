@@ -255,6 +255,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
       <Grid container item xs={12} style={{ marginTop: '20px' }}>
         <Grid md='4'>
           <Button
+            className={classes.formActionButton}
             variant='contained'
             color='primary'
             onClick={() => {
