@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable no-debugger */
@@ -30,6 +31,7 @@ const EditGroup = withRouter(({ history, ...props }) => {
   const [headers, setHeaders] = useState([]);
   const [usersRow, setUsersRow] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [priorSelected, setPriorSelected] = useState([]);
   const [completeData, setCompleteData] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const addGroupName = (e) => {
@@ -39,16 +41,36 @@ const EditGroup = withRouter(({ history, ...props }) => {
     try {
       const editGroupApiUrl = `${endpoints.communication.editGroup}${editId}/retrieve-update-group/`;
       const selectionArray = [];
-      selectedUsers.forEach((item) => {
-        item.selected.forEach((ids) => {
-          selectionArray.push(ids);
+      const newAddedId = [];
+      const newRemovedId = [];
+      if (!selectAll) {
+        selectedUsers.forEach((item) => {
+          item.selected.forEach((ids) => {
+            selectionArray.push(ids);
+          });
         });
-      });
+      }
+      if (selectAll) {
+        newAddedId.push(0);
+      }
+      if (!selectAll) {
+        selectionArray.forEach((items) => {
+          if (!priorSelected.includes(items)) {
+            newAddedId.push(items);
+          }
+        });
+        priorSelected.forEach((items) => {
+          if (!selectionArray.includes(items)) {
+            newRemovedId.push(items);
+          }
+        });
+      }
       const response = await axiosInstance.put(
         editGroupApiUrl,
         {
           group_name: groupName,
-          erp_users: selectionArray,
+          new_users: newAddedId,
+          remove_users: newRemovedId,
         },
         {
           headers: {
@@ -73,7 +95,7 @@ const EditGroup = withRouter(({ history, ...props }) => {
     }
   };
   const getEditGroupsData = async () => {
-    const getEditGroupsDataUrl = `${endpoints.communication.editGroup}${editId}/retrieve-update-group/?page=${pageno}&page_size=15`;
+    const getEditGroupsDataUrl = `${endpoints.communication.editGroup}${editId}/retrieve-update-group/?page=${pageno}&page_size=5`;
     try {
       const result = await axiosInstance.get(getEditGroupsDataUrl, {
         headers: {
@@ -103,6 +125,7 @@ const EditGroup = withRouter(({ history, ...props }) => {
         ]);
         const rows = [];
         const selectionRows = [];
+        const preSelectedId = [];
         result.data.data.results.forEach((items) => {
           rows.push({
             id: items.id,
@@ -113,6 +136,9 @@ const EditGroup = withRouter(({ history, ...props }) => {
             gender: items.gender,
             contact: items.contact,
           });
+          if (items.is_assigned && !priorSelected.includes(items.id)) {
+            preSelectedId.push(items.id);
+          }
           selectionRows.push({
             id: items.id,
             data: {
@@ -124,13 +150,14 @@ const EditGroup = withRouter(({ history, ...props }) => {
               gender: items.gender,
               contact: items.contact,
             },
-            selected:
-              selectedUsers.length && selectedUsers[pageno - 1].selected.length
-                ? selectedUsers[pageno - 1].selected.includes(items.id)
-                : items.is_assigned,
+            selected: selectAll
+              ? true
+              : selectedUsers.length && selectedUsers[pageno - 1].selected.length
+              ? selectedUsers[pageno - 1].selected.includes(items.id)
+              : items.is_assigned,
           });
         });
-
+        setPriorSelected([...priorSelected, ...preSelectedId]);
         setUsersRow(rows);
         setCompleteData(selectionRows);
         setTotalPage(result.data.data.count);

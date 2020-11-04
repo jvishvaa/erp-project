@@ -245,7 +245,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       }
     } else {
       const groupId = [];
-      getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15`;
+      getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=5`;
       if (selectedGroup.length && !selectedGroup.includes('All')) {
         groupList
           .filter((item) => selectedGroup.includes(item['group_name']))
