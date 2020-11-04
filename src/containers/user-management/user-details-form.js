@@ -191,7 +191,7 @@ const UserDetailsForm = ({
           </FormControl>
         </Grid>
       </Grid>
-      <Grid container item xs={12} spacing={4}>
+      {/* <Grid container item xs={12} spacing={4}>
         <Grid item md={4}>
           <FormControl variant='outlined' fullWidth disabled>
             <InputLabel htmlFor='component-outlined'>Address line 1</InputLabel>
@@ -215,7 +215,7 @@ const UserDetailsForm = ({
             />
           </FormControl>
         </Grid>
-      </Grid>
+      </Grid> */}
 
       <Grid item xs={12}>
         <Divider />
