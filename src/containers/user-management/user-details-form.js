@@ -41,6 +41,7 @@ const UserDetailsForm = ({
       contact: details.contact,
       email: details.email,
       date_of_birth: details.date_of_birth,
+      address: details.address,
     },
     validationSchema,
     onSubmit: (values) => {
@@ -191,20 +192,23 @@ const UserDetailsForm = ({
           </FormControl>
         </Grid>
       </Grid>
-      {/* <Grid container item xs={12} spacing={4}>
+      <Grid container item xs={12} spacing={4}>
         <Grid item md={4}>
-          <FormControl variant='outlined' fullWidth disabled>
-            <InputLabel htmlFor='component-outlined'>Address line 1</InputLabel>
+          <FormControl variant='outlined' fullWidth>
+            <InputLabel htmlFor='component-outlined'>Address</InputLabel>
             <OutlinedInput
-              id='component-outlined'
-              value=''
-              onChange={() => {}}
-              label='Address line 1'
-              disabled
+              id='address'
+              name='address'
+              onChange={formik.handleChange}
+              value={formik.values.address}
+              label='Address'
             />
+            <FormHelperText style={{ color: 'red' }}>
+              {formik.errors.address ? formik.errors.address : ''}
+            </FormHelperText>
           </FormControl>
-        </Grid>
-        <Grid item md={4}>
+        </Grid>{' '}
+        {/* <Grid item md={4}>
           <FormControl variant='outlined' fullWidth disabled>
             <InputLabel htmlFor='component-outlined'>Address line 2</InputLabel>
             <OutlinedInput
@@ -214,8 +218,8 @@ const UserDetailsForm = ({
               label='Address line 2'
             />
           </FormControl>
-        </Grid>
-      </Grid> */}
+        </Grid> */}
+      </Grid>
 
       <Grid item xs={12}>
         <Divider />

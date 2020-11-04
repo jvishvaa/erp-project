@@ -22,8 +22,8 @@ class CreateUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeStep: 1,
-      showParentForm: true,
+      activeStep: 0,
+      showParentForm: false,
       showGuardianForm: false,
       user: {
         first_name: '',
@@ -119,7 +119,7 @@ class CreateUser extends Component {
     const { user } = this.state;
     const { createUser, history } = this.props;
     console.log('user ', user);
-    let requestObj = JSON.parse(JSON.stringify(user));
+    let requestObj = user;
     const {
       academic_year,
       branch,
@@ -137,6 +137,7 @@ class CreateUser extends Component {
       profile,
       parent,
     } = requestObj;
+    console.log('profile ', profile);
     const {
       father_first_name,
       father_middle_name,
@@ -162,7 +163,7 @@ class CreateUser extends Component {
       branch: branch.id,
       grade: grade.id,
       section: section.id,
-      subjects: subjects.map((sub) => sub.id),
+      subjects: subjects.map((sub) => sub.id).join(),
       first_name,
       middle_name,
       last_name,
@@ -172,7 +173,7 @@ class CreateUser extends Component {
       contact,
       email,
       profile,
-      parent: {
+      parent: JSON.stringify({
         father_first_name,
         father_middle_name,
         father_last_name,
@@ -191,7 +192,7 @@ class CreateUser extends Component {
         guardian_last_name,
         guardian_email,
         guardian_mobile,
-      },
+      }),
     };
 
     if (!requestWithParentorGuradianDetails) {
