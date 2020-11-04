@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-wrap-multilines */
-import React from 'react';
+import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
-// import AttachFileIcon from '@material-ui/icons/AttachFile';
+import AttachFileIcon from '@material-ui/icons/AttachFile';
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -19,8 +19,19 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Radio from '@material-ui/core/Radio';
 import validationSchema from './schemas/user-details';
+import { Label } from '@material-ui/icons';
+import { useStyles } from './useStyles';
+import ImageUpload from '../../components/image-upload';
 
-const UserDetailsForm = ({ details, onSubmit, handleBack }) => {
+const UserDetailsForm = ({
+  details,
+  onSubmit,
+  handleBack,
+  toggleParentForm,
+  toggleGuardianForm,
+  showParentForm,
+  showGuardianForm,
+}) => {
   const formik = useFormik({
     initialValues: {
       first_name: details.first_name,
@@ -38,12 +49,17 @@ const UserDetailsForm = ({ details, onSubmit, handleBack }) => {
     validateOnChange: false,
     validateOnBlur: false,
   });
-  console.log('dob error', formik.values.date_of_birth, formik.errors.date_of_birth);
   return (
     <Grid container spacing={4}>
       <Grid container item xs={12}>
-        <Grid item md={4}>
-          {/* <Button startIcon={<AttachFileIcon />}>Attach Image</Button> */}
+        <Grid item xs={4}>
+          <ImageUpload
+            value={formik.values.profile}
+            onChange={(value) => {
+              console.log(value);
+              formik.setFieldValue('profile', value);
+            }}
+          />
         </Grid>
       </Grid>
       <Grid item md={4}>
@@ -124,7 +140,8 @@ const UserDetailsForm = ({ details, onSubmit, handleBack }) => {
         <Grid item md={4}>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <DatePicker
-              value={formik.values.date_of_birth || new Date()}
+              value={formik.values.date_of_birth || null}
+              defaultValue={formik.values.date_of_birth || null}
               onChange={(value) => {
                 console.log('date ', value);
                 console.log(moment(value).format('YYYY-MM-DD'));
@@ -174,7 +191,7 @@ const UserDetailsForm = ({ details, onSubmit, handleBack }) => {
           </FormControl>
         </Grid>
       </Grid>
-      <Grid container item xs={12} spacing={4}>
+      {/* <Grid container item xs={12} spacing={4}>
         <Grid item md={4}>
           <FormControl variant='outlined' fullWidth disabled>
             <InputLabel htmlFor='component-outlined'>Address line 1</InputLabel>
@@ -198,26 +215,31 @@ const UserDetailsForm = ({ details, onSubmit, handleBack }) => {
             />
           </FormControl>
         </Grid>
-      </Grid>
+      </Grid> */}
 
       <Grid item xs={12}>
         <Divider />
       </Grid>
       <Grid item md={4}>
-        <FormControl component='fieldset' fullWidth disabled>
+        <FormControl component='fieldset' fullWidth>
           <FormLabel component='legend'>Parent/Guardian</FormLabel>
           <FormGroup row>
             <FormControlLabel
               control={
-                <Checkbox checked onChange={() => {}} name='gilad' color='primary' />
+                <Checkbox
+                  checked={showParentForm}
+                  onChange={toggleParentForm}
+                  name='gilad'
+                  color='primary'
+                />
               }
               label='Parent'
             />
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={false}
-                  onChange={() => {}}
+                  checked={showGuardianForm}
+                  onChange={toggleGuardianForm}
                   name='jason'
                   color='primary'
                 />
@@ -227,7 +249,7 @@ const UserDetailsForm = ({ details, onSubmit, handleBack }) => {
           </FormGroup>
         </FormControl>
       </Grid>
-      <Grid container item xs={12}>
+      <Grid container item xs={12} style={{ marginTop: '20px' }}>
         <Grid item md='1'>
           <Button variant='contained' color='primary' onClick={handleBack}>
             Back
@@ -241,7 +263,7 @@ const UserDetailsForm = ({ details, onSubmit, handleBack }) => {
               formik.handleSubmit();
             }}
           >
-            Next
+            {showParentForm || showGuardianForm ? 'Next' : 'Submit'}
           </Button>
         </Grid>
       </Grid>

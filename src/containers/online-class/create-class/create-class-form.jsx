@@ -37,7 +37,7 @@ const CreateClassForm = () => {
   const [formKey, setFormKey] = useState(new Date());
   const [sectionSelectorKey, setSectionSelectorKey] = useState(new Date());
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const { subjects = [] } = useSelector((state) => state.academic);
+  const [subjects, setSubjects] = useState([]);
   const {
     listGradesCreateClass,
     listSectionsCreateClass,
@@ -58,6 +58,8 @@ const CreateClassForm = () => {
   } = useContext(CreateclassContext);
   const { setAlert } = useContext(AlertNotificationContext);
 
+  const { role_details: roleDetails } = JSON.parse(localStorage.getItem('userDetails'));
+
   useEffect(() => {
     dispatch(listGradesCreateClass());
   }, []);
@@ -76,19 +78,41 @@ const CreateClassForm = () => {
     }
   }, [isCreated]);
 
+  const listSubjects = async (gradeids) => {
+    try {
+      const { data } = await axiosInstance(
+        `${endpoints.academics.subjects}?branch=${roleDetails.branch.join(
+          ','
+        )}&grade=${gradeids.join(',')}`
+      );
+      setSubjects(data.data);
+    } catch (error) {
+      setAlert('error', 'Failed to load subjects');
+    }
+  };
+
   const handleGrade = (event, value) => {
     dispatch(clearFilteredStudents());
 
     if (value.length) {
       const ids = value.map((el) => el.grade_id);
       setOnlineClass((prevState) => ({ ...prevState, gradeIds: ids }));
+      listSubjects(ids);
       dispatch(listSectionsCreateClass(ids));
+      dispatch(clearTutorEmailValidation());
     } else {
       setOnlineClass((prevState) => ({ ...prevState, gradeIds: [] }));
+      setSubjects([]);
+      dispatch(clearTutorEmailValidation());
     }
     setOnlineClass((prevState) => ({ ...prevState, sectionIds: [] }));
-
     setSectionSelectorKey(new Date());
+    dispatch(clearTutorEmailValidation());
+    setOnlineClass((prevState) => ({
+      ...prevState,
+      tutorEmail: '',
+      coHosts: [{ email: '' }],
+    }));
   };
 
   const handleSection = (event, value) => {
@@ -99,18 +123,35 @@ const CreateClassForm = () => {
     } else {
       setOnlineClass((prevState) => ({ ...prevState, sectionIds: [] }));
     }
+    dispatch(clearTutorEmailValidation());
+    setOnlineClass((prevState) => ({
+      ...prevState,
+      tutorEmail: '',
+      coHosts: [{ email: '' }],
+    }));
   };
 
   const handleSubject = (event, value) => {
-    if (value)
+    if (value) {
       setOnlineClass((prevState) => ({ ...prevState, subject: value.subject__id }));
+    } else {
+      setOnlineClass((prevState) => ({ ...prevState, subject: '' }));
+    }
+    dispatch(clearTutorEmailValidation());
+    setOnlineClass((prevState) => ({
+      ...prevState,
+      tutorEmail: '',
+      coHosts: [{ email: '' }],
+    }));
   };
 
   useEffect(() => {
-    let listStudentUrl = `branch_ids=1`;
+    let listStudentUrl = `branch_ids=${roleDetails.branch.join(',')}`;
     const { gradeIds, sectionIds } = onlineClass;
     if (gradeIds.length && !sectionIds.length) {
-      listStudentUrl = `branch_ids=1&grade_ids=${gradeIds.join(',')}`;
+      listStudentUrl = `branch_ids=${roleDetails.branch.join(
+        ','
+      )}&grade_ids=${gradeIds.join(',')}`;
     } else if (gradeIds.length && sectionIds.length) {
       listStudentUrl = `section_mapping_ids=${sectionIds.join(',')}`;
     }
@@ -133,7 +174,13 @@ const CreateClassForm = () => {
       setAlert('error', 'Invalid email address');
     } else {
       const { tutorEmail, selectedDate, selectedTime, duration } = onlineClass;
-      verifyTutorEmail(tutorEmail, selectedDate, selectedTime, duration);
+      const data = {
+        branchId: roleDetails.branch.join(','),
+        gradeId: onlineClass.gradeIds.join(','),
+        sectionIds: onlineClass.sectionIds.join(','),
+        subjectId: onlineClass.subject,
+      };
+      verifyTutorEmail(tutorEmail, selectedDate, selectedTime, duration, data);
     }
   };
 
@@ -259,8 +306,8 @@ const CreateClassForm = () => {
     if (sectionIds.length) formdata.append('section_mapping_ids', sectionIds);
     else if (gradeIds.length) {
       formdata.append('grade_ids', gradeIds);
-      formdata.append('branch_ids', 5);
-    } else formdata.append('branch_ids', 5);
+      formdata.append('branch_ids', roleDetails.branch.join(','));
+    } else formdata.append('branch_ids', roleDetails.branch.join(','));
 
     if (filteredStudents.length)
       formdata.append('student_ids', filteredStudents.join(','));
@@ -269,18 +316,33 @@ const CreateClassForm = () => {
   };
 
   const handleCoHostBlur = async (index) => {
-    try {
-      const info = { email: [onlineClass.coHosts[index].email] };
-      const { data } = await axiosInstance.post(
-        endpoints.onlineClass.coHostValidation,
-        info
-      );
-      const stateCopy = onlineClass;
-      const hosts = stateCopy.coHosts;
-      hosts[index].isValid = data.data[0].status;
-      setOnlineClass((prevState) => ({ ...prevState, coHosts: hosts }));
-    } catch (error) {
-      setAlert('error', 'Something went wrong');
+    if (onlineClass.coHosts[index].email) {
+      try {
+        const acadinfo = {
+          branchId: roleDetails.branch.join(','),
+          gradeId: onlineClass.gradeIds.join(','),
+          sectionIds: onlineClass.sectionIds.join(','),
+          subjectId: onlineClass.subject,
+        };
+        const info = {
+          email: [onlineClass.coHosts[index].email],
+          erp_user_id: roleDetails.erp_user_id,
+        };
+        if (acadinfo.branchId) info.branch_id = acadinfo.branchId;
+        if (acadinfo.gradeId) info.grade_id = acadinfo.gradeId;
+        if (acadinfo.sectionIds) info.section_id = acadinfo.sectionIds;
+        if (acadinfo.subjectId) info.subject_id = acadinfo.subjectId.toString();
+        const { data } = await axiosInstance.post(
+          endpoints.onlineClass.coHostValidation,
+          info
+        );
+        const stateCopy = onlineClass;
+        const hosts = stateCopy.coHosts;
+        hosts[index].isValid = data.data[0].status;
+        setOnlineClass((prevState) => ({ ...prevState, coHosts: hosts }));
+      } catch (error) {
+        setAlert('error', 'Something went wrong');
+      }
     }
   };
 
@@ -300,27 +362,78 @@ const CreateClassForm = () => {
               required
             />
           </Grid>
-          <Grid item xs={12} sm={2}>
+          <Grid item>
             <Autocomplete
+              multiple
               size='small'
-              id='create__class-subject'
-              options={subjects}
-              getOptionLabel={(option) => option.subject__subject_name}
+              onChange={handleGrade}
+              id='create__class-grade'
+              options={grades}
+              getOptionLabel={(option) => option?.grade__grade_name}
               filterSelectedOptions
-              onChange={handleSubject}
               renderInput={(params) => (
                 <TextField
-                  size='small'
                   className='create__class-textfield'
                   {...params}
                   variant='outlined'
-                  label='Subject'
-                  placeholder='Subject'
-                  required
+                  label='Grades'
+                  placeholder='Grades'
                 />
               )}
             />
           </Grid>
+          <Grid item>
+            {onlineClass.gradeIds.length ? (
+              <Autocomplete
+                key={sectionSelectorKey}
+                size='small'
+                multiple
+                onChange={handleSection}
+                id='create__class-section'
+                options={sections}
+                getOptionLabel={(option) => {
+                  return `${option.section__section_name}`;
+                }}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    className='create__class-textfield'
+                    {...params}
+                    variant='outlined'
+                    label='Sections'
+                    placeholder='Sections'
+                  />
+                )}
+              />
+            ) : (
+              ''
+            )}
+          </Grid>
+          {onlineClass.gradeIds.length ? (
+            <Grid item xs={12} sm={2}>
+              <Autocomplete
+                size='small'
+                id='create__class-subject'
+                options={subjects}
+                getOptionLabel={(option) => option.subject__subject_name}
+                filterSelectedOptions
+                onChange={handleSubject}
+                renderInput={(params) => (
+                  <TextField
+                    size='small'
+                    className='create__class-textfield'
+                    {...params}
+                    variant='outlined'
+                    label='Subject'
+                    placeholder='Subject'
+                    required
+                  />
+                )}
+              />
+            </Grid>
+          ) : (
+            ''
+          )}
           <Grid item xs={12} sm={2}>
             <TextField
               size='small'
@@ -351,6 +464,8 @@ const CreateClassForm = () => {
               InputProps={{ inputProps: { min: 0 } }}
             />
           </Grid>
+        </Grid>
+        <Grid container spacing={2} className='create-class-container'>
           <MuiPickersUtilsProvider utils={MomentUtils}>
             <Grid item xs={12} sm={2}>
               <KeyboardDatePicker
@@ -395,7 +510,11 @@ const CreateClassForm = () => {
               size='small'
               onChange={handleTutorEmail}
               onBlur={handleBlur}
-              disabled={!onlineClass.duration}
+              disabled={
+                !onlineClass.duration ||
+                !onlineClass.subject ||
+                !onlineClass.gradeIds.length
+              }
               value={onlineClass.tutorEmail}
               required
             />
@@ -415,54 +534,6 @@ const CreateClassForm = () => {
           </Grid>
         </Grid>
         <Grid container className='create-class-container' spacing={2}>
-          <Grid item>
-            <Autocomplete
-              multiple
-              size='small'
-              onChange={handleGrade}
-              id='create__class-branch'
-              options={grades}
-              getOptionLabel={(option) => option?.grade__grade_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  className='create__class-textfield'
-                  {...params}
-                  variant='outlined'
-                  label='Grades'
-                  placeholder='Grades'
-                />
-              )}
-            />
-          </Grid>
-          <Grid item>
-            {onlineClass.gradeIds.length ? (
-              <Autocomplete
-                key={sectionSelectorKey}
-                size='small'
-                multiple
-                onChange={handleSection}
-                id='create__class-section'
-                options={sections}
-                getOptionLabel={(option) => {
-                  return `${option.section__section_name}`;
-                }}
-                filterSelectedOptions
-                // value={[]}
-                renderInput={(params) => (
-                  <TextField
-                    className='create__class-textfield'
-                    {...params}
-                    variant='outlined'
-                    label='Sections'
-                    placeholder='Sections'
-                  />
-                )}
-              />
-            ) : (
-              ''
-            )}
-          </Grid>
           <Grid item>
             <Button variant='contained' color='primary' onClick={toggleDrawer}>
               Filter students

@@ -1,3 +1,4 @@
+import qs from 'qs';
 import axios from '../../config/axios';
 
 export const userManagementActions = {
@@ -50,7 +51,9 @@ export const fetchUsers = () => (dispatch) => {
 export const createUser = (params) => (dispatch) => {
   dispatch({ type: CREATE_USER_REQUEST });
   return axios
-    .post('/erp_user/add_user/', params)
+    .post('/erp_user/add_user/', qs.stringify(params), {
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    })
     .then((response) => {
       dispatch({ type: CREATE_USER_SUCCESS });
       console.log(response.data);

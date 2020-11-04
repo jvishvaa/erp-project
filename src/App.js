@@ -12,6 +12,7 @@ import store from './redux/store';
 import AlertNotificationProvider from './context-api/alert-context/alert-state';
 import './assets/styles/styles.scss';
 import UserManagement from './containers/user-management';
+import ViewUsers from './containers/user-management/view-users/view-users';
 import Login from './containers/login';
 import Dashboard from './containers/dashboard';
 import { listSubjects } from './redux/actions/academic-mapping-actions';
@@ -73,6 +74,9 @@ function App() {
                 </Route>
                 <Route path='/user-management'>
                   {({ match }) => <UserManagement match={match} />}
+                </Route>
+                <Route exact path='/view-users'>
+                  {({ match }) => <ViewUsers match={match} />}
                 </Route>
                 <Route path='/dashboard'>
                   {({ match }) => <Dashboard match={match} />}
