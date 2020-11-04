@@ -34,4 +34,15 @@ export default {
     attendeeList: '/erp_user/onlineclass_attendeelist/',
     coHostValidation: '/erp_user/co-host-validation/',
   },
+  masterManagement: {
+    subjects: '/erp_user/subjects-list/',
+    grades: '/erp_user/grades-list/',
+    sections: '/erp_user/grades-section-list/',
+    createSubject: '/erp_user/create-subject/',
+    createSection: '/erp_user/create-section/',
+    createGrade: '/erp_user/create-grade/',
+    updateSubject: '/erp_user/update-subject/',
+    updateSection: '/erp_user/update-section/',
+    updateGrade: '/erp_user/update-grade/',
+  }
 };
