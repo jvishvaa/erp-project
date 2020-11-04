@@ -326,6 +326,21 @@ const Layout = ({ children, history }) => {
               </ListItem>
               <ListItem
                 button
+                className={
+                  history.location.pathname === '/profile' ? 'menu_selection' : null
+                }
+                onClick={() => {
+                  history.push('/profile');
+                }}
+              >
+                {' '}
+                <ListItemIcon className={classes.menuItemIcon}>
+                  <AssignmentIndIcon />
+                </ListItemIcon>
+                <ListItemText className={classes.menuItemText}>View Profile</ListItemText>
+              </ListItem>
+              <ListItem
+                button
                 onClick={() => {
                   setUserMenuOpen((prevState) => !prevState);
                 }}

@@ -228,7 +228,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
         sectionList
           .filter((item) => selectedSections.includes(item['section__section_name']))
           .forEach((items) => {
-            sectionsId.push(items.id);
+            sectionsId.push(items.section_id);
           });
       }
       if (rolesId.length && !selectedRoles.includes('All')) {
@@ -236,6 +236,9 @@ const SendMessage = withRouter(({ history, ...props }) => {
       }
       if (gradesId.length && !selectedGrades.includes('All')) {
         getUserListUrl += `&grade=${gradesId.toString()}`;
+      }
+      if (selectedBranch) {
+        getUserListUrl += `&branch=${selectedBranch}`;
       }
       if (sectionsId.length && !selectedSections.includes('All')) {
         getUserListUrl += `&section=${sectionsId.toString()}`;
