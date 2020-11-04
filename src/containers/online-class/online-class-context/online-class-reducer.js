@@ -13,6 +13,7 @@ import {
   LIST_SECTION_REQUEST,
   LIST_SECTION_SUCCESS,
   CANCEL_CLASS,
+  SET_TAB,
 } from './online-class-constants';
 
 const onlineClassReducer = (state, action) => {
@@ -142,6 +143,15 @@ const onlineClassReducer = (state, action) => {
       return {
         ...state,
         loading: false,
+      };
+
+    case SET_TAB:
+      return {
+        ...state,
+        managementView: {
+          ...state.managementView,
+          currentManagementTab: action.payload,
+        },
       };
 
     default:

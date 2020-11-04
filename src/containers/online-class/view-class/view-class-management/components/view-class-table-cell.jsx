@@ -24,7 +24,11 @@ const ViewClassTableCell = (props) => {
     },
   } = props || {};
 
-  const { cancelClass, dispatch } = useContext(OnlineclassViewContext);
+  const {
+    cancelClass,
+    dispatch,
+    managementView: { currentManagementTab },
+  } = useContext(OnlineclassViewContext);
 
   const [hasClassEnded, setHasClassEnded] = useState(false);
   const [isJoinTime, setIsJoinTime] = useState(false);
@@ -90,18 +94,22 @@ const ViewClassTableCell = (props) => {
           </Button>
         )}
       </TableCell>
-      <TableCell>
-        <Button
-          variant='contained'
-          color='primary'
-          disabled={isCancelled}
-          onClick={() => {
-            handleCancel(id);
-          }}
-        >
-          {isCancelled ? 'Class cancelled' : 'Cancel'}
-        </Button>
-      </TableCell>
+      {currentManagementTab === 0 ? (
+        <TableCell>
+          <Button
+            variant='contained'
+            color='primary'
+            disabled={isCancelled}
+            onClick={() => {
+              handleCancel(id);
+            }}
+          >
+            {isCancelled ? 'Class cancelled' : 'Cancel'}
+          </Button>
+        </TableCell>
+      ) : (
+        ''
+      )}
       <TableCell>
         <Button variant='contained' color='primary' onClick={handleAttendee}>
           Attendee list
