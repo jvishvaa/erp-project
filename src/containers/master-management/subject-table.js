@@ -23,6 +23,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Pagination from '@material-ui/lab/Pagination';
 import Layout from '../Layout';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import CreateSubject from './create-subject'
@@ -183,6 +184,11 @@ const SubjectTable = () => {
 
   return (
     <Layout>
+
+    <CommonBreadcrumbs
+      componentName='Master Management'
+      childComponentName='Subject List'
+    />
 
     {(addFlag||editFlag)  && 
     <div style={{float:'right',marginTop:'15px',marginRight:'15px'}}>

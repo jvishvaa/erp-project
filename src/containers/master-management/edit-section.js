@@ -7,6 +7,7 @@ import {
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 
 
 const EditSection = ({id,name,handleGoBack}) => {

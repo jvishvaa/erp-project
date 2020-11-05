@@ -22,6 +22,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Pagination from '@material-ui/lab/Pagination';
 import Layout from '../Layout';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import CreateGrade from './create-grade'
@@ -161,6 +162,11 @@ const GradeTable = () => {
   
   return (
     <Layout>
+
+    <CommonBreadcrumbs
+      componentName='Master Management'
+      childComponentName='Grade List'
+    />
 
     {(addFlag||editFlag)  && 
     <div style={{float:'right',marginTop:'15px',marginRight:'15px'}}>
