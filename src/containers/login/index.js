@@ -92,7 +92,7 @@ function SignIn({ onLogin, history }) {
             required
             fullWidth
             id='email'
-            label='Email Address'
+            label='User Name'
             name='email'
             autoComplete='email'
             autoFocus

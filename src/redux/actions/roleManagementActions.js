@@ -86,11 +86,11 @@ export const fetchRoles = (params) => (dispatch) => {
   axios
     .get(`/erp_user/roles/?page=${params.page}&page_size=${params.limit}`)
     .then((response) => {
-      const { result, current_page, limit, count } = response.data;
+      const { result, current_page: page, limit, count } = response.data;
       dispatch({
         type: FETCH_ROLES_SUCCESS,
         data: result,
-        page: current_page,
+        page,
         limit,
         count,
       });

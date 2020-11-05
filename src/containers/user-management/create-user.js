@@ -10,8 +10,12 @@ import UserDetailsForm from './user-details-form';
 import SchoolDetailsForm from './school-details-form';
 import GuardianDetailsForm from './guardian-details-form';
 import { createUser } from '../../redux/actions';
+import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
-function getSteps() {
+function getSteps(showParentOrGuardian) {
+  if (!showParentOrGuardian) {
+    return ['School details', 'User details'];
+  }
   return ['School details', 'User details', 'Parents/Guardian details'];
 }
 
@@ -20,6 +24,8 @@ class CreateUser extends Component {
     super(props);
     this.state = {
       activeStep: 0,
+      showParentForm: false,
+      showGuardianForm: false,
       user: {
         first_name: '',
         middle_name: '',
@@ -27,13 +33,14 @@ class CreateUser extends Component {
         email: '',
         academic_year: '',
         branch: '',
-        grade: '',
-        section: '',
+        grade: [],
+        section: [],
         subjects: [],
         contact: '',
         date_of_birth: '',
         gender: '',
         profile: '',
+        address: '',
         parent: {
           father_first_name: '',
           father_last_name: '',
@@ -48,10 +55,23 @@ class CreateUser extends Component {
           mother_photo: '',
           father_photo: '',
           address: '',
+          guardian_first_name: '',
+          guardian_middle_name: '',
+          guardian_last_name: '',
+          guardian_email: '',
+          guardian_mobile: '',
         },
       },
     };
   }
+
+  toggleParentForm = (e) => {
+    this.setState({ showParentForm: e.target.checked });
+  };
+
+  toggleGuardianForm = (e) => {
+    this.setState({ showGuardianForm: e.target.checked });
+  };
 
   handleReset = () => {
     this.setState({ activeStep: 0 });
@@ -74,9 +94,13 @@ class CreateUser extends Component {
 
   onSubmitUserDetails = (details) => {
     console.log('user details!!', details);
-
+    const { showParentForm, showGuardianForm } = this.state;
     this.setState((prevState) => ({ user: { ...prevState.user, ...details } }));
-    this.handleNext();
+    if (showParentForm || showGuardianForm) {
+      this.handleNext();
+    } else {
+      this.onCreateUser(false);
+    }
   };
 
   onSubmitGuardianDetails = (details) => {
@@ -87,16 +111,16 @@ class CreateUser extends Component {
         user: { ...prevState.user, parent: { ...prevState.user.parent, ...details } },
       }),
       () => {
-        this.onCreateUser();
+        this.onCreateUser(true);
       }
     );
   };
 
-  onCreateUser = () => {
+  onCreateUser = (requestWithParentorGuradianDetails) => {
     const { user } = this.state;
     const { createUser, history } = this.props;
     console.log('user ', user);
-    let requestObj = JSON.parse(JSON.stringify(user));
+    let requestObj = user;
     const {
       academic_year,
       branch,
@@ -114,6 +138,7 @@ class CreateUser extends Component {
       profile,
       parent,
     } = requestObj;
+    console.log('profile ', profile);
     const {
       father_first_name,
       father_middle_name,
@@ -128,13 +153,18 @@ class CreateUser extends Component {
       mother_email,
       mother_mobile,
       mother_photo,
+      guardian_first_name,
+      guardian_middle_name,
+      guardian_last_name,
+      guardian_email,
+      guardian_mobile,
     } = parent;
     requestObj = {
       academic_year: academic_year.id,
       branch: branch.id,
-      grade: grade.id,
-      section: section.id,
-      subjects: subjects.map((sub) => sub.id),
+      grade: grade.map((grade) => grade.id).join(),
+      section: section.map((section) => section.id).join(),
+      subjects: subjects.map((sub) => sub.id).join(),
       first_name,
       middle_name,
       last_name,
@@ -144,7 +174,7 @@ class CreateUser extends Component {
       contact,
       email,
       profile,
-      parent: {
+      parent: JSON.stringify({
         father_first_name,
         father_middle_name,
         father_last_name,
@@ -158,12 +188,28 @@ class CreateUser extends Component {
         mother_email,
         mother_mobile,
         mother_photo,
-      },
+        guardian_first_name,
+        guardian_middle_name,
+        guardian_last_name,
+        guardian_email,
+        guardian_mobile,
+      }),
     };
 
-    createUser(requestObj).then(() => history.push('/user-management'));
+    if (!requestWithParentorGuradianDetails) {
+      delete requestObj.parent;
+    }
+    const { setAlert } = this.context;
 
-    console.log('req ', requestObj);
+    console.log('requestObject ', requestObj);
+    createUser(requestObj)
+      .then(() => {
+        history.push('/user-management');
+        setAlert('success', 'User creatied');
+      })
+      .catch(() => {
+        setAlert('error', 'User creation failed');
+      });
   };
 
   onSubmitForm = (details) => {
@@ -171,9 +217,10 @@ class CreateUser extends Component {
   };
 
   render() {
-    const steps = getSteps();
-    const { activeStep, user } = this.state;
-    const { classes } = this.props;
+    const { activeStep, user, showParentForm, showGuardianForm } = this.state;
+    const showParentOrGuardianForm = showParentForm || showGuardianForm;
+    const steps = getSteps(showParentOrGuardianForm);
+    const { classes, creatingUser } = this.props;
     return (
       <div>
         <Stepper activeStep={activeStep} alternativeLabel>
@@ -192,6 +239,11 @@ class CreateUser extends Component {
               onSubmit={this.onSubmitUserDetails}
               details={user}
               handleBack={this.handleBack}
+              toggleParentForm={this.toggleParentForm}
+              toggleGuardianForm={this.toggleGuardianForm}
+              showParentForm={showParentForm}
+              showGuardianForm={showGuardianForm}
+              isSubmitting={creatingUser}
             />
           )}
           {activeStep === 2 && (
@@ -199,6 +251,9 @@ class CreateUser extends Component {
               onSubmit={this.onSubmitGuardianDetails}
               details={user.parent}
               handleBack={this.handleBack}
+              showParentForm={showParentForm}
+              showGuardianForm={showGuardianForm}
+              isSubmitting={creatingUser}
             />
           )}
         </div>
@@ -220,6 +275,8 @@ class CreateUser extends Component {
     );
   }
 }
+
+CreateUser.contextType = AlertNotificationContext;
 
 const mapStateToProps = (state) => ({
   creatingUser: state.userManagement.creatingUser,

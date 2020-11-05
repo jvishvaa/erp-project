@@ -63,7 +63,7 @@ const AssignRole = (props) => {
     }
   };
   const displayUsersList = async () => {
-    const getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15`;
+    const getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=5`;
     try {
       const result = await axiosInstance.get(getUserListUrl, {
         headers: {
@@ -257,7 +257,7 @@ const AssignRole = (props) => {
             selectedUsers={selectedUsers}
             changePage={setPageno}
             setSelectedUsers={setSelectedUsers}
-            pageSize={15}
+            pageSize={5}
           />
           <input
             className='assign_role_button'

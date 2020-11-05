@@ -19,6 +19,11 @@ import {
   LIST_SECTION_REQUEST,
   LIST_SECTION_SUCCESS,
   CANCEL_CLASS,
+  SET_TAB,
+  SET_RESOURCE_TAB,
+  RESOURCE_ONLINECLASS_REQUEST,
+  RESOURCE_ONLINECLASS_SUCCESS,
+  RESOURCE_ONLINECLASS_FAILURE,
 } from './online-class-constants';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
@@ -45,12 +50,25 @@ const OnlineclassViewProvider = (props) => {
       loadingManagementOnlineClasses: false,
       errorLoadingManagementOnlineClasses: '',
       currentServerTime: new Date(),
+      currentManagementTab: 0,
+    },
+    resourceView: {
+      currentPage: 1,
+      totalPages: 1,
+      resourceOnlineClasses: [],
+      loadingResourceOnlineClasses: false,
+      errorLoadingResourceOnlineClasses: '',
+      currentServerTime: new Date(),
+      currentResourceTab: 0,
     },
     grades: [],
     sections: [],
   };
 
   const [state, dispatch] = useReducer(onlineClassReducer, initalState);
+
+  const { role_details: roleDetails } =
+    JSON.parse(localStorage.getItem('userDetails')) || {};
 
   // all the actions related
 
@@ -95,6 +113,18 @@ const OnlineclassViewProvider = (props) => {
     }
   };
 
+  const listOnlineClassesResourceView = async (url) => {
+    dispatch(request(RESOURCE_ONLINECLASS_REQUEST));
+    try {
+      const { data } = await axiosInstance.get(
+        `${endpoints.onlineClass.managementOnlineClass}?${url}`
+      );
+      dispatch(success(data, RESOURCE_ONLINECLASS_SUCCESS));
+    } catch (error) {
+      dispatch(failure(error, RESOURCE_ONLINECLASS_FAILURE));
+    }
+  };
+
   const handleAccept = async (meetingId) => {
     try {
       const formData = new FormData();
@@ -127,7 +157,7 @@ const OnlineclassViewProvider = (props) => {
     dispatch(request(LIST_GRADE_REQUEST));
     try {
       const { data } = await axiosInstance.get(
-        `${endpoints.academics.grades}?branch_id=1`
+        `${endpoints.academics.grades}?branch_id=${roleDetails.branch.join(',')}`
       );
       if (data.status === 'success') dispatch(success(data.data, LIST_GRADE_SUCCESS));
       else throw new Error(data.message);
@@ -140,7 +170,9 @@ const OnlineclassViewProvider = (props) => {
     dispatch(request(LIST_SECTION_REQUEST));
     try {
       const { data } = await axiosInstance.get(
-        `${endpoints.academics.sections}?branch_id=1&grade_id=${gradeId}`
+        `${endpoints.academics.sections}?branch_id=${roleDetails.branch.join(
+          ','
+        )}&grade_id=${gradeId}`
       );
       if (data.status === 'success') {
         dispatch(success(data.data, LIST_SECTION_SUCCESS));
@@ -165,6 +197,14 @@ const OnlineclassViewProvider = (props) => {
     }
   };
 
+  const setCurrentTabs = (tab) => {
+    dispatch(success(tab, SET_TAB));
+  };
+
+  const setCurrentResourceTab = (tab) => {
+    dispatch(success(tab, SET_RESOURCE_TAB));
+  };
+
   return (
     <OnlineclassViewContext.Provider
       value={{
@@ -172,11 +212,14 @@ const OnlineclassViewProvider = (props) => {
         dispatch,
         listOnlineClassesStudentView,
         listOnlineClassesManagementView,
+        listOnlineClassesResourceView,
         handleAccept,
         handleJoin,
         listGrades,
         listSections,
         cancelClass,
+        setCurrentTabs,
+        setCurrentResourceTab,
       }}
     >
       {children}

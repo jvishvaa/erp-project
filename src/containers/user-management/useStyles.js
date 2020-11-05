@@ -19,6 +19,19 @@ const styles = (theme) => ({
     marginTop: '2rem',
     marginBottom: '2rem',
   },
+  imageUploadBtn: {
+    height: '30px',
+    width: '50px',
+    backgroundColor: '#ff6b6b',
+    padding: '15px',
+    fontSize: '16px',
+    color: '#ffffff',
+    borderRadius: '5px',
+    cursor: 'pointer',
+  },
+  formActionButton: {
+    color: '#ffffff',
+  },
 });
 
 const useStyles = makeStyles(styles);

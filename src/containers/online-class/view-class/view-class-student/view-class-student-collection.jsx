@@ -19,7 +19,8 @@ const ViewClassStudentCollection = () => {
   } = useContext(OnlineclassViewContext);
   const [currentTab, setCurrentTab] = useState(0);
 
-  const { role_details: roleDetails } = JSON.parse(localStorage.getItem('userDetails'));
+  const { role_details: roleDetails } =
+    JSON.parse(localStorage.getItem('userDetails')) || {};
 
   useEffect(() => {
     const isCompleted = !!currentTab;
