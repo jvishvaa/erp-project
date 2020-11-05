@@ -31,13 +31,13 @@ const OnlineClassFilter = () => {
   const [subjects, setSubjects] = useState([]);
 
   const {
-    listOnlineClassesManagementView,
+    listOnlineClassesResourceView,
     dispatch,
     listGrades,
     listSections,
     grades,
     sections,
-    setCurrentTabs,
+    setCurrentResourceTab,
   } = useContext(OnlineclassViewContext);
 
   const { setAlert } = useContext(AlertNotificationContext);
@@ -46,7 +46,7 @@ const OnlineClassFilter = () => {
 
   const handleTabChange = (event, tab) => {
     setCurrentTab(tab);
-    setCurrentTabs(tab);
+    setCurrentResourceTab(tab);
   };
 
   const handleCancel = (event, data) => {
@@ -120,7 +120,7 @@ const OnlineClassFilter = () => {
     } else if (gradeIds.length) {
       url += `&grade_ids=${gradeIds.join(',')}`;
     }
-    dispatch(listOnlineClassesManagementView(url));
+    dispatch(listOnlineClassesResourceView(url));
   };
 
   const handleSubject = (event, value) => {
@@ -281,16 +281,11 @@ const OnlineClassFilter = () => {
             get classes
           </Button>
         </Grid>
-        <Grid item xs={12} sm={2}>
-          <Button
-            className='viewclass__management-btn'
-            startIcon={<GetAppIcon />}
-            variant='outlined'
-            color='primary'
-          >
+        {/* <Grid item xs={12} sm={2}>
+          <Button className='viewclass__management-btn'>
             bulk excel
           </Button>
-        </Grid>
+        </Grid> */}
       </Grid>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
@@ -306,20 +301,6 @@ const OnlineClassFilter = () => {
             <Tab label={<Typography variant='h6'>Upcoming</Typography>} />
             <Tab label={<Typography variant='h6'>Completed</Typography>} />
           </Tabs>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <FormControlLabel
-            className='cancelled-class-check'
-            control={
-              <Checkbox
-                checked={isCancelSelected}
-                onChange={handleCancel}
-                name='cancel'
-                color='primary'
-              />
-            }
-            label='Cancelled class'
-          />
         </Grid>
       </Grid>
     </div>

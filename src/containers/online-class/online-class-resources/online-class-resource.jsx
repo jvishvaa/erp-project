@@ -1,15 +1,17 @@
 import React from 'react';
 import Layout from '../../Layout';
-import ViewClassManagementFilters from '../view-class/view-class-management/components/view-class-management-filters';
+import OnlineClassFilter from './components/online-class-filter';
 import OnlineClassResourceTable from './components/online-class-resource-table';
 import './online-class-resource.scss';
 
 const OnlineClassResource = () => {
   return (
-    <Layout>
-      <ViewClassManagementFilters />
-      <OnlineClassResourceTable />
-    </Layout>
+    <div className='viewclass__management-container'>
+      <Layout>
+        <OnlineClassFilter />
+        <OnlineClassResourceTable />
+      </Layout>
+    </div>
   );
 };
 

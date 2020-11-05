@@ -5,8 +5,11 @@ import moment from 'moment';
 import Countdown from '../../../../components/countdown/countdown';
 import './view-class-student.scss';
 import { OnlineclassViewContext } from '../../online-class-context/online-class-state';
+import ResourceModal from '../../online-class-resources/resourceModal';
 
 const ViewClassStudent = (props) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [onlineClassId, setOnlineClassId] = useState(null);
   const {
     data: {
       is_accepted: isAccepted,
@@ -14,6 +17,7 @@ const ViewClassStudent = (props) => {
       id: meetingId,
       zoom_meeting: {
         online_class: {
+          id: olClassId,
           start_time: startTime,
           end_time: endTime,
           title = '',
@@ -83,6 +87,10 @@ const ViewClassStudent = (props) => {
 
   const handleClassJoin = () => {
     dispatch(handleJoin(meetingId));
+  };
+
+  const closeModalHandler = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -191,6 +199,10 @@ const ViewClassStudent = (props) => {
                 className='viewclass__student-btn'
                 variant='contained'
                 color='primary'
+                onClick={() => {
+                  setIsModalOpen(true);
+                  setOnlineClassId(olClassId);
+                }}
               >
                 Resources
               </Button>
@@ -207,6 +219,15 @@ const ViewClassStudent = (props) => {
           </Grid>
         </Grid>
       </Grid>
+      {onlineClassId && (
+        <ResourceModal
+          isOpen={isModalOpen}
+          onClick={closeModalHandler}
+          id={olClassId}
+          type='resource'
+          key={`resource_modal${olClassId}`}
+        />
+      )}
     </div>
   );
 };

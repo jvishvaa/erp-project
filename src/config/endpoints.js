@@ -37,5 +37,7 @@ export default {
     cancelClass: '/erp_user/cancel-online-class/',
     attendeeList: '/erp_user/onlineclass_attendeelist/',
     coHostValidation: '/erp_user/co-host-validation/',
+    resourceLink: '/erp_user/resource_link/',
+    resourceFile: '/erp_user/resource_files/',
   },
 };

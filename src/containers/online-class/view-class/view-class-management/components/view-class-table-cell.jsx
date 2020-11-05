@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useContext, useEffect, useState } from 'react';
 import { Button, TableCell, TableRow } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';

@@ -17,11 +17,11 @@ import { OnlineclassViewContext } from '../../online-class-context/online-class-
 
 const OnlineClassResourceTable = () => {
   const {
-    managementView: {
-      managementOnlineClasses = [],
+    resourceView: {
+      resourceOnlineClasses = [],
       totalPages,
-      loadingManagementOnlineClasses,
-      currentManagementTab,
+      loadingResourceOnlineClasses,
+      currentResourceTab,
     },
   } = useContext(OnlineclassViewContext);
 
@@ -38,11 +38,11 @@ const OnlineClassResourceTable = () => {
               <TableCell align='center'>Upload resource</TableCell>
             </TableRow>
           </TableHead>
-          {loadingManagementOnlineClasses ? (
+          {loadingResourceOnlineClasses ? (
             <CircularProgress className='progress-center' />
           ) : (
             <TableBody className='viewclass__table-body'>
-              {managementOnlineClasses.map((row, index) => (
+              {resourceOnlineClasses.map((row, index) => (
                 <OnlineClassResourceCell data={row} key={row.id} index={index} />
               ))}
             </TableBody>
@@ -57,7 +57,7 @@ const OnlineClassResourceTable = () => {
         justify='center'
       >
         <Grid item xs={12}>
-          {!loadingManagementOnlineClasses ? (
+          {!loadingResourceOnlineClasses ? (
             <Pagination count={totalPages} color='primary' />
           ) : (
             ''

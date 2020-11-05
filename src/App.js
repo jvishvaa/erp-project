@@ -104,6 +104,9 @@ function App() {
                   {({ match }) => <CreateClass match={match} />}
                 </Route>
                 <Route exact path='/online-class/view-class'>
+                  {({ match }) => <ViewClassManagement match={match} />}
+                </Route>
+                <Route exact path='/online-class/resource'>
                   {({ match }) => <OnlineClassResource match={match} />}
                 </Route>
                 <Route exact path='/online-class/attendee-list/:id'>

@@ -282,7 +282,7 @@ const ViewClassManagementFilters = () => {
             get classes
           </Button>
         </Grid>
-        <Grid item xs={12} sm={2}>
+        {/* <Grid item xs={12} sm={2}>
           <Button
             className='viewclass__management-btn'
             startIcon={<GetAppIcon />}
@@ -291,7 +291,7 @@ const ViewClassManagementFilters = () => {
           >
             bulk excel
           </Button>
-        </Grid>
+        </Grid> */}
       </Grid>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
