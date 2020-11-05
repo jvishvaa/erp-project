@@ -6,6 +6,9 @@ import {
   MANAGEMENT_ONLINECLASS_REQUEST,
   MANAGEMENT_ONLINECLASS_SUCCESS,
   MANAGEMENT_ONLINECLASS_FAILURE,
+  RESOURCE_ONLINECLASS_REQUEST,
+  RESOURCE_ONLINECLASS_SUCCESS,
+  RESOURCE_ONLINECLASS_FAILURE,
   LIST_GRADE_FAILURE,
   LIST_GRADE_REQUEST,
   LIST_GRADE_SUCCESS,
@@ -14,6 +17,7 @@ import {
   LIST_SECTION_SUCCESS,
   CANCEL_CLASS,
   SET_TAB,
+  SET_RESOURCE_TAB,
 } from './online-class-constants';
 
 const onlineClassReducer = (state, action) => {
@@ -79,6 +83,38 @@ const onlineClassReducer = (state, action) => {
           ...state.managementView,
           loadingManagementOnlineClasses: false,
           errorLoadingManagementOnlineClasses: action.payload,
+        },
+      };
+
+    case RESOURCE_ONLINECLASS_REQUEST:
+      return {
+        ...state,
+        resourceView: {
+          ...state.resourceView,
+          loadingResourceOnlineClasses: true,
+          errorLoadingResourceOnlineClasses: '',
+        },
+      };
+    case RESOURCE_ONLINECLASS_SUCCESS:
+      return {
+        ...state,
+        resourceView: {
+          ...state.resourceView,
+          loadingResourceOnlineClasses: false,
+          errorLoadingResourceOnlineClasses: '',
+          resourceOnlineClasses: action.payload.data,
+          currentPage: action.payload.current_page * 1,
+          totalPages: action.payload.total_pages * 1,
+          currentServerTime: action.payload.current_server_time,
+        },
+      };
+    case RESOURCE_ONLINECLASS_FAILURE:
+      return {
+        ...state,
+        resourceView: {
+          ...state.resourceView,
+          loadingResourceOnlineClasses: false,
+          errorLoadingResourceOnlineClasses: action.payload,
         },
       };
 
@@ -151,6 +187,15 @@ const onlineClassReducer = (state, action) => {
         managementView: {
           ...state.managementView,
           currentManagementTab: action.payload,
+        },
+      };
+
+    case SET_RESOURCE_TAB:
+      return {
+        ...state,
+        resourceView: {
+          ...state.resourceView,
+          currentResourceTab: action.payload,
         },
       };
 

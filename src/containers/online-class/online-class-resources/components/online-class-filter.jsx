@@ -14,13 +14,12 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 import moment from 'moment';
-import { useSelector } from 'react-redux';
-import { OnlineclassViewContext } from '../../../online-class-context/online-class-state';
-import axiosInstance from '../../../../../config/axios';
-import endpoints from '../../../../../config/endpoints';
-import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
+import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
+import axiosInstance from '../../../../config/axios';
+import { OnlineclassViewContext } from '../../online-class-context/online-class-state';
+import endpoints from '../../../../config/endpoints';
 
-const ViewClassManagementFilters = () => {
+const OnlineClassFilter = () => {
   const [currentTab, setCurrentTab] = useState(0);
   const [isCancelSelected, setIsCancelSelected] = useState(false);
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
@@ -32,23 +31,22 @@ const ViewClassManagementFilters = () => {
   const [subjects, setSubjects] = useState([]);
 
   const {
-    listOnlineClassesManagementView,
+    listOnlineClassesResourceView,
     dispatch,
     listGrades,
     listSections,
     grades,
     sections,
-    setCurrentTabs,
+    setCurrentResourceTab,
   } = useContext(OnlineclassViewContext);
 
   const { setAlert } = useContext(AlertNotificationContext);
 
-  const { role_details: roleDetails } =
-    JSON.parse(localStorage.getItem('userDetails')) || {};
+  const { role_details: roleDetails } = JSON.parse(localStorage.getItem('userDetails'));
 
   const handleTabChange = (event, tab) => {
     setCurrentTab(tab);
-    setCurrentTabs(tab);
+    setCurrentResourceTab(tab);
   };
 
   const handleCancel = (event, data) => {
@@ -96,8 +94,9 @@ const ViewClassManagementFilters = () => {
   };
 
   const handleGetClasses = () => {
-    const { role_details: roleDetails, is_superuser: isSuperUser } =
-      JSON.parse(localStorage.getItem('userDetails')) || {};
+    const { role_details: roleDetails, is_superuser: isSuperUser } = JSON.parse(
+      localStorage.getItem('userDetails')
+    );
     const isCompleted = !!currentTab;
     let url = '';
     if (isSuperUser) {
@@ -121,7 +120,7 @@ const ViewClassManagementFilters = () => {
     } else if (gradeIds.length) {
       url += `&grade_ids=${gradeIds.join(',')}`;
     }
-    dispatch(listOnlineClassesManagementView(url));
+    dispatch(listOnlineClassesResourceView(url));
   };
 
   const handleSubject = (event, value) => {
@@ -283,12 +282,7 @@ const ViewClassManagementFilters = () => {
           </Button>
         </Grid>
         {/* <Grid item xs={12} sm={2}>
-          <Button
-            className='viewclass__management-btn'
-            startIcon={<GetAppIcon />}
-            variant='outlined'
-            color='primary'
-          >
+          <Button className='viewclass__management-btn'>
             bulk excel
           </Button>
         </Grid> */}
@@ -308,23 +302,9 @@ const ViewClassManagementFilters = () => {
             <Tab label={<Typography variant='h6'>Completed</Typography>} />
           </Tabs>
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <FormControlLabel
-            className='cancelled-class-check'
-            control={
-              <Checkbox
-                checked={isCancelSelected}
-                onChange={handleCancel}
-                name='cancel'
-                color='primary'
-              />
-            }
-            label='Cancelled class'
-          />
-        </Grid>
       </Grid>
     </div>
   );
 };
 
-export default ViewClassManagementFilters;
+export default OnlineClassFilter;

@@ -20,6 +20,10 @@ import {
   LIST_SECTION_SUCCESS,
   CANCEL_CLASS,
   SET_TAB,
+  SET_RESOURCE_TAB,
+  RESOURCE_ONLINECLASS_REQUEST,
+  RESOURCE_ONLINECLASS_SUCCESS,
+  RESOURCE_ONLINECLASS_FAILURE,
 } from './online-class-constants';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
@@ -47,6 +51,15 @@ const OnlineclassViewProvider = (props) => {
       errorLoadingManagementOnlineClasses: '',
       currentServerTime: new Date(),
       currentManagementTab: 0,
+    },
+    resourceView: {
+      currentPage: 1,
+      totalPages: 1,
+      resourceOnlineClasses: [],
+      loadingResourceOnlineClasses: false,
+      errorLoadingResourceOnlineClasses: '',
+      currentServerTime: new Date(),
+      currentResourceTab: 0,
     },
     grades: [],
     sections: [],
@@ -97,6 +110,18 @@ const OnlineclassViewProvider = (props) => {
       dispatch(success(data, MANAGEMENT_ONLINECLASS_SUCCESS));
     } catch (error) {
       dispatch(failure(error, MANAGEMENT_ONLINECLASS_FAILURE));
+    }
+  };
+
+  const listOnlineClassesResourceView = async (url) => {
+    dispatch(request(RESOURCE_ONLINECLASS_REQUEST));
+    try {
+      const { data } = await axiosInstance.get(
+        `${endpoints.onlineClass.managementOnlineClass}?${url}`
+      );
+      dispatch(success(data, RESOURCE_ONLINECLASS_SUCCESS));
+    } catch (error) {
+      dispatch(failure(error, RESOURCE_ONLINECLASS_FAILURE));
     }
   };
 
@@ -176,6 +201,10 @@ const OnlineclassViewProvider = (props) => {
     dispatch(success(tab, SET_TAB));
   };
 
+  const setCurrentResourceTab = (tab) => {
+    dispatch(success(tab, SET_RESOURCE_TAB));
+  };
+
   return (
     <OnlineclassViewContext.Provider
       value={{
@@ -183,12 +212,14 @@ const OnlineclassViewProvider = (props) => {
         dispatch,
         listOnlineClassesStudentView,
         listOnlineClassesManagementView,
+        listOnlineClassesResourceView,
         handleAccept,
         handleJoin,
         listGrades,
         listSections,
         cancelClass,
         setCurrentTabs,
+        setCurrentResourceTab,
       }}
     >
       {children}

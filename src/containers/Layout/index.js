@@ -156,6 +156,10 @@ const Layout = ({ children, history }) => {
         history.push('/online-class/view-class');
         break;
       }
+      case 'Resources': {
+        history.push('/online-class/resource');
+        break;
+      }
       case 'Attend Online Class': {
         history.push('/online-class/attend-class');
         break;
