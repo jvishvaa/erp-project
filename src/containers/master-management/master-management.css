@@ -1,5 +1,8 @@
 .paginate {
   display: flex;
   justify-content: center;
-  margin-top: 30px;
+  margin-top: 5px;
+  margin-bottom:50px;
+  padding:15px;
+  background-color: #F3E8E8;
 }

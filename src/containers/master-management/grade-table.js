@@ -138,7 +138,7 @@ const GradeTable = () => {
     };
 
     useEffect(()=>{
-      axiosInstance.get(`${endpoints.masterManagement.grades}?page=${page}&page_size=15&grade=${searchGrade}`,{
+      axiosInstance.get(`${endpoints.masterManagement.grades}?page=${page}&page_size=15&grade_name=${searchGrade}`,{
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -160,15 +160,17 @@ const GradeTable = () => {
   
   return (
     <Layout>
+
     {(addFlag||editFlag)  && 
-    <div className={classes.buttonContainer} style={{float:'right'}}>
-      <Button startIcon={<ArrowBackIcon />}  onClick={handleGoBack}>
-        Grade List
+    <div style={{float:'right',marginTop:'15px',marginRight:'15px'}}>
+      <Button startIcon={<ArrowBackIcon />} size="large" title="Go back to Grade List" onClick={handleGoBack}>
+      Grade List
       </Button>
     </div>
     }
     {!tableFlag && addFlag && !editFlag && <CreateGrade /> }
-    {!tableFlag && !addFlag && editFlag && <EditGrade id={gradeId} name={gradeName} type={gradeType} /> }
+    {!tableFlag && !addFlag && editFlag && <EditGrade id={gradeId} name={gradeName} type={gradeType} 
+    handleGoBack={handleGoBack}/> }
 
     {tableFlag && !addFlag && !editFlag && 
     <div className={classes.buttonContainer}>
@@ -178,8 +180,9 @@ const GradeTable = () => {
     </div>
     }
 
+
 {tableFlag && !addFlag && !editFlag && 
-    <Grid container className='create-class-container' spacing={2} style={{marginBottom:'10px'}}>
+    <Grid container className='create-class-container' spacing={4} style={{marginBottom:'10px'}}>
       <Grid item xs={12} sm={3}>
         <TextField
           className='create__class-textfield'
@@ -245,13 +248,9 @@ const GradeTable = () => {
               );
             })}
           </TableBody>
-  
         </Table>
       </TableContainer>
-    </Paper>
-    }
-    {tableFlag && !addFlag && !editFlag && 
-    <div className="paginate">
+      <div className="paginate">
         <Pagination
         count={Math.ceil(dataCount/15)}
         color="primary"
@@ -261,6 +260,7 @@ const GradeTable = () => {
         onChange={handleChangePage}
         />
     </div>
+    </Paper>
     }
     <Dialog
       open={openDeleteModal}

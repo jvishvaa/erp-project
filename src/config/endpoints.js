@@ -44,5 +44,6 @@ export default {
     updateSubject: '/erp_user/update-subject/',
     updateSection: '/erp_user/update-section/',
     updateGrade: '/erp_user/update-grade/',
+    gradesDrop: '/erp_user/grade/',
   }
 };

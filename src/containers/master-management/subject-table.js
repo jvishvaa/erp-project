@@ -165,10 +165,10 @@ const SubjectTable = () => {
         setAlert('error', error.message);
       })
 
-      axiosInstance.get(endpoints.masterManagement.grades)
+      axiosInstance.get(endpoints.masterManagement.gradesDrop)
       .then(result=>{
         if (result.status === 200) {
-          setGrades(result.data.result.results);
+          setGrades(result.data.data);
         } else {
           setAlert('error', result.data.message);
         }
@@ -184,14 +184,16 @@ const SubjectTable = () => {
     <Layout>
 
     {(addFlag||editFlag)  && 
-    <div className={classes.buttonContainer} style={{float:'right'}}>
-      <Button startIcon={<ArrowBackIcon />} onClick={handleGoBack}>
-        Subject List
+    <div style={{float:'right',marginTop:'15px',marginRight:'15px'}}>
+      <Button startIcon={<ArrowBackIcon />} size="large" title="Go back to Subject List" onClick={handleGoBack}>
+      Subject List
       </Button>
     </div>
     }
     {!tableFlag && addFlag && !editFlag && <CreateSubject grades={grades} /> }
-    {!tableFlag && !addFlag && editFlag && <EditSubject id={subjectId} desc={desc} name={subjectName}/> }
+    {!tableFlag && !addFlag && editFlag && <EditSubject id={subjectId} desc={desc} name={subjectName} 
+    handleGoBack={handleGoBack}
+    /> }
     
     {tableFlag && !addFlag && !editFlag && 
     <div className={classes.buttonContainer}>
@@ -202,7 +204,7 @@ const SubjectTable = () => {
     }
 
     {tableFlag && !addFlag && !editFlag && 
-    <Grid container className='create-class-container' spacing={2} style={{marginBottom:'10px'}}>
+    <Grid container className='create-class-container' spacing={4} style={{marginBottom:'10px'}}>
       <Grid item xs={12} sm={3}>
         <TextField
           className='create__class-textfield'
@@ -289,10 +291,7 @@ const SubjectTable = () => {
           </TableBody>
         </Table>
       </TableContainer> 
-    </Paper>
-    }
-    {tableFlag && !addFlag && !editFlag && 
-    <div className="paginate">
+      <div className="paginate">
         <Pagination
         count={Math.ceil(dataCount/15)}
         color="primary"
@@ -302,6 +301,7 @@ const SubjectTable = () => {
         onChange={handleChangePage}
         />
     </div>
+    </Paper>
     }
     <Dialog
       open={openDeleteModal}

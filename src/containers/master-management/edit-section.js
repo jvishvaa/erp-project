@@ -9,28 +9,28 @@ import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
 
-const EditSection = ({id,name}) => {
+const EditSection = ({id,name,handleGoBack}) => {
 
+  const secName=name.split("__").pop()
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { setAlert } = useContext(AlertNotificationContext);
-  const [sectionName,setSectionName]=useState(name || '')
+  const [sectionName,setSectionName]=useState(secName || '')
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    const formData=new FormData()
-    
-    if(sectionName!==name && sectionName!=="")
-    formData.append('section_name',sectionName)
-    formData.append('section_id',id)
-    if(sectionName!==name && sectionName!=="")
+    let request={}
+    if(sectionName!==secName && sectionName!=="")
     {
-      axiosInstance.put(endpoints.masterManagement.updateSection,formData,{
+      request['section_name']=sectionName
+      request['section_id']=id
+      axiosInstance.put(endpoints.masterManagement.updateSection,request,{
         headers: {
           Authorization: `Bearer ${token}`,
         },
       }).then(result=>{
         if (result.status === 200) {
           setAlert('success', result.data.message);
+          handleGoBack()
           setSectionName('')
         } else {
           setAlert('error', result.data.message);
@@ -52,6 +52,7 @@ const EditSection = ({id,name}) => {
         <Grid item style={{marginLeft:'14px'}} >
               <h1>Edit Section</h1>
         </Grid>
+        <hr/>
         <Grid container className='create-class-container'>
           <Grid item xs={12} sm={4}>
             <TextField
@@ -61,6 +62,7 @@ const EditSection = ({id,name}) => {
               variant='outlined'
               size='medium'
               value={sectionName}
+              inputProps={{pattern:'^[a-zA-Z0-9 ]+'}}
               name='secname'
               onChange={e=>setSectionName(e.target.value)}
               required

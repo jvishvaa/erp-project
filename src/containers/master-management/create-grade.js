@@ -47,6 +47,7 @@ const CreateGrade = () => {
         <Grid item style={{marginLeft:'14px'}} >
               <h1>Add Grade</h1>
         </Grid>
+        <hr/>
         <Grid container className='create-class-container'>
           <Grid item xs={12} sm={4}>
             <TextField

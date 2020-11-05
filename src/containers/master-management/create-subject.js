@@ -34,29 +34,35 @@ const CreateSubject = ({grades}) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    axiosInstance.post(endpoints.masterManagement.createSubject,{
-      subject_name:subjectName,
-      grade_name:gradeName,
-      grade_id:gradeId,
-      branch_id:JSON.parse(localStorage.getItem('userDetails')).role_details.branch[0],
-      description:description
-    }, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }).then(result=>{
-    if (result.data.status_code === 201) {
-      setAlert('success', result.data.message);
-      setSubjectName('')
-      setGradeName('')
-      setGradeId('')
-      setDescription('')
-    } else {
-      setAlert('error', result.data.message);
+    
+    if(gradeName==="" && gradeId==="")
+    setAlert('error','Select grade from the list')
+    else
+    {
+      axiosInstance.post(endpoints.masterManagement.createSubject,{
+        subject_name:subjectName,
+        grade_name:gradeName,
+        grade_id:gradeId,
+        branch_id:JSON.parse(localStorage.getItem('userDetails')).role_details.branch[0],
+        description:description
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then(result=>{
+      if (result.data.status_code === 201) {
+        setAlert('success', result.data.message);
+        setSubjectName('')
+        setGradeName('')
+        setGradeId('')
+        setDescription('')
+      } else {
+        setAlert('error', result.data.message);
+      }
+      }).catch((error)=>{
+        setAlert('error', error.message);
+      })
     }
-    }).catch((error)=>{
-      setAlert('error', error.message);
-    })
     };
 
 
@@ -66,6 +72,7 @@ const CreateSubject = ({grades}) => {
         <Grid item style={{marginLeft:'14px'}} >
               <h1>Add Subject</h1>
         </Grid>
+        <hr/>
         <Grid container className='create-class-container'>
           <Grid item xs={12} sm={4}>
             <TextField
@@ -75,23 +82,9 @@ const CreateSubject = ({grades}) => {
               variant='outlined'
               size='medium'
               value={subjectName}
+              inputProps={{pattern:'^[a-zA-Z0-9 ]+'}}
               name='subname'
               onChange={e=>setSubjectName(e.target.value)}
-              required
-            />
-          </Grid>
-          </Grid>
-          <Grid container className='create-class-container'>
-          <Grid item xs={12} sm={4}>
-            <TextField
-              className='create__class-textfield'
-              id='description'
-              label='Description'
-              variant='outlined'
-              size='medium'
-              value={description}
-              name='description'
-              onChange={e=>setDescription(e.target.value)}
               required
             />
           </Grid>
@@ -105,6 +98,7 @@ const CreateSubject = ({grades}) => {
               options={grades}
               getOptionLabel={(option) => option?.grade_name}
               filterSelectedOptions
+              required
               renderInput={(params) => (
                 <TextField
                   className='create__class-textfield'
@@ -112,14 +106,31 @@ const CreateSubject = ({grades}) => {
                   variant='outlined'
                   label='Grades'
                   placeholder='Grades'
-                  value={gradeName}
                   required
                 />
               )}
             />
           </Grid>
         </Grid>
-       
+        <Grid container className='create-class-container'>
+          <Grid item xs={12} sm={4}>
+            <TextField
+              className='create__class-textfield'
+              id='description'
+              label='Description'
+              variant='outlined'
+              size='medium'
+              multiline
+              rows={4}
+              rowsMax={6}
+              inputProps={{maxLength:100}}
+              value={description}
+              name='description'
+              onChange={e=>setDescription(e.target.value)}
+              required
+            />
+          </Grid>
+        </Grid>
         <Grid container className='create-class-container' >
           <Button variant='contained' color='primary' size='large' type='submit'>
             SUBMIT

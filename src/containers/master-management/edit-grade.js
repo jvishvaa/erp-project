@@ -9,7 +9,7 @@ import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
 
-const EditGrade = ({id,name,type}) => {
+const EditGrade = ({id,name,type,handleGoBack}) => {
 
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { setAlert } = useContext(AlertNotificationContext);
@@ -18,15 +18,17 @@ const EditGrade = ({id,name,type}) => {
   
   const handleSubmit = (e) => {
     e.preventDefault()
-    const formData=new FormData()
+    
+    let request={}
     if(gradeName!=="" && gradeName!==name)
-    formData.append('grade_name',gradeName)
+    request['grade_name']=gradeName
     if(gradeType!=="" && gradeType!==type)
-    formData.append('grade_type',gradeType)
-    formData.append('grade_id',id)
+    request['grade_type']=gradeType
+    request['grade_id']=id
+
     if((gradeName!=="" && gradeName!==name)||(gradeType!=="" && gradeType!==type))
     {
-      axiosInstance.put(endpoints.masterManagement.updateGrade,formData,{
+      axiosInstance.put(endpoints.masterManagement.updateGrade,request,{
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -34,6 +36,7 @@ const EditGrade = ({id,name,type}) => {
       if (result.status === 200) {
         {
           setAlert('success', result.data.message);
+          handleGoBack()
           setGradeName('')
           setGradeType('')
         }
@@ -57,6 +60,7 @@ const EditGrade = ({id,name,type}) => {
         <Grid item style={{marginLeft:'14px'}} >
               <h1>Edit Grade</h1>
         </Grid>
+        <hr/>
         <Grid container className='create-class-container'>
           <Grid item xs={12} sm={4}>
             <TextField

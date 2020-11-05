@@ -1,54 +1,51 @@
 import React , { useContext, useState } from 'react';
-import {
-  Grid,
-  TextField,
-  Button
-} from '@material-ui/core';
+import { Grid, TextField, Button } from '@material-ui/core';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
 
-const EditSubject = ({id,name,desc}) => {
+const EditSubject = ({id,name,desc,handleGoBack}) => {
 
+  const subName=name.split("__").pop()
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { setAlert } = useContext(AlertNotificationContext);
-  const [subjectName,setSubjectName]=useState(name || '')
+  const [subjectName,setSubjectName]=useState(subName || '')
   const [description,setDescription]=useState(desc || '')
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    let request={}
 
-    const formData=new FormData()
-    if(subjectName!==name && subjectName!=="")
-      formData.append('subject_name',subjectName)
-    
-    if(description!==desc && description!=="")
-      formData.append('subject_description',description)
+    request['subject_id']=id
+      if((subjectName!==subName && subjectName!=="")||(description!==desc && description!==""))
+      {
+        if(subjectName!==subName && subjectName!=="")
+        request['subject_name']=subjectName
+        if(description!==desc && description!=="")
+        request['subject_description']=description
 
-    formData.append('subject_id',id)
-    if((subjectName!==name && subjectName!=="")||(description!==desc && description!==""))
-    {
-      axiosInstance.put(endpoints.masterManagement.updateSubject,formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }).then(result=>{
-        if (result.status === 200) {
-          setAlert('success', result.data.message);
-          setSubjectName('')
-          setDescription('')
-        } else {
-          setAlert('error', result.data.message);
-        }
-      }).catch((error)=>{
-        setAlert('error', error.message);
-      })
-    }
-    else
-    {
-      setAlert('error', 'No Fields to Update');
-    }
+        axiosInstance.put(endpoints.masterManagement.updateSubject,request, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }).then(result=>{
+          if (result.status === 200) {
+            setAlert('success', result.data.message);
+            handleGoBack()
+            setSubjectName('')
+            setDescription('')
+          } else {
+            setAlert('error', result.data.message);
+          }
+        }).catch((error)=>{
+          setAlert('error', error.message);
+        })
+      }
+      else
+      {
+        setAlert('error', 'No Fields to Update');
+      }
     };
 
 
@@ -58,6 +55,7 @@ const EditSubject = ({id,name,desc}) => {
         <Grid item style={{marginLeft:'14px'}} >
               <h1>Edit Subject</h1>
         </Grid>
+        <hr/>
         <Grid container className='create-class-container'>
           <Grid item xs={12} sm={4}>
             <TextField
@@ -67,6 +65,7 @@ const EditSubject = ({id,name,desc}) => {
               variant='outlined'
               size='medium'
               value={subjectName}
+              inputProps={{pattern:'^[a-zA-Z0-9 ]+'}}
               name='subname'
               onChange={e=>setSubjectName(e.target.value)}
             />
@@ -80,6 +79,10 @@ const EditSubject = ({id,name,desc}) => {
               label='Description'
               variant='outlined'
               size='medium'
+              multiline
+              rows={4}
+              rowsMax={6}
+              inputProps={{maxLength:100}}
               value={description}
               name='description'
               onChange={e=>setDescription(e.target.value)}

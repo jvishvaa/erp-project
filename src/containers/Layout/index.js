@@ -42,6 +42,7 @@ const Layout = ({ children, history }) => {
   const [isLogout, setIsLogout] = useState(false);
   const [navigationData, setNavigationData] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [masterMenuOpen, setMasterMenuOpen] = useState(false);
   const [superUser, setSuperUser] = useState(false);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -339,8 +340,8 @@ const Layout = ({ children, history }) => {
                 {userMenuOpen ? (
                   <ExpandLess style={{ marginLeft: '2rem' }} />
                 ) : (
-                  <ExpandMore style={{ marginLeft: '2rem' }} />
-                )}
+                    <ExpandMore style={{ marginLeft: '2rem' }} />
+                  )}
               </ListItem>
               <Collapse in={userMenuOpen}>
                 <Divider />
@@ -387,6 +388,94 @@ const Layout = ({ children, history }) => {
                   </ListItem>
                 </List>
               </Collapse>
+
+
+              <ListItem
+                button
+                onClick={() => {
+                  setMasterMenuOpen((prevState) => !prevState);
+                }}
+              >
+                <ListItemIcon className={classes.menuItemIcon}>
+                  <PeopleIcon />
+                </ListItemIcon>
+                <ListItemText className={classes.menuItemText}>
+                  Master Management
+                </ListItemText>
+                {masterMenuOpen ? (
+                  <ExpandLess style={{ marginLeft: '2rem' }} />
+                ) : (
+                    <ExpandMore style={{ marginLeft: '2rem' }} />
+                  )}
+              </ListItem>
+              <Collapse in={masterMenuOpen}>
+                <Divider />
+                <List>
+                  <ListItem
+                    button
+                    className={
+                      history.location.pathname === '/master-mgmt/subject-table'
+                        ? 'menu_selection'
+                        : null
+                    }
+                    onClick={() => {
+                      history.push('/master-mgmt/subject-table');
+                    }}
+                  >
+                    <ListItemIcon className={classes.menuItemIcon}>
+                      {/* <MenuIcon name={child.child_name} /> */}
+                      {/* {menuIcon(child.child_name)} */}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={`Subject`}
+                      className={classes.menuItemText}
+                    />
+                  </ListItem>
+                  
+                  <ListItem
+                    button
+                    className={
+                      history.location.pathname === '/master-mgmt/section-table'
+                        ? 'menu_selection'
+                        : null
+                    }
+                    onClick={() => {
+                      history.push('/master-mgmt/section-table');
+                    }}
+                  >
+                    <ListItemIcon className={classes.menuItemIcon}>
+                      {/* <MenuIcon name={child.child_name} /> */}
+                      {/* {menuIcon(child.child_name)} */}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={`Section`}
+                      className={classes.menuItemText}
+                    />
+                  </ListItem>
+
+                  <ListItem
+                    button
+                    className={
+                      history.location.pathname === '/master-mgmt/grade-table'
+                        ? 'menu_selection'
+                        : null
+                    }
+                    onClick={() => {
+                      history.push('/master-mgmt/grade-table');
+                    }}
+                  >
+                    <ListItemIcon className={classes.menuItemIcon}>
+                      {/* <MenuIcon name={child.child_name} /> */}
+                      {/* {menuIcon(child.child_name)} */}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={`Grade`}
+                      className={classes.menuItemText}
+                    />
+                  </ListItem>
+                </List>
+              </Collapse>
+
               <ListItem
                 button
                 className={

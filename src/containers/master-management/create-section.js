@@ -34,27 +34,32 @@ const CreateSection = ({grades}) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    axiosInstance.post(endpoints.masterManagement.createSection,{
-      section_name:sectionName,
-      grade_name:gradeName,
-      grade_id:gradeId,
-      branch_id:JSON.parse(localStorage.getItem('userDetails')).role_details.branch[0]
-    }, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }).then(result=>{
-    if (result.data.status_code === 201) {
-      setAlert('success', result.data.message);
-      setSectionName('')
-      setGradeId('')
-      setGradeName('')
-    } else {
-      setAlert('error', result.data.message);
+    if(gradeName==="" && gradeId==="")
+    setAlert('error','Select grade from the list')
+    else 
+    {
+      axiosInstance.post(endpoints.masterManagement.createSection,{
+        section_name:sectionName,
+        grade_name:gradeName,
+        grade_id:gradeId,
+        branch_id:JSON.parse(localStorage.getItem('userDetails')).role_details.branch[0]
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then(result=>{
+      if (result.data.status_code === 201) {
+        setAlert('success', result.data.message);
+        setSectionName('')
+        setGradeId('')
+        setGradeName('')
+      } else {
+        setAlert('error', result.data.message);
+      }
+      }).catch((error)=>{
+        setAlert('error', error.message);
+      })
     }
-    }).catch((error)=>{
-      setAlert('error', error.message);
-    })
     };
 
 
@@ -64,6 +69,7 @@ const CreateSection = ({grades}) => {
         <Grid item style={{marginLeft:'14px'}} >
               <h1>Add Section</h1>
         </Grid>
+        <hr/>
         <Grid container className='create-class-container'>
           <Grid item xs={12} sm={4}>
             <TextField
@@ -73,6 +79,7 @@ const CreateSection = ({grades}) => {
               variant='outlined'
               size='medium'
               value={sectionName}
+              inputProps={{pattern:'^[a-zA-Z0-9 ]+'}}
               name='secname'
               onChange={e=>setSectionName(e.target.value)}
               required

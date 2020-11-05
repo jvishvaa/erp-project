@@ -165,14 +165,14 @@ const SectionTable = () => {
         setAlert('error', error.message);
       })
 
-      axiosInstance.get(endpoints.masterManagement.grades,{
+      axiosInstance.get(endpoints.masterManagement.gradesDrop,{
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then(result=>{
         if (result.status === 200) {
-          setGrades(result.data.result.results);
+          setGrades(result.data.data);
         } else {
           setAlert('error', result.data.message);
         }
@@ -186,14 +186,14 @@ const SectionTable = () => {
   return (
     <Layout>
     {(addFlag||editFlag)  && 
-    <div className={classes.buttonContainer} style={{float:'right'}}>
-      <Button startIcon={<ArrowBackIcon />} onClick={handleGoBack}>
+    <div style={{float:'right',marginTop:'15px',marginRight:'15px'}}>
+      <Button startIcon={<ArrowBackIcon />} size="large" title="Go back to Section List" onClick={handleGoBack}>
         Section List
       </Button>
     </div>
     }
     {!tableFlag && addFlag && !editFlag && <CreateSection grades={grades}/> }
-    {!tableFlag && !addFlag && editFlag && <EditSection id={sectionId} name={sectionName}/> }
+    {!tableFlag && !addFlag && editFlag && <EditSection id={sectionId} name={sectionName} handleGoBack={handleGoBack}/> }
 
     {tableFlag && !addFlag && !editFlag && 
     <div className={classes.buttonContainer}>
@@ -203,7 +203,7 @@ const SectionTable = () => {
     </div>
     }
     {tableFlag && !addFlag && !editFlag && 
-    <Grid container className='create-class-container' spacing={2} style={{marginBottom:'10px'}}>
+    <Grid container className='create-class-container' spacing={4} style={{marginBottom:'10px'}}>
       <Grid item xs={12} sm={3}>
         <TextField
           className='create__class-textfield'
@@ -286,10 +286,7 @@ const SectionTable = () => {
           </TableBody>
         </Table>
       </TableContainer>
-    </Paper>
-    }
-    {tableFlag && !addFlag && !editFlag && 
-    <div className="paginate">
+      <div className="paginate">
         <Pagination
         count={Math.ceil(dataCount/15)}
         color="primary"
@@ -299,6 +296,7 @@ const SectionTable = () => {
         onChange={handleChangePage}
         />
     </div>
+    </Paper>
     }
     <Dialog
       open={openDeleteModal}
