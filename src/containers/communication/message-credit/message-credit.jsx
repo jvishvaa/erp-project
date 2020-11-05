@@ -71,6 +71,12 @@ const MessageCredit = withRouter(({ history, ...props }) => {
       setTestData(tempData);
     }
   };
+  const handleCancel = (index) => {
+    const tempData = testData.slice();
+    tempData[index].AmountAdded = 0;
+    tempData[index].Adding = false;
+    setTestData(tempData);
+  };
   const handleStatusChange = (index) => {
     const tempData = testData.slice();
     setSmsCreditId(tempData[index].id);
@@ -187,12 +193,20 @@ const MessageCredit = withRouter(({ history, ...props }) => {
                 </td>
                 <td className='sms_credit_table_cells'>
                   {items.Adding ? (
-                    <input
-                      type='submit'
-                      className='add_credit_save_button'
-                      onClick={() => handleSubmit(index)}
-                      value='Save'
-                    />
+                    <div className='addcredit_button_wrapper'>
+                      <input
+                        type='submit'
+                        className='add_credit_save_button'
+                        onClick={() => handleSubmit(index)}
+                        value='Save'
+                      />
+                      <input
+                        type='submit'
+                        className='add_credit_save_button'
+                        onClick={() => handleCancel(index)}
+                        value='Cancel'
+                      />
+                    </div>
                   ) : (
                     <AddCircleIcon
                       style={{ color: '#005c99' }}

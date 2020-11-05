@@ -193,7 +193,6 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'SMS&Email Log': {
-        history.push('/sms-email-log');
         break;
       }
 
