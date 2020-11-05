@@ -24,6 +24,8 @@ import ViewClassStudentCollection from './containers/online-class/view-class/vie
 import SubjectTable from './containers/master-management/subject-table'
 import SectionTable from './containers/master-management/section-table'
 import GradeTable from './containers/master-management/grade-table'
+import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
+import Profile from './containers/profile/profile';
 
 const theme = createMuiTheme({
   palette: {
