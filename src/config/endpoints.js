@@ -8,6 +8,9 @@ export default {
     grades: '/erp_user/grademapping/',
     sections: '/erp_user/sectionmapping/',
   },
+  profile: {
+    userDetails: '/erp_user/user-data/',
+  },
   communication: {
     roles: '/erp_user/roles/',
     branches: '/erp_user/branch/',
@@ -22,6 +25,7 @@ export default {
     sendMessage: '/communication/send-messages/',
     getSmsCredit: '/communication/sms-credits/',
     assignRole: '/erp_user/assign_role/',
+    userStatusChange: '/erp_user/',
   },
   onlineClass: {
     filterStudent: '/erp_user/student_filter/',
@@ -33,5 +37,7 @@ export default {
     cancelClass: '/erp_user/cancel-online-class/',
     attendeeList: '/erp_user/onlineclass_attendeelist/',
     coHostValidation: '/erp_user/co-host-validation/',
+    resourceLink: '/erp_user/resource_link/',
+    resourceFile: '/erp_user/resource_files/',
   },
 };

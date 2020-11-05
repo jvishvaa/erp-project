@@ -16,6 +16,9 @@ import MomentUtils from '@date-io/moment';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
 import { OnlineclassViewContext } from '../../../online-class-context/online-class-state';
+import axiosInstance from '../../../../../config/axios';
+import endpoints from '../../../../../config/endpoints';
+import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
 
 const ViewClassManagementFilters = () => {
   const [currentTab, setCurrentTab] = useState(0);
@@ -26,8 +29,7 @@ const ViewClassManagementFilters = () => {
   const [sectionIds, setSectionIds] = useState([]);
   const [subjectIds, setSubjectIds] = useState([]);
   const [clearKey, setClearKey] = useState(new Date());
-
-  const { subjects = [] } = useSelector((state) => state.academic);
+  const [subjects, setSubjects] = useState([]);
 
   const {
     listOnlineClassesManagementView,
@@ -36,10 +38,17 @@ const ViewClassManagementFilters = () => {
     listSections,
     grades,
     sections,
+    setCurrentTabs,
   } = useContext(OnlineclassViewContext);
+
+  const { setAlert } = useContext(AlertNotificationContext);
+
+  const { role_details: roleDetails } =
+    JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const handleTabChange = (event, tab) => {
     setCurrentTab(tab);
+    setCurrentTabs(tab);
   };
 
   const handleCancel = (event, data) => {
@@ -51,13 +60,29 @@ const ViewClassManagementFilters = () => {
     else setEndDate(date);
   };
 
+  const listSubjects = async (gradeids) => {
+    try {
+      const { data } = await axiosInstance(
+        `${endpoints.academics.subjects}?branch=${roleDetails.branch.join(
+          ','
+        )}&grade=${gradeids.join(',')}`
+      );
+      setSubjects(data.data);
+    } catch (error) {
+      setAlert('error', 'Failed to load subjects');
+    }
+  };
+
   const handleGrade = (event, value) => {
     if (value.length) {
       const ids = value.map((el) => el.grade_id);
       setGradeIds(ids);
+      listSubjects(ids);
       dispatch(listSections(ids));
     } else {
       setGradeIds([]);
+      setSubjects([]);
+      setSectionIds([]);
     }
   };
 
@@ -71,15 +96,20 @@ const ViewClassManagementFilters = () => {
   };
 
   const handleGetClasses = () => {
-    const { role_details: roleDetails, is_superuser: isSuperUser } = JSON.parse(
-      localStorage.getItem('userDetails')
-    );
+    const { role_details: roleDetails, is_superuser: isSuperUser } =
+      JSON.parse(localStorage.getItem('userDetails')) || {};
     const isCompleted = !!currentTab;
     let url = '';
     if (isSuperUser) {
-      url += `page_number=1&page_size=10&branch_ids=1&is_completed=${isCompleted}&is_cancelled=${isCancelSelected}&start_date=${startDate}&end_date=${endDate}`;
+      url += `page_number=1&page_size=10&branch_ids=${roleDetails.branch.join(
+        ','
+      )}&is_completed=${isCompleted}&is_cancelled=${isCancelSelected}&start_date=${startDate}&end_date=${endDate}`;
     } else {
-      url += `page_number=1&page_size=10&branch_ids=1&is_completed=${isCompleted}&user_id=${roleDetails.erp_user_id}&is_cancelled=${isCancelSelected}&start_date=${startDate}&end_date=${endDate}`;
+      url += `page_number=1&page_size=10&branch_ids=${roleDetails.branch.join(
+        ','
+      )}&is_completed=${isCompleted}&user_id=${
+        roleDetails.erp_user_id
+      }&is_cancelled=${isCancelSelected}&start_date=${startDate}&end_date=${endDate}`;
     }
 
     if (subjectIds.length) {
@@ -166,28 +196,32 @@ const ViewClassManagementFilters = () => {
             ''
           )}
         </Grid>
-        <Grid item xs={12} sm={4}>
-          <Autocomplete
-            key={clearKey}
-            multiple
-            id='tags-outlined'
-            options={subjects}
-            onChange={handleSubject}
-            getOptionLabel={(option) => option.subject__subject_name}
-            filterSelectedOptions
-            size='small'
-            renderInput={(params) => (
-              <TextField
-                className='create__class-textfield'
-                {...params}
-                variant='outlined'
-                label='Subject'
-                placeholder='Subject'
-                color='primary'
-              />
-            )}
-          />
-        </Grid>
+        {gradeIds.length ? (
+          <Grid item xs={12} sm={4}>
+            <Autocomplete
+              key={clearKey}
+              multiple
+              id='tags-outlined'
+              options={subjects}
+              onChange={handleSubject}
+              getOptionLabel={(option) => option.subject__subject_name}
+              filterSelectedOptions
+              size='small'
+              renderInput={(params) => (
+                <TextField
+                  className='create__class-textfield'
+                  {...params}
+                  variant='outlined'
+                  label='Subject'
+                  placeholder='Subject'
+                  color='primary'
+                />
+              )}
+            />
+          </Grid>
+        ) : (
+          ''
+        )}
         <MuiPickersUtilsProvider utils={MomentUtils}>
           <Grid item xs={12} sm={2}>
             <KeyboardDatePicker
@@ -248,7 +282,7 @@ const ViewClassManagementFilters = () => {
             get classes
           </Button>
         </Grid>
-        <Grid item xs={12} sm={2}>
+        {/* <Grid item xs={12} sm={2}>
           <Button
             className='viewclass__management-btn'
             startIcon={<GetAppIcon />}
@@ -257,7 +291,7 @@ const ViewClassManagementFilters = () => {
           >
             bulk excel
           </Button>
-        </Grid>
+        </Grid> */}
       </Grid>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>

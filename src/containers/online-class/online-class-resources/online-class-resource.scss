@@ -1,0 +1,71 @@
+@import '../../../assets/styles/variables';
+
+.viewclass__management-container {
+  // filter component
+  .filters__container {
+    padding: 50px 0 0 0;
+
+    .managementview-tabs {
+      margin-top: 20px;
+    }
+
+    .viewclass__management-btn {
+      width: 100%;
+    }
+
+    .cancelled-class-check {
+      margin-top: 20px;
+    }
+
+    svg {
+      fill: $primary-color;
+    }
+
+    .MuiTextField-root {
+      width: 100%;
+    }
+  }
+
+  // table component
+  .viewclass__management-table {
+    margin-top: 20px;
+
+    .progress-center {
+      position: absolute;
+      left: 50%;
+      margin-top: 100px;
+    }
+
+    .viewclass__table-head {
+      th {
+        font-weight: bold;
+        color: $secondary-color;
+      }
+
+      th:not(:last-child) {
+        position: relative;
+      }
+
+      th:not(:last-child)::after {
+        content: '';
+        height: 50%;
+        width: 2px;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: $primary-color;
+      }
+    }
+
+    .viewclass__table-body {
+      td {
+        color: $secondary-color;
+      }
+    }
+
+    .pagination__container {
+      margin-top: 20px;
+    }
+  }
+}

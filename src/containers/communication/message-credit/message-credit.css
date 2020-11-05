@@ -68,3 +68,9 @@
   font-size: 1rem !important;
   font-weight: 600 !important;
 }
+.addcredit_button_wrapper{
+	display: flex;
+	justify-content: space-between;
+	width: 50%;
+	margin: auto;
+}

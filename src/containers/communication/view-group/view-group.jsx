@@ -58,7 +58,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
   const getGroupsData = async () => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.communication.getGroups}?page=${currentPage}`,
+        `${endpoints.communication.getGroups}?page=${currentPage}&page_size=15`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

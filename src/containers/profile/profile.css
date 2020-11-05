@@ -1,0 +1,301 @@
+.dashboard_profile{
+    margin: 4% auto 0%;
+    width: 70%;
+    padding: 2% 1%;
+}
+.profile_wrapper{
+	display: flex;
+    width: 100%;
+}
+.profile_upload_image_button{
+	background-color: #ff6b6b !important;
+	color: #014B7E !important;
+    text-align: center;
+}
+.profile_details_wrapper{
+	width: 75%;
+}
+.profile_update_button_wrapper{
+	text-align: center;
+    justify-content: space-between;
+    margin: auto;
+    width: 30%;
+}
+.profile_update_button{
+	font-size: 0.9rem;
+	margin: 5%;
+    padding: 3% 1%;
+    width: 40%;
+    border: none;
+    border-radius: 5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    outline: none !important;
+    color: white;
+    background-color: #FF6B6B;
+}
+.profile_image_wrapper{
+	width: 25%;
+	text-align: center;
+}
+.profile_change_password_button{
+	float: right;
+    margin-top: 3%;
+    cursor: pointer;
+	color: #014B7E;
+	margin-right: 10%;
+}
+.deshboard_profilr_username{
+    font-size: 1.4rem;
+    font-weight: 600;
+    padding: 0% 0% 1% 5%;
+}
+.profile_description{
+    padding-left: 5%;
+}
+.profile_avator{
+    background: #BFD0FF;
+    border-radius: 0.5rem;
+    width: 125px;
+    height: 125px;
+    margin: 3%;
+    padding: 1% 1% 0% 1%;
+}
+.avator_button{
+    position: absolute;
+    text-align: center;
+    cursor: pointer;
+    left: 15.5%;
+    top: 352px;
+    width: 92px;
+    border-radius: 0.3rem;
+    padding: 0.3%;
+    font-size: 0.8rem;
+    background: white;
+    border: 1px solid #D2D2D2;
+    box-shadow: none;
+    font-weight: 500;
+    color: #00346A;
+    overflow: hidden;
+}
+.avator_button_max{
+    height: 220px;
+    -webkit-transition: 0.8s;
+    -moz-transition: 0.8s;
+    transition: 0.8s;
+}
+.avator_button_min{
+    height: 30px;
+    -webkit-transition: 0.8s;
+    -moz-transition: 0.8s;
+    transition: 0.8s;
+}
+.avator_icons_wrapper{
+    overflow-y: auto;
+    padding-top: 4%;
+    text-align: center;
+    /* margin: auto; */
+    flex-wrap: wrap;
+    height: 100%;
+}
+.profile_avator_selection{
+    width: 20px;
+    display: inline-block;
+}
+.profile_tags{
+    color: #CFCFCF;
+    height: 1vw;
+}
+.profile_bio_tag{
+    color: #00346A;
+    font-weight: 500; 
+}
+.bio_field{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 0% 1%;
+    padding-left: 0;
+    width: 85%;
+    outline: none;
+    margin: 0% 5%;
+}
+.textFieldsContainer{
+    width: 100%;
+    display: inline-flex;
+    position: relative;
+}
+.textFieldsContainer .MuiInput-underline:before{
+      border-bottom: none;
+    }
+.textFieldsContainer .MuiInput-underline:after{
+      border-bottom: none;
+    }
+.textFieldsContainer .MuiInput-underline:hover:not(.Mui-disabled):before{
+      border-bottom: none;
+    }
+.textFields{
+    display: block;
+    padding: 0% 1%;
+    border: none;
+	border-bottom: 1px solid #FF6B6B;
+	color: #014B7E !important;
+    padding-left: 0;
+    width: 85%;
+    outline: none;
+    color: var(--secondary-blue);
+    margin: 0% 5%;
+}
+
+.profile_label_tag{
+	text-transform: capitalize;
+	padding-left: 5%;
+	color: #014B7E;
+	font-weight: 600;
+}
+.password{
+    display: inline-flex;
+    position: relative;
+    width: 100%;
+}
+.password .MuiInput-underline:before{
+      border-bottom: none;
+}
+.password .MuiInput-underline:after{
+      border-bottom: none;
+}
+.password .MuiInput-underline:hover:not(.Mui-disabled):before{
+      border-bottom: none;
+}
+.passwordWidth{
+    display: flex;
+    padding: 0%;
+}
+.MuiIconButton-edgeEnd {
+    margin-right: 20px !important;
+}
+.button_wrapper{
+    text-align: center;
+}
+.update_button{
+    margin: 2%;
+    width: 10rem;
+    background-color: #65D801 !important;
+    border: 1px solid #65D801 !important;
+    border-radius: 0.5rem !important;
+}
+.inactive{
+    background-color: #CFCFCF !important ;
+    color: #6A6A6A !important ;
+    border: none !important;
+}
+.cancel_button{
+    margin: 2%;
+    width: 10rem;
+    border-radius: 0.5rem !important;
+    background-color: white !important;
+    color: #65D801 !important;
+    border: 1px solid #65D801!important;
+}
+.dashboard_gender_options{
+    display: inline-block;
+    background-color: var(--primary-blue);
+    /* width: 14%; */
+    color: white;
+    margin: 1px 10px 0 0;
+    padding: 7px;
+    text-align: center;
+    border-radius: 0.8rem;
+    font-size: 1rem;
+    cursor: pointer;
+}
+.dashboard_grade_gender{
+    width: 85%;
+    margin: 0% 5%;
+    padding: 1%;
+    border-bottom: 1px solid #CFCFCF;
+}
+.dashboard_grade_gender .MuiFormControl-root .MuiInputLabel-outlined {
+    z-index: 0 !important;
+}
+.dropdownContiner .MuiFormControl-root .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline{
+      border: rgba(0, 0, 0, 0.23) !important;
+      outline: none;
+}
+.dropdownContiner .MuiFormControl-root .MuiOutlinedInput-root:focus .MuiSelect-outlined .MuiOutlinedInput-notchedOutline .MuiOutlinedInput-root{
+      border: rgba(0, 0, 0, 0.23) !important;
+      outline: none;
+}
+
+.formControl{
+    min-width: 120;
+    width: 17rem;
+    cursor: pointer;
+    margin: 1.5% 5%;
+    box-shadow:  0.1rem 0.1rem 0.5rem rgba(143, 140, 140, 0.7);
+    text-align: center;
+    margin-right: 0%;
+    border-radius: 0.3rem;
+    color:  var(--secondary-blue);
+}
+.formControl:hover{
+      outline: none;
+      border: none;
+}
+.gradelebel{
+    color: var(--secondary-blue);
+}
+.gradeselect{
+    color: var(--secondary-blue);
+}
+.gradeselect:hover{
+      outline: none;
+      border: none;
+ }
+.dashboard_profile_loader_wrapper{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}
+ @media screen and (max-width: 700px) {
+    .dashboard_profile{
+        width: 100%;
+        padding: 8vw 2% 1% 1%;
+        margin: 1% 1%;
+    }
+    .profile_avator{
+        position: relative;
+        left: 10%;
+        top: 0%;
+        width: 25%;
+        height: 27.5vw;
+    }
+    .avator_button{
+        /* position: relative; */
+        text-align: center;
+        cursor: pointer;
+        left: 10.5%;
+        top: 0%;
+        width: 25%;
+        font-size: 1.2rem;
+    }
+    .avator_button_min {
+        height: 22px;
+    }
+    .avator_button_max{
+        height: 110px;
+    }
+    .textFields input{
+        font-size: 1.2rem;
+    }
+    .profile_avator_selection {
+        width: 24px;
+    }
+}
+@media only screen and (max-width: 950px) and (min-width: 700px)  {
+    .dashboard_profile{
+        width: 65%;
+        padding-top: 5%;
+    }
+}

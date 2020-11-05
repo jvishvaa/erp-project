@@ -165,7 +165,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     const gradesId = [];
     const sectionsId = [];
     setNext(true);
-    let getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15`;
+    let getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=5`;
     if (selectedRoles.length && !selectedRoles.includes('All')) {
       roleList
         .filter((item) => selectedRoles.includes(item['role_name']))
@@ -184,11 +184,14 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       sectionList
         .filter((item) => selectedSections.includes(item['section__section_name']))
         .forEach((items) => {
-          sectionsId.push(items.id);
+          sectionsId.push(items.section_id);
         });
     }
     if (rolesId.length && !selectedRoles.includes('All')) {
       getUserListUrl += `&role=${rolesId.toString()}`;
+    }
+    if (selectedBranch) {
+      getUserListUrl += `&branch=${selectedBranch}`;
     }
     if (gradesId.length && !selectedGrades.includes('All')) {
       getUserListUrl += `&grade=${gradesId.toString()}`;

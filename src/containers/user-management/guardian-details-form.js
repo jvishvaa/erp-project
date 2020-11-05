@@ -12,6 +12,7 @@ import { useFormik } from 'formik';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import { useStyles } from './useStyles';
 import resolveValidationSchema from './schemas/guardian-details';
+import ImageUpload from '../../components/image-upload';
 
 const GuardianDetailsForm = ({
   details,
@@ -19,10 +20,10 @@ const GuardianDetailsForm = ({
   handleBack,
   showParentForm,
   showGuardianForm,
+  isSubmitting,
 }) => {
   const classes = useStyles();
   const validationSchema = resolveValidationSchema(showParentForm, showGuardianForm);
-  console.log('validation schema ', JSON.stringify(validationSchema));
   const formik = useFormik({
     initialValues: {
       father_first_name: details.father_first_name,
@@ -139,7 +140,7 @@ const GuardianDetailsForm = ({
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item md={4}>
+              {/* <Grid item md={4}>
                 <FormControl variant='outlined' fullWidth disabled>
                   <InputLabel htmlFor='component-outlined'>
                     Alternate mobile no.
@@ -151,7 +152,7 @@ const GuardianDetailsForm = ({
                     label='Name'
                   />
                 </FormControl>
-              </Grid>
+              </Grid> */}
               <Grid item md={4}>
                 <FormControl variant='outlined' fullWidth>
                   <InputLabel htmlFor='component-outlined'>Address line 1.</InputLabel>
@@ -167,7 +168,7 @@ const GuardianDetailsForm = ({
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item md={4}>
+              {/* <Grid item md={4}>
                 <FormControl variant='outlined' fullWidth disabled>
                   <InputLabel htmlFor='component-outlined'>Address line 2</InputLabel>
                   <OutlinedInput
@@ -176,10 +177,15 @@ const GuardianDetailsForm = ({
                     onChange={() => {}}
                     label='Name'
                   />
-                </FormControl>
-              </Grid>
+                </FormControl> 
+                    </Grid> */}
               <Grid item md={4}>
-                <Button startIcon={<AttachFileIcon />}>Attach Image</Button>
+                <ImageUpload
+                  value={formik.values.father_photo}
+                  onChange={(value) => {
+                    formik.setFieldValue('father_photo', value);
+                  }}
+                />
               </Grid>
             </Grid>
           </div>
@@ -268,7 +274,7 @@ const GuardianDetailsForm = ({
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item md={4}>
+              {/* <Grid item md={4}>
                 <FormControl variant='outlined' fullWidth disabled>
                   <InputLabel htmlFor='component-outlined'>
                     Alternate mobile no.
@@ -280,8 +286,8 @@ const GuardianDetailsForm = ({
                     label='Name'
                   />
                 </FormControl>
-              </Grid>
-              <Grid item md={4}>
+              </Grid> */}
+              {/* <Grid item md={4}>
                 <FormControl variant='outlined' fullWidth disabled>
                   <InputLabel htmlFor='component-outlined'>Address line 1</InputLabel>
                   <OutlinedInput
@@ -302,10 +308,15 @@ const GuardianDetailsForm = ({
                     label='Name'
                   />
                 </FormControl>
-              </Grid>
+              </Grid> */}
 
               <Grid item md={4}>
-                <Button startIcon={<AttachFileIcon />}>Attach Image</Button>
+                <ImageUpload
+                  value={formik.values.mother_photo}
+                  onChange={(value) => {
+                    formik.setFieldValue('mother_photo', value);
+                  }}
+                />
               </Grid>
             </Grid>
           </div>
@@ -401,7 +412,7 @@ const GuardianDetailsForm = ({
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item md={4}>
+              {/* <Grid item md={4}>
                 <FormControl variant='outlined' fullWidth disabled>
                   <InputLabel htmlFor='component-outlined'>
                     Alternate mobile no.
@@ -413,8 +424,8 @@ const GuardianDetailsForm = ({
                     label='Name'
                   />
                 </FormControl>
-              </Grid>
-              <Grid item md={4}>
+              </Grid> */}
+              {/* <Grid item md={4}>
                 <FormControl variant='outlined' fullWidth disabled>
                   <InputLabel htmlFor='component-outlined'>Address line 1</InputLabel>
                   <OutlinedInput
@@ -435,29 +446,36 @@ const GuardianDetailsForm = ({
                     label='Name'
                   />
                 </FormControl>
-              </Grid>
+              </Grid> */}
 
-              <Grid item md={4}>
+              {/* <Grid item md={4}>
                 <Button startIcon={<AttachFileIcon />}>Attach Image</Button>
-              </Grid>
+              </Grid> */}
             </Grid>
           </div>
         </>
       )}
 
-      <Grid container item xs={12}>
+      <Grid container item xs={12} style={{ marginTop: '20px' }}>
         <Grid item md='1'>
-          <Button variant='contained' color='primary' onClick={handleBack}>
+          <Button
+            className={classes.formActionButton}
+            variant='contained'
+            color='primary'
+            onClick={handleBack}
+          >
             Back
           </Button>
         </Grid>
         <Grid item md='1'>
           <Button
+            className={classes.formActionButton}
             variant='contained'
             color='primary'
             onClick={() => {
               formik.handleSubmit();
             }}
+            disabled={isSubmitting}
           >
             Submit
           </Button>

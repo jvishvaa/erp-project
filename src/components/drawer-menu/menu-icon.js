@@ -47,7 +47,7 @@ const menuIcon = (name) => {
       break;
     }
     case 'SMS&Email Log': {
-      icon = EmailIcon;
+      icon = <EmailIcon />;
       break;
     }
 
