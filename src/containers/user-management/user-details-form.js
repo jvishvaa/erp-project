@@ -76,7 +76,7 @@ const UserDetailsForm = ({
           <ImageUpload
             value={formik.values.profile}
             onChange={(value) => {
-              console.log(value);
+              console.log(value instanceof File);
               formik.setFieldValue('profile', value);
             }}
           />

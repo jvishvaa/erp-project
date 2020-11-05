@@ -50,14 +50,14 @@ export const fetchUsers = () => (dispatch) => {
 
 export const createUser = (params) => (dispatch) => {
   dispatch({ type: CREATE_USER_REQUEST });
-  console.log(
-    'before stringifying ',
-    params,
-    'after stringifying ',
-    qs.stringify(params)
-  );
+  // console.log(
+  //   'before stringifying ',
+  //   params,
+  //   'after stringifying ',
+  //   qs.stringify(params)
+  // );
   return axios
-    .post('/erp_user/add_user/', qs.stringify(params))
+    .post('/erp_user/add_user/', params)
     .then((response) => {
       dispatch({ type: CREATE_USER_SUCCESS });
       console.log(response.data);

@@ -19,6 +19,31 @@ function getSteps(showParentOrGuardian) {
   return ['School details', 'User details', 'Parents/Guardian details'];
 }
 
+function buildFormData(formData, data, parentKey) {
+  if (
+    data &&
+    typeof data === 'object' &&
+    !(data instanceof Date) &&
+    !(data instanceof File)
+  ) {
+    Object.keys(data).forEach((key) => {
+      buildFormData(formData, data[key], parentKey ? `${parentKey}[${key}]` : key);
+    });
+  } else {
+    const value = data == null ? '' : data;
+
+    formData.append(parentKey, value);
+  }
+}
+
+function jsonToFormData(data) {
+  const formData = new FormData();
+
+  buildFormData(formData, data);
+
+  return formData;
+}
+
 class CreateUser extends Component {
   constructor(props) {
     super(props);
@@ -174,7 +199,7 @@ class CreateUser extends Component {
       contact,
       email,
       profile,
-      parent: JSON.stringify({
+      parent: {
         father_first_name,
         father_middle_name,
         father_last_name,
@@ -193,16 +218,17 @@ class CreateUser extends Component {
         guardian_last_name,
         guardian_email,
         guardian_mobile,
-      }),
+      },
     };
 
     if (!requestWithParentorGuradianDetails) {
       delete requestObj.parent;
     }
     const { setAlert } = this.context;
+    const requestObjFormData = jsonToFormData(requestObj);
 
-    console.log('requestObject ', requestObj);
-    createUser(requestObj)
+    console.log('requestObject ', requestObjFormData);
+    createUser(requestObjFormData)
       .then(() => {
         history.push('/user-management');
         setAlert('success', 'User creatied');
