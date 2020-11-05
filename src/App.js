@@ -22,6 +22,7 @@ import ViewClassManagement from './containers/online-class/view-class/view-class
 import AttendeeList from './containers/online-class/view-class/view-class-management/attendee-list/attendee-list';
 import ViewClassStudentCollection from './containers/online-class/view-class/view-class-student/view-class-student-collection';
 import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
+import Profile from './containers/profile/profile';
 
 const theme = createMuiTheme({
   palette: {
@@ -70,6 +71,7 @@ function App() {
           <OnlineclassViewProvider>
             <ThemeProvider theme={theme}>
               <Switch>
+                <Route path='/profile'>{({ match }) => <Profile match={match} />}</Route>
                 <Route path='/role-management'>
                   {({ match }) => <RoleManagement match={match} />}
                 </Route>

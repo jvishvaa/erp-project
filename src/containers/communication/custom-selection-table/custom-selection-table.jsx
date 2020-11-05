@@ -61,7 +61,7 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
       style={{ height: 400, width: '100%' }}
     >
       <DataGrid
-        pageSize={pageSize || 15}
+        pageSize={pageSize || 5}
         rowCount={totalRows}
         checkboxSelection
         onPageChange={pageChange}

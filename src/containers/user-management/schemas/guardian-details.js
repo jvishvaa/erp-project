@@ -1,5 +1,7 @@
 import * as Yup from 'yup';
 
+const phoneRegExp = /^\+?1?\d{9,15}$/;
+
 const validationSchema = (validateParent, validateGuardian) => {
   const parentValidationObj = Yup.object({
     father_first_name: Yup.string().required('Required'),
@@ -8,8 +10,12 @@ const validationSchema = (validateParent, validateGuardian) => {
     mother_last_name: Yup.string().required('Required'),
     father_email: Yup.string().email('Provide a valid email').required('Required'),
     mother_email: Yup.string().email('Provide a valid email').required('Required'),
-    father_mobile: Yup.string().required('Required'),
-    mother_mobile: Yup.string().required('Required'),
+    father_mobile: Yup.string()
+      .matches(phoneRegExp, 'Phone number is not valid')
+      .required('Required'),
+    mother_mobile: Yup.string()
+      .matches(phoneRegExp, 'Phone number is not valid')
+      .required('Required'),
     address: Yup.string().required('Required'),
   });
 
@@ -17,7 +23,9 @@ const validationSchema = (validateParent, validateGuardian) => {
     guardian_first_name: Yup.string().required('Required'),
     guardian_last_name: Yup.string().required('Required'),
     guardian_email: Yup.string().email('Provide a valid email').required('Required'),
-    guardian_mobile: Yup.string().required('Required'),
+    guardian_mobile: Yup.string()
+      .matches(phoneRegExp, 'Phone number is not valid')
+      .required('Required'),
   });
 
   const parentGuardianValidationObj = Yup.object({
@@ -27,13 +35,19 @@ const validationSchema = (validateParent, validateGuardian) => {
     mother_last_name: Yup.string().required('Required'),
     father_email: Yup.string().email('Provide a valid email').required('Required'),
     mother_email: Yup.string().email('Provide a valid email').required('Required'),
-    father_mobile: Yup.string().required('Required'),
-    mother_mobile: Yup.string().required('Required'),
+    father_mobile: Yup.string()
+      .matches(phoneRegExp, 'Phone number is not valid')
+      .required('Required'),
+    mother_mobile: Yup.string()
+      .matches(phoneRegExp, 'Phone number is not valid')
+      .required('Required'),
     address: Yup.string().required('Required'),
     guardian_first_name: Yup.string().required('Required'),
     guardian_last_name: Yup.string().required('Required'),
     guardian_email: Yup.string().email('Provide a valid email').required('Required'),
-    guardian_mobile: Yup.string().required('Required'),
+    guardian_mobile: Yup.string()
+      .matches(phoneRegExp, 'Phone number is not valid')
+      .required('Required'),
   });
 
   if (validateParent && validateGuardian) {

@@ -330,6 +330,21 @@ const Layout = ({ children, history }) => {
               </ListItem>
               <ListItem
                 button
+                className={
+                  history.location.pathname === '/profile' ? 'menu_selection' : null
+                }
+                onClick={() => {
+                  history.push('/profile');
+                }}
+              >
+                {' '}
+                <ListItemIcon className={classes.menuItemIcon}>
+                  <AssignmentIndIcon />
+                </ListItemIcon>
+                <ListItemText className={classes.menuItemText}>View Profile</ListItemText>
+              </ListItem>
+              <ListItem
+                button
                 onClick={() => {
                   setUserMenuOpen((prevState) => !prevState);
                 }}
@@ -369,6 +384,24 @@ const Layout = ({ children, history }) => {
                       className={classes.menuItemText}
                     />
                   </ListItem>
+                  <ListItem
+                    button
+                    className={
+                      history.location.pathname === '/view-users'
+                        ? 'menu_selection'
+                        : null
+                    }
+                    onClick={() => {
+                      history.push('/view-users');
+                    }}
+                  >
+                    <ListItemIcon className={classes.menuItemIcon}>
+                      {/* <MenuIcon name={child.child_name} /> */}
+                      {/* {menuIcon(child.child_name)} */}
+                    </ListItemIcon>
+                    <ListItemText primary='View User' className={classes.menuItemText} />
+                  </ListItem>
+
                   <ListItem
                     button
                     className={
