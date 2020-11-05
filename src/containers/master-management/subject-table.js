@@ -83,6 +83,7 @@ const SubjectTable = () => {
   const [dataCount,setDataCount]=useState()
   const [searchGrade,setSearchGrade]=useState('')
   const [searchSubject,setSearchSubject]=useState('')
+  const [widthFlag,setWidthFlag]=useState(false)
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -196,29 +197,36 @@ const SubjectTable = () => {
     /> }
     
     {tableFlag && !addFlag && !editFlag && 
+    <div className="headerMaster">
+    <div style={{color:'#014B7E'}}>
+      <h1>Subject List</h1>
+    </div>
     <div className={classes.buttonContainer}>
       <Button startIcon={<AddOutlinedIcon />} onClick={handleAddSubject}>
         Add Subject
       </Button>
     </div>
+    </div>
     }
-
+    
     {tableFlag && !addFlag && !editFlag && 
-    <Grid container className='create-class-container' spacing={4} style={{marginBottom:'10px'}}>
+    <Grid container spacing={4} style={{marginBottom:'10px'}}>
       <Grid item xs={12} sm={3}>
         <TextField
-          className='create__class-textfield'
           id='subname'
           label='Subject Name'
           variant='outlined'
-          size='small'
+          size='medium'
           name='subname'
+          className={widthFlag?"mainWidth widthClass":"mainWidth"}
+          onFocus={e=>setWidthFlag(true)}
+          onBlur={e=>setWidthFlag(false)}
           onChange={e=>setSearchSubject(e.target.value)}
         />
       </Grid>
       <Grid item xs={12} sm={2} >
         <Autocomplete
-          size='small'
+          size='medium'
           onChange={handleGrade}
           id='grade'
           options={grades}
@@ -226,7 +234,6 @@ const SubjectTable = () => {
           filterSelectedOptions
           renderInput={(params) => (
             <TextField
-              className='create__class-textfield'
               {...params}
               variant='outlined'
               label='Grades'

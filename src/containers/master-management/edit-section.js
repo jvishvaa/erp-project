@@ -49,7 +49,7 @@ const EditSection = ({id,name,handleGoBack}) => {
   return (
       <div className='create__class'>
       <form autoComplete='off' onSubmit={handleSubmit}>
-        <Grid item style={{marginLeft:'14px'}} >
+        <Grid item style={{marginLeft:'14px',color:'#014B7E'}} >
               <h1>Edit Section</h1>
         </Grid>
         <hr/>

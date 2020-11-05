@@ -44,7 +44,7 @@ const CreateGrade = () => {
   return (
       <div className='create__class'>
       <form autoComplete='off' onSubmit={handleSubmit}>
-        <Grid item style={{marginLeft:'14px'}} >
+        <Grid item style={{marginLeft:'14px',color:'#014B7E'}} >
               <h1>Add Grade</h1>
         </Grid>
         <hr/>
@@ -81,7 +81,7 @@ const CreateGrade = () => {
        
         <Grid container className='create-class-container'>
           <Button variant='contained' color='primary' size='large' type='submit'>
-          SUBMIT
+              SUBMIT
           </Button>
         </Grid>
       </form>

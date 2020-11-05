@@ -6,3 +6,16 @@
   padding:15px;
   background-color: #F3E8E8;
 }
+
+.mainWidth.widthClass {
+  width: 300px;
+  transition: width 0.3s;
+}
+.mainWidth {
+  width: auto;
+}
+.headerMaster {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between ;
+}

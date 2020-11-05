@@ -79,6 +79,7 @@ const GradeTable = () => {
   const [dataCount,setDataCount]=useState()
   const [delFlag,setDelFlag]=useState(false)
   const [searchGrade,setSearchGrade]=useState('')
+  const [widthFlag,setWidthFlag]=useState(false)
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -173,23 +174,30 @@ const GradeTable = () => {
     handleGoBack={handleGoBack}/> }
 
     {tableFlag && !addFlag && !editFlag && 
+    <div className="headerMaster">
+    <div style={{color:'#014B7E'}}>
+      <h1>Grade List</h1>
+    </div>
     <div className={classes.buttonContainer}>
       <Button startIcon={<AddOutlinedIcon />} onClick={handleAddGrade}>
         Add Grade
       </Button>
     </div>
+    </div>
     }
 
 
 {tableFlag && !addFlag && !editFlag && 
-    <Grid container className='create-class-container' spacing={4} style={{marginBottom:'10px'}}>
-      <Grid item xs={12} sm={3}>
+    <Grid container spacing={4} style={{marginBottom:'10px'}}>
+      <Grid item xs={12} sm={4}>
         <TextField
-          className='create__class-textfield'
           id='gradename'
+          className={widthFlag?"mainWidth widthClass":"mainWidth"}
+          onFocus={e=>setWidthFlag(true)}
+          onBlur={e=>setWidthFlag(false)}
           label='Grade Name'
           variant='outlined'
-          size='small'
+          size='medium'
           name='gradename'
           onChange={e=>setSearchGrade(e.target.value)}
         />
