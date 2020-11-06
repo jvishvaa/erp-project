@@ -1,14 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Grid, Typography, Button } from '@material-ui/core';
+import { Grid, Typography, Button, Modal } from '@material-ui/core';
 import moment from 'moment';
 
 import Countdown from '../../../../components/countdown/countdown';
 import './view-class-student.scss';
 import { OnlineclassViewContext } from '../../online-class-context/online-class-state';
 import ResourceModal from '../../online-class-resources/resourceModal';
+import OnlineClassFeedback from '../../Feedback/OnlineClassFeedback';
 
 const ViewClassStudent = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [onlineClassId, setOnlineClassId] = useState(null);
   const {
     data: {
@@ -92,6 +94,8 @@ const ViewClassStudent = (props) => {
   const closeModalHandler = () => {
     setIsModalOpen(false);
   };
+
+  const handleFeedbackClick = () => {};
 
   return (
     <div className='viewclass__student-container'>
@@ -207,15 +211,16 @@ const ViewClassStudent = (props) => {
                 Resources
               </Button>
             </Grid>
-            {/* <Grid item xs={6}>
+            <Grid item xs={6}>
               <Button
                 className='viewclass__student-btn'
-                variant='outlined'
-                color='primary'
+                onClick={() => {
+                  setIsFeedbackOpen(true);
+                }}
               >
                 Homework
               </Button>
-            </Grid> */}
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
@@ -228,6 +233,30 @@ const ViewClassStudent = (props) => {
           key={`resource_modal${olClassId}`}
         />
       )}
+      <Modal
+        open={isFeedbackOpen}
+        onClose={() => {
+          setIsFeedbackOpen(false);
+        }}
+        aria-labelledby='simple-modal-title'
+        aria-describedby='simple-modal-description'
+      >
+        <div className='onlineclass__feedback--modal'>
+          <div className='onlineclass__feedback--topbar'>
+            <p className='onlineclass__feedback--topbartitle'>
+              How was your last online class ?
+            </p>
+          </div>
+          <div className='onlineclass__emoji--container'>
+            <OnlineClassFeedback
+              handleFeedBack={(rating) => {
+                handleFeedbackClick(rating);
+              }}
+              feedbackType='numeric'
+            />
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };
