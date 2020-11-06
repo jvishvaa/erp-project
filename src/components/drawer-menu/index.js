@@ -6,7 +6,9 @@ const DrawerMenu = ({ navigationItems, onClick }) => {
   return (
     <>
       {navigationItems &&
-        navigationItems.map((item) => <MenuItem item={item} onClick={onClick} />)}
+        navigationItems
+          .filter((item) => item.child_module && item.child_module.length > 0)
+          .map((item) => <MenuItem item={item} onClick={onClick} />)}
       {/* <ListItem button>
         <ListItemIcon className={classes.menuItemIcon}>
           <DashboardIcon />

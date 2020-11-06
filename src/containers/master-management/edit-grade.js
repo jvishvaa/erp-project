@@ -8,7 +8,6 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 
 const EditGrade = ({id,name,type,handleGoBack}) => {
 
-  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { setAlert } = useContext(AlertNotificationContext);
   const [gradeName,setGradeName]=useState(name||'')
   const [gradeType,setGradeType]=useState(type||'')
@@ -25,11 +24,8 @@ const EditGrade = ({id,name,type,handleGoBack}) => {
 
     if((gradeName!=="" && gradeName!==name)||(gradeType!=="" && gradeType!==type))
     {
-      axiosInstance.put(endpoints.masterManagement.updateGrade,request,{
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }).then(result=>{
+      axiosInstance.put(endpoints.masterManagement.updateGrade,request)
+      .then(result=>{
       if (result.status === 200) {
         {
           setAlert('success', result.data.message);

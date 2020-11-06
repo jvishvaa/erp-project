@@ -67,7 +67,6 @@ const columns = [
 const GradeTable = () => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
-  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [page, setPage] = React.useState(1);
   const [grades,setGrades]=useState([])
   const [openDeleteModal,setOpenDeleteModal]=useState(false)
@@ -111,10 +110,6 @@ const GradeTable = () => {
     axiosInstance.put(endpoints.masterManagement.updateGrade,{
       'is_delete': true,
       'grade_id': gradeId
-    },{
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     }).then(result=>{
     if (result.status === 200) {
       {
@@ -140,11 +135,7 @@ const GradeTable = () => {
     };
 
     useEffect(()=>{
-      axiosInstance.get(`${endpoints.masterManagement.grades}?page=${page}&page_size=15&grade_name=${searchGrade}`,{
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      axiosInstance.get(`${endpoints.masterManagement.grades}?page=${page}&page_size=15&grade_name=${searchGrade}`)
       .then(result=>{
         if (result.status === 200) {
           {

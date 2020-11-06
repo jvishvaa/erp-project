@@ -68,7 +68,6 @@ const columns = [
 const SubjectTable = () => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
-  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [page, setPage] = React.useState(1);
   const [subjects,setSubjects]=useState([])
   const [grades,setGrades]=useState([])
@@ -121,11 +120,6 @@ const SubjectTable = () => {
       axiosInstance.put(endpoints.masterManagement.updateSubject,{
         'is_delete': true,
         'subject_id': subjectId
-      },{
-        headers: {
-          'content-type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
       }).then(result=>{
       if (result.status === 200) {
         setAlert('success', result.data.message);
@@ -149,11 +143,7 @@ const SubjectTable = () => {
   };
 
   useEffect(()=>{
-      axiosInstance.get(`${endpoints.masterManagement.subjects}?page=${page}&page_size=15&grade=${searchGrade}&subject=${searchSubject}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      axiosInstance.get(`${endpoints.masterManagement.subjects}?page=${page}&page_size=15&grade=${searchGrade}&subject=${searchSubject}`)
       .then(result=>{
         if (result.status === 200) {
           setSubjects(result.data.result.results);

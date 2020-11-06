@@ -8,8 +8,7 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 
 const EditSection = ({id,name,handleGoBack}) => {
 
-  const secName=name.split("__").pop()
-  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const secName=name.split("_").pop()
   const { setAlert } = useContext(AlertNotificationContext);
   const [sectionName,setSectionName]=useState(secName || '')
 
@@ -20,11 +19,8 @@ const EditSection = ({id,name,handleGoBack}) => {
     {
       request['section_name']=sectionName
       request['section_id']=id
-      axiosInstance.put(endpoints.masterManagement.updateSection,request,{
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }).then(result=>{
+      axiosInstance.put(endpoints.masterManagement.updateSection,request)
+      .then(result=>{
         if (result.status === 200) {
           setAlert('success', result.data.message);
           handleGoBack()

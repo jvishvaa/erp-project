@@ -67,7 +67,6 @@ const columns = [
 const SectionTable = () => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
-  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [page, setPage] = React.useState(1);
   const [sections,setSections]=useState([])
   const [openDeleteModal,setOpenDeleteModal]=useState(false)
@@ -118,11 +117,6 @@ const SectionTable = () => {
     axiosInstance.put(endpoints.masterManagement.updateSection,{
       'section_id': sectionId,
       'is_delete': true,
-    },{
-      headers: {
-        'content-type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
     }).then(result=>{
     if (result.status === 200) {
       {
@@ -148,11 +142,7 @@ const SectionTable = () => {
     };
 
     useEffect(()=>{
-      axiosInstance.get(`${endpoints.masterManagement.sections}?page=${page}&page_size=15&section=${searchSection}&grade=${searchGrade}`,{
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      axiosInstance.get(`${endpoints.masterManagement.sections}?page=${page}&page_size=15&section=${searchSection}&grade=${searchGrade}`)
       .then(result=>{
         if (result.status === 200) {
           setSections(result.data.result.results);
@@ -165,11 +155,7 @@ const SectionTable = () => {
         setAlert('error', error.message);
       })
 
-      axiosInstance.get(endpoints.masterManagement.gradesDrop,{
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      axiosInstance.get(endpoints.masterManagement.gradesDrop)
       .then(result=>{
         if (result.status === 200) {
           setGrades(result.data.data);

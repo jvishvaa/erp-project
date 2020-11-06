@@ -8,7 +8,6 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 
 const CreateSection = ({grades}) => {
 
-  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { setAlert } = useContext(AlertNotificationContext);
   const [sectionName,setSectionName]=useState('')
   const [gradeId,setGradeId]=useState('')
@@ -39,10 +38,6 @@ const CreateSection = ({grades}) => {
         grade_name:gradeName,
         grade_id:gradeId,
         branch_id:JSON.parse(localStorage.getItem('userDetails')).role_details.branch[0]
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       }).then(result=>{
       if (result.data.status_code === 201) {
         setAlert('success', result.data.message);
