@@ -7,7 +7,6 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 
 const CreateGrade = () => {
 
-  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { setAlert } = useContext(AlertNotificationContext);
   const [gradeName,setGradeName]=useState('')
   const [gradeType,setGradeType]=useState('')
@@ -17,10 +16,6 @@ const CreateGrade = () => {
     axiosInstance.post(endpoints.masterManagement.createGrade,{
       grade_name:gradeName,
       grade_type:gradeType,
-    }, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     }).then(result=>{
     if (result.data.status_code === 201) {
       {
