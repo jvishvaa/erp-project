@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+/* eslint-disable no-nested-ternary */
 import React, { Component } from 'react';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -9,11 +10,11 @@ import { styles } from './useStyles';
 import UserDetailsForm from './user-details-form';
 import SchoolDetailsForm from './school-details-form';
 import GuardianDetailsForm from './guardian-details-form';
-import { createUser } from '../../redux/actions';
+import { fetchUser, editUser } from '../../redux/actions';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import { getSteps, jsonToFormData } from './utils';
 
-class CreateUser extends Component {
+class EditUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -59,6 +60,10 @@ class CreateUser extends Component {
     };
   }
 
+  componentDidMount() {
+    this.fetchUserDetails();
+  }
+
   toggleParentForm = (e) => {
     this.setState({ showParentForm: e.target.checked });
   };
@@ -81,7 +86,13 @@ class CreateUser extends Component {
 
   onSubmitSchoolDetails = (details) => {
     console.log('school details!!', details);
-
+    const { selectedUser } = this.props;
+    if (selectedUser.parent.father_first_name) {
+      this.setState({ showParentForm: true });
+    }
+    if (selectedUser.parent.guardian_first_name) {
+      this.setState({ showGuardianForm: true });
+    }
     this.setState((prevState) => ({ user: { ...prevState.user, ...details } }));
     this.handleNext();
   };
@@ -93,7 +104,7 @@ class CreateUser extends Component {
     if (showParentForm || showGuardianForm) {
       this.handleNext();
     } else {
-      this.onCreateUser(false);
+      this.onEditUser(false);
     }
   };
 
@@ -105,14 +116,14 @@ class CreateUser extends Component {
         user: { ...prevState.user, parent: { ...prevState.user.parent, ...details } },
       }),
       () => {
-        this.onCreateUser(true);
+        this.onEditUser(true);
       }
     );
   };
 
-  onCreateUser = (requestWithParentorGuradianDetails) => {
+  onEditUser = (requestWithParentorGuradianDetails) => {
     const { user } = this.state;
-    const { createUser, history } = this.props;
+    const { editUser, history, selectedUser } = this.props;
     console.log('user ', user);
     let requestObj = user;
     const {
@@ -153,8 +164,8 @@ class CreateUser extends Component {
       guardian_email,
       guardian_mobile,
     } = parent;
-
     requestObj = {
+      erp_id: selectedUser.erp_id,
       academic_year: academic_year.id,
       branch: branch.id,
       grade: grade.map((grade) => grade.id).join(),
@@ -172,6 +183,7 @@ class CreateUser extends Component {
       father_photo,
       mother_photo,
       parent: {
+        id: selectedUser.parent.id,
         father_first_name,
         father_middle_name,
         father_last_name,
@@ -200,13 +212,13 @@ class CreateUser extends Component {
     const requestObjFormData = jsonToFormData(requestObj);
 
     console.log('requestObject ', requestObjFormData);
-    createUser(requestObjFormData)
+    editUser(requestObjFormData)
       .then(() => {
         history.push('/user-management');
-        setAlert('success', 'User creatied');
+        setAlert('success', 'User updated');
       })
       .catch(() => {
-        setAlert('error', 'User creation failed');
+        setAlert('error', 'User update failed');
       });
   };
 
@@ -214,79 +226,99 @@ class CreateUser extends Component {
     this.onSubmitGuardianDetails(details);
   };
 
+  fetchUserDetails() {
+    const { fetchUser, match } = this.props;
+
+    fetchUser(match.params.id);
+  }
+
   render() {
     const { activeStep, user, showParentForm, showGuardianForm } = this.state;
     const showParentOrGuardianForm = showParentForm || showGuardianForm;
     const steps = getSteps(showParentOrGuardianForm);
-    const { classes, creatingUser } = this.props;
+    const { classes, creatingUser, fetchingUserDetails, selectedUser } = this.props;
     return (
       <div>
-        <Stepper activeStep={activeStep} alternativeLabel>
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-        <div className={classes.formContainer}>
-          {activeStep === 0 && (
-            <SchoolDetailsForm onSubmit={this.onSubmitSchoolDetails} details={user} />
-          )}
-          {activeStep === 1 && (
-            <UserDetailsForm
-              onSubmit={this.onSubmitUserDetails}
-              details={user}
-              handleBack={this.handleBack}
-              toggleParentForm={this.toggleParentForm}
-              toggleGuardianForm={this.toggleGuardianForm}
-              showParentForm={showParentForm}
-              showGuardianForm={showGuardianForm}
-              isSubmitting={creatingUser}
-            />
-          )}
-          {activeStep === 2 && (
-            <GuardianDetailsForm
-              onSubmit={this.onSubmitGuardianDetails}
-              details={user.parent}
-              handleBack={this.handleBack}
-              showParentForm={showParentForm}
-              showGuardianForm={showGuardianForm}
-              isSubmitting={creatingUser}
-            />
-          )}
-        </div>
+        {selectedUser ? (
+          <>
+            <Stepper activeStep={activeStep} alternativeLabel>
+              {steps.map((label) => (
+                <Step key={label}>
+                  <StepLabel>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+            <div className={classes.formContainer}>
+              {activeStep === 0 && (
+                <SchoolDetailsForm
+                  onSubmit={this.onSubmitSchoolDetails}
+                  details={selectedUser}
+                />
+              )}
+              {activeStep === 1 && (
+                <UserDetailsForm
+                  onSubmit={this.onSubmitUserDetails}
+                  details={selectedUser}
+                  handleBack={this.handleBack}
+                  toggleParentForm={this.toggleParentForm}
+                  toggleGuardianForm={this.toggleGuardianForm}
+                  showParentForm={showParentForm}
+                  showGuardianForm={showGuardianForm}
+                  isSubmitting={creatingUser}
+                />
+              )}
+              {activeStep === 2 && (
+                <GuardianDetailsForm
+                  onSubmit={this.onSubmitGuardianDetails}
+                  details={selectedUser.parent}
+                  handleBack={this.handleBack}
+                  showParentForm={showParentForm}
+                  showGuardianForm={showGuardianForm}
+                  isSubmitting={creatingUser}
+                />
+              )}
+            </div>
+          </>
+        ) : fetchingUserDetails ? (
+          'Loading'
+        ) : (
+          'Loading'
+        )}
+
         {/* <div>
-          <div>
-            <Button
-              disabled={activeStep === 0}
-              onClick={this.handleBack}
-              className={classes.backButton}
-            >
-              Back
-            </Button>
-            <Button variant='contained' color='primary' onClick={this.handleNext}>
-              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-            </Button>
-          </div>
-        </div> */}
+              <div>
+                <Button
+                  disabled={activeStep === 0}
+                  onClick={this.handleBack}
+                  className={classes.backButton}
+                >
+                  Back
+                </Button>
+                <Button variant='contained' color='primary' onClick={this.handleNext}>
+                  {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                </Button>
+              </div>
+            </div> */}
       </div>
     );
   }
 }
 
-CreateUser.contextType = AlertNotificationContext;
+EditUser.contextType = AlertNotificationContext;
 
 const mapStateToProps = (state) => ({
   creatingUser: state.userManagement.creatingUser,
+  fetchingUserDetails: state.userManagement.fetchingUserDetails,
+  selectedUser: state.userManagement.selectedUser,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  createUser: (params) => {
-    return dispatch(createUser(params));
+  fetchUser: (params) => {
+    return dispatch(fetchUser(params));
+  },
+  editUser: (params) => {
+    return dispatch(editUser(params));
   },
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withStyles(styles)(CreateUser));
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(EditUser));
