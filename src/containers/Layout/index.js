@@ -15,7 +15,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/More';
 import Collapse from '@material-ui/core/Collapse';
 import Divider from '@material-ui/core/Divider';
-
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import InputBase from '@material-ui/core/InputBase';
 import Paper from '@material-ui/core/Paper';
 import SearchIcon from '@material-ui/icons/Search';
@@ -436,7 +436,7 @@ const Layout = ({ children, history }) => {
                 }}
               >
                 <ListItemIcon className={classes.menuItemIcon}>
-                  <PeopleIcon />
+                  <SupervisorAccountIcon />
                 </ListItemIcon>
                 <ListItemText className={classes.menuItemText}>
                   Master Management
