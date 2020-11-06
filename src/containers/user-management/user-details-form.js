@@ -138,17 +138,17 @@ const UserDetailsForm = ({
             >
               <FormControlLabel
                 value='1'
-                control={<Radio color='primary' />}
+                control={<Radio color='primary' checked={formik.values.gender == 1} />}
                 label='Male'
               />
               <FormControlLabel
                 value='2'
-                control={<Radio color='primary' />}
+                control={<Radio color='primary' checked={formik.values.gender == 2} />}
                 label='Female'
               />
               <FormControlLabel
                 value='3'
-                control={<Radio color='primary' />}
+                control={<Radio color='primary' checked={formik.values.gender == 3} />}
                 label='Other'
               />
             </RadioGroup>
