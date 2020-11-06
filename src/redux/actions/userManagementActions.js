@@ -96,9 +96,22 @@ export const fetchUser = (id) => (dispatch) => {
         branch:
           user.mapping_bgs[0].branch &&
           user.mapping_bgs[0].branch.length > 0 &&
-          user.mapping_bgs[0].branch[0],
-        grade: user.mapping_bgs[0].grade,
-        section: user.mapping_bgs[0].section,
+          user.mapping_bgs[0].branch.map((branch) => ({
+            id: branch.branch_id,
+            branch_name: branch.branch__branch_name,
+          }))[0],
+        grade:
+          user.mapping_bgs[0].grade &&
+          user.mapping_bgs[0].grade.map((grade) => ({
+            id: grade.grade_id,
+            grade_name: grade.grade__grade_name,
+          })),
+        section:
+          user.mapping_bgs[0].section &&
+          user.mapping_bgs[0].section.map((section) => ({
+            id: section.section_id,
+            section_name: section.section__section_name,
+          })),
         subjects: user.subjects.map((subject) => ({
           id: subject.id,
           subject_name: subject.subject_name,
@@ -134,7 +147,7 @@ export const fetchUser = (id) => (dispatch) => {
 
       console.log('user detail ', response);
     })
-    .then(() => {
+    .catch(() => {
       dispatch({ type: FETCH_USER_DETAIL_FAILURE });
     });
 };
