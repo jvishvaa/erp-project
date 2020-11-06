@@ -26,6 +26,7 @@ export default {
     getSmsCredit: '/communication/sms-credits/',
     assignRole: '/erp_user/assign_role/',
     userStatusChange: '/erp_user/',
+    getMessages: '/communication/email-sms-logs/',
   },
   onlineClass: {
     filterStudent: '/erp_user/student_filter/',
@@ -41,4 +42,16 @@ export default {
     resourceFile: '/erp_user/resource_files/',
     feedback: '/erp_user/onlineclass_attendancecheck/',
   },
+  masterManagement: {
+    subjects: '/erp_user/subjects-list/',
+    grades: '/erp_user/grades-list/',
+    sections: '/erp_user/grades-section-list/',
+    createSubject: '/erp_user/create-subject/',
+    createSection: '/erp_user/create-section/',
+    createGrade: '/erp_user/create-grade/',
+    updateSubject: '/erp_user/update-subject/',
+    updateSection: '/erp_user/update-section/',
+    updateGrade: '/erp_user/update-grade/',
+    gradesDrop: '/erp_user/grade/',
+  }
 };

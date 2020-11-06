@@ -6,6 +6,7 @@ import CreateGroup from './containers/communication/create-group/create-group';
 import ViewGroup from './containers/communication/view-group/view-group';
 import MessageCredit from './containers/communication/message-credit/message-credit';
 import SendMessage from './containers/communication/send-message/send-message';
+import MessageLog from './containers/communication/message-log/message-log';
 import AssignRole from './containers/communication/assign-role/assign-role';
 import RoleManagement from './containers/role-management';
 import store from './redux/store';
@@ -21,6 +22,9 @@ import CreateClass from './containers/online-class/create-class';
 import ViewClassManagement from './containers/online-class/view-class/view-class-management/view-class-management';
 import AttendeeList from './containers/online-class/view-class/view-class-management/attendee-list/attendee-list';
 import ViewClassStudentCollection from './containers/online-class/view-class/view-class-student/view-class-student-collection';
+import SubjectTable from './containers/master-management/subject-table'
+import SectionTable from './containers/master-management/section-table'
+import GradeTable from './containers/master-management/grade-table'
 import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
 import Profile from './containers/profile/profile';
 
@@ -81,6 +85,9 @@ function App() {
                 <Route exact path='/view-users'>
                   {({ match }) => <ViewUsers match={match} />}
                 </Route>
+                <Route path='/messagelog'>
+                  {({ match }) => <MessageLog match={match} />}
+                </Route>
                 <Route path='/dashboard'>
                   {({ match }) => <Dashboard match={match} />}
                 </Route>
@@ -117,6 +124,17 @@ function App() {
                 <Route exact path='/online-class/attend-class'>
                   {({ match }) => <ViewClassStudentCollection match={match} />}
                 </Route>
+
+                <Route exact path='/master-mgmt/subject-table'>
+                  {({ match }) => <SubjectTable match={match} />}
+                </Route>
+                <Route exact path='/master-mgmt/section-table'>
+                  {({ match }) => <SectionTable match={match} />}
+                </Route>
+                <Route exact path='/master-mgmt/grade-table'>
+                  {({ match }) => <GradeTable match={match} />}
+                </Route>
+
               </Switch>
             </ThemeProvider>
           </OnlineclassViewProvider>

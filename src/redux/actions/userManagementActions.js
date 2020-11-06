@@ -8,6 +8,12 @@ export const userManagementActions = {
   FETCH_USERS_REQUEST: 'FETCH_USERS_REQUEST',
   FETCH_USERS_SUCCESS: 'FETCH_USERS_SUCCESS',
   FETCH_USERS_FAILURE: 'FETCH_USERS_FAILURE',
+  FETCH_USER_DETAIL_REQUEST: 'FETCH_USER_DETAIL_REQUEST',
+  FETCH_USER_DETAIL_SUCCESS: 'FETCH_USER_DETAIL_SUCCESS',
+  FETCH_USER_DETAIL_FAILURE: 'FETCH_USER_DETAIL_FAILURE',
+  EDIT_USER_REQUEST: 'EDIT_USER_REQUEST',
+  EDIT_USER_SUCCESS: 'EDIT_USER_SUCCESS',
+  EDIT_USER_FAILURE: 'EDIT_USER_FAILURE',
 };
 
 const {
@@ -17,6 +23,12 @@ const {
   FETCH_USERS_REQUEST,
   FETCH_USERS_SUCCESS,
   FETCH_USERS_FAILURE,
+  FETCH_USER_DETAIL_REQUEST,
+  FETCH_USER_DETAIL_SUCCESS,
+  FETCH_USER_DETAIL_FAILURE,
+  EDIT_USER_REQUEST,
+  EDIT_USER_SUCCESS,
+  EDIT_USER_FAILURE,
 } = userManagementActions;
 
 export const fetchUsers = () => (dispatch) => {
@@ -48,23 +60,115 @@ export const fetchUsers = () => (dispatch) => {
     });
 };
 
+export const fetchUser = (id) => (dispatch) => {
+  dispatch({ type: FETCH_USER_DETAIL_REQUEST });
+  return axios
+    .get(`/erp_user/user-data/?erp_user_id=${id}`)
+    .then((response) => {
+      const user = response.data.result;
+      let gender;
+      switch (user.gender) {
+        case 'male':
+          gender = 1;
+          break;
+        case 'female':
+          gender = 2;
+          break;
+        case 'other':
+          gender = 3;
+          break;
+        default:
+          gender = 1;
+          break;
+      }
+
+      const transformedUser = {
+        id: user.id || '',
+        erp_id: user.erp_id || '',
+        first_name: user.user.first_name || '',
+        middle_name: user.user_middle_name || '',
+        last_name: user.user.last_name || '',
+        email: user.user.email || '',
+        academic_year: user.academic_year && {
+          id: user.academic_year.id,
+          session_year: user.academic_year.session_year,
+        },
+        branch:
+          user.mapping_bgs[0].branch &&
+          user.mapping_bgs[0].branch.length > 0 &&
+          user.mapping_bgs[0].branch[0],
+        grade: user.mapping_bgs[0].grade,
+        section: user.mapping_bgs[0].section,
+        subjects: user.subjects.map((subject) => ({
+          id: subject.id,
+          subject_name: subject.subject_name,
+        })),
+        contact: user.contact || '',
+        date_of_birth: user.date_of_birth,
+        gender,
+        profile: user.profile || '',
+        address: user.address || '',
+        parent: {
+          id: user.parent_details.id,
+          father_first_name: user.parent_details.father_first_name || '',
+          father_last_name: user.parent_details.father_last_name || '',
+          mother_first_name: user.parent_details.mother_first_name || '',
+          mother_last_name: user.parent_details.mother_last_name || '',
+          mother_middle_name: user.parent_details.mother_middle_name || '',
+          father_middle_name: user.parent_details.father_middle_name || '',
+          father_email: user.parent_details.father_email || '',
+          mother_email: user.parent_details.mother_email || '',
+          father_mobile: user.parent_details.father_mobile || '',
+          mother_mobile: user.parent_details.mother_mobile || '',
+          mother_photo: user.parent_details.mother_photo || '',
+          father_photo: user.parent_details.father_photo || '',
+          address: user.parent_details.address,
+          guardian_first_name: user.parent_details.guardian_first_name || '',
+          guardian_middle_name: user.parent_details.guardian_middle_name || '',
+          guardian_last_name: user.parent_details.guardian_last_name || '',
+          guardian_email: user.parent_details.guardian_email || '',
+          guardian_mobile: user.parent_details.guardian_mobile || '',
+        },
+      };
+      dispatch({ type: FETCH_USER_DETAIL_SUCCESS, data: transformedUser });
+
+      console.log('user detail ', response);
+    })
+    .then(() => {
+      dispatch({ type: FETCH_USER_DETAIL_FAILURE });
+    });
+};
+
 export const createUser = (params) => (dispatch) => {
   dispatch({ type: CREATE_USER_REQUEST });
-  console.log(
-    'before stringifying ',
-    params,
-    'after stringifying ',
-    qs.stringify(params)
-  );
+  // console.log(
+  //   'before stringifying ',
+  //   params,
+  //   'after stringifying ',
+  //   qs.stringify(params)
+  // );
   return axios
-    .post('/erp_user/add_user/', qs.stringify(params))
-    .then((response) => {
+    .post('/erp_user/add_user/', params)
+    .then(() => {
       dispatch({ type: CREATE_USER_SUCCESS });
-      console.log(response.data);
     })
     .catch((error) => {
       console.log(error);
       dispatch({ type: CREATE_USER_FAILURE });
+      throw error;
+    });
+};
+
+export const editUser = (params) => (dispatch) => {
+  dispatch({ type: EDIT_USER_REQUEST });
+  return axios
+    .put('/erp_user/update-user/', params)
+    .then(() => {
+      dispatch({ type: EDIT_USER_SUCCESS });
+    })
+    .catch((error) => {
+      console.log(error);
+      dispatch({ type: EDIT_USER_FAILURE });
       throw error;
     });
 };

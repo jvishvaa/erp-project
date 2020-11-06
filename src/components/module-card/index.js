@@ -203,18 +203,32 @@ export default function ModuleCard({
       }
     }
 
-    const modulePermissions = changedModuleIndices.map((index) => {
-      const changedSubModule = moduleObj.module_child[index];
+    // const modulePermissions = changedModuleIndices.map((index) => {
+    //   const changedSubModule = moduleObj.module_child[index];
+    //   const reqObj = {
+    //     modules_id: changedSubModule.module_child_id,
+    //     my_branch: changedSubModule.my_branch,
+    //     my_grade: changedSubModule.my_grade,
+    //     my_section: changedSubModule.my_section,
+    //     my_subject: changedSubModule.my_subject,
+    //     custom_grade: changedSubModule.custom_grade.map((grade) => grade.id),
+    //     custom_section: changedSubModule.custom_section.map((section) => section.id),
+    //     custom_branch: changedSubModule.custom_branch.map((branch) => branch.id),
+    //     custom_subject: changedSubModule.custom_subject.map((subject) => subject.id),
+    //   };
+    //   return reqObj;
+    // });
+    const modulePermissions = moduleObj.module_child.map((subModule) => {
       const reqObj = {
-        modules_id: changedSubModule.module_child_id,
-        my_branch: changedSubModule.my_branch,
-        my_grade: changedSubModule.my_grade,
-        my_section: changedSubModule.my_section,
-        my_subject: changedSubModule.my_subject,
-        custom_grade: changedSubModule.custom_grade.map((grade) => grade.id),
-        custom_section: changedSubModule.custom_section.map((section) => section.id),
-        custom_branch: changedSubModule.custom_branch.map((branch) => branch.id),
-        custom_subject: changedSubModule.custom_subject.map((subject) => subject.id),
+        modules_id: subModule.module_child_id,
+        my_branch: subModule.my_branch,
+        my_grade: subModule.my_grade,
+        my_section: subModule.my_section,
+        my_subject: subModule.my_subject,
+        custom_grade: subModule.custom_grade.map((grade) => grade.id),
+        custom_section: subModule.custom_section.map((section) => section.id),
+        custom_branch: subModule.custom_branch.map((branch) => branch.id),
+        custom_subject: subModule.custom_subject.map((subject) => subject.id),
       };
       return reqObj;
     });

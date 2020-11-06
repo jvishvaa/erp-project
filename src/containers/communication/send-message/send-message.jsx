@@ -209,7 +209,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       const rolesId = [];
       const gradesId = [];
       const sectionsId = [];
-      getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15`;
+      getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=5`;
       if (selectedRoles.length && !selectedRoles.includes('All')) {
         roleList
           .filter((item) => selectedRoles.includes(item['role_name']))
@@ -318,6 +318,18 @@ const SendMessage = withRouter(({ history, ...props }) => {
     }
   };
 
+  const handleSelectAll = () => {
+    setSelectAll(!selectAll);
+    const testclick = document.querySelectorAll('[class*="PrivateSwitchBase-input-"]');
+    if (!selectAll) {
+      testclick[0].click();
+    } else {
+      for (let i = 1; i < testclick.length; i += 1) {
+        testclick[i].click();
+      }
+    }
+  };
+
   const handleback = () => {
     if (!firstStep && secondStep && !thirdStep) {
       setSelectedUsers([]);
@@ -336,7 +348,13 @@ const SendMessage = withRouter(({ history, ...props }) => {
       setSelectUsersError('');
     }
     if (!firstStep && !secondStep && thirdStep) {
+      setSelectAll(false);
       setSelectedUsers([]);
+      setHeaders([]);
+      setUsersRow([]);
+      setCompleteData([]);
+      setTotalPage(0);
+      displayUsersList();
       setTextMessage('');
       setWordcount(641);
       setIsEmail(false);
@@ -419,17 +437,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
     }
     return 0;
   };
-  const handleSelectAll = () => {
-    setSelectAll(!selectAll);
-    const testclick = document.querySelectorAll('[class*="PrivateSwitchBase-input-"]');
-    if (!selectAll) {
-      testclick[0].click();
-    } else {
-      for (let i = 1; i < testclick.length; i += 1) {
-        testclick[i].click();
-      }
-    }
-  };
+
   const getSmsTypeApi = async () => {
     try {
       const result = await axiosInstance.get(endpoints.communication.getMessageTypes, {

@@ -57,11 +57,74 @@ class EditRole extends Component {
       history,
       roleId,
       roleName,
+      modules,
     } = this.props;
+    const requestData = [];
+
+    modules.forEach((module) => {
+      module.module_child.forEach((subModule) => {
+        // const index = modulePermissionsRequestData.findIndex(
+        //   (obj) => obj.modules_id == subModule.module_child_id
+        // );
+        // if (index === -1) {
+        const currentSubModule = subModule;
+        const includeInRequest = Object.keys(currentSubModule).some((key) => {
+          if (key.includes('my_')) {
+            if (currentSubModule[key]) {
+              console.log(
+                'included in request because non custom scope is true',
+                currentSubModule
+              );
+
+              return true;
+            }
+          }
+          if (key.includes('custom_')) {
+            if (currentSubModule[key].length > 0) {
+              console.log(
+                'included in request because custom scope is true',
+                currentSubModule
+              );
+
+              return true;
+            }
+          }
+          return false;
+        });
+        if (includeInRequest) {
+          const reqObj = {
+            modules_id: currentSubModule.module_child_id,
+            my_branch: currentSubModule.my_branch,
+            my_grade: currentSubModule.my_grade,
+            my_section: currentSubModule.my_section,
+            my_subject: currentSubModule.my_subject,
+            custom_grade: currentSubModule.custom_grade.map((grade) => grade.id),
+            custom_section: currentSubModule.custom_section.map((section) => section.id),
+            custom_branch: currentSubModule.custom_branch.map((branch) => branch.id),
+            custom_subject: currentSubModule.custom_subject.map((subject) => subject.id),
+          };
+          requestData.push(reqObj);
+          // }
+          // const reqObj = {
+          //   modules_id: subModule.module_child_id,
+          //   my_branch: subModule.my_branch,
+          //   my_grade: subModule.my_grade,
+          //   my_section: subModule.my_section,
+          //   my_subject: subModule.my_subject,
+          //   custom_grade: subModule.custom_grade.map((grade) => grade.id),
+          //   custom_section: subModule.custom_section.map((section) => section.id),
+          //   custom_branch: subModule.custom_branch.map((branch) => branch.id),
+          //   custom_subject: subModule.custom_subject.map((subject) => subject.id),
+          // };
+          // requestData.push(reqObj);
+        }
+      });
+    });
+
     const reqObj = {
       role_id: roleId,
       role_name: roleName,
-      Module: modulePermissionsRequestData,
+      Module: requestData,
     };
     editRole(reqObj)
       .then(() => {
