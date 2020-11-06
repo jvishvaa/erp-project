@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable no-nested-ternary */
 import React, { Component } from 'react';
 import Stepper from '@material-ui/core/Stepper';
@@ -11,38 +12,8 @@ import SchoolDetailsForm from './school-details-form';
 import GuardianDetailsForm from './guardian-details-form';
 import { fetchUser, editUser } from '../../redux/actions';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import { getSteps, jsonToFormData } from './utils';
 
-function getSteps(showParentOrGuardian) {
-  if (!showParentOrGuardian) {
-    return ['School details', 'User details'];
-  }
-  return ['School details', 'User details', 'Parents/Guardian details'];
-}
-
-function buildFormData(formData, data, parentKey) {
-  if (
-    data &&
-    typeof data === 'object' &&
-    !(data instanceof Date) &&
-    !(data instanceof File)
-  ) {
-    Object.keys(data).forEach((key) => {
-      buildFormData(formData, data[key], parentKey ? `${parentKey}[${key}]` : key);
-    });
-  } else {
-    const value = data == null ? '' : data;
-
-    formData.append(parentKey, value);
-  }
-}
-
-function jsonToFormData(data) {
-  const formData = new FormData();
-
-  buildFormData(formData, data);
-
-  return formData;
-}
 class EditUser extends Component {
   constructor(props) {
     super(props);
@@ -133,7 +104,7 @@ class EditUser extends Component {
     if (showParentForm || showGuardianForm) {
       this.handleNext();
     } else {
-      this.onCreateUser(false);
+      this.onEditUser(false);
     }
   };
 
@@ -145,14 +116,14 @@ class EditUser extends Component {
         user: { ...prevState.user, parent: { ...prevState.user.parent, ...details } },
       }),
       () => {
-        this.onCreateUser(true);
+        this.onEditUser(true);
       }
     );
   };
 
   onEditUser = (requestWithParentorGuradianDetails) => {
     const { user } = this.state;
-    const { createUser, history, selectedUser } = this.props;
+    const { editUser, history, selectedUser } = this.props;
     console.log('user ', user);
     let requestObj = user;
     const {
@@ -209,6 +180,8 @@ class EditUser extends Component {
       contact,
       email,
       profile,
+      father_photo,
+      mother_photo,
       parent: {
         id: selectedUser.parent.id,
         father_first_name,
@@ -216,14 +189,12 @@ class EditUser extends Component {
         father_last_name,
         father_email,
         father_mobile,
-        father_photo,
         address: parent_address,
         mother_first_name,
         mother_middle_name,
         mother_last_name,
         mother_email,
         mother_mobile,
-        mother_photo,
         guardian_first_name,
         guardian_middle_name,
         guardian_last_name,
@@ -234,18 +205,20 @@ class EditUser extends Component {
 
     if (!requestWithParentorGuradianDetails) {
       delete requestObj.parent;
+      delete requestObj.father_photo;
+      delete requestObj.mother_photo;
     }
     const { setAlert } = this.context;
     const requestObjFormData = jsonToFormData(requestObj);
 
     console.log('requestObject ', requestObjFormData);
-    createUser(requestObjFormData)
+    editUser(requestObjFormData)
       .then(() => {
         history.push('/user-management');
-        setAlert('success', 'User creatied');
+        setAlert('success', 'User updated');
       })
       .catch(() => {
-        setAlert('error', 'User creation failed');
+        setAlert('error', 'User update failed');
       });
   };
 
@@ -342,6 +315,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   fetchUser: (params) => {
     return dispatch(fetchUser(params));
+  },
+  editUser: (params) => {
+    return dispatch(editUser(params));
   },
 });
 

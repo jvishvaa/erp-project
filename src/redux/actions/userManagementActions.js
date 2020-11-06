@@ -86,7 +86,7 @@ export const fetchUser = (id) => (dispatch) => {
         id: user.id || '',
         erp_id: user.erp_id || '',
         first_name: user.user.first_name || '',
-        middle_name: user.user.middle_name || '',
+        middle_name: user.user_middle_name || '',
         last_name: user.user.last_name || '',
         email: user.user.email || '',
         academic_year: user.academic_year && {
@@ -110,12 +110,12 @@ export const fetchUser = (id) => (dispatch) => {
         address: user.address || '',
         parent: {
           id: user.parent_details.id,
-          father_first_name: '',
-          father_last_name: '',
-          mother_first_name: '',
-          mother_last_name: '',
-          mother_middle_name: '',
-          father_middle_name: '',
+          father_first_name: user.parent_details.father_first_name || '',
+          father_last_name: user.parent_details.father_last_name || '',
+          mother_first_name: user.parent_details.mother_first_name || '',
+          mother_last_name: user.parent_details.mother_last_name || '',
+          mother_middle_name: user.parent_details.mother_middle_name || '',
+          father_middle_name: user.parent_details.father_middle_name || '',
           father_email: user.parent_details.father_email || '',
           mother_email: user.parent_details.mother_email || '',
           father_mobile: user.parent_details.father_mobile || '',
@@ -123,9 +123,9 @@ export const fetchUser = (id) => (dispatch) => {
           mother_photo: user.parent_details.mother_photo || '',
           father_photo: user.parent_details.father_photo || '',
           address: user.parent_details.address,
-          guardian_first_name: '',
-          guardian_middle_name: '',
-          guardian_last_name: '',
+          guardian_first_name: user.parent_details.guardian_first_name || '',
+          guardian_middle_name: user.parent_details.guardian_middle_name || '',
+          guardian_last_name: user.parent_details.guardian_last_name || '',
           guardian_email: user.parent_details.guardian_email || '',
           guardian_mobile: user.parent_details.guardian_mobile || '',
         },
@@ -162,7 +162,7 @@ export const createUser = (params) => (dispatch) => {
 export const editUser = (params) => (dispatch) => {
   dispatch({ type: EDIT_USER_REQUEST });
   return axios
-    .post('/erp_user/update-user/', params)
+    .put('/erp_user/update-user/', params)
     .then(() => {
       dispatch({ type: EDIT_USER_SUCCESS });
     })

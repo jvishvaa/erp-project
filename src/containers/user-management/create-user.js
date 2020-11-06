@@ -11,43 +11,7 @@ import SchoolDetailsForm from './school-details-form';
 import GuardianDetailsForm from './guardian-details-form';
 import { createUser } from '../../redux/actions';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-
-function getSteps(showParentOrGuardian) {
-  if (!showParentOrGuardian) {
-    return ['School details', 'User details'];
-  }
-  return ['School details', 'User details', 'Parents/Guardian details'];
-}
-
-function buildFormData(formData, data, parentKey) {
-  if (
-    data &&
-    typeof data === 'object' &&
-    !(data instanceof Date) &&
-    !(data instanceof File) &&
-    !(parentKey == 'parent')
-  ) {
-    Object.keys(data).forEach((key) => {
-      buildFormData(formData, data[key], parentKey ? `${parentKey}[${key}]` : key);
-    });
-  } else {
-    const value = data == null ? '' : data;
-
-    if (parentKey == 'parent') {
-      formData.append(parentKey, JSON.stringify(value));
-    } else {
-      formData.append(parentKey, value);
-    }
-  }
-}
-
-function jsonToFormData(data) {
-  const formData = new FormData();
-
-  buildFormData(formData, data);
-
-  return formData;
-}
+import { getSteps, jsonToFormData } from './utils';
 
 class CreateUser extends Component {
   constructor(props) {

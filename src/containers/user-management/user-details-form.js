@@ -39,6 +39,7 @@ const UserDetailsForm = ({
     initialValues: {
       first_name: details.first_name,
       last_name: details.last_name,
+      middle_name: details.middle_name,
       gender: details.gender,
       profile: details.profile,
       contact: details.contact,
