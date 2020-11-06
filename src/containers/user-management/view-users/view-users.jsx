@@ -260,6 +260,10 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     setDeleteAlert(false);
   };
 
+  const handleEdit = (id) => {
+    history.push(`/user-management/edit-user/${id}`);
+  };
+
   useEffect(() => {
     setIsNewSearch(true);
   }, [selectedRoles, selectedGrades]);
@@ -442,7 +446,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                       <span
                         className='group_view_button group_view_delete_button'
                         title='Edit'
-                        // onClick={() => handleEdit(items.groupId, i)}
+                        onClick={() => handleEdit(items.userId)}
                       >
                         <EditIcon />
                       </span>

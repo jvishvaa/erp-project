@@ -26,6 +26,7 @@ export default {
     getSmsCredit: '/communication/sms-credits/',
     assignRole: '/erp_user/assign_role/',
     userStatusChange: '/erp_user/',
+    getMessages: '/communication/email-sms-logs/',
   },
   onlineClass: {
     filterStudent: '/erp_user/student_filter/',
