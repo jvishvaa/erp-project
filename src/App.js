@@ -6,6 +6,7 @@ import CreateGroup from './containers/communication/create-group/create-group';
 import ViewGroup from './containers/communication/view-group/view-group';
 import MessageCredit from './containers/communication/message-credit/message-credit';
 import SendMessage from './containers/communication/send-message/send-message';
+import MessageLog from './containers/communication/message-log/message-log';
 import AssignRole from './containers/communication/assign-role/assign-role';
 import RoleManagement from './containers/role-management';
 import store from './redux/store';
@@ -83,6 +84,9 @@ function App() {
                 </Route>
                 <Route exact path='/view-users'>
                   {({ match }) => <ViewUsers match={match} />}
+                </Route>
+                <Route path='/messagelog'>
+                  {({ match }) => <MessageLog match={match} />}
                 </Route>
                 <Route path='/dashboard'>
                   {({ match }) => <Dashboard match={match} />}

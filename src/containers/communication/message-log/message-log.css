@@ -1,0 +1,32 @@
+.message_log_branch{
+	width: 100%;
+}
+.table_body{
+	max-height: 500px;
+	overflow-y: scroll;
+}
+.selectedRow{
+	background-color: antiquewhite;
+}
+.selectedRow:hover{
+	cursor: pointer;
+}
+.notSelected:hover{
+	cursor: pointer;
+}
+.deactive_clearAll{
+	font-size: 0.9rem;
+	margin: 5%;
+    padding: 3% 1%;
+    width: 40%;
+    border: none;
+    border-radius: 5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    outline: none !important;
+    color: white;
+    background-color: #a19e9e;
+}
+.spacing{
+	height: 2vw;
+}
