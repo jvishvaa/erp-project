@@ -30,3 +30,9 @@
 .spacing{
 	height: 2vw;
 }
+.MuiButton-textPrimary{
+	color: white !important;
+}
+.MuiButton-textPrimary:hover{
+	background-color: #FF6B6B !important;
+}

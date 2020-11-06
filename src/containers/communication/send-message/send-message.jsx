@@ -209,7 +209,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       const rolesId = [];
       const gradesId = [];
       const sectionsId = [];
-      getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=5`;
+      getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15`;
       if (selectedRoles.length && !selectedRoles.includes('All')) {
         roleList
           .filter((item) => selectedRoles.includes(item['role_name']))
@@ -245,7 +245,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       }
     } else {
       const groupId = [];
-      getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=5`;
+      getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15`;
       if (selectedGroup.length && !selectedGroup.includes('All')) {
         groupList
           .filter((item) => selectedGroup.includes(item['group_name']))

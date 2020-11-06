@@ -165,7 +165,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     const gradesId = [];
     const sectionsId = [];
     setNext(true);
-    let getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=5`;
+    let getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15`;
     if (selectedRoles.length && !selectedRoles.includes('All')) {
       roleList
         .filter((item) => selectedRoles.includes(item['role_name']))
@@ -400,6 +400,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       setGradeError('Please select a grade');
       return;
     }
+    window.scrollTo(0, 0);
     setGroupNameError('');
     setRoleError('');
     setBranchError('');
