@@ -7,6 +7,9 @@ import './view-class-student.scss';
 import { OnlineclassViewContext } from '../../online-class-context/online-class-state';
 import ResourceModal from '../../online-class-resources/resourceModal';
 import OnlineClassFeedback from '../../Feedback/OnlineClassFeedback';
+import axiosInstance from '../../../../config/axios';
+import endpoints from '../../../../config/endpoints';
+import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 
 const ViewClassStudent = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,6 +21,7 @@ const ViewClassStudent = (props) => {
       join_time: joinTime,
       id: meetingId,
       zoom_meeting: {
+        id: zoomId,
         online_class: {
           id: olClassId,
           start_time: startTime,
@@ -42,6 +46,11 @@ const ViewClassStudent = (props) => {
   const [hasClassStarted, setHasClassStarted] = useState(false);
   const [hasClassEnded, setHasClassEnded] = useState(false);
   const [isJoinTime, setIsJoinTime] = useState(false);
+
+  const { setAlert } = useContext(AlertNotificationContext);
+
+  const { role_details: roleDetails } =
+    JSON.parse(localStorage.getItem('userDetails')) || {};
 
   useEffect(() => {
     const now = new Date(currentServerTime);
@@ -87,15 +96,43 @@ const ViewClassStudent = (props) => {
     dispatch(handleAccept(meetingId));
   };
 
-  const handleClassJoin = () => {
-    dispatch(handleJoin(meetingId));
+  const handleClassJoin = async () => {
+    try {
+      const response = await axiosInstance.get(
+        `${endpoints.onlineClass.feedback}?erp_user_id=${roleDetails.erp_user_id}`
+      );
+      const {
+        is_attended: isAttended,
+        feedback_submitted: feedbackSubmitted,
+      } = response.data;
+      if (isAttended && feedbackSubmitted === false) {
+        setIsFeedbackOpen(true);
+      } else {
+        dispatch(handleJoin(meetingId));
+      }
+    } catch (error) {
+      setAlert('error', 'Failed to get attendance details');
+    }
   };
 
   const closeModalHandler = () => {
     setIsModalOpen(false);
   };
 
-  const handleFeedbackClick = () => {};
+  const handleFeedbackClick = async (rating) => {
+    try {
+      const formData = new FormData();
+      formData.append('online_class_id', olClassId);
+      formData.append('zoom_meeting_id', zoomId);
+      formData.append('erp_user_id', roleDetails.erp_user_id);
+      formData.append('rating', rating);
+      await axiosInstance.post(`${endpoints.onlineClass.feedback}`, formData);
+      setIsFeedbackOpen(false);
+      dispatch(handleJoin(meetingId));
+    } catch (error) {
+      setAlert('error', 'Failed to submit feedback');
+    }
+  };
 
   return (
     <div className='viewclass__student-container'>
@@ -211,7 +248,7 @@ const ViewClassStudent = (props) => {
                 Resources
               </Button>
             </Grid>
-            <Grid item xs={6}>
+            {/* <Grid item xs={6}>
               <Button
                 className='viewclass__student-btn'
                 onClick={() => {
@@ -220,7 +257,7 @@ const ViewClassStudent = (props) => {
               >
                 Homework
               </Button>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Grid>
       </Grid>
