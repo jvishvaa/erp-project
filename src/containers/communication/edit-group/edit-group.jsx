@@ -95,7 +95,7 @@ const EditGroup = withRouter(({ history, ...props }) => {
     }
   };
   const getEditGroupsData = async () => {
-    const getEditGroupsDataUrl = `${endpoints.communication.editGroup}${editId}/retrieve-update-group/?page=${pageno}&page_size=5`;
+    const getEditGroupsDataUrl = `${endpoints.communication.editGroup}${editId}/retrieve-update-group/?page=${pageno}&page_size=15`;
     try {
       const result = await axiosInstance.get(getEditGroupsDataUrl, {
         headers: {

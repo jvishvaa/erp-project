@@ -331,7 +331,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
             />
           </Grid>
         </Grid>
-        <Grid container spacing={2} className='create-class-container'>
+        <Grid container spacing={2} className='message-log-container'>
           <MuiPickersUtilsProvider utils={MomentUtils}>
             <Grid item xs={12} sm={2}>
               <KeyboardDatePicker
