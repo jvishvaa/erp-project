@@ -194,6 +194,7 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'SMS&Email Log': {
+        history.push('/messageLog');
         break;
       }
 
@@ -311,6 +312,23 @@ const Layout = ({ children, history }) => {
             </ListItemIcon>
             <ListItemText className={classes.menuItemText}>Menu</ListItemText>
           </ListItem>
+          {drawerOpen ? (
+            <ListItem
+              button
+              className={
+                history.location.pathname === '/profile' ? 'menu_selection' : null
+              }
+              onClick={() => {
+                history.push('/profile');
+              }}
+            >
+              {' '}
+              <ListItemIcon className={classes.menuItemIcon}>
+                <AssignmentIndIcon />
+              </ListItemIcon>
+              <ListItemText className={classes.menuItemText}>View Profile</ListItemText>
+            </ListItem>
+          ) : null}
           {superUser && drawerOpen && (
             <>
               <ListItem
@@ -327,21 +345,6 @@ const Layout = ({ children, history }) => {
                   <AssignmentIndIcon />
                 </ListItemIcon>
                 <ListItemText className={classes.menuItemText}>Dashboard</ListItemText>
-              </ListItem>
-              <ListItem
-                button
-                className={
-                  history.location.pathname === '/profile' ? 'menu_selection' : null
-                }
-                onClick={() => {
-                  history.push('/profile');
-                }}
-              >
-                {' '}
-                <ListItemIcon className={classes.menuItemIcon}>
-                  <AssignmentIndIcon />
-                </ListItemIcon>
-                <ListItemText className={classes.menuItemText}>View Profile</ListItemText>
               </ListItem>
               <ListItem
                 button
