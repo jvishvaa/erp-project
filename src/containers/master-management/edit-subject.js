@@ -8,8 +8,7 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 
 const EditSubject = ({id,name,desc,handleGoBack}) => {
 
-  const subName=name.split("__").pop()
-  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const subName=name.split("_").pop()
   const { setAlert } = useContext(AlertNotificationContext);
   const [subjectName,setSubjectName]=useState(subName || '')
   const [description,setDescription]=useState(desc || '')
@@ -26,11 +25,7 @@ const EditSubject = ({id,name,desc,handleGoBack}) => {
         if(description!==desc && description!=="")
         request['subject_description']=description
 
-        axiosInstance.put(endpoints.masterManagement.updateSubject,request, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }).then(result=>{
+        axiosInstance.put(endpoints.masterManagement.updateSubject,request).then(result=>{
           if (result.status === 200) {
             setAlert('success', result.data.message);
             handleGoBack()
