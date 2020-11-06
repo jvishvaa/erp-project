@@ -30,6 +30,20 @@ const columns = [
   },
 ];
 
+const unCheckScopeDependenciesForModules = {
+  my_branch: [],
+  my_grade: ['my_branch'],
+  my_section: ['my_branch', 'my_grade'],
+  my_subject: ['my_branch', 'my_grade', 'my_section'],
+};
+
+const scopeToDisplayNameMapping = {
+  my_branch: 'Branch',
+  my_grade: 'Grade',
+  my_section: 'Section',
+  my_subject: 'Subject',
+};
+
 function findAndApplyScope(subModules, id, scope, checked) {
   const clonedArray = JSON.parse(JSON.stringify(subModules));
   const index = clonedArray.findIndex((obj) => obj.module_child_id == id);
@@ -165,17 +179,41 @@ export default function ModuleCard({
         moduleObj.module_child = clonedArray;
       }
     } else if (unCheckDependency.length === 0) {
-      const { clonedArray, index } = findAndApplyScope(
-        subModules,
-        subModuleId,
-        scope,
-        checked
+      const unCheckScopeDependencies = [];
+      const currSubModule = subModules.find((obj) => obj.module_child_id === subModuleId);
+      console.log(
+        'currSubModule ',
+        currSubModule,
+        unCheckScopeDependenciesForModules[scope]
       );
-      changedModuleIndices.push(index);
-      moduleObj.module_child = clonedArray;
+      unCheckScopeDependenciesForModules[scope].forEach((scopeName) => {
+        if (currSubModule[scopeName] == true) {
+          // parent scope is checked
+          unCheckScopeDependencies.push(scopeToDisplayNameMapping[scopeName]);
+        }
+      });
+
+      if (unCheckScopeDependencies.length > 0) {
+        setAlert(
+          'error',
+          `Uncheck  ${unCheckScopeDependencies.join(', ')} scope of current module first`
+        );
+      } else {
+        const { clonedArray, index } = findAndApplyScope(
+          subModules,
+          subModuleId,
+          scope,
+          checked
+        );
+        changedModuleIndices.push(index);
+        moduleObj.module_child = clonedArray;
+      }
     } else {
       // check if dependency is not selected
+      const unCheckDependencies = [];
+      const unCheckScopeDependencies = [];
       const safeToUnsetValues = unCheckDependency.every((depId) => {
+        //change every to for each to list all dependency module names
         const subModuleIndex = subModules.findIndex(
           (obj) => obj.module_child_id == depId
         );
@@ -183,11 +221,24 @@ export default function ModuleCard({
           if (!subModules[subModuleIndex][scope]) {
             return true;
           }
-
+          unCheckDependencies.push(subModules[subModuleIndex].module_child_name);
           return false;
         }
         return true;
       });
+      const currSubModule = subModules.find((obj) => obj.module_child_id === subModuleId);
+      console.log(
+        'currSubModule ',
+        currSubModule,
+        unCheckScopeDependenciesForModules[scope]
+      );
+      unCheckScopeDependenciesForModules[scope].forEach((scopeName) => {
+        if (currSubModule[scopeName] == true) {
+          // parent scope is checked
+          unCheckScopeDependencies.push(scopeToDisplayNameMapping[scopeName]);
+        }
+      });
+
       if (safeToUnsetValues) {
         const { clonedArray, index } = findAndApplyScope(
           subModules,
@@ -197,9 +248,17 @@ export default function ModuleCard({
         );
         changedModuleIndices.push(index);
         moduleObj.module_child = clonedArray;
+        if (unCheckScopeDependencies.length > 0) {
+          setAlert(
+            'error',
+            `Uncheck  ${unCheckScopeDependencies.join(
+              ', '
+            )} scope of current module first`
+          );
+        }
       } else {
-        console.log('not safe to uncheck dependency');
-        setAlert('error', 'Uncheck the dependency modules first');
+        console.log('not safe to uncheck dependency', unCheckDependencies);
+        setAlert('error', `Uncheck  ${unCheckDependencies.join(', ')} modules first`);
       }
     }
 
@@ -268,6 +327,7 @@ export default function ModuleCard({
         changedModuleIndices.push(index);
       }
     } else {
+      const unCheckDependencies = [];
       const safeToUnsetValues = unCheckDependency.every((depId) => {
         const subModuleIndex = subModules.findIndex(
           (obj) => obj.module_child_id == depId
@@ -279,7 +339,7 @@ export default function ModuleCard({
           ) {
             return true;
           }
-
+          unCheckDependencies.push(subModules[subModuleIndex].module_child_name);
           return false;
         }
         return true;
@@ -294,7 +354,7 @@ export default function ModuleCard({
         changedModuleIndices.push(index);
       } else {
         console.log('not safe to uncheck');
-        setAlert('error', 'Uncheck the dependency to modules first');
+        setAlert('error', `Uncheck  ${unCheckDependencies.join(', ')} modules first`);
       }
     }
 
@@ -405,6 +465,17 @@ export default function ModuleCard({
                         <Checkbox
                           onChange={(e) => {
                             onCheckAll(e.target.checked, column.id);
+                            // if (e.target.checked) {
+                            //   onCheckAll(e.target.checked, column.id);
+                            // } else {
+                            //   if(allCheckedScopes.length > 0) {
+                            //     unCheckScopeDependenciesForModules[column.id].forEach((scope) => {
+                            //       if(allCheckedScopes.includes(scope)) {
+
+                            //       }
+                            //     })
+                            //   }
+                            // }
                           }}
                           checked={checkAll}
                           color='primary'
