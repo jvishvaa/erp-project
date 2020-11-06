@@ -9,13 +9,16 @@
 
 .mainWidth.widthClass {
   width: 300px;
-  transition: width 0.3s;
+  transition: width 0.4s;
 }
 .mainWidth {
-  width: auto;
+  width: 250px;
 }
 .headerMaster {
   display: flex;
   flex-direction: row;
   justify-content: space-between ;
+}
+.gradeDropClass {
+  width: 200px;
 }

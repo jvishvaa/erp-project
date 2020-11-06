@@ -47,8 +47,7 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonContainer: {
     background: theme.palette.background.secondary,
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
+    paddingBottom: theme.spacing(2),
   }
 }));
 
@@ -187,7 +186,7 @@ const SectionTable = () => {
   return (
     <Layout>
 
-    <CommonBreadcrumbs
+    {/* <CommonBreadcrumbs
       componentName='Master Management'
       childComponentName='Section List'
     />
@@ -199,24 +198,48 @@ const SectionTable = () => {
       </Button>
     </div>
     }
-    {!tableFlag && addFlag && !editFlag && <CreateSection grades={grades}/> }
-    {!tableFlag && !addFlag && editFlag && <EditSection id={sectionId} name={sectionName} handleGoBack={handleGoBack}/> }
 
     {tableFlag && !addFlag && !editFlag && 
     <div className="headerMaster">
-    <div style={{color:'#014B7E'}}>
-      <h1>Section List</h1>
+      <div style={{color:'#014B7E'}}>
+        <h1>Section List</h1>
+      </div>
+      <div className={classes.buttonContainer}>
+        <Button startIcon={<AddOutlinedIcon />} onClick={handleAddSection}>
+          Add Section
+        </Button>
+      </div>
     </div>
-    <div className={classes.buttonContainer}>
-      <Button startIcon={<AddOutlinedIcon />} onClick={handleAddSection}>
-        Add Section
-      </Button>
+    } */}
+
+    <div className="headerMaster">
+      <div>
+        <CommonBreadcrumbs
+          componentName='Master Management'
+          childComponentName='Section List'
+        />
+      </div>
+      <div className={classes.buttonContainer}>
+      {tableFlag && !addFlag && !editFlag &&
+        <Button startIcon={<AddOutlinedIcon />} size="medium" title="Add Section" onClick={handleAddSection}>
+          Add Section
+        </Button>
+      }
+      { (addFlag || editFlag) &&
+        <Button startIcon={<ArrowBackIcon />} size="medium" title="Go back to Section List" onClick={handleGoBack}>
+          Section List
+        </Button>
+      }
+      </div>
     </div>
-    </div>
-    }
+
+    {!tableFlag && addFlag && !editFlag && <CreateSection grades={grades}/> }
+    {!tableFlag && !addFlag && editFlag && <EditSection id={sectionId} name={sectionName} handleGoBack={handleGoBack}/> }
+
+   
     {tableFlag && !addFlag && !editFlag && 
     <Grid container spacing={4} style={{marginBottom:'10px'}}>
-      <Grid item xs={12} sm={3}>
+      <Grid item>
         <TextField
           id='secname'
           label='Section Name'
@@ -229,11 +252,12 @@ const SectionTable = () => {
           onChange={e=>setSearchSection(e.target.value)}
         />
       </Grid>
-      <Grid item xs={12} sm={2}>
+      <Grid item>
         <Autocomplete
           size='medium'
           onChange={handleGrade}
           id='grade'
+          className="gradeDropClass"
           options={grades}
           getOptionLabel={(option) => option.grade_name}
           filterSelectedOptions

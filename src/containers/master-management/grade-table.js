@@ -27,6 +27,7 @@ import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import CreateGrade from './create-grade'
 import EditGrade from './edit-grade'
+import './master-management.css'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,8 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonContainer: {
     background: theme.palette.background.secondary,
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
+    paddingBottom: theme.spacing(2),
   }
 }));
 
@@ -162,53 +162,47 @@ const GradeTable = () => {
   
   return (
     <Layout>
-
-    <CommonBreadcrumbs
-      componentName='Master Management'
-      childComponentName='Grade List'
-    />
-
-    {(addFlag||editFlag)  && 
-    <div style={{float:'right',marginTop:'15px',marginRight:'15px'}}>
-      <Button startIcon={<ArrowBackIcon />} size="large" title="Go back to Grade List" onClick={handleGoBack}>
-      Grade List
-      </Button>
+    <div className="headerMaster">
+      <div>
+        <CommonBreadcrumbs
+          componentName='Master Management'
+          childComponentName='Grade List'
+        />
+      </div>
+      <div className={classes.buttonContainer}>
+      {tableFlag && !addFlag && !editFlag &&
+        <Button startIcon={<AddOutlinedIcon />} size="medium" title="Add Grade" onClick={handleAddGrade}>
+          Add Grade
+        </Button>
+      }
+      { (addFlag || editFlag) &&
+        <Button startIcon={<ArrowBackIcon />} size="medium" title="Go back to Grade List" onClick={handleGoBack}>
+          Grade List
+        </Button>
+      }
+      </div>
     </div>
-    }
+
     {!tableFlag && addFlag && !editFlag && <CreateGrade /> }
     {!tableFlag && !addFlag && editFlag && <EditGrade id={gradeId} name={gradeName} type={gradeType} 
     handleGoBack={handleGoBack}/> }
 
     {tableFlag && !addFlag && !editFlag && 
-    <div className="headerMaster">
-    <div style={{color:'#014B7E'}}>
-      <h1>Grade List</h1>
-    </div>
-    <div className={classes.buttonContainer}>
-      <Button startIcon={<AddOutlinedIcon />} onClick={handleAddGrade}>
-        Add Grade
-      </Button>
-    </div>
-    </div>
-    }
-
-
-{tableFlag && !addFlag && !editFlag && 
-    <Grid container spacing={4} style={{marginBottom:'10px'}}>
-      <Grid item xs={12} sm={4}>
-        <TextField
-          id='gradename'
-          className={widthFlag?"mainWidth widthClass":"mainWidth"}
-          onFocus={e=>setWidthFlag(true)}
-          onBlur={e=>setWidthFlag(false)}
-          label='Grade Name'
-          variant='outlined'
-          size='medium'
-          name='gradename'
-          onChange={e=>setSearchGrade(e.target.value)}
-        />
+      <Grid container spacing={4} style={{marginBottom:'10px'}}>
+        <Grid item>
+          <TextField
+            id='gradename'
+            className={widthFlag?"mainWidth widthClass":"mainWidth"}
+            onFocus={e=>setWidthFlag(true)}
+            onBlur={e=>setWidthFlag(false)}
+            label='Grade Name'
+            variant='outlined'
+            size='medium'
+            name='gradename'
+            onChange={e=>setSearchGrade(e.target.value)}
+          />
+        </Grid>
       </Grid>
-    </Grid>
     }
 
     {tableFlag && !addFlag && !editFlag && 
@@ -273,7 +267,7 @@ const GradeTable = () => {
         page={page}
         onChange={handleChangePage}
         />
-    </div>
+      </div>
     </Paper>
     }
     <Dialog
