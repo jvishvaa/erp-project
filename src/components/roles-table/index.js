@@ -62,68 +62,70 @@ const RolesTable = ({ roles, onEdit, onDelete, count, limit, page, onChangePage 
             </TableRow>
           </TableHead>
           <TableBody>
-            {roles.map((role, index) => {
-              const transformedRole = {
-                'sl-no': (page - 1) * limit + index + 1,
-                ...role,
-              };
-              return (
-                <TableRow hover role='checkbox' tabIndex={-1} key={role.id}>
-                  {columns.map((column) => {
-                    const value = transformedRole[column.id];
-                    if (column.id === 'actions') {
-                      return (
-                        <TableCell
-                          className={classes.tableCell}
-                          key={column.id}
-                          align={column.align}
-                        >
-                          <IconButton
-                            onClick={() => {
-                              onEdit(role);
-                            }}
-                            title='Edit role'
+            {roles &&
+              roles.length > 0 &&
+              roles.map((role, index) => {
+                const transformedRole = {
+                  'sl-no': (page - 1) * limit + index + 1,
+                  ...role,
+                };
+                return (
+                  <TableRow hover role='checkbox' tabIndex={-1} key={role.id}>
+                    {columns.map((column) => {
+                      const value = transformedRole[column.id];
+                      if (column.id === 'actions') {
+                        return (
+                          <TableCell
+                            className={classes.tableCell}
+                            key={column.id}
+                            align={column.align}
                           >
-                            <EditOutlinedIcon color='primary' />
-                          </IconButton>
-                          <IconButton
-                            onClick={() => {
-                              onDelete(role);
-                            }}
-                            title='Delete role'
+                            <IconButton
+                              onClick={() => {
+                                onEdit(role);
+                              }}
+                              title='Edit role'
+                            >
+                              <EditOutlinedIcon color='primary' />
+                            </IconButton>
+                            <IconButton
+                              onClick={() => {
+                                onDelete(role);
+                              }}
+                              title='Delete role'
+                            >
+                              <DeleteOutlinedIcon color='primary' />
+                            </IconButton>
+                          </TableCell>
+                        );
+                      }
+                      if (column.id === 'created_at') {
+                        return (
+                          <TableCell
+                            className={classes.tableCell}
+                            key={column.id}
+                            align={column.align}
                           >
-                            <DeleteOutlinedIcon color='primary' />
-                          </IconButton>
-                        </TableCell>
-                      );
-                    }
-                    if (column.id === 'created_at') {
-                      return (
-                        <TableCell
-                          className={classes.tableCell}
-                          key={column.id}
-                          align={column.align}
-                        >
-                          {value ? moment(value).format('DD-MM-YYYY') : ''}
-                        </TableCell>
-                      );
-                    }
+                            {value ? moment(value).format('DD-MM-YYYY') : ''}
+                          </TableCell>
+                        );
+                      }
 
-                    return (
-                      <TableCell
-                        className={classes.tableCell}
-                        key={column.id}
-                        align={column.align}
-                      >
-                        {column.format && typeof value === 'number'
-                          ? column.format(value)
-                          : value || '--'}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
+                      return (
+                        <TableCell
+                          className={classes.tableCell}
+                          key={column.id}
+                          align={column.align}
+                        >
+                          {column.format && typeof value === 'number'
+                            ? column.format(value)
+                            : value || '--'}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })}
           </TableBody>
         </Table>
       </TableContainer>
