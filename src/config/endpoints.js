@@ -40,6 +40,7 @@ export default {
     coHostValidation: '/erp_user/co-host-validation/',
     resourceLink: '/erp_user/resource_link/',
     resourceFile: '/erp_user/resource_files/',
+    feedback: '/erp_user/onlineclass_attendancecheck/',
   },
   masterManagement: {
     subjects: '/erp_user/subjects-list/',

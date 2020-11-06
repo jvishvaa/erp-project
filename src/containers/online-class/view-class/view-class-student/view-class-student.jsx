@@ -1,14 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Grid, Typography, Button } from '@material-ui/core';
+import { Grid, Typography, Button, Modal } from '@material-ui/core';
 import moment from 'moment';
 
 import Countdown from '../../../../components/countdown/countdown';
 import './view-class-student.scss';
 import { OnlineclassViewContext } from '../../online-class-context/online-class-state';
 import ResourceModal from '../../online-class-resources/resourceModal';
+import OnlineClassFeedback from '../../Feedback/OnlineClassFeedback';
+import axiosInstance from '../../../../config/axios';
+import endpoints from '../../../../config/endpoints';
+import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 
 const ViewClassStudent = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [onlineClassId, setOnlineClassId] = useState(null);
   const {
     data: {
@@ -16,6 +21,7 @@ const ViewClassStudent = (props) => {
       join_time: joinTime,
       id: meetingId,
       zoom_meeting: {
+        id: zoomId,
         online_class: {
           id: olClassId,
           start_time: startTime,
@@ -40,6 +46,11 @@ const ViewClassStudent = (props) => {
   const [hasClassStarted, setHasClassStarted] = useState(false);
   const [hasClassEnded, setHasClassEnded] = useState(false);
   const [isJoinTime, setIsJoinTime] = useState(false);
+
+  const { setAlert } = useContext(AlertNotificationContext);
+
+  const { role_details: roleDetails } =
+    JSON.parse(localStorage.getItem('userDetails')) || {};
 
   useEffect(() => {
     const now = new Date(currentServerTime);
@@ -85,12 +96,42 @@ const ViewClassStudent = (props) => {
     dispatch(handleAccept(meetingId));
   };
 
-  const handleClassJoin = () => {
-    dispatch(handleJoin(meetingId));
+  const handleClassJoin = async () => {
+    try {
+      const response = await axiosInstance.get(
+        `${endpoints.onlineClass.feedback}?erp_user_id=${roleDetails.erp_user_id}`
+      );
+      const {
+        is_attended: isAttended,
+        feedback_submitted: feedbackSubmitted,
+      } = response.data;
+      if (isAttended && feedbackSubmitted === false) {
+        setIsFeedbackOpen(true);
+      } else {
+        dispatch(handleJoin(meetingId));
+      }
+    } catch (error) {
+      setAlert('error', 'Failed to get attendance details');
+    }
   };
 
   const closeModalHandler = () => {
     setIsModalOpen(false);
+  };
+
+  const handleFeedbackClick = async (rating) => {
+    try {
+      const formData = new FormData();
+      formData.append('online_class_id', olClassId);
+      formData.append('zoom_meeting_id', zoomId);
+      formData.append('erp_user_id', roleDetails.erp_user_id);
+      formData.append('rating', rating);
+      await axiosInstance.post(`${endpoints.onlineClass.feedback}`, formData);
+      setIsFeedbackOpen(false);
+      dispatch(handleJoin(meetingId));
+    } catch (error) {
+      setAlert('error', 'Failed to submit feedback');
+    }
   };
 
   return (
@@ -210,8 +251,9 @@ const ViewClassStudent = (props) => {
             {/* <Grid item xs={6}>
               <Button
                 className='viewclass__student-btn'
-                variant='outlined'
-                color='primary'
+                onClick={() => {
+                  setIsFeedbackOpen(true);
+                }}
               >
                 Homework
               </Button>
@@ -228,6 +270,30 @@ const ViewClassStudent = (props) => {
           key={`resource_modal${olClassId}`}
         />
       )}
+      <Modal
+        open={isFeedbackOpen}
+        onClose={() => {
+          setIsFeedbackOpen(false);
+        }}
+        aria-labelledby='simple-modal-title'
+        aria-describedby='simple-modal-description'
+      >
+        <div className='onlineclass__feedback--modal'>
+          <div className='onlineclass__feedback--topbar'>
+            <p className='onlineclass__feedback--topbartitle'>
+              How was your last online class ?
+            </p>
+          </div>
+          <div className='onlineclass__emoji--container'>
+            <OnlineClassFeedback
+              handleFeedBack={(rating) => {
+                handleFeedbackClick(rating);
+              }}
+              feedbackType='numeric'
+            />
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

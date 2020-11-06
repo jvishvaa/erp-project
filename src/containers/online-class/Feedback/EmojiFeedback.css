@@ -1,0 +1,31 @@
+.emoji__container {
+  width: 120px;
+  height: 120px;
+  display: inline-block;
+  margin: 0px 20px;
+}
+
+.emoji__container:hover {
+    cursor: pointer;
+}
+
+@media only screen and (max-width: 1200px) {
+  .emoji__container {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  .emoji__container {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media only screen and (max-width: 672px) {
+  .emoji__container {
+    width: 40px;
+    height: 40px;
+  }
+}
