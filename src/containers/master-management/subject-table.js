@@ -47,8 +47,7 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonContainer: {
     background: theme.palette.background.secondary,
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
+    paddingBottom: theme.spacing(2),
   }
 }));
 
@@ -185,39 +184,34 @@ const SubjectTable = () => {
   return (
     <Layout>
 
-    <CommonBreadcrumbs
-      componentName='Master Management'
-      childComponentName='Subject List'
-    />
-
-    {(addFlag||editFlag)  && 
-    <div style={{float:'right',marginTop:'15px',marginRight:'15px'}}>
-      <Button startIcon={<ArrowBackIcon />} size="large" title="Go back to Subject List" onClick={handleGoBack}>
-      Subject List
-      </Button>
-    </div>
-    }
-    {!tableFlag && addFlag && !editFlag && <CreateSubject grades={grades} /> }
-    {!tableFlag && !addFlag && editFlag && <EditSubject id={subjectId} desc={desc} name={subjectName} 
-    handleGoBack={handleGoBack}
-    /> }
-    
-    {tableFlag && !addFlag && !editFlag && 
     <div className="headerMaster">
-    <div style={{color:'#014B7E'}}>
-      <h1>Subject List</h1>
+      <div>
+        <CommonBreadcrumbs
+          componentName='Master Management'
+          childComponentName='Subject List'
+        />
+      </div>
+      <div className={classes.buttonContainer}>
+      {tableFlag && !addFlag && !editFlag &&
+        <Button startIcon={<AddOutlinedIcon />} size="medium" title="Add Subject" onClick={handleAddSubject}>
+          Add Subject
+        </Button>
+      }
+      { (addFlag || editFlag) &&
+        <Button startIcon={<ArrowBackIcon />} size="medium" title="Go back to Subject List" onClick={handleGoBack}>
+        Subject List
+        </Button>
+      }
+      </div>
     </div>
-    <div className={classes.buttonContainer}>
-      <Button startIcon={<AddOutlinedIcon />} onClick={handleAddSubject}>
-        Add Subject
-      </Button>
-    </div>
-    </div>
-    }
+   
+    {!tableFlag && addFlag && !editFlag && <CreateSubject grades={grades} /> }
+    {!tableFlag && !addFlag && editFlag && <EditSubject id={subjectId} desc={desc} name={subjectName} handleGoBack={handleGoBack}/> }
+    
     
     {tableFlag && !addFlag && !editFlag && 
     <Grid container spacing={4} style={{marginBottom:'10px'}}>
-      <Grid item xs={12} sm={3}>
+      <Grid item>
         <TextField
           id='subname'
           label='Subject Name'
@@ -230,11 +224,12 @@ const SubjectTable = () => {
           onChange={e=>setSearchSubject(e.target.value)}
         />
       </Grid>
-      <Grid item xs={12} sm={2} >
+      <Grid item>
         <Autocomplete
           size='medium'
           onChange={handleGrade}
           id='grade'
+          className="gradeDropClass"
           options={grades}
           getOptionLabel={(option) => option.grade_name}
           filterSelectedOptions

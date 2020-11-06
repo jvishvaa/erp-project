@@ -92,7 +92,7 @@ const EditSubject = ({id,name,desc,handleGoBack}) => {
         </Grid>
        
         <Grid container className='create-class-container' >
-          <Button variant='contained' color='primary' size='large' type='submit'>
+          <Button variant='contained' className='custom_button' color='primary' size='large' type='submit'>
             SUBMIT
           </Button>
         </Grid>

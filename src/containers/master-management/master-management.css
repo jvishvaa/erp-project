@@ -9,13 +9,26 @@
 
 .mainWidth.widthClass {
   width: 300px;
-  transition: width 0.3s;
+  transition: width 0.4s;
 }
 .mainWidth {
-  width: auto;
+  width: 250px;
 }
 .headerMaster {
   display: flex;
   flex-direction: row;
   justify-content: space-between ;
+}
+.gradeDropClass {
+  width: 200px;
+}
+
+
+.custom_button{
+  color:white !important;
+  outline: none !important;
+}
+.custom_button:hover{
+	transform: translateY(-2px);
+  box-shadow: 1px 3px 5px 1px rgba(0, 0, 0, 0.3);
 }
