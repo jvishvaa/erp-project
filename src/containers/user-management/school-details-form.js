@@ -89,10 +89,11 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
   useEffect(() => {
     fetchAcademicYears();
     fetchBranches();
-    if (details.branch && details.branch.length > 0) {
-      handleChangeBranch(details.branch);
+    console.log('branches ', details.branch, details.grade);
+    if (details.branch) {
+      handleChangeBranch([details.branch]);
       if (details.grade && details.grade.length > 0) {
-        // handleChangeGrade(details.grade, details.branch);
+        handleChangeGrade(details.grade, [details.branch]);
       }
     }
   }, []);
