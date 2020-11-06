@@ -44,8 +44,6 @@
     font-weight: 600 !important;
 }
 .button_wrapper{
-	position: absolute;
-    top: 85%;
     margin: 2%;
     display: flex;
     justify-content: space-between;

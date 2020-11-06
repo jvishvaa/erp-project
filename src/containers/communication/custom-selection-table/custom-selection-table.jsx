@@ -18,9 +18,12 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
     selectedUsers,
     pageno,
     setSelectAll,
+    name,
   } = props || {};
   const selectRow = (e) => {
-    setSelectAll(false);
+    if (name !== 'assign_role') {
+      setSelectAll(false);
+    }
     if (
       selectedUsers.length &&
       !e.isSelected &&
@@ -58,10 +61,10 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
   return (
     <div
       className='custom_selection_table_wrapper'
-      style={{ height: 400, width: '100%' }}
+      style={{ height: 580, width: '100%' }}
     >
       <DataGrid
-        pageSize={pageSize || 5}
+        pageSize={pageSize || 15}
         rowCount={totalRows}
         checkboxSelection
         onPageChange={pageChange}
