@@ -57,7 +57,6 @@ const CustomMultiSelect = (props) => {
   const classes = useStyles();
   const theme = useTheme();
   const { selections, setSelections, nameOfDropdown, optionNames } = props || {};
-
   const handleChange = (event) => {
     setSelections(event.target.value);
   };

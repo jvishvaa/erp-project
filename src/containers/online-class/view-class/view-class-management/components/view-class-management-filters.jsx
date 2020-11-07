@@ -22,6 +22,7 @@ import { AlertNotificationContext } from '../../../../../context-api/alert-conte
 
 const ViewClassManagementFilters = () => {
   const [currentTab, setCurrentTab] = useState(0);
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [isCancelSelected, setIsCancelSelected] = useState(false);
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
@@ -30,6 +31,7 @@ const ViewClassManagementFilters = () => {
   const [subjectIds, setSubjectIds] = useState([]);
   const [clearKey, setClearKey] = useState(new Date());
   const [subjects, setSubjects] = useState([]);
+  const [moduleId, setModuleId] = useState();
 
   const {
     listOnlineClassesManagementView,
@@ -141,9 +143,29 @@ const ViewClassManagementFilters = () => {
 
   useEffect(() => {
     handleGetClasses();
-    dispatch(listGrades());
+    if (moduleId) {
+      dispatch(listGrades(moduleId));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentTab, clearKey]);
+  }, [currentTab, clearKey, moduleId]);
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Communication' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Add Group') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
 
   return (
     <div className='filters__container'>

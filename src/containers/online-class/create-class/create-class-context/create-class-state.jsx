@@ -64,11 +64,13 @@ const CreateclassProvider = (props) => {
     return { type, payload: error };
   }
 
-  const listGradesCreateClass = async () => {
+  const listGradesCreateClass = async (moduleId) => {
     dispatch(request(LIST_GRADE_REQUEST));
     try {
       const { data } = await axiosInstance.get(
-        `${endpoints.academics.grades}?branch_id=${roleDetails.branch.join(',')}`
+        `${endpoints.academics.grades}?branch_id=${roleDetails.branch.join(
+          ','
+        )}&module_id=${moduleId}`
       );
       if (data.status === 'success') dispatch(success(data.data, LIST_GRADE_SUCCESS));
       else throw new Error(data.message);
@@ -77,13 +79,13 @@ const CreateclassProvider = (props) => {
     }
   };
 
-  const listSectionsCreateClass = async (gradeId) => {
+  const listSectionsCreateClass = async (gradeId, moduleId) => {
     dispatch(request(LIST_SECTION_REQUEST));
     try {
       const { data } = await axiosInstance.get(
         `${endpoints.academics.sections}?branch_id=${roleDetails.branch.join(
           ','
-        )}&grade_id=${gradeId}`
+        )}&grade_id=${gradeId}&module_id=${moduleId}`
       );
       if (data.status === 'success') {
         dispatch(success(data.data, LIST_SECTION_SUCCESS));

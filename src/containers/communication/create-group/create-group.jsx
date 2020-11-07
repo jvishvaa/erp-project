@@ -37,6 +37,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [selectedRoles, setSelectedRoles] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [selectedGrades, setSelectedGrades] = useState([]);
@@ -48,10 +49,9 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   const [usersRow, setUsersRow] = useState([]);
   const [completeData, setCompleteData] = useState([]);
   const [headers, setHeaders] = useState([]);
-  const [roles, setRoles] = useState(['All']);
-  const [branch, setBranch] = useState(['All']);
-  const [grade, setGrade] = useState(['All']);
-  const [section, setSection] = useState(['All']);
+  const [roles, setRoles] = useState([]);
+  const [grade, setGrade] = useState([]);
+  const [section, setSection] = useState([]);
   const [roleList, setRoleList] = useState([]);
   const [branchList, setBranchList] = useState([]);
   const [gradeList, setGradeList] = useState([]);
@@ -63,6 +63,8 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   const [branchError, setBranchError] = useState('');
   const [selectectUserError, setSelectectUserError] = useState('');
   const [selectAll, setSelectAll] = useState(false);
+  const [moduleId, setModuleId] = useState();
+  const [modulePermision, setModulePermision] = useState(true);
 
   const getRoleApi = async () => {
     try {
@@ -74,7 +76,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       const resultOptions = [];
       if (result.status === 200) {
         result.data.result.map((items) => resultOptions.push(items.role_name));
-        setRoles([...roles, ...resultOptions]);
+        setRoles(resultOptions);
         setRoleList(result.data.result);
       } else {
         setAlert('error', result.data.message);
@@ -94,7 +96,6 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       const resultOptions = [];
       if (result.status === 200) {
         result.data.data.map((items) => resultOptions.push(items.branch_name));
-        setBranch([...branch, ...resultOptions]);
         setBranchList(result.data.data);
       } else {
         setAlert('error', result.data.message);
@@ -107,7 +108,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   const getGradeApi = async () => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?branch_id=${selectedBranch}`,
+        `${endpoints.communication.grades}?branch_id=${selectedBranch}&module_id=${moduleId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -118,7 +119,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       if (result.status === 200) {
         result.data.data.map((items) => resultOptions.push(items.grade__grade_name));
         if (selectedBranch) {
-          setGrade(['All', ...resultOptions]);
+          setGrade(resultOptions);
         }
         setGradeList(result.data.data);
       } else {
@@ -140,7 +141,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       const result = await axiosInstance.get(
         `${
           endpoints.communication.sections
-        }?branch_id=${selectedBranch}&grade_id=${gradesId.toString()}`,
+        }?branch_id=${selectedBranch}&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -150,7 +151,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       const resultOptions = [];
       if (result.status === 200) {
         result.data.data.map((items) => resultOptions.push(items.section__section_name));
-        setSection(['All', ...resultOptions]);
+        setSection(resultOptions);
         setSectionList(result.data.data);
       } else {
         setAlert('error', result.data.message);
@@ -395,11 +396,6 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       setBranchError('Please select a branch');
       return;
     }
-    if (!selectedGrades.length) {
-      setBranchError('');
-      setGradeError('Please select a grade');
-      return;
-    }
     window.scrollTo(0, 0);
     setGroupNameError('');
     setRoleError('');
@@ -411,18 +407,40 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   useEffect(() => {
     getRoleApi();
     getBranchApi();
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Communication' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Add Group') {
+              setModuleId(item.child_id);
+              setModulePermision(true);
+            } else {
+              setModulePermision(false);
+            }
+          });
+        } else {
+          setModulePermision(false);
+        }
+      });
+    } else {
+      setModulePermision(false);
+    }
   }, []);
 
   useEffect(() => {
     if (selectedBranch) {
-      setGrade(['All']);
+      setGrade([]);
       setSelectedGrades([]);
       setSelectedSections([]);
       getGradeApi();
     }
   }, [selectedBranch]);
   useEffect(() => {
-    if (selectedGrades.length && !selectedGrades.includes('All')) {
+    if (selectedGrades.length) {
       setSelectedSections([]);
       getSectionApi();
     }
@@ -515,7 +533,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
                   </div>
                   <span className='create_group_error_span'>{branchError}</span>
                 </div>
-                {selectedBranch ? (
+                {selectedBranch && gradeList.length ? (
                   <div>
                     <CustomMultiSelect
                       selections={selectedGrades}
@@ -526,7 +544,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
                     <span className='create_group_error_span'>{gradeError}</span>
                   </div>
                 ) : null}
-                {selectedGrades.length && !selectedGrades.includes('All') ? (
+                {selectedGrades.length && sectionList.length ? (
                   <CustomMultiSelect
                     selections={selectedSections}
                     setSelections={setSelectedSections}
