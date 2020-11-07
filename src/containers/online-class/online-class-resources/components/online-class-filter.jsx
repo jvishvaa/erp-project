@@ -65,7 +65,7 @@ const OnlineClassFilter = () => {
       const { data } = await axiosInstance(
         `${endpoints.academics.subjects}?branch=${roleDetails.branch.join(
           ','
-        )}&grade=${gradeids.join(',')}`
+        )}&grade=${gradeids.join(',')}&module_id=${moduleId}`
       );
       setSubjects(data.data);
     } catch (error) {
