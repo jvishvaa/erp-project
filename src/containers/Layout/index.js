@@ -361,8 +361,8 @@ const Layout = ({ children, history }) => {
                 {userMenuOpen ? (
                   <ExpandLess style={{ marginLeft: '2rem' }} />
                 ) : (
-                    <ExpandMore style={{ marginLeft: '2rem' }} />
-                  )}
+                  <ExpandMore style={{ marginLeft: '2rem' }} />
+                )}
               </ListItem>
               <Collapse in={userMenuOpen}>
                 <Divider />
@@ -428,7 +428,6 @@ const Layout = ({ children, history }) => {
                 </List>
               </Collapse>
 
-
               <ListItem
                 button
                 onClick={() => {
@@ -444,8 +443,8 @@ const Layout = ({ children, history }) => {
                 {masterMenuOpen ? (
                   <ExpandLess style={{ marginLeft: '2rem' }} />
                 ) : (
-                    <ExpandMore style={{ marginLeft: '2rem' }} />
-                  )}
+                  <ExpandMore style={{ marginLeft: '2rem' }} />
+                )}
               </ListItem>
               <Collapse in={masterMenuOpen}>
                 <Divider />
@@ -465,12 +464,9 @@ const Layout = ({ children, history }) => {
                       {/* <MenuIcon name={child.child_name} /> */}
                       {/* {menuIcon(child.child_name)} */}
                     </ListItemIcon>
-                    <ListItemText
-                      primary={`Subject`}
-                      className={classes.menuItemText}
-                    />
+                    <ListItemText primary={`Subject`} className={classes.menuItemText} />
                   </ListItem>
-                  
+
                   <ListItem
                     button
                     className={
@@ -486,10 +482,7 @@ const Layout = ({ children, history }) => {
                       {/* <MenuIcon name={child.child_name} /> */}
                       {/* {menuIcon(child.child_name)} */}
                     </ListItemIcon>
-                    <ListItemText
-                      primary={`Section`}
-                      className={classes.menuItemText}
-                    />
+                    <ListItemText primary={`Section`} className={classes.menuItemText} />
                   </ListItem>
 
                   <ListItem
@@ -507,10 +500,7 @@ const Layout = ({ children, history }) => {
                       {/* <MenuIcon name={child.child_name} /> */}
                       {/* {menuIcon(child.child_name)} */}
                     </ListItemIcon>
-                    <ListItemText
-                      primary={`Grade`}
-                      className={classes.menuItemText}
-                    />
+                    <ListItemText primary={`Grade`} className={classes.menuItemText} />
                   </ListItem>
                 </List>
               </Collapse>

@@ -41,6 +41,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [customSelect, setCustomSelect] = useState(false);
   const [firstStep, setFirstStep] = useState(true);
   const [secondStep, setSecondStep] = useState(false);
@@ -56,11 +57,11 @@ const SendMessage = withRouter(({ history, ...props }) => {
   const [usersRow, setUsersRow] = useState([]);
   const [completeData, setCompleteData] = useState([]);
   const [headers, setHeaders] = useState([]);
-  const [group, setGroup] = useState(['All']);
-  const [roles, setRoles] = useState(['All']);
-  const [branch, setBranch] = useState(['All']);
-  const [grade, setGrade] = useState(['All']);
-  const [section, setSection] = useState(['All']);
+  const [group, setGroup] = useState([]);
+  const [roles, setRoles] = useState([]);
+  const [branch, setBranch] = useState([]);
+  const [grade, setGrade] = useState([]);
+  const [section, setSection] = useState([]);
   const [groupList, setGroupList] = useState([]);
   const [roleList, setRoleList] = useState([]);
   const [branchList, setBranchList] = useState([]);
@@ -82,6 +83,8 @@ const SendMessage = withRouter(({ history, ...props }) => {
   const [messageTypeError, setMessageTypeError] = useState('');
   const [messageSending, setMessageSending] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
+  const [moduleId, setModuleId] = useState();
+  const [modulePermision, setModulePermision] = useState(true);
 
   const handleCustomChange = () => {
     setCustomSelect(!customSelect);
@@ -150,7 +153,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
   const getGradeApi = async () => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?branch_id=${selectedBranch}`,
+        `${endpoints.communication.grades}?branch_id=${selectedBranch}&module_id=${moduleId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -161,7 +164,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       if (result.status === 200) {
         result.data.data.map((items) => resultOptions.push(items.grade__grade_name));
         if (selectedBranch) {
-          setGrade(['All', ...resultOptions]);
+          setGrade(resultOptions);
         }
         setGradeList(result.data.data);
       } else {
@@ -183,7 +186,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       const result = await axiosInstance.get(
         `${
           endpoints.communication.sections
-        }?branch_id=${selectedBranch}&grade_id=${gradesId.toString()}`,
+        }?branch_id=${selectedBranch}&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -193,7 +196,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       const resultOptions = [];
       if (result.status === 200) {
         result.data.data.map((items) => resultOptions.push(items.section__section_name));
-        setSection(['All', ...resultOptions]);
+        setSection(resultOptions);
         setSectionList(result.data.data);
       } else {
         setAlert('error', result.data.message);
@@ -210,50 +213,50 @@ const SendMessage = withRouter(({ history, ...props }) => {
       const gradesId = [];
       const sectionsId = [];
       getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15`;
-      if (selectedRoles.length && !selectedRoles.includes('All')) {
+      if (selectedRoles.length) {
         roleList
           .filter((item) => selectedRoles.includes(item['role_name']))
           .forEach((items) => {
             rolesId.push(items.id);
           });
       }
-      if (selectedGrades.length && !selectedGrades.includes('All')) {
+      if (selectedGrades.length) {
         gradeList
           .filter((item) => selectedGrades.includes(item['grade__grade_name']))
           .forEach((items) => {
             gradesId.push(items.grade_id);
           });
       }
-      if (selectedSections.length && !selectedSections.includes('All')) {
+      if (selectedSections.length) {
         sectionList
           .filter((item) => selectedSections.includes(item['section__section_name']))
           .forEach((items) => {
             sectionsId.push(items.section_id);
           });
       }
-      if (rolesId.length && !selectedRoles.includes('All')) {
+      if (rolesId.length) {
         getUserListUrl += `&role=${rolesId.toString()}`;
       }
-      if (gradesId.length && !selectedGrades.includes('All')) {
+      if (gradesId.length) {
         getUserListUrl += `&grade=${gradesId.toString()}`;
       }
       if (selectedBranch) {
         getUserListUrl += `&branch=${selectedBranch}`;
       }
-      if (sectionsId.length && !selectedSections.includes('All')) {
+      if (sectionsId.length) {
         getUserListUrl += `&section=${sectionsId.toString()}`;
       }
     } else {
       const groupId = [];
       getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15`;
-      if (selectedGroup.length && !selectedGroup.includes('All')) {
+      if (selectedGroup.length) {
         groupList
           .filter((item) => selectedGroup.includes(item['group_name']))
           .forEach((items) => {
             groupId.push(items.id);
           });
       }
-      if (groupId.length && !selectedGroup.includes('All')) {
+      if (groupId.length) {
         getUserListUrl += `&group=${groupId.toString()}`;
       }
     }
@@ -517,7 +520,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
           const branchId = [];
           const gradesId = [];
           const sectionsId = [];
-          if (selectedRoles.length && !selectedRoles.includes('All')) {
+          if (selectedRoles.length) {
             roleList
               .filter((item) => selectedRoles.includes(item['role_name']))
               .forEach((items) => {
@@ -527,14 +530,14 @@ const SendMessage = withRouter(({ history, ...props }) => {
           if (selectedBranch) {
             branchId.push(selectedBranch);
           }
-          if (selectedGrades.length && !selectedGrades.includes('All')) {
+          if (selectedGrades.length) {
             gradeList
               .filter((item) => selectedGrades.includes(item['grade__grade_name']))
               .forEach((items) => {
                 gradesId.push(items.grade_id);
               });
           }
-          if (selectedSections.length && !selectedSections.includes('All')) {
+          if (selectedSections.length) {
             sectionList
               .filter((item) => selectedSections.includes(item['section__section_name']))
               .forEach((items) => {
@@ -629,6 +632,30 @@ const SendMessage = withRouter(({ history, ...props }) => {
     }
   };
   useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Communication' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Send Message') {
+              setModuleId(item.child_id);
+              setModulePermision(true);
+            } else {
+              setModulePermision(false);
+            }
+          });
+        } else {
+          setModulePermision(false);
+        }
+      });
+    } else {
+      setModulePermision(false);
+    }
+  }, []);
+  useEffect(() => {
     if (customSelect) {
       getRoleApi();
       getBranchApi();
@@ -652,14 +679,14 @@ const SendMessage = withRouter(({ history, ...props }) => {
 
   useEffect(() => {
     if (selectedBranch) {
-      setGrade(['All']);
+      setGrade([]);
       setSelectedGrades([]);
       setSelectedSections([]);
       getGradeApi();
     }
   }, [selectedBranch]);
   useEffect(() => {
-    if (selectedGrades.length && !selectedGrades.includes('All')) {
+    if (selectedGrades.length) {
       getSectionApi();
     }
   }, [selectedGrades]);
@@ -715,7 +742,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
                       <span className='create_group_error_span'>{roleError}</span>
                     </div>
                   </div>
-                  {selectedRoles.length && !selectedRoles.includes('All') ? (
+                  {selectedRoles.length ? (
                     <div className='creategroup_firstrow'>
                       <div>
                         <FormControl variant='outlined' className={classes.formControl}>
@@ -744,7 +771,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
                         </FormControl>
                         <span className='create_group_error_span'>{branchError}</span>
                       </div>
-                      {selectedBranch ? (
+                      {selectedBranch && gradeList.length ? (
                         <div>
                           <CustomMultiSelect
                             selections={selectedGrades}
@@ -755,7 +782,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
                           <span className='create_group_error_span'>{gradeError}</span>
                         </div>
                       ) : null}
-                      {selectedGrades.length && !selectedGrades.includes('All') ? (
+                      {selectedGrades.length && sectionList.length ? (
                         <CustomMultiSelect
                           selections={selectedSections}
                           setSelections={setSelectedSections}
