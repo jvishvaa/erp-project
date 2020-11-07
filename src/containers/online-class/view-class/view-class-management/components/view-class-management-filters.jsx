@@ -153,12 +153,12 @@ const ViewClassManagementFilters = () => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Communication' &&
+          item.parent_modules === 'Online Class' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Add Group') {
+            if (item.child_name === 'View Class') {
               setModuleId(item.child_id);
             }
           });
