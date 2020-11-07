@@ -29,6 +29,8 @@ const OnlineClassFilter = () => {
   const [subjectIds, setSubjectIds] = useState([]);
   const [clearKey, setClearKey] = useState(new Date());
   const [subjects, setSubjects] = useState([]);
+  const [moduleId, setModuleId] = useState();
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
   const {
     listOnlineClassesResourceView,
@@ -76,7 +78,7 @@ const OnlineClassFilter = () => {
       const ids = value.map((el) => el.grade_id);
       setGradeIds(ids);
       listSubjects(ids);
-      dispatch(listSections(ids));
+      dispatch(listSections(ids, moduleId));
     } else {
       setGradeIds([]);
       setSubjects([]);
@@ -140,9 +142,29 @@ const OnlineClassFilter = () => {
 
   useEffect(() => {
     handleGetClasses();
-    dispatch(listGrades());
+    if (moduleId) {
+      dispatch(listGrades(moduleId));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentTab, clearKey]);
+  }, [currentTab, clearKey, moduleId]);
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Communication' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Add Group') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    } 
+  }, []);
 
   return (
     <div className='filters__container'>

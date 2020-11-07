@@ -34,10 +34,12 @@ import endpoints from '../../../config/endpoints';
 
 const CreateClassForm = () => {
   const [onlineClass, setOnlineClass] = useState(initialFormStructure);
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [formKey, setFormKey] = useState(new Date());
   const [sectionSelectorKey, setSectionSelectorKey] = useState(new Date());
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [subjects, setSubjects] = useState([]);
+  const [moduleId, setModuleId] = useState();
   const {
     listGradesCreateClass,
     listSectionsCreateClass,
@@ -62,7 +64,25 @@ const CreateClassForm = () => {
     JSON.parse(localStorage.getItem('userDetails')) || {};
 
   useEffect(() => {
-    dispatch(listGradesCreateClass());
+    dispatch(listGradesCreateClass(moduleId));
+  }, [moduleId]);
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Communication' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Add Group') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    } 
   }, []);
 
   useEffect(() => {
@@ -84,7 +104,7 @@ const CreateClassForm = () => {
       const { data } = await axiosInstance(
         `${endpoints.academics.subjects}?branch=${roleDetails.branch.join(
           ','
-        )}&grade=${gradeids.join(',')}`
+        )}&grade=${gradeids.join(',')}&module_id=${moduleId}`
       );
       setSubjects(data.data);
     } catch (error) {
@@ -99,7 +119,7 @@ const CreateClassForm = () => {
       const ids = value.map((el) => el.grade_id);
       setOnlineClass((prevState) => ({ ...prevState, gradeIds: ids }));
       listSubjects(ids);
-      dispatch(listSectionsCreateClass(ids));
+      dispatch(listSectionsCreateClass(ids, moduleId));
       dispatch(clearTutorEmailValidation());
     } else {
       setOnlineClass((prevState) => ({ ...prevState, gradeIds: [] }));
@@ -145,6 +165,7 @@ const CreateClassForm = () => {
       coHosts: [{ email: '' }],
     }));
   };
+
 
   useEffect(() => {
     let listStudentUrl = `branch_ids=${roleDetails.branch.join(',')}`;
