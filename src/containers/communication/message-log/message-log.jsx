@@ -162,7 +162,6 @@ const MessageLog = withRouter(({ history, ...props }) => {
             sent: items.is_sent ? 'Yes' : 'No',
           });
         });
-        debugger;
         setMessageRows(tempLogArray);
         setMessageTotalPage(result.data.data.total_pages);
         setLoading(false);
