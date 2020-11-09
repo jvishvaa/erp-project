@@ -40,10 +40,15 @@
 }
 .profile_change_password_button{
 	float: right;
-    margin-top: 3%;
+    margin-top: 3% !important;
     cursor: pointer;
-	color: #014B7E;
-	margin-right: 10%;
+	color: #014B7E !important;
+    margin-right: 10%;
+    background-color: #ff6b6b !important;
+}
+
+.profile_change_password_button:hover{
+    opacity: 0.8;
 }
 .deshboard_profilr_username{
     font-size: 1.4rem;

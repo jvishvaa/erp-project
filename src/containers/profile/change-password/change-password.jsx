@@ -22,7 +22,7 @@ const ChangePassword = (props) => {
   };
   const handleChangePassword = async () => {
     if (!previousPassword) {
-      setErrorPassword('Please enter the previous password');
+      setErrorPassword('Please enter the old password');
       return;
     }
     if (!newPassword) {

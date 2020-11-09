@@ -44,5 +44,12 @@ export const login = (params) => (dispatch) => {
 
 export const logout = () => (dispatch) => {
   dispatch({ type: LOGOUT_REQUEST });
+  if(JSON.parse(localStorage.getItem('rememberDetails')))
+  {
+    localStorage.removeItem('userDetails');
+    localStorage.removeItem('navigationData');
+  }
+  else
   localStorage.clear();
+  
 };

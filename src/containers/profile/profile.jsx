@@ -178,12 +178,13 @@ const Profile = (props) => {
               ))}
             </form>
           </div>
-          <span
+          <Button
+            variant='contained'
             className='profile_change_password_button'
             onClick={() => setPasswordPopUp(true)}
           >
             Change password
-          </span>
+          </Button>
         </div>
         {userImage ? (
           <div className='profile_update_button_wrapper'>
