@@ -65,7 +65,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   const [selectectUserError, setSelectectUserError] = useState('');
   const [selectAll, setSelectAll] = useState(false);
   const [moduleId, setModuleId] = useState();
-  const [loading, setLoaging] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [modulePermision, setModulePermision] = useState(true);
 
   const getRoleApi = async () => {
@@ -204,6 +204,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     }
 
     try {
+      setLoading(true);
       const result = await axiosInstance.get(getUserListUrl, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -250,6 +251,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         setUsersRow(rows);
         setCompleteData(selectionRows);
         setTotalPage(result.data.count);
+        setLoading(false);
         if (!selectedUsers.length) {
           const tempSelectedUser = [];
           for (let page = 1; page <= result.data.total_pages; page += 1) {
@@ -259,12 +261,15 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         }
       } else {
         setAlert('error', result.data.message);
+        setLoading(false);
       }
     } catch (error) {
       setAlert('error', error.message);
+      setLoading(false);
     }
   };
   const createGroup = async () => {
+    setLoading(true);
     const rolesId = [];
     const branchId = [];
     const gradesId = [];
@@ -344,6 +349,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       );
       const { message } = response.data;
       if (message === 'Group created successfully') {
+        setLoading(false);
         setAlert('success', message);
         setNext(false);
         setSelectedUsers([]);
@@ -355,9 +361,11 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         setSelectAll(false);
       } else {
         setAlert('error', response.data.message);
+        setLoading(false);
       }
     } catch (error) {
       setAlert('error', error.message);
+      setLoading(false);
     }
   };
 

@@ -111,18 +111,11 @@ const FileRow = ({
   };
 
   const imageClickHandler = (src) => {
-    axiosInstance
-      .get(src, {
-        responseType: 'blob',
-      })
-      .then((res) => {
-        const url = window.URL.createObjectURL(res.data);
-        window.open(url);
-      })
-      .catch((err) => {
-        console.error(err);
-        alert.warning('Failed To Get Image');
-      });
+    if (src) {
+      window.open(src);
+    } else {
+      alert('warning', 'Resource link not found');
+    }
   };
 
   const attemptClickHandler = (resourceLink) => {
@@ -359,7 +352,7 @@ const ResourceModal = ({ id, alert, onClick, isMobile, type, isOpen }) => {
       const tempArr = e.target.files[0].name.split('.');
       const ext = tempArr.length ? tempArr[tempArr.length - 1] : 'unsupported';
       if (!allowedExtensions.includes(ext)) {
-        alert.warning('Unsupported File Type');
+        alert('warning', 'Unsupported File Type');
         return;
       }
       const newFiles = [...files, e.target.files[0]];
@@ -374,7 +367,7 @@ const ResourceModal = ({ id, alert, onClick, isMobile, type, isOpen }) => {
 
   const submitFilesHandler = () => {
     if (files.length === 0 && type === 'homework' && existingUpload.length === 0) {
-      alert.warning('Minimum 1 file is required');
+      alert('warning', 'Minimum 1 file is required');
       return;
     }
     const formData = new FormData();
@@ -385,14 +378,14 @@ const ResourceModal = ({ id, alert, onClick, isMobile, type, isOpen }) => {
     axiosInstance
       .post(endpoints.onlineClass.resourceFile, formData)
       .then((response) => {
-        alert.success('Work Submitted Successfully');
+        alert('success', 'Work Submitted Successfully');
         setTimeout(() => {
           onClick();
         }, 500);
       })
       .catch((err) => {
         console.error(err);
-        alert.warning(
+        alert('warning',
           (err.response &&
             err.response.data &&
             err.response.data.status &&

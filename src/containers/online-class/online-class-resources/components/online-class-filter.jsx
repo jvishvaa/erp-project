@@ -163,7 +163,7 @@ const OnlineClassFilter = () => {
           });
         }
       });
-    } 
+    }
   }, []);
 
   return (
@@ -190,8 +190,8 @@ const OnlineClassFilter = () => {
             )}
           />
         </Grid>
-        <Grid item>
-          {gradeIds.length ? (
+        {gradeIds.length ? (
+          <Grid item xs={2}>
             <Autocomplete
               key={clearKey}
               size='small'
@@ -213,10 +213,10 @@ const OnlineClassFilter = () => {
                 />
               )}
             />
-          ) : (
-            ''
-          )}
-        </Grid>
+          </Grid>
+        ) : (
+          ''
+        )}
         {gradeIds.length ? (
           <Grid item xs={12} sm={4}>
             <Autocomplete

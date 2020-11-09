@@ -17,6 +17,7 @@ const ViewClassStudent = (props) => {
   const [onlineClassId, setOnlineClassId] = useState(null);
   const {
     data: {
+      resource_available: isResourceAvailable,
       is_accepted: isAccepted,
       join_time: joinTime,
       id: meetingId,
@@ -235,19 +236,23 @@ const ViewClassStudent = (props) => {
                 </Button>
               )}
             </Grid>
-            <Grid item xs={6}>
-              <Button
-                className='viewclass__student-btn'
-                variant='contained'
-                color='primary'
-                onClick={() => {
-                  setIsModalOpen(true);
-                  setOnlineClassId(olClassId);
-                }}
-              >
-                Resources
-              </Button>
-            </Grid>
+            {isResourceAvailable ? (
+              <Grid item xs={6}>
+                <Button
+                  className='viewclass__student-btn'
+                  variant='contained'
+                  color='primary'
+                  onClick={() => {
+                    setIsModalOpen(true);
+                    setOnlineClassId(olClassId);
+                  }}
+                >
+                  Resources
+                </Button>
+              </Grid>
+            ) : (
+              ''
+            )}
             {/* <Grid item xs={6}>
               <Button
                 className='viewclass__student-btn'
@@ -263,6 +268,7 @@ const ViewClassStudent = (props) => {
       </Grid>
       {onlineClassId && (
         <ResourceModal
+          alert={setAlert}
           isOpen={isModalOpen}
           onClick={closeModalHandler}
           id={olClassId}

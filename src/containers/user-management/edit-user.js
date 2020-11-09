@@ -1,3 +1,4 @@
+/* eslint-disable react/no-did-update-set-state */
 /* eslint-disable camelcase */
 /* eslint-disable no-nested-ternary */
 import React, { Component } from 'react';
@@ -21,47 +22,56 @@ class EditUser extends Component {
       activeStep: 0,
       showParentForm: false,
       showGuardianForm: false,
-      user: {
-        first_name: '',
-        middle_name: '',
-        last_name: '',
-        email: '',
-        academic_year: '',
-        branch: '',
-        grade: [],
-        section: [],
-        subjects: [],
-        contact: '',
-        date_of_birth: '',
-        gender: '',
-        profile: '',
-        address: '',
-        parent: {
-          father_first_name: '',
-          father_last_name: '',
-          mother_first_name: '',
-          mother_last_name: '',
-          mother_middle_name: '',
-          father_middle_name: '',
-          father_email: '',
-          mother_email: '',
-          father_mobile: '',
-          mother_mobile: '',
-          mother_photo: '',
-          father_photo: '',
-          address: '',
-          guardian_first_name: '',
-          guardian_middle_name: '',
-          guardian_last_name: '',
-          guardian_email: '',
-          guardian_mobile: '',
-        },
-      },
+      user: null,
+      // user: {
+      //   first_name: '',
+      //   middle_name: '',
+      //   last_name: '',
+      //   email: '',
+      //   academic_year: '',
+      //   branch: '',
+      //   grade: [],
+      //   section: [],
+      //   subjects: [],
+      //   contact: '',
+      //   date_of_birth: '',
+      //   gender: '',
+      //   profile: '',
+      //   address: '',
+      //   parent: {
+      //     father_first_name: '',
+      //     father_last_name: '',
+      //     mother_first_name: '',
+      //     mother_last_name: '',
+      //     mother_middle_name: '',
+      //     father_middle_name: '',
+      //     father_email: '',
+      //     mother_email: '',
+      //     father_mobile: '',
+      //     mother_mobile: '',
+      //     mother_photo: '',
+      //     father_photo: '',
+      //     address: '',
+      //     guardian_first_name: '',
+      //     guardian_middle_name: '',
+      //     guardian_last_name: '',
+      //     guardian_email: '',
+      //     guardian_mobile: '',
+      //   },
+      // },
     };
   }
 
   componentDidMount() {
     this.fetchUserDetails();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { selectedUser } = this.props;
+    if (prevProps.selectedUser !== selectedUser && selectedUser) {
+      console.log('called');
+      this.setState({ user: selectedUser });
+    }
   }
 
   toggleParentForm = (e) => {
@@ -239,7 +249,7 @@ class EditUser extends Component {
     const { classes, creatingUser, fetchingUserDetails, selectedUser } = this.props;
     return (
       <div>
-        {selectedUser ? (
+        {user ? (
           <>
             <Stepper activeStep={activeStep} alternativeLabel>
               {steps.map((label) => (
@@ -250,15 +260,12 @@ class EditUser extends Component {
             </Stepper>
             <div className={classes.formContainer}>
               {activeStep === 0 && (
-                <SchoolDetailsForm
-                  onSubmit={this.onSubmitSchoolDetails}
-                  details={selectedUser}
-                />
+                <SchoolDetailsForm onSubmit={this.onSubmitSchoolDetails} details={user} />
               )}
               {activeStep === 1 && (
                 <UserDetailsForm
                   onSubmit={this.onSubmitUserDetails}
-                  details={selectedUser}
+                  details={user}
                   handleBack={this.handleBack}
                   toggleParentForm={this.toggleParentForm}
                   toggleGuardianForm={this.toggleGuardianForm}
@@ -267,10 +274,10 @@ class EditUser extends Component {
                   isSubmitting={creatingUser}
                 />
               )}
-              {activeStep === 2 && (
+              {activeStep === 2 && selectedUser && (
                 <GuardianDetailsForm
                   onSubmit={this.onSubmitGuardianDetails}
-                  details={selectedUser.parent}
+                  details={user.parent}
                   handleBack={this.handleBack}
                   showParentForm={showParentForm}
                   showGuardianForm={showGuardianForm}
