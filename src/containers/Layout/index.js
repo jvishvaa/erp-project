@@ -82,7 +82,7 @@ const Layout = ({ children, history }) => {
   const getGlobalUserRecords = async () => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.gloabSearch.getUsers}?search=${searchedText}&page=${currentPage}&page_size=15`,
+        `${endpoints.gloabSearch.getUsers}?search=${searchedText}&page=${currentPage}&page_size=100`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -138,11 +138,11 @@ const Layout = ({ children, history }) => {
     }
   }, [isLogout]);
 
-  useEffect(() => {
-    if (searchedText !== '') {
-      getGlobalUserRecords();
-    }
-  }, [currentPage]);
+  //   useEffect(() => {
+  //     if (searchedText !== '') {
+  //       getGlobalUserRecords();
+  //     }
+  //   }, [currentPage]);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -188,20 +188,16 @@ const Layout = ({ children, history }) => {
     }
   };
 
-  const handleScroll = (event) => {
-    const { target } = event;
-    if (target.scrollTop === 1 && scrollDone && currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-      setScrollDone(false);
-    }
-    if (
-      target.scrollTop + target.clientHeight === target.scrollHeight &&
-      currentPage < totalPage
-    ) {
-      setScrollDone(true);
-      setCurrentPage(currentPage + 1);
-    }
-  };
+  //   const handleScroll = (event) => {
+
+  //     if (
+  //       target.scrollTop + target.clientHeight === target.scrollHeight &&
+  //       currentPage < totalPage
+  //     ) {
+  //       setScrollDone(true);
+  //       setCurrentPage(currentPage + 1);
+  //     }
+  //   };
 
   const classes = useStyles();
 
@@ -384,7 +380,7 @@ const Layout = ({ children, history }) => {
                               }}
                             >
                               <Grid
-                                onScroll={(event) => handleScroll(event)}
+                                // onScroll={(event) => handleScroll(event)}
                                 style={{
                                   paddingRight: 8,
                                   maxHeight: 385,
