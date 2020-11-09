@@ -263,6 +263,7 @@ const ViewClassStudent = (props) => {
       </Grid>
       {onlineClassId && (
         <ResourceModal
+          alert={setAlert}
           isOpen={isModalOpen}
           onClick={closeModalHandler}
           id={olClassId}

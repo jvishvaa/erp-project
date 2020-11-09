@@ -60,8 +60,9 @@ const CreateClassForm = () => {
   } = useContext(CreateclassContext);
   const { setAlert } = useContext(AlertNotificationContext);
 
-  const { role_details: roleDetails } =
-    JSON.parse(localStorage.getItem('userDetails')) || {};
+  const {
+    role_details: { branch = [], erp_user_id: erpUser },
+  } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   useEffect(() => {
     dispatch(listGradesCreateClass(moduleId));
@@ -82,7 +83,7 @@ const CreateClassForm = () => {
           });
         }
       });
-    } 
+    }
   }, []);
 
   useEffect(() => {
@@ -102,9 +103,9 @@ const CreateClassForm = () => {
   const listSubjects = async (gradeids) => {
     try {
       const { data } = await axiosInstance(
-        `${endpoints.academics.subjects}?branch=${roleDetails.branch.join(
+        `${endpoints.academics.subjects}?branch=${branch.join(',')}&grade=${gradeids.join(
           ','
-        )}&grade=${gradeids.join(',')}&module_id=${moduleId}`
+        )}&module_id=${moduleId}`
       );
       setSubjects(data.data);
     } catch (error) {
@@ -166,14 +167,11 @@ const CreateClassForm = () => {
     }));
   };
 
-
   useEffect(() => {
-    let listStudentUrl = `branch_ids=${roleDetails.branch.join(',')}`;
+    let listStudentUrl = `branch_ids=${branch.join(',')}`;
     const { gradeIds, sectionIds } = onlineClass;
     if (gradeIds.length && !sectionIds.length) {
-      listStudentUrl = `branch_ids=${roleDetails.branch.join(
-        ','
-      )}&grade_ids=${gradeIds.join(',')}`;
+      listStudentUrl = `branch_ids=${branch.join(',')}&grade_ids=${gradeIds.join(',')}`;
     } else if (gradeIds.length && sectionIds.length) {
       listStudentUrl = `section_mapping_ids=${sectionIds.join(',')}`;
     }
@@ -197,7 +195,7 @@ const CreateClassForm = () => {
     } else {
       const { tutorEmail, selectedDate, selectedTime, duration } = onlineClass;
       const data = {
-        branchId: roleDetails.branch.join(','),
+        branchId: branch.join(','),
         gradeId: onlineClass.gradeIds.join(','),
         sectionIds: onlineClass.sectionIds.join(','),
         subjectId: onlineClass.subject,
@@ -328,8 +326,8 @@ const CreateClassForm = () => {
     if (sectionIds.length) formdata.append('section_mapping_ids', sectionIds);
     else if (gradeIds.length) {
       formdata.append('grade_ids', gradeIds);
-      formdata.append('branch_ids', roleDetails.branch.join(','));
-    } else formdata.append('branch_ids', roleDetails.branch.join(','));
+      formdata.append('branch_ids', branch.join(','));
+    } else formdata.append('branch_ids', branch.join(','));
 
     if (filteredStudents.length)
       formdata.append('student_ids', filteredStudents.join(','));
@@ -341,14 +339,14 @@ const CreateClassForm = () => {
     if (onlineClass.coHosts[index].email) {
       try {
         const acadinfo = {
-          branchId: roleDetails.branch.join(','),
+          branchId: branch.join(','),
           gradeId: onlineClass.gradeIds.join(','),
           sectionIds: onlineClass.sectionIds.join(','),
           subjectId: onlineClass.subject,
         };
         const info = {
           email: [onlineClass.coHosts[index].email],
-          erp_user_id: roleDetails.erp_user_id,
+          erp_user_id: erpUser,
         };
         if (acadinfo.branchId) info.branch_id = acadinfo.branchId;
         if (acadinfo.gradeId) info.grade_id = acadinfo.gradeId;
@@ -404,8 +402,8 @@ const CreateClassForm = () => {
               )}
             />
           </Grid>
-          <Grid item>
-            {onlineClass.gradeIds.length ? (
+          {onlineClass.gradeIds.length ? (
+            <Grid item xs={2}>
               <Autocomplete
                 key={sectionSelectorKey}
                 size='small'
@@ -427,10 +425,10 @@ const CreateClassForm = () => {
                   />
                 )}
               />
-            ) : (
-              ''
-            )}
-          </Grid>
+            </Grid>
+          ) : (
+            ''
+          )}
           {onlineClass.gradeIds.length ? (
             <Grid item xs={12} sm={2}>
               <Autocomplete
