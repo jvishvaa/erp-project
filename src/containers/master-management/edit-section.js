@@ -3,17 +3,18 @@ import { Grid, TextField, Button } from '@material-ui/core';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-
-
+import Loading from '../../components/loader/loader';
 
 const EditSection = ({id,name,handleGoBack}) => {
 
   const secName=name.split("_").pop()
   const { setAlert } = useContext(AlertNotificationContext);
   const [sectionName,setSectionName]=useState(secName || '')
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    setLoading(true);
     let request={}
     if(sectionName!==secName && sectionName!=="")
     {
@@ -25,22 +26,28 @@ const EditSection = ({id,name,handleGoBack}) => {
           setAlert('success', result.data.message);
           handleGoBack()
           setSectionName('')
+          setLoading(false);
         } else {
           setAlert('error', result.data.message);
+          setLoading(false);
         }
       }).catch((error)=>{
         setAlert('error', error.message);
+        setLoading(false);
       })
     }
     else
     {
       setAlert('error','No Fields to Update')
+      setLoading(false);
     }
     };
 
 
   return (
-      <div className='create__class'>
+    <>
+    {loading ? <Loading message='Loading...' /> : null} 
+     <div className='create__class'>
       <form autoComplete='off' onSubmit={handleSubmit}>
         <Grid item style={{marginLeft:'14px',color:'#014B7E'}} >
               <h1>Edit Section</h1>
@@ -70,6 +77,7 @@ const EditSection = ({id,name,handleGoBack}) => {
         </Grid>
       </form>
     </div>
+    </>
   );
 };
 

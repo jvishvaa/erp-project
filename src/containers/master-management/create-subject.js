@@ -4,6 +4,8 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import Loading from '../../components/loader/loader';
+
 
 const CreateSubject = ({grades}) => {
 
@@ -12,6 +14,7 @@ const CreateSubject = ({grades}) => {
   const [gradeId,setGradeId]=useState('')
   const [gradeName,setGradeName]=useState('')
   const [description,setDescription]=useState('')
+  const [loading, setLoading] = useState(false);
 
   const handleGrade = (event, value) => {
     if(value)
@@ -28,9 +31,12 @@ const CreateSubject = ({grades}) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    
+    setLoading(true);
     if(gradeName==="" && gradeId==="")
-    setAlert('error','Select grade from the list')
+    { 
+      setLoading(false);
+      setAlert('error','Select grade from the list')
+    }
     else
     {
       axiosInstance.post(endpoints.masterManagement.createSubject,{
@@ -46,17 +52,22 @@ const CreateSubject = ({grades}) => {
         setGradeName('')
         setGradeId('')
         setDescription('')
+        setLoading(false);
       } else {
         setAlert('error', result.data.message);
+        setLoading(false);
       }
       }).catch((error)=>{
         setAlert('error', error.message);
+        setLoading(false);
       })
     }
     };
 
 
   return (
+    <>
+    {loading ? <Loading message='Loading...' /> : null}
       <div className='create__class'>
       <form autoComplete='off' onSubmit={handleSubmit}>
         <Grid item style={{marginLeft:'14px',color:'#014B7E'}} >
@@ -128,6 +139,7 @@ const CreateSubject = ({grades}) => {
         </Grid>
       </form>
     </div>
+    </>
   );
 };
 
