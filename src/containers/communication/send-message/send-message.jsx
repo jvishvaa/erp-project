@@ -23,6 +23,7 @@ import endpoints from '../../../config/endpoints';
 import HeaderSection from './components/header-section';
 import CustomMultiSelect from '../custom-multiselect/custom-multiselect';
 import CustomSelectionTable from '../custom-selection-table/custom-selection-table';
+import Loading from '../../../components/loader/loader';
 import Layout from '../../Layout';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './send-message.css';
@@ -84,6 +85,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
   const [messageSending, setMessageSending] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
   const [moduleId, setModuleId] = useState();
+  const [loading, setLoading] = useState(false);
   const [modulePermision, setModulePermision] = useState(true);
 
   const handleCustomChange = () => {
@@ -261,6 +263,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       }
     }
     try {
+      setLoading(true);
       const result = await axiosInstance.get(getUserListUrl, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -306,6 +309,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
         setUsersRow(rows);
         setCompleteData(selectionRows);
         setTotalPage(result.data.count);
+        setLoading(false);
         if (!selectedUsers.length) {
           const tempSelectedUser = [];
           for (let page = 1; page <= result.data.total_pages; page += 1) {
@@ -315,9 +319,11 @@ const SendMessage = withRouter(({ history, ...props }) => {
         }
       } else {
         setAlert('error', result.data.message);
+        setLoading(false);
       }
     } catch (error) {
       setAlert('error', error.message);
+      setLoading(false);
     }
   };
 
@@ -584,6 +590,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
             };
           }
         }
+        setLoading(true);
         const response = await axiosInstance.post(sendMessageApi, request, {
           headers: {
             // 'application/json' is the modern content-type for JSON, but some
@@ -704,229 +711,232 @@ const SendMessage = withRouter(({ history, ...props }) => {
   }, [textMessage]);
 
   return (
-    <Layout>
-      <div className='send_message_wrapper'>
-        <HeaderSection
-          firstStep={firstStep}
-          secondStep={secondStep}
-          thirdStep={thirdStep}
-          currentStep={currentStep}
-        />
-        {firstStep ? (
-          <>
-            <div className='send_message_type_wrapper'>
-              <div className='send_message_group_select_lebel'>Group Select</div>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={customSelect}
-                    onChange={handleCustomChange}
-                    name='checkedA'
-                  />
-                }
-                label='Custom select'
-              />
-            </div>
+    <>
+      {loading ? <Loading message='Loading...' /> : null}
+      <Layout>
+        <div className='send_message_wrapper'>
+          <HeaderSection
+            firstStep={firstStep}
+            secondStep={secondStep}
+            thirdStep={thirdStep}
+            currentStep={currentStep}
+          />
+          {firstStep ? (
+            <>
+              <div className='send_message_type_wrapper'>
+                <div className='send_message_group_select_lebel'>Group Select</div>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={customSelect}
+                      onChange={handleCustomChange}
+                      name='checkedA'
+                    />
+                  }
+                  label='Custom select'
+                />
+              </div>
 
-            <div>
-              {customSelect ? (
-                <>
-                  <div className='creategroup_firstrow'>
-                    <div>
-                      <CustomMultiSelect
-                        selections={selectedRoles}
-                        setSelections={setSelectedRoles}
-                        nameOfDropdown='User Role'
-                        optionNames={roles}
-                      />
-                      <span className='create_group_error_span'>{roleError}</span>
-                    </div>
-                  </div>
-                  {selectedRoles.length ? (
+              <div>
+                {customSelect ? (
+                  <>
                     <div className='creategroup_firstrow'>
                       <div>
-                        <FormControl variant='outlined' className={classes.formControl}>
-                          <InputLabel id='demo-simple-select-outlined-label'>
-                            Branch
-                          </InputLabel>
-                          <Select
-                            labelId='demo-simple-select-outlined-label'
-                            id='demo-simple-select-outlined'
-                            value={selectedBranch}
-                            onChange={(e) => setSelectedBranch(e.target.value)}
-                            label='Branch'
-                          >
-                            <MenuItem value=''>
-                              <em>None</em>
-                            </MenuItem>
-                            {branchList.map((items, index) => (
-                              <MenuItem
-                                key={`branch_create_group_${index}`}
-                                value={items.id}
-                              >
-                                {items.branch_name}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                        <span className='create_group_error_span'>{branchError}</span>
-                      </div>
-                      {selectedBranch && gradeList.length ? (
-                        <div>
-                          <CustomMultiSelect
-                            selections={selectedGrades}
-                            setSelections={setSelectedGrades}
-                            nameOfDropdown='Grade'
-                            optionNames={grade}
-                          />
-                          <span className='create_group_error_span'>{gradeError}</span>
-                        </div>
-                      ) : null}
-                      {selectedGrades.length && sectionList.length ? (
                         <CustomMultiSelect
-                          selections={selectedSections}
-                          setSelections={setSelectedSections}
-                          nameOfDropdown='Section'
-                          optionNames={section}
+                          selections={selectedRoles}
+                          setSelections={setSelectedRoles}
+                          nameOfDropdown='User Role'
+                          optionNames={roles}
                         />
-                      ) : null}
+                        <span className='create_group_error_span'>{roleError}</span>
+                      </div>
                     </div>
-                  ) : null}
-                </>
-              ) : (
-                <div className='creategroup_firstrow'>
-                  <CustomMultiSelect
-                    selections={selectedGroup}
-                    setSelections={setSelectedGroup}
-                    nameOfDropdown='Group'
-                    optionNames={group}
+                    {selectedRoles.length ? (
+                      <div className='creategroup_firstrow'>
+                        <div>
+                          <FormControl variant='outlined' className={classes.formControl}>
+                            <InputLabel id='demo-simple-select-outlined-label'>
+                              Branch
+                            </InputLabel>
+                            <Select
+                              labelId='demo-simple-select-outlined-label'
+                              id='demo-simple-select-outlined'
+                              value={selectedBranch}
+                              onChange={(e) => setSelectedBranch(e.target.value)}
+                              label='Branch'
+                            >
+                              <MenuItem value=''>
+                                <em>None</em>
+                              </MenuItem>
+                              {branchList.map((items, index) => (
+                                <MenuItem
+                                  key={`branch_create_group_${index}`}
+                                  value={items.id}
+                                >
+                                  {items.branch_name}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                          <span className='create_group_error_span'>{branchError}</span>
+                        </div>
+                        {selectedBranch && gradeList.length ? (
+                          <div>
+                            <CustomMultiSelect
+                              selections={selectedGrades}
+                              setSelections={setSelectedGrades}
+                              nameOfDropdown='Grade'
+                              optionNames={grade}
+                            />
+                            <span className='create_group_error_span'>{gradeError}</span>
+                          </div>
+                        ) : null}
+                        {selectedGrades.length && sectionList.length ? (
+                          <CustomMultiSelect
+                            selections={selectedSections}
+                            setSelections={setSelectedSections}
+                            nameOfDropdown='Section'
+                            optionNames={section}
+                          />
+                        ) : null}
+                      </div>
+                    ) : null}
+                  </>
+                ) : (
+                  <div className='creategroup_firstrow'>
+                    <CustomMultiSelect
+                      selections={selectedGroup}
+                      setSelections={setSelectedGroup}
+                      nameOfDropdown='Group'
+                      optionNames={group}
+                    />
+                    <span className='create_group_error_span'>{groupError}</span>
+                  </div>
+                )}
+              </div>
+            </>
+          ) : null}
+          {secondStep ? (
+            <div className='send_message_table_wrapper'>
+              {usersRow.length ? (
+                <div className='send_message_select_all_wrapper'>
+                  <input
+                    type='checkbox'
+                    className='send_message_select_all_checkbox'
+                    checked={selectAll}
+                    onChange={handleSelectAll}
                   />
-                  <span className='create_group_error_span'>{groupError}</span>
+                  <span>Select All</span>
                 </div>
-              )}
+              ) : null}
+              <span className='create_group_error_span'>{selectUsersError}</span>
+              <CustomSelectionTable
+                header={headers}
+                rows={usersRow}
+                completeData={completeData}
+                totalRows={totalPage}
+                setSelectAll={setSelectAll}
+                pageno={pageno}
+                selectedUsers={selectedUsers}
+                changePage={setPageno}
+                setSelectedUsers={setSelectedUsers}
+              />
             </div>
-          </>
-        ) : null}
-        {secondStep ? (
-          <div className='send_message_table_wrapper'>
-            {usersRow.length ? (
-              <div className='send_message_select_all_wrapper'>
-                <input
-                  type='checkbox'
-                  className='send_message_select_all_checkbox'
-                  checked={selectAll}
-                  onChange={handleSelectAll}
-                />
-                <span>Select All</span>
-              </div>
-            ) : null}
-            <span className='create_group_error_span'>{selectUsersError}</span>
-            <CustomSelectionTable
-              header={headers}
-              rows={usersRow}
-              completeData={completeData}
-              totalRows={totalPage}
-              setSelectAll={setSelectAll}
-              pageno={pageno}
-              selectedUsers={selectedUsers}
-              changePage={setPageno}
-              setSelectedUsers={setSelectedUsers}
-            />
-          </div>
-        ) : null}
-        {thirdStep ? (
-          <div className='message_sending_screen_wrapper'>
-            <div className='message_type_block_wrapper'>
-              <div
-                className={`message_type_block ${
-                  isEmail ? null : 'message_type_block_selected'
-                }`}
-                onClick={() => setIsEmail(false)}
-              >
-                SMS
-              </div>
-              <div
-                className={`message_type_block ${
-                  isEmail ? 'message_type_block_selected' : null
-                }`}
-                onClick={() => setIsEmail(true)}
-              >
-                Mail
-              </div>
-            </div>
-            <div className='message_type_wrapper'>
-              <FormControl variant='outlined' className={classes.formControl}>
-                <InputLabel id='demo-simple-select-outlined-label'>
-                  {isEmail ? 'Email Type' : 'SMS Type'}
-                </InputLabel>
-                <Select
-                  labelId='demo-simple-select-outlined-label'
-                  id='demo-simple-select-outlined'
-                  value={selectedSmsType}
-                  onChange={(e) => setSelectedSmsType(e.target.value)}
-                  label={isEmail ? 'Email Type' : 'SMS Type'}
-                >
-                  <MenuItem value=''>
-                    <em>None</em>
-                  </MenuItem>
-                  {smsTypeList.map((items, index) => (
-                    <MenuItem key={`sms_type_${index}`} value={items.id}>
-                      {items.category_name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
-            <span className='create_group_error_span'>{messageTypeError}</span>
-            {isEmail ? (
-              <div className='email_subject_wrapper'>
-                <TextField
-                  id='email_subject'
-                  label='Email Subject'
-                  value={emailSubject}
-                  onChange={(e) => setEmailSubject(e.target.value)}
-                />
-              </div>
-            ) : null}
-            <div className='send_message_message_tag'>Message</div>
-            <TextareaAutosize
-              className='textFields_message'
-              aria-label='minimum height'
-              rowsMin={6}
-              onChange={handleMessageChange}
-              value={textMessage}
-            />
-            <span className='text_message_word_count'>{`Word count : ${wordcount} words left`}</span>
-            <span className='create_group_error_span'>{textMessageError}</span>
-          </div>
-        ) : null}
-        <div className='send_message_button_wrapper'>
-          {!firstStep ? (
-            <input
-              className='custom_button addgroup_back_button'
-              type='button'
-              onClick={handleback}
-              value='back'
-            />
           ) : null}
           {thirdStep ? (
-            <input
-              className='custom_button addgroup_next_button'
-              type='button'
-              onClick={handleSendMessage}
-              value={messageSending ? 'Sending Message' : 'Send Message'}
-            />
-          ) : (
-            <input
-              className='custom_button addgroup_next_button'
-              type='button'
-              onClick={handlenext}
-              value='next'
-            />
-          )}
+            <div className='message_sending_screen_wrapper'>
+              <div className='message_type_block_wrapper'>
+                <div
+                  className={`message_type_block ${
+                    isEmail ? null : 'message_type_block_selected'
+                  }`}
+                  onClick={() => setIsEmail(false)}
+                >
+                  SMS
+                </div>
+                <div
+                  className={`message_type_block ${
+                    isEmail ? 'message_type_block_selected' : null
+                  }`}
+                  onClick={() => setIsEmail(true)}
+                >
+                  Mail
+                </div>
+              </div>
+              <div className='message_type_wrapper'>
+                <FormControl variant='outlined' className={classes.formControl}>
+                  <InputLabel id='demo-simple-select-outlined-label'>
+                    {isEmail ? 'Email Type' : 'SMS Type'}
+                  </InputLabel>
+                  <Select
+                    labelId='demo-simple-select-outlined-label'
+                    id='demo-simple-select-outlined'
+                    value={selectedSmsType}
+                    onChange={(e) => setSelectedSmsType(e.target.value)}
+                    label={isEmail ? 'Email Type' : 'SMS Type'}
+                  >
+                    <MenuItem value=''>
+                      <em>None</em>
+                    </MenuItem>
+                    {smsTypeList.map((items, index) => (
+                      <MenuItem key={`sms_type_${index}`} value={items.id}>
+                        {items.category_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
+              <span className='create_group_error_span'>{messageTypeError}</span>
+              {isEmail ? (
+                <div className='email_subject_wrapper'>
+                  <TextField
+                    id='email_subject'
+                    label='Email Subject'
+                    value={emailSubject}
+                    onChange={(e) => setEmailSubject(e.target.value)}
+                  />
+                </div>
+              ) : null}
+              <div className='send_message_message_tag'>Message</div>
+              <TextareaAutosize
+                className='textFields_message'
+                aria-label='minimum height'
+                rowsMin={6}
+                onChange={handleMessageChange}
+                value={textMessage}
+              />
+              <span className='text_message_word_count'>{`Word count : ${wordcount} words left`}</span>
+              <span className='create_group_error_span'>{textMessageError}</span>
+            </div>
+          ) : null}
+          <div className='send_message_button_wrapper'>
+            {!firstStep ? (
+              <input
+                className='custom_button addgroup_back_button'
+                type='button'
+                onClick={handleback}
+                value='back'
+              />
+            ) : null}
+            {thirdStep ? (
+              <input
+                className='custom_button addgroup_next_button'
+                type='button'
+                onClick={handleSendMessage}
+                value={messageSending ? 'Sending Message' : 'Send Message'}
+              />
+            ) : (
+              <input
+                className='custom_button addgroup_next_button'
+                type='button'
+                onClick={handlenext}
+                value='next'
+              />
+            )}
+          </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </>
   );
 });
 
