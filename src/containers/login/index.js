@@ -49,8 +49,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function SignIn({ onLogin, history }) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+
+  const [uname,pass,checked] =JSON.parse(localStorage.getItem('rememberDetails')) || []
+  const [username, setUsername] = useState(''||uname);
+  const [password, setPassword] = useState(''||pass);
+  const [check,setCheck]=useState(false||checked)
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
 
@@ -62,14 +65,20 @@ function SignIn({ onLogin, history }) {
     if (username && password) {
       onLogin(params).then((response) => {
         if (response.isLogin) {
-          history.push('/dashboard');
+          history.push('/profile');
         } else {
           setAlert('error', response.message);
         }
       });
     }
+    if(check) {
+      localStorage.setItem('rememberDetails',JSON.stringify([username,password,check]))
+    }
+    else{
+      localStorage.removeItem('rememberDetails')
+    }
   };
-
+  
   return (
     <Container component='main' maxWidth='xs'>
       <CssBaseline />
@@ -117,8 +126,8 @@ function SignIn({ onLogin, history }) {
             }}
           />
           <FormControlLabel
-            control={<Checkbox value='remember' color='primary' />}
-            label='Remember me'
+            control={<Checkbox value='remember' color='primary' checked={check} onClick={e=>setCheck(!check)}/>}
+            label='Remember Me'
           />
           <Button
             fullWidth

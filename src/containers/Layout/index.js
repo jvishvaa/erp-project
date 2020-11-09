@@ -15,12 +15,11 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/More';
 import Collapse from '@material-ui/core/Collapse';
 import Divider from '@material-ui/core/Divider';
-import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
+import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountOutlined';
+import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import InputBase from '@material-ui/core/InputBase';
 import Paper from '@material-ui/core/Paper';
 import SearchIcon from '@material-ui/icons/Search';
-import Badge from '@material-ui/core/Badge';
-import NotificationsNoneOutlinedIcon from '@material-ui/icons/NotificationsNoneOutlined';
 import clsx from 'clsx';
 import { withRouter } from 'react-router-dom';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
@@ -32,6 +31,7 @@ import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import { logout } from '../../redux/actions';
 import DrawerMenu from '../../components/drawer-menu';
 import useStyles from './useStyles';
+import Grow from '@material-ui/core/Grow';
 import './styles.scss';
 
 import logo from '../../assets/images/logo.png';
@@ -47,6 +47,7 @@ const Layout = ({ children, history }) => {
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [profileOpen,setProfileOpen]=useState(false)
 
   useEffect(() => {
     const navigationData = localStorage.getItem('navigationData');
@@ -71,12 +72,7 @@ const Layout = ({ children, history }) => {
     }
   }, [isLogout]);
 
-  const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
 
   const handleLogout = () => {
     dispatch(logout());
@@ -85,66 +81,51 @@ const Layout = ({ children, history }) => {
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
+    setProfileOpen(false)
   };
 
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
+    setProfileOpen(true)
   };
 
   const classes = useStyles();
 
-  const menuId = 'primary-search-account-menu';
-  const renderMenu = () => (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-    </Menu>
-  );
-
   const mobileMenuId = 'primary-search-account-menu-mobile';
   const renderMobileMenu = (
+
     <Menu
-      anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id={mobileMenuId}
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}
-    >
-      <MenuItem>
-        <IconButton aria-label='show 11 new notifications' color='inherit'>
-          <Badge badgeContent={11} color='secondary'>
-            <NotificationsNoneOutlinedIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          aria-label='account of current user'
-          aria-controls='primary-search-account-menu'
-          aria-haspopup='true'
-          color='inherit'
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
-    </Menu>
+    anchorEl={mobileMoreAnchorEl}
+    getContentAnchorEl={null}
+    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+    id={mobileMenuId}
+    TransitionComponent={Grow}
+    transitionDuration={500}
+    keepMounted
+    transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+    open={isMobileMenuOpen}
+    onClose={handleMobileMenuClose}
+  >
+    <MenuItem onClick={e=>history.push('/profile')} >
+      <IconButton
+        aria-label='my profile'
+        color='inherit'
+      >
+        <PermIdentityIcon color='primary' style={{ fontSize: '2rem' }} />
+      </IconButton>
+      <p  style={{color:'#014B7E'}}>My Profile</p>
+    </MenuItem>
+    
+    <MenuItem onClick={handleLogout}>
+      <IconButton
+        aria-label='logout button'
+        color='inherit'
+      >
+        <ExitToAppIcon color='primary' style={{ fontSize: '2rem' }} />
+      </IconButton>
+      <p style={{color:'#014B7E'}}>Logout</p>
+    </MenuItem>
+  </Menu>
   );
 
   const handleRouting = (name) => {
@@ -236,43 +217,24 @@ const Layout = ({ children, history }) => {
               </IconButton>
             </Paper>
           </div>
-          <div className={classes.sectionDesktop}>
-            <IconButton aria-label='show 17 new notifications' color='inherit'>
-              <Badge
-                badgeContent={17}
-                color='primary'
-                classes={{
-                  badge: classes.notificationNumber,
-                  root: classes.notificationNumber,
-                }}
-              >
-                <NotificationsNoneOutlinedIcon
-                  color='primary'
-                  style={{ fontSize: '2rem' }}
-                />
-              </Badge>
-            </IconButton>
+
+          <div className={classes.sectionDesktop}> 
             <IconButton
-              edge='end'
-              aria-label='account of current user'
-              aria-controls={menuId}
+              aria-label='show more'
+              aria-controls={mobileMenuId}
               aria-haspopup='true'
-              onClick={handleProfileMenuOpen}
+              onClick={handleMobileMenuOpen}
               color='inherit'
             >
-              <AccountCircle color='primary' style={{ fontSize: '2rem' }} />
-            </IconButton>
-            <IconButton
-              edge='end'
-              aria-label='logout button'
-              aria-controls={menuId}
-              aria-haspopup='false'
-              onClick={handleLogout}
-              color='inherit'
-            >
-              <ExitToAppIcon color='primary' style={{ fontSize: '2rem' }} />
+              <AccountCircle color='primary' style={{ fontSize: '2rem'}} />
+              {profileOpen ? (
+                  <ExpandLess />
+                ) : (
+                  <ExpandMore />
+                )}
             </IconButton>
           </div>
+
           <div className={classes.sectionMobile}>
             <IconButton
               aria-label='show more'
@@ -284,9 +246,9 @@ const Layout = ({ children, history }) => {
               <MoreIcon />
             </IconButton>
           </div>
+
         </Toolbar>
       </AppBar>
-      {renderMenu}
       {renderMobileMenu}
       <Drawer
         open={drawerOpen}
@@ -435,7 +397,7 @@ const Layout = ({ children, history }) => {
                 }}
               >
                 <ListItemIcon className={classes.menuItemIcon}>
-                  <SupervisorAccountIcon />
+                  <SupervisorAccountOutlinedIcon />
                 </ListItemIcon>
                 <ListItemText className={classes.menuItemText}>
                   Master Management
