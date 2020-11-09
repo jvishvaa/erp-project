@@ -90,7 +90,7 @@ const ViewClassManagementFilters = () => {
 
   const handleSection = (event, value) => {
     if (value.length) {
-      const ids = value.map((el) => el.section_id);
+      const ids = value.map((el) => el.id);
       setSectionIds(ids);
     } else {
       setSectionIds([]);
