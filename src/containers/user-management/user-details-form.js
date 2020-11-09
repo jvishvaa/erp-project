@@ -91,6 +91,7 @@ const UserDetailsForm = ({
             name='first_name'
             onChange={formik.handleChange}
             value={formik.values.first_name}
+            inputProps={{maxLength:20}}
             label='First name'
             autoFocus
           />
@@ -107,6 +108,7 @@ const UserDetailsForm = ({
             name='middle_name'
             onChange={formik.handleChange}
             value={formik.values.middle_name}
+            inputProps={{maxLength:20}}
             label='Middle name'
           />
         </FormControl>
@@ -119,6 +121,7 @@ const UserDetailsForm = ({
             name='last_name'
             onChange={formik.handleChange}
             value={formik.values.last_name}
+            inputProps={{maxLength:20}}
             label='Last name'
           />
           <FormHelperText style={{ color: 'red' }}>
@@ -192,6 +195,7 @@ const UserDetailsForm = ({
             <OutlinedInput
               id='contact'
               name='contact'
+              inputProps={{maxLength:10}}
               onChange={formik.handleChange}
               value={formik.values.contact}
               label='Mobile no.'
@@ -209,6 +213,7 @@ const UserDetailsForm = ({
               name='email'
               onChange={formik.handleChange}
               value={formik.values.email}
+              inputProps={{maxLength:40}}
               label='Email'
             />
             <FormHelperText style={{ color: 'red' }}>
@@ -226,6 +231,10 @@ const UserDetailsForm = ({
               name='address'
               onChange={formik.handleChange}
               value={formik.values.address}
+              inputProps={{maxLength:75}}
+              multiline
+              rows={4}
+              rowsMax={6}
               label='Address'
             />
             <FormHelperText style={{ color: 'red' }}>

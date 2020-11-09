@@ -165,6 +165,7 @@ class EditRole extends Component {
                 id='outlined-helperText'
                 label='Role name'
                 defaultValue=''
+                inputProps={{maxLength:20}}
                 variant='outlined'
                 value={roleName}
                 onChange={this.onChangeRoleName}

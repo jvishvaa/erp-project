@@ -1,7 +1,10 @@
+/* eslint-disable react/jsx-wrap-multilines */
+/* eslint-disable no-use-before-define */
 /* eslint-disable no-debugger */
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { throttle, debounce } from 'throttle-debounce';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -15,38 +18,106 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/More';
 import Collapse from '@material-ui/core/Collapse';
 import Divider from '@material-ui/core/Divider';
-import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
+import {
+  Popper,
+  Fade,
+  Paper,
+  Grid,
+  ListItemSecondaryAction,
+  ListItemIcon,
+} from '@material-ui/core';
+import EditIcon from '@material-ui/icons/EditOutlined';
+import { fade } from '@material-ui/core/styles/colorManipulator';
+import List from '@material-ui/core/List';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import ListItem from '@material-ui/core/ListItem';
+import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountOutlined';
+import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import InputBase from '@material-ui/core/InputBase';
-import Paper from '@material-ui/core/Paper';
 import SearchIcon from '@material-ui/icons/Search';
-import Badge from '@material-ui/core/Badge';
-import NotificationsNoneOutlinedIcon from '@material-ui/icons/NotificationsNoneOutlined';
 import clsx from 'clsx';
 import { withRouter } from 'react-router-dom';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import PeopleIcon from '@material-ui/icons/People';
-import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { logout } from '../../redux/actions';
 import DrawerMenu from '../../components/drawer-menu';
+import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import UserDetails from './userDetails/user-details';
+import axiosInstance from '../../config/axios';
+import endpoints from '../../config/endpoints';
 import useStyles from './useStyles';
+import Grow from '@material-ui/core/Grow';
 import './styles.scss';
 
 import logo from '../../assets/images/logo.png';
 
 const Layout = ({ children, history }) => {
   const dispatch = useDispatch();
+  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const { role_details: roleDetails } =
+    JSON.parse(localStorage.getItem('userDetails')) || {};
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isLogout, setIsLogout] = useState(false);
   const [navigationData, setNavigationData] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [masterMenuOpen, setMasterMenuOpen] = useState(false);
   const [superUser, setSuperUser] = useState(false);
-
+  const [searchUserDetails, setSearchUserDetails] = useState([]);
+  const searchInputRef = useRef();
+  const { setAlert } = useContext(AlertNotificationContext);
+  const [searching, setSearching] = useState(false);
+  const [globalSearchResults, setGlobalSearchResults] = useState(false);
+  const [globalSearchError, setGlobalSearchError] = useState(false);
+  const [searchedText, setSearchedText] = useState('');
+  const [totalPage, setTotalPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [scrollDone, setScrollDone] = useState(false);
+  const [displayUserDetails, setDisplayUserDetails] = useState(false);
+  const [userId, setUserId] = useState();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const getGlobalUserRecords = async () => {
+    try {
+      const result = await axiosInstance.get(
+        `${endpoints.gloabSearch.getUsers}?search=${searchedText}&page=${currentPage}&page_size=100`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (result.data.status_code === 200) {
+        const tempData = [];
+        result.data.data.results.map((items) =>
+          tempData.push({ id: items.id, name: items.name, erpId: items.erp_id })
+        );
+        setTotalPage(result.data.data.total_pages);
+        setSearchUserDetails(tempData);
+      } else {
+        setAlert('error', result.data.message);
+        setGlobalSearchError(false);
+      }
+    } catch (error) {
+      setAlert('error', error.message);
+      setGlobalSearchError(false);
+    }
+  };
+  const autocompleteSearch = (q, pageId, isDelete) => {
+    if (q !== '') {
+      setSearching(true);
+      setGlobalSearchResults(true);
+      getGlobalUserRecords();
+    }
+  };
+  const autocompleteSearchDebounced = debounce(500, autocompleteSearch);
+  const autocompleteSearchThrottled = throttle(500, autocompleteSearch);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   useEffect(() => {
     const navigationData = localStorage.getItem('navigationData');
@@ -71,12 +142,14 @@ const Layout = ({ children, history }) => {
     }
   }, [isLogout]);
 
+  //   useEffect(() => {
+  //     if (searchedText !== '') {
+  //       getGlobalUserRecords();
+  //     }
+  //   }, [currentPage]);
+
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
 
   const handleLogout = () => {
     dispatch(logout());
@@ -85,64 +158,72 @@ const Layout = ({ children, history }) => {
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
+    setProfileOpen(false);
   };
 
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
+    setProfileOpen(true);
   };
 
-  const classes = useStyles();
+  const changeQuery = (event) => {
+    setSearchedText(event.target.value);
+    if (event.target.value === '') {
+      setGlobalSearchResults(false);
+      setSearching(false);
+      setSearchUserDetails([]);
+      setTotalPage(0);
+      setCurrentPage(1);
+    }
+    const q = event.target.value;
+    if (q.length < 5) {
+      setCurrentPage(1);
+      autocompleteSearchThrottled(event.target.value);
+    } else {
+      setCurrentPage(1);
+      autocompleteSearchDebounced(event.target.value);
+    }
+  };
 
-  const menuId = 'primary-search-account-menu';
-  const renderMenu = () => (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-    </Menu>
-  );
+  //   const handleScroll = (event) => {
+
+  //     if (
+  //       target.scrollTop + target.clientHeight === target.scrollHeight &&
+  //       currentPage < totalPage
+  //     ) {
+  //       setScrollDone(true);
+  //       setCurrentPage(currentPage + 1);
+  //     }
+  //   };
+
+  const classes = useStyles();
 
   const mobileMenuId = 'primary-search-account-menu-mobile';
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      getContentAnchorEl={null}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       id={mobileMenuId}
+      TransitionComponent={Grow}
+      transitionDuration={500}
       keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      transformOrigin={{ vertical: 'top', horizontal: 'center' }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconButton aria-label='show 11 new notifications' color='inherit'>
-          <Badge badgeContent={11} color='secondary'>
-            <NotificationsNoneOutlinedIcon />
-          </Badge>
+      <MenuItem onClick={(e) => history.push('/profile')}>
+        <IconButton aria-label='my profile' color='inherit'>
+          <PermIdentityIcon color='primary' style={{ fontSize: '2rem' }} />
         </IconButton>
-        <p>Notifications</p>
+        <p style={{ color: '#014B7E' }}>My Profile</p>
       </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          aria-label='account of current user'
-          aria-controls='primary-search-account-menu'
-          aria-haspopup='true'
-          color='inherit'
-        >
-          <AccountCircle />
+
+      <MenuItem onClick={handleLogout}>
+        <IconButton aria-label='logout button' color='inherit'>
+          <ExitToAppIcon color='primary' style={{ fontSize: '2rem' }} />
         </IconButton>
-        <p>Profile</p>
+        <p style={{ color: '#014B7E' }}>Logout</p>
       </MenuItem>
     </Menu>
   );
@@ -219,60 +300,198 @@ const Layout = ({ children, history }) => {
             Welcome!
             <span style={{ fontSize: '1rem', marginLeft: '1rem' }}>Have a great day</span>
           </Typography>
-
-          <div className={classes.grow}>
-            <Paper component='form' className={classes.searchInputContainer}>
-              <InputBase
-                className={classes.searchInput}
-                placeholder='Search..'
-                inputProps={{ 'aria-label': 'search across site' }}
-              />
-              <IconButton
-                type='submit'
-                className={classes.searchIconButton}
-                aria-label='search'
-              >
-                <SearchIcon />
-              </IconButton>
-            </Paper>
-          </div>
-          <div className={classes.sectionDesktop}>
-            <IconButton aria-label='show 17 new notifications' color='inherit'>
-              <Badge
-                badgeContent={17}
-                color='primary'
-                classes={{
-                  badge: classes.notificationNumber,
-                  root: classes.notificationNumber,
-                }}
-              >
-                <NotificationsNoneOutlinedIcon
-                  color='primary'
-                  style={{ fontSize: '2rem' }}
+          {superUser ? (
+            <div className={classes.grow}>
+              <Paper component='form' className={classes.searchInputContainer}>
+                <InputBase
+                  className={classes.searchInput}
+                  placeholder='Search..'
+                  inputProps={{ 'aria-label': 'search across site' }}
+                  inputRef={searchInputRef}
+                  onChange={changeQuery}
                 />
-              </Badge>
-            </IconButton>
+                <IconButton
+                  type='submit'
+                  className={classes.searchIconButton}
+                  aria-label='search'
+                >
+                  <SearchIcon />
+                </IconButton>
+              </Paper>
+              <Popper
+                open={searching}
+                className={classes.searchDropdown}
+                placement='bottom'
+                style={{
+                  position: 'fixed',
+                  top:
+                    searchInputRef.current &&
+                    searchInputRef.current.getBoundingClientRect().top + 32,
+                  left: 'auto',
+                  right: `calc(100vw - ${
+                    searchInputRef.current &&
+                    searchInputRef.current.getBoundingClientRect().left +
+                      searchInputRef.current.getBoundingClientRect().width
+                  }px)`,
+                  zIndex: 3000,
+                }}
+                transition
+              >
+                {({ TransitionProps }) => (
+                  <Fade {...TransitionProps} timeout={350}>
+                    <Paper>
+                      <Grid container style={{ flexDirection: 'column' }}>
+                        {globalSearchResults ? (
+                          <>
+                            <Grid item>
+                              <Grid
+                                container
+                                style={{
+                                  flexDirection: 'row',
+                                  paddingBottom: 12,
+                                  paddingTop: 12,
+                                  paddingLeft: 16,
+                                  backgroundColor: '#eee',
+                                  paddingRight: 16,
+                                  minWidth: 374,
+                                }}
+                              >
+                                <Grid
+                                  // onScroll={(event) => handleScroll(event)}
+                                  style={{
+                                    paddingRight: 8,
+                                    maxHeight: 385,
+                                    height: 300,
+                                    overflow: 'auto',
+                                  }}
+                                  item
+                                >
+                                  {globalSearchResults && (
+                                    <List
+                                      style={{ minWidth: 61 }}
+                                      subheader={
+                                        <ListSubheader
+                                          style={{
+                                            background: 'rgb(238, 238, 238)',
+                                            width: '100%',
+                                          }}
+                                        >
+                                          Users
+                                        </ListSubheader>
+                                      }
+                                    >
+                                      {globalSearchResults &&
+                                        searchUserDetails.map((result, index) => {
+                                          return (
+                                            <ListItem
+                                              style={{ width: 324 }}
+                                              button
+                                              onClick={() => {
+                                                console.log('I amcalled...');
+                                                setSearching(false);
+                                                setUserId(result.id);
+                                                setDisplayUserDetails(true);
+                                              }}
+                                            >
+                                              <ListItemText
+                                                primary={result.name}
+                                                secondary={result.erpId}
+                                              />
+                                              {/* <ListItemSecondaryAction>
+                                              <IconButton
+                                                aria-label='Delete'
+                                                onClick={() =>
+                                                  handleUserDelete(result.id, index)
+                                                }
+                                                className={classes.margin}
+                                              >
+                                                <DeleteIcon fontSize='small' />
+                                              </IconButton>
+                                            </ListItemSecondaryAction> */}
+                                            </ListItem>
+                                          );
+                                        })}
+                                    </List>
+                                  )}
+                                </Grid>
+                              </Grid>
+                            </Grid>
+                          </>
+                        ) : (
+                          <Grid
+                            container
+                            style={{
+                              flexDirection: 'row',
+                              backgroundColor: '#eee',
+                              minHeight: 324,
+                              minWidth: 374,
+                              flexGrow: 1,
+                            }}
+                          >
+                            {searchedText.length > 0 ? (
+                              <LinearProgress
+                                style={{ width: '100%' }}
+                                color='secondary'
+                                variant='query'
+                              />
+                            ) : (
+                              <span style={{ padding: 1 }}>
+                                Type something to search.
+                              </span>
+                            )}
+                          </Grid>
+                        )}
+                      </Grid>
+                      <Grid container>
+                        {globalSearchError && (
+                          <Grid
+                            style={{ padding: 8, width: '100%', backgroundColor: '#eee' }}
+                            xs={12}
+                            item
+                          >
+                            Something went wrong.
+                          </Grid>
+                        )}
+                      </Grid>
+                    </Paper>
+                  </Fade>
+                )}
+              </Popper>
+              {displayUserDetails ? (
+                <UserDetails
+                  close={setDisplayUserDetails}
+                  userId={userId}
+                  setUserId={setUserId}
+                  setSearching={setSearching}
+                />
+              ) : null}
+            </div>
+          ) : null}
+          <div
+            className={`${classes.sectionDesktop} ${
+              superUser ? 'null' : 'layout_user_icon'
+            }`}
+          >
             <IconButton
-              edge='end'
-              aria-label='account of current user'
-              aria-controls={menuId}
+              aria-label='show more'
+              aria-controls={mobileMenuId}
               aria-haspopup='true'
-              onClick={handleProfileMenuOpen}
+              onClick={handleMobileMenuOpen}
               color='inherit'
             >
-              <AccountCircle color='primary' style={{ fontSize: '2rem' }} />
-            </IconButton>
-            <IconButton
-              edge='end'
-              aria-label='logout button'
-              aria-controls={menuId}
-              aria-haspopup='false'
-              onClick={handleLogout}
-              color='inherit'
-            >
-              <ExitToAppIcon color='primary' style={{ fontSize: '2rem' }} />
+              {roleDetails.user_profile ? (
+                <img
+                  src={roleDetails.user_profile}
+                  alt='no img'
+                  className='profile_img'
+                />
+              ) : (
+                <AccountCircle color='primary' style={{ fontSize: '2rem' }} />
+              )}
+              {profileOpen ? <ExpandLess /> : <ExpandMore />}
             </IconButton>
           </div>
+
           <div className={classes.sectionMobile}>
             <IconButton
               aria-label='show more'
@@ -286,7 +505,6 @@ const Layout = ({ children, history }) => {
           </div>
         </Toolbar>
       </AppBar>
-      {renderMenu}
       {renderMobileMenu}
       <Drawer
         open={drawerOpen}
@@ -435,7 +653,7 @@ const Layout = ({ children, history }) => {
                 }}
               >
                 <ListItemIcon className={classes.menuItemIcon}>
-                  <SupervisorAccountIcon />
+                  <SupervisorAccountOutlinedIcon />
                 </ListItemIcon>
                 <ListItemText className={classes.menuItemText}>
                   Master Management

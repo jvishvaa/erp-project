@@ -28,6 +28,7 @@ import axiosInstance from '../../config/axios';
 import CreateGrade from './create-grade'
 import EditGrade from './edit-grade'
 import './master-management.css'
+import Loading from '../../components/loader/loader';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -80,7 +81,8 @@ const GradeTable = () => {
   const [delFlag,setDelFlag]=useState(false)
   const [searchGrade,setSearchGrade]=useState('')
   const [widthFlag,setWidthFlag]=useState(false)
-
+  const [loading, setLoading] = useState(false);
+  
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -106,7 +108,9 @@ const GradeTable = () => {
     setEditFlag(false)
   }
 
-    const handleDeleteGrade = () => {
+    const handleDeleteGrade = (e) => {
+    e.preventDefault()
+    setLoading(true);
     axiosInstance.put(endpoints.masterManagement.updateGrade,{
       'is_delete': true,
       'grade_id': gradeId
@@ -115,12 +119,15 @@ const GradeTable = () => {
       {
         setAlert('success', result.data.message);
         setDelFlag(!delFlag)
+        setLoading(false);
       }
     } else {
       setAlert('error', result.data.message);
+      setLoading(false);
     }
     }).catch((error)=>{
       setAlert('error', error.message);
+      setLoading(false);
     })
     setOpenDeleteModal(false)
     };
@@ -152,6 +159,8 @@ const GradeTable = () => {
   },[openDeleteModal,delFlag,editFlag,addFlag,page,searchGrade])
   
   return (
+    <>
+    {loading ? <Loading message='Loading...' /> : null}
     <Layout>
     <div className="headerMaster">
       <div>
@@ -281,8 +290,8 @@ const GradeTable = () => {
         <Button onClick={handleDeleteGrade}>Confirm</Button>
       </DialogActions>
     </Dialog>
-    
     </Layout>
+    </>
   );
 };
 
