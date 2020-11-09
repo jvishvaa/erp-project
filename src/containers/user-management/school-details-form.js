@@ -24,6 +24,23 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
   const [grades, setGrades] = useState([]);
   const [sections, setSections] = useState([]);
   const [subjects, setSubjects] = useState([]);
+
+  const formik = useFormik({
+    initialValues: {
+      academic_year: details.academic_year,
+      branch: details.branch,
+      grade: details.grade,
+      section: details.section,
+      subjects: details.subjects,
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      onSubmit(values);
+    },
+    validateOnChange: false,
+    validateOnBlur: false,
+  });
+
   const fetchAcademicYears = () => {
     getAcademicYears().then((data) => {
       const transformedData = data.map((obj) => ({
@@ -45,13 +62,21 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
   };
 
   const fetchSubjects = (branch, grade) => {
-    getSubjects(branch, grade).then((data) => {
-      const transformedData = data.map((obj) => ({
-        id: obj.subject__id,
-        subject_name: obj.subject__subject_name,
-      }));
-      setSubjects(transformedData);
-    });
+    if (branch && branch.length > 0 && grade && grade.length > 0) {
+      getSubjects(branch, grade).then((data) => {
+        const transformedData = data.map((obj) => ({
+          id: obj.subject__id,
+          subject_name: obj.subject__subject_name,
+        }));
+        setSubjects(transformedData);
+        const filteredSelectedSubjects = formik.values.subjects.filter(
+          (sub) => transformedData.findIndex((data) => data.id === sub.id) > -1
+        );
+        formik.setFieldValue('subjects', filteredSelectedSubjects);
+      });
+    } else {
+      setSubjects([]);
+    }
   };
 
   const handleChangeBranch = (values) => {
@@ -69,7 +94,6 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
   };
 
   const handleChangeGrade = (values, branch) => {
-    setSections([]);
     if (branch && branch.length > 0 && values && values.length > 0) {
       fetchSections(branch, values).then((data) => {
         const transformedData = data
@@ -78,7 +102,11 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
               section_name: `${section.section__section_name}`,
             }))
           : [];
+        const filteredSelectedSections = formik.values.section.filter(
+          (sec) => transformedData.findIndex((data) => data.id === sec.id) > -1
+        );
         setSections(transformedData);
+        formik.setFieldValue('section', filteredSelectedSections);
       });
       fetchSubjects(branch, values);
     } else {
@@ -99,21 +127,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
   }, []);
 
   const classes = useStyles();
-  const formik = useFormik({
-    initialValues: {
-      academic_year: details.academic_year,
-      branch: details.branch,
-      grade: details.grade,
-      section: details.section,
-      subjects: details.subjects,
-    },
-    validationSchema,
-    onSubmit: (values) => {
-      onSubmit(values);
-    },
-    validateOnChange: false,
-    validateOnBlur: false,
-  });
+
   return (
     <Grid container spacing={4}>
       <Grid container item xs={12}>

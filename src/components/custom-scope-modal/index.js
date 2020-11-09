@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
@@ -13,8 +13,8 @@ import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
-  fetchGrades,
-  fetchSections,
+  fetchGrades as getGrades,
+  fetchSections as getSections,
   fetchSubjects as getSubjects,
 } from '../../redux/actions';
 
@@ -122,18 +122,78 @@ const CustomScopeModal = ({
   const classes = useStyles();
 
   const onCustomScopeChange = (scope, value) => {
+    console.log('custon scope before passing ', scope, value);
     onChange(scope, value);
   };
 
-  const fetchSubjects = (branches, grades) => {
-    getSubjects(branches, grades).then((data) => {
+  const fetchSubjects = (branches, grades, customScopeObj, setFilteredResults) => {
+    const customScopeObject = JSON.parse(JSON.stringify(customScopeObj));
+    if (branches && branches.length > 0 && grades && grades.length > 0) {
+      getSubjects(branches, grades).then((data) => {
+        const transformedData = data
+          ? data.map((subject) => ({
+              id: subject.subject__id,
+              subject_name: `${subject.subject__subject_name}`,
+            }))
+          : [];
+        setSubjects(transformedData);
+        if (setFilteredResults) {
+          const filteredSelectedSubjects = customScopeObject.custom_subject.filter(
+            (subject) => transformedData.findIndex((sub) => sub.id == subject.id) > -1
+          );
+          customScopeObject.custom_subject = filteredSelectedSubjects;
+          onCustomScopeChange('custom_subject', customScopeObject);
+        }
+      });
+    } else {
+      customScopeObject.custom_subject = [];
+      onCustomScopeChange('custom_subject', customScopeObject);
+    }
+  };
+
+  const fetchGrades = (branches) => {
+    getGrades(branches).then((data) => {
       const transformedData = data
-        ? data.map((subject) => ({
-            id: subject.subject__id,
-            subject_name: `${subject.subject__subject_name}`,
+        ? data.map((grade) => ({
+            id: grade.grade_id,
+            grade_name: grade.grade__grade_name,
           }))
         : [];
-      setSubjects(transformedData);
+      setGrades(transformedData);
+    });
+  };
+
+  const fetchSections = (grades, setFilteredResults) => {
+    const customScopeObj = {
+      custom_branch: customScope.custom_branch,
+      custom_grade: [...grades],
+      custom_section: customScope.custom_section,
+      custom_subject: customScope.custom_subject,
+    };
+    getSections(customScope.custom_branch, grades).then((data) => {
+      const transformedData = data
+        ? data.map((section) => ({
+            id: section.section_id,
+            section_name: `${section.section__section_name}`,
+          }))
+        : [];
+
+      setSections(transformedData);
+
+      if (setFilteredResults) {
+        const filteredSelectedSections = customScopeObj.custom_section.filter(
+          (section) => transformedData.findIndex((sec) => sec.id === section.id) > -1
+        );
+        customScopeObj.custom_section = filteredSelectedSections;
+        onCustomScopeChange('custom_section', customScopeObj);
+      }
+
+      fetchSubjects(
+        customScope.custom_branch,
+        grades,
+        customScopeObj,
+        setFilteredResults
+      );
     });
   };
 
@@ -145,42 +205,23 @@ const CustomScopeModal = ({
       custom_subject: [],
     };
     onCustomScopeChange('custom_branch', customScopeObj);
-    setGrades([]);
-    setSections([]);
-    setSubjects([]);
-
-    fetchGrades(values).then((data) => {
-      const transformedData = data
-        ? data.map((grade) => ({
-            id: grade.grade_id,
-            grade_name: grade.grade__grade_name,
-          }))
-        : [];
-      setGrades(transformedData);
-    });
+    fetchGrades(values);
   };
 
   const handleChangeGrade = (values) => {
     const customScopeObj = {
       custom_branch: customScope.custom_branch,
       custom_grade: values,
-      custom_section: [],
-      custom_subject: [],
+      custom_section: customScope.custom_section,
+      custom_subject: customScope.custom_subject,
     };
     onCustomScopeChange('custom_grade', customScopeObj);
-    setSections([]);
-    setSubjects([]);
     if (customScope.custom_branch.length > 0 && values && values.length > 0) {
-      fetchSections(customScope.custom_branch, values).then((data) => {
-        const transformedData = data
-          ? data.map((section) => ({
-              id: section.section_id,
-              section_name: `${section.section__section_name}`,
-            }))
-          : [];
-        setSections(transformedData);
-      });
-      fetchSubjects(customScope.custom_branch, values);
+      fetchSections(values, true);
+    } else {
+      customScopeObj.custom_section = [];
+      customScopeObj.custom_subject = [];
+      onCustomScopeChange('custom_section', customScopeObj);
     }
   };
   const handleChangeSection = (values) => {
@@ -201,6 +242,17 @@ const CustomScopeModal = ({
     onCustomScopeChange('custom_section', customScopeObj);
   };
 
+  useEffect(() => {
+    if (open) {
+      if (customScope.custom_branch && customScope.custom_branch.length > 0) {
+        fetchGrades(customScope.custom_branch);
+        if (customScope.custom_grade && customScope.custom_grade.length > 0) {
+          fetchSections(customScope.custom_grade, false); // not neccessary to filter out selcted data based on response list
+        }
+      }
+    }
+  }, [open]);
+
   return (
     <Dialog
       onClose={handleClose}
@@ -216,7 +268,7 @@ const CustomScopeModal = ({
       <DialogContent>
         <Grid container alignItems='center' direction='column'>
           <Grid item sm={12}>
-            <FormControl className={classes.formControl}>
+            <FormControl className={classes.formControl} disabled>
               <Autocomplete
                 options={branches}
                 style={{ width: 400 }}
