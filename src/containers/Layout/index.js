@@ -60,6 +60,8 @@ import logo from '../../assets/images/logo.png';
 const Layout = ({ children, history }) => {
   const dispatch = useDispatch();
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const { role_details: roleDetails } =
+    JSON.parse(localStorage.getItem('userDetails')) || {};
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isLogout, setIsLogout] = useState(false);
   const [navigationData, setNavigationData] = useState(false);
@@ -478,7 +480,15 @@ const Layout = ({ children, history }) => {
               onClick={handleMobileMenuOpen}
               color='inherit'
             >
-              <AccountCircle color='primary' style={{ fontSize: '2rem' }} />
+              {roleDetails.user_profile ? (
+                <img
+                  src={roleDetails.user_profile}
+                  alt='no img'
+                  className='profile_img'
+                />
+              ) : (
+                <AccountCircle color='primary' style={{ fontSize: '2rem' }} />
+              )}
               {profileOpen ? <ExpandLess /> : <ExpandMore />}
             </IconButton>
           </div>
