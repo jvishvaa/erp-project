@@ -77,6 +77,7 @@ const ChangePassword = (props) => {
             className='profile_change_password_input'
             id='previousPassword'
             value={previousPassword}
+            placeholder='Enter Old Password'
             name='previousPassword'
             type='password'
             onChange={(e) => setPreviousPassword(e.target.value)}
@@ -88,6 +89,7 @@ const ChangePassword = (props) => {
             className='profile_change_password_input'
             id='newPassword'
             value={newPassword}
+            placeholder='Enter New Password'
             name='newPassword'
             type='password'
             onChange={(e) => setNewPassword(e.target.value)}
@@ -99,6 +101,7 @@ const ChangePassword = (props) => {
             className='profile_change_password_input'
             id='confirmPassword'
             value={confirmNewPassword}
+            placeholder='Confirm New Password'
             name='confirmPassword'
             type='password'
             onChange={(e) => setConfirmNewPassword(e.target.value)}

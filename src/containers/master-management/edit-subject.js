@@ -3,7 +3,7 @@ import { Grid, TextField, Button } from '@material-ui/core';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-
+import Loading from '../../components/loader/loader';
 
 
 const EditSubject = ({id,name,desc,handleGoBack}) => {
@@ -12,11 +12,12 @@ const EditSubject = ({id,name,desc,handleGoBack}) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [subjectName,setSubjectName]=useState(subName || '')
   const [description,setDescription]=useState(desc || '')
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    setLoading(true);
     let request={}
-
     request['subject_id']=id
       if((subjectName!==subName && subjectName!=="")||(description!==desc && description!==""))
       {
@@ -31,21 +32,27 @@ const EditSubject = ({id,name,desc,handleGoBack}) => {
             handleGoBack()
             setSubjectName('')
             setDescription('')
+            setLoading(false);
           } else {
             setAlert('error', result.data.message);
+            setLoading(false);
           }
         }).catch((error)=>{
           setAlert('error', error.message);
+          setLoading(false);
         })
       }
       else
       {
         setAlert('error', 'No Fields to Update');
+        setLoading(false);
       }
     };
 
 
   return (
+    <>
+    {loading ? <Loading message='Loading...' /> : null}
       <div className='create__class'>
       <form autoComplete='off' onSubmit={handleSubmit}>
         <Grid item style={{marginLeft:'14px',color:'#014B7E'}} >
@@ -61,7 +68,7 @@ const EditSubject = ({id,name,desc,handleGoBack}) => {
               variant='outlined'
               size='medium'
               value={subjectName}
-              inputProps={{pattern:'^[a-zA-Z0-9 ]+'}}
+              inputProps={{pattern:'^[a-zA-Z0-9 ]+',maxLength:10}}
               name='subname'
               onChange={e=>setSubjectName(e.target.value)}
             />
@@ -93,6 +100,7 @@ const EditSubject = ({id,name,desc,handleGoBack}) => {
         </Grid>
       </form>
     </div>
+    </>
   );
 };
 

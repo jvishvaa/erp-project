@@ -106,6 +106,7 @@ function SignIn({ onLogin, history }) {
             autoComplete='email'
             autoFocus
             value={username}
+            inputProps={{maxLength:40}}
             onChange={(e) => {
               setUsername(e.target.value);
             }}
@@ -121,6 +122,7 @@ function SignIn({ onLogin, history }) {
             id='password'
             autoComplete='current-password'
             value={password}
+            inputProps={{maxLength:20}}
             onChange={(e) => {
               setPassword(e.target.value);
             }}

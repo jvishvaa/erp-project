@@ -3,16 +3,18 @@ import { Grid, TextField, Button } from '@material-ui/core';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-
+import Loading from '../../components/loader/loader';
 
 const CreateGrade = () => {
 
   const { setAlert } = useContext(AlertNotificationContext);
   const [gradeName,setGradeName]=useState('')
   const [gradeType,setGradeType]=useState('')
+  const [loading, setLoading] = useState(false);
   
   const handleSubmit = (e) => {
     e.preventDefault()
+    setLoading(true);
     axiosInstance.post(endpoints.masterManagement.createGrade,{
       grade_name:gradeName,
       grade_type:gradeType,
@@ -22,17 +24,22 @@ const CreateGrade = () => {
         setAlert('success', result.data.message);
         setGradeName('')
         setGradeType('')
+        setLoading(false);
       }
     } else {
       setAlert('error', result.data.message);
+      setLoading(false);
     }
     }).catch((error)=>{
       setAlert('error', error.message);
+      setLoading(false);
     })
     };
 
 
   return (
+    <>
+    {loading ? <Loading message='Loading...' /> : null}
       <div className='create__class'>
       <form autoComplete='off' onSubmit={handleSubmit}>
         <Grid item style={{marginLeft:'14px',color:'#014B7E'}} >
@@ -48,6 +55,7 @@ const CreateGrade = () => {
               variant='outlined'
               size='medium'
               value={gradeName}
+              inputProps={{maxLength:10}}
               name='gradename'
               onChange={e=>setGradeName(e.target.value)}
               required
@@ -63,6 +71,7 @@ const CreateGrade = () => {
               variant='outlined'
               size='medium'
               value={gradeType}
+              inputProps={{maxLength:10}}
               name='gradetype'
               onChange={e=>setGradeType(e.target.value)}
               required
@@ -77,6 +86,7 @@ const CreateGrade = () => {
         </Grid>
       </form>
     </div>
+    </>
   );
 };
 
