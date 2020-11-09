@@ -156,12 +156,13 @@ const MessageLog = withRouter(({ history, ...props }) => {
             id: items.id,
             message: isEmail ? items.email_subject : items.message_content,
             type: items.communicate_type.category_name,
-            sendBy: items.created_by,
+            sendBy: items.created_by ? items.created_by.first_name : 'null',
             sendOn: items.created_at,
             totalCount: items.total_count,
             sent: items.is_sent ? 'Yes' : 'No',
           });
         });
+        debugger;
         setMessageRows(tempLogArray);
         setMessageTotalPage(result.data.data.total_pages);
         setLoading(false);
