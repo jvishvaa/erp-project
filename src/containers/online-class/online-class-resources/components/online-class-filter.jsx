@@ -51,9 +51,6 @@ const OnlineClassFilter = () => {
     setCurrentResourceTab(tab);
   };
 
-  const handleCancel = (event, data) => {
-    setIsCancelSelected(data);
-  };
 
   const handleDateChange = (name, date) => {
     if (name === 'startDate') setStartDate(date);
@@ -102,11 +99,11 @@ const OnlineClassFilter = () => {
     const isCompleted = !!currentTab;
     let url = '';
     if (isSuperUser) {
-      url += `page_number=1&page_size=10&branch_ids=${roleDetails.branch.join(
+      url += `module_id=${moduleId}&page_number=1&page_size=10&branch_ids=${roleDetails.branch.join(
         ','
       )}&is_completed=${isCompleted}&is_cancelled=${isCancelSelected}&start_date=${startDate}&end_date=${endDate}`;
     } else {
-      url += `page_number=1&page_size=10&branch_ids=${roleDetails.branch.join(
+      url += `module_id=${moduleId}&page_number=1&page_size=10&branch_ids=${roleDetails.branch.join(
         ','
       )}&is_completed=${isCompleted}&user_id=${
         roleDetails.erp_user_id
@@ -141,8 +138,8 @@ const OnlineClassFilter = () => {
   };
 
   useEffect(() => {
-    handleGetClasses();
     if (moduleId) {
+      handleGetClasses();
       dispatch(listGrades(moduleId));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
