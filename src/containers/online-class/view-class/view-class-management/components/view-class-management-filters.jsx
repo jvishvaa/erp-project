@@ -32,6 +32,9 @@ const ViewClassManagementFilters = () => {
   const [clearKey, setClearKey] = useState(new Date());
   const [subjects, setSubjects] = useState([]);
   const [moduleId, setModuleId] = useState();
+  const [selectedGrades, setSelectedGrades] = useState([]);
+  const [selectedSections, setSelectedSections] = useState([]);
+  const [selectedSubjects, setSelectedSubjects] = useState([]);
 
   const {
     listOnlineClassesManagementView,
@@ -76,6 +79,7 @@ const ViewClassManagementFilters = () => {
   };
 
   const handleGrade = (event, value) => {
+    setSelectedGrades(value);
     if (value.length) {
       const ids = value.map((el) => el.grade_id);
       setGradeIds(ids);
@@ -89,6 +93,7 @@ const ViewClassManagementFilters = () => {
   };
 
   const handleSection = (event, value) => {
+    setSelectedSections(value);
     if (value.length) {
       const ids = value.map((el) => el.section_id);
       setSectionIds(ids);
@@ -129,6 +134,7 @@ const ViewClassManagementFilters = () => {
   const handleSubject = (event, value) => {
     const ids = value.map((el) => el.subject__id);
     setSubjectIds(ids);
+    setSelectedSubjects(value);
   };
 
   const handleClear = () => {
@@ -167,6 +173,25 @@ const ViewClassManagementFilters = () => {
     }
   }, []);
 
+  useEffect(() => {}, [grades]);
+
+  useEffect(() => {
+    const filteredSelectedSubjects = subjects.filter(
+      (subject) =>
+        selectedSubjects.findIndex((data) => data.subject__id == subject.subject__id) > -1
+    );
+
+    setSelectedSubjects(filteredSelectedSubjects);
+  }, [subjects]);
+
+  useEffect(() => {
+    const filteredSelectedSections = sections.filter(
+      (data) =>
+        selectedSections.findIndex((sec) => sec.section_id == data.section_id) > -1
+    );
+    setSelectedSections(filteredSelectedSections);
+  }, [sections]);
+
   return (
     <div className='filters__container'>
       <Grid container spacing={3}>
@@ -180,6 +205,7 @@ const ViewClassManagementFilters = () => {
             options={grades}
             getOptionLabel={(option) => option?.grade__grade_name}
             filterSelectedOptions
+            value={selectedGrades}
             renderInput={(params) => (
               <TextField
                 className='create__class-textfield'
@@ -204,6 +230,7 @@ const ViewClassManagementFilters = () => {
                 return `${option.section__section_name}`;
               }}
               filterSelectedOptions
+              value={selectedSections}
               renderInput={(params) => (
                 <TextField
                   className='create__class-textfield'
@@ -229,6 +256,7 @@ const ViewClassManagementFilters = () => {
               getOptionLabel={(option) => option.subject__subject_name}
               filterSelectedOptions
               size='small'
+              value={selectedSubjects}
               renderInput={(params) => (
                 <TextField
                   className='create__class-textfield'
