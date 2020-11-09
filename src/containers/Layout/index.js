@@ -403,7 +403,7 @@ const Layout = ({ children, history }) => {
                                           width: '100%',
                                         }}
                                       >
-                                        Students
+                                        Users
                                       </ListSubheader>
                                     }
                                   >
