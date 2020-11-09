@@ -72,7 +72,7 @@ const CreateSubject = ({grades}) => {
               variant='outlined'
               size='medium'
               value={subjectName}
-              inputProps={{pattern:'^[a-zA-Z0-9 ]+'}}
+              inputProps={{pattern:'^[a-zA-Z0-9 ]+',maxLength:20}}
               name='subname'
               onChange={e=>setSubjectName(e.target.value)}
               required

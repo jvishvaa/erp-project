@@ -48,6 +48,7 @@ const CreateGrade = () => {
               variant='outlined'
               size='medium'
               value={gradeName}
+              inputProps={{maxLength:10}}
               name='gradename'
               onChange={e=>setGradeName(e.target.value)}
               required
@@ -63,6 +64,7 @@ const CreateGrade = () => {
               variant='outlined'
               size='medium'
               value={gradeType}
+              inputProps={{maxLength:10}}
               name='gradetype'
               onChange={e=>setGradeType(e.target.value)}
               required

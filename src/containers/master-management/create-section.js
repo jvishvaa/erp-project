@@ -70,7 +70,7 @@ const CreateSection = ({grades}) => {
               variant='outlined'
               size='medium'
               value={sectionName}
-              inputProps={{pattern:'^[a-zA-Z0-9 ]+'}}
+              inputProps={{pattern:'^[a-zA-Z0-9 ]+',maxLength:10}}
               name='secname'
               onChange={e=>setSectionName(e.target.value)}
               required

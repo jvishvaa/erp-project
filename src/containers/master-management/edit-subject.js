@@ -61,7 +61,7 @@ const EditSubject = ({id,name,desc,handleGoBack}) => {
               variant='outlined'
               size='medium'
               value={subjectName}
-              inputProps={{pattern:'^[a-zA-Z0-9 ]+'}}
+              inputProps={{pattern:'^[a-zA-Z0-9 ]+',maxLength:10}}
               name='subname'
               onChange={e=>setSubjectName(e.target.value)}
             />

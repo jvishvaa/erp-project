@@ -62,6 +62,7 @@ const EditGrade = ({id,name,type,handleGoBack}) => {
               label='Grade Name'
               variant='outlined'
               size='medium'
+              inputProps={{maxLength:10}}
               value={gradeName}
               name='gradename'
               onChange={e=>setGradeName(e.target.value)}
@@ -77,6 +78,7 @@ const EditGrade = ({id,name,type,handleGoBack}) => {
               label='Grade Type'
               variant='outlined'
               size='medium'
+              inputProps={{maxLength:10}}
               value={gradeType}
               name='gradetype'
               onChange={e=>setGradeType(e.target.value)}

@@ -10,6 +10,7 @@ export default function CustomInput(props) {
       label={name}
       className={className}
       onChange={onChange}
+      inputProps={{maxLength:20}}
       variant='outlined'
     />
   );
