@@ -73,7 +73,6 @@ const EditGrade = ({id,name,type,handleGoBack}) => {
               value={gradeName}
               name='gradename'
               onChange={e=>setGradeName(e.target.value)}
-              required
             />
           </Grid>
           </Grid>
@@ -89,7 +88,6 @@ const EditGrade = ({id,name,type,handleGoBack}) => {
               value={gradeType}
               name='gradetype'
               onChange={e=>setGradeType(e.target.value)}
-              required
             />
           </Grid>
         </Grid>

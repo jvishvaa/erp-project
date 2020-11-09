@@ -28,6 +28,7 @@ import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import CreateSubject from './create-subject'
 import EditSubject from './edit-subject'
+import Loading from '../../components/loader/loader';
 import './master-management.css'
 
 const useStyles = makeStyles((theme) => ({
@@ -83,7 +84,8 @@ const SubjectTable = () => {
   const [searchGrade,setSearchGrade]=useState('')
   const [searchSubject,setSearchSubject]=useState('')
   const [widthFlag,setWidthFlag]=useState(false)
-
+  const [loading, setLoading] = useState(false);
+  
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -116,7 +118,9 @@ const SubjectTable = () => {
     setEditFlag(false)
   }
 
-  const handleDeleteSubject = () => {
+  const handleDeleteSubject = (e) => {
+      e.preventDefault()
+      setLoading(true);
       axiosInstance.put(endpoints.masterManagement.updateSubject,{
         'is_delete': true,
         'subject_id': subjectId
@@ -124,11 +128,14 @@ const SubjectTable = () => {
       if (result.status === 200) {
         setAlert('success', result.data.message);
         setDelFlag(!delFlag)
+        setLoading(false);
       } else {
         setAlert('error', result.data.message);
+        setLoading(false);
       }
       }).catch((error)=>{
         setAlert('error', error.message);
+        setLoading(false);
       })
     setOpenDeleteModal(false)
   };
@@ -170,10 +177,10 @@ const SubjectTable = () => {
   },[openDeleteModal,delFlag,editFlag,addFlag,page,searchGrade,searchSubject])
       
  
-
   return (
-    <Layout>
-
+    <>
+    {loading ? <Loading message='Loading...' /> : null}
+   <Layout>
     <div className="headerMaster">
       <div>
         <CommonBreadcrumbs
@@ -323,6 +330,7 @@ const SubjectTable = () => {
     </Dialog>
     
     </Layout>
+    </>
   );
 };
 

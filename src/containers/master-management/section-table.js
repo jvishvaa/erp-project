@@ -28,6 +28,7 @@ import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import CreateSection from './create-section'
 import EditSection from './edit-section'
+import Loading from '../../components/loader/loader';
 import './master-management.css'
 
 const useStyles = makeStyles((theme) => ({
@@ -81,7 +82,8 @@ const SectionTable = () => {
   const [searchGrade,setSearchGrade]=useState('')
   const [searchSection,setSearchSection]=useState('')
   const [widthFlag,setWidthFlag]=useState(false)
-
+  const [loading, setLoading] = useState(false);
+  
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -113,7 +115,9 @@ const SectionTable = () => {
     setEditFlag(false)
   }
 
-  const handleDeleteSection = () => {
+  const handleDeleteSection = (e) => {
+    e.preventDefault()
+    setLoading(true);
     axiosInstance.put(endpoints.masterManagement.updateSection,{
       'section_id': sectionId,
       'is_delete': true,
@@ -122,12 +126,15 @@ const SectionTable = () => {
       {
         setAlert('success', result.data.message);
         setDelFlag(!delFlag)
+        setLoading(false);
       }
     } else {
       setAlert('error', result.data.message);
+      setLoading(false);
     }
     }).catch((error)=>{
       setAlert('error', error.message);
+      setLoading(false);
     })
     setOpenDeleteModal(false)
     };
@@ -170,34 +177,9 @@ const SectionTable = () => {
 
 
   return (
+    <>
+    {loading ? <Loading message='Loading...' /> : null}
     <Layout>
-
-    {/* <CommonBreadcrumbs
-      componentName='Master Management'
-      childComponentName='Section List'
-    />
-
-    {(addFlag||editFlag)  && 
-    <div style={{float:'right',marginTop:'15px',marginRight:'15px'}}>
-      <Button startIcon={<ArrowBackIcon />} size="large" title="Go back to Section List" onClick={handleGoBack}>
-        Section List
-      </Button>
-    </div>
-    }
-
-    {tableFlag && !addFlag && !editFlag && 
-    <div className="headerMaster">
-      <div style={{color:'#014B7E'}}>
-        <h1>Section List</h1>
-      </div>
-      <div className={classes.buttonContainer}>
-        <Button startIcon={<AddOutlinedIcon />} onClick={handleAddSection}>
-          Add Section
-        </Button>
-      </div>
-    </div>
-    } */}
-
     <div className="headerMaster">
       <div>
         <CommonBreadcrumbs
@@ -341,8 +323,8 @@ const SectionTable = () => {
         <Button onClick={handleDeleteSection}>Confirm</Button>
       </DialogActions>
     </Dialog>
-
     </Layout>
+    </>
   );
 };
 
