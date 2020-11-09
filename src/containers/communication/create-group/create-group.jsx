@@ -153,12 +153,15 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         result.data.data.map((items) => resultOptions.push(items.section__section_name));
         setSection(resultOptions);
         setSectionList(result.data.data);
-        const selectedSectionsArray = selectedSections.filter(
-          (sec) =>
-            result.data.data.findIndex((obj) => obj.section__section_name == sec) > -1
-        );
-        console.log('selected sections array ', selectedSectionsArray);
-        setSelectedSections(selectedSectionsArray);
+        if (selectedSections && selectedSections.length > 0) {
+          // for retaining neccessary selected sections when grade is changed
+          const selectedSectionsArray = selectedSections.filter(
+            (sec) =>
+              result.data.data.findIndex((obj) => obj.section__section_name == sec) > -1
+          );
+          console.log('selected sections array ', selectedSectionsArray);
+          setSelectedSections(selectedSectionsArray);
+        }
       } else {
         setAlert('error', result.data.message);
       }
