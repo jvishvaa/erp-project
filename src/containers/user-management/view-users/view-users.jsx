@@ -23,6 +23,8 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
+import BlockIcon from '@material-ui/icons/Block';
+import IconButton from '@material-ui/core/IconButton';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
@@ -413,43 +415,57 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                         <div style={{ color: 'red' }}>Deactivated</div>
                       )}
                     </TableCell>
-                    <TableCell>
+                    <TableCell
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
                       {items.active ? (
-                        <button
-                          type='submit'
-                          className='group_view_deactivate_button group_view_button'
-                          title='Deactivate'
+                        <IconButton
+                          aria-label='deactivate'
                           onClick={() => handleStatusChange(items.userId, i, '2')}
+                          title='Deactivate'
                         >
-                          D
-                        </button>
+                          <BlockIcon color='secondary' />
+                        </IconButton>
                       ) : (
+                        // <button
+                        //   type='submit'
+                        //   className='group_view_deactivate_button group_view_button'
+                        //   title='Deactivate'
+                        //   onClick={() => handleStatusChange(items.userId, i, '2')}
+                        // >
+                        //   D
+                        // </button>
                         <button
                           type='submit'
                           className='group_view_activate_button group_view_button'
                           title='Activate'
                           onClick={() => handleStatusChange(items.userId, i, '1')}
+                          style={{ borderRadius: '50%' }}
                         >
                           A
                         </button>
                       )}
 
-                      <span
-                        className='group_view_button group_view_delete_button'
+                      <IconButton
                         title='Delete'
+                        className='group_view_button group_view_delete_button'
                         onClick={() => handleDelete(items.userId, i)}
                       >
-                        <DeleteIcon />
-                      </span>
+                        <DeleteIcon color='secondary' />
+                      </IconButton>
                     </TableCell>
                     <TableCell>
-                      <span
+                      <IconButton
                         className='group_view_button group_view_delete_button'
                         title='Edit'
                         onClick={() => handleEdit(items.userId)}
                       >
-                        <EditIcon />
-                      </span>
+                        <EditIcon color='secondary' />
+                      </IconButton>
                     </TableCell>
                   </TableRow>
                 ))}
