@@ -11,6 +11,7 @@ import endpoints from '../../../config/endpoints';
 import CustomInput from '../custom-inputfield/custom-input';
 import CustomSelectionTable from '../custom-selection-table/custom-selection-table';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import Loading from '../../../components/loader/loader';
 import './edit-group.css';
 
 // eslint-disable-next-line no-unused-vars
@@ -34,10 +35,12 @@ const EditGroup = withRouter(({ history, ...props }) => {
   const [priorSelected, setPriorSelected] = useState([]);
   const [completeData, setCompleteData] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
+  const [loading, setLoading] = useState(false);
   const addGroupName = (e) => {
     setGroupName(e.target.value);
   };
   const editGroup = async () => {
+    setLoading(true);
     try {
       const editGroupApiUrl = `${endpoints.communication.editGroup}${editId}/retrieve-update-group/`;
       const selectionArray = [];
@@ -87,11 +90,14 @@ const EditGroup = withRouter(({ history, ...props }) => {
         setAlert('success', message);
         editClose(false);
         setSelectAll(false);
+        setLoading(false);
       } else {
         setAlert('error', response.data.message);
+        setLoading(false);
       }
     } catch (error) {
       setAlert('error', error.message);
+      setLoading(false);
     }
   };
   const getEditGroupsData = async () => {
@@ -211,64 +217,67 @@ const EditGroup = withRouter(({ history, ...props }) => {
     }
   }, [completeData, selectedUsers]);
   return (
-    <div className='edit_group__page'>
-      <span className='close_icon_edit_group' onClick={() => editClose(false)}>
-        <CloseIcon />
-      </span>
-      <div className='editGroup_Fields'>
-        <CustomInput
-          className='group_name'
-          onChange={addGroupName}
-          value={groupName}
-          name='Group name'
-        />
-        <div className='role_name_edit_group'>
-          <span className='edit_group_level'>Group Role</span>
-          <Chip label={groupRole} className='edit_group_chip' />
-        </div>
-        <div className='role_name_edit_group'>
-          <span className='edit_group_level'>Group Grade</span>
-          {groupGrades.map((grades) => (
-            <Chip label={grades.grade_name} className='edit_group_chip' />
-          ))}
-        </div>
-        <div className='role_name_edit_group'>
-          <span className='edit_group_level'>Group Section</span>
-          {groupSections.map((sections) => (
-            <Chip label={sections.section__section_name} className='edit_group_chip' />
-          ))}
-        </div>
-      </div>
-      {usersRow.length ? (
-        <div className='create_group_select_all_wrapper'>
-          <input
-            type='checkbox'
-            className='create_group_select_all_checkbox'
-            checked={selectAll}
-            onChange={handleSelectAll}
+    <>
+      {loading ? <Loading message='Loading...' /> : null}
+      <div className='edit_group__page'>
+        <span className='close_icon_edit_group' onClick={() => editClose(false)}>
+          <CloseIcon />
+        </span>
+        <div className='editGroup_Fields'>
+          <CustomInput
+            className='group_name'
+            onChange={addGroupName}
+            value={groupName}
+            name='Group name'
           />
-          <span>Select All</span>
+          <div className='role_name_edit_group'>
+            <span className='edit_group_level'>Group Role</span>
+            <Chip label={groupRole} className='edit_group_chip' />
+          </div>
+          <div className='role_name_edit_group'>
+            <span className='edit_group_level'>Group Grade</span>
+            {groupGrades.map((grades) => (
+              <Chip label={grades.grade_name} className='edit_group_chip' />
+            ))}
+          </div>
+          <div className='role_name_edit_group'>
+            <span className='edit_group_level'>Group Section</span>
+            {groupSections.map((sections) => (
+              <Chip label={sections.section__section_name} className='edit_group_chip' />
+            ))}
+          </div>
         </div>
-      ) : null}
-      <CustomSelectionTable
-        header={headers}
-        rows={usersRow}
-        completeData={completeData}
-        totalRows={totalPage}
-        setSelectAll={setSelectAll}
-        edit
-        pageno={pageno}
-        selectedUsers={selectedUsers}
-        changePage={setPageno}
-        setSelectedUsers={setSelectedUsers}
-      />
-      <input
-        className='edit_group_button'
-        type='button'
-        onClick={editGroup}
-        value='edit group'
-      />
-    </div>
+        {usersRow.length ? (
+          <div className='create_group_select_all_wrapper'>
+            <input
+              type='checkbox'
+              className='create_group_select_all_checkbox'
+              checked={selectAll}
+              onChange={handleSelectAll}
+            />
+            <span>Select All</span>
+          </div>
+        ) : null}
+        <CustomSelectionTable
+          header={headers}
+          rows={usersRow}
+          completeData={completeData}
+          totalRows={totalPage}
+          setSelectAll={setSelectAll}
+          edit
+          pageno={pageno}
+          selectedUsers={selectedUsers}
+          changePage={setPageno}
+          setSelectedUsers={setSelectedUsers}
+        />
+        <input
+          className='edit_group_button'
+          type='button'
+          onClick={editGroup}
+          value='edit group'
+        />
+      </div>
+    </>
   );
 });
 

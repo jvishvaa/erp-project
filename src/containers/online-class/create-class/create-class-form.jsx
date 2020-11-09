@@ -40,6 +40,9 @@ const CreateClassForm = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [subjects, setSubjects] = useState([]);
   const [moduleId, setModuleId] = useState();
+  const [selectedGrades, setSelectedGrades] = useState([]);
+  const [selectedSections, setSelectedSections] = useState([]);
+  const [selectedSubject, setSelectedSubject] = useState([]);
   const {
     listGradesCreateClass,
     listSectionsCreateClass,
@@ -87,6 +90,14 @@ const CreateClassForm = () => {
   }, []);
 
   useEffect(() => {
+    const filteredSelectedSections = sections.filter(
+      (data) =>
+        selectedSections.findIndex((sec) => sec.section_id == data.section_id) > -1
+    );
+    setSelectedSections(filteredSelectedSections);
+  }, [sections]);
+
+  useEffect(() => {
     if (isCreated) {
       setFormKey(new Date());
       setAlert('success', 'Successfully created the class');
@@ -108,6 +119,19 @@ const CreateClassForm = () => {
         )}&module_id=${moduleId}`
       );
       setSubjects(data.data);
+      const response = data.data;
+      console.log('subjects ', response);
+
+      if (response) {
+        const filteredSelectedSubject = response.filter(
+          (data) => selectedSubject.subject__id == data.subject__id
+        );
+        console.log('filtered subjects ', filteredSelectedSubject);
+
+        setSelectedSubject(
+          filteredSelectedSubject.length > 0 ? filteredSelectedSubject[0] : null
+        );
+      }
     } catch (error) {
       setAlert('error', 'Failed to load subjects');
     }
@@ -115,7 +139,7 @@ const CreateClassForm = () => {
 
   const handleGrade = (event, value) => {
     dispatch(clearFilteredStudents());
-
+    setSelectedGrades(value);
     if (value.length) {
       const ids = value.map((el) => el.grade_id);
       setOnlineClass((prevState) => ({ ...prevState, gradeIds: ids }));
@@ -139,6 +163,7 @@ const CreateClassForm = () => {
 
   const handleSection = (event, value) => {
     dispatch(clearFilteredStudents());
+    setSelectedSections(value);
     if (value.length) {
       const ids = value.map((el) => el.id);
       setOnlineClass((prevState) => ({ ...prevState, sectionIds: ids }));
@@ -154,6 +179,7 @@ const CreateClassForm = () => {
   };
 
   const handleSubject = (event, value) => {
+    setSelectedSubject(value);
     if (value) {
       setOnlineClass((prevState) => ({ ...prevState, subject: value.subject__id }));
     } else {
@@ -392,6 +418,7 @@ const CreateClassForm = () => {
               options={grades}
               getOptionLabel={(option) => option?.grade__grade_name}
               filterSelectedOptions
+              value={selectedGrades}
               renderInput={(params) => (
                 <TextField
                   className='create__class-textfield'
@@ -416,6 +443,7 @@ const CreateClassForm = () => {
                   return `${option.section__section_name}`;
                 }}
                 filterSelectedOptions
+                value={selectedSections}
                 renderInput={(params) => (
                   <TextField
                     className='create__class-textfield'
@@ -438,6 +466,7 @@ const CreateClassForm = () => {
                 options={subjects}
                 getOptionLabel={(option) => option.subject__subject_name}
                 filterSelectedOptions
+                value={selectedSubject}
                 onChange={handleSubject}
                 renderInput={(params) => (
                   <TextField
