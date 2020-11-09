@@ -90,7 +90,7 @@ const ViewClassManagementFilters = () => {
 
   const handleSection = (event, value) => {
     if (value.length) {
-      const ids = value.map((el) => el.section_id);
+      const ids = value.map((el) => el.id);
       setSectionIds(ids);
     } else {
       setSectionIds([]);
@@ -191,8 +191,8 @@ const ViewClassManagementFilters = () => {
             )}
           />
         </Grid>
-        <Grid item>
-          {gradeIds.length ? (
+        {gradeIds.length ? (
+          <Grid item xs={2}>
             <Autocomplete
               key={clearKey}
               size='small'
@@ -214,12 +214,12 @@ const ViewClassManagementFilters = () => {
                 />
               )}
             />
-          ) : (
-            ''
-          )}
-        </Grid>
+          </Grid>
+        ) : (
+          ''
+        )}
         {gradeIds.length ? (
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={3}>
             <Autocomplete
               key={clearKey}
               multiple
