@@ -65,7 +65,6 @@ const EditSection = ({id,name,handleGoBack}) => {
               inputProps={{pattern:'^[a-zA-Z0-9 ]+',maxLength:10}}
               name='secname'
               onChange={e=>setSectionName(e.target.value)}
-              required
             />
           </Grid>
           </Grid>
