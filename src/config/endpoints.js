@@ -53,5 +53,9 @@ export default {
     updateSection: '/erp_user/update-section/',
     updateGrade: '/erp_user/update-grade/',
     gradesDrop: '/erp_user/grade/',
-  }
+  },
+  gloabSearch: {
+    getUsers: '/erp_user/global-search/',
+    singleUser: '/erp_user/',
+  },
 };

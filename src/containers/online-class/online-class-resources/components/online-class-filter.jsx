@@ -30,6 +30,9 @@ const OnlineClassFilter = () => {
   const [clearKey, setClearKey] = useState(new Date());
   const [subjects, setSubjects] = useState([]);
   const [moduleId, setModuleId] = useState();
+  const [selectedGrades, setSelectedGrades] = useState([]);
+  const [selectedSections, setSelectedSections] = useState([]);
+  const [selectedSubjects, setSelectedSubjects] = useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
   const {
@@ -71,6 +74,7 @@ const OnlineClassFilter = () => {
   };
 
   const handleGrade = (event, value) => {
+    setSelectedGrades(value);
     if (value.length) {
       const ids = value.map((el) => el.grade_id);
       setGradeIds(ids);
@@ -84,6 +88,7 @@ const OnlineClassFilter = () => {
   };
 
   const handleSection = (event, value) => {
+    setSelectedSections(value);
     if (value.length) {
       const ids = value.map((el) => el.section_id);
       setSectionIds(ids);
@@ -123,6 +128,7 @@ const OnlineClassFilter = () => {
   };
 
   const handleSubject = (event, value) => {
+    setSelectedSubjects(value);
     const ids = value.map((el) => el.subject__id);
     setSubjectIds(ids);
   };
@@ -163,6 +169,23 @@ const OnlineClassFilter = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const filteredSelectedSubjects = subjects.filter(
+      (subject) =>
+        selectedSubjects.findIndex((data) => data.subject__id == subject.subject__id) > -1
+    );
+
+    setSelectedSubjects(filteredSelectedSubjects);
+  }, [subjects]);
+
+  useEffect(() => {
+    const filteredSelectedSections = sections.filter(
+      (data) =>
+        selectedSections.findIndex((sec) => sec.section_id == data.section_id) > -1
+    );
+    setSelectedSections(filteredSelectedSections);
+  }, [sections]);
+
   return (
     <div className='filters__container'>
       <Grid container spacing={3}>
@@ -176,6 +199,7 @@ const OnlineClassFilter = () => {
             options={grades}
             getOptionLabel={(option) => option?.grade__grade_name}
             filterSelectedOptions
+            value={selectedGrades}
             renderInput={(params) => (
               <TextField
                 className='create__class-textfield'
@@ -200,6 +224,7 @@ const OnlineClassFilter = () => {
                 return `${option.section__section_name}`;
               }}
               filterSelectedOptions
+              value={selectedSections}
               renderInput={(params) => (
                 <TextField
                   className='create__class-textfield'
@@ -224,6 +249,7 @@ const OnlineClassFilter = () => {
               onChange={handleSubject}
               getOptionLabel={(option) => option.subject__subject_name}
               filterSelectedOptions
+              value={selectedSubjects}
               size='small'
               renderInput={(params) => (
                 <TextField

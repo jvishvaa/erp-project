@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     borderRadius: '30px',
-    width: '50%',
+    width: '70%',
   },
   searchInput: {
     padding: '2px 10px',

@@ -21,6 +21,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import Loading from '../../../components/loader/loader';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
 import './message-log.css';
@@ -70,6 +71,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
   const [clearAll, setClearAll] = useState(false);
   const [selectedRow, setSelectedRow] = useState();
   const [clearAllActive, setClearAllActive] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleFromDateChange = (event, value) => {
     setSelectedFromDate(value);
@@ -141,6 +143,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
       getMessagesUrl += `&from_date=${selectedFromDate}&to_date=${selectedToDate}`;
     }
     try {
+      setLoading(true);
       const result = await axiosInstance.get(getMessagesUrl, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -161,11 +164,14 @@ const MessageLog = withRouter(({ history, ...props }) => {
         });
         setMessageRows(tempLogArray);
         setMessageTotalPage(result.data.data.total_pages);
+        setLoading(false);
       } else {
         setAlert('error', result.data.message);
+        setLoading(false);
       }
     } catch (error) {
       setAlert('error', error.message);
+      setLoading(false);
     }
   };
 
@@ -176,6 +182,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
   const getUserDatails = async (id) => {
     setSelectedRow(id);
     try {
+      setLoading(true);
       const result = await axiosInstance.get(
         `${endpoints.communication.editGroup}${id}/user-logs/?page=${usersCurrentPageno}&page_size=15`,
         {
@@ -194,12 +201,15 @@ const MessageLog = withRouter(({ history, ...props }) => {
           });
           setUserLogs(tempLogArray);
           setUsersTotalPage(result.data.data.total_pages);
+          setLoading(false);
         });
       } else {
         setAlert('error', result.data.message);
+        setLoading(false);
       }
     } catch (error) {
       setAlert('error', error.message);
+      setLoading(false);
     }
   };
 
@@ -279,183 +289,153 @@ const MessageLog = withRouter(({ history, ...props }) => {
   }, [selectedBranches, selectedSmsType, selectedToDate, selectedFromDate]);
 
   return (
-    <Layout>
-      <div className='message_log_wrapper'>
-        <CommonBreadcrumbs
-          componentName='Communication'
-          childComponentName='SMS/Email Log'
-        />
-        <div className='spacing' />
-        <Grid container className='message_log_container' spacing={10}>
-          <Grid lg={5} item>
-            <Autocomplete
-              multiple
-              size='small'
-              onChange={handleBranch}
-              value={selectedBranches}
-              id='message_log-branch'
-              className='message_log_branch'
-              options={branchList}
-              getOptionLabel={(option) => option?.branch_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  className='message_log-textfield'
-                  {...params}
-                  variant='outlined'
-                  label='Branch'
-                  placeholder='Branch'
-                />
-              )}
-            />
-          </Grid>
-          <Grid lg={5} item>
-            <Autocomplete
-              multiple
-              size='small'
-              onChange={handleSmsType}
-              value={selectedSmsType}
-              id='message_log-smsType'
-              options={smsTypeList}
-              getOptionLabel={(option) => option?.category_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  className='message_log-textfield'
-                  {...params}
-                  variant='outlined'
-                  label='SMS Type'
-                  placeholder='SMS Type'
-                />
-              )}
-            />
-          </Grid>
-        </Grid>
-        <Grid container spacing={2} className='message-log-container'>
-          <MuiPickersUtilsProvider utils={MomentUtils}>
-            <Grid item xs={12} sm={2}>
-              <KeyboardDatePicker
-                margin='normal'
-                id='date-picker-dialog'
-                label='From'
-                format='YYYY-MM-DD'
-                value={selectedFromDate}
-                onChange={handleFromDateChange}
-                KeyboardButtonProps={{
-                  'aria-label': 'change date',
-                }}
+    <>
+      {loading ? <Loading message='Loading...' /> : null}
+      <Layout>
+        <div className='message_log_wrapper'>
+          <CommonBreadcrumbs
+            componentName='Communication'
+            childComponentName='SMS/Email Log'
+          />
+          <div className='spacing' />
+          <Grid container className='message_log_container' spacing={10}>
+            <Grid lg={5} item>
+              <Autocomplete
+                multiple
+                size='small'
+                onChange={handleBranch}
+                value={selectedBranches}
+                id='message_log-branch'
+                className='message_log_branch'
+                options={branchList}
+                getOptionLabel={(option) => option?.branch_name}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    className='message_log-textfield'
+                    {...params}
+                    variant='outlined'
+                    label='Branch'
+                    placeholder='Branch'
+                  />
+                )}
               />
             </Grid>
-            <Grid item xs={12} sm={2}>
-              <KeyboardDatePicker
-                margin='normal'
-                id='date-picker-dialog'
-                label='To'
-                format='YYYY-MM-DD'
-                value={selectedToDate}
-                onChange={handleToDateChange}
-                KeyboardButtonProps={{
-                  'aria-label': 'change date',
-                }}
+            <Grid lg={5} item>
+              <Autocomplete
+                multiple
+                size='small'
+                onChange={handleSmsType}
+                value={selectedSmsType}
+                id='message_log-smsType'
+                options={smsTypeList}
+                getOptionLabel={(option) => option?.category_name}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    className='message_log-textfield'
+                    {...params}
+                    variant='outlined'
+                    label='SMS Type'
+                    placeholder='SMS Type'
+                  />
+                )}
               />
             </Grid>
-          </MuiPickersUtilsProvider>
-        </Grid>
-        <Grid container className='message_log_container' spacing={2}>
-          <Grid lg={5} item>
-            <input
-              className={clearAllActive ? 'profile_update_button' : 'deactive_clearAll'}
-              type='button'
-              onClick={handleClearAll}
-              value='Clear All'
-            />
+          </Grid>
+          <Grid container spacing={2} className='message-log-container'>
+            <MuiPickersUtilsProvider utils={MomentUtils}>
+              <Grid item xs={12} sm={2}>
+                <KeyboardDatePicker
+                  margin='normal'
+                  id='date-picker-dialog'
+                  label='From'
+                  format='YYYY-MM-DD'
+                  value={selectedFromDate}
+                  onChange={handleFromDateChange}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={2}>
+                <KeyboardDatePicker
+                  margin='normal'
+                  id='date-picker-dialog'
+                  label='To'
+                  format='YYYY-MM-DD'
+                  value={selectedToDate}
+                  onChange={handleToDateChange}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
+                />
+              </Grid>
+            </MuiPickersUtilsProvider>
+          </Grid>
+          <Grid container className='message_log_container' spacing={2}>
+            <Grid lg={5} item>
+              <input
+                className={clearAllActive ? 'profile_update_button' : 'deactive_clearAll'}
+                type='button'
+                onClick={handleClearAll}
+                value='Clear All'
+              />
 
-            <input
-              className='profile_update_button'
-              type='button'
-              onClick={handleFilterCheck}
-              value='Filter'
-            />
+              <input
+                className='profile_update_button'
+                type='button'
+                onClick={handleFilterCheck}
+                value='Filter'
+              />
+            </Grid>
           </Grid>
-        </Grid>
-        <div className='message_type_block_wrapper'>
-          <div
-            className={`message_type_block ${
-              isEmail ? null : 'message_type_block_selected'
-            }`}
-            onClick={handleTypeChange}
-          >
-            SMS Logs
+          <div className='message_type_block_wrapper'>
+            <div
+              className={`message_type_block ${
+                isEmail ? null : 'message_type_block_selected'
+              }`}
+              onClick={handleTypeChange}
+            >
+              SMS Logs
+            </div>
+            <div
+              className={`message_type_block ${
+                isEmail ? 'message_type_block_selected' : null
+              }`}
+              onClick={handleTypeChange}
+            >
+              Email Logs
+            </div>
           </div>
-          <div
-            className={`message_type_block ${
-              isEmail ? 'message_type_block_selected' : null
-            }`}
-            onClick={handleTypeChange}
-          >
-            Email Logs
-          </div>
-        </div>
-        <Grid container className='message_log_container' spacing={2}>
-          <Grid lg={9} item>
-            <Paper className={classes.root}>
-              <TableContainer className={`table table-shadow ${classes.container}`}>
-                <Table stickyHeader aria-label='sticky table'>
-                  <TableHead className='view_groups_header'>
-                    <TableRow>
-                      <TableCell>Message</TableCell>
-                      <TableCell>Type</TableCell>
-                      <TableCell>Sent by</TableCell>
-                      <TableCell>Sent on</TableCell>
-                      <TableCell>Total Count</TableCell>
-                      <TableCell>Sent</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody className='table_body'>
-                    {messageRows.map((row) => (
-                      <TableRow
-                        className={selectedRow === row.id ? 'selectedRow' : 'notSelected'}
-                        onClick={() => handleUserDetails(row.id)}
-                      >
-                        <TableCell align='right'>{row.message}</TableCell>
-                        <TableCell align='right'>{row.type}</TableCell>
-                        <TableCell align='right'>{row.sendBy}</TableCell>
-                        <TableCell align='right'>{row.sendOn}</TableCell>
-                        <TableCell align='right'>{row.totalCount}</TableCell>
-                        <TableCell align='right'>{row.sent}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <div className={`${classes.root} pagenation_view_groups`}>
-                <Pagination
-                  page={Number(messageCurrentPageno)}
-                  size='large'
-                  className='books__pagination'
-                  onChange={handleMessagePagination}
-                  count={messageTotalPage}
-                />
-              </div>
-            </Paper>
-          </Grid>
-          <Grid lg={3} item>
-            {userLogs.length ? (
+          <Grid container className='message_log_container' spacing={2}>
+            <Grid lg={9} item>
               <Paper className={classes.root}>
                 <TableContainer className={`table table-shadow ${classes.container}`}>
                   <Table stickyHeader aria-label='sticky table'>
                     <TableHead className='view_groups_header'>
                       <TableRow>
-                        <TableCell>Name</TableCell>
-                        <TableCell>{isEmail ? 'Email Id' : 'Number'}</TableCell>
+                        <TableCell>Message</TableCell>
+                        <TableCell>Type</TableCell>
+                        <TableCell>Sent by</TableCell>
+                        <TableCell>Sent on</TableCell>
+                        <TableCell>Total Count</TableCell>
                         <TableCell>Sent</TableCell>
                       </TableRow>
                     </TableHead>
-                    <TableBody>
-                      {userLogs.map((row) => (
-                        <TableRow>
-                          <TableCell align='right'>{row.name}</TableCell>
-                          <TableCell align='right'>{row.number}</TableCell>
+                    <TableBody className='table_body'>
+                      {messageRows.map((row) => (
+                        <TableRow
+                          className={
+                            selectedRow === row.id ? 'selectedRow' : 'notSelected'
+                          }
+                          onClick={() => handleUserDetails(row.id)}
+                        >
+                          <TableCell align='right'>{row.message}</TableCell>
+                          <TableCell align='right'>{row.type}</TableCell>
+                          <TableCell align='right'>{row.sendBy}</TableCell>
+                          <TableCell align='right'>{row.sendOn}</TableCell>
+                          <TableCell align='right'>{row.totalCount}</TableCell>
                           <TableCell align='right'>{row.sent}</TableCell>
                         </TableRow>
                       ))}
@@ -464,19 +444,54 @@ const MessageLog = withRouter(({ history, ...props }) => {
                 </TableContainer>
                 <div className={`${classes.root} pagenation_view_groups`}>
                   <Pagination
-                    page={Number(usersCurrentPageno)}
+                    page={Number(messageCurrentPageno)}
                     size='large'
                     className='books__pagination'
-                    onChange={handleUsersPagination}
-                    count={usersTotalPage}
+                    onChange={handleMessagePagination}
+                    count={messageTotalPage}
                   />
                 </div>
               </Paper>
-            ) : null}
+            </Grid>
+            <Grid lg={3} item>
+              {userLogs.length ? (
+                <Paper className={classes.root}>
+                  <TableContainer className={`table table-shadow ${classes.container}`}>
+                    <Table stickyHeader aria-label='sticky table'>
+                      <TableHead className='view_groups_header'>
+                        <TableRow>
+                          <TableCell>Name</TableCell>
+                          <TableCell>{isEmail ? 'Email Id' : 'Number'}</TableCell>
+                          <TableCell>Sent</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {userLogs.map((row) => (
+                          <TableRow>
+                            <TableCell align='right'>{row.name}</TableCell>
+                            <TableCell align='right'>{row.number}</TableCell>
+                            <TableCell align='right'>{row.sent}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                  <div className={`${classes.root} pagenation_view_groups`}>
+                    <Pagination
+                      page={Number(usersCurrentPageno)}
+                      size='large'
+                      className='books__pagination'
+                      onChange={handleUsersPagination}
+                      count={usersTotalPage}
+                    />
+                  </div>
+                </Paper>
+              ) : null}
+            </Grid>
           </Grid>
-        </Grid>
-      </div>
-    </Layout>
+        </div>
+      </Layout>
+    </>
   );
 });
 

@@ -89,6 +89,7 @@ const CreateclassProvider = (props) => {
       );
       if (data.status === 'success') {
         dispatch(success(data.data, LIST_SECTION_SUCCESS));
+        return data.data;
       } else {
         throw new Error(data.message);
       }
