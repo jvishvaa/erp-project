@@ -3,13 +3,14 @@ import { Grid, TextField, Button } from '@material-ui/core';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-
+import Loading from '../../components/loader/loader';
 
 const CreateGrade = () => {
 
   const { setAlert } = useContext(AlertNotificationContext);
   const [gradeName,setGradeName]=useState('')
   const [gradeType,setGradeType]=useState('')
+  const [loading, setLoading] = useState(false);
   
   const handleSubmit = (e) => {
     e.preventDefault()
