@@ -331,8 +331,7 @@ const Layout = ({ children, history }) => {
                   right: `calc(100vw - ${
                     searchInputRef.current &&
                     searchInputRef.current.getBoundingClientRect().left +
-                      searchInputRef.current.getBoundingClientRect().width +
-                      70
+                      searchInputRef.current.getBoundingClientRect().width
                   }px)`,
                   zIndex: 3000,
                 }}
