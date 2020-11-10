@@ -19,6 +19,7 @@ import styles from './useStyles';
 
 import ModuleCard from '../../components/module-card';
 import { AssignmentReturned } from '@material-ui/icons';
+import Loading from '../../components/loader/loader';
 
 class CreateRole extends Component {
   constructor(props) {
@@ -149,7 +150,7 @@ class CreateRole extends Component {
     } = this.props;
     const { roleNameError, selectionError } = this.state;
     const modulesListing = () => {
-      if (fetchingModules) return 'Loading.....';
+      if (fetchingModules) return <Loading message='Loading modules...' />;
       if (modules?.length > 0) {
         return modules.map((module) => (
           <Grid item xs={12} sm={6} lg={12}>

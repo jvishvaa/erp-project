@@ -270,13 +270,16 @@ export const editRole = (params) => (dispatch) => {
     });
 };
 
-export const deleteRole = (params) => (dispatch) => {
+export const deleteRole = (params) => (dispatch, getState) => {
   dispatch({ type: DELETE_ROLE_REQUEST });
+  const {
+    roleManagement: { limit },
+  } = getState();
   return axios
     .post(`/erp_user/delete_role/`, params)
     .then(() => {
       dispatch({ type: DELETE_ROLE_SUCCESS });
-      dispatch(fetchRoles());
+      dispatch(fetchRoles({ page: 1, limit }));
     })
     .catch(() => {
       dispatch({ type: DELETE_ROLE_FAILURE });
