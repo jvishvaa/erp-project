@@ -77,7 +77,7 @@ const GradeTable = () => {
   const [addFlag,setAddFlag]=useState(false)
   const [editFlag,setEditFlag]=useState(false)
   const [tableFlag,setTableFlag]=useState(true)
-  const [dataCount,setDataCount]=useState()
+  const [pageCount,setPageCount]=useState()
   const [delFlag,setDelFlag]=useState(false)
   const [searchGrade,setSearchGrade]=useState('')
   const [widthFlag,setWidthFlag]=useState(false)
@@ -106,6 +106,7 @@ const GradeTable = () => {
     setTableFlag(true)
     setAddFlag(false)
     setEditFlag(false)
+    setSearchGrade('')
   }
 
     const handleDeleteGrade = (e) => {
@@ -117,17 +118,17 @@ const GradeTable = () => {
     }).then(result=>{
     if (result.status === 200) {
       {
-        setAlert('success', result.data.message);
         setDelFlag(!delFlag)
         setLoading(false);
+        setAlert('success', result.data.message);
       }
     } else {
-      setAlert('error', result.data.message);
       setLoading(false);
+      setAlert('error', result.data.message);
     }
     }).catch((error)=>{
-      setAlert('error', error.message);
       setLoading(false);
+      setAlert('error', error.message);
     })
     setOpenDeleteModal(false)
     };
@@ -142,19 +143,24 @@ const GradeTable = () => {
     };
 
     useEffect(()=>{
+      setLoading(true)
+      setTimeout(()=> {setLoading(false)},450); 
+    },[page,delFlag,editFlag,addFlag])
+
+    useEffect(()=>{
       axiosInstance.get(`${endpoints.masterManagement.grades}?page=${page}&page_size=15&grade_name=${searchGrade}`)
       .then(result=>{
         if (result.status === 200) {
           {
             setGrades(result.data.result.results);
-            setDataCount(result.data.result.count)
+            setPageCount(result.data.result.total_pages)
           }
         } else {
-          setAlert('error', result.data.message);
+          setAlert('error', result.data.message)
         }
       })
       .catch((error)=>{
-        setAlert('error', error.message);
+        setAlert('error', error.message)
       })
   },[openDeleteModal,delFlag,editFlag,addFlag,page,searchGrade])
   
@@ -183,9 +189,9 @@ const GradeTable = () => {
       </div>
     </div>
 
-    {!tableFlag && addFlag && !editFlag && <CreateGrade /> }
+    {!tableFlag && addFlag && !editFlag && <CreateGrade setLoading={setLoading}/> }
     {!tableFlag && !addFlag && editFlag && <EditGrade id={gradeId} name={gradeName} type={gradeType} 
-    handleGoBack={handleGoBack}/> }
+    handleGoBack={handleGoBack} setLoading={setLoading}/> }
 
     {tableFlag && !addFlag && !editFlag && 
       <Grid container spacing={4} style={{marginBottom:'10px'}}>
@@ -199,6 +205,7 @@ const GradeTable = () => {
             variant='outlined'
             size='medium'
             name='gradename'
+            autoComplete="off"
             onChange={e=>setSearchGrade(e.target.value)}
           />
         </Grid>
@@ -260,7 +267,7 @@ const GradeTable = () => {
       </TableContainer>
       <div className="paginate">
         <Pagination
-        count={Math.ceil(dataCount/15)}
+        count={pageCount}
         color="primary"
         showFirstButton
         showLastButton

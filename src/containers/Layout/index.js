@@ -483,7 +483,7 @@ const Layout = ({ children, history }) => {
               onClick={handleMobileMenuOpen}
               color='inherit'
             >
-              {roleDetails.user_profile ? (
+              {roleDetails ? (
                 <img
                   src={roleDetails.user_profile}
                   alt='no img'

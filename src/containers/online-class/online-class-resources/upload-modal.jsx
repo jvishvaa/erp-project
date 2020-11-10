@@ -496,6 +496,7 @@ const UploadModal = ({ id, onClose, isMobile, type }) => {
             placeholder='Resource Name'
             fullWidth
             name='name'
+            inputProps={{maxLength:30}}
             disabled={isExisting && !item.isEditable}
             onChange={(e) => resourceChangeHandler(e, i, isExisting)}
           />
@@ -608,6 +609,7 @@ const UploadModal = ({ id, onClose, isMobile, type }) => {
           placeholder='Homework Description'
           rowsmax={6}
           rows={6}
+          inputProps={{maxLength:250}}
           fullWidth
           onChange={(e) => setDescription(e.target.value)}
         />
