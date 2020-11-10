@@ -65,6 +65,7 @@ class RoleManagement extends Component {
             Add Role
           </Button>
         </div>
+        <div className={classes.searchContainer}></div>
 
         <div>
           <RolesTable
