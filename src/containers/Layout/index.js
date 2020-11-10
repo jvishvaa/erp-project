@@ -142,6 +142,16 @@ const Layout = ({ children, history }) => {
     }
   }, [isLogout]);
 
+  useEffect(() => {
+    if (searchedText !== '') {
+      setGlobalSearchResults(false);
+      setSearching(false);
+      setSearchUserDetails([]);
+      setTotalPage(0);
+      setCurrentPage(1);
+    }
+  }, [history.location.pathname]);
+
   //   useEffect(() => {
   //     if (searchedText !== '') {
   //       getGlobalUserRecords();
@@ -174,6 +184,7 @@ const Layout = ({ children, history }) => {
       setSearchUserDetails([]);
       setTotalPage(0);
       setCurrentPage(1);
+      return;
     }
     const q = event.target.value;
     if (q.length < 5) {
@@ -183,6 +194,15 @@ const Layout = ({ children, history }) => {
       setCurrentPage(1);
       autocompleteSearchDebounced(event.target.value);
     }
+  };
+
+  const handleTextSearchClear = () => {
+    setSearchedText('');
+    setGlobalSearchResults(false);
+    setSearching(false);
+    setSearchUserDetails([]);
+    setTotalPage(0);
+    setCurrentPage(1);
   };
 
   //   const handleScroll = (event) => {
@@ -304,12 +324,23 @@ const Layout = ({ children, history }) => {
             <div className={classes.grow}>
               <Paper component='form' className={classes.searchInputContainer}>
                 <InputBase
+                  value={searchedText}
                   className={classes.searchInput}
                   placeholder='Search..'
                   inputProps={{ 'aria-label': 'search across site' }}
                   inputRef={searchInputRef}
                   onChange={changeQuery}
                 />
+                {searchedText ? (
+                  <IconButton
+                    type='submit'
+                    className={classes.clearIconButton}
+                    aria-label='search'
+                    onClick={handleTextSearchClear}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                ) : null}
                 <IconButton
                   type='submit'
                   className={classes.searchIconButton}
@@ -341,7 +372,7 @@ const Layout = ({ children, history }) => {
                   <Fade {...TransitionProps} timeout={350}>
                     <Paper>
                       <Grid container style={{ flexDirection: 'column' }}>
-                        {globalSearchResults ? (
+                        {globalSearchResults && searchUserDetails.length ? (
                           <>
                             <Grid item>
                               <Grid
@@ -384,6 +415,7 @@ const Layout = ({ children, history }) => {
                                       }
                                     >
                                       {globalSearchResults &&
+                                        searchUserDetails.length &&
                                         searchUserDetails.map((result, index) => {
                                           return (
                                             <ListItem
@@ -432,17 +464,16 @@ const Layout = ({ children, history }) => {
                               flexGrow: 1,
                             }}
                           >
-                            {searchedText.length > 0 ? (
-                              <LinearProgress
-                                style={{ width: '100%' }}
-                                color='secondary'
-                                variant='query'
-                              />
-                            ) : (
-                              <span style={{ padding: 1 }}>
-                                Type something to search.
-                              </span>
-                            )}
+                            <span
+                              style={{
+                                padding: 1,
+                                textAlign: 'center',
+                                margin: 'auto',
+                                color: '#014B7E',
+                              }}
+                            >
+                              No data available.
+                            </span>
                           </Grid>
                         )}
                       </Grid>
