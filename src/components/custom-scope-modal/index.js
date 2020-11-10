@@ -12,6 +12,8 @@ import Grid from '@material-ui/core/Grid';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import Box from '@material-ui/core/Box';
+import RotateLeftIcon from '@material-ui/icons/RotateLeft';
 import {
   fetchGrades as getGrades,
   fetchSections as getSections,
@@ -124,6 +126,16 @@ const CustomScopeModal = ({
   const onCustomScopeChange = (scope, value) => {
     console.log('custon scope before passing ', scope, value);
     onChange(scope, value);
+  };
+
+  const onResetInputs = () => {
+    const customScopeObj = {
+      custom_branch: [],
+      custom_grade: [],
+      custom_section: [],
+      custom_subject: [],
+    };
+    onCustomScopeChange('', customScopeObj);
   };
 
   const fetchSubjects = (branches, grades, customScopeObj, setFilteredResults) => {
@@ -265,6 +277,18 @@ const CustomScopeModal = ({
         Custom Scope
         <p className={classes.subTitle}>{subModule}</p>
       </DialogTitle>
+      <Grid container sm={12} justify='flex-end' mx={5}>
+        <Grid item>
+          <Box px={5}>
+            <Button startIcon={<RotateLeftIcon />} onClick={onResetInputs}>
+              Reset all
+            </Button>
+          </Box>
+        </Grid>
+        {/* <Box style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+           
+          </Box> */}
+      </Grid>
       <DialogContent>
         <Grid container alignItems='center' direction='column'>
           <Grid item sm={12}>
