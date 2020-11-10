@@ -19,6 +19,7 @@ import {
 import styles from './useStyles';
 
 import ModuleCard from '../../components/module-card';
+import Loading from '../../components/loader/loader';
 
 class EditRole extends Component {
   constructor(props) {
@@ -165,7 +166,7 @@ class EditRole extends Component {
                 id='outlined-helperText'
                 label='Role name'
                 defaultValue=''
-                inputProps={{maxLength:20}}
+                inputProps={{ maxLength: 20 }}
                 variant='outlined'
                 value={roleName}
                 onChange={this.onChangeRoleName}
@@ -179,6 +180,7 @@ class EditRole extends Component {
         <Typography className={classes.sectionHeader}>Number of modules</Typography>
         <Divider />
         <Grid container spacing={4} style={{ padding: '2rem 0' }}>
+          {fetchingRoleDataById && <Loading message='loading modules ...' />}
           {modules &&
             modules.map((module) => (
               <Grid item xs={12} sm={6} lg={12}>

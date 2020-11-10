@@ -10,6 +10,7 @@ const OnlineClassResourceCell = (props) => {
     index,
     data: {
       id,
+      scope,
       online_class: {
         id: classId,
         start_time: startTime,
@@ -40,7 +41,7 @@ const OnlineClassResourceCell = (props) => {
         <TableCell align='center'>{subjectName}</TableCell>
         <TableCell align='center'>{startTime}</TableCell>
         <TableCell align='center'>
-          <Button onClick={handleClick}>Upload resource</Button>
+          {scope === true ? <Button onClick={handleClick}>Upload resource</Button> : ''}
         </TableCell>
       </TableRow>
       {uploadModal}
