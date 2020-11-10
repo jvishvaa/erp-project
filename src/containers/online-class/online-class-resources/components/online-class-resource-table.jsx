@@ -21,9 +21,16 @@ const OnlineClassResourceTable = () => {
       resourceOnlineClasses = [],
       totalPages,
       loadingResourceOnlineClasses,
-      currentResourceTab,
+      currentPage,
     },
+    setResourcePage,
   } = useContext(OnlineclassViewContext);
+
+  const handlePagination = (event, page) => {
+    if (page !== currentPage) {
+      setResourcePage(page);
+    }
+  };
 
   return (
     <div className='viewclass__management-table'>
@@ -43,7 +50,12 @@ const OnlineClassResourceTable = () => {
           ) : (
             <TableBody className='viewclass__table-body'>
               {resourceOnlineClasses.map((row, index) => (
-                <OnlineClassResourceCell data={row} key={row.id} index={index} />
+                <OnlineClassResourceCell
+                  data={row}
+                  key={row.id}
+                  index={index}
+                  currentPage={currentPage}
+                />
               ))}
             </TableBody>
           )}
@@ -58,7 +70,12 @@ const OnlineClassResourceTable = () => {
       >
         <Grid item xs={12}>
           {!loadingResourceOnlineClasses ? (
-            <Pagination count={totalPages} color='primary' />
+            <Pagination
+              count={totalPages}
+              color='primary'
+              onChange={handlePagination}
+              page={currentPage}
+            />
           ) : (
             ''
           )}

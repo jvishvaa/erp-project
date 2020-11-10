@@ -24,6 +24,8 @@ import {
   RESOURCE_ONLINECLASS_REQUEST,
   RESOURCE_ONLINECLASS_SUCCESS,
   RESOURCE_ONLINECLASS_FAILURE,
+  SET_MANAGEMENT_PAGE,
+  SET_RESOURCE_PAGE,
 } from './online-class-constants';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
@@ -125,6 +127,14 @@ const OnlineclassViewProvider = (props) => {
     }
   };
 
+  const setManagementPage = (page) => {
+    dispatch(success(page, SET_MANAGEMENT_PAGE));
+  };
+
+  const setResourcePage = (page) => {
+    dispatch(success(page, SET_RESOURCE_PAGE));
+  };
+
   const handleAccept = async (meetingId) => {
     try {
       const formData = new FormData();
@@ -222,6 +232,8 @@ const OnlineclassViewProvider = (props) => {
         cancelClass,
         setCurrentTabs,
         setCurrentResourceTab,
+        setManagementPage,
+        setResourcePage,
       }}
     >
       {children}

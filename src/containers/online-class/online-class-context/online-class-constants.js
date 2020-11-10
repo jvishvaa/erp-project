@@ -26,3 +26,6 @@ export const CANCEL_CLASS = 'CANCEL_CLASS';
 export const SET_TAB = 'SET_TAB';
 
 export const SET_RESOURCE_TAB = 'SET_RESOURCE_TAB';
+
+export const SET_MANAGEMENT_PAGE = 'SET_MANAGEMENT_PAGE';
+export const SET_RESOURCE_PAGE = 'SET_RESOURCE_PAGE';

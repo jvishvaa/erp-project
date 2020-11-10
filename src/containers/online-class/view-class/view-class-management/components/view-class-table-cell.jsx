@@ -7,6 +7,7 @@ import { OnlineclassViewContext } from '../../../online-class-context/online-cla
 const ViewClassTableCell = (props) => {
   const {
     index,
+    currentPage,
     data: {
       id,
       scope,
@@ -75,7 +76,7 @@ const ViewClassTableCell = (props) => {
 
   return (
     <TableRow key={id}>
-      <TableCell align='center'>{index + 1}</TableCell>
+      <TableCell align='center'>{currentPage * 10 - (10 - index - 1)}</TableCell>
       <TableCell align='center'>{title}</TableCell>
       <TableCell align='center'>{subjectName}</TableCell>
       <TableCell align='center'>{startTime}</TableCell>

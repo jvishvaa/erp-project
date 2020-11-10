@@ -21,8 +21,16 @@ const ViewClassManagementTable = () => {
       totalPages,
       loadingManagementOnlineClasses,
       currentManagementTab,
+      currentPage,
     },
+    setManagementPage,
   } = useContext(OnlineclassViewContext);
+
+  const handlePagination = (event, page) => {
+    if (page !== currentPage) {
+      setManagementPage(page);
+    }
+  };
 
   return (
     <div className='viewclass__management-table'>
@@ -52,7 +60,12 @@ const ViewClassManagementTable = () => {
           ) : (
             <TableBody className='viewclass__table-body'>
               {managementOnlineClasses.map((row, index) => (
-                <ViewClassTableCell data={row} key={row.id} index={index} />
+                <ViewClassTableCell
+                  data={row}
+                  key={row.id}
+                  index={index}
+                  currentPage={currentPage}
+                />
               ))}
             </TableBody>
           )}
@@ -67,7 +80,12 @@ const ViewClassManagementTable = () => {
       >
         <Grid item xs={12}>
           {!loadingManagementOnlineClasses ? (
-            <Pagination count={totalPages} color='primary' />
+            <Pagination
+              count={totalPages}
+              color='primary'
+              onChange={handlePagination}
+              page={currentPage}
+            />
           ) : (
             ''
           )}
