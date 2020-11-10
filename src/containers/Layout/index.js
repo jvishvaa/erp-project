@@ -197,6 +197,7 @@ const Layout = ({ children, history }) => {
   };
 
   const handleTextSearchClear = () => {
+    setSearchedText('');
     setGlobalSearchResults(false);
     setSearching(false);
     setSearchUserDetails([]);
@@ -323,6 +324,7 @@ const Layout = ({ children, history }) => {
             <div className={classes.grow}>
               <Paper component='form' className={classes.searchInputContainer}>
                 <InputBase
+                  value={searchedText}
                   className={classes.searchInput}
                   placeholder='Search..'
                   inputProps={{ 'aria-label': 'search across site' }}
