@@ -25,18 +25,18 @@ const EditSubject = ({id,name,desc,handleGoBack,setLoading}) => {
 
         axiosInstance.put(endpoints.masterManagement.updateSubject,request).then(result=>{
           if (result.status === 200) {
-            setAlert('success', result.data.message);
             handleGoBack()
             setSubjectName('')
             setDescription('')
             setLoading(false);
-          } else {
-            setAlert('error', result.data.message);
+            setAlert('success', result.data.message);
+          } else {            
             setLoading(false);
+            setAlert('error', result.data.message);
           }
         }).catch((error)=>{
-          setAlert('error', error.message);
           setLoading(false);
+          setAlert('error', error.message);
         })
       }
       else

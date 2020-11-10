@@ -106,6 +106,7 @@ const GradeTable = () => {
     setTableFlag(true)
     setAddFlag(false)
     setEditFlag(false)
+    setSearchGrade('')
   }
 
     const handleDeleteGrade = (e) => {
@@ -117,17 +118,17 @@ const GradeTable = () => {
     }).then(result=>{
     if (result.status === 200) {
       {
-        setAlert('success', result.data.message);
         setDelFlag(!delFlag)
         setLoading(false);
+        setAlert('success', result.data.message);
       }
     } else {
-      setAlert('error', result.data.message);
       setLoading(false);
+      setAlert('error', result.data.message);
     }
     }).catch((error)=>{
-      setAlert('error', error.message);
       setLoading(false);
+      setAlert('error', error.message);
     })
     setOpenDeleteModal(false)
     };
@@ -142,19 +143,23 @@ const GradeTable = () => {
     };
 
     useEffect(()=>{
+      setLoading(true)
       axiosInstance.get(`${endpoints.masterManagement.grades}?page=${page}&page_size=15&grade_name=${searchGrade}`)
       .then(result=>{
         if (result.status === 200) {
           {
             setGrades(result.data.result.results);
             setDataCount(result.data.result.count)
+            setLoading(false)
           }
         } else {
-          setAlert('error', result.data.message);
+          setLoading(false)
+          setAlert('error', result.data.message)
         }
       })
       .catch((error)=>{
-        setAlert('error', error.message);
+        setLoading(false)
+        setAlert('error', error.message)
       })
   },[openDeleteModal,delFlag,editFlag,addFlag,page,searchGrade])
   
@@ -199,6 +204,7 @@ const GradeTable = () => {
             variant='outlined'
             size='medium'
             name='gradename'
+            autoComplete="off"
             onChange={e=>setSearchGrade(e.target.value)}
           />
         </Grid>

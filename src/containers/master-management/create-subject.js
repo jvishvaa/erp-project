@@ -9,27 +9,20 @@ const CreateSubject = ({grades,setLoading}) => {
 
   const { setAlert } = useContext(AlertNotificationContext);
   const [subjectName,setSubjectName]=useState('')
-  const [gradeId,setGradeId]=useState('')
-  const [gradeName,setGradeName]=useState('')
   const [description,setDescription]=useState('')
-  
+  const [selectedGrade,setSelectedGrade]=useState('')
+
   const handleGrade = (event, value) => {
     if(value)
-    {
-      setGradeId(value.id)
-      setGradeName(value.grade_name)
-    }
+      setSelectedGrade(value)
     else
-    {
-      setGradeId('')
-      setGradeName('')
-    }
+      setSelectedGrade('')
   };
 
   const handleSubmit = (e) => {
     e.preventDefault()
     setLoading(true);
-    if(gradeName==="" && gradeId==="")
+    if(selectedGrade==="")
     { 
       setLoading(false);
       setAlert('error','Select grade from the list')
@@ -38,25 +31,24 @@ const CreateSubject = ({grades,setLoading}) => {
     {
       axiosInstance.post(endpoints.masterManagement.createSubject,{
         subject_name:subjectName,
-        grade_name:gradeName,
-        grade_id:gradeId,
+        grade_name:selectedGrade.grade_name,
+        grade_id:selectedGrade.id,
         branch_id:JSON.parse(localStorage.getItem('userDetails')).role_details.branch[0],
         description:description
       }).then(result=>{
       if (result.data.status_code === 201) {
-        setAlert('success', result.data.message);
         setSubjectName('')
-        setGradeName('')
-        setGradeId('')
+        setSelectedGrade('')
         setDescription('')
         setLoading(false);
+        setAlert('success', result.data.message);
       } else {
-        setAlert('error', result.data.message);
         setLoading(false);
+        setAlert('error', result.data.message);
       }
       }).catch((error)=>{
-        setAlert('error', error.message);
         setLoading(false);
+        setAlert('error', error.message);
       })
     }
     };
@@ -92,7 +84,8 @@ const CreateSubject = ({grades,setLoading}) => {
               onChange={handleGrade}
               id='grade'
               options={grades}
-              getOptionLabel={(option) => option?.grade_name}
+              value={selectedGrade}
+              getOptionLabel={(option) => option.grade_name}
               filterSelectedOptions
               required
               renderInput={(params) => (

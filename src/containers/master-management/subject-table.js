@@ -116,6 +116,8 @@ const SubjectTable = () => {
     setTableFlag(true)
     setAddFlag(false)
     setEditFlag(false)
+    setSearchGrade('')
+    setSearchSubject('')
   }
 
   const handleDeleteSubject = (e) => {
@@ -126,16 +128,16 @@ const SubjectTable = () => {
         'subject_id': subjectId
       }).then(result=>{
       if (result.status === 200) {
-        setAlert('success', result.data.message);
         setDelFlag(!delFlag)
         setLoading(false);
+        setAlert('success', result.data.message);
       } else {
-        setAlert('error', result.data.message);
         setLoading(false);
+        setAlert('error', result.data.message);
       }
       }).catch((error)=>{
-        setAlert('error', error.message);
         setLoading(false);
+        setAlert('error', error.message);
       })
     setOpenDeleteModal(false)
   };
@@ -150,16 +152,24 @@ const SubjectTable = () => {
   };
 
   useEffect(()=>{
+
+  },[])
+
+  useEffect(()=>{
+      setLoading(true);
       axiosInstance.get(`${endpoints.masterManagement.subjects}?page=${page}&page_size=15&grade=${searchGrade}&subject=${searchSubject}`)
       .then(result=>{
         if (result.status === 200) {
           setSubjects(result.data.result.results);
           setDataCount(result.data.result.count)
+          setLoading(false);
         } else {
+          setLoading(false);
           setAlert('error', result.data.message);
         }
       })
       .catch((error)=>{
+        setLoading(false);
         setAlert('error', error.message);
       })
 
@@ -167,11 +177,14 @@ const SubjectTable = () => {
       .then(result=>{
         if (result.status === 200) {
           setGrades(result.data.data);
+          setLoading(false);
         } else {
+          setLoading(false);
           setAlert('error', result.data.message);
         }
       })
       .catch((error)=>{
+        setLoading(false);
         setAlert('error', error.message);
       })
   },[openDeleteModal,delFlag,editFlag,addFlag,page,searchGrade,searchSubject])
@@ -215,6 +228,7 @@ const SubjectTable = () => {
           variant='outlined'
           size='medium'
           name='subname'
+          autoComplete="off"
           className={widthFlag?"mainWidth widthClass":"mainWidth"}
           onFocus={e=>setWidthFlag(true)}
           onBlur={e=>setWidthFlag(false)}

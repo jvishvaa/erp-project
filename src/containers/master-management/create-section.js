@@ -9,48 +9,44 @@ const CreateSection = ({grades,setLoading}) => {
 
   const { setAlert } = useContext(AlertNotificationContext);
   const [sectionName,setSectionName]=useState('')
-  const [gradeId,setGradeId]=useState('')
-  const [gradeName,setGradeName]=useState('')
-  
+  const [selectedGrade,setSelectedGrade]=useState('')
+
   const handleGrade = (event, value) => {
     if(value)
-    {
-      setGradeId(value.id)
-      setGradeName(value.grade_name)
-    }
+      setSelectedGrade(value)
     else
-    {
-      setGradeId('')
-      setGradeName('')
-    }
+      setSelectedGrade('')
   };
+  
 
   const handleSubmit = (e) => {
     e.preventDefault()
     setLoading(true);
-    if(gradeName==="" && gradeId==="")
-    setAlert('error','Select grade from the list')
+    if(selectedGrade==="")
+    {
+      setLoading(false)
+      setAlert('error','Select grade from the list')
+    }
     else 
     {
       axiosInstance.post(endpoints.masterManagement.createSection,{
         section_name:sectionName,
-        grade_name:gradeName,
-        grade_id:gradeId,
+        grade_name:selectedGrade.grade_name,
+        grade_id:selectedGrade.id,
         branch_id:JSON.parse(localStorage.getItem('userDetails')).role_details.branch[0]
       }).then(result=>{
       if (result.data.status_code === 201) {
-        setAlert('success', result.data.message);
         setSectionName('')
-        setGradeId('')
-        setGradeName('')
+        setSelectedGrade('')
         setLoading(false);
-      } else {
+        setAlert('success', result.data.message);
+      } else {        
+        setLoading(false);
         setAlert('error', result.data.message);
-        setLoading(false);
       }
       }).catch((error)=>{
+        setLoading(false);        
         setAlert('error', error.message);
-        setLoading(false);
       })
     }
     };
@@ -85,6 +81,7 @@ const CreateSection = ({grades,setLoading}) => {
               size='medium'
               onChange={handleGrade}
               id='grade'
+              value={selectedGrade}
               options={grades}
               getOptionLabel={(option) => option?.grade_name}
               filterSelectedOptions
@@ -95,7 +92,6 @@ const CreateSection = ({grades,setLoading}) => {
                   variant='outlined'
                   label='Grades'
                   placeholder='Grades'
-                  value={gradeName}
                   required
                 />
               )}

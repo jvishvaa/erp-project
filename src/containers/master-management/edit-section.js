@@ -22,23 +22,23 @@ const EditSection = ({id,name,handleGoBack,setLoading}) => {
       axiosInstance.put(endpoints.masterManagement.updateSection,request)
       .then(result=>{
         if (result.status === 200) {
-          setAlert('success', result.data.message);
           handleGoBack()
           setSectionName('')
           setLoading(false);
+          setAlert('success', result.data.message);
         } else {
-          setAlert('error', result.data.message);
           setLoading(false);
+          setAlert('error', result.data.message);
         }
       }).catch((error)=>{
-        setAlert('error', error.message);
         setLoading(false);
+        setAlert('error', error.message);
       })
     }
     else
     {
-      setAlert('error','No Fields to Update')
       setLoading(false);
+      setAlert('error','No Fields to Update')
     }
     };
 

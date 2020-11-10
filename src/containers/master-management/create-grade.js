@@ -19,18 +19,18 @@ const CreateGrade = ({setLoading}) => {
     }).then(result=>{
     if (result.data.status_code === 201) {
       {
-        setAlert('success', result.data.message);
         setGradeName('')
         setGradeType('')
         setLoading(false);
+        setAlert('success', result.data.message);
       }
     } else {
-      setAlert('error', result.data.message);
       setLoading(false);
+      setAlert('error', result.data.message);
     }
     }).catch((error)=>{
-      setAlert('error', error.message);
       setLoading(false);
+      setAlert('error', error.message);
     })
     };
 
