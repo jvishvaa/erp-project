@@ -13,6 +13,7 @@ import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import SearchOutlined from '@material-ui/icons/SearchOutlined';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 
+import { debounce } from '@material-ui/core';
 import {
   fetchRoles,
   setSelectedRole,
@@ -20,12 +21,14 @@ import {
   searchRoles,
 } from '../../redux/actions';
 import RolesTable from '../../components/roles-table';
+import Loading from '../../components/loader/loader';
 import styles from './useStyles';
 
 class RoleManagement extends Component {
   constructor(props) {
     super(props);
     this.state = { openDeleteModal: false, selectedRole: null, searchInput: '' };
+    this.handleSearchRoles = debounce(this.handleSearchRoles, 500);
   }
 
   componentDidMount() {
@@ -100,16 +103,20 @@ class RoleManagement extends Component {
         </Box>
 
         <div>
-          <RolesTable
-            roles={roles}
-            loading={fetchingRoles}
-            onEdit={this.editRole}
-            onDelete={this.handleOpenDeleteModal}
-            page={page}
-            limit={limit}
-            count={count}
-            onChangePage={this.handlePageChange}
-          />
+          {fetchingRoles ? (
+            <Loading message='fetching roles ..' />
+          ) : (
+            <RolesTable
+              roles={roles}
+              loading={fetchingRoles}
+              onEdit={this.editRole}
+              onDelete={this.handleOpenDeleteModal}
+              page={page}
+              limit={limit}
+              count={count}
+              onChangePage={this.handlePageChange}
+            />
+          )}
         </div>
         <Dialog
           open={openDeleteModal}
