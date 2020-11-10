@@ -1,0 +1,23 @@
+@import '../../assets/styles/variables';
+.roles-table {
+  .table-header-row {
+    tr {
+      th {
+        position: relative;
+        margin: '10px 0';
+        &:not(:last-child) {
+          &:after {
+            content: '';
+            width: 2px;
+            background-color: $primary-color;
+            height: 60%;
+            position: absolute;
+            border-radius: 5px;
+            right: 0;
+            transform: translateY(-10%);
+          }
+        }
+      }
+    }
+  }
+}

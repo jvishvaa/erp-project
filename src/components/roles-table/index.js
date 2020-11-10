@@ -13,6 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import useStyles from './useStyles';
 import TablePagination from '@material-ui/core/TablePagination';
 import moment from 'moment';
+import './styles.scss';
 
 const columns = [
   //   { id: 'id', label: 'Id', minWidth: 170 },
@@ -44,10 +45,10 @@ const RolesTable = ({ roles, onEdit, onDelete, count, limit, page, onChangePage 
   // };
 
   return (
-    <Paper className={classes.root}>
+    <Paper className={`${classes.root} roles-table`}>
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label='sticky table'>
-          <TableHead>
+          <TableHead className='table-header-row'>
             <TableRow>
               {columns.map((column) => (
                 <TableCell
