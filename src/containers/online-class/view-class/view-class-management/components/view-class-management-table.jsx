@@ -7,9 +7,9 @@ import {
   TableBody,
   TableContainer,
   Grid,
-  CircularProgress,
 } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
+import Loader from '../../../../../components/loader/loader';
 
 import ViewClassTableCell from './view-class-table-cell';
 import { OnlineclassViewContext } from '../../../online-class-context/online-class-state';
@@ -48,7 +48,7 @@ const ViewClassManagementTable = () => {
             </TableRow>
           </TableHead>
           {loadingManagementOnlineClasses ? (
-            <CircularProgress className='progress-center' />
+            <Loader />
           ) : (
             <TableBody className='viewclass__table-body'>
               {managementOnlineClasses.map((row, index) => (
