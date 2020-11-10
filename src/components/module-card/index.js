@@ -306,74 +306,83 @@ export default function ModuleCard({
     console.log('custom scope obj ', customScopeObj);
     const moduleObj = JSON.parse(JSON.stringify(module));
     const subModules = module.module_child;
-    const changedModuleIndices = [];
+    // const changedModuleIndices = [];
 
-    if (unCheckDependency.length == 0) {
-      const { clonedArray, index } = findAndApplyCustomScope(
-        subModules,
-        subModuleId,
-        customScopeObj
-      );
-      moduleObj.module_child = clonedArray;
-      changedModuleIndices.push(index);
-      if (dependencySubModule) {
-        const { clonedArray, index } = findAndApplyCustomScope(
-          moduleObj.module_child,
-          dependencySubModule,
-          customScopeObj,
-          true
-        );
-        moduleObj.module_child = clonedArray;
-        changedModuleIndices.push(index);
-      }
-    } else {
-      const unCheckDependencies = [];
-      const safeToUnsetValues = unCheckDependency.every((depId) => {
-        const subModuleIndex = subModules.findIndex(
-          (obj) => obj.module_child_id == depId
-        );
-        if (subModuleIndex) {
-          if (
-            subModules[subModuleIndex][scope] &&
-            subModules[subModuleIndex][scope].length == 0
-          ) {
-            return true;
-          }
-          unCheckDependencies.push(subModules[subModuleIndex].module_child_name);
-          return false;
-        }
-        return true;
-      });
-      if (safeToUnsetValues) {
-        const { clonedArray, index } = findAndApplyCustomScope(
-          subModules,
-          subModuleId,
-          customScopeObj
-        );
-        moduleObj.module_child = clonedArray;
-        changedModuleIndices.push(index);
-      } else {
-        console.log('not safe to uncheck');
-        setAlert('error', `Uncheck  ${unCheckDependencies.join(', ')} modules first`);
-      }
-    }
+    const { clonedArray, index } = findAndApplyCustomScope(
+      subModules,
+      subModuleId,
+      customScopeObj
+    );
+    moduleObj.module_child = clonedArray;
 
-    const modulePermissions = changedModuleIndices.map((index) => {
-      const changedSubModule = moduleObj.module_child[index];
-      const reqObj = {
-        modules_id: changedSubModule.module_child_id,
-        my_branch: changedSubModule.my_branch,
-        my_grade: changedSubModule.my_grade,
-        my_section: changedSubModule.my_section,
-        custom_grade: changedSubModule.custom_grade.map((grade) => grade.id),
-        custom_section: changedSubModule.custom_section.map((section) => section.id),
-        custom_branch: changedSubModule.custom_branch.map((branch) => branch.id),
-        custom_subject: changedSubModule.custom_subject.map((subject) => subject.id),
-      };
-      return reqObj;
-    });
+    console.log('module state', moduleObj);
 
-    constructModulePermissionsRequestData(modulePermissions);
+    // if (unCheckDependency.length == 0) {
+    //   const { clonedArray, index } = findAndApplyCustomScope(
+    //     subModules,
+    //     subModuleId,
+    //     customScopeObj
+    //   );
+    //   moduleObj.module_child = clonedArray;
+    //   changedModuleIndices.push(index);
+    //   if (dependencySubModule) {
+    //     const { clonedArray, index } = findAndApplyCustomScope(
+    //       moduleObj.module_child,
+    //       dependencySubModule,
+    //       customScopeObj,
+    //       true
+    //     );
+    //     moduleObj.module_child = clonedArray;
+    //     changedModuleIndices.push(index);
+    //   }
+    // } else {
+    //   const unCheckDependencies = [];
+    //   const safeToUnsetValues = unCheckDependency.every((depId) => {
+    //     const subModuleIndex = subModules.findIndex(
+    //       (obj) => obj.module_child_id == depId
+    //     );
+    //     if (subModuleIndex) {
+    //       if (
+    //         subModules[subModuleIndex][scope] &&
+    //         subModules[subModuleIndex][scope].length == 0
+    //       ) {
+    //         return true;
+    //       }
+    //       unCheckDependencies.push(subModules[subModuleIndex].module_child_name);
+    //       return false;
+    //     }
+    //     return true;
+    //   });
+    //   if (safeToUnsetValues) {
+    //     const { clonedArray, index } = findAndApplyCustomScope(
+    //       subModules,
+    //       subModuleId,
+    //       customScopeObj
+    //     );
+    //     moduleObj.module_child = clonedArray;
+    //     changedModuleIndices.push(index);
+    //   } else {
+    //     console.log('not safe to uncheck');
+    //     setAlert('error', `Uncheck  ${unCheckDependencies.join(', ')} modules first`);
+    //   }
+    // }
+
+    // const modulePermissions = changedModuleIndices.map((index) => {
+    //   const changedSubModule = moduleObj.module_child[index];
+    //   const reqObj = {
+    //     modules_id: changedSubModule.module_child_id,
+    //     my_branch: changedSubModule.my_branch,
+    //     my_grade: changedSubModule.my_grade,
+    //     my_section: changedSubModule.my_section,
+    //     custom_grade: changedSubModule.custom_grade.map((grade) => grade.id),
+    //     custom_section: changedSubModule.custom_section.map((section) => section.id),
+    //     custom_branch: changedSubModule.custom_branch.map((branch) => branch.id),
+    //     custom_subject: changedSubModule.custom_subject.map((subject) => subject.id),
+    //   };
+    //   return reqObj;
+    // });
+
+    // constructModulePermissionsRequestData(modulePermissions);
     alterCreateRolePermissions(moduleObj);
   };
 
