@@ -30,7 +30,10 @@ const UserDetails = withRouter(({ history, ...props }) => {
   };
 
   const handleEdit = (id) => {
-    history.push(`/user-management/edit-user/${id}`);
+    history.replace(`/user-management/edit-user/${id}`);
+    if (history.location.pathname.includes('/edit-user/')) {
+      window.location.reload();
+    }
   };
 
   const getUserDetails = async () => {

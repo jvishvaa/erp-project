@@ -82,10 +82,10 @@ const Layout = ({ children, history }) => {
   const [userId, setUserId] = useState();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-  const getGlobalUserRecords = async () => {
+  const getGlobalUserRecords = async (text) => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.gloabSearch.getUsers}?search=${searchedText}&page=${currentPage}&page_size=100`,
+        `${endpoints.gloabSearch.getUsers}?search=${text}&page=${currentPage}&page_size=100`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -112,7 +112,7 @@ const Layout = ({ children, history }) => {
     if (q !== '') {
       setSearching(true);
       setGlobalSearchResults(true);
-      getGlobalUserRecords();
+      getGlobalUserRecords(q);
     }
   };
   const autocompleteSearchDebounced = debounce(500, autocompleteSearch);
@@ -351,7 +351,7 @@ const Layout = ({ children, history }) => {
                                   paddingBottom: 12,
                                   paddingTop: 12,
                                   paddingLeft: 16,
-                                  backgroundColor: '#eee',
+                                  backgroundColor: 'rgb(224 224 224)',
                                   paddingRight: 16,
                                   minWidth: 374,
                                 }}
@@ -372,8 +372,11 @@ const Layout = ({ children, history }) => {
                                       subheader={
                                         <ListSubheader
                                           style={{
-                                            background: 'rgb(238, 238, 238)',
+                                            background: 'rgb(224 224 224)',
                                             width: '100%',
+                                            color: '#014B7E',
+                                            fontSize: '1rem',
+                                            fontWeight: 600,
                                           }}
                                         >
                                           Users
@@ -385,6 +388,7 @@ const Layout = ({ children, history }) => {
                                           return (
                                             <ListItem
                                               style={{ width: 324 }}
+                                              className='user_rows_details'
                                               button
                                               onClick={() => {
                                                 console.log('I amcalled...');
