@@ -139,6 +139,7 @@ const RolesTable = ({ roles, onEdit, onDelete, count, limit, page, onChangePage 
           onChangePage(pageNo + 1);
         }}
         rowsPerPageOptions={false}
+        className='table-pagination'
       />
     </Paper>
   );

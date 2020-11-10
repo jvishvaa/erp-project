@@ -100,6 +100,27 @@ export const fetchRoles = (params) => (dispatch) => {
     });
 };
 
+export const searchRoles = (params) => (dispatch) => {
+  dispatch({ type: FETCH_ROLES_REQUEST });
+  axios
+    .get(
+      `/erp_user/role-search/?role_name=${params.roleName}&page=${params.page}&page_size=${params.limit}`
+    )
+    .then((response) => {
+      const { result, current_page: page, limit, count } = response.data;
+      dispatch({
+        type: FETCH_ROLES_SUCCESS,
+        data: result,
+        page,
+        limit,
+        count,
+      });
+    })
+    .catch(() => {
+      dispatch({ type: FETCH_ROLES_FAILURE });
+    });
+};
+
 export const fetchModules = () => (dispatch) => {
   dispatch({ type: FETCH_MODULES_REQUEST });
   axios
