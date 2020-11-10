@@ -164,7 +164,7 @@ const GuardianDetailsForm = ({
                   <OutlinedInput
                     id='address'
                     name='address'
-                    inputProps={{maxLength:75}}
+                    inputProps={{maxLength:150}}
                     multiline
                     rows={4}
                     rowsMax={6}

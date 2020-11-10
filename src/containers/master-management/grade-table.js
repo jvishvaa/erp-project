@@ -183,9 +183,9 @@ const GradeTable = () => {
       </div>
     </div>
 
-    {!tableFlag && addFlag && !editFlag && <CreateGrade /> }
+    {!tableFlag && addFlag && !editFlag && <CreateGrade setLoading={setLoading}/> }
     {!tableFlag && !addFlag && editFlag && <EditGrade id={gradeId} name={gradeName} type={gradeType} 
-    handleGoBack={handleGoBack}/> }
+    handleGoBack={handleGoBack} setLoading={setLoading}/> }
 
     {tableFlag && !addFlag && !editFlag && 
       <Grid container spacing={4} style={{marginBottom:'10px'}}>

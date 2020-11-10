@@ -201,8 +201,8 @@ const SectionTable = () => {
       </div>
     </div>
 
-    {!tableFlag && addFlag && !editFlag && <CreateSection grades={grades}/> }
-    {!tableFlag && !addFlag && editFlag && <EditSection id={sectionId} name={sectionName} handleGoBack={handleGoBack}/> }
+    {!tableFlag && addFlag && !editFlag && <CreateSection grades={grades} setLoading={setLoading}/> }
+    {!tableFlag && !addFlag && editFlag && <EditSection id={sectionId} name={sectionName} handleGoBack={handleGoBack} setLoading={setLoading}/> }
 
    
     {tableFlag && !addFlag && !editFlag && 

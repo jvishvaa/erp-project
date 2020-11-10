@@ -3,17 +3,14 @@ import { Grid, TextField, Button } from '@material-ui/core';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import Loading from '../../components/loader/loader';
 
-
-const EditSubject = ({id,name,desc,handleGoBack}) => {
+const EditSubject = ({id,name,desc,handleGoBack,setLoading}) => {
 
   const subName=name.split("_").pop()
   const { setAlert } = useContext(AlertNotificationContext);
   const [subjectName,setSubjectName]=useState(subName || '')
   const [description,setDescription]=useState(desc || '')
-  const [loading, setLoading] = useState(false);
-
+ 
   const handleSubmit = (e) => {
     e.preventDefault()
     setLoading(true);
@@ -51,9 +48,7 @@ const EditSubject = ({id,name,desc,handleGoBack}) => {
 
 
   return (
-    <>
-    {loading ? <Loading message='Loading...' /> : null}
-      <div className='create__class'>
+     <div className='create__class'>
       <form autoComplete='off' onSubmit={handleSubmit}>
         <Grid item style={{marginLeft:'14px',color:'#014B7E'}} >
               <h1>Edit Subject</h1>
@@ -100,7 +95,6 @@ const EditSubject = ({id,name,desc,handleGoBack}) => {
         </Grid>
       </form>
     </div>
-    </>
   );
 };
 

@@ -202,8 +202,8 @@ const SubjectTable = () => {
       </div>
     </div>
    
-    {!tableFlag && addFlag && !editFlag && <CreateSubject grades={grades} /> }
-    {!tableFlag && !addFlag && editFlag && <EditSubject id={subjectId} desc={desc} name={subjectName} handleGoBack={handleGoBack}/> }
+    {!tableFlag && addFlag && !editFlag && <CreateSubject grades={grades} setLoading={setLoading}/> }
+    {!tableFlag && !addFlag && editFlag && <EditSubject id={subjectId} desc={desc} name={subjectName} setLoading={setLoading} handleGoBack={handleGoBack}/> }
     
     
     {tableFlag && !addFlag && !editFlag && 

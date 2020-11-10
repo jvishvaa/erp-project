@@ -4,18 +4,15 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import Loading from '../../components/loader/loader';
 
-
-const CreateSubject = ({grades}) => {
+const CreateSubject = ({grades,setLoading}) => {
 
   const { setAlert } = useContext(AlertNotificationContext);
   const [subjectName,setSubjectName]=useState('')
   const [gradeId,setGradeId]=useState('')
   const [gradeName,setGradeName]=useState('')
   const [description,setDescription]=useState('')
-  const [loading, setLoading] = useState(false);
-
+  
   const handleGrade = (event, value) => {
     if(value)
     {
@@ -66,9 +63,7 @@ const CreateSubject = ({grades}) => {
 
 
   return (
-    <>
-    {loading ? <Loading message='Loading...' /> : null}
-      <div className='create__class'>
+     <div className='create__class'>
       <form autoComplete='off' onSubmit={handleSubmit}>
         <Grid item style={{marginLeft:'14px',color:'#014B7E'}} >
               <h1>Add Subject</h1>
@@ -139,7 +134,6 @@ const CreateSubject = ({grades}) => {
         </Grid>
       </form>
     </div>
-    </>
   );
 };
 
