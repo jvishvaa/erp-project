@@ -77,7 +77,7 @@ const SectionTable = () => {
   const [editFlag,setEditFlag]=useState(false)
   const [tableFlag,setTableFlag]=useState(true)
   const [grades,setGrades]=useState([])
-  const [dataCount,setDataCount]=useState()
+  const [pageCount,setPageCount]=useState()
   const [delFlag,setDelFlag]=useState(false)
   const [searchGrade,setSearchGrade]=useState('')
   const [searchSection,setSearchSection]=useState('')
@@ -151,35 +151,33 @@ const SectionTable = () => {
     };
 
     useEffect(()=>{
-      setLoading(true);
+      setLoading(true)
+      setTimeout(()=> {setLoading(false)},450); 
+    },[page,delFlag,editFlag,addFlag,searchGrade])
+
+    useEffect(()=>{
       axiosInstance.get(`${endpoints.masterManagement.sections}?page=${page}&page_size=15&section=${searchSection}&grade=${searchGrade}`)
       .then(result=>{
         if (result.status === 200) {
           setSections(result.data.result.results);
-          setDataCount(result.data.result.count)
-          setLoading(false);
+          setPageCount(result.data.result.total_pages)
         } else {
-          setLoading(false);
           setAlert('error', result.data.message);
         }
       })
       .catch((error)=>{
-        setLoading(false);
         setAlert('error', error.message);
       })
 
       axiosInstance.get(endpoints.masterManagement.gradesDrop)
       .then(result=>{
         if (result.status === 200) {
-          setLoading(false);
           setGrades(result.data.data);
         } else {
-          setLoading(false);
           setAlert('error', result.data.message);
         }
       })
       .catch((error)=>{
-        setLoading(false);
         setAlert('error', error.message);
       })
   },[openDeleteModal,delFlag,addFlag,editFlag,page,searchGrade,searchSection])
@@ -303,7 +301,7 @@ const SectionTable = () => {
       </TableContainer>
       <div className="paginate">
         <Pagination
-        count={Math.ceil(dataCount/15)}
+        count={pageCount}
         color="primary"
         showFirstButton
         showLastButton

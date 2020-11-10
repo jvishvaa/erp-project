@@ -77,7 +77,7 @@ const GradeTable = () => {
   const [addFlag,setAddFlag]=useState(false)
   const [editFlag,setEditFlag]=useState(false)
   const [tableFlag,setTableFlag]=useState(true)
-  const [dataCount,setDataCount]=useState()
+  const [pageCount,setPageCount]=useState()
   const [delFlag,setDelFlag]=useState(false)
   const [searchGrade,setSearchGrade]=useState('')
   const [widthFlag,setWidthFlag]=useState(false)
@@ -144,21 +144,22 @@ const GradeTable = () => {
 
     useEffect(()=>{
       setLoading(true)
+      setTimeout(()=> {setLoading(false)},450); 
+    },[page,delFlag,editFlag,addFlag])
+
+    useEffect(()=>{
       axiosInstance.get(`${endpoints.masterManagement.grades}?page=${page}&page_size=15&grade_name=${searchGrade}`)
       .then(result=>{
         if (result.status === 200) {
           {
             setGrades(result.data.result.results);
-            setDataCount(result.data.result.count)
-            setLoading(false)
+            setPageCount(result.data.result.total_pages)
           }
         } else {
-          setLoading(false)
           setAlert('error', result.data.message)
         }
       })
       .catch((error)=>{
-        setLoading(false)
         setAlert('error', error.message)
       })
   },[openDeleteModal,delFlag,editFlag,addFlag,page,searchGrade])
@@ -266,7 +267,7 @@ const GradeTable = () => {
       </TableContainer>
       <div className="paginate">
         <Pagination
-        count={Math.ceil(dataCount/15)}
+        count={pageCount}
         color="primary"
         showFirstButton
         showLastButton
