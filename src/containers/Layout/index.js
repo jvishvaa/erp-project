@@ -483,8 +483,9 @@ const Layout = ({ children, history }) => {
               onClick={handleMobileMenuOpen}
               color='inherit'
             >
-              {roleDetails ? (
+              {roleDetails && roleDetails.user_profile ? (
                 <img
+                  style={{fontSize: '0.4rem'}}
                   src={roleDetails.user_profile}
                   alt='no img'
                   className='profile_img'
