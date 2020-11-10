@@ -3,7 +3,8 @@
   .table-header-row {
     tr {
       th {
-        position: relative;
+        position: sticky;
+        top: 0;
         margin: '10px 0';
         &:not(:last-child) {
           &:after {
