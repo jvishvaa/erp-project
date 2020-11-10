@@ -18,6 +18,8 @@ import {
   CANCEL_CLASS,
   SET_TAB,
   SET_RESOURCE_TAB,
+  SET_MANAGEMENT_PAGE,
+  SET_RESOURCE_PAGE,
 } from './online-class-constants';
 
 const onlineClassReducer = (state, action) => {
@@ -83,6 +85,24 @@ const onlineClassReducer = (state, action) => {
           ...state.managementView,
           loadingManagementOnlineClasses: false,
           errorLoadingManagementOnlineClasses: action.payload,
+        },
+      };
+
+    case SET_MANAGEMENT_PAGE:
+      return {
+        ...state,
+        managementView: {
+          ...state.managementView,
+          currentPage: action.payload,
+        },
+      };
+
+    case SET_RESOURCE_PAGE:
+      return {
+        ...state,
+        resourceView: {
+          ...state.resourceView,
+          currentPage: action.payload,
         },
       };
 
