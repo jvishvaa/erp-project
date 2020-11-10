@@ -9,6 +9,7 @@ const ViewClassTableCell = (props) => {
     index,
     data: {
       id,
+      scope,
       is_canceled: isCancelled,
       absent_student_count: absentCount,
       attendee_student_count: attendedCount,
@@ -97,16 +98,20 @@ const ViewClassTableCell = (props) => {
       </TableCell>
       {currentManagementTab === 0 ? (
         <TableCell>
-          <Button
-            variant='contained'
-            color='primary'
-            disabled={isCancelled}
-            onClick={() => {
-              handleCancel(id);
-            }}
-          >
-            {isCancelled ? 'Class cancelled' : 'Cancel'}
-          </Button>
+          {scope === true ? (
+            <Button
+              variant='contained'
+              color='primary'
+              disabled={isCancelled}
+              onClick={() => {
+                handleCancel(id);
+              }}
+            >
+              {isCancelled ? 'Class cancelled' : 'Cancel'}
+            </Button>
+          ) : (
+            ''
+          )}
         </TableCell>
       ) : (
         ''

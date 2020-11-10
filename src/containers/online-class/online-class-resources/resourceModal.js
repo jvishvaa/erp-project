@@ -16,6 +16,7 @@ import {
   HighlightOffOutlined as CloseIcon,
   OpenInBrowserOutlined as OpenIcon,
 } from '@material-ui/icons';
+import CancelIcon from '@material-ui/icons/Cancel';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import { resourceModalStyles, fileUploadButton, fileRow } from './resourceModal.styles';
@@ -504,6 +505,7 @@ const ResourceModal = ({ id, alert, onClick, isMobile, type, isOpen }) => {
   return (
     <Modal open={isOpen} click={onClick} large>
       <div className={classes.container}>
+      <span style={{ float: 'right' }}><CancelIcon onClick={onClick} /></span>
         <Typography variant={isMobile ? 'h6' : 'h4'} className={classes.heading}>
           <span style={{ textTransform: 'capitalize' }}>{type}</span> Files
         </Typography>
