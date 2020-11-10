@@ -103,12 +103,14 @@ const EditGroup = withRouter(({ history, ...props }) => {
   const getEditGroupsData = async () => {
     const getEditGroupsDataUrl = `${endpoints.communication.editGroup}${editId}/retrieve-update-group/?page=${pageno}&page_size=15`;
     try {
+      setLoading(true);
       const result = await axiosInstance.get(getEditGroupsDataUrl, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       if (result.status === 200) {
+        setLoading(false);
         setHeaders([
           { field: 'id', headerName: 'ID', width: 100 },
           { field: 'firstName', headerName: 'First name', width: 150 },
@@ -176,9 +178,11 @@ const EditGroup = withRouter(({ history, ...props }) => {
         }
       } else {
         setAlert('error', result.data.message);
+        setLoading(false);
       }
     } catch (error) {
       setAlert('error', error.message);
+      setLoading(false);
     }
   };
 

@@ -123,16 +123,19 @@ const CreateClassForm = () => {
       console.log('subjects ', response);
 
       if (response) {
-        const filteredSelectedSubject = response.filter(
-          (data) => selectedSubject.subject__id == data.subject__id
-        );
-        console.log('filtered subjects ', filteredSelectedSubject);
+        if (selectedSubject) {
+          const filteredSelectedSubject = response.filter(
+            (data) => selectedSubject.subject__id == data.subject__id
+          );
+          console.log('filtered subjects ', filteredSelectedSubject);
 
-        setSelectedSubject(
-          filteredSelectedSubject.length > 0 ? filteredSelectedSubject[0] : null
-        );
+          setSelectedSubject(
+            filteredSelectedSubject.length > 0 ? filteredSelectedSubject[0] : null
+          );
+        }
       }
     } catch (error) {
+      console.log('error in fetching subjects ', error);
       setAlert('error', 'Failed to load subjects');
     }
   };

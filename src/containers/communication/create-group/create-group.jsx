@@ -70,6 +70,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
 
   const getRoleApi = async () => {
     try {
+      setLoading(true);
       const result = await axiosInstance.get(endpoints.communication.roles, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -80,16 +81,20 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         result.data.result.map((items) => resultOptions.push(items.role_name));
         setRoles(resultOptions);
         setRoleList(result.data.result);
+        setLoading(false);
       } else {
         setAlert('error', result.data.message);
+        setLoading(false);
       }
     } catch (error) {
       setAlert('error', error.message);
+      setLoading(false);
     }
   };
 
   const getBranchApi = async () => {
     try {
+      setLoading(true);
       const result = await axiosInstance.get(endpoints.communication.branches, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -99,16 +104,20 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       if (result.status === 200) {
         result.data.data.map((items) => resultOptions.push(items.branch_name));
         setBranchList(result.data.data);
+        setLoading(false);
       } else {
         setAlert('error', result.data.message);
+        setLoading(false);
       }
     } catch (error) {
       setAlert('error', error.message);
+      setLoading(false);
     }
   };
 
   const getGradeApi = async () => {
     try {
+      setLoading(true);
       const result = await axiosInstance.get(
         `${endpoints.communication.grades}?branch_id=${selectedBranch}&module_id=${moduleId}`,
         {
@@ -124,16 +133,20 @@ const CreateGroup = withRouter(({ history, ...props }) => {
           setGrade(resultOptions);
         }
         setGradeList(result.data.data);
+        setLoading(false);
       } else {
         setAlert('error', result.data.message);
+        setLoading(false);
       }
     } catch (error) {
       setAlert('error', error.message);
+      setLoading(false);
     }
   };
 
   const getSectionApi = async () => {
     try {
+      setLoading(true);
       const gradesId = [];
       gradeList
         .filter((item) => selectedGrades.includes(item['grade__grade_name']))
@@ -155,11 +168,23 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         result.data.data.map((items) => resultOptions.push(items.section__section_name));
         setSection(resultOptions);
         setSectionList(result.data.data);
+        if (selectedSections && selectedSections.length > 0) {
+          // for retaining neccessary selected sections when grade is changed
+          const selectedSectionsArray = selectedSections.filter(
+            (sec) =>
+              result.data.data.findIndex((obj) => obj.section__section_name == sec) > -1
+          );
+          console.log('selected sections array ', selectedSectionsArray);
+          setSelectedSections(selectedSectionsArray);
+        }
+        setLoading(false);
       } else {
         setAlert('error', result.data.message);
+        setLoading(false);
       }
     } catch (error) {
       setAlert('error', error.message);
+      setLoading(false);
     }
   };
 
@@ -269,7 +294,6 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     }
   };
   const createGroup = async () => {
-    setLoading(true);
     const rolesId = [];
     const branchId = [];
     const gradesId = [];
@@ -327,6 +351,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     }
     setSelectectUserError('');
     try {
+      setLoading(true);
       const response = await axiosInstance.post(
         createGroupApi,
         {
@@ -451,8 +476,10 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   }, [selectedBranch]);
   useEffect(() => {
     if (selectedGrades.length) {
-      setSelectedSections([]);
+      // setSelectedSections([]);
       getSectionApi();
+    } else {
+      setSelectedSections([]);
     }
   }, [selectedGrades]);
   useEffect(() => {
