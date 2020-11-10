@@ -4,8 +4,7 @@ import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
-
-const CreateGrade = () => {
+const CreateGrade = ({setLoading}) => {
 
   const { setAlert } = useContext(AlertNotificationContext);
   const [gradeName,setGradeName]=useState('')
@@ -13,20 +12,24 @@ const CreateGrade = () => {
   
   const handleSubmit = (e) => {
     e.preventDefault()
+    setLoading(true);
     axiosInstance.post(endpoints.masterManagement.createGrade,{
       grade_name:gradeName,
       grade_type:gradeType,
     }).then(result=>{
     if (result.data.status_code === 201) {
       {
-        setAlert('success', result.data.message);
         setGradeName('')
         setGradeType('')
+        setLoading(false);
+        setAlert('success', result.data.message);
       }
     } else {
+      setLoading(false);
       setAlert('error', result.data.message);
     }
     }).catch((error)=>{
+      setLoading(false);
       setAlert('error', error.message);
     })
     };
@@ -48,6 +51,7 @@ const CreateGrade = () => {
               variant='outlined'
               size='medium'
               value={gradeName}
+              inputProps={{maxLength:10}}
               name='gradename'
               onChange={e=>setGradeName(e.target.value)}
               required
@@ -63,6 +67,7 @@ const CreateGrade = () => {
               variant='outlined'
               size='medium'
               value={gradeType}
+              inputProps={{maxLength:10}}
               name='gradetype'
               onChange={e=>setGradeType(e.target.value)}
               required

@@ -4,9 +4,7 @@ import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
-
-
-const EditGrade = ({id,name,type,handleGoBack}) => {
+const EditGrade = ({id,name,type,handleGoBack,setLoading}) => {
 
   const { setAlert } = useContext(AlertNotificationContext);
   const [gradeName,setGradeName]=useState(name||'')
@@ -14,7 +12,7 @@ const EditGrade = ({id,name,type,handleGoBack}) => {
   
   const handleSubmit = (e) => {
     e.preventDefault()
-    
+    setLoading(true);
     let request={}
     if(gradeName!=="" && gradeName!==name)
     request['grade_name']=gradeName
@@ -28,27 +26,31 @@ const EditGrade = ({id,name,type,handleGoBack}) => {
       .then(result=>{
       if (result.status === 200) {
         {
-          setAlert('success', result.data.message);
           handleGoBack()
           setGradeName('')
           setGradeType('')
+          setLoading(false);
+          setAlert('success', result.data.message);
         }
       } else {
+        setLoading(false);
         setAlert('error', result.data.message);
       }
       }).catch((error)=>{
+        setLoading(false);
         setAlert('error', error.message);
       })
     }
     else
     {
+      setLoading(false);
       setAlert('error','No Fields to Update')
     }
     };
 
 
   return (
-      <div className='create__class'>
+    <div className='create__class'>
       <form autoComplete='off' onSubmit={handleSubmit}>
         <Grid item style={{marginLeft:'14px',color:'#014B7E'}} >
               <h1>Edit Grade</h1>
@@ -62,10 +64,10 @@ const EditGrade = ({id,name,type,handleGoBack}) => {
               label='Grade Name'
               variant='outlined'
               size='medium'
+              inputProps={{maxLength:10}}
               value={gradeName}
               name='gradename'
               onChange={e=>setGradeName(e.target.value)}
-              required
             />
           </Grid>
           </Grid>
@@ -77,10 +79,10 @@ const EditGrade = ({id,name,type,handleGoBack}) => {
               label='Grade Type'
               variant='outlined'
               size='medium'
+              inputProps={{maxLength:10}}
               value={gradeType}
               name='gradetype'
               onChange={e=>setGradeType(e.target.value)}
-              required
             />
           </Grid>
         </Grid>

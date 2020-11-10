@@ -28,6 +28,7 @@ import axiosInstance from '../../config/axios';
 import CreateGrade from './create-grade'
 import EditGrade from './edit-grade'
 import './master-management.css'
+import Loading from '../../components/loader/loader';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -76,11 +77,12 @@ const GradeTable = () => {
   const [addFlag,setAddFlag]=useState(false)
   const [editFlag,setEditFlag]=useState(false)
   const [tableFlag,setTableFlag]=useState(true)
-  const [dataCount,setDataCount]=useState()
+  const [pageCount,setPageCount]=useState()
   const [delFlag,setDelFlag]=useState(false)
   const [searchGrade,setSearchGrade]=useState('')
   const [widthFlag,setWidthFlag]=useState(false)
-
+  const [loading, setLoading] = useState(false);
+  
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -104,22 +106,28 @@ const GradeTable = () => {
     setTableFlag(true)
     setAddFlag(false)
     setEditFlag(false)
+    setSearchGrade('')
   }
 
-    const handleDeleteGrade = () => {
+    const handleDeleteGrade = (e) => {
+    e.preventDefault()
+    setLoading(true);
     axiosInstance.put(endpoints.masterManagement.updateGrade,{
       'is_delete': true,
       'grade_id': gradeId
     }).then(result=>{
     if (result.status === 200) {
       {
-        setAlert('success', result.data.message);
         setDelFlag(!delFlag)
+        setLoading(false);
+        setAlert('success', result.data.message);
       }
     } else {
+      setLoading(false);
       setAlert('error', result.data.message);
     }
     }).catch((error)=>{
+      setLoading(false);
       setAlert('error', error.message);
     })
     setOpenDeleteModal(false)
@@ -135,23 +143,30 @@ const GradeTable = () => {
     };
 
     useEffect(()=>{
+      setLoading(true)
+      setTimeout(()=> {setLoading(false)},450); 
+    },[page,delFlag,editFlag,addFlag])
+
+    useEffect(()=>{
       axiosInstance.get(`${endpoints.masterManagement.grades}?page=${page}&page_size=15&grade_name=${searchGrade}`)
       .then(result=>{
         if (result.status === 200) {
           {
             setGrades(result.data.result.results);
-            setDataCount(result.data.result.count)
+            setPageCount(result.data.result.total_pages)
           }
         } else {
-          setAlert('error', result.data.message);
+          setAlert('error', result.data.message)
         }
       })
       .catch((error)=>{
-        setAlert('error', error.message);
+        setAlert('error', error.message)
       })
   },[openDeleteModal,delFlag,editFlag,addFlag,page,searchGrade])
   
   return (
+    <>
+    {loading ? <Loading message='Loading...' /> : null}
     <Layout>
     <div className="headerMaster">
       <div>
@@ -174,9 +189,9 @@ const GradeTable = () => {
       </div>
     </div>
 
-    {!tableFlag && addFlag && !editFlag && <CreateGrade /> }
+    {!tableFlag && addFlag && !editFlag && <CreateGrade setLoading={setLoading}/> }
     {!tableFlag && !addFlag && editFlag && <EditGrade id={gradeId} name={gradeName} type={gradeType} 
-    handleGoBack={handleGoBack}/> }
+    handleGoBack={handleGoBack} setLoading={setLoading}/> }
 
     {tableFlag && !addFlag && !editFlag && 
       <Grid container spacing={4} style={{marginBottom:'10px'}}>
@@ -190,6 +205,7 @@ const GradeTable = () => {
             variant='outlined'
             size='medium'
             name='gradename'
+            autoComplete="off"
             onChange={e=>setSearchGrade(e.target.value)}
           />
         </Grid>
@@ -251,7 +267,7 @@ const GradeTable = () => {
       </TableContainer>
       <div className="paginate">
         <Pagination
-        count={Math.ceil(dataCount/15)}
+        count={pageCount}
         color="primary"
         showFirstButton
         showLastButton
@@ -281,8 +297,8 @@ const GradeTable = () => {
         <Button onClick={handleDeleteGrade}>Confirm</Button>
       </DialogActions>
     </Dialog>
-    
     </Layout>
+    </>
   );
 };
 

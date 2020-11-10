@@ -60,6 +60,8 @@ import logo from '../../assets/images/logo.png';
 const Layout = ({ children, history }) => {
   const dispatch = useDispatch();
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const { role_details: roleDetails } =
+    JSON.parse(localStorage.getItem('userDetails')) || {};
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isLogout, setIsLogout] = useState(false);
   const [navigationData, setNavigationData] = useState(false);
@@ -80,10 +82,10 @@ const Layout = ({ children, history }) => {
   const [userId, setUserId] = useState();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-  const getGlobalUserRecords = async () => {
+  const getGlobalUserRecords = async (text) => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.gloabSearch.getUsers}?search=${searchedText}&page=${currentPage}&page_size=100`,
+        `${endpoints.gloabSearch.getUsers}?search=${text}&page=${currentPage}&page_size=100`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -110,7 +112,7 @@ const Layout = ({ children, history }) => {
     if (q !== '') {
       setSearching(true);
       setGlobalSearchResults(true);
-      getGlobalUserRecords();
+      getGlobalUserRecords(q);
     }
   };
   const autocompleteSearchDebounced = debounce(500, autocompleteSearch);
@@ -298,105 +300,108 @@ const Layout = ({ children, history }) => {
             Welcome!
             <span style={{ fontSize: '1rem', marginLeft: '1rem' }}>Have a great day</span>
           </Typography>
-
-          <div className={classes.grow}>
-            <Paper component='form' className={classes.searchInputContainer}>
-              <InputBase
-                className={classes.searchInput}
-                placeholder='Search..'
-                inputProps={{ 'aria-label': 'search across site' }}
-                inputRef={searchInputRef}
-                onChange={changeQuery}
-              />
-              <IconButton
-                type='submit'
-                className={classes.searchIconButton}
-                aria-label='search'
+          {superUser ? (
+            <div className={classes.grow}>
+              <Paper component='form' className={classes.searchInputContainer}>
+                <InputBase
+                  className={classes.searchInput}
+                  placeholder='Search..'
+                  inputProps={{ 'aria-label': 'search across site' }}
+                  inputRef={searchInputRef}
+                  onChange={changeQuery}
+                />
+                <IconButton
+                  type='submit'
+                  className={classes.searchIconButton}
+                  aria-label='search'
+                >
+                  <SearchIcon />
+                </IconButton>
+              </Paper>
+              <Popper
+                open={searching}
+                className={classes.searchDropdown}
+                placement='bottom'
+                style={{
+                  position: 'fixed',
+                  top:
+                    searchInputRef.current &&
+                    searchInputRef.current.getBoundingClientRect().top + 32,
+                  left: 'auto',
+                  right: `calc(100vw - ${
+                    searchInputRef.current &&
+                    searchInputRef.current.getBoundingClientRect().left +
+                      searchInputRef.current.getBoundingClientRect().width
+                  }px)`,
+                  zIndex: 3000,
+                }}
+                transition
               >
-                <SearchIcon />
-              </IconButton>
-            </Paper>
-            <Popper
-              open={searching}
-              className={classes.searchDropdown}
-              placement='bottom'
-              style={{
-                position: 'fixed',
-                top:
-                  searchInputRef.current &&
-                  searchInputRef.current.getBoundingClientRect().top + 32,
-                left: 'auto',
-                right: `calc(100vw - ${
-                  searchInputRef.current &&
-                  searchInputRef.current.getBoundingClientRect().left +
-                    searchInputRef.current.getBoundingClientRect().width +
-                    70
-                }px)`,
-                zIndex: 3000,
-              }}
-              transition
-            >
-              {({ TransitionProps }) => (
-                <Fade {...TransitionProps} timeout={350}>
-                  <Paper>
-                    <Grid container style={{ flexDirection: 'column' }}>
-                      {globalSearchResults ? (
-                        <>
-                          <Grid item>
-                            <Grid
-                              container
-                              style={{
-                                flexDirection: 'row',
-                                paddingBottom: 12,
-                                paddingTop: 12,
-                                paddingLeft: 16,
-                                backgroundColor: '#eee',
-                                paddingRight: 16,
-                                minWidth: 374,
-                              }}
-                            >
+                {({ TransitionProps }) => (
+                  <Fade {...TransitionProps} timeout={350}>
+                    <Paper>
+                      <Grid container style={{ flexDirection: 'column' }}>
+                        {globalSearchResults ? (
+                          <>
+                            <Grid item>
                               <Grid
-                                // onScroll={(event) => handleScroll(event)}
+                                container
                                 style={{
-                                  paddingRight: 8,
-                                  maxHeight: 385,
-                                  height: 300,
-                                  overflow: 'auto',
+                                  flexDirection: 'row',
+                                  paddingBottom: 12,
+                                  paddingTop: 12,
+                                  paddingLeft: 16,
+                                  backgroundColor: 'rgb(224 224 224)',
+                                  paddingRight: 16,
+                                  minWidth: 374,
                                 }}
-                                item
                               >
-                                {globalSearchResults && (
-                                  <List
-                                    style={{ minWidth: 61 }}
-                                    subheader={
-                                      <ListSubheader
-                                        style={{
-                                          background: 'rgb(238, 238, 238)',
-                                          width: '100%',
-                                        }}
-                                      >
-                                        Users
-                                      </ListSubheader>
-                                    }
-                                  >
-                                    {globalSearchResults &&
-                                      searchUserDetails.map((result, index) => {
-                                        return (
-                                          <ListItem
-                                            style={{ width: 324 }}
-                                            button
-                                            onClick={() => {
-                                              console.log('I amcalled...');
-                                              setSearching(false);
-                                              setUserId(result.id);
-                                              setDisplayUserDetails(true);
-                                            }}
-                                          >
-                                            <ListItemText
-                                              primary={result.name}
-                                              secondary={result.erpId}
-                                            />
-                                            {/* <ListItemSecondaryAction>
+                                <Grid
+                                  // onScroll={(event) => handleScroll(event)}
+                                  style={{
+                                    paddingRight: 8,
+                                    maxHeight: 385,
+                                    height: 300,
+                                    overflow: 'auto',
+                                  }}
+                                  item
+                                >
+                                  {globalSearchResults && (
+                                    <List
+                                      style={{ minWidth: 61 }}
+                                      subheader={
+                                        <ListSubheader
+                                          style={{
+                                            background: 'rgb(224 224 224)',
+                                            width: '100%',
+                                            color: '#014B7E',
+                                            fontSize: '1rem',
+                                            fontWeight: 600,
+                                          }}
+                                        >
+                                          Users
+                                        </ListSubheader>
+                                      }
+                                    >
+                                      {globalSearchResults &&
+                                        searchUserDetails.map((result, index) => {
+                                          return (
+                                            <ListItem
+                                              style={{ width: 324 }}
+                                              className='user_rows_details'
+                                              button
+                                              onClick={() => {
+                                                console.log('I amcalled...');
+                                                setSearching(false);
+                                                setUserId(result.id);
+                                                setDisplayUserDetails(true);
+                                              }}
+                                            >
+                                              <ListItemText
+                                                primary={result.name}
+                                                secondary={result.erpId}
+                                              />
+                                              {/* <ListItemSecondaryAction>
                                               <IconButton
                                                 aria-label='Delete'
                                                 onClick={() =>
@@ -407,64 +412,70 @@ const Layout = ({ children, history }) => {
                                                 <DeleteIcon fontSize='small' />
                                               </IconButton>
                                             </ListItemSecondaryAction> */}
-                                          </ListItem>
-                                        );
-                                      })}
-                                  </List>
-                                )}
+                                            </ListItem>
+                                          );
+                                        })}
+                                    </List>
+                                  )}
+                                </Grid>
                               </Grid>
                             </Grid>
+                          </>
+                        ) : (
+                          <Grid
+                            container
+                            style={{
+                              flexDirection: 'row',
+                              backgroundColor: '#eee',
+                              minHeight: 324,
+                              minWidth: 374,
+                              flexGrow: 1,
+                            }}
+                          >
+                            {searchedText.length > 0 ? (
+                              <LinearProgress
+                                style={{ width: '100%' }}
+                                color='secondary'
+                                variant='query'
+                              />
+                            ) : (
+                              <span style={{ padding: 1 }}>
+                                Type something to search.
+                              </span>
+                            )}
                           </Grid>
-                        </>
-                      ) : (
-                        <Grid
-                          container
-                          style={{
-                            flexDirection: 'row',
-                            backgroundColor: '#eee',
-                            minHeight: 324,
-                            minWidth: 374,
-                            flexGrow: 1,
-                          }}
-                        >
-                          {searchedText.length > 0 ? (
-                            <LinearProgress
-                              style={{ width: '100%' }}
-                              color='secondary'
-                              variant='query'
-                            />
-                          ) : (
-                            <span style={{ padding: 1 }}>Type something to search.</span>
-                          )}
-                        </Grid>
-                      )}
-                    </Grid>
-                    <Grid container>
-                      {globalSearchError && (
-                        <Grid
-                          style={{ padding: 8, width: '100%', backgroundColor: '#eee' }}
-                          xs={12}
-                          item
-                        >
-                          Something went wrong.
-                        </Grid>
-                      )}
-                    </Grid>
-                  </Paper>
-                </Fade>
-              )}
-            </Popper>
-            {displayUserDetails ? (
-              <UserDetails
-                close={setDisplayUserDetails}
-                userId={userId}
-                setUserId={setUserId}
-                setSearching={setSearching}
-              />
-            ) : null}
-          </div>
-
-          <div className={classes.sectionDesktop}>
+                        )}
+                      </Grid>
+                      <Grid container>
+                        {globalSearchError && (
+                          <Grid
+                            style={{ padding: 8, width: '100%', backgroundColor: '#eee' }}
+                            xs={12}
+                            item
+                          >
+                            Something went wrong.
+                          </Grid>
+                        )}
+                      </Grid>
+                    </Paper>
+                  </Fade>
+                )}
+              </Popper>
+              {displayUserDetails ? (
+                <UserDetails
+                  close={setDisplayUserDetails}
+                  userId={userId}
+                  setUserId={setUserId}
+                  setSearching={setSearching}
+                />
+              ) : null}
+            </div>
+          ) : null}
+          <div
+            className={`${classes.sectionDesktop} ${
+              superUser ? 'null' : 'layout_user_icon'
+            }`}
+          >
             <IconButton
               aria-label='show more'
               aria-controls={mobileMenuId}
@@ -472,7 +483,15 @@ const Layout = ({ children, history }) => {
               onClick={handleMobileMenuOpen}
               color='inherit'
             >
-              <AccountCircle color='primary' style={{ fontSize: '2rem' }} />
+              {roleDetails ? (
+                <img
+                  src={roleDetails.user_profile}
+                  alt='no img'
+                  className='profile_img'
+                />
+              ) : (
+                <AccountCircle color='primary' style={{ fontSize: '2rem' }} />
+              )}
               {profileOpen ? <ExpandLess /> : <ExpandMore />}
             </IconButton>
           </div>

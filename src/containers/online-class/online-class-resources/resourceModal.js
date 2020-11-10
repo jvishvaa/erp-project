@@ -413,6 +413,7 @@ const ResourceModal = ({ id, alert, onClick, isMobile, type, isOpen }) => {
             placeholder='Resource Name'
             fullWidth
             name='name'
+            inputProps={{maxLength:30}}
             disabled
             onChange={(e) => {}}
           />
@@ -458,6 +459,7 @@ const ResourceModal = ({ id, alert, onClick, isMobile, type, isOpen }) => {
           placeholder='Homework Description'
           rowsmax={6}
           rows={6}
+          inputProps={{maxLength:250}}
           fullWidth
           disabled
           onChange={(e) => {}}

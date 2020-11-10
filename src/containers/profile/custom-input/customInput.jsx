@@ -24,6 +24,7 @@ const CustomInput = (props) => {
           autoComplete='off'
           defaultValue={value}
           onChange={onChange}
+          inputProps={{maxLength:20}}
           type={showPassword ? 'text' : 'password'}
           endAdornment={
             <InputAdornment position='start'>
@@ -45,6 +46,7 @@ const CustomInput = (props) => {
           readOnly={readonly}
           name={name}
           defaultValue={value}
+          inputProps={{maxLength:20}}
           autoComplete='off'
           type={type || 'text'}
           onChange={onChange}

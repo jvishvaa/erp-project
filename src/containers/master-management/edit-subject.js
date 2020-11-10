@@ -4,19 +4,17 @@ import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
-
-
-const EditSubject = ({id,name,desc,handleGoBack}) => {
+const EditSubject = ({id,name,desc,handleGoBack,setLoading}) => {
 
   const subName=name.split("_").pop()
   const { setAlert } = useContext(AlertNotificationContext);
   const [subjectName,setSubjectName]=useState(subName || '')
   const [description,setDescription]=useState(desc || '')
-
+ 
   const handleSubmit = (e) => {
     e.preventDefault()
+    setLoading(true);
     let request={}
-
     request['subject_id']=id
       if((subjectName!==subName && subjectName!=="")||(description!==desc && description!==""))
       {
@@ -27,26 +25,30 @@ const EditSubject = ({id,name,desc,handleGoBack}) => {
 
         axiosInstance.put(endpoints.masterManagement.updateSubject,request).then(result=>{
           if (result.status === 200) {
-            setAlert('success', result.data.message);
             handleGoBack()
             setSubjectName('')
             setDescription('')
-          } else {
+            setLoading(false);
+            setAlert('success', result.data.message);
+          } else {            
+            setLoading(false);
             setAlert('error', result.data.message);
           }
         }).catch((error)=>{
+          setLoading(false);
           setAlert('error', error.message);
         })
       }
       else
       {
         setAlert('error', 'No Fields to Update');
+        setLoading(false);
       }
     };
 
 
   return (
-      <div className='create__class'>
+     <div className='create__class'>
       <form autoComplete='off' onSubmit={handleSubmit}>
         <Grid item style={{marginLeft:'14px',color:'#014B7E'}} >
               <h1>Edit Subject</h1>
@@ -61,7 +63,7 @@ const EditSubject = ({id,name,desc,handleGoBack}) => {
               variant='outlined'
               size='medium'
               value={subjectName}
-              inputProps={{pattern:'^[a-zA-Z0-9 ]+'}}
+              inputProps={{pattern:'^[a-zA-Z0-9 ]+',maxLength:10}}
               name='subname'
               onChange={e=>setSubjectName(e.target.value)}
             />

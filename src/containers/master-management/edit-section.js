@@ -5,15 +5,15 @@ import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
 
-
-const EditSection = ({id,name,handleGoBack}) => {
+const EditSection = ({id,name,handleGoBack,setLoading}) => {
 
   const secName=name.split("_").pop()
   const { setAlert } = useContext(AlertNotificationContext);
   const [sectionName,setSectionName]=useState(secName || '')
-
+  
   const handleSubmit = (e) => {
     e.preventDefault()
+    setLoading(true);
     let request={}
     if(sectionName!==secName && sectionName!=="")
     {
@@ -22,25 +22,29 @@ const EditSection = ({id,name,handleGoBack}) => {
       axiosInstance.put(endpoints.masterManagement.updateSection,request)
       .then(result=>{
         if (result.status === 200) {
-          setAlert('success', result.data.message);
           handleGoBack()
           setSectionName('')
+          setLoading(false);
+          setAlert('success', result.data.message);
         } else {
+          setLoading(false);
           setAlert('error', result.data.message);
         }
       }).catch((error)=>{
+        setLoading(false);
         setAlert('error', error.message);
       })
     }
     else
     {
+      setLoading(false);
       setAlert('error','No Fields to Update')
     }
     };
 
 
   return (
-      <div className='create__class'>
+    <div className='create__class'>
       <form autoComplete='off' onSubmit={handleSubmit}>
         <Grid item style={{marginLeft:'14px',color:'#014B7E'}} >
               <h1>Edit Section</h1>
@@ -55,10 +59,9 @@ const EditSection = ({id,name,handleGoBack}) => {
               variant='outlined'
               size='medium'
               value={sectionName}
-              inputProps={{pattern:'^[a-zA-Z0-9 ]+'}}
+              inputProps={{pattern:'^[a-zA-Z0-9 ]+',maxLength:10}}
               name='secname'
               onChange={e=>setSectionName(e.target.value)}
-              required
             />
           </Grid>
           </Grid>

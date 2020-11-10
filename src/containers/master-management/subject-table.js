@@ -28,6 +28,7 @@ import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import CreateSubject from './create-subject'
 import EditSubject from './edit-subject'
+import Loading from '../../components/loader/loader';
 import './master-management.css'
 
 const useStyles = makeStyles((theme) => ({
@@ -79,11 +80,12 @@ const SubjectTable = () => {
   const [tableFlag,setTableFlag]=useState(true)
   const [desc,setDesc]=useState('')
   const [delFlag,setDelFlag]=useState(false)
-  const [dataCount,setDataCount]=useState()
+  const [pageCount,setPageCount]=useState()
   const [searchGrade,setSearchGrade]=useState('')
   const [searchSubject,setSearchSubject]=useState('')
   const [widthFlag,setWidthFlag]=useState(false)
-
+  const [loading, setLoading] = useState(false);
+  
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -114,20 +116,27 @@ const SubjectTable = () => {
     setTableFlag(true)
     setAddFlag(false)
     setEditFlag(false)
+    setSearchGrade('')
+    setSearchSubject('')
   }
 
-  const handleDeleteSubject = () => {
+  const handleDeleteSubject = (e) => {
+      e.preventDefault()
+      setLoading(true);
       axiosInstance.put(endpoints.masterManagement.updateSubject,{
         'is_delete': true,
         'subject_id': subjectId
       }).then(result=>{
       if (result.status === 200) {
-        setAlert('success', result.data.message);
         setDelFlag(!delFlag)
+        setLoading(false);
+        setAlert('success', result.data.message);
       } else {
+        setLoading(false);
         setAlert('error', result.data.message);
       }
       }).catch((error)=>{
+        setLoading(false);
         setAlert('error', error.message);
       })
     setOpenDeleteModal(false)
@@ -143,11 +152,16 @@ const SubjectTable = () => {
   };
 
   useEffect(()=>{
+    setLoading(true)
+    setTimeout(()=> {setLoading(false)},450); 
+  },[page,delFlag,editFlag,addFlag,searchGrade])
+
+  useEffect(()=>{
       axiosInstance.get(`${endpoints.masterManagement.subjects}?page=${page}&page_size=15&grade=${searchGrade}&subject=${searchSubject}`)
       .then(result=>{
         if (result.status === 200) {
           setSubjects(result.data.result.results);
-          setDataCount(result.data.result.count)
+          setPageCount(result.data.result.total_pages)
         } else {
           setAlert('error', result.data.message);
         }
@@ -170,10 +184,10 @@ const SubjectTable = () => {
   },[openDeleteModal,delFlag,editFlag,addFlag,page,searchGrade,searchSubject])
       
  
-
   return (
-    <Layout>
-
+    <>
+    {loading ? <Loading message='Loading...' /> : null}
+   <Layout>
     <div className="headerMaster">
       <div>
         <CommonBreadcrumbs
@@ -195,8 +209,8 @@ const SubjectTable = () => {
       </div>
     </div>
    
-    {!tableFlag && addFlag && !editFlag && <CreateSubject grades={grades} /> }
-    {!tableFlag && !addFlag && editFlag && <EditSubject id={subjectId} desc={desc} name={subjectName} handleGoBack={handleGoBack}/> }
+    {!tableFlag && addFlag && !editFlag && <CreateSubject grades={grades} setLoading={setLoading}/> }
+    {!tableFlag && !addFlag && editFlag && <EditSubject id={subjectId} desc={desc} name={subjectName} setLoading={setLoading} handleGoBack={handleGoBack}/> }
     
     
     {tableFlag && !addFlag && !editFlag && 
@@ -208,6 +222,7 @@ const SubjectTable = () => {
           variant='outlined'
           size='medium'
           name='subname'
+          autoComplete="off"
           className={widthFlag?"mainWidth widthClass":"mainWidth"}
           onFocus={e=>setWidthFlag(true)}
           onBlur={e=>setWidthFlag(false)}
@@ -291,7 +306,7 @@ const SubjectTable = () => {
       </TableContainer> 
       <div className="paginate">
         <Pagination
-        count={Math.ceil(dataCount/15)}
+        count={pageCount}
         color="primary"
         showFirstButton
         showLastButton
@@ -323,6 +338,7 @@ const SubjectTable = () => {
     </Dialog>
     
     </Layout>
+    </>
   );
 };
 

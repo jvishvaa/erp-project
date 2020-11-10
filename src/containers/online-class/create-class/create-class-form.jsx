@@ -123,16 +123,19 @@ const CreateClassForm = () => {
       console.log('subjects ', response);
 
       if (response) {
-        const filteredSelectedSubject = response.filter(
-          (data) => selectedSubject.subject__id == data.subject__id
-        );
-        console.log('filtered subjects ', filteredSelectedSubject);
+        if (selectedSubject) {
+          const filteredSelectedSubject = response.filter(
+            (data) => selectedSubject.subject__id == data.subject__id
+          );
+          console.log('filtered subjects ', filteredSelectedSubject);
 
-        setSelectedSubject(
-          filteredSelectedSubject.length > 0 ? filteredSelectedSubject[0] : null
-        );
+          setSelectedSubject(
+            filteredSelectedSubject.length > 0 ? filteredSelectedSubject[0] : null
+          );
+        }
       }
     } catch (error) {
+      console.log('error in fetching subjects ', error);
       setAlert('error', 'Failed to load subjects');
     }
   };
@@ -404,6 +407,7 @@ const CreateClassForm = () => {
               variant='outlined'
               size='small'
               name='title'
+              inputProps={{maxLength:20}}
               onChange={handleChange}
               required
             />
@@ -494,7 +498,7 @@ const CreateClassForm = () => {
               name='duration'
               onChange={handleChange}
               required
-              InputProps={{ inputProps: { min: 0 } }}
+              InputProps={{ inputProps: { min: 0 ,maxLength:3} }}
             />
           </Grid>
           <Grid item xs={12} sm={2}>
@@ -510,7 +514,7 @@ const CreateClassForm = () => {
               onChange={handleChange}
               placeholder='Maximum 300'
               required
-              InputProps={{ inputProps: { min: 0 } }}
+              InputProps={{ inputProps: { min: 0} }}
             />
           </Grid>
         </Grid>
@@ -613,6 +617,7 @@ const CreateClassForm = () => {
                   label='Cohost email address'
                   variant='outlined'
                   value={el.email}
+                  inputProps={{maxLength:40}}
                   onChange={(event) => {
                     handleCohostEmail(event, index);
                   }}

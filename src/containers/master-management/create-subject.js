@@ -5,51 +5,49 @@ import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
-const CreateSubject = ({grades}) => {
+const CreateSubject = ({grades,setLoading}) => {
 
   const { setAlert } = useContext(AlertNotificationContext);
   const [subjectName,setSubjectName]=useState('')
-  const [gradeId,setGradeId]=useState('')
-  const [gradeName,setGradeName]=useState('')
   const [description,setDescription]=useState('')
+  const [selectedGrade,setSelectedGrade]=useState('')
 
   const handleGrade = (event, value) => {
     if(value)
-    {
-      setGradeId(value.id)
-      setGradeName(value.grade_name)
-    }
+      setSelectedGrade(value)
     else
-    {
-      setGradeId('')
-      setGradeName('')
-    }
+      setSelectedGrade('')
   };
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    
-    if(gradeName==="" && gradeId==="")
-    setAlert('error','Select grade from the list')
+    setLoading(true);
+    if(selectedGrade==="")
+    { 
+      setLoading(false);
+      setAlert('error','Select grade from the list')
+    }
     else
     {
       axiosInstance.post(endpoints.masterManagement.createSubject,{
         subject_name:subjectName,
-        grade_name:gradeName,
-        grade_id:gradeId,
+        grade_name:selectedGrade.grade_name,
+        grade_id:selectedGrade.id,
         branch_id:JSON.parse(localStorage.getItem('userDetails')).role_details.branch[0],
         description:description
       }).then(result=>{
       if (result.data.status_code === 201) {
-        setAlert('success', result.data.message);
         setSubjectName('')
-        setGradeName('')
-        setGradeId('')
+        setSelectedGrade('')
         setDescription('')
+        setLoading(false);
+        setAlert('success', result.data.message);
       } else {
+        setLoading(false);
         setAlert('error', result.data.message);
       }
       }).catch((error)=>{
+        setLoading(false);
         setAlert('error', error.message);
       })
     }
@@ -57,7 +55,7 @@ const CreateSubject = ({grades}) => {
 
 
   return (
-      <div className='create__class'>
+     <div className='create__class'>
       <form autoComplete='off' onSubmit={handleSubmit}>
         <Grid item style={{marginLeft:'14px',color:'#014B7E'}} >
               <h1>Add Subject</h1>
@@ -72,7 +70,7 @@ const CreateSubject = ({grades}) => {
               variant='outlined'
               size='medium'
               value={subjectName}
-              inputProps={{pattern:'^[a-zA-Z0-9 ]+'}}
+              inputProps={{pattern:'^[a-zA-Z0-9 ]+',maxLength:20}}
               name='subname'
               onChange={e=>setSubjectName(e.target.value)}
               required
@@ -86,7 +84,8 @@ const CreateSubject = ({grades}) => {
               onChange={handleGrade}
               id='grade'
               options={grades}
-              getOptionLabel={(option) => option?.grade_name}
+              value={selectedGrade}
+              getOptionLabel={(option) => option.grade_name}
               filterSelectedOptions
               required
               renderInput={(params) => (

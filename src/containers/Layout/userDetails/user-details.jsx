@@ -30,7 +30,10 @@ const UserDetails = withRouter(({ history, ...props }) => {
   };
 
   const handleEdit = (id) => {
-    history.push(`/user-management/edit-user/${id}`);
+    history.replace(`/user-management/edit-user/${id}`);
+    if (history.location.pathname.includes('/edit-user/')) {
+      window.location.reload();
+    }
   };
 
   const getUserDetails = async () => {
@@ -49,7 +52,7 @@ const UserDetails = withRouter(({ history, ...props }) => {
           {
             name: 'name',
             type: 'text',
-            value: userDetails.name,
+            value: userDetails.name || 'null',
             placeholder: 'Name',
             editable: true,
             requireOTPAuthentication: false,
@@ -57,7 +60,7 @@ const UserDetails = withRouter(({ history, ...props }) => {
           {
             name: 'email',
             type: 'text',
-            value: userDetails.user.email,
+            value: userDetails.user ? userDetails.user.email : 'null',
             placeholder: 'Email Id',
             editable: true,
             requireOTPAuthentication: true,
@@ -65,7 +68,7 @@ const UserDetails = withRouter(({ history, ...props }) => {
           {
             name: 'ERP ID',
             type: 'text',
-            value: userDetails.erp_id,
+            value: userDetails.erp_id || 'null',
             placeholder: 'Erp Id',
             editable: true,
             requireOTPAuthentication: true,
@@ -73,7 +76,7 @@ const UserDetails = withRouter(({ history, ...props }) => {
           {
             name: 'Role',
             type: 'text',
-            value: userDetails.roles.role_name,
+            value: userDetails.roles ? userDetails.roles.role_name : 'null',
             placeholder: 'Role name',
             editable: true,
             requireOTPAuthentication: true,
@@ -81,7 +84,7 @@ const UserDetails = withRouter(({ history, ...props }) => {
           {
             name: 'Date of Birth',
             type: 'text',
-            value: userDetails.date_of_birth,
+            value: userDetails.date_of_birth || 'null',
             placeholder: 'Date of Birth',
             editable: true,
             requireOTPAuthentication: true,
@@ -89,7 +92,7 @@ const UserDetails = withRouter(({ history, ...props }) => {
           {
             name: 'phone no',
             type: 'text',
-            value: userDetails.contact,
+            value: userDetails.contact || 'null',
             placeholder: 'Phone Number',
             editable: false,
             requireOTPAuthentication: true,
@@ -97,7 +100,7 @@ const UserDetails = withRouter(({ history, ...props }) => {
           {
             name: 'Address',
             type: 'text',
-            value: userDetails.address,
+            value: userDetails.address || 'null',
             placeholder: 'Address',
             editable: false,
             requireOTPAuthentication: true,

@@ -3,19 +3,29 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
+import TextField from '@material-ui/core/TextField';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Box from '@material-ui/core/Box';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
-import { fetchRoles, setSelectedRole, deleteRole } from '../../redux/actions';
+import SearchOutlined from '@material-ui/icons/SearchOutlined';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+
+import {
+  fetchRoles,
+  setSelectedRole,
+  deleteRole,
+  searchRoles,
+} from '../../redux/actions';
 import RolesTable from '../../components/roles-table';
 import styles from './useStyles';
 
 class RoleManagement extends Component {
   constructor(props) {
     super(props);
-    this.state = { openDeleteModal: false, selectedRole: null };
+    this.state = { openDeleteModal: false, selectedRole: null, searchInput: '' };
   }
 
   componentDidMount() {
@@ -49,14 +59,29 @@ class RoleManagement extends Component {
   };
 
   handlePageChange = (page) => {
-    const { limit, fetchRoles } = this.props;
+    const { limit, fetchRoles, searchRoles } = this.props;
+    const { searchInput } = this.state;
     console.log('page change ', page);
-    fetchRoles({ page, limit });
+    if (searchInput) {
+      fetchRoles({ page, limit });
+    } else {
+      searchRoles({ roleName: searchInput, page, limit });
+    }
+  };
+
+  handleSearchRoles = (searchInput) => {
+    const { limit, searchRoles } = this.props;
+    searchRoles({ roleName: searchInput, page: 1, limit });
+  };
+
+  handleSearchInputChange = (e) => {
+    this.setState({ searchInput: e.target.value });
+    this.handleSearchRoles(e.target.value);
   };
 
   render() {
     const { match, roles, fetchingRoles, classes, page, limit, count } = this.props;
-    const { openDeleteModal, selectedRole } = this.state;
+    const { openDeleteModal, selectedRole, searchInput } = this.state;
 
     return (
       <div>
@@ -65,6 +90,14 @@ class RoleManagement extends Component {
             Add Role
           </Button>
         </div>
+        <Box my={2} className={classes.searchContainer}>
+          <OutlinedInput
+            endAdornment={<SearchOutlined color='primary' />}
+            value={searchInput}
+            onChange={this.handleSearchInputChange}
+            placeholder='Search roles ...'
+          />
+        </Box>
 
         <div>
           <RolesTable
@@ -121,6 +154,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   setSelectedRole: (params) => {
     dispatch(setSelectedRole(params));
+  },
+  searchRoles: (params) => {
+    dispatch(searchRoles(params));
   },
 });
 export default connect(

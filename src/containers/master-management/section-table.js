@@ -28,6 +28,7 @@ import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import CreateSection from './create-section'
 import EditSection from './edit-section'
+import Loading from '../../components/loader/loader';
 import './master-management.css'
 
 const useStyles = makeStyles((theme) => ({
@@ -76,12 +77,13 @@ const SectionTable = () => {
   const [editFlag,setEditFlag]=useState(false)
   const [tableFlag,setTableFlag]=useState(true)
   const [grades,setGrades]=useState([])
-  const [dataCount,setDataCount]=useState()
+  const [pageCount,setPageCount]=useState()
   const [delFlag,setDelFlag]=useState(false)
   const [searchGrade,setSearchGrade]=useState('')
   const [searchSection,setSearchSection]=useState('')
   const [widthFlag,setWidthFlag]=useState(false)
-
+  const [loading, setLoading] = useState(false);
+  
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -97,6 +99,8 @@ const SectionTable = () => {
     setTableFlag(false)
     setAddFlag(true)
     setEditFlag(false)
+    setSearchGrade('')
+    setSearchSection('')
   }
 
   const handleEditSection=(id,name)=>{
@@ -113,20 +117,25 @@ const SectionTable = () => {
     setEditFlag(false)
   }
 
-  const handleDeleteSection = () => {
+  const handleDeleteSection = (e) => {
+    e.preventDefault()
+    setLoading(true);
     axiosInstance.put(endpoints.masterManagement.updateSection,{
       'section_id': sectionId,
       'is_delete': true,
     }).then(result=>{
     if (result.status === 200) {
       {
-        setAlert('success', result.data.message);
         setDelFlag(!delFlag)
+        setLoading(false);
+        setAlert('success', result.data.message);
       }
     } else {
+      setLoading(false);
       setAlert('error', result.data.message);
     }
     }).catch((error)=>{
+      setLoading(false);
       setAlert('error', error.message);
     })
     setOpenDeleteModal(false)
@@ -142,11 +151,16 @@ const SectionTable = () => {
     };
 
     useEffect(()=>{
+      setLoading(true)
+      setTimeout(()=> {setLoading(false)},450); 
+    },[page,delFlag,editFlag,addFlag,searchGrade])
+
+    useEffect(()=>{
       axiosInstance.get(`${endpoints.masterManagement.sections}?page=${page}&page_size=15&section=${searchSection}&grade=${searchGrade}`)
       .then(result=>{
         if (result.status === 200) {
           setSections(result.data.result.results);
-          setDataCount(result.data.result.count)
+          setPageCount(result.data.result.total_pages)
         } else {
           setAlert('error', result.data.message);
         }
@@ -170,34 +184,9 @@ const SectionTable = () => {
 
 
   return (
+    <>
+    {loading ? <Loading message='Loading...' /> : null}
     <Layout>
-
-    {/* <CommonBreadcrumbs
-      componentName='Master Management'
-      childComponentName='Section List'
-    />
-
-    {(addFlag||editFlag)  && 
-    <div style={{float:'right',marginTop:'15px',marginRight:'15px'}}>
-      <Button startIcon={<ArrowBackIcon />} size="large" title="Go back to Section List" onClick={handleGoBack}>
-        Section List
-      </Button>
-    </div>
-    }
-
-    {tableFlag && !addFlag && !editFlag && 
-    <div className="headerMaster">
-      <div style={{color:'#014B7E'}}>
-        <h1>Section List</h1>
-      </div>
-      <div className={classes.buttonContainer}>
-        <Button startIcon={<AddOutlinedIcon />} onClick={handleAddSection}>
-          Add Section
-        </Button>
-      </div>
-    </div>
-    } */}
-
     <div className="headerMaster">
       <div>
         <CommonBreadcrumbs
@@ -219,8 +208,8 @@ const SectionTable = () => {
       </div>
     </div>
 
-    {!tableFlag && addFlag && !editFlag && <CreateSection grades={grades}/> }
-    {!tableFlag && !addFlag && editFlag && <EditSection id={sectionId} name={sectionName} handleGoBack={handleGoBack}/> }
+    {!tableFlag && addFlag && !editFlag && <CreateSection grades={grades} setLoading={setLoading}/> }
+    {!tableFlag && !addFlag && editFlag && <EditSection id={sectionId} name={sectionName} handleGoBack={handleGoBack} setLoading={setLoading}/> }
 
    
     {tableFlag && !addFlag && !editFlag && 
@@ -234,6 +223,7 @@ const SectionTable = () => {
           onBlur={e=>setWidthFlag(false)}
           variant='outlined'
           size='medium'
+          autoComplete="off"
           name='secname'
           onChange={e=>setSearchSection(e.target.value)}
         />
@@ -311,7 +301,7 @@ const SectionTable = () => {
       </TableContainer>
       <div className="paginate">
         <Pagination
-        count={Math.ceil(dataCount/15)}
+        count={pageCount}
         color="primary"
         showFirstButton
         showLastButton
@@ -341,8 +331,8 @@ const SectionTable = () => {
         <Button onClick={handleDeleteSection}>Confirm</Button>
       </DialogActions>
     </Dialog>
-
     </Layout>
+    </>
   );
 };
 

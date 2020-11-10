@@ -93,6 +93,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
   };
   const getRoleApi = async () => {
     try {
+      setLoading(true);
       const result = await axiosInstance.get(endpoints.communication.roles, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -103,18 +104,20 @@ const SendMessage = withRouter(({ history, ...props }) => {
         result.data.result.map((items) => resultOptions.push(items.role_name));
         setRoles([...roles, ...resultOptions]);
         setRoleList(result.data.result);
+        setLoading(false);
       } else {
-        console.log('error');
-        // dispatch(setAlert('error', result.data.message));
+        setLoading(false);
+        setAlert('error', result.data.message);
       }
     } catch (error) {
-      console.log('error');
-      // dispatch(setAlert('error', error.message));
+      setLoading(false);
+      setAlert('error', error.message);
     }
   };
 
   const getBranchApi = async () => {
     try {
+      setLoading(true);
       const result = await axiosInstance.get(endpoints.communication.branches, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -125,15 +128,19 @@ const SendMessage = withRouter(({ history, ...props }) => {
         result.data.data.map((items) => resultOptions.push(items.branch_name));
         setBranch([...branch, ...resultOptions]);
         setBranchList(result.data.data);
+        setLoading(false);
       } else {
         setAlert('error', result.data.message);
+        setLoading(false);
       }
     } catch (error) {
       setAlert('error', error.message);
+      setLoading(false);
     }
   };
   const getGroupApi = async () => {
     try {
+      setLoading(false);
       const result = await axiosInstance.get(endpoints.communication.groupList, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -144,16 +151,20 @@ const SendMessage = withRouter(({ history, ...props }) => {
         result.data.data.map((items) => resultOptions.push(items.group_name));
         setGroup([...group, ...resultOptions]);
         setGroupList(result.data.data);
+        setLoading(false);
       } else {
         setAlert('error', result.data.message);
+        setLoading(false);
       }
     } catch (error) {
       setAlert('error', error.message);
+      setLoading(false);
     }
   };
 
   const getGradeApi = async () => {
     try {
+      setLoading(true);
       const result = await axiosInstance.get(
         `${endpoints.communication.grades}?branch_id=${selectedBranch}&module_id=${moduleId}`,
         {
@@ -169,11 +180,14 @@ const SendMessage = withRouter(({ history, ...props }) => {
           setGrade(resultOptions);
         }
         setGradeList(result.data.data);
+        setLoading(false);
       } else {
         setAlert('error', result.data.message);
+        setLoading(false);
       }
     } catch (error) {
       setAlert('error', error.message);
+      setLoading(false);
     }
   };
 
@@ -185,6 +199,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
         .forEach((items) => {
           gradesId.push(items.grade_id);
         });
+      setLoading(true);
       const result = await axiosInstance.get(
         `${
           endpoints.communication.sections
@@ -200,11 +215,14 @@ const SendMessage = withRouter(({ history, ...props }) => {
         result.data.data.map((items) => resultOptions.push(items.section__section_name));
         setSection(resultOptions);
         setSectionList(result.data.data);
+        setLoading(false);
       } else {
         setAlert('error', result.data.message);
+        setLoading(false);
       }
     } catch (error) {
       setAlert('error', error.message);
+      setLoading(false);
     }
   };
 
@@ -628,13 +646,16 @@ const SendMessage = withRouter(({ history, ...props }) => {
           setThirdStep(false);
           setCurrentStep(1);
           setMessageSending(false);
+          setLoading(false);
         } else {
           setAlert('error', response.data.message);
           setMessageSending(false);
+          setLoading(false);
         }
       } catch (error) {
         setAlert('error', error.message);
         setMessageSending(false);
+        setLoading(false);
       }
     }
   };

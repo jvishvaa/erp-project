@@ -68,6 +68,7 @@ const GuardianDetailsForm = ({
                     id='father_first_name'
                     name='father_first_name'
                     onChange={formik.handleChange}
+                    inputProps={{maxLength:20}}
                     value={formik.values.father_first_name}
                     label='First name'
                   />
@@ -85,6 +86,7 @@ const GuardianDetailsForm = ({
                     id='father_middle_name'
                     name='father_middle_name'
                     onChange={formik.handleChange}
+                    inputProps={{maxLength:20}}
                     value={formik.values.father_middle_name}
                     label='Middle name'
                   />
@@ -102,6 +104,7 @@ const GuardianDetailsForm = ({
                     id='father_last_name'
                     name='father_last_name'
                     onChange={formik.handleChange}
+                    inputProps={{maxLength:20}}
                     value={formik.values.father_last_name}
                     label='Last name'
                   />
@@ -117,6 +120,7 @@ const GuardianDetailsForm = ({
                     id='father_email'
                     name='father_email'
                     onChange={formik.handleChange}
+                    inputProps={{maxLength:40}}
                     value={formik.values.father_email}
                     label='Email ID'
                   />
@@ -132,6 +136,7 @@ const GuardianDetailsForm = ({
                     id='father_mobile'
                     name='father_mobile'
                     onChange={formik.handleChange}
+                    inputProps={{maxLength:10}}
                     value={formik.values.father_mobile}
                     label='Mobile no.'
                   />
@@ -155,13 +160,17 @@ const GuardianDetailsForm = ({
               </Grid> */}
               <Grid item md={4}>
                 <FormControl variant='outlined' fullWidth>
-                  <InputLabel htmlFor='component-outlined'>Address line 1.</InputLabel>
+                  <InputLabel htmlFor='component-outlined'>Address</InputLabel>
                   <OutlinedInput
                     id='address'
                     name='address'
+                    inputProps={{maxLength:150}}
+                    multiline
+                    rows={4}
+                    rowsMax={6}
                     onChange={formik.handleChange}
                     value={formik.values.address}
-                    label='Address line 1.'
+                    label='Address'
                   />
                   <FormHelperText style={{ color: 'red' }}>
                     {formik.errors.address ? formik.errors.address : ''}
