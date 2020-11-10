@@ -231,7 +231,7 @@ const UserDetailsForm = ({
               name='address'
               onChange={formik.handleChange}
               value={formik.values.address}
-              inputProps={{maxLength:75}}
+              inputProps={{ maxLength: 150 }}
               multiline
               rows={4}
               rowsMax={6}
