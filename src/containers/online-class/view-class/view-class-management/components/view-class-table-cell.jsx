@@ -7,8 +7,10 @@ import { OnlineclassViewContext } from '../../../online-class-context/online-cla
 const ViewClassTableCell = (props) => {
   const {
     index,
+    currentPage,
     data: {
       id,
+      scope,
       is_canceled: isCancelled,
       absent_student_count: absentCount,
       attendee_student_count: attendedCount,
@@ -74,7 +76,7 @@ const ViewClassTableCell = (props) => {
 
   return (
     <TableRow key={id}>
-      <TableCell align='center'>{index + 1}</TableCell>
+      <TableCell align='center'>{currentPage * 10 - (10 - index - 1)}</TableCell>
       <TableCell align='center'>{title}</TableCell>
       <TableCell align='center'>{subjectName}</TableCell>
       <TableCell align='center'>{startTime}</TableCell>
@@ -97,16 +99,20 @@ const ViewClassTableCell = (props) => {
       </TableCell>
       {currentManagementTab === 0 ? (
         <TableCell>
-          <Button
-            variant='contained'
-            color='primary'
-            disabled={isCancelled}
-            onClick={() => {
-              handleCancel(id);
-            }}
-          >
-            {isCancelled ? 'Class cancelled' : 'Cancel'}
-          </Button>
+          {scope === true ? (
+            <Button
+              variant='contained'
+              color='primary'
+              disabled={isCancelled}
+              onClick={() => {
+                handleCancel(id);
+              }}
+            >
+              {isCancelled ? 'Class cancelled' : 'Cancel'}
+            </Button>
+          ) : (
+            ''
+          )}
         </TableCell>
       ) : (
         ''
@@ -116,7 +122,6 @@ const ViewClassTableCell = (props) => {
           Attendee list
         </Button>
       </TableCell>
-      <TableCell align='center'>{tutor}</TableCell>
     </TableRow>
   );
 };

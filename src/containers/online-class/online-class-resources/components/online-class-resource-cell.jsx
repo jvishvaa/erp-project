@@ -8,8 +8,10 @@ const OnlineClassResourceCell = (props) => {
 
   const {
     index,
+    currentPage,
     data: {
       id,
+      scope,
       online_class: {
         id: classId,
         start_time: startTime,
@@ -35,12 +37,12 @@ const OnlineClassResourceCell = (props) => {
   return (
     <>
       <TableRow key={id}>
-        <TableCell align='center'>{index + 1}</TableCell>
+        <TableCell align='center'>{currentPage * 10 - (10 - index - 1)}</TableCell>
         <TableCell align='center'>{title}</TableCell>
         <TableCell align='center'>{subjectName}</TableCell>
         <TableCell align='center'>{startTime}</TableCell>
         <TableCell align='center'>
-          <Button onClick={handleClick}>Upload resource</Button>
+          {scope === true ? <Button onClick={handleClick}>Upload resource</Button> : ''}
         </TableCell>
       </TableRow>
       {uploadModal}

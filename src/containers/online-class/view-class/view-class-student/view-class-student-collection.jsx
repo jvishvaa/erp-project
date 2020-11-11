@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Tabs, Tab, Typography, Grid, CircularProgress } from '@material-ui/core';
+import { Tabs, Tab, Typography, Grid } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import ViewClassStudent from './view-class-student';
 import { OnlineclassViewContext } from '../../online-class-context/online-class-state';
 import './view-class-student.scss';
 import Layout from '../../../Layout';
+import Loader from '../../../../components/loader/loader';
 
 const ViewClassStudentCollection = () => {
   const {
@@ -44,7 +45,7 @@ const ViewClassStudentCollection = () => {
 
   const renderUI = () => {
     if (loadingStudentOnlineClasses) {
-      return <CircularProgress className='progress-center' />;
+      return <Loader />;
     }
     if (!studentOnlineClasses.length) {
       return (

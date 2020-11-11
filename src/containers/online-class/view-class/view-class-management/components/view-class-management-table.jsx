@@ -7,9 +7,9 @@ import {
   TableBody,
   TableContainer,
   Grid,
-  CircularProgress,
 } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
+import Loader from '../../../../../components/loader/loader';
 
 import ViewClassTableCell from './view-class-table-cell';
 import { OnlineclassViewContext } from '../../../online-class-context/online-class-state';
@@ -21,8 +21,16 @@ const ViewClassManagementTable = () => {
       totalPages,
       loadingManagementOnlineClasses,
       currentManagementTab,
+      currentPage,
     },
+    setManagementPage,
   } = useContext(OnlineclassViewContext);
+
+  const handlePagination = (event, page) => {
+    if (page !== currentPage) {
+      setManagementPage(page);
+    }
+  };
 
   return (
     <div className='viewclass__management-table'>
@@ -44,15 +52,19 @@ const ViewClassManagementTable = () => {
                 ''
               )}
               <TableCell align='center'>Attendee list</TableCell>
-              <TableCell align='center'>Tutor email</TableCell>
             </TableRow>
           </TableHead>
           {loadingManagementOnlineClasses ? (
-            <CircularProgress className='progress-center' />
+            <Loader />
           ) : (
             <TableBody className='viewclass__table-body'>
               {managementOnlineClasses.map((row, index) => (
-                <ViewClassTableCell data={row} key={row.id} index={index} />
+                <ViewClassTableCell
+                  data={row}
+                  key={row.id}
+                  index={index}
+                  currentPage={currentPage}
+                />
               ))}
             </TableBody>
           )}
@@ -67,7 +79,12 @@ const ViewClassManagementTable = () => {
       >
         <Grid item xs={12}>
           {!loadingManagementOnlineClasses ? (
-            <Pagination count={totalPages} color='primary' />
+            <Pagination
+              count={totalPages}
+              color='primary'
+              onChange={handlePagination}
+              page={currentPage}
+            />
           ) : (
             ''
           )}

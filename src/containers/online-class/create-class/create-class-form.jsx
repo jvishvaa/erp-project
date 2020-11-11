@@ -65,6 +65,7 @@ const CreateClassForm = () => {
 
   const {
     role_details: { branch = [], erp_user_id: erpUser },
+    user_id: userId,
   } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   useEffect(() => {
@@ -343,6 +344,7 @@ const CreateClassForm = () => {
     const tutorEmails = [tutorEmail, ...coHosts.map((el) => el.email)];
 
     const formdata = new FormData();
+    formdata.append('user_id', userId);
     formdata.append('title', title);
     formdata.append('duration', duration);
     formdata.append('subject_id', subject);
@@ -407,7 +409,7 @@ const CreateClassForm = () => {
               variant='outlined'
               size='small'
               name='title'
-              inputProps={{maxLength:20}}
+              inputProps={{ maxLength: 20 }}
               onChange={handleChange}
               required
             />
@@ -498,7 +500,7 @@ const CreateClassForm = () => {
               name='duration'
               onChange={handleChange}
               required
-              InputProps={{ inputProps: { min: 0 ,maxLength:3} }}
+              InputProps={{ inputProps: { min: 0, maxLength: 3 } }}
             />
           </Grid>
           <Grid item xs={12} sm={2}>
@@ -514,7 +516,7 @@ const CreateClassForm = () => {
               onChange={handleChange}
               placeholder='Maximum 300'
               required
-              InputProps={{ inputProps: { min: 0} }}
+              InputProps={{ inputProps: { min: 0 } }}
             />
           </Grid>
         </Grid>
@@ -571,6 +573,16 @@ const CreateClassForm = () => {
               value={onlineClass.tutorEmail}
               required
             />
+            {!onlineClass.duration ||
+            !onlineClass.subject ||
+            !onlineClass.gradeIds.length ? (
+              <span style={{ color: 'red' }}>
+                *This input field will be enabled once grade, subject and duration are
+                selected
+              </span>
+            ) : (
+              ''
+            )}
             {onlineClass.tutorEmail && !onlineClass.tutorEmail.match(emailRegExp) ? (
               <span className='alert__email'>Please enter a valid email</span>
             ) : (
@@ -617,7 +629,7 @@ const CreateClassForm = () => {
                   label='Cohost email address'
                   variant='outlined'
                   value={el.email}
-                  inputProps={{maxLength:40}}
+                  inputProps={{ maxLength: 40 }}
                   onChange={(event) => {
                     handleCohostEmail(event, index);
                   }}

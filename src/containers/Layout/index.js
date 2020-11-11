@@ -82,10 +82,10 @@ const Layout = ({ children, history }) => {
   const [userId, setUserId] = useState();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-  const getGlobalUserRecords = async () => {
+  const getGlobalUserRecords = async (text) => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.gloabSearch.getUsers}?search=${searchedText}&page=${currentPage}&page_size=100`,
+        `${endpoints.gloabSearch.getUsers}?search=${text}&page=${currentPage}&page_size=100`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -112,7 +112,7 @@ const Layout = ({ children, history }) => {
     if (q !== '') {
       setSearching(true);
       setGlobalSearchResults(true);
-      getGlobalUserRecords();
+      getGlobalUserRecords(q);
     }
   };
   const autocompleteSearchDebounced = debounce(500, autocompleteSearch);
@@ -141,6 +141,16 @@ const Layout = ({ children, history }) => {
       setIsLogout(false);
     }
   }, [isLogout]);
+
+  useEffect(() => {
+    if (searchedText !== '') {
+      setGlobalSearchResults(false);
+      setSearching(false);
+      setSearchUserDetails([]);
+      setTotalPage(0);
+      setCurrentPage(1);
+    }
+  }, [history.location.pathname]);
 
   //   useEffect(() => {
   //     if (searchedText !== '') {
@@ -174,6 +184,7 @@ const Layout = ({ children, history }) => {
       setSearchUserDetails([]);
       setTotalPage(0);
       setCurrentPage(1);
+      return;
     }
     const q = event.target.value;
     if (q.length < 5) {
@@ -183,6 +194,15 @@ const Layout = ({ children, history }) => {
       setCurrentPage(1);
       autocompleteSearchDebounced(event.target.value);
     }
+  };
+
+  const handleTextSearchClear = () => {
+    setSearchedText('');
+    setGlobalSearchResults(false);
+    setSearching(false);
+    setSearchUserDetails([]);
+    setTotalPage(0);
+    setCurrentPage(1);
   };
 
   //   const handleScroll = (event) => {
@@ -304,12 +324,23 @@ const Layout = ({ children, history }) => {
             <div className={classes.grow}>
               <Paper component='form' className={classes.searchInputContainer}>
                 <InputBase
+                  value={searchedText}
                   className={classes.searchInput}
                   placeholder='Search..'
                   inputProps={{ 'aria-label': 'search across site' }}
                   inputRef={searchInputRef}
                   onChange={changeQuery}
                 />
+                {searchedText ? (
+                  <IconButton
+                    type='submit'
+                    className={classes.clearIconButton}
+                    aria-label='search'
+                    onClick={handleTextSearchClear}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                ) : null}
                 <IconButton
                   type='submit'
                   className={classes.searchIconButton}
@@ -341,7 +372,7 @@ const Layout = ({ children, history }) => {
                   <Fade {...TransitionProps} timeout={350}>
                     <Paper>
                       <Grid container style={{ flexDirection: 'column' }}>
-                        {globalSearchResults ? (
+                        {globalSearchResults && searchUserDetails.length ? (
                           <>
                             <Grid item>
                               <Grid
@@ -351,7 +382,7 @@ const Layout = ({ children, history }) => {
                                   paddingBottom: 12,
                                   paddingTop: 12,
                                   paddingLeft: 16,
-                                  backgroundColor: '#eee',
+                                  backgroundColor: 'rgb(224 224 224)',
                                   paddingRight: 16,
                                   minWidth: 374,
                                 }}
@@ -372,8 +403,11 @@ const Layout = ({ children, history }) => {
                                       subheader={
                                         <ListSubheader
                                           style={{
-                                            background: 'rgb(238, 238, 238)',
+                                            background: 'rgb(224 224 224)',
                                             width: '100%',
+                                            color: '#014B7E',
+                                            fontSize: '1rem',
+                                            fontWeight: 600,
                                           }}
                                         >
                                           Users
@@ -381,10 +415,12 @@ const Layout = ({ children, history }) => {
                                       }
                                     >
                                       {globalSearchResults &&
+                                        searchUserDetails.length &&
                                         searchUserDetails.map((result, index) => {
                                           return (
                                             <ListItem
                                               style={{ width: 324 }}
+                                              className='user_rows_details'
                                               button
                                               onClick={() => {
                                                 console.log('I amcalled...');
@@ -428,17 +464,16 @@ const Layout = ({ children, history }) => {
                               flexGrow: 1,
                             }}
                           >
-                            {searchedText.length > 0 ? (
-                              <LinearProgress
-                                style={{ width: '100%' }}
-                                color='secondary'
-                                variant='query'
-                              />
-                            ) : (
-                              <span style={{ padding: 1 }}>
-                                Type something to search.
-                              </span>
-                            )}
+                            <span
+                              style={{
+                                padding: 1,
+                                textAlign: 'center',
+                                margin: 'auto',
+                                color: '#014B7E',
+                              }}
+                            >
+                              No data available.
+                            </span>
                           </Grid>
                         )}
                       </Grid>
@@ -479,8 +514,9 @@ const Layout = ({ children, history }) => {
               onClick={handleMobileMenuOpen}
               color='inherit'
             >
-              {roleDetails.user_profile ? (
+              {roleDetails && roleDetails.user_profile ? (
                 <img
+                  style={{fontSize: '0.4rem'}}
                   src={roleDetails.user_profile}
                   alt='no img'
                   className='profile_img'

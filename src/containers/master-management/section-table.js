@@ -77,7 +77,7 @@ const SectionTable = () => {
   const [editFlag,setEditFlag]=useState(false)
   const [tableFlag,setTableFlag]=useState(true)
   const [grades,setGrades]=useState([])
-  const [dataCount,setDataCount]=useState()
+  const [pageCount,setPageCount]=useState()
   const [delFlag,setDelFlag]=useState(false)
   const [searchGrade,setSearchGrade]=useState('')
   const [searchSection,setSearchSection]=useState('')
@@ -99,6 +99,8 @@ const SectionTable = () => {
     setTableFlag(false)
     setAddFlag(true)
     setEditFlag(false)
+    setSearchGrade('')
+    setSearchSection('')
   }
 
   const handleEditSection=(id,name)=>{
@@ -124,17 +126,17 @@ const SectionTable = () => {
     }).then(result=>{
     if (result.status === 200) {
       {
-        setAlert('success', result.data.message);
         setDelFlag(!delFlag)
         setLoading(false);
+        setAlert('success', result.data.message);
       }
     } else {
-      setAlert('error', result.data.message);
       setLoading(false);
+      setAlert('error', result.data.message);
     }
     }).catch((error)=>{
-      setAlert('error', error.message);
       setLoading(false);
+      setAlert('error', error.message);
     })
     setOpenDeleteModal(false)
     };
@@ -149,11 +151,16 @@ const SectionTable = () => {
     };
 
     useEffect(()=>{
+      setLoading(true)
+      setTimeout(()=> {setLoading(false)},450); 
+    },[page,delFlag,editFlag,addFlag,searchGrade])
+
+    useEffect(()=>{
       axiosInstance.get(`${endpoints.masterManagement.sections}?page=${page}&page_size=15&section=${searchSection}&grade=${searchGrade}`)
       .then(result=>{
         if (result.status === 200) {
           setSections(result.data.result.results);
-          setDataCount(result.data.result.count)
+          setPageCount(result.data.result.total_pages)
         } else {
           setAlert('error', result.data.message);
         }
@@ -201,8 +208,8 @@ const SectionTable = () => {
       </div>
     </div>
 
-    {!tableFlag && addFlag && !editFlag && <CreateSection grades={grades}/> }
-    {!tableFlag && !addFlag && editFlag && <EditSection id={sectionId} name={sectionName} handleGoBack={handleGoBack}/> }
+    {!tableFlag && addFlag && !editFlag && <CreateSection grades={grades} setLoading={setLoading}/> }
+    {!tableFlag && !addFlag && editFlag && <EditSection id={sectionId} name={sectionName} handleGoBack={handleGoBack} setLoading={setLoading}/> }
 
    
     {tableFlag && !addFlag && !editFlag && 
@@ -216,6 +223,7 @@ const SectionTable = () => {
           onBlur={e=>setWidthFlag(false)}
           variant='outlined'
           size='medium'
+          autoComplete="off"
           name='secname'
           onChange={e=>setSearchSection(e.target.value)}
         />
@@ -293,7 +301,7 @@ const SectionTable = () => {
       </TableContainer>
       <div className="paginate">
         <Pagination
-        count={Math.ceil(dataCount/15)}
+        count={pageCount}
         color="primary"
         showFirstButton
         showLastButton

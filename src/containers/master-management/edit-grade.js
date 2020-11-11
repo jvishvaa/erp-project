@@ -3,15 +3,12 @@ import { Grid, TextField, Button } from '@material-ui/core';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import Loading from '../../components/loader/loader';
 
-
-const EditGrade = ({id,name,type,handleGoBack}) => {
+const EditGrade = ({id,name,type,handleGoBack,setLoading}) => {
 
   const { setAlert } = useContext(AlertNotificationContext);
   const [gradeName,setGradeName]=useState(name||'')
   const [gradeType,setGradeType]=useState(type||'')
-  const [loading, setLoading] = useState(false);
   
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -29,33 +26,31 @@ const EditGrade = ({id,name,type,handleGoBack}) => {
       .then(result=>{
       if (result.status === 200) {
         {
-          setAlert('success', result.data.message);
           handleGoBack()
           setGradeName('')
           setGradeType('')
           setLoading(false);
+          setAlert('success', result.data.message);
         }
       } else {
-        setAlert('error', result.data.message);
         setLoading(false);
+        setAlert('error', result.data.message);
       }
       }).catch((error)=>{
-        setAlert('error', error.message);
         setLoading(false);
+        setAlert('error', error.message);
       })
     }
     else
     {
-      setAlert('error','No Fields to Update')
       setLoading(false);
+      setAlert('error','No Fields to Update')
     }
     };
 
 
   return (
-    <>
-    {loading ? <Loading message='Loading...' /> : null}
-      <div className='create__class'>
+    <div className='create__class'>
       <form autoComplete='off' onSubmit={handleSubmit}>
         <Grid item style={{marginLeft:'14px',color:'#014B7E'}} >
               <h1>Edit Grade</h1>
@@ -99,7 +94,6 @@ const EditGrade = ({id,name,type,handleGoBack}) => {
         </Grid>
       </form>
     </div>
-    </>
   );
 };
 

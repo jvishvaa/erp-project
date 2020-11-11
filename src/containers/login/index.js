@@ -15,7 +15,9 @@ import { connect } from 'react-redux';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import { login } from '../../redux/actions';
 
+
 function Copyright() {
+
   return (
     <Typography variant='body2' color='textSecondary' align='center'>
       {'Copyright © '}
@@ -50,6 +52,9 @@ const useStyles = makeStyles((theme) => ({
 
 function SignIn({ onLogin, history }) {
 
+  if(localStorage.getItem('userDetails')&&localStorage.getItem('navigationData'))
+  history.push('/profile')
+  
   const [uname,pass,checked] =JSON.parse(localStorage.getItem('rememberDetails')) || []
   const [username, setUsername] = useState(''||uname);
   const [password, setPassword] = useState(''||pass);

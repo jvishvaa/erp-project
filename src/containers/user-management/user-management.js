@@ -12,7 +12,6 @@ import {
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { Autocomplete } from '@material-ui/lab';
-import fileDownload from 'js-file-download';
 
 import axiosInstance from '../../config/axios';
 import AssignRole from '../communication/assign-role/assign-role';
