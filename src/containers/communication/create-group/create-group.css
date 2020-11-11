@@ -15,7 +15,7 @@
     text-align: center;
     color: red;
 }
-.group_name{
+.group_name_create_group{
 	width: 350px;
     height: 37px;
     border: none !important;
@@ -113,5 +113,8 @@
 	.create_group_select_all_wrapper {
 		margin-top: 6%;
 		margin-bottom: 4%;
+	}
+	.group_name_create_group{
+		width: 300px;
 	}
 }

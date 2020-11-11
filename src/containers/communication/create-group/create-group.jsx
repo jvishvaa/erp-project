@@ -529,7 +529,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
                 <Grid lg={5} item>
                   <div className='group_name_wrapper'>
                     <CustomInput
-                      className='group_name'
+                      className='group_name_create_group'
                       onChange={addGroupName}
                       value={groupName}
                       name='Group name'

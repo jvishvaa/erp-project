@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: '50px',
     marginTop: '50px',
     [theme.breakpoints.down('xs')]: {
-      width: '66vw',
+      width: '85vw',
       marginLeft: '5px',
       marginTop: '5px',
     },
