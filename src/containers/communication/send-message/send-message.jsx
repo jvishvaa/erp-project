@@ -702,6 +702,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
   useEffect(() => {
     if (!isEmail) {
       setSelectedSmsType('');
+      setTextMessage('');
     }
   }, [isEmail]);
 
@@ -884,7 +885,13 @@ const SendMessage = withRouter(({ history, ...props }) => {
                   className={`message_type_block ${
                     isEmail ? null : 'message_type_block_selected'
                   }`}
-                  onClick={() => setIsEmail(false)}
+                  onClick={() => {
+                    if (isEmail) {
+                      setIsEmail(false);
+                      setSelectedSmsType('');
+                      setTextMessage('');
+                    }
+                  }}
                 >
                   SMS
                 </div>
@@ -892,7 +899,13 @@ const SendMessage = withRouter(({ history, ...props }) => {
                   className={`message_type_block ${
                     isEmail ? 'message_type_block_selected' : null
                   }`}
-                  onClick={() => setIsEmail(true)}
+                  onClick={() => {
+                    if (!isEmail) {
+                      setIsEmail(true);
+                      setSelectedSmsType('');
+                      setTextMessage('');
+                    }
+                  }}
                 >
                   Mail
                 </div>
