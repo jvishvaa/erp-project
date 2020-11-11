@@ -34,6 +34,11 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     marginLeft: '5px',
     marginTop: '50px',
+    [theme.breakpoints.down('xs')]: {
+      width: '85vw',
+      marginLeft: '5px',
+      marginTop: '5px',
+    },
   },
   container: {
     maxHeight: 440,
@@ -298,7 +303,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
             childComponentName='SMS/Email Log'
           />
           <div className='spacing' />
-          <Grid container className='message_log_container' spacing={10}>
+          <Grid container className='message_log_container' spacing={5}>
             <Grid lg={5} item>
               <Autocomplete
                 multiple
@@ -328,6 +333,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
                 onChange={handleSmsType}
                 value={selectedSmsType}
                 id='message_log-smsType'
+                className='message_log_branch'
                 options={smsTypeList}
                 getOptionLabel={(option) => option?.category_name}
                 filterSelectedOptions

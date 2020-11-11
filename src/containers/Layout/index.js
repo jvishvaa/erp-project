@@ -330,6 +330,7 @@ const Layout = ({ children, history }) => {
                   inputProps={{ 'aria-label': 'search across site' }}
                   inputRef={searchInputRef}
                   onChange={changeQuery}
+                  onBlur={handleTextSearchClear}
                 />
                 {searchedText ? (
                   <IconButton
