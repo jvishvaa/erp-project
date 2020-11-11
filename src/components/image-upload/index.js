@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useTheme } from '@material-ui/core/styles';
 import useStyles from './useStyles';
 
 const ImageUpload = ({ value, onChange }) => {
   const [image, setImage] = useState(null);
   const classes = useStyles();
+  const themeContext = useTheme();
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   useEffect(() => {
     if (typeof value === 'object') {
       setImage(URL.createObjectURL(value));
@@ -13,7 +17,14 @@ const ImageUpload = ({ value, onChange }) => {
     }
   }, [value]);
   return (
-    <Grid container item xs={12} alignItems='center' spacing={2}>
+    <Grid
+      container
+      item
+      xs={12}
+      alignItems='center'
+      spacing={2}
+      direction={isMobile ? 'column' : 'row'}
+    >
       <Grid item>
         <img
           src={

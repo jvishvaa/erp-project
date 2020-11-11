@@ -1,0 +1,13 @@
+.form-grid {
+  @media screen and (max-width: 960px) {
+    .MuiGrid-item {
+      &:not(.profile-img-container) {
+        order: 2;
+      }
+      .profile-img-container {
+        display: flex;
+        justify-content: center;
+      }
+    }
+  }
+}
