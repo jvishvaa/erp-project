@@ -52,7 +52,6 @@ const ViewClassManagementTable = () => {
                 ''
               )}
               <TableCell align='center'>Attendee list</TableCell>
-              <TableCell align='center'>Tutor email</TableCell>
             </TableRow>
           </TableHead>
           {loadingManagementOnlineClasses ? (
