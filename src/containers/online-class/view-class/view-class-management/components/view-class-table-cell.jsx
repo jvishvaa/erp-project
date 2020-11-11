@@ -11,6 +11,7 @@ const ViewClassTableCell = (props) => {
     data: {
       id,
       scope,
+      scope_takeclass: canTakeClass,
       is_canceled: isCancelled,
       absent_student_count: absentCount,
       attendee_student_count: attendedCount,
@@ -87,14 +88,20 @@ const ViewClassTableCell = (props) => {
         {hasClassEnded ? (
           'Class Ended'
         ) : (
-          <Button
-            onClick={isHost ? handleHost : handleAudit}
-            disabled={!isJoinTime || isCancelled}
-            variant='contained'
-            color='primary'
-          >
-            {isCancelled ? 'Class canceled' : isHost ? 'Host' : 'Audit'}
-          </Button>
+          <>
+            {canTakeClass ? (
+              <Button
+                onClick={isHost ? handleHost : handleAudit}
+                disabled={!isJoinTime || isCancelled}
+                variant='contained'
+                color='primary'
+              >
+                {isCancelled ? 'Class canceled' : isHost ? 'Host' : 'Audit'}
+              </Button>
+            ) : (
+              ''
+            )}
+          </>
         )}
       </TableCell>
       {currentManagementTab === 0 ? (
