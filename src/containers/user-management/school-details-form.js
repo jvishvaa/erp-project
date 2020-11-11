@@ -7,7 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { useFormik } from 'formik';
 import { FormHelperText } from '@material-ui/core';
-
+import Box from '@material-ui/core/Box';
 import { useStyles } from './useStyles';
 import validationSchema from './schemas/school-details';
 import {
@@ -131,7 +131,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
   return (
     <Grid container spacing={4}>
       <Grid container item xs={12}>
-        <Grid item md={4}>
+        <Grid item md={4} xs={12}>
           <FormControl fullWidth className={classes.margin} variant='outlined'>
             <Autocomplete
               id='academic_year'
@@ -160,7 +160,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
       <Grid item xs={12}>
         <Divider />
       </Grid>
-      <Grid item md={4}>
+      <Grid item md={4} xs={12}>
         <FormControl fullWidth className={classes.margin} variant='outlined'>
           <Autocomplete
             id='branch'
@@ -188,7 +188,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
           </FormHelperText>
         </FormControl>
       </Grid>
-      <Grid item md={4}>
+      <Grid item md={4} xs={12}>
         <FormControl fullWidth className={classes.margin} variant='outlined'>
           <Autocomplete
             id='grade'
@@ -217,7 +217,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
           </FormHelperText>
         </FormControl>
       </Grid>
-      <Grid item md={4}>
+      <Grid item md={4} xs={12}>
         <FormControl fullWidth className={classes.margin} variant='outlined'>
           <Autocomplete
             id='section'
@@ -244,7 +244,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
           </FormHelperText>
         </FormControl>
       </Grid>
-      <Grid item md={4}>
+      <Grid item md={4} xs={12}>
         <FormControl
           color='secondary'
           fullWidth
@@ -278,17 +278,19 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
         </FormControl>
       </Grid>
       <Grid container item xs={12} style={{ marginTop: '20px' }}>
-        <Grid md='4'>
-          <Button
-            className={classes.formActionButton}
-            variant='contained'
-            color='primary'
-            onClick={() => {
-              formik.handleSubmit();
-            }}
-          >
-            Next
-          </Button>
+        <Grid md='4' xs={12}>
+          <Box className={classes.formActionButtonContainer}>
+            <Button
+              className={classes.formActionButton}
+              variant='contained'
+              color='primary'
+              onClick={() => {
+                formik.handleSubmit();
+              }}
+            >
+              Next
+            </Button>
+          </Box>
         </Grid>
       </Grid>
     </Grid>
