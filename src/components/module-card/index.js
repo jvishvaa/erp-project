@@ -168,15 +168,17 @@ export default function ModuleCard({
       changedModuleIndices.push(index); //changed submodules  eg Create class Edit class etc
 
       moduleObj.module_child = clonedArray;
-      if (dependencySubModule) {
-        const { clonedArray, index } = findAndApplyScope(
-          moduleObj.module_child,
-          dependencySubModule,
-          scope,
-          checked
-        );
-        changedModuleIndices.push(index);
-        moduleObj.module_child = clonedArray;
+      if (dependencySubModule && dependencySubModule.length > 0) {
+        dependencySubModule.forEach((subModule) => {
+          const { clonedArray, index } = findAndApplyScope(
+            moduleObj.module_child,
+            subModule,
+            scope,
+            checked
+          );
+          changedModuleIndices.push(index);
+          moduleObj.module_child = clonedArray;
+        });
       }
     } else if (unCheckDependency.length === 0) {
       const unCheckScopeDependencies = [];
