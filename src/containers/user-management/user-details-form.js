@@ -18,11 +18,13 @@ import moment from 'moment';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Radio from '@material-ui/core/Radio';
+import Box from '@material-ui/core/Box';
 import validationSchema from './schemas/user-details';
 import { Label } from '@material-ui/icons';
 import { useStyles } from './useStyles';
 import ImageUpload from '../../components/image-upload';
 import { createMuiTheme, ThemeProvider, useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 const UserDetailsForm = ({
   details,
@@ -35,6 +37,8 @@ const UserDetailsForm = ({
   isSubmitting,
 }) => {
   const themeContext = useTheme();
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+
   const formik = useFormik({
     initialValues: {
       first_name: details.first_name,
@@ -73,17 +77,16 @@ const UserDetailsForm = ({
   return (
     <Grid container spacing={4}>
       <Grid container item xs={12}>
-        <Grid item md={4}>
+        <Grid item md={4} xs={12}>
           <ImageUpload
             value={formik.values.profile}
             onChange={(value) => {
-              console.log(value instanceof File);
               formik.setFieldValue('profile', value);
             }}
           />
         </Grid>
       </Grid>
-      <Grid item md={4}>
+      <Grid item md={4} xs={12}>
         <FormControl variant='outlined' fullWidth>
           <InputLabel htmlFor='component-outlined'>First name</InputLabel>
           <OutlinedInput
@@ -91,7 +94,7 @@ const UserDetailsForm = ({
             name='first_name'
             onChange={formik.handleChange}
             value={formik.values.first_name}
-            inputProps={{maxLength:20}}
+            inputProps={{ maxLength: 20 }}
             label='First name'
             autoFocus
           />
@@ -100,7 +103,7 @@ const UserDetailsForm = ({
           </FormHelperText>
         </FormControl>
       </Grid>
-      <Grid item md={4}>
+      <Grid item md={4} xs={12}>
         <FormControl variant='outlined' fullWidth>
           <InputLabel htmlFor='component-outlined'>Middle name</InputLabel>
           <OutlinedInput
@@ -108,12 +111,12 @@ const UserDetailsForm = ({
             name='middle_name'
             onChange={formik.handleChange}
             value={formik.values.middle_name}
-            inputProps={{maxLength:20}}
+            inputProps={{ maxLength: 20 }}
             label='Middle name'
           />
         </FormControl>
       </Grid>
-      <Grid item md={4}>
+      <Grid item md={4} xs={12}>
         <FormControl variant='outlined' fullWidth>
           <InputLabel htmlFor='component-outlined'>Last name</InputLabel>
           <OutlinedInput
@@ -121,7 +124,7 @@ const UserDetailsForm = ({
             name='last_name'
             onChange={formik.handleChange}
             value={formik.values.last_name}
-            inputProps={{maxLength:20}}
+            inputProps={{ maxLength: 20 }}
             label='Last name'
           />
           <FormHelperText style={{ color: 'red' }}>
@@ -138,7 +141,8 @@ const UserDetailsForm = ({
               name='gender'
               value={formik.values.gender}
               onChange={formik.handleChange}
-              row
+              row={!isMobile}
+              column={isMobile}
             >
               <FormControlLabel
                 value='1'
@@ -161,15 +165,13 @@ const UserDetailsForm = ({
             </FormHelperText>
           </FormControl>
         </Grid>
-        <Grid item md={4}>
+        <Grid item md={4} xs={12}>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <ThemeProvider theme={theme}>
               <DatePicker
                 value={formik.values.date_of_birth || null}
                 defaultValue={formik.values.date_of_birth || null}
                 onChange={(value) => {
-                  console.log('date ', value);
-                  console.log(moment(value).format('YYYY-MM-DD'));
                   formik.setFieldValue(
                     'date_of_birth',
                     moment(value).format('YYYY-MM-DD')
@@ -189,13 +191,13 @@ const UserDetailsForm = ({
         </Grid>
       </Grid>
       <Grid container item xs={12} spacing={4}>
-        <Grid item md={4}>
+        <Grid item md={4} xs={12}>
           <FormControl variant='outlined' fullWidth>
             <InputLabel htmlFor='component-outlined'>Mobile no.</InputLabel>
             <OutlinedInput
               id='contact'
               name='contact'
-              inputProps={{maxLength:10}}
+              inputProps={{ maxLength: 10 }}
               onChange={formik.handleChange}
               value={formik.values.contact}
               label='Mobile no.'
@@ -205,7 +207,7 @@ const UserDetailsForm = ({
             </FormHelperText>
           </FormControl>
         </Grid>
-        <Grid item md={4}>
+        <Grid item md={4} xs={12}>
           <FormControl variant='outlined' fullWidth>
             <InputLabel htmlFor='component-outlined'>Email</InputLabel>
             <OutlinedInput
@@ -213,7 +215,7 @@ const UserDetailsForm = ({
               name='email'
               onChange={formik.handleChange}
               value={formik.values.email}
-              inputProps={{maxLength:40}}
+              inputProps={{ maxLength: 40 }}
               label='Email'
             />
             <FormHelperText style={{ color: 'red' }}>
@@ -223,7 +225,7 @@ const UserDetailsForm = ({
         </Grid>
       </Grid>
       <Grid container item xs={12} spacing={4}>
-        <Grid item md={4}>
+        <Grid item md={4} xs={12}>
           <FormControl variant='outlined' fullWidth>
             <InputLabel htmlFor='component-outlined'>Address</InputLabel>
             <OutlinedInput
@@ -231,7 +233,7 @@ const UserDetailsForm = ({
               name='address'
               onChange={formik.handleChange}
               value={formik.values.address}
-              inputProps={{maxLength:150}}
+              inputProps={{ maxLength: 150 }}
               multiline
               rows={4}
               rowsMax={6}
@@ -241,7 +243,7 @@ const UserDetailsForm = ({
               {formik.errors.address ? formik.errors.address : ''}
             </FormHelperText>
           </FormControl>
-        </Grid>{' '}
+        </Grid>
         {/* <Grid item md={4}>
           <FormControl variant='outlined' fullWidth disabled>
             <InputLabel htmlFor='component-outlined'>Address line 2</InputLabel>
@@ -258,7 +260,7 @@ const UserDetailsForm = ({
       <Grid item xs={12}>
         <Divider />
       </Grid>
-      <Grid item md={4}>
+      <Grid item md={4} xs={12}>
         <FormControl component='fieldset' fullWidth>
           <FormLabel component='legend'>Parent/Guardian</FormLabel>
           <FormGroup row>
@@ -287,29 +289,40 @@ const UserDetailsForm = ({
           </FormGroup>
         </FormControl>
       </Grid>
-      <Grid container item xs={12} style={{ marginTop: '20px' }}>
+      <Grid
+        container
+        item
+        xs={12}
+        style={{ marginTop: '20px' }}
+        direction={isMobile ? 'column-reverse' : 'row'}
+        spacing={3}
+      >
         <Grid item md='1'>
-          <Button
-            className={classes.formActionButton}
-            variant='contained'
-            color='primary'
-            onClick={handleBack}
-          >
-            Back
-          </Button>
+          <Box display='flex' justifyContent={isMobile ? 'center' : ''}>
+            <Button
+              className={classes.formActionButton}
+              variant='contained'
+              color='primary'
+              onClick={handleBack}
+            >
+              Back
+            </Button>
+          </Box>
         </Grid>
         <Grid item md='1'>
-          <Button
-            className={classes.formActionButton}
-            variant='contained'
-            color='primary'
-            onClick={() => {
-              formik.handleSubmit();
-            }}
-            disabled={isSubmitting}
-          >
-            {showParentForm || showGuardianForm ? 'Next' : 'Submit'}
-          </Button>
+          <Box display='flex' justifyContent={isMobile ? 'center' : ''}>
+            <Button
+              className={classes.formActionButton}
+              variant='contained'
+              color='primary'
+              onClick={() => {
+                formik.handleSubmit();
+              }}
+              disabled={isSubmitting}
+            >
+              {showParentForm || showGuardianForm ? 'Next' : 'Submit'}
+            </Button>
+          </Box>
         </Grid>
       </Grid>
     </Grid>

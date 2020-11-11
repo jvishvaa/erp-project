@@ -1,8 +1,18 @@
+/* eslint-disable global-require */
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
-import { Checkbox, FormControlLabel, Grid, Input, TextField } from '@material-ui/core';
+import {
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  Input,
+  TextField,
+  Box,
+} from '@material-ui/core';
+import { Link } from 'react-router-dom';
 import { Autocomplete } from '@material-ui/lab';
+
 import axiosInstance from '../../config/axios';
 import AssignRole from '../communication/assign-role/assign-role';
 
@@ -141,7 +151,21 @@ class UserManagement extends Component {
                 />
               </Grid>
               <Grid item xs={3}>
-                <Input type='file' onChange={this.handleFile} />
+                <Box display='flex' flexDirection='column'>
+                  <Input type='file' onChange={this.handleFile} />
+                  <Box display='flex' flexDirection='row' style={{ color: 'gray' }}>
+                    <Box p={1}>
+                      {`Download Format: `}
+                      <a
+                        style={{ cursor: 'pointer' }}
+                        href={require('./download-format/erp_user.xlsx')}
+                        download='format.xlsx'
+                      >
+                        Download format
+                      </a>
+                    </Box>
+                  </Box>
+                </Box>
               </Grid>
               <Grid item xs={3}>
                 <Button style={{ marginLeft: 20 }} onClick={this.handleUpload}>
