@@ -26,7 +26,6 @@ const UserDetails = withRouter(({ history, ...props }) => {
   const handleClose = () => {
     setUserId(null);
     close(false);
-    setSearching(true);
   };
 
   const handleEdit = (id) => {
