@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
     flexShrink: 0,
     background: theme.palette.primary.main,
     whiteSpace: 'nowrap',
+    [theme.breakpoints.down('xs')]: { display: 'none' },
   },
   drawerPaper: {
     transition: theme.transitions.create('width', {

@@ -1,46 +1,63 @@
-.edit_group__page{
-	position: fixed;
-    left: 50%;
-    top: 55%;
-    transform: translate(-50%,-50%);
-    width: 80%;
-    height: 42vw;
-    background: #fdfdfde0;
-    border: 12px solid #d2cdcd;
-    border-radius: 5px;
-    z-index: 10;
-	padding: 1% 2%;
-	overflow-y: scroll;
+.edit_group__page {
+  position: fixed;
+  left: 50%;
+  top: 55%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 42vw;
+  background: #fdfdfde0;
+  border: 12px solid #d2cdcd;
+  border-radius: 5px;
+  z-index: 1500;
+  padding: 1% 2%;
+  overflow-y: scroll;
 }
-.editGroup_Fields{
-	display: flex;
-    justify-content: space-between;
-    margin: 2% 0%;
+.editGroup_Fields {
+  display: flex;
+  justify-content: space-between;
+  margin: 2% 0%;
 }
-.edit_group_level{
-	display: block;
-    color: #014B7E;
-    text-align: center;
+.edit_group_level {
+  display: block;
+  color: #014b7e;
+  text-align: center;
 }
-.close_icon_edit_group{
-	float: right;
-    margin-top: -1%;
-	color: #ff6b6b;
-	cursor: pointer;
+.close_icon_edit_group {
+  float: right;
+  margin-top: -1%;
+  color: #ff6b6b;
+  cursor: pointer;
 }
-.edit_group_button{
-	font-size: 0.9rem;
-    padding: 2% 4%;
-    border: none;
-    border-radius: 5px;
-    text-transform: uppercase;
-    cursor: pointer;
-    outline: none !important;
-    color: white;
-	background-color: #FF6B6B;
-	margin: 2% 0%;
+.edit_group_button {
+  font-size: 0.9rem;
+  padding: 2% 4%;
+  border: none;
+  border-radius: 5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  outline: none !important;
+  color: white;
+  background-color: #ff6b6b;
+  margin: 2% 0%;
 }
-.edit_group_button:hover{
-	transform: translateY(-2px);
-    box-shadow: 1px 3px 5px 1px rgba(0, 0, 0, 0.3);
+.edit_group_button:hover {
+  transform: translateY(-2px);
+  box-shadow: 1px 3px 5px 1px rgba(0, 0, 0, 0.3);
+}
+@media screen and (max-width: 700px) {
+  .edit_group__page {
+    width: 90%;
+	height: 134vw;
+	left: 48%;
+  }
+  .editGroup_Fields {
+    flex-direction: column;
+  }
+  .role_name_edit_group {
+    margin-top: 9%;
+  }
+  .group_name {
+	margin-top: 6% !important;
+	width: 200px;
+  }
 }

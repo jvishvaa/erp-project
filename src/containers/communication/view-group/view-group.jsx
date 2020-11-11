@@ -33,6 +33,11 @@ const useStyles = makeStyles((theme) => ({
     width: '90%',
     marginLeft: '50px',
     marginTop: '50px',
+    [theme.breakpoints.down('xs')]: {
+      width: '85vw',
+      marginLeft: '5px',
+      marginTop: '5px',
+    },
   },
   container: {
     maxHeight: 440,
