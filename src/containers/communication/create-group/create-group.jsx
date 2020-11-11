@@ -12,6 +12,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
+import { Grid } from '@material-ui/core';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CustomMultiSelect from '../custom-multiselect/custom-multiselect';
@@ -237,8 +238,8 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       });
       if (result.status === 200) {
         setHeaders([
-          { field: 'id', headerName: 'ID', width: 100 },
-          { field: 'fullName', headerName: 'Name', width: 250 },
+          { field: 'id', headerName: 'ID', width: 70 },
+          { field: 'fullName', headerName: 'Name', width: 180 },
           { field: 'email', headerName: 'Email Id', width: 200 },
           { field: 'erp_id', headerName: 'Erp Id', width: 150 },
           { field: 'gender', headerName: 'Gender', width: 100 },
@@ -524,105 +525,122 @@ const CreateGroup = withRouter(({ history, ...props }) => {
             </>
           ) : (
             <>
-              <div className='creategroup_firstrow'>
-                <div className='group_name_wrapper'>
-                  <CustomInput
-                    className='group_name'
-                    onChange={addGroupName}
-                    value={groupName}
-                    name='Group name'
-                  />
-                  <span className='create_group_error_span'>{groupNameError}</span>
-                </div>
-                <div>
-                  <CustomMultiSelect
-                    selections={selectedRoles}
-                    setSelections={setSelectedRoles}
-                    nameOfDropdown='User Role'
-                    optionNames={roles}
-                  />
-                  <span className='create_group_error_span'>{roleError}</span>
-                </div>
-              </div>
-              {selectedRoles.length && !selectedRoles.includes('All') ? (
-                <div className='creategroup_firstrow'>
-                  <div>
-                    <div className='create_group_branch_wrapper'>
-                      <FormControl variant='outlined' className={classes.formControl}>
-                        <InputLabel id='demo-simple-select-outlined-label'>
-                          Branch
-                        </InputLabel>
-                        <Select
-                          labelId='demo-simple-select-outlined-label'
-                          id='demo-simple-select-outlined'
-                          value={selectedBranch}
-                          onChange={(e) => setSelectedBranch(e.target.value)}
-                          label='Branch'
-                        >
-                          <MenuItem value=''>
-                            <em>None</em>
-                          </MenuItem>
-                          {branchList.map((items, index) => (
-                            <MenuItem
-                              key={`branch_create_group_${index}`}
-                              value={items.id}
-                            >
-                              {items.branch_name}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </div>
-                    <span className='create_group_error_span'>{branchError}</span>
-                  </div>
-                  {selectedBranch && gradeList.length ? (
-                    <div>
-                      <CustomMultiSelect
-                        selections={selectedGrades}
-                        setSelections={setSelectedGrades}
-                        nameOfDropdown='Grade'
-                        optionNames={grade}
-                      />
-                      <span className='create_group_error_span'>{gradeError}</span>
-                    </div>
-                  ) : null}
-                  {selectedGrades.length && sectionList.length ? (
-                    <CustomMultiSelect
-                      selections={selectedSections}
-                      setSelections={setSelectedSections}
-                      nameOfDropdown='Section'
-                      optionNames={section}
+              <Grid container className='create_group_container' spacing={10}>
+                <Grid lg={5} item>
+                  <div className='group_name_wrapper'>
+                    <CustomInput
+                      className='group_name'
+                      onChange={addGroupName}
+                      value={groupName}
+                      name='Group name'
                     />
-                  ) : null}
-                </div>
+                    <span className='create_group_error_span'>{groupNameError}</span>
+                  </div>
+                </Grid>
+                <Grid lg={5} item>
+                  <div>
+                    <CustomMultiSelect
+                      selections={selectedRoles}
+                      setSelections={setSelectedRoles}
+                      nameOfDropdown='User Role'
+                      optionNames={roles}
+                    />
+                    <span className='create_group_error_span'>{roleError}</span>
+                  </div>
+                </Grid>
+              </Grid>
+
+              {selectedRoles.length && !selectedRoles.includes('All') ? (
+                <Grid container className='create_group_container' spacing={3}>
+                  <Grid lg={4} className='create_group_items' item>
+                    <div>
+                      <div className='create_group_branch_wrapper'>
+                        <FormControl variant='outlined' className={classes.formControl}>
+                          <InputLabel id='demo-simple-select-outlined-label'>
+                            Branch
+                          </InputLabel>
+                          <Select
+                            labelId='demo-simple-select-outlined-label'
+                            id='demo-simple-select-outlined'
+                            value={selectedBranch}
+                            onChange={(e) => setSelectedBranch(e.target.value)}
+                            label='Branch'
+                          >
+                            <MenuItem value=''>
+                              <em>None</em>
+                            </MenuItem>
+                            {branchList.map((items, index) => (
+                              <MenuItem
+                                key={`branch_create_group_${index}`}
+                                value={items.id}
+                              >
+                                {items.branch_name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </div>
+                      <span className='create_group_error_span'>{branchError}</span>
+                    </div>
+                  </Grid>
+                  <Grid lg={4} className='create_group_items' item>
+                    {selectedBranch && gradeList.length ? (
+                      <div>
+                        <CustomMultiSelect
+                          selections={selectedGrades}
+                          setSelections={setSelectedGrades}
+                          nameOfDropdown='Grade'
+                          optionNames={grade}
+                        />
+                        <span className='create_group_error_span'>{gradeError}</span>
+                      </div>
+                    ) : null}
+                  </Grid>
+                  <Grid lg={4} className='create_group_items' item>
+                    {selectedGrades.length && sectionList.length ? (
+                      <CustomMultiSelect
+                        selections={selectedSections}
+                        setSelections={setSelectedSections}
+                        nameOfDropdown='Section'
+                        optionNames={section}
+                      />
+                    ) : null}
+                  </Grid>
+                </Grid>
               ) : null}
             </>
           )}
-          <div className='button_wrapper'>
+          <Grid container className='create_group_custom_button_wrapper' spacing={5}>
             {next ? (
-              <input
-                className='custom_button addgroup_back_button'
-                type='button'
-                onClick={handleback}
-                value='back'
-              />
+              <Grid lg={5} className='create_group_custom_button' item>
+                <input
+                  className='custom_button addgroup_back_button'
+                  type='button'
+                  onClick={handleback}
+                  value='back'
+                />
+              </Grid>
             ) : null}
             {next ? (
-              <input
-                className='custom_button addgroup_next_button'
-                type='button'
-                onClick={createGroup}
-                value='create group'
-              />
+              <Grid lg={5} className='create_group_custom_button' item>
+                <input
+                  className='custom_button addgroup_next_button'
+                  type='button'
+                  onClick={createGroup}
+                  value='create group'
+                />
+              </Grid>
             ) : (
-              <input
-                className='custom_button addgroup_next_button'
-                type='button'
-                onClick={handlenext}
-                value='next'
-              />
+              <Grid lg={5} className='create_group_custom_button' item>
+                <input
+                  className='custom_button addgroup_next_button'
+                  type='button'
+                  onClick={handlenext}
+                  value='next'
+                />
+              </Grid>
             )}
-          </div>
+          </Grid>
         </div>
       </Layout>
     </>

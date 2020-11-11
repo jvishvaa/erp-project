@@ -51,7 +51,8 @@
 }
 .custom_button{
 	font-size: 0.9rem;
-    padding: 3% 15%;
+    width: 150px;
+    height: 45px;
     border: none;
 	border-radius: 5px;
 	text-transform: uppercase;
@@ -93,4 +94,24 @@
 .create_group_select_all_checkbox{
 	transform: scale(1.5);
 	margin-right: 1%;
+}
+.create_group_container{
+	margin: 3% 1% !important;
+	border-bottom: 2px solid #dcdcdc;
+}
+.create_group_items{
+	margin: auto !important;
+}
+.create_group_custom_button{
+	margin: auto !important;
+	padding-top: 5% !important;
+}
+.create_group_custom_button_wrapper{
+	margin-top: 2% !important;
+}
+@media screen and (max-width: 700px){
+	.create_group_select_all_wrapper {
+		margin-top: 6%;
+		margin-bottom: 4%;
+	}
 }

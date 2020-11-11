@@ -108,3 +108,24 @@
 	transform: scale(1.5);
 	margin-right: 1%;
 }
+@media screen and (max-width: 700px) {
+	.send_message_select_all_wrapper{
+		margin-top: 6%;
+		margin-bottom: 4%;
+	}
+	.send_message_button_wrapper{
+		width: 100%;
+	}
+	.message_type_block{
+		width: 28%;
+	}
+	.email_subject_wrapper .MuiFormControl-root {
+		width: 80%;
+	}
+	.deactive_clearAll{
+		width: 80%;
+	}
+	.profile_update_button{
+		width: 80%;
+	}
+}

@@ -8,3 +8,13 @@
     width: 20px !important;
     vertical-align: bottom;
 }
+@media screen and (max-width: 700px) {
+	.page_heading_arrow {
+		color: #FF6B6B;
+		width: 10px !important;
+		vertical-align: middle;
+	}
+	.page_title{
+		font-size: 0.9rem;
+	}
+}

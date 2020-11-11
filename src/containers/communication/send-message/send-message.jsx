@@ -11,7 +11,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
-import { TextareaAutosize } from '@material-ui/core';
+import { TextareaAutosize, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -289,8 +289,8 @@ const SendMessage = withRouter(({ history, ...props }) => {
       });
       if (result.status === 200) {
         setHeaders([
-          { field: 'id', headerName: 'ID', width: 100 },
-          { field: 'fullName', headerName: 'Name', width: 250 },
+          { field: 'id', headerName: 'ID', width: 70 },
+          { field: 'fullName', headerName: 'Name', width: 180 },
           { field: 'email', headerName: 'Email Id', width: 200 },
           { field: 'erp_id', headerName: 'Erp Id', width: 150 },
           { field: 'gender', headerName: 'Gender', width: 100 },
@@ -389,7 +389,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       setSelectedSmsType('');
       setSecondStep(true);
       setThirdStep(false);
-      setCurrentStep(1);
+      setCurrentStep(2);
       setTextMessageError('');
       setMessageTypeError('');
       setEmailSubject('');
@@ -773,54 +773,65 @@ const SendMessage = withRouter(({ history, ...props }) => {
                       </div>
                     </div>
                     {selectedRoles.length ? (
-                      <div className='creategroup_firstrow'>
-                        <div>
-                          <FormControl variant='outlined' className={classes.formControl}>
-                            <InputLabel id='demo-simple-select-outlined-label'>
-                              Branch
-                            </InputLabel>
-                            <Select
-                              labelId='demo-simple-select-outlined-label'
-                              id='demo-simple-select-outlined'
-                              value={selectedBranch}
-                              onChange={(e) => setSelectedBranch(e.target.value)}
-                              label='Branch'
-                            >
-                              <MenuItem value=''>
-                                <em>None</em>
-                              </MenuItem>
-                              {branchList.map((items, index) => (
-                                <MenuItem
-                                  key={`branch_create_group_${index}`}
-                                  value={items.id}
-                                >
-                                  {items.branch_name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                          <span className='create_group_error_span'>{branchError}</span>
-                        </div>
-                        {selectedBranch && gradeList.length ? (
+                      <Grid container className='create_group_container' spacing={3}>
+                        <Grid lg={4} className='create_group_items' item>
                           <div>
-                            <CustomMultiSelect
-                              selections={selectedGrades}
-                              setSelections={setSelectedGrades}
-                              nameOfDropdown='Grade'
-                              optionNames={grade}
-                            />
-                            <span className='create_group_error_span'>{gradeError}</span>
+                            <FormControl
+                              variant='outlined'
+                              className={classes.formControl}
+                            >
+                              <InputLabel id='demo-simple-select-outlined-label'>
+                                Branch
+                              </InputLabel>
+                              <Select
+                                labelId='demo-simple-select-outlined-label'
+                                id='demo-simple-select-outlined'
+                                value={selectedBranch}
+                                onChange={(e) => setSelectedBranch(e.target.value)}
+                                label='Branch'
+                              >
+                                <MenuItem value=''>
+                                  <em>None</em>
+                                </MenuItem>
+                                {branchList.map((items, index) => (
+                                  <MenuItem
+                                    key={`branch_create_group_${index}`}
+                                    value={items.id}
+                                  >
+                                    {items.branch_name}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                            <span className='create_group_error_span'>{branchError}</span>
                           </div>
+                        </Grid>
+                        {selectedBranch && gradeList.length ? (
+                          <Grid lg={4} className='create_group_items' item>
+                            <div>
+                              <CustomMultiSelect
+                                selections={selectedGrades}
+                                setSelections={setSelectedGrades}
+                                nameOfDropdown='Grade'
+                                optionNames={grade}
+                              />
+                              <span className='create_group_error_span'>
+                                {gradeError}
+                              </span>
+                            </div>
+                          </Grid>
                         ) : null}
                         {selectedGrades.length && sectionList.length ? (
-                          <CustomMultiSelect
-                            selections={selectedSections}
-                            setSelections={setSelectedSections}
-                            nameOfDropdown='Section'
-                            optionNames={section}
-                          />
+                          <Grid lg={4} className='create_group_items' item>
+                            <CustomMultiSelect
+                              selections={selectedSections}
+                              setSelections={setSelectedSections}
+                              nameOfDropdown='Section'
+                              optionNames={section}
+                            />
+                          </Grid>
                         ) : null}
-                      </div>
+                      </Grid>
                     ) : null}
                   </>
                 ) : (
