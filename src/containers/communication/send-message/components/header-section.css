@@ -43,7 +43,7 @@
     background-position: center;
   }
   .send_message_header{
-	  margin-left: -5%;
+	  margin-left: -6%;
 	  text-align: center;
   }
   .send_message_header_circle{
@@ -55,6 +55,6 @@
 	padding: 0% 4%;
   }
   .send_message_header_title{
-	  font-size: 0.7rem;
+	  font-size: 0.8rem;
   }
 }

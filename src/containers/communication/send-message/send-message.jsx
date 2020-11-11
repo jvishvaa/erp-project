@@ -761,21 +761,23 @@ const SendMessage = withRouter(({ history, ...props }) => {
               <div>
                 {customSelect ? (
                   <>
-                    <div className='creategroup_firstrow'>
-                      <div>
-                        <CustomMultiSelect
-                          selections={selectedRoles}
-                          setSelections={setSelectedRoles}
-                          nameOfDropdown='User Role'
-                          optionNames={roles}
-                        />
-                        <span className='create_group_error_span'>{roleError}</span>
-                      </div>
-                    </div>
+                    <Grid container className='create_group_container' spacing={3}>
+                      <Grid lg={4} className='create_group_items' item>
+                        <div>
+                          <CustomMultiSelect
+                            selections={selectedRoles}
+                            setSelections={setSelectedRoles}
+                            nameOfDropdown='User Role'
+                            optionNames={roles}
+                          />
+                          <span className='create_group_error_span'>{roleError}</span>
+                        </div>
+                      </Grid>
+                    </Grid>
                     {selectedRoles.length ? (
                       <Grid container className='create_group_container' spacing={3}>
                         <Grid lg={4} className='create_group_items' item>
-                          <div>
+                          <div className='create_group_branch_wrapper'>
                             <FormControl
                               variant='outlined'
                               className={classes.formControl}

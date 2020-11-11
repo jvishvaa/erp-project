@@ -97,6 +97,8 @@
 }
 .create_group_container{
 	margin: 3% 1% !important;
+	width: 96% !important;
+	padding-bottom: 4%;
 	border-bottom: 2px solid #dcdcdc;
 }
 .create_group_items{
@@ -109,6 +111,17 @@
 .create_group_custom_button_wrapper{
 	margin-top: 2% !important;
 }
+.create_group_branch_wrapper .MuiOutlinedInput-root {
+	border-radius: 10px;
+}
+.create_group_branch_wrapper .MuiOutlinedInput-input {
+	padding: 9.5px 14px;
+	width: 250px;
+	color: #014B7E;
+}
+.create_group_branch_wrapper .MuiInputLabel-outlined {
+    transform: translate(14px, 14px) scale(1);
+}
 @media screen and (max-width: 700px){
 	.create_group_select_all_wrapper {
 		margin-top: 6%;
@@ -116,5 +129,10 @@
 	}
 	.group_name_create_group{
 		width: 300px;
+		margin-left: 2% !important;
+	}
+	.create_group_branch_wrapper .MuiOutlinedInput-input {
+		padding: 9.5px 14px;
+		width: 250px;
 	}
 }
