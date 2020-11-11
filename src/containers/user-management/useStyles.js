@@ -29,6 +29,12 @@ const styles = (theme) => ({
     borderRadius: '5px',
     cursor: 'pointer',
   },
+  formActionButtonContainer: {
+    [theme.breakpoints.down('sm')]: {
+      display: 'flex',
+      justifyContent: 'center',
+    },
+  },
   formActionButton: {
     color: '#ffffff',
   },
