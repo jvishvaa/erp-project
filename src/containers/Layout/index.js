@@ -197,12 +197,14 @@ const Layout = ({ children, history }) => {
   };
 
   const handleTextSearchClear = () => {
-    setSearchedText('');
-    setGlobalSearchResults(false);
-    setSearching(false);
-    setSearchUserDetails([]);
-    setTotalPage(0);
-    setCurrentPage(1);
+    setTimeout(() => {
+      setSearchedText('');
+      setGlobalSearchResults(false);
+      setSearching(false);
+      setSearchUserDetails([]);
+      setTotalPage(0);
+      setCurrentPage(1);
+    }, 500);
   };
 
   //   const handleScroll = (event) => {

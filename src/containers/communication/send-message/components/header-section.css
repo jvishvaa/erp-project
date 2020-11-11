@@ -39,11 +39,12 @@
     margin-top: 2%;
     margin-left: -9%;
     margin-right: -13%;
-	width: 20%;
+	width: 17%;
     background-position: center;
   }
   .send_message_header{
-	  margin-left: -5%;
+	margin: 1% 0%;
+    margin-left: -3%;
 	  text-align: center;
   }
   .send_message_header_circle{
@@ -55,6 +56,6 @@
 	padding: 0% 4%;
   }
   .send_message_header_title{
-	  font-size: 0.7rem;
+	  font-size: 0.8rem;
   }
 }

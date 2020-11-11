@@ -702,6 +702,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
   useEffect(() => {
     if (!isEmail) {
       setSelectedSmsType('');
+      setTextMessage('');
     }
   }, [isEmail]);
 
@@ -761,21 +762,23 @@ const SendMessage = withRouter(({ history, ...props }) => {
               <div>
                 {customSelect ? (
                   <>
-                    <div className='creategroup_firstrow'>
-                      <div>
-                        <CustomMultiSelect
-                          selections={selectedRoles}
-                          setSelections={setSelectedRoles}
-                          nameOfDropdown='User Role'
-                          optionNames={roles}
-                        />
-                        <span className='create_group_error_span'>{roleError}</span>
-                      </div>
-                    </div>
+                    <Grid container className='create_group_container' spacing={3}>
+                      <Grid lg={4} className='create_group_items' item>
+                        <div>
+                          <CustomMultiSelect
+                            selections={selectedRoles}
+                            setSelections={setSelectedRoles}
+                            nameOfDropdown='User Role'
+                            optionNames={roles}
+                          />
+                          <span className='create_group_error_span'>{roleError}</span>
+                        </div>
+                      </Grid>
+                    </Grid>
                     {selectedRoles.length ? (
                       <Grid container className='create_group_container' spacing={3}>
                         <Grid lg={4} className='create_group_items' item>
-                          <div>
+                          <div className='create_group_branch_wrapper'>
                             <FormControl
                               variant='outlined'
                               className={classes.formControl}
@@ -882,7 +885,13 @@ const SendMessage = withRouter(({ history, ...props }) => {
                   className={`message_type_block ${
                     isEmail ? null : 'message_type_block_selected'
                   }`}
-                  onClick={() => setIsEmail(false)}
+                  onClick={() => {
+                    if (isEmail) {
+                      setIsEmail(false);
+                      setSelectedSmsType('');
+                      setTextMessage('');
+                    }
+                  }}
                 >
                   SMS
                 </div>
@@ -890,7 +899,13 @@ const SendMessage = withRouter(({ history, ...props }) => {
                   className={`message_type_block ${
                     isEmail ? 'message_type_block_selected' : null
                   }`}
-                  onClick={() => setIsEmail(true)}
+                  onClick={() => {
+                    if (!isEmail) {
+                      setIsEmail(true);
+                      setSelectedSmsType('');
+                      setTextMessage('');
+                    }
+                  }}
                 >
                   Mail
                 </div>
