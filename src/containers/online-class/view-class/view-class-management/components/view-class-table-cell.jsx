@@ -122,7 +122,6 @@ const ViewClassTableCell = (props) => {
           Attendee list
         </Button>
       </TableCell>
-      <TableCell align='center'>{tutor}</TableCell>
     </TableRow>
   );
 };

@@ -65,6 +65,7 @@ const CreateClassForm = () => {
 
   const {
     role_details: { branch = [], erp_user_id: erpUser },
+    user_id: userId,
   } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   useEffect(() => {
@@ -343,6 +344,7 @@ const CreateClassForm = () => {
     const tutorEmails = [tutorEmail, ...coHosts.map((el) => el.email)];
 
     const formdata = new FormData();
+    formdata.append('user_id', userId);
     formdata.append('title', title);
     formdata.append('duration', duration);
     formdata.append('subject_id', subject);

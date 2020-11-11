@@ -54,23 +54,22 @@ const ViewClassStudent = (props) => {
     JSON.parse(localStorage.getItem('userDetails')) || {};
 
   useEffect(() => {
-    const now = new Date(currentServerTime);
+    const now = new Date(moment(currentServerTime).format('llll'));
+    // const now = new Date(currentServerTime);
     if (startTime) {
-      const difference = new Date(startTime) - now;
+      const difference = new Date(moment(startTime).format('llll')) - now;
       setTimeout(() => {
         setHasClassStarted(true);
       }, difference);
     }
-
     if (joinTime) {
-      const difference = new Date(joinTime) - now;
+      const difference = new Date(moment(joinTime).format('llll')) - now;
       setTimeout(() => {
         setIsJoinTime(true);
       }, difference);
     }
-
     if (endTime) {
-      const difference = new Date(endTime) - now;
+      const difference = new Date(moment(endTime).format('llll')) - now;
       setTimeout(() => {
         setHasClassStarted(false);
         setHasClassEnded(true);
