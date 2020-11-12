@@ -28,10 +28,8 @@ const ViewClassStudent = (props) => {
           start_time: startTime,
           end_time: endTime,
           title = '',
-          description = '',
-          subject = {},
+          subject = '',
           join_limit: joinLimit,
-          is_assigned_to_parent: isParentClass,
         },
       } = {},
     },
@@ -163,7 +161,7 @@ const ViewClassStudent = (props) => {
                 {subject.subject_name}
               </Typography>
               <Typography variant='h6' gutterBottom color='secondary'>
-                {moment(startTime).format('MMMM Do YYYY, h:mm:ss a')}
+                {subject}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -174,6 +172,17 @@ const ViewClassStudent = (props) => {
                 className='responsive__align'
               >
                 Join limit: {joinLimit}
+              </Typography>
+            </Grid>
+          </Grid>
+
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <Typography variant='h6' gutterBottom color='secondary'>
+                {subject.subject_name}
+              </Typography>
+              <Typography variant='h6' gutterBottom color='secondary'>
+                {moment(startTime).format('MMMM Do YYYY, h:mm:ss a')}
               </Typography>
             </Grid>
           </Grid>

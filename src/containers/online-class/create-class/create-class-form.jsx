@@ -16,7 +16,7 @@ import MomentUtils from '@date-io/moment';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
-import { useSelector } from 'react-redux';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 import moment from 'moment';
 
 import { CreateclassContext } from './create-class-context/create-class-state';
@@ -31,6 +31,7 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import './create-class.scss';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
+import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 
 const CreateClassForm = () => {
   const [onlineClass, setOnlineClass] = useState(initialFormStructure);
@@ -399,292 +400,325 @@ const CreateClassForm = () => {
 
   return (
     <div className='create__class' key={formKey}>
-      <form autoComplete='off' onSubmit={validateForm} key={formKey}>
-        <Grid container className='create-class-container' spacing={2}>
-          <Grid item xs={12} sm={2}>
-            <TextField
-              className='create__class-textfield'
-              id='class-title'
-              label='Title'
-              variant='outlined'
-              size='small'
-              name='title'
-              inputProps={{ maxLength: 20 }}
-              onChange={handleChange}
-              required
-            />
-          </Grid>
-          <Grid item xs={12} sm={2}>
-            <Autocomplete
-              multiple
-              size='small'
-              onChange={handleGrade}
-              id='create__class-grade'
-              options={grades}
-              getOptionLabel={(option) => option?.grade__grade_name}
-              filterSelectedOptions
-              value={selectedGrades}
-              renderInput={(params) => (
-                <TextField
-                  className='create__class-textfield'
-                  {...params}
-                  variant='outlined'
-                  label='Grades'
-                  placeholder='Grades'
-                />
-              )}
-            />
-          </Grid>
-          {onlineClass.gradeIds.length ? (
+      <div className='breadcrumb-container'>
+        <CommonBreadcrumbs
+          componentName='Online Class'
+          childComponentName='Create Class'
+        />
+      </div>
+      <div className='create-class-form-container'>
+        <form
+          autoComplete='off'
+          onSubmit={validateForm}
+          key={formKey}
+          className='create-class-form'
+        >
+          <Grid container className='create-class-container' spacing={2}>
+            <Grid item xs={12} sm={2}>
+              <TextField
+                className='create__class-textfield'
+                id='class-title'
+                label='Title'
+                variant='outlined'
+                size='small'
+                name='title'
+                inputProps={{ maxLength: 20 }}
+                onChange={handleChange}
+                required
+              />
+            </Grid>
             <Grid item xs={12} sm={2}>
               <Autocomplete
-                key={sectionSelectorKey}
-                size='small'
                 multiple
-                onChange={handleSection}
-                id='create__class-section'
-                options={sections}
-                getOptionLabel={(option) => {
-                  return `${option.section__section_name}`;
-                }}
+                size='small'
+                onChange={handleGrade}
+                id='create__class-grade'
+                options={grades}
+                getOptionLabel={(option) => option?.grade__grade_name}
                 filterSelectedOptions
-                value={selectedSections}
+                value={selectedGrades}
                 renderInput={(params) => (
                   <TextField
                     className='create__class-textfield'
                     {...params}
                     variant='outlined'
-                    label='Sections'
-                    placeholder='Sections'
+                    label='Grades'
+                    placeholder='Grades'
                   />
                 )}
               />
             </Grid>
-          ) : (
-            ''
-          )}
-          {onlineClass.gradeIds.length ? (
+            {onlineClass.gradeIds.length ? (
+              <Grid item xs={12} sm={2}>
+                <Autocomplete
+                  key={sectionSelectorKey}
+                  size='small'
+                  multiple
+                  onChange={handleSection}
+                  id='create__class-section'
+                  options={sections}
+                  getOptionLabel={(option) => {
+                    return `${option.section__section_name}`;
+                  }}
+                  filterSelectedOptions
+                  value={selectedSections}
+                  renderInput={(params) => (
+                    <TextField
+                      className='create__class-textfield'
+                      {...params}
+                      variant='outlined'
+                      label='Sections'
+                      placeholder='Sections'
+                    />
+                  )}
+                />
+              </Grid>
+            ) : (
+              ''
+            )}
+            {onlineClass.gradeIds.length ? (
+              <Grid item xs={12} sm={2}>
+                <Autocomplete
+                  size='small'
+                  id='create__class-subject'
+                  options={subjects}
+                  getOptionLabel={(option) => option.subject__subject_name}
+                  filterSelectedOptions
+                  value={selectedSubject}
+                  onChange={handleSubject}
+                  renderInput={(params) => (
+                    <TextField
+                      size='small'
+                      className='create__class-textfield'
+                      {...params}
+                      variant='outlined'
+                      label='Subject'
+                      placeholder='Subject'
+                      required
+                    />
+                  )}
+                />
+              </Grid>
+            ) : (
+              ''
+            )}
             <Grid item xs={12} sm={2}>
-              <Autocomplete
+              <TextField
                 size='small'
-                id='create__class-subject'
-                options={subjects}
-                getOptionLabel={(option) => option.subject__subject_name}
-                filterSelectedOptions
-                value={selectedSubject}
-                onChange={handleSubject}
-                renderInput={(params) => (
+                className='create__class-textfield'
+                id='class-duration'
+                label='Duration (mins)'
+                variant='outlined'
+                type='number'
+                name='duration'
+                onChange={handleChange}
+                required
+                InputProps={{ inputProps: { min: 0, maxLength: 3 } }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={2}>
+              <TextField
+                size='small'
+                className='create__class-textfield'
+                id='class-join-limit'
+                label='Join limit'
+                variant='outlined'
+                type='number'
+                name='joinLimit'
+                value={onlineClass.joinLimit}
+                onChange={handleChange}
+                placeholder='Maximum 300'
+                required
+                InputProps={{ inputProps: { min: 0 } }}
+              />
+            </Grid>
+          </Grid>
+          <Grid container spacing={2} className='create-class-container'>
+            <MuiPickersUtilsProvider utils={MomentUtils}>
+              <Grid item xs={12} sm={2}>
+                <KeyboardDatePicker
+                  size='small'
+                  disableToolbar
+                  variant='inline'
+                  format='YYYY-MM-DD'
+                  margin='none'
+                  id='date-picker'
+                  label='Start date'
+                  value={onlineClass.selectedDate}
+                  minDate={new Date()}
+                  onChange={handleDateChange}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={2}>
+                <KeyboardTimePicker
+                  size='small'
+                  margin='none'
+                  id='time-picker'
+                  label='Start time'
+                  value={onlineClass.selectedTime}
+                  onChange={handleTimeChange}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change time',
+                  }}
+                />
+              </Grid>
+            </MuiPickersUtilsProvider>
+          </Grid>
+          <hr />
+          <Grid container className='create-class-container' spacing={2}>
+            <Grid item xs={11} sm={7} md={4}>
+              <TextField
+                className='create__class-textfield'
+                id='class-tutor-email'
+                label='Tutor email'
+                variant='outlined'
+                size='small'
+                onChange={handleTutorEmail}
+                onBlur={handleBlur}
+                disabled={
+                  !onlineClass.duration ||
+                  !onlineClass.subject ||
+                  !onlineClass.gradeIds.length
+                }
+                value={onlineClass.tutorEmail}
+                required
+              />
+              {!onlineClass.duration ||
+              !onlineClass.subject ||
+              !onlineClass.gradeIds.length ? (
+                <span style={{ color: 'red' }}>
+                  *This input field will be enabled once grade, subject and duration are
+                  selected
+                </span>
+              ) : (
+                ''
+              )}
+              {onlineClass.tutorEmail && !onlineClass.tutorEmail.match(emailRegExp) ? (
+                <span className='alert__email'>Please enter a valid email</span>
+              ) : (
+                ''
+              )}
+            </Grid>
+            <Grid item xs={1} sm={4}>
+              {isTutorEmailValid ? (
+                <CheckCircleIcon style={{ fill: 'green', marginTop: 8 }} />
+              ) : (
+                ''
+              )}
+              {isValidatingTutorEmail ? <CircularProgress color='secondary' /> : ''}
+            </Grid>
+          </Grid>
+          <Grid container className='create-class-container' spacing={2}>
+            <Grid item>
+              <Button variant='contained' color='primary' onClick={toggleDrawer}>
+                Filter students
+              </Button>
+            </Grid>
+          </Grid>
+          <Grid container>
+            <SwipeableDrawer
+              className='my__swipable'
+              anchor='right'
+              open={isDrawerOpen}
+              onClose={toggleDrawer}
+              onOpen={toggleDrawer}
+            >
+              <FilterStudents />
+            </SwipeableDrawer>
+          </Grid>
+          <hr />
+          <Grid container className='create-class-container' spacing={2}>
+            <Grid item xs={12}>
+              <h2 className='co_host-title'>Co-Host</h2>
+            </Grid>
+            {onlineClass.coHosts.map((el, index) => (
+              <>
+                <Grid item xs={11} sm={5} key={el}>
                   <TextField
                     size='small'
-                    className='create__class-textfield'
-                    {...params}
+                    id='class-cohost-email'
+                    label='Cohost email address'
                     variant='outlined'
-                    label='Subject'
-                    placeholder='Subject'
-                    required
+                    value={el.email}
+                    inputProps={{ maxLength: 40 }}
+                    onChange={(event) => {
+                      handleCohostEmail(event, index);
+                    }}
+                    onBlur={() => {
+                      handleCoHostBlur(index);
+                    }}
                   />
-                )}
-              />
-            </Grid>
-          ) : (
-            ''
-          )}
-          <Grid item xs={12} sm={2}>
-            <TextField
+                </Grid>
+                <Grid item xs={1} key={el}>
+                  {onlineClass.coHosts[index].isValid &&
+                  onlineClass.coHosts[index].isValid !== false ? (
+                    <CheckCircleIcon
+                      style={{ fill: 'green', marginTop: 8 }}
+                      onClick={() => {
+                        removeCohost(index);
+                      }}
+                    />
+                  ) : onlineClass.coHosts[index].isValid === false ? (
+                    <CancelIcon
+                      style={{ fill: 'red', marginTop: 8 }}
+                      onClick={() => {
+                        removeCohost(index);
+                      }}
+                    />
+                  ) : (
+                    ''
+                  )}
+                  <RemoveCircleIcon
+                    style={{ marginTop: 8 }}
+                    onClick={() => {
+                      removeCohost(index);
+                    }}
+                  />
+                </Grid>
+              </>
+            ))}
+          </Grid>
+          <Grid container>
+            <Button
+              onClick={handleAddCohosts}
+              className='btn-addmore'
+              variant='contained'
+              color='primary'
               size='small'
-              className='create__class-textfield'
-              id='class-duration'
-              label='Duration (minutes)'
-              variant='outlined'
-              type='number'
-              name='duration'
-              onChange={handleChange}
-              required
-              InputProps={{ inputProps: { min: 0, maxLength: 3 } }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={2}>
-            <TextField
-              size='small'
-              className='create__class-textfield'
-              id='class-join-limit'
-              label='Join limit'
-              variant='outlined'
-              type='number'
-              name='joinLimit'
-              value={onlineClass.joinLimit}
-              onChange={handleChange}
-              placeholder='Maximum 300'
-              required
-              InputProps={{ inputProps: { min: 0 } }}
-            />
-          </Grid>
-        </Grid>
-        <Grid container spacing={2} className='create-class-container'>
-          <MuiPickersUtilsProvider utils={MomentUtils}>
-            <Grid item xs={12} sm={2}>
-              <KeyboardDatePicker
-                size='small'
-                disableToolbar
-                variant='inline'
-                format='YYYY-MM-DD'
-                margin='none'
-                id='date-picker'
-                label='Start date'
-                value={onlineClass.selectedDate}
-                minDate={new Date()}
-                onChange={handleDateChange}
-                KeyboardButtonProps={{
-                  'aria-label': 'change date',
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={2}>
-              <KeyboardTimePicker
-                size='small'
-                margin='none'
-                id='time-picker'
-                label='Start time'
-                value={onlineClass.selectedTime}
-                onChange={handleTimeChange}
-                KeyboardButtonProps={{
-                  'aria-label': 'change time',
-                }}
-              />
-            </Grid>
-          </MuiPickersUtilsProvider>
-        </Grid>
-        <hr />
-        <Grid container className='create-class-container' spacing={2}>
-          <Grid item xs={11} sm={7} md={4}>
-            <TextField
-              className='create__class-textfield'
-              id='class-tutor-email'
-              label='Tutor email'
-              variant='outlined'
-              size='small'
-              onChange={handleTutorEmail}
-              onBlur={handleBlur}
-              disabled={
-                !onlineClass.duration ||
-                !onlineClass.subject ||
-                !onlineClass.gradeIds.length
-              }
-              value={onlineClass.tutorEmail}
-              required
-            />
-            {!onlineClass.duration ||
-            !onlineClass.subject ||
-            !onlineClass.gradeIds.length ? (
-              <span style={{ color: 'red' }}>
-                *This input field will be enabled once grade, subject and duration are
-                selected
-              </span>
-            ) : (
-              ''
-            )}
-            {onlineClass.tutorEmail && !onlineClass.tutorEmail.match(emailRegExp) ? (
-              <span className='alert__email'>Please enter a valid email</span>
-            ) : (
-              ''
-            )}
-          </Grid>
-          <Grid item xs={1} sm={4}>
-            {isTutorEmailValid ? (
-              <CheckCircleIcon style={{ fill: 'green', marginTop: 8 }} />
-            ) : (
-              ''
-            )}
-            {isValidatingTutorEmail ? <CircularProgress color='secondary' /> : ''}
-          </Grid>
-        </Grid>
-        <Grid container className='create-class-container' spacing={2}>
-          <Grid item>
-            <Button variant='contained' color='primary' onClick={toggleDrawer}>
-              Filter students
+              startIcon={<AddCircleIcon style={{ fill: '#fff' }} />}
+            >
+              Add cohost
             </Button>
           </Grid>
-        </Grid>
-        <Grid container>
-          <SwipeableDrawer
-            className='my__swipable'
-            anchor='right'
-            open={isDrawerOpen}
-            onClose={toggleDrawer}
-            onOpen={toggleDrawer}
-          >
-            <FilterStudents />
-          </SwipeableDrawer>
-        </Grid>
-        <hr />
-        <Grid container className='create-class-container' spacing={2}>
-          <Grid item xs={12}>
-            <h2 className='co_host-title'>Co-Host</h2>
+          <hr style={{ marginTop: 20, marginBottom: 15 }} />
+          <Grid container className='create-class-container' spacing={2}>
+            <Grid item xs={12} sm={2}>
+              <Button
+                disabled={creatingOnlineClass}
+                variant='contained'
+                color='primary'
+                size='medium'
+                type='submit'
+                style={{ width: '100%' }}
+              >
+                {creatingOnlineClass ? 'Please wait.Creating new class' : 'Create class'}
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <Button
+                variant='contained'
+                size='medium'
+                style={{ width: '100%', color: 'black' }}
+              >
+                Clear All Selections
+              </Button>
+            </Grid>
           </Grid>
-          {onlineClass.coHosts.map((el, index) => (
-            <>
-              <Grid item xs={11} sm={5} key={el}>
-                <TextField
-                  size='small'
-                  id='class-cohost-email'
-                  label='Cohost email address'
-                  variant='outlined'
-                  value={el.email}
-                  inputProps={{ maxLength: 40 }}
-                  onChange={(event) => {
-                    handleCohostEmail(event, index);
-                  }}
-                  onBlur={() => {
-                    handleCoHostBlur(index);
-                  }}
-                />
-              </Grid>
-              <Grid item xs={1} key={el}>
-                {onlineClass.coHosts[index].isValid &&
-                onlineClass.coHosts[index].isValid !== false ? (
-                  <CheckCircleIcon
-                    style={{ fill: 'green', marginTop: 8 }}
-                    onClick={() => {
-                      removeCohost(index);
-                    }}
-                  />
-                ) : onlineClass.coHosts[index].isValid === false ? (
-                  <CancelIcon
-                    style={{ fill: 'red', marginTop: 8 }}
-                    onClick={() => {
-                      removeCohost(index);
-                    }}
-                  />
-                ) : (
-                  ''
-                )}
-                <RemoveCircleIcon
-                  style={{ marginTop: 8 }}
-                  onClick={() => {
-                    removeCohost(index);
-                  }}
-                />
-              </Grid>
-            </>
-          ))}
-        </Grid>
-        <Grid container>
-          <Button
-            onClick={handleAddCohosts}
-            className='btn-addmore'
-            variant='contained'
-            color='primary'
-            size='small'
-          >
-            Add another
-          </Button>
-        </Grid>
-        <Grid container className='create-class-container' spacing={2}>
-          <Button variant='contained' color='primary' size='large' type='submit'>
-            {creatingOnlineClass ? 'Please wait.Creating new class' : 'Create class'}
-          </Button>
-        </Grid>
-      </form>
+        </form>
+      </div>
     </div>
   );
 };
