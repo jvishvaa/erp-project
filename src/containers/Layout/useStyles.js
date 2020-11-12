@@ -168,6 +168,17 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   expandIcons: { marginLeft: '2rem', color: '#ffffff' },
+  profileInfoContainer: {
+    backgroundColor: theme.palette.primary.main,
+    padding: '10px',
+  },
+  sidebarActionButtons: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'space-between',
+    color: '#ffffff',
+    padding: '10px',
+  },
 }));
 
 export default useStyles;

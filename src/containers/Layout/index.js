@@ -62,6 +62,9 @@ import logo from '../../assets/images/logo.png';
 
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
+import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import SettingsIcon from '@material-ui/icons/Settings';
+import UserInfo from '../../components/user-info';
 
 const Layout = ({ children, history }) => {
   const dispatch = useDispatch();
@@ -610,6 +613,32 @@ const Layout = ({ children, history }) => {
         onClose={() => setDrawerOpen(false)}
       >
         <div className={classes.appBarSpacer} />
+        {isMobile && drawerOpen && (
+          <>
+            <UserInfo
+              user={roleDetails}
+              onClick={() => {
+                history.push('/profile');
+                setDrawerOpen((prevState) => !prevState);
+              }}
+            />
+            <Box className={classes.sidebarActionButtons}>
+              <IconButton onClick={handleLogout}>
+                <PowerSettingsNewIcon style={{ color: '#ffffff' }} />
+              </IconButton>
+              <IconButton>
+                <SettingsIcon style={{ color: '#ffffff' }} />
+              </IconButton>
+              <IconButton>
+                <SearchIcon style={{ color: '#ffffff' }} />
+              </IconButton>
+            </Box>
+            <Box style={{ padding: '0 10px' }}>
+              <Divider style={{ backgroundColor: '#ffffff' }} />
+            </Box>
+          </>
+        )}
+
         <List>
           <ListItem
             className={classes.menuControlContainer}
@@ -620,7 +649,7 @@ const Layout = ({ children, history }) => {
             </ListItemIcon>
             <ListItemText className='menu-item-text'>Menu</ListItemText>
           </ListItem>
-          {drawerOpen ? (
+          {/* {drawerOpen ? (
             <ListItem
               button
               className={
@@ -636,7 +665,7 @@ const Layout = ({ children, history }) => {
               </ListItemIcon>
               <ListItemText className='menu-item-text'>View Profile</ListItemText>
             </ListItem>
-          ) : null}
+          ) : null} */}
           {superUser && drawerOpen && (
             <>
               <ListItem

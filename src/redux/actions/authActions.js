@@ -7,9 +7,20 @@ export const authActions = {
   LOGIN_FAILURE: 'LOGIN_FAILURE',
   SET_ROLE_DETAILS: 'SET_ROLE_DETAILS',
   LOGOUT_REQUEST: 'LOGOUT_REQUEST',
+  FETCH_LOGGED_IN_USER_INFO_REQUEST: 'FETCH_LOGGED_IN_USER_INFO_REQUEST',
+  FETCH_LOGGED_IN_USER_INFO_SUCCESS: 'FETCH_LOGGED_IN_USER_INFO_SUCCESS',
+  FETCH_LOGGED_IN_USER_INFO_FAILURE: 'FETCH_LOGGED_IN_USER_INFO_FAILURE',
 };
 
-const { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT_REQUEST } = authActions;
+const {
+  LOGIN_REQUEST,
+  LOGIN_SUCCESS,
+  LOGIN_FAILURE,
+  LOGOUT_REQUEST,
+  FETCH_LOGGED_IN_USER_INFO_REQUEST,
+  FETCH_LOGGED_IN_USER_INFO_SUCCESS,
+  FETCH_LOGGED_IN_USER_INFO_FAILURE,
+} = authActions;
 
 export const login = (params) => (dispatch) => {
   dispatch({ type: LOGIN_REQUEST });
@@ -44,12 +55,26 @@ export const login = (params) => (dispatch) => {
 
 export const logout = () => (dispatch) => {
   dispatch({ type: LOGOUT_REQUEST });
-  if(JSON.parse(localStorage.getItem('rememberDetails')))
-  {
+  if (JSON.parse(localStorage.getItem('rememberDetails'))) {
     localStorage.removeItem('userDetails');
     localStorage.removeItem('navigationData');
-  }
-  else
-  localStorage.clear();
-  
+  } else localStorage.clear();
+};
+
+export const fetchLoggedInUserDetails = () => (dispatch) => {
+  dispatch({ type: FETCH_LOGGED_IN_USER_INFO_REQUEST });
+  const { role_details: roleDetails } =
+    JSON.parse(localStorage.getItem('userDetails')) || {};
+  return axios
+    .get(`/erp_user/user-data/?erp_user_id=${roleDetails?.erp_user_id}`)
+    .then((response) => {
+      dispatch({
+        type: FETCH_LOGGED_IN_USER_INFO_SUCCESS,
+        data: response.data.result,
+      });
+    })
+    .catch(() => {
+      dispatch({ type: FETCH_LOGGED_IN_USER_INFO_FAILURE });
+      // throw new Error();
+    });
 };
