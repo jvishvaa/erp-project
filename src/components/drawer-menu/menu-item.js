@@ -54,12 +54,12 @@ const MenuItem = withRouter(({ history, ...props }) => {
           {/* <MenuIcon name={item.parent_modules} /> */}
           {menuIcon(item.parent_modules)}
         </ListItemIcon>
-        <ListItemText primary={item.parent_modules} className={classes.menuItemText} />
+        <ListItemText primary={item.parent_modules} className='menu-item-text' />
         {item.child_module && item.child_module.length > 0 ? (
           menuOpen ? (
-            <ExpandLess style={{ marginLeft: '2rem' }} />
+            <ExpandLess className={classes.expandIcons} />
           ) : (
-            <ExpandMore style={{ marginLeft: '2rem' }} />
+            <ExpandMore className={classes.expandIcons} />
           )
         ) : (
           ''
@@ -86,10 +86,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
                   {/* <MenuIcon name={child.child_name} /> */}
                   {/* {menuIcon(child.child_name)} */}
                 </ListItemIcon>
-                <ListItemText
-                  primary={child.child_name}
-                  className={classes.menuItemText}
-                />
+                <ListItemText primary={child.child_name} className='menu-item-text' />
               </ListItem>
             ))}
           </List>
