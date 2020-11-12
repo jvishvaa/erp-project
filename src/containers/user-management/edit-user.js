@@ -6,6 +6,7 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import { withStyles } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
 import { styles } from './useStyles';
 import UserDetailsForm from './user-details-form';
@@ -23,42 +24,6 @@ class EditUser extends Component {
       showParentForm: false,
       showGuardianForm: false,
       user: null,
-      // user: {
-      //   first_name: '',
-      //   middle_name: '',
-      //   last_name: '',
-      //   email: '',
-      //   academic_year: '',
-      //   branch: '',
-      //   grade: [],
-      //   section: [],
-      //   subjects: [],
-      //   contact: '',
-      //   date_of_birth: '',
-      //   gender: '',
-      //   profile: '',
-      //   address: '',
-      //   parent: {
-      //     father_first_name: '',
-      //     father_last_name: '',
-      //     mother_first_name: '',
-      //     mother_last_name: '',
-      //     mother_middle_name: '',
-      //     father_middle_name: '',
-      //     father_email: '',
-      //     mother_email: '',
-      //     father_mobile: '',
-      //     mother_mobile: '',
-      //     mother_photo: '',
-      //     father_photo: '',
-      //     address: '',
-      //     guardian_first_name: '',
-      //     guardian_middle_name: '',
-      //     guardian_last_name: '',
-      //     guardian_email: '',
-      //     guardian_mobile: '',
-      //   },
-      // },
     };
   }
 
@@ -69,7 +34,6 @@ class EditUser extends Component {
   componentDidUpdate(prevProps) {
     const { selectedUser } = this.props;
     if (prevProps.selectedUser !== selectedUser && selectedUser) {
-      console.log('called');
       this.setState({ user: selectedUser });
     }
   }
@@ -95,7 +59,6 @@ class EditUser extends Component {
   };
 
   onSubmitSchoolDetails = (details) => {
-    console.log('school details!!', details);
     const { selectedUser } = this.props;
     if (selectedUser.parent.father_first_name) {
       this.setState({ showParentForm: true });
@@ -108,7 +71,6 @@ class EditUser extends Component {
   };
 
   onSubmitUserDetails = (details) => {
-    console.log('user details!!', details);
     const { showParentForm, showGuardianForm } = this.state;
     this.setState((prevState) => ({ user: { ...prevState.user, ...details } }));
     if (showParentForm || showGuardianForm) {
@@ -119,8 +81,6 @@ class EditUser extends Component {
   };
 
   onSubmitGuardianDetails = (details) => {
-    console.log('guardian details!!', details);
-
     this.setState(
       (prevState) => ({
         user: { ...prevState.user, parent: { ...prevState.user.parent, ...details } },
@@ -134,7 +94,6 @@ class EditUser extends Component {
   onEditUser = (requestWithParentorGuradianDetails) => {
     const { user } = this.state;
     const { editUser, history, selectedUser } = this.props;
-    console.log('user ', user);
     let requestObj = user;
     const {
       academic_year,
@@ -153,7 +112,6 @@ class EditUser extends Component {
       profile,
       parent,
     } = requestObj;
-    console.log('profile ', profile);
     const {
       father_first_name,
       father_middle_name,
@@ -220,8 +178,6 @@ class EditUser extends Component {
     }
     const { setAlert } = this.context;
     const requestObjFormData = jsonToFormData(requestObj);
-
-    console.log('requestObject ', requestObjFormData);
     editUser(requestObjFormData)
       .then(() => {
         history.push('/user-management');
@@ -248,7 +204,7 @@ class EditUser extends Component {
     const steps = getSteps(showParentOrGuardianForm);
     const { classes, creatingUser, fetchingUserDetails, selectedUser } = this.props;
     return (
-      <div>
+      <Container>
         {user ? (
           <>
             <Stepper activeStep={activeStep} alternativeLabel>
@@ -306,7 +262,7 @@ class EditUser extends Component {
                 </Button>
               </div>
             </div> */}
-      </div>
+      </Container>
     );
   }
 }

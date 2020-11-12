@@ -1,6 +1,7 @@
 /* eslint-disable global-require */
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
+import Container from '@material-ui/core/Container';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import {
   Checkbox,
@@ -10,7 +11,6 @@ import {
   TextField,
   Box,
 } from '@material-ui/core';
-import { Link } from 'react-router-dom';
 import { Autocomplete } from '@material-ui/lab';
 
 import axiosInstance from '../../config/axios';
@@ -39,7 +39,7 @@ class UserManagement extends Component {
       const data = await axiosInstance.get('erp_user/branch/');
       this.setState({ branches: data.data.data });
     } catch (error) {
-      window.alert('Failed to load branches');
+      console.log('failed to load branches');
     }
   };
 
@@ -48,7 +48,7 @@ class UserManagement extends Component {
       const data = await axiosInstance.get('erp_user/list-academic_year/');
       this.setState({ years: data.data.data });
     } catch (error) {
-      window.alert('Failed to load branches');
+      console.log('failed to load years');
     }
   };
 
@@ -88,7 +88,7 @@ class UserManagement extends Component {
   render() {
     const { match } = this.props;
     return (
-      <>
+      <Container>
         <div>
           <Button startIcon={<AddOutlinedIcon />} href={`${match.url}/create-user`}>
             Add user
@@ -178,7 +178,7 @@ class UserManagement extends Component {
           )}
           <AssignRole />
         </div>
-      </>
+      </Container>
     );
   }
 }
