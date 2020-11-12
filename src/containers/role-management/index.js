@@ -1,5 +1,6 @@
 import React from 'react';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
+import Container from '@material-ui/core/Container';
 import RoleManagement from './role-management';
 import CreateRole from './create-role';
 import EditRole from './edit-role';
@@ -11,7 +12,7 @@ const RoutesIndex = () => {
 
   return (
     <Layout>
-      <div>
+      <Container>
         <Switch>
           <Route path={`${match.url}/create-role`}>
             {({ match, history }) => <CreateRole match={match} history={history} />}
@@ -23,7 +24,7 @@ const RoutesIndex = () => {
             {({ match, history }) => <RoleManagement match={match} history={history} />}
           </Route>
         </Switch>
-      </div>
+      </Container>
     </Layout>
   );
 };

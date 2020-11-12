@@ -347,11 +347,21 @@ const Layout = ({ children, history }) => {
             aria-label='open drawer'
             className={clsx(classes.logoBtn, classes.desktopToolbarComponents)}
           >
-            <img src={logo} alt='logo' style={{ maxHeight: '100%' }} />
+            <img src={logo} alt='logo' style={{ height: '45px' }} />
           </IconButton>
+          <Divider
+            orientation='vertical'
+            flexItem
+            style={{
+              backgroundColor: '#ff6b6b',
+              margin: '5px 10px',
+              display: `${isMobile && 'none'}`,
+            }}
+          />
+
           <Typography
             className={classes.desktopToolbarComponents}
-            component='h1'
+            component='h6'
             variant='h6'
             color='inherit'
             noWrap

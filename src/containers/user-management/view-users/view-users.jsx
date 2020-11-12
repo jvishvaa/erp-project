@@ -22,6 +22,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
+import Container from '@material-ui/core/Container';
 import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
 import BlockIcon from '@material-ui/icons/Block';
 import IconButton from '@material-ui/core/IconButton';
@@ -293,7 +294,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
 
   return (
     <Layout>
-      <div className='view_users__page'>
+      <Container className='view_users__page'>
         <CommonBreadcrumbs
           componentName='User Management'
           childComponentName='View users'
@@ -483,7 +484,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             />
           </div>
         </Paper>
-      </div>
+      </Container>
     </Layout>
   );
 });

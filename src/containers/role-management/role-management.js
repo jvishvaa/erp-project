@@ -12,8 +12,9 @@ import Box from '@material-ui/core/Box';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import SearchOutlined from '@material-ui/icons/SearchOutlined';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
-
 import { debounce } from '@material-ui/core';
+import Pagination from '@material-ui/lab/Pagination';
+import RoleCard from '../../components/role-card';
 import {
   fetchRoles,
   setSelectedRole,
@@ -102,7 +103,7 @@ class RoleManagement extends Component {
           />
         </Box>
 
-        <div>
+        <div className={classes.rolesTableContainer}>
           {fetchingRoles ? (
             <Loading message='fetching roles ..' />
           ) : (
@@ -117,6 +118,28 @@ class RoleManagement extends Component {
               onChangePage={this.handlePageChange}
             />
           )}
+        </div>
+        <div className={classes.roleCardsContainer}>
+          {fetchingRoles ? (
+            <Loading message='fetching roles ..' />
+          ) : (
+            roles &&
+            roles.map((role) => (
+              <RoleCard
+                role={role}
+                onEdit={this.editRole}
+                onDelete={this.handleOpenDeleteModal}
+              />
+            ))
+          )}
+        </div>
+        <div className={classes.roleCardsPagination}>
+          <Pagination
+            page={page}
+            count={Math.ceil(count / limit)}
+            onChange={(e, page) => this.handlePageChange(page)}
+            color='primary'
+          />
         </div>
         <Dialog
           open={openDeleteModal}
