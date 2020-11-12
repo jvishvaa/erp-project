@@ -42,6 +42,12 @@
   }
 }
 
+.my__swipable {
+  .MuiPaper-elevation16 {
+    width: 85%;
+  }
+}
+
 .styled__table {
   @include styledTable ;
 }

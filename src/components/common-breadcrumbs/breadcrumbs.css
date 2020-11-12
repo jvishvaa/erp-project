@@ -6,7 +6,8 @@
 .page_heading_arrow{
 	color: #FF6B6B;
     width: 20px !important;
-    vertical-align: bottom;
+	vertical-align: bottom;
+	margin: 0px 10px;
 }
 @media screen and (max-width: 700px) {
 	.page_heading_arrow {

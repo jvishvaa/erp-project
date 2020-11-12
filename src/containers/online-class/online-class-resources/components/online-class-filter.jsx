@@ -189,7 +189,7 @@ const OnlineClassFilter = () => {
   return (
     <div className='filters__container'>
       <Grid container spacing={3}>
-        <Grid item>
+        <Grid item xs={12} sm={2}>
           <Autocomplete
             key={clearKey}
             multiple
@@ -212,7 +212,7 @@ const OnlineClassFilter = () => {
           />
         </Grid>
         {gradeIds.length ? (
-          <Grid item xs={2}>
+          <Grid item xs={12} sm={2}>
             <Autocomplete
               key={clearKey}
               size='small'

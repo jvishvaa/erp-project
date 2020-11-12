@@ -173,46 +173,15 @@ const ViewClassStudent = (props) => {
                 color='secondary'
                 className='responsive__align'
               >
-                Join limit
-              </Typography>
-              <Typography
-                variant='h6'
-                gutterBottom
-                color='secondary'
-                className='responsive__align'
-              >
-                {joinLimit}
+                Join limit: {joinLimit}
               </Typography>
             </Grid>
           </Grid>
           {/*  */}
-          <Grid container spacing={2}>
-            <Grid item xs={8}>
-              {isParentClass ? (
-                <Typography variant='h5' gutterBottom color='secondary'>
-                  Class For parents
-                </Typography>
-              ) : (
-                ''
-              )}
-              <Typography variant='subtitle1' gutterBottom color='secondary'>
-                {description}
-              </Typography>
-            </Grid>
-          </Grid>
         </Grid>
         <Grid item xs={12} sm={12} md={4}>
           <Grid container spacing={3}>
-            {/* <Grid item xs={6}>
-              <Button
-                className='viewclass__student-btn'
-                variant='outlined'
-                color='primary'
-              >
-                Set reminder
-              </Button>
-            </Grid> */}
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6}>
               {!isAccepted ? (
                 <Button
                   className='viewclass__student-btn'
@@ -236,7 +205,7 @@ const ViewClassStudent = (props) => {
               )}
             </Grid>
             {isResourceAvailable ? (
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <Button
                   className='viewclass__student-btn'
                   variant='contained'
@@ -252,16 +221,6 @@ const ViewClassStudent = (props) => {
             ) : (
               ''
             )}
-            {/* <Grid item xs={6}>
-              <Button
-                className='viewclass__student-btn'
-                onClick={() => {
-                  setIsFeedbackOpen(true);
-                }}
-              >
-                Homework
-              </Button>
-            </Grid> */}
           </Grid>
         </Grid>
       </Grid>

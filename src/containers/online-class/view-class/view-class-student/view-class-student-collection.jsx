@@ -6,6 +6,7 @@ import { OnlineclassViewContext } from '../../online-class-context/online-class-
 import './view-class-student.scss';
 import Layout from '../../../Layout';
 import Loader from '../../../../components/loader/loader';
+import CommonBreadcrumbs from '../../../../components/common-breadcrumbs/breadcrumbs';
 
 const ViewClassStudentCollection = () => {
   const {
@@ -67,12 +68,18 @@ const ViewClassStudentCollection = () => {
   return (
     <Layout>
       <div className='viewclass__student-collection'>
+        <div className='breadcrumb-container'>
+          <CommonBreadcrumbs
+            componentName='Online Class'
+            childComponentName='Attend online class'
+          />
+        </div>
         <Grid container>
           <Grid item xs={12} sm={6}>
             <Tabs
               value={currentTab}
               onChange={handleTabChange}
-              variant='fullWidth'
+              variant='standard'
               indicatorColor='primary'
               textColor='primary'
               aria-label='icon label tabs example'

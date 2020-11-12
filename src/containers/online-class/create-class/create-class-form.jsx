@@ -414,7 +414,7 @@ const CreateClassForm = () => {
               required
             />
           </Grid>
-          <Grid item>
+          <Grid item xs={12} sm={2}>
             <Autocomplete
               multiple
               size='small'
@@ -436,7 +436,7 @@ const CreateClassForm = () => {
             />
           </Grid>
           {onlineClass.gradeIds.length ? (
-            <Grid item xs={2}>
+            <Grid item xs={12} sm={2}>
               <Autocomplete
                 key={sectionSelectorKey}
                 size='small'
@@ -607,6 +607,7 @@ const CreateClassForm = () => {
         </Grid>
         <Grid container>
           <SwipeableDrawer
+            className='my__swipable'
             anchor='right'
             open={isDrawerOpen}
             onClose={toggleDrawer}
