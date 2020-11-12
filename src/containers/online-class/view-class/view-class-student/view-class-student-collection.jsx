@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Tabs, Tab, Typography, Grid } from '@material-ui/core';
+import { Tabs, Tab, Typography, Grid, withStyles } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import ViewClassStudent from './view-class-student';
 import { OnlineclassViewContext } from '../../online-class-context/online-class-state';
@@ -7,6 +7,32 @@ import './view-class-student.scss';
 import Layout from '../../../Layout';
 import Loader from '../../../../components/loader/loader';
 import CommonBreadcrumbs from '../../../../components/common-breadcrumbs/breadcrumbs';
+
+const StyledTabs = withStyles({
+  indicator: {
+    display: 'flex',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+    '& > span': {
+      maxWidth: 85,
+      width: '80%',
+      backgroundColor: '#ff6b6b',
+    },
+  },
+})((props) => <Tabs {...props} TabIndicatorProps={{ children: <span /> }} />);
+
+const StyledTab = withStyles((theme) => ({
+  root: {
+    textTransform: 'none',
+    color: '#014b7e',
+    fontWeight: theme.typography.fontWeightRegular,
+    fontSize: theme.typography.pxToRem(15),
+    marginRight: theme.spacing(0),
+    '&:focus': {
+      opacity: 1,
+    },
+  },
+}))((props) => <Tab disableRipple {...props} />);
 
 const ViewClassStudentCollection = () => {
   const {
@@ -67,32 +93,24 @@ const ViewClassStudentCollection = () => {
 
   return (
     <Layout>
+      <div className='breadcrumb-container'>
+        <CommonBreadcrumbs
+          componentName='Online Class'
+          childComponentName='Attend online class'
+        />
+      </div>
       <div className='viewclass__student-collection'>
-        <div className='breadcrumb-container'>
-          <CommonBreadcrumbs
-            componentName='Online Class'
-            childComponentName='Attend online class'
-          />
-        </div>
         <Grid container>
           <Grid item xs={12} sm={6}>
-            <Tabs
+            <StyledTabs
+              variant='standard'
               value={currentTab}
               onChange={handleTabChange}
-              variant='standard'
-              indicatorColor='primary'
-              textColor='primary'
-              aria-label='icon label tabs example'
+              aria-label='styled tabs example'
             >
-              <Tab
-                disabled={loadingStudentOnlineClasses}
-                label={<Typography variant='h6'>Upcoming</Typography>}
-              />
-              <Tab
-                disabled={loadingStudentOnlineClasses}
-                label={<Typography variant='h6'>Completed</Typography>}
-              />
-            </Tabs>
+              <StyledTab label={<Typography variant='h6'>Upcoming</Typography>} />
+              <StyledTab label={<Typography variant='h6'>Completed</Typography>} />
+            </StyledTabs>
           </Grid>
         </Grid>
         {renderUI()}

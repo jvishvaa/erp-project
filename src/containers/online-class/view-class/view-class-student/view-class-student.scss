@@ -3,6 +3,8 @@
 
 // View class student collection
 .viewclass__student-collection {
+  min-height: 600px;
+  background-color: white;
   width: 100%;
   margin: 20px auto 0px auto;
 
@@ -25,12 +27,12 @@
   h5 {
     font-size: 18px !important;
   }
+}
 
-  .breadcrumb-container {
-    width: 95%;
-    font-weight: 100;
-    margin: 0px auto 40px auto;
-  }
+.breadcrumb-container {
+  width: 95%;
+  font-weight: 100;
+  margin: 20px auto 40px auto;
 }
 
 // View class student
