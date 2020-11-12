@@ -1,4 +1,5 @@
 import { fade, makeStyles } from '@material-ui/core/styles';
+import { FilterNone } from '@material-ui/icons';
 
 const drawerWidth = 300;
 
@@ -7,7 +8,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
   },
   appBar: {
-    zIndex: theme.zIndex.drawer + 1,
+    zIndex: theme.zIndex.drawer + 200,
     backgroundColor: '#ffffff',
     color: theme.palette.secondary.main,
   },
@@ -39,7 +40,6 @@ const useStyles = makeStyles((theme) => ({
     flexShrink: 0,
     background: theme.palette.primary.main,
     whiteSpace: 'nowrap',
-    [theme.breakpoints.down('xs')]: { display: 'none' },
   },
   drawerPaper: {
     transition: theme.transitions.create('width', {
@@ -47,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     width: drawerWidth,
+    [theme.breakpoints.down('xs')]: { width: '100vw' },
   },
   drawerPaperClose: {
     transition: theme.transitions.create('width', {
@@ -58,6 +59,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       width: theme.spacing(9) + 1,
     },
+    [theme.breakpoints.down('xs')]: { display: 'none' },
   },
   drawerContainer: {
     overflow: 'auto',
@@ -68,17 +70,11 @@ const useStyles = makeStyles((theme) => ({
   menuItemText: {
     color: '#ffffff',
   },
-  appBarSpacer: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
-  },
+  appBarSpacer: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3),
+    height: '100vh',
+    overflow: 'auto',
   },
   search: {
     position: 'relative',
@@ -137,6 +133,34 @@ const useStyles = makeStyles((theme) => ({
   notificationNumber: {
     color: '#ffffff',
   },
+  mobileToolbar: {
+    display: 'none',
+    width: '100%',
+    [theme.breakpoints.down('sm')]: {
+      display: 'flex',
+    },
+  },
+  logoMobileContainer: {
+    padding: 0,
+  },
+  logoMObile: {
+    width: '40px',
+  },
+  menuControlContainer: {
+    [theme.breakpoints.down('xs')]: {
+      display: 'none',
+    },
+  },
+  container: {
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
+  },
+  desktopToolbarComponents: {
+    [theme.breakpoints.down('sm')]: {
+      display: 'none',
+    },
+  },
+  expandIcons: { marginLeft: '2rem', color: '#ffffff' },
 }));
 
 export default useStyles;

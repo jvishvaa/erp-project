@@ -1,24 +1,29 @@
-.layout-container {
-  height: 100%;
-  display: flex;
-  .content {
-    height: 100vh;
+// .layout-container {
+//   height: 100%;
+//   display: flex;
+//   .content {
+//     height: 100vh;
+//   }
+// }
+.menu-item-text {
+  span {
+    color: #ffffff;
   }
 }
-.menu_selection{
-	background-color: #ce5858 !important;
+.menu_selection {
+  background-color: #ce5858 !important;
 }
-.layout_user_icon{
-	margin-left: 52% !important;
+.layout_user_icon {
+  margin-left: 52% !important;
 }
-.profile_img{
-	width: 40px;
+.profile_img {
+  width: 40px;
   height: 40px;
-	border-radius: 50%;
+  border-radius: 50%;
 }
-.user_rows_details{
-	background-color: rgb(247, 236, 216) !important;
+.user_rows_details {
+  background-color: rgb(247, 236, 216) !important;
 }
-.user_rows_details:hover{
-	background-color: rgb(221, 203, 180) !important;
+.user_rows_details:hover {
+  background-color: rgb(221, 203, 180) !important;
 }
