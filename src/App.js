@@ -22,11 +22,12 @@ import CreateClass from './containers/online-class/create-class';
 import ViewClassManagement from './containers/online-class/view-class/view-class-management/view-class-management';
 import AttendeeList from './containers/online-class/view-class/view-class-management/attendee-list/attendee-list';
 import ViewClassStudentCollection from './containers/online-class/view-class/view-class-student/view-class-student-collection';
-import SubjectTable from './containers/master-management/subject-table'
-import SectionTable from './containers/master-management/section-table'
-import GradeTable from './containers/master-management/grade-table'
+import SubjectTable from './containers/master-management/subject-table';
+import SectionTable from './containers/master-management/section-table';
+import GradeTable from './containers/master-management/grade-table';
 import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
 import Profile from './containers/profile/profile';
+import { fetchLoggedInUserDetails } from './redux/actions';
 
 const theme = createMuiTheme({
   palette: {
@@ -64,8 +65,8 @@ const theme = createMuiTheme({
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
-    store.dispatch({ type: 'SAMPLE_ACTION' });
     dispatch(listSubjects());
+    dispatch(fetchLoggedInUserDetails());
   }, []);
 
   return (
@@ -134,7 +135,6 @@ function App() {
                 <Route exact path='/master-mgmt/grade-table'>
                   {({ match }) => <GradeTable match={match} />}
                 </Route>
-
               </Switch>
             </ThemeProvider>
           </OnlineclassViewProvider>
