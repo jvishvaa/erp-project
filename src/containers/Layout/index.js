@@ -53,9 +53,15 @@ import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import useStyles from './useStyles';
 import Grow from '@material-ui/core/Grow';
+import Box from '@material-ui/core/Box';
+import Container from '@material-ui/core/Container';
 import './styles.scss';
+import logoMobile from '../../assets/images/logo_mobile.png';
 
 import logo from '../../assets/images/logo.png';
+
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useTheme } from '@material-ui/core/styles';
 
 const Layout = ({ children, history }) => {
   const dispatch = useDispatch();
@@ -197,12 +203,14 @@ const Layout = ({ children, history }) => {
   };
 
   const handleTextSearchClear = () => {
-    setSearchedText('');
-    setGlobalSearchResults(false);
-    setSearching(false);
-    setSearchUserDetails([]);
-    setTotalPage(0);
-    setCurrentPage(1);
+    setTimeout(() => {
+      setSearchedText('');
+      setGlobalSearchResults(false);
+      setSearching(false);
+      setSearchUserDetails([]);
+      setTotalPage(0);
+      setCurrentPage(1);
+    }, 500);
   };
 
   //   const handleScroll = (event) => {
@@ -304,24 +312,55 @@ const Layout = ({ children, history }) => {
     }
   };
 
+  const themeContext = useTheme();
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+
   return (
-    <div className='layout-container'>
+    <div className={classes.root}>
       <AppBar position='absolute' className={clsx(classes.appBar)}>
         <Toolbar className={classes.toolbar}>
+          <Box
+            className={classes.mobileToolbar}
+            display='flex'
+            justifyContent='space-between'
+          >
+            <IconButton
+              edge='start'
+              color='inherit'
+              aria-label='open drawer'
+              onClick={() => {
+                setDrawerOpen((prevState) => !prevState);
+              }}
+            >
+              {drawerOpen ? <CloseIcon color='primary' /> : <MenuIcon color='primary' />}
+            </IconButton>
+
+            <IconButton className={classes.logoMobileContainer}>
+              <img className={classes.logoMObile} src={logoMobile} alt='logo-small' />
+            </IconButton>
+
+            <IconButton />
+          </Box>
           <IconButton
             edge='start'
             color='inherit'
             aria-label='open drawer'
-            className={classes.logoBtn}
+            className={clsx(classes.logoBtn, classes.desktopToolbarComponents)}
           >
             <img src={logo} alt='logo' style={{ maxHeight: '100%' }} />
           </IconButton>
-          <Typography component='h1' variant='h6' color='inherit' noWrap>
+          <Typography
+            className={classes.desktopToolbarComponents}
+            component='h1'
+            variant='h6'
+            color='inherit'
+            noWrap
+          >
             Welcome!
             <span style={{ fontSize: '1rem', marginLeft: '1rem' }}>Have a great day</span>
           </Typography>
           {superUser ? (
-            <div className={classes.grow}>
+            <div className={clsx(classes.grow, classes.desktopToolbarComponents)}>
               <Paper component='form' className={classes.searchInputContainer}>
                 <InputBase
                   value={searchedText}
@@ -504,9 +543,10 @@ const Layout = ({ children, history }) => {
             </div>
           ) : null}
           <div
-            className={`${classes.sectionDesktop} ${
-              superUser ? 'null' : 'layout_user_icon'
-            }`}
+            className={`${clsx(
+              classes.sectionDesktop,
+              classes.desktopToolbarComponents
+            )} ${superUser ? 'null' : 'layout_user_icon'}`}
           >
             <IconButton
               aria-label='show more'
@@ -517,7 +557,7 @@ const Layout = ({ children, history }) => {
             >
               {roleDetails && roleDetails.user_profile ? (
                 <img
-                  style={{fontSize: '0.4rem'}}
+                  style={{ fontSize: '0.4rem' }}
                   src={roleDetails.user_profile}
                   alt='no img'
                   className='profile_img'
@@ -529,7 +569,7 @@ const Layout = ({ children, history }) => {
             </IconButton>
           </div>
 
-          <div className={classes.sectionMobile}>
+          {/* <div className={classes.sectionMobile}>
             <IconButton
               aria-label='show more'
               aria-controls={mobileMenuId}
@@ -539,13 +579,13 @@ const Layout = ({ children, history }) => {
             >
               <MoreIcon />
             </IconButton>
-          </div>
+          </div> */}
         </Toolbar>
       </AppBar>
       {renderMobileMenu}
       <Drawer
         open={drawerOpen}
-        variant='permanent'
+        variant={isMobile ? '' : 'permanent'}
         className={clsx(classes.drawer, {
           [classes.drawerPaper]: drawerOpen,
           [classes.drawerPaperClose]: !drawerOpen,
@@ -559,13 +599,16 @@ const Layout = ({ children, history }) => {
         }}
         onClose={() => setDrawerOpen(false)}
       >
-        <Toolbar className={classes.toolbar} />
+        <div className={classes.appBarSpacer} />
         <List>
-          <ListItem onClick={() => setDrawerOpen((prevState) => !prevState)}>
+          <ListItem
+            className={classes.menuControlContainer}
+            onClick={() => setDrawerOpen((prevState) => !prevState)}
+          >
             <ListItemIcon className={classes.menuItemIcon}>
               {drawerOpen ? <CloseIcon /> : <MenuIcon />}
             </ListItemIcon>
-            <ListItemText className={classes.menuItemText}>Menu</ListItemText>
+            <ListItemText className='menu-item-text'>Menu</ListItemText>
           </ListItem>
           {drawerOpen ? (
             <ListItem
@@ -581,7 +624,7 @@ const Layout = ({ children, history }) => {
               <ListItemIcon className={classes.menuItemIcon}>
                 <AssignmentIndIcon />
               </ListItemIcon>
-              <ListItemText className={classes.menuItemText}>View Profile</ListItemText>
+              <ListItemText className='menu-item-text'>View Profile</ListItemText>
             </ListItem>
           ) : null}
           {superUser && drawerOpen && (
@@ -599,7 +642,7 @@ const Layout = ({ children, history }) => {
                 <ListItemIcon className={classes.menuItemIcon}>
                   <AssignmentIndIcon />
                 </ListItemIcon>
-                <ListItemText className={classes.menuItemText}>Dashboard</ListItemText>
+                <ListItemText className='menu-item-text'>Dashboard</ListItemText>
               </ListItem>
               <ListItem
                 button
@@ -610,13 +653,11 @@ const Layout = ({ children, history }) => {
                 <ListItemIcon className={classes.menuItemIcon}>
                   <PeopleIcon />
                 </ListItemIcon>
-                <ListItemText className={classes.menuItemText}>
-                  User Management
-                </ListItemText>
+                <ListItemText className='menu-item-text'>User Management</ListItemText>
                 {userMenuOpen ? (
-                  <ExpandLess style={{ marginLeft: '2rem' }} />
+                  <ExpandLess className={classes.expandIcons} />
                 ) : (
-                  <ExpandMore style={{ marginLeft: '2rem' }} />
+                  <ExpandMore className={classes.expandIcons} />
                 )}
               </ListItem>
               <Collapse in={userMenuOpen}>
@@ -637,10 +678,7 @@ const Layout = ({ children, history }) => {
                       {/* <MenuIcon name={child.child_name} /> */}
                       {/* {menuIcon(child.child_name)} */}
                     </ListItemIcon>
-                    <ListItemText
-                      primary={`Create User`}
-                      className={classes.menuItemText}
-                    />
+                    <ListItemText primary={`Create User`} className='menu-item-text' />
                   </ListItem>
                   <ListItem
                     button
@@ -657,7 +695,7 @@ const Layout = ({ children, history }) => {
                       {/* <MenuIcon name={child.child_name} /> */}
                       {/* {menuIcon(child.child_name)} */}
                     </ListItemIcon>
-                    <ListItemText primary='View User' className={classes.menuItemText} />
+                    <ListItemText primary='View User' className='menu-item-text' />
                   </ListItem>
 
                   <ListItem
@@ -675,10 +713,7 @@ const Layout = ({ children, history }) => {
                       {/* <MenuIcon name={child.child_name} /> */}
                       {/* {menuIcon(child.child_name)} */}
                     </ListItemIcon>
-                    <ListItemText
-                      primary={`Assign Role`}
-                      className={classes.menuItemText}
-                    />
+                    <ListItemText primary={`Assign Role`} className='menu-item-text' />
                   </ListItem>
                 </List>
               </Collapse>
@@ -692,13 +727,11 @@ const Layout = ({ children, history }) => {
                 <ListItemIcon className={classes.menuItemIcon}>
                   <SupervisorAccountOutlinedIcon />
                 </ListItemIcon>
-                <ListItemText className={classes.menuItemText}>
-                  Master Management
-                </ListItemText>
+                <ListItemText className='menu-item-text'>Master Management</ListItemText>
                 {masterMenuOpen ? (
-                  <ExpandLess style={{ marginLeft: '2rem' }} />
+                  <ExpandLess className={classes.expandIcons} />
                 ) : (
-                  <ExpandMore style={{ marginLeft: '2rem' }} />
+                  <ExpandMore className={classes.expandIcons} />
                 )}
               </ListItem>
               <Collapse in={masterMenuOpen}>
@@ -719,7 +752,7 @@ const Layout = ({ children, history }) => {
                       {/* <MenuIcon name={child.child_name} /> */}
                       {/* {menuIcon(child.child_name)} */}
                     </ListItemIcon>
-                    <ListItemText primary={`Subject`} className={classes.menuItemText} />
+                    <ListItemText primary={`Subject`} className='menu-item-text' />
                   </ListItem>
 
                   <ListItem
@@ -737,7 +770,7 @@ const Layout = ({ children, history }) => {
                       {/* <MenuIcon name={child.child_name} /> */}
                       {/* {menuIcon(child.child_name)} */}
                     </ListItemIcon>
-                    <ListItemText primary={`Section`} className={classes.menuItemText} />
+                    <ListItemText primary={`Section`} className='menu-item-text' />
                   </ListItem>
 
                   <ListItem
@@ -755,7 +788,7 @@ const Layout = ({ children, history }) => {
                       {/* <MenuIcon name={child.child_name} /> */}
                       {/* {menuIcon(child.child_name)} */}
                     </ListItemIcon>
-                    <ListItemText primary={`Grade`} className={classes.menuItemText} />
+                    <ListItemText primary={`Grade`} className='menu-item-text' />
                   </ListItem>
                 </List>
               </Collapse>
@@ -774,9 +807,7 @@ const Layout = ({ children, history }) => {
                 <ListItemIcon className={classes.menuItemIcon}>
                   <AssignmentIndIcon />
                 </ListItemIcon>
-                <ListItemText className={classes.menuItemText}>
-                  Role management
-                </ListItemText>
+                <ListItemText className='menu-item-text'>Role management</ListItemText>
               </ListItem>
             </>
           )}
@@ -787,8 +818,8 @@ const Layout = ({ children, history }) => {
         </List>
       </Drawer>
       <main className={classes.content}>
-        <Toolbar className={classes.toolbar} />
-        {children}
+        <div className={classes.appBarSpacer} />
+        <Container className={classes.container}>{children}</Container>
       </main>
     </div>
   );

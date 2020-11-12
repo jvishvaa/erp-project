@@ -525,8 +525,8 @@ const CreateGroup = withRouter(({ history, ...props }) => {
             </>
           ) : (
             <>
-              <Grid container className='create_group_container' spacing={10}>
-                <Grid lg={5} item>
+              <Grid container className='create_group_container' spacing={3}>
+                <Grid lg={4} className='create_group_items' item>
                   <div className='group_name_wrapper'>
                     <CustomInput
                       className='group_name_create_group'
@@ -537,7 +537,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
                     <span className='create_group_error_span'>{groupNameError}</span>
                   </div>
                 </Grid>
-                <Grid lg={5} item>
+                <Grid lg={4} className='create_group_items' item>
                   <div>
                     <CustomMultiSelect
                       selections={selectedRoles}

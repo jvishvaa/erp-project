@@ -10,9 +10,14 @@ import InputLabel from '@material-ui/core/InputLabel';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import { useFormik } from 'formik';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import Box from '@material-ui/core/Box';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useTheme } from '@material-ui/core/styles';
+
 import { useStyles } from './useStyles';
 import resolveValidationSchema from './schemas/guardian-details';
 import ImageUpload from '../../components/image-upload';
+import './styles.scss';
 
 const GuardianDetailsForm = ({
   details,
@@ -22,6 +27,8 @@ const GuardianDetailsForm = ({
   showGuardianForm,
   isSubmitting,
 }) => {
+  const themeContext = useTheme();
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const classes = useStyles();
   const validationSchema = resolveValidationSchema(showParentForm, showGuardianForm);
   const formik = useFormik({
@@ -56,19 +63,19 @@ const GuardianDetailsForm = ({
     <>
       {showParentForm && (
         <>
-          <div className='details-container'>
+          <div className='details-container parent-form-container'>
             <Typography variant='h5' gutterBottom color='primary'>
               Father's Details
             </Typography>
-            <Grid container spacing={4}>
-              <Grid item md={4}>
+            <Grid container spacing={4} className='form-grid'>
+              <Grid item md={4} xs={12}>
                 <FormControl variant='outlined' fullWidth color='secondary'>
                   <InputLabel htmlFor='component-outlined'>First name</InputLabel>
                   <OutlinedInput
                     id='father_first_name'
                     name='father_first_name'
                     onChange={formik.handleChange}
-                    inputProps={{maxLength:20}}
+                    inputProps={{ maxLength: 20 }}
                     value={formik.values.father_first_name}
                     label='First name'
                   />
@@ -79,14 +86,14 @@ const GuardianDetailsForm = ({
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item md={4}>
+              <Grid item md={4} xs={12}>
                 <FormControl variant='outlined' fullWidth>
                   <InputLabel htmlFor='component-outlined'>Middle name</InputLabel>
                   <OutlinedInput
                     id='father_middle_name'
                     name='father_middle_name'
                     onChange={formik.handleChange}
-                    inputProps={{maxLength:20}}
+                    inputProps={{ maxLength: 20 }}
                     value={formik.values.father_middle_name}
                     label='Middle name'
                   />
@@ -97,14 +104,14 @@ const GuardianDetailsForm = ({
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item md={4}>
+              <Grid item md={4} xs={12}>
                 <FormControl variant='outlined' fullWidth>
                   <InputLabel htmlFor='component-outlined'>Last name</InputLabel>
                   <OutlinedInput
                     id='father_last_name'
                     name='father_last_name'
                     onChange={formik.handleChange}
-                    inputProps={{maxLength:20}}
+                    inputProps={{ maxLength: 20 }}
                     value={formik.values.father_last_name}
                     label='Last name'
                   />
@@ -113,14 +120,14 @@ const GuardianDetailsForm = ({
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item md={4}>
+              <Grid item md={4} xs={12}>
                 <FormControl variant='outlined' fullWidth>
                   <InputLabel htmlFor='component-outlined'>Email ID</InputLabel>
                   <OutlinedInput
                     id='father_email'
                     name='father_email'
                     onChange={formik.handleChange}
-                    inputProps={{maxLength:40}}
+                    inputProps={{ maxLength: 40 }}
                     value={formik.values.father_email}
                     label='Email ID'
                   />
@@ -129,14 +136,14 @@ const GuardianDetailsForm = ({
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item md={4}>
+              <Grid item md={4} xs={12}>
                 <FormControl variant='outlined' fullWidth>
                   <InputLabel htmlFor='component-outlined'>Mobile no.</InputLabel>
                   <OutlinedInput
                     id='father_mobile'
                     name='father_mobile'
                     onChange={formik.handleChange}
-                    inputProps={{maxLength:10}}
+                    inputProps={{ maxLength: 10 }}
                     value={formik.values.father_mobile}
                     label='Mobile no.'
                   />
@@ -158,13 +165,13 @@ const GuardianDetailsForm = ({
                   />
                 </FormControl>
               </Grid> */}
-              <Grid item md={4}>
+              <Grid item md={4} xs={12}>
                 <FormControl variant='outlined' fullWidth>
                   <InputLabel htmlFor='component-outlined'>Address</InputLabel>
                   <OutlinedInput
                     id='address'
                     name='address'
-                    inputProps={{maxLength:150}}
+                    inputProps={{ maxLength: 150 }}
                     multiline
                     rows={4}
                     rowsMax={6}
@@ -188,7 +195,7 @@ const GuardianDetailsForm = ({
                   />
                 </FormControl> 
                     </Grid> */}
-              <Grid item md={4}>
+              <Grid item md={4} xs={12} className='profile-img-container'>
                 <ImageUpload
                   value={formik.values.father_photo}
                   onChange={(value) => {
@@ -203,8 +210,13 @@ const GuardianDetailsForm = ({
             <Typography variant='h5' gutterBottom color='primary'>
               Mothers's Details
             </Typography>
-            <Grid container spacing={4}>
-              <Grid item md={4}>
+            <Grid
+              container
+              spacing={4}
+              direction={isMobile ? 'column' : 'row'}
+              className='form-grid'
+            >
+              <Grid item md={4} xs={12}>
                 <FormControl variant='outlined' fullWidth>
                   <InputLabel htmlFor='component-outlined'>First name</InputLabel>
                   <OutlinedInput
@@ -221,7 +233,7 @@ const GuardianDetailsForm = ({
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item md={4}>
+              <Grid item md={4} xs={12}>
                 <FormControl variant='outlined' fullWidth>
                   <InputLabel htmlFor='component-outlined'>Middle name</InputLabel>
                   <OutlinedInput
@@ -238,7 +250,7 @@ const GuardianDetailsForm = ({
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item md={4}>
+              <Grid item md={4} xs={12}>
                 <FormControl variant='outlined' fullWidth>
                   <InputLabel htmlFor='component-outlined'>Last name</InputLabel>
                   <OutlinedInput
@@ -253,7 +265,7 @@ const GuardianDetailsForm = ({
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item md={4}>
+              <Grid item md={4} xs={12}>
                 <FormControl variant='outlined' fullWidth>
                   <InputLabel htmlFor='component-outlined'>Email ID</InputLabel>
                   <OutlinedInput
@@ -268,7 +280,7 @@ const GuardianDetailsForm = ({
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item md={4}>
+              <Grid item md={4} xs={12}>
                 <FormControl variant='outlined' fullWidth>
                   <InputLabel htmlFor='component-outlined'>Mobile no.</InputLabel>
                   <OutlinedInput
@@ -319,7 +331,7 @@ const GuardianDetailsForm = ({
                 </FormControl>
               </Grid> */}
 
-              <Grid item md={4}>
+              <Grid item md={4} xs={12} className='profile-img-container'>
                 <ImageUpload
                   value={formik.values.mother_photo}
                   onChange={(value) => {
@@ -340,7 +352,7 @@ const GuardianDetailsForm = ({
               Guardian's Details
             </Typography>
             <Grid container spacing={4}>
-              <Grid item md={4}>
+              <Grid item md={4} xs={12}>
                 <FormControl variant='outlined' fullWidth>
                   <InputLabel htmlFor='component-outlined'>First name</InputLabel>
                   <OutlinedInput
@@ -357,7 +369,7 @@ const GuardianDetailsForm = ({
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item md={4}>
+              <Grid item md={4} xs={12}>
                 <FormControl variant='outlined' fullWidth>
                   <InputLabel htmlFor='component-outlined'>Middle name</InputLabel>
                   <OutlinedInput
@@ -374,7 +386,7 @@ const GuardianDetailsForm = ({
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item md={4}>
+              <Grid item md={4} xs={12}>
                 <FormControl variant='outlined' fullWidth>
                   <InputLabel htmlFor='component-outlined'>Last name</InputLabel>
                   <OutlinedInput
@@ -391,7 +403,7 @@ const GuardianDetailsForm = ({
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item md={4}>
+              <Grid item md={4} xs={12}>
                 <FormControl variant='outlined' fullWidth>
                   <InputLabel htmlFor='component-outlined'>Email ID</InputLabel>
                   <OutlinedInput
@@ -406,7 +418,7 @@ const GuardianDetailsForm = ({
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              <Grid item md={4}>
+              <Grid item md={4} xs={12}>
                 <FormControl variant='outlined' fullWidth>
                   <InputLabel htmlFor='component-outlined'>Mobile no.</InputLabel>
                   <OutlinedInput
@@ -465,29 +477,40 @@ const GuardianDetailsForm = ({
         </>
       )}
 
-      <Grid container item xs={12} style={{ marginTop: '20px' }}>
+      <Grid
+        container
+        item
+        xs={12}
+        style={{ marginTop: '20px' }}
+        direction={isMobile ? 'column-reverse' : 'row'}
+        spacing={3}
+      >
         <Grid item md='1'>
-          <Button
-            className={classes.formActionButton}
-            variant='contained'
-            color='primary'
-            onClick={handleBack}
-          >
-            Back
-          </Button>
+          <Box display='flex' justifyContent={isMobile ? 'center' : ''}>
+            <Button
+              className={classes.formActionButton}
+              variant='contained'
+              color='primary'
+              onClick={handleBack}
+            >
+              Back
+            </Button>
+          </Box>
         </Grid>
         <Grid item md='1'>
-          <Button
-            className={classes.formActionButton}
-            variant='contained'
-            color='primary'
-            onClick={() => {
-              formik.handleSubmit();
-            }}
-            disabled={isSubmitting}
-          >
-            Submit
-          </Button>
+          <Box display='flex' justifyContent={isMobile ? 'center' : ''}>
+            <Button
+              className={classes.formActionButton}
+              variant='contained'
+              color='primary'
+              onClick={() => {
+                formik.handleSubmit();
+              }}
+              disabled={isSubmitting}
+            >
+              Submit
+            </Button>
+          </Box>
         </Grid>
       </Grid>
     </>
