@@ -1,10 +1,9 @@
 .paginate {
+  width: 95%;
+  margin: 20px auto;
   display: flex;
   justify-content: center;
-  margin-top: 5px;
-  margin-bottom:50px;
   padding:15px;
-  background-color: #F3E8E8;
 }
 
 .mainWidth.widthClass {
@@ -14,11 +13,7 @@
 .mainWidth {
   width: 250px;
 }
-.headerMaster {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between ;
-}
+
 .gradeDropClass {
   width: 200px;
 }
