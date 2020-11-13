@@ -6,7 +6,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { useContext, useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -23,9 +23,15 @@ import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Container from '@material-ui/core/Container';
-import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import SettingsBackupRestoreOutlined from '@material-ui/icons/SettingsBackupRestoreOutlined';
 import BlockIcon from '@material-ui/icons/Block';
 import IconButton from '@material-ui/core/IconButton';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import SearchOutlined from '@material-ui/icons/SearchOutlined';
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
@@ -33,6 +39,7 @@ import CustomMultiSelect from '../../communication/custom-multiselect/custom-mul
 import Layout from '../../Layout';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './view-users.css';
+import ViewUserCard from '../../../components/view-user-card';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,8 +54,18 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: 440,
   },
   formControl: {
-    margin: theme.spacing(1),
-    minWidth: 250,
+    // margin: theme.spacing(1),
+    // minWidth: 250,
+  },
+  cardsPagination: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    position: 'fixed',
+    bottom: 0,
+    padding: '1rem',
+    backgroundColor: '#ffffff',
+    zIndex: 100,
   },
 }));
 
@@ -72,6 +89,9 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const [gradeList, setGradeList] = useState([]);
   const [isNewSeach, setIsNewSearch] = useState(true);
   const [searchText, setSearchText] = useState('');
+
+  const themeContext = useTheme();
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
   const getRoleApi = async () => {
     try {
@@ -299,18 +319,87 @@ const ViewUsers = withRouter(({ history, ...props }) => {
           componentName='User Management'
           childComponentName='View users'
         />
-        <div className='user_search_wrapper'>
-          <TextField
-            id='user_search'
-            label='Search'
-            value={searchText}
-            onChange={handleTextSearch}
-          />
-        </div>
-        <span className='view_users__reset_icon' onClick={handleResetFilters}>
+        <Grid container spacing={2} style={{ padding: '1rem' }}>
+          <Grid item xs={12}>
+            <Box style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+              <Button
+                startIcon={<SettingsBackupRestoreOutlined />}
+                onClick={handleResetFilters}
+              >
+                Reset
+              </Button>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <FormControl variant='outlined' className={classes.formControl} fullWidth>
+              <InputLabel>Search</InputLabel>
+              <OutlinedInput
+                endAdornment={<SearchOutlined color='primary' />}
+                placeholder='Search users ..'
+                label='Search'
+                value={searchText}
+                onChange={handleTextSearch}
+              />
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <FormControl variant='outlined' className={classes.formControl} fullWidth>
+              <InputLabel>Role</InputLabel>
+              <Select
+                labelId='demo-simple-select-outlined-label'
+                id='demo-simple-select-outlined'
+                value={selectedRoles}
+                onChange={(e) => setSelectedRoles(e.target.value)}
+                label='Role'
+              >
+                <MenuItem value=''>
+                  <em>None</em>
+                </MenuItem>
+                {roleList.map((items, index) => (
+                  <MenuItem key={`role_user_details_${index}`} value={items.id}>
+                    {items.role_name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <FormControl variant='outlined' className={classes.formControl} fullWidth>
+              <InputLabel id='demo-simple-select-outlined-label'>Branch</InputLabel>
+              <Select
+                labelId='demo-simple-select-outlined-label'
+                id='demo-simple-select-outlined'
+                value={selectedBranch}
+                onChange={(e) => setSelectedBranch(e.target.value)}
+                label='Branch'
+              >
+                <MenuItem value=''>
+                  <em>None</em>
+                </MenuItem>
+                {branchList.map((items, index) => (
+                  <MenuItem key={`branch_user_details_${index}`} value={items.id}>
+                    {items.branch_name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          {selectedBranch && (
+            <Grid item xs={12} md={3}>
+              <CustomMultiSelect
+                selections={selectedGrades}
+                setSelections={setSelectedGrades}
+                nameOfDropdown='Grade'
+                optionNames={grade}
+              />
+            </Grid>
+          )}
+        </Grid>
+
+        {/* <span className='view_users__reset_icon' onClick={handleResetFilters}>
           <SettingsBackupRestoreIcon />
-        </span>
-        <div className='view_users_filter_wrapper'>
+        </span> */}
+        {/* <div className='view_users_filter_wrapper'>
           <div className='user_details_role_wrapper'>
             <FormControl variant='outlined' className={classes.formControl}>
               <InputLabel id='demo-simple-select-outlined-label'>Role</InputLabel>
@@ -363,7 +452,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
               />
             </div>
           ) : null}
-        </div>
+        </div> */}
         {deleteAlert ? (
           <div className='view_users_delete_alert_wrapper'>
             <span className='view_users_delete_alert_tag'>
@@ -385,105 +474,142 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             </div>
           </div>
         ) : null}
-        <Paper className={classes.root}>
-          <TableContainer className={`table table-shadow ${classes.container}`}>
-            <Table stickyHeader aria-label='sticky table'>
-              <TableHead className='view_groups_header'>
-                <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>ERP Id</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>Action</TableCell>
-                  <TableCell>Edit</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody className='view_groups_body'>
-                {usersData.map((items, i) => (
-                  <TableRow
-                    hover
-                    role='checkbox'
-                    tabIndex={-1}
-                    key={`user_table_index${i}`}
-                  >
-                    <TableCell>{items.userName}</TableCell>
-                    <TableCell>{items.erpId}</TableCell>
-                    <TableCell>{items.emails}</TableCell>
-                    <TableCell>
-                      {items.active ? (
-                        <div style={{ color: 'green' }}>Activated</div>
-                      ) : (
-                        <div style={{ color: 'red' }}>Deactivated</div>
-                      )}
-                    </TableCell>
-                    <TableCell
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      {items.active ? (
-                        <IconButton
-                          aria-label='deactivate'
-                          onClick={() => handleStatusChange(items.userId, i, '2')}
-                          title='Deactivate'
-                        >
-                          <BlockIcon color='secondary' />
-                        </IconButton>
-                      ) : (
-                        // <button
-                        //   type='submit'
-                        //   className='group_view_deactivate_button group_view_button'
-                        //   title='Deactivate'
-                        //   onClick={() => handleStatusChange(items.userId, i, '2')}
-                        // >
-                        //   D
-                        // </button>
-                        <button
-                          type='submit'
-                          className='group_view_activate_button group_view_button'
-                          title='Activate'
-                          onClick={() => handleStatusChange(items.userId, i, '1')}
-                          style={{ borderRadius: '50%' }}
-                        >
-                          A
-                        </button>
-                      )}
-
-                      <IconButton
-                        title='Delete'
-                        className='group_view_button group_view_delete_button'
-                        onClick={() => handleDelete(items.userId, i)}
-                      >
-                        <DeleteIcon color='secondary' />
-                      </IconButton>
-                    </TableCell>
-                    <TableCell>
-                      <IconButton
-                        className='group_view_button group_view_delete_button'
-                        title='Edit'
-                        onClick={() => handleEdit(items.userId)}
-                      >
-                        <EditIcon color='secondary' />
-                      </IconButton>
-                    </TableCell>
+        {/* <div className='user_search_wrapper'>
+          <OutlinedInput
+            endAdornment={<SearchOutlined color='primary' />}
+            label='Search users ..'
+            value={searchText}
+            onChange={handleTextSearch}
+          />
+        </div> */}
+        {!isMobile && (
+          <Paper className={classes.root}>
+            <TableContainer className={`table table-shadow ${classes.container}`}>
+              <Table stickyHeader aria-label='sticky table'>
+                <TableHead className='view_groups_header'>
+                  <TableRow>
+                    <TableCell>Name</TableCell>
+                    <TableCell>ERP Id</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Status</TableCell>
+                    <TableCell>Action</TableCell>
+                    <TableCell>Edit</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                </TableHead>
+                <TableBody className='view_groups_body'>
+                  {usersData.map((items, i) => (
+                    <TableRow
+                      hover
+                      role='checkbox'
+                      tabIndex={-1}
+                      key={`user_table_index${i}`}
+                    >
+                      <TableCell>{items.userName}</TableCell>
+                      <TableCell>{items.erpId}</TableCell>
+                      <TableCell>{items.emails}</TableCell>
+                      <TableCell>
+                        {items.active ? (
+                          <div style={{ color: 'green' }}>Activated</div>
+                        ) : (
+                          <div style={{ color: 'red' }}>Deactivated</div>
+                        )}
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        {items.active ? (
+                          <IconButton
+                            aria-label='deactivate'
+                            onClick={() => handleStatusChange(items.userId, i, '2')}
+                            title='Deactivate'
+                          >
+                            <BlockIcon color='secondary' />
+                          </IconButton>
+                        ) : (
+                          // <button
+                          //   type='submit'
+                          //   className='group_view_deactivate_button group_view_button'
+                          //   title='Deactivate'
+                          //   onClick={() => handleStatusChange(items.userId, i, '2')}
+                          // >
+                          //   D
+                          // </button>
+                          <button
+                            type='submit'
+                            className='group_view_activate_button group_view_button'
+                            title='Activate'
+                            onClick={() => handleStatusChange(items.userId, i, '1')}
+                            style={{ borderRadius: '50%' }}
+                          >
+                            A
+                          </button>
+                        )}
 
-          <div className={`${classes.root} pagenation_view_groups`}>
-            <Pagination
-              page={Number(currentPage)}
-              size='large'
-              className='books__pagination'
-              onChange={handlePagination}
-              count={totalPages}
-            />
-          </div>
-        </Paper>
+                        <IconButton
+                          title='Delete'
+                          className='group_view_button group_view_delete_button'
+                          onClick={() => handleDelete(items.userId, i)}
+                        >
+                          <DeleteIcon color='secondary' />
+                        </IconButton>
+                      </TableCell>
+                      <TableCell>
+                        <IconButton
+                          className='group_view_button group_view_delete_button'
+                          title='Edit'
+                          onClick={() => handleEdit(items.userId)}
+                        >
+                          <EditIcon color='secondary' />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+
+            <div className={`${classes.root} pagenation_view_groups`}>
+              <Pagination
+                page={Number(currentPage)}
+                size='large'
+                className='books__pagination'
+                onChange={handlePagination}
+                count={totalPages}
+              />
+            </div>
+          </Paper>
+        )}
+
+        {isMobile && (
+          <>
+            <div className={classes.cardsContainer}>
+              {usersData.map((user, i) => (
+                <ViewUserCard
+                  user={user}
+                  onEdit={handleEdit}
+                  onDelete={(userId) => {
+                    handleDelete(userId, i);
+                  }}
+                  onStatusChange={(userId, status) => {
+                    handleStatusChange(userId, i, status);
+                  }}
+                />
+              ))}
+            </div>
+            <div className={classes.cardsPagination}>
+              <Pagination
+                page={Number(currentPage)}
+                count={totalPages}
+                onChange={handlePagination}
+                color='primary'
+              />
+            </div>
+          </>
+        )}
       </Container>
     </Layout>
   );
