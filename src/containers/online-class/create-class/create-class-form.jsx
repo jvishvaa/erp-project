@@ -398,6 +398,20 @@ const CreateClassForm = () => {
     }
   };
 
+  const handleClear = () => {
+    setFormKey(new Date());
+    setSelectedGrades([]);
+    setSelectedSections([]);
+    setSelectedSubject([]);
+    setOnlineClass((prevState) => ({
+      ...prevState,
+      ...initialFormStructure,
+      coHosts: [{ email: '' }],
+    }));
+    dispatch(resetContext());
+    dispatch(listGradesCreateClass());
+  };
+
   return (
     <div className='create__class' key={formKey}>
       <div className='breadcrumb-container'>
@@ -422,7 +436,6 @@ const CreateClassForm = () => {
                 variant='outlined'
                 size='small'
                 name='title'
-                inputProps={{ maxLength: 20 }}
                 onChange={handleChange}
                 required
               />
@@ -712,6 +725,7 @@ const CreateClassForm = () => {
                 variant='contained'
                 size='medium'
                 style={{ width: '100%', color: 'black' }}
+                onClick={handleClear}
               >
                 Clear All Selections
               </Button>

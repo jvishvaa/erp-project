@@ -28,7 +28,7 @@ const ViewClassStudent = (props) => {
           start_time: startTime,
           end_time: endTime,
           title = '',
-          subject = '',
+          subject: { subject_name: subjectName = '' },
           join_limit: joinLimit,
         },
       } = {},
@@ -158,10 +158,7 @@ const ViewClassStudent = (props) => {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <Typography variant='h6' gutterBottom color='secondary'>
-                {subject.subject_name}
-              </Typography>
-              <Typography variant='h6' gutterBottom color='secondary'>
-                {subject}
+                {subjectName}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -178,9 +175,6 @@ const ViewClassStudent = (props) => {
 
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <Typography variant='h6' gutterBottom color='secondary'>
-                {subject.subject_name}
-              </Typography>
               <Typography variant='h6' gutterBottom color='secondary'>
                 {moment(startTime).format('MMMM Do YYYY, h:mm:ss a')}
               </Typography>
