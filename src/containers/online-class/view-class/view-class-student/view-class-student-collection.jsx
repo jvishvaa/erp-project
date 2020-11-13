@@ -52,7 +52,7 @@ const ViewClassStudentCollection = () => {
 
   useEffect(() => {
     const isCompleted = !!currentTab;
-    dispatch(listOnlineClassesStudentView(roleDetails.erp_user_id, isCompleted, 1, 10));
+    dispatch(listOnlineClassesStudentView(roleDetails.erp_user_id, isCompleted, 1, 12));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTab]);
 
@@ -65,7 +65,7 @@ const ViewClassStudentCollection = () => {
 
     if (page !== currentPage) {
       dispatch(
-        listOnlineClassesStudentView(roleDetails.erp_user_id, isCompleted, page, 10)
+        listOnlineClassesStudentView(roleDetails.erp_user_id, isCompleted, page, 12)
       );
     }
   };
@@ -83,11 +83,13 @@ const ViewClassStudentCollection = () => {
     }
 
     return (
-      <>
+      <Grid container spacing={1} style={{ width: '98%', margin: '0 auto' }}>
         {studentOnlineClasses.map((onlineClass) => (
-          <ViewClassStudent key={onlineClass.id} data={onlineClass} />
+          <Grid item xs={12} sm={6} md={4}>
+            <ViewClassStudent key={onlineClass.id} data={onlineClass} />
+          </Grid>
         ))}
-      </>
+      </Grid>
     );
   };
 
@@ -121,7 +123,7 @@ const ViewClassStudentCollection = () => {
           alignItems='center'
           justify='center'
         >
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={3}>
             {studentOnlineClasses.length && !loadingStudentOnlineClasses ? (
               <Pagination
                 className='student-view-pagination'

@@ -19,6 +19,7 @@ const OnlineClassResourceCell = (props) => {
         title,
       },
     },
+    isHidden,
   } = props || {};
 
   let uploadModal = null;
@@ -37,7 +38,9 @@ const OnlineClassResourceCell = (props) => {
   return (
     <>
       <TableRow key={id}>
-        <TableCell align='center'>{currentPage * 10 - (10 - index - 1)}</TableCell>
+        <TableCell align='center' className={`${isHidden ? 'hide' : 'show'}`}>
+          {currentPage * 10 - (10 - index - 1)}
+        </TableCell>
         <TableCell align='center'>{title}</TableCell>
         <TableCell align='center'>{subjectName}</TableCell>
         <TableCell align='center'>{startTime}</TableCell>

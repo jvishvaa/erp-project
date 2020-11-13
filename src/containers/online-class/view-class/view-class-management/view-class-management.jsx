@@ -9,10 +9,7 @@ const ViewClassManagement = () => {
   return (
     <Layout>
       <div className='breadcrumb-container'>
-        <CommonBreadcrumbs
-          componentName='Online Class'
-          childComponentName='Attend online class'
-        />
+        <CommonBreadcrumbs componentName='Online Class' childComponentName='View Class' />
       </div>
       <div className='viewclass__management-container'>
         <ViewClassManagementFilters />

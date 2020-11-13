@@ -135,7 +135,7 @@ const ViewClassStudent = (props) => {
   return (
     <div className='viewclass__student-container'>
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={12} md={8}>
+        <Grid item xs={12}>
           {/*  */}
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
@@ -182,7 +182,7 @@ const ViewClassStudent = (props) => {
           </Grid>
           {/*  */}
         </Grid>
-        <Grid item xs={12} sm={12} md={4}>
+        <Grid item xs={12}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               {!isAccepted ? (

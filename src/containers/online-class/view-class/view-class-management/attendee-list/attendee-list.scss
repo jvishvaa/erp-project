@@ -1,6 +1,41 @@
-
 @import '../../../../../assets/styles/mixins';
 
+.attendeelist-filters {
+  width: 95%;
+  margin: 0 auto 40px auto;
+}
+
 .attendee__management-table {
-    @include styledTable;
+  @include styledTable;
+  min-height: 600px;
+  background-color: #fff;
+
+  .expand-management {
+    display: none;
+    fill: $secondary-color;
+  }
+}
+
+@media only screen and(max-width:600px) {
+  .attendeelist-filters {
+    h5,
+    h6 {
+      font-size: 18px !important;
+    }
+  }
+
+  .attendee__management-table {
+    .hide {
+      display: none;
+    }
+
+    .show {
+      display: table-cell;
+    }
+    .expand-management {
+      float: right;
+      margin-right: 20px;
+      display: block !important;
+    }
+  }
 }
