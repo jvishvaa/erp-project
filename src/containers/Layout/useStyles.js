@@ -1,5 +1,4 @@
 import { fade, makeStyles } from '@material-ui/core/styles';
-import { FilterNone } from '@material-ui/icons';
 
 const drawerWidth = 300;
 
@@ -11,12 +10,18 @@ const useStyles = makeStyles((theme) => ({
     zIndex: theme.zIndex.drawer + 200,
     backgroundColor: '#ffffff',
     color: theme.palette.secondary.main,
+    boxShadow: 'none',
   },
   searchInputContainer: {
     display: 'flex',
     alignItems: 'center',
     borderRadius: '30px',
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
     width: '70%',
+    boxShadow: '2px 1px 2px grey',
+    // border: '1px solid grey',
+    border: 0,
   },
   searchInput: {
     padding: '2px 10px',
@@ -163,6 +168,17 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   expandIcons: { marginLeft: '2rem', color: '#ffffff' },
+  profileInfoContainer: {
+    backgroundColor: theme.palette.primary.main,
+    padding: '10px',
+  },
+  sidebarActionButtons: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'space-between',
+    color: '#ffffff',
+    padding: '10px',
+  },
 }));
 
 export default useStyles;
