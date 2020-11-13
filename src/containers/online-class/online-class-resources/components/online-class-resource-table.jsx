@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Table,
   TableHead,
@@ -9,6 +9,8 @@ import {
   Grid,
   Button,
 } from '@material-ui/core';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import Pagination from '@material-ui/lab/Pagination';
 
 import OnlineClassResourceCell from './online-class-resource-cell';
@@ -16,6 +18,8 @@ import { OnlineclassViewContext } from '../../online-class-context/online-class-
 import Loader from '../../../../components/loader/loader';
 
 const OnlineClassResourceTable = () => {
+  const [isHidden, setIsHidden] = useState(window.innerWidth < 600);
+
   const {
     resourceView: {
       resourceOnlineClasses = [],
@@ -32,13 +36,24 @@ const OnlineClassResourceTable = () => {
     }
   };
 
+  const toggleHide = () => {
+    setIsHidden(!isHidden);
+  };
+
   return (
     <div className='viewclass__management-table'>
+      {isHidden ? (
+        <AddCircleOutlineIcon className='expand-management' onClick={toggleHide} />
+      ) : (
+        <RemoveCircleIcon className='expand-management' onClick={toggleHide} />
+      )}
       <TableContainer>
         <Table className='viewclass__table' aria-label='simple table'>
           <TableHead className='viewclass__table-head'>
             <TableRow>
-              <TableCell align='center'>SL_NO.</TableCell>
+              <TableCell align='center' className={`${isHidden ? 'hide' : 'show'}`}>
+                SL_NO.
+              </TableCell>
               <TableCell align='center'>Title</TableCell>
               <TableCell align='center'>Subject</TableCell>
               <TableCell align='center'>Start time</TableCell>
@@ -51,6 +66,7 @@ const OnlineClassResourceTable = () => {
             <TableBody className='viewclass__table-body'>
               {resourceOnlineClasses.map((row, index) => (
                 <OnlineClassResourceCell
+                  isHidden={isHidden}
                   data={row}
                   key={row.id}
                   index={index}

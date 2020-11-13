@@ -48,12 +48,12 @@ const EditSubject = ({id,name,desc,handleGoBack,setLoading}) => {
 
 
   return (
-     <div className='create__class'>
+     <div className='create__class' style={{ width: '95%', margin: '0 auto' }}>
       <form autoComplete='off' onSubmit={handleSubmit}>
-        <Grid item style={{marginLeft:'14px',color:'#014B7E'}} >
+        <Grid item style={{color:'#014B7E'}} >
               <h1>Edit Subject</h1>
         </Grid>
-        <hr/>
+        <hr style={{ marginBottom: 20 }} />
         <Grid container className='create-class-container'>
           <Grid item xs={12} sm={4}>
             <TextField

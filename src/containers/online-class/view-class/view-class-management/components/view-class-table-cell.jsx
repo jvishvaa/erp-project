@@ -26,6 +26,7 @@ const ViewClassTableCell = (props) => {
       },
       tutor_email: tutor,
     },
+    isHidden,
   } = props || {};
 
   const {
@@ -77,13 +78,13 @@ const ViewClassTableCell = (props) => {
 
   return (
     <TableRow key={id}>
-      <TableCell align='center'>{currentPage * 10 - (10 - index - 1)}</TableCell>
+      <TableCell align='center' className={`${isHidden ? 'hide' : 'show'}`}>{currentPage * 10 - (10 - index - 1)}</TableCell>
       <TableCell align='center'>{title}</TableCell>
       <TableCell align='center'>{subjectName}</TableCell>
       <TableCell align='center'>{startTime}</TableCell>
-      <TableCell align='center'>{attendedCount}</TableCell>
-      <TableCell align='center'>{absentCount}</TableCell>
-      <TableCell align='center'>{email}</TableCell>
+      <TableCell align='center' className={`${isHidden ? 'hide' : 'show'}`}>{attendedCount}</TableCell>
+      <TableCell align='center' className={`${isHidden ? 'hide' : 'show'}`}>{absentCount}</TableCell>
+      <TableCell align='center' className={`${isHidden ? 'hide' : 'show'}`}>{email}</TableCell>
       <TableCell align='center'>
         {hasClassEnded ? (
           'Class Ended'
@@ -105,7 +106,7 @@ const ViewClassTableCell = (props) => {
         )}
       </TableCell>
       {currentManagementTab === 0 ? (
-        <TableCell>
+        <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
           {scope === true ? (
             <Button
               variant='contained'
@@ -124,7 +125,7 @@ const ViewClassTableCell = (props) => {
       ) : (
         ''
       )}
-      <TableCell>
+      <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
         <Button variant='contained' color='primary' onClick={handleAttendee}>
           Attendee list
         </Button>

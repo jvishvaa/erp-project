@@ -3,7 +3,9 @@
 
 // View class student collection
 .viewclass__student-collection {
-  width: 95%;
+  min-height: 600px;
+  background-color: white;
+  width: 100%;
   margin: 20px auto 0px auto;
 
   .not-found-alert {
@@ -18,15 +20,27 @@
   }
 
   .student-view-pagination {
-    margin-top: 40px;
+    margin-top: 0px;
   }
+
+  h6,
+  h5 {
+    font-size: 18px !important;
+  }
+}
+
+.breadcrumb-container {
+  width: 95%;
+  font-weight: 100;
+  margin: 20px auto 40px auto;
 }
 
 // View class student
 .viewclass__student-container {
+  background-color: white;
   width: 95%;
-  border: 2px solid $primary-color;
-  margin: 20px auto;
+  border: 1px solid $primary-color;
+  margin: 25px auto 40px auto;
   padding: 15px;
   border-radius: 5px;
 
@@ -36,6 +50,16 @@
 
   .responsive__align {
     text-align: right;
+  }
+
+  h6,
+  h5 {
+    font-size: 18px !important;
+  }
+
+  button {
+    color: white;
+    font-size: 12px;
   }
 }
 

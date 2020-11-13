@@ -8,17 +8,42 @@ import {
   Tabs,
   TextField,
   Typography,
+  withStyles,
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import GetAppIcon from '@material-ui/icons/GetApp';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 import moment from 'moment';
-import { useSelector } from 'react-redux';
 import { OnlineclassViewContext } from '../../../online-class-context/online-class-state';
 import axiosInstance from '../../../../../config/axios';
 import endpoints from '../../../../../config/endpoints';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
+
+const StyledTabs = withStyles({
+  indicator: {
+    display: 'flex',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+    '& > span': {
+      maxWidth: 100,
+      width: '100%',
+      backgroundColor: '#ff6b6b',
+    },
+  },
+})((props) => <Tabs {...props} TabIndicatorProps={{ children: <span /> }} />);
+
+const StyledTab = withStyles((theme) => ({
+  root: {
+    textTransform: 'none',
+    color: '#014b7e',
+    fontWeight: theme.typography.fontWeightRegular,
+    fontSize: theme.typography.pxToRem(15),
+    marginRight: theme.spacing(0),
+    '&:focus': {
+      opacity: 1,
+    },
+  },
+}))((props) => <Tab disableRipple {...props} />);
 
 const ViewClassManagementFilters = () => {
   const [currentTab, setCurrentTab] = useState(0);
@@ -196,7 +221,7 @@ const ViewClassManagementFilters = () => {
   return (
     <div className='filters__container'>
       <Grid container spacing={3}>
-        <Grid item>
+        <Grid item xs={12} sm={2}>
           <Autocomplete
             key={clearKey}
             multiple
@@ -219,7 +244,7 @@ const ViewClassManagementFilters = () => {
           />
         </Grid>
         {gradeIds.length ? (
-          <Grid item xs={2}>
+          <Grid item xs={12} sm={2}>
             <Autocomplete
               key={clearKey}
               size='small'
@@ -291,6 +316,7 @@ const ViewClassManagementFilters = () => {
               KeyboardButtonProps={{
                 'aria-label': 'change date',
               }}
+              style={{ marginTop: -6 }}
             />
           </Grid>
           <Grid item xs={12} sm={2}>
@@ -310,15 +336,33 @@ const ViewClassManagementFilters = () => {
               KeyboardButtonProps={{
                 'aria-label': 'change date',
               }}
+              style={{ marginTop: -6 }}
             />
           </Grid>
         </MuiPickersUtilsProvider>
+        <Grid item xs={12} sm={3}>
+          <FormControlLabel
+            className='cancelled-class-check'
+            control={
+              <Checkbox
+                checked={isCancelSelected}
+                onChange={handleCancel}
+                name='cancel'
+                color='primary'
+              />
+            }
+            label='Cancelled class'
+          />
+        </Grid>
+      </Grid>
+      <Grid container spacing={3} style={{ marginTop: 30 }}>
         <Grid item xs={12} sm={2}>
           <Button
             className='viewclass__management-btn'
             variant='contained'
             onClick={handleClear}
             disabled={!gradeIds.length && !subjectIds.length}
+            style={{ color: 'black' }}
           >
             Clear all
           </Button>
@@ -333,45 +377,19 @@ const ViewClassManagementFilters = () => {
             get classes
           </Button>
         </Grid>
-        {/* <Grid item xs={12} sm={2}>
-          <Button
-            className='viewclass__management-btn'
-            startIcon={<GetAppIcon />}
-            variant='outlined'
-            color='primary'
-          >
-            bulk excel
-          </Button>
-        </Grid> */}
       </Grid>
+      <hr style={{ marginTop: 40 }} />
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
-          <Tabs
+          <StyledTabs
+            variant='standard'
             value={currentTab}
             onChange={handleTabChange}
-            variant='fullWidth'
-            indicatorColor='primary'
-            textColor='primary'
-            aria-label='icon label tabs example'
-            className='managementview-tabs'
+            aria-label='styled tabs example'
           >
-            <Tab label={<Typography variant='h6'>Upcoming</Typography>} />
-            <Tab label={<Typography variant='h6'>Completed</Typography>} />
-          </Tabs>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <FormControlLabel
-            className='cancelled-class-check'
-            control={
-              <Checkbox
-                checked={isCancelSelected}
-                onChange={handleCancel}
-                name='cancel'
-                color='primary'
-              />
-            }
-            label='Cancelled class'
-          />
+            <StyledTab label={<Typography variant='h6'>Upcoming</Typography>} />
+            <StyledTab label={<Typography variant='h6'>Completed</Typography>} />
+          </StyledTabs>
         </Grid>
       </Grid>
     </div>
