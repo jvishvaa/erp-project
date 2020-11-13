@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-duplicate-props */
-import React , { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -10,7 +10,7 @@ import TableRow from '@material-ui/core/TableRow';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import IconButton from '@material-ui/core/IconButton';
-import { Grid, TextField, Button} from '@material-ui/core';
+import { Grid, TextField, Button } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -19,17 +19,21 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Pagination from '@material-ui/lab/Pagination';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Container from '@material-ui/core/Container';
+import Box from '@material-ui/core/Box';
 import Layout from '../Layout';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
-import CreateSection from './create-section'
-import EditSection from './edit-section'
+import CreateSection from './create-section';
+import EditSection from './edit-section';
 import Loading from '../../components/loader/loader';
-import './master-management.css'
+import './master-management.css';
+import SectionCard from '../../components/section-card';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,7 +53,24 @@ const useStyles = makeStyles((theme) => ({
   buttonContainer: {
     background: theme.palette.background.secondary,
     paddingBottom: theme.spacing(2),
-  }
+  },
+  cardsPagination: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    position: 'fixed',
+    bottom: 0,
+    padding: '1rem',
+    backgroundColor: '#ffffff',
+    zIndex: 100,
+  },
+  centerInMobile: {
+    width: '100%',
+    display: 'flex',
+    [theme.breakpoints.down('sm')]: {
+      justifyContent: 'center',
+    },
+  },
 }));
 
 const columns = [
@@ -64,274 +85,360 @@ const columns = [
   },
 ];
 
-
 const SectionTable = () => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const [page, setPage] = React.useState(1);
-  const [sections,setSections]=useState([])
-  const [openDeleteModal,setOpenDeleteModal]=useState(false)
-  const [sectionId,setSectionId]=useState()
-  const [sectionName,setSectionName]=useState('')
-  const [addFlag,setAddFlag]=useState(false)
-  const [editFlag,setEditFlag]=useState(false)
-  const [tableFlag,setTableFlag]=useState(true)
-  const [grades,setGrades]=useState([])
-  const [pageCount,setPageCount]=useState()
-  const [delFlag,setDelFlag]=useState(false)
-  const [searchGrade,setSearchGrade]=useState('')
-  const [searchSection,setSearchSection]=useState('')
-  const [widthFlag,setWidthFlag]=useState(false)
+  const [sections, setSections] = useState([]);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [sectionId, setSectionId] = useState();
+  const [sectionName, setSectionName] = useState('');
+  const [addFlag, setAddFlag] = useState(false);
+  const [editFlag, setEditFlag] = useState(false);
+  const [tableFlag, setTableFlag] = useState(true);
+  const [grades, setGrades] = useState([]);
+  const [pageCount, setPageCount] = useState();
+  const [delFlag, setDelFlag] = useState(false);
+  const [searchGrade, setSearchGrade] = useState('');
+  const [searchSection, setSearchSection] = useState('');
+  const [widthFlag, setWidthFlag] = useState(false);
   const [loading, setLoading] = useState(false);
-  
+
+  const themeContext = useTheme();
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
   const handleGrade = (event, value) => {
-    if(value)
-    setSearchGrade(value.id)
-    else
-    setSearchGrade('')
+    if (value) setSearchGrade(value.id);
+    else setSearchGrade('');
   };
 
-  const handleAddSection=()=>{
-    setTableFlag(false)
-    setAddFlag(true)
-    setEditFlag(false)
-    setSearchGrade('')
-    setSearchSection('')
-  }
+  const handleAddSection = () => {
+    setTableFlag(false);
+    setAddFlag(true);
+    setEditFlag(false);
+    setSearchGrade('');
+    setSearchSection('');
+  };
 
-  const handleEditSection=(id,name)=>{
-    setTableFlag(false)
-    setAddFlag(false)
-    setEditFlag(true)
-    setSectionId(id)
-    setSectionName(name)
-  }
+  const handleEditSection = (id, name) => {
+    setTableFlag(false);
+    setAddFlag(false);
+    setEditFlag(true);
+    setSectionId(id);
+    setSectionName(name);
+  };
 
-  const handleGoBack=()=>{
-    setTableFlag(true)
-    setAddFlag(false)
-    setEditFlag(false)
-  }
+  const handleGoBack = () => {
+    setTableFlag(true);
+    setAddFlag(false);
+    setEditFlag(false);
+  };
 
   const handleDeleteSection = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     setLoading(true);
-    axiosInstance.put(endpoints.masterManagement.updateSection,{
-      'section_id': sectionId,
-      'is_delete': true,
-    }).then(result=>{
-    if (result.status === 200) {
-      {
-        setDelFlag(!delFlag)
+    axiosInstance
+      .put(endpoints.masterManagement.updateSection, {
+        section_id: sectionId,
+        is_delete: true,
+      })
+      .then((result) => {
+        if (result.status === 200) {
+          {
+            setDelFlag(!delFlag);
+            setLoading(false);
+            setAlert('success', result.data.message);
+          }
+        } else {
+          setLoading(false);
+          setAlert('error', result.data.message);
+        }
+      })
+      .catch((error) => {
         setLoading(false);
-        setAlert('success', result.data.message);
-      }
-    } else {
+        setAlert('error', error.message);
+      });
+    setOpenDeleteModal(false);
+  };
+
+  const handleOpenDeleteModal = (id) => {
+    setSectionId(id);
+    setOpenDeleteModal(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setOpenDeleteModal(false);
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
       setLoading(false);
-      setAlert('error', result.data.message);
-    }
-    }).catch((error)=>{
-      setLoading(false);
-      setAlert('error', error.message);
-    })
-    setOpenDeleteModal(false)
-    };
+    }, 450);
+  }, [page, delFlag, editFlag, addFlag, searchGrade]);
 
-    const handleOpenDeleteModal = (id) => {
-    setSectionId(id)
-    setOpenDeleteModal(true)
-    };
-
-    const handleCloseDeleteModal = () => {
-    setOpenDeleteModal(false)
-    };
-
-    useEffect(()=>{
-      setLoading(true)
-      setTimeout(()=> {setLoading(false)},450); 
-    },[page,delFlag,editFlag,addFlag,searchGrade])
-
-    useEffect(()=>{
-      axiosInstance.get(`${endpoints.masterManagement.sections}?page=${page}&page_size=15&section=${searchSection}&grade=${searchGrade}`)
-      .then(result=>{
+  useEffect(() => {
+    axiosInstance
+      .get(
+        `${endpoints.masterManagement.sections}?page=${page}&page_size=15&section=${searchSection}&grade=${searchGrade}`
+      )
+      .then((result) => {
         if (result.status === 200) {
           setSections(result.data.result.results);
-          setPageCount(result.data.result.total_pages)
+          setPageCount(result.data.result.total_pages);
         } else {
           setAlert('error', result.data.message);
         }
       })
-      .catch((error)=>{
+      .catch((error) => {
         setAlert('error', error.message);
-      })
+      });
 
-      axiosInstance.get(endpoints.masterManagement.gradesDrop)
-      .then(result=>{
+    axiosInstance
+      .get(endpoints.masterManagement.gradesDrop)
+      .then((result) => {
         if (result.status === 200) {
           setGrades(result.data.data);
         } else {
           setAlert('error', result.data.message);
         }
       })
-      .catch((error)=>{
+      .catch((error) => {
         setAlert('error', error.message);
-      })
-  },[openDeleteModal,delFlag,addFlag,editFlag,page,searchGrade,searchSection])
-
+      });
+  }, [openDeleteModal, delFlag, addFlag, editFlag, page, searchGrade, searchSection]);
 
   return (
     <>
-    {loading ? <Loading message='Loading...' /> : null}
-    <Layout>
-    <div className="headerMaster">
-      <div>
-        <CommonBreadcrumbs
-          componentName='Master Management'
-          childComponentName='Section List'
-        />
-      </div>
-      <div className={classes.buttonContainer}>
-      {tableFlag && !addFlag && !editFlag &&
-        <Button startIcon={<AddOutlinedIcon />} size="medium" title="Add Section" onClick={handleAddSection}>
-          Add Section
-        </Button>
-      }
-      { (addFlag || editFlag) &&
-        <Button startIcon={<ArrowBackIcon />} size="medium" title="Go back to Section List" onClick={handleGoBack}>
-          Section List
-        </Button>
-      }
-      </div>
-    </div>
-
-    {!tableFlag && addFlag && !editFlag && <CreateSection grades={grades} setLoading={setLoading}/> }
-    {!tableFlag && !addFlag && editFlag && <EditSection id={sectionId} name={sectionName} handleGoBack={handleGoBack} setLoading={setLoading}/> }
-
-   
-    {tableFlag && !addFlag && !editFlag && 
-    <Grid container spacing={4} style={{marginBottom:'10px'}}>
-      <Grid item>
-        <TextField
-          id='secname'
-          label='Section Name'
-          className={widthFlag?"mainWidth widthClass":"mainWidth"}
-          onFocus={e=>setWidthFlag(true)}
-          onBlur={e=>setWidthFlag(false)}
-          variant='outlined'
-          size='medium'
-          autoComplete="off"
-          name='secname'
-          onChange={e=>setSearchSection(e.target.value)}
-        />
-      </Grid>
-      <Grid item>
-        <Autocomplete
-          size='medium'
-          onChange={handleGrade}
-          id='grade'
-          className="gradeDropClass"
-          options={grades}
-          getOptionLabel={(option) => option.grade_name}
-          filterSelectedOptions
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant='outlined'    
-              label='Grades'
-              placeholder='Grades'
+      {loading ? <Loading message='Loading...' /> : null}
+      <Layout>
+        <div className='headerMaster'>
+          <div style={{ padding: '1rem' }}>
+            <CommonBreadcrumbs
+              componentName='Master Management'
+              childComponentName='Section List'
             />
-          )}
-        />
-      </Grid>
-    </Grid>
-    }
-    {tableFlag && !addFlag && !editFlag && 
-    <Paper className={classes.root}>
-      <TableContainer className={classes.container}>
-        <Table stickyHeader aria-label='sticky table'>
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                  className={classes.columnHeader}
-                >
-                  {column.label}
-                </TableCell>
+          </div>
+          {/* <div className={classes.buttonContainer}>
+            {tableFlag && !addFlag && !editFlag && (
+              <Button
+                startIcon={<AddOutlinedIcon />}
+                size='medium'
+                title='Add Section'
+                onClick={handleAddSection}
+              >
+                Add Section
+              </Button>
+            )}
+            {(addFlag || editFlag) && (
+              <Button
+                startIcon={<ArrowBackIcon />}
+                size='medium'
+                title='Go back to Section List'
+                onClick={handleGoBack}
+              >
+                Section List
+              </Button>
+            )}
+          </div> */}
+        </div>
+
+        {!tableFlag && addFlag && !editFlag && (
+          <CreateSection grades={grades} setLoading={setLoading} />
+        )}
+        {!tableFlag && !addFlag && editFlag && (
+          <EditSection
+            id={sectionId}
+            name={sectionName}
+            handleGoBack={handleGoBack}
+            setLoading={setLoading}
+          />
+        )}
+
+        {tableFlag && !addFlag && !editFlag && (
+          <Grid container spacing={3} style={{ padding: '1rem', marginBottom: '10px' }}>
+            <Grid item xs={12}>
+              <Box className={classes.centerInMobile}>
+                {tableFlag && !addFlag && !editFlag && (
+                  <Button
+                    startIcon={<AddOutlinedIcon />}
+                    size='medium'
+                    title='Add Section'
+                    onClick={handleAddSection}
+                  >
+                    Add Section
+                  </Button>
+                )}
+                {(addFlag || editFlag) && (
+                  <Button
+                    startIcon={<ArrowBackIcon />}
+                    size='medium'
+                    title='Go back to Section List'
+                    onClick={handleGoBack}
+                  >
+                    Section List
+                  </Button>
+                )}
+              </Box>
+            </Grid>
+            <Grid item xs={12}>
+              <Box className={classes.centerInMobile}>
+                <TextField
+                  id='secname'
+                  label='Section Name'
+                  className={widthFlag ? 'mainWidth widthClass' : 'mainWidth'}
+                  onFocus={(e) => setWidthFlag(true)}
+                  onBlur={(e) => setWidthFlag(false)}
+                  variant='outlined'
+                  size='medium'
+                  autoComplete='off'
+                  name='secname'
+                  onChange={(e) => setSearchSection(e.target.value)}
+                />
+              </Box>
+            </Grid>
+            <Grid item xs={12}>
+              <Box className={classes.centerInMobile}>
+                <Autocomplete
+                  size='medium'
+                  onChange={handleGrade}
+                  id='grade'
+                  className='gradeDropClass'
+                  options={grades}
+                  getOptionLabel={(option) => option.grade_name}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Grades'
+                      placeholder='Grades'
+                    />
+                  )}
+                />
+              </Box>
+            </Grid>
+          </Grid>
+        )}
+        {!isMobile && tableFlag && !addFlag && !editFlag && (
+          <Paper className={classes.root}>
+            <TableContainer className={classes.container}>
+              <Table stickyHeader aria-label='sticky table'>
+                <TableHead>
+                  <TableRow>
+                    {columns.map((column) => (
+                      <TableCell
+                        key={column.id}
+                        align={column.align}
+                        style={{ minWidth: column.minWidth }}
+                        className={classes.columnHeader}
+                      >
+                        {column.label}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {sections.map((section, index) => {
+                    return (
+                      <TableRow hover section='checkbox' tabIndex={-1} key={index}>
+                        <TableCell className={classes.tableCell}>
+                          {section.section.section_name}
+                        </TableCell>
+                        <TableCell className={classes.tableCell}>
+                          {section.section.created_by}
+                        </TableCell>
+                        <TableCell className={classes.tableCell}>
+                          <IconButton
+                            onClick={(e) =>
+                              handleEditSection(
+                                section.section.id,
+                                section.section.section_name
+                              )
+                            }
+                            title='Edit Section'
+                          >
+                            <EditOutlinedIcon color='primary' />
+                          </IconButton>
+                          <IconButton
+                            onClick={(e) => {
+                              setSectionName(section.section.section_name);
+                              handleOpenDeleteModal(section.section.id);
+                            }}
+                            title='Delete Section'
+                          >
+                            <DeleteOutlinedIcon color='primary' />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <div className='paginate'>
+              <Pagination
+                count={pageCount}
+                color='primary'
+                showFirstButton
+                showLastButton
+                page={page}
+                onChange={handleChangePage}
+              />
+            </div>
+          </Paper>
+        )}
+        {isMobile && tableFlag && !addFlag && !editFlag && (
+          <>
+            <Container className={classes.cardsContainer}>
+              {sections.map((section, i) => (
+                <SectionCard
+                  section={section.section}
+                  onEdit={(section) => {
+                    handleEditSection(section.id, section.section_name);
+                  }}
+                  onDelete={(section) => {
+                    setSectionName(section.section_name);
+                    handleOpenDeleteModal(section.id);
+                  }}
+                />
               ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {sections.map((section, index) => {
-              return (
-                <TableRow hover section='checkbox' tabIndex={-1} key={index}>
-                    <TableCell className={classes.tableCell}>
-                      {section.section.section_name}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {section.section.created_by}
-                    </TableCell>
-                    <TableCell
-                      className={classes.tableCell}
-                    >
-                      <IconButton
-                        onClick={e=>handleEditSection(section.section.id,section.section.section_name)}
-                        title='Edit Section'
-                      >
-                        <EditOutlinedIcon color='primary' />
-                      </IconButton>
-                      <IconButton
-                         onClick={e=>{setSectionName(section.section.section_name);handleOpenDeleteModal(section.section.id);}}
-                        title='Delete Section'
-                      >
-                        <DeleteOutlinedIcon color='primary' />
-                      </IconButton>
-                    </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <div className="paginate">
-        <Pagination
-        count={pageCount}
-        color="primary"
-        showFirstButton
-        showLastButton
-        page={page}
-        onChange={handleChangePage}
-        />
-    </div>
-    </Paper>
-    }
-    <Dialog
-      open={openDeleteModal}
-      onClose={handleCloseDeleteModal}
-      aria-labelledby='draggable-dialog-title'
-    >
-      <DialogTitle style={{ cursor: 'move' }} id='draggable-dialog-title'>
-        Delete Section
-      </DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-        {`Confirm Delete Section ${sectionName}`}
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button autoFocus onClick={handleCloseDeleteModal} color='secondary'>
-          Cancel
-        </Button>
-        <Button onClick={handleDeleteSection}>Confirm</Button>
-      </DialogActions>
-    </Dialog>
-    </Layout>
+            </Container>
+            <div className={classes.cardsPagination}>
+              <Pagination
+                page={page}
+                count={pageCount}
+                onChange={handleChangePage}
+                color='primary'
+              />
+            </div>
+          </>
+        )}
+        <Dialog
+          open={openDeleteModal}
+          onClose={handleCloseDeleteModal}
+          aria-labelledby='draggable-dialog-title'
+        >
+          <DialogTitle style={{ cursor: 'move' }} id='draggable-dialog-title'>
+            Delete Section
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              {`Confirm Delete Section ${sectionName}`}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button autoFocus onClick={handleCloseDeleteModal} color='secondary'>
+              Cancel
+            </Button>
+            <Button onClick={handleDeleteSection}>Confirm</Button>
+          </DialogActions>
+        </Dialog>
+      </Layout>
     </>
   );
 };
