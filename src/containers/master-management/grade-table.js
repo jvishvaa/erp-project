@@ -23,6 +23,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
+import TablePagination from '@material-ui/core/TablePagination';
 import Layout from '../Layout';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
@@ -33,6 +34,7 @@ import EditGrade from './edit-grade';
 import './master-management.css';
 import Loading from '../../components/loader/loader';
 import GradeCard from '../../components/grade-card';
+import './styles.scss';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,14 +42,6 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     maxHeight: '70vh',
-  },
-  columnHeader: {
-    color: theme.palette.secondary.main,
-    fontWeight: 600,
-    fontSize: '1rem',
-  },
-  tableCell: {
-    color: theme.palette.secondary.main,
   },
   buttonContainer: {
     background: theme.palette.background.secondary,
@@ -69,6 +63,15 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       justifyContent: 'center',
     },
+  },
+  columnHeader: {
+    color: `${theme.palette.secondary.main} !important`,
+    fontWeight: 600,
+    fontSize: '1rem',
+    backgroundColor: `#ffffff !important`,
+  },
+  tableCell: {
+    color: theme.palette.secondary.main,
   },
 }));
 
@@ -102,12 +105,14 @@ const GradeTable = () => {
   const [searchGrade, setSearchGrade] = useState('');
   const [widthFlag, setWidthFlag] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+  const [limit, setLimit] = useState(15);
 
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    setPage(newPage + 1);
   };
 
   const handleAddGrade = () => {
@@ -178,11 +183,12 @@ const GradeTable = () => {
   useEffect(() => {
     axiosInstance
       .get(
-        `${endpoints.masterManagement.grades}?page=${page}&page_size=15&grade_name=${searchGrade}`
+        `${endpoints.masterManagement.grades}?page=${page}&page_size=${limit}&grade_name=${searchGrade}`
       )
       .then((result) => {
         if (result.status === 200) {
           {
+            setTotalCount(result.data.result.count);
             setGrades(result.data.result.results);
             setPageCount(result.data.result.total_pages);
           }
@@ -287,10 +293,10 @@ const GradeTable = () => {
         )}
 
         {!isMobile && tableFlag && !addFlag && !editFlag && (
-          <Paper className={classes.root}>
+          <Paper className={`${classes.root} common-table`}>
             <TableContainer className={classes.container}>
               <Table stickyHeader aria-label='sticky table'>
-                <TableHead>
+                <TableHead className='table-header-row'>
                   <TableRow>
                     {columns.map((column) => (
                       <TableCell
@@ -346,7 +352,7 @@ const GradeTable = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-            <div className='paginate'>
+            {/* <div className='paginate'>
               <Pagination
                 count={pageCount}
                 color='primary'
@@ -355,7 +361,16 @@ const GradeTable = () => {
                 page={page}
                 onChange={handleChangePage}
               />
-            </div>
+            </div> */}
+            <TablePagination
+              component='div'
+              count={totalCount}
+              rowsPerPage={limit}
+              page={page - 1}
+              onChangePage={handleChangePage}
+              rowsPerPageOptions={false}
+              className='table-pagination'
+            />
           </Paper>
         )}
         {isMobile && !addFlag && !editFlag && (

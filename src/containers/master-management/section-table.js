@@ -24,6 +24,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
+import TablePagination from '@material-ui/core/TablePagination';
 import Layout from '../Layout';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
@@ -41,14 +42,6 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     maxHeight: '70vh',
-  },
-  columnHeader: {
-    color: theme.palette.secondary.main,
-    fontWeight: 600,
-    fontSize: '1rem',
-  },
-  tableCell: {
-    color: theme.palette.secondary.main,
   },
   buttonContainer: {
     background: theme.palette.background.secondary,
@@ -70,6 +63,15 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       justifyContent: 'center',
     },
+  },
+  columnHeader: {
+    color: `${theme.palette.secondary.main} !important`,
+    fontWeight: 600,
+    fontSize: '1rem',
+    backgroundColor: `#ffffff !important`,
+  },
+  tableCell: {
+    color: theme.palette.secondary.main,
   },
 }));
 
@@ -103,12 +105,14 @@ const SectionTable = () => {
   const [searchSection, setSearchSection] = useState('');
   const [widthFlag, setWidthFlag] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+  const [limit, setLimit] = useState(15);
 
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    setPage(newPage + 1);
   };
 
   const handleGrade = (event, value) => {
@@ -184,10 +188,11 @@ const SectionTable = () => {
   useEffect(() => {
     axiosInstance
       .get(
-        `${endpoints.masterManagement.sections}?page=${page}&page_size=15&section=${searchSection}&grade=${searchGrade}`
+        `${endpoints.masterManagement.sections}?page=${page}&page_size=${limit}&section=${searchSection}&grade=${searchGrade}`
       )
       .then((result) => {
         if (result.status === 200) {
+          setTotalCount(result.data.result.count);
           setSections(result.data.result.results);
           setPageCount(result.data.result.total_pages);
         } else {
@@ -325,10 +330,10 @@ const SectionTable = () => {
           </Grid>
         )}
         {!isMobile && tableFlag && !addFlag && !editFlag && (
-          <Paper className={classes.root}>
+          <Paper className={`${classes.root} common-table`}>
             <TableContainer className={classes.container}>
               <Table stickyHeader aria-label='sticky table'>
-                <TableHead>
+                <TableHead className='table-header-row'>
                   <TableRow>
                     {columns.map((column) => (
                       <TableCell
@@ -380,7 +385,7 @@ const SectionTable = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-            <div className='paginate'>
+            {/* <div className='paginate'>
               <Pagination
                 count={pageCount}
                 color='primary'
@@ -389,7 +394,16 @@ const SectionTable = () => {
                 page={page}
                 onChange={handleChangePage}
               />
-            </div>
+            </div> */}
+            <TablePagination
+              component='div'
+              count={totalCount}
+              rowsPerPage={limit}
+              page={page - 1}
+              onChangePage={handleChangePage}
+              rowsPerPageOptions={false}
+              className='table-pagination'
+            />
           </Paper>
         )}
         {isMobile && tableFlag && !addFlag && !editFlag && (
