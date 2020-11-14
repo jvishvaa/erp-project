@@ -205,7 +205,8 @@ const Layout = ({ children, history }) => {
     }
   };
 
-  const handleTextSearchClear = () => {
+  const handleTextSearchClear = (e) => {
+    e.preventDefault();
     setTimeout(() => {
       setSearchedText('');
       setGlobalSearchResults(false);
@@ -388,7 +389,7 @@ const Layout = ({ children, history }) => {
                   <IconButton
                     type='submit'
                     className={classes.clearIconButton}
-                    aria-label='search'
+                    aria-label='close'
                     onClick={handleTextSearchClear}
                   >
                     <CloseIcon />

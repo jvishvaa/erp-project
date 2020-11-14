@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
@@ -27,6 +28,7 @@ const EditGroup = withRouter(({ history, ...props }) => {
   } = props || {};
   const { setAlert } = useContext(AlertNotificationContext);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [pageno, setPageno] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
   const [headers, setHeaders] = useState([]);
@@ -36,6 +38,8 @@ const EditGroup = withRouter(({ history, ...props }) => {
   const [completeData, setCompleteData] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [moduleId, setModuleId] = useState();
+  const [modulePermision, setModulePermision] = useState(true);
   const addGroupName = (e) => {
     setGroupName(e.target.value);
   };
@@ -101,7 +105,7 @@ const EditGroup = withRouter(({ history, ...props }) => {
     }
   };
   const getEditGroupsData = async () => {
-    const getEditGroupsDataUrl = `${endpoints.communication.editGroup}${editId}/retrieve-update-group/?page=${pageno}&page_size=15`;
+    const getEditGroupsDataUrl = `${endpoints.communication.editGroup}${editId}/retrieve-update-group/?page=${pageno}&page_size=15&module_id=${moduleId}`;
     try {
       setLoading(true);
       const result = await axiosInstance.get(getEditGroupsDataUrl, {
@@ -197,7 +201,30 @@ const EditGroup = withRouter(({ history, ...props }) => {
       }
     }
   };
-
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Communication' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'View&Edit Group') {
+              setModuleId(item.child_id);
+              setModulePermision(true);
+            } else {
+              setModulePermision(false);
+            }
+          });
+        } else {
+          setModulePermision(false);
+        }
+      });
+    } else {
+      setModulePermision(false);
+    }
+  }, []);
   useEffect(() => {
     getEditGroupsData();
   }, [pageno]);

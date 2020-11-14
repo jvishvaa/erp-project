@@ -1,131 +1,208 @@
-.send_message_wrapper{
-	background-color: #F9F9F9;
+.send_message_wrapper {
+  background-color: #f9f9f9;
 }
-.send_message_group_select_lebel{
-	display: inline-block;
-    font-size: 1rem;
-    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-    font-weight: 400;
-    line-height: 1.5;
-    letter-spacing: 0.00938em;
-    vertical-align: middle;
-	margin-right: 1%;
-	color: #014B7E;
+.send_message_group_select_lebel {
+  display: inline-block;
+  font-size: 1.1428571428571428rem;
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.00938em;
+  vertical-align: middle;
+  margin-right: 1%;
+  color: #014b7e;
 }
-.MuiTypography-body1{
-	color: #014B7E;
+.MuiTypography-body1 {
+  color: #014b7e;
 }
-.send_message_button_wrapper{
-	margin: 2%;
-    display: flex;
-    justify-content: space-between;
-    width: 50%;
+.send_message_button_wrapper {
+  margin: 2%;
+  display: flex;
+  justify-content: space-between;
+  width: 35%;
+  margin-left: 5%;
 }
-.textFields_message{
-	display: block;
-    padding: 0%;
-    border-radius: 5px;
-    border: 1px solid #CFCFCF;
-    padding-left: 0;
-    width: 96.5%;
-    outline: none;
-    resize: none;
-    color: #014B7E;
-    font-size: 1.2rem;
+.textFields_message {
+  display: block;
+  padding: 0%;
+  border-radius: 5px;
+  border: 1px solid #cfcfcf;
+  padding-left: 0;
+  width: 92.5%;
+  outline: none;
+  resize: none;
+  color: #014b7e;
+  font-size: 1.2rem;
 }
-.text_message_word_count{
-	color: #014B7E;
+.text_message_word_count {
+  color: #014b7e;
+  margin: 4%;
+  line-height: 2;
 }
-.message_type_block_wrapper{
-	display: flex;
-    margin: 2%;
-    border-bottom: 1px solid #CFCFCF;
+.message_sending_screen_wrapper {
+  padding: 1% 5%;
+  background: white;
 }
-.message_type_block{
-	width: 10%;
-    height: 30px;
-    text-align: center;
-	color: #014B7E;
-	cursor: pointer;
+.message_type_block_wrapper {
+  display: flex;
+  margin: 2%;
+  margin-left: 0%;
+  border-bottom: 1px solid #cfcfcf;
 }
-.message_type_block_selected{
-	border-bottom: 3px solid #FF6B6B;
-    font-weight: 600;
+.message_type_block {
+  width: 10%;
+  height: 30px;
+  text-align: center;
+  color: #014b7e;
+  cursor: pointer;
 }
-.send_message_message_tag{
-	color: #014B7E;
-	font-weight: 600;
+.message_type_block_selected {
+  border-bottom: 3px solid #ff6b6b;
+  font-weight: 600;
 }
-.email_subject_wrapper .MuiFormControl-root{
-	width: 40%;
-    margin: 2% 1%;
+.send_message_message_tag {
+  color: #014b7e;
+  font-weight: 600;
 }
-.message_type_wrapper   .MuiFormControl-root{
-	border: 1px solid #d4cbcb !important;
-    border-radius: 10px;
+.email_subject_wrapper .MuiFormControl-root {
+  width: 40%;
+  margin: 2% 1%;
 }
-.message_type_wrapper   .MuiInput-underline:before{
-	border: none !important;
+.message_type_wrapper .MuiFormControl-root {
+  border: 1px solid #d4cbcb !important;
+  border-radius: 10px;
 }
-.message_type_wrapper   .MuiInput-underline:after{
-	border: none !important;
+.message_type_wrapper .MuiInput-underline:before {
+  border: none !important;
 }
-.message_type_wrapper   .MuiSelect-select:focus{
-	background-color: #F9F9F9 !important;
-	border-radius: 10px !important;
+.message_type_wrapper .MuiInput-underline:after {
+  border: none !important;
 }
-.message_type_wrapper   .MuiSelect-select{
-	border-radius: 5px !important;
+.message_type_wrapper .MuiSelect-select:focus {
+  background-color: #f9f9f9 !important;
+  border-radius: 10px !important;
 }
-.message_type_wrapper    label + .MuiInput-formControl{
-    margin-top: 3px !important;
+.message_type_wrapper .MuiSelect-select {
+  border-radius: 5px !important;
 }
-.message_type_wrapper   .MuiSelect-icon{
-	color: #FF6B6B !important;
+.message_type_wrapper label + .MuiInput-formControl {
+  margin-top: 3px !important;
 }
-.message_type_wrapper  .MuiInputLabel-outlined{
-	transform: translate(14px, 10px) scale(1) !important;
+.message_type_wrapper .MuiSelect-icon {
+  color: #ff6b6b !important;
 }
-.message_type_wrapper  .MuiInputLabel-outlined.MuiInputLabel-shrink{
-	transform: translate(14px, -6px) scale(0.75) !important;
+.message_type_wrapper .MuiInputLabel-outlined {
+  transform: translate(14px, 10px) scale(1) !important;
 }
-.message_type_wrapper  .MuiPaper-elevation8{
-	margin-top: 6%;
+.message_type_wrapper .MuiInputLabel-outlined.MuiInputLabel-shrink {
+  transform: translate(14px, -6px) scale(0.75) !important;
 }
-.message_type_wrapper .MuiFormLabel-root{
-	color: #014B7E !important;
-	font-size: 1rem !important;
-    font-weight: 600 !important;
+.message_type_wrapper .MuiPaper-elevation8 {
+  margin-top: 6%;
 }
-.send_message_select_all_wrapper{
-	color: #014B7E;
-    font-size: 1rem;
-    font-weight: 600;
-    margin-top: 2%;
-    margin-bottom: -2%;
+.message_type_wrapper .MuiFormLabel-root {
+  color: #014b7e !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
 }
-.send_message_select_all_checkbox{
-	transform: scale(1.5);
-	margin-right: 1%;
+.send_message_select_all_wrapper {
+  color: #014b7e;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 2%;
+  margin-bottom: 1%;
+  margin-left: 5%;
+}
+.send_message_select_all_checkbox {
+  transform: scale(1.5);
+  margin-right: 1%;
+}
+.send_message_type_wrapper {
+  margin-left: 5%;
+}
+.create_group_message_type_wrapper .MuiOutlinedInput-root {
+  border-radius: 10px;
+}
+.create_group_message_type_wrapper .MuiOutlinedInput-input {
+  padding: 9.5px 14px;
+  width: 250px;
+  color: #014b7e;
+}
+.create_group_message_type_wrapper .MuiInputLabel-outlined {
+  transform: translate(14px, 14px) scale(1);
+}
+.create_group_message_type_wrapper .MuiInputLabel-outlined {
+  color: #014b7e !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+}
+.create_group_message_type_wrapper .MuiSvgIcon-root {
+  color: #ff6b6b;
+}
+.create_group_message_type_wrapper .makeStyles-formControl-1 {
+  margin-left: 0%;
 }
 @media screen and (max-width: 700px) {
-	.send_message_select_all_wrapper{
-		margin-top: 6%;
-		margin-bottom: 4%;
-	}
-	.send_message_button_wrapper{
-		width: 100%;
-	}
-	.message_type_block{
-		width: 28%;
-	}
-	.email_subject_wrapper .MuiFormControl-root {
-		width: 80%;
-	}
-	.deactive_clearAll{
-		width: 80%;
-	}
-	.profile_update_button{
-		width: 80%;
-	}
+  .textFields_message {
+    width: 97.5%;
+  }
+  .send_message_group_select_lebel {
+    margin-right: 4%;
+  }
+  .send_message_type_wrapper {
+    margin-left: 10%;
+    margin-top: 5%;
+  }
+  .message_type_block_wrapper {
+    margin-bottom: 8%;
+  }
+  .send_message_select_all_wrapper {
+    margin-top: 6%;
+    margin-bottom: 4%;
+  }
+  .send_message_message_tag {
+    margin-top: 2%;
+    margin-left: 4%;
+  }
+  .send_message_button_wrapper {
+    width: 90%;
+    margin: auto;
+    margin-top: 5%;
+  }
+  .message_type_block {
+    width: 50%;
+  }
+  .email_subject_wrapper .MuiFormControl-root {
+    width: 88%;
+    margin: auto;
+    margin-left: 3%;
+  }
+  .deactive_clearAll {
+    width: 80%;
+  }
+  .profile_update_button {
+    width: 80%;
+  }
+  .message_sending_screen_wrapper {
+    margin: auto;
+    margin-top: 5%;
+    padding: 5%;
+    background-color: white;
+  }
+  .create_group_message_type_wrapper .MuiOutlinedInput-input {
+    padding: 9.5px 14px;
+    width: 270px;
+  }
+  .creategroup_firstrow {
+    margin: auto;
+    margin-top: 2%;
+    padding: 2% 0% 2% 2%;
+  }
+  .custom_button {
+    margin: auto;
+  }
+  .email_subject_wrapper{
+	  width: 100%;
+	  margin: auto;
+  }
 }

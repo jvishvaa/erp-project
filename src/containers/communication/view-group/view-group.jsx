@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable no-debugger */
@@ -49,6 +50,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [groupsData, setGroupsData] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [editGroupId, setEditGroupId] = useState(0);
@@ -62,11 +64,13 @@ const ViewGroup = withRouter(({ history, ...props }) => {
   const [editing, setEditing] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [moduleId, setModuleId] = useState();
+  const [modulePermision, setModulePermision] = useState(true);
   const getGroupsData = async () => {
     try {
       setLoading(true);
       const result = await axiosInstance.get(
-        `${endpoints.communication.getGroups}?page=${currentPage}&page_size=15`,
+        `${endpoints.communication.getGroups}?page=${currentPage}&page_size=15&module_id=${moduleId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -176,6 +180,30 @@ const ViewGroup = withRouter(({ history, ...props }) => {
     setEditing(true);
   };
   useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Communication' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'View&Edit Group') {
+              setModuleId(item.child_id);
+              setModulePermision(true);
+            } else {
+              setModulePermision(false);
+            }
+          });
+        } else {
+          setModulePermision(false);
+        }
+      });
+    } else {
+      setModulePermision(false);
+    }
+  }, []);
+  useEffect(() => {
     getGroupsData();
   }, [currentPage]);
   useEffect(() => {
@@ -230,7 +258,9 @@ const ViewGroup = withRouter(({ history, ...props }) => {
             </div>
           ) : null}
           <Paper className={classes.root}>
-            <TableContainer className={`table table-shadow ${classes.container}`}>
+            <TableContainer
+              className={`table table-shadow view_group_table ${classes.container}`}
+            >
               <Table stickyHeader aria-label='sticky table'>
                 <TableHead className='view_groups_header'>
                   <TableRow>

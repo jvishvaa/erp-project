@@ -14,6 +14,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Grid, TextField } from '@material-ui/core';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import CancelIcon from '@material-ui/icons/Cancel';
 import MomentUtils from '@date-io/moment';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
@@ -36,8 +38,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '50px',
     [theme.breakpoints.down('xs')]: {
       width: '85vw',
-      marginLeft: '5px',
-      marginTop: '5px',
+      margin: 'auto',
     },
   },
   container: {
@@ -63,6 +64,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
     { name: 'Test', number: '9456123568', sentby: 'subhra' },
   ];
   const [branchList, setBranchList] = useState([]);
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [selectedBranches, setSelectedBranches] = useState([]);
   const [smsTypeList, setSmsTypeList] = useState([]);
   const [selectedSmsType, setSelectedSmsType] = useState([]);
@@ -77,6 +79,8 @@ const MessageLog = withRouter(({ history, ...props }) => {
   const [selectedRow, setSelectedRow] = useState();
   const [clearAllActive, setClearAllActive] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [moduleId, setModuleId] = useState();
+  const [modulePermision, setModulePermision] = useState(true);
 
   const handleFromDateChange = (event, value) => {
     setSelectedFromDate(value);
@@ -134,7 +138,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
   };
 
   const getMessages = async () => {
-    let getMessagesUrl = `${endpoints.communication.getMessages}?page=${messageCurrentPageno}&page_size=15`;
+    let getMessagesUrl = `${endpoints.communication.getMessages}?page=${messageCurrentPageno}&page_size=15&module_id=${moduleId}`;
     if (selectedBranches.length) {
       const selectedBranchId = selectedBranches.map((el) => el.id);
       getMessagesUrl += `&branch=${selectedBranchId.toString()}`;
@@ -270,6 +274,28 @@ const MessageLog = withRouter(({ history, ...props }) => {
       getBranchApi();
       getSmsTypeApi();
     }
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Communication' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'SMS&Email Log') {
+              setModuleId(item.child_id);
+              setModulePermision(true);
+            } else {
+              setModulePermision(false);
+            }
+          });
+        } else {
+          setModulePermision(false);
+        }
+      });
+    } else {
+      setModulePermision(false);
+    }
   }, []);
   useEffect(() => {
     if (clearAll) {
@@ -303,8 +329,8 @@ const MessageLog = withRouter(({ history, ...props }) => {
             childComponentName='SMS/Email Log'
           />
           <div className='spacing' />
-          <Grid container className='message_log_container' spacing={5}>
-            <Grid lg={5} item>
+          <Grid container className='message_log_container' xs={12} lg={12} spacing={5}>
+            <Grid xs={6} lg={6} item>
               <Autocomplete
                 multiple
                 size='small'
@@ -326,7 +352,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
                 )}
               />
             </Grid>
-            <Grid lg={5} item>
+            <Grid xs={6} lg={6} item>
               <Autocomplete
                 multiple
                 size='small'
@@ -379,8 +405,8 @@ const MessageLog = withRouter(({ history, ...props }) => {
               </Grid>
             </MuiPickersUtilsProvider>
           </Grid>
-          <Grid container className='message_log_container' spacing={2}>
-            <Grid lg={5} item>
+          <Grid container className='message_log_container' xs={12} spacing={2}>
+            <Grid xs={12} lg={5} item>
               <input
                 className={clearAllActive ? 'profile_update_button' : 'deactive_clearAll'}
                 type='button'
@@ -415,9 +441,11 @@ const MessageLog = withRouter(({ history, ...props }) => {
             </div>
           </div>
           <Grid container className='message_log_container' spacing={2}>
-            <Grid lg={9} item>
-              <Paper className={classes.root}>
-                <TableContainer className={`table table-shadow ${classes.container}`}>
+            <Grid xs={12} lg={9} item>
+              <Paper className={`message_log_table_wrapper ${classes.root}`}>
+                <TableContainer
+                  className={`table table-shadow message_log_table ${classes.container}`}
+                >
                   <Table stickyHeader aria-label='sticky table'>
                     <TableHead className='view_groups_header'>
                       <TableRow>
@@ -442,7 +470,15 @@ const MessageLog = withRouter(({ history, ...props }) => {
                           <TableCell align='right'>{row.sendBy}</TableCell>
                           <TableCell align='right'>{row.sendOn}</TableCell>
                           <TableCell align='right'>{row.totalCount}</TableCell>
-                          <TableCell align='right'>{row.sent}</TableCell>
+                          <TableCell align='right'>
+                            {row.sent ? (
+                              <CheckCircleIcon
+                                style={{ color: 'green', marginLeft: '15px' }}
+                              />
+                            ) : (
+                              <CancelIcon style={{ color: 'red', marginLeft: '15px' }} />
+                            )}
+                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -459,10 +495,12 @@ const MessageLog = withRouter(({ history, ...props }) => {
                 </div>
               </Paper>
             </Grid>
-            <Grid lg={3} item>
+            <Grid xs={12} lg={3} item>
               {userLogs.length ? (
-                <Paper className={classes.root}>
-                  <TableContainer className={`table table-shadow ${classes.container}`}>
+                <Paper className={`message_log_table_wrapper ${classes.root}`}>
+                  <TableContainer
+                    className={`table table-shadow message_log_table ${classes.container}`}
+                  >
                     <Table stickyHeader aria-label='sticky table'>
                       <TableHead className='view_groups_header'>
                         <TableRow>
@@ -476,7 +514,17 @@ const MessageLog = withRouter(({ history, ...props }) => {
                           <TableRow>
                             <TableCell align='right'>{row.name}</TableCell>
                             <TableCell align='right'>{row.number}</TableCell>
-                            <TableCell align='right'>{row.sent}</TableCell>
+                            <TableCell align='right'>
+                              {row.sent ? (
+                                <CheckCircleIcon
+                                  style={{ color: 'green', marginLeft: '15px' }}
+                                />
+                              ) : (
+                                <CancelIcon
+                                  style={{ color: 'red', marginLeft: '15px' }}
+                                />
+                              )}
+                            </TableCell>
                           </TableRow>
                         ))}
                       </TableBody>

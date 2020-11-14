@@ -474,35 +474,45 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             </div>
           </div>
         ) : null}
-        {/* <div className='user_search_wrapper'>
-          <OutlinedInput
-            endAdornment={<SearchOutlined color='primary' />}
-            label='Search users ..'
-            value={searchText}
-            onChange={handleTextSearch}
-          />
-        </div> */}
-        {!isMobile && (
-          <Paper className={classes.root}>
-            <TableContainer className={`table table-shadow ${classes.container}`}>
-              <Table stickyHeader aria-label='sticky table'>
-                <TableHead className='view_groups_header'>
-                  <TableRow>
-                    <TableCell>Name</TableCell>
-                    <TableCell>ERP Id</TableCell>
-                    <TableCell>Email</TableCell>
-                    <TableCell>Status</TableCell>
-                    <TableCell>Action</TableCell>
-                    <TableCell>Edit</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody className='view_groups_body'>
-                  {usersData.map((items, i) => (
-                    <TableRow
-                      hover
-                      role='checkbox'
-                      tabIndex={-1}
-                      key={`user_table_index${i}`}
+        <Paper className={classes.root}>
+          <TableContainer
+            className={`table table-shadow view_users_table ${classes.container}`}
+          >
+            <Table stickyHeader aria-label='sticky table'>
+              <TableHead className='view_groups_header'>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell>ERP Id</TableCell>
+                  <TableCell>Email</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>Action</TableCell>
+                  <TableCell>Edit</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody className='view_groups_body'>
+                {usersData.map((items, i) => (
+                  <TableRow
+                    hover
+                    role='checkbox'
+                    tabIndex={-1}
+                    key={`user_table_index${i}`}
+                  >
+                    <TableCell>{items.userName}</TableCell>
+                    <TableCell>{items.erpId}</TableCell>
+                    <TableCell>{items.emails}</TableCell>
+                    <TableCell>
+                      {items.active ? (
+                        <div style={{ color: 'green' }}>Activated</div>
+                      ) : (
+                        <div style={{ color: 'red' }}>Deactivated</div>
+                      )}
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
                     >
                       <TableCell>{items.userName}</TableCell>
                       <TableCell>{items.erpId}</TableCell>

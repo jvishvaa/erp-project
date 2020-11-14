@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/no-array-index-key */
@@ -194,7 +195,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     const gradesId = [];
     const sectionsId = [];
     setNext(true);
-    let getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15`;
+    let getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15&module_id=${moduleId}`;
     if (selectedRoles.length && !selectedRoles.includes('All')) {
       roleList
         .filter((item) => selectedRoles.includes(item['role_name']))
@@ -240,7 +241,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         setHeaders([
           { field: 'id', headerName: 'ID', width: 70 },
           { field: 'fullName', headerName: 'Name', width: 180 },
-          { field: 'email', headerName: 'Email Id', width: 200 },
+          { field: 'email', headerName: 'Email Id', width: 250 },
           { field: 'erp_id', headerName: 'Erp Id', width: 150 },
           { field: 'gender', headerName: 'Gender', width: 100 },
           { field: 'contact', headerName: 'Contact', width: 150 },
@@ -412,10 +413,16 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   };
 
   const handleback = () => {
+    if (selectAll) {
+      handleSelectAll();
+    }
     setSelectedUsers([]);
     setNext(false);
     setSelectAll(false);
     setSelectectUserError('');
+    setUsersRow([]);
+    setCompleteData([]);
+    setTotalPage([]);
   };
   const handlenext = () => {
     if (!groupName) {
@@ -548,6 +555,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
                     <span className='create_group_error_span'>{roleError}</span>
                   </div>
                 </Grid>
+                <Grid xs={0} lg={4} className='create_group_items_mobile_none' item />
               </Grid>
 
               {selectedRoles.length && !selectedRoles.includes('All') ? (
@@ -610,9 +618,9 @@ const CreateGroup = withRouter(({ history, ...props }) => {
               ) : null}
             </>
           )}
-          <Grid container className='create_group_custom_button_wrapper' spacing={5}>
+          <Grid container className='create_group_custom_button_wrapper' sm={8} lg={4}>
             {next ? (
-              <Grid lg={5} className='create_group_custom_button' item>
+              <Grid xs={5} lg={3} className='create_group_custom_button' item>
                 <input
                   className='custom_button addgroup_back_button'
                   type='button'
@@ -622,7 +630,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
               </Grid>
             ) : null}
             {next ? (
-              <Grid lg={5} className='create_group_custom_button' item>
+              <Grid xs={5} lg={3} className='create_group_custom_button' item>
                 <input
                   className='custom_button addgroup_next_button'
                   type='button'
@@ -631,7 +639,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
                 />
               </Grid>
             ) : (
-              <Grid lg={5} className='create_group_custom_button' item>
+              <Grid xs={5} lg={3} className='create_group_custom_button' item>
                 <input
                   className='custom_button addgroup_next_button'
                   type='button'

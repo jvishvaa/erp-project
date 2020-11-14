@@ -58,7 +58,7 @@
   font-weight: 500 !important;
   text-align: center !important;
 }
-.MuiTableCell-stickyHeader {
+.view_users_table .MuiTableCell-stickyHeader {
   background-color: #f3e8e8 !important;
 }
 .group_view_activate_button {
@@ -74,7 +74,7 @@
   margin-right: 1%;
   outline: none;
   border: none;
-  width: 30%;
+  width: 40%;
   height: 30px;
   vertical-align: bottom;
 }
@@ -88,7 +88,7 @@
   box-shadow: none;
 }
 .books__pagination {
-  width: 100%;
+  width: 98%;
   margin-top: 1rem;
   display: flex;
   justify-content: center;
