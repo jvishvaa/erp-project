@@ -395,7 +395,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             </Grid>
           )}
         </Grid>
-
         {/* <span className='view_users__reset_icon' onClick={handleResetFilters}>
           <SettingsBackupRestoreIcon />
         </span> */}
@@ -514,86 +513,67 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                         justifyContent: 'center',
                       }}
                     >
-                      <TableCell>{items.userName}</TableCell>
-                      <TableCell>{items.erpId}</TableCell>
-                      <TableCell>{items.emails}</TableCell>
-                      <TableCell>
-                        {items.active ? (
-                          <div style={{ color: 'green' }}>Activated</div>
-                        ) : (
-                          <div style={{ color: 'red' }}>Deactivated</div>
-                        )}
-                      </TableCell>
-                      <TableCell
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
+                      {items.active ? (
+                        <IconButton
+                          aria-label='deactivate'
+                          onClick={() => handleStatusChange(items.userId, i, '2')}
+                          title='Deactivate'
+                        >
+                          <BlockIcon color='secondary' />
+                        </IconButton>
+                      ) : (
+                        // <button
+                        //   type='submit'
+                        //   className='group_view_deactivate_button group_view_button'
+                        //   title='Deactivate'
+                        //   onClick={() => handleStatusChange(items.userId, i, '2')}
+                        // >
+                        //   D
+                        // </button>
+                        <button
+                          type='submit'
+                          className='group_view_activate_button group_view_button'
+                          title='Activate'
+                          onClick={() => handleStatusChange(items.userId, i, '1')}
+                          style={{ borderRadius: '50%' }}
+                        >
+                          A
+                        </button>
+                      )}
+
+                      <IconButton
+                        title='Delete'
+                        className='group_view_button group_view_delete_button'
+                        onClick={() => handleDelete(items.userId, i)}
                       >
-                        {items.active ? (
-                          <IconButton
-                            aria-label='deactivate'
-                            onClick={() => handleStatusChange(items.userId, i, '2')}
-                            title='Deactivate'
-                          >
-                            <BlockIcon color='secondary' />
-                          </IconButton>
-                        ) : (
-                          // <button
-                          //   type='submit'
-                          //   className='group_view_deactivate_button group_view_button'
-                          //   title='Deactivate'
-                          //   onClick={() => handleStatusChange(items.userId, i, '2')}
-                          // >
-                          //   D
-                          // </button>
-                          <button
-                            type='submit'
-                            className='group_view_activate_button group_view_button'
-                            title='Activate'
-                            onClick={() => handleStatusChange(items.userId, i, '1')}
-                            style={{ borderRadius: '50%' }}
-                          >
-                            A
-                          </button>
-                        )}
+                        <DeleteIcon color='secondary' />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell>
+                      <IconButton
+                        className='group_view_button group_view_delete_button'
+                        title='Edit'
+                        onClick={() => handleEdit(items.userId)}
+                      >
+                        <EditIcon color='secondary' />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
 
-                        <IconButton
-                          title='Delete'
-                          className='group_view_button group_view_delete_button'
-                          onClick={() => handleDelete(items.userId, i)}
-                        >
-                          <DeleteIcon color='secondary' />
-                        </IconButton>
-                      </TableCell>
-                      <TableCell>
-                        <IconButton
-                          className='group_view_button group_view_delete_button'
-                          title='Edit'
-                          onClick={() => handleEdit(items.userId)}
-                        >
-                          <EditIcon color='secondary' />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-
-            <div className={`${classes.root} pagenation_view_groups`}>
-              <Pagination
-                page={Number(currentPage)}
-                size='large'
-                className='books__pagination'
-                onChange={handlePagination}
-                count={totalPages}
-              />
-            </div>
-          </Paper>
-        )}
-
+          <div className={`${classes.root} pagenation_view_groups`}>
+            <Pagination
+              page={Number(currentPage)}
+              size='large'
+              className='books__pagination'
+              onChange={handlePagination}
+              count={totalPages}
+            />
+          </div>
+        </Paper>
         {isMobile && (
           <>
             <div className={classes.cardsContainer}>
