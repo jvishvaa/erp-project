@@ -14,9 +14,14 @@
 .notSelected:hover {
   cursor: pointer;
 }
+.message_log_table .MuiTableCell-head{
+	background-color: white;
+}
+.message_log_table_wrapper{
+	border: 1px solid #FF6B6B;
+}
 .deactive_clearAll {
   font-size: 0.9rem;
-  margin: 5%;
   padding: 3% 1%;
   width: 40%;
   border: none;
@@ -36,8 +41,14 @@
 .MuiButton-textPrimary:hover {
   background-color: #ff6b6b !important;
 }
+.message_log_wrapper{
+	padding: 0% 2%;	
+}
 @media screen and (max-width: 700px) {
   .message_log_branch {
     width: 125%;
+  }
+  .message_log_wrapper{
+	  text-align: center;
   }
 }

@@ -230,7 +230,9 @@ const ViewGroup = withRouter(({ history, ...props }) => {
             </div>
           ) : null}
           <Paper className={classes.root}>
-            <TableContainer className={`table table-shadow ${classes.container}`}>
+            <TableContainer
+              className={`table table-shadow view_group_table ${classes.container}`}
+            >
               <Table stickyHeader aria-label='sticky table'>
                 <TableHead className='view_groups_header'>
                   <TableRow>

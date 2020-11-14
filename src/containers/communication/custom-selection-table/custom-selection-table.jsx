@@ -60,8 +60,15 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
 
   return (
     <div
-      className='custom_selection_table_wrapper'
-      style={{ height: 580, width: '100%' }}
+      className={`custom_selection_table_wrapper ${
+        completeData.length > 5
+          ? 'long_height_custom_selection_table_wrapper'
+          : 'short_height_custom_selection_table_wrapper'
+      }`}
+      style={{
+        width: '90%',
+        margin: 'auto',
+      }}
     >
       <DataGrid
         pageSize={pageSize || 15}

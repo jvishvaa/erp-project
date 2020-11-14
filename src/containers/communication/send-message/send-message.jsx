@@ -141,7 +141,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
   const getGroupApi = async () => {
     try {
       setLoading(false);
-      const result = await axiosInstance.get(endpoints.communication.groupList, {
+      const result = await axiosInstance.get(`${endpoints.communication.groupList}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -762,19 +762,17 @@ const SendMessage = withRouter(({ history, ...props }) => {
               <div>
                 {customSelect ? (
                   <>
-                    <Grid container className='create_group_container' spacing={3}>
-                      <Grid lg={4} className='create_group_items' item>
-                        <div>
-                          <CustomMultiSelect
-                            selections={selectedRoles}
-                            setSelections={setSelectedRoles}
-                            nameOfDropdown='User Role'
-                            optionNames={roles}
-                          />
-                          <span className='create_group_error_span'>{roleError}</span>
-                        </div>
-                      </Grid>
-                    </Grid>
+                    <div className='creategroup_firstrow'>
+                      <div>
+                        <CustomMultiSelect
+                          selections={selectedRoles}
+                          setSelections={setSelectedRoles}
+                          nameOfDropdown='User Role'
+                          optionNames={roles}
+                        />
+                        <span className='create_group_error_span'>{roleError}</span>
+                      </div>
+                    </div>
                     {selectedRoles.length ? (
                       <Grid container className='create_group_container' spacing={3}>
                         <Grid lg={4} className='create_group_items' item>
@@ -910,7 +908,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
                   Mail
                 </div>
               </div>
-              <div className='message_type_wrapper'>
+              <div className='create_group_message_type_wrapper'>
                 <FormControl variant='outlined' className={classes.formControl}>
                   <InputLabel id='demo-simple-select-outlined-label'>
                     {isEmail ? 'Email Type' : 'SMS Type'}
