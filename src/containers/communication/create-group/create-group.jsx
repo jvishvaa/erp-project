@@ -545,7 +545,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
                   </div>
                 </Grid>
                 <Grid lg={4} className='create_group_items' item>
-                  <div>
+                  <div className='create_group_role'>
                     <CustomMultiSelect
                       selections={selectedRoles}
                       setSelections={setSelectedRoles}
