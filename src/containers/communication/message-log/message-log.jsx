@@ -64,6 +64,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
     { name: 'Test', number: '9456123568', sentby: 'subhra' },
   ];
   const [branchList, setBranchList] = useState([]);
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [selectedBranches, setSelectedBranches] = useState([]);
   const [smsTypeList, setSmsTypeList] = useState([]);
   const [selectedSmsType, setSelectedSmsType] = useState([]);
@@ -78,6 +79,8 @@ const MessageLog = withRouter(({ history, ...props }) => {
   const [selectedRow, setSelectedRow] = useState();
   const [clearAllActive, setClearAllActive] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [moduleId, setModuleId] = useState();
+  const [modulePermision, setModulePermision] = useState(true);
 
   const handleFromDateChange = (event, value) => {
     setSelectedFromDate(value);
@@ -135,7 +138,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
   };
 
   const getMessages = async () => {
-    let getMessagesUrl = `${endpoints.communication.getMessages}?page=${messageCurrentPageno}&page_size=15`;
+    let getMessagesUrl = `${endpoints.communication.getMessages}?page=${messageCurrentPageno}&page_size=15&module_id=${moduleId}`;
     if (selectedBranches.length) {
       const selectedBranchId = selectedBranches.map((el) => el.id);
       getMessagesUrl += `&branch=${selectedBranchId.toString()}`;
@@ -270,6 +273,28 @@ const MessageLog = withRouter(({ history, ...props }) => {
     if (!branchList.length) {
       getBranchApi();
       getSmsTypeApi();
+    }
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Communication' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Add Group') {
+              setModuleId(item.child_id);
+              setModulePermision(true);
+            } else {
+              setModulePermision(false);
+            }
+          });
+        } else {
+          setModulePermision(false);
+        }
+      });
+    } else {
+      setModulePermision(false);
     }
   }, []);
   useEffect(() => {
