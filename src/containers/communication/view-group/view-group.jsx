@@ -257,7 +257,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
               </div>
             </div>
           ) : null}
-          <Paper className={classes.root}>
+          <Paper className={` view_group_table_wrapper ${classes.root}`}>
             <TableContainer
               className={`table table-shadow view_group_table ${classes.container}`}
             >
@@ -290,9 +290,12 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                       </TableCell>
                       <TableCell>
                         {items.sections.length
-                          ? items.sections.map(
-                              (sections) => sections.section__section_name
-                            )
+                          ? items.sections.map((sections, index) => {
+                              if (index + 1 === items.sections.length) {
+                                return sections.section__section_name;
+                              }
+                              return `${sections.section__section_name}, `;
+                            })
                           : null}
                       </TableCell>
                       <TableCell>
