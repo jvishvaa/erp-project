@@ -66,14 +66,6 @@ function EnhancedTableHead(props) {
   return (
     <TableHead className='styled__table-head'>
       <TableRow>
-        <TableCell padding='checkbox'>
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{ 'aria-label': 'select all desserts' }}
-          />
-        </TableCell>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -95,6 +87,14 @@ function EnhancedTableHead(props) {
             </TableSortLabel>
           </TableCell>
         ))}
+        <TableCell padding='checkbox'>
+          <Checkbox
+            indeterminate={numSelected > 0 && numSelected < rowCount}
+            checked={rowCount > 0 && numSelected === rowCount}
+            onChange={onSelectAllClick}
+            inputProps={{ 'aria-label': 'select all desserts' }}
+          />
+        </TableCell>
       </TableRow>
     </TableHead>
   );
@@ -299,15 +299,15 @@ export default function FilterStudents() {
                       key={row.id}
                       selected={isItemSelected}
                     >
+                      <TableCell align='center'>{row.sl}</TableCell>
+                      <TableCell align='center'>{row.erp_id}</TableCell>
+                      <TableCell align='center'>{row.user.first_name}</TableCell>
                       <TableCell padding='checkbox'>
                         <Checkbox
                           checked={isItemSelected}
                           inputProps={{ 'aria-labelledby': labelId }}
                         />
                       </TableCell>
-                      <TableCell align='center'>{row.sl}</TableCell>
-                      <TableCell align='center'>{row.erp_id}</TableCell>
-                      <TableCell align='center'>{row.user.first_name}</TableCell>
                     </TableRow>
                   );
                 })}

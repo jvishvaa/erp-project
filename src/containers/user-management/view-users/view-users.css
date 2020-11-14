@@ -6,6 +6,16 @@
   width: 95%;
   border-bottom: 2px solid #dcdcdc;
 }
+@media screen and (max-width: 960px) {
+  .view_users_filter_wrapper {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}
 .user_details_role_wrapper .MuiSelect-icon {
   color: #ff6b6b !important;
 }

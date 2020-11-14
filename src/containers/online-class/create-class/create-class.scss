@@ -2,12 +2,26 @@
 @import '../../../assets/styles/mixins';
 
 .create__class {
-  width: 98%;
+  width: 100%;
   margin: 0 auto;
 
+  button {
+    color: white;
+  }
+
+  .create-class-form-container {
+    background-color: #fff;
+    .create-class-form {
+      width: 95%;
+      margin: 0 auto;
+    }
+  }
+
   .create-class-container {
-    padding: 10px;
-    margin-top: 20px !important;
+    // border: 1px solid red;
+    // padding-bottom: 20px;
+    padding: 10px 0px;
+    // margin-top: 20px !important;
 
     .create__class-textfield {
       width: 100%;
@@ -30,7 +44,7 @@
   }
 
   .MuiTextField-root {
-      width: 100%;
+    width: 100%;
   }
 
   .co_host-title {
@@ -38,10 +52,33 @@
   }
 
   .btn-addmore {
-    margin-left: 10px;
+    margin-left: 0px;
+  }
+}
+
+.my__swipable {
+  .MuiPaper-elevation16 {
+    z-index: 9999 !important;
+    width: 50%;
   }
 }
 
 .styled__table {
-  @include styledTable ;
+  @include styledTable;
+}
+
+@media only screen and(max-width:600px) {
+  .create__class {
+    .create-class-form-container {
+      .create-class-form {
+        width: 92%;
+      }
+    }
+  }
+
+  .my__swipable {
+    .MuiPaper-elevation16 {
+      width: 85%;
+    }
+  }
 }

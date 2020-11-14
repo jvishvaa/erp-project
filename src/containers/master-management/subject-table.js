@@ -11,7 +11,7 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import IconButton from '@material-ui/core/IconButton';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
-import { Grid, TextField, Button} from '@material-ui/core';
+import { Grid, TextField, Button, useTheme } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { makeStyles } from '@material-ui/core/styles';
@@ -21,6 +21,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Pagination from '@material-ui/lab/Pagination';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Layout from '../Layout';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
@@ -30,10 +31,12 @@ import CreateSubject from './create-subject'
 import EditSubject from './edit-subject'
 import Loading from '../../components/loader/loader';
 import './master-management.css'
+import SubjectCard from './subjects-card';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '100%',
+    width: '95%',
+    margin: '0 auto'
   },
   container: {
     maxHeight: '70vh',
@@ -47,6 +50,8 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.secondary.main,
   },
   buttonContainer: {
+    width: '95%',
+    margin: '0 auto',
     background: theme.palette.background.secondary,
     paddingBottom: theme.spacing(2),
   }
@@ -85,6 +90,10 @@ const SubjectTable = () => {
   const [searchSubject,setSearchSubject]=useState('')
   const [widthFlag,setWidthFlag]=useState(false)
   const [loading, setLoading] = useState(false);
+
+  const themeContext = useTheme();
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+
   
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -183,24 +192,24 @@ const SubjectTable = () => {
       })
   },[openDeleteModal,delFlag,editFlag,addFlag,page,searchGrade,searchSubject])
       
+  const handleDelete = (subj) => {
+    setSubjectName(subj.subject.subject_name);
+    handleOpenDeleteModal(subj.subject.id)
+  }
  
   return (
     <>
     {loading ? <Loading message='Loading...' /> : null}
    <Layout>
     <div className="headerMaster">
-      <div>
+      <div style={{ width: '95%', margin: '30px auto' }}>
         <CommonBreadcrumbs
           componentName='Master Management'
           childComponentName='Subject List'
         />
       </div>
       <div className={classes.buttonContainer}>
-      {tableFlag && !addFlag && !editFlag &&
-        <Button startIcon={<AddOutlinedIcon />} size="medium" title="Add Subject" onClick={handleAddSubject}>
-          Add Subject
-        </Button>
-      }
+      
       { (addFlag || editFlag) &&
         <Button startIcon={<ArrowBackIcon />} size="medium" title="Go back to Subject List" onClick={handleGoBack}>
         Subject List
@@ -214,13 +223,14 @@ const SubjectTable = () => {
     
     
     {tableFlag && !addFlag && !editFlag && 
-    <Grid container spacing={4} style={{marginBottom:'10px'}}>
-      <Grid item>
+    <Grid container spacing={1} style={{ width: '95%', margin: '0px auto 30px auto'}}>
+      <Grid item xs={12} sm={3}>
         <TextField
+        style={{ width: '100%' }}
           id='subname'
           label='Subject Name'
           variant='outlined'
-          size='medium'
+          size='small'
           name='subname'
           autoComplete="off"
           className={widthFlag?"mainWidth widthClass":"mainWidth"}
@@ -229,9 +239,10 @@ const SubjectTable = () => {
           onChange={e=>setSearchSubject(e.target.value)}
         />
       </Grid>
-      <Grid item>
+      <Grid item xs={12} sm={3}>
         <Autocomplete
-          size='medium'
+        style={{ width: '100%' }}
+          size='small'
           onChange={handleGrade}
           id='grade'
           className="gradeDropClass"
@@ -248,10 +259,22 @@ const SubjectTable = () => {
           )}
         />
       </Grid>
+      <Grid item xs={0} sm={3} />
+      <Grid item xs={0} sm={3}>
+      {tableFlag && !addFlag && !editFlag &&
+        <Button startIcon={<AddOutlinedIcon />} size="medium" title="Add Subject" onClick={handleAddSubject}>
+          Add Subject
+        </Button>
+      }
+        </Grid>
     </Grid>
     }
 
-    {tableFlag && !addFlag && !editFlag && 
+    <>
+    {
+      !isMobile
+      ? <>
+      {tableFlag && !addFlag && !editFlag && 
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label='sticky table'>
@@ -292,7 +315,7 @@ const SubjectTable = () => {
                         <EditOutlinedIcon color='primary' />
                       </IconButton>
                       <IconButton
-                      onClick={e=>{setSubjectName(subject.subject.subject_name);handleOpenDeleteModal(subject.subject.id);}}
+                      onClick={e=>{ handleDelete(subject) }}
                         title='Delete Subject'
                       >
                         <DeleteOutlinedIcon color='primary' />
@@ -304,7 +327,27 @@ const SubjectTable = () => {
           </TableBody>
         </Table>
       </TableContainer> 
-      <div className="paginate">
+    </Paper>
+    }
+      </>
+      : <>
+      <>
+      {tableFlag && !addFlag && !editFlag && 
+      <>
+      {
+        subjects.map(subject => (
+          <SubjectCard data={subject} handleDelete={handleDelete} handleEditSubject={handleEditSubject} />
+        ))
+      }
+      </>
+      }
+      </>
+      </>
+    }
+    </>
+    <div className="paginate">
+      {
+        tableFlag && !addFlag && !editFlag && 
         <Pagination
         count={pageCount}
         color="primary"
@@ -313,9 +356,8 @@ const SubjectTable = () => {
         page={page}
         onChange={handleChangePage}
         />
+      }
     </div>
-    </Paper>
-    }
     <Dialog
       open={openDeleteModal}
       onClose={handleCloseDeleteModal}

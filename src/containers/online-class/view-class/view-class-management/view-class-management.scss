@@ -1,20 +1,32 @@
 @import '../../../../assets/styles/variables';
 
 .viewclass__management-container {
+
+  h6,
+  h5 {
+    font-size: 18px !important;
+  }
+
+  min-height: 600px;
+  background-color: #fff;
   // filter component
   .filters__container {
-    padding: 50px 0 0 0;
+    background-color: #fafafa !important;
+    padding: 0px 2.5%;
+    margin: 0 auto;
+    // padding: 50px 0 0 0;
 
     .managementview-tabs {
       margin-top: 20px;
     }
 
     .viewclass__management-btn {
+      color: white;
       width: 100%;
     }
 
     .cancelled-class-check {
-      margin-top: 20px;
+      margin-top: 0px !important;
     }
 
     svg {
@@ -28,7 +40,8 @@
 
   // table component
   .viewclass__management-table {
-    margin-top: 20px;
+    width: 98%;
+    margin: 40px auto 0px auto !important;
 
     .progress-center {
       position: absolute;
@@ -66,6 +79,31 @@
 
     .pagination__container {
       margin-top: 20px;
+    }
+
+    .expand-management {
+      display: none;
+      fill: $secondary-color;
+    }
+  }
+}
+
+@media only screen and(max-width:600px) {
+
+  .viewclass__management-table {
+    .hide {
+      display: none;
+    }
+
+    .show {
+      display: table-cell;
+    }
+  }
+  .viewclass__management-table {
+    .expand-management {
+      float: right;
+      margin-right: 20px;
+      display: block !important;
     }
   }
 }

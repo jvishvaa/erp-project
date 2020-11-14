@@ -10,7 +10,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Card,
   Button,
   Typography,
   Chip,
@@ -20,8 +19,11 @@ import {
 } from '@material-ui/core';
 import './attendee-list.scss';
 import { Pagination } from '@material-ui/lab';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import axiosInstance from '../../../../../config/axios';
 import endpoints from '../../../../../config/endpoints';
+import CommonBreadcrumbs from '../../../../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
 import Layout from '../../../../Layout';
 
@@ -34,6 +36,7 @@ const AttendeeList = (props) => {
   const [isEdit, setIsEdit] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isHidden, setIsHidden] = useState(window.innerWidth < 600);
 
   const pageSize = 10;
 
@@ -120,9 +123,16 @@ const AttendeeList = (props) => {
     }
   };
 
+  const toggleHide = () => {
+    setIsHidden(!isHidden);
+  };
+
   return (
     <Layout>
-      <Card style={{ marginBottom: 30, padding: 30 }}>
+      <div className='breadcrumb-container'>
+        <CommonBreadcrumbs componentName='Online Class' childComponentName='View Class' />
+      </div>
+      <div className='attendeelist-filters'>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={2}>
             <Button onClick={handleExcelDownload}>Download Excel</Button>
@@ -158,16 +168,23 @@ const AttendeeList = (props) => {
             </Typography>
           </Grid>
         </Grid>
-      </Card>
+      </div>
       <div className='attendee__management-table'>
+        {isHidden ? (
+          <AddCircleOutlineIcon className='expand-management' onClick={toggleHide} />
+        ) : (
+          <RemoveCircleIcon className='expand-management' onClick={toggleHide} />
+        )}
         <TableContainer>
           <Table className='viewclass__table' aria-label='simple table'>
             <TableHead className='styled__table-head'>
               <TableRow>
-                <TableCell align='center'>SL_NO.</TableCell>
+                <TableCell align='center' className={`${isHidden ? 'hide' : 'show'}`}>
+                  SL_NO.
+                </TableCell>
                 <TableCell align='center'>Student name</TableCell>
                 <TableCell align='center'>Erp</TableCell>
-                <TableCell align='center'>Acceptance status</TableCell>
+                <TableCell align='center'>Accepted status</TableCell>
                 <TableCell align='center'>Attended status</TableCell>
               </TableRow>
             </TableHead>
@@ -176,7 +193,12 @@ const AttendeeList = (props) => {
                 {attendeeList.map((el, index) => {
                   return (
                     <TableRow key={el.id}>
-                      <TableCell align='center'>{index + 1}</TableCell>
+                      <TableCell
+                        align='center'
+                        className={`${isHidden ? 'hide' : 'show'}`}
+                      >
+                        {index + 1}
+                      </TableCell>
                       <TableCell align='center'>{el.user.user.first_name}</TableCell>
                       <TableCell align='center'>{el.user.erp_id}</TableCell>
                       <TableCell align='center'>
