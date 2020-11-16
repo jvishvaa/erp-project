@@ -66,7 +66,7 @@ function App() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(listSubjects());
-    dispatch(fetchLoggedInUserDetails());
+    // dispatch(fetchLoggedInUserDetails());
   }, []);
 
   return (
