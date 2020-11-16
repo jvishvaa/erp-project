@@ -48,7 +48,7 @@
   border-radius: 10px !important;
   outline: 1px solid #d4cbcb;
 }
-.MuiTableCell-head {
+/* .MuiTableCell-head {
   color: #ff6b6b !important;
   font-weight: 600 !important;
   text-align: center !important;
@@ -57,10 +57,10 @@
   color: #014b7e !important;
   font-weight: 500 !important;
   text-align: center !important;
-}
-.view_users_table .MuiTableCell-stickyHeader {
+} */
+/* .view_users_table .MuiTableCell-stickyHeader {
   background-color: #f3e8e8 !important;
-}
+} */
 .group_view_activate_button {
   background-color: green;
   color: white;

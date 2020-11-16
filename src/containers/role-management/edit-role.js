@@ -121,21 +121,25 @@ class EditRole extends Component {
         }
       });
     });
+    const { setAlert } = this.context;
 
-    const reqObj = {
-      role_id: roleId,
-      role_name: roleName,
-      Module: requestData,
-    };
-    editRole(reqObj)
-      .then(() => {
-        history.push('/role-management');
-      })
-      .catch((error) => {
-        console.log('update role error ', error);
-        const { setAlert } = this.context;
-        setAlert('error', 'Update failed');
-      });
+    if (requestData.length > 0) {
+      const reqObj = {
+        role_id: roleId,
+        role_name: roleName,
+        Module: requestData,
+      };
+      editRole(reqObj)
+        .then(() => {
+          history.push('/role-management');
+        })
+        .catch((error) => {
+          console.log('update role error ', error);
+          setAlert('error', 'Update failed');
+        });
+    } else {
+      setAlert('error', 'Please select permissions for atleast one module');
+    }
   };
 
   onChangeRoleName = (e) => {
