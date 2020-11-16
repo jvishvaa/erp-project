@@ -20,6 +20,7 @@ import styles from './useStyles';
 import ModuleCard from '../../components/module-card';
 import { AssignmentReturned } from '@material-ui/icons';
 import Loading from '../../components/loader/loader';
+import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
 class CreateRole extends Component {
   constructor(props) {
@@ -128,15 +129,22 @@ class CreateRole extends Component {
         }
       });
     });
-    const reqObj = {
-      role_name: roleName,
-      Module: requestData,
-    };
-    createRole(reqObj)
-      .then(() => {
-        history.push('/role-management');
-      })
-      .catch(() => {});
+    const { setAlert } = this.context;
+    if (requestData.length > 0) {
+      const reqObj = {
+        role_name: roleName,
+        Module: requestData,
+      };
+      createRole(reqObj)
+        .then(() => {
+          history.push('/role-management');
+        })
+        .catch(() => {
+          setAlert('error', 'Creation Failed');
+        });
+    } else {
+      setAlert('error', 'Please select permissions for atleast one module');
+    }
   };
 
   render() {
@@ -197,6 +205,8 @@ class CreateRole extends Component {
     );
   }
 }
+
+CreateRole.contextType = AlertNotificationContext;
 
 const mapStateToProps = (state) => ({
   modules: state.roleManagement.createRoleModulePermissionsState,

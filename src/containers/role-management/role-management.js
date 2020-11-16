@@ -24,6 +24,7 @@ import {
 import RolesTable from '../../components/roles-table';
 import Loading from '../../components/loader/loader';
 import styles from './useStyles';
+import './styles.scss';
 
 class RoleManagement extends Component {
   constructor(props) {
@@ -139,6 +140,7 @@ class RoleManagement extends Component {
             count={Math.ceil(count / limit)}
             onChange={(e, page) => this.handlePageChange(page)}
             color='primary'
+            className='pagination-white'
           />
         </div>
         <Dialog

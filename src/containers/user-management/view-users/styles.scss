@@ -1,5 +1,6 @@
-@import '../../assets/styles/variables';
+@import '../../../assets/styles/variables';
 .common-table {
+  width: 100%;
   .table-header-row {
     background-color: '#ffffff';
     tr {
@@ -7,6 +8,7 @@
         position: sticky;
         top: 0;
         margin: '10px 0';
+        color: $secondary-color !important;
         &:not(:last-child) {
           &:after {
             content: '';

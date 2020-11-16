@@ -5,7 +5,8 @@ import TableRow from '@material-ui/core/TableRow';
 import Checkbox from '@material-ui/core/Checkbox';
 import Switch from '@material-ui/core/Switch';
 import IconButton from '@material-ui/core/IconButton';
-import EditIcon from '@material-ui/icons/Edit';
+import EditIcon from '@material-ui/icons/EditOutlined';
+import AddCircle from '@material-ui/icons/AddCircleOutline';
 import CustomScopeModal from '../custom-scope-modal';
 import useStyles from './useStyles';
 
@@ -62,7 +63,11 @@ const SubModule = ({
                 }
               />
               <IconButton onClick={handleOpenModal} title='Add/Edit custom scope'>
-                <EditIcon color='primary' />
+                {customScopeApplied ? (
+                  <EditIcon color='primary' />
+                ) : (
+                  <AddCircle color='primary' />
+                )}
               </IconButton>
             </TableCell>
           );

@@ -38,6 +38,7 @@ const styles = (theme) => ({
     justifyContent: 'center',
     position: 'fixed',
     bottom: 0,
+    left: 0,
     padding: '1rem',
     backgroundColor: '#ffffff',
     zIndex: 100,

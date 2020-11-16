@@ -323,28 +323,34 @@ const Layout = ({ children, history }) => {
     <div className={classes.root}>
       <AppBar position='absolute' className={clsx(classes.appBar)}>
         <Toolbar className={classes.toolbar}>
-          <Box
-            className={classes.mobileToolbar}
-            display='flex'
-            justifyContent='space-between'
-          >
-            <IconButton
-              edge='start'
-              color='inherit'
-              aria-label='open drawer'
-              onClick={() => {
-                setDrawerOpen((prevState) => !prevState);
-              }}
+          {isMobile && (
+            <Box
+              className={classes.mobileToolbar}
+              display='flex'
+              justifyContent='space-between'
             >
-              {drawerOpen ? <CloseIcon color='primary' /> : <MenuIcon color='primary' />}
-            </IconButton>
+              <IconButton
+                edge='start'
+                color='inherit'
+                aria-label='open drawer'
+                onClick={() => {
+                  setDrawerOpen((prevState) => !prevState);
+                }}
+              >
+                {drawerOpen ? (
+                  <CloseIcon color='primary' />
+                ) : (
+                  <MenuIcon color='primary' />
+                )}
+              </IconButton>
 
-            <IconButton className={classes.logoMobileContainer}>
-              <img className={classes.logoMObile} src={logoMobile} alt='logo-small' />
-            </IconButton>
+              <IconButton className={classes.logoMobileContainer}>
+                <img className={classes.logoMObile} src={logoMobile} alt='logo-small' />
+              </IconButton>
 
-            <IconButton />
-          </Box>
+              <IconButton />
+            </Box>
+          )}
           <IconButton
             edge='start'
             color='inherit'
@@ -359,8 +365,8 @@ const Layout = ({ children, history }) => {
             style={{
               backgroundColor: '#ff6b6b',
               margin: '5px 10px',
-              display: `${isMobile && 'none'}`,
             }}
+            className={classes.desktopToolbarComponents}
           />
 
           <Typography

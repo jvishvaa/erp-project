@@ -15,8 +15,8 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import Pagination from '@material-ui/lab/Pagination';
 import TextField from '@material-ui/core/TextField';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import TableRow from '@material-ui/core/TableRow';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -32,24 +32,18 @@ import SearchOutlined from '@material-ui/icons/SearchOutlined';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import TablePagination from '@material-ui/core/TablePagination';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CustomMultiSelect from '../../communication/custom-multiselect/custom-multiselect';
 import Layout from '../../Layout';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-import './view-users.css';
+// import './view-users.css';
 import ViewUserCard from '../../../components/view-user-card';
+import './styles.scss';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    '& > *': {
-      marginTop: theme.spacing(2),
-    },
-    width: '90%',
-    marginLeft: '50px',
-    marginTop: '50px',
-  },
   container: {
     maxHeight: 440,
   },
@@ -63,9 +57,20 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     position: 'fixed',
     bottom: 0,
+    left: 0,
     padding: '1rem',
     backgroundColor: '#ffffff',
     zIndex: 100,
+    color: '#ffffff',
+  },
+  columnHeader: {
+    color: `${theme.palette.secondary.main} !important`,
+    fontWeight: 600,
+    fontSize: '1rem',
+    backgroundColor: `#ffffff !important`,
+  },
+  tableCell: {
+    color: theme.palette.secondary.main,
   },
 }));
 
@@ -89,6 +94,8 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const [gradeList, setGradeList] = useState([]);
   const [isNewSeach, setIsNewSearch] = useState(true);
   const [searchText, setSearchText] = useState('');
+  const [limit, setLimit] = useState(15);
+  const [totalCount, setTotalCount] = useState(0);
 
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -165,7 +172,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
           gradesId.push(items.grade_id);
         });
     }
-    let getUserListUrl = `${endpoints.communication.userList}?page=${currentPage}&page_size=15`;
+    let getUserListUrl = `${endpoints.communication.userList}?page=${currentPage}&page_size=${limit}`;
     if (rolesId.length && selectedRoles !== 'All') {
       getUserListUrl += `&role=${rolesId.toString()}`;
     }
@@ -183,6 +190,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
       });
       const resultUsers = [];
       if (result.status === 200) {
+        setTotalCount(result.data.count);
         result.data.results.map((items) =>
           resultUsers.push({
             userId: items.id,
@@ -202,7 +210,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     }
   };
   const handlePagination = (event, page) => {
-    setCurrentPage(page);
+    setCurrentPage(page + 1);
   };
 
   const handleResetFilters = () => {
@@ -314,12 +322,12 @@ const ViewUsers = withRouter(({ history, ...props }) => {
 
   return (
     <Layout>
-      <Container className='view_users__page'>
+      <div className='view_users__page'>
         <CommonBreadcrumbs
           componentName='User Management'
           childComponentName='View users'
         />
-        <Grid container spacing={2} style={{ padding: '1rem' }}>
+        <Grid container spacing={2} style={{ padding: '1rem', marginBottom: '10px' }}>
           <Grid item xs={12}>
             <Box style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
               <Button
@@ -473,107 +481,115 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             </div>
           </div>
         ) : null}
-        <Paper className={classes.root}>
-          <TableContainer
-            className={`table table-shadow view_users_table ${classes.container}`}
-          >
-            <Table stickyHeader aria-label='sticky table'>
-              <TableHead className='view_groups_header'>
-                <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>ERP Id</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>Action</TableCell>
-                  <TableCell>Edit</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody className='view_groups_body'>
-                {usersData.map((items, i) => (
-                  <TableRow
-                    hover
-                    role='checkbox'
-                    tabIndex={-1}
-                    key={`user_table_index${i}`}
-                  >
-                    <TableCell>{items.userName}</TableCell>
-                    <TableCell>{items.erpId}</TableCell>
-                    <TableCell>{items.emails}</TableCell>
-                    <TableCell>
-                      {items.active ? (
-                        <div style={{ color: 'green' }}>Activated</div>
-                      ) : (
-                        <div style={{ color: 'red' }}>Deactivated</div>
-                      )}
-                    </TableCell>
-                    <TableCell
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      {items.active ? (
-                        <IconButton
-                          aria-label='deactivate'
-                          onClick={() => handleStatusChange(items.userId, i, '2')}
-                          title='Deactivate'
-                        >
-                          <BlockIcon color='secondary' />
-                        </IconButton>
-                      ) : (
-                        // <button
-                        //   type='submit'
-                        //   className='group_view_deactivate_button group_view_button'
-                        //   title='Deactivate'
-                        //   onClick={() => handleStatusChange(items.userId, i, '2')}
-                        // >
-                        //   D
-                        // </button>
-                        <button
-                          type='submit'
-                          className='group_view_activate_button group_view_button'
-                          title='Activate'
-                          onClick={() => handleStatusChange(items.userId, i, '1')}
-                          style={{ borderRadius: '50%' }}
-                        >
-                          A
-                        </button>
-                      )}
-
-                      <IconButton
-                        title='Delete'
-                        className='group_view_button group_view_delete_button'
-                        onClick={() => handleDelete(items.userId, i)}
-                      >
-                        <DeleteIcon color='secondary' />
-                      </IconButton>
-                    </TableCell>
-                    <TableCell>
-                      <IconButton
-                        className='group_view_button group_view_delete_button'
-                        title='Edit'
-                        onClick={() => handleEdit(items.userId)}
-                      >
-                        <EditIcon color='secondary' />
-                      </IconButton>
-                    </TableCell>
+        {!isMobile && (
+          <Paper className={`${classes.root} common-table`}>
+            <TableContainer
+              className={`table table-shadow view_users_table ${classes.container}`}
+            >
+              <Table stickyHeader aria-label='sticky table'>
+                <TableHead className={`${classes.columnHeader} table-header-row`}>
+                  <TableRow>
+                    <TableCell className={classes.tableCell}>Name</TableCell>
+                    <TableCell className={classes.tableCell}>ERP Id</TableCell>
+                    <TableCell className={classes.tableCell}>Email</TableCell>
+                    <TableCell className={classes.tableCell}>Status</TableCell>
+                    <TableCell className={classes.tableCell}>Action</TableCell>
+                    <TableCell className={classes.tableCell}>Edit</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                </TableHead>
+                <TableBody>
+                  {usersData.map((items, i) => (
+                    <TableRow
+                      hover
+                      role='checkbox'
+                      tabIndex={-1}
+                      key={`user_table_index${i}`}
+                    >
+                      <TableCell className={classes.tableCell}>
+                        {items.userName}
+                      </TableCell>
+                      <TableCell className={classes.tableCell}>{items.erpId}</TableCell>
+                      <TableCell className={classes.tableCell}>{items.emails}</TableCell>
+                      <TableCell className={classes.tableCell}>
+                        {items.active ? (
+                          <div style={{ color: 'green' }}>Activated</div>
+                        ) : (
+                          <div style={{ color: 'red' }}>Deactivated</div>
+                        )}
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                        className={classes.tableCell}
+                      >
+                        {items.active ? (
+                          <IconButton
+                            aria-label='deactivate'
+                            onClick={() => handleStatusChange(items.userId, i, '2')}
+                            title='Deactivate'
+                          >
+                            <BlockIcon color='primary' />
+                          </IconButton>
+                        ) : (
+                          // <button
+                          //   type='submit'
+                          //   className='group_view_deactivate_button group_view_button'
+                          //   title='Deactivate'
+                          //   onClick={() => handleStatusChange(items.userId, i, '2')}
+                          // >
+                          //   D
+                          // </button>
+                          <button
+                            type='submit'
+                            title='Activate'
+                            onClick={() => handleStatusChange(items.userId, i, '1')}
+                            style={{ borderRadius: '50%' }}
+                          >
+                            A
+                          </button>
+                        )}
 
-          <div className={`${classes.root} pagenation_view_groups`}>
-            <Pagination
-              page={Number(currentPage)}
-              size='large'
-              className='books__pagination'
-              onChange={handlePagination}
-              count={totalPages}
+                        <IconButton
+                          title='Delete'
+                          onClick={() => handleDelete(items.userId, i)}
+                        >
+                          <DeleteOutlinedIcon color='primary' />
+                        </IconButton>
+                      </TableCell>
+                      <TableCell className={classes.tableCell}>
+                        <IconButton title='Edit' onClick={() => handleEdit(items.userId)}>
+                          <EditOutlinedIcon color='primary' />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+
+            {/* <div className={`${classes.root} pagenation_view_groups`}>
+              <Pagination
+                page={Number(currentPage)}
+                size='large'
+                className='books__pagination'
+                onChange={handlePagination}
+                count={totalPages}
+              />
+            </div> */}
+            <TablePagination
+              component='div'
+              count={totalCount}
+              rowsPerPage={limit}
+              page={Number(currentPage) - 1}
+              onChangePage={handlePagination}
+              rowsPerPageOptions={false}
+              className='table-pagination'
             />
-          </div>
-        </Paper>
+          </Paper>
+        )}
         {isMobile && (
           <>
             <div className={classes.cardsContainer}>
@@ -596,11 +612,12 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                 count={totalPages}
                 onChange={handlePagination}
                 color='primary'
+                className='pagination-white'
               />
             </div>
           </>
         )}
-      </Container>
+      </div>
     </Layout>
   );
 });
