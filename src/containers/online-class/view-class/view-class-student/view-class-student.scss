@@ -27,12 +27,17 @@
   h5 {
     font-size: 18px !important;
   }
+
+  .studentview-tab-container {
+    background-color: #f8f8f8;
+    padding-bottom: 20px;
+  }
 }
 
 .breadcrumb-container {
   width: 95%;
   font-weight: 100;
-  margin: 20px auto 40px auto;
+  margin: 20px auto;
 }
 
 // View class student
@@ -40,7 +45,7 @@
   background-color: white;
   width: 95%;
   border: 1px solid $primary-color;
-  margin: 25px auto 40px auto;
+  margin: 25px auto 20px auto;
   padding: 15px;
   border-radius: 5px;
 

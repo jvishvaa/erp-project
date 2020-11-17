@@ -42,9 +42,17 @@ const ViewClassManagementTable = () => {
   return (
     <div className='viewclass__management-table'>
       {isHidden ? (
-        <AddCircleOutlineIcon className='expand-management' onClick={toggleHide} />
+        <AddCircleOutlineIcon
+          fontSize='large'
+          className='expand-management'
+          onClick={toggleHide}
+        />
       ) : (
-        <RemoveCircleIcon className='expand-management' onClick={toggleHide} />
+        <RemoveCircleIcon
+          fontSize='large'
+          className='expand-management'
+          onClick={toggleHide}
+        />
       )}
       <TableContainer>
         <Table className='viewclass__table' aria-label='simple table'>

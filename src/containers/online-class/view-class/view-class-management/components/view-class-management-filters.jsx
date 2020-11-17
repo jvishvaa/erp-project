@@ -220,7 +220,7 @@ const ViewClassManagementFilters = () => {
 
   return (
     <div className='filters__container'>
-      <Grid container spacing={3}>
+      <Grid container spacing={5}>
         <Grid item xs={12} sm={2}>
           <Autocomplete
             key={clearKey}
@@ -355,7 +355,7 @@ const ViewClassManagementFilters = () => {
           />
         </Grid>
       </Grid>
-      <Grid container spacing={3} style={{ marginTop: 30 }}>
+      <Grid container spacing={4} style={{ marginTop: 20 }}>
         <Grid item xs={12} sm={2}>
           <Button
             className='viewclass__management-btn'
@@ -378,8 +378,8 @@ const ViewClassManagementFilters = () => {
           </Button>
         </Grid>
       </Grid>
-      <hr style={{ marginTop: 40 }} />
-      <Grid container spacing={3}>
+      <hr style={{ margin: '40px auto 20px auto' }} />
+      <Grid container spacing={0} className="viewmanagement-tabs-container">
         <Grid item xs={12} sm={6}>
           <StyledTabs
             variant='standard'

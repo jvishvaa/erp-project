@@ -102,7 +102,7 @@ const ViewClassStudentCollection = () => {
         />
       </div>
       <div className='viewclass__student-collection'>
-        <Grid container>
+        <Grid container className='studentview-tab-container'>
           <Grid item xs={12} sm={6}>
             <StyledTabs
               variant='standard'
