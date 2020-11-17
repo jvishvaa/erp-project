@@ -97,12 +97,12 @@ const EditGrade = ({id,name,type,handleGoBack,setLoading}) => {
         </div>
         <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '20px 7px'}} >
           <Grid item xs={6} sm={2}>
-            <Button variant='contained' color ="primary" className="custom_button_master" size='small' type='submit'>
+            <Button variant='contained' style={{color:'white'}} color ="primary" className="custom_button_master" size='medium' type='submit'>
               Submit
             </Button>
           </Grid>
           <Grid item xs={6} sm={2}>
-            <Button variant='contained' color ="primary" className="custom_button_master" size='small' onClick={handleGoBack}>
+            <Button variant='contained' className="custom_button_master" size='medium' onClick={handleGoBack}>
               Back
             </Button>
           </Grid>

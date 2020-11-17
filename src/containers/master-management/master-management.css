@@ -5,22 +5,16 @@
   justify-content: center;
   padding:15px;
 }
-
 .custom_button_master{
-  font-size: 0.9rem;
-  width: 150px;
-  height: 45px;
-  border: none;
-	border-radius: 5px;
-	text-transform: uppercase;
+  width: 100% !important;
+  text-transform: uppercase;
 	cursor: pointer;
   outline: none !important;
-  color:white !important;;
 }
-.custom_button_master:hover{
+/* .custom_button_master:hover{
 	transform: translateY(-2px);
   box-shadow: 1px 3px 5px 1px rgba(0, 0, 0, 0.3);
-}
+} */
 
 .hideGridItem{
     display: none !important;
