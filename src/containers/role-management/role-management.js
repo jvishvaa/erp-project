@@ -12,7 +12,7 @@ import Box from '@material-ui/core/Box';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import SearchOutlined from '@material-ui/icons/SearchOutlined';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
-import { debounce } from '@material-ui/core';
+import { debounce, FormControl } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 import RoleCard from '../../components/role-card';
 import {
@@ -96,12 +96,14 @@ class RoleManagement extends Component {
           </Button>
         </div>
         <Box my={2} className={classes.searchContainer}>
-          <OutlinedInput
-            endAdornment={<SearchOutlined color='primary' />}
-            value={searchInput}
-            onChange={this.handleSearchInputChange}
-            placeholder='Search roles ...'
-          />
+          <FormControl size='small'>
+            <OutlinedInput
+              endAdornment={<SearchOutlined color='primary' />}
+              value={searchInput}
+              onChange={this.handleSearchInputChange}
+              placeholder='Search roles ...'
+            />
+          </FormControl>
         </Box>
 
         <div className={classes.rolesTableContainer}>

@@ -34,3 +34,19 @@
     color: #ffffff;
   }
 }
+
+.view-users-page {
+  .form-container {
+    width: 95%;
+    margin: 20px auto;
+    .MuiFormControl-root {
+      .MuiSvgIcon-root {
+        color: #ff6b6b;
+      }
+    }
+  }
+  .bread-crumbs-container {
+    width: 95%;
+    margin: 20px auto;
+  }
+}

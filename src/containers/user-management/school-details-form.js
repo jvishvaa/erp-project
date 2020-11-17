@@ -129,7 +129,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
   const classes = useStyles();
 
   return (
-    <Grid container spacing={4}>
+    <Grid container spacing={4} className='school-details-form-container'>
       <Grid container item xs={12}>
         <Grid item md={4} xs={12}>
           <FormControl fullWidth className={classes.margin} variant='outlined'>
@@ -150,6 +150,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
                   placeholder='Academic Year'
                 />
               )}
+              size='small'
             />
             <FormHelperText style={{ color: 'red' }}>
               {formik.errors.academic_year ? formik.errors.academic_year : ''}
@@ -182,6 +183,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
                 placeholder='Branch'
               />
             )}
+            size='small'
           />
           <FormHelperText style={{ color: 'red' }}>
             {formik.errors.branch ? formik.errors.branch : ''}
@@ -211,6 +213,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
               />
             )}
             getOptionSelected={(option, value) => option.id == value.id}
+            size='small'
           />
           <FormHelperText style={{ color: 'red' }}>
             {formik.errors.grade ? formik.errors.grade : ''}
@@ -238,6 +241,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
               />
             )}
             getOptionSelected={(option, value) => option.id == value.id}
+            size='small'
           />
           <FormHelperText style={{ color: 'red' }}>
             {formik.errors.section ? formik.errors.section : ''}
@@ -271,6 +275,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
               />
             )}
             getOptionSelected={(option, value) => option.id == value.id}
+            size='small'
           />
           <FormHelperText style={{ color: 'red' }}>
             {formik.errors.subjects ? formik.errors.subjects : ''}

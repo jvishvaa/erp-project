@@ -33,6 +33,9 @@ import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import TablePagination from '@material-ui/core/TablePagination';
+import Input from '@material-ui/core/Input';
+import Chip from '@material-ui/core/Chip';
+
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
@@ -88,7 +91,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const [deleteIndex, setDeleteIndex] = useState(null);
   const [deleteAlert, setDeleteAlert] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [grade, setGrade] = useState(['All']);
+  const [grade, setGrade] = useState([]);
   const [roleList, setRoleList] = useState([]);
   const [branchList, setBranchList] = useState([]);
   const [gradeList, setGradeList] = useState([]);
@@ -148,7 +151,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
       if (result.status === 200) {
         result.data.data.map((items) => resultOptions.push(items.grade__grade_name));
         if (selectedBranch) {
-          setGrade(['All', ...resultOptions]);
+          setGrade([...resultOptions]);
         }
         setGradeList(result.data.data);
       } else {
@@ -322,12 +325,14 @@ const ViewUsers = withRouter(({ history, ...props }) => {
 
   return (
     // <Layout>
-    <div className='view_users__page'>
-      <CommonBreadcrumbs
-        componentName='User Management'
-        childComponentName='View users'
-      />
-      <Grid container spacing={2} style={{ padding: '1rem', marginBottom: '10px' }}>
+    <div className='view-users-page'>
+      <div className='bread-crumbs-container'>
+        <CommonBreadcrumbs
+          componentName='User Management'
+          childComponentName='View users'
+        />
+      </div>
+      <Grid container spacing={4} className='form-container'>
         <Grid item xs={12}>
           <Box style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
             <Button
@@ -339,7 +344,12 @@ const ViewUsers = withRouter(({ history, ...props }) => {
           </Box>
         </Grid>
         <Grid item xs={12} md={3}>
-          <FormControl variant='outlined' className={classes.formControl} fullWidth>
+          <FormControl
+            variant='outlined'
+            className={classes.formControl}
+            fullWidth
+            size='small'
+          >
             <InputLabel>Search</InputLabel>
             <OutlinedInput
               endAdornment={<SearchOutlined color='primary' />}
@@ -351,7 +361,12 @@ const ViewUsers = withRouter(({ history, ...props }) => {
           </FormControl>
         </Grid>
         <Grid item xs={12} md={3}>
-          <FormControl variant='outlined' className={classes.formControl} fullWidth>
+          <FormControl
+            variant='outlined'
+            className={classes.formControl}
+            fullWidth
+            size='small'
+          >
             <InputLabel>Role</InputLabel>
             <Select
               labelId='demo-simple-select-outlined-label'
@@ -372,7 +387,12 @@ const ViewUsers = withRouter(({ history, ...props }) => {
           </FormControl>
         </Grid>
         <Grid item xs={12} md={3}>
-          <FormControl variant='outlined' className={classes.formControl} fullWidth>
+          <FormControl
+            variant='outlined'
+            className={classes.formControl}
+            fullWidth
+            size='small'
+          >
             <InputLabel id='demo-simple-select-outlined-label'>Branch</InputLabel>
             <Select
               labelId='demo-simple-select-outlined-label'
@@ -380,6 +400,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
               value={selectedBranch}
               onChange={(e) => setSelectedBranch(e.target.value)}
               label='Branch'
+              color='primary'
             >
               <MenuItem value=''>
                 <em>None</em>
@@ -394,12 +415,65 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         </Grid>
         {selectedBranch && (
           <Grid item xs={12} md={3}>
-            <CustomMultiSelect
+            {/* <CustomMultiSelect
               selections={selectedGrades}
               setSelections={setSelectedGrades}
               nameOfDropdown='Grade'
               optionNames={grade}
-            />
+            /> */}
+            <FormControl
+              variant='outlined'
+              className={classes.formControl}
+              fullWidth
+              size='small'
+            >
+              <InputLabel id='demo-simple-select-outlined-label'>Grade</InputLabel>
+              <Select
+                labelId='demo-simple-select-outlined-label'
+                id='demo-simple-select-outlined'
+                variant='outlined'
+                value={selectedGrades}
+                onChange={(e) => {
+                  const values = e.target.value;
+                  if (values.includes('none')) {
+                    setSelectedGrades([]);
+                  } else {
+                    setSelectedGrades(e.target.value);
+                  }
+                }}
+                label='Grade'
+                color='primary'
+                multiple
+                renderValue={(selected) => (
+                  <div className={classes.chips}>
+                    {selected.map((value, index) => (
+                      <Chip
+                        key={`${value}_${index}`}
+                        label={value}
+                        className={classes.chip}
+                        onDelete={() => {
+                          setSelectedGrades(
+                            selectedGrades.filter((item) => item !== value)
+                          );
+                        }}
+                        onMouseDown={(event) => {
+                          event.stopPropagation();
+                        }}
+                      />
+                    ))}
+                  </div>
+                )}
+              >
+                <MenuItem value='none'>
+                  <em>None</em>
+                </MenuItem>
+                {grade.map((item, index) => (
+                  <MenuItem key={`branch_user_details_${index}`} value={item}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
         )}
       </Grid>
