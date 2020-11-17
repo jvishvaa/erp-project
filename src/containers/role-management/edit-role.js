@@ -161,7 +161,7 @@ class EditRole extends Component {
     const { roleName } = this.props;
     return (
       <div className={classes.root}>
-        <Grid container spacing={2} alignItems='center' style={{ padding: '2rem 0' }}>
+        <Grid container spacing={2} alignItems='center' className={classes.formContainer}>
           <Grid item>
             {fetchingRoleDataById ? (
               <Skeleton />
@@ -174,6 +174,7 @@ class EditRole extends Component {
                 variant='outlined'
                 value={roleName}
                 onChange={this.onChangeRoleName}
+                size='small'
               />
             )}
           </Grid>
@@ -182,8 +183,8 @@ class EditRole extends Component {
           </Grid>
         </Grid>
         <Typography className={classes.sectionHeader}>Number of modules</Typography>
-        <Divider />
-        <Grid container spacing={4} style={{ padding: '2rem 0' }}>
+        <Divider className={classes.divider} />
+        <Grid container spacing={4} className={classes.modulesContainer}>
           {fetchingRoleDataById && <Loading message='loading modules ...' />}
           {modules &&
             modules.map((module) => (

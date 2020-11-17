@@ -4,23 +4,29 @@ const styles = (theme) => ({
   },
   buttonContainer: {
     background: theme.palette.background.secondary,
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
+    // paddingTop: theme.spacing(3),
+    // paddingBottom: theme.spacing(3),
     [theme.breakpoints.down('sm')]: {
       display: 'flex',
       justifyContent: 'center',
     },
+    width: '95%',
+    margin: '20px auto',
   },
   searchContainer: {
     [theme.breakpoints.down('sm')]: {
       display: 'flex',
       justifyContent: 'center',
     },
+    width: '95%',
+    margin: '20px auto',
   },
   sectionHeader: {
     fontSize: '1.3rem',
     color: theme.palette.secondary.main,
     fontWeight: 600,
+    width: '95%',
+    margin: '20px auto',
   },
   rolesTableContainer: {
     [theme.breakpoints.down('sm')]: {
@@ -46,6 +52,18 @@ const styles = (theme) => ({
     [theme.breakpoints.down('sm')]: {
       display: 'flex',
     },
+  },
+  divider: {
+    width: '95%',
+    margin: '20px auto',
+  },
+  modulesContainer: {
+    width: '95%',
+    margin: '20px auto',
+  },
+  formContainer: {
+    width: '95%',
+    margin: '20px auto',
   },
 });
 
