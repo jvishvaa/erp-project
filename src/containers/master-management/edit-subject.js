@@ -96,7 +96,7 @@ const EditSubject = ({id,name,desc,handleGoBack,setLoading}) => {
         </Grid>
         </div>
 
-        <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '20px 7px'}} >
+        <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '20px 10px'}} >
           <Grid item xs={6} sm={2}>
             <Button variant='contained' style={{color:'white'}} color ="primary" className="custom_button_master" size='medium' type='submit'>
               Submit

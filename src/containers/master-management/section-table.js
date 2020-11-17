@@ -116,8 +116,13 @@ const SectionTable = () => {
   const widerWidth=isMobile?'98%':'95%'
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage + 1);
-  };
+    setPage(newPage)
+  }
+
+  const handleChangePageScreen = (event,value) => {
+    setPage(value+1)
+  }
+
 
   const handleGrade = (event, value) => {
     if (value) setSearchGrade(value.id);
@@ -286,7 +291,7 @@ const SectionTable = () => {
           </Grid>
           <Grid item xs sm className={isMobile?'hideGridItem':''}/>
           <Grid item xs={12} sm={3}>
-             <Button startIcon={<AddOutlinedIcon />} size="small" title="Add Section" onClick={handleAddSection}>
+             <Button startIcon={<AddOutlinedIcon />}  variant='contained' color='primary' size="medium" style={{color:'white'}}  title="Add Section" onClick={handleAddSection}>
                 Add Section
              </Button>
           </Grid>
@@ -348,22 +353,12 @@ const SectionTable = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-            {/* <div className='paginate'>
-              <Pagination
-                count={pageCount}
-                color='primary'
-                showFirstButton
-                showLastButton
-                page={page}
-                onChange={handleChangePage}
-              />
-            </div> */}
             <TablePagination
               component='div'
               count={totalCount}
               rowsPerPage={limit}
               page={page - 1}
-              onChangePage={handleChangePage}
+              onChangePage={handleChangePageScreen}
               rowsPerPageOptions={false}
               className='table-pagination'
             />

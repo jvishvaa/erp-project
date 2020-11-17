@@ -93,7 +93,8 @@ const SubjectTable = () => {
   const [searchGrade,setSearchGrade]=useState('')
   const [searchSubject,setSearchSubject]=useState('')
   const [loading, setLoading] = useState(false);
-
+  const [limit, setLimit] = useState(15);
+   
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
@@ -101,8 +102,13 @@ const SubjectTable = () => {
   const widerWidth=isMobile?'98%':'95%'
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    setPage(newPage)
   };
+
+  const handleChangePageScreen = (event,value) => {
+    setPage(value+1)
+  }
+
 
   const handleGrade = (event, value) => {
     if(value)
@@ -171,7 +177,7 @@ const SubjectTable = () => {
   },[page,delFlag,editFlag,addFlag,searchGrade])
 
   useEffect(()=>{
-      axiosInstance.get(`${endpoints.masterManagement.subjects}?page=${page}&page_size=15&grade=${searchGrade}&subject=${searchSubject}`)
+      axiosInstance.get(`${endpoints.masterManagement.subjects}?page=${page}&page_size=${limit}&grade=${searchGrade}&subject=${searchSubject}`)
       .then(result=>{
         if (result.status === 200) {
           setTotalCount(result.data.result.count);
@@ -255,7 +261,7 @@ const SubjectTable = () => {
       </Grid>
       <Grid item xs sm className={isMobile?'hideGridItem':''}/>
       <Grid item xs={12} sm={3}>
-        <Button startIcon={<AddOutlinedIcon />} size="small" title="Add Subject" onClick={handleAddSubject}>
+        <Button startIcon={<AddOutlinedIcon />} variant='contained' color='primary' size="medium" style={{color:'white'}} title="Add Subject" onClick={handleAddSubject}>
           Add Subject
         </Button>
       </Grid>
@@ -322,9 +328,9 @@ const SubjectTable = () => {
       <TablePagination
         component='div'
         count={totalCount}
-        rowsPerPage={15}
-        page={page - 1}
-        onChangePage={handleChangePage}
+        rowsPerPage={limit}
+        page={page-1}
+        onChangePage={handleChangePageScreen}
         rowsPerPageOptions={false}
         className='table-pagination'
       />
