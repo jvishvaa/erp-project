@@ -112,6 +112,9 @@ const SectionTable = () => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
+  const wider= isMobile?'10px 0px 10px 0px':'20px 0px 20px 8px'
+  const widerWidth=isMobile?'98%':'95%'
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage + 1);
   };
@@ -222,115 +225,74 @@ const SectionTable = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div className='headerMaster'>
-          <div style={{ padding: '1rem' }}>
-            <CommonBreadcrumbs
-              componentName='Master Management'
-              childComponentName='Section List'
-            />
-          </div>
-          {/* <div className={classes.buttonContainer}>
-            {tableFlag && !addFlag && !editFlag && (
-              <Button
-                startIcon={<AddOutlinedIcon />}
-                size='medium'
-                title='Add Section'
-                onClick={handleAddSection}
-              >
-                Add Section
-              </Button>
-            )}
-            {(addFlag || editFlag) && (
-              <Button
-                startIcon={<ArrowBackIcon />}
-                size='medium'
-                title='Go back to Section List'
-                onClick={handleGoBack}
-              >
-                Section List
-              </Button>
-            )}
-          </div> */}
-        </div>
-
-        {!tableFlag && addFlag && !editFlag && (
-          <CreateSection grades={grades} setLoading={setLoading} />
-        )}
-        {!tableFlag && !addFlag && editFlag && (
-          <EditSection
-            id={sectionId}
-            name={sectionName}
-            handleGoBack={handleGoBack}
-            setLoading={setLoading}
+      <div>
+        <div style={{ width: '95%', margin: '20px auto' }}>
+          <CommonBreadcrumbs
+            componentName='Master Management'
+            childComponentName='Section List'
           />
-        )}
+        </div>
+      </div>
 
-        {tableFlag && !addFlag && !editFlag && (
-          <Grid container spacing={3} style={{ padding: '1rem', marginBottom: '10px' }}>
-            <Grid item xs={12}>
-              <Box className={classes.centerInMobile}>
-                {tableFlag && !addFlag && !editFlag && (
-                  <Button
-                    startIcon={<AddOutlinedIcon />}
-                    size='medium'
-                    title='Add Section'
-                    onClick={handleAddSection}
-                  >
-                    Add Section
-                  </Button>
-                )}
-                {(addFlag || editFlag) && (
-                  <Button
-                    startIcon={<ArrowBackIcon />}
-                    size='medium'
-                    title='Go back to Section List'
-                    onClick={handleGoBack}
-                  >
-                    Section List
-                  </Button>
-                )}
-              </Box>
-            </Grid>
-            <Grid item xs={12}>
-              <Box className={classes.centerInMobile}>
-                <TextField
-                  id='secname'
-                  label='Section Name'
-                  className={widthFlag ? 'mainWidth widthClass' : 'mainWidth'}
-                  onFocus={(e) => setWidthFlag(true)}
-                  onBlur={(e) => setWidthFlag(false)}
-                  variant='outlined'
-                  size='medium'
-                  autoComplete='off'
-                  name='secname'
-                  onChange={(e) => setSearchSection(e.target.value)}
-                />
-              </Box>
-            </Grid>
-            <Grid item xs={12}>
-              <Box className={classes.centerInMobile}>
-                <Autocomplete
-                  size='medium'
-                  onChange={handleGrade}
-                  id='grade'
-                  className='gradeDropClass'
-                  options={grades}
-                  getOptionLabel={(option) => option.grade_name}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Grades'
-                      placeholder='Grades'
-                    />
-                  )}
-                />
-              </Box>
-            </Grid>
+      {!tableFlag && addFlag && !editFlag && (
+        <CreateSection grades={grades} setLoading={setLoading} handleGoBack={handleGoBack}/>
+      )}
+
+      {!tableFlag && !addFlag && editFlag && (
+        <EditSection
+          id={sectionId}
+          name={sectionName}
+          handleGoBack={handleGoBack}
+          setLoading={setLoading}
+        />
+      )}
+
+      {tableFlag && !addFlag && !editFlag && (
+        <Grid container spacing={isMobile?3:5} style={{ width: widerWidth, margin: wider}}>
+          <Grid item xs={12} sm={3}>
+            <Box className={classes.centerInMobile}>
+              <TextField
+                id='secname'
+                style={{ width: '100%' }}
+                label='Section Name'
+                variant='outlined'
+                size='small'
+                autoComplete='off'
+                name='secname'
+                onChange={(e) => setSearchSection(e.target.value)}
+              />
+            </Box>
           </Grid>
-        )}
-        {!isMobile && tableFlag && !addFlag && !editFlag && (
+          <Grid item xs={12} sm={3}>
+            <Box className={classes.centerInMobile}>
+              <Autocomplete
+                size='small'
+                style={{ width: '100%' }}
+                onChange={handleGrade}
+                id='grade'
+                options={grades}
+                getOptionLabel={(option) => option.grade_name}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Grades'
+                    placeholder='Grades'
+                  />
+                )}
+              />
+            </Box>
+          </Grid>
+          <Grid item xs sm className={isMobile?'hideGridItem':''}/>
+          <Grid item xs={12} sm={3}>
+             <Button startIcon={<AddOutlinedIcon />} size="small" title="Add Section" onClick={handleAddSection}>
+                Add Section
+             </Button>
+          </Grid>
+        </Grid>
+      )}
+      {!isMobile && tableFlag && !addFlag && !editFlag && (
           <Paper className={`${classes.root} common-table`}>
             <TableContainer className={classes.container}>
               <Table stickyHeader aria-label='sticky table'>
@@ -423,10 +385,12 @@ const SectionTable = () => {
                 />
               ))}
             </Container>
-            <div className={classes.cardsPagination}>
+            <div className='paginate'>
               <Pagination
                 page={page}
                 count={pageCount}
+                showFirstButton
+                showLastButton
                 onChange={handleChangePage}
                 color='primary'
                 className='pagination-white'
