@@ -195,7 +195,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     const gradesId = [];
     const sectionsId = [];
     setNext(true);
-    let getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15&module_id=${moduleId}`;
+    let getUserListUrl = `${endpoints.communication.communicationUserList}?page=${pageno}&page_size=15&module_id=${moduleId}`;
     if (selectedRoles.length && !selectedRoles.includes('All')) {
       roleList
         .filter((item) => selectedRoles.includes(item['role_name']))

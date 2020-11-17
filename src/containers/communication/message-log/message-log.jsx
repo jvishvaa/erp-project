@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     },
     width: '100%',
     marginLeft: '5px',
-    marginTop: '20px',
+    marginTop: '5px',
     [theme.breakpoints.down('xs')]: {
       width: '85vw',
       margin: 'auto',
@@ -451,9 +451,9 @@ const MessageLog = withRouter(({ history, ...props }) => {
                       <TableRow>
                         <TableCell>Message</TableCell>
                         <TableCell>Type</TableCell>
-                        <TableCell>Sent by</TableCell>
+                        <TableCell className='message_log_send_by'>Sent by</TableCell>
                         <TableCell>Sent on</TableCell>
-                        <TableCell>Total Count</TableCell>
+                        <TableCell>Count</TableCell>
                         <TableCell>Sent</TableCell>
                       </TableRow>
                     </TableHead>

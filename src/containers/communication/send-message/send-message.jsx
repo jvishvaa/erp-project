@@ -141,14 +141,11 @@ const SendMessage = withRouter(({ history, ...props }) => {
   const getGroupApi = async () => {
     try {
       setLoading(false);
-      const result = await axiosInstance.get(
-        `${endpoints.communication.groupList}&module_id=${moduleId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const result = await axiosInstance.get(`${endpoints.communication.groupList}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const resultOptions = [];
       if (result.status === 200) {
         result.data.data.map((items) => resultOptions.push(items.group_name));
@@ -235,7 +232,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       const rolesId = [];
       const gradesId = [];
       const sectionsId = [];
-      getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15`;
+      getUserListUrl = `${endpoints.communication.communicationUserList}?page=${pageno}&page_size=15`;
       if (selectedRoles.length) {
         roleList
           .filter((item) => selectedRoles.includes(item['role_name']))
@@ -271,7 +268,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       }
     } else {
       const groupId = [];
-      getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15&module_id=${moduleId}`;
+      getUserListUrl = `${endpoints.communication.communicationUserList}?page=${pageno}&page_size=15&module_id=${moduleId}`;
       if (selectedGroup.length) {
         groupList
           .filter((item) => selectedGroup.includes(item['group_name']))

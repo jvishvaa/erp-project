@@ -30,7 +30,7 @@
   cursor: pointer;
   outline: none !important;
   color: white;
-  background-color: #a19e9e;
+  background-color: rgba(0, 0, 0, 0.12);;
 }
 .spacing {
   height: 2vw;
@@ -43,6 +43,25 @@
 }
 .message_log_wrapper{
 	padding: 0% 2%;	
+}
+.message_log_table_wrapper .message_log_table tr th:not(:last-child):after {
+    content: '';
+    width: 2px;
+    background-color: #ff6b6b;
+    height: 60%;
+    position: absolute;
+    border-radius: 5px;
+    right: 0;
+    transform: translateY(-10%);
+}
+.message_log_table_wrapper > *{
+	margin-top: 0px !important;
+}
+.message_log_send_by{
+	min-width: 100px; 
+}
+.message_log_table_wrapper{
+	border-radius: 0px !important;
 }
 @media screen and (max-width: 700px) {
   .message_log_branch {
