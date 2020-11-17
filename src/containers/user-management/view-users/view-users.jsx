@@ -585,7 +585,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
               rowsPerPage={limit}
               page={Number(currentPage) - 1}
               onChangePage={(e, page) => {
-                handlePagination(page + 1);
+                handlePagination(e, page + 1);
               }}
               rowsPerPageOptions={false}
               className='table-pagination'
