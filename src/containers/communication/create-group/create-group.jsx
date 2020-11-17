@@ -542,11 +542,15 @@ const CreateGroup = withRouter(({ history, ...props }) => {
               <Grid container className='create_group_container' spacing={5}>
                 <Grid xs={12} lg={4} className='create_group_items' item>
                   <div className='group_name_wrapper'>
-                    <CustomInput
-                      className='group_name_create_group'
-                      onChange={addGroupName}
-                      value={groupName}
+                    <TextField
+                      className='create_group-textfield'
+                      id='class-Group name'
+                      label='Group name'
+                      variant='outlined'
+                      size='small'
                       name='Group name'
+                      onChange={addGroupName}
+                      required
                     />
                     <span className='create_group_error_span'>{groupNameError}</span>
                   </div>

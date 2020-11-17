@@ -26,9 +26,6 @@
 .create_group_role .makeStyles-formControl-51{
 	margin-top: 0%;
 }
-.group_name_wrapper .MuiOutlinedInput-input {
-	padding: 9.5px 14px !important;
-}
 .group_name_wrapper .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
     border-color: rgb(0 0 0 / 18%) !important;
 }
@@ -80,6 +77,9 @@
 	color: #014B7E !important;
 	font-size: 1rem !important;
     font-weight: 600 !important;
+}
+.create_group-textfield{
+	width: 350px;
 }
 .create_group_branch_wrapper .MuiInputBase-input {
 	color: #014b7e !important;
