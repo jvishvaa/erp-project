@@ -19,12 +19,11 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Radio from '@material-ui/core/Radio';
 import Box from '@material-ui/core/Box';
-import validationSchema from './schemas/user-details';
-import { Label } from '@material-ui/icons';
-import { useStyles } from './useStyles';
-import ImageUpload from '../../components/image-upload';
 import { createMuiTheme, ThemeProvider, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import validationSchema from './schemas/user-details';
+import { useStyles } from './useStyles';
+import ImageUpload from '../../components/image-upload';
 
 const UserDetailsForm = ({
   details,
@@ -64,6 +63,7 @@ const UserDetailsForm = ({
     flatButton: {
       primaryTextColor: '#ffffff',
     },
+
     overrides: {
       MuiButton: {
         // Name of the rule
@@ -72,10 +72,23 @@ const UserDetailsForm = ({
           color: '#ffffff',
         },
       },
+      MuiPickersToolbarText: {
+        toolbarTxt: {
+          color: '#ffffff',
+        },
+        toolbarBtnSelected: {
+          color: '#ffffff',
+        },
+      },
+      MuiPickersDay: {
+        daySelected: {
+          color: '#ffffff',
+        },
+      },
     },
   });
   return (
-    <Grid container spacing={4}>
+    <Grid container spacing={4} className='user-details-form-container'>
       <Grid container item xs={12}>
         <Grid item md={4} xs={12}>
           <ImageUpload
@@ -87,7 +100,7 @@ const UserDetailsForm = ({
         </Grid>
       </Grid>
       <Grid item md={4} xs={12}>
-        <FormControl variant='outlined' fullWidth>
+        <FormControl variant='outlined' fullWidth size='small'>
           <InputLabel htmlFor='component-outlined'>First name</InputLabel>
           <OutlinedInput
             id='first_name'
@@ -104,7 +117,7 @@ const UserDetailsForm = ({
         </FormControl>
       </Grid>
       <Grid item md={4} xs={12}>
-        <FormControl variant='outlined' fullWidth>
+        <FormControl variant='outlined' fullWidth size='small'>
           <InputLabel htmlFor='component-outlined'>Middle name</InputLabel>
           <OutlinedInput
             id='middle_name'
@@ -117,7 +130,7 @@ const UserDetailsForm = ({
         </FormControl>
       </Grid>
       <Grid item md={4} xs={12}>
-        <FormControl variant='outlined' fullWidth>
+        <FormControl variant='outlined' fullWidth size='small'>
           <InputLabel htmlFor='component-outlined'>Last name</InputLabel>
           <OutlinedInput
             id='last_name'
@@ -134,7 +147,7 @@ const UserDetailsForm = ({
       </Grid>
       <Grid container item xs={12} spacing={8}>
         <Grid item md={4}>
-          <FormControl component='fieldset' fullWidth>
+          <FormControl component='fieldset' fullWidth size='small'>
             <FormLabel component='legend'>Gender</FormLabel>
             <RadioGroup
               id='gender'
@@ -182,6 +195,7 @@ const UserDetailsForm = ({
                 label='Date of birth'
                 disabled={false}
                 format='YYYY-MM-DD'
+                size='small'
               />
             </ThemeProvider>
           </MuiPickersUtilsProvider>
@@ -192,7 +206,7 @@ const UserDetailsForm = ({
       </Grid>
       <Grid container item xs={12} spacing={4}>
         <Grid item md={4} xs={12}>
-          <FormControl variant='outlined' fullWidth>
+          <FormControl variant='outlined' fullWidth size='small'>
             <InputLabel htmlFor='component-outlined'>Mobile no.</InputLabel>
             <OutlinedInput
               id='contact'
@@ -208,7 +222,7 @@ const UserDetailsForm = ({
           </FormControl>
         </Grid>
         <Grid item md={4} xs={12}>
-          <FormControl variant='outlined' fullWidth>
+          <FormControl variant='outlined' fullWidth size='small'>
             <InputLabel htmlFor='component-outlined'>Email</InputLabel>
             <OutlinedInput
               id='email'
@@ -226,7 +240,7 @@ const UserDetailsForm = ({
       </Grid>
       <Grid container item xs={12} spacing={4}>
         <Grid item md={4} xs={12}>
-          <FormControl variant='outlined' fullWidth>
+          <FormControl variant='outlined' fullWidth size='small'>
             <InputLabel htmlFor='component-outlined'>Address</InputLabel>
             <OutlinedInput
               id='address'
@@ -261,7 +275,7 @@ const UserDetailsForm = ({
         <Divider />
       </Grid>
       <Grid item md={4} xs={12}>
-        <FormControl component='fieldset' fullWidth>
+        <FormControl component='fieldset' fullWidth size='small'>
           <FormLabel component='legend'>Parent/Guardian</FormLabel>
           <FormGroup row>
             <FormControlLabel

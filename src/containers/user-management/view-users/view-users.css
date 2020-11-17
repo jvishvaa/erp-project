@@ -1,9 +1,14 @@
+.view_users__page {
+  width: 95%;
+  margin: 20px auto;
+}
+
 .view_users_filter_wrapper {
   display: flex;
   justify-content: space-around;
-  padding: 2% 15% 2% 2%;
+  /* padding: 2% 15% 2% 2%;
   margin-left: 2%;
-  width: 95%;
+  width: 95%; */
   border-bottom: 2px solid #dcdcdc;
 }
 @media screen and (max-width: 960px) {

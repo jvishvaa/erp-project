@@ -1,13 +1,49 @@
-.form-grid {
-  @media screen and (max-width: 960px) {
-    .MuiGrid-item {
-      &:not(.profile-img-container) {
-        order: 2;
-      }
-      .profile-img-container {
-        display: flex;
-        justify-content: center;
+.user-management-container {
+  .form-grid {
+    @media screen and (max-width: 960px) {
+      .MuiGrid-item {
+        &:not(.profile-img-container) {
+          order: 2;
+        }
+        .profile-img-container {
+          display: flex;
+          justify-content: center;
+        }
       }
     }
+  }
+
+  .stepper {
+    .MuiStepIcon-root {
+      &.MuiStepIcon-active {
+        .MuiStepIcon-text {
+          fill: #ffffff;
+        }
+      }
+      &:not(.MuiStepIcon-active) {
+        fill: #e2e2e2;
+        .MuiStepIcon-text {
+          fill: #8c8c8c;
+        }
+      }
+    }
+  }
+
+  .school-details-form-container,
+  .parent-form-container,
+  .user-details-form-container,
+  .guardian-form-container {
+    width: 95%;
+    margin: 20px auto;
+
+    .MuiFormControl-root {
+      .MuiSvgIcon-root {
+        color: #ff6b6b;
+      }
+    }
+  }
+  .form-action-btn-container {
+    width: 95%;
+    margin: 20px auto;
   }
 }

@@ -6,13 +6,14 @@ import EditUser from './edit-user';
 import Layout from '../Layout';
 import ViewUsers from './view-users/view-users';
 import AssignRole from '../communication/assign-role/assign-role';
+import './styles.scss';
 
 const RoutesIndex = () => {
   const match = useRouteMatch();
 
   return (
     <Layout>
-      <div>
+      <div className='user-management-container'>
         <Switch>
           <Route path={`${match.url}/create-user`} exact>
             {({ match, history }) => <CreateUser match={match} history={history} />}
