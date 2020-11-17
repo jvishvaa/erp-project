@@ -36,17 +36,30 @@
 }
 .text_message_word_count {
   color: #014b7e;
-  margin: 4%;
   line-height: 2;
 }
+.send_message_user_list_wrapper {
+  padding: 20px;
+  width: 100%;
+  background-color: white;
+}
 .message_sending_screen_wrapper {
-  padding: 1% 5%;
-  background: white;
+	width: 92%;
+    margin: 20px auto;
+}
+.message_sending_white_wrapper{
+	margin: 20px 0px 0px;
+	padding: 20px 0px 0px;
+	background-color: white;
+}
+.email_subject_wrapper_grid{
+	padding-top: 0px !important;
+	padding-bottom: 0px !important;
 }
 .message_type_block_wrapper {
   display: flex;
-  margin: 2%;
-  margin-left: 0%;
+  width: 95%;
+  margin: 20px auto;
   border-bottom: 1px solid #cfcfcf;
 }
 .message_type_block {
@@ -64,9 +77,14 @@
   color: #014b7e;
   font-weight: 600;
 }
+.send_message_type .MuiInputBase-input {
+	color: #014b7e !important;
+}
+.send_message_type .MuiIconButton-label{
+	color: #FF6B6B !important;
+}
 .email_subject_wrapper .MuiFormControl-root {
-  width: 40%;
-  margin: 2% 1%;
+  width: 70%;
 }
 .message_type_wrapper .MuiFormControl-root {
   border: 1px solid #d4cbcb !important;
@@ -100,7 +118,7 @@
 .message_type_wrapper .MuiPaper-elevation8 {
   margin-top: 6%;
 }
-.message_type_wrapper .MuiFormLabel-root {
+.send_message_type .MuiFormLabel-root {
   color: #014b7e !important;
   font-size: 1rem !important;
   font-weight: 600 !important;
@@ -109,9 +127,8 @@
   color: #014b7e;
   font-size: 1rem;
   font-weight: 600;
-  margin-top: 2%;
-  margin-bottom: 1%;
-  margin-left: 5%;
+  width: 95%;
+  margin: 20px auto 1%;
 }
 .send_message_select_all_checkbox {
   transform: scale(1.5);
@@ -119,6 +136,7 @@
 }
 .send_message_type_wrapper {
   margin-left: 5%;
+  margin-bottom: 20px;
 }
 .create_group_message_type_wrapper .MuiOutlinedInput-root {
   border-radius: 10px;
@@ -144,7 +162,7 @@
 }
 @media screen and (max-width: 700px) {
   .textFields_message {
-    width: 97.5%;
+    width: 100%;
   }
   .send_message_group_select_lebel {
     margin-right: 4%;
@@ -173,9 +191,7 @@
     width: 50%;
   }
   .email_subject_wrapper .MuiFormControl-root {
-    width: 88%;
-    margin: auto;
-    margin-left: 3%;
+    width: 100%;
   }
   .deactive_clearAll {
     width: 80%;
@@ -201,8 +217,8 @@
   .custom_button {
     margin: auto;
   }
-  .email_subject_wrapper{
-	  width: 100%;
-	  margin: auto;
+  .email_subject_wrapper {
+    width: 100%;
+    margin: auto;
   }
 }

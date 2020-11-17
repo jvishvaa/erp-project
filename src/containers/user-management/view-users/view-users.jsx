@@ -33,6 +33,9 @@ import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import TablePagination from '@material-ui/core/TablePagination';
+import Input from '@material-ui/core/Input';
+import Chip from '@material-ui/core/Chip';
+
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
@@ -88,7 +91,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const [deleteIndex, setDeleteIndex] = useState(null);
   const [deleteAlert, setDeleteAlert] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [grade, setGrade] = useState(['All']);
+  const [grade, setGrade] = useState([]);
   const [roleList, setRoleList] = useState([]);
   const [branchList, setBranchList] = useState([]);
   const [gradeList, setGradeList] = useState([]);
@@ -148,7 +151,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
       if (result.status === 200) {
         result.data.data.map((items) => resultOptions.push(items.grade__grade_name));
         if (selectedBranch) {
-          setGrade(['All', ...resultOptions]);
+          setGrade([...resultOptions]);
         }
         setGradeList(result.data.data);
       } else {
@@ -321,92 +324,163 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   }, [isNewSeach]);
 
   return (
-    <Layout>
-      <div className='view_users__page'>
+    // <Layout>
+    <div className='view-users-page'>
+      <div className='bread-crumbs-container'>
         <CommonBreadcrumbs
           componentName='User Management'
           childComponentName='View users'
         />
-        <Grid container spacing={2} style={{ padding: '1rem', marginBottom: '10px' }}>
-          <Grid item xs={12}>
-            <Box style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
-              <Button
-                startIcon={<SettingsBackupRestoreOutlined />}
-                onClick={handleResetFilters}
-              >
-                Reset
-              </Button>
-            </Box>
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <FormControl variant='outlined' className={classes.formControl} fullWidth>
-              <InputLabel>Search</InputLabel>
-              <OutlinedInput
-                endAdornment={<SearchOutlined color='primary' />}
-                placeholder='Search users ..'
-                label='Search'
-                value={searchText}
-                onChange={handleTextSearch}
-              />
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <FormControl variant='outlined' className={classes.formControl} fullWidth>
-              <InputLabel>Role</InputLabel>
-              <Select
-                labelId='demo-simple-select-outlined-label'
-                id='demo-simple-select-outlined'
-                value={selectedRoles}
-                onChange={(e) => setSelectedRoles(e.target.value)}
-                label='Role'
-              >
-                <MenuItem value=''>
-                  <em>None</em>
-                </MenuItem>
-                {roleList.map((items, index) => (
-                  <MenuItem key={`role_user_details_${index}`} value={items.id}>
-                    {items.role_name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} md={3}>
-            <FormControl variant='outlined' className={classes.formControl} fullWidth>
-              <InputLabel id='demo-simple-select-outlined-label'>Branch</InputLabel>
-              <Select
-                labelId='demo-simple-select-outlined-label'
-                id='demo-simple-select-outlined'
-                value={selectedBranch}
-                onChange={(e) => setSelectedBranch(e.target.value)}
-                label='Branch'
-              >
-                <MenuItem value=''>
-                  <em>None</em>
-                </MenuItem>
-                {branchList.map((items, index) => (
-                  <MenuItem key={`branch_user_details_${index}`} value={items.id}>
-                    {items.branch_name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          {selectedBranch && (
-            <Grid item xs={12} md={3}>
-              <CustomMultiSelect
-                selections={selectedGrades}
-                setSelections={setSelectedGrades}
-                nameOfDropdown='Grade'
-                optionNames={grade}
-              />
-            </Grid>
-          )}
+      </div>
+      <Grid container spacing={4} className='form-container'>
+        <Grid item xs={12}>
+          <Box style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+            <Button
+              startIcon={<SettingsBackupRestoreOutlined />}
+              onClick={handleResetFilters}
+            >
+              Reset
+            </Button>
+          </Box>
         </Grid>
-        {/* <span className='view_users__reset_icon' onClick={handleResetFilters}>
+        <Grid item xs={12} md={3}>
+          <FormControl
+            variant='outlined'
+            className={classes.formControl}
+            fullWidth
+            size='small'
+          >
+            <InputLabel>Search</InputLabel>
+            <OutlinedInput
+              endAdornment={<SearchOutlined color='primary' />}
+              placeholder='Search users ..'
+              label='Search'
+              value={searchText}
+              onChange={handleTextSearch}
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <FormControl
+            variant='outlined'
+            className={classes.formControl}
+            fullWidth
+            size='small'
+          >
+            <InputLabel>Role</InputLabel>
+            <Select
+              labelId='demo-simple-select-outlined-label'
+              id='demo-simple-select-outlined'
+              value={selectedRoles}
+              onChange={(e) => setSelectedRoles(e.target.value)}
+              label='Role'
+            >
+              <MenuItem value=''>
+                <em>None</em>
+              </MenuItem>
+              {roleList.map((items, index) => (
+                <MenuItem key={`role_user_details_${index}`} value={items.id}>
+                  {items.role_name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <FormControl
+            variant='outlined'
+            className={classes.formControl}
+            fullWidth
+            size='small'
+          >
+            <InputLabel id='demo-simple-select-outlined-label'>Branch</InputLabel>
+            <Select
+              labelId='demo-simple-select-outlined-label'
+              id='demo-simple-select-outlined'
+              value={selectedBranch}
+              onChange={(e) => setSelectedBranch(e.target.value)}
+              label='Branch'
+              color='primary'
+            >
+              <MenuItem value=''>
+                <em>None</em>
+              </MenuItem>
+              {branchList.map((items, index) => (
+                <MenuItem key={`branch_user_details_${index}`} value={items.id}>
+                  {items.branch_name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        {selectedBranch && (
+          <Grid item xs={12} md={3}>
+            {/* <CustomMultiSelect
+              selections={selectedGrades}
+              setSelections={setSelectedGrades}
+              nameOfDropdown='Grade'
+              optionNames={grade}
+            /> */}
+            <FormControl
+              variant='outlined'
+              className={classes.formControl}
+              fullWidth
+              size='small'
+            >
+              <InputLabel id='demo-simple-select-outlined-label'>Grade</InputLabel>
+              <Select
+                labelId='demo-simple-select-outlined-label'
+                id='demo-simple-select-outlined'
+                variant='outlined'
+                value={selectedGrades}
+                onChange={(e) => {
+                  const values = e.target.value;
+                  if (values.includes('none')) {
+                    setSelectedGrades([]);
+                  } else {
+                    setSelectedGrades(e.target.value);
+                  }
+                }}
+                label='Grade'
+                color='primary'
+                multiple
+                renderValue={(selected) => (
+                  <div className={classes.chips}>
+                    {selected.map((value, index) => (
+                      <Chip
+                        key={`${value}_${index}`}
+                        label={value}
+                        className={classes.chip}
+                        onDelete={() => {
+                          setSelectedGrades(
+                            selectedGrades.filter((item) => item !== value)
+                          );
+                        }}
+                        onMouseDown={(event) => {
+                          event.stopPropagation();
+                        }}
+                      />
+                    ))}
+                  </div>
+                )}
+              >
+                <MenuItem value='none'>
+                  <em>None</em>
+                </MenuItem>
+                {grade.map((item, index) => (
+                  <MenuItem key={`branch_user_details_${index}`} value={item}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+        )}
+      </Grid>
+      {/* <span className='view_users__reset_icon' onClick={handleResetFilters}>
           <SettingsBackupRestoreIcon />
         </span> */}
-        {/* <div className='view_users_filter_wrapper'>
+      {/* <div className='view_users_filter_wrapper'>
           <div className='user_details_role_wrapper'>
             <FormControl variant='outlined' className={classes.formControl}>
               <InputLabel id='demo-simple-select-outlined-label'>Role</InputLabel>
@@ -460,117 +534,115 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             </div>
           ) : null}
         </div> */}
-        {deleteAlert ? (
-          <div className='view_users_delete_alert_wrapper'>
-            <span className='view_users_delete_alert_tag'>
-              Do you want to Delete the user
-            </span>
-            <div className='view_users_delete_alert_button_wrapper'>
-              <input
-                className='view_users_delete_alert_button'
-                type='button'
-                onClick={handleDeleteConfirm}
-                value='Delete'
-              />
-              <input
-                className='view_users_delete_alert_button'
-                type='button'
-                onClick={handleDeleteCancel}
-                value='cancel'
-              />
-            </div>
+      {deleteAlert ? (
+        <div className='view_users_delete_alert_wrapper'>
+          <span className='view_users_delete_alert_tag'>
+            Do you want to Delete the user
+          </span>
+          <div className='view_users_delete_alert_button_wrapper'>
+            <input
+              className='view_users_delete_alert_button'
+              type='button'
+              onClick={handleDeleteConfirm}
+              value='Delete'
+            />
+            <input
+              className='view_users_delete_alert_button'
+              type='button'
+              onClick={handleDeleteCancel}
+              value='cancel'
+            />
           </div>
-        ) : null}
-        {!isMobile && (
-          <Paper className={`${classes.root} common-table`}>
-            <TableContainer
-              className={`table table-shadow view_users_table ${classes.container}`}
-            >
-              <Table stickyHeader aria-label='sticky table'>
-                <TableHead className={`${classes.columnHeader} table-header-row`}>
-                  <TableRow>
-                    <TableCell className={classes.tableCell}>Name</TableCell>
-                    <TableCell className={classes.tableCell}>ERP Id</TableCell>
-                    <TableCell className={classes.tableCell}>Email</TableCell>
-                    <TableCell className={classes.tableCell}>Status</TableCell>
-                    <TableCell className={classes.tableCell}>Action</TableCell>
-                    <TableCell className={classes.tableCell}>Edit</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {usersData.map((items, i) => (
-                    <TableRow
-                      hover
-                      role='checkbox'
-                      tabIndex={-1}
-                      key={`user_table_index${i}`}
+        </div>
+      ) : null}
+      {!isMobile && (
+        <Paper className={`${classes.root} common-table`}>
+          <TableContainer
+            className={`table table-shadow view_users_table ${classes.container}`}
+          >
+            <Table stickyHeader aria-label='sticky table'>
+              <TableHead className={`${classes.columnHeader} table-header-row`}>
+                <TableRow>
+                  <TableCell className={classes.tableCell}>Name</TableCell>
+                  <TableCell className={classes.tableCell}>ERP Id</TableCell>
+                  <TableCell className={classes.tableCell}>Email</TableCell>
+                  <TableCell className={classes.tableCell}>Status</TableCell>
+                  <TableCell className={classes.tableCell}>Action</TableCell>
+                  <TableCell className={classes.tableCell}>Edit</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {usersData.map((items, i) => (
+                  <TableRow
+                    hover
+                    role='checkbox'
+                    tabIndex={-1}
+                    key={`user_table_index${i}`}
+                  >
+                    <TableCell className={classes.tableCell}>{items.userName}</TableCell>
+                    <TableCell className={classes.tableCell}>{items.erpId}</TableCell>
+                    <TableCell className={classes.tableCell}>{items.emails}</TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {items.active ? (
+                        <div style={{ color: 'green' }}>Activated</div>
+                      ) : (
+                        <div style={{ color: 'red' }}>Deactivated</div>
+                      )}
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                      className={classes.tableCell}
                     >
-                      <TableCell className={classes.tableCell}>
-                        {items.userName}
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>{items.erpId}</TableCell>
-                      <TableCell className={classes.tableCell}>{items.emails}</TableCell>
-                      <TableCell className={classes.tableCell}>
-                        {items.active ? (
-                          <div style={{ color: 'green' }}>Activated</div>
-                        ) : (
-                          <div style={{ color: 'red' }}>Deactivated</div>
-                        )}
-                      </TableCell>
-                      <TableCell
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                        className={classes.tableCell}
-                      >
-                        {items.active ? (
-                          <IconButton
-                            aria-label='deactivate'
-                            onClick={() => handleStatusChange(items.userId, i, '2')}
-                            title='Deactivate'
-                          >
-                            <BlockIcon color='primary' />
-                          </IconButton>
-                        ) : (
-                          // <button
-                          //   type='submit'
-                          //   className='group_view_deactivate_button group_view_button'
-                          //   title='Deactivate'
-                          //   onClick={() => handleStatusChange(items.userId, i, '2')}
-                          // >
-                          //   D
-                          // </button>
-                          <button
-                            type='submit'
-                            title='Activate'
-                            onClick={() => handleStatusChange(items.userId, i, '1')}
-                            style={{ borderRadius: '50%' }}
-                          >
-                            A
-                          </button>
-                        )}
-
+                      {items.active ? (
                         <IconButton
-                          title='Delete'
-                          onClick={() => handleDelete(items.userId, i)}
+                          aria-label='deactivate'
+                          onClick={() => handleStatusChange(items.userId, i, '2')}
+                          title='Deactivate'
                         >
-                          <DeleteOutlinedIcon color='primary' />
+                          <BlockIcon color='primary' />
                         </IconButton>
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>
-                        <IconButton title='Edit' onClick={() => handleEdit(items.userId)}>
-                          <EditOutlinedIcon color='primary' />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                      ) : (
+                        // <button
+                        //   type='submit'
+                        //   className='group_view_deactivate_button group_view_button'
+                        //   title='Deactivate'
+                        //   onClick={() => handleStatusChange(items.userId, i, '2')}
+                        // >
+                        //   D
+                        // </button>
+                        <button
+                          type='submit'
+                          title='Activate'
+                          onClick={() => handleStatusChange(items.userId, i, '1')}
+                          style={{ borderRadius: '50%' }}
+                        >
+                          A
+                        </button>
+                      )}
 
-            {/* <div className={`${classes.root} pagenation_view_groups`}>
+                      <IconButton
+                        title='Delete'
+                        onClick={() => handleDelete(items.userId, i)}
+                      >
+                        <DeleteOutlinedIcon color='primary' />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      <IconButton title='Edit' onClick={() => handleEdit(items.userId)}>
+                        <EditOutlinedIcon color='primary' />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          {/* <div className={`${classes.root} pagenation_view_groups`}>
               <Pagination
                 page={Number(currentPage)}
                 size='large'
@@ -579,48 +651,48 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                 count={totalPages}
               />
             </div> */}
-            <TablePagination
-              component='div'
-              count={totalCount}
-              rowsPerPage={limit}
-              page={Number(currentPage) - 1}
-              onChangePage={(e, page) => {
-                handlePagination(e, page + 1);
-              }}
-              rowsPerPageOptions={false}
-              className='table-pagination'
-            />
-          </Paper>
-        )}
-        {isMobile && (
-          <>
-            <div className={classes.cardsContainer}>
-              {usersData.map((user, i) => (
-                <ViewUserCard
-                  user={user}
-                  onEdit={handleEdit}
-                  onDelete={(userId) => {
-                    handleDelete(userId, i);
-                  }}
-                  onStatusChange={(userId, status) => {
-                    handleStatusChange(userId, i, status);
-                  }}
-                />
-              ))}
-            </div>
-            <div className={classes.cardsPagination}>
-              <Pagination
-                page={Number(currentPage)}
-                count={totalPages}
-                onChange={handlePagination}
-                color='primary'
-                className='pagination-white'
+          <TablePagination
+            component='div'
+            count={totalCount}
+            rowsPerPage={limit}
+            page={Number(currentPage) - 1}
+            onChangePage={(e, page) => {
+              handlePagination(e, page + 1);
+            }}
+            rowsPerPageOptions={false}
+            className='table-pagination'
+          />
+        </Paper>
+      )}
+      {isMobile && (
+        <>
+          <div className={classes.cardsContainer}>
+            {usersData.map((user, i) => (
+              <ViewUserCard
+                user={user}
+                onEdit={handleEdit}
+                onDelete={(userId) => {
+                  handleDelete(userId, i);
+                }}
+                onStatusChange={(userId, status) => {
+                  handleStatusChange(userId, i, status);
+                }}
               />
-            </div>
-          </>
-        )}
-      </div>
-    </Layout>
+            ))}
+          </div>
+          <div className={classes.cardsPagination}>
+            <Pagination
+              page={Number(currentPage)}
+              count={totalPages}
+              onChange={handlePagination}
+              color='primary'
+              className='pagination-white'
+            />
+          </div>
+        </>
+      )}
+    </div>
+    // </Layout>
   );
 });
 
