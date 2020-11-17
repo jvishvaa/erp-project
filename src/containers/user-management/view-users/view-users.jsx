@@ -210,7 +210,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     }
   };
   const handlePagination = (event, page) => {
-    setCurrentPage(page + 1);
+    setCurrentPage(page);
   };
 
   const handleResetFilters = () => {
@@ -584,7 +584,9 @@ const ViewUsers = withRouter(({ history, ...props }) => {
               count={totalCount}
               rowsPerPage={limit}
               page={Number(currentPage) - 1}
-              onChangePage={handlePagination}
+              onChangePage={(e, page) => {
+                handlePagination(page + 1);
+              }}
               rowsPerPageOptions={false}
               className='table-pagination'
             />

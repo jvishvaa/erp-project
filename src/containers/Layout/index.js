@@ -865,7 +865,7 @@ const Layout = ({ children, history }) => {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
-        <Container className={classes.container}>{children}</Container>
+        <div className={classes.container}>{children}</div>
       </main>
     </div>
   );
