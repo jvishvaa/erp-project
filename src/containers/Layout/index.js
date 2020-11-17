@@ -32,7 +32,6 @@ import List from '@material-ui/core/List';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItem from '@material-ui/core/ListItem';
-import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountOutlined';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
@@ -41,8 +40,7 @@ import { withRouter } from 'react-router-dom';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-import PeopleIcon from '@material-ui/icons/People';
-import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+
 import LinearProgress from '@material-ui/core/LinearProgress';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { logout } from '../../redux/actions';
@@ -308,6 +306,42 @@ const Layout = ({ children, history }) => {
       }
       case 'SMS&Email Log': {
         history.push('/messageLog');
+        break;
+      }
+      case 'Dashboard': {
+        history.push('/dashboard');
+        break;
+      }
+      case 'user-management': {
+        history.push('/user-management');
+        break;
+      }
+      case 'create-user': {
+        history.push('/user-management/create-user');
+        break;
+      }
+      case 'view-users': {
+        history.push('/user-management/view-users');
+        break;
+      }
+      case 'assign-role': {
+        history.push('/user-management/assign-role');
+        break;
+      }
+      case 'subject-table': {
+        history.push('/master-mgmt/subject-table');
+        break;
+      }
+      case 'section-table': {
+        history.push('/master-mgmt/section-table');
+        break;
+      }
+      case 'grade-table': {
+        history.push('/master-mgmt/grade-table');
+        break;
+      }
+      case 'role-management': {
+        history.push('/role-management');
         break;
       }
 
@@ -673,193 +707,13 @@ const Layout = ({ children, history }) => {
               <ListItemText className='menu-item-text'>View Profile</ListItemText>
             </ListItem>
           ) : null} */}
-          {superUser && drawerOpen && (
-            <>
-              <ListItem
-                button
-                className={
-                  history.location.pathname === '/dashboard' ? 'menu_selection' : null
-                }
-                onClick={() => {
-                  history.push('/dashboard');
-                }}
-              >
-                {' '}
-                <ListItemIcon className={classes.menuItemIcon}>
-                  <AssignmentIndIcon />
-                </ListItemIcon>
-                <ListItemText className='menu-item-text'>Dashboard</ListItemText>
-              </ListItem>
-              <ListItem
-                button
-                onClick={() => {
-                  setUserMenuOpen((prevState) => !prevState);
-                }}
-              >
-                <ListItemIcon className={classes.menuItemIcon}>
-                  <PeopleIcon />
-                </ListItemIcon>
-                <ListItemText className='menu-item-text'>User Management</ListItemText>
-                {userMenuOpen ? (
-                  <ExpandLess className={classes.expandIcons} />
-                ) : (
-                  <ExpandMore className={classes.expandIcons} />
-                )}
-              </ListItem>
-              <Collapse in={userMenuOpen}>
-                <Divider />
-                <List>
-                  <ListItem
-                    button
-                    className={
-                      history.location.pathname === '/user-management/create-user'
-                        ? 'menu_selection'
-                        : null
-                    }
-                    onClick={() => {
-                      history.push('/user-management/create-user');
-                    }}
-                  >
-                    <ListItemIcon className={classes.menuItemIcon}>
-                      {/* <MenuIcon name={child.child_name} /> */}
-                      {/* {menuIcon(child.child_name)} */}
-                    </ListItemIcon>
-                    <ListItemText primary={`Create User`} className='menu-item-text' />
-                  </ListItem>
-                  <ListItem
-                    button
-                    className={
-                      history.location.pathname === '/view-users'
-                        ? 'menu_selection'
-                        : null
-                    }
-                    onClick={() => {
-                      history.push('/view-users');
-                    }}
-                  >
-                    <ListItemIcon className={classes.menuItemIcon}>
-                      {/* <MenuIcon name={child.child_name} /> */}
-                      {/* {menuIcon(child.child_name)} */}
-                    </ListItemIcon>
-                    <ListItemText primary='View User' className='menu-item-text' />
-                  </ListItem>
-
-                  <ListItem
-                    button
-                    className={
-                      history.location.pathname === '/user-management'
-                        ? 'menu_selection'
-                        : null
-                    }
-                    onClick={() => {
-                      history.push('/user-management');
-                    }}
-                  >
-                    <ListItemIcon className={classes.menuItemIcon}>
-                      {/* <MenuIcon name={child.child_name} /> */}
-                      {/* {menuIcon(child.child_name)} */}
-                    </ListItemIcon>
-                    <ListItemText primary={`Assign Role`} className='menu-item-text' />
-                  </ListItem>
-                </List>
-              </Collapse>
-
-              <ListItem
-                button
-                onClick={() => {
-                  setMasterMenuOpen((prevState) => !prevState);
-                }}
-              >
-                <ListItemIcon className={classes.menuItemIcon}>
-                  <SupervisorAccountOutlinedIcon />
-                </ListItemIcon>
-                <ListItemText className='menu-item-text'>Master Management</ListItemText>
-                {masterMenuOpen ? (
-                  <ExpandLess className={classes.expandIcons} />
-                ) : (
-                  <ExpandMore className={classes.expandIcons} />
-                )}
-              </ListItem>
-              <Collapse in={masterMenuOpen}>
-                <Divider />
-                <List>
-                  <ListItem
-                    button
-                    className={
-                      history.location.pathname === '/master-mgmt/subject-table'
-                        ? 'menu_selection'
-                        : null
-                    }
-                    onClick={() => {
-                      history.push('/master-mgmt/subject-table');
-                    }}
-                  >
-                    <ListItemIcon className={classes.menuItemIcon}>
-                      {/* <MenuIcon name={child.child_name} /> */}
-                      {/* {menuIcon(child.child_name)} */}
-                    </ListItemIcon>
-                    <ListItemText primary={`Subject`} className='menu-item-text' />
-                  </ListItem>
-
-                  <ListItem
-                    button
-                    className={
-                      history.location.pathname === '/master-mgmt/section-table'
-                        ? 'menu_selection'
-                        : null
-                    }
-                    onClick={() => {
-                      history.push('/master-mgmt/section-table');
-                    }}
-                  >
-                    <ListItemIcon className={classes.menuItemIcon}>
-                      {/* <MenuIcon name={child.child_name} /> */}
-                      {/* {menuIcon(child.child_name)} */}
-                    </ListItemIcon>
-                    <ListItemText primary={`Section`} className='menu-item-text' />
-                  </ListItem>
-
-                  <ListItem
-                    button
-                    className={
-                      history.location.pathname === '/master-mgmt/grade-table'
-                        ? 'menu_selection'
-                        : null
-                    }
-                    onClick={() => {
-                      history.push('/master-mgmt/grade-table');
-                    }}
-                  >
-                    <ListItemIcon className={classes.menuItemIcon}>
-                      {/* <MenuIcon name={child.child_name} /> */}
-                      {/* {menuIcon(child.child_name)} */}
-                    </ListItemIcon>
-                    <ListItemText primary={`Grade`} className='menu-item-text' />
-                  </ListItem>
-                </List>
-              </Collapse>
-
-              <ListItem
-                button
-                className={
-                  history.location.pathname === '/role-management'
-                    ? 'menu_selection'
-                    : null
-                }
-                onClick={() => {
-                  history.push('/role-management');
-                }}
-              >
-                <ListItemIcon className={classes.menuItemIcon}>
-                  <AssignmentIndIcon />
-                </ListItemIcon>
-                <ListItemText className='menu-item-text'>Role management</ListItemText>
-              </ListItem>
-            </>
-          )}
 
           {navigationData && drawerOpen && navigationData.length > 0 && (
-            <DrawerMenu navigationItems={navigationData} onClick={handleRouting} />
+            <DrawerMenu
+              superUser={superUser}
+              navigationItems={navigationData}
+              onClick={handleRouting}
+            />
           )}
         </List>
       </Drawer>

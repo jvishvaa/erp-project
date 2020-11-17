@@ -14,7 +14,7 @@ import useStyles from './useStyles';
 import menuIcon from './menu-icon';
 
 const MenuItem = withRouter(({ history, ...props }) => {
-  const { item, onClick } = props || {};
+  const { item, onClick, onChangeMenuState, menuOpen } = props || {};
   const [selectedIndex, setSelectedIndex] = useState(null);
   const menuSelectionArray = [
     { name: 'Take Class', Path: '/take-class' },
@@ -29,7 +29,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Add SMS Credit', Path: '/smscredit' },
     { name: 'SMS&Email Log', Path: '/sms-email-log' },
   ];
-  const [menuOpen, setMenuOpen] = useState(false);
+  // const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
     menuSelectionArray.forEach((items, index) => {
       if (items.Path === history.location.pathname) {
@@ -44,7 +44,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
         button
         onClick={() => {
           if (item.child_module.length > 0) {
-            setMenuOpen((prevState) => !prevState);
+            onChangeMenuState();
           } else {
             onClick(item.parent_modules);
           }
