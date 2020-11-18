@@ -49,7 +49,7 @@ const CreateGrade = ({setLoading,handleGoBack}) => {
           <hr />
         </div>
         <Grid container spacing={5}>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
             <TextField
               id='gradename'
               label='Grade Name'
@@ -65,7 +65,7 @@ const CreateGrade = ({setLoading,handleGoBack}) => {
           </Grid>
           </Grid>
           <Grid container spacing={5}>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
             <TextField
               id='gradetype'
               label='Grade Type'
@@ -82,12 +82,12 @@ const CreateGrade = ({setLoading,handleGoBack}) => {
         </Grid>
         </div>
         <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '10px'}} >
-        <Grid item xs={6} sm={2}>
+        <Grid item xs={6} sm={2} className={isMobile?'':'addEditButtonsPadding'}>
             <Button variant='contained' className="custom_button_master" size='medium' onClick={handleGoBack}>
               Back
             </Button>
           </Grid>
-          <Grid item xs={6} sm={2}>
+          <Grid item xs={6} sm={2} className={isMobile?'':'addEditButtonsPadding'}>
             <Button variant='contained' style={{color:'white'}} color ="primary" className="custom_button_master" size='medium' type='submit'>
               Submit
             </Button>

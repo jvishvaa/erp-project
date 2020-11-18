@@ -11,8 +11,8 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [subjectName,setSubjectName]=useState('')
   const [description,setDescription]=useState('')
-  const [selectedGrade,setSelectedGrade]=useState('')
-  const [selectedSection,setSelectedSection]=useState('')
+  const [selectedGrade,setSelectedGrade]=useState([])
+  const [selectedSection,setSelectedSection]=useState([])
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [sections,setSections]=useState([])
@@ -32,14 +32,22 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
           else
           {
             setAlert('error',result.data.message)
+            setSections([])
+            setSelectedSection([])
           }
         })
         .catch(error=>{
           setAlert('error', error.message);
+          setSelectedSection([])
+          setSections([])
         })
       }
     else
-      setSelectedGrade([])
+      {
+        setSelectedGrade([])
+        setSelectedSection([])
+        setSections([])
+      }
   };
 
   const handleSection = (event, value) => {
@@ -87,7 +95,7 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
           <hr style={{margin:'20px auto'}}/>
         </div>
         <Grid container spacing={5}>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
             <Autocomplete
               size='small'
               onChange={handleGrade}
@@ -110,7 +118,7 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
           </Grid>
         </Grid>
         <Grid container spacing={5}>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
             <Autocomplete
               size='small'
               onChange={handleSection}
@@ -133,7 +141,7 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
           </Grid>
         </Grid>
         <Grid container spacing={5}>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
             <TextField
               id='subname'
               style={{ width: '100%' }}
@@ -149,7 +157,7 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
           </Grid>
         </Grid>
         <Grid container spacing={5}>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
             <TextField
               id='description'
               label='Description'
@@ -169,12 +177,12 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
         </Grid>
         </div>
         <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '10px'}} >
-        <Grid item xs={6} sm={2}>
+        <Grid item xs={6} sm={2} className={isMobile?'':'addEditButtonsPadding'}>
             <Button variant='contained' className="custom_button_master" size='medium' onClick={handleGoBack}>
               Back
             </Button>
           </Grid>
-          <Grid item xs={6} sm={2}>
+          <Grid item xs={6} sm={2} className={isMobile?'':'addEditButtonsPadding'}> 
             <Button variant='contained' style={{color:'white'}} color ="primary" className="custom_button_master" size='medium' type='submit'>
               Submit
             </Button>

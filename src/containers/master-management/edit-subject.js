@@ -62,7 +62,7 @@ const EditSubject = ({id,name,desc,handleGoBack,setLoading}) => {
           <hr />
         </div>
         <Grid container spacing={5}>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
             <TextField
               id='subname'
               label='Subject Name'
@@ -77,7 +77,7 @@ const EditSubject = ({id,name,desc,handleGoBack,setLoading}) => {
           </Grid>
           </Grid>
           <Grid container spacing={5}>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
             <TextField
               id='description'
               label='Description'
@@ -97,12 +97,12 @@ const EditSubject = ({id,name,desc,handleGoBack,setLoading}) => {
         </div>
 
         <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '10px'}} >
-        <Grid item xs={6} sm={2}>
+        <Grid item xs={6} sm={2} className={isMobile?'':'addEditButtonsPadding'}>
             <Button variant='contained' className="custom_button_master" size='medium' onClick={handleGoBack}>
               Back
             </Button>
           </Grid>
-          <Grid item xs={6} sm={2}>
+          <Grid item xs={6} sm={2} className={isMobile?'':'addEditButtonsPadding'}>
             <Button variant='contained' style={{color:'white'}} color ="primary" className="custom_button_master" size='medium' type='submit'>
               Submit
             </Button>

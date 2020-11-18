@@ -262,7 +262,7 @@ const SectionTable = () => {
 
       {tableFlag && !addFlag && !editFlag && (
         <Grid container spacing={isMobile?3:5} style={{ width: widerWidth, margin: wider}}>
-          <Grid item xs={12} sm={3}>
+          <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
             <Box className={classes.centerInMobile}>
               <TextField
                 id='secname'
@@ -276,7 +276,7 @@ const SectionTable = () => {
               />
             </Box>
           </Grid>
-          <Grid item xs={12} sm={3}>
+          <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
             <Box className={classes.centerInMobile}>
               <Autocomplete
                 size='small'
@@ -298,7 +298,7 @@ const SectionTable = () => {
             </Box>
           </Grid>
           <Grid item xs sm className={isMobile?'hideGridItem':''}/>
-          <Grid item xs={12} sm={3}>
+          <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
              <Button 
              startIcon={<AddOutlinedIcon style={{fontSize:'30px'}}/>}
              variant='contained' 
