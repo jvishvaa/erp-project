@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-newline */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
@@ -11,6 +12,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import { TextareaAutosize, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -141,14 +143,11 @@ const SendMessage = withRouter(({ history, ...props }) => {
   const getGroupApi = async () => {
     try {
       setLoading(false);
-      const result = await axiosInstance.get(
-        `${endpoints.communication.groupList}&module_id=${moduleId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const result = await axiosInstance.get(`${endpoints.communication.groupList}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const resultOptions = [];
       if (result.status === 200) {
         result.data.data.map((items) => resultOptions.push(items.group_name));
@@ -169,7 +168,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
     try {
       setLoading(true);
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?branch_id=${selectedBranch}&module_id=${moduleId}`,
+        `${endpoints.communication.grades}?branch_id=${selectedBranch.id}&module_id=${moduleId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -204,9 +203,9 @@ const SendMessage = withRouter(({ history, ...props }) => {
         });
       setLoading(true);
       const result = await axiosInstance.get(
-        `${
-          endpoints.communication.sections
-        }?branch_id=${selectedBranch}&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
+        `${endpoints.communication.sections}?branch_id=${
+          selectedBranch.id
+        }&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -235,7 +234,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       const rolesId = [];
       const gradesId = [];
       const sectionsId = [];
-      getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15`;
+      getUserListUrl = `${endpoints.communication.communicationUserList}?page=${pageno}&page_size=15`;
       if (selectedRoles.length) {
         roleList
           .filter((item) => selectedRoles.includes(item['role_name']))
@@ -264,14 +263,14 @@ const SendMessage = withRouter(({ history, ...props }) => {
         getUserListUrl += `&grade=${gradesId.toString()}`;
       }
       if (selectedBranch) {
-        getUserListUrl += `&branch=${selectedBranch}`;
+        getUserListUrl += `&branch=${selectedBranch.id}`;
       }
       if (sectionsId.length) {
         getUserListUrl += `&section=${sectionsId.toString()}`;
       }
     } else {
       const groupId = [];
-      getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15&module_id=${moduleId}`;
+      getUserListUrl = `${endpoints.communication.communicationUserList}?page=${pageno}&page_size=15&module_id=${moduleId}`;
       if (selectedGroup.length) {
         groupList
           .filter((item) => selectedGroup.includes(item['group_name']))
@@ -293,7 +292,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       if (result.status === 200) {
         setHeaders([
           { field: 'id', headerName: 'ID', width: 70 },
-          { field: 'fullName', headerName: 'Name', width: 180 },
+          { field: 'fullName', headerName: 'Name', width: 190 },
           { field: 'email', headerName: 'Email Id', width: 200 },
           { field: 'erp_id', headerName: 'Erp Id', width: 150 },
           { field: 'gender', headerName: 'Gender', width: 100 },
@@ -484,6 +483,23 @@ const SendMessage = withRouter(({ history, ...props }) => {
       setAlert('error', error.message);
     }
   };
+
+  const handleMessageTypeChange = (event, value) => {
+    if (value) {
+      setSelectedSmsType(value);
+    } else {
+      setSelectedSmsType();
+    }
+  };
+
+  const handleBranch = (event, value) => {
+    if (value) {
+      setSelectedBranch(value);
+    } else {
+      setSelectedBranch();
+    }
+  };
+
   const handleSendMessage = async () => {
     if (!textMessage) {
       setTextMessageError('Please enter a message');
@@ -522,7 +538,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
           }
           if (isEmail) {
             request = {
-              communicate_type: selectedSmsType,
+              communicate_type: selectedSmsType.id,
               email_body: textMessage,
               email_subject: emailSubject,
               group_type: '1',
@@ -533,7 +549,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
           }
           if (!isEmail) {
             request = {
-              communicate_type: selectedSmsType,
+              communicate_type: selectedSmsType.id,
               message_content: textMessage,
               group_type: '1',
               message_type: '2',
@@ -555,7 +571,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
               });
           }
           if (selectedBranch) {
-            branchId.push(selectedBranch);
+            branchId.push(selectedBranch.id);
           }
           if (selectedGrades.length) {
             gradeList
@@ -765,88 +781,93 @@ const SendMessage = withRouter(({ history, ...props }) => {
               <div>
                 {customSelect ? (
                   <>
-                    <div className='creategroup_firstrow'>
-                      <div>
-                        <CustomMultiSelect
-                          selections={selectedRoles}
-                          setSelections={setSelectedRoles}
-                          nameOfDropdown='User Role'
-                          optionNames={roles}
-                        />
-                        <span className='create_group_error_span'>{roleError}</span>
-                      </div>
+                    <div className='create_group_filter_container'>
+                      <Grid container className='message_log_container' spacing={5}>
+                        <Grid xs={12} lg={4} className='send_message_role_wrapper' item>
+                          <CustomMultiSelect
+                            selections={selectedRoles}
+                            setSelections={setSelectedRoles}
+                            nameOfDropdown='User Role'
+                            optionNames={roles}
+                          />
+                          <span className='create_group_error_span'>{roleError}</span>
+                        </Grid>
+                        <Grid xs={12} lg={12} className='under_line_create_group' />
+                      </Grid>
                     </div>
                     {selectedRoles.length ? (
-                      <Grid container className='create_group_container' spacing={3}>
-                        <Grid lg={4} className='create_group_items' item>
-                          <div className='create_group_branch_wrapper'>
-                            <FormControl
-                              variant='outlined'
-                              className={classes.formControl}
-                            >
-                              <InputLabel id='demo-simple-select-outlined-label'>
-                                Branch
-                              </InputLabel>
-                              <Select
-                                labelId='demo-simple-select-outlined-label'
-                                id='demo-simple-select-outlined'
+                      <div className='create_group_filter_container'>
+                        <Grid container className='create_group_container' spacing={5}>
+                          <Grid xs={12} lg={4} className='create_group_items' item>
+                            <div className='create_group_branch_wrapper'>
+                              <Autocomplete
+                                size='small'
+                                onChange={handleBranch}
                                 value={selectedBranch}
-                                onChange={(e) => setSelectedBranch(e.target.value)}
-                                label='Branch'
-                              >
-                                <MenuItem value=''>
-                                  <em>None</em>
-                                </MenuItem>
-                                {branchList.map((items, index) => (
-                                  <MenuItem
-                                    key={`branch_create_group_${index}`}
-                                    value={items.id}
-                                  >
-                                    {items.branch_name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
-                            <span className='create_group_error_span'>{branchError}</span>
-                          </div>
-                        </Grid>
-                        {selectedBranch && gradeList.length ? (
-                          <Grid lg={4} className='create_group_items' item>
-                            <div>
-                              <CustomMultiSelect
-                                selections={selectedGrades}
-                                setSelections={setSelectedGrades}
-                                nameOfDropdown='Grade'
-                                optionNames={grade}
+                                id='message_log-branch'
+                                className='create_group_branch'
+                                options={branchList}
+                                getOptionLabel={(option) => option?.branch_name}
+                                filterSelectedOptions
+                                renderInput={(params) => (
+                                  <TextField
+                                    className='message_log-textfield'
+                                    {...params}
+                                    variant='outlined'
+                                    label='Branch'
+                                    placeholder='Branch'
+                                  />
+                                )}
                               />
                               <span className='create_group_error_span'>
-                                {gradeError}
+                                {branchError}
                               </span>
                             </div>
                           </Grid>
-                        ) : null}
-                        {selectedGrades.length && sectionList.length ? (
-                          <Grid lg={4} className='create_group_items' item>
-                            <CustomMultiSelect
-                              selections={selectedSections}
-                              setSelections={setSelectedSections}
-                              nameOfDropdown='Section'
-                              optionNames={section}
-                            />
-                          </Grid>
-                        ) : null}
-                      </Grid>
+                          {selectedBranch && gradeList.length ? (
+                            <Grid xs={12} lg={4} className='create_group_items' item>
+                              <div>
+                                <CustomMultiSelect
+                                  selections={selectedGrades}
+                                  setSelections={setSelectedGrades}
+                                  nameOfDropdown='Grade'
+                                  optionNames={grade}
+                                />
+                                <span className='create_group_error_span'>
+                                  {gradeError}
+                                </span>
+                              </div>
+                            </Grid>
+                          ) : null}
+                          {selectedGrades.length && sectionList.length ? (
+                            <Grid xs={12} lg={4} className='create_group_items' item>
+                              <CustomMultiSelect
+                                selections={selectedSections}
+                                setSelections={setSelectedSections}
+                                nameOfDropdown='Section'
+                                optionNames={section}
+                              />
+                            </Grid>
+                          ) : null}
+                          <Grid xs={12} lg={12} className='under_line_create_group' />
+                        </Grid>
+                      </div>
                     ) : null}
                   </>
                 ) : (
-                  <div className='creategroup_firstrow'>
-                    <CustomMultiSelect
-                      selections={selectedGroup}
-                      setSelections={setSelectedGroup}
-                      nameOfDropdown='Group'
-                      optionNames={group}
-                    />
-                    <span className='create_group_error_span'>{groupError}</span>
+                  <div className='create_group_filter_container'>
+                    <Grid container className='message_log_container' spacing={5}>
+                      <Grid xs={12} lg={4} item>
+                        <CustomMultiSelect
+                          selections={selectedGroup}
+                          setSelections={setSelectedGroup}
+                          nameOfDropdown='Group'
+                          optionNames={group}
+                        />
+                        <span className='create_group_error_span'>{groupError}</span>
+                      </Grid>
+                      <Grid xs={12} lg={12} className='under_line_create_group' />
+                    </Grid>
                   </div>
                 )}
               </div>
@@ -854,33 +875,35 @@ const SendMessage = withRouter(({ history, ...props }) => {
           ) : null}
           {secondStep ? (
             <div className='send_message_table_wrapper'>
-              {usersRow.length ? (
-                <div className='send_message_select_all_wrapper'>
-                  <input
-                    type='checkbox'
-                    className='send_message_select_all_checkbox'
-                    checked={selectAll}
-                    onChange={handleSelectAll}
-                  />
-                  <span>Select All</span>
-                </div>
-              ) : null}
-              <span className='create_group_error_span'>{selectUsersError}</span>
-              <CustomSelectionTable
-                header={headers}
-                rows={usersRow}
-                completeData={completeData}
-                totalRows={totalPage}
-                setSelectAll={setSelectAll}
-                pageno={pageno}
-                selectedUsers={selectedUsers}
-                changePage={setPageno}
-                setSelectedUsers={setSelectedUsers}
-              />
+              <div className='send_message_user_list_wrapper'>
+                {usersRow.length ? (
+                  <div className='send_message_select_all_wrapper'>
+                    <input
+                      type='checkbox'
+                      className='send_message_select_all_checkbox'
+                      checked={selectAll}
+                      onChange={handleSelectAll}
+                    />
+                    <span style={{ marginLeft: '1%' }}>Select All</span>
+                  </div>
+                ) : null}
+                <span className='create_group_error_span'>{selectUsersError}</span>
+                <CustomSelectionTable
+                  header={headers}
+                  rows={usersRow}
+                  completeData={completeData}
+                  totalRows={totalPage}
+                  setSelectAll={setSelectAll}
+                  pageno={pageno}
+                  selectedUsers={selectedUsers}
+                  changePage={setPageno}
+                  setSelectedUsers={setSelectedUsers}
+                />
+              </div>
             </div>
           ) : null}
           {thirdStep ? (
-            <div className='message_sending_screen_wrapper'>
+            <div className='message_sending_white_wrapper'>
               <div className='message_type_block_wrapper'>
                 <div
                   className={`message_type_block ${
@@ -911,76 +934,97 @@ const SendMessage = withRouter(({ history, ...props }) => {
                   Mail
                 </div>
               </div>
-              <div className='create_group_message_type_wrapper'>
-                <FormControl variant='outlined' className={classes.formControl}>
-                  <InputLabel id='demo-simple-select-outlined-label'>
-                    {isEmail ? 'Email Type' : 'SMS Type'}
-                  </InputLabel>
-                  <Select
-                    labelId='demo-simple-select-outlined-label'
-                    id='demo-simple-select-outlined'
-                    value={selectedSmsType}
-                    onChange={(e) => setSelectedSmsType(e.target.value)}
-                    label={isEmail ? 'Email Type' : 'SMS Type'}
-                  >
-                    <MenuItem value=''>
-                      <em>None</em>
-                    </MenuItem>
-                    {smsTypeList.map((items, index) => (
-                      <MenuItem key={`sms_type_${index}`} value={items.id}>
-                        {items.category_name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+              <div className='create_group_filter_container'>
+                <Grid
+                  container
+                  className='create_group_custom_button_wrapper'
+                  spacing={5}
+                >
+                  <Grid xs={12} lg={4} className='create_group_custom_button' item>
+                    <Autocomplete
+                      size='small'
+                      onChange={handleMessageTypeChange}
+                      value={selectedSmsType}
+                      id='send_message-type'
+                      className='send_message_type'
+                      options={smsTypeList}
+                      getOptionLabel={(option) =>
+                        option && option.category_name ? option.category_name : ''
+                      }
+                      filterSelectedOptions
+                      renderInput={(params) => (
+                        <TextField
+                          className='message_log-textfield'
+                          {...params}
+                          variant='outlined'
+                          label={isEmail ? 'Email Type' : 'SMS Type'}
+                          placeholder={isEmail ? 'Email Type' : 'SMS Type'}
+                        />
+                      )}
+                    />
+                    <span className='create_group_error_span'>{messageTypeError}</span>
+                  </Grid>
+                  <Grid xs={0} lg={8} className='create_group_items_mobile_none' item />
+                  {isEmail ? (
+                    <Grid xs={12} lg={8} className='email_subject_wrapper_grid' item>
+                      <div className='email_subject_wrapper'>
+                        <TextField
+                          id='email_subject'
+                          label='Email Subject'
+                          value={emailSubject}
+                          onChange={(e) => setEmailSubject(e.target.value)}
+                        />
+                      </div>
+                    </Grid>
+                  ) : null}
+                  <Grid xs={12} lg={12} className='create_group_custom_button' item>
+                    <div className='send_message_message_tag'>Message</div>
+                    <TextareaAutosize
+                      className='textFields_message'
+                      aria-label='minimum height'
+                      rowsMin={6}
+                      onChange={handleMessageChange}
+                      value={textMessage}
+                    />
+                    <span className='text_message_word_count'>{`Word count : ${wordcount} words left`}</span>
+                    <span className='create_group_error_span'>{textMessageError}</span>
+                  </Grid>
+                </Grid>
               </div>
-              <span className='create_group_error_span'>{messageTypeError}</span>
-              {isEmail ? (
-                <div className='email_subject_wrapper'>
-                  <TextField
-                    id='email_subject'
-                    label='Email Subject'
-                    value={emailSubject}
-                    onChange={(e) => setEmailSubject(e.target.value)}
-                  />
-                </div>
-              ) : null}
-              <div className='send_message_message_tag'>Message</div>
-              <TextareaAutosize
-                className='textFields_message'
-                aria-label='minimum height'
-                rowsMin={6}
-                onChange={handleMessageChange}
-                value={textMessage}
-              />
-              <span className='text_message_word_count'>{`Word count : ${wordcount} words left`}</span>
-              <span className='create_group_error_span'>{textMessageError}</span>
             </div>
           ) : null}
-          <div className='send_message_button_wrapper'>
-            {!firstStep ? (
-              <input
-                className='custom_button addgroup_back_button'
-                type='button'
-                onClick={handleback}
-                value='back'
-              />
-            ) : null}
-            {thirdStep ? (
-              <input
-                className='custom_button addgroup_next_button'
-                type='button'
-                onClick={handleSendMessage}
-                value={messageSending ? 'Sending Message' : 'Send Message'}
-              />
-            ) : (
-              <input
-                className='custom_button addgroup_next_button'
-                type='button'
-                onClick={handlenext}
-                value='next'
-              />
-            )}
+          <div className='create_group_filter_container'>
+            <Grid container className='create_group_custom_button_wrapper' spacing={5}>
+              {!firstStep ? (
+                <Grid xs={12} lg={3} className='create_group_custom_button' item>
+                  <input
+                    className='custom_button addgroup_back_button'
+                    type='button'
+                    onClick={handleback}
+                    value='back'
+                  />
+                </Grid>
+              ) : null}
+              {thirdStep ? (
+                <Grid xs={12} lg={3} className='create_group_custom_button' item>
+                  <input
+                    className='custom_button addgroup_next_button'
+                    type='button'
+                    onClick={handleSendMessage}
+                    value={messageSending ? 'Sending Message' : 'Send Message'}
+                  />
+                </Grid>
+              ) : (
+                <Grid xs={12} lg={3} className='create_group_custom_button' item>
+                  <input
+                    className='custom_button addgroup_next_button'
+                    type='button'
+                    onClick={handlenext}
+                    value='next'
+                  />
+                </Grid>
+              )}
+            </Grid>
           </div>
         </div>
       </Layout>

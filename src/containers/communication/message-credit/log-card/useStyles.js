@@ -5,15 +5,16 @@ const useStyles = makeStyles((theme) => ({
     border: '1px solid',
     borderColor: theme.palette.primary.main,
     padding: '1rem',
-    borderRadius: '10px',
-    width: '98%',
-    margin: '1.5rem -0.1rem',
+    width: '95%',
+    margin: '3rem auto',
   },
   title: {
-    fontSize: '1.1rem',
+    fontSize: '1.2rem',
   },
   content: {
-    fontSize: '0.9rem',
+    fontSize: '1rem',
+    // overflow: 'hidden',
+    // textOverflow: 'ellipsis',
   },
   textRight: {
     textAlign: 'right',

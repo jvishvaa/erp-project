@@ -6,71 +6,111 @@
     padding: 2% 3%;
 }
 .sms_credit_table {
-	width: 95%;
 	margin: 2% auto;
 	line-height: 2.5;
 	border-spacing: 0px;
-	border: 1px solid #c3bdbd;
 }
 .sms_credit_table_header_wrapper{
-	background-color: antiquewhite;
+	background-color: white;
+}
+.sms_credit_table{
+	border: none !important;
+}
+.sms_credit_table_wrapper{
+	box-shadow: none !important;
+}
+.sms_credit_table_wrapper .sms_credit_table tr th:not(:last-child):after {
+	content: '';
+    height: 50%;
+    width: 2px;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #ff6b6b;
 }
 .sms_credit_table_header {
-  color: #ff6b6b;
-  border: 1px solid;
+  color: #014B7E;
+}
+.sms_credit_table_row{
+	border-bottom: 1px solid grey;
 }
 .sms_credit_table_cells {
   text-align: center;
   color: #014b7e;
 }
-.sms_credit_body_wrapper tr:nth-child(even) {background-color: #f2f2f2;}
-.sms_credit_body_wrapper tr:nth-child(odd) {background-color: #e4e4e4;}
+.sms_credit_body_wrapper{
+	background-color: white;
+}
 .add_sms_credit_box {
 	width: 50px;
     height: 25px;
-    border: 1px solid #a29999;
     text-align: center;
 }
-.sms_credit_branch .MuiFormControl-root {
-  border: 1px solid #d4cbcb !important;
-  border-radius: 10px;
+.add_sms_credit_box{
+	width: 50px;
+    height: 25px;
+    text-align: center;
+    outline: none;
+    border: none;
+    color: #014B7E;
 }
-.sms_credit_branch .MuiInput-underline:before {
-  border: none !important;
-}
-.sms_credit_branch .MuiInput-underline:after {
-  border: none !important;
-}
-.sms_credit_branch .MuiSelect-select:focus {
-  background-color: #f9f9f9 !important;
-  border-radius: 10px !important;
-}
-.sms_credit_branch .MuiSelect-select {
-  border-radius: 5px !important;
-}
-.sms_credit_branch label + .MuiInput-formControl {
-  margin-top: 3px !important;
-}
-.sms_credit_branch .MuiSelect-icon {
-  color: #ff6b6b !important;
-}
-.sms_credit_branch .MuiInputLabel-outlined {
-  transform: translate(14px, 10px) scale(1) !important;
-}
-.sms_credit_branch .MuiInputLabel-outlined.MuiInputLabel-shrink {
-  transform: translate(14px, -6px) scale(0.75) !important;
-}
-.sms_credit_branch .MuiPaper-elevation8 {
-  margin-top: 6%;
-}
-.sms_credit_branch .MuiFormLabel-root {
-  color: #014b7e !important;
-  font-size: 1rem !important;
-  font-weight: 600 !important;
+.change_sms_credit_box{
+	background-color: gainsboro;
 }
 .addcredit_button_wrapper{
 	display: flex;
 	justify-content: space-between;
 	width: 50%;
 	margin: auto;
+}
+.bread_crumb_container{
+	margin: 20px auto;
+	width: 95%;
+}
+.sms_credit_branch .MuiIconButton-label{
+	color: #FF6B6B !important;
+}
+.sms_credit_white_space_wrapper{
+	width: 100%;
+	margin-top: 20px;
+	padding: 20px 0px;
+	height: 28vw;
+	background-color: white;
+}
+.add_credit_mobile_form_outside_wrapper{
+	position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: #e8dfdfa3;
+    padding: 3% 5%;
+    width: 100%;
+    height: 180vw;
+    border-radius: 5px;
+    z-index: 1450;
+}
+.add_credit_mobile_form{
+	position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 3% 5%;
+	width: 90%;
+	border-radius: 5px;
+	z-index: 1500;
+}
+.add_credit_mobile_input{
+	text-align: center;
+}
+.add_credit_mobile_form_heading{
+	color: #014B7E;
+	font-size: 1.2rem;
+	font-weight: 600;
+	text-align: center;
+}
+@media screen and (max-width: 700px) {
+	
+
 }

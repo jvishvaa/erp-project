@@ -1,10 +1,25 @@
 .view_groups_header {
-  color: #ff6b6b !important;
+  color: #014b7e !important;
+  background-color: white !important;
+}
+.view_group_breadcrumb_container{
+	margin: 20px auto;
+	width: 95%;
+}
+.view_group_white_space_wrapper{
+	width: 100%;
+	margin-top: 20px;
+	padding-top: 1px;
+    background-color: white;
 }
 .MuiTableCell-head {
-  color: #ff6b6b !important;
+color: #014b7e !important;
+	background-color: white !important;
   font-weight: 600 !important;
   text-align: center !important;
+}
+.view_group_table_wrapper{
+	box-shadow: none !important;
 }
 .MuiTableCell-body {
   color: #014b7e !important;
@@ -12,8 +27,19 @@
   text-align: center !important;
 }
 .view_group_table .MuiTableCell-stickyHeader {
-  background-color: #f3e8e8 !important;
+  background-color: white !important;
 }
+.view_group_table_wrapper .view_groups_header tr th:not(:last-child):after {
+    content: '';
+    width: 2px;
+    background-color: #ff6b6b;
+    height: 60%;
+    position: absolute;
+    border-radius: 5px;
+    right: 0;
+    transform: translateY(-10%);
+}
+
 .group_view_activate_button {
   background-color: green;
   color: white;

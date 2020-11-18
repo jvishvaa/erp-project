@@ -9,11 +9,8 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import { Grid } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { Grid, TextField } from '@material-ui/core';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CustomMultiSelect from '../custom-multiselect/custom-multiselect';
@@ -121,7 +118,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     try {
       setLoading(true);
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?branch_id=${selectedBranch}&module_id=${moduleId}`,
+        `${endpoints.communication.grades}?branch_id=${selectedBranch.id}&module_id=${moduleId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -156,9 +153,9 @@ const CreateGroup = withRouter(({ history, ...props }) => {
           gradesId.push(items.grade_id);
         });
       const result = await axiosInstance.get(
-        `${
-          endpoints.communication.sections
-        }?branch_id=${selectedBranch}&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
+        `${endpoints.communication.sections}?branch_id=${
+          selectedBranch.id
+        }&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -195,7 +192,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     const gradesId = [];
     const sectionsId = [];
     setNext(true);
-    let getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15&module_id=${moduleId}`;
+    let getUserListUrl = `${endpoints.communication.communicationUserList}?page=${pageno}&page_size=15&module_id=${moduleId}`;
     if (selectedRoles.length && !selectedRoles.includes('All')) {
       roleList
         .filter((item) => selectedRoles.includes(item['role_name']))
@@ -221,7 +218,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       getUserListUrl += `&role=${rolesId.toString()}`;
     }
     if (selectedBranch) {
-      getUserListUrl += `&branch=${selectedBranch}`;
+      getUserListUrl += `&branch=${selectedBranch.id}`;
     }
     if (gradesId.length && !selectedGrades.includes('All')) {
       getUserListUrl += `&grade=${gradesId.toString()}`;
@@ -308,7 +305,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         });
     }
     if (selectedBranch) {
-      branchId.push(selectedBranch);
+      branchId.push(selectedBranch.id);
     }
     if (selectedGrades.length && !selectedGrades.includes('All')) {
       gradeList
@@ -412,6 +409,14 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     }
   };
 
+  const handleBranch = (event, value) => {
+    if (value) {
+      setSelectedBranch(value);
+    } else {
+      setSelectedBranch();
+    }
+  };
+
   const handleback = () => {
     if (selectAll) {
       handleSelectAll();
@@ -500,12 +505,14 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
         <div className='creategroup__page'>
-          <CommonBreadcrumbs
-            componentName='Communication'
-            childComponentName='Create Group'
-          />
+          <div className='create_group_breadcrumb_wrapper'>
+            <CommonBreadcrumbs
+              componentName='Communication'
+              childComponentName='Create Group'
+            />
+          </div>
           {next ? (
-            <>
+            <div className='create_group_user_list_wrapper'>
               {usersRow.length ? (
                 <div className='create_group_select_all_wrapper'>
                   <input
@@ -529,126 +536,134 @@ const CreateGroup = withRouter(({ history, ...props }) => {
                 changePage={setPageno}
                 setSelectedUsers={setSelectedUsers}
               />
-            </>
+            </div>
           ) : (
             <>
-              <Grid container className='create_group_container' spacing={3}>
-                <Grid lg={4} className='create_group_items' item>
-                  <div className='group_name_wrapper'>
-                    <CustomInput
-                      className='group_name_create_group'
-                      onChange={addGroupName}
-                      value={groupName}
-                      name='Group name'
-                    />
-                    <span className='create_group_error_span'>{groupNameError}</span>
-                  </div>
-                </Grid>
-                <Grid lg={4} className='create_group_items' item>
-                  <div className='create_group_role'>
-                    <CustomMultiSelect
-                      selections={selectedRoles}
-                      setSelections={setSelectedRoles}
-                      nameOfDropdown='User Role'
-                      optionNames={roles}
-                    />
-                    <span className='create_group_error_span'>{roleError}</span>
-                  </div>
-                </Grid>
-                <Grid xs={0} lg={4} className='create_group_items_mobile_none' item />
-              </Grid>
-
-              {selectedRoles.length && !selectedRoles.includes('All') ? (
-                <Grid container className='create_group_container' spacing={3}>
-                  <Grid lg={4} className='create_group_items' item>
-                    <div>
-                      <div className='create_group_branch_wrapper'>
-                        <FormControl variant='outlined' className={classes.formControl}>
-                          <InputLabel id='demo-simple-select-outlined-label'>
-                            Branch
-                          </InputLabel>
-                          <Select
-                            labelId='demo-simple-select-outlined-label'
-                            id='demo-simple-select-outlined'
-                            value={selectedBranch}
-                            onChange={(e) => setSelectedBranch(e.target.value)}
-                            label='Branch'
-                          >
-                            <MenuItem value=''>
-                              <em>None</em>
-                            </MenuItem>
-                            {branchList.map((items, index) => (
-                              <MenuItem
-                                key={`branch_create_group_${index}`}
-                                value={items.id}
-                              >
-                                {items.branch_name}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                      </div>
-                      <span className='create_group_error_span'>{branchError}</span>
+              <div className='create_group_filter_container'>
+                <Grid container className='create_group_container' spacing={5}>
+                  <Grid xs={12} lg={4} className='create_group_items' item>
+                    <div className='group_name_wrapper'>
+                      <TextField
+                        className='create_group-textfield'
+                        id='class-Group name'
+                        label='Group name'
+                        variant='outlined'
+                        size='small'
+                        name='Group name'
+                        value={groupName}
+                        onChange={addGroupName}
+                        required
+                      />
+                      <span className='create_group_error_span'>{groupNameError}</span>
                     </div>
                   </Grid>
-                  <Grid lg={4} className='create_group_items' item>
-                    {selectedBranch && gradeList.length ? (
-                      <div>
-                        <CustomMultiSelect
-                          selections={selectedGrades}
-                          setSelections={setSelectedGrades}
-                          nameOfDropdown='Grade'
-                          optionNames={grade}
-                        />
-                        <span className='create_group_error_span'>{gradeError}</span>
-                      </div>
-                    ) : null}
-                  </Grid>
-                  <Grid lg={4} className='create_group_items' item>
-                    {selectedGrades.length && sectionList.length ? (
+                  <Grid xs={12} lg={4} className='create_group_items' item>
+                    <div className='create_group_role'>
                       <CustomMultiSelect
-                        selections={selectedSections}
-                        setSelections={setSelectedSections}
-                        nameOfDropdown='Section'
-                        optionNames={section}
+                        selections={selectedRoles}
+                        setSelections={setSelectedRoles}
+                        nameOfDropdown='User Role'
+                        optionNames={roles}
                       />
-                    ) : null}
+                      <span className='create_group_error_span'>{roleError}</span>
+                    </div>
                   </Grid>
+                  <Grid xs={0} lg={4} className='create_group_items_mobile_none' item />
+                  <Grid xs={12} lg={12} className='under_line_create_group' />
                 </Grid>
+              </div>
+
+              {selectedRoles.length && !selectedRoles.includes('All') ? (
+                <div className='create_group_filter_container'>
+                  <Grid container className='create_group_container' spacing={5}>
+                    <Grid xs={12} lg={4} className='create_group_items' item>
+                      <div>
+                        <div className='create_group_branch_wrapper'>
+                          <Autocomplete
+                            size='small'
+                            onChange={handleBranch}
+                            value={selectedBranch}
+                            id='message_log-branch'
+                            className='create_group_branch'
+                            options={branchList}
+                            getOptionLabel={(option) => option?.branch_name}
+                            filterSelectedOptions
+                            renderInput={(params) => (
+                              <TextField
+                                className='message_log-textfield'
+                                {...params}
+                                variant='outlined'
+                                label='Branch'
+                                placeholder='Branch'
+                              />
+                            )}
+                          />
+                        </div>
+                        <span className='create_group_error_span'>{branchError}</span>
+                      </div>
+                    </Grid>
+                    <Grid xs={12} lg={4} className='create_group_items' item>
+                      {selectedBranch && gradeList.length ? (
+                        <div>
+                          <CustomMultiSelect
+                            selections={selectedGrades}
+                            setSelections={setSelectedGrades}
+                            nameOfDropdown='Grade'
+                            optionNames={grade}
+                          />
+                          <span className='create_group_error_span'>{gradeError}</span>
+                        </div>
+                      ) : null}
+                    </Grid>
+                    <Grid xs={12} lg={4} className='create_group_items' item>
+                      {selectedGrades.length && sectionList.length ? (
+                        <CustomMultiSelect
+                          selections={selectedSections}
+                          setSelections={setSelectedSections}
+                          nameOfDropdown='Section'
+                          optionNames={section}
+                        />
+                      ) : null}
+                    </Grid>
+                    <Grid xs={12} lg={12} className='under_line_create_group' />
+                  </Grid>
+                </div>
               ) : null}
             </>
           )}
-          <Grid container className='create_group_custom_button_wrapper' sm={8} lg={4}>
-            {next ? (
-              <Grid xs={5} lg={3} className='create_group_custom_button' item>
-                <input
-                  className='custom_button addgroup_back_button'
-                  type='button'
-                  onClick={handleback}
-                  value='back'
-                />
-              </Grid>
-            ) : null}
-            {next ? (
-              <Grid xs={5} lg={3} className='create_group_custom_button' item>
-                <input
-                  className='custom_button addgroup_next_button'
-                  type='button'
-                  onClick={createGroup}
-                  value='create group'
-                />
-              </Grid>
-            ) : (
-              <Grid xs={5} lg={3} className='create_group_custom_button' item>
-                <input
-                  className='custom_button addgroup_next_button'
-                  type='button'
-                  onClick={handlenext}
-                  value='next'
-                />
-              </Grid>
-            )}
-          </Grid>
+          <div className='create_group_filter_container'>
+            <Grid container className='create_group_custom_button_wrapper' spacing={5}>
+              {next ? (
+                <Grid xs={12} lg={3} className='create_group_custom_button' item>
+                  <input
+                    className='custom_button addgroup_back_button'
+                    type='button'
+                    onClick={handleback}
+                    value='back'
+                  />
+                </Grid>
+              ) : null}
+              {next ? (
+                <Grid xs={12} lg={3} className='create_group_custom_button' item>
+                  <input
+                    className='custom_button addgroup_next_button'
+                    type='button'
+                    onClick={createGroup}
+                    value='create group'
+                  />
+                </Grid>
+              ) : (
+                <Grid xs={12} lg={3} className='create_group_custom_button' item>
+                  <input
+                    className='custom_button addgroup_next_button'
+                    type='button'
+                    onClick={handlenext}
+                    value='next'
+                  />
+                </Grid>
+              )}
+            </Grid>
+          </div>
         </div>
       </Layout>
     </>

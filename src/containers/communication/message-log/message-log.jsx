@@ -12,6 +12,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import CloseIcon from '@material-ui/icons/Close';
 import Paper from '@material-ui/core/Paper';
 import { Grid, TextField } from '@material-ui/core';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
@@ -35,9 +36,9 @@ const useStyles = makeStyles((theme) => ({
     },
     width: '100%',
     marginLeft: '5px',
-    marginTop: '20px',
+    marginTop: '5px',
     [theme.breakpoints.down('xs')]: {
-      width: '85vw',
+      width: '87vw',
       margin: 'auto',
     },
   },
@@ -49,20 +50,11 @@ const useStyles = makeStyles((theme) => ({
 const MessageLog = withRouter(({ history, ...props }) => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
+  const [isHidden, setIsHidden] = useState(window.innerWidth < 600);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 600);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [messageRows, setMessageRows] = useState([]);
   const [userLogs, setUserLogs] = useState([]);
-  const rows = [
-    { srno: 1, message: 'The is test', totalCount: 5, type: 'Special', sent: 'yes' },
-    { srno: 1, message: 'The is test', totalCount: 5, type: 'Special', sent: 'yes' },
-    { srno: 1, message: 'The is test', totalCount: 5, type: 'Special', sent: 'yes' },
-  ];
-  const subrows = [
-    { name: 'Test', number: '9456123568', sentby: 'subhra' },
-    { name: 'Test', number: '9456123568', sentby: 'subhra' },
-    { name: 'Test', number: '9456123568', sentby: 'subhra' },
-    { name: 'Test', number: '9456123568', sentby: 'subhra' },
-  ];
   const [branchList, setBranchList] = useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [selectedBranches, setSelectedBranches] = useState([]);
@@ -269,6 +261,10 @@ const MessageLog = withRouter(({ history, ...props }) => {
     }
   };
 
+  const toggleHide = () => {
+    setIsHidden(!isHidden);
+  };
+
   useEffect(() => {
     if (!branchList.length) {
       getBranchApi();
@@ -324,225 +320,291 @@ const MessageLog = withRouter(({ history, ...props }) => {
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
         <div className='message_log_wrapper'>
-          <CommonBreadcrumbs
-            componentName='Communication'
-            childComponentName='SMS/Email Log'
-          />
-          <div className='spacing' />
-          <Grid container className='message_log_container' xs={12} lg={12} spacing={5}>
-            <Grid xs={6} lg={6} item>
-              <Autocomplete
-                multiple
-                size='small'
-                onChange={handleBranch}
-                value={selectedBranches}
-                id='message_log-branch'
-                className='message_log_branch'
-                options={branchList}
-                getOptionLabel={(option) => option?.branch_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    className='message_log-textfield'
-                    {...params}
-                    variant='outlined'
-                    label='Branch'
-                    placeholder='Branch'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid xs={6} lg={6} item>
-              <Autocomplete
-                multiple
-                size='small'
-                onChange={handleSmsType}
-                value={selectedSmsType}
-                id='message_log-smsType'
-                className='message_log_branch'
-                options={smsTypeList}
-                getOptionLabel={(option) => option?.category_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    className='message_log-textfield'
-                    {...params}
-                    variant='outlined'
-                    label='SMS Type'
-                    placeholder='SMS Type'
-                  />
-                )}
-              />
-            </Grid>
-          </Grid>
-          <Grid container spacing={2} className='message-log-container'>
-            <MuiPickersUtilsProvider utils={MomentUtils}>
-              <Grid item xs={12} sm={2}>
-                <KeyboardDatePicker
-                  margin='normal'
-                  id='date-picker-dialog'
-                  label='From'
-                  format='YYYY-MM-DD'
-                  value={selectedFromDate}
-                  onChange={handleFromDateChange}
-                  KeyboardButtonProps={{
-                    'aria-label': 'change date',
-                  }}
+          <div className='message_log_breadcrumb_wrapper'>
+            <CommonBreadcrumbs
+              componentName='Communication'
+              childComponentName='SMS/Email Log'
+            />
+          </div>
+          <div className='create_group_filter_container'>
+            <Grid container className='message_log_container' spacing={5}>
+              <Grid xs={12} lg={6} item>
+                <Autocomplete
+                  multiple
+                  size='small'
+                  onChange={handleBranch}
+                  value={selectedBranches}
+                  id='message_log-branch'
+                  className='message_log_branch'
+                  options={branchList}
+                  getOptionLabel={(option) => option?.branch_name}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      className='message_log-textfield'
+                      {...params}
+                      variant='outlined'
+                      label='Branch'
+                      placeholder='Branch'
+                    />
+                  )}
                 />
               </Grid>
-              <Grid item xs={12} sm={2}>
-                <KeyboardDatePicker
-                  margin='normal'
-                  id='date-picker-dialog'
-                  label='To'
-                  format='YYYY-MM-DD'
-                  value={selectedToDate}
-                  onChange={handleToDateChange}
-                  KeyboardButtonProps={{
-                    'aria-label': 'change date',
-                  }}
+              <Grid xs={12} lg={6} item>
+                <Autocomplete
+                  multiple
+                  size='small'
+                  onChange={handleSmsType}
+                  value={selectedSmsType}
+                  id='message_log-smsType'
+                  className='message_log_branch'
+                  options={smsTypeList}
+                  getOptionLabel={(option) => option?.category_name}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      className='message_log-textfield'
+                      {...params}
+                      variant='outlined'
+                      label='SMS Type'
+                      placeholder='SMS Type'
+                    />
+                  )}
                 />
               </Grid>
-            </MuiPickersUtilsProvider>
-          </Grid>
-          <Grid container className='message_log_container' xs={12} spacing={2}>
-            <Grid xs={12} lg={5} item>
-              <input
-                className={clearAllActive ? 'profile_update_button' : 'deactive_clearAll'}
-                type='button'
-                onClick={handleClearAll}
-                value='Clear All'
-              />
-
-              <input
-                className='profile_update_button'
-                type='button'
-                onClick={handleFilterCheck}
-                value='Filter'
-              />
             </Grid>
-          </Grid>
-          <div className='message_type_block_wrapper'>
-            <div
-              className={`message_type_block ${
-                isEmail ? null : 'message_type_block_selected'
-              }`}
-              onClick={handleTypeChange}
-            >
-              SMS Logs
+          </div>
+          <div className='create_group_filter_container'>
+            <Grid container spacing={5} className='message_log_container'>
+              <MuiPickersUtilsProvider utils={MomentUtils} className='date_provider'>
+                <Grid item xs={12} sm={3}>
+                  <KeyboardDatePicker
+                    margin='normal'
+                    id='date-picker-dialog'
+                    label='From'
+                    className='message_log_date_piker'
+                    format='YYYY-MM-DD'
+                    value={selectedFromDate}
+                    onChange={handleFromDateChange}
+                    KeyboardButtonProps={{
+                      'aria-label': 'change date',
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                  <KeyboardDatePicker
+                    margin='normal'
+                    id='date-picker-dialog'
+                    label='To'
+                    className='message_log_date_piker'
+                    format='YYYY-MM-DD'
+                    value={selectedToDate}
+                    onChange={handleToDateChange}
+                    KeyboardButtonProps={{
+                      'aria-label': 'change date',
+                    }}
+                  />
+                </Grid>
+              </MuiPickersUtilsProvider>
+            </Grid>
+          </div>
+          <div className='create_group_filter_container'>
+            <Grid container className='message_log_container' spacing={5}>
+              <Grid xs={12} lg={3} item>
+                <input
+                  className='deactive_clearAll'
+                  type='button'
+                  onClick={handleClearAll}
+                  value='Clear All'
+                />
+              </Grid>
+              <Grid xs={12} lg={3} item>
+                <input
+                  className='message_log_filter_button'
+                  type='button'
+                  onClick={handleFilterCheck}
+                  value='Filter'
+                />
+              </Grid>
+            </Grid>
+          </div>
+          <div className='message_log_white_wrapper'>
+            <div className='message_type_block_wrapper'>
+              <div
+                className={`message_type_block ${
+                  isEmail ? null : 'message_type_block_selected'
+                }`}
+                onClick={handleTypeChange}
+              >
+                SMS Logs
+              </div>
+              <div
+                className={`message_type_block ${
+                  isEmail ? 'message_type_block_selected' : null
+                }`}
+                onClick={handleTypeChange}
+              >
+                Email Logs
+              </div>
             </div>
-            <div
-              className={`message_type_block ${
-                isEmail ? 'message_type_block_selected' : null
-              }`}
-              onClick={handleTypeChange}
-            >
-              Email Logs
+            {isHidden ? (
+              <span className='message_log_expand_manage' onClick={toggleHide}>
+                view more
+              </span>
+            ) : (
+              <span className='message_log_expand_manage' onClick={toggleHide}>
+                view less
+              </span>
+            )}
+            <div className='create_group_filter_container'>
+              <Grid container className='message_log_container' spacing={2}>
+                <Grid xs={12} lg={9} item>
+                  <Paper className={`message_log_table_wrapper ${classes.root}`}>
+                    <TableContainer
+                      className={`table table-shadow message_log_table ${classes.container}`}
+                    >
+                      <Table stickyHeader aria-label='sticky table'>
+                        <TableHead className='view_groups_header'>
+                          <TableRow>
+                            <TableCell>Message</TableCell>
+                            <TableCell className='message_log_send_by'>Sent by</TableCell>
+                            <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
+                              Type
+                            </TableCell>
+                            <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
+                              Sent on
+                            </TableCell>
+                            <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
+                              Count
+                            </TableCell>
+                            <TableCell>Sent</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody className='table_body'>
+                          {messageRows.map((row, i) => (
+                            <TableRow
+                              className={
+                                selectedRow === row.id ? 'selectedRow' : 'notSelected'
+                              }
+                              onClick={() => handleUserDetails(row.id)}
+                              key={`message_log_details${i}`}
+                            >
+                              <TableCell align='right'>{row.message}</TableCell>
+                              <TableCell align='right'>{row.sendBy}</TableCell>
+                              <TableCell
+                                align='right'
+                                className={`${isHidden ? 'hide' : 'show'}`}
+                              >
+                                {row.type}
+                              </TableCell>
+                              <TableCell
+                                align='right'
+                                className={`${isHidden ? 'hide' : 'show'}`}
+                              >
+                                {row.sendOn}
+                              </TableCell>
+                              <TableCell
+                                align='right'
+                                className={`${isHidden ? 'hide' : 'show'}`}
+                              >
+                                {row.totalCount}
+                              </TableCell>
+                              <TableCell align='right'>
+                                {row.sent ? (
+                                  <CheckCircleIcon
+                                    style={{ color: 'green', marginLeft: '15px' }}
+                                  />
+                                ) : (
+                                  <CancelIcon
+                                    style={{ color: 'red', marginLeft: '15px' }}
+                                  />
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                    <div className={`${classes.root} pagenation_view_groups`}>
+                      <Pagination
+                        page={Number(messageCurrentPageno)}
+                        size='large'
+                        className='books__pagination'
+                        onChange={handleMessagePagination}
+                        count={messageTotalPage}
+                      />
+                    </div>
+                  </Paper>
+                </Grid>
+                <Grid xs={12} lg={3} item>
+                  {userLogs.length ? (
+                    <div
+                      className={
+                        isMobile ? 'add_credit_mobile_form_outside_wrapper' : 'none'
+                      }
+                    >
+                      <div className={isMobile ? 'view_details_mobile' : 'desktop'}>
+                        {isMobile ? (
+                          <span
+                            className='close_icon_view_details_mobile'
+                            onClick={() => {
+                              setSelectedRow();
+                              setUserLogs([]);
+                            }}
+                          >
+                            <CloseIcon />
+                          </span>
+                        ) : null}
+                        <Paper className={`message_log_table_wrapper ${classes.root}`}>
+                          <TableContainer
+                            className={`table table-shadow message_log_table ${classes.container}`}
+                          >
+                            <Table stickyHeader aria-label='sticky table'>
+                              <TableHead className='view_groups_header'>
+                                <TableRow>
+                                  <TableCell>Name</TableCell>
+                                  <TableCell>{isEmail ? 'Email Id' : 'Number'}</TableCell>
+                                  <TableCell>Sent</TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {userLogs.map((row, i) => (
+                                  <TableRow key={`message_details${i}`}>
+                                    <TableCell align='right'>{row.name}</TableCell>
+                                    <TableCell align='right'>{row.number}</TableCell>
+                                    <TableCell align='right'>
+                                      {row.sent ? (
+                                        <CheckCircleIcon
+                                          style={{ color: 'green', marginLeft: '15px' }}
+                                        />
+                                      ) : (
+                                        <CancelIcon
+                                          style={{ color: 'red', marginLeft: '15px' }}
+                                        />
+                                      )}
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                          <div className={`${classes.root} pagenation_view_groups`}>
+                            <Pagination
+                              page={Number(usersCurrentPageno)}
+                              size='large'
+                              className='books__pagination'
+                              onChange={handleUsersPagination}
+                              count={usersTotalPage}
+                            />
+                          </div>
+                        </Paper>
+                      </div>
+                    </div>
+                  ) : null}
+                </Grid>
+              </Grid>
             </div>
           </div>
-          <Grid container className='message_log_container' spacing={2}>
-            <Grid xs={12} lg={9} item>
-              <Paper className={`message_log_table_wrapper ${classes.root}`}>
-                <TableContainer
-                  className={`table table-shadow message_log_table ${classes.container}`}
-                >
-                  <Table stickyHeader aria-label='sticky table'>
-                    <TableHead className='view_groups_header'>
-                      <TableRow>
-                        <TableCell>Message</TableCell>
-                        <TableCell>Type</TableCell>
-                        <TableCell>Sent by</TableCell>
-                        <TableCell>Sent on</TableCell>
-                        <TableCell>Total Count</TableCell>
-                        <TableCell>Sent</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody className='table_body'>
-                      {messageRows.map((row) => (
-                        <TableRow
-                          className={
-                            selectedRow === row.id ? 'selectedRow' : 'notSelected'
-                          }
-                          onClick={() => handleUserDetails(row.id)}
-                        >
-                          <TableCell align='right'>{row.message}</TableCell>
-                          <TableCell align='right'>{row.type}</TableCell>
-                          <TableCell align='right'>{row.sendBy}</TableCell>
-                          <TableCell align='right'>{row.sendOn}</TableCell>
-                          <TableCell align='right'>{row.totalCount}</TableCell>
-                          <TableCell align='right'>
-                            {row.sent ? (
-                              <CheckCircleIcon
-                                style={{ color: 'green', marginLeft: '15px' }}
-                              />
-                            ) : (
-                              <CancelIcon style={{ color: 'red', marginLeft: '15px' }} />
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                <div className={`${classes.root} pagenation_view_groups`}>
-                  <Pagination
-                    page={Number(messageCurrentPageno)}
-                    size='large'
-                    className='books__pagination'
-                    onChange={handleMessagePagination}
-                    count={messageTotalPage}
-                  />
-                </div>
-              </Paper>
-            </Grid>
-            <Grid xs={12} lg={3} item>
-              {userLogs.length ? (
-                <Paper className={`message_log_table_wrapper ${classes.root}`}>
-                  <TableContainer
-                    className={`table table-shadow message_log_table ${classes.container}`}
-                  >
-                    <Table stickyHeader aria-label='sticky table'>
-                      <TableHead className='view_groups_header'>
-                        <TableRow>
-                          <TableCell>Name</TableCell>
-                          <TableCell>{isEmail ? 'Email Id' : 'Number'}</TableCell>
-                          <TableCell>Sent</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {userLogs.map((row) => (
-                          <TableRow>
-                            <TableCell align='right'>{row.name}</TableCell>
-                            <TableCell align='right'>{row.number}</TableCell>
-                            <TableCell align='right'>
-                              {row.sent ? (
-                                <CheckCircleIcon
-                                  style={{ color: 'green', marginLeft: '15px' }}
-                                />
-                              ) : (
-                                <CancelIcon
-                                  style={{ color: 'red', marginLeft: '15px' }}
-                                />
-                              )}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                  <div className={`${classes.root} pagenation_view_groups`}>
-                    <Pagination
-                      page={Number(usersCurrentPageno)}
-                      size='large'
-                      className='books__pagination'
-                      onChange={handleUsersPagination}
-                      count={usersTotalPage}
-                    />
-                  </div>
-                </Paper>
-              ) : null}
-            </Grid>
-          </Grid>
         </div>
       </Layout>
     </>

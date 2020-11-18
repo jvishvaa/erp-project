@@ -108,13 +108,20 @@ const GradeTable = () => {
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [limit, setLimit] = useState(15);
-
+  const [goBackFlag,setGoBackFlag]=useState(false)
+  
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+  const wider= isMobile?'-10px 0px':'20px 0px 20px 8px'
+  const widerWidth=isMobile?'98%':'95%'
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage + 1);
+    setPage(newPage)
   };
+
+  const handleChangePageScreen = (event,value) => {
+    setPage(value+1)
+  }
 
   const handleAddGrade = () => {
     setTableFlag(false);
@@ -136,6 +143,7 @@ const GradeTable = () => {
     setAddFlag(false);
     setEditFlag(false);
     setSearchGrade('');
+    setGoBackFlag(!goBackFlag)
   };
 
   const handleDeleteGrade = (e) => {
@@ -179,7 +187,7 @@ const GradeTable = () => {
     setTimeout(() => {
       setLoading(false);
     }, 450);
-  }, [page, delFlag, editFlag, addFlag]);
+  }, [page, delFlag, goBackFlag]);
 
   useEffect(() => {
     axiosInstance
@@ -200,44 +208,22 @@ const GradeTable = () => {
       .catch((error) => {
         setAlert('error', error.message);
       });
-  }, [openDeleteModal, delFlag, editFlag, addFlag, page, searchGrade]);
+  }, [delFlag, goBackFlag, page, searchGrade]);
 
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div className='headerMaster'>
-          <div style={{ padding: '1rem' }}>
+        <div>
+          <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
               componentName='Master Management'
               childComponentName='Grade List'
             />
           </div>
-          {/* <div className={classes.buttonContainer}>
-            {tableFlag && !addFlag && !editFlag && (
-              <Button
-                startIcon={<AddOutlinedIcon />}
-                size='medium'
-                title='Add Grade'
-                onClick={handleAddGrade}
-              >
-                Add Grade
-              </Button>
-            )}
-            {(addFlag || editFlag) && (
-              <Button
-                startIcon={<ArrowBackIcon />}
-                size='medium'
-                title='Go back to Grade List'
-                onClick={handleGoBack}
-              >
-                Grade List
-              </Button>
-            )}
-          </div> */}
         </div>
 
-        {!tableFlag && addFlag && !editFlag && <CreateGrade setLoading={setLoading} />}
+        {!tableFlag && addFlag && !editFlag && <CreateGrade setLoading={setLoading} handleGoBack={handleGoBack}/>}
         {!tableFlag && !addFlag && editFlag && (
           <EditGrade
             id={gradeId}
@@ -249,46 +235,31 @@ const GradeTable = () => {
         )}
 
         {tableFlag && !addFlag && !editFlag && (
-          <Grid container spacing={3} style={{ padding: '1rem', marginBottom: '10px' }}>
-            <Grid item xs={12}>
-              <Box className={classes.centerInMobile}>
-                {tableFlag && !addFlag && !editFlag && (
-                  <Button
-                    startIcon={<AddOutlinedIcon />}
-                    size='medium'
-                    title='Add Grade'
-                    onClick={handleAddGrade}
-                  >
-                    Add Grade
-                  </Button>
-                )}
-                {(addFlag || editFlag) && (
-                  <Button
-                    startIcon={<ArrowBackIcon />}
-                    size='medium'
-                    title='Go back to Grade List'
-                    onClick={handleGoBack}
-                  >
-                    Grade List
-                  </Button>
-                )}
-              </Box>
-            </Grid>
-            <Grid item xs={12}>
-              <Box className={classes.centerInMobile}>
+          <Grid container spacing={isMobile?3:5} style={{ width: widerWidth, margin: wider}}>
+            <Grid item xs={12} sm={3}>
                 <TextField
                   id='gradename'
-                  className={widthFlag ? 'mainWidth widthClass' : 'mainWidth'}
-                  onFocus={(e) => setWidthFlag(true)}
-                  onBlur={(e) => setWidthFlag(false)}
+                  style={{ width: '100%' }}
                   label='Grade Name'
                   variant='outlined'
-                  size='medium'
+                  size='small'
                   name='gradename'
                   autoComplete='off'
                   onChange={(e) => setSearchGrade(e.target.value)}
                 />
-              </Box>
+            </Grid>
+            <Grid item xs sm className={isMobile?'hideGridItem':''}/>
+            <Grid item xs={12} sm={3}>
+              <Button 
+              startIcon={<AddOutlinedIcon style={{fontSize:'30px'}}/>} 
+              variant='contained' 
+              color='primary' 
+              size="small" 
+              style={{color:'white'}} 
+              title="Add Subject" 
+              onClick={handleAddGrade}>
+                Add Grade
+              </Button>
             </Grid>
           </Grid>
         )}
@@ -353,25 +324,17 @@ const GradeTable = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-            {/* <div className='paginate'>
-              <Pagination
-                count={pageCount}
-                color='primary'
-                showFirstButton
-                showLastButton
-                page={page}
-                onChange={handleChangePage}
-              />
-            </div> */}
+            <div className="paginateData">
             <TablePagination
               component='div'
               count={totalCount}
               rowsPerPage={limit}
               page={page - 1}
-              onChangePage={handleChangePage}
+              onChangePage={handleChangePageScreen}
               rowsPerPageOptions={false}
               className='table-pagination'
             />
+            </div>
           </Paper>
         )}
         {isMobile && !addFlag && !editFlag && (
@@ -390,10 +353,12 @@ const GradeTable = () => {
                 />
               ))}
             </Container>
-            <div className={classes.cardsPagination}>
+            <div className='paginate'>
               <Pagination
                 page={page}
                 count={pageCount}
+                showFirstButton
+                showLastButton
                 onChange={handleChangePage}
                 color='primary'
                 className='pagination-white'

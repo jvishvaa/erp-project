@@ -5,25 +5,25 @@
   justify-content: center;
   padding:15px;
 }
-
-.mainWidth.widthClass {
-  width: 300px;
-  transition: width 0.4s;
-}
-.mainWidth {
-  width: 250px;
-}
-
-.gradeDropClass {
-  width: 200px;
-}
-
-
-.custom_button{
-  color:white !important;
+.custom_button_master{
+  width: 100% !important;
+  text-transform: uppercase;
+	cursor: pointer;
   outline: none !important;
 }
-.custom_button:hover{
+/* .custom_button_master:hover{
 	transform: translateY(-2px);
   box-shadow: 1px 3px 5px 1px rgba(0, 0, 0, 0.3);
+} */
+
+.paginateData{
+  padding: 10px 40px !important;
+}
+
+.hideGridItem{
+    display: none !important;
+}
+
+.removePadding.MuiIconButton-root {
+  padding: 0 !important;
 }

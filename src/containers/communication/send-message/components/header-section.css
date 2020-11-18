@@ -1,5 +1,10 @@
+.send_message_breadcrumb_wrapper{
+	margin: 20px auto;
+	width: 95%;
+}
 .send_message_header {
-  margin: 1% 5%;
+	margin: 20px auto;
+	width: 95%;
 }
 .send_message_header_icon_wrapper {
   display: inline-block;
@@ -14,12 +19,12 @@
 }
 .send_message_header_circle {
   width: 40px;
-  height: 32px;
+  height: 40px;
   margin: auto;
   border-radius: 50%;
   background-color: #ffffff;
   color: #ff6b6b;
-  padding: 6% 1.5%;
+  padding: 9% 1.5%;
   text-align: center;
 }
 .send_message_header_border_circle {
@@ -34,6 +39,12 @@
   background-repeat: no-repeat;
   background-image: url(../../../../assets/images/Group-8088.svg);
 }
+@media screen and (min-width: 2000px) {
+	.send_message_header_bar {
+		vertical-align: super;
+		width: 5%;
+	}
+}
 @media screen and (max-width: 700px) {
   .send_message_header_bar {
     margin-top: 2%;
@@ -42,10 +53,9 @@
 	width: 17%;
     background-position: center;
   }
+
   .send_message_header{
-	margin: 1% 0%;
-    margin-left: -3%;
-	  text-align: center;
+	text-align: center;
   }
   .send_message_header_circle{
 	width: 30px;
