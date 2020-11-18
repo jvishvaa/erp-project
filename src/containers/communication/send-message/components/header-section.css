@@ -1,10 +1,10 @@
 .send_message_breadcrumb_wrapper{
-	margin: 20px;
+	margin: 20px auto;
 	width: 95%;
 }
 .send_message_header {
-  margin: 20px;
-  width: 95%;
+	margin: 20px auto;
+	width: 95%;
 }
 .send_message_header_icon_wrapper {
   display: inline-block;
@@ -53,6 +53,7 @@
 	width: 17%;
     background-position: center;
   }
+
   .send_message_header{
 	text-align: center;
 	margin: auto;

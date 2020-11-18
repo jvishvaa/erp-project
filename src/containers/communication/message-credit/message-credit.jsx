@@ -181,29 +181,31 @@ const MessageCredit = withRouter(({ history, ...props }) => {
               childComponentName='Add SMS credit'
             />
           </div>
-          <Grid container className='message_log_container' xs={12} lg={12} spacing={5}>
-            <Grid xs={12} lg={3} item>
-              <Autocomplete
-                size='small'
-                onChange={handleBranch}
-                value={selectedBranch}
-                id='message_log-branch'
-                className='sms_credit_branch'
-                options={branchList}
-                getOptionLabel={(option) => option?.branch_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    className='message_log-textfield'
-                    {...params}
-                    variant='outlined'
-                    label='Branch'
-                    placeholder='Branch'
-                  />
-                )}
-              />
+          <div className='create_group_filter_container'>
+            <Grid container className='message_log_container' spacing={5}>
+              <Grid xs={12} lg={3} item>
+                <Autocomplete
+                  size='small'
+                  onChange={handleBranch}
+                  value={selectedBranch}
+                  id='message_log-branch'
+                  className='sms_credit_branch'
+                  options={branchList}
+                  getOptionLabel={(option) => option?.branch_name}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      className='message_log-textfield'
+                      {...params}
+                      variant='outlined'
+                      label='Branch'
+                      placeholder='Branch'
+                    />
+                  )}
+                />
+              </Grid>
             </Grid>
-          </Grid>
+          </div>
           <div className='sms_credit_white_space_wrapper'>
             <Paper className={`sms_credit_table_wrapper ${classes.root}`}>
               <TableContainer
