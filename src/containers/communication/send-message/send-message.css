@@ -59,7 +59,7 @@
 .message_type_block_wrapper {
   display: flex;
   width: 95%;
-  margin: 20px auto;
+  margin: 20px;
   border-bottom: 1px solid #cfcfcf;
 }
 .message_type_block {

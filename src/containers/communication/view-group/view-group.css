@@ -7,10 +7,13 @@
 	width: 95%;
 }
 .MuiTableCell-head {
-	color: #014b7e !important;
+color: #014b7e !important;
 	background-color: white !important;
   font-weight: 600 !important;
   text-align: center !important;
+}
+.view_group_table_wrapper{
+	box-shadow: none !important;
 }
 .MuiTableCell-body {
   color: #014b7e !important;
