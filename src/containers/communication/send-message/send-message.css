@@ -128,7 +128,7 @@
   font-size: 1rem;
   font-weight: 600;
   width: 98%;
-  margin: 20px auto 1%;
+  margin: 1px auto 1%;
 }
 .send_message_select_all_checkbox {
   transform: scale(1.5);
@@ -173,10 +173,6 @@
   }
   .message_type_block_wrapper {
     margin: 20px auto;
-  }
-  .send_message_select_all_wrapper {
-    margin-top: 6%;
-    margin-bottom: 4%;
   }
   .send_message_message_tag {
     margin-top: 2%;

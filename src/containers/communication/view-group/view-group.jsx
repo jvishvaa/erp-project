@@ -257,7 +257,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
               </div>
             </div>
           ) : null}
-          <div className='sms_credit_white_space_wrapper'>
+          <div className='view_group_white_space_wrapper'>
             {isHidden ? (
               <span className='message_log_expand_manage' onClick={toggleHide}>
                 view more
