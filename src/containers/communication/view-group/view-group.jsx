@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     width: '95%',
     margin: 'auto',
     [theme.breakpoints.down('xs')]: {
-      width: '85vw',
+      width: '90vw',
       marginLeft: '5px',
       marginTop: '5px',
     },
@@ -69,6 +69,7 @@ const useStyles = makeStyles((theme) => ({
 const ViewGroup = withRouter(({ history, ...props }) => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
+  const [isHidden, setIsHidden] = useState(window.innerWidth < 600);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [groupsData, setGroupsData] = useState([]);
@@ -197,6 +198,9 @@ const ViewGroup = withRouter(({ history, ...props }) => {
     setEditGroupSections(groupsData[index].sections);
     setEditing(true);
   };
+  const toggleHide = () => {
+    setIsHidden(!isHidden);
+  };
   useEffect(() => {
     getGroupsData();
   }, [currentPage]);
@@ -253,7 +257,16 @@ const ViewGroup = withRouter(({ history, ...props }) => {
               </div>
             </div>
           ) : null}
-          <div className='sms_credit_white_space_wrapper'>
+          <div className='view_group_white_space_wrapper'>
+            {isHidden ? (
+              <span className='message_log_expand_manage' onClick={toggleHide}>
+                view more
+              </span>
+            ) : (
+              <span className='message_log_expand_manage' onClick={toggleHide}>
+                view less
+              </span>
+            )}
             <Paper className={` view_group_table_wrapper ${classes.root}`}>
               <TableContainer
                 className={`table table-shadow view_group_table ${classes.container}`}
@@ -262,12 +275,32 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                   <TableHead className={`${classes.columnHeader} view_groups_header`}>
                     <TableRow>
                       <TableCell className={classes.tableCell}>Group Name</TableCell>
-                      <TableCell className={classes.tableCell}>Role Type</TableCell>
-                      <TableCell className={classes.tableCell}>Grades</TableCell>
-                      <TableCell className={classes.tableCell}>Sections</TableCell>
+                      <TableCell
+                        className={`${classes.tableCell} ${isHidden ? 'hide' : 'show'}`}
+                      >
+                        Role Type
+                      </TableCell>
+                      <TableCell
+                        className={`${classes.tableCell} ${isHidden ? 'hide' : 'show'}`}
+                      >
+                        Grades
+                      </TableCell>
+                      <TableCell
+                        className={`${classes.tableCell} ${isHidden ? 'hide' : 'show'}`}
+                      >
+                        Sections
+                      </TableCell>
                       <TableCell className={classes.tableCell}>Status</TableCell>
-                      <TableCell className={classes.tableCell}>Action</TableCell>
-                      <TableCell className={classes.tableCell}>Edit</TableCell>
+                      <TableCell
+                        className={`${classes.tableCell} ${isHidden ? 'hide' : 'show'}`}
+                      >
+                        Action
+                      </TableCell>
+                      <TableCell
+                        className={`${classes.tableCell} ${isHidden ? 'hide' : 'show'}`}
+                      >
+                        Edit
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody className='view_groups_body'>
@@ -279,13 +312,15 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                         key={`group_table_index${i}`}
                       >
                         <TableCell>{items.groupName}</TableCell>
-                        <TableCell>{items.roleType}</TableCell>
-                        <TableCell>
+                        <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
+                          {items.roleType}
+                        </TableCell>
+                        <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
                           {items.grades.length
                             ? items.grades.map((grades) => grades.grade_name)
                             : null}
                         </TableCell>
-                        <TableCell>
+                        <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
                           {items.sections.length
                             ? items.sections.map((sections, index) => {
                                 if (index + 1 === items.sections.length) {
@@ -302,7 +337,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                             <div style={{ color: 'red' }}>Deactivated</div>
                           )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
                           {items.active ? (
                             <button
                               type='submit'
@@ -331,7 +366,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                             <DeleteIcon />
                           </span>
                         </TableCell>
-                        <TableCell>
+                        <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
                           <span
                             className='group_view_button group_view_delete_button'
                             title='Edit'
