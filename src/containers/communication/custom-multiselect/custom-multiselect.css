@@ -1,18 +1,9 @@
-.custom_multiselect_wrapper .MuiChip-root {
-	color: #014B7E !important;
-}
 .custom_multiselect_wrapper .MuiChip-deleteIcon{
 	color: #FF6B6B !important;
 }
 
 .custom_multiselect_wrapper .MuiSelect-select{
 	border-radius: 5px !important;
-}
-.custom_multiselect_wrapper  label#demo-mutiple-chip-label {
-    color: #014B7E;
-    background:  #F9F9F9;
-    font-size: 1rem;
-    font-weight: 600;
 }
 .custom_multiselect_wrapper  label + .MuiInput-formControl{
     margin-top: 3px !important;
