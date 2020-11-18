@@ -66,7 +66,7 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
           : 'short_height_custom_selection_table_wrapper'
       }`}
       style={{
-        width: '95%',
+        width: '98%',
         margin: 'auto',
       }}
     >

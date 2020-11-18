@@ -2,8 +2,12 @@
 	background-color: #F9F9F9;
 }
 .create_group_breadcrumb_wrapper{
-	margin: 20px;
+	margin: 20px auto;
 	width: 95%;
+}
+.create_group_filter_container{
+	padding: 20px 2.5%;
+    margin: 0 auto;
 }
 .creategroup_firstrow{
 	display: flex;
@@ -91,16 +95,12 @@
 	color: #014B7E;
     font-size: 1rem;
     font-weight: 600;
-    width: 95%;
-    margin: 20px auto 1%;
+    width: 98%;
+    margin: 1px auto 1%;
 }
 .create_group_select_all_checkbox{
 	transform: scale(1.5);
 	margin-right: 1%;
-}
-.create_group_container{
-	margin: 0px !important;
-	width: 95% !important;
 }
 .under_line_create_group{
 	border-bottom: 2px solid #dcdcdc;
@@ -110,10 +110,6 @@
 	padding: 20px;
 	width: 100%;
 	background-color: white;
-}
-.create_group_custom_button_wrapper{
-	margin: 0px !important;
-	width: 95% !important;
 }
 .create_group_branch{
 	width: 100%;
