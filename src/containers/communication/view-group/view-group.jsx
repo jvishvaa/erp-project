@@ -216,10 +216,12 @@ const ViewGroup = withRouter(({ history, ...props }) => {
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
         <div className='creategroup__page'>
-          <CommonBreadcrumbs
-            componentName='Communication'
-            childComponentName='View Group'
-          />
+          <div className='view_group_breadcrumb_container'>
+            <CommonBreadcrumbs
+              componentName='Communication'
+              childComponentName='View Group'
+            />
+          </div>
           {editing ? (
             <EditGroup
               editId={editGroupId}

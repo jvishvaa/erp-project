@@ -549,6 +549,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
                       variant='outlined'
                       size='small'
                       name='Group name'
+                      value={groupName}
                       onChange={addGroupName}
                       required
                     />

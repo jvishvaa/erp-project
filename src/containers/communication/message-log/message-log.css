@@ -32,6 +32,26 @@
   color: white;
   background-color: rgba(0, 0, 0, 0.12);
 }
+.message_log_date_piker svg{
+	fill: #ff6b6b;
+}
+.message_log_branch .MuiIconButton-label{
+	color: #FF6B6B !important;
+}
+.message_log_branch .MuiInputLabel-outlined{
+	color: #014B7E !important;
+	font-size: 1rem !important;
+    font-weight: 600 !important;
+}
+.message_log_branch .MuiInputBase-input {
+	color: #014b7e !important;
+}
+.message_log_branch .MuiChip-root {
+	color: #014B7E !important;
+}
+.message_log_branch .MuiChip-deleteIcon{
+	color: #FF6B6B !important;
+}
 .message_log_filter_button {
   font-size: 0.9rem;
   height: 45px;
@@ -74,7 +94,7 @@
   width: 95%;
 }
 .message_log_container {
-  margin: 0px auto !important;
+  margin: 0px !important;
   width: 95% !important;
 }
 .message_log_white_wrapper {
