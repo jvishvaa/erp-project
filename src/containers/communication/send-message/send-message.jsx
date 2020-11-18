@@ -788,7 +788,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
                       lg={12}
                       spacing={5}
                     >
-                      <Grid xs={12} lg={3} className='send_message_role_wrapper' item>
+                      <Grid xs={12} lg={4} className='send_message_role_wrapper' item>
                         <CustomMultiSelect
                           selections={selectedRoles}
                           setSelections={setSelectedRoles}
@@ -801,7 +801,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
                     </Grid>
                     {selectedRoles.length ? (
                       <Grid container className='create_group_container' spacing={5}>
-                        <Grid xs={12} lg={3} className='create_group_items' item>
+                        <Grid xs={12} lg={4} className='create_group_items' item>
                           <div className='create_group_branch_wrapper'>
                             <Autocomplete
                               size='small'
@@ -826,7 +826,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
                           </div>
                         </Grid>
                         {selectedBranch && gradeList.length ? (
-                          <Grid xs={12} lg={3} className='create_group_items' item>
+                          <Grid xs={12} lg={4} className='create_group_items' item>
                             <div>
                               <CustomMultiSelect
                                 selections={selectedGrades}
@@ -841,7 +841,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
                           </Grid>
                         ) : null}
                         {selectedGrades.length && sectionList.length ? (
-                          <Grid xs={12} lg={3} className='create_group_items' item>
+                          <Grid xs={12} lg={4} className='create_group_items' item>
                             <CustomMultiSelect
                               selections={selectedSections}
                               setSelections={setSelectedSections}
@@ -862,7 +862,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
                     lg={12}
                     spacing={5}
                   >
-                    <Grid xs={12} lg={3} item>
+                    <Grid xs={12} lg={4} item>
                       <CustomMultiSelect
                         selections={selectedGroup}
                         setSelections={setSelectedGroup}
