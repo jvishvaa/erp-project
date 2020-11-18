@@ -19,8 +19,6 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import MomentUtils from '@date-io/moment';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import Pagination from '@material-ui/lab/Pagination';
 import axiosInstance from '../../../config/axios';
@@ -378,7 +376,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
           </div>
           <div className='create_group_filter_container'>
             <Grid container spacing={5} className='message_log_container'>
-              <MuiPickersUtilsProvider utils={MomentUtils}>
+              <MuiPickersUtilsProvider utils={MomentUtils} className='date_provider'>
                 <Grid item xs={12} sm={3}>
                   <KeyboardDatePicker
                     margin='normal'
@@ -540,61 +538,67 @@ const MessageLog = withRouter(({ history, ...props }) => {
                 </Grid>
                 <Grid xs={12} lg={3} item>
                   {userLogs.length ? (
-                    <div className={isMobile ? 'view_details_mobile' : 'desktop'}>
-                      {isMobile ? (
-                        <span
-                          className='close_icon_view_details_mobile'
-                          onClick={() => {
-                            setSelectedRow();
-                            setUserLogs([]);
-                          }}
-                        >
-                          <CloseIcon />
-                        </span>
-                      ) : null}
-                      <Paper className={`message_log_table_wrapper ${classes.root}`}>
-                        <TableContainer
-                          className={`table table-shadow message_log_table ${classes.container}`}
-                        >
-                          <Table stickyHeader aria-label='sticky table'>
-                            <TableHead className='view_groups_header'>
-                              <TableRow>
-                                <TableCell>Name</TableCell>
-                                <TableCell>{isEmail ? 'Email Id' : 'Number'}</TableCell>
-                                <TableCell>Sent</TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {userLogs.map((row, i) => (
-                                <TableRow key={`message_details${i}`}>
-                                  <TableCell align='right'>{row.name}</TableCell>
-                                  <TableCell align='right'>{row.number}</TableCell>
-                                  <TableCell align='right'>
-                                    {row.sent ? (
-                                      <CheckCircleIcon
-                                        style={{ color: 'green', marginLeft: '15px' }}
-                                      />
-                                    ) : (
-                                      <CancelIcon
-                                        style={{ color: 'red', marginLeft: '15px' }}
-                                      />
-                                    )}
-                                  </TableCell>
+                    <div
+                      className={
+                        isMobile ? 'add_credit_mobile_form_outside_wrapper' : 'none'
+                      }
+                    >
+                      <div className={isMobile ? 'view_details_mobile' : 'desktop'}>
+                        {isMobile ? (
+                          <span
+                            className='close_icon_view_details_mobile'
+                            onClick={() => {
+                              setSelectedRow();
+                              setUserLogs([]);
+                            }}
+                          >
+                            <CloseIcon />
+                          </span>
+                        ) : null}
+                        <Paper className={`message_log_table_wrapper ${classes.root}`}>
+                          <TableContainer
+                            className={`table table-shadow message_log_table ${classes.container}`}
+                          >
+                            <Table stickyHeader aria-label='sticky table'>
+                              <TableHead className='view_groups_header'>
+                                <TableRow>
+                                  <TableCell>Name</TableCell>
+                                  <TableCell>{isEmail ? 'Email Id' : 'Number'}</TableCell>
+                                  <TableCell>Sent</TableCell>
                                 </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                        <div className={`${classes.root} pagenation_view_groups`}>
-                          <Pagination
-                            page={Number(usersCurrentPageno)}
-                            size='large'
-                            className='books__pagination'
-                            onChange={handleUsersPagination}
-                            count={usersTotalPage}
-                          />
-                        </div>
-                      </Paper>
+                              </TableHead>
+                              <TableBody>
+                                {userLogs.map((row, i) => (
+                                  <TableRow key={`message_details${i}`}>
+                                    <TableCell align='right'>{row.name}</TableCell>
+                                    <TableCell align='right'>{row.number}</TableCell>
+                                    <TableCell align='right'>
+                                      {row.sent ? (
+                                        <CheckCircleIcon
+                                          style={{ color: 'green', marginLeft: '15px' }}
+                                        />
+                                      ) : (
+                                        <CancelIcon
+                                          style={{ color: 'red', marginLeft: '15px' }}
+                                        />
+                                      )}
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                          <div className={`${classes.root} pagenation_view_groups`}>
+                            <Pagination
+                              page={Number(usersCurrentPageno)}
+                              size='large'
+                              className='books__pagination'
+                              onChange={handleUsersPagination}
+                              count={usersTotalPage}
+                            />
+                          </div>
+                        </Paper>
+                      </div>
                     </div>
                   ) : null}
                 </Grid>
