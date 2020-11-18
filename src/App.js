@@ -83,9 +83,9 @@ function App() {
                 <Route path='/user-management'>
                   {({ match }) => <UserManagement match={match} />}
                 </Route>
-                <Route exact path='/view-users'>
+                {/* <Route exact path='/view-users'>
                   {({ match }) => <ViewUsers match={match} />}
-                </Route>
+                </Route> */}
                 <Route path='/messagelog'>
                   {({ match }) => <MessageLog match={match} />}
                 </Route>
@@ -95,9 +95,9 @@ function App() {
                 <Route exact path='/'>
                   {({ match, history }) => <Login match={match} history={history} />}
                 </Route>
-                <Route exact path='/assignrole'>
+                {/* <Route exact path='/assignrole'>
                   {({ match }) => <AssignRole match={match} />}
-                </Route>
+                </Route> */}
                 <Route exact path='/addgroup'>
                   {({ match }) => <CreateGroup match={match} />}
                 </Route>

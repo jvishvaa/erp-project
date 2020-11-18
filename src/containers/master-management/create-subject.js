@@ -1,16 +1,20 @@
 import React , { useContext, useState } from 'react';
-import { Grid, TextField, Button } from '@material-ui/core';
+import { Grid, TextField, Button, useTheme } from '@material-ui/core';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
-const CreateSubject = ({grades,setLoading}) => {
+const CreateSubject = ({grades,setLoading,handleGoBack}) => {
 
   const { setAlert } = useContext(AlertNotificationContext);
   const [subjectName,setSubjectName]=useState('')
   const [description,setDescription]=useState('')
   const [selectedGrade,setSelectedGrade]=useState('')
+  const themeContext = useTheme();
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+
 
   const handleGrade = (event, value) => {
     if(value)
@@ -53,22 +57,23 @@ const CreateSubject = ({grades,setLoading}) => {
     }
     };
 
-
   return (
-     <div className='create__class'>
       <form autoComplete='off' onSubmit={handleSubmit}>
-        <Grid item style={{marginLeft:'14px',color:'#014B7E'}} >
-              <h1>Add Subject</h1>
-        </Grid>
-        <hr/>
-        <Grid container className='create-class-container'>
+      <div style={{ width: '95%', margin: '20px auto'}}>
+        <div style={{color:'#014B7E'}}>
+            <h2>Add Subject</h2>
+        </div>
+        <div style={{margin:'40px auto'}}>
+          <hr />
+        </div>
+        <Grid container spacing={5}>
           <Grid item xs={12} sm={4}>
             <TextField
-              className='create__class-textfield'
               id='subname'
+              style={{ width: '100%' }}
               label='Subject Name'
               variant='outlined'
-              size='medium'
+              size='small'
               value={subjectName}
               inputProps={{pattern:'^[a-zA-Z0-9 ]+',maxLength:20}}
               name='subname'
@@ -77,20 +82,19 @@ const CreateSubject = ({grades,setLoading}) => {
             />
           </Grid>
         </Grid>
-        <Grid container className='create-class-container' >
+        <Grid container spacing={5} >
           <Grid item xs={12} sm={4}>
             <Autocomplete
-              size='medium'
+              size='small'
               onChange={handleGrade}
+              style={{ width: '100%' }}
               id='grade'
               options={grades}
               value={selectedGrade}
               getOptionLabel={(option) => option.grade_name}
               filterSelectedOptions
-              required
               renderInput={(params) => (
                 <TextField
-                  className='create__class-textfield'
                   {...params}
                   variant='outlined'
                   label='Grades'
@@ -101,14 +105,14 @@ const CreateSubject = ({grades,setLoading}) => {
             />
           </Grid>
         </Grid>
-        <Grid container className='create-class-container'>
+        <Grid container spacing={5}>
           <Grid item xs={12} sm={4}>
             <TextField
-              className='create__class-textfield'
               id='description'
               label='Description'
               variant='outlined'
-              size='medium'
+              size='small'
+              style={{ width: '100%' }}
               multiline
               rows={4}
               rowsMax={6}
@@ -120,13 +124,20 @@ const CreateSubject = ({grades,setLoading}) => {
             />
           </Grid>
         </Grid>
-        <Grid container className='create-class-container' >
-          <Button variant='contained' color ="primary" className="custom_button" size='large' type='submit'>
-            SUBMIT
-          </Button>
+        </div>
+        <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '20px 10px'}} >
+          <Grid item xs={6} sm={2}>
+            <Button variant='contained' style={{color:'white'}} color ="primary" className="custom_button_master" size='medium' type='submit'>
+              Submit
+            </Button>
+          </Grid>
+          <Grid item xs={6} sm={2}>
+            <Button variant='contained' className="custom_button_master" size='medium' onClick={handleGoBack}>
+              Back
+            </Button>
+          </Grid>
         </Grid>
       </form>
-    </div>
   );
 };
 

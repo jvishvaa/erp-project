@@ -176,7 +176,7 @@ class CreateRole extends Component {
     };
     return (
       <div className={classes.root}>
-        <Grid container spacing={2} alignItems='center' style={{ padding: '2rem 0' }}>
+        <Grid container spacing={4} alignItems='center' className={classes.formContainer}>
           <Grid item>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <span style={{ color: 'red' }}>{roleNameError}</span>
@@ -188,6 +188,7 @@ class CreateRole extends Component {
                 inputProps={{ maxLength: 20 }}
                 onChange={this.handleRoleNameChange}
                 color='secondary'
+                size='small'
               />
             </div>
           </Grid>
@@ -196,9 +197,9 @@ class CreateRole extends Component {
           </Grid>
         </Grid>
         <Typography className={classes.sectionHeader}>Number of modules</Typography>
-        <Divider />
+        <Divider className={classes.divider} />
         <span style={{ color: 'red' }}>{selectionError}</span>
-        <Grid container spacing={4} style={{ padding: '2rem 0' }}>
+        <Grid container spacing={4} className={classes.modulesContainer}>
           {modulesListing()}
         </Grid>
       </div>

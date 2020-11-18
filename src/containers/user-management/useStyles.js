@@ -38,6 +38,9 @@ const styles = (theme) => ({
   formActionButton: {
     color: '#ffffff',
   },
+  stepper: {
+    backgroundColor: '#fafafa',
+  },
 });
 
 const useStyles = makeStyles(styles);

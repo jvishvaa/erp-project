@@ -5,6 +5,7 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
+import TablePagination from '@material-ui/core/TablePagination';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
@@ -35,16 +36,18 @@ import SubjectCard from './subjects-card';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '95%',
+    width: '100%',
     margin: '0 auto'
   },
   container: {
     maxHeight: '70vh',
+    width: '100%'
   },
   columnHeader: {
-    color: theme.palette.secondary.main,
+    color: `${theme.palette.secondary.main} !important`,
     fontWeight: 600,
     fontSize: '1rem',
+    backgroundColor: `#ffffff !important`,
   },
   tableCell: {
     color: theme.palette.secondary.main,
@@ -86,18 +89,26 @@ const SubjectTable = () => {
   const [desc,setDesc]=useState('')
   const [delFlag,setDelFlag]=useState(false)
   const [pageCount,setPageCount]=useState()
+  const [totalCount, setTotalCount] = useState(0);
   const [searchGrade,setSearchGrade]=useState('')
   const [searchSubject,setSearchSubject]=useState('')
-  const [widthFlag,setWidthFlag]=useState(false)
   const [loading, setLoading] = useState(false);
-
+  const [limit, setLimit] = useState(15);
+   
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
-  
+  const wider= isMobile?'10px 0px':'20px 0px 20px 8px'
+  const widerWidth=isMobile?'98%':'95%'
+
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    setPage(newPage)
   };
+
+  const handleChangePageScreen = (event,value) => {
+    setPage(value+1)
+  }
+
 
   const handleGrade = (event, value) => {
     if(value)
@@ -166,9 +177,10 @@ const SubjectTable = () => {
   },[page,delFlag,editFlag,addFlag,searchGrade])
 
   useEffect(()=>{
-      axiosInstance.get(`${endpoints.masterManagement.subjects}?page=${page}&page_size=15&grade=${searchGrade}&subject=${searchSubject}`)
+      axiosInstance.get(`${endpoints.masterManagement.subjects}?page=${page}&page_size=${limit}&grade=${searchGrade}&subject=${searchSubject}`)
       .then(result=>{
         if (result.status === 200) {
+          setTotalCount(result.data.result.count);
           setSubjects(result.data.result.results);
           setPageCount(result.data.result.total_pages)
         } else {
@@ -201,51 +213,39 @@ const SubjectTable = () => {
     <>
     {loading ? <Loading message='Loading...' /> : null}
    <Layout>
-    <div className="headerMaster">
-      <div style={{ width: '95%', margin: '30px auto' }}>
+    <div>
+      <div style={{ width: '95%', margin: '20px auto' }}>
         <CommonBreadcrumbs
           componentName='Master Management'
           childComponentName='Subject List'
         />
       </div>
-      <div className={classes.buttonContainer}>
-      
-      { (addFlag || editFlag) &&
-        <Button startIcon={<ArrowBackIcon />} size="medium" title="Go back to Subject List" onClick={handleGoBack}>
-        Subject List
-        </Button>
-      }
-      </div>
     </div>
    
-    {!tableFlag && addFlag && !editFlag && <CreateSubject grades={grades} setLoading={setLoading}/> }
+    {!tableFlag && addFlag && !editFlag && <CreateSubject grades={grades} setLoading={setLoading} handleGoBack={handleGoBack}/> }
     {!tableFlag && !addFlag && editFlag && <EditSubject id={subjectId} desc={desc} name={subjectName} setLoading={setLoading} handleGoBack={handleGoBack}/> }
     
     
     {tableFlag && !addFlag && !editFlag && 
-    <Grid container spacing={1} style={{ width: '95%', margin: '0px auto 30px auto'}}>
+    <Grid container spacing={isMobile?3:5} style={{ width: widerWidth, margin: wider}}>
       <Grid item xs={12} sm={3}>
         <TextField
-        style={{ width: '100%' }}
+        style={{ width: '100%'}}
           id='subname'
           label='Subject Name'
           variant='outlined'
           size='small'
           name='subname'
           autoComplete="off"
-          className={widthFlag?"mainWidth widthClass":"mainWidth"}
-          onFocus={e=>setWidthFlag(true)}
-          onBlur={e=>setWidthFlag(false)}
           onChange={e=>setSearchSubject(e.target.value)}
         />
       </Grid>
       <Grid item xs={12} sm={3}>
         <Autocomplete
-        style={{ width: '100%' }}
+          style={{ width: '100%' }}
           size='small'
           onChange={handleGrade}
           id='grade'
-          className="gradeDropClass"
           options={grades}
           getOptionLabel={(option) => option.grade_name}
           filterSelectedOptions
@@ -259,14 +259,12 @@ const SubjectTable = () => {
           )}
         />
       </Grid>
-      <Grid item xs={0} sm={3} />
-      <Grid item xs={0} sm={3}>
-      {tableFlag && !addFlag && !editFlag &&
-        <Button startIcon={<AddOutlinedIcon />} size="medium" title="Add Subject" onClick={handleAddSubject}>
+      <Grid item xs sm={3} className={isMobile?'hideGridItem':''}/>
+      <Grid item xs={12} sm={3}>
+        <Button startIcon={<AddOutlinedIcon />} variant='contained' color='primary' size="medium" style={{color:'white'}} title="Add Subject" onClick={handleAddSubject}>
           Add Subject
         </Button>
-      }
-        </Grid>
+      </Grid>
     </Grid>
     }
 
@@ -275,10 +273,10 @@ const SubjectTable = () => {
       !isMobile
       ? <>
       {tableFlag && !addFlag && !editFlag && 
-    <Paper className={classes.root}>
+    <Paper className={`${classes.root} common-table`}>
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label='sticky table'>
-          <TableHead>
+          <TableHead className='table-header-row'>
             <TableRow>
               {columns.map((column) => (
                 <TableCell
@@ -327,6 +325,17 @@ const SubjectTable = () => {
           </TableBody>
         </Table>
       </TableContainer> 
+      <div className="paginateData">
+      <TablePagination
+        component='div'
+        count={totalCount}
+        rowsPerPage={limit}
+        page={page-1}
+        onChangePage={handleChangePageScreen}
+        rowsPerPageOptions={false}
+        className='table-pagination'
+      />
+      </div>
     </Paper>
     }
       </>
@@ -339,25 +348,22 @@ const SubjectTable = () => {
           <SubjectCard data={subject} handleDelete={handleDelete} handleEditSubject={handleEditSubject} />
         ))
       }
-      </>
-      }
-      </>
-      </>
-    }
-    </>
-    <div className="paginate">
-      {
-        tableFlag && !addFlag && !editFlag && 
-        <Pagination
+      <div className='paginate' >
+       <Pagination
         count={pageCount}
         color="primary"
         showFirstButton
         showLastButton
         page={page}
         onChange={handleChangePage}
-        />
-      }
+      />
     </div>
+      </>
+      }
+      </>
+      </>
+    }
+    </>
     <Dialog
       open={openDeleteModal}
       onClose={handleCloseDeleteModal}

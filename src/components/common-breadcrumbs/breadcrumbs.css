@@ -2,7 +2,6 @@
   color: #014b7e;
   font-size: 1.2rem;
   font-weight: 600;
-  /* margin-left: 1%; */
 }
 .page_heading_arrow {
   color: #ff6b6b;
@@ -19,8 +18,7 @@
   }
   .page_title {
     font-size: 0.9rem;
-    margin-bottom: 3%;
-    /* margin-left: 3%; */
+    margin: auto;
   }
   .addgroup_next_button {
     margin: auto;

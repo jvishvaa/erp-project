@@ -4,7 +4,6 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import { withStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
 import { styles } from './useStyles';
 import UserDetailsForm from './user-details-form';
@@ -221,8 +220,12 @@ class CreateUser extends Component {
     const steps = getSteps(showParentOrGuardianForm);
     const { classes, creatingUser } = this.props;
     return (
-      <Container>
-        <Stepper activeStep={activeStep} alternativeLabel>
+      <div>
+        <Stepper
+          activeStep={activeStep}
+          alternativeLabel
+          className={`${classes.stepper} stepper`}
+        >
           {steps.map((label) => (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>
@@ -270,7 +273,7 @@ class CreateUser extends Component {
             </Button>
           </div>
         </div> */}
-      </Container>
+      </div>
     );
   }
 }
