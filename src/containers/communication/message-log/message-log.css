@@ -29,7 +29,7 @@
   text-transform: uppercase;
   cursor: pointer;
   outline: none !important;
-  color: white;
+  color: grey;
   background-color: rgba(0, 0, 0, 0.12);
 }
 .message_log_date_piker svg {
