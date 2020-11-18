@@ -28,6 +28,14 @@
 .short_height_custom_selection_table_wrapper{
 	height: 400px;
 }
+.selection_table_no_rows{
+	position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    font-size: 1.2rem;
+    font-weight: 500;
+}
 @media screen and (max-width: 700px) {
 	.custom_selection_table_wrapper{
 		width: 90vw !important;

@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     },
     width: '100%',
     marginLeft: '5px',
-    marginTop: '20px',
+    marginTop: '5px',
     [theme.breakpoints.down('xs')]: {
       width: '85vw',
       margin: 'auto',
@@ -324,13 +324,14 @@ const MessageLog = withRouter(({ history, ...props }) => {
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
         <div className='message_log_wrapper'>
-          <CommonBreadcrumbs
-            componentName='Communication'
-            childComponentName='SMS/Email Log'
-          />
-          <div className='spacing' />
+          <div className='message_log_breadcrumb_wrapper'>
+            <CommonBreadcrumbs
+              componentName='Communication'
+              childComponentName='SMS/Email Log'
+            />
+          </div>
           <Grid container className='message_log_container' xs={12} lg={12} spacing={5}>
-            <Grid xs={6} lg={6} item>
+            <Grid xs={12} lg={6} item>
               <Autocomplete
                 multiple
                 size='small'
@@ -352,7 +353,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
                 )}
               />
             </Grid>
-            <Grid xs={6} lg={6} item>
+            <Grid xs={12} lg={6} item>
               <Autocomplete
                 multiple
                 size='small'
@@ -375,13 +376,14 @@ const MessageLog = withRouter(({ history, ...props }) => {
               />
             </Grid>
           </Grid>
-          <Grid container spacing={2} className='message-log-container'>
+          <Grid container spacing={5} className='message_log_container'>
             <MuiPickersUtilsProvider utils={MomentUtils}>
-              <Grid item xs={12} sm={2}>
+              <Grid item xs={12} sm={3}>
                 <KeyboardDatePicker
                   margin='normal'
                   id='date-picker-dialog'
                   label='From'
+                  className='message_log_date_piker'
                   format='YYYY-MM-DD'
                   value={selectedFromDate}
                   onChange={handleFromDateChange}
@@ -390,11 +392,12 @@ const MessageLog = withRouter(({ history, ...props }) => {
                   }}
                 />
               </Grid>
-              <Grid item xs={12} sm={2}>
+              <Grid item xs={12} sm={3}>
                 <KeyboardDatePicker
                   margin='normal'
                   id='date-picker-dialog'
                   label='To'
+                  className='message_log_date_piker'
                   format='YYYY-MM-DD'
                   value={selectedToDate}
                   onChange={handleToDateChange}
@@ -405,98 +408,45 @@ const MessageLog = withRouter(({ history, ...props }) => {
               </Grid>
             </MuiPickersUtilsProvider>
           </Grid>
-          <Grid container className='message_log_container' xs={12} spacing={2}>
-            <Grid xs={12} lg={5} item>
+          <Grid container className='message_log_container' xs={12} lg={12} spacing={5}>
+            <Grid xs={12} lg={3} item>
               <input
-                className={clearAllActive ? 'profile_update_button' : 'deactive_clearAll'}
+                className='deactive_clearAll'
                 type='button'
                 onClick={handleClearAll}
                 value='Clear All'
               />
-
+            </Grid>
+            <Grid xs={12} lg={3} item>
               <input
-                className='profile_update_button'
+                className='message_log_filter_button'
                 type='button'
                 onClick={handleFilterCheck}
                 value='Filter'
               />
             </Grid>
           </Grid>
-          <div className='message_type_block_wrapper'>
-            <div
-              className={`message_type_block ${
-                isEmail ? null : 'message_type_block_selected'
-              }`}
-              onClick={handleTypeChange}
-            >
-              SMS Logs
+          <div className='message_log_white_wrapper'>
+            <div className='message_type_block_wrapper'>
+              <div
+                className={`message_type_block ${
+                  isEmail ? null : 'message_type_block_selected'
+                }`}
+                onClick={handleTypeChange}
+              >
+                SMS Logs
+              </div>
+              <div
+                className={`message_type_block ${
+                  isEmail ? 'message_type_block_selected' : null
+                }`}
+                onClick={handleTypeChange}
+              >
+                Email Logs
+              </div>
             </div>
-            <div
-              className={`message_type_block ${
-                isEmail ? 'message_type_block_selected' : null
-              }`}
-              onClick={handleTypeChange}
-            >
-              Email Logs
-            </div>
-          </div>
-          <Grid container className='message_log_container' spacing={2}>
-            <Grid xs={12} lg={9} item>
-              <Paper className={`message_log_table_wrapper ${classes.root}`}>
-                <TableContainer
-                  className={`table table-shadow message_log_table ${classes.container}`}
-                >
-                  <Table stickyHeader aria-label='sticky table'>
-                    <TableHead className='view_groups_header'>
-                      <TableRow>
-                        <TableCell>Message</TableCell>
-                        <TableCell>Type</TableCell>
-                        <TableCell>Sent by</TableCell>
-                        <TableCell>Sent on</TableCell>
-                        <TableCell>Total Count</TableCell>
-                        <TableCell>Sent</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody className='table_body'>
-                      {messageRows.map((row) => (
-                        <TableRow
-                          className={
-                            selectedRow === row.id ? 'selectedRow' : 'notSelected'
-                          }
-                          onClick={() => handleUserDetails(row.id)}
-                        >
-                          <TableCell align='right'>{row.message}</TableCell>
-                          <TableCell align='right'>{row.type}</TableCell>
-                          <TableCell align='right'>{row.sendBy}</TableCell>
-                          <TableCell align='right'>{row.sendOn}</TableCell>
-                          <TableCell align='right'>{row.totalCount}</TableCell>
-                          <TableCell align='right'>
-                            {row.sent ? (
-                              <CheckCircleIcon
-                                style={{ color: 'green', marginLeft: '15px' }}
-                              />
-                            ) : (
-                              <CancelIcon style={{ color: 'red', marginLeft: '15px' }} />
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                <div className={`${classes.root} pagenation_view_groups`}>
-                  <Pagination
-                    page={Number(messageCurrentPageno)}
-                    size='large'
-                    className='books__pagination'
-                    onChange={handleMessagePagination}
-                    count={messageTotalPage}
-                  />
-                </div>
-              </Paper>
-            </Grid>
-            <Grid xs={12} lg={3} item>
-              {userLogs.length ? (
+            <Grid container className='message_log_container' spacing={2}>
+              <Grid xs={12} lg={9} item>
                 <Paper className={`message_log_table_wrapper ${classes.root}`}>
                   <TableContainer
                     className={`table table-shadow message_log_table ${classes.container}`}
@@ -504,16 +454,27 @@ const MessageLog = withRouter(({ history, ...props }) => {
                     <Table stickyHeader aria-label='sticky table'>
                       <TableHead className='view_groups_header'>
                         <TableRow>
-                          <TableCell>Name</TableCell>
-                          <TableCell>{isEmail ? 'Email Id' : 'Number'}</TableCell>
+                          <TableCell>Message</TableCell>
+                          <TableCell>Type</TableCell>
+                          <TableCell className='message_log_send_by'>Sent by</TableCell>
+                          <TableCell>Sent on</TableCell>
+                          <TableCell>Count</TableCell>
                           <TableCell>Sent</TableCell>
                         </TableRow>
                       </TableHead>
-                      <TableBody>
-                        {userLogs.map((row) => (
-                          <TableRow>
-                            <TableCell align='right'>{row.name}</TableCell>
-                            <TableCell align='right'>{row.number}</TableCell>
+                      <TableBody className='table_body'>
+                        {messageRows.map((row) => (
+                          <TableRow
+                            className={
+                              selectedRow === row.id ? 'selectedRow' : 'notSelected'
+                            }
+                            onClick={() => handleUserDetails(row.id)}
+                          >
+                            <TableCell align='right'>{row.message}</TableCell>
+                            <TableCell align='right'>{row.type}</TableCell>
+                            <TableCell align='right'>{row.sendBy}</TableCell>
+                            <TableCell align='right'>{row.sendOn}</TableCell>
+                            <TableCell align='right'>{row.totalCount}</TableCell>
                             <TableCell align='right'>
                               {row.sent ? (
                                 <CheckCircleIcon
@@ -532,17 +493,64 @@ const MessageLog = withRouter(({ history, ...props }) => {
                   </TableContainer>
                   <div className={`${classes.root} pagenation_view_groups`}>
                     <Pagination
-                      page={Number(usersCurrentPageno)}
+                      page={Number(messageCurrentPageno)}
                       size='large'
                       className='books__pagination'
-                      onChange={handleUsersPagination}
-                      count={usersTotalPage}
+                      onChange={handleMessagePagination}
+                      count={messageTotalPage}
                     />
                   </div>
                 </Paper>
-              ) : null}
+              </Grid>
+              <Grid xs={12} lg={3} item>
+                {userLogs.length ? (
+                  <Paper className={`message_log_table_wrapper ${classes.root}`}>
+                    <TableContainer
+                      className={`table table-shadow message_log_table ${classes.container}`}
+                    >
+                      <Table stickyHeader aria-label='sticky table'>
+                        <TableHead className='view_groups_header'>
+                          <TableRow>
+                            <TableCell>Name</TableCell>
+                            <TableCell>{isEmail ? 'Email Id' : 'Number'}</TableCell>
+                            <TableCell>Sent</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {userLogs.map((row) => (
+                            <TableRow>
+                              <TableCell align='right'>{row.name}</TableCell>
+                              <TableCell align='right'>{row.number}</TableCell>
+                              <TableCell align='right'>
+                                {row.sent ? (
+                                  <CheckCircleIcon
+                                    style={{ color: 'green', marginLeft: '15px' }}
+                                  />
+                                ) : (
+                                  <CancelIcon
+                                    style={{ color: 'red', marginLeft: '15px' }}
+                                  />
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                    <div className={`${classes.root} pagenation_view_groups`}>
+                      <Pagination
+                        page={Number(usersCurrentPageno)}
+                        size='large'
+                        className='books__pagination'
+                        onChange={handleUsersPagination}
+                        count={usersTotalPage}
+                      />
+                    </div>
+                  </Paper>
+                ) : null}
+              </Grid>
             </Grid>
-          </Grid>
+          </div>
         </div>
       </Layout>
     </>

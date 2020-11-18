@@ -17,6 +17,7 @@ export default {
     grades: '/erp_user/grademapping/',
     sections: '/erp_user/sectionmapping/',
     userList: '/communication/erp-user-info/',
+    communicationUserList: '/communication/communication-user-list/',
     createGroup: '/communication/communication-group/',
     editGroup: '/communication/',
     getGroups: '/communication/communication-group/',

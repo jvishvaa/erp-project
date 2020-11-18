@@ -66,7 +66,7 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
           : 'short_height_custom_selection_table_wrapper'
       }`}
       style={{
-        width: '90%',
+        width: '95%',
         margin: 'auto',
       }}
     >
@@ -87,7 +87,7 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
             if (!apiRef.current) {
               apiRef.current = params.api.current;
             }
-            return <div>No rows</div>;
+            return <div className='selection_table_no_rows'>No rows</div>;
           },
         }}
       />

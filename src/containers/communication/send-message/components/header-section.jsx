@@ -12,10 +12,12 @@ const HeaderSection = withRouter(({ history, ...props }) => {
   const { firstStep, secondStep, thirdStep, currentStep } = props || {};
   return (
     <div className='send_message_heading_wrapper'>
-      <CommonBreadcrumbs
-        componentName='Communication'
-        childComponentName='send sms/mail'
-      />
+      <div className='send_message_breadcrumb_wrapper'>
+        <CommonBreadcrumbs
+          componentName='Communication'
+          childComponentName='send sms/mail'
+        />
+      </div>
       <div className='send_message_header'>
         <div className='send_message_header_icon_wrapper'>
           <div
