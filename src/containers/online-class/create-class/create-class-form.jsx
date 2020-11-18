@@ -414,7 +414,7 @@ const CreateClassForm = () => {
 
   return (
     <div className='create__class' key={formKey}>
-      <div className='breadcrumb-container'>
+      <div className='breadcrumb-container-create'>
         <CommonBreadcrumbs
           componentName='Online Class'
           childComponentName='Create Class'
@@ -427,7 +427,12 @@ const CreateClassForm = () => {
           key={formKey}
           className='create-class-form'
         >
-          <Grid container className='create-class-container' spacing={2}>
+          <Grid
+            container
+            className='create-class-container'
+            style={{ paddingBottom: 0 }}
+            spacing={3}
+          >
             <Grid item xs={12} sm={2}>
               <TextField
                 className='create__class-textfield'
@@ -546,7 +551,7 @@ const CreateClassForm = () => {
               />
             </Grid>
           </Grid>
-          <Grid container spacing={2} className='create-class-container'>
+          <Grid container spacing={3} className='create-class-container'>
             <MuiPickersUtilsProvider utils={MomentUtils}>
               <Grid item xs={12} sm={2}>
                 <KeyboardDatePicker
@@ -580,8 +585,13 @@ const CreateClassForm = () => {
               </Grid>
             </MuiPickersUtilsProvider>
           </Grid>
-          <hr />
-          <Grid container className='create-class-container' spacing={2}>
+          <hr className='horizontal-line' />
+          <Grid
+            container
+            className='create-class-container'
+            style={{ paddingBottom: 5 }}
+            spacing={2}
+          >
             <Grid item xs={11} sm={7} md={4}>
               <TextField
                 className='create__class-textfield'
@@ -642,7 +652,7 @@ const CreateClassForm = () => {
               <FilterStudents />
             </SwipeableDrawer>
           </Grid>
-          <hr />
+          <hr className='horizontal-line' />
           <Grid container className='create-class-container' spacing={2}>
             <Grid item xs={12}>
               <h2 className='co_host-title'>Co-Host</h2>
@@ -706,9 +716,9 @@ const CreateClassForm = () => {
               Add cohost
             </Button>
           </Grid>
-          <hr style={{ marginTop: 20, marginBottom: 15 }} />
+          <hr className='horizontal-line-last' />
           <Grid container className='create-class-container' spacing={2}>
-            <Grid item xs={12} sm={2}>
+            <Grid item xs={12} sm={3}>
               <Button
                 disabled={creatingOnlineClass}
                 variant='contained'
@@ -724,10 +734,10 @@ const CreateClassForm = () => {
               <Button
                 variant='contained'
                 size='medium'
-                style={{ width: '100%', color: 'black' }}
+                style={{ width: '100%', color: '#8c8c8c' }}
                 onClick={handleClear}
               >
-                Clear All Selections
+                Reset
               </Button>
             </Grid>
           </Grid>
