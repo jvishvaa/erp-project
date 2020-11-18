@@ -5,13 +5,15 @@ const useStyles = makeStyles((theme) => ({
     border: '1px solid',
     borderColor: theme.palette.primary.main,
     padding: '1rem',
-    margin: '1rem 0',
+    borderRadius: '10px',
+    width: '98%',
+    margin: '1.5rem -0.1rem',
   },
   title: {
-    fontSize: '1.2rem',
+    fontSize: '1.1rem',
   },
   content: {
-    fontSize: '1rem',
+    fontSize: '0.9rem',
   },
   textRight: {
     textAlign: 'right',

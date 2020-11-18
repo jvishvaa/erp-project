@@ -23,3 +23,7 @@
 .hideGridItem{
     display: none !important;
 }
+
+.removePadding.MuiIconButton-root {
+  padding: 0 !important;
+}
