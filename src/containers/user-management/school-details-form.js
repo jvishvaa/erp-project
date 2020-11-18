@@ -63,17 +63,17 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
 
   const fetchSubjects = (branch, grade) => {
     if (branch && branch.length > 0 && grade && grade.length > 0) {
-      getSubjects(branch, grade).then((data) => {
-        const transformedData = data.map((obj) => ({
-          id: obj.subject__id,
-          subject_name: obj.subject__subject_name,
-        }));
-        setSubjects(transformedData);
-        const filteredSelectedSubjects = formik.values.subjects.filter(
-          (sub) => transformedData.findIndex((data) => data.id === sub.id) > -1
-        );
-        formik.setFieldValue('subjects', filteredSelectedSubjects);
-      });
+      // getSubjects(branch, grade).then((data) => {
+      //   const transformedData = data.map((obj) => ({
+      //     id: obj.subject__id,
+      //     subject_name: obj.subject__subject_name,
+      //   }));
+      //   setSubjects(transformedData);
+      //   const filteredSelectedSubjects = formik.values.subjects.filter(
+      //     (sub) => transformedData.findIndex((data) => data.id === sub.id) > -1
+      //   );
+      //   formik.setFieldValue('subjects', filteredSelectedSubjects);
+      // });
     } else {
       setSubjects([]);
     }

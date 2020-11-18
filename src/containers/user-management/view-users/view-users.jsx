@@ -326,157 +326,156 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   return (
     // <Layout>
     <div className='view-users-page'>
-      <div className='bread-crumbs-container'>
-        <CommonBreadcrumbs
-          componentName='User Management'
-          childComponentName='View users'
-        />
-      </div>
-      <Grid container spacing={4} className='form-container'>
-        <Grid item xs={12}>
-          <Box style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
-            <Button
-              startIcon={<SettingsBackupRestoreOutlined />}
-              onClick={handleResetFilters}
-            >
-              Reset
-            </Button>
-          </Box>
-        </Grid>
-        <Grid item xs={12} md={3}>
-          <FormControl
-            variant='outlined'
-            className={classes.formControl}
-            fullWidth
-            size='small'
-          >
-            <InputLabel>Search</InputLabel>
-            <OutlinedInput
-              endAdornment={<SearchOutlined color='primary' />}
-              placeholder='Search users ..'
-              label='Search'
-              value={searchText}
-              onChange={handleTextSearch}
-            />
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} md={3}>
-          <FormControl
-            variant='outlined'
-            className={classes.formControl}
-            fullWidth
-            size='small'
-          >
-            <InputLabel>Role</InputLabel>
-            <Select
-              labelId='demo-simple-select-outlined-label'
-              id='demo-simple-select-outlined'
-              value={selectedRoles}
-              onChange={(e) => setSelectedRoles(e.target.value)}
-              label='Role'
-            >
-              <MenuItem value=''>
-                <em>None</em>
-              </MenuItem>
-              {roleList.map((items, index) => (
-                <MenuItem key={`role_user_details_${index}`} value={items.id}>
-                  {items.role_name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} md={3}>
-          <FormControl
-            variant='outlined'
-            className={classes.formControl}
-            fullWidth
-            size='small'
-          >
-            <InputLabel id='demo-simple-select-outlined-label'>Branch</InputLabel>
-            <Select
-              labelId='demo-simple-select-outlined-label'
-              id='demo-simple-select-outlined'
-              value={selectedBranch}
-              onChange={(e) => setSelectedBranch(e.target.value)}
-              label='Branch'
-              color='primary'
-            >
-              <MenuItem value=''>
-                <em>None</em>
-              </MenuItem>
-              {branchList.map((items, index) => (
-                <MenuItem key={`branch_user_details_${index}`} value={items.id}>
-                  {items.branch_name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Grid>
-        {selectedBranch && (
+      <div className='inner-container'>
+        <div className='bread-crumbs-container'>
+          <CommonBreadcrumbs
+            componentName='User Management'
+            childComponentName='View users'
+          />
+        </div>
+        <Grid container spacing={4} className='form-container spacer'>
           <Grid item xs={12} md={3}>
-            {/* <CustomMultiSelect
-              selections={selectedGrades}
-              setSelections={setSelectedGrades}
-              nameOfDropdown='Grade'
-              optionNames={grade}
-            /> */}
             <FormControl
               variant='outlined'
               className={classes.formControl}
               fullWidth
               size='small'
             >
-              <InputLabel id='demo-simple-select-outlined-label'>Grade</InputLabel>
+              <InputLabel>Search</InputLabel>
+              <OutlinedInput
+                endAdornment={<SearchOutlined color='primary' />}
+                placeholder='Search users ..'
+                label='Search'
+                value={searchText}
+                onChange={handleTextSearch}
+              />
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <FormControl
+              variant='outlined'
+              className={classes.formControl}
+              fullWidth
+              size='small'
+            >
+              <InputLabel>Role</InputLabel>
               <Select
                 labelId='demo-simple-select-outlined-label'
                 id='demo-simple-select-outlined'
-                variant='outlined'
-                value={selectedGrades}
-                onChange={(e) => {
-                  const values = e.target.value;
-                  if (values.includes('none')) {
-                    setSelectedGrades([]);
-                  } else {
-                    setSelectedGrades(e.target.value);
-                  }
-                }}
-                label='Grade'
-                color='primary'
-                multiple
-                renderValue={(selected) => (
-                  <div className={classes.chips}>
-                    {selected.map((value, index) => (
-                      <Chip
-                        key={`${value}_${index}`}
-                        label={value}
-                        className={classes.chip}
-                        onDelete={() => {
-                          setSelectedGrades(
-                            selectedGrades.filter((item) => item !== value)
-                          );
-                        }}
-                        onMouseDown={(event) => {
-                          event.stopPropagation();
-                        }}
-                      />
-                    ))}
-                  </div>
-                )}
+                value={selectedRoles}
+                onChange={(e) => setSelectedRoles(e.target.value)}
+                label='Role'
               >
-                <MenuItem value='none'>
+                <MenuItem value=''>
                   <em>None</em>
                 </MenuItem>
-                {grade.map((item, index) => (
-                  <MenuItem key={`branch_user_details_${index}`} value={item}>
-                    {item}
+                {roleList.map((items, index) => (
+                  <MenuItem key={`role_user_details_${index}`} value={items.id}>
+                    {items.role_name}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
           </Grid>
-        )}
-      </Grid>
+          <Grid item xs={12} md={3}>
+            <FormControl
+              variant='outlined'
+              className={classes.formControl}
+              fullWidth
+              size='small'
+            >
+              <InputLabel id='demo-simple-select-outlined-label'>Branch</InputLabel>
+              <Select
+                labelId='demo-simple-select-outlined-label'
+                id='demo-simple-select-outlined'
+                value={selectedBranch}
+                onChange={(e) => setSelectedBranch(e.target.value)}
+                label='Branch'
+                color='primary'
+              >
+                <MenuItem value=''>
+                  <em>None</em>
+                </MenuItem>
+                {branchList.map((items, index) => (
+                  <MenuItem key={`branch_user_details_${index}`} value={items.id}>
+                    {items.branch_name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          {selectedBranch && (
+            <Grid item xs={12} md={3}>
+              {/* <CustomMultiSelect
+              selections={selectedGrades}
+              setSelections={setSelectedGrades}
+              nameOfDropdown='Grade'
+              optionNames={grade}
+            /> */}
+              <FormControl
+                variant='outlined'
+                className={classes.formControl}
+                fullWidth
+                size='small'
+              >
+                <InputLabel id='demo-simple-select-outlined-label'>Grade</InputLabel>
+                <Select
+                  labelId='demo-simple-select-outlined-label'
+                  id='demo-simple-select-outlined'
+                  variant='outlined'
+                  value={selectedGrades}
+                  onChange={(e) => {
+                    const values = e.target.value;
+                    if (values.includes('none')) {
+                      setSelectedGrades([]);
+                    } else {
+                      setSelectedGrades(e.target.value);
+                    }
+                  }}
+                  label='Grade'
+                  color='primary'
+                  multiple
+                  renderValue={(selected) => (
+                    <div className={classes.chips}>
+                      {selected.map((value, index) => (
+                        <Chip
+                          key={`${value}_${index}`}
+                          label={value}
+                          className={classes.chip}
+                          onDelete={() => {
+                            setSelectedGrades(
+                              selectedGrades.filter((item) => item !== value)
+                            );
+                          }}
+                          onMouseDown={(event) => {
+                            event.stopPropagation();
+                          }}
+                        />
+                      ))}
+                    </div>
+                  )}
+                >
+                  <MenuItem value='none'>
+                    <em>None</em>
+                  </MenuItem>
+                  {grade.map((item, index) => (
+                    <MenuItem key={`branch_user_details_${index}`} value={item}>
+                      {item}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+          )}
+          <Grid item xs={12}>
+            <Box style={{ width: '100%', display: 'flex', justifyContent: 'flex-start' }}>
+              <Button onClick={handleResetFilters} className='disabled-btn'>
+                CLEAR ALL
+              </Button>
+            </Box>
+          </Grid>
+        </Grid>
+      </div>
       {/* <span className='view_users__reset_icon' onClick={handleResetFilters}>
           <SettingsBackupRestoreIcon />
         </span> */}

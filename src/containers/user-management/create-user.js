@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, withTheme } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { styles } from './useStyles';
 import UserDetailsForm from './user-details-form';
@@ -12,13 +12,15 @@ import GuardianDetailsForm from './guardian-details-form';
 import { createUser } from '../../redux/actions';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import { getSteps, jsonToFormData } from './utils';
+import CustomStepperConnector from '../../components/custom-stepper-connector';
+import CustomStepperIcon from '../../components/custom-stepper-icon';
 
 class CreateUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeStep: 0,
-      showParentForm: false,
+      activeStep: 2,
+      showParentForm: true,
       showGuardianForm: false,
       user: {
         first_name: '',
@@ -225,10 +227,18 @@ class CreateUser extends Component {
           activeStep={activeStep}
           alternativeLabel
           className={`${classes.stepper} stepper`}
+          connector={<CustomStepperConnector />}
         >
           {steps.map((label) => (
             <Step key={label}>
-              <StepLabel>{label}</StepLabel>
+              <StepLabel
+                StepIconComponent={CustomStepperIcon}
+                classes={{
+                  alternativeLabel: classes.stepLabel,
+                }}
+              >
+                {label}
+              </StepLabel>
             </Step>
           ))}
         </Stepper>

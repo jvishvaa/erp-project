@@ -16,7 +16,7 @@ import {
   setModulePermissionsRequestData,
 } from '../../redux/actions';
 import styles from './useStyles';
-
+import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import ModuleCard from '../../components/module-card';
 import { AssignmentReturned } from '@material-ui/icons';
 import Loading from '../../components/loader/loader';
@@ -176,7 +176,13 @@ class CreateRole extends Component {
     };
     return (
       <div className={classes.root}>
-        <Grid container spacing={4} alignItems='center' className={classes.formContainer}>
+        <div className='bread-crumbs-container'>
+          <CommonBreadcrumbs
+            componentName='Role Management'
+            childComponentName='Create Role'
+          />
+        </div>
+        <Grid container alignItems='center' spacing={2} className={classes.formContainer}>
           <Grid item>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <span style={{ color: 'red' }}>{roleNameError}</span>
@@ -196,10 +202,16 @@ class CreateRole extends Component {
             <Button onClick={this.handleCreateRole}>Add Role</Button>
           </Grid>
         </Grid>
-        <Typography className={classes.sectionHeader}>Number of modules</Typography>
+        <Grid container spacing={2} className={classes.spacer}>
+          <Grid item>
+            <Typography className={classes.sectionHeader}>Number of modules</Typography>
+          </Grid>
+        </Grid>
+
         <Divider className={classes.divider} />
+
         <span style={{ color: 'red' }}>{selectionError}</span>
-        <Grid container spacing={4} className={classes.modulesContainer}>
+        <Grid container spacing={2} className={classes.modulesContainer}>
           {modulesListing()}
         </Grid>
       </div>

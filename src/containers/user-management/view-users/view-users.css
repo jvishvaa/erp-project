@@ -1,6 +1,6 @@
 .view_users__page {
-  width: 95%;
-  margin: 20px auto;
+  /* width: calc(100% - 40px);
+  margin: 20px auto; */
 }
 
 .view_users_filter_wrapper {
