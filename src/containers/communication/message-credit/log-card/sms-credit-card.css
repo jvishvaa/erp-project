@@ -1,0 +1,12 @@
+.add_credit_mobile{
+	width: 100%;
+	color: white;
+	background-color: #FF6B6B;
+	font-size: 0.9rem;
+    height: 45px;
+    border: none;
+    border-radius: 5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    outline: none !important;
+}

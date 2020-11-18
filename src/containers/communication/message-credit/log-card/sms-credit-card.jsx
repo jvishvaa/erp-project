@@ -1,25 +1,32 @@
+/* eslint-disable no-debugger */
 import React from 'react';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import { Divider, IconButton } from '@material-ui/core';
+import { Divider } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import useStyles from './useStyles';
+import './sms-credit-card.css';
 
-const SubjectCard = (props) => {
+const SmsCreditCard = (props) => {
   const {
-    data: { subject },
-    handleDelete,
-    handleEditSubject,
+    data,
+    setMobileAddCreditId,
+    setAddCreditMobile,
+    index,
+    handleStatusChange,
   } = props;
   const classes = useStyles();
+  const handleAdd = () => {
+    handleStatusChange(index);
+    setMobileAddCreditId(index);
+    setAddCreditMobile(true);
+  };
   return (
     <Paper className={classes.root}>
       <Grid container spacing={3}>
         <Grid container item>
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <Box>
               <Typography
                 className={classes.title}
@@ -27,7 +34,7 @@ const SubjectCard = (props) => {
                 component='p'
                 color='secondary'
               >
-                Subject
+                Branch Name
               </Typography>
             </Box>
             <Box>
@@ -36,14 +43,16 @@ const SubjectCard = (props) => {
                 variant='p'
                 component='p'
                 color='secondary'
-                title={subject?.subject_name}
+                title={data?.BranchName}
                 noWrap
               >
-                {subject.subject_name}
+                {data.BranchName}
               </Typography>
             </Box>
           </Grid>
-          <Grid item xs={6} className={classes.textRight}>
+        </Grid>
+        <Grid item container>
+          <Grid item xs={8}>
             <Box>
               <Typography
                 className={classes.title}
@@ -51,9 +60,11 @@ const SubjectCard = (props) => {
                 component='p'
                 color='secondary'
               >
-                Created by
+                Available SMS Credit
               </Typography>
             </Box>
+          </Grid>
+          <Grid item xs={4}>
             <Box>
               <Typography
                 className={classes.content}
@@ -62,13 +73,11 @@ const SubjectCard = (props) => {
                 color='secondary'
                 align='right'
               >
-                {subject.created_by}
+                {data.AvailableSMS}
               </Typography>
             </Box>
           </Grid>
-        </Grid>
-        <Grid item container>
-          <Grid item xs={6}>
+          <Grid item xs={8}>
             <Box>
               <Typography
                 className={classes.title}
@@ -76,17 +85,20 @@ const SubjectCard = (props) => {
                 component='p'
                 color='secondary'
               >
-                Description
+                Used SMS Credit
               </Typography>
             </Box>
+          </Grid>
+          <Grid item xs={4}>
             <Box>
               <Typography
                 className={classes.content}
                 variant='p'
                 component='p'
                 color='secondary'
+                align='right'
               >
-                {subject.subject_description}
+                {data.useSMS}
               </Typography>
             </Box>
           </Grid>
@@ -95,29 +107,13 @@ const SubjectCard = (props) => {
           <Divider />
         </Grid>
         <Grid item container>
-          <Grid item xs={6}>
-            <Box style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-              <IconButton
-                onClick={() => {
-                  handleEditSubject(
-                    subject.id,
-                    subject.subject_name,
-                    subject.subject_description
-                  );
-                }}
-              >
-                <EditOutlinedIcon color='primary' />
-              </IconButton>
-            </Box>
-          </Grid>
-          <Grid item xs={6} className={classes.textRight}>
-            <IconButton
-              onClick={() => {
-                handleDelete(props.data);
-              }}
-            >
-              <DeleteOutlineIcon color='primary' />
-            </IconButton>
+          <Grid item xs={12}>
+            <input
+              type='button'
+              className='add_credit_mobile'
+              onClick={handleAdd}
+              value='Add Credit'
+            />
           </Grid>
         </Grid>
       </Grid>
@@ -125,4 +121,4 @@ const SubjectCard = (props) => {
   );
 };
 
-export default SubjectCard;
+export default SmsCreditCard;
