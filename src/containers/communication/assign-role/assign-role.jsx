@@ -9,25 +9,18 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { Grid, TextField } from '@material-ui/core';
+import { Divider, Grid, TextField, Button } from '@material-ui/core';
 import Select from '@material-ui/core/Select';
 import { makeStyles } from '@material-ui/core/styles';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CustomSelectionTable from '../custom-selection-table/custom-selection-table';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-// import Layout from '../../Layout';
-import './assign-role.css';
+import useStyles from './useStyles';
+import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 250,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-}));
+// import Layout from '../../Layout';
+// import './assign-role.css';
 
 const AssignRole = (props) => {
   const classes = useStyles();
@@ -409,128 +402,256 @@ const AssignRole = (props) => {
 
   return (
     // <Layout>
-    <div className='assign_role_wrapper'>
-      <Grid container className='message_log_container' spacing={10}>
-        <Grid lg={10} item>
-          <div className='user_search_wrapper'>
-            <TextField
-              id='user_search'
-              label='Search'
-              value={searchText}
-              onChange={handleTextSearch}
-            />
-          </div>
-        </Grid>
-      </Grid>
-      <Grid container className='message_log_container' spacing={5}>
-        <Grid lg={3} item>
-          <Autocomplete
-            multiple
-            size='small'
-            onChange={handleMultipleRoles}
-            value={selectedMultipleRoles}
-            id='message_log-smsType'
-            options={roles}
-            getOptionLabel={(option) => option?.role_name}
-            filterSelectedOptions
-            renderInput={(params) => (
+    <div className='assign-role-container'>
+      <div className={classes.filtersContainer}>
+        <div className={`bread-crumbs-container ${classes.spacer}`}>
+          <CommonBreadcrumbs
+            componentName='User Management'
+            childComponentName='Assign role'
+          />
+        </div>
+        {/* <Grid container className='message_log_container' spacing={10}>
+          <Grid lg={10} item>
+            <div className='user_search_wrapper'>
               <TextField
-                className='message_log-textfield'
-                {...params}
-                variant='outlined'
-                label='Role'
-                placeholder='Role'
+                id='user_search'
+                label='Search'
+                value={searchText}
+                onChange={handleTextSearch}
               />
-            )}
-          />
-        </Grid>
-        <Grid lg={3} item>
-          <Autocomplete
-            size='small'
-            onChange={handleBranch}
-            value={selectedBranch}
-            id='message_log-branch'
-            className='message_log_branch'
-            options={branchList}
-            getOptionLabel={(option) => option?.branch_name}
-            filterSelectedOptions
-            renderInput={(params) => (
-              <TextField
-                className='message_log-textfield'
-                {...params}
-                variant='outlined'
-                label='Branch'
-                placeholder='Branch'
-              />
-            )}
-          />
-        </Grid>
-        <Grid lg={3} item>
-          {selectedBranch ? (
-            <Autocomplete
-              multiple
-              size='small'
-              onChange={handleGrades}
-              value={selectedGrades}
-              id='message_log-smsType'
-              options={gradeList}
-              getOptionLabel={(option) => option?.grade__grade_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  className='message_log-textfield'
-                  {...params}
-                  variant='outlined'
-                  label='Grade'
-                  placeholder='Grade'
-                />
-              )}
-            />
-          ) : null}
-        </Grid>
-        <Grid lg={3} item>
-          {selectedGrades.length ? (
-            <Autocomplete
-              multiple
-              size='small'
-              onChange={handleSections}
-              value={selectedSections}
-              id='message_log-smsType'
-              options={sectionList}
-              getOptionLabel={(option) => option?.section__section_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  className='message_log-textfield'
-                  {...params}
-                  variant='outlined'
-                  label='Sections'
-                  placeholder='Sections'
-                />
-              )}
-            />
-          ) : null}
-        </Grid>
-      </Grid>
-      <Grid container className='message_log_container' spacing={2}>
-        <Grid lg={5} item>
-          <input
-            className={clearAllActive ? 'profile_update_button' : 'deactive_clearAll'}
-            // className='profile_update_button'
-            type='button'
-            onClick={handleClearAll}
-            value='Clear All'
-          />
+            </div>
+          </Grid>
 
-          <input
-            className='profile_update_button'
-            type='button'
-            onClick={handleFilterCheck}
-            value='Filter'
-          />
+        </Grid> */}
+        <Grid container spacing={2} className={classes.spacer}>
+          <Grid item xs={4}>
+            <Autocomplete
+              multiple
+              size='small'
+              onChange={handleMultipleRoles}
+              value={selectedMultipleRoles}
+              id='message_log-smsType'
+              options={roles}
+              getOptionLabel={(option) => option?.role_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  className='message_log-textfield'
+                  {...params}
+                  variant='outlined'
+                  label='Role'
+                  placeholder='Role'
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <Autocomplete
+              size='small'
+              onChange={handleBranch}
+              value={selectedBranch}
+              id='message_log-branch'
+              className='message_log_branch'
+              options={branchList}
+              getOptionLabel={(option) => option?.branch_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  className='message_log-textfield'
+                  {...params}
+                  variant='outlined'
+                  label='Branch'
+                  placeholder='Branch'
+                />
+              )}
+            />
+          </Grid>
+          {selectedBranch && (
+            <Grid item xs={4}>
+              <Autocomplete
+                multiple
+                size='small'
+                onChange={handleGrades}
+                value={selectedGrades}
+                id='message_log-smsType'
+                options={gradeList}
+                getOptionLabel={(option) => option?.grade__grade_name}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    className='message_log-textfield'
+                    {...params}
+                    variant='outlined'
+                    label='Grade'
+                    placeholder='Grade'
+                  />
+                )}
+              />
+            </Grid>
+          )}
+          {selectedGrades.length > 0 && (
+            <Grid item xs={4}>
+              <Autocomplete
+                multiple
+                size='small'
+                onChange={handleSections}
+                value={selectedSections}
+                id='message_log-smsType'
+                options={sectionList}
+                getOptionLabel={(option) => option?.section__section_name}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    className='message_log-textfield'
+                    {...params}
+                    variant='outlined'
+                    label='Sections'
+                    placeholder='Sections'
+                  />
+                )}
+              />
+            </Grid>
+          )}
+          {/* <Grid xs={4}></Grid> */}
         </Grid>
-      </Grid>
-      {assignedRole ? (
+        <Divider className={classes.spacer} />
+        <Grid container spacing={2} className={classes.spacer}>
+          <Grid item md={2} xs={12}>
+            <Button className='disabled-btn' onClick={handleClearAll} fullWidth>
+              CLEAR ALL
+            </Button>
+
+            {/* <input
+              className={clearAllActive ? 'profile_update_button' : 'deactive_clearAll'}
+              // className='profile_update_button'
+              type='button'
+              onClick={handleClearAll}
+              value='Clear All'
+            /> */}
+
+            {/* <input
+              className='profile_update_button'
+              type='button'
+              onClick={handleFilterCheck}
+              value='Filter'
+            /> */}
+          </Grid>
+          <Grid item md={2} xs={12}>
+            <Button onClick={handleFilterCheck} fullWidth>
+              CLEAR ALL
+            </Button>
+          </Grid>
+        </Grid>
+        {/* <Grid container className='message_log_container' spacing={5}>
+          <Grid lg={3} item>
+            <Autocomplete
+              multiple
+              size='small'
+              onChange={handleMultipleRoles}
+              value={selectedMultipleRoles}
+              id='message_log-smsType'
+              options={roles}
+              getOptionLabel={(option) => option?.role_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  className='message_log-textfield'
+                  {...params}
+                  variant='outlined'
+                  label='Role'
+                  placeholder='Role'
+                />
+              )}
+            />
+          </Grid>
+          <Grid lg={3} item>
+            <Autocomplete
+              size='small'
+              onChange={handleBranch}
+              value={selectedBranch}
+              id='message_log-branch'
+              className='message_log_branch'
+              options={branchList}
+              getOptionLabel={(option) => option?.branch_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  className='message_log-textfield'
+                  {...params}
+                  variant='outlined'
+                  label='Branch'
+                  placeholder='Branch'
+                />
+              )}
+            />
+          </Grid>
+          <Grid lg={3} item>
+            {selectedBranch ? (
+              <Autocomplete
+                multiple
+                size='small'
+                onChange={handleGrades}
+                value={selectedGrades}
+                id='message_log-smsType'
+                options={gradeList}
+                getOptionLabel={(option) => option?.grade__grade_name}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    className='message_log-textfield'
+                    {...params}
+                    variant='outlined'
+                    label='Grade'
+                    placeholder='Grade'
+                  />
+                )}
+              />
+            ) : null}
+          </Grid>
+          <Grid lg={3} item>
+            {selectedGrades.length ? (
+              <Autocomplete
+                multiple
+                size='small'
+                onChange={handleSections}
+                value={selectedSections}
+                id='message_log-smsType'
+                options={sectionList}
+                getOptionLabel={(option) => option?.section__section_name}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    className='message_log-textfield'
+                    {...params}
+                    variant='outlined'
+                    label='Sections'
+                    placeholder='Sections'
+                  />
+                )}
+              />
+            ) : null}
+          </Grid>
+        </Grid> */}
+        {/* <Grid container className='message_log_container' spacing={2}>
+          <Grid lg={5} item>
+            <input
+              className={clearAllActive ? 'profile_update_button' : 'deactive_clearAll'}
+              // className='profile_update_button'
+              type='button'
+              onClick={handleClearAll}
+              value='Clear All'
+            />
+
+            <input
+              className='profile_update_button'
+              type='button'
+              onClick={handleFilterCheck}
+              value='Filter'
+            />
+          </Grid>
+        </Grid> */}
+      </div>
+      {/* {assignedRole ? (
         <div>Please Wait ...</div>
       ) : (
         <>
@@ -595,7 +716,7 @@ const AssignRole = (props) => {
             </Grid>
           </Grid>
         </>
-      )}
+      )} */}
     </div>
   );
 };
