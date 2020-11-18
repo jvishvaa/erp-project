@@ -463,12 +463,13 @@ const MessageLog = withRouter(({ history, ...props }) => {
                         </TableRow>
                       </TableHead>
                       <TableBody className='table_body'>
-                        {messageRows.map((row) => (
+                        {messageRows.map((row, i) => (
                           <TableRow
                             className={
                               selectedRow === row.id ? 'selectedRow' : 'notSelected'
                             }
                             onClick={() => handleUserDetails(row.id)}
+                            key={`message_log_details${i}`}
                           >
                             <TableCell align='right'>{row.message}</TableCell>
                             <TableCell align='right'>{row.type}</TableCell>
@@ -517,8 +518,8 @@ const MessageLog = withRouter(({ history, ...props }) => {
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {userLogs.map((row) => (
-                            <TableRow>
+                          {userLogs.map((row, i) => (
+                            <TableRow key={`message_details${i}`}>
                               <TableCell align='right'>{row.name}</TableCell>
                               <TableCell align='right'>{row.number}</TableCell>
                               <TableCell align='right'>
