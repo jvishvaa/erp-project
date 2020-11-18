@@ -53,6 +53,9 @@
   color: white;
   background-color: #ff6b6b;
 }
+.message_log_date_piker{
+	margin: 0px !important;
+}
 .MuiButton-textPrimary {
   color: white !important;
 }
