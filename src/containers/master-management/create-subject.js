@@ -12,37 +12,58 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
   const [subjectName,setSubjectName]=useState('')
   const [description,setDescription]=useState('')
   const [selectedGrade,setSelectedGrade]=useState('')
+  const [selectedSection,setSelectedSection]=useState('')
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+  const [sections,setSections]=useState([])
 
+  const {role_details}=JSON.parse(localStorage.getItem('userDetails'))
 
   const handleGrade = (event, value) => {
     if(value)
-      setSelectedGrade(value)
+      {
+        setSelectedGrade(value)
+        axiosInstance.get(`${endpoints.masterManagement.sections}?branch_id=${role_details.branch[0]}&grade_id=${value.id}`)
+        .then(result=>{
+          if(result.data.status_code===200)
+          {
+            setSections(result.data.data)
+          }
+          else
+          {
+            setAlert('error',result.data.message)
+          }
+        })
+        .catch(error=>{
+          setAlert('error', error.message);
+        })
+      }
     else
-      setSelectedGrade('')
+      setSelectedGrade([])
+  };
+
+  const handleSection = (event, value) => {
+    if(value)
+      setSelectedSection(value)
+    else
+      setSelectedSection([])
   };
 
   const handleSubmit = (e) => {
     e.preventDefault()
     setLoading(true);
-    if(selectedGrade==="")
-    { 
-      setLoading(false);
-      setAlert('error','Select grade from the list')
-    }
-    else
-    {
       axiosInstance.post(endpoints.masterManagement.createSubject,{
         subject_name:subjectName,
-        grade_name:selectedGrade.grade_name,
         grade_id:selectedGrade.id,
-        branch_id:JSON.parse(localStorage.getItem('userDetails')).role_details.branch[0],
+        section_name:selectedSection.section__section_name,
+        section_id:selectedSection.section_id,
+        branch_id:role_details.branch[0],
         description:description
       }).then(result=>{
       if (result.data.status_code === 201) {
         setSubjectName('')
         setSelectedGrade('')
+        setSelectedSection('')
         setDescription('')
         setLoading(false);
         setAlert('success', result.data.message);
@@ -54,7 +75,6 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
         setLoading(false);
         setAlert('error', error.message);
       })
-    }
     };
 
   return (
@@ -63,9 +83,55 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
         <div style={{color:'#014B7E'}}>
             <h2>Add Subject</h2>
         </div>
-        <div style={{margin:'20px auto'}}>
-          <hr />
+        <div >
+          <hr style={{margin:'20px auto'}}/>
         </div>
+        <Grid container spacing={5}>
+          <Grid item xs={12} sm={4}>
+            <Autocomplete
+              size='small'
+              onChange={handleGrade}
+              style={{ width: '100%' }}
+              id='grade'
+              options={grades}
+              value={selectedGrade}
+              getOptionLabel={(option) => option?.grade_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Grades'
+                  placeholder='Grades'
+                  required
+                />
+              )}
+            />
+          </Grid>
+        </Grid>
+        <Grid container spacing={5}>
+          <Grid item xs={12} sm={4}>
+            <Autocomplete
+              size='small'
+              onChange={handleSection}
+              style={{ width: '100%' }}
+              id='section'
+              options={sections}
+              value={selectedSection}
+              getOptionLabel={(option) => option?.section__section_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Section'
+                  placeholder='Sections'
+                  required
+                />
+              )}
+            />
+          </Grid>
+        </Grid>
         <Grid container spacing={5}>
           <Grid item xs={12} sm={4}>
             <TextField
@@ -79,29 +145,6 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
               name='subname'
               onChange={e=>setSubjectName(e.target.value)}
               required
-            />
-          </Grid>
-        </Grid>
-        <Grid container spacing={5} >
-          <Grid item xs={12} sm={4}>
-            <Autocomplete
-              size='small'
-              onChange={handleGrade}
-              style={{ width: '100%' }}
-              id='grade'
-              options={grades}
-              value={selectedGrade}
-              getOptionLabel={(option) => option.grade_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Grades'
-                  placeholder='Grades'
-                  required
-                />
-              )}
             />
           </Grid>
         </Grid>
@@ -125,7 +168,7 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
           </Grid>
         </Grid>
         </div>
-        <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '20px 10px'}} >
+        <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '10px'}} >
         <Grid item xs={6} sm={2}>
             <Button variant='contained' className="custom_button_master" size='medium' onClick={handleGoBack}>
               Back

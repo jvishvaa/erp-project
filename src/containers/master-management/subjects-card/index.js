@@ -20,7 +20,7 @@ const SubjectCard = (props) => {
     <Paper className={classes.root}>
       <Grid container spacing={2}>
         <Grid container item>
-          <Grid item xs={6}>
+          <Grid item xs={8}>
             <Box>
               <Typography
                 className={classes.title}
@@ -44,7 +44,7 @@ const SubjectCard = (props) => {
               </Typography>
             </Box>
           </Grid>
-          <Grid item xs={6} className={classes.textRight}>
+          <Grid item xs={4} className={classes.textRight}>
             <Box>
               <Typography
                 className={classes.title}
