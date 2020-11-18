@@ -71,14 +71,6 @@
 .sms_credit_branch .MuiIconButton-label{
 	color: #FF6B6B !important;
 }
-.sms_credit_branch .MuiInputLabel-outlined{
-	color: #014B7E !important;
-	font-size: 1rem !important;
-    font-weight: 600 !important;
-}
-.sms_credit_branch .MuiInputBase-input{
-	color: #014B7E !important;
-}
 .sms_credit_white_space_wrapper{
 	width: 100%;
 	margin-top: 20px;

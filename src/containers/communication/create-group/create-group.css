@@ -36,16 +36,6 @@
 .group_name_wrapper .MuiInputLabel-outlined {
     transform: translate(14px, 12px) scale(1);
 }
-.custom_multiselect_wrapper .MuiFormLabel-root{
-	color: #014B7E !important;
-	font-size: 1rem !important;
-    font-weight: 600 !important;
-}
-.group_name_wrapper .MuiFormLabel-root{
-	color: #014B7E !important;
-	font-size: 1rem !important;
-    font-weight: 600 !important;
-}
 .button_wrapper{
     margin: 2%;
     display: flex;
@@ -77,24 +67,11 @@
 .create_group_branch_wrapper .MuiIconButton-label{
 	color: #FF6B6B !important;
 }
-.create_group_branch_wrapper .MuiInputLabel-outlined{
-	color: #014B7E !important;
-	font-size: 1rem !important;
-    font-weight: 600 !important;
-}
 .create_group-textfield{
 	width: 100%;
 }
-.create_group-textfield .MuiInputBase-input{
-	color: #014B7E !important;
-}
-.create_group_branch_wrapper .MuiInputBase-input {
-	color: #014b7e !important;
-}
+
 .create_group_select_all_wrapper{
-	color: #014B7E;
-    font-size: 1rem;
-    font-weight: 600;
     width: 98%;
     margin: 1px auto 1%;
 }

@@ -23,7 +23,7 @@
 .deactive_clearAll {
   font-size: 0.9rem;
   height: 45px;
-  width: 75%;
+  width: 100%;
   border: none;
   border-radius: 5px;
   text-transform: uppercase;
@@ -38,24 +38,13 @@
 .message_log_branch .MuiIconButton-label {
   color: #ff6b6b !important;
 }
-.message_log_branch .MuiInputLabel-outlined {
-  color: #014b7e !important;
-  font-size: 1rem !important;
-  font-weight: 600 !important;
-}
-.message_log_branch .MuiInputBase-input {
-  color: #014b7e !important;
-}
-.message_log_branch .MuiChip-root {
-  color: #014b7e !important;
-}
 .message_log_branch .MuiChip-deleteIcon {
   color: #ff6b6b !important;
 }
 .message_log_filter_button {
   font-size: 0.9rem;
   height: 45px;
-  width: 75%;
+  width: 100%;
   border: none;
   border-radius: 5px;
   text-transform: uppercase;
@@ -63,6 +52,9 @@
   outline: none !important;
   color: white;
   background-color: #ff6b6b;
+}
+.message_log_date_piker{
+	margin: 0px !important;
 }
 .MuiButton-textPrimary {
   color: white !important;
