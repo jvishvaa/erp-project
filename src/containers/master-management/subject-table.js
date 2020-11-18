@@ -94,11 +94,12 @@ const SubjectTable = () => {
   const [searchSubject,setSearchSubject]=useState('')
   const [loading, setLoading] = useState(false);
   const [limit, setLimit] = useState(15);
+  const [goBackFlag,setGoBackFlag]=useState(false)
    
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
-  const wider= isMobile?'10px 0px':'20px 0px 20px 8px'
+  const wider= isMobile?'-10px 0px':'20px 0px 20px 8px'
   const widerWidth=isMobile?'98%':'95%'
 
   const handleChangePage = (event, newPage) => {
@@ -108,7 +109,6 @@ const SubjectTable = () => {
   const handleChangePageScreen = (event,value) => {
     setPage(value+1)
   }
-
 
   const handleGrade = (event, value) => {
     if(value)
@@ -138,6 +138,7 @@ const SubjectTable = () => {
     setEditFlag(false)
     setSearchGrade('')
     setSearchSubject('')
+    setGoBackFlag(!goBackFlag)
   }
 
   const handleDeleteSubject = (e) => {
@@ -174,7 +175,21 @@ const SubjectTable = () => {
   useEffect(()=>{
     setLoading(true)
     setTimeout(()=> {setLoading(false)},450); 
-  },[page,delFlag,editFlag,addFlag,searchGrade])
+  },[goBackFlag,page,delFlag,searchGrade])
+
+  useEffect(()=>{
+    axiosInstance.get(endpoints.masterManagement.gradesDrop)
+    .then(result=>{
+      if (result.status === 200) {
+        setGrades(result.data.data);
+      } else {
+        setAlert('error', result.data.message);
+      }
+    })
+    .catch((error)=>{
+      setAlert('error', error.message);
+    })
+  },[])
 
   useEffect(()=>{
       axiosInstance.get(`${endpoints.masterManagement.subjects}?page=${page}&page_size=${limit}&grade=${searchGrade}&subject=${searchSubject}`)
@@ -190,19 +205,7 @@ const SubjectTable = () => {
       .catch((error)=>{
         setAlert('error', error.message);
       })
-
-      axiosInstance.get(endpoints.masterManagement.gradesDrop)
-      .then(result=>{
-        if (result.status === 200) {
-          setGrades(result.data.data);
-        } else {
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch((error)=>{
-        setAlert('error', error.message);
-      })
-  },[openDeleteModal,delFlag,editFlag,addFlag,page,searchGrade,searchSubject])
+  },[goBackFlag,delFlag,page,searchGrade,searchSubject])
       
   const handleDelete = (subj) => {
     setSubjectName(subj.subject.subject_name);
@@ -259,9 +262,16 @@ const SubjectTable = () => {
           )}
         />
       </Grid>
-      <Grid item xs sm={3} className={isMobile?'hideGridItem':''}/>
+      <Grid item xs sm className={isMobile?'hideGridItem':''}/>
       <Grid item xs={12} sm={3}>
-        <Button startIcon={<AddOutlinedIcon />} variant='contained' color='primary' size="medium" style={{color:'white'}} title="Add Subject" onClick={handleAddSubject}>
+        <Button 
+        startIcon={<AddOutlinedIcon style={{fontSize:'30px'}}/>} 
+        variant='contained' 
+        color='primary' 
+        size="small" 
+        style={{color:'white'}} 
+        title="Add Subject" 
+        onClick={handleAddSubject}>
           Add Subject
         </Button>
       </Grid>
