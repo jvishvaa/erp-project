@@ -13,7 +13,7 @@ const GradeCard = ({ grade, onEdit, onDelete }) => {
   const classes = useStyles();
   return (
     <Paper className={classes.root}>
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <Grid container item>
           <Grid item xs={6}>
             <Box>
@@ -93,6 +93,7 @@ const GradeCard = ({ grade, onEdit, onDelete }) => {
         <Grid item container>
           <Grid item xs={6}>
             <IconButton
+              className='removePadding'
               onClick={() => {
                 onEdit(grade);
               }}
@@ -102,6 +103,7 @@ const GradeCard = ({ grade, onEdit, onDelete }) => {
           </Grid>
           <Grid item xs={6} className={classes.textRight}>
             <IconButton
+              className='removePadding'
               onClick={() => {
                 onDelete(grade);
               }}

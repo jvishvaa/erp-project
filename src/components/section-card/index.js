@@ -70,6 +70,7 @@ const SectionCard = ({ section, onEdit, onDelete }) => {
         <Grid item container>
           <Grid item xs={6}>
             <IconButton
+              className='removePadding'
               onClick={() => {
                 onEdit(section);
               }}
@@ -79,6 +80,7 @@ const SectionCard = ({ section, onEdit, onDelete }) => {
           </Grid>
           <Grid item xs={6} className={classes.textRight}>
             <IconButton
+              className='removePadding'
               onClick={() => {
                 onDelete(section);
               }}
