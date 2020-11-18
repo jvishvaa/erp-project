@@ -43,9 +43,15 @@ const OnlineClassResourceTable = () => {
   return (
     <div className='viewclass__management-table'>
       {isHidden ? (
-        <AddCircleOutlineIcon className='expand-management' onClick={toggleHide} />
+        <h5 className='expand-management' onClick={toggleHide}>
+          View more
+        </h5>
       ) : (
-        <RemoveCircleIcon className='expand-management' onClick={toggleHide} />
+        // <AddCircleOutlineIcon className='expand-management' onClick={toggleHide} />
+        <h5 className='expand-management' onClick={toggleHide}>
+          View less
+        </h5>
+        // <RemoveCircleIcon className='expand-management' onClick={toggleHide} />
       )}
       <TableContainer>
         <Table className='viewclass__table' aria-label='simple table'>

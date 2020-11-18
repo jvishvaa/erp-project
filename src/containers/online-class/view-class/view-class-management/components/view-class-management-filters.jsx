@@ -362,7 +362,7 @@ const ViewClassManagementFilters = () => {
             variant='contained'
             onClick={handleClear}
             disabled={!gradeIds.length && !subjectIds.length}
-            style={{ color: 'black' }}
+            style={{ color: '#8c8c8c' }}
           >
             Clear all
           </Button>
@@ -379,7 +379,7 @@ const ViewClassManagementFilters = () => {
         </Grid>
       </Grid>
       <hr style={{ margin: '40px auto 20px auto' }} />
-      <Grid container spacing={0} className="viewmanagement-tabs-container">
+      <Grid container spacing={0} className='viewmanagement-tabs-container'>
         <Grid item xs={12} sm={6}>
           <StyledTabs
             variant='standard'

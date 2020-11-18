@@ -427,7 +427,12 @@ const CreateClassForm = () => {
           key={formKey}
           className='create-class-form'
         >
-          <Grid container className='create-class-container' spacing={3}>
+          <Grid
+            container
+            className='create-class-container'
+            style={{ paddingBottom: 0 }}
+            spacing={3}
+          >
             <Grid item xs={12} sm={2}>
               <TextField
                 className='create__class-textfield'
@@ -581,7 +586,12 @@ const CreateClassForm = () => {
             </MuiPickersUtilsProvider>
           </Grid>
           <hr className='horizontal-line' />
-          <Grid container className='create-class-container' spacing={2}>
+          <Grid
+            container
+            className='create-class-container'
+            style={{ paddingBottom: 5 }}
+            spacing={2}
+          >
             <Grid item xs={11} sm={7} md={4}>
               <TextField
                 className='create__class-textfield'

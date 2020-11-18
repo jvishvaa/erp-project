@@ -82,7 +82,8 @@
 
     .expand-management {
       display: none;
-      fill: $secondary-color;
+      cursor: pointer;
+      color: $primary-color;
     }
   }
 }
@@ -107,6 +108,7 @@
   .viewclass__management-table {
     .expand-management {
       float: right;
+      margin: 0px 20px 0px 0px;
       margin-right: 20px;
       display: block !important;
     }

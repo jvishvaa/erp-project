@@ -348,6 +348,7 @@ const OnlineClassFilter = () => {
             variant='contained'
             onClick={handleClear}
             disabled={!gradeIds.length && !subjectIds.length}
+            style={{ color: '#8c8c8c' }}
           >
             Clear all
           </Button>
