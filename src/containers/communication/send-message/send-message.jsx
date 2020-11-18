@@ -292,7 +292,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       if (result.status === 200) {
         setHeaders([
           { field: 'id', headerName: 'ID', width: 70 },
-          { field: 'fullName', headerName: 'Name', width: 180 },
+          { field: 'fullName', headerName: 'Name', width: 190 },
           { field: 'email', headerName: 'Email Id', width: 200 },
           { field: 'erp_id', headerName: 'Erp Id', width: 150 },
           { field: 'gender', headerName: 'Gender', width: 100 },
@@ -884,7 +884,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
                       checked={selectAll}
                       onChange={handleSelectAll}
                     />
-                    <span>Select All</span>
+                    <span style={{ marginLeft: '1%' }}>Select All</span>
                   </div>
                 ) : null}
                 <span className='create_group_error_span'>{selectUsersError}</span>

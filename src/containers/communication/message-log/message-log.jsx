@@ -19,8 +19,6 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import MomentUtils from '@date-io/moment';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import Pagination from '@material-ui/lab/Pagination';
 import axiosInstance from '../../../config/axios';
@@ -378,7 +376,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
           </div>
           <div className='create_group_filter_container'>
             <Grid container spacing={5} className='message_log_container'>
-              <MuiPickersUtilsProvider utils={MomentUtils}>
+              <MuiPickersUtilsProvider utils={MomentUtils} className='date_provider'>
                 <Grid item xs={12} sm={3}>
                   <KeyboardDatePicker
                     margin='normal'

@@ -96,6 +96,15 @@
 .message_log_expand_manage{
 	display: none;
 }
+.MuiPickersDatePickerRoot-toolbar .MuiPickersToolbarText-toolbarBtnSelected{
+color: white !important;
+}
+.MuiPickersDatePickerRoot-toolbar  .MuiPickersToolbarText-toolbarTxt{
+	color: white !important;
+}
+.MuiPickersDay-daySelected {
+	color: white !important;
+}
 @media screen and (max-width: 700px) {
   .message_log_wrapper {
     text-align: center;
