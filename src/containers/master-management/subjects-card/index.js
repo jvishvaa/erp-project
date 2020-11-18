@@ -97,7 +97,7 @@ const SubjectCard = (props) => {
         </Grid>
         <Grid item container>
           <Grid item xs={6}>
-            <Box style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+            <Box style={{ width: '100%', display: 'flex', justifyContent: 'left' }}>
               <IconButton
                 onClick={() => {
                   handleEditSubject(

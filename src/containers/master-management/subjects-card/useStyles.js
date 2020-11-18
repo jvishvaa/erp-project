@@ -6,7 +6,7 @@ const useStyles = makeStyles((theme) => ({
     borderColor: theme.palette.primary.main,
     padding: '1rem',
     width: '95%',
-    margin: '3rem auto',
+    margin: '1rem auto',
   },
   title: {
     fontSize: '1.2rem',

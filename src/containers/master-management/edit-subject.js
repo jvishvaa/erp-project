@@ -1,5 +1,6 @@
 import React , { useContext, useState } from 'react';
-import { Grid, TextField, Button } from '@material-ui/core';
+import { Grid, TextField, Button, useTheme } from '@material-ui/core';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
@@ -10,6 +11,9 @@ const EditSubject = ({id,name,desc,handleGoBack,setLoading}) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [subjectName,setSubjectName]=useState(subName || '')
   const [description,setDescription]=useState(desc || '')
+  const themeContext = useTheme();
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+
  
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -48,20 +52,23 @@ const EditSubject = ({id,name,desc,handleGoBack,setLoading}) => {
 
 
   return (
-     <div className='create__class' style={{ width: '95%', margin: '0 auto' }}>
+     
       <form autoComplete='off' onSubmit={handleSubmit}>
-        <Grid item style={{color:'#014B7E'}} >
-              <h1>Edit Subject</h1>
-        </Grid>
-        <hr style={{ marginBottom: 20 }} />
-        <Grid container className='create-class-container'>
+      <div style={{ width: '95%', margin: '20px auto' }}>
+        <div style={{color:'#014B7E'}} >
+              <h2>Edit Subject</h2>
+        </div>
+        <div style={{margin:'40px auto'}}>
+          <hr />
+        </div>
+        <Grid container spacing={5}>
           <Grid item xs={12} sm={4}>
             <TextField
-              className='create__class-textfield'
               id='subname'
               label='Subject Name'
               variant='outlined'
-              size='medium'
+              style={{ width: '100%' }}
+              size='small'
               value={subjectName}
               inputProps={{pattern:'^[a-zA-Z0-9 ]+',maxLength:10}}
               name='subname'
@@ -69,14 +76,14 @@ const EditSubject = ({id,name,desc,handleGoBack,setLoading}) => {
             />
           </Grid>
           </Grid>
-          <Grid container className='create-class-container'>
+          <Grid container spacing={5}>
           <Grid item xs={12} sm={4}>
             <TextField
-              className='create__class-textfield'
               id='description'
               label='Description'
               variant='outlined'
-              size='medium'
+              size='small'
+              style={{ width: '100%' }}
               multiline
               rows={4}
               rowsMax={6}
@@ -87,14 +94,22 @@ const EditSubject = ({id,name,desc,handleGoBack,setLoading}) => {
             />
           </Grid>
         </Grid>
-       
-        <Grid container className='create-class-container' >
-          <Button variant='contained' className='custom_button' color='primary' size='large' type='submit'>
-            SUBMIT
-          </Button>
+        </div>
+
+        <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '20px 10px'}} >
+          <Grid item xs={6} sm={2}>
+            <Button variant='contained' style={{color:'white'}} color ="primary" className="custom_button_master" size='medium' type='submit'>
+              Submit
+            </Button>
+          </Grid>
+          <Grid item xs={6} sm={2}>
+            <Button variant='contained' className="custom_button_master" size='medium' onClick={handleGoBack}>
+              Back
+            </Button>
+          </Grid>
         </Grid>
+        
       </form>
-    </div>
   );
 };
 
