@@ -42,6 +42,11 @@
     justify-content: space-between;
     width: 40%;
 }
+.create_group_select_all_wrapper{
+	color: #014b7e;
+    font-size: 1rem;
+    font-weight: 600;
+}
 .custom_button{
 	font-size: 0.9rem;
     width: 75%;
@@ -61,7 +66,7 @@
 	background-color: #FF6B6B;
 }
 .addgroup_back_button{
-	color: white;
+	color: grey;
   background-color: rgba(0, 0, 0, 0.12);
 }
 .create_group_branch_wrapper .MuiIconButton-label{
