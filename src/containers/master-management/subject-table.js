@@ -98,7 +98,7 @@ const SubjectTable = () => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
-  const wider= isMobile?'10px 0px 10px 0px':'20px 0px 20px 8px'
+  const wider= isMobile?'10px 0px':'20px 0px 20px 8px'
   const widerWidth=isMobile?'98%':'95%'
 
   const handleChangePage = (event, newPage) => {
@@ -259,7 +259,7 @@ const SubjectTable = () => {
           )}
         />
       </Grid>
-      <Grid item xs sm className={isMobile?'hideGridItem':''}/>
+      <Grid item xs sm={3} className={isMobile?'hideGridItem':''}/>
       <Grid item xs={12} sm={3}>
         <Button startIcon={<AddOutlinedIcon />} variant='contained' color='primary' size="medium" style={{color:'white'}} title="Add Subject" onClick={handleAddSubject}>
           Add Subject
@@ -325,6 +325,7 @@ const SubjectTable = () => {
           </TableBody>
         </Table>
       </TableContainer> 
+      <div className="paginateData">
       <TablePagination
         component='div'
         count={totalCount}
@@ -334,6 +335,7 @@ const SubjectTable = () => {
         rowsPerPageOptions={false}
         className='table-pagination'
       />
+      </div>
     </Paper>
     }
       </>

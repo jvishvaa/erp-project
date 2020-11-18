@@ -353,6 +353,7 @@ const SectionTable = () => {
                 </TableBody>
               </Table>
             </TableContainer>
+            <div className="paginateData">
             <TablePagination
               component='div'
               count={totalCount}
@@ -362,6 +363,7 @@ const SectionTable = () => {
               rowsPerPageOptions={false}
               className='table-pagination'
             />
+            </div>
           </Paper>
         )}
         {isMobile && tableFlag && !addFlag && !editFlag && (

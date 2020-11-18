@@ -111,7 +111,7 @@ const GradeTable = () => {
   
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const wider= isMobile?'10px 0px':'20px 0px 20px 8px'
+  const wider= isMobile?'10px 0px':'20px 0px 20px 0px'
   const widerWidth=isMobile?'98%':'95%'
 
   const handleChangePage = (event, newPage) => {
@@ -121,7 +121,6 @@ const GradeTable = () => {
   const handleChangePageScreen = (event,value) => {
     setPage(value+1)
   }
-
 
   const handleAddGrade = () => {
     setTableFlag(false);
