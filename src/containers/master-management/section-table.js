@@ -238,6 +238,7 @@ const SectionTable = () => {
           <CommonBreadcrumbs
             componentName='Master Management'
             childComponentName='Section List'
+            childComponentNameNext={(addFlag&&!tableFlag)?'Add Section':(editFlag&&!tableFlag)?'Edit Section':null}
           />
         </div>
       </div>
@@ -343,7 +344,7 @@ const SectionTable = () => {
                             }}
                             title='Delete Section'
                           >
-                            <DeleteOutlinedIcon color='primary' />
+                            <DeleteOutlinedIcon style={{color:'#fe6b6b'}} />
                           </IconButton>
 
                           <IconButton
@@ -355,7 +356,7 @@ const SectionTable = () => {
                             }
                             title='Edit Section'
                           >
-                            <EditOutlinedIcon color='secondary' />
+                            <EditOutlinedIcon style={{color:'#fe6b6b'}} />
                           </IconButton>
                         </TableCell>
                       </TableRow>

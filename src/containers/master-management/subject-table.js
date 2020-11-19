@@ -77,7 +77,7 @@ const columns = [
 const SubjectTable = () => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = useState(1);
   const [subjects,setSubjects]=useState([])
   const [grades,setGrades]=useState([])
   const [sections,setSections]=useState([])
@@ -257,6 +257,7 @@ const SubjectTable = () => {
         <CommonBreadcrumbs
           componentName='Master Management'
           childComponentName='Subject List'
+          childComponentNameNext={(addFlag&&!tableFlag)?'Add Subject':(editFlag&&!tableFlag)?'Edit Subject':null}
         />
       </div>
     </div>
@@ -377,14 +378,14 @@ const SubjectTable = () => {
                       onClick={e=>{ handleDelete(subject) }}
                         title='Delete Subject'
                       >
-                        <DeleteOutlinedIcon color='primary' />
+                        <DeleteOutlinedIcon style={{color:'#fe6b6b'}} />
                       </IconButton>
 
                       <IconButton
                         onClick={e=>handleEditSubject(subject.subject.id,subject.subject.subject_name,subject.subject.subject_description)}
                         title='Edit Subject'
                       >
-                        <EditOutlinedIcon color='secondary' />
+                        <EditOutlinedIcon style={{color:'#fe6b6b'}} />
                       </IconButton>
                       
                     </TableCell>

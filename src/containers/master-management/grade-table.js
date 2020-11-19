@@ -215,6 +215,7 @@ const GradeTable = () => {
             <CommonBreadcrumbs
               componentName='Master Management'
               childComponentName='Grade List'
+              childComponentNameNext={(addFlag&&!tableFlag)?'Add Grade':(editFlag&&!tableFlag)?'Edit Grade':null}
             />
           </div>
         </div>
@@ -300,7 +301,7 @@ const GradeTable = () => {
                             }}
                             title='Delete Grade'
                           >
-                            <DeleteOutlinedIcon color='primary' />
+                            <DeleteOutlinedIcon style={{color:'#fe6b6b'}} />
                           </IconButton>
 
                           <IconButton
@@ -313,9 +314,8 @@ const GradeTable = () => {
                             }
                             title='Edit Grade'
                           >
-                            <EditOutlinedIcon color='secondary' />
-                          </IconButton>
-                          
+                            <EditOutlinedIcon style={{color:'#fe6b6b'}} />
+                          </IconButton>      
                         </TableCell>
                       </TableRow>
                     );
