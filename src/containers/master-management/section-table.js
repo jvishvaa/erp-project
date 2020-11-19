@@ -355,7 +355,7 @@ const SectionTable = () => {
                             }
                             title='Edit Section'
                           >
-                            <EditOutlinedIcon color='primary' />
+                            <EditOutlinedIcon color='secondary' />
                           </IconButton>
                         </TableCell>
                       </TableRow>

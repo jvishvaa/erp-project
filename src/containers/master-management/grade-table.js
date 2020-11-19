@@ -313,7 +313,7 @@ const GradeTable = () => {
                             }
                             title='Edit Grade'
                           >
-                            <EditOutlinedIcon color='primary' />
+                            <EditOutlinedIcon color='secondary' />
                           </IconButton>
                           
                         </TableCell>

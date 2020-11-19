@@ -96,7 +96,7 @@ const SubjectTable = () => {
   const [sectionDisplay,setSectionDisplay]=useState([])
   const [searchSubject,setSearchSubject]=useState('')
   const [loading, setLoading] = useState(false);
-  const [limit, setLimit] = useState(15);
+  const [limit, setLimit] = useState(2);
   const [goBackFlag,setGoBackFlag]=useState(false)
   const {role_details}=JSON.parse(localStorage.getItem('userDetails'))
   const themeContext = useTheme();
@@ -227,11 +227,12 @@ const SubjectTable = () => {
   },[])
 
   useEffect(()=>{
+   
       axiosInstance.get(`${endpoints.masterManagement.subjects}?page=${page}&page_size=${limit}&grade=${searchGrade}&subject=${searchSubject}&section=${searchSection}`)
       .then(result=>{
         if (result.status === 200) {
-          setTotalCount(result.data.result.count);
-          setSubjects(result.data.result.results);
+          setTotalCount(result.data.result.count)
+          setSubjects(result.data.result.results)
           setPageCount(result.data.result.total_pages)
         } else {
           setAlert('error', result.data.message);
@@ -383,7 +384,7 @@ const SubjectTable = () => {
                         onClick={e=>handleEditSubject(subject.subject.id,subject.subject.subject_name,subject.subject.subject_description)}
                         title='Edit Subject'
                       >
-                        <EditOutlinedIcon color='primary' />
+                        <EditOutlinedIcon color='secondary' />
                       </IconButton>
                       
                     </TableCell>
