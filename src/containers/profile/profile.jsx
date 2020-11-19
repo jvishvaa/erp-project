@@ -126,7 +126,9 @@ const Profile = (props) => {
   return (
     <>
       <Layout>
-        <CommonBreadcrumbs componentName='Profile' />
+        <div className='profile_breadcrumb_wrapper'>
+          <CommonBreadcrumbs componentName='Profile' />
+        </div>
         <div className='dashboard_profile'>
           {passwordPopUp ? <ChangePassword close={setPasswordPopUp} id={userId} /> : null}
           <div className='profile_wrapper'>
@@ -189,16 +191,16 @@ const Profile = (props) => {
         {userImage ? (
           <div className='profile_update_button_wrapper'>
             <input
-              className='profile_update_button'
+              className='profile_update_button cancel_button_profile'
               type='button'
-              onClick={handleProfileUpdate}
-              value='Update Profile'
+              onClick={handleProfileUpdateCancel}
+              value='cancel'
             />
             <input
               className='profile_update_button'
               type='button'
-              onClick={handleProfileUpdateCancel}
-              value='cancel'
+              onClick={handleProfileUpdate}
+              value='Update Profile'
             />
           </div>
         ) : null}
