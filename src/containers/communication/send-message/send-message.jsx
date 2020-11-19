@@ -377,8 +377,9 @@ const SendMessage = withRouter(({ history, ...props }) => {
       setSelectUsersError('');
     }
     if (!firstStep && !secondStep && thirdStep) {
-      setSelectAll(false);
-      setSelectedUsers([]);
+      //   setSelectAll(false);
+      //   setSelectedUsers([]);
+      setPageno(1);
       setHeaders([]);
       setUsersRow([]);
       setCompleteData([]);
@@ -601,7 +602,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
           });
           if (isEmail) {
             request = {
-              communicate_type: selectedSmsType,
+              communicate_type: selectedSmsType.id,
               email_body: textMessage,
               email_subject: emailSubject,
               group_type: '2',
@@ -615,7 +616,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
           }
           if (!isEmail) {
             request = {
-              communicate_type: selectedSmsType,
+              communicate_type: selectedSmsType.id,
               message_content: textMessage,
               group_type: '2',
               message_type: '2',
