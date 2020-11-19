@@ -11,13 +11,17 @@ import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Divider, Grid, TextField, Button } from '@material-ui/core';
 import Select from '@material-ui/core/Select';
-import { makeStyles } from '@material-ui/core/styles';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useTheme } from '@material-ui/core/styles';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CustomSelectionTable from '../custom-selection-table/custom-selection-table';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import useStyles from './useStyles';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
+import './styles.scss';
 
 // import Layout from '../../Layout';
 // import './assign-role.css';
@@ -49,6 +53,9 @@ const AssignRole = (props) => {
   const [clearAllActive, setClearAllActive] = useState(false);
   const [filterCheck, setFilterCheck] = useState(false);
   const [selectAllObj, setSelectAllObj] = useState([]);
+
+  const themeContext = useTheme();
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('xs'));
 
   const getRoleApi = async () => {
     try {
@@ -424,7 +431,7 @@ const AssignRole = (props) => {
 
         </Grid> */}
         <Grid container spacing={2} className={classes.spacer}>
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4}>
             <Autocomplete
               multiple
               size='small'
@@ -445,7 +452,7 @@ const AssignRole = (props) => {
               )}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4}>
             <Autocomplete
               size='small'
               onChange={handleBranch}
@@ -467,7 +474,7 @@ const AssignRole = (props) => {
             />
           </Grid>
           {selectedBranch && (
-            <Grid item xs={4}>
+            <Grid item xs={12} md={4}>
               <Autocomplete
                 multiple
                 size='small'
@@ -490,7 +497,7 @@ const AssignRole = (props) => {
             </Grid>
           )}
           {selectedGrades.length > 0 && (
-            <Grid item xs={4}>
+            <Grid item xs={12} md={4}>
               <Autocomplete
                 multiple
                 size='small'
@@ -538,7 +545,7 @@ const AssignRole = (props) => {
           </Grid>
           <Grid item md={2} xs={12}>
             <Button onClick={handleFilterCheck} fullWidth>
-              CLEAR ALL
+              FILTER
             </Button>
           </Grid>
         </Grid>
@@ -651,11 +658,48 @@ const AssignRole = (props) => {
           </Grid>
         </Grid> */}
       </div>
-      {/* {assignedRole ? (
+      <div className={`${classes.tableActionsContainer} ${classes.spacer}`}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={4}>
+            <FormControl variant='outlined' fullWidth size='small'>
+              <InputLabel id='demo-simple-select-outlined-label'>Assign Role</InputLabel>
+              <Select
+                labelId='demo-simple-select-outlined-label'
+                id='demo-simple-select-outlined'
+                value={selectedRole}
+                onChange={(e) => setSelectedRole(e.target.value)}
+                label='Assign Role'
+              >
+                <MenuItem>
+                  <em>None</em>
+                </MenuItem>
+                {roles.map((items, index) => (
+                  <MenuItem key={`roles_assign_${index}`} value={items.id}>
+                    {items.role_name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item md={4}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={selectAllObj[pageno - 1]?.selectAll}
+                  onChange={handleSelectAll}
+                  color='primary'
+                />
+              }
+              label='Select all'
+            />
+          </Grid>
+        </Grid>
+      </div>
+      {assignedRole ? (
         <div>Please Wait ...</div>
       ) : (
         <>
-          {usersRow.length && selectAllObj.length ? (
+          {/* {usersRow.length && selectAllObj.length ? (
             <div className='assign_role_select_all_wrapper'>
               <input
                 type='checkbox'
@@ -665,10 +709,16 @@ const AssignRole = (props) => {
               />
               <span>Select All</span>
             </div>
-          ) : null}
+          ) : null} */}
           <span className='create_group_error_span'>{selectectUserError}</span>
           <CustomSelectionTable
-            header={headers}
+            header={
+              isMobile
+                ? headers
+                    .filter((obj) => ['fullName', 'erp_id'].includes(obj.field))
+                    .map((header) => ({ ...header, width: 150 }))
+                : headers
+            }
             rows={usersRow}
             completeData={completeData}
             totalRows={totalPage}
@@ -679,7 +729,7 @@ const AssignRole = (props) => {
             setSelectedUsers={setSelectedUsers}
             pageSize={15}
           />
-          <Grid container className='message_log_container' spacing={5}>
+          {/* <Grid container className='message_log_container' spacing={5}>
             <Grid lg={3} item>
               <input
                 className='assign_role_button'
@@ -714,9 +764,17 @@ const AssignRole = (props) => {
                 </FormControl>
               </div>
             </Grid>
+          </Grid> */}
+          <Grid
+            container
+            className={`${classes.assignRoleBtnContainer} ${classes.spacer}`}
+          >
+            <Grid item md={4}>
+              <Button onClick={assignRole}>ASSIGN ROLE</Button>
+            </Grid>
           </Grid>
         </>
-      )} */}
+      )}
     </div>
   );
 };

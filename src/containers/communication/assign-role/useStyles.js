@@ -10,6 +10,16 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '20px',
     marginBottom: '20px',
   },
+  tableActionsContainer: {
+    width: 'calc(100% - 40px)',
+    marginLeft: '20px',
+    marginRight: '20px',
+  },
+  assignRoleBtnContainer: {
+    width: 'calc(100% - 40px)',
+    marginLeft: '20px',
+    marginRight: '20px',
+  },
   //   formControl: {
   //     margin: theme.spacing(1),
   //     minWidth: 250,
