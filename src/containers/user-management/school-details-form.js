@@ -61,9 +61,16 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
     });
   };
 
-  const fetchSubjects = (branch, grade) => {
-    if (branch && branch.length > 0 && grade && grade.length > 0) {
-      getSubjects(branch, grade).then((data) => {
+  const fetchSubjects = (branch, grade, section) => {
+    if (
+      branch &&
+      branch.length > 0 &&
+      grade &&
+      grade.length > 0 &&
+      section &&
+      section.length > 0
+    ) {
+      getSubjects(branch, grade, section).then((data) => {
         const transformedData = data.map((obj) => ({
           id: obj.subject__id,
           subject_name: obj.subject__subject_name,
@@ -108,10 +115,21 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
         setSections(transformedData);
         formik.setFieldValue('section', filteredSelectedSections);
       });
-      fetchSubjects(branch, values);
+      // fetchSubjects(branch, values);
     } else {
       setSections([]);
     }
+  };
+
+  const handleSection = (e, value) => {
+    formik.setFieldValue('section', value);
+    if (!value.length) {
+      formik.setFieldValue('subjects', []);
+    }
+    const {
+      values: { branch = {}, grade = [] },
+    } = formik;
+    fetchSubjects([branch], grade, value);
   };
 
   useEffect(() => {
@@ -170,6 +188,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
               formik.setFieldValue('branch', value);
               formik.setFieldValue('grade', []);
               formik.setFieldValue('section', []);
+              formik.setFieldValue('subjects', []);
               handleChangeBranch(value ? [value] : null);
             }}
             value={formik.values.branch}
@@ -198,6 +217,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
             onChange={(e, value) => {
               formik.setFieldValue('grade', value);
               formik.setFieldValue('section', []);
+              formik.setFieldValue('subjects', []);
               handleChangeGrade(value || null, [formik.values.branch]);
             }}
             multiple
@@ -225,9 +245,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
           <Autocomplete
             id='section'
             name='section'
-            onChange={(e, value) => {
-              formik.setFieldValue('section', value);
-            }}
+            onChange={handleSection}
             value={formik.values.section}
             options={sections}
             multiple

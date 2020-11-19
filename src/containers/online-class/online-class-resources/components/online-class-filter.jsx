@@ -87,12 +87,14 @@ const OnlineClassFilter = () => {
     else setEndDate(date);
   };
 
-  const listSubjects = async (gradeids) => {
+  const listSubjects = async (gradeids, sectionIds) => {
     try {
       const { data } = await axiosInstance(
         `${endpoints.academics.subjects}?branch=${roleDetails.branch.join(
           ','
-        )}&grade=${gradeids.join(',')}&module_id=${moduleId}`
+        )}&grade=${gradeids.join(',')}&section=${sectionIds.join(
+          ','
+        )}&module_id=${moduleId}`
       );
       setSubjects(data.data);
     } catch (error) {
@@ -105,7 +107,7 @@ const OnlineClassFilter = () => {
     if (value.length) {
       const ids = value.map((el) => el.grade_id);
       setGradeIds(ids);
-      listSubjects(ids);
+      // listSubjects(ids);
       dispatch(listSections(ids, moduleId));
     } else {
       setGradeIds([]);
@@ -119,6 +121,7 @@ const OnlineClassFilter = () => {
     if (value.length) {
       const ids = value.map((el) => el.section_id);
       setSectionIds(ids);
+      listSubjects(gradeIds, ids);
     } else {
       setSectionIds([]);
     }
@@ -266,7 +269,7 @@ const OnlineClassFilter = () => {
         ) : (
           ''
         )}
-        {gradeIds.length ? (
+        {sectionIds.length ? (
           <Grid item xs={12} sm={4}>
             <Autocomplete
               key={clearKey}
@@ -298,8 +301,8 @@ const OnlineClassFilter = () => {
             <KeyboardDatePicker
               size='small'
               color='primary'
-              disableToolbar
-              variant='inline'
+              // disableToolbar
+              variant='dialog'
               format='YYYY-MM-DD'
               margin='none'
               id='date-picker-start-date'
@@ -317,8 +320,8 @@ const OnlineClassFilter = () => {
           <Grid item xs={12} sm={2}>
             <KeyboardDatePicker
               size='small'
-              disableToolbar
-              variant='inline'
+              // disableToolbar
+              variant='dialog'
               format='YYYY-MM-DD'
               margin='none'
               id='date-picker-end-date'

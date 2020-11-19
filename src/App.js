@@ -63,11 +63,11 @@ const theme = createMuiTheme({
 });
 
 function App() {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(listSubjects());
-    // dispatch(fetchLoggedInUserDetails());
-  }, []);
+  // const dispatch = useDispatch();
+  // useEffect(() => {
+  //   dispatch(listSubjects());
+  //   // dispatch(fetchLoggedInUserDetails());
+  // }, []);
 
   return (
     <div className='App'>

@@ -88,6 +88,10 @@
   }
 }
 
+.MuiPickersDatePickerRoot-toolbar * {
+  color: #fff !important;
+}
+
 @media only screen and(max-width:600px) {
   .viewclass__management-table {
     .hide {

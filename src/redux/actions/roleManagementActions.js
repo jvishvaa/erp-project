@@ -187,14 +187,18 @@ export const fetchGrades = (branches) => {
   // return Promise.resolve([]);
 };
 
-export const fetchSubjects = (branches, grades) => {
+export const fetchSubjects = (branches, grades, sections) => {
   const branchIds =
     branches && branches.length > 0 ? branches.map((branch) => branch.id).join(',') : '';
   //   const branchIds = branches.id;
   const gradeIds =
     grades && grades.length > 0 ? grades.map((grade) => grade.id).join(',') : '';
+  const sectionIds =
+    sections && sections.length > 0
+      ? sections.map((section) => section.id).join(',')
+      : '';
   return axios
-    .get(`/erp_user/subject/?branch=${branchIds}&grade=${gradeIds}`)
+    .get(`/erp_user/subject/?branch=${branchIds}&grade=${gradeIds}&section=${sectionIds}`)
     .then((response) => {
       return response.data.data;
     })
