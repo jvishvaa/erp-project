@@ -544,7 +544,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
               email_subject: emailSubject,
               group_type: '1',
               message_type: '1',
-              group: groupId[0],
+              group: groupId,
               erp_users: selectionArray,
             };
           }
@@ -554,7 +554,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
               message_content: textMessage,
               group_type: '1',
               message_type: '2',
-              group: groupId[0],
+              group: groupId,
               erp_users: selectionArray,
             };
           }
