@@ -19,9 +19,9 @@ const useStyles = makeStyles((theme) => ({
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
     width: '70%',
-    boxShadow: '2px 1px 2px grey',
-    // border: '1px solid grey',
-    border: 0,
+    boxShadow: 'none',
+    borderBottom: '1px solid lightgray',
+    height: '40px',
   },
   searchInput: {
     padding: '2px 10px',
@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
     color: '#ffffff',
+    height: '40px',
   },
   logoBtn: {
     height: theme.mixins.toolbar.minHeight,

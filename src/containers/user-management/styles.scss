@@ -1,3 +1,4 @@
+@import '../../assets/styles/variables';
 .user-management-container {
   .form-grid {
     @media screen and (max-width: 960px) {
@@ -21,9 +22,11 @@
         }
       }
       &:not(.MuiStepIcon-active) {
-        fill: #e2e2e2;
+        circle {
+          stroke: $primary-color;
+        }
         .MuiStepIcon-text {
-          fill: #8c8c8c;
+          fill: $primary-color;
         }
       }
     }
