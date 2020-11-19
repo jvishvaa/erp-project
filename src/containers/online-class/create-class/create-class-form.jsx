@@ -113,16 +113,15 @@ const CreateClassForm = () => {
     }
   }, [isCreated]);
 
-  const listSubjects = async (gradeids) => {
+  const listSubjects = async (gradeids, sectionIds) => {
     try {
       const { data } = await axiosInstance(
         `${endpoints.academics.subjects}?branch=${branch.join(',')}&grade=${gradeids.join(
           ','
-        )}&module_id=${moduleId}`
+        )}&section=${sectionIds.join(',')}&module_id=${moduleId}`
       );
       setSubjects(data.data);
       const response = data.data;
-      console.log('subjects ', response);
 
       if (response) {
         if (selectedSubject) {
@@ -148,7 +147,7 @@ const CreateClassForm = () => {
     if (value.length) {
       const ids = value.map((el) => el.grade_id);
       setOnlineClass((prevState) => ({ ...prevState, gradeIds: ids }));
-      listSubjects(ids);
+      // listSubjects(ids);
       dispatch(listSectionsCreateClass(ids, moduleId));
       dispatch(clearTutorEmailValidation());
     } else {
@@ -156,12 +155,13 @@ const CreateClassForm = () => {
       setSubjects([]);
       dispatch(clearTutorEmailValidation());
     }
-    setOnlineClass((prevState) => ({ ...prevState, sectionIds: [] }));
     setSectionSelectorKey(new Date());
     dispatch(clearTutorEmailValidation());
     setOnlineClass((prevState) => ({
       ...prevState,
       tutorEmail: '',
+      sectionIds: [],
+      subject: '',
       coHosts: [{ email: '' }],
     }));
   };
@@ -170,14 +170,16 @@ const CreateClassForm = () => {
     dispatch(clearFilteredStudents());
     setSelectedSections(value);
     if (value.length) {
-      const ids = value.map((el) => el.id);
+      const ids = value.map((el) => el.section_id);
       setOnlineClass((prevState) => ({ ...prevState, sectionIds: ids }));
+      listSubjects(onlineClass.gradeIds, ids);
     } else {
       setOnlineClass((prevState) => ({ ...prevState, sectionIds: [] }));
     }
     dispatch(clearTutorEmailValidation());
     setOnlineClass((prevState) => ({
       ...prevState,
+      subject: '',
       tutorEmail: '',
       coHosts: [{ email: '' }],
     }));
@@ -494,7 +496,7 @@ const CreateClassForm = () => {
             ) : (
               ''
             )}
-            {onlineClass.gradeIds.length ? (
+            {onlineClass.sectionIds.length ? (
               <Grid item xs={12} sm={2}>
                 <Autocomplete
                   size='small'
@@ -556,8 +558,8 @@ const CreateClassForm = () => {
               <Grid item xs={12} sm={2}>
                 <KeyboardDatePicker
                   size='small'
-                  disableToolbar
-                  variant='inline'
+                  // disableToolbar
+                  variant='dialog'
                   format='YYYY-MM-DD'
                   margin='none'
                   id='date-picker'
@@ -718,7 +720,17 @@ const CreateClassForm = () => {
           </Grid>
           <hr className='horizontal-line-last' />
           <Grid container className='create-class-container' spacing={2}>
-            <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={2}>
+              <Button
+                variant='contained'
+                size='medium'
+                style={{ width: '100%', color: '#8c8c8c' }}
+                onClick={handleClear}
+              >
+                Reset
+              </Button>
+            </Grid>
+            <Grid item xs={12} sm={2}>
               <Button
                 disabled={creatingOnlineClass}
                 variant='contained'
@@ -728,16 +740,6 @@ const CreateClassForm = () => {
                 style={{ width: '100%' }}
               >
                 {creatingOnlineClass ? 'Please wait.Creating new class' : 'Create class'}
-              </Button>
-            </Grid>
-            <Grid item xs={12} sm={3}>
-              <Button
-                variant='contained'
-                size='medium'
-                style={{ width: '100%', color: '#8c8c8c' }}
-                onClick={handleClear}
-              >
-                Reset
               </Button>
             </Grid>
           </Grid>
