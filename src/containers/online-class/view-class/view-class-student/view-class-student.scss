@@ -21,6 +21,7 @@
 
   .student-view-pagination {
     margin-top: 0px;
+    color: red !important;
   }
 
   h6,
@@ -31,6 +32,15 @@
   .studentview-tab-container {
     background-color: #f8f8f8;
     padding-bottom: 20px;
+  }
+
+  .student-view-class-pagination p {
+    color: $secondary-color;
+    font-weight: bold !important;
+  }
+
+  .student-view-class-pagination .MuiTablePagination-actions {
+    color: $secondary-color;
   }
 }
 

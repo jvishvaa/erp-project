@@ -1,5 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Tabs, Tab, Typography, Grid, withStyles } from '@material-ui/core';
+import {
+  Tabs,
+  Tab,
+  Typography,
+  Grid,
+  withStyles,
+  TablePagination,
+} from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import ViewClassStudent from './view-class-student';
 import { OnlineclassViewContext } from '../../online-class-context/online-class-state';
@@ -40,6 +47,7 @@ const ViewClassStudentCollection = () => {
       studentOnlineClasses = [],
       currentPage,
       totalPages,
+      count,
       loadingStudentOnlineClasses,
     },
     listOnlineClassesStudentView,
@@ -63,11 +71,11 @@ const ViewClassStudentCollection = () => {
   const handlePagination = (event, page) => {
     const isCompleted = !!currentTab;
 
-    if (page !== currentPage) {
-      dispatch(
-        listOnlineClassesStudentView(roleDetails.erp_user_id, isCompleted, page, 12)
-      );
-    }
+    dispatch(
+      listOnlineClassesStudentView(roleDetails.erp_user_id, isCompleted, page + 1, 12)
+    );
+    // if (page !== currentPage) {
+    // }
   };
 
   const renderUI = () => {
@@ -125,12 +133,22 @@ const ViewClassStudentCollection = () => {
         >
           <Grid item xs={12} sm={3}>
             {studentOnlineClasses.length && !loadingStudentOnlineClasses ? (
-              <Pagination
-                className='student-view-pagination'
-                count={totalPages}
+              // <Pagination
+              //   className='student-view-pagination'
+              //   count={totalPages}
+              //   color='primary'
+              //   onChange={handlePagination}
+              //   page={currentPage}
+              // />
+              <TablePagination
+                rowsPerPageOptions={[]}
+                count={count}
                 color='secondary'
-                onChange={handlePagination}
-                page={currentPage}
+                onChangePage={handlePagination}
+                page={currentPage - 1}
+                rowsPerPage={12}
+                component='div'
+                className='student-view-class-pagination'
               />
             ) : (
               ''

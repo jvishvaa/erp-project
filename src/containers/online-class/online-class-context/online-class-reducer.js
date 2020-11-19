@@ -44,6 +44,7 @@ const onlineClassReducer = (state, action) => {
           currentPage: action.payload.current_page * 1,
           totalPages: action.payload.total_pages * 1,
           currentServerTime: action.payload.current_server_time,
+          count: action.payload.count * 1,
         },
       };
     case STUDENT_ONLINECLASS_FAILURE:
@@ -75,6 +76,7 @@ const onlineClassReducer = (state, action) => {
           managementOnlineClasses: action.payload.data,
           currentPage: action.payload.current_page * 1,
           totalPages: action.payload.total_pages * 1,
+          count: action.payload.count * 1,
           currentServerTime: action.payload.current_server_time,
         },
       };
@@ -126,6 +128,7 @@ const onlineClassReducer = (state, action) => {
           currentPage: action.payload.current_page * 1,
           totalPages: action.payload.total_pages * 1,
           currentServerTime: action.payload.current_server_time,
+          count: action.payload.count * 1,
         },
       };
     case RESOURCE_ONLINECLASS_FAILURE:
