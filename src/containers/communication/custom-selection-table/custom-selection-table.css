@@ -1,50 +1,50 @@
-.custom_selection_table_wrapper  .MuiDataGrid-root{
-	color: #014B7E !important;
+.custom_selection_table_wrapper .MuiDataGrid-root {
+  color: #014b7e !important;
 }
-.custom_selection_table_wrapper  .MuiDataGrid-colCellTitle{
-	font-weight: 600 !important;
+.custom_selection_table_wrapper .MuiDataGrid-colCellTitle {
+  font-weight: 600 !important;
 }
-.custom_selection_table_wrapper  .MuiDataGrid-iconSeparator {
-	color: #FF6B6B !important;
+.custom_selection_table_wrapper .MuiDataGrid-iconSeparator {
+  color: #ff6b6b !important;
 }
-.custom_selection_table_wrapper  .MuiDataGrid-cell{
-	text-align: center;
+.custom_selection_table_wrapper .MuiDataGrid-cell {
+  text-align: center;
 }
-.custom_selection_table_wrapper  .MuiDataGrid-colCell{
-	text-align: center;
+.custom_selection_table_wrapper .MuiDataGrid-colCell {
+  text-align: center;
 }
-.custom_selection_table_wrapper  .MuiDataGrid-colCell-draggable{
-	justify-content: center !important;
+.custom_selection_table_wrapper .MuiDataGrid-colCell-draggable {
+  justify-content: center !important;
 }
-.custom_selection_table_wrapper{
-	margin-top: 2%;
+.custom_selection_table_wrapper {
+  margin-top: 2%;
 }
-.custom_selection_table_wrapper .MuiDataGrid-colCellWrapper .MuiIconButton-label{
-	visibility: hidden !important;
+.custom_selection_table_wrapper .MuiDataGrid-colCellWrapper .MuiIconButton-label {
+  visibility: hidden !important;
 }
-.long_height_custom_selection_table_wrapper{
-	height: 580px;
+.long_height_custom_selection_table_wrapper {
+  height: 580px;
 }
-.short_height_custom_selection_table_wrapper{
-	height: 400px;
+.short_height_custom_selection_table_wrapper {
+  height: 400px;
 }
-.selection_table_no_rows{
-	position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    font-size: 1.2rem;
-    font-weight: 500;
+.selection_table_no_rows {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.2rem;
+  font-weight: 500;
 }
-@media screen and (max-width: 700px) {
-	.custom_selection_table_wrapper{
-		width: 90vw !important;
-		margin: auto;
-	}
-	.long_height_custom_selection_table_wrapper{
-		height: 700px;
-	}
-	.short_height_custom_selection_table_wrapper{
-		height: 400px;
-	}
-}
+/* @media screen and (max-width: 700px) {
+  .custom_selection_table_wrapper {
+    width: 90vw !important;
+    margin: auto;
+  }
+  .long_height_custom_selection_table_wrapper {
+    height: 700px;
+  }
+  .short_height_custom_selection_table_wrapper {
+    height: 400px;
+  }
+} */

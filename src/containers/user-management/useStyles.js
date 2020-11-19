@@ -41,6 +41,9 @@ const styles = (theme) => ({
   stepper: {
     backgroundColor: '#fafafa',
   },
+  stepLabel: {
+    color: `${theme.palette.primary.main} !important`,
+  },
 });
 
 const useStyles = makeStyles(styles);

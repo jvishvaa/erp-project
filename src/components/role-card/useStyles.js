@@ -5,7 +5,7 @@ const useStyles = makeStyles((theme) => ({
     border: '1px solid',
     borderColor: theme.palette.primary.main,
     padding: '1rem',
-    margin: '3rem 0',
+    margin: '20px 0',
   },
   title: {
     fontSize: '1.2rem',

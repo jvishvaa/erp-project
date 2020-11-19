@@ -1,6 +1,8 @@
 const styles = (theme) => ({
   root: {
     color: theme.palette.secondary.main,
+    width: 'calc(100% - 40px)',
+    margin: '20px',
   },
   buttonContainer: {
     background: theme.palette.background.secondary,
@@ -10,23 +12,20 @@ const styles = (theme) => ({
       display: 'flex',
       justifyContent: 'center',
     },
-    width: '95%',
-    margin: '20px auto',
+    // width: 'calc(100% - 20px)',
   },
   searchContainer: {
     [theme.breakpoints.down('sm')]: {
       display: 'flex',
       justifyContent: 'center',
     },
-    width: '95%',
-    margin: '20px auto',
+    // width: 'calc(100% - 20px)',
+    // margin: '20px',
   },
   sectionHeader: {
     fontSize: '1.3rem',
     color: theme.palette.secondary.main,
     fontWeight: 600,
-    width: '95%',
-    margin: '20px auto',
   },
   rolesTableContainer: {
     [theme.breakpoints.down('sm')]: {
@@ -54,16 +53,20 @@ const styles = (theme) => ({
     },
   },
   divider: {
-    width: '95%',
-    margin: '20px auto',
+    width: '100%',
+    margin: '20px 0',
   },
   modulesContainer: {
-    width: '95%',
-    margin: '20px auto',
+    width: '100%',
+    margin: '20px 0',
   },
   formContainer: {
-    width: '95%',
-    margin: '20px auto',
+    width: '100%',
+    margin: '20px 0',
+  },
+  spacer: {
+    width: '100%',
+    margin: '20px 0',
   },
 });
 

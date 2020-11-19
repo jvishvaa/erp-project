@@ -14,6 +14,7 @@ import SearchOutlined from '@material-ui/icons/SearchOutlined';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import { debounce, FormControl } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
+import Grid from '@material-ui/core/Grid';
 import RoleCard from '../../components/role-card';
 import {
   fetchRoles,
@@ -23,6 +24,7 @@ import {
 } from '../../redux/actions';
 import RolesTable from '../../components/roles-table';
 import Loading from '../../components/loader/loader';
+import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import styles from './useStyles';
 import './styles.scss';
 
@@ -89,22 +91,29 @@ class RoleManagement extends Component {
     const { openDeleteModal, selectedRole, searchInput } = this.state;
 
     return (
-      <div>
-        <div className={classes.buttonContainer}>
-          <Button startIcon={<AddOutlinedIcon />} href={`${match.url}/create-role`}>
-            Add Role
-          </Button>
+      <div className={`role-management-container ${classes.root}`}>
+        <div className='bread-crumbs-container'>
+          <CommonBreadcrumbs componentName='Role Management' />
         </div>
-        <Box my={2} className={classes.searchContainer}>
-          <FormControl size='small'>
-            <OutlinedInput
-              endAdornment={<SearchOutlined color='primary' />}
-              value={searchInput}
-              onChange={this.handleSearchInputChange}
-              placeholder='Search roles ...'
-            />
-          </FormControl>
-        </Box>
+        <Grid container spacing={2} className={classes.spacer}>
+          <Box className={classes.searchContainer}>
+            <FormControl size='small'>
+              <OutlinedInput
+                endAdornment={<SearchOutlined color='primary' />}
+                value={searchInput}
+                onChange={this.handleSearchInputChange}
+                placeholder='Search roles ...'
+              />
+            </FormControl>
+          </Box>
+        </Grid>
+        <Grid container spacing={2} className={classes.spacer}>
+          <div className={classes.buttonContainer}>
+            <Button startIcon={<AddOutlinedIcon />} href={`${match.url}/create-role`}>
+              Add Role
+            </Button>
+          </div>
+        </Grid>
 
         <div className={classes.rolesTableContainer}>
           {fetchingRoles ? (

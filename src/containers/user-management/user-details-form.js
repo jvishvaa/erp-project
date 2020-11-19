@@ -11,7 +11,11 @@ import FormLabel from '@material-ui/core/FormLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import {
+  DatePicker,
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/moment';
 import { useFormik } from 'formik';
 import moment from 'moment';
@@ -145,120 +149,130 @@ const UserDetailsForm = ({
           </FormHelperText>
         </FormControl>
       </Grid>
-      <Grid container item xs={12} spacing={8}>
-        <Grid item md={4}>
-          <FormControl component='fieldset' fullWidth size='small'>
-            <FormLabel component='legend'>Gender</FormLabel>
-            <RadioGroup
-              id='gender'
-              name='gender'
-              value={formik.values.gender}
-              onChange={formik.handleChange}
-              row={!isMobile}
-              column={isMobile}
-            >
-              <FormControlLabel
-                value='1'
-                control={<Radio color='primary' checked={formik.values.gender == 1} />}
-                label='Male'
-              />
-              <FormControlLabel
-                value='2'
-                control={<Radio color='primary' checked={formik.values.gender == 2} />}
-                label='Female'
-              />
-              <FormControlLabel
-                value='3'
-                control={<Radio color='primary' checked={formik.values.gender == 3} />}
-                label='Other'
-              />
-            </RadioGroup>
-            <FormHelperText style={{ color: 'red' }}>
-              {formik.errors.gender ? formik.errors.gender : ''}
-            </FormHelperText>
-          </FormControl>
-        </Grid>
-        <Grid item md={4} xs={12}>
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <ThemeProvider theme={theme}>
-              <DatePicker
-                value={formik.values.date_of_birth || null}
-                defaultValue={formik.values.date_of_birth || null}
-                onChange={(value) => {
-                  formik.setFieldValue(
-                    'date_of_birth',
-                    moment(value).format('YYYY-MM-DD')
-                  );
-                }}
-                inputVariant='outlined'
-                fullWidth
-                label='Date of birth'
-                disabled={false}
-                format='YYYY-MM-DD'
-                size='small'
-              />
-            </ThemeProvider>
-          </MuiPickersUtilsProvider>
+      {/* <Grid container item xs={12} spacing={8}> */}
+      <Grid item md={4} xs={12}>
+        <FormControl component='fieldset' fullWidth size='small'>
+          <FormLabel component='legend'>Gender</FormLabel>
+          <RadioGroup
+            id='gender'
+            name='gender'
+            value={formik.values.gender}
+            onChange={formik.handleChange}
+            row={!isMobile}
+            column={isMobile}
+          >
+            <FormControlLabel
+              value='1'
+              control={<Radio color='primary' checked={formik.values.gender == 1} />}
+              label='Male'
+            />
+            <FormControlLabel
+              value='2'
+              control={<Radio color='primary' checked={formik.values.gender == 2} />}
+              label='Female'
+            />
+            <FormControlLabel
+              value='3'
+              control={<Radio color='primary' checked={formik.values.gender == 3} />}
+              label='Other'
+            />
+          </RadioGroup>
           <FormHelperText style={{ color: 'red' }}>
-            {formik.errors.date_of_birth ? formik.errors.date_of_birth : ''}
+            {formik.errors.gender ? formik.errors.gender : ''}
           </FormHelperText>
-        </Grid>
+        </FormControl>
       </Grid>
-      <Grid container item xs={12} spacing={4}>
-        <Grid item md={4} xs={12}>
-          <FormControl variant='outlined' fullWidth size='small'>
-            <InputLabel htmlFor='component-outlined'>Mobile no.</InputLabel>
-            <OutlinedInput
-              id='contact'
-              name='contact'
-              inputProps={{ maxLength: 10 }}
-              onChange={formik.handleChange}
-              value={formik.values.contact}
-              label='Mobile no.'
+      <Grid item md={4} xs={12}>
+        {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <ThemeProvider theme={theme}>
+            <DatePicker
+              value={formik.values.date_of_birth || null}
+              defaultValue={formik.values.date_of_birth || null}
+              onChange={(value) => {
+                formik.setFieldValue('date_of_birth', moment(value).format('YYYY-MM-DD'));
+              }}
+              inputVariant='outlined'
+              fullWidth
+              label='Date of birth'
+              disabled={false}
+              format='YYYY-MM-DD'
+              size='small'
+
             />
-            <FormHelperText style={{ color: 'red' }}>
-              {formik.errors.contact ? formik.errors.contact : ''}
-            </FormHelperText>
-          </FormControl>
-        </Grid>
-        <Grid item md={4} xs={12}>
-          <FormControl variant='outlined' fullWidth size='small'>
-            <InputLabel htmlFor='component-outlined'>Email</InputLabel>
-            <OutlinedInput
-              id='email'
-              name='email'
-              onChange={formik.handleChange}
-              value={formik.values.email}
-              inputProps={{ maxLength: 40 }}
-              label='Email'
-            />
-            <FormHelperText style={{ color: 'red' }}>
-              {formik.errors.email ? formik.errors.email : ''}
-            </FormHelperText>
-          </FormControl>
-        </Grid>
+          </ThemeProvider>
+        </MuiPickersUtilsProvider> */}
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <KeyboardDatePicker
+            value={formik.values.date_of_birth || null}
+            onChange={(value) => {
+              formik.setFieldValue('date_of_birth', moment(value).format('YYYY-MM-DD'));
+            }}
+            format='YYYY-MM-DD'
+            size='small'
+            inputVariant='outlined'
+            fullWidth
+          />
+        </MuiPickersUtilsProvider>
+        <FormHelperText style={{ color: 'red' }}>
+          {formik.errors.date_of_birth ? formik.errors.date_of_birth : ''}
+        </FormHelperText>
       </Grid>
-      <Grid container item xs={12} spacing={4}>
-        <Grid item md={4} xs={12}>
-          <FormControl variant='outlined' fullWidth size='small'>
-            <InputLabel htmlFor='component-outlined'>Address</InputLabel>
-            <OutlinedInput
-              id='address'
-              name='address'
-              onChange={formik.handleChange}
-              value={formik.values.address}
-              inputProps={{ maxLength: 150 }}
-              multiline
-              rows={4}
-              rowsMax={6}
-              label='Address'
-            />
-            <FormHelperText style={{ color: 'red' }}>
-              {formik.errors.address ? formik.errors.address : ''}
-            </FormHelperText>
-          </FormControl>
-        </Grid>
-        {/* <Grid item md={4}>
+      {/* </Grid> */}
+      {/* <Grid container item xs={12} spacing={4}> */}
+      <Grid item md={4} xs={12}>
+        <FormControl variant='outlined' fullWidth size='small'>
+          <InputLabel htmlFor='component-outlined'>Mobile no.</InputLabel>
+          <OutlinedInput
+            id='contact'
+            name='contact'
+            inputProps={{ maxLength: 10 }}
+            onChange={formik.handleChange}
+            value={formik.values.contact}
+            label='Mobile no.'
+          />
+          <FormHelperText style={{ color: 'red' }}>
+            {formik.errors.contact ? formik.errors.contact : ''}
+          </FormHelperText>
+        </FormControl>
+      </Grid>
+      <Grid item md={4} xs={12}>
+        <FormControl variant='outlined' fullWidth size='small'>
+          <InputLabel htmlFor='component-outlined'>Email</InputLabel>
+          <OutlinedInput
+            id='email'
+            name='email'
+            onChange={formik.handleChange}
+            value={formik.values.email}
+            inputProps={{ maxLength: 40 }}
+            label='Email'
+          />
+          <FormHelperText style={{ color: 'red' }}>
+            {formik.errors.email ? formik.errors.email : ''}
+          </FormHelperText>
+        </FormControl>
+      </Grid>
+      {/* </Grid> */}
+      {/* <Grid container item xs={12} spacing={4}> */}
+      <Grid item md={4} xs={12}>
+        <FormControl variant='outlined' fullWidth size='small'>
+          <InputLabel htmlFor='component-outlined'>Address</InputLabel>
+          <OutlinedInput
+            id='address'
+            name='address'
+            onChange={formik.handleChange}
+            value={formik.values.address}
+            inputProps={{ maxLength: 150 }}
+            multiline
+            rows={4}
+            rowsMax={6}
+            label='Address'
+          />
+          <FormHelperText style={{ color: 'red' }}>
+            {formik.errors.address ? formik.errors.address : ''}
+          </FormHelperText>
+        </FormControl>
+      </Grid>
+      {/* <Grid item md={4}>
           <FormControl variant='outlined' fullWidth disabled>
             <InputLabel htmlFor='component-outlined'>Address line 2</InputLabel>
             <OutlinedInput
@@ -269,7 +283,7 @@ const UserDetailsForm = ({
             />
           </FormControl>
         </Grid> */}
-      </Grid>
+      {/* </Grid> */}
 
       <Grid item xs={12}>
         <Divider />
@@ -314,7 +328,7 @@ const UserDetailsForm = ({
         <Grid item md='1'>
           <Box display='flex' justifyContent={isMobile ? 'center' : ''}>
             <Button
-              className={classes.formActionButton}
+              className={`${classes.formActionButton} disabled-btn`}
               variant='contained'
               color='primary'
               onClick={handleBack}
