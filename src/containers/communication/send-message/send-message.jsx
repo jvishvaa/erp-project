@@ -349,11 +349,11 @@ const SendMessage = withRouter(({ history, ...props }) => {
 
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
-    const testclick = document.querySelectorAll('[class*="PrivateSwitchBase-input-"]');
+    const testclick = document.querySelectorAll('input[type=checkbox]'); // [class*="PrivateSwitchBase-input-"]
     if (!selectAll) {
-      testclick[0].click();
+      testclick[1].click();
     } else {
-      for (let i = 1; i < testclick.length; i += 1) {
+      for (let i = 2; i < testclick.length; i += 1) {
         testclick[i].click();
       }
     }
@@ -377,8 +377,9 @@ const SendMessage = withRouter(({ history, ...props }) => {
       setSelectUsersError('');
     }
     if (!firstStep && !secondStep && thirdStep) {
-      setSelectAll(false);
-      setSelectedUsers([]);
+      //   setSelectAll(false);
+      //   setSelectedUsers([]);
+      setPageno(1);
       setHeaders([]);
       setUsersRow([]);
       setCompleteData([]);
@@ -543,7 +544,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
               email_subject: emailSubject,
               group_type: '1',
               message_type: '1',
-              group: groupId[0],
+              group: groupId,
               erp_users: selectionArray,
             };
           }
@@ -553,7 +554,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
               message_content: textMessage,
               group_type: '1',
               message_type: '2',
-              group: groupId[0],
+              group: groupId,
               erp_users: selectionArray,
             };
           }
@@ -601,7 +602,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
           });
           if (isEmail) {
             request = {
-              communicate_type: selectedSmsType,
+              communicate_type: selectedSmsType.id,
               email_body: textMessage,
               email_subject: emailSubject,
               group_type: '2',
@@ -615,7 +616,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
           }
           if (!isEmail) {
             request = {
-              communicate_type: selectedSmsType,
+              communicate_type: selectedSmsType.id,
               message_content: textMessage,
               group_type: '2',
               message_type: '2',

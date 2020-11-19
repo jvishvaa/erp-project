@@ -304,7 +304,7 @@ const AssignRole = (props) => {
     const tempSelectObj = selectAllObj.slice();
     tempSelectObj[pageno - 1].selectAll = !tempSelectObj[pageno - 1].selectAll;
     setSelectAllObj(tempSelectObj);
-    const testclick = document.querySelectorAll('[class*="PrivateSwitchBase-input-"]');
+    const testclick = document.querySelectorAll('input[type=checkbox]');
     if (!selectAllObj[pageno - 1].selectAll) {
       for (let i = 2; i < testclick.length; i += 1) {
         testclick[i].click();

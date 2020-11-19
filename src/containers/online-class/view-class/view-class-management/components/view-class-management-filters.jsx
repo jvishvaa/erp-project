@@ -91,12 +91,14 @@ const ViewClassManagementFilters = () => {
     else setEndDate(date);
   };
 
-  const listSubjects = async (gradeids) => {
+  const listSubjects = async (gradeids, sectionIds) => {
     try {
       const { data } = await axiosInstance(
         `${endpoints.academics.subjects}?branch=${roleDetails.branch.join(
           ','
-        )}&grade=${gradeids.join(',')}&module_id=${moduleId}`
+        )}&grade=${gradeids.join(',')}&section=${sectionIds.join(
+          ','
+        )}&module_id=${moduleId}`
       );
       setSubjects(data.data);
     } catch (error) {
@@ -109,7 +111,7 @@ const ViewClassManagementFilters = () => {
     if (value.length) {
       const ids = value.map((el) => el.grade_id);
       setGradeIds(ids);
-      listSubjects(ids);
+      // listSubjects(ids);
       dispatch(listSections(ids, moduleId));
     } else {
       setGradeIds([]);
@@ -121,8 +123,9 @@ const ViewClassManagementFilters = () => {
   const handleSection = (event, value) => {
     setSelectedSections(value);
     if (value.length) {
-      const ids = value.map((el) => el.id);
+      const ids = value.map((el) => el.section_id);
       setSectionIds(ids);
+      listSubjects(gradeIds, ids);
     } else {
       setSectionIds([]);
     }
@@ -244,7 +247,7 @@ const ViewClassManagementFilters = () => {
           />
         </Grid>
         {gradeIds.length ? (
-          <Grid item xs={12} sm={2}>
+          <Grid item xs={12} sm={3}>
             <Autocomplete
               key={clearKey}
               size='small'
@@ -271,7 +274,7 @@ const ViewClassManagementFilters = () => {
         ) : (
           ''
         )}
-        {gradeIds.length ? (
+        {sectionIds.length ? (
           <Grid item xs={12} sm={3}>
             <Autocomplete
               key={clearKey}
@@ -303,8 +306,8 @@ const ViewClassManagementFilters = () => {
             <KeyboardDatePicker
               size='small'
               color='primary'
-              disableToolbar
-              variant='inline'
+              // disableToolbar
+              variant='dialog'
               format='YYYY-MM-DD'
               margin='none'
               id='date-picker-start-date'
@@ -322,8 +325,8 @@ const ViewClassManagementFilters = () => {
           <Grid item xs={12} sm={2}>
             <KeyboardDatePicker
               size='small'
-              disableToolbar
-              variant='inline'
+              // disableToolbar
+              variant='dialog'
               format='YYYY-MM-DD'
               margin='none'
               id='date-picker-end-date'
