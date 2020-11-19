@@ -6,9 +6,12 @@ import React, { useContext, useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { Grid, TextField } from '@material-ui/core';
+import { Grid, TextField, useTheme, Divider, Box } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
 import TableContainer from '@material-ui/core/TableContainer';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import CloseIcon from '@material-ui/icons/Close';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
@@ -16,6 +19,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
+import SmsCreditCard from './log-card/sms-credit-card';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -51,6 +55,10 @@ const useStyles = makeStyles((theme) => ({
 const MessageCredit = withRouter(({ history, ...props }) => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
+  const themeContext = useTheme();
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+  const [addCreditMobile, setAddCreditMobile] = useState(false);
+  const [mobileAddCreditId, setMobileAddCreditId] = useState();
   const [selectedBranch, setSelectedBranch] = useState();
   const [smsCreditId, setSmsCreditId] = useState();
   const [branchList, setBranchList] = useState([]);
@@ -90,7 +98,7 @@ const MessageCredit = withRouter(({ history, ...props }) => {
   };
   const handleAddingSms = (e, index) => {
     const creditToadd = Number(e.target.value);
-    if (creditToadd > 0) {
+    if (creditToadd >= 0) {
       const tempData = testData.slice();
       tempData[index].AmountAdded = creditToadd;
       setTestData(tempData);
@@ -101,6 +109,16 @@ const MessageCredit = withRouter(({ history, ...props }) => {
     tempData[index].AmountAdded = 0;
     tempData[index].Adding = false;
     setTestData(tempData);
+  };
+  const handleMobileCancel = () => {
+    handleCancel(mobileAddCreditId);
+    setMobileAddCreditId();
+    setAddCreditMobile(false);
+  };
+  const handleMobileAdding = () => {
+    handleSubmit(mobileAddCreditId);
+    setMobileAddCreditId();
+    setAddCreditMobile(false);
   };
   const handleStatusChange = (index) => {
     const tempData = testData.slice();
@@ -173,6 +191,93 @@ const MessageCredit = withRouter(({ history, ...props }) => {
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
+      {addCreditMobile ? (
+        <div className='add_credit_mobile_form_outside_wrapper'>
+          <div className='add_credit_mobile_form'>
+            <span className='close_icon_edit_group' onClick={handleMobileCancel}>
+              <CloseIcon />
+            </span>
+            <div className='add_credit_mobile_form_heading'>Add Amount</div>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <Divider />
+              </Grid>
+              <Grid item container>
+                <Grid item xs={8}>
+                  <Box>
+                    <Typography
+                      className={classes.title}
+                      variant='p'
+                      component='p'
+                      color='secondary'
+                    >
+                      Available SMS Credit
+                    </Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={4}>
+                  <Box>
+                    <Typography
+                      className={classes.content}
+                      variant='p'
+                      component='p'
+                      color='secondary'
+                      align='right'
+                    >
+                      {testData[mobileAddCreditId].AvailableSMS}
+                    </Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={8}>
+                  <Box>
+                    <Typography
+                      className={classes.title}
+                      variant='p'
+                      component='p'
+                      color='secondary'
+                    >
+                      Used SMS Credit
+                    </Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={4}>
+                  <Box>
+                    <Typography
+                      className={classes.content}
+                      variant='p'
+                      component='p'
+                      color='secondary'
+                      align='right'
+                    >
+                      {testData[mobileAddCreditId].useSMS}
+                    </Typography>
+                  </Box>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <div className='add_credit_mobile_input'>
+                  <input
+                    type='number'
+                    className='add_sms_credit_box change_sms_credit_box'
+                    value={Number(testData[mobileAddCreditId].AmountAdded).toString()}
+                    onChange={(e) => handleAddingSms(e, mobileAddCreditId)}
+                  />
+                </div>
+              </Grid>
+              <Grid item container>
+                <Grid item xs={12}>
+                  <input
+                    type='button'
+                    className='add_credit_mobile'
+                    onClick={handleMobileAdding}
+                    value='Add Credit'
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+          </div>
+        </div>
+      ) : null}
       <Layout>
         <div className='message_credit__page'>
           <div className='bread_crumb_container'>
@@ -181,98 +286,114 @@ const MessageCredit = withRouter(({ history, ...props }) => {
               childComponentName='Add SMS credit'
             />
           </div>
-          <Grid container className='message_log_container' xs={12} lg={12} spacing={5}>
-            <Grid xs={12} lg={3} item>
-              <Autocomplete
-                size='small'
-                onChange={handleBranch}
-                value={selectedBranch}
-                id='message_log-branch'
-                className='sms_credit_branch'
-                options={branchList}
-                getOptionLabel={(option) => option?.branch_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    className='message_log-textfield'
-                    {...params}
-                    variant='outlined'
-                    label='Branch'
-                    placeholder='Branch'
-                  />
-                )}
-              />
+          <div className='create_group_filter_container'>
+            <Grid container className='message_log_container' spacing={5}>
+              <Grid xs={12} lg={3} item>
+                <Autocomplete
+                  size='small'
+                  onChange={handleBranch}
+                  value={selectedBranch}
+                  id='message_log-branch'
+                  className='sms_credit_branch'
+                  options={branchList}
+                  getOptionLabel={(option) => option?.branch_name}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      className='message_log-textfield'
+                      {...params}
+                      variant='outlined'
+                      label='Branch'
+                      placeholder='Branch'
+                    />
+                  )}
+                />
+              </Grid>
             </Grid>
-          </Grid>
-          <div className='sms_credit_white_space_wrapper'>
-            <Paper className={`sms_credit_table_wrapper ${classes.root}`}>
-              <TableContainer
-                className={`table table-shadow sms_credit_table ${classes.container}`}
-              >
-                <Table stickyHeader aria-label='sticky table'>
-                  <TableHead className='view_groups_header'>
-                    <TableRow>
-                      <TableCell>Branch</TableCell>
-                      <TableCell>Available SMS Credit</TableCell>
-                      <TableCell>Used SMS Credit</TableCell>
-                      <TableCell>Amount to be Added</TableCell>
-                      <TableCell>Add SMS Credit</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody className='table_body'>
-                    {testData.map((items, index) => (
-                      <TableRow key={`message_credit_table_${index}`}>
-                        <TableCell align='right'>{items.BranchName}</TableCell>
-                        <TableCell align='right'>{items.AvailableSMS}</TableCell>
-                        <TableCell align='right'>{items.useSMS}</TableCell>
-                        <TableCell align='right'>
-                          {items.Adding ? (
-                            <input
-                              type='number'
-                              className='add_sms_credit_box change_sms_credit_box'
-                              value={Number(items.AmountAdded).toString()}
-                              onChange={(e) => handleAddingSms(e, index)}
-                            />
-                          ) : (
-                            <input
-                              type='number'
-                              className='add_sms_credit_box'
-                              value={items.AmountAdded}
-                              readOnly
-                            />
-                          )}
-                        </TableCell>
-                        <TableCell align='right'>
-                          {items.Adding ? (
-                            <div className='addcredit_button_wrapper'>
-                              <input
-                                type='submit'
-                                className='add_credit_save_button'
-                                onClick={() => handleSubmit(index)}
-                                value='Save'
-                              />
-                              <input
-                                type='submit'
-                                className='add_credit_save_button'
-                                onClick={() => handleCancel(index)}
-                                value='Cancel'
-                              />
-                            </div>
-                          ) : (
-                            <AddCircleIcon
-                              style={{ color: '#005c99' }}
-                              variant='contained'
-                              onClick={() => handleStatusChange(index)}
-                            />
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Paper>
           </div>
+          {isMobile ? (
+            <>
+              {testData.map((items, index) => (
+                <SmsCreditCard
+                  data={items}
+                  setMobileAddCreditId={setMobileAddCreditId}
+                  setAddCreditMobile={setAddCreditMobile}
+                  index={index}
+                  handleStatusChange={handleStatusChange}
+                />
+              ))}
+            </>
+          ) : (
+            <div className='sms_credit_white_space_wrapper'>
+              <Paper className={`sms_credit_table_wrapper ${classes.root}`}>
+                <TableContainer
+                  className={`table table-shadow sms_credit_table ${classes.container}`}
+                >
+                  <Table stickyHeader aria-label='sticky table'>
+                    <TableHead className='view_groups_header'>
+                      <TableRow>
+                        <TableCell>Branch</TableCell>
+                        <TableCell>Available SMS Credit</TableCell>
+                        <TableCell>Used SMS Credit</TableCell>
+                        <TableCell>Amount to be Added</TableCell>
+                        <TableCell>Add SMS Credit</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody className='table_body'>
+                      {testData.map((items, index) => (
+                        <TableRow key={`message_credit_table_${index}`}>
+                          <TableCell align='right'>{items.BranchName}</TableCell>
+                          <TableCell align='right'>{items.AvailableSMS}</TableCell>
+                          <TableCell align='right'>{items.useSMS}</TableCell>
+                          <TableCell align='right'>
+                            {items.Adding ? (
+                              <input
+                                type='number'
+                                className='add_sms_credit_box change_sms_credit_box'
+                                value={Number(items.AmountAdded).toString()}
+                                onChange={(e) => handleAddingSms(e, index)}
+                              />
+                            ) : (
+                              <input
+                                type='number'
+                                className='add_sms_credit_box'
+                                value={items.AmountAdded}
+                                readOnly
+                              />
+                            )}
+                          </TableCell>
+                          <TableCell align='right'>
+                            {items.Adding ? (
+                              <div className='addcredit_button_wrapper'>
+                                <input
+                                  type='submit'
+                                  className='add_credit_save_button'
+                                  onClick={() => handleSubmit(index)}
+                                  value='Save'
+                                />
+                                <input
+                                  type='submit'
+                                  className='add_credit_save_button'
+                                  onClick={() => handleCancel(index)}
+                                  value='Cancel'
+                                />
+                              </div>
+                            ) : (
+                              <AddCircleIcon
+                                style={{ color: '#005c99' }}
+                                variant='contained'
+                                onClick={() => handleStatusChange(index)}
+                              />
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Paper>
+            </div>
+          )}
         </div>
       </Layout>
     </>

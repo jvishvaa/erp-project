@@ -19,40 +19,32 @@ const CreateSection = ({grades,setLoading,handleGoBack}) => {
     if(value)
       setSelectedGrade(value)
     else
-      setSelectedGrade('')
+      setSelectedGrade([])
   };
   
 
   const handleSubmit = (e) => {
     e.preventDefault()
     setLoading(true);
-    if(selectedGrade==="")
-    {
-      setLoading(false)
-      setAlert('error','Select grade from the list')
+    axiosInstance.post(endpoints.masterManagement.createSection,{
+      section_name:sectionName,
+      grade_name:selectedGrade.grade_name,
+      grade_id:selectedGrade.id,
+      branch_id:JSON.parse(localStorage.getItem('userDetails')).role_details.branch[0]
+    }).then(result=>{
+    if (result.data.status_code === 201) {
+      setSectionName('')
+      setSelectedGrade('')
+      setLoading(false);
+      setAlert('success', result.data.message);
+    } else {        
+      setLoading(false);
+      setAlert('error', result.data.message);
     }
-    else 
-    {
-      axiosInstance.post(endpoints.masterManagement.createSection,{
-        section_name:sectionName,
-        grade_name:selectedGrade.grade_name,
-        grade_id:selectedGrade.id,
-        branch_id:JSON.parse(localStorage.getItem('userDetails')).role_details.branch[0]
-      }).then(result=>{
-      if (result.data.status_code === 201) {
-        setSectionName('')
-        setSelectedGrade('')
-        setLoading(false);
-        setAlert('success', result.data.message);
-      } else {        
-        setLoading(false);
-        setAlert('error', result.data.message);
-      }
-      }).catch((error)=>{
-        setLoading(false);        
-        setAlert('error', error.message);
-      })
-    }
+    }).catch((error)=>{
+      setLoading(false);        
+      setAlert('error', error.message);
+    })
     };
 
 
@@ -63,11 +55,11 @@ const CreateSection = ({grades,setLoading,handleGoBack}) => {
         <div style={{color:'#014B7E'}} >
               <h2>Add Section</h2>
         </div>
-        <div style={{margin:'40px auto'}}>
+        <div style={{margin:'20px auto'}}>
           <hr />
         </div>
         <Grid container spacing={5}>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
             <TextField
               className='create__class-textfield'
               id='secname'
@@ -84,7 +76,7 @@ const CreateSection = ({grades,setLoading,handleGoBack}) => {
           </Grid>
           </Grid>
           <Grid container spacing={5} >
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
             <Autocomplete
               size='small'
               onChange={handleGrade}
@@ -108,15 +100,15 @@ const CreateSection = ({grades,setLoading,handleGoBack}) => {
           </Grid>
         </Grid>
         </div>
-        <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '20px 10px'}} >
-          <Grid item xs={6} sm={2}>
-            <Button variant='contained' style={{color:'white'}} color ="primary" className="custom_button_master" size='medium' type='submit'>
-              Submit
-            </Button>
-          </Grid>
-          <Grid item xs={6} sm={2}>
+        <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '10px'}} >
+        <Grid item xs={6} sm={2} className={isMobile?'':'addEditButtonsPadding'}>
             <Button variant='contained' className="custom_button_master" size='medium' onClick={handleGoBack}>
               Back
+            </Button>
+          </Grid>
+          <Grid item xs={6} sm={2} className={isMobile?'':'addEditButtonsPadding'}>
+            <Button variant='contained' style={{color:'white'}} color ="primary" className="custom_button_master" size='medium' type='submit'>
+              Submit
             </Button>
           </Grid>
         </Grid>

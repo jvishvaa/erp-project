@@ -80,6 +80,7 @@ const SubjectTable = () => {
   const [page, setPage] = React.useState(1);
   const [subjects,setSubjects]=useState([])
   const [grades,setGrades]=useState([])
+  const [sections,setSections]=useState([])
   const [openDeleteModal,setOpenDeleteModal]=useState(false)
   const [subjectId,setSubjectId]=useState()
   const [subjectName,setSubjectName]=useState('')
@@ -91,14 +92,17 @@ const SubjectTable = () => {
   const [pageCount,setPageCount]=useState()
   const [totalCount, setTotalCount] = useState(0);
   const [searchGrade,setSearchGrade]=useState('')
+  const [searchSection,setSearchSection]=useState('')
+  const [sectionDisplay,setSectionDisplay]=useState([])
   const [searchSubject,setSearchSubject]=useState('')
   const [loading, setLoading] = useState(false);
   const [limit, setLimit] = useState(15);
-   
+  const [goBackFlag,setGoBackFlag]=useState(false)
+  const {role_details}=JSON.parse(localStorage.getItem('userDetails'))
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
-  const wider= isMobile?'10px 0px':'20px 0px 20px 8px'
+  const wider= isMobile?'-10px 0px':'20px 0px 20px 8px'
   const widerWidth=isMobile?'98%':'95%'
 
   const handleChangePage = (event, newPage) => {
@@ -109,13 +113,45 @@ const SubjectTable = () => {
     setPage(value+1)
   }
 
-
   const handleGrade = (event, value) => {
     if(value)
-    setSearchGrade(value.id)
+      {
+        setSearchGrade(value.id)
+        axiosInstance.get(`${endpoints.masterManagement.sections}?branch_id=${role_details.branch[0]}&grade_id=${value.id}`)
+        .then(result=>{
+          if(result.data.status_code===200)
+          {
+            setSections(result.data.data)
+          }
+          else
+          {
+            setAlert('error',result.data.message)
+            setSections([])
+            setSectionDisplay([])
+          }
+        })
+        .catch(error=>{
+          setAlert('error', error.message);
+          setSections([])
+          setSectionDisplay([])
+        })
+      }
     else
-    setSearchGrade('')
+      {
+        setSearchGrade('')
+        setSearchSection('')
+        setSections([])
+        setSectionDisplay([])
+      }
   };
+
+  const handleSection = (event, value) => {
+    setSearchSection('')
+    setSectionDisplay(value)
+    if(value)
+      setSearchSection(value.section_id)
+  };
+
 
   const handleAddSubject=()=>{
     setTableFlag(false)
@@ -138,6 +174,9 @@ const SubjectTable = () => {
     setEditFlag(false)
     setSearchGrade('')
     setSearchSubject('')
+    setSearchSection('')
+    setSectionDisplay([])
+    setGoBackFlag(!goBackFlag)
   }
 
   const handleDeleteSubject = (e) => {
@@ -174,10 +213,24 @@ const SubjectTable = () => {
   useEffect(()=>{
     setLoading(true)
     setTimeout(()=> {setLoading(false)},450); 
-  },[page,delFlag,editFlag,addFlag,searchGrade])
+  },[goBackFlag,page,delFlag,searchGrade,searchSection])
 
   useEffect(()=>{
-      axiosInstance.get(`${endpoints.masterManagement.subjects}?page=${page}&page_size=${limit}&grade=${searchGrade}&subject=${searchSubject}`)
+    axiosInstance.get(endpoints.masterManagement.gradesDrop)
+    .then(result=>{
+      if (result.status === 200) {
+        setGrades(result.data.data);
+      } else {
+        setAlert('error', result.data.message);
+      }
+    })
+    .catch((error)=>{
+      setAlert('error', error.message);
+    })
+  },[])
+
+  useEffect(()=>{
+      axiosInstance.get(`${endpoints.masterManagement.subjects}?page=${page}&page_size=${limit}&grade=${searchGrade}&subject=${searchSubject}&section=${searchSection}`)
       .then(result=>{
         if (result.status === 200) {
           setTotalCount(result.data.result.count);
@@ -190,19 +243,7 @@ const SubjectTable = () => {
       .catch((error)=>{
         setAlert('error', error.message);
       })
-
-      axiosInstance.get(endpoints.masterManagement.gradesDrop)
-      .then(result=>{
-        if (result.status === 200) {
-          setGrades(result.data.data);
-        } else {
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch((error)=>{
-        setAlert('error', error.message);
-      })
-  },[openDeleteModal,delFlag,editFlag,addFlag,page,searchGrade,searchSubject])
+  },[goBackFlag,delFlag,page,searchGrade,searchSection,searchSubject])
       
   const handleDelete = (subj) => {
     setSubjectName(subj.subject.subject_name);
@@ -228,9 +269,9 @@ const SubjectTable = () => {
     
     {tableFlag && !addFlag && !editFlag && 
     <Grid container spacing={isMobile?3:5} style={{ width: widerWidth, margin: wider}}>
-      <Grid item xs={12} sm={3}>
+      <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
         <TextField
-        style={{ width: '100%'}}
+          style={{ width: '100%'}}
           id='subname'
           label='Subject Name'
           variant='outlined'
@@ -240,14 +281,14 @@ const SubjectTable = () => {
           onChange={e=>setSearchSubject(e.target.value)}
         />
       </Grid>
-      <Grid item xs={12} sm={3}>
+      <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
         <Autocomplete
           style={{ width: '100%' }}
           size='small'
           onChange={handleGrade}
           id='grade'
           options={grades}
-          getOptionLabel={(option) => option.grade_name}
+          getOptionLabel={(option) => option?.grade_name}
           filterSelectedOptions
           renderInput={(params) => (
             <TextField
@@ -259,9 +300,35 @@ const SubjectTable = () => {
           )}
         />
       </Grid>
-      <Grid item xs sm={3} className={isMobile?'hideGridItem':''}/>
-      <Grid item xs={12} sm={3}>
-        <Button startIcon={<AddOutlinedIcon />} variant='contained' color='primary' size="medium" style={{color:'white'}} title="Add Subject" onClick={handleAddSubject}>
+      <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
+        <Autocomplete
+          style={{ width: '100%' }}
+          size='small'
+          onChange={handleSection}
+          id='section'
+          value={sectionDisplay}
+          options={sections}
+          getOptionLabel={(option) => option?.section__section_name}
+          filterSelectedOptions
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant='outlined'
+              label='Sections'
+              placeholder='Sections'
+            />
+          )}
+        />
+      </Grid>
+      <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
+        <Button 
+        startIcon={<AddOutlinedIcon style={{fontSize:'30px'}}/>} 
+        variant='contained' 
+        color='primary' 
+        size="small" 
+        style={{color:'white'}} 
+        title="Add Subject" 
+        onClick={handleAddSubject}>
           Add Subject
         </Button>
       </Grid>

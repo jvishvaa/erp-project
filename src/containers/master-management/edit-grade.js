@@ -59,11 +59,11 @@ const EditGrade = ({id,name,type,handleGoBack,setLoading}) => {
         <div style={{color:'#014B7E'}} >
               <h2>Edit Subject</h2>
         </div>
-        <div style={{margin:'40px auto'}}>
+        <div style={{margin:'20px auto'}}>
           <hr />
         </div>
         <Grid container spacing={5}>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
             <TextField
               className='create__class-textfield'
               id='gradename'
@@ -79,7 +79,7 @@ const EditGrade = ({id,name,type,handleGoBack,setLoading}) => {
           </Grid>
           </Grid>
           <Grid container spacing={5}>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
             <TextField
               className='create__class-textfield'
               id='gradetype'
@@ -95,15 +95,15 @@ const EditGrade = ({id,name,type,handleGoBack,setLoading}) => {
           </Grid>
         </Grid>
         </div>
-        <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '20px 10px'}} >
-          <Grid item xs={6} sm={2}>
-            <Button variant='contained' style={{color:'white'}} color ="primary" className="custom_button_master" size='medium' type='submit'>
-              Submit
-            </Button>
-          </Grid>
-          <Grid item xs={6} sm={2}>
+        <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '10px'}} >
+          <Grid item xs={6} sm={2} className={isMobile?'':'addEditButtonsPadding'}>
             <Button variant='contained' className="custom_button_master" size='medium' onClick={handleGoBack}>
               Back
+            </Button>
+          </Grid>
+          <Grid item xs={6} sm={2} className={isMobile?'':'addEditButtonsPadding'}>
+            <Button variant='contained' style={{color:'white'}} color ="primary" className="custom_button_master" size='medium' type='submit'>
+              Submit
             </Button>
           </Grid>
         </Grid>

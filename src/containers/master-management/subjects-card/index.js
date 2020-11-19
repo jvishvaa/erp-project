@@ -18,9 +18,9 @@ const SubjectCard = (props) => {
   const classes = useStyles();
   return (
     <Paper className={classes.root}>
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <Grid container item>
-          <Grid item xs={6}>
+          <Grid item xs={8}>
             <Box>
               <Typography
                 className={classes.title}
@@ -44,7 +44,7 @@ const SubjectCard = (props) => {
               </Typography>
             </Box>
           </Grid>
-          <Grid item xs={6} className={classes.textRight}>
+          <Grid item xs={4} className={classes.textRight}>
             <Box>
               <Typography
                 className={classes.title}
@@ -99,6 +99,7 @@ const SubjectCard = (props) => {
           <Grid item xs={6}>
             <Box style={{ width: '100%', display: 'flex', justifyContent: 'left' }}>
               <IconButton
+                className='removePadding'
                 onClick={() => {
                   handleEditSubject(
                     subject.id,
@@ -113,6 +114,7 @@ const SubjectCard = (props) => {
           </Grid>
           <Grid item xs={6} className={classes.textRight}>
             <IconButton
+              className='removePadding'
               onClick={() => {
                 handleDelete(props.data);
               }}

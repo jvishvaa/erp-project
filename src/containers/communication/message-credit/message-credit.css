@@ -65,17 +65,52 @@
 	margin: auto;
 }
 .bread_crumb_container{
-	margin: 20px;
+	margin: 20px auto;
 	width: 95%;
+}
+.sms_credit_branch .MuiIconButton-label{
+	color: #FF6B6B !important;
 }
 .sms_credit_white_space_wrapper{
 	width: 100%;
 	margin-top: 20px;
 	padding: 20px 0px;
+	height: 28vw;
 	background-color: white;
 }
+.add_credit_mobile_form_outside_wrapper{
+	position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: #e8dfdfa3;
+    padding: 3% 5%;
+    width: 100%;
+    height: 180vw;
+    border-radius: 5px;
+    z-index: 1450;
+}
+.add_credit_mobile_form{
+	position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 3% 5%;
+	width: 90%;
+	border-radius: 5px;
+	z-index: 1500;
+}
+.add_credit_mobile_input{
+	text-align: center;
+}
+.add_credit_mobile_form_heading{
+	color: #014B7E;
+	font-size: 1.2rem;
+	font-weight: 600;
+	text-align: center;
+}
 @media screen and (max-width: 700px) {
-	.sms_credit_branch{
-		margin: 5%;
-	}	
+	
+
 }

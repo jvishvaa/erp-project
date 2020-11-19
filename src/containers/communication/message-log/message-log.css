@@ -23,39 +23,28 @@
 .deactive_clearAll {
   font-size: 0.9rem;
   height: 45px;
-  width: 75%;
+  width: 100%;
   border: none;
   border-radius: 5px;
   text-transform: uppercase;
   cursor: pointer;
   outline: none !important;
-  color: white;
+  color: grey;
   background-color: rgba(0, 0, 0, 0.12);
 }
-.message_log_date_piker svg{
-	fill: #ff6b6b;
+.message_log_date_piker svg {
+  fill: #ff6b6b;
 }
-.message_log_branch .MuiIconButton-label{
-	color: #FF6B6B !important;
+.message_log_branch .MuiIconButton-label {
+  color: #ff6b6b !important;
 }
-.message_log_branch .MuiInputLabel-outlined{
-	color: #014B7E !important;
-	font-size: 1rem !important;
-    font-weight: 600 !important;
-}
-.message_log_branch .MuiInputBase-input {
-	color: #014b7e !important;
-}
-.message_log_branch .MuiChip-root {
-	color: #014B7E !important;
-}
-.message_log_branch .MuiChip-deleteIcon{
-	color: #FF6B6B !important;
+.message_log_branch .MuiChip-deleteIcon {
+  color: #ff6b6b !important;
 }
 .message_log_filter_button {
   font-size: 0.9rem;
   height: 45px;
-  width: 75%;
+  width: 100%;
   border: none;
   border-radius: 5px;
   text-transform: uppercase;
@@ -63,6 +52,9 @@
   outline: none !important;
   color: white;
   background-color: #ff6b6b;
+}
+.message_log_date_piker{
+	margin: 0px !important;
 }
 .MuiButton-textPrimary {
   color: white !important;
@@ -90,18 +82,28 @@
   border-radius: 0px !important;
 }
 .message_log_breadcrumb_wrapper {
-  margin: 20px;
+  margin: 20px auto;
   width: 95%;
-}
-.message_log_container {
-  margin: 0px !important;
-  width: 95% !important;
 }
 .message_log_white_wrapper {
   width: 100%;
-  margin-top: 20px;
-  padding: 20px 0px;
+  padding: 1px 0px;
   background-color: white;
+}
+.close_icon_view_details_mobile{
+	display: none;
+}
+.message_log_expand_manage{
+	display: none;
+}
+.MuiPickersDatePickerRoot-toolbar .MuiPickersToolbarText-toolbarBtnSelected{
+color: white !important;
+}
+.MuiPickersDatePickerRoot-toolbar  .MuiPickersToolbarText-toolbarTxt{
+	color: white !important;
+}
+.MuiPickersDay-daySelected {
+	color: white !important;
 }
 @media screen and (max-width: 700px) {
   .message_log_wrapper {
@@ -110,7 +112,38 @@
   .deactive_clearAll {
     width: 100%;
   }
+  .message_log_expand_manage {
+    float: right;
+    margin-right: 30px;
+	color: #014b7e;
+	display: block;
+  }
   .message_log_filter_button {
     width: 100%;
+  }
+  .hide {
+    display: none !important;
+  }
+  .show {
+    display: table-cell !important;
+  }
+  .view_details_mobile {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10% 5%;
+    background-color: white;
+    border: 5px solid #d2cdcd;
+    border-radius: 5px;
+    z-index: 1500;
+  }
+  .close_icon_view_details_mobile{
+	float: right;
+	margin-top: -10%;
+	margin-right: -5%;
+	color: #ff6b6b;
+	cursor: pointer;
+	display: block;
   }
 }

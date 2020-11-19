@@ -59,7 +59,7 @@
 .message_type_block_wrapper {
   display: flex;
   width: 95%;
-  margin: 20px;
+  margin: 20px auto;
   border-bottom: 1px solid #cfcfcf;
 }
 .message_type_block {
@@ -127,16 +127,16 @@
   color: #014b7e;
   font-size: 1rem;
   font-weight: 600;
-  width: 95%;
-  margin: 20px auto 1%;
+  width: 98%;
+  margin: 1px auto 1%;
 }
 .send_message_select_all_checkbox {
   transform: scale(1.5);
   margin-right: 1%;
 }
 .send_message_type_wrapper {
-  margin-left: 20px;
-  margin-bottom: 20px;
+	margin: 20px auto;
+	width: 95%;
 }
 .create_group_message_type_wrapper .MuiOutlinedInput-root {
   border-radius: 10px;
@@ -172,11 +172,7 @@
     margin-top: 5%;
   }
   .message_type_block_wrapper {
-    margin-bottom: 8%;
-  }
-  .send_message_select_all_wrapper {
-    margin-top: 6%;
-    margin-bottom: 4%;
+    margin: 20px auto;
   }
   .send_message_message_tag {
     margin-top: 2%;

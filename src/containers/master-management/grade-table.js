@@ -108,10 +108,11 @@ const GradeTable = () => {
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [limit, setLimit] = useState(15);
+  const [goBackFlag,setGoBackFlag]=useState(false)
   
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const wider= isMobile?'10px 0px':'20px 0px 20px 0px'
+  const wider= isMobile?'-10px 0px':'20px 0px 20px 8px'
   const widerWidth=isMobile?'98%':'95%'
 
   const handleChangePage = (event, newPage) => {
@@ -142,6 +143,7 @@ const GradeTable = () => {
     setAddFlag(false);
     setEditFlag(false);
     setSearchGrade('');
+    setGoBackFlag(!goBackFlag)
   };
 
   const handleDeleteGrade = (e) => {
@@ -185,7 +187,7 @@ const GradeTable = () => {
     setTimeout(() => {
       setLoading(false);
     }, 450);
-  }, [page, delFlag, editFlag, addFlag]);
+  }, [page, delFlag, goBackFlag]);
 
   useEffect(() => {
     axiosInstance
@@ -206,7 +208,7 @@ const GradeTable = () => {
       .catch((error) => {
         setAlert('error', error.message);
       });
-  }, [openDeleteModal, delFlag, editFlag, addFlag, page, searchGrade]);
+  }, [delFlag, goBackFlag, page, searchGrade]);
 
   return (
     <>
@@ -234,7 +236,7 @@ const GradeTable = () => {
 
         {tableFlag && !addFlag && !editFlag && (
           <Grid container spacing={isMobile?3:5} style={{ width: widerWidth, margin: wider}}>
-            <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
                 <TextField
                   id='gradename'
                   style={{ width: '100%' }}
@@ -247,8 +249,15 @@ const GradeTable = () => {
                 />
             </Grid>
             <Grid item xs sm className={isMobile?'hideGridItem':''}/>
-            <Grid item xs={12} sm={3}>
-              <Button startIcon={<AddOutlinedIcon />}  variant='contained' color='primary' size="medium" style={{color:'white'}}  title="Add Subject" onClick={handleAddGrade}>
+            <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
+              <Button 
+              startIcon={<AddOutlinedIcon style={{fontSize:'30px'}}/>} 
+              variant='contained' 
+              color='primary' 
+              size="small" 
+              style={{color:'white'}} 
+              title="Add Subject" 
+              onClick={handleAddGrade}>
                 Add Grade
               </Button>
             </Grid>

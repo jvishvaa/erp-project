@@ -23,3 +23,20 @@
 .hideGridItem{
     display: none !important;
 }
+
+.removePadding.MuiIconButton-root {
+  padding: 0 !important;
+}
+
+.filterPadding {
+  padding: 20px 10px 20px 20px !important;
+}
+
+.addEditPadding {
+  padding: 30px 20px 20px 20px !important;
+}
+
+.addEditButtonsPadding {
+  padding: 10px 20px 20px 20px !important;
+}
+
