@@ -379,6 +379,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
     if (!firstStep && !secondStep && thirdStep) {
       //   setSelectAll(false);
       //   setSelectedUsers([]);
+      setPageno(1);
       setHeaders([]);
       setUsersRow([]);
       setCompleteData([]);
