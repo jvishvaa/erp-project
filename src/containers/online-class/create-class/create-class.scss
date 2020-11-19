@@ -7,7 +7,7 @@
 
   .breadcrumb-container-create {
     width: 95%;
-    margin: 20px auto 40px auto;
+    margin: 20px auto 30px auto;
   }
 
   button {
@@ -15,7 +15,7 @@
   }
 
   .create-class-form-container {
-    background-color: #fff;
+    // background-color: #fff;
     .create-class-form {
       width: 95%;
       margin: 0 auto;
@@ -65,6 +65,16 @@
   .horizontal-line-last {
     margin: 40px auto 20px auto;
   }
+}
+
+.MuiPickersTimePickerToolbar-toolbarAmpmLeftPadding h2,
+.MuiPickersTimePickerToolbar-toolbarAmpmLeftPadding h6 {
+  color: white !important;
+}
+
+.MuiPickersTimePickerToolbar-toolbarAmpmLeftPadding
+  .MuiPickersToolbarText-toolbarBtnSelected {
+  color: rgb(204, 204, 204) !important;
 }
 
 .my__swipable {

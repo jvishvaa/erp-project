@@ -66,8 +66,9 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
           : 'short_height_custom_selection_table_wrapper'
       }`}
       style={{
-        width: '98%',
+        width: '100%',
         margin: 'auto',
+        background: '#ffffff',
       }}
     >
       <DataGrid
@@ -75,6 +76,8 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
         rowCount={totalRows}
         checkboxSelection
         onPageChange={pageChange}
+        hideFooterSelectedRowCount
+        hideFooterRowCount
         paginationMode='server'
         ref={(input) => (apiRef = input)}
         {...data}

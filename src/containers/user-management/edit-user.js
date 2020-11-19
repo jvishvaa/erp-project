@@ -14,6 +14,9 @@ import GuardianDetailsForm from './guardian-details-form';
 import { fetchUser, editUser } from '../../redux/actions';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import { getSteps, jsonToFormData } from './utils';
+import CustomStepperConnector from '../../components/custom-stepper-connector';
+import CustomStepperIcon from '../../components/custom-stepper-icon';
+import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 
 class EditUser extends Component {
   constructor(props) {
@@ -179,7 +182,7 @@ class EditUser extends Component {
     const requestObjFormData = jsonToFormData(requestObj);
     editUser(requestObjFormData)
       .then(() => {
-        history.push('/user-management');
+        history.push('/user-management/view-users');
         setAlert('success', 'User updated');
       })
       .catch(() => {
@@ -204,12 +207,37 @@ class EditUser extends Component {
     const { classes, creatingUser, fetchingUserDetails, selectedUser } = this.props;
     return (
       <div>
+        <div className='bread-crumbs-container'>
+          <CommonBreadcrumbs
+            componentName='User Management'
+            childComponentName='Edit User'
+          />
+        </div>
         {user ? (
           <>
-            <Stepper activeStep={activeStep} alternativeLabel className={classes.stepper}>
+            {/* <Stepper activeStep={activeStep} alternativeLabel className={classes.stepper}>
               {steps.map((label) => (
                 <Step key={label}>
                   <StepLabel>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper> */}
+            <Stepper
+              activeStep={activeStep}
+              alternativeLabel
+              className={`${classes.stepper} stepper`}
+              connector={<CustomStepperConnector />}
+            >
+              {steps.map((label) => (
+                <Step key={label}>
+                  <StepLabel
+                    StepIconComponent={CustomStepperIcon}
+                    classes={{
+                      alternativeLabel: classes.stepLabel,
+                    }}
+                  >
+                    {label}
+                  </StepLabel>
                 </Step>
               ))}
             </Stepper>

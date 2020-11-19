@@ -78,6 +78,15 @@
 
     .pagination__container {
       margin-top: 20px;
+
+      .view-class-pagination p {
+        color: $secondary-color;
+        font-weight: bold !important;
+      }
+
+      .view-class-pagination .MuiTablePagination-actions {
+        color: $secondary-color;
+      }
     }
 
     .expand-management {

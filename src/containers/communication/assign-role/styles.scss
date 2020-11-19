@@ -1,0 +1,31 @@
+@import '../../../assets/styles/variables';
+
+.assign-role-container {
+  .spacer {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .bread-crumbs-container {
+    .page_title {
+      margin: 0;
+    }
+  }
+  .inner-container {
+    width: calc(100% - 40px);
+    margin: 0 20px;
+    .form-container {
+      .MuiFormControl-root {
+        .MuiSvgIcon-root {
+          color: #ff6b6b;
+        }
+      }
+    }
+  }
+  .MuiDataGrid-footer {
+    .MuiTablePagination-root {
+      width: 100% !important;
+      color: $secondary-color !important;
+    }
+  }
+}

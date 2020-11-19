@@ -13,7 +13,8 @@ import { withRouter } from 'react-router-dom';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { TextareaAutosize, Grid } from '@material-ui/core';
+import { TextareaAutosize, Grid, useTheme } from '@material-ui/core';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -43,6 +44,8 @@ const useStyles = makeStyles((theme) => ({
 const SendMessage = withRouter(({ history, ...props }) => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
+  const themeContext = useTheme();
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [customSelect, setCustomSelect] = useState(false);
@@ -290,42 +293,80 @@ const SendMessage = withRouter(({ history, ...props }) => {
         },
       });
       if (result.status === 200) {
-        setHeaders([
-          { field: 'id', headerName: 'ID', width: 70 },
-          { field: 'fullName', headerName: 'Name', width: 190 },
-          { field: 'email', headerName: 'Email Id', width: 200 },
-          { field: 'erp_id', headerName: 'Erp Id', width: 150 },
-          { field: 'gender', headerName: 'Gender', width: 100 },
-          { field: 'contact', headerName: 'Contact', width: 150 },
-        ]);
         const rows = [];
         const selectionRows = [];
-        result.data.results.forEach((items) => {
-          rows.push({
-            id: items.id,
-            fullName: `${items.user.first_name} ${items.user.last_name}`,
-            email: items.user.email,
-            erp_id: items.erp_id,
-            gender: items.gender,
-            contact: items.contact,
+        if (!isMobile) {
+          setHeaders([
+            { field: 'contact', headerName: 'Contact', width: 180 },
+            { field: 'gender', headerName: 'Gender', width: 100 },
+            { field: 'erp_id', headerName: 'Erp Id', width: 180 },
+            { field: 'email', headerName: 'Email Id', width: 280 },
+            { field: 'fullName', headerName: 'Name', width: 250 },
+            { field: 'id', headerName: 'ID', width: 70 },
+          ]);
+          result.data.results.forEach((items) => {
+            rows.push({
+              contact: items.contact,
+              gender: items.gender,
+              erp_id: items.erp_id,
+              email: items.user.email,
+              fullName: `${items.user.first_name} ${items.user.last_name}`,
+              id: items.id,
+            });
+            selectionRows.push({
+              id: items.id,
+              data: {
+                contact: items.contact,
+                gender: items.gender,
+                erp_id: items.erp_id,
+                email: items.user.email,
+                fullName: `${items.user.first_name} ${items.user.last_name}`,
+                id: items.id,
+              },
+              selected: selectAll
+                ? true
+                : selectedUsers.length
+                ? selectedUsers[pageno - 1].selected.includes(items.id)
+                : false,
+            });
           });
-          selectionRows.push({
-            id: items.id,
-            data: {
+        }
+        if (isMobile) {
+          setHeaders([
+            { field: 'id', headerName: 'ID', width: 70 },
+            { field: 'fullName', headerName: 'Name', width: 190 },
+            { field: 'email', headerName: 'Email Id', width: 200 },
+            { field: 'erp_id', headerName: 'Erp Id', width: 150 },
+            { field: 'gender', headerName: 'Gender', width: 100 },
+            { field: 'contact', headerName: 'Contact', width: 150 },
+          ]);
+          result.data.results.forEach((items) => {
+            rows.push({
               id: items.id,
               fullName: `${items.user.first_name} ${items.user.last_name}`,
               email: items.user.email,
               erp_id: items.erp_id,
               gender: items.gender,
               contact: items.contact,
-            },
-            selected: selectAll
-              ? true
-              : selectedUsers.length
-              ? selectedUsers[pageno - 1].selected.includes(items.id)
-              : false,
+            });
+            selectionRows.push({
+              id: items.id,
+              data: {
+                id: items.id,
+                fullName: `${items.user.first_name} ${items.user.last_name}`,
+                email: items.user.email,
+                erp_id: items.erp_id,
+                gender: items.gender,
+                contact: items.contact,
+              },
+              selected: selectAll
+                ? true
+                : selectedUsers.length
+                ? selectedUsers[pageno - 1].selected.includes(items.id)
+                : false,
+            });
           });
-        });
+        }
         setUsersRow(rows);
         setCompleteData(selectionRows);
         setTotalPage(result.data.count);
