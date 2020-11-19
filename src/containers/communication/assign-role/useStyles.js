@@ -20,6 +20,9 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: '20px',
     marginRight: '20px',
   },
+  viewMoreBtn: {
+    color: theme.palette.primary.main,
+  },
   //   formControl: {
   //     margin: theme.spacing(1),
   //     minWidth: 250,

@@ -53,6 +53,7 @@ const AssignRole = (props) => {
   const [clearAllActive, setClearAllActive] = useState(false);
   const [filterCheck, setFilterCheck] = useState(false);
   const [selectAllObj, setSelectAllObj] = useState([]);
+  const [viewMore, setViewMore] = useState(false);
 
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('xs'));
@@ -681,7 +682,7 @@ const AssignRole = (props) => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item md={4}>
+          <Grid item md={4} xs={6}>
             <FormControlLabel
               control={
                 <Checkbox
@@ -693,6 +694,19 @@ const AssignRole = (props) => {
               label='Select all'
             />
           </Grid>
+          {isMobile && (
+            <Grid item md={4} xs={6}>
+              <p
+                className={classes.viewMoreBtn}
+                onClick={() => {
+                  setViewMore((prevState) => !prevState);
+                }}
+                style={{ textAlign: 'right' }}
+              >
+                {viewMore ? 'View Less' : 'View More'}
+              </p>
+            </Grid>
+          )}
         </Grid>
       </div>
       {assignedRole ? (
@@ -715,7 +729,12 @@ const AssignRole = (props) => {
             header={
               isMobile
                 ? headers
-                    .filter((obj) => ['fullName', 'erp_id'].includes(obj.field))
+                    .filter((obj) => {
+                      if (viewMore) {
+                        return true;
+                      }
+                      return ['fullName', 'erp_id'].includes(obj.field);
+                    })
                     .map((header) => ({ ...header, width: 150 }))
                 : headers
             }
@@ -768,6 +787,7 @@ const AssignRole = (props) => {
           <Grid
             container
             className={`${classes.assignRoleBtnContainer} ${classes.spacer}`}
+            justify={isMobile && 'center'}
           >
             <Grid item md={4}>
               <Button onClick={assignRole}>ASSIGN ROLE</Button>
