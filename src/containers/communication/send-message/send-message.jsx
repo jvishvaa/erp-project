@@ -349,11 +349,11 @@ const SendMessage = withRouter(({ history, ...props }) => {
 
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
-    const testclick = document.querySelectorAll('[class*="PrivateSwitchBase-input-"]');
+    const testclick = document.querySelectorAll('input[type=checkbox]'); // [class*="PrivateSwitchBase-input-"]
     if (!selectAll) {
-      testclick[0].click();
+      testclick[1].click();
     } else {
-      for (let i = 1; i < testclick.length; i += 1) {
+      for (let i = 2; i < testclick.length; i += 1) {
         testclick[i].click();
       }
     }
