@@ -98,7 +98,7 @@ const EditSubject = ({id,name,desc,handleGoBack,setLoading}) => {
 
         <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '10px'}} >
         <Grid item xs={6} sm={2} className={isMobile?'':'addEditButtonsPadding'}>
-            <Button variant='contained' className="custom_button_master" size='medium' onClick={handleGoBack}>
+            <Button variant='contained' className="custom_button_master labelColor" size='medium' onClick={handleGoBack}>
               Back
             </Button>
           </Grid>

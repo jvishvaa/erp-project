@@ -102,16 +102,13 @@ const SubjectTable = () => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
-  const wider= isMobile?'-10px 0px':'20px 0px 20px 8px'
+  const wider= isMobile?'-10px 0px':'-10px 0px 20px 8px'
   const widerWidth=isMobile?'98%':'95%'
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage)
-  };
 
-  const handleChangePageScreen = (event,value) => {
-    setPage(value+1)
-  }
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage+1)
+  };
 
   const handleGrade = (event, value) => {
     if(value)
@@ -268,6 +265,7 @@ const SubjectTable = () => {
     
     
     {tableFlag && !addFlag && !editFlag && 
+    <>
     <Grid container spacing={isMobile?3:5} style={{ width: widerWidth, margin: wider}}>
       <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
         <TextField
@@ -300,7 +298,7 @@ const SubjectTable = () => {
           )}
         />
       </Grid>
-      <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
+      <Grid item xs={12} sm={3}>
         <Autocomplete
           style={{ width: '100%' }}
           size='small'
@@ -320,26 +318,27 @@ const SubjectTable = () => {
           )}
         />
       </Grid>
-      <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
-        <Button 
-        startIcon={<AddOutlinedIcon style={{fontSize:'30px'}}/>} 
-        variant='contained' 
-        color='primary' 
-        size="small" 
-        style={{color:'white'}} 
-        title="Add Subject" 
-        onClick={handleAddSubject}>
-          Add Subject
+      <Grid item xs sm={3} className={isMobile?'hideGridItem':''}/>
+      <Grid item xs={12} sm={3} className={isMobile?'':'addButtonPadding'}>
+         <Button 
+          startIcon={<AddOutlinedIcon style={{fontSize:'30px'}}/>} 
+          variant='contained' 
+          color='primary' 
+          size="small" 
+          style={{color:'white'}} 
+          title="Add Subject" 
+          onClick={handleAddSubject}>
+            Add Subject
         </Button>
       </Grid>
     </Grid>
+    </>
     }
 
     <>
-    {
-      !isMobile
-      ? <>
-      {tableFlag && !addFlag && !editFlag && 
+    {!isMobile?
+     <>
+    {tableFlag && !addFlag && !editFlag && 
     <Paper className={`${classes.root} common-table`}>
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label='sticky table'>
@@ -396,9 +395,10 @@ const SubjectTable = () => {
       <TablePagination
         component='div'
         count={totalCount}
+        className='customPagination'
         rowsPerPage={limit}
         page={page-1}
-        onChangePage={handleChangePageScreen}
+        onChangePage={handleChangePage}
         rowsPerPageOptions={false}
         className='table-pagination'
       />
@@ -415,16 +415,17 @@ const SubjectTable = () => {
           <SubjectCard data={subject} handleDelete={handleDelete} handleEditSubject={handleEditSubject} />
         ))
       }
-      <div className='paginate' >
-       <Pagination
-        count={pageCount}
-        color="primary"
-        showFirstButton
-        showLastButton
-        page={page}
-        onChange={handleChangePage}
+      <div className="paginateData paginateMobileMargin">
+      <TablePagination
+        component='div'
+        count={totalCount}
+        rowsPerPage={limit}
+        page={page-1}
+        onChangePage={handleChangePage}
+        rowsPerPageOptions={false}
+        className='table-pagination'
       />
-    </div>
+      </div>
       </>
       }
       </>
@@ -436,7 +437,7 @@ const SubjectTable = () => {
       onClose={handleCloseDeleteModal}
       aria-labelledby='draggable-dialog-title'
     >
-      <DialogTitle style={{ cursor: 'move' }} id='draggable-dialog-title'>
+      <DialogTitle style={{ cursor: 'move',color: '#014b7e' }} id='draggable-dialog-title'>
         Delete Subject
       </DialogTitle>
       <DialogContent>
@@ -445,10 +446,10 @@ const SubjectTable = () => {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button autoFocus onClick={handleCloseDeleteModal} color='secondary'>
+        <Button onClick={handleCloseDeleteModal} className="labelColor cancelButton">
           Cancel
         </Button>
-        <Button onClick={handleDeleteSubject}>Confirm</Button>
+        <Button color="primary" onClick={handleDeleteSubject}>Confirm</Button>
       </DialogActions>
     </Dialog>
     

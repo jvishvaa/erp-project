@@ -1,23 +1,29 @@
-.paginate {
-  width: 95%;
-  margin: 20px auto;
-  display: flex;
-  justify-content: center;
-  padding:15px;
+.MuiPaginationItem-textPrimary.Mui-selected  {
+  color: white !important;
 }
+
 .custom_button_master{
   width: 100% !important;
   text-transform: uppercase;
 	cursor: pointer;
   outline: none !important;
 }
-/* .custom_button_master:hover{
-	transform: translateY(-2px);
-  box-shadow: 1px 3px 5px 1px rgba(0, 0, 0, 0.3);
-} */
 
 .paginateData{
-  padding: 10px 40px !important;
+  width: 95%;
+  display: flex;
+  justify-content: center;
+  padding: 10px 20px !important;
+}
+
+.paginateData .MuiTypography-colorInherit{
+  font-weight: bold !important;
+  color: #014b7e;
+}
+
+.paginateMobileMargin {
+  margin-top: -25px !important;
+  margin-left: -40px !important;
 }
 
 .hideGridItem{
@@ -32,6 +38,10 @@
   padding: 20px 10px 20px 20px !important;
 }
 
+.addButtonPadding {
+  padding: 15px 10px 15px 20px !important;
+}
+
 .addEditPadding {
   padding: 30px 20px 20px 20px !important;
 }
@@ -40,3 +50,10 @@
   padding: 10px 20px 20px 20px !important;
 }
 
+.labelColor {
+  color: rgb(140, 140, 140) !important;
+}
+
+.cancelButton {
+  background-color: #e0e0e0 !important;
+}

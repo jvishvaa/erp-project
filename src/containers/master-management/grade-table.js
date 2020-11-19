@@ -112,15 +112,11 @@ const GradeTable = () => {
   
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const wider= isMobile?'-10px 0px':'20px 0px 20px 8px'
+  const wider= isMobile?'-10px 0px':'-10px 0px 20px 8px'
   const widerWidth=isMobile?'98%':'95%'
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage)
-  };
-
-  const handleChangePageScreen = (event,value) => {
-    setPage(value+1)
+    setPage(newPage+1)
   }
 
   const handleAddGrade = () => {
@@ -236,7 +232,7 @@ const GradeTable = () => {
 
         {tableFlag && !addFlag && !editFlag && (
           <Grid container spacing={isMobile?3:5} style={{ width: widerWidth, margin: wider}}>
-            <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
+            <Grid item xs={12} sm={3} >
                 <TextField
                   id='gradename'
                   style={{ width: '100%' }}
@@ -248,8 +244,8 @@ const GradeTable = () => {
                   onChange={(e) => setSearchGrade(e.target.value)}
                 />
             </Grid>
-            <Grid item xs sm className={isMobile?'hideGridItem':''}/>
-            <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
+            <Grid item xs sm={9} className={isMobile?'hideGridItem':''}/>
+            <Grid item xs={12} sm={3} className={isMobile?'':'addButtonPadding'}>
               <Button 
               startIcon={<AddOutlinedIcon style={{fontSize:'30px'}}/>} 
               variant='contained' 
@@ -330,7 +326,7 @@ const GradeTable = () => {
               count={totalCount}
               rowsPerPage={limit}
               page={page - 1}
-              onChangePage={handleChangePageScreen}
+              onChangePage={handleChangePage}
               rowsPerPageOptions={false}
               className='table-pagination'
             />
@@ -353,16 +349,16 @@ const GradeTable = () => {
                 />
               ))}
             </Container>
-            <div className='paginate'>
-              <Pagination
-                page={page}
-                count={pageCount}
-                showFirstButton
-                showLastButton
-                onChange={handleChangePage}
-                color='primary'
-                className='pagination-white'
-              />
+            <div className="paginateData paginateMobileMargin">
+            <TablePagination
+              component='div'
+              count={totalCount}
+              rowsPerPage={limit}
+              page={page-1}
+              onChangePage={handleChangePage}
+              rowsPerPageOptions={false}
+              className='table-pagination'
+            />
             </div>
           </>
         )}
@@ -371,17 +367,17 @@ const GradeTable = () => {
           onClose={handleCloseDeleteModal}
           aria-labelledby='draggable-dialog-title'
         >
-          <DialogTitle style={{ cursor: 'move' }} id='draggable-dialog-title'>
+          <DialogTitle style={{ cursor: 'move',color: '#014b7e' }} id='draggable-dialog-title'>
             Delete Grade
           </DialogTitle>
           <DialogContent>
             <DialogContentText>{`Confirm Delete Grade ${gradeName}`}</DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button autoFocus onClick={handleCloseDeleteModal} color='secondary'>
+            <Button  onClick={handleCloseDeleteModal} className="labelColor cancelButton">
               Cancel
             </Button>
-            <Button onClick={handleDeleteGrade}>Confirm</Button>
+            <Button color="primary" onClick={handleDeleteGrade}>Confirm</Button>
           </DialogActions>
         </Dialog>
       </Layout>
