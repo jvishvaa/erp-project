@@ -489,7 +489,7 @@ const GuardianDetailsForm = ({
         <Grid item md='1'>
           <Box display='flex' justifyContent={isMobile ? 'center' : ''}>
             <Button
-              className={classes.formActionButton}
+              className={`${classes.formActionButton} disabled-btn`}
               variant='contained'
               color='primary'
               onClick={handleBack}

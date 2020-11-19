@@ -14,13 +14,14 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import { getSteps, jsonToFormData } from './utils';
 import CustomStepperConnector from '../../components/custom-stepper-connector';
 import CustomStepperIcon from '../../components/custom-stepper-icon';
+import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 
 class CreateUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeStep: 2,
-      showParentForm: true,
+      activeStep: 0,
+      showParentForm: false,
       showGuardianForm: false,
       user: {
         first_name: '',
@@ -204,7 +205,7 @@ class CreateUser extends Component {
     console.log('requestObject ', requestObjFormData);
     createUser(requestObjFormData)
       .then(() => {
-        history.push('/user-management');
+        history.push('/user-management/view-users');
         setAlert('success', 'User creatied');
       })
       .catch(() => {
@@ -223,6 +224,12 @@ class CreateUser extends Component {
     const { classes, creatingUser } = this.props;
     return (
       <div>
+        <div className='bread-crumbs-container'>
+          <CommonBreadcrumbs
+            componentName='User Management'
+            childComponentName='Create User'
+          />
+        </div>
         <Stepper
           activeStep={activeStep}
           alternativeLabel

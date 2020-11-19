@@ -16,6 +16,7 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import { getSteps, jsonToFormData } from './utils';
 import CustomStepperConnector from '../../components/custom-stepper-connector';
 import CustomStepperIcon from '../../components/custom-stepper-icon';
+import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 
 class EditUser extends Component {
   constructor(props) {
@@ -181,7 +182,7 @@ class EditUser extends Component {
     const requestObjFormData = jsonToFormData(requestObj);
     editUser(requestObjFormData)
       .then(() => {
-        history.push('/user-management');
+        history.push('/user-management/view-users');
         setAlert('success', 'User updated');
       })
       .catch(() => {
@@ -206,6 +207,12 @@ class EditUser extends Component {
     const { classes, creatingUser, fetchingUserDetails, selectedUser } = this.props;
     return (
       <div>
+        <div className='bread-crumbs-container'>
+          <CommonBreadcrumbs
+            componentName='User Management'
+            childComponentName='Edit User'
+          />
+        </div>
         {user ? (
           <>
             {/* <Stepper activeStep={activeStep} alternativeLabel className={classes.stepper}>
