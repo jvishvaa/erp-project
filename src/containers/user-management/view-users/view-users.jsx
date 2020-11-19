@@ -246,10 +246,10 @@ const ViewUsers = withRouter(({ history, ...props }) => {
       );
       if (statusChange.status === 200) {
         setAlert('success', statusChange.data.message);
-        const tempGroupData = usersData.slice();
-        tempGroupData[index].active = usersData[index].active
-          ? !usersData[index].active
-          : true;
+        const tempGroupData = JSON.parse(JSON.stringify(usersData));
+        const active = !usersData[index].active;
+        const newData = { ...tempGroupData[index], active };
+        tempGroupData.splice(index, 1, newData);
         setUsersData(tempGroupData);
       } else {
         setAlert('error', statusChange.data.message);
@@ -567,7 +567,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                   <TableCell className={classes.tableCell}>Email</TableCell>
                   <TableCell className={classes.tableCell}>Status</TableCell>
                   <TableCell className={classes.tableCell}>Action</TableCell>
-                  <TableCell className={classes.tableCell}>Edit</TableCell>
+                  {/* <TableCell className={classes.tableCell}>Edit</TableCell> */}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -602,7 +602,9 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                           onClick={() => handleStatusChange(items.userId, i, '2')}
                           title='Deactivate'
                         >
-                          <BlockIcon color='primary' />
+                          <BlockIcon
+                            style={{ color: themeContext.palette.primary.main }}
+                          />
                         </IconButton>
                       ) : (
                         // <button
@@ -617,7 +619,15 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                           type='submit'
                           title='Activate'
                           onClick={() => handleStatusChange(items.userId, i, '1')}
-                          style={{ borderRadius: '50%' }}
+                          style={{
+                            borderRadius: '50%',
+                            backgroundColor: 'green',
+                            border: 0,
+                            width: '30px',
+                            height: '30px',
+                            color: '#ffffff',
+                            cursor: 'pointer',
+                          }}
                         >
                           A
                         </button>
@@ -627,14 +637,19 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                         title='Delete'
                         onClick={() => handleDelete(items.userId, i)}
                       >
-                        <DeleteOutlinedIcon color='primary' />
+                        <DeleteOutlinedIcon
+                          style={{ color: themeContext.palette.primary.main }}
+                        />
                       </IconButton>
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
                       <IconButton title='Edit' onClick={() => handleEdit(items.userId)}>
-                        <EditOutlinedIcon color='primary' />
+                        <EditOutlinedIcon
+                          style={{ color: themeContext.palette.primary.main }}
+                        />
                       </IconButton>
                     </TableCell>
+                    {/* <TableCell className={classes.tableCell}>
+                      
+                    </TableCell> */}
                   </TableRow>
                 ))}
               </TableBody>
