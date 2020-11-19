@@ -212,7 +212,7 @@ const SectionTable = () => {
   useEffect(() => {
     axiosInstance
       .get(
-        `${endpoints.masterManagement.sections}?page=${page}&page_size=${limit}&section=${searchSection}&grade=${searchGrade}`
+        `${endpoints.masterManagement.sectionsTable}?page=${page}&page_size=${limit}&section=${searchSection}&grade=${searchGrade}`
       )
       .then((result) => {
         if (result.status === 200) {
@@ -336,6 +336,16 @@ const SectionTable = () => {
                           {section.section.created_by}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
+                        <IconButton
+                            onClick={(e) => {
+                              setSectionName(section.section.section_name);
+                              handleOpenDeleteModal(section.section.id);
+                            }}
+                            title='Delete Section'
+                          >
+                            <DeleteOutlinedIcon color='primary' />
+                          </IconButton>
+
                           <IconButton
                             onClick={(e) =>
                               handleEditSection(
@@ -346,15 +356,6 @@ const SectionTable = () => {
                             title='Edit Section'
                           >
                             <EditOutlinedIcon color='primary' />
-                          </IconButton>
-                          <IconButton
-                            onClick={(e) => {
-                              setSectionName(section.section.section_name);
-                              handleOpenDeleteModal(section.section.id);
-                            }}
-                            title='Delete Section'
-                          >
-                            <DeleteOutlinedIcon color='primary' />
                           </IconButton>
                         </TableCell>
                       </TableRow>

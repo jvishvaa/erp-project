@@ -373,17 +373,19 @@ const SubjectTable = () => {
                       className={classes.tableCell}
                     >
                       <IconButton
-                        onClick={e=>handleEditSubject(subject.subject.id,subject.subject.subject_name,subject.subject.subject_description)}
-                        title='Edit Subject'
-                      >
-                        <EditOutlinedIcon color='primary' />
-                      </IconButton>
-                      <IconButton
                       onClick={e=>{ handleDelete(subject) }}
                         title='Delete Subject'
                       >
                         <DeleteOutlinedIcon color='primary' />
                       </IconButton>
+
+                      <IconButton
+                        onClick={e=>handleEditSubject(subject.subject.id,subject.subject.subject_name,subject.subject.subject_description)}
+                        title='Edit Subject'
+                      >
+                        <EditOutlinedIcon color='primary' />
+                      </IconButton>
+                      
                     </TableCell>
                 </TableRow>
               );

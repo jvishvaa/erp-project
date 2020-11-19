@@ -292,6 +292,17 @@ const GradeTable = () => {
                           {grade.created_by}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
+
+                          <IconButton
+                            onClick={(e) => {
+                              setGradeName(grade.grade_name);
+                              handleOpenDeleteModal(grade.id);
+                            }}
+                            title='Delete Grade'
+                          >
+                            <DeleteOutlinedIcon color='primary' />
+                          </IconButton>
+
                           <IconButton
                             onClick={(e) =>
                               handleEditGrade(
@@ -304,15 +315,7 @@ const GradeTable = () => {
                           >
                             <EditOutlinedIcon color='primary' />
                           </IconButton>
-                          <IconButton
-                            onClick={(e) => {
-                              setGradeName(grade.grade_name);
-                              handleOpenDeleteModal(grade.id);
-                            }}
-                            title='Delete Grade'
-                          >
-                            <DeleteOutlinedIcon color='primary' />
-                          </IconButton>
+                          
                         </TableCell>
                       </TableRow>
                     );
