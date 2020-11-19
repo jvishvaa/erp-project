@@ -8,6 +8,7 @@ import {
   TableContainer,
   Grid,
   Button,
+  TablePagination,
 } from '@material-ui/core';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
@@ -26,14 +27,15 @@ const OnlineClassResourceTable = () => {
       totalPages,
       loadingResourceOnlineClasses,
       currentPage,
+      count,
     },
     setResourcePage,
   } = useContext(OnlineclassViewContext);
 
   const handlePagination = (event, page) => {
-    if (page !== currentPage) {
-      setResourcePage(page);
-    }
+    setResourcePage(page + 1);
+    // if (page !== currentPage) {
+    // }
   };
 
   const toggleHide = () => {
@@ -92,11 +94,21 @@ const OnlineClassResourceTable = () => {
       >
         <Grid item xs={12}>
           {!loadingResourceOnlineClasses ? (
-            <Pagination
-              count={totalPages}
-              color='primary'
-              onChange={handlePagination}
-              page={currentPage}
+            // <Pagination
+            //   count={totalPages}
+            //   color='primary'
+            //   onChange={handlePagination}
+            //   page={currentPage}
+            // />
+            <TablePagination
+              rowsPerPageOptions={[]}
+              count={count}
+              color='secondary'
+              onChangePage={handlePagination}
+              page={currentPage - 1}
+              rowsPerPage={10}
+              component='div'
+              className='view-class-pagination'
             />
           ) : (
             ''

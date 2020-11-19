@@ -40,6 +40,7 @@ const OnlineclassViewProvider = (props) => {
     studentView: {
       currentPage: 1,
       totalPages: 1,
+      count: 0,
       studentOnlineClasses: [],
       loadingStudentOnlineClasses: false,
       errorLoadingStudentOnlineClasses: '',
@@ -48,6 +49,7 @@ const OnlineclassViewProvider = (props) => {
     managementView: {
       currentPage: 1,
       totalPages: 1,
+      count: 0,
       managementOnlineClasses: [],
       loadingManagementOnlineClasses: false,
       errorLoadingManagementOnlineClasses: '',
@@ -57,6 +59,7 @@ const OnlineclassViewProvider = (props) => {
     resourceView: {
       currentPage: 1,
       totalPages: 1,
+      count: 0,
       resourceOnlineClasses: [],
       loadingResourceOnlineClasses: false,
       errorLoadingResourceOnlineClasses: '',
@@ -90,7 +93,7 @@ const OnlineclassViewProvider = (props) => {
     userId,
     isCompleted,
     pageNo,
-    pageSize = 10
+    pageSize = 12
   ) => {
     dispatch(request(STUDENT_ONLINECLASS_REQUEST));
     try {
