@@ -236,7 +236,7 @@ const GradeTable = () => {
 
         {tableFlag && !addFlag && !editFlag && (
           <Grid container spacing={isMobile?3:5} style={{ width: widerWidth, margin: wider}}>
-            <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
                 <TextField
                   id='gradename'
                   style={{ width: '100%' }}
@@ -249,7 +249,7 @@ const GradeTable = () => {
                 />
             </Grid>
             <Grid item xs sm className={isMobile?'hideGridItem':''}/>
-            <Grid item xs={12} sm={3}>
+            <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
               <Button 
               startIcon={<AddOutlinedIcon style={{fontSize:'30px'}}/>} 
               variant='contained' 
