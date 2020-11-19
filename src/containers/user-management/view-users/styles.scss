@@ -36,17 +36,25 @@
 }
 
 .view-users-page {
-  .form-container {
-    width: 95%;
-    margin: 20px auto;
-    .MuiFormControl-root {
-      .MuiSvgIcon-root {
-        color: #ff6b6b;
-      }
+  .spacer {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .bread-crumbs-container {
+    .page_title {
+      margin: 0;
     }
   }
-  .bread-crumbs-container {
-    width: 95%;
-    margin: 20px auto;
+  .inner-container {
+    width: calc(100% - 40px);
+    margin: 0 20px;
+    .form-container {
+      .MuiFormControl-root {
+        .MuiSvgIcon-root {
+          color: #ff6b6b;
+        }
+      }
+    }
   }
 }

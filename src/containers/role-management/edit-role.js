@@ -20,6 +20,7 @@ import styles from './useStyles';
 
 import ModuleCard from '../../components/module-card';
 import Loading from '../../components/loader/loader';
+import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 
 class EditRole extends Component {
   constructor(props) {
@@ -161,6 +162,12 @@ class EditRole extends Component {
     const { roleName } = this.props;
     return (
       <div className={classes.root}>
+        <div className='bread-crumbs-container'>
+          <CommonBreadcrumbs
+            componentName='Role Management'
+            childComponentName='Edit Role'
+          />
+        </div>
         <Grid container spacing={2} alignItems='center' className={classes.formContainer}>
           <Grid item>
             {fetchingRoleDataById ? (
@@ -182,7 +189,11 @@ class EditRole extends Component {
             <Button onClick={this.handleEditRole}>Update Role</Button>
           </Grid>
         </Grid>
-        <Typography className={classes.sectionHeader}>Number of modules</Typography>
+        <Grid container spacing={2} className={classes.spacer}>
+          <Grid item>
+            <Typography className={classes.sectionHeader}>Number of modules</Typography>
+          </Grid>
+        </Grid>
         <Divider className={classes.divider} />
         <Grid container spacing={4} className={classes.modulesContainer}>
           {fetchingRoleDataById && <Loading message='loading modules ...' />}
