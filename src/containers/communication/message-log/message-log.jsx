@@ -20,7 +20,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import MomentUtils from '@date-io/moment';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
-import Pagination from '@material-ui/lab/Pagination';
+import TablePagination from '@material-ui/core/TablePagination';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -73,7 +73,6 @@ const MessageLog = withRouter(({ history, ...props }) => {
   const [loading, setLoading] = useState(false);
   const [moduleId, setModuleId] = useState();
   const [modulePermision, setModulePermision] = useState(true);
-
   const handleFromDateChange = (event, value) => {
     setSelectedFromDate(value);
   };
@@ -164,7 +163,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
           });
         });
         setMessageRows(tempLogArray);
-        setMessageTotalPage(result.data.data.total_pages);
+        setMessageTotalPage(result.data.data.count);
         setLoading(false);
       } else {
         setAlert('error', result.data.message);
@@ -201,7 +200,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
             sent: 'Yes',
           });
           setUserLogs(tempLogArray);
-          setUsersTotalPage(result.data.data.total_pages);
+          setUsersTotalPage(result.data.data.count);
           setLoading(false);
         });
       } else {
@@ -386,6 +385,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
                     format='YYYY-MM-DD'
                     value={selectedFromDate}
                     onChange={handleFromDateChange}
+                    maxDate={new Date()}
                     KeyboardButtonProps={{
                       'aria-label': 'change date',
                     }}
@@ -400,6 +400,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
                     format='YYYY-MM-DD'
                     value={selectedToDate}
                     onChange={handleToDateChange}
+                    maxDate={new Date()}
                     KeyboardButtonProps={{
                       'aria-label': 'change date',
                     }}
@@ -526,12 +527,14 @@ const MessageLog = withRouter(({ history, ...props }) => {
                       </Table>
                     </TableContainer>
                     <div className={`${classes.root} pagenation_view_groups`}>
-                      <Pagination
-                        page={Number(messageCurrentPageno)}
-                        size='large'
-                        className='books__pagination'
-                        onChange={handleMessagePagination}
+                      <TablePagination
+                        component='div'
                         count={messageTotalPage}
+                        rowsPerPage={15}
+                        page={Number(messageCurrentPageno) - 1}
+                        onChangePage={handleMessagePagination}
+                        rowsPerPageOptions={false}
+                        className='table-pagination-message-log'
                       />
                     </div>
                   </Paper>
@@ -589,12 +592,14 @@ const MessageLog = withRouter(({ history, ...props }) => {
                             </Table>
                           </TableContainer>
                           <div className={`${classes.root} pagenation_view_groups`}>
-                            <Pagination
-                              page={Number(usersCurrentPageno)}
-                              size='large'
-                              className='books__pagination'
-                              onChange={handleUsersPagination}
+                            <TablePagination
+                              component='div'
                               count={usersTotalPage}
+                              rowsPerPage={15}
+                              page={Number(usersCurrentPageno) - 1}
+                              onChangePage={handleUsersPagination}
+                              rowsPerPageOptions={false}
+                              className='table-pagination-users-log-message'
                             />
                           </div>
                         </Paper>

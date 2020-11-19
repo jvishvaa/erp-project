@@ -250,63 +250,68 @@ const EditGroup = withRouter(({ history, ...props }) => {
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
-      <div className='edit_group__page'>
-        <span className='close_icon_edit_group' onClick={() => editClose(false)}>
-          <CloseIcon />
-        </span>
-        <div className='editGroup_Fields'>
-          <CustomInput
-            className='group_name'
-            onChange={addGroupName}
-            value={groupName}
-            name='Group name'
-          />
-          <div className='role_name_edit_group'>
-            <span className='edit_group_level'>Group Role</span>
-            <Chip label={groupRole} className='edit_group_chip' />
-          </div>
-          <div className='role_name_edit_group'>
-            <span className='edit_group_level'>Group Grade</span>
-            {groupGrades.map((grades) => (
-              <Chip label={grades.grade_name} className='edit_group_chip' />
-            ))}
-          </div>
-          <div className='role_name_edit_group'>
-            <span className='edit_group_level'>Group Section</span>
-            {groupSections.map((sections) => (
-              <Chip label={sections.section__section_name} className='edit_group_chip' />
-            ))}
-          </div>
-        </div>
-        {usersRow.length ? (
-          <div className='create_group_select_all_wrapper'>
-            <input
-              type='checkbox'
-              className='create_group_select_all_checkbox'
-              checked={selectAll}
-              onChange={handleSelectAll}
+      <div className='edit_group_cover'>
+        <div className='edit_group__page'>
+          <span className='close_icon_edit_group' onClick={() => editClose(false)}>
+            <CloseIcon />
+          </span>
+          <div className='editGroup_Fields'>
+            <CustomInput
+              className='group_name'
+              onChange={addGroupName}
+              value={groupName}
+              name='Group name'
             />
-            <span>Select All</span>
+            <div className='role_name_edit_group'>
+              <span className='edit_group_level'>Group Role</span>
+              <Chip label={groupRole} className='edit_group_chip' />
+            </div>
+            <div className='role_name_edit_group'>
+              <span className='edit_group_level'>Group Grade</span>
+              {groupGrades.map((grades) => (
+                <Chip label={grades.grade_name} className='edit_group_chip' />
+              ))}
+            </div>
+            <div className='role_name_edit_group'>
+              <span className='edit_group_level'>Group Section</span>
+              {groupSections.map((sections) => (
+                <Chip
+                  label={sections.section__section_name}
+                  className='edit_group_chip'
+                />
+              ))}
+            </div>
           </div>
-        ) : null}
-        <CustomSelectionTable
-          header={headers}
-          rows={usersRow}
-          completeData={completeData}
-          totalRows={totalPage}
-          setSelectAll={setSelectAll}
-          edit
-          pageno={pageno}
-          selectedUsers={selectedUsers}
-          changePage={setPageno}
-          setSelectedUsers={setSelectedUsers}
-        />
-        <input
-          className='edit_group_button'
-          type='button'
-          onClick={editGroup}
-          value='edit group'
-        />
+          {usersRow.length ? (
+            <div className='create_group_select_all_wrapper'>
+              <input
+                type='checkbox'
+                className='create_group_select_all_checkbox'
+                checked={selectAll}
+                onChange={handleSelectAll}
+              />
+              <span>Select All</span>
+            </div>
+          ) : null}
+          <CustomSelectionTable
+            header={headers}
+            rows={usersRow}
+            completeData={completeData}
+            totalRows={totalPage}
+            setSelectAll={setSelectAll}
+            edit
+            pageno={pageno}
+            selectedUsers={selectedUsers}
+            changePage={setPageno}
+            setSelectedUsers={setSelectedUsers}
+          />
+          <input
+            className='edit_group_button'
+            type='button'
+            onClick={editGroup}
+            value='edit group'
+          />
+        </div>
       </div>
     </>
   );

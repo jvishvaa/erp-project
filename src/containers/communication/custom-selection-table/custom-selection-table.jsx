@@ -76,6 +76,8 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
         rowCount={totalRows}
         checkboxSelection
         onPageChange={pageChange}
+        hideFooterSelectedRowCount
+        hideFooterRowCount
         paginationMode='server'
         ref={(input) => (apiRef = input)}
         {...data}

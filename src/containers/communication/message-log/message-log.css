@@ -105,6 +105,24 @@ color: white !important;
 .MuiPickersDay-daySelected {
 	color: white !important;
 }
+.table-pagination-message-log{
+	text-align: center;
+    display: flex;
+   	justify-content: center;
+    color: #014b7e !important;
+}
+.table-pagination-users-log-message{
+	text-align: center;
+    display: flex;
+   	justify-content: center;
+    color: #014b7e !important;
+}
+.table-pagination-message-log .MuiTablePagination-caption{
+	font-weight: 600;
+}
+.table-pagination-users-log-message .MuiTablePagination-caption{
+	font-weight: 600;
+}
 @media screen and (max-width: 700px) {
   .message_log_wrapper {
     text-align: center;

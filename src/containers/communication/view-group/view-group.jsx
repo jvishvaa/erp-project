@@ -7,13 +7,20 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
+import { Button } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
+import TablePagination from '@material-ui/core/TablePagination';
 import TableHead from '@material-ui/core/TableHead';
 import Pagination from '@material-ui/lab/Pagination';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import TableRow from '@material-ui/core/TableRow';
@@ -110,7 +117,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
           })
         );
         setGroupsData(resultGroups);
-        setTotalPages(result.data.data.total_pages);
+        setTotalPages(result.data.data.count);
       } else {
         setAlert('error', result.data.message);
         setLoading(false);
@@ -121,7 +128,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
     }
   };
   const handlePagination = (event, page) => {
-    setCurrentPage(page);
+    setCurrentPage(page + 1);
   };
   const handleStatusChange = async (id, index) => {
     try {
@@ -237,25 +244,40 @@ const ViewGroup = withRouter(({ history, ...props }) => {
             />
           ) : null}
           {deleteAlert ? (
-            <div className='view_group_delete_alert_wrapper'>
-              <span className='view_group_delete_alert_tag'>
-                Do you want to Delete the Group
-              </span>
-              <div className='view_group_delete_alert_button_wrapper'>
-                <input
-                  className='view_group_delete_alert_button'
-                  type='button'
-                  onClick={handleDeleteConfirm}
-                  value='Delete'
-                />
-                <input
-                  className='view_group_delete_alert_button'
-                  type='button'
+            <Dialog
+              open={deleteAlert}
+              onClose={handleDeleteCancel}
+              className='view_group_delete_modal'
+            >
+              <DialogTitle
+                className='view_group_delete_modal_title'
+                style={{ cursor: 'move' }}
+                id='draggable-dialog-title'
+              >
+                Delete Group
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText className='view_group_delete_alert_tag'>
+                  Do you want to Delete the Group
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  autoFocus
                   onClick={handleDeleteCancel}
-                  value='cancel'
-                />
-              </div>
-            </div>
+                  className='view_group_delete_alert_button_cancel'
+                  color='secondary'
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className='view_group_delete_alert_button'
+                  onClick={handleDeleteConfirm}
+                >
+                  Confirm
+                </Button>
+              </DialogActions>
+            </Dialog>
           ) : null}
           <div className='view_group_white_space_wrapper'>
             {isHidden ? (
@@ -296,11 +318,6 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                       >
                         Action
                       </TableCell>
-                      <TableCell
-                        className={`${classes.tableCell} ${isHidden ? 'hide' : 'show'}`}
-                      >
-                        Edit
-                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody className='view_groups_body'>
@@ -315,12 +332,20 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                         <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
                           {items.roleType}
                         </TableCell>
-                        <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
+                        <TableCell
+                          className={`view_group_table_sections ${
+                            isHidden ? 'hide' : 'show'
+                          }`}
+                        >
                           {items.grades.length
                             ? items.grades.map((grades) => grades.grade_name)
                             : null}
                         </TableCell>
-                        <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
+                        <TableCell
+                          className={`view_group_table_sections ${
+                            isHidden ? 'hide' : 'show'
+                          }`}
+                        >
                           {items.sections.length
                             ? items.sections.map((sections, index) => {
                                 if (index + 1 === items.sections.length) {
@@ -365,8 +390,6 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                           >
                             <DeleteIcon />
                           </span>
-                        </TableCell>
-                        <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
                           <span
                             className='group_view_button group_view_delete_button'
                             title='Edit'
@@ -382,12 +405,14 @@ const ViewGroup = withRouter(({ history, ...props }) => {
               </TableContainer>
 
               <div className={`${classes.root} pagenation_view_groups`}>
-                <Pagination
-                  page={Number(currentPage)}
-                  size='large'
-                  className='books__pagination'
-                  onChange={handlePagination}
+                <TablePagination
+                  component='div'
                   count={totalPages}
+                  rowsPerPage={15}
+                  page={Number(currentPage) - 1}
+                  onChangePage={handlePagination}
+                  rowsPerPageOptions={false}
+                  className='table-pagination-view-group'
                 />
               </div>
             </Paper>
