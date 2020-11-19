@@ -727,7 +727,7 @@ const CreateClassForm = () => {
                 style={{ width: '100%', color: '#8c8c8c' }}
                 onClick={handleClear}
               >
-                Reset
+                Clear all
               </Button>
             </Grid>
             <Grid item xs={12} sm={2}>

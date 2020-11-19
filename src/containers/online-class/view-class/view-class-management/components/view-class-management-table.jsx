@@ -7,6 +7,7 @@ import {
   TableBody,
   TableContainer,
   Grid,
+  TablePagination,
 } from '@material-ui/core';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
@@ -25,14 +26,15 @@ const ViewClassManagementTable = () => {
       loadingManagementOnlineClasses,
       currentManagementTab,
       currentPage,
+      count,
     },
     setManagementPage,
   } = useContext(OnlineclassViewContext);
 
   const handlePagination = (event, page) => {
-    if (page !== currentPage) {
-      setManagementPage(page);
-    }
+    setManagementPage(page + 1);
+    // if (page !== currentPage) {
+    // }
   };
 
   const toggleHide = () => {
@@ -42,20 +44,10 @@ const ViewClassManagementTable = () => {
   return (
     <div className='viewclass__management-table'>
       {isHidden ? (
-        // <AddCircleOutlineIcon
-        //   fontSize='large'
-        //   className='expand-management'
-        //   onClick={toggleHide}
-        // />
         <h5 className='expand-management' onClick={toggleHide}>
           View more
         </h5>
       ) : (
-        // <RemoveCircleIcon
-        //   fontSize='large'
-        //   className='expand-management'
-        //   onClick={toggleHide}
-        // />
         <h5 className='expand-management' onClick={toggleHide}>
           View less
         </h5>
@@ -118,11 +110,15 @@ const ViewClassManagementTable = () => {
       >
         <Grid item xs={12}>
           {!loadingManagementOnlineClasses ? (
-            <Pagination
-              count={totalPages}
-              color='primary'
-              onChange={handlePagination}
-              page={currentPage}
+            <TablePagination
+              rowsPerPageOptions={[]}
+              count={count}
+              color='secondary'
+              onChangePage={handlePagination}
+              page={currentPage - 1}
+              rowsPerPage={10}
+              component='div'
+              className='view-class-pagination'
             />
           ) : (
             ''
