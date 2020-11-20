@@ -30,7 +30,7 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import Layout from '../../Layout';
-import EditGroup from '../edit-group/edit-group';
+import CreateGroup from '../create-group/create-group';
 import Loading from '../../../components/loader/loader';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './view-group.css';
@@ -226,205 +226,207 @@ const ViewGroup = withRouter(({ history, ...props }) => {
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
-      <Layout>
-        <div className='creategroup__page'>
-          <div className='view_group_breadcrumb_container'>
-            <CommonBreadcrumbs
-              componentName='Communication'
-              childComponentName='View Group'
-            />
-          </div>
-          {editing ? (
-            <EditGroup
-              editId={editGroupId}
-              editClose={setEditing}
-              groupName={editGroupName}
-              groupRole={editGroupRole}
-              groupGrades={editGroupGrades}
-              groupSections={editGroupSections}
-              setGroupName={setEditGroupName}
-            />
-          ) : null}
-          {deleteAlert ? (
-            <Dialog
-              open={deleteAlert}
-              onClose={handleDeleteCancel}
-              className='view_group_delete_modal'
-            >
-              <DialogTitle
-                className='view_group_delete_modal_title'
-                style={{ cursor: 'move' }}
-                id='draggable-dialog-title'
+      {editing ? (
+        <CreateGroup
+          preSelectedGroupId={editGroupId}
+          edit
+          editClose={setEditing}
+          preSelectedGroupName={editGroupName}
+          preSeletedRoles={editGroupRole}
+          preSeletedGrades={editGroupGrades}
+          preSeletedSections={editGroupSections}
+          setGroupName={setEditGroupName}
+        />
+      ) : (
+        <Layout>
+          <div className='creategroup__page'>
+            <div className='view_group_breadcrumb_container'>
+              <CommonBreadcrumbs
+                componentName='Communication'
+                childComponentName='View Group'
+              />
+            </div>
+            {deleteAlert ? (
+              <Dialog
+                open={deleteAlert}
+                onClose={handleDeleteCancel}
+                className='view_group_delete_modal'
               >
-                Delete Group
-              </DialogTitle>
-              <DialogContent>
-                <DialogContentText className='view_group_delete_alert_tag'>
-                  Do you want to Delete the Group
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button
-                  autoFocus
-                  onClick={handleDeleteCancel}
-                  className='view_group_delete_alert_button_cancel'
-                  color='secondary'
+                <DialogTitle
+                  className='view_group_delete_modal_title'
+                  style={{ cursor: 'move' }}
+                  id='draggable-dialog-title'
                 >
-                  Cancel
-                </Button>
-                <Button
-                  className='view_group_delete_alert_button'
-                  onClick={handleDeleteConfirm}
+                  Delete Group
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText className='view_group_delete_alert_tag'>
+                    Do you want to Delete the Group
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    autoFocus
+                    onClick={handleDeleteCancel}
+                    className='view_group_delete_alert_button_cancel'
+                    color='secondary'
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    className='view_group_delete_alert_button'
+                    onClick={handleDeleteConfirm}
+                  >
+                    Confirm
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            ) : null}
+            <div className='view_group_white_space_wrapper'>
+              {isHidden ? (
+                <span className='message_log_expand_manage' onClick={toggleHide}>
+                  view more
+                </span>
+              ) : (
+                <span className='message_log_expand_manage' onClick={toggleHide}>
+                  view less
+                </span>
+              )}
+              <Paper className={` view_group_table_wrapper ${classes.root}`}>
+                <TableContainer
+                  className={`table table-shadow view_group_table ${classes.container}`}
                 >
-                  Confirm
-                </Button>
-              </DialogActions>
-            </Dialog>
-          ) : null}
-          <div className='view_group_white_space_wrapper'>
-            {isHidden ? (
-              <span className='message_log_expand_manage' onClick={toggleHide}>
-                view more
-              </span>
-            ) : (
-              <span className='message_log_expand_manage' onClick={toggleHide}>
-                view less
-              </span>
-            )}
-            <Paper className={` view_group_table_wrapper ${classes.root}`}>
-              <TableContainer
-                className={`table table-shadow view_group_table ${classes.container}`}
-              >
-                <Table stickyHeader aria-label='sticky table'>
-                  <TableHead className={`${classes.columnHeader} view_groups_header`}>
-                    <TableRow>
-                      <TableCell className={classes.tableCell}>Group Name</TableCell>
-                      <TableCell
-                        className={`${classes.tableCell} ${isHidden ? 'hide' : 'show'}`}
-                      >
-                        Role Type
-                      </TableCell>
-                      <TableCell
-                        className={`${classes.tableCell} ${isHidden ? 'hide' : 'show'}`}
-                      >
-                        Grades
-                      </TableCell>
-                      <TableCell
-                        className={`${classes.tableCell} ${isHidden ? 'hide' : 'show'}`}
-                      >
-                        Sections
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>Status</TableCell>
-                      <TableCell
-                        className={`${classes.tableCell} ${isHidden ? 'hide' : 'show'}`}
-                      >
-                        Action
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody className='view_groups_body'>
-                    {groupsData.map((items, i) => (
-                      <TableRow
-                        hover
-                        role='checkbox'
-                        tabIndex={-1}
-                        key={`group_table_index${i}`}
-                      >
-                        <TableCell>{items.groupName}</TableCell>
-                        <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
-                          {items.roleType}
+                  <Table stickyHeader aria-label='sticky table'>
+                    <TableHead className={`${classes.columnHeader} view_groups_header`}>
+                      <TableRow>
+                        <TableCell className={classes.tableCell}>Group Name</TableCell>
+                        <TableCell
+                          className={`${classes.tableCell} ${isHidden ? 'hide' : 'show'}`}
+                        >
+                          Role Type
                         </TableCell>
                         <TableCell
-                          className={`view_group_table_sections ${
-                            isHidden ? 'hide' : 'show'
-                          }`}
+                          className={`${classes.tableCell} ${isHidden ? 'hide' : 'show'}`}
                         >
-                          {items.grades.length
-                            ? items.grades.map((grades) => grades.grade_name)
-                            : null}
+                          Grades
                         </TableCell>
                         <TableCell
-                          className={`view_group_table_sections ${
-                            isHidden ? 'hide' : 'show'
-                          }`}
+                          className={`${classes.tableCell} ${isHidden ? 'hide' : 'show'}`}
                         >
-                          {items.sections.length
-                            ? items.sections.map((sections, index) => {
-                                if (index + 1 === items.sections.length) {
-                                  return sections.section__section_name;
-                                }
-                                return `${sections.section__section_name}, `;
-                              })
-                            : null}
+                          Sections
                         </TableCell>
-                        <TableCell>
-                          {items.active ? (
-                            <div style={{ color: 'green' }}>Activated</div>
-                          ) : (
-                            <div style={{ color: 'red' }}>Deactivated</div>
-                          )}
-                        </TableCell>
-                        <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
-                          {items.active ? (
-                            <IconButton
-                              aria-label='deactivate'
-                              onClick={() => handleStatusChange(items.groupId, i)}
-                              title='Deactivate'
-                            >
-                              <BlockIcon style={{ color: '#ff6b6b' }} />
-                            </IconButton>
-                          ) : (
-                            <button
-                              type='submit'
-                              title='Activate'
-                              onClick={() => handleStatusChange(items.groupId, i)}
-                              style={{
-                                borderRadius: '50%',
-                                backgroundColor: 'green',
-                                border: 0,
-                                width: '30px',
-                                height: '30px',
-                                color: '#ffffff',
-                                cursor: 'pointer',
-                              }}
-                            >
-                              A
-                            </button>
-                          )}
-                          <IconButton
-                            title='Delete'
-                            onClick={() => handleDelete(items.groupId, i)}
-                          >
-                            <DeleteOutlinedIcon style={{ color: '#ff6b6b' }} />
-                          </IconButton>
-                          <IconButton
-                            title='Edit'
-                            onClick={() => handleEdit(items.groupId, i)}
-                          >
-                            <EditOutlinedIcon style={{ color: '#ff6b6b' }} />
-                          </IconButton>
+                        <TableCell className={classes.tableCell}>Status</TableCell>
+                        <TableCell
+                          className={`${classes.tableCell} ${isHidden ? 'hide' : 'show'}`}
+                        >
+                          Action
                         </TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                    </TableHead>
+                    <TableBody className='view_groups_body'>
+                      {groupsData.map((items, i) => (
+                        <TableRow
+                          hover
+                          role='checkbox'
+                          tabIndex={-1}
+                          key={`group_table_index${i}`}
+                        >
+                          <TableCell>{items.groupName}</TableCell>
+                          <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
+                            {items.roleType}
+                          </TableCell>
+                          <TableCell
+                            className={`view_group_table_sections ${
+                              isHidden ? 'hide' : 'show'
+                            }`}
+                          >
+                            {items.grades.length
+                              ? items.grades.map((grades) => grades.grade_name)
+                              : null}
+                          </TableCell>
+                          <TableCell
+                            className={`view_group_table_sections ${
+                              isHidden ? 'hide' : 'show'
+                            }`}
+                          >
+                            {items.sections.length
+                              ? items.sections.map((sections, index) => {
+                                  if (index + 1 === items.sections.length) {
+                                    return sections.section__section_name;
+                                  }
+                                  return `${sections.section__section_name}, `;
+                                })
+                              : null}
+                          </TableCell>
+                          <TableCell>
+                            {items.active ? (
+                              <div style={{ color: 'green' }}>Activated</div>
+                            ) : (
+                              <div style={{ color: 'red' }}>Deactivated</div>
+                            )}
+                          </TableCell>
+                          <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
+                            {items.active ? (
+                              <IconButton
+                                aria-label='deactivate'
+                                onClick={() => handleStatusChange(items.groupId, i)}
+                                title='Deactivate'
+                              >
+                                <BlockIcon style={{ color: '#ff6b6b' }} />
+                              </IconButton>
+                            ) : (
+                              <button
+                                type='submit'
+                                title='Activate'
+                                onClick={() => handleStatusChange(items.groupId, i)}
+                                style={{
+                                  borderRadius: '50%',
+                                  backgroundColor: 'green',
+                                  border: 0,
+                                  width: '30px',
+                                  height: '30px',
+                                  color: '#ffffff',
+                                  cursor: 'pointer',
+                                }}
+                              >
+                                A
+                              </button>
+                            )}
+                            <IconButton
+                              title='Delete'
+                              onClick={() => handleDelete(items.groupId, i)}
+                            >
+                              <DeleteOutlinedIcon style={{ color: '#ff6b6b' }} />
+                            </IconButton>
+                            <IconButton
+                              title='Edit'
+                              onClick={() => handleEdit(items.groupId, i)}
+                            >
+                              <EditOutlinedIcon style={{ color: '#ff6b6b' }} />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
 
-              <div className={`${classes.root} pagenation_view_groups`}>
-                <TablePagination
-                  component='div'
-                  count={totalPages}
-                  rowsPerPage={15}
-                  page={Number(currentPage) - 1}
-                  onChangePage={handlePagination}
-                  rowsPerPageOptions={false}
-                  className='table-pagination-view-group'
-                />
-              </div>
-            </Paper>
+                <div className={`${classes.root} pagenation_view_groups`}>
+                  <TablePagination
+                    component='div'
+                    count={totalPages}
+                    rowsPerPage={15}
+                    page={Number(currentPage) - 1}
+                    onChangePage={handlePagination}
+                    rowsPerPageOptions={false}
+                    className='table-pagination-view-group'
+                  />
+                </div>
+              </Paper>
+            </div>
           </div>
-        </div>
-      </Layout>
+        </Layout>
+      )}
     </>
   );
 });
