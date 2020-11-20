@@ -14,14 +14,12 @@ import IconButton from '@material-ui/core/IconButton';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import { Grid, TextField, Button, useTheme } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { makeStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Pagination from '@material-ui/lab/Pagination';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Layout from '../Layout';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
@@ -375,7 +373,7 @@ const SubjectTable = () => {
                       className={classes.tableCell}
                     >
                       <IconButton
-                      onClick={e=>{ handleDelete(subject) }}
+                        onClick={e=>{ handleDelete(subject) }}
                         title='Delete Subject'
                       >
                         <DeleteOutlinedIcon style={{color:'#fe6b6b'}} />

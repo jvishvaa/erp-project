@@ -26,7 +26,7 @@ const CommonBreadcrumbs = withRouter(({ history, ...props }) => {
       ) : null}
        {childComponentNameNext ? (
         <>
-          <ArrowForwardIosIcon className='page_heading_arrow' />
+          <ArrowForwardIosIcon className='page_heading_arrow_mob' />
           {childComponentNameNext}
         </>
       ) : null}
