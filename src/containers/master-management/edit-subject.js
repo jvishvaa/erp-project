@@ -33,14 +33,14 @@ const EditSubject = ({id,name,desc,handleGoBack,setLoading}) => {
             setSubjectName('')
             setDescription('')
             setLoading(false);
-            setAlert('success', result.data.message);
+            setAlert('success', "Subject updated successfully!");
           } else {            
             setLoading(false);
-            setAlert('error', result.data.message);
+            setAlert('error', "Network Error!");
           }
         }).catch((error)=>{
           setLoading(false);
-          setAlert('error', error.message);
+          setAlert('error', "Section couldn't be updated!");
         })
       }
       else

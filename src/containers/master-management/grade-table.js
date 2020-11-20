@@ -155,16 +155,16 @@ const GradeTable = () => {
           {
             setDelFlag(!delFlag);
             setLoading(false);
-            setAlert('success', result.data.message);
+            setAlert('success', 'Grade deleted successfully!');
           }
         } else {
           setLoading(false);
-          setAlert('error', result.data.message);
+          setAlert('error', "Network Error!");
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.message);
+        setAlert('error', "Grade couldn't be deleted!");
       });
     setOpenDeleteModal(false);
   };
@@ -198,11 +198,11 @@ const GradeTable = () => {
             setPageCount(result.data.result.total_pages);
           }
         } else {
-          setAlert('error', result.data.message);
+          setAlert('error', 'Network Error');
         }
       })
       .catch((error) => {
-        setAlert('error', error.message);
+        setAlert('error', 'Grade Unavailable!');
       });
   }, [delFlag, goBackFlag, page, searchGrade]);
 
@@ -242,7 +242,7 @@ const GradeTable = () => {
                   size='small'
                   name='gradename'
                   autoComplete='off'
-                  onChange={(e) => setSearchGrade(e.target.value)}
+                  onChange={(e) => {setPage(1);setSearchGrade(e.target.value);}}
                 />
             </Grid>
             <Grid item xs sm={9} className={isMobile?'hideGridItem':''}/>

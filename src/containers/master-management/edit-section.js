@@ -29,14 +29,14 @@ const EditSection = ({id,name,handleGoBack,setLoading}) => {
           handleGoBack()
           setSectionName('')
           setLoading(false);
-          setAlert('success', result.data.message);
+          setAlert('success', "Section updated successfully!");
         } else {
           setLoading(false);
-          setAlert('error', result.data.message);
+          setAlert('error', "Network Error!");
         }
       }).catch((error)=>{
         setLoading(false);
-        setAlert('error', error.message);
+        setAlert('error', "Section couldn't be updated!");
       })
     }
     else

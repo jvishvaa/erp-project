@@ -26,15 +26,15 @@ const CreateGrade = ({setLoading,handleGoBack}) => {
         setGradeName('')
         setGradeType('')
         setLoading(false);
-        setAlert('success', result.data.message);
+        setAlert('success', "Grade created successfully!");
       }
     } else {
       setLoading(false);
-      setAlert('error', result.data.message);
+      setAlert('error', "Network Error!");
     }
     }).catch((error)=>{
       setLoading(false);
-      setAlert('error', error.message);
+      setAlert('error', "Grade couldn't be created!");
     })
     };
 

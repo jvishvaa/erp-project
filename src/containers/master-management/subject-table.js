@@ -112,6 +112,7 @@ const SubjectTable = () => {
     if(value)
       {
         setSearchGrade(value.id)
+        setPage(1)
         axiosInstance.get(`${endpoints.masterManagement.sections}?branch_id=${role_details.branch[0]}&grade_id=${value.id}`)
         .then(result=>{
           if(result.data.status_code===200)
@@ -144,7 +145,10 @@ const SubjectTable = () => {
     setSearchSection('')
     setSectionDisplay(value)
     if(value)
+    {
+      setPage(1)
       setSearchSection(value.section_id)
+    }  
   };
 
 
@@ -184,14 +188,14 @@ const SubjectTable = () => {
       if (result.status === 200) {
         setDelFlag(!delFlag)
         setLoading(false);
-        setAlert('success', result.data.message);
+        setAlert('success', "Subject deleted successfully!");
       } else {
         setLoading(false);
-        setAlert('error', result.data.message);
+        setAlert('error', "Network Error!");
       }
       }).catch((error)=>{
         setLoading(false);
-        setAlert('error', error.message);
+        setAlert('error', "Subject couldn't be deleted!");
       })
     setOpenDeleteModal(false)
   };
@@ -216,16 +220,15 @@ const SubjectTable = () => {
       if (result.status === 200) {
         setGrades(result.data.data);
       } else {
-        setAlert('error', result.data.message);
+        setAlert('error', 'Network Error!');
       }
     })
     .catch((error)=>{
-      setAlert('error', error.message);
+      setAlert('error', 'Grades Unavailable!');
     })
   },[])
 
   useEffect(()=>{
-   
       axiosInstance.get(`${endpoints.masterManagement.subjects}?page=${page}&page_size=${limit}&grade=${searchGrade}&subject=${searchSubject}&section=${searchSection}`)
       .then(result=>{
         if (result.status === 200) {
@@ -233,11 +236,11 @@ const SubjectTable = () => {
           setSubjects(result.data.result.results)
           setPageCount(result.data.result.total_pages)
         } else {
-          setAlert('error', result.data.message);
+          setAlert('error', 'Network Error!');
         }
       })
       .catch((error)=>{
-        setAlert('error', error.message);
+        setAlert('error', 'Subject Unavailable!');
       })
   },[goBackFlag,delFlag,page,searchGrade,searchSection,searchSubject])
       
@@ -276,7 +279,7 @@ const SubjectTable = () => {
           size='small'
           name='subname'
           autoComplete="off"
-          onChange={e=>setSearchSubject(e.target.value)}
+          onChange={e=>{setPage(1);setSearchSubject(e.target.value);}}
         />
       </Grid>
       <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>

@@ -120,7 +120,11 @@ const SectionTable = () => {
   }
 
   const handleGrade = (event, value) => {
-    if (value) setSearchGrade(value.id);
+    if (value) 
+    {
+      setPage(1)
+      setSearchGrade(value.id);
+    }
     else setSearchGrade('');
   };
 
@@ -162,16 +166,16 @@ const SectionTable = () => {
           {
             setDelFlag(!delFlag);
             setLoading(false);
-            setAlert('success', result.data.message);
+            setAlert('success', 'Section deleted successfully!');
           }
         } else {
           setLoading(false);
-          setAlert('error', result.data.message);
+          setAlert('error', "Network Error!");
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.message);
+        setAlert('error', "Section couldn't be deleted!");
       });
     setOpenDeleteModal(false);
   };
@@ -199,11 +203,11 @@ const SectionTable = () => {
       if (result.status === 200) {
         setGrades(result.data.data);
       } else {
-        setAlert('error', result.data.message);
+        setAlert('error', 'Network Error!');
       }
     })
     .catch((error) => {
-      setAlert('error', error.message);
+      setAlert('error', 'Grades Unavailable!');
     });
   },[])
 
@@ -218,11 +222,11 @@ const SectionTable = () => {
           setSections(result.data.result.results);
           setPageCount(result.data.result.total_pages);
         } else {
-          setAlert('error', result.data.message);
+          setAlert('error', 'Network Error!');
         }
       })
       .catch((error) => {
-        setAlert('error', error.message);
+        setAlert('error', 'Section Unavailable!');
       });
 
   }, [delFlag, goBackFlag, page, searchGrade, searchSection]);

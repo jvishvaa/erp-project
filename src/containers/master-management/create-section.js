@@ -36,14 +36,14 @@ const CreateSection = ({grades,setLoading,handleGoBack}) => {
       setSectionName('')
       setSelectedGrade('')
       setLoading(false);
-      setAlert('success', result.data.message);
+      setAlert('success', "Section created successfully!");
     } else {        
       setLoading(false);
-      setAlert('error', result.data.message);
+      setAlert('error', "Network Error!");
     }
     }).catch((error)=>{
       setLoading(false);        
-      setAlert('error', error.message);
+      setAlert('error', "Section couldn't be created!");
     })
     };
 

@@ -31,13 +31,13 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
           }
           else
           {
-            setAlert('error',result.data.message)
+            setAlert('error','Network Error!')
             setSections([])
             setSelectedSection([])
           }
         })
         .catch(error=>{
-          setAlert('error', error.message);
+          setAlert('error', 'Sections Unavailable!');
           setSelectedSection([])
           setSections([])
         })
@@ -74,14 +74,14 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
         setSelectedSection('')
         setDescription('')
         setLoading(false);
-        setAlert('success', result.data.message);
+        setAlert('success', 'Subject Created Successfully!');
       } else {
         setLoading(false);
-        setAlert('error', result.data.message);
+        setAlert('error','Network Error!')
       }
       }).catch((error)=>{
         setLoading(false);
-        setAlert('error', error.message);
+        setAlert('error', "Subject couldn't be created!");
       })
     };
 
