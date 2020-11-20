@@ -304,7 +304,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
             { field: 'fullName', headerName: 'Name', width: 250 },
             { field: 'id', headerName: 'ID', width: 70 },
           ]);
-          result.data.results.forEach((items) => {
+          result.data.data.results.forEach((items) => {
             rows.push({
               contact: items.contact,
               gender: items.gender,
@@ -369,11 +369,11 @@ const SendMessage = withRouter(({ history, ...props }) => {
         }
         setUsersRow(rows);
         setCompleteData(selectionRows);
-        setTotalPage(result.data.count);
+        setTotalPage(result.data.data.count);
         setLoading(false);
         if (!selectedUsers.length) {
           const tempSelectedUser = [];
-          for (let page = 1; page <= result.data.total_pages; page += 1) {
+          for (let page = 1; page <= result.data.data.total_pages; page += 1) {
             tempSelectedUser.push({ pageNo: page, selected: [] });
           }
           setSelectedUsers(tempSelectedUser);

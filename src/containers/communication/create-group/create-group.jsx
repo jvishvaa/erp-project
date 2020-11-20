@@ -1,3 +1,4 @@
+/* eslint-disable no-lonely-if */
 /* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-nested-ternary */
@@ -35,6 +36,16 @@ const useStyles = makeStyles((theme) => ({
 
 // eslint-disable-next-line no-unused-vars
 const CreateGroup = withRouter(({ history, ...props }) => {
+  const {
+    edit,
+    preSeletedRoles,
+    preSeletedBranch,
+    preSeletedGrades,
+    preSeletedSections,
+    preSelectedGroupName,
+    preSelectedGroupId,
+    editClose,
+  } = props || {};
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
@@ -195,7 +206,13 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     const gradesId = [];
     const sectionsId = [];
     setNext(true);
-    let getUserListUrl = `${endpoints.communication.communicationUserList}?page=${pageno}&page_size=15&module_id=${moduleId}`;
+    let getUserListUrl;
+    if (!edit) {
+      getUserListUrl = `${endpoints.communication.communicationUserList}?page=${pageno}&page_size=15&module_id=${moduleId}`;
+    }
+    if (edit) {
+      getUserListUrl = `${endpoints.communication.editGroup}${preSelectedGroupId}/retrieve-update-group/?page=${pageno}&page_size=15&module_id=${moduleId}`;
+    }
     if (selectedRoles.length && !selectedRoles.includes('All')) {
       roleList
         .filter((item) => selectedRoles.includes(item['role_name']))
@@ -246,10 +263,10 @@ const CreateGroup = withRouter(({ history, ...props }) => {
             { field: 'gender', headerName: 'Gender', width: 100 },
             { field: 'erp_id', headerName: 'Erp Id', width: 180 },
             { field: 'email', headerName: 'Email Id', width: 280 },
-            { field: 'fullName', headerName: 'Name', width: 250 },
+            { field: 'fullName', headerName: 'Name', width: 280 },
             { field: 'id', headerName: 'ID', width: 70 },
           ]);
-          result.data.results.forEach((items) => {
+          result.data.data.results.forEach((items) => {
             rows.push({
               contact: items.contact,
               gender: items.gender,
@@ -272,6 +289,8 @@ const CreateGroup = withRouter(({ history, ...props }) => {
                 ? true
                 : selectedUsers.length
                 ? selectedUsers[pageno - 1].selected.includes(items.id)
+                : edit
+                ? items.is_assigned
                 : false,
             });
           });
@@ -308,23 +327,120 @@ const CreateGroup = withRouter(({ history, ...props }) => {
                 ? true
                 : selectedUsers.length
                 ? selectedUsers[pageno - 1].selected.includes(items.id)
+                : edit
+                ? items.is_assigned
                 : false,
             });
           });
         }
         setUsersRow(rows);
         setCompleteData(selectionRows);
-        setTotalPage(result.data.count);
+        setTotalPage(result.data.data.count);
         setLoading(false);
         if (!selectedUsers.length) {
           const tempSelectedUser = [];
-          for (let page = 1; page <= result.data.total_pages; page += 1) {
-            tempSelectedUser.push({ pageNo: page, selected: [] });
+          for (let page = 1; page <= result.data.data.total_pages; page += 1) {
+            tempSelectedUser.push({ pageNo: page, first: true, selected: [] });
           }
           setSelectedUsers(tempSelectedUser);
         }
       } else {
         setAlert('error', result.data.message);
+        setLoading(false);
+      }
+    } catch (error) {
+      setAlert('error', error.message);
+      setLoading(false);
+    }
+  };
+  const editGroup = async () => {
+    console.log(selectedUsers);
+    const editGroupApiUrl = `${endpoints.communication.editGroup}${preSelectedGroupId}/retrieve-update-group/`;
+    const rolesId = [];
+    const branchId = [];
+    const gradesId = [];
+    const sectionsId = [];
+    if (selectedRoles.length && !selectedRoles.includes('All')) {
+      roleList
+        .filter((item) => selectedRoles.includes(item['role_name']))
+        .forEach((items) => {
+          rolesId.push(items.id);
+        });
+    }
+    if (selectedBranch) {
+      branchId.push(selectedBranch.id);
+    }
+    if (selectedGrades.length && !selectedGrades.includes('All')) {
+      gradeList
+        .filter((item) => selectedGrades.includes(item['grade__grade_name']))
+        .forEach((items) => {
+          gradesId.push(items.grade_id);
+        });
+    }
+    if (selectedSections.length && !selectedSections.includes('All')) {
+      sectionList
+        .filter((item) => selectedSections.includes(item['section__section_name']))
+        .forEach((items) => {
+          sectionsId.push(items.id);
+        });
+    }
+    const branchArray = [];
+    const gradeArray = [];
+    const sectionArray = [];
+    const selectionArray = [];
+    gradesId.forEach((item) => {
+      gradeArray.push(item);
+    });
+    branchId.forEach((item) => {
+      branchArray.push(item);
+    });
+    sectionsId.forEach((item) => {
+      sectionArray.push(item);
+    });
+    if (selectAll) {
+      selectionArray.push(0);
+    } else {
+      selectedUsers.forEach((item) => {
+        item.selected.forEach((ids) => {
+          selectionArray.push(ids);
+        });
+      });
+    }
+    if (!selectionArray.length) {
+      setSelectectUserError('Please select some users');
+      return;
+    }
+    setSelectectUserError('');
+    try {
+      setLoading(true);
+      const response = await axiosInstance.put(
+        editGroupApiUrl,
+        {
+          group_name: groupName,
+          role: rolesId[0],
+          branch: branchArray,
+          grade: gradeArray,
+          mapping_bgs: sectionArray,
+          erp_users: selectionArray,
+        },
+        {
+          headers: {
+            // 'application/json' is the modern content-type for JSON, but some
+            // older servers may use 'text/json'.
+            // See: http://bit.ly/text-json
+            Authorization: `Bearer ${token}`,
+            'content-type': 'application/json',
+          },
+        }
+      );
+      const { message, status_code: statusCode } = response.data;
+      if (statusCode === 200) {
+        setAlert('success', message);
+        editClose(false);
+        setSelectAll(false);
+        setLoading(false);
+      } else {
+        setAlert('error', response.data.message);
         setLoading(false);
       }
     } catch (error) {
@@ -456,6 +572,16 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       setSelectedBranch();
     }
   };
+  const handleEditCancel = () => {
+    setSelectedUsers([]);
+    setSelectedRoles([]);
+    setSelectedSections([]);
+    setSelectedGrades([]);
+    setGroupName('');
+    setSelectectUserError('');
+    setSelectAll(false);
+    editClose(false);
+  };
 
   const handleback = () => {
     if (selectAll) {
@@ -493,6 +619,26 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   };
 
   useEffect(() => {
+    if (
+      selectedUsers.length &&
+      !selectedUsers[pageno - 1].length &&
+      selectedUsers[pageno - 1].first &&
+      completeData.length
+    ) {
+      let tempSelection = [];
+      tempSelection = selectedUsers;
+      const newEnter = [{ pageNo: pageno, first: false, selected: [] }];
+      completeData.forEach((items) => {
+        if (items.selected) {
+          newEnter[0].selected.push(items.id);
+        }
+      });
+      tempSelection.splice(pageno - 1, 1, newEnter[0]);
+      setSelectedUsers(tempSelection);
+    }
+  }, [completeData, selectedUsers]);
+
+  useEffect(() => {
     getRoleApi();
     getBranchApi();
     if (NavData && NavData.length) {
@@ -517,24 +663,37 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     } else {
       setModulePermision(false);
     }
+    if (edit) {
+      setSelectedBranch({ id: 5, branch_name: 'Orchids' });
+      const tempRoles = [];
+      const tempGrades = [];
+      const tempSections = [];
+      tempRoles.push(preSeletedRoles);
+      preSeletedGrades.map((items) => tempGrades.push(items.grade_name));
+      preSeletedSections.map((items) => tempSections.push(items.section__section_name));
+      setSelectedRoles(tempRoles);
+      setGroupName(preSelectedGroupName);
+      setSelectedGrades(tempGrades);
+      setSelectedSections(tempSections);
+    }
   }, []);
 
   useEffect(() => {
     if (selectedBranch) {
       setGrade([]);
-      setSelectedGrades([]);
-      setSelectedSections([]);
       getGradeApi();
     }
   }, [selectedBranch]);
   useEffect(() => {
-    if (selectedGrades.length) {
+    if (selectedGrades.length && gradeList.length) {
       // setSelectedSections([]);
       getSectionApi();
     } else {
-      setSelectedSections([]);
+      if (!edit) {
+        setSelectedSections([]);
+      }
     }
-  }, [selectedGrades]);
+  }, [gradeList, selectedGrades]);
   useEffect(() => {
     if (next && groupName && selectedRoles) {
       displayUsersList();
@@ -548,7 +707,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
           <div className='create_group_breadcrumb_wrapper'>
             <CommonBreadcrumbs
               componentName='Communication'
-              childComponentName='Create Group'
+              childComponentName={edit ? 'Edit Group' : 'Create Group'}
             />
           </div>
           {next ? (
@@ -673,6 +832,16 @@ const CreateGroup = withRouter(({ history, ...props }) => {
           )}
           <div className='create_group_filter_container'>
             <Grid container className='create_group_custom_button_wrapper' spacing={5}>
+              {!next && edit ? (
+                <Grid xs={12} lg={3} className='create_group_custom_button' item>
+                  <input
+                    className='custom_button addgroup_back_button'
+                    type='button'
+                    onClick={handleEditCancel}
+                    value='Cancel'
+                  />
+                </Grid>
+              ) : null}
               {next ? (
                 <Grid xs={12} lg={3} className='create_group_custom_button' item>
                   <input
@@ -684,14 +853,25 @@ const CreateGroup = withRouter(({ history, ...props }) => {
                 </Grid>
               ) : null}
               {next ? (
-                <Grid xs={12} lg={3} className='create_group_custom_button' item>
-                  <input
-                    className='custom_button addgroup_next_button'
-                    type='button'
-                    onClick={createGroup}
-                    value='create group'
-                  />
-                </Grid>
+                edit ? (
+                  <Grid xs={12} lg={3} className='create_group_custom_button' item>
+                    <input
+                      className='custom_button addgroup_next_button'
+                      type='button'
+                      onClick={editGroup}
+                      value='edit group'
+                    />
+                  </Grid>
+                ) : (
+                  <Grid xs={12} lg={3} className='create_group_custom_button' item>
+                    <input
+                      className='custom_button addgroup_next_button'
+                      type='button'
+                      onClick={createGroup}
+                      value='create group'
+                    />
+                  </Grid>
+                )
               ) : (
                 <Grid xs={12} lg={3} className='create_group_custom_button' item>
                   <input
