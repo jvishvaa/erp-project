@@ -340,7 +340,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
             { field: 'gender', headerName: 'Gender', width: 100 },
             { field: 'contact', headerName: 'Contact', width: 150 },
           ]);
-          result.data.results.forEach((items) => {
+          result.data.data.results.forEach((items) => {
             rows.push({
               id: items.id,
               fullName: `${items.user.first_name} ${items.user.last_name}`,
