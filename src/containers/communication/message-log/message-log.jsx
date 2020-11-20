@@ -113,6 +113,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
 
   const handleSmsType = (event, value) => {
     if (value.length) {
+      setMessageCurrentPageno(1);
       const ids = value.map((el) => el);
       setSelectedSmsType(ids);
     } else {
@@ -121,6 +122,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
   };
   const handleBranch = (event, value) => {
     if (value.length) {
+      setMessageCurrentPageno(1);
       const ids = value.map((el) => el);
       setSelectedBranches(ids);
     } else {

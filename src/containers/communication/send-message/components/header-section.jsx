@@ -15,7 +15,7 @@ const HeaderSection = withRouter(({ history, ...props }) => {
       <div className='send_message_breadcrumb_wrapper'>
         <CommonBreadcrumbs
           componentName='Communication'
-          childComponentName='send sms/mail'
+          childComponentName='Send sms/mail'
         />
       </div>
       <div className='send_message_header'>
