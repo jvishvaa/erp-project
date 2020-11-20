@@ -283,6 +283,12 @@
   .profile_wrapper {
     flex-direction: column;
   }
+  .password_label {
+    margin: 6% 0% 2%;
+}
+  .MuiIconButton-edgeEnd {
+	margin-right: -5px !important;
+  }
   .profile_upload_image_button {
     width: 40%;
     margin: auto !important;
