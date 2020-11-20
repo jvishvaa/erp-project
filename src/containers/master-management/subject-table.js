@@ -94,7 +94,7 @@ const SubjectTable = () => {
   const [sectionDisplay,setSectionDisplay]=useState([])
   const [searchSubject,setSearchSubject]=useState('')
   const [loading, setLoading] = useState(false);
-  const [limit, setLimit] = useState(2);
+  const [limit, setLimit] = useState(15);
   const [goBackFlag,setGoBackFlag]=useState(false)
   const {role_details}=JSON.parse(localStorage.getItem('userDetails'))
   const themeContext = useTheme();
