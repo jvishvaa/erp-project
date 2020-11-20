@@ -137,14 +137,14 @@ const ChangePassword = (props) => {
         <Button
           className='profile_delete_change_password_button'
           type='button'
-          variant='contained'
+          // variant='contained'
           onClick={handleCancel}
           value='cancel'
         />
         <Button
           className='profile_delete_change_password_button'
           type='button'
-          variant='contained'
+          // variant='contained'
           onClick={handleChangePassword}
           value='Change Password'
         />

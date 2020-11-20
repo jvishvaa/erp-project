@@ -36,7 +36,7 @@ const CreateSection = ({grades,setLoading,handleGoBack}) => {
       setSectionName('')
       setSelectedGrade('')
       setLoading(false);
-      setAlert('success', "Section created successfully!");
+      setAlert('success', "Section added successfully!");
     } else {        
       setLoading(false);
       setAlert('error', "Network Error!");

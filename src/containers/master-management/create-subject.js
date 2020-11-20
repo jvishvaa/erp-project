@@ -74,7 +74,7 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
         setSelectedSection('')
         setDescription('')
         setLoading(false);
-        setAlert('success', 'Subject Created Successfully!');
+        setAlert('success', 'Subject added successfully!');
       } else {
         setLoading(false);
         setAlert('error','Network Error!')
