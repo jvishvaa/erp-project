@@ -21,9 +21,11 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import TableRow from '@material-ui/core/TableRow';
+import IconButton from '@material-ui/core/IconButton';
+import BlockIcon from '@material-ui/icons/Block';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
@@ -364,39 +366,43 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                         </TableCell>
                         <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
                           {items.active ? (
-                            <button
-                              type='submit'
-                              className='group_view_deactivate_button group_view_button'
-                              title='Deactivate'
+                            <IconButton
+                              aria-label='deactivate'
                               onClick={() => handleStatusChange(items.groupId, i)}
+                              title='Deactivate'
                             >
-                              D
-                            </button>
+                              <BlockIcon style={{ color: '#ff6b6b' }} />
+                            </IconButton>
                           ) : (
                             <button
                               type='submit'
-                              className='group_view_activate_button group_view_button'
                               title='Activate'
                               onClick={() => handleStatusChange(items.groupId, i)}
+                              style={{
+                                borderRadius: '50%',
+                                backgroundColor: 'green',
+                                border: 0,
+                                width: '30px',
+                                height: '30px',
+                                color: '#ffffff',
+                                cursor: 'pointer',
+                              }}
                             >
                               A
                             </button>
                           )}
-
-                          <span
-                            className='group_view_button group_view_delete_button'
+                          <IconButton
                             title='Delete'
                             onClick={() => handleDelete(items.groupId, i)}
                           >
-                            <DeleteIcon />
-                          </span>
-                          <span
-                            className='group_view_button group_view_delete_button'
+                            <DeleteOutlinedIcon style={{ color: '#ff6b6b' }} />
+                          </IconButton>
+                          <IconButton
                             title='Edit'
                             onClick={() => handleEdit(items.groupId, i)}
                           >
-                            <EditIcon />
-                          </span>
+                            <EditOutlinedIcon style={{ color: '#ff6b6b' }} />
+                          </IconButton>
                         </TableCell>
                       </TableRow>
                     ))}

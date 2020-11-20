@@ -237,7 +237,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       const rolesId = [];
       const gradesId = [];
       const sectionsId = [];
-      getUserListUrl = `${endpoints.communication.communicationUserList}?page=${pageno}&page_size=15`;
+      getUserListUrl = `${endpoints.communication.communicationUserList}?page=${pageno}&page_size=15&module_id=${moduleId}`;
       if (selectedRoles.length) {
         roleList
           .filter((item) => selectedRoles.includes(item['role_name']))
