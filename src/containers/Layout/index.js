@@ -85,6 +85,7 @@ const Layout = ({ children, history }) => {
   const [totalPage, setTotalPage] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [scrollDone, setScrollDone] = useState(false);
+  const [mobileSeach, setMobileSeach] = useState(false);
   const [displayUserDetails, setDisplayUserDetails] = useState(false);
   const [userId, setUserId] = useState();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -205,6 +206,18 @@ const Layout = ({ children, history }) => {
 
   const handleTextSearchClear = (e) => {
     e.preventDefault();
+    setTimeout(() => {
+      setSearchedText('');
+      setGlobalSearchResults(false);
+      setSearching(false);
+      setSearchUserDetails([]);
+      setTotalPage(0);
+      setCurrentPage(1);
+    }, 500);
+  };
+  const handleTextSearchClearMobile = (e) => {
+    e.preventDefault();
+    setMobileSeach(false);
     setTimeout(() => {
       setSearchedText('');
       setGlobalSearchResults(false);
@@ -445,15 +458,19 @@ const Layout = ({ children, history }) => {
               </Paper>
               <Popper
                 open={searching}
-                className={classes.searchDropdown}
+                className={`${classes.searchDropdown} ${
+                  isMobile ? classes.searchDropdownMobile : 'null'
+                }`}
                 placement='bottom'
                 style={{
                   position: 'fixed',
-                  top:
-                    searchInputRef.current &&
-                    searchInputRef.current.getBoundingClientRect().top + 32,
+                  top: isMobile
+                    ? searchInputRef.current &&
+                      searchInputRef.current.getBoundingClientRect().top + 44
+                    : searchInputRef.current &&
+                      searchInputRef.current.getBoundingClientRect().top + 32,
                   left: 'auto',
-                  right: `calc(100vw - ${
+                  right: `calc(${isMobile ? '95vw' : '100vw'} - ${
                     searchInputRef.current &&
                     searchInputRef.current.getBoundingClientRect().left +
                       searchInputRef.current.getBoundingClientRect().width
@@ -664,15 +681,48 @@ const Layout = ({ children, history }) => {
               }}
             />
             <Box className={classes.sidebarActionButtons}>
-              <IconButton onClick={handleLogout}>
-                <PowerSettingsNewIcon style={{ color: '#ffffff' }} />
-              </IconButton>
-              <IconButton>
-                <SettingsIcon style={{ color: '#ffffff' }} />
-              </IconButton>
-              <IconButton>
-                <SearchIcon style={{ color: '#ffffff' }} />
-              </IconButton>
+              {mobileSeach ? (
+                <div>
+                  <Paper component='form' className={classes.searchInputContainerMobile}>
+                    <IconButton
+                      type='submit'
+                      className={classes.clearIconButtonMobile}
+                      aria-label='close'
+                      onClick={handleTextSearchClearMobile}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                    <InputBase
+                      value={searchedText}
+                      className={classes.searchInputMobile}
+                      placeholder='Search..'
+                      inputProps={{ 'aria-label': 'search across site' }}
+                      inputRef={searchInputRef}
+                      onChange={changeQuery}
+                      onBlur={handleTextSearchClear}
+                    />
+                    <IconButton
+                      type='submit'
+                      className={classes.searchIconButtonMobile}
+                      aria-label='search'
+                    >
+                      <SearchIcon />
+                    </IconButton>
+                  </Paper>
+                </div>
+              ) : (
+                <>
+                  <IconButton onClick={handleLogout}>
+                    <PowerSettingsNewIcon style={{ color: '#ffffff' }} />
+                  </IconButton>
+                  <IconButton>
+                    <SettingsIcon style={{ color: '#ffffff' }} />
+                  </IconButton>
+                  <IconButton onClick={() => setMobileSeach(true)}>
+                    <SearchIcon style={{ color: '#ffffff' }} />
+                  </IconButton>
+                </>
+              )}
             </Box>
             <Box style={{ padding: '0 10px' }}>
               <Divider style={{ backgroundColor: '#ffffff' }} />
