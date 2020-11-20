@@ -18,9 +18,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Pagination from '@material-ui/lab/Pagination';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
@@ -114,20 +112,19 @@ const SectionTable = () => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
-  const wider= isMobile?'-10px 0px':'20px 0px 20px 8px'
+  const wider= isMobile?'-10px 0px':'-10px 0px 20px 8px'
   const widerWidth=isMobile?'98%':'95%'
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage)
+    setPage(newPage+1)
   }
-
-  const handleChangePageScreen = (event,value) => {
-    setPage(value+1)
-  }
-
 
   const handleGrade = (event, value) => {
-    if (value) setSearchGrade(value.id);
+    if (value) 
+    {
+      setPage(1)
+      setSearchGrade(value.id);
+    }
     else setSearchGrade('');
   };
 
@@ -169,16 +166,16 @@ const SectionTable = () => {
           {
             setDelFlag(!delFlag);
             setLoading(false);
-            setAlert('success', result.data.message);
+            setAlert('success', 'Section deleted successfully!');
           }
         } else {
           setLoading(false);
-          setAlert('error', result.data.message);
+          setAlert('error', "Network Error!");
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.message);
+        setAlert('error', "Section couldn't be deleted!");
       });
     setOpenDeleteModal(false);
   };
@@ -206,18 +203,18 @@ const SectionTable = () => {
       if (result.status === 200) {
         setGrades(result.data.data);
       } else {
-        setAlert('error', result.data.message);
+        setAlert('error', 'Network Error!');
       }
     })
     .catch((error) => {
-      setAlert('error', error.message);
+      setAlert('error', 'Grades Unavailable!');
     });
   },[])
 
   useEffect(() => {
     axiosInstance
       .get(
-        `${endpoints.masterManagement.sections}?page=${page}&page_size=${limit}&section=${searchSection}&grade=${searchGrade}`
+        `${endpoints.masterManagement.sectionsTable}?page=${page}&page_size=${limit}&section=${searchSection}&grade=${searchGrade}`
       )
       .then((result) => {
         if (result.status === 200) {
@@ -225,11 +222,11 @@ const SectionTable = () => {
           setSections(result.data.result.results);
           setPageCount(result.data.result.total_pages);
         } else {
-          setAlert('error', result.data.message);
+          setAlert('error', 'Network Error!');
         }
       })
       .catch((error) => {
-        setAlert('error', error.message);
+        setAlert('error', 'Section Unavailable!');
       });
 
   }, [delFlag, goBackFlag, page, searchGrade, searchSection]);
@@ -243,6 +240,7 @@ const SectionTable = () => {
           <CommonBreadcrumbs
             componentName='Master Management'
             childComponentName='Section List'
+            childComponentNameNext={(addFlag&&!tableFlag)?'Add Section':(editFlag&&!tableFlag)?'Edit Section':null}
           />
         </div>
       </div>
@@ -276,7 +274,7 @@ const SectionTable = () => {
               />
             </Box>
           </Grid>
-          <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
+          <Grid item xs={12} sm={3}>
             <Box className={classes.centerInMobile}>
               <Autocomplete
                 size='small'
@@ -297,8 +295,8 @@ const SectionTable = () => {
               />
             </Box>
           </Grid>
-          <Grid item xs sm className={isMobile?'hideGridItem':''}/>
-          <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
+          <Grid item xs sm={6} className={isMobile?'hideGridItem':''}/>
+          <Grid item xs={12} sm={3} className={isMobile?'':'addButtonPadding'}>
              <Button 
              startIcon={<AddOutlinedIcon style={{fontSize:'30px'}}/>}
              variant='contained' 
@@ -341,6 +339,16 @@ const SectionTable = () => {
                           {section.section.created_by}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
+                        <IconButton
+                            onClick={(e) => {
+                              setSectionName(section.section.section_name);
+                              handleOpenDeleteModal(section.section.id);
+                            }}
+                            title='Delete Section'
+                          >
+                            <DeleteOutlinedIcon style={{color:'#fe6b6b'}} />
+                          </IconButton>
+
                           <IconButton
                             onClick={(e) =>
                               handleEditSection(
@@ -350,16 +358,7 @@ const SectionTable = () => {
                             }
                             title='Edit Section'
                           >
-                            <EditOutlinedIcon color='primary' />
-                          </IconButton>
-                          <IconButton
-                            onClick={(e) => {
-                              setSectionName(section.section.section_name);
-                              handleOpenDeleteModal(section.section.id);
-                            }}
-                            title='Delete Section'
-                          >
-                            <DeleteOutlinedIcon color='primary' />
+                            <EditOutlinedIcon style={{color:'#fe6b6b'}} />
                           </IconButton>
                         </TableCell>
                       </TableRow>
@@ -374,7 +373,7 @@ const SectionTable = () => {
               count={totalCount}
               rowsPerPage={limit}
               page={page - 1}
-              onChangePage={handleChangePageScreen}
+              onChangePage={handleChangePage}
               rowsPerPageOptions={false}
               className='table-pagination'
             />
@@ -397,16 +396,16 @@ const SectionTable = () => {
                 />
               ))}
             </Container>
-            <div className='paginate'>
-              <Pagination
-                page={page}
-                count={pageCount}
-                showFirstButton
-                showLastButton
-                onChange={handleChangePage}
-                color='primary'
-                className='pagination-white'
-              />
+            <div className="paginateData paginateMobileMargin">
+            <TablePagination
+              component='div'
+              count={totalCount}
+              rowsPerPage={limit}
+              page={page-1}
+              onChangePage={handleChangePage}
+              rowsPerPageOptions={false}
+              className='table-pagination'
+            />
             </div>
           </>
         )}
@@ -415,7 +414,7 @@ const SectionTable = () => {
           onClose={handleCloseDeleteModal}
           aria-labelledby='draggable-dialog-title'
         >
-          <DialogTitle style={{ cursor: 'move' }} id='draggable-dialog-title'>
+          <DialogTitle style={{ cursor: 'move',color: '#014b7e'}} id='draggable-dialog-title'>
             Delete Section
           </DialogTitle>
           <DialogContent>
@@ -424,11 +423,11 @@ const SectionTable = () => {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button autoFocus onClick={handleCloseDeleteModal} color='secondary'>
-              Cancel
-            </Button>
-            <Button onClick={handleDeleteSection}>Confirm</Button>
-          </DialogActions>
+          <Button  onClick={handleCloseDeleteModal} className="labelColor cancelButton">
+            Cancel
+          </Button>
+          <Button color="primary" onClick={handleDeleteSection}>Confirm</Button>
+        </DialogActions>
         </Dialog>
       </Layout>
     </>

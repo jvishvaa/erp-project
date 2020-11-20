@@ -9,7 +9,7 @@ import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import './breadcrumbs.css';
 
 const CommonBreadcrumbs = withRouter(({ history, ...props }) => {
-  const { componentName, childComponentName } = props || {};
+  const { componentName, childComponentName, childComponentNameNext } = props || {};
   return (
     <div className='page_title'>
       {' '}
@@ -22,6 +22,12 @@ const CommonBreadcrumbs = withRouter(({ history, ...props }) => {
         <>
           <ArrowForwardIosIcon className='page_heading_arrow' />
           {childComponentName}
+        </>
+      ) : null}
+       {childComponentNameNext ? (
+        <>
+          <ArrowForwardIosIcon className='page_heading_arrow_mob' />
+          {childComponentNameNext}
         </>
       ) : null}
     </div>

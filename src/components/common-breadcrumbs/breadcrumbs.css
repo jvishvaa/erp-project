@@ -9,6 +9,13 @@
   vertical-align: bottom;
   margin: 0% 1.5%;
 }
+.page_heading_arrow_mob {
+  color: #ff6b6b;
+  width: 20px !important;
+  vertical-align: bottom;
+  margin: 0% 1.5%;
+}
+
 @media screen and (max-width: 700px) {
   .page_heading_arrow {
     color: #ff6b6b;
@@ -16,6 +23,14 @@
     vertical-align: middle;
     margin: 0% 1.5%;
   }
+
+  .page_heading_arrow_mob {
+    color: #ff6b6b;
+    width: 10px !important;
+    vertical-align: middle;
+    margin: 0% 1.5% 0% 0%;
+  }
+
   .page_title {
     font-size: 0.9rem;
     margin: auto;

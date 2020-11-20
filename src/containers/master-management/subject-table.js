@@ -14,14 +14,12 @@ import IconButton from '@material-ui/core/IconButton';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import { Grid, TextField, Button, useTheme } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { makeStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import Pagination from '@material-ui/lab/Pagination';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Layout from '../Layout';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
@@ -77,7 +75,7 @@ const columns = [
 const SubjectTable = () => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = useState(1);
   const [subjects,setSubjects]=useState([])
   const [grades,setGrades]=useState([])
   const [sections,setSections]=useState([])
@@ -102,21 +100,19 @@ const SubjectTable = () => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
-  const wider= isMobile?'-10px 0px':'20px 0px 20px 8px'
+  const wider= isMobile?'-10px 0px':'-10px 0px 20px 8px'
   const widerWidth=isMobile?'98%':'95%'
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage)
-  };
 
-  const handleChangePageScreen = (event,value) => {
-    setPage(value+1)
-  }
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage+1)
+  };
 
   const handleGrade = (event, value) => {
     if(value)
       {
         setSearchGrade(value.id)
+        setPage(1)
         axiosInstance.get(`${endpoints.masterManagement.sections}?branch_id=${role_details.branch[0]}&grade_id=${value.id}`)
         .then(result=>{
           if(result.data.status_code===200)
@@ -149,7 +145,10 @@ const SubjectTable = () => {
     setSearchSection('')
     setSectionDisplay(value)
     if(value)
+    {
+      setPage(1)
       setSearchSection(value.section_id)
+    }  
   };
 
 
@@ -189,14 +188,14 @@ const SubjectTable = () => {
       if (result.status === 200) {
         setDelFlag(!delFlag)
         setLoading(false);
-        setAlert('success', result.data.message);
+        setAlert('success', "Subject deleted successfully!");
       } else {
         setLoading(false);
-        setAlert('error', result.data.message);
+        setAlert('error', "Network Error!");
       }
       }).catch((error)=>{
         setLoading(false);
-        setAlert('error', error.message);
+        setAlert('error', "Subject couldn't be deleted!");
       })
     setOpenDeleteModal(false)
   };
@@ -221,11 +220,11 @@ const SubjectTable = () => {
       if (result.status === 200) {
         setGrades(result.data.data);
       } else {
-        setAlert('error', result.data.message);
+        setAlert('error', 'Network Error!');
       }
     })
     .catch((error)=>{
-      setAlert('error', error.message);
+      setAlert('error', 'Grades Unavailable!');
     })
   },[])
 
@@ -233,15 +232,15 @@ const SubjectTable = () => {
       axiosInstance.get(`${endpoints.masterManagement.subjects}?page=${page}&page_size=${limit}&grade=${searchGrade}&subject=${searchSubject}&section=${searchSection}`)
       .then(result=>{
         if (result.status === 200) {
-          setTotalCount(result.data.result.count);
-          setSubjects(result.data.result.results);
+          setTotalCount(result.data.result.count)
+          setSubjects(result.data.result.results)
           setPageCount(result.data.result.total_pages)
         } else {
-          setAlert('error', result.data.message);
+          setAlert('error', 'Network Error!');
         }
       })
       .catch((error)=>{
-        setAlert('error', error.message);
+        setAlert('error', 'Subject Unavailable!');
       })
   },[goBackFlag,delFlag,page,searchGrade,searchSection,searchSubject])
       
@@ -259,6 +258,7 @@ const SubjectTable = () => {
         <CommonBreadcrumbs
           componentName='Master Management'
           childComponentName='Subject List'
+          childComponentNameNext={(addFlag&&!tableFlag)?'Add Subject':(editFlag&&!tableFlag)?'Edit Subject':null}
         />
       </div>
     </div>
@@ -268,6 +268,7 @@ const SubjectTable = () => {
     
     
     {tableFlag && !addFlag && !editFlag && 
+    <>
     <Grid container spacing={isMobile?3:5} style={{ width: widerWidth, margin: wider}}>
       <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
         <TextField
@@ -278,7 +279,7 @@ const SubjectTable = () => {
           size='small'
           name='subname'
           autoComplete="off"
-          onChange={e=>setSearchSubject(e.target.value)}
+          onChange={e=>{setPage(1);setSearchSubject(e.target.value);}}
         />
       </Grid>
       <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
@@ -300,7 +301,7 @@ const SubjectTable = () => {
           )}
         />
       </Grid>
-      <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
+      <Grid item xs={12} sm={3}>
         <Autocomplete
           style={{ width: '100%' }}
           size='small'
@@ -320,26 +321,27 @@ const SubjectTable = () => {
           )}
         />
       </Grid>
-      <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
-        <Button 
-        startIcon={<AddOutlinedIcon style={{fontSize:'30px'}}/>} 
-        variant='contained' 
-        color='primary' 
-        size="small" 
-        style={{color:'white'}} 
-        title="Add Subject" 
-        onClick={handleAddSubject}>
-          Add Subject
+      <Grid item xs sm={3} className={isMobile?'hideGridItem':''}/>
+      <Grid item xs={12} sm={3} className={isMobile?'':'addButtonPadding'}>
+         <Button 
+          startIcon={<AddOutlinedIcon style={{fontSize:'30px'}}/>} 
+          variant='contained' 
+          color='primary' 
+          size="small" 
+          style={{color:'white'}} 
+          title="Add Subject" 
+          onClick={handleAddSubject}>
+            Add Subject
         </Button>
       </Grid>
     </Grid>
+    </>
     }
 
     <>
-    {
-      !isMobile
-      ? <>
-      {tableFlag && !addFlag && !editFlag && 
+    {!isMobile?
+     <>
+    {tableFlag && !addFlag && !editFlag && 
     <Paper className={`${classes.root} common-table`}>
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label='sticky table'>
@@ -374,17 +376,19 @@ const SubjectTable = () => {
                       className={classes.tableCell}
                     >
                       <IconButton
+                        onClick={e=>{ handleDelete(subject) }}
+                        title='Delete Subject'
+                      >
+                        <DeleteOutlinedIcon style={{color:'#fe6b6b'}} />
+                      </IconButton>
+
+                      <IconButton
                         onClick={e=>handleEditSubject(subject.subject.id,subject.subject.subject_name,subject.subject.subject_description)}
                         title='Edit Subject'
                       >
-                        <EditOutlinedIcon color='primary' />
+                        <EditOutlinedIcon style={{color:'#fe6b6b'}} />
                       </IconButton>
-                      <IconButton
-                      onClick={e=>{ handleDelete(subject) }}
-                        title='Delete Subject'
-                      >
-                        <DeleteOutlinedIcon color='primary' />
-                      </IconButton>
+                      
                     </TableCell>
                 </TableRow>
               );
@@ -396,9 +400,10 @@ const SubjectTable = () => {
       <TablePagination
         component='div'
         count={totalCount}
+        className='customPagination'
         rowsPerPage={limit}
         page={page-1}
-        onChangePage={handleChangePageScreen}
+        onChangePage={handleChangePage}
         rowsPerPageOptions={false}
         className='table-pagination'
       />
@@ -415,16 +420,17 @@ const SubjectTable = () => {
           <SubjectCard data={subject} handleDelete={handleDelete} handleEditSubject={handleEditSubject} />
         ))
       }
-      <div className='paginate' >
-       <Pagination
-        count={pageCount}
-        color="primary"
-        showFirstButton
-        showLastButton
-        page={page}
-        onChange={handleChangePage}
+      <div className="paginateData paginateMobileMargin">
+      <TablePagination
+        component='div'
+        count={totalCount}
+        rowsPerPage={limit}
+        page={page-1}
+        onChangePage={handleChangePage}
+        rowsPerPageOptions={false}
+        className='table-pagination'
       />
-    </div>
+      </div>
       </>
       }
       </>
@@ -436,7 +442,7 @@ const SubjectTable = () => {
       onClose={handleCloseDeleteModal}
       aria-labelledby='draggable-dialog-title'
     >
-      <DialogTitle style={{ cursor: 'move' }} id='draggable-dialog-title'>
+      <DialogTitle style={{ cursor: 'move',color: '#014b7e' }} id='draggable-dialog-title'>
         Delete Subject
       </DialogTitle>
       <DialogContent>
@@ -445,10 +451,10 @@ const SubjectTable = () => {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button autoFocus onClick={handleCloseDeleteModal} color='secondary'>
+        <Button onClick={handleCloseDeleteModal} className="labelColor cancelButton">
           Cancel
         </Button>
-        <Button onClick={handleDeleteSubject}>Confirm</Button>
+        <Button color="primary" onClick={handleDeleteSubject}>Confirm</Button>
       </DialogActions>
     </Dialog>
     

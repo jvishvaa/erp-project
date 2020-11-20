@@ -34,15 +34,15 @@ const EditGrade = ({id,name,type,handleGoBack,setLoading}) => {
           setGradeName('')
           setGradeType('')
           setLoading(false);
-          setAlert('success', result.data.message);
+          setAlert('success', "Grade updated successfully!");
         }
       } else {
         setLoading(false);
-        setAlert('error', result.data.message);
+        setAlert('error', "Network Error!");
       }
       }).catch((error)=>{
         setLoading(false);
-        setAlert('error', error.message);
+        setAlert('error', "Grade couldn't be updated!");
       })
     }
     else
@@ -56,12 +56,12 @@ const EditGrade = ({id,name,type,handleGoBack,setLoading}) => {
   return (
     <form autoComplete='off' onSubmit={handleSubmit}>
         <div style={{ width: '95%', margin: '20px auto' }}>
-        <div style={{color:'#014B7E'}} >
+        {/* <div style={{color:'#014B7E'}} >
               <h2>Edit Subject</h2>
         </div>
         <div style={{margin:'20px auto'}}>
           <hr />
-        </div>
+        </div> */}
         <Grid container spacing={5}>
           <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
             <TextField
@@ -97,7 +97,7 @@ const EditGrade = ({id,name,type,handleGoBack,setLoading}) => {
         </div>
         <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '10px'}} >
           <Grid item xs={6} sm={2} className={isMobile?'':'addEditButtonsPadding'}>
-            <Button variant='contained' className="custom_button_master" size='medium' onClick={handleGoBack}>
+            <Button variant='contained' className="custom_button_master labelColor" size='medium' onClick={handleGoBack}>
               Back
             </Button>
           </Grid>

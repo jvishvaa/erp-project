@@ -36,14 +36,14 @@ const CreateSection = ({grades,setLoading,handleGoBack}) => {
       setSectionName('')
       setSelectedGrade('')
       setLoading(false);
-      setAlert('success', result.data.message);
+      setAlert('success', "Section added successfully!");
     } else {        
       setLoading(false);
-      setAlert('error', result.data.message);
+      setAlert('error', "Network Error!");
     }
     }).catch((error)=>{
       setLoading(false);        
-      setAlert('error', error.message);
+      setAlert('error', "Section couldn't be created!");
     })
     };
 
@@ -52,12 +52,12 @@ const CreateSection = ({grades,setLoading,handleGoBack}) => {
     
       <form autoComplete='off' onSubmit={handleSubmit}>
       <div style={{ width: '95%', margin: '20px auto'}}> 
-        <div style={{color:'#014B7E'}} >
+        {/* <div style={{color:'#014B7E'}} >
               <h2>Add Section</h2>
         </div>
         <div style={{margin:'20px auto'}}>
           <hr />
-        </div>
+        </div> */}
         <Grid container spacing={5}>
           <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
             <TextField
@@ -102,7 +102,7 @@ const CreateSection = ({grades,setLoading,handleGoBack}) => {
         </div>
         <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '10px'}} >
         <Grid item xs={6} sm={2} className={isMobile?'':'addEditButtonsPadding'}>
-            <Button variant='contained' className="custom_button_master" size='medium' onClick={handleGoBack}>
+            <Button variant='contained' className="custom_button_master labelColor" size='medium' onClick={handleGoBack}>
               Back
             </Button>
           </Grid>

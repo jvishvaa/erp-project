@@ -46,7 +46,7 @@ export default {
   masterManagement: {
     subjects: '/erp_user/subjects-list/',
     grades: '/erp_user/grades-list/',
-    sections: '/erp_user/grades-section-list/',
+    sectionsTable: '/erp_user/grades-section-list/',
     createSubject: '/erp_user/create-subject/',
     createSection: '/erp_user/create-section/',
     createGrade: '/erp_user/create-grade/',

@@ -9,6 +9,12 @@ import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './change-password.css';
+import { Button } from '@material-ui/core';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 const ChangePassword = (props) => {
   const { close, id } = props || {};
@@ -16,6 +22,7 @@ const ChangePassword = (props) => {
   const [previousPassword, setPreviousPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [openModal,setOpenModal]=useState(true)
   const [errorPassword, setErrorPassword] = useState('');
   const handleCancel = () => {
     close(false);
@@ -67,9 +74,24 @@ const ChangePassword = (props) => {
     }
   };
 
+
+  const handleCloseModal = () => {
+    close(false)
+  };
+
+
   return (
-    <div className='profile_delete_change_password_wrapper'>
-      <span className='profile_delete_change_password_tag'>Change Password</span>
+
+    <Dialog
+      open={openModal}
+      onClose={handleCloseModal}
+      aria-labelledby='draggable-dialog-title'
+    >
+      <DialogTitle style={{ cursor: 'move',color: '#014b7e' }} id='draggable-dialog-title'>
+      Change Password
+      </DialogTitle>
+
+      <DialogContent>
       <div className='password_wrapper'>
         <div className='profile_password_wrapper'>
           <span className='password_label'>Old Password</span>
@@ -109,21 +131,27 @@ const ChangePassword = (props) => {
         </div>
       </div>
       <span className='profile_password_error'>{errorPassword}</span>
+      </DialogContent>
+      <DialogActions>
       <div className='profile_delete_change_password_button_wrapper'>
-        <input
+        <Button
           className='profile_delete_change_password_button'
           type='button'
-          onClick={handleChangePassword}
-          value='Change Password'
-        />
-        <input
-          className='profile_delete_change_password_button'
-          type='button'
+          // variant='contained'
           onClick={handleCancel}
           value='cancel'
         />
+        <Button
+          className='profile_delete_change_password_button'
+          type='button'
+          // variant='contained'
+          onClick={handleChangePassword}
+          value='Change Password'
+        />
+        
       </div>
-    </div>
+      </DialogActions>
+    </Dialog>
   );
 };
 

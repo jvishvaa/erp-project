@@ -112,15 +112,11 @@ const GradeTable = () => {
   
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const wider= isMobile?'-10px 0px':'20px 0px 20px 8px'
+  const wider= isMobile?'-10px 0px':'-10px 0px 20px 8px'
   const widerWidth=isMobile?'98%':'95%'
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage)
-  };
-
-  const handleChangePageScreen = (event,value) => {
-    setPage(value+1)
+    setPage(newPage+1)
   }
 
   const handleAddGrade = () => {
@@ -159,16 +155,16 @@ const GradeTable = () => {
           {
             setDelFlag(!delFlag);
             setLoading(false);
-            setAlert('success', result.data.message);
+            setAlert('success', 'Grade deleted successfully!');
           }
         } else {
           setLoading(false);
-          setAlert('error', result.data.message);
+          setAlert('error', "Network Error!");
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.message);
+        setAlert('error', "Grade couldn't be deleted!");
       });
     setOpenDeleteModal(false);
   };
@@ -202,11 +198,11 @@ const GradeTable = () => {
             setPageCount(result.data.result.total_pages);
           }
         } else {
-          setAlert('error', result.data.message);
+          setAlert('error', 'Network Error');
         }
       })
       .catch((error) => {
-        setAlert('error', error.message);
+        setAlert('error', 'Grade Unavailable!');
       });
   }, [delFlag, goBackFlag, page, searchGrade]);
 
@@ -219,6 +215,7 @@ const GradeTable = () => {
             <CommonBreadcrumbs
               componentName='Master Management'
               childComponentName='Grade List'
+              childComponentNameNext={(addFlag&&!tableFlag)?'Add Grade':(editFlag&&!tableFlag)?'Edit Grade':null}
             />
           </div>
         </div>
@@ -236,7 +233,7 @@ const GradeTable = () => {
 
         {tableFlag && !addFlag && !editFlag && (
           <Grid container spacing={isMobile?3:5} style={{ width: widerWidth, margin: wider}}>
-            <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
+            <Grid item xs={12} sm={3} >
                 <TextField
                   id='gradename'
                   style={{ width: '100%' }}
@@ -245,11 +242,11 @@ const GradeTable = () => {
                   size='small'
                   name='gradename'
                   autoComplete='off'
-                  onChange={(e) => setSearchGrade(e.target.value)}
+                  onChange={(e) => {setPage(1);setSearchGrade(e.target.value);}}
                 />
             </Grid>
-            <Grid item xs sm className={isMobile?'hideGridItem':''}/>
-            <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
+            <Grid item xs sm={9} className={isMobile?'hideGridItem':''}/>
+            <Grid item xs={12} sm={3} className={isMobile?'':'addButtonPadding'}>
               <Button 
               startIcon={<AddOutlinedIcon style={{fontSize:'30px'}}/>} 
               variant='contained' 
@@ -296,6 +293,17 @@ const GradeTable = () => {
                           {grade.created_by}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
+
+                          <IconButton
+                            onClick={(e) => {
+                              setGradeName(grade.grade_name);
+                              handleOpenDeleteModal(grade.id);
+                            }}
+                            title='Delete Grade'
+                          >
+                            <DeleteOutlinedIcon style={{color:'#fe6b6b'}} />
+                          </IconButton>
+
                           <IconButton
                             onClick={(e) =>
                               handleEditGrade(
@@ -306,17 +314,8 @@ const GradeTable = () => {
                             }
                             title='Edit Grade'
                           >
-                            <EditOutlinedIcon color='primary' />
-                          </IconButton>
-                          <IconButton
-                            onClick={(e) => {
-                              setGradeName(grade.grade_name);
-                              handleOpenDeleteModal(grade.id);
-                            }}
-                            title='Delete Grade'
-                          >
-                            <DeleteOutlinedIcon color='primary' />
-                          </IconButton>
+                            <EditOutlinedIcon style={{color:'#fe6b6b'}} />
+                          </IconButton>      
                         </TableCell>
                       </TableRow>
                     );
@@ -330,7 +329,7 @@ const GradeTable = () => {
               count={totalCount}
               rowsPerPage={limit}
               page={page - 1}
-              onChangePage={handleChangePageScreen}
+              onChangePage={handleChangePage}
               rowsPerPageOptions={false}
               className='table-pagination'
             />
@@ -353,16 +352,16 @@ const GradeTable = () => {
                 />
               ))}
             </Container>
-            <div className='paginate'>
-              <Pagination
-                page={page}
-                count={pageCount}
-                showFirstButton
-                showLastButton
-                onChange={handleChangePage}
-                color='primary'
-                className='pagination-white'
-              />
+            <div className="paginateData paginateMobileMargin">
+            <TablePagination
+              component='div'
+              count={totalCount}
+              rowsPerPage={limit}
+              page={page-1}
+              onChangePage={handleChangePage}
+              rowsPerPageOptions={false}
+              className='table-pagination'
+            />
             </div>
           </>
         )}
@@ -371,17 +370,17 @@ const GradeTable = () => {
           onClose={handleCloseDeleteModal}
           aria-labelledby='draggable-dialog-title'
         >
-          <DialogTitle style={{ cursor: 'move' }} id='draggable-dialog-title'>
+          <DialogTitle style={{ cursor: 'move',color: '#014b7e' }} id='draggable-dialog-title'>
             Delete Grade
           </DialogTitle>
           <DialogContent>
             <DialogContentText>{`Confirm Delete Grade ${gradeName}`}</DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button autoFocus onClick={handleCloseDeleteModal} color='secondary'>
+            <Button  onClick={handleCloseDeleteModal} className="labelColor cancelButton">
               Cancel
             </Button>
-            <Button onClick={handleDeleteGrade}>Confirm</Button>
+            <Button color="primary" onClick={handleDeleteGrade}>Confirm</Button>
           </DialogActions>
         </Dialog>
       </Layout>

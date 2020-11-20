@@ -13,7 +13,7 @@
 }
 .profile_upload_image_button {
   background-color: #ff6b6b !important;
-  color: #014b7e !important;
+  color: white !important;
   text-align: center;
 }
 .profile_details_wrapper {
@@ -50,7 +50,7 @@
   float: right;
   margin-top: 3% !important;
   cursor: pointer;
-  color: #014b7e !important;
+  color: white !important;
   margin-right: 10%;
   background-color: #ff6b6b !important;
 }
@@ -288,6 +288,7 @@
     margin: auto !important;
   }
   .profile_details_wrapper {
+    margin-top: -5px !important;
     width: 100%;
   }
   .profile_image_wrapper {
@@ -296,6 +297,8 @@
     text-align: center;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    margin-top: -30px !important ;
   }
   .profile_update_button_wrapper {
     width: 100%;
@@ -336,6 +339,11 @@
   }
   .profile_avator_selection {
     width: 24px;
+  }
+  .profile_change_password_button {
+    margin-left: 65px !important;
+    margin-top: 25px !important; 
+    float: left;
   }
 }
 @media only screen and (max-width: 950px) and (min-width: 700px) {
