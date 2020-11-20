@@ -659,7 +659,10 @@ const AssignRole = (props) => {
           </Grid>
         </Grid> */}
       </div>
-      <div className={`${classes.tableActionsContainer} ${classes.spacer}`}>
+      <div
+        className={`${classes.tableActionsContainer} ${classes.spacer}`}
+        style={{ width: '95%', marginLeft: 'auto', marginRight: 'auto' }}
+      >
         <Grid container spacing={2}>
           <Grid item xs={12} md={4}>
             <FormControl variant='outlined' fullWidth size='small'>
