@@ -42,13 +42,14 @@
   }
 
   .bread-crumbs-container {
+    width: 100%;
     .page_title {
       margin: 0;
     }
   }
   .inner-container {
-    width: calc(100% - 40px);
-    margin: 0 20px;
+    width: 95%;
+    margin: 0 auto;
     .form-container {
       .MuiFormControl-root {
         .MuiSvgIcon-root {
