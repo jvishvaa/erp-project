@@ -2,8 +2,8 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   filtersContainer: {
-    width: 'calc(100% - 40px)',
-    margin: '0 20px',
+    width: '95%',
+    margin: '0 auto',
     backgroundColor: '#fafafa',
   },
   spacer: {
