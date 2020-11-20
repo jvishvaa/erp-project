@@ -4,17 +4,17 @@
 /* eslint-disable no-console */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useState, useContext } from 'react';
-import CustomInput from '../custom-input/customInput';
-import axiosInstance from '../../../config/axios';
-import endpoints from '../../../config/endpoints';
-import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-import './change-password.css';
 import { Button } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import CustomInput from '../custom-input/customInput';
+import axiosInstance from '../../../config/axios';
+import endpoints from '../../../config/endpoints';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import './change-password.css';
 
 const ChangePassword = (props) => {
   const { close, id } = props || {};
@@ -22,7 +22,7 @@ const ChangePassword = (props) => {
   const [previousPassword, setPreviousPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
-  const [openModal,setOpenModal]=useState(true)
+  const [openModal, setOpenModal] = useState(true);
   const [errorPassword, setErrorPassword] = useState('');
   const handleCancel = () => {
     close(false);
@@ -74,82 +74,76 @@ const ChangePassword = (props) => {
     }
   };
 
-
   const handleCloseModal = () => {
-    close(false)
+    close(false);
   };
 
-
   return (
-
     <Dialog
       open={openModal}
       onClose={handleCloseModal}
       aria-labelledby='draggable-dialog-title'
     >
-      <DialogTitle style={{ cursor: 'move',color: '#014b7e' }} id='draggable-dialog-title'>
-      Change Password
+      <DialogTitle
+        style={{ cursor: 'move', color: '#014b7e' }}
+        id='draggable-dialog-title'
+      >
+        Change Password
       </DialogTitle>
 
       <DialogContent>
-      <div className='password_wrapper'>
-        <div className='profile_password_wrapper'>
-          <span className='password_label'>Old Password</span>
-          <CustomInput
-            className='profile_change_password_input'
-            id='previousPassword'
-            value={previousPassword}
-            placeholder='Enter Old Password'
-            name='previousPassword'
-            type='password'
-            onChange={(e) => setPreviousPassword(e.target.value)}
-          />
+        <div className='password_wrapper'>
+          <div className='profile_password_wrapper'>
+            <span className='password_label'>Old Password</span>
+            <CustomInput
+              className='profile_change_password_input'
+              id='previousPassword'
+              value={previousPassword}
+              placeholder='Enter Old Password'
+              name='previousPassword'
+              type='password'
+              onChange={(e) => setPreviousPassword(e.target.value)}
+            />
+          </div>
+          <div className='profile_password_wrapper'>
+            <span className='password_label'>New Password</span>
+            <CustomInput
+              className='profile_change_password_input'
+              id='newPassword'
+              value={newPassword}
+              placeholder='Enter New Password'
+              name='newPassword'
+              type='password'
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+          </div>
+          <div className='profile_password_wrapper'>
+            <span className='password_label'>Confirm New Password</span>
+            <CustomInput
+              className='profile_change_password_input'
+              id='confirmPassword'
+              value={confirmNewPassword}
+              placeholder='Confirm New Password'
+              name='confirmPassword'
+              type='password'
+              onChange={(e) => setConfirmNewPassword(e.target.value)}
+            />
+          </div>
         </div>
-        <div className='profile_password_wrapper'>
-          <span className='password_label'>New Password</span>
-          <CustomInput
-            className='profile_change_password_input'
-            id='newPassword'
-            value={newPassword}
-            placeholder='Enter New Password'
-            name='newPassword'
-            type='password'
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-        </div>
-        <div className='profile_password_wrapper'>
-          <span className='password_label'>Confirm New Password</span>
-          <CustomInput
-            className='profile_change_password_input'
-            id='confirmPassword'
-            value={confirmNewPassword}
-            placeholder='Confirm New Password'
-            name='confirmPassword'
-            type='password'
-            onChange={(e) => setConfirmNewPassword(e.target.value)}
-          />
-        </div>
-      </div>
-      <span className='profile_password_error'>{errorPassword}</span>
+        <span className='profile_password_error'>{errorPassword}</span>
       </DialogContent>
       <DialogActions>
-      <div className='profile_delete_change_password_button_wrapper'>
         <Button
-          className='profile_delete_change_password_button'
-          type='button'
-          // variant='contained'
+          autoFocus
           onClick={handleCancel}
-          value='cancel'
-        />
-        <Button
-          className='profile_delete_change_password_button'
-          type='button'
-          // variant='contained'
-          onClick={handleChangePassword}
-          value='Change Password'
-        />
-        
-      </div>
+          className='view_group_delete_alert_button_cancel'
+          color='secondary'
+        >
+          Cancel
+        </Button>
+        <Button className='view_group_delete_alert_button' onClick={handleChangePassword}>
+          Confirm
+        </Button>
       </DialogActions>
     </Dialog>
   );
