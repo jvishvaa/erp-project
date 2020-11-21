@@ -36,12 +36,6 @@
     font-size: 1.2rem;
     font-weight: 500;
 }
-.custom_selection_table_wrapper .MuiDataGrid-row{
-	flex-direction: row-reverse;
-}
-.custom_selection_table_wrapper .MuiDataGrid-colCellWrapper{
-	flex-direction: row-reverse;
-}
 .custom_selection_table_wrapper .MuiTablePagination-toolbar{
 	color: #014B7E;
 }
@@ -61,11 +55,5 @@
 	}
 	.short_height_custom_selection_table_wrapper{
 		height: 400px;
-	}
-	.custom_selection_table_wrapper .MuiDataGrid-row{
-		flex-direction: row;
-	}
-	.custom_selection_table_wrapper .MuiDataGrid-colCellWrapper{
-		flex-direction: row;
 	}
 }

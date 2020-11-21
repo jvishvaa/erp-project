@@ -257,82 +257,42 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       if (result.status === 200) {
         const rows = [];
         const selectionRows = [];
-        if (!isMobile) {
-          setHeaders([
-            { field: 'contact', headerName: 'Contact', width: 180 },
-            { field: 'gender', headerName: 'Gender', width: 100 },
-            { field: 'erp_id', headerName: 'Erp Id', width: 180 },
-            { field: 'email', headerName: 'Email Id', width: 280 },
-            { field: 'fullName', headerName: 'Name', width: 280 },
-            { field: 'id', headerName: 'ID', width: 70 },
-          ]);
-          result.data.data.results.forEach((items) => {
-            rows.push({
-              contact: items.contact,
-              gender: items.gender,
-              erp_id: items.erp_id,
-              email: items.user.email,
-              fullName: `${items.user.first_name} ${items.user.last_name}`,
-              id: items.id,
-            });
-            selectionRows.push({
-              id: items.id,
-              data: {
-                contact: items.contact,
-                gender: items.gender,
-                erp_id: items.erp_id,
-                email: items.user.email,
-                fullName: `${items.user.first_name} ${items.user.last_name}`,
-                id: items.id,
-              },
-              selected: selectAll
-                ? true
-                : selectedUsers.length && !selectedUsers[pageno - 1].first
-                ? selectedUsers[pageno - 1].selected.includes(items.id)
-                : edit
-                ? items.is_assigned
-                : false,
-            });
+        setHeaders([
+          { field: 'id', headerName: 'ID', width: 70 },
+          { field: 'fullName', headerName: 'Name', width: 190 },
+          { field: 'email', headerName: 'Email Id', width: 250 },
+          { field: 'erp_id', headerName: 'Erp Id', width: 150 },
+          { field: 'gender', headerName: 'Gender', width: 100 },
+          { field: 'contact', headerName: 'Contact', width: 150 },
+        ]);
+        result.data.data.results.forEach((items) => {
+          rows.push({
+            id: items.id,
+            fullName: `${items.user.first_name} ${items.user.last_name}`,
+            email: items.user.email,
+            erp_id: items.erp_id,
+            gender: items.gender,
+            contact: items.contact,
           });
-        }
-        if (isMobile) {
-          setHeaders([
-            { field: 'id', headerName: 'ID', width: 70 },
-            { field: 'fullName', headerName: 'Name', width: 190 },
-            { field: 'email', headerName: 'Email Id', width: 200 },
-            { field: 'erp_id', headerName: 'Erp Id', width: 150 },
-            { field: 'gender', headerName: 'Gender', width: 100 },
-            { field: 'contact', headerName: 'Contact', width: 150 },
-          ]);
-          result.data.data.results.forEach((items) => {
-            rows.push({
+          selectionRows.push({
+            id: items.id,
+            data: {
               id: items.id,
               fullName: `${items.user.first_name} ${items.user.last_name}`,
               email: items.user.email,
               erp_id: items.erp_id,
               gender: items.gender,
               contact: items.contact,
-            });
-            selectionRows.push({
-              id: items.id,
-              data: {
-                id: items.id,
-                fullName: `${items.user.first_name} ${items.user.last_name}`,
-                email: items.user.email,
-                erp_id: items.erp_id,
-                gender: items.gender,
-                contact: items.contact,
-              },
-              selected: selectAll
-                ? true
-                : selectedUsers.length && !selectedUsers[pageno - 1].first
-                ? selectedUsers[pageno - 1].selected.includes(items.id)
-                : edit
-                ? items.is_assigned
-                : false,
-            });
+            },
+            selected: selectAll
+              ? true
+              : selectedUsers.length && !selectedUsers[pageno - 1].first
+              ? selectedUsers[pageno - 1].selected.includes(items.id)
+              : edit
+              ? items.is_assigned
+              : false,
           });
-        }
+        });
         setUsersRow(rows);
         setCompleteData(selectionRows);
         setTotalPage(result.data.data.count);
