@@ -143,6 +143,7 @@ const RolesTable = ({ roles, onEdit, onDelete, count, limit, page, onChangePage 
         classes={{
           spacer: classes.tablePaginationSpacer,
           toolbar: classes.tablePaginationToolbar,
+          caption: classes.tablePaginationCaption,
         }}
       />
     </Paper>
