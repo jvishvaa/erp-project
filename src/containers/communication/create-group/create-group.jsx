@@ -287,7 +287,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
               },
               selected: selectAll
                 ? true
-                : selectedUsers.length
+                : selectedUsers.length && !selectedUsers[pageno - 1].first
                 ? selectedUsers[pageno - 1].selected.includes(items.id)
                 : edit
                 ? items.is_assigned
@@ -325,7 +325,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
               },
               selected: selectAll
                 ? true
-                : selectedUsers.length
+                : selectedUsers.length && !selectedUsers[pageno - 1].first
                 ? selectedUsers[pageno - 1].selected.includes(items.id)
                 : edit
                 ? items.is_assigned
