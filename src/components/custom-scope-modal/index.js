@@ -141,7 +141,7 @@ const CustomScopeModal = ({
   const fetchSubjects = (branches, grades, customScopeObj, setFilteredResults) => {
     const customScopeObject = JSON.parse(JSON.stringify(customScopeObj));
     if (branches && branches.length > 0 && grades && grades.length > 0) {
-      getSubjects(branches, grades).then((data) => {
+      getSubjects(branches, grades, customScopeObj.custom_section).then((data) => {
         const transformedData = data
           ? data.map((subject) => ({
               id: subject.subject__id,
@@ -197,15 +197,18 @@ const CustomScopeModal = ({
           (section) => transformedData.findIndex((sec) => sec.id === section.id) > -1
         );
         customScopeObj.custom_section = filteredSelectedSections;
-        onCustomScopeChange('custom_section', customScopeObj);
+        if (filteredSelectedSections && filteredSelectedSections.length > 0) {
+          fetchSubjects(
+            customScope.custom_branch,
+            grades,
+            customScopeObj,
+            setFilteredResults
+          );
+        } else {
+          customScopeObj.custom_subject = [];
+          onCustomScopeChange('custom_section', customScopeObj);
+        }
       }
-
-      fetchSubjects(
-        customScope.custom_branch,
-        grades,
-        customScopeObj,
-        setFilteredResults
-      );
     });
   };
 
@@ -241,7 +244,14 @@ const CustomScopeModal = ({
       custom_branch: customScope.custom_branch,
       custom_grade: customScope.custom_grade,
       custom_section: values,
+      custom_subject: customScope.custom_subject,
     };
+    fetchSubjects(
+      customScope.custom_branch,
+      customScope.custom_grade,
+      customScopeObj,
+      true
+    );
     onCustomScopeChange('custom_section', customScopeObj);
   };
   const handleChangeSubject = (values) => {
@@ -265,6 +275,13 @@ const CustomScopeModal = ({
     }
   }, [open]);
 
+  // useEffect(() => {
+  //   if(customScope.custom_branch?.length > 0 && customScope.custom_grade.length > 0 && customScope.custom_section?.length > 0) {
+  //     fetchSubjects()
+  //   }
+
+  // }, [customScope.custom_branch, customScope.custom_grade, customScope.custom_section])
+
   return (
     <Dialog
       onClose={handleClose}
@@ -280,8 +297,8 @@ const CustomScopeModal = ({
       <Grid container sm={12} justify='flex-end' mx={5}>
         <Grid item>
           <Box px={5}>
-            <Button startIcon={<RotateLeftIcon />} onClick={onResetInputs}>
-              Reset all
+            <Button className='disabled-btn' onClick={onResetInputs}>
+              CLEAR ALL
             </Button>
           </Box>
         </Grid>
