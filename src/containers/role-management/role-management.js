@@ -14,6 +14,7 @@ import SearchOutlined from '@material-ui/icons/SearchOutlined';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import { debounce, FormControl } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
+import TablePagination from '@material-ui/core/TablePagination';
 import Grid from '@material-ui/core/Grid';
 import RoleCard from '../../components/role-card';
 import {
@@ -95,24 +96,32 @@ class RoleManagement extends Component {
         <div className='bread-crumbs-container'>
           <CommonBreadcrumbs componentName='Role Management' />
         </div>
-        <Grid container spacing={2} className={classes.spacer}>
-          <Box className={classes.searchContainer}>
-            <FormControl size='small'>
-              <OutlinedInput
-                endAdornment={<SearchOutlined color='primary' />}
-                value={searchInput}
-                onChange={this.handleSearchInputChange}
-                placeholder='Search roles ...'
-              />
-            </FormControl>
-          </Box>
+
+        <Grid container spacing={1} className={classes.spacer}>
+          <Grid item xs={12} md={4}>
+            <Box className={classes.searchContainer}>
+              <FormControl size='small' fullWidth>
+                <OutlinedInput
+                  endAdornment={<SearchOutlined color='primary' />}
+                  value={searchInput}
+                  onChange={this.handleSearchInputChange}
+                  placeholder='Search roles ...'
+                />
+              </FormControl>
+            </Box>
+          </Grid>
         </Grid>
-        <Grid container spacing={2} className={classes.spacer}>
-          <div className={classes.buttonContainer}>
+        <Grid
+          container
+          spacing={1}
+          className={classes.spacer}
+          style={{ marginBottom: '25px' }}
+        >
+          <Grid item xs={12} className={classes.buttonContainer}>
             <Button startIcon={<AddOutlinedIcon />} href={`${match.url}/create-role`}>
               Add Role
             </Button>
-          </div>
+          </Grid>
         </Grid>
 
         <div className={classes.rolesTableContainer}>
@@ -146,12 +155,27 @@ class RoleManagement extends Component {
           )}
         </div>
         <div className={classes.roleCardsPagination}>
-          <Pagination
+          {/* <Pagination
             page={page}
             count={Math.ceil(count / limit)}
             onChange={(e, page) => this.handlePageChange(page)}
             color='primary'
             className='pagination-white'
+          /> */}
+          <TablePagination
+            component='div'
+            count={count}
+            rowsPerPage={limit}
+            page={page - 1}
+            onChangePage={(e, pageNo) => {
+              this.handlePageChange(pageNo + 1);
+            }}
+            rowsPerPageOptions={false}
+            className='table-pagination'
+            classes={{
+              spacer: classes.tablePaginationSpacer,
+              toolbar: classes.tablePaginationToolbar,
+            }}
           />
         </div>
         <Dialog

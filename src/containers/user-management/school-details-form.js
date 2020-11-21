@@ -148,34 +148,34 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
 
   return (
     <Grid container spacing={4} className='school-details-form-container'>
-      <Grid container item xs={12}>
-        <Grid item md={4} xs={12}>
-          <FormControl fullWidth className={classes.margin} variant='outlined'>
-            <Autocomplete
-              id='academic_year'
-              name='academic_year'
-              onChange={(e, value) => {
-                formik.setFieldValue('academic_year', value);
-              }}
-              value={formik.values.academic_year}
-              options={academicYears}
-              getOptionLabel={(option) => option.session_year || ''}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Academic Year'
-                  placeholder='Academic Year'
-                />
-              )}
-              size='small'
-            />
-            <FormHelperText style={{ color: 'red' }}>
-              {formik.errors.academic_year ? formik.errors.academic_year : ''}
-            </FormHelperText>
-          </FormControl>
-        </Grid>
+      {/* <Grid container item xs={12}> */}
+      <Grid item md={4} xs={12}>
+        <FormControl fullWidth className={classes.margin} variant='outlined'>
+          <Autocomplete
+            id='academic_year'
+            name='academic_year'
+            onChange={(e, value) => {
+              formik.setFieldValue('academic_year', value);
+            }}
+            value={formik.values.academic_year}
+            options={academicYears}
+            getOptionLabel={(option) => option.session_year || ''}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Academic Year'
+                placeholder='Academic Year'
+              />
+            )}
+            size='small'
+          />
+          <FormHelperText style={{ color: 'red' }}>
+            {formik.errors.academic_year ? formik.errors.academic_year : ''}
+          </FormHelperText>
+        </FormControl>
       </Grid>
+      {/* </Grid> */}
       <Grid item xs={12}>
         <Divider />
       </Grid>

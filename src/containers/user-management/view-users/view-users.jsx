@@ -75,6 +75,16 @@ const useStyles = makeStyles((theme) => ({
   tableCell: {
     color: theme.palette.secondary.main,
   },
+  tablePaginationSpacer: {
+    flex: 0,
+  },
+  tablePaginationToolbar: {
+    justifyContent: 'center',
+  },
+  cardsContainer: {
+    width: '95%',
+    margin: '0 auto',
+  },
 }));
 
 // eslint-disable-next-line no-unused-vars
@@ -675,12 +685,16 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             }}
             rowsPerPageOptions={false}
             className='table-pagination'
+            classes={{
+              spacer: classes.tablePaginationSpacer,
+              toolbar: classes.tablePaginationToolbar,
+            }}
           />
         </Paper>
       )}
       {isMobile && (
         <>
-          <div className={classes.cardsContainer}>
+          <Grid container className={classes.cardsContainer}>
             {usersData.map((user, i) => (
               <ViewUserCard
                 user={user}
@@ -693,14 +707,29 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                 }}
               />
             ))}
-          </div>
+          </Grid>
           <div className={classes.cardsPagination}>
-            <Pagination
+            {/* <Pagination
               page={Number(currentPage)}
               count={totalPages}
               onChange={handlePagination}
               color='primary'
               className='pagination-white'
+            /> */}
+            <TablePagination
+              component='div'
+              count={totalCount}
+              rowsPerPage={limit}
+              page={Number(currentPage) - 1}
+              onChangePage={(e, page) => {
+                handlePagination(e, page + 1);
+              }}
+              rowsPerPageOptions={false}
+              className='table-pagination'
+              classes={{
+                spacer: classes.tablePaginationSpacer,
+                toolbar: classes.tablePaginationToolbar,
+              }}
             />
           </div>
         </>
