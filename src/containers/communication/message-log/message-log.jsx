@@ -452,11 +452,11 @@ const MessageLog = withRouter(({ history, ...props }) => {
             </div>
             {isHidden ? (
               <span className='message_log_expand_manage' onClick={toggleHide}>
-                view more
+                View more
               </span>
             ) : (
               <span className='message_log_expand_manage' onClick={toggleHide}>
-                view less
+                View less
               </span>
             )}
             <div className='create_group_filter_container'>
