@@ -35,7 +35,11 @@ import Grid from '@material-ui/core/Grid';
 import TablePagination from '@material-ui/core/TablePagination';
 import Input from '@material-ui/core/Input';
 import Chip from '@material-ui/core/Chip';
-
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
@@ -546,7 +550,28 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             </div>
           ) : null}
         </div> */}
-      {deleteAlert ? (
+      <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
+        <DialogTitle
+          style={{ cursor: 'move', color: '#014b7e' }}
+          id='draggable-dialog-title'
+        >
+          Delete User
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this user ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel} className='labelColor cancelButton'>
+            Cancel
+          </Button>
+          <Button color='primary' onClick={handleDeleteConfirm}>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* {deleteAlert ? (
         <div className='view_users_delete_alert_wrapper'>
           <span className='view_users_delete_alert_tag'>
             Do you want to Delete the user
@@ -566,7 +591,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             />
           </div>
         </div>
-      ) : null}
+      ) : null} */}
       {!isMobile && (
         <Paper className={`${classes.root} common-table`}>
           <TableContainer
