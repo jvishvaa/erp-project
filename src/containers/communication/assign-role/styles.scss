@@ -27,6 +27,12 @@
     .MuiTablePagination-root {
       width: 100% !important;
       color: $secondary-color !important;
+      .MuiTablePagination-toolbar {
+        justify-content: center;
+        .MuiTablePagination-spacer {
+          flex: 0;
+        }
+      }
     }
   }
 }

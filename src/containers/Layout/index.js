@@ -488,7 +488,11 @@ const Layout = ({ children, history }) => {
                 {({ TransitionProps }) => (
                   <Fade {...TransitionProps} timeout={350}>
                     <Paper>
-                      <Grid container style={{ flexDirection: 'column' }}>
+                      <Grid
+                        container
+                        className='main_search_container'
+                        style={{ flexDirection: 'column' }}
+                      >
                         {globalSearchResults && searchUserDetails.length ? (
                           <>
                             <Grid item>

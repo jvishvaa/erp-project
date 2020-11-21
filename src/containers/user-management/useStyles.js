@@ -12,7 +12,6 @@ const styles = (theme) => ({
     marginBottom: theme.spacing(1),
   },
   formContainer: {
-    paddingTop: '2rem',
     paddingBottom: '2rem',
   },
   divider: {

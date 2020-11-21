@@ -17,6 +17,15 @@ const useStyles = makeStyles((theme) => ({
   tableCell: {
     color: theme.palette.secondary.main,
   },
+  tablePaginationSpacer: {
+    flex: 0,
+  },
+  tablePaginationToolbar: {
+    justifyContent: 'center',
+  },
+  tablePaginationCaption: {
+    fontWeight: 600,
+  },
 }));
 
 export default useStyles;
