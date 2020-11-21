@@ -30,6 +30,12 @@ const useStyles = makeStyles((theme) => ({
   //   selectEmpty: {
   //     marginTop: theme.spacing(2),
   //   },
+  tablePaginationSpacer: {
+    flex: 0,
+  },
+  tablePaginationToolbar: {
+    justifyContent: 'center',
+  },
 }));
 
 export default useStyles;
