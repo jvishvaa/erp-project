@@ -8,6 +8,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { useState, Fragment, useEffect, useContext } from 'react';
 import { withRouter } from 'react-router-dom';
+import Dialog from '@material-ui/core/Dialog';
 import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
 import axiosInstance from '../../../config/axios';
@@ -17,8 +18,9 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import './user-details.css';
 
 const UserDetails = withRouter(({ history, ...props }) => {
-  const { close, userId, setUserId, setSearching } = props || {};
+  const { close, userId, setUserId, setSearching, mobileSearch } = props || {};
   const { setAlert } = useContext(AlertNotificationContext);
+  const [openModal, setOpenModal] = useState(true);
   const { role_details: roleDetailes } =
     JSON.parse(localStorage.getItem('userDetails')) || {};
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -26,6 +28,7 @@ const UserDetails = withRouter(({ history, ...props }) => {
   const handleClose = () => {
     setUserId(null);
     close(false);
+    mobileSearch(false);
   };
 
   const handleEdit = (id) => {
@@ -117,7 +120,11 @@ const UserDetails = withRouter(({ history, ...props }) => {
     getUserDetails();
   }, []);
   return (
-    <div className='global_search_whole_page_wrapper'>
+    <Dialog
+      open={openModal}
+      onClose={handleClose}
+      aria-labelledby='draggable-dialog-title'
+    >
       <div className='global_search_userdetails_wrapper'>
         <span
           className='edit_icon_global_user_details'
@@ -155,7 +162,7 @@ const UserDetails = withRouter(({ history, ...props }) => {
           ))}
         </form>
       </div>
-    </div>
+    </Dialog>
   );
 });
 

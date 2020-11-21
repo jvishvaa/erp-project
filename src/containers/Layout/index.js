@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-debugger */
@@ -103,7 +104,12 @@ const Layout = ({ children, history }) => {
       if (result.data.status_code === 200) {
         const tempData = [];
         result.data.data.results.map((items) =>
-          tempData.push({ id: items.id, name: items.name, erpId: items.erp_id })
+          tempData.push({
+            id: items.id,
+            name: items.name,
+            erpId: items.erp_id,
+            contact: items.contact,
+          })
         );
         setTotalPage(result.data.data.total_pages);
         setSearchUserDetails(tempData);
@@ -542,7 +548,14 @@ const Layout = ({ children, history }) => {
                                             >
                                               <ListItemText
                                                 primary={result.name}
-                                                secondary={result.erpId}
+                                                secondary={
+                                                  <div>
+                                                    <span>{result.erpId}</span>
+                                                    <span style={{ float: 'right' }}>
+                                                      Mob: {result.contact}
+                                                    </span>
+                                                  </div>
+                                                }
                                               />
                                               {/* <ListItemSecondaryAction>
                                               <IconButton
@@ -606,6 +619,7 @@ const Layout = ({ children, history }) => {
               {displayUserDetails ? (
                 <UserDetails
                   close={setDisplayUserDetails}
+                  mobileSearch={setMobileSeach}
                   userId={userId}
                   setUserId={setUserId}
                   setSearching={setSearching}
