@@ -85,6 +85,9 @@ const useStyles = makeStyles((theme) => ({
     width: '95%',
     margin: '0 auto',
   },
+  tablePaginationCaption: {
+    fontWeight: '600 !important',
+  },
 }));
 
 // eslint-disable-next-line no-unused-vars
@@ -729,6 +732,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
               classes={{
                 spacer: classes.tablePaginationSpacer,
                 toolbar: classes.tablePaginationToolbar,
+                caption: classes.tablePaginationCaption,
               }}
             />
           </div>

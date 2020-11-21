@@ -60,5 +60,8 @@
   }
   .table-pagination {
     color: $secondary-color;
+    .MuiTablePagination-caption {
+      font-weight: 600;
+    }
   }
 }

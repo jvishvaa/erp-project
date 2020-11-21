@@ -23,6 +23,9 @@ const useStyles = makeStyles((theme) => ({
   tablePaginationToolbar: {
     justifyContent: 'center',
   },
+  tablePaginationCaption: {
+    fontWeight: 600,
+  },
 }));
 
 export default useStyles;
