@@ -124,6 +124,7 @@ const UserDetails = withRouter(({ history, ...props }) => {
       open={openModal}
       onClose={handleClose}
       aria-labelledby='draggable-dialog-title'
+      className='global_search_user_details_modal'
     >
       <div className='global_search_userdetails_wrapper'>
         <span
