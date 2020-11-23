@@ -344,10 +344,14 @@ const CreateGroup = withRouter(({ history, ...props }) => {
           sectionsId.push(items.id);
         });
     }
+    const roleArray = [];
     const branchArray = [];
     const gradeArray = [];
     const sectionArray = [];
     const selectionArray = [];
+    rolesId.forEach((item) => {
+      roleArray.push(item);
+    });
     gradesId.forEach((item) => {
       gradeArray.push(item);
     });
@@ -377,7 +381,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         editGroupApiUrl,
         {
           group_name: groupName,
-          role: rolesId[0],
+          role: roleArray,
           branch: branchArray,
           grade: gradeArray,
           mapping_bgs: sectionArray,
@@ -438,10 +442,14 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         });
     }
     const createGroupApi = endpoints.communication.createGroup;
+    const roleArray = [];
     const branchArray = [];
     const gradeArray = [];
     const sectionArray = [];
     const selectionArray = [];
+    rolesId.forEach((item) => {
+      roleArray.push(item);
+    });
     gradesId.forEach((item) => {
       gradeArray.push(item);
     });
@@ -471,7 +479,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         createGroupApi,
         {
           group_name: groupName,
-          role: rolesId[0],
+          role: roleArray,
           branch: branchArray,
           grade: gradeArray,
           mapping_bgs: sectionArray,
