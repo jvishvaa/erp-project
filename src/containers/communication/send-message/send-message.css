@@ -160,6 +160,11 @@
 .create_group_message_type_wrapper .makeStyles-formControl-1 {
   margin-left: 0%;
 }
+.file_name_container{
+	font-size: 1rem;
+	color: #014b7e;
+	font-weight: 600;
+}
 @media screen and (max-width: 700px) {
   .textFields_message {
     width: 100%;

@@ -1,3 +1,5 @@
+/* eslint-disable no-plusplus */
+/* eslint-disable no-param-reassign */
 /* eslint-disable react/jsx-curly-newline */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-unused-vars */
@@ -13,13 +15,25 @@ import { withRouter } from 'react-router-dom';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { TextareaAutosize, Grid, useTheme } from '@material-ui/core';
+import {
+  TextareaAutosize,
+  Grid,
+  useTheme,
+  IconButton,
+  Typography,
+  Divider,
+} from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { makeStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import Dropzone from 'react-dropzone';
+import {
+  Attachment as AttachmentIcon,
+  HighlightOffOutlined as CloseIcon,
+} from '@material-ui/icons';
 import TextField from '@material-ui/core/TextField';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
@@ -38,6 +52,32 @@ const useStyles = makeStyles((theme) => ({
   },
   selectEmpty: {
     marginTop: theme.spacing(2),
+  },
+  wrapper: {
+    position: 'relative',
+    overflow: 'hidden',
+    display: 'inline-block',
+  },
+  attachmentIcon: {
+    '&:hover': {
+      cursor: 'pointer',
+    },
+  },
+  fileInput: {
+    fontSize: '50px',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    opacity: 0,
+  },
+  fileRow: {
+    padding: '6px',
+  },
+  modalButtons: {
+    position: 'sticky',
+    width: '98%',
+    margin: 'auto',
+    bottom: 0,
   },
 }));
 
@@ -90,6 +130,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
   const [messageSending, setMessageSending] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
   const [moduleId, setModuleId] = useState();
+  const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modulePermision, setModulePermision] = useState(true);
 
@@ -502,6 +543,35 @@ const SendMessage = withRouter(({ history, ...props }) => {
     } else {
       setSelectedBranch();
     }
+  };
+
+  const uploadFileHandler = (e) => {
+    if (e.target.files[0]) {
+      const newFiles = [...files, e.target.files[0]];
+      setFiles(newFiles);
+    }
+  };
+
+  const removeFileHandler = (i) => {
+    const newFiles = files.filter((_, index) => index !== i);
+    setFiles(newFiles);
+  };
+
+  const FileRow = (props) => {
+    const { file, onClose, className } = props;
+    return (
+      <div className={className}>
+        <Grid container spacing={2} alignItems='center'>
+          <Grid item xs={12} md={8}>
+            <Typography className='file_name_container' variant='span'>{file.name}</Typography>
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <CloseIcon style={{ color: '#ff6b6b' }} onClick={onClose} />
+          </Grid>
+        </Grid>
+        <Divider />
+      </div>
+    );
   };
 
   const handleSendMessage = async () => {
@@ -993,6 +1063,50 @@ const SendMessage = withRouter(({ history, ...props }) => {
                     <span className='text_message_word_count'>{`Word count : ${wordcount} words left`}</span>
                     <span className='create_group_error_span'>{textMessageError}</span>
                   </Grid>
+                  {isEmail ? (
+                    <Grid xs={12} lg={12}>
+                      <Grid
+                        container
+                        alignItems='center'
+                        spacing={2}
+                        justify='space-between'
+                      >
+                        <Grid item xs={2} className={classes.wrapper}>
+                          <IconButton
+                            fontSize='large'
+                            // component={AttachmentIcon}
+                            className={classes.attachmentIcon}
+                          >
+                            <AttachmentIcon
+                              fontSize='large'
+                              className={classes.Attachment}
+                            />
+                            <input
+                              type='file'
+                              onChange={uploadFileHandler}
+                              className={classes.fileInput}
+                            />
+                          </IconButton>
+                        </Grid>
+                        <Grid item xs={8}>
+                          {/* <Grid container alignItem='center' spacing={2}>
+                            {files.map(file => (
+                              <Grid item xs={12}>
+
+                              </Grid>
+                            ))}
+                          </Grid> */}
+                          {files.map((file, i) => (
+                            <FileRow
+                              file={file}
+                              onClose={() => removeFileHandler(i)}
+                              className={classes.fileRow}
+                            />
+                          ))}
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  ) : null}
                 </Grid>
               </div>
             </div>
