@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-debugger */
@@ -85,6 +86,7 @@ const Layout = ({ children, history }) => {
   const [totalPage, setTotalPage] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [scrollDone, setScrollDone] = useState(false);
+  const [mobileSeach, setMobileSeach] = useState(false);
   const [displayUserDetails, setDisplayUserDetails] = useState(false);
   const [userId, setUserId] = useState();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -102,7 +104,12 @@ const Layout = ({ children, history }) => {
       if (result.data.status_code === 200) {
         const tempData = [];
         result.data.data.results.map((items) =>
-          tempData.push({ id: items.id, name: items.name, erpId: items.erp_id })
+          tempData.push({
+            id: items.id,
+            name: items.name,
+            erpId: items.erp_id,
+            contact: items.contact,
+          })
         );
         setTotalPage(result.data.data.total_pages);
         setSearchUserDetails(tempData);
@@ -166,7 +173,7 @@ const Layout = ({ children, history }) => {
   //   }, [currentPage]);
 
   const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  let isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -180,7 +187,7 @@ const Layout = ({ children, history }) => {
 
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
-    setProfileOpen(true);
+    setProfileOpen(!profileOpen);
   };
 
   const changeQuery = (event) => {
@@ -205,6 +212,18 @@ const Layout = ({ children, history }) => {
 
   const handleTextSearchClear = (e) => {
     e.preventDefault();
+    setTimeout(() => {
+      setSearchedText('');
+      setGlobalSearchResults(false);
+      setSearching(false);
+      setSearchUserDetails([]);
+      setTotalPage(0);
+      setCurrentPage(1);
+    }, 500);
+  };
+  const handleTextSearchClearMobile = (e) => {
+    e.preventDefault();
+    setMobileSeach(false);
     setTimeout(() => {
       setSearchedText('');
       setGlobalSearchResults(false);
@@ -239,7 +258,7 @@ const Layout = ({ children, history }) => {
       transitionDuration={500}
       keepMounted
       transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-      open={isMobileMenuOpen}
+      open={profileOpen}
       onClose={handleMobileMenuClose}
     >
       <MenuItem onClick={(e) => history.push('/profile')}>
@@ -445,15 +464,19 @@ const Layout = ({ children, history }) => {
               </Paper>
               <Popper
                 open={searching}
-                className={classes.searchDropdown}
+                className={`${classes.searchDropdown} ${
+                  isMobile ? classes.searchDropdownMobile : 'null'
+                }`}
                 placement='bottom'
                 style={{
                   position: 'fixed',
-                  top:
-                    searchInputRef.current &&
-                    searchInputRef.current.getBoundingClientRect().top + 32,
+                  top: isMobile
+                    ? searchInputRef.current &&
+                      searchInputRef.current.getBoundingClientRect().top + 44
+                    : searchInputRef.current &&
+                      searchInputRef.current.getBoundingClientRect().top + 32,
                   left: 'auto',
-                  right: `calc(100vw - ${
+                  right: `calc(${isMobile ? '95vw' : '100vw'} - ${
                     searchInputRef.current &&
                     searchInputRef.current.getBoundingClientRect().left +
                       searchInputRef.current.getBoundingClientRect().width
@@ -465,7 +488,11 @@ const Layout = ({ children, history }) => {
                 {({ TransitionProps }) => (
                   <Fade {...TransitionProps} timeout={350}>
                     <Paper>
-                      <Grid container style={{ flexDirection: 'column' }}>
+                      <Grid
+                        container
+                        className='main_search_container'
+                        style={{ flexDirection: 'column' }}
+                      >
                         {globalSearchResults && searchUserDetails.length ? (
                           <>
                             <Grid item>
@@ -525,7 +552,14 @@ const Layout = ({ children, history }) => {
                                             >
                                               <ListItemText
                                                 primary={result.name}
-                                                secondary={result.erpId}
+                                                secondary={
+                                                  <div>
+                                                    <span>{result.erpId}</span>
+                                                    <span style={{ float: 'right' }}>
+                                                      Mob: {result.contact}
+                                                    </span>
+                                                  </div>
+                                                }
                                               />
                                               {/* <ListItemSecondaryAction>
                                               <IconButton
@@ -589,6 +623,7 @@ const Layout = ({ children, history }) => {
               {displayUserDetails ? (
                 <UserDetails
                   close={setDisplayUserDetails}
+                  mobileSearch={setMobileSeach}
                   userId={userId}
                   setUserId={setUserId}
                   setSearching={setSearching}
@@ -664,15 +699,48 @@ const Layout = ({ children, history }) => {
               }}
             />
             <Box className={classes.sidebarActionButtons}>
-              <IconButton onClick={handleLogout}>
-                <PowerSettingsNewIcon style={{ color: '#ffffff' }} />
-              </IconButton>
-              <IconButton>
-                <SettingsIcon style={{ color: '#ffffff' }} />
-              </IconButton>
-              <IconButton>
-                <SearchIcon style={{ color: '#ffffff' }} />
-              </IconButton>
+              {mobileSeach ? (
+                <div>
+                  <Paper component='form' className={classes.searchInputContainerMobile}>
+                    <IconButton
+                      type='submit'
+                      className={classes.clearIconButtonMobile}
+                      aria-label='close'
+                      onClick={handleTextSearchClearMobile}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                    <InputBase
+                      value={searchedText}
+                      className={classes.searchInputMobile}
+                      placeholder='Search..'
+                      inputProps={{ 'aria-label': 'search across site' }}
+                      inputRef={searchInputRef}
+                      onChange={changeQuery}
+                      onBlur={handleTextSearchClear}
+                    />
+                    <IconButton
+                      type='submit'
+                      className={classes.searchIconButtonMobile}
+                      aria-label='search'
+                    >
+                      <SearchIcon />
+                    </IconButton>
+                  </Paper>
+                </div>
+              ) : (
+                <>
+                  <IconButton onClick={handleLogout}>
+                    <PowerSettingsNewIcon style={{ color: '#ffffff' }} />
+                  </IconButton>
+                  <IconButton>
+                    <SettingsIcon style={{ color: '#ffffff' }} />
+                  </IconButton>
+                  <IconButton onClick={() => setMobileSeach(true)}>
+                    <SearchIcon style={{ color: '#ffffff' }} />
+                  </IconButton>
+                </>
+              )}
             </Box>
             <Box style={{ padding: '0 10px' }}>
               <Divider style={{ backgroundColor: '#ffffff' }} />

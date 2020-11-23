@@ -10,9 +10,9 @@ import TableRow from '@material-ui/core/TableRow';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import IconButton from '@material-ui/core/IconButton';
-import useStyles from './useStyles';
 import TablePagination from '@material-ui/core/TablePagination';
 import moment from 'moment';
+import useStyles from './useStyles';
 import './styles.scss';
 
 const columns = [
@@ -140,6 +140,11 @@ const RolesTable = ({ roles, onEdit, onDelete, count, limit, page, onChangePage 
         }}
         rowsPerPageOptions={false}
         className='table-pagination'
+        classes={{
+          spacer: classes.tablePaginationSpacer,
+          toolbar: classes.tablePaginationToolbar,
+          caption: classes.tablePaginationCaption,
+        }}
       />
     </Paper>
   );

@@ -91,15 +91,13 @@
     z-index: 1450;
 }
 .add_credit_mobile_form{
-	position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
     padding: 3% 5%;
-	width: 90%;
-	border-radius: 5px;
+	width: 100%;
 	z-index: 1500;
+}
+.close_icon_add_message_credit{
+	color: #ff6b6b;
+	float: right;
 }
 .add_credit_mobile_input{
 	text-align: center;

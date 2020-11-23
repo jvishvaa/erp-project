@@ -68,6 +68,13 @@ const styles = (theme) => ({
     width: '100%',
     margin: '20px 0',
   },
+  tablePaginationSpacer: {
+    flex: 0,
+  },
+  tablePaginationToolbar: {
+    justifyContent: 'center',
+    color: theme.palette.secondary.main,
+  },
 });
 
 export default styles;

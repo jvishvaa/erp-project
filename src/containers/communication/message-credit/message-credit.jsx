@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-debugger */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
@@ -11,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
 import TableContainer from '@material-ui/core/TableContainer';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Dialog from '@material-ui/core/Dialog';
 import CloseIcon from '@material-ui/icons/Close';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -57,6 +59,7 @@ const MessageCredit = withRouter(({ history, ...props }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+  const [openModal, setOpenModal] = useState(true);
   const [addCreditMobile, setAddCreditMobile] = useState(false);
   const [mobileAddCreditId, setMobileAddCreditId] = useState();
   const [selectedBranch, setSelectedBranch] = useState();
@@ -192,9 +195,13 @@ const MessageCredit = withRouter(({ history, ...props }) => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       {addCreditMobile ? (
-        <div className='add_credit_mobile_form_outside_wrapper'>
+        <Dialog
+          open={openModal}
+          onClose={handleMobileCancel}
+          aria-labelledby='draggable-dialog-title'
+        >
           <div className='add_credit_mobile_form'>
-            <span className='close_icon_edit_group' onClick={handleMobileCancel}>
+            <span className='close_icon_add_message_credit' onClick={handleMobileCancel}>
               <CloseIcon />
             </span>
             <div className='add_credit_mobile_form_heading'>Add Amount</div>
@@ -276,7 +283,7 @@ const MessageCredit = withRouter(({ history, ...props }) => {
               </Grid>
             </Grid>
           </div>
-        </div>
+        </Dialog>
       ) : null}
       <Layout>
         <div className='message_credit__page'>

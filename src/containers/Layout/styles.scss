@@ -27,3 +27,8 @@
 .user_rows_details:hover {
   background-color: rgb(221, 203, 180) !important;
 }
+@media screen and (max-width: 700px) {
+.main_search_container{
+margin: auto !important;
+}
+}

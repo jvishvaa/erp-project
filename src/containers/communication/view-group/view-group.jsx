@@ -285,11 +285,11 @@ const ViewGroup = withRouter(({ history, ...props }) => {
             <div className='view_group_white_space_wrapper'>
               {isHidden ? (
                 <span className='message_log_expand_manage' onClick={toggleHide}>
-                  view more
+                  View more
                 </span>
               ) : (
                 <span className='message_log_expand_manage' onClick={toggleHide}>
-                  view less
+                  View less
                 </span>
               )}
               <Paper className={` view_group_table_wrapper ${classes.root}`}>
