@@ -433,6 +433,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       setTextMessage('');
       setWordcount(641);
       setIsEmail(false);
+      setFiles([]);
       setSmsTypeList([]);
       setSelectedSmsType('');
       setSecondStep(true);
@@ -687,8 +688,12 @@ const SendMessage = withRouter(({ history, ...props }) => {
             formData.set('message_type', '1');
             formData.set('role', roleArray);
             formData.set('branch', branchArray);
-            formData.set('grade', gradeArray);
-            formData.set('mapping_bgs', sectionArray);
+            if (gradeArray.length) {
+              formData.set('grade', gradeArray);
+            }
+            if (sectionArray.length) {
+              formData.set('mapping_bgs', sectionArray);
+            }
             formData.set('erp_users', selectionArray);
             for (let i = 0; i < files.length; i++) {
               formData.append('files', files[i]);
@@ -701,8 +706,12 @@ const SendMessage = withRouter(({ history, ...props }) => {
             formData.set('message_type', '2');
             formData.set('role', roleArray);
             formData.set('branch', branchArray);
-            formData.set('grade', gradeArray);
-            formData.set('mapping_bgs', sectionArray);
+            if (gradeArray.length) {
+              formData.set('grade', gradeArray);
+            }
+            if (sectionArray.length) {
+              formData.set('mapping_bgs', sectionArray);
+            }
             formData.set('erp_users', selectionArray);
           }
         }
@@ -729,6 +738,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
           setHeaders([]);
           setUsersRow([]);
           setCompleteData([]);
+          setFiles([]);
           setTotalPage(0);
           setFirstStep(true);
           setCustomSelect(false);
