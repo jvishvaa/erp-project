@@ -17,6 +17,7 @@ import { getSteps, jsonToFormData } from './utils';
 import CustomStepperConnector from '../../components/custom-stepper-connector';
 import CustomStepperIcon from '../../components/custom-stepper-icon';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
+import Layout from '../Layout';
 
 class EditUser extends Component {
   constructor(props) {
@@ -206,76 +207,80 @@ class EditUser extends Component {
     const steps = getSteps(showParentOrGuardianForm);
     const { classes, creatingUser, fetchingUserDetails, selectedUser } = this.props;
     return (
-      <div>
-        <div className='bread-crumbs-container'>
-          <CommonBreadcrumbs
-            componentName='User Management'
-            childComponentName='Edit User'
-          />
-        </div>
-        {user ? (
-          <>
-            {/* <Stepper activeStep={activeStep} alternativeLabel className={classes.stepper}>
+      <Layout>
+        <div>
+          <div className='bread-crumbs-container'>
+            <CommonBreadcrumbs
+              componentName='User Management'
+              childComponentName='Edit User'
+            />
+          </div>
+          {user ? (
+            <>
+              {/* <Stepper activeStep={activeStep} alternativeLabel className={classes.stepper}>
               {steps.map((label) => (
                 <Step key={label}>
                   <StepLabel>{label}</StepLabel>
                 </Step>
               ))}
             </Stepper> */}
-            <Stepper
-              activeStep={activeStep}
-              alternativeLabel
-              className={`${classes.stepper} stepper`}
-              connector={<CustomStepperConnector />}
-            >
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel
-                    StepIconComponent={CustomStepperIcon}
-                    classes={{
-                      alternativeLabel: classes.stepLabel,
-                    }}
-                  >
-                    {label}
-                  </StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-            <div className={classes.formContainer}>
-              {activeStep === 0 && (
-                <SchoolDetailsForm onSubmit={this.onSubmitSchoolDetails} details={user} />
-              )}
-              {activeStep === 1 && (
-                <UserDetailsForm
-                  onSubmit={this.onSubmitUserDetails}
-                  details={user}
-                  handleBack={this.handleBack}
-                  toggleParentForm={this.toggleParentForm}
-                  toggleGuardianForm={this.toggleGuardianForm}
-                  showParentForm={showParentForm}
-                  showGuardianForm={showGuardianForm}
-                  isSubmitting={creatingUser}
-                />
-              )}
-              {activeStep === 2 && selectedUser && (
-                <GuardianDetailsForm
-                  onSubmit={this.onSubmitGuardianDetails}
-                  details={user.parent}
-                  handleBack={this.handleBack}
-                  showParentForm={showParentForm}
-                  showGuardianForm={showGuardianForm}
-                  isSubmitting={creatingUser}
-                />
-              )}
-            </div>
-          </>
-        ) : fetchingUserDetails ? (
-          'Loading'
-        ) : (
-          'Loading'
-        )}
+              <Stepper
+                activeStep={activeStep}
+                alternativeLabel
+                className={`${classes.stepper} stepper`}
+                connector={<CustomStepperConnector />}
+              >
+                {steps.map((label) => (
+                  <Step key={label}>
+                    <StepLabel
+                      StepIconComponent={CustomStepperIcon}
+                      classes={{
+                        alternativeLabel: classes.stepLabel,
+                      }}
+                    >
+                      {label}
+                    </StepLabel>
+                  </Step>
+                ))}
+              </Stepper>
+              <div className={classes.formContainer}>
+                {activeStep === 0 && (
+                  <SchoolDetailsForm
+                    onSubmit={this.onSubmitSchoolDetails}
+                    details={user}
+                  />
+                )}
+                {activeStep === 1 && (
+                  <UserDetailsForm
+                    onSubmit={this.onSubmitUserDetails}
+                    details={user}
+                    handleBack={this.handleBack}
+                    toggleParentForm={this.toggleParentForm}
+                    toggleGuardianForm={this.toggleGuardianForm}
+                    showParentForm={showParentForm}
+                    showGuardianForm={showGuardianForm}
+                    isSubmitting={creatingUser}
+                  />
+                )}
+                {activeStep === 2 && selectedUser && (
+                  <GuardianDetailsForm
+                    onSubmit={this.onSubmitGuardianDetails}
+                    details={user.parent}
+                    handleBack={this.handleBack}
+                    showParentForm={showParentForm}
+                    showGuardianForm={showGuardianForm}
+                    isSubmitting={creatingUser}
+                  />
+                )}
+              </div>
+            </>
+          ) : fetchingUserDetails ? (
+            'Loading'
+          ) : (
+            'Loading'
+          )}
 
-        {/* <div>
+          {/* <div>
               <div>
                 <Button
                   disabled={activeStep === 0}
@@ -289,7 +294,8 @@ class EditUser extends Component {
                 </Button>
               </div>
             </div> */}
-      </div>
+        </div>
+      </Layout>
     );
   }
 }
