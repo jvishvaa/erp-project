@@ -75,6 +75,9 @@ const styles = (theme) => ({
     justifyContent: 'center',
     color: theme.palette.secondary.main,
   },
+  tablePaginationCaption: {
+    fontWeight: '600 !important',
+  },
 });
 
 export default styles;

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable no-use-before-define */
@@ -256,7 +257,6 @@ const Layout = ({ children, history }) => {
       id={mobileMenuId}
       TransitionComponent={Grow}
       transitionDuration={500}
-      keepMounted
       transformOrigin={{ vertical: 'top', horizontal: 'center' }}
       open={profileOpen}
       onClose={handleMobileMenuClose}
@@ -476,7 +476,7 @@ const Layout = ({ children, history }) => {
                     : searchInputRef.current &&
                       searchInputRef.current.getBoundingClientRect().top + 32,
                   left: 'auto',
-                  right: `calc(${isMobile ? '95vw' : '100vw'} - ${
+                  right: `calc(${isMobile ? '92vw' : '100vw'} - ${
                     searchInputRef.current &&
                     searchInputRef.current.getBoundingClientRect().left +
                       searchInputRef.current.getBoundingClientRect().width
@@ -505,7 +505,7 @@ const Layout = ({ children, history }) => {
                                   paddingLeft: 16,
                                   backgroundColor: 'rgb(224 224 224)',
                                   paddingRight: 16,
-                                  minWidth: 374,
+                                  width: isMobile ? '310' : '374',
                                 }}
                               >
                                 <Grid
@@ -540,7 +540,7 @@ const Layout = ({ children, history }) => {
                                         searchUserDetails.map((result, index) => {
                                           return (
                                             <ListItem
-                                              style={{ width: 324 }}
+                                              style={{ width: isMobile ? 270 : 324 }}
                                               className='user_rows_details'
                                               button
                                               onClick={() => {
@@ -555,7 +555,12 @@ const Layout = ({ children, history }) => {
                                                 secondary={
                                                   <div>
                                                     <span>{result.erpId}</span>
-                                                    <span style={{ float: 'right' }}>
+                                                    <span
+                                                      style={{
+                                                        float: 'right',
+                                                        margin: '0% 1%',
+                                                      }}
+                                                    >
                                                       Mob: {result.contact}
                                                     </span>
                                                   </div>
