@@ -1,4 +1,4 @@
-import React, from 'react';
+import React from 'react';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -18,7 +18,7 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
   const classes = useStyles();
   const userMenuOpen = openMenu === 'user-management';
   const masterMenuOpen = openMenu === 'master-management';
- 
+
   return (
     <>
       <ListItem
