@@ -175,6 +175,7 @@ class RoleManagement extends Component {
             classes={{
               spacer: classes.tablePaginationSpacer,
               toolbar: classes.tablePaginationToolbar,
+              caption: classes.tablePaginationCaption,
             }}
           />
         </div>

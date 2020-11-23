@@ -18,6 +18,7 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
   const classes = useStyles();
   const userMenuOpen = openMenu === 'user-management';
   const masterMenuOpen = openMenu === 'master-management';
+
   return (
     <>
       <ListItem
@@ -72,7 +73,9 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
           <ListItem
             button
             className={
-              history.location.pathname === '/view-users' ? 'menu_selection' : null
+              history.location.pathname === '/user-management/view-users'
+                ? 'menu_selection'
+                : null
             }
             onClick={() => {
               onClickMenuItem('view-users');
@@ -88,7 +91,9 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
           <ListItem
             button
             className={
-              history.location.pathname === '/user-management' ? 'menu_selection' : null
+              history.location.pathname === '/user-management/assign-role'
+                ? 'menu_selection'
+                : null
             }
             onClick={() => {
               onClickMenuItem('assign-role');
