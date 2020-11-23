@@ -23,7 +23,7 @@ import useStyles from './useStyles';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import './styles.scss';
 
-// import Layout from '../../Layout';
+import Layout from '../../Layout';
 // import './assign-role.css';
 
 const AssignRole = (props) => {
@@ -409,16 +409,16 @@ const AssignRole = (props) => {
   }, [pageno, assignedRole, clearAll, filterCheck]);
 
   return (
-    // <Layout>
-    <div className='assign-role-container'>
-      <div className={classes.filtersContainer}>
-        <div className={`bread-crumbs-container ${classes.spacer}`}>
-          <CommonBreadcrumbs
-            componentName='User Management'
-            childComponentName='Assign role'
-          />
-        </div>
-        {/* <Grid container className='message_log_container' spacing={10}>
+    <Layout>
+      <div className='assign-role-container'>
+        <div className={classes.filtersContainer}>
+          <div className={`bread-crumbs-container ${classes.spacer}`}>
+            <CommonBreadcrumbs
+              componentName='User Management'
+              childComponentName='Assign role'
+            />
+          </div>
+          {/* <Grid container className='message_log_container' spacing={10}>
           <Grid lg={10} item>
             <div className='user_search_wrapper'>
               <TextField
@@ -431,105 +431,105 @@ const AssignRole = (props) => {
           </Grid>
 
         </Grid> */}
-        <Grid container spacing={2} className={classes.spacer}>
-          <Grid item xs={12} md={4}>
-            <Autocomplete
-              multiple
-              size='small'
-              onChange={handleMultipleRoles}
-              value={selectedMultipleRoles}
-              id='message_log-smsType'
-              options={roles}
-              getOptionLabel={(option) => option?.role_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  className='message_log-textfield'
-                  {...params}
-                  variant='outlined'
-                  label='Role'
-                  placeholder='Role'
-                />
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Autocomplete
-              size='small'
-              onChange={handleBranch}
-              value={selectedBranch}
-              id='message_log-branch'
-              className='message_log_branch'
-              options={branchList}
-              getOptionLabel={(option) => option?.branch_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  className='message_log-textfield'
-                  {...params}
-                  variant='outlined'
-                  label='Branch'
-                  placeholder='Branch'
-                />
-              )}
-            />
-          </Grid>
-          {selectedBranch && (
+          <Grid container spacing={2} className={classes.spacer}>
             <Grid item xs={12} md={4}>
               <Autocomplete
                 multiple
                 size='small'
-                onChange={handleGrades}
-                value={selectedGrades}
+                onChange={handleMultipleRoles}
+                value={selectedMultipleRoles}
                 id='message_log-smsType'
-                options={gradeList}
-                getOptionLabel={(option) => option?.grade__grade_name}
+                options={roles}
+                getOptionLabel={(option) => option?.role_name}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
                     className='message_log-textfield'
                     {...params}
                     variant='outlined'
-                    label='Grade'
-                    placeholder='Grade'
+                    label='Role'
+                    placeholder='Role'
                   />
                 )}
               />
             </Grid>
-          )}
-          {selectedGrades.length > 0 && (
             <Grid item xs={12} md={4}>
               <Autocomplete
-                multiple
                 size='small'
-                onChange={handleSections}
-                value={selectedSections}
-                id='message_log-smsType'
-                options={sectionList}
-                getOptionLabel={(option) => option?.section__section_name}
+                onChange={handleBranch}
+                value={selectedBranch}
+                id='message_log-branch'
+                className='message_log_branch'
+                options={branchList}
+                getOptionLabel={(option) => option?.branch_name}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
                     className='message_log-textfield'
                     {...params}
                     variant='outlined'
-                    label='Sections'
-                    placeholder='Sections'
+                    label='Branch'
+                    placeholder='Branch'
                   />
                 )}
               />
             </Grid>
-          )}
-          {/* <Grid xs={4}></Grid> */}
-        </Grid>
-        <Divider className={classes.spacer} />
-        <Grid container spacing={2} className={classes.spacer}>
-          <Grid item md={2} xs={12}>
-            <Button className='disabled-btn' onClick={handleClearAll} fullWidth>
-              CLEAR ALL
-            </Button>
+            {selectedBranch && (
+              <Grid item xs={12} md={4}>
+                <Autocomplete
+                  multiple
+                  size='small'
+                  onChange={handleGrades}
+                  value={selectedGrades}
+                  id='message_log-smsType'
+                  options={gradeList}
+                  getOptionLabel={(option) => option?.grade__grade_name}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      className='message_log-textfield'
+                      {...params}
+                      variant='outlined'
+                      label='Grade'
+                      placeholder='Grade'
+                    />
+                  )}
+                />
+              </Grid>
+            )}
+            {selectedGrades.length > 0 && (
+              <Grid item xs={12} md={4}>
+                <Autocomplete
+                  multiple
+                  size='small'
+                  onChange={handleSections}
+                  value={selectedSections}
+                  id='message_log-smsType'
+                  options={sectionList}
+                  getOptionLabel={(option) => option?.section__section_name}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      className='message_log-textfield'
+                      {...params}
+                      variant='outlined'
+                      label='Sections'
+                      placeholder='Sections'
+                    />
+                  )}
+                />
+              </Grid>
+            )}
+            {/* <Grid xs={4}></Grid> */}
+          </Grid>
+          <Divider className={classes.spacer} />
+          <Grid container spacing={2} className={classes.spacer}>
+            <Grid item md={2} xs={12}>
+              <Button className='disabled-btn' onClick={handleClearAll} fullWidth>
+                CLEAR ALL
+              </Button>
 
-            {/* <input
+              {/* <input
               className={clearAllActive ? 'profile_update_button' : 'deactive_clearAll'}
               // className='profile_update_button'
               type='button'
@@ -537,20 +537,20 @@ const AssignRole = (props) => {
               value='Clear All'
             /> */}
 
-            {/* <input
+              {/* <input
               className='profile_update_button'
               type='button'
               onClick={handleFilterCheck}
               value='Filter'
             /> */}
+            </Grid>
+            <Grid item md={2} xs={12}>
+              <Button onClick={handleFilterCheck} fullWidth>
+                FILTER
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item md={2} xs={12}>
-            <Button onClick={handleFilterCheck} fullWidth>
-              FILTER
-            </Button>
-          </Grid>
-        </Grid>
-        {/* <Grid container className='message_log_container' spacing={5}>
+          {/* <Grid container className='message_log_container' spacing={5}>
           <Grid lg={3} item>
             <Autocomplete
               multiple
@@ -640,7 +640,7 @@ const AssignRole = (props) => {
             ) : null}
           </Grid>
         </Grid> */}
-        {/* <Grid container className='message_log_container' spacing={2}>
+          {/* <Grid container className='message_log_container' spacing={2}>
           <Grid lg={5} item>
             <input
               className={clearAllActive ? 'profile_update_button' : 'deactive_clearAll'}
@@ -658,65 +658,67 @@ const AssignRole = (props) => {
             />
           </Grid>
         </Grid> */}
-      </div>
-      <div
-        className={`${classes.tableActionsContainer} ${classes.spacer}`}
-        style={{ width: '95%', marginLeft: 'auto', marginRight: 'auto' }}
-      >
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={4}>
-            <FormControl variant='outlined' fullWidth size='small'>
-              <InputLabel id='demo-simple-select-outlined-label'>Assign Role</InputLabel>
-              <Select
-                labelId='demo-simple-select-outlined-label'
-                id='demo-simple-select-outlined'
-                value={selectedRole}
-                onChange={(e) => setSelectedRole(e.target.value)}
-                label='Assign Role'
-              >
-                <MenuItem>
-                  <em>None</em>
-                </MenuItem>
-                {roles.map((items, index) => (
-                  <MenuItem key={`roles_assign_${index}`} value={items.id}>
-                    {items.role_name}
+        </div>
+        <div
+          className={`${classes.tableActionsContainer} ${classes.spacer}`}
+          style={{ width: '95%', marginLeft: 'auto', marginRight: 'auto' }}
+        >
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={4}>
+              <FormControl variant='outlined' fullWidth size='small'>
+                <InputLabel id='demo-simple-select-outlined-label'>
+                  Assign Role
+                </InputLabel>
+                <Select
+                  labelId='demo-simple-select-outlined-label'
+                  id='demo-simple-select-outlined'
+                  value={selectedRole}
+                  onChange={(e) => setSelectedRole(e.target.value)}
+                  label='Assign Role'
+                >
+                  <MenuItem>
+                    <em>None</em>
                   </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item md={4} xs={6}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={selectAllObj[pageno - 1]?.selectAll}
-                  onChange={handleSelectAll}
-                  color='primary'
-                />
-              }
-              label='Select all'
-            />
-          </Grid>
-          {isMobile && (
-            <Grid item md={4} xs={6}>
-              <p
-                className={classes.viewMoreBtn}
-                onClick={() => {
-                  setViewMore((prevState) => !prevState);
-                }}
-                style={{ textAlign: 'right' }}
-              >
-                {viewMore ? 'View Less' : 'View More'}
-              </p>
+                  {roles.map((items, index) => (
+                    <MenuItem key={`roles_assign_${index}`} value={items.id}>
+                      {items.role_name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
-          )}
-        </Grid>
-      </div>
-      {assignedRole ? (
-        <div>Please Wait ...</div>
-      ) : (
-        <>
-          {/* {usersRow.length && selectAllObj.length ? (
+            <Grid item md={4} xs={6}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={selectAllObj[pageno - 1]?.selectAll}
+                    onChange={handleSelectAll}
+                    color='primary'
+                  />
+                }
+                label='Select all'
+              />
+            </Grid>
+            {isMobile && (
+              <Grid item md={4} xs={6}>
+                <p
+                  className={classes.viewMoreBtn}
+                  onClick={() => {
+                    setViewMore((prevState) => !prevState);
+                  }}
+                  style={{ textAlign: 'right' }}
+                >
+                  {viewMore ? 'View Less' : 'View More'}
+                </p>
+              </Grid>
+            )}
+          </Grid>
+        </div>
+        {assignedRole ? (
+          <div>Please Wait ...</div>
+        ) : (
+          <>
+            {/* {usersRow.length && selectAllObj.length ? (
             <div className='assign_role_select_all_wrapper'>
               <input
                 type='checkbox'
@@ -727,31 +729,31 @@ const AssignRole = (props) => {
               <span>Select All</span>
             </div>
           ) : null} */}
-          <span className='create_group_error_span'>{selectectUserError}</span>
-          <CustomSelectionTable
-            header={
-              isMobile
-                ? headers
-                    .filter((obj) => {
-                      if (viewMore) {
-                        return true;
-                      }
-                      return ['fullName', 'erp_id'].includes(obj.field);
-                    })
-                    .map((header) => ({ ...header, width: 150 }))
-                : headers
-            }
-            rows={usersRow}
-            completeData={completeData}
-            totalRows={totalPage}
-            pageno={pageno}
-            selectedUsers={selectedUsers}
-            changePage={setPageno}
-            name='assign_role'
-            setSelectedUsers={setSelectedUsers}
-            pageSize={15}
-          />
-          {/* <Grid container className='message_log_container' spacing={5}>
+            <span className='create_group_error_span'>{selectectUserError}</span>
+            <CustomSelectionTable
+              header={
+                isMobile
+                  ? headers
+                      .filter((obj) => {
+                        if (viewMore) {
+                          return true;
+                        }
+                        return ['fullName', 'erp_id'].includes(obj.field);
+                      })
+                      .map((header) => ({ ...header, width: 150 }))
+                  : headers
+              }
+              rows={usersRow}
+              completeData={completeData}
+              totalRows={totalPage}
+              pageno={pageno}
+              selectedUsers={selectedUsers}
+              changePage={setPageno}
+              name='assign_role'
+              setSelectedUsers={setSelectedUsers}
+              pageSize={15}
+            />
+            {/* <Grid container className='message_log_container' spacing={5}>
             <Grid lg={3} item>
               <input
                 className='assign_role_button'
@@ -787,18 +789,19 @@ const AssignRole = (props) => {
               </div>
             </Grid>
           </Grid> */}
-          <Grid
-            container
-            className={`${classes.assignRoleBtnContainer} ${classes.spacer}`}
-            justify={isMobile && 'center'}
-          >
-            <Grid item md={4}>
-              <Button onClick={assignRole}>ASSIGN ROLE</Button>
+            <Grid
+              container
+              className={`${classes.assignRoleBtnContainer} ${classes.spacer}`}
+              justify={isMobile && 'center'}
+            >
+              <Grid item md={4}>
+                <Button onClick={assignRole}>ASSIGN ROLE</Button>
+              </Grid>
             </Grid>
-          </Grid>
-        </>
-      )}
-    </div>
+          </>
+        )}
+      </div>
+    </Layout>
   );
 };
 

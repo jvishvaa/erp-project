@@ -15,6 +15,7 @@ import { Autocomplete } from '@material-ui/lab';
 
 import axiosInstance from '../../config/axios';
 import AssignRole from '../communication/assign-role/assign-role';
+import Layout from '../Layout';
 
 class UserManagement extends Component {
   constructor(props) {
@@ -88,97 +89,99 @@ class UserManagement extends Component {
   render() {
     const { match } = this.props;
     return (
-      <Container>
-        <div>
-          <Button startIcon={<AddOutlinedIcon />} href={`${match.url}/create-user`}>
-            Add user
-          </Button>
-          <span style={{ margin: '0px 20px' }}>or</span>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={this.state.checked}
-                onChange={this.handleChange}
-                name='checked'
-              />
-            }
-            label='Upload excel'
-          />
-        </div>
-        <div style={{ marginTop: 20 }}>
-          {this.state.checked ? (
-            <Grid container spacing={2} style={{ marginBottom: 20 }}>
-              <Grid item xs={3}>
-                <Autocomplete
-                  size='small'
-                  id='create__class-subject'
-                  options={this.state.branches}
-                  getOptionLabel={(option) => option.branch_name}
-                  filterSelectedOptions
-                  onChange={this.handleBranch}
-                  renderInput={(params) => (
-                    <TextField
-                      size='small'
-                      className='create__class-textfield'
-                      {...params}
-                      variant='outlined'
-                      label='Branch'
-                      placeholder='Branch'
-                      required
-                    />
-                  )}
+      <Layout>
+        <Container>
+          <div>
+            <Button startIcon={<AddOutlinedIcon />} href={`${match.url}/create-user`}>
+              Add user
+            </Button>
+            <span style={{ margin: '0px 20px' }}>or</span>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={this.state.checked}
+                  onChange={this.handleChange}
+                  name='checked'
                 />
-              </Grid>
-              <Grid item xs={3}>
-                <Autocomplete
-                  size='small'
-                  id='create__class-subject'
-                  options={this.state.years}
-                  getOptionLabel={(option) => option.session_year}
-                  filterSelectedOptions
-                  onChange={this.handleYear}
-                  renderInput={(params) => (
-                    <TextField
-                      size='small'
-                      className='create__class-textfield'
-                      {...params}
-                      variant='outlined'
-                      label='Academic year'
-                      placeholder='Academic year'
-                      required
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={3}>
-                <Box display='flex' flexDirection='column'>
-                  <Input type='file' onChange={this.handleFile} />
-                  <Box display='flex' flexDirection='row' style={{ color: 'gray' }}>
-                    <Box p={1}>
-                      {`Download Format: `}
-                      <a
-                        style={{ cursor: 'pointer' }}
-                        href={require('./download-format/erp_user.xlsx')}
-                        download='format.xlsx'
-                      >
-                        Download format
-                      </a>
+              }
+              label='Upload excel'
+            />
+          </div>
+          <div style={{ marginTop: 20 }}>
+            {this.state.checked ? (
+              <Grid container spacing={2} style={{ marginBottom: 20 }}>
+                <Grid item xs={3}>
+                  <Autocomplete
+                    size='small'
+                    id='create__class-subject'
+                    options={this.state.branches}
+                    getOptionLabel={(option) => option.branch_name}
+                    filterSelectedOptions
+                    onChange={this.handleBranch}
+                    renderInput={(params) => (
+                      <TextField
+                        size='small'
+                        className='create__class-textfield'
+                        {...params}
+                        variant='outlined'
+                        label='Branch'
+                        placeholder='Branch'
+                        required
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={3}>
+                  <Autocomplete
+                    size='small'
+                    id='create__class-subject'
+                    options={this.state.years}
+                    getOptionLabel={(option) => option.session_year}
+                    filterSelectedOptions
+                    onChange={this.handleYear}
+                    renderInput={(params) => (
+                      <TextField
+                        size='small'
+                        className='create__class-textfield'
+                        {...params}
+                        variant='outlined'
+                        label='Academic year'
+                        placeholder='Academic year'
+                        required
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={3}>
+                  <Box display='flex' flexDirection='column'>
+                    <Input type='file' onChange={this.handleFile} />
+                    <Box display='flex' flexDirection='row' style={{ color: 'gray' }}>
+                      <Box p={1}>
+                        {`Download Format: `}
+                        <a
+                          style={{ cursor: 'pointer' }}
+                          href={require('./download-format/erp_user.xlsx')}
+                          download='format.xlsx'
+                        >
+                          Download format
+                        </a>
+                      </Box>
                     </Box>
                   </Box>
-                </Box>
+                </Grid>
+                <Grid item xs={3}>
+                  <Button style={{ marginLeft: 20 }} onClick={this.handleUpload}>
+                    Upload
+                  </Button>
+                </Grid>
               </Grid>
-              <Grid item xs={3}>
-                <Button style={{ marginLeft: 20 }} onClick={this.handleUpload}>
-                  Upload
-                </Button>
-              </Grid>
-            </Grid>
-          ) : (
-            ''
-          )}
-          <AssignRole />
-        </div>
-      </Container>
+            ) : (
+              ''
+            )}
+            <AssignRole />
+          </div>
+        </Container>
+      </Layout>
     );
   }
 }
