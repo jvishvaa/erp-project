@@ -58,6 +58,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'inline-block',
   },
   attachmentIcon: {
+    color: '#ff6b6b',
+    marginLeft: '4%',
     '&:hover': {
       cursor: 'pointer',
     },
@@ -562,7 +564,9 @@ const SendMessage = withRouter(({ history, ...props }) => {
       <div className={className}>
         <Grid container spacing={2} alignItems='center'>
           <Grid item xs={12} md={8}>
-            <Typography className='file_name_container' variant='span'>{file.name}</Typography>
+            <Typography className='file_name_container' variant='span'>
+              {file.name}
+            </Typography>
           </Grid>
           <Grid item xs={12} md={3}>
             <CloseIcon style={{ color: '#ff6b6b' }} onClick={onClose} />
@@ -1063,7 +1067,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
                     <span className='create_group_error_span'>{textMessageError}</span>
                   </Grid>
                   {isEmail ? (
-                    <Grid xs={12} lg={12}>
+                    <Grid xs={12} lg={8}>
                       <Grid
                         container
                         alignItems='center'
