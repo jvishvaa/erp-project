@@ -221,10 +221,12 @@ const SubjectTable = () => {
         setGrades(result.data.data);
       } else {
         setAlert('error', 'Network Error!');
+        setGrades([])
       }
     })
     .catch((error)=>{
       setAlert('error', 'Grades Unavailable!');
+      setGrades([])
     })
   },[])
 
