@@ -170,9 +170,10 @@ const CreateClassForm = () => {
     dispatch(clearFilteredStudents());
     setSelectedSections(value);
     if (value.length) {
-      const ids = value.map((el) => el.section_id);
+      const ids = value.map((el) => el.id);
+      const sectionIds = value.map((el) => el.section_id);
       setOnlineClass((prevState) => ({ ...prevState, sectionIds: ids }));
-      listSubjects(onlineClass.gradeIds, ids);
+      listSubjects(onlineClass.gradeIds, sectionIds);
     } else {
       setOnlineClass((prevState) => ({ ...prevState, sectionIds: [] }));
     }
