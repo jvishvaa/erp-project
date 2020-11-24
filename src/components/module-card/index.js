@@ -11,6 +11,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import SubModule from '../sub-module';
 import { scopes } from '../../redux/actions';
 import useStyles from './useStyles';
@@ -445,25 +446,58 @@ export default function ModuleCard({
     <Card className={classes.root}>
       <CardContent>
         <Typography className={classes.cardHeader}>{module.module_parent}</Typography>
+
         <TableContainer className={classes.container}>
           <Table stickyHeader aria-label='sticky table'>
             <TableHead>
               <TableRow>
-                {columns.map((column) => (
-                  <TableCell
-                    key={column.id}
-                    align={column.align}
-                    style={{ minWidth: column.minWidth }}
-                    className={classes.columnHeader}
-                  >
-                    {column.label}
-                  </TableCell>
-                ))}
+                {columns.map((column) => {
+                  if (column.id === 'module_child_name') {
+                    const checkAll = module.module_child.every((subModule) => {
+                      if (subModule.my_branch) {
+                        return true;
+                      }
+                      return false;
+                    });
+                    return (
+                      <TableCell
+                        key={column.id}
+                        align={column.align}
+                        style={{ minWidth: column.minWidth }}
+                        className={classes.columnHeader}
+                      >
+                        {/* <FormControlLabel
+                          control={ */}
+                        <Checkbox
+                          onChange={(e) => {
+                            onCheckAll(e.target.checked, 'my_branch');
+                          }}
+                          color='primary'
+                          checked={checkAll}
+                        />
+                        {/* }
+                          title='Select All'
+                        /> */}
+                      </TableCell>
+                    );
+                  }
+
+                  return (
+                    <TableCell
+                      key={column.id}
+                      align={column.align}
+                      style={{ minWidth: column.minWidth }}
+                      className={classes.columnHeader}
+                    >
+                      {column.label}
+                    </TableCell>
+                  );
+                })}
               </TableRow>
             </TableHead>
             <TableBody>
               <TableRow hover role='checkbox' tabIndex={-1} id='select-all'>
-                {columns.map((column) => {
+                {columns.map((column, index) => {
                   if (column.id !== 'module_child_name' && column.id !== 'custom') {
                     const checkAll = module.module_child.every((subModule) => {
                       if (subModule[column.id]) {
@@ -493,6 +527,9 @@ export default function ModuleCard({
                         />
                       </TableCell>
                     );
+                  }
+                  if (index === 0) {
+                    return <TableCell>Select All</TableCell>;
                   }
                   return <TableCell />;
                 })}
