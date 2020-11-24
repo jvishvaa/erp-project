@@ -29,7 +29,6 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import Dropzone from 'react-dropzone';
 import {
   Attachment as AttachmentIcon,
   HighlightOffOutlined as CloseIcon,
@@ -59,6 +58,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'inline-block',
   },
   attachmentIcon: {
+    color: '#ff6b6b',
+    marginLeft: '4%',
     '&:hover': {
       cursor: 'pointer',
     },
@@ -432,6 +433,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
       setTextMessage('');
       setWordcount(641);
       setIsEmail(false);
+      setFiles([]);
       setSmsTypeList([]);
       setSelectedSmsType('');
       setSecondStep(true);
@@ -563,7 +565,9 @@ const SendMessage = withRouter(({ history, ...props }) => {
       <div className={className}>
         <Grid container spacing={2} alignItems='center'>
           <Grid item xs={12} md={8}>
-            <Typography className='file_name_container' variant='span'>{file.name}</Typography>
+            <Typography className='file_name_container' variant='span'>
+              {file.name}
+            </Typography>
           </Grid>
           <Grid item xs={12} md={3}>
             <CloseIcon style={{ color: '#ff6b6b' }} onClick={onClose} />
@@ -600,7 +604,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
         if (selectAll) {
           selectionArray.push(0);
         }
-        let request = {};
+        const formData = new FormData();
         if (!customSelect) {
           const groupId = [];
           if (selectedGroup.length && !selectedGroup.includes('All')) {
@@ -611,25 +615,24 @@ const SendMessage = withRouter(({ history, ...props }) => {
               });
           }
           if (isEmail) {
-            request = {
-              communicate_type: selectedSmsType.id,
-              email_body: textMessage,
-              email_subject: emailSubject,
-              group_type: '1',
-              message_type: '1',
-              group: groupId,
-              erp_users: selectionArray,
-            };
+            formData.set('communicate_type', selectedSmsType.id);
+            formData.set('email_body', textMessage);
+            formData.set('email_subject', emailSubject);
+            formData.set('group_type', '1');
+            formData.set('message_type', '1');
+            formData.set('group', groupId);
+            formData.set('erp_users', selectionArray);
+            for (let i = 0; i < files.length; i++) {
+              formData.append('files', files[i]);
+            }
           }
           if (!isEmail) {
-            request = {
-              communicate_type: selectedSmsType.id,
-              message_content: textMessage,
-              group_type: '1',
-              message_type: '2',
-              group: groupId,
-              erp_users: selectionArray,
-            };
+            formData.set('communicate_type', selectedSmsType.id);
+            formData.set('message_content', textMessage);
+            formData.set('group_type', '1');
+            formData.set('message_type', '2');
+            formData.set('group', groupId);
+            formData.set('erp_users', selectionArray);
           }
         }
         if (customSelect) {
@@ -661,9 +664,13 @@ const SendMessage = withRouter(({ history, ...props }) => {
                 sectionsId.push(items.id);
               });
           }
+          const roleArray = [];
           const branchArray = [];
           const gradeArray = [];
           const sectionArray = [];
+          rolesId.forEach((item) => {
+            roleArray.push(item);
+          });
           gradesId.forEach((item) => {
             gradeArray.push(item);
           });
@@ -674,43 +681,56 @@ const SendMessage = withRouter(({ history, ...props }) => {
             branchArray.push(item);
           });
           if (isEmail) {
-            request = {
-              communicate_type: selectedSmsType.id,
-              email_body: textMessage,
-              email_subject: emailSubject,
-              group_type: '2',
-              message_type: '1',
-              role: rolesId[0],
-              branch: branchArray,
-              grade: gradeArray,
-              mapping_bgs: sectionArray,
-              erp_users: selectionArray,
-            };
+            formData.set('communicate_type', selectedSmsType.id);
+            formData.set('email_body', textMessage);
+            formData.set('email_subject', emailSubject);
+            formData.set('group_type', '2');
+            formData.set('message_type', '1');
+            formData.set('role', roleArray);
+            formData.set('branch', branchArray);
+            if (gradeArray.length) {
+              formData.set('grade', gradeArray);
+            }
+            if (sectionArray.length) {
+              formData.set('mapping_bgs', sectionArray);
+            }
+            formData.set('erp_users', selectionArray);
+            for (let i = 0; i < files.length; i++) {
+              formData.append('files', files[i]);
+            }
           }
           if (!isEmail) {
-            request = {
-              communicate_type: selectedSmsType.id,
-              message_content: textMessage,
-              group_type: '2',
-              message_type: '2',
-              role: rolesId[0],
-              branch: branchArray,
-              grade: gradeArray,
-              mapping_bgs: sectionArray,
-              erp_users: selectionArray,
-            };
+            formData.set('communicate_type', selectedSmsType.id);
+            formData.set('message_content', textMessage);
+            formData.set('group_type', '2');
+            formData.set('message_type', '2');
+            formData.set('role', roleArray);
+            formData.set('branch', branchArray);
+            if (gradeArray.length) {
+              formData.set('grade', gradeArray);
+            }
+            if (sectionArray.length) {
+              formData.set('mapping_bgs', sectionArray);
+            }
+            formData.set('erp_users', selectionArray);
           }
         }
         setLoading(true);
-        const response = await axiosInstance.post(sendMessageApi, request, {
-          headers: {
-            // 'application/json' is the modern content-type for JSON, but some
-            // older servers may use 'text/json'.
-            // See: http://bit.ly/text-json
-            Authorization: `Bearer ${token}`,
-            'content-type': 'application/json',
-          },
+        const response = await axiosInstance({
+          method: 'post',
+          url: sendMessageApi,
+          data: formData,
+          headers: { Authorization: `Bearer ${token}` },
         });
+        // .post(sendMessageApi, request, {
+        //   headers: {
+        //     // 'application/json' is the modern content-type for JSON, but some
+        //     // older servers may use 'text/json'.
+        //     // See: http://bit.ly/text-json
+        //     Authorization: `Bearer ${token}`,
+        //     'content-type': 'application/json',
+        //   },
+        // });
         const { message } = response.data;
         if (response.data.status_code === 200) {
           setAlert('success', message);
@@ -718,6 +738,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
           setHeaders([]);
           setUsersRow([]);
           setCompleteData([]);
+          setFiles([]);
           setTotalPage(0);
           setFirstStep(true);
           setCustomSelect(false);
@@ -1064,7 +1085,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
                     <span className='create_group_error_span'>{textMessageError}</span>
                   </Grid>
                   {isEmail ? (
-                    <Grid xs={12} lg={12}>
+                    <Grid xs={12} lg={8}>
                       <Grid
                         container
                         alignItems='center'
