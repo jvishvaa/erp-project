@@ -446,11 +446,22 @@ const CreateClassForm = () => {
   };
 
   useEffect(() => {
-    if (onlineClass.duration && onlineClass.subject && onlineClass.gradeIds.length) {
-      console.log('call the fucking api');
+    if (
+      onlineClass.duration &&
+      onlineClass.subject &&
+      onlineClass.gradeIds.length &&
+      onlineClass.selectedDate &&
+      onlineClass.selectedTime
+    ) {
       fetchTutorEmails();
     }
-  }, [onlineClass.duration, onlineClass.subject, onlineClass.gradeIds.length]);
+  }, [
+    onlineClass.duration,
+    onlineClass.subject,
+    onlineClass.gradeIds.length,
+    onlineClass.selectedDate,
+    onlineClass.selectedTime,
+  ]);
 
   return (
     <div className='create__class' key={formKey}>
@@ -643,6 +654,7 @@ const CreateClassForm = () => {
                 filterSelectedOptions
                 value={onlineClass.tutorEmail}
                 onChange={handleTutorEmail}
+                disabled={tutorEmailsLoading}
                 renderInput={(params) => (
                   <TextField
                     size='small'
@@ -732,6 +744,7 @@ const CreateClassForm = () => {
                 filterSelectedOptions
                 value={onlineClass.coHosts}
                 onChange={handleCoHost}
+                disabled={tutorEmailsLoading}
                 renderInput={(params) => (
                   <TextField
                     size='small'
