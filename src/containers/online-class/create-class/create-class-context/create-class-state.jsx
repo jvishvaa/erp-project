@@ -21,6 +21,9 @@ import {
   CREATE_NEW_CLASS_SUCCESS,
   CREATE_NEW_CLASS_FAILURE,
   RESET_CREATE_CLASS_CONTEXT,
+  LIST_TUTOR_EMAILS_REQUEST,
+  LIST_TUTOR_EMAILS_SUCCESS,
+  LIST_TUTOR_EMAILS_FAILURE,
 } from './create-class-constants';
 import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
@@ -43,6 +46,8 @@ const CreateclassProvider = (props) => {
     isValidatingTutorEmail: null,
     creatingOnlineClass: false,
     isCreated: false,
+    tutorEmails: [],
+    tutorEmailsLoading: false,
   };
 
   const [state, dispatch] = useReducer(createClassReducer, initalState);
@@ -63,6 +68,25 @@ const CreateclassProvider = (props) => {
   function failure(error, type) {
     return { type, payload: error };
   }
+
+  const listTutorEmails = async (selectedDate, selectedTime, duration, info) => {
+    dispatch(request(LIST_TUTOR_EMAILS_REQUEST));
+    const startTime = `${selectedDate} ${getFormatedTime(selectedTime)}`;
+    const { role_details: roleDetails } =
+      JSON.parse(localStorage.getItem('userDetails')) || {};
+    const { branchId, gradeId, sectionIds, subjectId } = info;
+
+    try {
+      const { data } = await axiosInstance.get(
+        `/erp_user/tutor_availability_check/?erp_user_id=${roleDetails.erp_user_id}&start_time=${startTime}&duration=${duration}&branch_id=${branchId}&grade_id=${gradeId}&section_id=${sectionIds}&subject_id=${subjectId}`
+      );
+      if (data.status === 'success')
+        dispatch(success(data.data, LIST_TUTOR_EMAILS_SUCCESS));
+      else throw new Error(data.message);
+    } catch (error) {
+      dispatch(failure(error));
+    }
+  };
 
   const listGradesCreateClass = async (moduleId) => {
     dispatch(request(LIST_GRADE_REQUEST));
@@ -189,6 +213,7 @@ const CreateclassProvider = (props) => {
         listFilteredStudents,
         createNewOnlineClass,
         resetContext,
+        listTutorEmails,
       }}
     >
       {children}

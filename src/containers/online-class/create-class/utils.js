@@ -21,7 +21,7 @@ export const initialFormStructure = {
   sectionIds: [],
   selectedDate: moment(new Date()).format('YYYY-MM-DD'),
   selectedTime: new Date(),
-  coHosts: [{ email: '' }],
+  coHosts: [],
 };
 
 export const isBetweenNonSchedulingTime = (value) => {
