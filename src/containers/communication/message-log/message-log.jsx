@@ -298,8 +298,8 @@ const MessageLog = withRouter(({ history, ...props }) => {
     if (clearAll) {
       setClearAll(false);
     }
-    getMessages();
-  }, [messageCurrentPageno, isEmail, clearAll]);
+    if (moduleId) getMessages();
+  }, [messageCurrentPageno, isEmail, clearAll, moduleId]);
   useEffect(() => {
     if (usersCurrentPageno > 1) {
       getUserDatails();
