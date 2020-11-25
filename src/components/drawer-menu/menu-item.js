@@ -23,11 +23,11 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Create Class', Path: '/online-class/create-class' },
     { name: 'Online Class', Path: '/create-class' },
     { name: 'Communication', Path: '/communication' },
-    { name: 'Add Group', Path: '/addgroup' },
-    { name: 'View&Edit Group', Path: '/viewgroup' },
-    { name: 'Send Message', Path: '/sendmessage' },
-    { name: 'Add SMS Credit', Path: '/smscredit' },
-    { name: 'SMS&Email Log', Path: '/sms-email-log' },
+    { name: 'Add Group', Path: '/communication/addgroup' },
+    { name: 'View&Edit Group', Path: '/communication/viewgroup' },
+    { name: 'Send Message', Path: '/communication/sendmessage' },
+    { name: 'Add SMS Credit', Path: '/communication/smscredit' },
+    { name: 'SMS&Email Log', Path: '/communication/messageLog' },
   ];
   // const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
