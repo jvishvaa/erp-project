@@ -18,6 +18,9 @@ import {
   CREATE_NEW_CLASS_SUCCESS,
   CREATE_NEW_CLASS_FAILURE,
   RESET_CREATE_CLASS_CONTEXT,
+  LIST_TUTOR_EMAILS_REQUEST,
+  LIST_TUTOR_EMAILS_SUCCESS,
+  LIST_TUTOR_EMAILS_FAILURE,
 } from './create-class-constants';
 
 const createClassReducer = (state, action) => {
@@ -126,6 +129,15 @@ const createClassReducer = (state, action) => {
     // reset context
     case RESET_CREATE_CLASS_CONTEXT:
       return { ...state, ...action.payload };
+
+    case LIST_TUTOR_EMAILS_REQUEST:
+      return { ...state, tutorEmailsLoading: true };
+
+    case LIST_TUTOR_EMAILS_SUCCESS:
+      return { ...state, tutorEmails: action.payload, tutorEmailsLoading: false };
+
+    case LIST_TUTOR_EMAILS_FAILURE:
+      return { ...state, tutorEmailsLoading: false };
 
     default:
       return { ...state };

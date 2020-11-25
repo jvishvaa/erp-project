@@ -41,8 +41,8 @@ const CreateClassForm = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [subjects, setSubjects] = useState([]);
   const [moduleId, setModuleId] = useState();
-  const [selectedGrades, setSelectedGrades] = useState([]);
-  const [selectedSections, setSelectedSections] = useState([]);
+  const [selectedGrades, setSelectedGrades] = useState(null);
+  const [selectedSections, setSelectedSections] = useState(null);
   const [selectedSubject, setSelectedSubject] = useState([]);
   const {
     listGradesCreateClass,
@@ -61,6 +61,9 @@ const CreateClassForm = () => {
     creatingOnlineClass,
     isCreated,
     resetContext,
+    listTutorEmails,
+    tutorEmails: tutorEmailList,
+    tutorEmailsLoading,
   } = useContext(CreateclassContext);
   const { setAlert } = useContext(AlertNotificationContext);
 
@@ -92,11 +95,11 @@ const CreateClassForm = () => {
   }, []);
 
   useEffect(() => {
-    const filteredSelectedSections = sections.filter(
-      (data) =>
-        selectedSections.findIndex((sec) => sec.section_id == data.section_id) > -1
-    );
-    setSelectedSections(filteredSelectedSections);
+    // const filteredSelectedSections = sections.filter(
+    //   (data) =>
+    //     selectedSections.findIndex((sec) => sec.section_id == data.section_id) > -1
+    // );
+    // setSelectedSections(filteredSelectedSections);
   }, [sections]);
 
   useEffect(() => {
@@ -106,9 +109,10 @@ const CreateClassForm = () => {
       setOnlineClass((prevState) => ({
         ...prevState,
         ...initialFormStructure,
-        coHosts: [{ email: '' }],
+        coHosts: [],
       }));
       dispatch(resetContext());
+      setSelectedGrades(null);
       dispatch(listGradesCreateClass());
     }
   }, [isCreated]);
@@ -143,7 +147,7 @@ const CreateClassForm = () => {
 
   const handleGrade = (event, value) => {
     dispatch(clearFilteredStudents());
-    setSelectedGrades(value);
+    setSelectedGrades(value.length > 0 ? value[0] : null);
     if (value.length) {
       const ids = value.map((el) => el.grade_id);
       setOnlineClass((prevState) => ({ ...prevState, gradeIds: ids }));
@@ -162,13 +166,13 @@ const CreateClassForm = () => {
       tutorEmail: '',
       sectionIds: [],
       subject: '',
-      coHosts: [{ email: '' }],
+      coHosts: [],
     }));
   };
 
   const handleSection = (event, value) => {
     dispatch(clearFilteredStudents());
-    setSelectedSections(value);
+    setSelectedSections(value.length > 0 ? value[0] : null);
     if (value.length) {
       const ids = value.map((el) => el.id);
       const sectionIds = value.map((el) => el.section_id);
@@ -182,7 +186,7 @@ const CreateClassForm = () => {
       ...prevState,
       subject: '',
       tutorEmail: '',
-      coHosts: [{ email: '' }],
+      coHosts: [],
     }));
   };
 
@@ -197,7 +201,7 @@ const CreateClassForm = () => {
     setOnlineClass((prevState) => ({
       ...prevState,
       tutorEmail: '',
-      coHosts: [{ email: '' }],
+      coHosts: [],
     }));
   };
 
@@ -217,8 +221,23 @@ const CreateClassForm = () => {
     setIsDrawerOpen((prevState) => !prevState);
   };
 
-  const handleTutorEmail = (event) => {
-    const { value } = event.target;
+  const handleCoHost = (event, value) => {
+    setOnlineClass((prevState) => ({ ...prevState, coHosts: value }));
+  };
+
+  const handleTutorEmail = (event, value) => {
+    // const { value } = event.target;
+    if (onlineClass.coHosts.length > 0) {
+      const index = onlineClass.coHosts.findIndex((host) => host === value);
+      if (index) {
+        console.log('before splicing ', onlineClass.coHosts);
+        const coHosts = onlineClass.coHosts.slice();
+        coHosts.splice(index, 1);
+        console.log('before splicing ', coHosts);
+
+        setOnlineClass((prevState) => ({ ...prevState, coHosts }));
+      }
+    }
     setOnlineClass((prevState) => ({ ...prevState, tutorEmail: value }));
   };
 
@@ -326,12 +345,12 @@ const CreateClassForm = () => {
       coHosts,
     } = onlineClass;
 
-    for (let i = 0; i < coHosts.length; i++) {
-      if (!coHosts[i].isValid === true) {
-        setAlert('error', 'Cohost email is not valid');
-        return;
-      }
-    }
+    // for (let i = 0; i < coHosts.length; i++) {
+    //   if (!coHosts[i].isValid === true) {
+    //     setAlert('error', 'Cohost email is not valid');
+    //     return;
+    //   }
+    // }
 
     if (isBetweenNonSchedulingTime(selectedTime)) {
       setAlert(
@@ -340,12 +359,12 @@ const CreateClassForm = () => {
       );
       return;
     }
-    if (!isTutorEmailValid) {
-      setAlert('error', 'Tutor email is not valid');
-      return;
-    }
+    // if (!isTutorEmailValid) {
+    //   setAlert('error', 'Tutor email is not valid');
+    //   return;
+    // }
     const startTime = `${selectedDate} ${getFormatedTime(selectedTime)}`;
-    const tutorEmails = [tutorEmail, ...coHosts.map((el) => el.email)];
+    const tutorEmails = [tutorEmail, ...coHosts];
 
     const formdata = new FormData();
     formdata.append('user_id', userId);
@@ -403,17 +422,46 @@ const CreateClassForm = () => {
 
   const handleClear = () => {
     setFormKey(new Date());
-    setSelectedGrades([]);
-    setSelectedSections([]);
-    setSelectedSubject([]);
+    setSelectedGrades(null);
+    setSelectedSections(null);
+    setSelectedSubject(null);
     setOnlineClass((prevState) => ({
       ...prevState,
       ...initialFormStructure,
-      coHosts: [{ email: '' }],
+      coHosts: [],
     }));
     dispatch(resetContext());
     dispatch(listGradesCreateClass());
   };
+
+  const fetchTutorEmails = () => {
+    const { selectedDate, selectedTime, duration } = onlineClass;
+    const data = {
+      branchId: branch.join(','),
+      gradeId: onlineClass.gradeIds.join(','),
+      sectionIds: onlineClass.sectionIds.join(','),
+      subjectId: onlineClass.subject,
+    };
+    listTutorEmails(selectedDate, selectedTime, duration, data);
+  };
+
+  useEffect(() => {
+    if (
+      onlineClass.duration &&
+      onlineClass.subject &&
+      onlineClass.gradeIds.length &&
+      onlineClass.selectedDate &&
+      onlineClass.selectedTime
+    ) {
+      fetchTutorEmails();
+    }
+  }, [
+    onlineClass.duration,
+    onlineClass.subject,
+    onlineClass.gradeIds.length,
+    onlineClass.selectedDate,
+    onlineClass.selectedTime,
+  ]);
 
   return (
     <div className='create__class' key={formKey}>
@@ -450,9 +498,11 @@ const CreateClassForm = () => {
             </Grid>
             <Grid item xs={12} sm={2}>
               <Autocomplete
-                multiple
                 size='small'
-                onChange={handleGrade}
+                onChange={(e, value) => {
+                  console.log('gradeValue ', value);
+                  handleGrade(e, value ? [value] : []);
+                }}
                 id='create__class-grade'
                 options={grades}
                 getOptionLabel={(option) => option?.grade__grade_name}
@@ -474,8 +524,9 @@ const CreateClassForm = () => {
                 <Autocomplete
                   key={sectionSelectorKey}
                   size='small'
-                  multiple
-                  onChange={handleSection}
+                  onChange={(e, value) => {
+                    handleSection(e, value ? [value] : []);
+                  }}
                   id='create__class-section'
                   options={sections}
                   getOptionLabel={(option) => {
@@ -596,7 +647,27 @@ const CreateClassForm = () => {
             spacing={2}
           >
             <Grid item xs={11} sm={7} md={4}>
-              <TextField
+              <Autocomplete
+                size='small'
+                id='create__class-tutor-email'
+                options={tutorEmailList}
+                filterSelectedOptions
+                value={onlineClass.tutorEmail}
+                onChange={handleTutorEmail}
+                disabled={tutorEmailsLoading}
+                renderInput={(params) => (
+                  <TextField
+                    size='small'
+                    className='create__class-textfield'
+                    {...params}
+                    variant='outlined'
+                    label='Tutor Email'
+                    placeholder='Tutor Email'
+                    required
+                  />
+                )}
+              />
+              {/* <TextField
                 className='create__class-textfield'
                 id='class-tutor-email'
                 label='Tutor email'
@@ -626,7 +697,7 @@ const CreateClassForm = () => {
                 <span className='alert__email'>Please enter a valid email</span>
               ) : (
                 ''
-              )}
+              )} */}
             </Grid>
             <Grid item xs={1} sm={4}>
               {isTutorEmailValid ? (
@@ -634,7 +705,7 @@ const CreateClassForm = () => {
               ) : (
                 ''
               )}
-              {isValidatingTutorEmail ? <CircularProgress color='secondary' /> : ''}
+              {tutorEmailsLoading ? <CircularProgress color='secondary' /> : ''}
             </Grid>
           </Grid>
           <Grid container className='create-class-container' spacing={2}>
@@ -656,11 +727,38 @@ const CreateClassForm = () => {
             </SwipeableDrawer>
           </Grid>
           <hr className='horizontal-line' />
+          {/* {onlineClass.tutorEmail && ( */}
           <Grid container className='create-class-container' spacing={2}>
             <Grid item xs={12}>
               <h2 className='co_host-title'>Co-Host</h2>
             </Grid>
-            {onlineClass.coHosts.map((el, index) => (
+
+            <Grid item xs={11} sm={5}>
+              <Autocomplete
+                size='small'
+                multiple
+                id='create__class-tutor-email'
+                options={tutorEmailList.filter(
+                  (email) => email !== onlineClass.tutorEmail
+                )}
+                filterSelectedOptions
+                value={onlineClass.coHosts}
+                onChange={handleCoHost}
+                disabled={tutorEmailsLoading}
+                renderInput={(params) => (
+                  <TextField
+                    size='small'
+                    className='create__class-textfield'
+                    {...params}
+                    variant='outlined'
+                    label='Tutor Email'
+                    placeholder='Tutor Email'
+                  />
+                )}
+              />
+            </Grid>
+
+            {/* {onlineClass.coHosts.map((el, index) => (
               <>
                 <Grid item xs={11} sm={5} key={el}>
                   <TextField
@@ -705,9 +803,10 @@ const CreateClassForm = () => {
                   />
                 </Grid>
               </>
-            ))}
+            ))}*/}
           </Grid>
-          <Grid container>
+          {/* )} */}
+          {/* <Grid container>
             <Button
               onClick={handleAddCohosts}
               className='btn-addmore'
@@ -718,7 +817,7 @@ const CreateClassForm = () => {
             >
               Add cohost
             </Button>
-          </Grid>
+          </Grid> */}
           <hr className='horizontal-line-last' />
           <Grid container className='create-class-container' spacing={2}>
             <Grid item xs={12} sm={2}>
