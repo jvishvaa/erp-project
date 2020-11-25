@@ -158,13 +158,13 @@ class UserManagement extends Component {
                     <Box display='flex' flexDirection='row' style={{ color: 'gray' }}>
                       <Box p={1}>
                         {`Download Format: `}
-                        <a
+                        {/* <a
                           style={{ cursor: 'pointer' }}
                           href={require('./download-format/erp_user.xlsx')}
                           download='format.xlsx'
                         >
                           Download format
-                        </a>
+                        </a> */}
                       </Box>
                     </Box>
                   </Box>
