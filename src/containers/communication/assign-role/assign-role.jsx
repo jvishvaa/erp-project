@@ -431,7 +431,7 @@ const AssignRole = (props) => {
           </Grid>
 
         </Grid> */}
-          <Grid container spacing={2} className={classes.spacer}>
+          <Grid container spacing={4} className={classes.spacer}>
             <Grid item xs={12} md={4}>
               <Autocomplete
                 multiple
@@ -523,9 +523,14 @@ const AssignRole = (props) => {
             {/* <Grid xs={4}></Grid> */}
           </Grid>
           <Divider className={classes.spacer} />
-          <Grid container spacing={2} className={classes.spacer}>
+          <Grid container spacing={4} className={classes.spacer}>
             <Grid item md={2} xs={12}>
-              <Button className='disabled-btn' onClick={handleClearAll} fullWidth>
+              <Button
+                variant='contained'
+                className='disabled-btn'
+                onClick={handleClearAll}
+                fullWidth
+              >
                 CLEAR ALL
               </Button>
 
@@ -545,7 +550,12 @@ const AssignRole = (props) => {
             /> */}
             </Grid>
             <Grid item md={2} xs={12}>
-              <Button onClick={handleFilterCheck} fullWidth>
+              <Button
+                variant='contained'
+                onClick={handleFilterCheck}
+                color='primary'
+                fullWidth
+              >
                 FILTER
               </Button>
             </Grid>
