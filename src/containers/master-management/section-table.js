@@ -37,6 +37,7 @@ import SectionCard from '../../components/section-card';
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
+    boxShadow:'none'
   },
   container: {
     maxHeight: '70vh',

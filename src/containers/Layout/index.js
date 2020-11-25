@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable no-use-before-define */
@@ -174,7 +173,7 @@ const Layout = ({ children, history }) => {
   //   }, [currentPage]);
 
   const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  let isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -505,7 +504,7 @@ const Layout = ({ children, history }) => {
                                   paddingLeft: 16,
                                   backgroundColor: 'rgb(224 224 224)',
                                   paddingRight: 16,
-                                  width: isMobile ? '310' : '374',
+                                  minWidth: 374,
                                 }}
                               >
                                 <Grid
@@ -540,7 +539,7 @@ const Layout = ({ children, history }) => {
                                         searchUserDetails.map((result, index) => {
                                           return (
                                             <ListItem
-                                              style={{ width: isMobile ? 270 : 324 }}
+                                              style={{ width: 324 }}
                                               className='user_rows_details'
                                               button
                                               onClick={() => {
@@ -555,12 +554,7 @@ const Layout = ({ children, history }) => {
                                                 secondary={
                                                   <div>
                                                     <span>{result.erpId}</span>
-                                                    <span
-                                                      style={{
-                                                        float: 'right',
-                                                        margin: '0% 1%',
-                                                      }}
-                                                    >
+                                                    <span style={{ float: 'right' }}>
                                                       Mob: {result.contact}
                                                     </span>
                                                   </div>

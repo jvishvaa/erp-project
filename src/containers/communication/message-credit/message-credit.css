@@ -60,8 +60,8 @@
 }
 .addcredit_button_wrapper{
 	display: flex;
-	justify-content: space-between;
-	width: 50%;
+	justify-content: space-evenly;
+	width: 80%;
 	margin: auto;
 }
 .bread_crumb_container{

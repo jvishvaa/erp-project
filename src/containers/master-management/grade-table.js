@@ -39,6 +39,7 @@ import './styles.scss';
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
+    boxShadow:'none'
   },
   container: {
     maxHeight: '70vh',

@@ -7,7 +7,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { Grid, TextField, useTheme, Divider, Box } from '@material-ui/core';
+import { Grid, TextField, useTheme, Divider, Box, Button } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
 import TableContainer from '@material-ui/core/TableContainer';
@@ -372,18 +372,27 @@ const MessageCredit = withRouter(({ history, ...props }) => {
                           <TableCell align='right'>
                             {items.Adding ? (
                               <div className='addcredit_button_wrapper'>
-                                <input
-                                  type='submit'
-                                  className='add_credit_save_button'
-                                  onClick={() => handleSubmit(index)}
-                                  value='Save'
-                                />
-                                <input
-                                  type='submit'
-                                  className='add_credit_save_button'
-                                  onClick={() => handleCancel(index)}
-                                  value='Cancel'
-                                />
+
+                                <Button 
+                                type='submit'
+                                variant='contained'
+                                onClick={() => handleCancel(index)}
+                                className="custom_button_master labelColor"
+                                size="small">
+                                  CANCEL
+                                </Button>
+
+                                <Button 
+                                type='submit'
+                                variant='contained'
+                                color="primary"
+                                style={{color:'white',marginLeft:'10%'}}
+                                onClick={() => handleSubmit(index)}
+                                className="custom_button_master"
+                                size="small">
+                                  SAVE
+                                </Button>
+
                               </div>
                             ) : (
                               <AddCircleIcon
