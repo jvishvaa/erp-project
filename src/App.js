@@ -86,7 +86,7 @@ function App() {
                 {/* <Route exact path='/view-users'>
                   {({ match }) => <ViewUsers match={match} />}
                 </Route> */}
-                <Route path='/messagelog'>
+                <Route path='/communication/messagelog'>
                   {({ match }) => <MessageLog match={match} />}
                 </Route>
                 <Route path='/dashboard'>
@@ -98,16 +98,16 @@ function App() {
                 {/* <Route exact path='/assignrole'>
                   {({ match }) => <AssignRole match={match} />}
                 </Route> */}
-                <Route exact path='/addgroup'>
+                <Route exact path='/communication/addgroup'>
                   {({ match }) => <CreateGroup match={match} />}
                 </Route>
-                <Route exact path='/smscredit'>
+                <Route exact path='/communication/smscredit'>
                   {({ match }) => <MessageCredit match={match} />}
                 </Route>
-                <Route exact path='/viewgroup'>
+                <Route exact path='/communication/viewgroup'>
                   {({ match }) => <ViewGroup match={match} />}
                 </Route>
-                <Route exact path='/sendmessage'>
+                <Route exact path='/communication/sendmessage'>
                   {({ match }) => <SendMessage match={match} />}
                 </Route>
                 <Route exact path='/online-class/create-class'>

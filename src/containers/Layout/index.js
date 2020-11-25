@@ -308,23 +308,23 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Add Group': {
-        history.push('/addgroup');
+        history.push('/communication/addgroup');
         break;
       }
       case 'View&Edit Group': {
-        history.push('/viewgroup');
+        history.push('/communication/viewgroup');
         break;
       }
       case 'Send Message': {
-        history.push('/sendmessage');
+        history.push('/communication/sendmessage');
         break;
       }
       case 'Add SMS Credit': {
-        history.push('/smscredit');
+        history.push('/communication/smscredit');
         break;
       }
       case 'SMS&Email Log': {
-        history.push('/messageLog');
+        history.push('/communication/messageLog');
         break;
       }
       case 'Dashboard': {
