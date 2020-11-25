@@ -3,7 +3,9 @@ import React, { Component } from 'react';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-import { withStyles, withTheme } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 import { connect } from 'react-redux';
 import { styles } from './useStyles';
 import UserDetailsForm from './user-details-form';
@@ -16,11 +18,13 @@ import CustomStepperConnector from '../../components/custom-stepper-connector';
 import CustomStepperIcon from '../../components/custom-stepper-icon';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../Layout';
+import BulkUpload from '../../components/bulk-upload';
 
 class CreateUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      bulkUpload: false,
       activeStep: 0,
       showParentForm: false,
       showGuardianForm: false,
@@ -218,66 +222,98 @@ class CreateUser extends Component {
     this.onSubmitGuardianDetails(details);
   };
 
+  handleToggleBulkUploadView = () => {
+    this.setState((prevState) => ({ bulkUpload: !prevState.bulkUpload }));
+  };
+
   render() {
-    const { activeStep, user, showParentForm, showGuardianForm } = this.state;
+    const { activeStep, user, showParentForm, showGuardianForm, bulkUpload } = this.state;
     const showParentOrGuardianForm = showParentForm || showGuardianForm;
     const steps = getSteps(showParentOrGuardianForm);
     const { classes, creatingUser } = this.props;
     return (
       <Layout>
-        <div>
+        <div className='create-user-container'>
           <div className='bread-crumbs-container'>
             <CommonBreadcrumbs
               componentName='User Management'
               childComponentName='Create User'
             />
           </div>
-          <Stepper
-            activeStep={activeStep}
-            alternativeLabel
-            className={`${classes.stepper} stepper`}
-            connector={<CustomStepperConnector />}
-          >
-            {steps.map((label) => (
-              <Step key={label}>
-                <StepLabel
-                  StepIconComponent={CustomStepperIcon}
-                  classes={{
-                    alternativeLabel: classes.stepLabel,
-                  }}
-                >
-                  {label}
-                </StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-          <div className={classes.formContainer}>
-            {activeStep === 0 && (
-              <SchoolDetailsForm onSubmit={this.onSubmitSchoolDetails} details={user} />
-            )}
-            {activeStep === 1 && (
-              <UserDetailsForm
-                onSubmit={this.onSubmitUserDetails}
-                details={user}
-                handleBack={this.handleBack}
-                toggleParentForm={this.toggleParentForm}
-                toggleGuardianForm={this.toggleGuardianForm}
-                showParentForm={showParentForm}
-                showGuardianForm={showGuardianForm}
-                isSubmitting={creatingUser}
-              />
-            )}
-            {activeStep === 2 && (
-              <GuardianDetailsForm
-                onSubmit={this.onSubmitGuardianDetails}
-                details={user.parent}
-                handleBack={this.handleBack}
-                showParentForm={showParentForm}
-                showGuardianForm={showGuardianForm}
-                isSubmitting={creatingUser}
-              />
-            )}
+          <div className='bulk-upload-check-box-container'>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={bulkUpload}
+                  onChange={this.handleToggleBulkUploadView}
+                  name='checked'
+                  color='primary'
+                />
+              }
+              label='Upload excel'
+            />
           </div>
+          {bulkUpload ? (
+            <div className='bulk-upload-container'>
+              <BulkUpload
+                onUploadSuccess={() => {
+                  this.handleToggleBulkUploadView();
+                }}
+              />
+            </div>
+          ) : (
+            <>
+              <Stepper
+                activeStep={activeStep}
+                alternativeLabel
+                className={`${classes.stepper} stepper`}
+                connector={<CustomStepperConnector />}
+              >
+                {steps.map((label) => (
+                  <Step key={label}>
+                    <StepLabel
+                      StepIconComponent={CustomStepperIcon}
+                      classes={{
+                        alternativeLabel: classes.stepLabel,
+                      }}
+                    >
+                      {label}
+                    </StepLabel>
+                  </Step>
+                ))}
+              </Stepper>
+              <div className={classes.formContainer}>
+                {activeStep === 0 && (
+                  <SchoolDetailsForm
+                    onSubmit={this.onSubmitSchoolDetails}
+                    details={user}
+                  />
+                )}
+                {activeStep === 1 && (
+                  <UserDetailsForm
+                    onSubmit={this.onSubmitUserDetails}
+                    details={user}
+                    handleBack={this.handleBack}
+                    toggleParentForm={this.toggleParentForm}
+                    toggleGuardianForm={this.toggleGuardianForm}
+                    showParentForm={showParentForm}
+                    showGuardianForm={showGuardianForm}
+                    isSubmitting={creatingUser}
+                  />
+                )}
+                {activeStep === 2 && (
+                  <GuardianDetailsForm
+                    onSubmit={this.onSubmitGuardianDetails}
+                    details={user.parent}
+                    handleBack={this.handleBack}
+                    showParentForm={showParentForm}
+                    showGuardianForm={showGuardianForm}
+                    isSubmitting={creatingUser}
+                  />
+                )}
+              </div>
+            </>
+          )}
           {/* <div>
           <div>
             <Button

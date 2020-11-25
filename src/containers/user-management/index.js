@@ -26,9 +26,9 @@ const RoutesIndex = () => {
         <Route path={`${match.url}/edit-user/:id`}>
           {({ match, history }) => <EditUser match={match} history={history} />}
         </Route>
-        <Route path={`${match.url}`} exact>
+        {/* <Route path={`${match.url}`} exact>
           {({ match, history }) => <UserManagement match={match} history={history} />}
-        </Route>
+        </Route> */}
       </Switch>
     </div>
   );
