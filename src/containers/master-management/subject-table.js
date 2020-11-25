@@ -35,7 +35,8 @@ import SubjectCard from './subjects-card';
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
-    margin: '0 auto'
+    margin: '0 auto',
+    boxShadow:'none'
   },
   container: {
     maxHeight: '70vh',

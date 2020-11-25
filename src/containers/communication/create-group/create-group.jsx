@@ -11,7 +11,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { Grid, TextField, useTheme } from '@material-ui/core';
+import { Grid, TextField, useTheme, Button } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
@@ -798,56 +798,63 @@ const CreateGroup = withRouter(({ history, ...props }) => {
               ) : null}
             </>
           )}
+
           <div className='create_group_filter_container'>
             <Grid container className='create_group_custom_button_wrapper' spacing={5}>
               {!next && edit ? (
                 <Grid xs={12} lg={3} className='create_group_custom_button' item>
-                  <input
-                    className='custom_button addgroup_back_button'
-                    type='button'
-                    onClick={handleEditCancel}
-                    value='Cancel'
-                  />
+                  <Button variant='contained' className="custom_button_master labelColor" size='medium' onClick={handleEditCancel}>
+                    CANCEL
+                  </Button>
                 </Grid>
               ) : null}
               {next ? (
                 <Grid xs={12} lg={3} className='create_group_custom_button' item>
-                  <input
-                    className='custom_button addgroup_back_button'
-                    type='button'
-                    onClick={handleback}
-                    value='back'
-                  />
+                  <Button 
+                  variant='contained' 
+                  className="custom_button_master labelColor" 
+                  size='medium' 
+                  onClick={handleback}>
+                    BACK
+                  </Button>
                 </Grid>
               ) : null}
               {next ? (
                 edit ? (
                   <Grid xs={12} lg={3} className='create_group_custom_button' item>
-                    <input
-                      className='custom_button addgroup_next_button'
-                      type='button'
-                      onClick={editGroup}
-                      value='edit group'
-                    />
+                    <Button 
+                    variant='contained' 
+                    style={{color:'white'}}  
+                    className="custom_button_master" 
+                    size='medium' 
+                    onClick={editGroup}>
+                      EDIT GROUP
+                    </Button>     
                   </Grid>
                 ) : (
                   <Grid xs={12} lg={3} className='create_group_custom_button' item>
-                    <input
-                      className='custom_button addgroup_next_button'
-                      type='button'
-                      onClick={createGroup}
-                      value='create group'
-                    />
+                    <Button 
+                    variant='contained' 
+                    style={{color:'white'}} 
+                    onClick={createGroup} 
+                    color ="primary" 
+                    className="custom_button_master" 
+                    size='medium'>
+                      CREATE GROUP
+                    </Button>
                   </Grid>
                 )
               ) : (
                 <Grid xs={12} lg={3} className='create_group_custom_button' item>
-                  <input
-                    className='custom_button addgroup_next_button'
-                    type='button'
+                   <Button 
+                    variant='contained' 
+                    style={{color:'white'}} 
                     onClick={handlenext}
-                    value='next'
-                  />
+                    color ="primary" 
+                    className="custom_button_master" 
+                    size='medium'>
+                      NEXT
+                    </Button>
                 </Grid>
               )}
             </Grid>

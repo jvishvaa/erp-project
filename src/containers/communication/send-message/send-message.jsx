@@ -22,6 +22,7 @@ import {
   IconButton,
   Typography,
   Divider,
+  Button
 } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { makeStyles } from '@material-ui/core/styles';
@@ -1136,31 +1137,28 @@ const SendMessage = withRouter(({ history, ...props }) => {
             <Grid container className='create_group_custom_button_wrapper' spacing={5}>
               {!firstStep ? (
                 <Grid xs={12} lg={3} className='create_group_custom_button' item>
-                  <input
-                    className='custom_button addgroup_back_button'
-                    type='button'
-                    onClick={handleback}
-                    value='back'
-                  />
+        
+                <Button 
+                variant='contained' 
+                onClick={handleback} 
+                className="custom_button_master labelColor" 
+                size='medium' 
+                type='submit'>
+                    BACK
+                </Button>
                 </Grid>
               ) : null}
               {thirdStep ? (
                 <Grid xs={12} lg={3} className='create_group_custom_button' item>
-                  <input
-                    className='custom_button addgroup_next_button'
-                    type='button'
-                    onClick={handleSendMessage}
-                    value={messageSending ? 'Sending Message' : 'Send Message'}
-                  />
+                  <Button variant='contained'onClick={handleSendMessage} style={{color:'white'}} color ="primary" className="custom_button_master" size='medium'>
+                    {messageSending ? 'Sending Message' : 'Send Message'}
+                  </Button>
                 </Grid>
               ) : (
                 <Grid xs={12} lg={3} className='create_group_custom_button' item>
-                  <input
-                    className='custom_button addgroup_next_button'
-                    type='button'
-                    onClick={handlenext}
-                    value='next'
-                  />
+                  <Button variant='contained' onClick={handlenext} style={{color:'white'}} color ="primary" className="custom_button_master" size='medium'>
+                    NEXT
+                  </Button>
                 </Grid>
               )}
             </Grid>

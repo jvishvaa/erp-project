@@ -305,12 +305,9 @@ const EditGroup = withRouter(({ history, ...props }) => {
             changePage={setPageno}
             setSelectedUsers={setSelectedUsers}
           />
-          <input
-            className='edit_group_button'
-            type='button'
-            onClick={editGroup}
-            value='edit group'
-          />
+          <Button variant='contained'onClick={editGroup} style={{color:'white'}} color ="primary" className="custom_button_master" size='medium' onClick={handleGoBack}>
+              EDIT GROUP
+          </Button>
         </div>
       </div>
     </>

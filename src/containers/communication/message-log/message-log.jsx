@@ -14,7 +14,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import CloseIcon from '@material-ui/icons/Close';
 import Paper from '@material-ui/core/Paper';
-import { Grid, TextField } from '@material-ui/core';
+import { Grid, TextField, Button } from '@material-ui/core';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import MomentUtils from '@date-io/moment';
@@ -298,8 +298,8 @@ const MessageLog = withRouter(({ history, ...props }) => {
     if (clearAll) {
       setClearAll(false);
     }
-    getMessages();
-  }, [messageCurrentPageno, isEmail, clearAll]);
+    if (moduleId) getMessages();
+  }, [messageCurrentPageno, isEmail, clearAll, moduleId]);
   useEffect(() => {
     if (usersCurrentPageno > 1) {
       getUserDatails();
@@ -411,23 +411,18 @@ const MessageLog = withRouter(({ history, ...props }) => {
               </MuiPickersUtilsProvider>
             </Grid>
           </div>
+
           <div className='create_group_filter_container'>
             <Grid container className='message_log_container' spacing={5}>
               <Grid xs={12} lg={3} item>
-                <input
-                  className='deactive_clearAll'
-                  type='button'
-                  onClick={handleClearAll}
-                  value='Clear All'
-                />
+                <Button variant='contained' onClick={handleClearAll} className="custom_button_master labelColor" size='medium'>
+                  Clear All
+                </Button>
               </Grid>
               <Grid xs={12} lg={3} item>
-                <input
-                  className='message_log_filter_button'
-                  type='button'
-                  onClick={handleFilterCheck}
-                  value='Filter'
-                />
+                <Button  onClick={handleFilterCheck} variant='contained' style={{color:'white'}} color ="primary" className="custom_button_master" size='medium'>
+                  FILTER
+                </Button>
               </Grid>
             </Grid>
           </div>
