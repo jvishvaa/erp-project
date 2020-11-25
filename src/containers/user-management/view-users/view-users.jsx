@@ -484,11 +484,18 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                 </FormControl>
               </Grid>
             )}
-            <Grid item xs={12}>
+          </Grid>
+          <Grid container className='spacer'>
+            <Grid item xs={12} md={2}>
               <Box
                 style={{ width: '100%', display: 'flex', justifyContent: 'flex-start' }}
               >
-                <Button onClick={handleResetFilters} className='disabled-btn'>
+                <Button
+                  variant='contained'
+                  onClick={handleResetFilters}
+                  className='disabled-btn'
+                  fullWidth
+                >
                   CLEAR ALL
                 </Button>
               </Box>

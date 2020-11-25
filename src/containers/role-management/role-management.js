@@ -118,7 +118,12 @@ class RoleManagement extends Component {
           style={{ marginBottom: '25px' }}
         >
           <Grid item xs={12} className={classes.buttonContainer}>
-            <Button startIcon={<AddOutlinedIcon />} href={`${match.url}/create-role`}>
+            <Button
+              variant='contained'
+              startIcon={<AddOutlinedIcon />}
+              href={`${match.url}/create-role`}
+              color='primary'
+            >
               Add Role
             </Button>
           </Grid>
