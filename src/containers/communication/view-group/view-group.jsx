@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
@@ -108,16 +109,16 @@ const ViewGroup = withRouter(({ history, ...props }) => {
       const resultGroups = [];
       if (result.status === 200) {
         setLoading(false);
-        result.data.data.results.map((items) =>
+        result.data.data.results.forEach((items) => {
           resultGroups.push({
             groupId: items.id,
             groupName: items.group_name,
-            roleType: items.role.role_name,
+            roleType: items.role,
             grades: items.grade,
             sections: items.mapping_bgs,
             active: items.is_active,
-          })
-        );
+          });
+        });
         setGroupsData(resultGroups);
         setTotalPages(result.data.data.count);
       } else {
@@ -333,7 +334,14 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                         >
                           <TableCell>{items.groupName}</TableCell>
                           <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
-                            {items.roleType}
+                            {items.roleType.length
+                              ? items.roleType.map((roles, index) => {
+                                  if (index + 1 === items.roleType.length) {
+                                    return roles.role_name;
+                                  }
+                                  return `${roles.role_name}, `;
+                                })
+                              : null}
                           </TableCell>
                           <TableCell
                             className={`view_group_table_sections ${
@@ -341,7 +349,12 @@ const ViewGroup = withRouter(({ history, ...props }) => {
                             }`}
                           >
                             {items.grades.length
-                              ? items.grades.map((grades) => grades.grade_name)
+                              ? items.grades.map((grades, index) => {
+                                  if (index + 1 === items.grades.length) {
+                                    return grades.grade_name;
+                                  }
+                                  return `${grades.grade_name}, `;
+                                })
                               : null}
                           </TableCell>
                           <TableCell
