@@ -21,7 +21,7 @@ const EditAcademicYear = ({id,year,handleGoBack,setLoading}) => {
     request['academic_year_id']=id
     if(sessionYear!=="" && sessionYear!==year)
     {
-        request['session_year']=sessionYear
+      request['session_year']=sessionYear
       axiosInstance.put(endpoints.masterManagement.updateAcademicYear,request)
       .then(result=>{
       if (result.data.status_code === 200) {

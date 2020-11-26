@@ -375,7 +375,6 @@ const SectionTable = () => {
               page={page - 1}
               onChangePage={handleChangePage}
               rowsPerPageOptions={false}
-              className='table-pagination'
             />
             </div>
           </Paper>
@@ -404,7 +403,6 @@ const SectionTable = () => {
               page={page-1}
               onChangePage={handleChangePage}
               rowsPerPageOptions={false}
-              className='table-pagination'
             />
             </div>
           </>
