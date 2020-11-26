@@ -25,6 +25,7 @@ import ViewClassStudentCollection from './containers/online-class/view-class/vie
 import SubjectTable from './containers/master-management/subject-table';
 import SectionTable from './containers/master-management/section-table';
 import GradeTable from './containers/master-management/grade-table';
+import AcademicYearTable from './containers/master-management/academic-year-table';
 import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
 import Profile from './containers/profile/profile';
 import { fetchLoggedInUserDetails } from './redux/actions';
@@ -134,6 +135,9 @@ function App() {
                 </Route>
                 <Route exact path='/master-mgmt/grade-table'>
                   {({ match }) => <GradeTable match={match} />}
+                </Route>
+                <Route exact path='/master-mgmt/academic-year-table'>
+                  {({ match }) => <AcademicYearTable match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

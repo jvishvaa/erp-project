@@ -88,7 +88,6 @@ const SubjectTable = () => {
   const [tableFlag,setTableFlag]=useState(true)
   const [desc,setDesc]=useState('')
   const [delFlag,setDelFlag]=useState(false)
-  const [pageCount,setPageCount]=useState()
   const [totalCount, setTotalCount] = useState(0);
   const [searchGrade,setSearchGrade]=useState('')
   const [searchSection,setSearchSection]=useState('')
@@ -169,6 +168,7 @@ const SubjectTable = () => {
   }
 
   const handleGoBack=()=>{
+    setPage(1)
     setTableFlag(true)
     setAddFlag(false)
     setEditFlag(false)
@@ -237,7 +237,6 @@ const SubjectTable = () => {
         if (result.status === 200) {
           setTotalCount(result.data.result.count)
           setSubjects(result.data.result.results)
-          setPageCount(result.data.result.total_pages)
         } else {
           setAlert('error', 'Network Error!');
         }
@@ -420,7 +419,10 @@ const SubjectTable = () => {
       <>
       {
         subjects.map(subject => (
-          <SubjectCard data={subject} handleDelete={handleDelete} handleEditSubject={handleEditSubject} />
+          <SubjectCard 
+          data={subject} 
+          handleDelete={handleDelete} 
+          handleEditSubject={handleEditSubject} />
         ))
       }
       <div className="paginateData paginateMobileMargin">

@@ -55,6 +55,9 @@ export default {
     updateGrade: '/erp_user/update-grade/',
     gradesDrop: '/erp_user/grade/',
     sections: '/erp_user/sectionmapping/',
+    academicYear: '/erp_user/academic-year-list/',
+    updateAcademicYear : '/erp_user/update-academic-year/',
+    createAcademicYear : '/erp_user/create-academic-year/'
   },
   gloabSearch: {
     getUsers: '/erp_user/global-search/',

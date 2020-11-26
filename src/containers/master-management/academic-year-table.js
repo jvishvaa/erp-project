@@ -29,16 +29,16 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
-import CreateGrade from './create-grade';
-import EditGrade from './edit-grade';
+import CreateAcademicYear from './create-academic-year';
+import EditAcademicYear from './edit-academic-year';
 import './master-management.css';
 import Loading from '../../components/loader/loader';
-import GradeCard from '../../components/grade-card';
 import './styles.scss';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
+    boxShadow:'none'
   },
   container: {
     maxHeight: '70vh',
@@ -77,9 +77,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const columns = [
-  { id: 'grade_name', label: 'Grade', minWidth: 100 },
-  { id: 'grade_by', label: 'Type', minWidth: 100 },
-  { id: 'created_by', label: 'Created by', minWidth: 100 },
+  { id: 'session_year', label: 'Session Year', minWidth: 100 },
   {
     id: 'actions',
     label: 'Actions',
@@ -89,20 +87,18 @@ const columns = [
   },
 ];
 
-const GradeTable = () => {
+const AcademicYearTable = () => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const [page, setPage] = React.useState(1);
-  const [grades, setGrades] = useState([]);
+  const [academicYear, setAcademicYear] = useState([]);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
-  const [gradeId, setGradeId] = useState();
-  const [gradeName, setGradeName] = useState('');
-  const [gradeType, setGradeType] = useState('');
+  const [yearId, setYearId] = useState();
+  const [sessionYear, setSessionYear] = useState('');
   const [addFlag, setAddFlag] = useState(false);
   const [editFlag, setEditFlag] = useState(false);
   const [tableFlag, setTableFlag] = useState(true);
   const [delFlag, setDelFlag] = useState(false);
-  const [searchGrade, setSearchGrade] = useState('');
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [limit, setLimit] = useState(15);
@@ -110,26 +106,25 @@ const GradeTable = () => {
   
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const wider= isMobile?'-10px 0px':'-10px 0px 20px 8px'
+  const wider= isMobile?'-12px 0px 10px 0px':'-10px 0px 20px 8px'
   const widerWidth=isMobile?'98%':'95%'
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage+1)
   }
 
-  const handleAddGrade = () => {
+  const handleAddYear = () => {
     setTableFlag(false);
     setAddFlag(true);
     setEditFlag(false);
   };
 
-  const handleEditGrade = (id, name, type) => {
+  const handleEditYear = (id, year) => {
     setTableFlag(false);
     setAddFlag(false);
     setEditFlag(true);
-    setGradeId(id);
-    setGradeName(name);
-    setGradeType(type);
+    setYearId(id);
+    setSessionYear(year);
   };
 
   const handleGoBack = () => {
@@ -137,39 +132,37 @@ const GradeTable = () => {
     setTableFlag(true);
     setAddFlag(false);
     setEditFlag(false);
-    setSearchGrade('');
     setGoBackFlag(!goBackFlag)
   };
 
-  const handleDeleteGrade = (e) => {
+  const handleDeleteYear = (e) => {
     e.preventDefault();
     setLoading(true);
     axiosInstance
-      .put(endpoints.masterManagement.updateGrade, {
+      .put(endpoints.masterManagement.updateAcademicYear, {
         is_delete: true,
-        grade_id: gradeId,
+        academic_year_id: yearId,
       })
       .then((result) => {
         if (result.status === 200) {
-          {
             setDelFlag(!delFlag);
             setLoading(false);
-            setAlert('success', 'Grade deleted successfully!');
-          }
-        } else {
+            setAlert('success', 'Academic Year deleted successfully!');
+        }
+        else {
           setLoading(false);
           setAlert('error', "Network Error!");
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', "Grade couldn't be deleted!");
+        setAlert('error', "Academic Year couldn't be deleted!");
       });
     setOpenDeleteModal(false);
   };
 
   const handleOpenDeleteModal = (id) => {
-    setGradeId(id);
+    setYearId(id);
     setOpenDeleteModal(true);
   };
 
@@ -187,22 +180,22 @@ const GradeTable = () => {
   useEffect(() => {
     axiosInstance
       .get(
-        `${endpoints.masterManagement.grades}?page=${page}&page_size=${limit}&grade_name=${searchGrade}`
+        `${endpoints.masterManagement.academicYear}?page=${page}&page_size=${limit}`
       )
       .then((result) => {
         if (result.status === 200) {
           {
             setTotalCount(result.data.result.count);
-            setGrades(result.data.result.results);
+            setAcademicYear(result.data.result.results);
           }
         } else {
           setAlert('error', 'Network Error');
         }
       })
       .catch((error) => {
-        setAlert('error', 'Grade Unavailable!');
+        setAlert('error', 'Academic Year Unavailable!');
       });
-  }, [delFlag, goBackFlag, page, searchGrade]);
+  }, [delFlag, goBackFlag, page]);
 
   return (
     <>
@@ -212,18 +205,17 @@ const GradeTable = () => {
           <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
               componentName='Master Management'
-              childComponentName='Grade List'
-              childComponentNameNext={(addFlag&&!tableFlag)?'Add Grade':(editFlag&&!tableFlag)?'Edit Grade':null}
+              childComponentName='Academic Year List'
+              childComponentNameNext={(addFlag&&!tableFlag)?'Add Academic Year':(editFlag&&!tableFlag)?'Edit Academic Year':null}
             />
           </div>
         </div>
 
-        {!tableFlag && addFlag && !editFlag && <CreateGrade setLoading={setLoading} handleGoBack={handleGoBack}/>}
+        {!tableFlag && addFlag && !editFlag && <CreateAcademicYear setLoading={setLoading} handleGoBack={handleGoBack}/>}
         {!tableFlag && !addFlag && editFlag && (
-          <EditGrade
-            id={gradeId}
-            name={gradeName}
-            type={gradeType}
+          <EditAcademicYear
+            id={yearId}
+            year={sessionYear}
             handleGoBack={handleGoBack}
             setLoading={setLoading}
           />
@@ -231,35 +223,22 @@ const GradeTable = () => {
 
         {tableFlag && !addFlag && !editFlag && (
           <Grid container spacing={isMobile?3:5} style={{ width: widerWidth, margin: wider}}>
-            <Grid item xs={12} sm={3} >
-                <TextField
-                  id='gradename'
-                  style={{ width: '100%' }}
-                  label='Grade Name'
-                  variant='outlined'
-                  size='small'
-                  name='gradename'
-                  autoComplete='off'
-                  onChange={(e) => {setPage(1);setSearchGrade(e.target.value);}}
-                />
-            </Grid>
-            <Grid item xs sm={9} className={isMobile?'hideGridItem':''}/>
-            <Grid item xs={12} sm={3} className={isMobile?'':'addButtonPadding'}>
+            <Grid item xs={12} sm={4} className='addButtonPadding'>
               <Button 
               startIcon={<AddOutlinedIcon style={{fontSize:'30px'}}/>} 
               variant='contained' 
               color='primary' 
               size="small" 
               style={{color:'white'}} 
-              title="Add Subject" 
-              onClick={handleAddGrade}>
-                Add Grade
+              title="Add Academic Year" 
+              onClick={handleAddYear}>
+                Add Academic Year
               </Button>
             </Grid>
           </Grid>
         )}
 
-        {!isMobile && tableFlag && !addFlag && !editFlag && (
+        {tableFlag && !addFlag && !editFlag && (
           <Paper className={`${classes.root} common-table`}>
             <TableContainer className={classes.container}>
               <Table stickyHeader aria-label='sticky table'>
@@ -278,39 +257,32 @@ const GradeTable = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {grades.map((grade, index) => {
+                  {academicYear.map((year, index) => {
                     return (
-                      <TableRow hover grade='checkbox' tabIndex={-1} key={index}>
+                      <TableRow hover academicyear='checkbox' tabIndex={-1} key={index}>
                         <TableCell className={classes.tableCell}>
-                          {grade.grade_name}
-                        </TableCell>
-                        <TableCell className={classes.tableCell}>
-                          {grade.grade_type}
-                        </TableCell>
-                        <TableCell className={classes.tableCell}>
-                          {grade.created_by}
+                          {year.session_year}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
 
                           <IconButton
                             onClick={(e) => {
-                              setGradeName(grade.grade_name);
-                              handleOpenDeleteModal(grade.id);
+                              setSessionYear(year.session_year);
+                              handleOpenDeleteModal(year.id);
                             }}
-                            title='Delete Grade'
+                            title='Delete Academic Year'
                           >
                             <DeleteOutlinedIcon style={{color:'#fe6b6b'}} />
                           </IconButton>
 
                           <IconButton
                             onClick={(e) =>
-                              handleEditGrade(
-                                grade.id,
-                                grade.grade_name,
-                                grade.grade_type
+                              handleEditYear(
+                                year.id,
+                                year.session_year,
                               )
                             }
-                            title='Edit Grade'
+                            title='Edit Academic Year'
                           >
                             <EditOutlinedIcon style={{color:'#fe6b6b'}} />
                           </IconButton>      
@@ -334,51 +306,22 @@ const GradeTable = () => {
             </div>
           </Paper>
         )}
-        {isMobile && !addFlag && !editFlag && (
-          <>
-            <Container className={classes.cardsContainer}>
-              {grades.map((grade, i) => (
-                <GradeCard
-                  grade={grade}
-                  onEdit={(grade) => {
-                    handleEditGrade(grade.id, grade.grade_name, grade.grade_type);
-                  }}
-                  onDelete={(grade) => {
-                    setGradeName(grade.grade_name);
-                    handleOpenDeleteModal(grade.id);
-                  }}
-                />
-              ))}
-            </Container>
-            <div className="paginateData paginateMobileMargin">
-            <TablePagination
-              component='div'
-              count={totalCount}
-              rowsPerPage={limit}
-              page={page-1}
-              onChangePage={handleChangePage}
-              rowsPerPageOptions={false}
-              className='table-pagination'
-            />
-            </div>
-          </>
-        )}
         <Dialog
           open={openDeleteModal}
           onClose={handleCloseDeleteModal}
           aria-labelledby='draggable-dialog-title'
         >
           <DialogTitle style={{ cursor: 'move',color: '#014b7e' }} id='draggable-dialog-title'>
-            Delete Grade
+            Delete Academic Year
           </DialogTitle>
           <DialogContent>
-            <DialogContentText>{`Confirm Delete Grade ${gradeName}`}</DialogContentText>
+            <DialogContentText>{`Confirm Delete Academic Year ${sessionYear}`}</DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button  onClick={handleCloseDeleteModal} className="labelColor cancelButton">
               Cancel
             </Button>
-            <Button color="primary" onClick={handleDeleteGrade}>Confirm</Button>
+            <Button color="primary" onClick={handleDeleteYear}>Confirm</Button>
           </DialogActions>
         </Dialog>
       </Layout>
@@ -386,4 +329,4 @@ const GradeTable = () => {
   );
 };
 
-export default GradeTable;
+export default AcademicYearTable;

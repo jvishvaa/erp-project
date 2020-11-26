@@ -99,7 +99,6 @@ const SectionTable = () => {
   const [editFlag, setEditFlag] = useState(false);
   const [tableFlag, setTableFlag] = useState(true);
   const [grades, setGrades] = useState([]);
-  const [pageCount, setPageCount] = useState();
   const [delFlag, setDelFlag] = useState(false);
   const [searchGrade, setSearchGrade] = useState('');
   const [searchSection, setSearchSection] = useState('');
@@ -146,6 +145,7 @@ const SectionTable = () => {
   };
 
   const handleGoBack = () => {
+    setPage(1)
     setTableFlag(true);
     setAddFlag(false);
     setEditFlag(false);
@@ -221,7 +221,6 @@ const SectionTable = () => {
         if (result.status === 200) {
           setTotalCount(result.data.result.count);
           setSections(result.data.result.results);
-          setPageCount(result.data.result.total_pages);
         } else {
           setAlert('error', 'Network Error!');
         }
