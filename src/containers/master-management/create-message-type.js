@@ -20,18 +20,22 @@ const CreateMessageType = ({setLoading,handleGoBack}) => {
         category_name:categoryName,
     }).then(result=>{
     if (result.data.status_code === 201) {
-      {
         setCategoryName('')
         setLoading(false);
-        setAlert('success', "Message category added successfully!");
-      }
-    } else {
+        setAlert('success',"Message Type created successfully!");
+    }
+    else if(result.data.status_code===409){
+        setCategoryName('')
+        setLoading(false);
+        setAlert('warning',"Message Type already exists!");
+    } 
+    else {
       setLoading(false);
       setAlert('error', "Network Error!");
     }
     }).catch((error)=>{
       setLoading(false);
-      setAlert('error', "Message category couldn't be created!");
+      setAlert('error', "Message Type couldn't be created!");
     })
     };
 

@@ -15,7 +15,6 @@ const EditMessageType = ({id,category,handleGoBack,setLoading}) => {
   
   const handleSubmit = (e) => {
     e.preventDefault()
-
     setLoading(true)
     let request={}
     if(categoryName!=="" && categoryName!==category)
@@ -59,10 +58,9 @@ const EditMessageType = ({id,category,handleGoBack,setLoading}) => {
             <TextField
               id='categoryname'
               label='Category Name'
-              style={{ width: '100%' }}
+              style={{ width: '100%'}}
               variant='outlined'
               size='small'
-              placeholder='Ex: Attendance List'
               value={categoryName}
               inputProps={{maxLength:40}}
               name='categoryname'

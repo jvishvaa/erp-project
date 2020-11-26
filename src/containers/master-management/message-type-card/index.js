@@ -16,7 +16,7 @@ const MessageTypeCard = (props) => {
   } = props;
   const classes = useStyles();
   return (
-    <div className={classes.root}>
+    <Paper className={classes.root}>
       <Grid container spacing={2}>
           <Grid item xs={8}>
               <Typography
@@ -49,7 +49,7 @@ const MessageTypeCard = (props) => {
                 onClick={() => {
                   handleEditMessageType(
                     msgtype.id,
-                    handleEditMessageType.category_name,
+                    msgtype.category_name,
                   );
                 }}
               >
@@ -69,7 +69,7 @@ const MessageTypeCard = (props) => {
           </Grid>
         </Grid>
       </Grid>
-    </div>
+    </Paper>
   );
 };
 

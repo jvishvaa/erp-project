@@ -199,7 +199,12 @@ const MessageTypeTable = () => {
           </div>
         </div>
 
-        {!tableFlag && addFlag && !editFlag && <CreateMessageType setLoading={setLoading} handleGoBack={handleGoBack}/>}
+        {!tableFlag && addFlag && !editFlag && (
+        <CreateMessageType 
+        setLoading={setLoading} 
+        handleGoBack={handleGoBack}
+        />
+        )}
         {!tableFlag && !addFlag && editFlag && (
           <EditMessageType
             id={messageTypeId}
