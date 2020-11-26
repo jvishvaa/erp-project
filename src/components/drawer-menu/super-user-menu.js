@@ -199,6 +199,24 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
             <ListItemText primary='Academic Year' className='menu-item-text' />
           </ListItem>
 
+          <ListItem
+            button
+            className={
+              history.location.pathname === '/master-mgmt/message-type-table'
+                ? 'menu_selection'
+                : null
+            }
+            onClick={() => {
+              onClickMenuItem('message-type-table');
+            }}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+              {/* <MenuIcon name={child.child_name} /> */}
+              {/* {menuIcon(child.child_name)} */}
+            </ListItemIcon>
+            <ListItemText primary='Message Type' className='menu-item-text' />
+          </ListItem>
+
         </List>
       </Collapse>
 

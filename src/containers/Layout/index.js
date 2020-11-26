@@ -362,6 +362,10 @@ const Layout = ({ children, history }) => {
         history.push('/master-mgmt/academic-year-table');
         break;
       }
+      case 'message-type-table': {
+        history.push('/master-mgmt/message-type-table');
+        break;
+      }
       case 'role-management': {
         history.push('/role-management');
         break;
