@@ -407,7 +407,6 @@ const SubjectTable = () => {
         page={page-1}
         onChangePage={handleChangePage}
         rowsPerPageOptions={false}
-        className='table-pagination'
       />
       </div>
     </Paper>

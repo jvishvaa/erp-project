@@ -17,12 +17,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Pagination from '@material-ui/lab/Pagination';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import Container from '@material-ui/core/Container';
-import Box from '@material-ui/core/Box';
 import TablePagination from '@material-ui/core/TablePagination';
 import Layout from '../Layout';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
@@ -34,6 +30,7 @@ import EditAcademicYear from './edit-academic-year';
 import './master-management.css';
 import Loading from '../../components/loader/loader';
 import './styles.scss';
+import AcademicYearCard from './academic-year-card';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,17 +43,6 @@ const useStyles = makeStyles((theme) => ({
   buttonContainer: {
     background: theme.palette.background.secondary,
     paddingBottom: theme.spacing(2),
-  },
-  cardsPagination: {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    position: 'fixed',
-    bottom: 0,
-    left: 0,
-    padding: '1rem',
-    backgroundColor: '#ffffff',
-    zIndex: 100,
   },
   centerInMobile: {
     width: '100%',
@@ -106,7 +92,7 @@ const AcademicYearTable = () => {
   
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const wider= isMobile?'-12px 0px 10px 0px':'-10px 0px 20px 8px'
+  const wider= isMobile?'-10px 0px':'-10px 0px 20px 8px'
   const widerWidth=isMobile?'98%':'95%'
 
   const handleChangePage = (event, newPage) => {
@@ -160,6 +146,11 @@ const AcademicYearTable = () => {
       });
     setOpenDeleteModal(false);
   };
+
+  const handleDelete = (year) => {
+    setSessionYear(year.session_year);
+    handleOpenDeleteModal(year.id);
+  }
 
   const handleOpenDeleteModal = (id) => {
     setYearId(id);
@@ -238,7 +229,7 @@ const AcademicYearTable = () => {
           </Grid>
         )}
 
-        {tableFlag && !addFlag && !editFlag && (
+        {!isMobile && tableFlag && !addFlag && !editFlag && (
           <Paper className={`${classes.root} common-table`}>
             <TableContainer className={classes.container}>
               <Table stickyHeader aria-label='sticky table'>
@@ -264,12 +255,8 @@ const AcademicYearTable = () => {
                           {year.session_year}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
-
                           <IconButton
-                            onClick={(e) => {
-                              setSessionYear(year.session_year);
-                              handleOpenDeleteModal(year.id);
-                            }}
+                            onClick={e=>{ handleDelete(year) }}
                             title='Delete Academic Year'
                           >
                             <DeleteOutlinedIcon style={{color:'#fe6b6b'}} />
@@ -301,10 +288,31 @@ const AcademicYearTable = () => {
               page={page - 1}
               onChangePage={handleChangePage}
               rowsPerPageOptions={false}
-              className='table-pagination'
             />
             </div>
           </Paper>
+        )}
+        {isMobile && !addFlag && !editFlag && (
+          <>
+             {
+              academicYear.map(year => (
+                <AcademicYearCard 
+                year={year} 
+                handleDelete={handleDelete} 
+                handleEditYear={handleEditYear} />
+              ))
+            }
+            <div className="paginateData paginateMobileMargin">
+            <TablePagination
+              component='div'
+              count={totalCount}
+              rowsPerPage={limit}
+              page={page-1}
+              onChangePage={handleChangePage}
+              rowsPerPageOptions={false}
+            />
+            </div>
+          </>
         )}
         <Dialog
           open={openDeleteModal}

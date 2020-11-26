@@ -52,12 +52,6 @@ const CreateSection = ({grades,setLoading,handleGoBack}) => {
     
       <form autoComplete='off' onSubmit={handleSubmit}>
       <div style={{ width: '95%', margin: '20px auto'}}> 
-        {/* <div style={{color:'#014B7E'}} >
-              <h2>Add Section</h2>
-        </div>
-        <div style={{margin:'20px auto'}}>
-          <hr />
-        </div> */}
         <Grid container spacing={5}>
           <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
             <TextField
