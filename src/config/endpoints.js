@@ -56,8 +56,10 @@ export default {
     gradesDrop: '/erp_user/grade/',
     sections: '/erp_user/sectionmapping/',
     academicYear: '/erp_user/academic-year-list/',
-    updateAcademicYear : '/erp_user/update-academic-year/',
-    createAcademicYear : '/erp_user/create-academic-year/'
+    updateAcademicYear: '/erp_user/update-academic-year/',
+    createAcademicYear: '/erp_user/create-academic-year/',
+    messageTypeTable: '/communication/communicate-type/',
+    updateMessageType: '/communication/'
   },
   gloabSearch: {
     getUsers: '/erp_user/global-search/',
