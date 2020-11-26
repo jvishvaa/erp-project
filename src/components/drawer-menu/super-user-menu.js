@@ -196,7 +196,7 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
               {/* <MenuIcon name={child.child_name} /> */}
               {/* {menuIcon(child.child_name)} */}
             </ListItemIcon>
-            <ListItemText primary='AcademicYear' className='menu-item-text' />
+            <ListItemText primary='Academic Year' className='menu-item-text' />
           </ListItem>
 
         </List>
