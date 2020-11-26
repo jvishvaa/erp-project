@@ -180,6 +180,25 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
             </ListItemIcon>
             <ListItemText primary='Grade' className='menu-item-text' />
           </ListItem>
+
+          <ListItem
+            button
+            className={
+              history.location.pathname === '/master-mgmt/academic-year-table'
+                ? 'menu_selection'
+                : null
+            }
+            onClick={() => {
+              onClickMenuItem('academic-year-table');
+            }}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+              {/* <MenuIcon name={child.child_name} /> */}
+              {/* {menuIcon(child.child_name)} */}
+            </ListItemIcon>
+            <ListItemText primary='Academic Year' className='menu-item-text' />
+          </ListItem>
+
         </List>
       </Collapse>
 

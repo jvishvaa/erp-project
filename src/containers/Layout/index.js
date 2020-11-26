@@ -358,6 +358,10 @@ const Layout = ({ children, history }) => {
         history.push('/master-mgmt/grade-table');
         break;
       }
+      case 'academic-year-table': {
+        history.push('/master-mgmt/academic-year-table');
+        break;
+      }
       case 'role-management': {
         history.push('/role-management');
         break;

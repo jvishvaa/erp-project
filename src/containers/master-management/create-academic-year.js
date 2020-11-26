@@ -5,70 +5,60 @@ import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
+const CreateAcademicYear = ({setLoading,handleGoBack}) => {
 
-const EditSection = ({id,name,handleGoBack,setLoading}) => {
-
-  const secName=name.split("_").pop()
   const { setAlert } = useContext(AlertNotificationContext);
-  const [sectionName,setSectionName]=useState(secName || '')
+  const [sessionYear,setSessionYear]=useState('')
+  
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
-  
   const handleSubmit = (e) => {
     e.preventDefault()
     setLoading(true);
-    let request={}
-    if(sectionName!==secName && sectionName!=="")
-    {
-      request['section_name']=sectionName
-      request['section_id']=id
-      axiosInstance.put(endpoints.masterManagement.updateSection,request)
-      .then(result=>{
-        if (result.status === 200) {
-          handleGoBack()
-          setSectionName('')
-          setLoading(false);
-          setAlert('success', "Section updated successfully!");
-        } else {
-          setLoading(false);
-          setAlert('error', "Network Error!");
-        }
-      }).catch((error)=>{
+    axiosInstance.post(endpoints.masterManagement.createAcademicYear,{
+        session_year:sessionYear,
+    }).then(result=>{
+    if (result.data.status_code === 201) {
+      {
+        setSessionYear('')
         setLoading(false);
-        setAlert('error', "Section couldn't be updated!");
-      })
-    }
-    else
-    {
+        setAlert('success', "Academic Year added successfully!");
+      }
+    } else {
       setLoading(false);
-      setAlert('error','No Fields to Update')
+      setAlert('error', "Network Error!");
     }
+    }).catch((error)=>{
+      setLoading(false);
+      setAlert('error', "Academic Year couldn't be created!");
+    })
     };
 
 
   return (
       <form autoComplete='off' onSubmit={handleSubmit}>
-      <div style={{ width: '95%', margin: '20px auto' }}>
+      <div style={{ width: '95%', margin: '20px auto'}}>
         <Grid container spacing={5}>
           <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
             <TextField
-              id='secname'
-              label='Section Name'
+              id='sessionyear'
+              label='Academic Year'
+              style={{ width: '100%' }}
               variant='outlined'
               size='small'
-              style={{ width: '100%' }}
-              value={sectionName}
-              inputProps={{pattern:'^[a-zA-Z0-9 ]+',maxLength:10}}
-              name='secname'
-              onChange={e=>setSectionName(e.target.value)}
+              placeholder='2020-21'
+              value={sessionYear}
+              inputProps={{maxLength:7,pattern:'^[0-9]{4}-[0-9]{2}'}}
+              name='sessionyear'
+              onChange={e=>setSessionYear(e.target.value)}
+              required
             />
           </Grid>
           </Grid>
-          </div>
-
-          <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '10px'}} >
-          <Grid item xs={6} sm={2} className={isMobile?'':'addEditButtonsPadding'}>
+        </div>
+        <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '10px'}} >
+        <Grid item xs={6} sm={2} className={isMobile?'':'addEditButtonsPadding'}>
             <Button variant='contained' className="custom_button_master labelColor" size='medium' onClick={handleGoBack}>
               Back
             </Button>
@@ -78,9 +68,9 @@ const EditSection = ({id,name,handleGoBack,setLoading}) => {
               Submit
             </Button>
           </Grid>
-        </Grid>
+        </Grid>        
       </form>
   );
 };
 
-export default EditSection;
+export default CreateAcademicYear;
