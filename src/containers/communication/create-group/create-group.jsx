@@ -636,7 +636,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       const tempRoles = [];
       const tempGrades = [];
       const tempSections = [];
-      tempRoles.push(preSeletedRoles);
+      preSeletedRoles.map((items) => tempRoles.push(items.role_name));
       preSeletedGrades.map((items) => tempGrades.push(items.grade_name));
       preSeletedSections.map((items) => tempSections.push(items.section__section_name));
       setSelectedRoles(tempRoles);
