@@ -208,7 +208,7 @@ class EditUser extends Component {
     const { classes, creatingUser, fetchingUserDetails, selectedUser } = this.props;
     return (
       <Layout>
-        <div>
+        <div className='edit-user-container'>
           <div className='bread-crumbs-container'>
             <CommonBreadcrumbs
               componentName='User Management'

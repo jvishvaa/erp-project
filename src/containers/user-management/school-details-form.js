@@ -43,7 +43,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
 
   const fetchAcademicYears = () => {
     getAcademicYears().then((data) => {
-      const transformedData = data.map((obj) => ({
+      const transformedData = data?.map((obj) => ({
         id: obj.id,
         session_year: obj.session_year,
       }));
@@ -53,7 +53,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
 
   const fetchBranches = () => {
     fetchBranchesForCreateUser().then((data) => {
-      const transformedData = data.map((obj) => ({
+      const transformedData = data?.map((obj) => ({
         id: obj.id,
         branch_name: obj.branch_name,
       }));
