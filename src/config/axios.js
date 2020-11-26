@@ -1,7 +1,11 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
+<<<<<<< HEAD
+  baseURL: `${window.location.protocol}://${window.location.host}/qbox`,
+=======
   baseURL: `https://${window.location.host}/qbox`,
+>>>>>>> develop
   // baseURL: 'https://erpnew.letseduvate.com/qbox',
   // baseURL: 'http://13.234.252.195:443',
   // baseURL: 'http://localhost:8000/qbox',
