@@ -26,6 +26,7 @@ import { SvgIcon, Icon } from '@material-ui/core';
 import hwGiven from '../../../assets/images/hw-given.svg';
 import hwEvaluated from '../../../assets/images/hw-evaluated.svg';
 import submitted from '../../../assets/images/student-submitted.svg';
+import HomeWorkCard from '../homework-card';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -145,7 +146,7 @@ const TeacherHomework = withRouter(({ history, ...props }) => {
             </div>
             <div className='create_group_filter_container'>
               <Grid container className='homework_container' spacing={2}>
-                <Grid xs={12} lg={9} item>
+                <Grid xs={12} md={8} item>
                   <Paper className={`homework_table_wrapper ${classes.root}`}>
                     <TableContainer
                       className={`table table-shadow homework_table ${classes.container}`}
@@ -219,6 +220,7 @@ const TeacherHomework = withRouter(({ history, ...props }) => {
                     </TableContainer>
                   </Paper>
                 </Grid>
+                <HomeWorkCard />
               </Grid>
             </div>
           </div>
