@@ -32,6 +32,7 @@ import OnlineClassResource from './containers/online-class/online-class-resource
 import HomeworkCard from './containers/homework/homework-card';
 import Profile from './containers/profile/profile';
 import { fetchLoggedInUserDetails } from './redux/actions';
+import TeacherHomework from './containers/homework/teacher-homework';
 
 const theme = createMuiTheme({
   palette: {
@@ -152,6 +153,9 @@ function App() {
 
                 <Route exact path='/homework/student'>
                   {({ match }) => <StudentHomework match={match} />}
+                </Route>
+                <Route exact path='/homework/teacher'>
+                  {({ match }) => <TeacherHomework match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

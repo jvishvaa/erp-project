@@ -370,6 +370,10 @@ const Layout = ({ children, history }) => {
         history.push('/role-management');
         break;
       }
+      case 'homework-teacher': {
+        history.push('/homework/teacher');
+        break;
+      }
 
       default:
         break;
