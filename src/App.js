@@ -7,6 +7,7 @@ import ViewGroup from './containers/communication/view-group/view-group';
 import MessageCredit from './containers/communication/message-credit/message-credit';
 import SendMessage from './containers/communication/send-message/send-message';
 import MessageLog from './containers/communication/message-log/message-log';
+import StudentHomework from './containers/homework/student-homework/student-homework';
 import AssignRole from './containers/communication/assign-role/assign-role';
 import RoleManagement from './containers/role-management';
 import store from './redux/store';
@@ -142,6 +143,9 @@ function App() {
                 </Route>
                 <Route exact path='/master-mgmt/message-type-table'>
                   {({ match }) => <MessageTypeTable match={match} />}
+                </Route>
+                <Route exact path='/homework/student'>
+                  {({ match }) => <StudentHomework match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>
