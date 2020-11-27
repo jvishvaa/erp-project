@@ -28,6 +28,7 @@ import GradeTable from './containers/master-management/grade/grade-table';
 import AcademicYearTable from './containers/master-management/academic-year/academic-year-table';
 import MessageTypeTable from './containers/master-management/message-type/message-type-table';
 import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
+import HomeworkCard from './containers/homework/homework-card';
 import Profile from './containers/profile/profile';
 import { fetchLoggedInUserDetails } from './redux/actions';
 
@@ -143,6 +144,11 @@ function App() {
                 <Route exact path='/master-mgmt/message-type-table'>
                   {({ match }) => <MessageTypeTable match={match} />}
                 </Route>
+
+                <Route exact path='/homework/homework-card'>
+                  {({ match }) => <HomeworkCard match={match} />}
+                </Route>
+
               </Switch>
             </ThemeProvider>
           </OnlineclassViewProvider>

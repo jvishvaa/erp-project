@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
+
+.hwcard {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #fe6b6b;
+    border-radius: 1.25rem !important;
+    opacity: 1;
+    box-shadow: none;
+    height: 44rem;
+    padding: 2.5rem;
+    background: #FFFFFF 0% 0% no-repeat padding-box !important;
+}
+
+.cardHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font: normal normal 600 20px/24px Raleway;
+    letter-spacing: 0px;
+    color: #014B7E;
+}
+
+.divider {
+    opacity: 1;
+    height: 1px;
+    background-color: #E2E2E2;
+    margin: 0.5rem 0;
+}
+
+.dividerRow {
+    opacity: 1;
+    height: 1px;
+    flex-grow: 1;
+    background-color: #E2E2E2;
+    margin: auto 1rem;
+}
+
+.cardHeaderSub {
+    font: normal normal 600 18px/21px Raleway;
+    letter-spacing: 0px;
+    color: #014B7E;
+    margin-top: 2rem;
+}
+
+.cardRow {
+    display:flex;
+    flex-direction:row;
+    justify-content: space-between;
+    padding: 1.25rem 0 0 0;
+    margin-right: 0.5rem;
+}
+
+.subjectName {
+    margin-top: 8px;
+}
+
+.innerBox {
+    overflow-y: scroll;
+}
+
+.studentName {
+    font: normal normal normal 14px/16px Raleway;
+    letter-spacing: 0px;
+    color: #014B7E;
+    opacity: 1;
+}
+
+.studentMarks {
+    font: normal normal normal 14px/16px Raleway;
+    letter-spacing: 0px;
+    opacity: 1;
+}
+
