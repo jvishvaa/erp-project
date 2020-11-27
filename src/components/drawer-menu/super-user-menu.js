@@ -10,6 +10,7 @@ import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountOutlined';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
+import HomeWorkIcon from '@material-ui/icons/HomeWork';
 import { useHistory } from 'react-router-dom';
 import useStyles from './useStyles';
 
@@ -33,6 +34,21 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
           <AssignmentIndIcon />
         </ListItemIcon>
         <ListItemText className='menu-item-text'>Dashboard</ListItemText>
+      </ListItem>
+      <ListItem
+        button
+        className={
+          history.location.pathname === '/homework/teacher' ? 'menu_selection' : null
+        }
+        onClick={() => {
+          onClickMenuItem('homework-teacher');
+        }}
+      >
+        {' '}
+        <ListItemIcon className={classes.menuItemIcon}>
+          <HomeWorkIcon />
+        </ListItemIcon>
+        <ListItemText className='menu-item-text'>Homework</ListItemText>
       </ListItem>
       <ListItem
         button
@@ -216,7 +232,6 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
             </ListItemIcon>
             <ListItemText primary='Message Type' className='menu-item-text' />
           </ListItem>
-
         </List>
       </Collapse>
 
