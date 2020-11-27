@@ -2,9 +2,9 @@ import React , { useContext, useState } from 'react';
 import { Grid, TextField, Button, useTheme } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import endpoints from '../../config/endpoints';
-import axiosInstance from '../../config/axios';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import endpoints from '../../../config/endpoints';
+import axiosInstance from '../../../config/axios';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 const CreateSubject = ({grades,setLoading,handleGoBack}) => {
 

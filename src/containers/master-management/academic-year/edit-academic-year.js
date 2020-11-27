@@ -1,37 +1,39 @@
 import React , { useContext, useState } from 'react';
 import { Grid, TextField, Button, useTheme } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import endpoints from '../../config/endpoints';
-import axiosInstance from '../../config/axios';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import endpoints from '../../../config/endpoints';
+import axiosInstance from '../../../config/axios';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
-const EditMessageType = ({id,category,handleGoBack,setLoading}) => {
+const EditAcademicYear = ({id,year,handleGoBack,setLoading}) => {
 
   const { setAlert } = useContext(AlertNotificationContext);
-  const [categoryName,setCategoryName]=useState(category||'')
+  const [sessionYear,setSessionYear]=useState(year||'')
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
   
   const handleSubmit = (e) => {
     e.preventDefault()
+
     setLoading(true)
     let request={}
-    if(categoryName!=="" && categoryName!==category)
+    request['academic_year_id']=id
+    if(sessionYear!=="" && sessionYear!==year)
     {
-      request['category_name']=categoryName
-      axiosInstance.put(`${endpoints.masterManagement.updateMessageType}${id}/communicate-type/`,request)
+      request['session_year']=sessionYear
+      axiosInstance.put(endpoints.masterManagement.updateAcademicYear,request)
       .then(result=>{
       if (result.data.status_code === 200) {
           handleGoBack()
-          setCategoryName('')
+          setSessionYear('')
           setLoading(false);
-          setAlert('success', "Message type updated successfully!");
+          setAlert('success', "Academic Year updated successfully!");
       }
       else if(result.data.status_code===204)
       {
         setLoading(false);
-        setAlert('warning', "Message type already exists!");
+        setAlert('warning', "Academic Year already exists!");
       } 
       else {
         setLoading(false);
@@ -39,7 +41,7 @@ const EditMessageType = ({id,category,handleGoBack,setLoading}) => {
       }
       }).catch((error)=>{
         setLoading(false);
-        setAlert('error', "Message type couldn't be updated!");
+        setAlert('error', "Academic Year couldn't be updated!");
       })
     }
     else
@@ -56,15 +58,15 @@ const EditMessageType = ({id,category,handleGoBack,setLoading}) => {
         <Grid container spacing={5}>
           <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
             <TextField
-              id='categoryname'
-              label='Category Name'
-              style={{ width: '100%'}}
+              id='sessionyear'
+              label='Academic Year'
               variant='outlined'
+              style={{ width: '100%' }}
               size='small'
-              value={categoryName}
-              inputProps={{maxLength:40}}
-              name='categoryname'
-              onChange={e=>setCategoryName(e.target.value)}
+              inputProps={{maxLength:7,pattern:'^[0-9]{4}-[0-9]{2}'}}
+              value={sessionYear}
+              name='sessionyear'
+              onChange={e=>setSessionYear(e.target.value)}
             />
           </Grid>
           </Grid>
@@ -85,4 +87,4 @@ const EditMessageType = ({id,category,handleGoBack,setLoading}) => {
   );
 };
 
-export default EditMessageType;
+export default EditAcademicYear;

@@ -1,15 +1,14 @@
 import React , { useContext, useState } from 'react';
 import { Grid, TextField, Button, useTheme } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import endpoints from '../../config/endpoints';
-import axiosInstance from '../../config/axios';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import endpoints from '../../../config/endpoints';
+import axiosInstance from '../../../config/axios';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
-const CreateGrade = ({setLoading,handleGoBack}) => {
+const CreateAcademicYear = ({setLoading,handleGoBack}) => {
 
   const { setAlert } = useContext(AlertNotificationContext);
-  const [gradeName,setGradeName]=useState('')
-  const [gradeType,setGradeType]=useState('')
+  const [sessionYear,setSessionYear]=useState('')
   
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -17,16 +16,14 @@ const CreateGrade = ({setLoading,handleGoBack}) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     setLoading(true);
-    axiosInstance.post(endpoints.masterManagement.createGrade,{
-      grade_name:gradeName,
-      grade_type:gradeType,
+    axiosInstance.post(endpoints.masterManagement.createAcademicYear,{
+        session_year:sessionYear,
     }).then(result=>{
     if (result.data.status_code === 201) {
       {
-        setGradeName('')
-        setGradeType('')
+        setSessionYear('')
         setLoading(false);
-        setAlert('success', "Grade added successfully!");
+        setAlert('success', "Academic Year added successfully!");
       }
     } else {
       setLoading(false);
@@ -34,7 +31,7 @@ const CreateGrade = ({setLoading,handleGoBack}) => {
     }
     }).catch((error)=>{
       setLoading(false);
-      setAlert('error', "Grade couldn't be created!");
+      setAlert('error', "Academic Year couldn't be created!");
     })
     };
 
@@ -45,35 +42,20 @@ const CreateGrade = ({setLoading,handleGoBack}) => {
         <Grid container spacing={5}>
           <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
             <TextField
-              id='gradename'
-              label='Grade Name'
+              id='sessionyear'
+              label='Academic Year'
               style={{ width: '100%' }}
               variant='outlined'
               size='small'
-              value={gradeName}
-              inputProps={{maxLength:10}}
-              name='gradename'
-              onChange={e=>setGradeName(e.target.value)}
+              placeholder='2020-21'
+              value={sessionYear}
+              inputProps={{maxLength:7,pattern:'^[0-9]{4}-[0-9]{2}'}}
+              name='sessionyear'
+              onChange={e=>setSessionYear(e.target.value)}
               required
             />
           </Grid>
           </Grid>
-          <Grid container spacing={5}>
-          <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
-            <TextField
-              id='gradetype'
-              label='Grade Type'
-              variant='outlined'
-              size='small'
-              style={{ width: '100%' }}
-              value={gradeType}
-              inputProps={{maxLength:10}}
-              name='gradetype'
-              onChange={e=>setGradeType(e.target.value)}
-              required
-            />
-          </Grid>
-        </Grid>
         </div>
         <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '10px'}} >
         <Grid item xs={6} sm={2} className={isMobile?'':'addEditButtonsPadding'}>
@@ -91,4 +73,4 @@ const CreateGrade = ({setLoading,handleGoBack}) => {
   );
 };
 
-export default CreateGrade;
+export default CreateAcademicYear;
