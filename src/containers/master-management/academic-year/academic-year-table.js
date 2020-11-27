@@ -20,16 +20,15 @@ import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import TablePagination from '@material-ui/core/TablePagination';
-import Layout from '../Layout';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
-import endpoints from '../../config/endpoints';
-import axiosInstance from '../../config/axios';
+import Layout from '../../Layout';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
+import endpoints from '../../../config/endpoints';
+import axiosInstance from '../../../config/axios';
 import CreateAcademicYear from './create-academic-year';
 import EditAcademicYear from './edit-academic-year';
-import './master-management.css';
-import Loading from '../../components/loader/loader';
-import './styles.scss';
+import '../master-management.css';
+import Loading from '../../../components/loader/loader';
 import AcademicYearCard from './academic-year-card';
 
 const useStyles = makeStyles((theme) => ({

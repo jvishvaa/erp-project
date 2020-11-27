@@ -16,7 +16,7 @@ const AcademicYearCard = (props) => {
   } = props;
   const classes = useStyles();
   return (
-    <div className={classes.root}>
+    <Paper className={classes.root}>
       <Grid container spacing={2}>
           <Grid item xs={8}>
               <Typography
@@ -69,7 +69,7 @@ const AcademicYearCard = (props) => {
           </Grid>
         </Grid>
       </Grid>
-    </div>
+    </Paper>
   );
 };
 

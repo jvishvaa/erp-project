@@ -10,7 +10,7 @@ import TableRow from '@material-ui/core/TableRow';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import IconButton from '@material-ui/core/IconButton';
-import { Grid, Button } from '@material-ui/core';
+import { Grid, TextField, Button } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -19,23 +19,22 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Container from '@material-ui/core/Container';
 import TablePagination from '@material-ui/core/TablePagination';
-import Layout from '../Layout';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
-import endpoints from '../../config/endpoints';
-import axiosInstance from '../../config/axios';
-import CreateMessageType from './create-message-type';
-import EditMessageType from './edit-message-type';
-import './master-management.css';
-import Loading from '../../components/loader/loader';
-import './styles.scss';
-import MessageTypeCard from './message-type-card';
+import Layout from '../../Layout';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
+import endpoints from '../../../config/endpoints';
+import axiosInstance from '../../../config/axios';
+import CreateGrade from './create-grade';
+import EditGrade from './edit-grade';
+import '../master-management.css';
+import Loading from '../../../components/loader/loader';
+import GradeCard from './grade-card';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
-    boxShadow:'none'
   },
   container: {
     maxHeight: '70vh',
@@ -43,6 +42,17 @@ const useStyles = makeStyles((theme) => ({
   buttonContainer: {
     background: theme.palette.background.secondary,
     paddingBottom: theme.spacing(2),
+  },
+  cardsPagination: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    position: 'fixed',
+    bottom: 0,
+    left: 0,
+    padding: '1rem',
+    backgroundColor: '#ffffff',
+    zIndex: 100,
   },
   centerInMobile: {
     width: '100%',
@@ -63,7 +73,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const columns = [
-  { id: 'message_type', label: 'Message Type', minWidth: 100 },
+  { id: 'grade_name', label: 'Grade', minWidth: 100 },
+  { id: 'grade_by', label: 'Type', minWidth: 100 },
+  { id: 'created_by', label: 'Created by', minWidth: 100 },
   {
     id: 'actions',
     label: 'Actions',
@@ -73,18 +85,20 @@ const columns = [
   },
 ];
 
-const MessageTypeTable = () => {
+const GradeTable = () => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const [page, setPage] = React.useState(1);
-  const [messageType, setMessageType] = useState([]);
+  const [grades, setGrades] = useState([]);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
-  const [messageTypeId, setMessageTypeId] = useState();
-  const [categoryName,setCategoryName] = useState('');
+  const [gradeId, setGradeId] = useState();
+  const [gradeName, setGradeName] = useState('');
+  const [gradeType, setGradeType] = useState('');
   const [addFlag, setAddFlag] = useState(false);
   const [editFlag, setEditFlag] = useState(false);
   const [tableFlag, setTableFlag] = useState(true);
   const [delFlag, setDelFlag] = useState(false);
+  const [searchGrade, setSearchGrade] = useState('');
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [limit, setLimit] = useState(15);
@@ -99,18 +113,19 @@ const MessageTypeTable = () => {
     setPage(newPage+1)
   }
 
-  const handleAddMessageType = () => {
+  const handleAddGrade = () => {
     setTableFlag(false);
     setAddFlag(true);
     setEditFlag(false);
   };
 
-  const handleEditMessageType = (id, name) => {
+  const handleEditGrade = (id, name, type) => {
     setTableFlag(false);
     setAddFlag(false);
     setEditFlag(true);
-    setMessageTypeId(id);
-    setCategoryName(name);
+    setGradeId(id);
+    setGradeName(name);
+    setGradeType(type);
   };
 
   const handleGoBack = () => {
@@ -118,39 +133,39 @@ const MessageTypeTable = () => {
     setTableFlag(true);
     setAddFlag(false);
     setEditFlag(false);
+    setSearchGrade('');
     setGoBackFlag(!goBackFlag)
   };
 
-  const handleDeleteMessageType = (e) => {
+  const handleDeleteGrade = (e) => {
     e.preventDefault();
     setLoading(true);
     axiosInstance
-      .delete(`${endpoints.masterManagement.updateMessageType}${messageTypeId}/communicate-type/`)
+      .put(endpoints.masterManagement.updateGrade, {
+        is_delete: true,
+        grade_id: gradeId,
+      })
       .then((result) => {
         if (result.status === 200) {
+          {
             setDelFlag(!delFlag);
             setLoading(false);
-            setAlert('success', 'Message Type deleted successfully!');
-        }
-        else {
+            setAlert('success', 'Grade deleted successfully!');
+          }
+        } else {
           setLoading(false);
           setAlert('error', "Network Error!");
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', "Message Type couldn't be deleted!");
+        setAlert('error', "Grade couldn't be deleted!");
       });
     setOpenDeleteModal(false);
   };
 
-  const handleDelete = (msgtype) => {
-    setCategoryName(msgtype.category_name);
-    handleOpenDeleteModal(msgtype.id);
-  }
-
   const handleOpenDeleteModal = (id) => {
-    setMessageTypeId(id);
+    setGradeId(id);
     setOpenDeleteModal(true);
   };
 
@@ -168,22 +183,22 @@ const MessageTypeTable = () => {
   useEffect(() => {
     axiosInstance
       .get(
-        `${endpoints.masterManagement.messageTypeTable}?page=${page}&page_size=${limit}`
+        `${endpoints.masterManagement.grades}?page=${page}&page_size=${limit}&grade_name=${searchGrade}`
       )
       .then((result) => {
         if (result.status === 200) {
           {
-            setTotalCount(result.data.data.count);
-            setMessageType(result.data.data.results);
+            setTotalCount(result.data.result.count);
+            setGrades(result.data.result.results);
           }
         } else {
           setAlert('error', 'Network Error');
         }
       })
       .catch((error) => {
-        setAlert('error', 'Message Type Unavailable!');
+        setAlert('error', 'Grade Unavailable!');
       });
-  }, [delFlag, goBackFlag, page]);
+  }, [delFlag, goBackFlag, page, searchGrade]);
 
   return (
     <>
@@ -193,22 +208,18 @@ const MessageTypeTable = () => {
           <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
               componentName='Master Management'
-              childComponentName='Message Type List'
-              childComponentNameNext={(addFlag&&!tableFlag)?'Add Message Type':(editFlag&&!tableFlag)?'Edit Message Type':null}
+              childComponentName='Grade List'
+              childComponentNameNext={(addFlag&&!tableFlag)?'Add Grade':(editFlag&&!tableFlag)?'Edit Grade':null}
             />
           </div>
         </div>
 
-        {!tableFlag && addFlag && !editFlag && (
-        <CreateMessageType 
-        setLoading={setLoading} 
-        handleGoBack={handleGoBack}
-        />
-        )}
+        {!tableFlag && addFlag && !editFlag && <CreateGrade setLoading={setLoading} handleGoBack={handleGoBack}/>}
         {!tableFlag && !addFlag && editFlag && (
-          <EditMessageType
-            id={messageTypeId}
-            category={categoryName}
+          <EditGrade
+            id={gradeId}
+            name={gradeName}
+            type={gradeType}
             handleGoBack={handleGoBack}
             setLoading={setLoading}
           />
@@ -216,16 +227,29 @@ const MessageTypeTable = () => {
 
         {tableFlag && !addFlag && !editFlag && (
           <Grid container spacing={isMobile?3:5} style={{ width: widerWidth, margin: wider}}>
-            <Grid item xs={12} sm={4} className='addButtonPadding'>
+            <Grid item xs={12} sm={3} >
+                <TextField
+                  id='gradename'
+                  style={{ width: '100%' }}
+                  label='Grade Name'
+                  variant='outlined'
+                  size='small'
+                  name='gradename'
+                  autoComplete='off'
+                  onChange={(e) => {setPage(1);setSearchGrade(e.target.value);}}
+                />
+            </Grid>
+            <Grid item xs sm={9} className={isMobile?'hideGridItem':''}/>
+            <Grid item xs={12} sm={3} className={isMobile?'':'addButtonPadding'}>
               <Button 
               startIcon={<AddOutlinedIcon style={{fontSize:'30px'}}/>} 
               variant='contained' 
               color='primary' 
               size="small" 
               style={{color:'white'}} 
-              title="Add Message Type" 
-              onClick={handleAddMessageType}>
-                Add Message Type
+              title="Add Subject" 
+              onClick={handleAddGrade}>
+                Add Grade
               </Button>
             </Grid>
           </Grid>
@@ -250,28 +274,39 @@ const MessageTypeTable = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {messageType.map((msgtype, index) => {
+                  {grades.map((grade, index) => {
                     return (
-                      <TableRow hover messagetype='checkbox' tabIndex={-1} key={index}>
+                      <TableRow hover grade='checkbox' tabIndex={-1} key={index}>
                         <TableCell className={classes.tableCell}>
-                          {msgtype.category_name}
+                          {grade.grade_name}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
+                          {grade.grade_type}
+                        </TableCell>
+                        <TableCell className={classes.tableCell}>
+                          {grade.created_by}
+                        </TableCell>
+                        <TableCell className={classes.tableCell}>
+
                           <IconButton
-                            onClick={e=>{ handleDelete(msgtype) }}
-                            title='Delete Message Type'
+                            onClick={(e) => {
+                              setGradeName(grade.grade_name);
+                              handleOpenDeleteModal(grade.id);
+                            }}
+                            title='Delete Grade'
                           >
                             <DeleteOutlinedIcon style={{color:'#fe6b6b'}} />
                           </IconButton>
 
                           <IconButton
                             onClick={(e) =>
-                              handleEditMessageType(
-                                msgtype.id,
-                                msgtype.category_name,
+                              handleEditGrade(
+                                grade.id,
+                                grade.grade_name,
+                                grade.grade_type
                               )
                             }
-                            title='Edit Message Type'
+                            title='Edit Grade'
                           >
                             <EditOutlinedIcon style={{color:'#fe6b6b'}} />
                           </IconButton>      
@@ -296,14 +331,20 @@ const MessageTypeTable = () => {
         )}
         {isMobile && !addFlag && !editFlag && (
           <>
-             {
-              messageType.map(msgtype => (
-                <MessageTypeCard
-                msgtype={msgtype} 
-                handleDelete={handleDelete} 
-                handleEditMessageType={handleEditMessageType} />
-              ))
-            }
+            <Container className={classes.cardsContainer}>
+              {grades.map((grade, i) => (
+                <GradeCard
+                  grade={grade}
+                  onEdit={(grade) => {
+                    handleEditGrade(grade.id, grade.grade_name, grade.grade_type);
+                  }}
+                  onDelete={(grade) => {
+                    setGradeName(grade.grade_name);
+                    handleOpenDeleteModal(grade.id);
+                  }}
+                />
+              ))}
+            </Container>
             <div className="paginateData paginateMobileMargin">
             <TablePagination
               component='div'
@@ -322,16 +363,16 @@ const MessageTypeTable = () => {
           aria-labelledby='draggable-dialog-title'
         >
           <DialogTitle style={{ cursor: 'move',color: '#014b7e' }} id='draggable-dialog-title'>
-            Delete Message Type
+            Delete Grade
           </DialogTitle>
           <DialogContent>
-            <DialogContentText>{`Confirm Delete Message Type ${categoryName}`}</DialogContentText>
+            <DialogContentText>{`Confirm Delete Grade ${gradeName}`}</DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button  onClick={handleCloseDeleteModal} className="labelColor cancelButton">
               Cancel
             </Button>
-            <Button color="primary" onClick={handleDeleteMessageType}>Confirm</Button>
+            <Button color="primary" onClick={handleDeleteGrade}>Confirm</Button>
           </DialogActions>
         </Dialog>
       </Layout>
@@ -339,4 +380,4 @@ const MessageTypeTable = () => {
   );
 };
 
-export default MessageTypeTable;
+export default GradeTable;

@@ -23,16 +23,16 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import TablePagination from '@material-ui/core/TablePagination';
-import Layout from '../Layout';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
-import endpoints from '../../config/endpoints';
-import axiosInstance from '../../config/axios';
+import Layout from '../../Layout';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
+import endpoints from '../../../config/endpoints';
+import axiosInstance from '../../../config/axios';
 import CreateSection from './create-section';
 import EditSection from './edit-section';
-import Loading from '../../components/loader/loader';
-import './master-management.css';
-import SectionCard from '../../components/section-card';
+import Loading from '../../../components/loader/loader';
+import '../master-management.css';
+import SectionCard from './section-card';
 
 const useStyles = makeStyles((theme) => ({
   root: {

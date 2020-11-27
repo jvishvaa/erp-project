@@ -1,9 +1,9 @@
 import React , { useContext, useState } from 'react';
 import { Grid, TextField, Button, useTheme } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import endpoints from '../../config/endpoints';
-import axiosInstance from '../../config/axios';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import endpoints from '../../../config/endpoints';
+import axiosInstance from '../../../config/axios';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 const EditSubject = ({id,name,desc,handleGoBack,setLoading}) => {
 
