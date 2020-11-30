@@ -1,3 +1,4 @@
+@import '../../../assets/styles/variables';
 /* .homework_table_wrapper .message_log_table tr th:not(:last-child):after {
 	content: '';
 	height: 100%;
@@ -57,4 +58,13 @@
   padding-bottom: 1%;
   margin: 20px auto;
   border-bottom: 1px solid #cfcfcf;
+  align-items: center;
+}
+
+.icon-desc-container {
+  display: flex;
+  flex-direction: space-around;
+  align-items: center;
+  margin-left: 1rem;
+  color: $secondary-color;
 }

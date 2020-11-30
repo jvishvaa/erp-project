@@ -14,19 +14,18 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { Grid, TextField, Button } from '@material-ui/core';
+import { Grid, TextField, Button, SvgIcon, Icon } from '@material-ui/core';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import Loading from '../../../components/loader/loader';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
-import './student-homework.css';
-import { SvgIcon, Icon } from '@material-ui/core';
 import hwGiven from '../../../assets/images/hw-given.svg';
 import hwEvaluated from '../../../assets/images/hw-evaluated.svg';
 import submitted from '../../../assets/images/student-submitted.svg';
 import HomeWorkCard from '../homework-card';
+import './styles.scss';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -143,6 +142,42 @@ const TeacherHomework = withRouter(({ history, ...props }) => {
           <div className='message_log_white_wrapper'>
             <div className='homework_block_wrapper'>
               <div className='homework_block'>Weekly Time table</div>
+              <div className='icon-desc-container'>
+                <SvgIcon
+                  component={() => (
+                    <img
+                      style={{ width: '20px', marginRight: '5px' }}
+                      src={hwGiven}
+                      alt='given'
+                    />
+                  )}
+                />
+                <span>HW given</span>
+              </div>
+              <div className='icon-desc-container'>
+                <SvgIcon
+                  component={() => (
+                    <img
+                      style={{ width: '20px', marginRight: '5px' }}
+                      src={submitted}
+                      alt='submitted'
+                    />
+                  )}
+                />
+                <span>Students submitted</span>
+              </div>
+              <div className='icon-desc-container'>
+                <SvgIcon
+                  component={() => (
+                    <img
+                      style={{ width: '20px', marginRight: '5px' }}
+                      src={hwEvaluated}
+                      alt='evaluated'
+                    />
+                  )}
+                />
+                <span>HW given</span>
+              </div>
             </div>
             <div className='create_group_filter_container'>
               <Grid container className='homework_container' spacing={2}>
