@@ -146,7 +146,7 @@ const TeacherHomework = withRouter(({ history, ...props }) => {
                 <SvgIcon
                   component={() => (
                     <img
-                      style={{ width: '25px', padding: '5px' }}
+                      style={{ width: '20px', marginRight: '5px' }}
                       src={hwGiven}
                       alt='given'
                     />
@@ -158,7 +158,7 @@ const TeacherHomework = withRouter(({ history, ...props }) => {
                 <SvgIcon
                   component={() => (
                     <img
-                      style={{ width: '25px', padding: '5px' }}
+                      style={{ width: '20px', marginRight: '5px' }}
                       src={submitted}
                       alt='submitted'
                     />
@@ -170,7 +170,7 @@ const TeacherHomework = withRouter(({ history, ...props }) => {
                 <SvgIcon
                   component={() => (
                     <img
-                      style={{ width: '25px', padding: '5px' }}
+                      style={{ width: '20px', marginRight: '5px' }}
                       src={hwEvaluated}
                       alt='evaluated'
                     />
