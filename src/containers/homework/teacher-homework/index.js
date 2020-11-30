@@ -14,7 +14,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { Grid, TextField, Button, SvgIcon, Icon } from '@material-ui/core';
+import { Grid, TextField, Button, SvgIcon, Badge } from '@material-ui/core';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -214,17 +214,17 @@ const TeacherHomework = withRouter(({ history, ...props }) => {
                                         : 'null'
                                     }
                                   >
-                                    {/* <SvgIcon> */}
-                                    {/* <CheckCircleIcon style={{ color: 'green' }} /> */}
-                                    <SvgIcon
-                                      component={() => (
-                                        <img
-                                          style={{ width: '35px', padding: '5px' }}
-                                          src={hwGiven}
-                                          alt='given'
-                                        />
-                                      )}
-                                    />
+                                    <Badge badgeContent={4} color='primary'>
+                                      <SvgIcon
+                                        component={() => (
+                                          <img
+                                            style={{ width: '35px', padding: '5px' }}
+                                            src={hwGiven}
+                                            alt='given'
+                                          />
+                                        )}
+                                      />
+                                    </Badge>
                                     <SvgIcon
                                       component={() => (
                                         <img
