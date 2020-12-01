@@ -58,3 +58,52 @@
   margin: 20px auto;
   border-bottom: 1px solid #cfcfcf;
 }
+.top-performer-card{
+	box-shadow: none !important;
+	margin: 0% 5%;
+	position: relative !important;
+	color: #014b7e !important;
+}
+.top-performer-header{
+	background-color: #fde795;
+}
+.top-performer-tag{
+	vertical-align: super;
+    font-size: 1.2rem;
+    font-weight: 600;
+    padding-left: 5%;
+}
+.top-performer-subject{
+	font-size: 1rem;
+    padding: 2% 5%;
+    border-bottom: 1px solid  #cfcfcf;
+}
+.top-performer-student-wrapper{
+	position: absolute !important;
+    right: -14% !important;
+    border: 1px solid #ff6b6b;
+	box-shadow: none !important;
+	color: #014b7e !important;
+    padding: 5.5%;
+    width: 55%;
+}
+.top-performer-student{
+	font-size: 1rem;
+    padding: 2% 5%;
+}
+.subject-homework-details-wrapper{
+    margin: 20px 5%;
+    color: #014b7e;
+    font-size: 1rem !important;
+    padding: 5%;
+    border: 1px solid #ff6b6b;
+    border-radius: 10px;
+}
+.top-performer-star-icon{
+	color: gold;
+	vertical-align: middle;
+	font-size: large;
+}
+.subject-homework-details-tag{
+	margin: 0% 0% 5%;
+}
