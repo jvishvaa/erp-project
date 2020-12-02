@@ -60,14 +60,39 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const columns = [
-  { id: 'subject_name', label: 'Subject', minWidth: 100 },
-  { id: 'created_by', label: 'Created by', minWidth: 100 },
-  { id: 'desc', label: 'Description', minWidth: 100 },
+  { 
+    id: 'subject_name',
+    label: 'Subject',
+    minWidth: 100 ,
+    align: 'center',
+    labelAlign: 'center',
+  },
+  { 
+    id: 'created_by',
+    label: 'Created by',
+    minWidth: 100 ,
+    align: 'center',
+    labelAlign: 'center',
+  },
+  { 
+    id: 'desc', 
+    label: 'Description', 
+    minWidth: 100 , 
+    align: 'center',
+    labelAlign: 'center',
+  },
+  {
+    id: 'optional',
+    label: 'Optional',
+    minWidth: 50,
+    align: 'center',
+    labelAlign: 'center',
+  },
   {
     id: 'actions',
     label: 'Actions',
     minWidth: 170,
-    align: 'right',
+    align: 'center',
     labelAlign: 'center',
   },
 ];
@@ -93,7 +118,8 @@ const SubjectTable = () => {
   const [searchSection,setSearchSection]=useState('')
   const [sectionDisplay,setSectionDisplay]=useState([])
   const [searchSubject,setSearchSubject]=useState('')
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
+  const [opt, setOpt] = useState(false)
   const [limit, setLimit] = useState(15);
   const [goBackFlag,setGoBackFlag]=useState(false)
   const {role_details}=JSON.parse(localStorage.getItem('userDetails'))
@@ -158,13 +184,14 @@ const SubjectTable = () => {
     setEditFlag(false)
   }
 
-  const handleEditSubject=(id,name,desc)=>{
+  const handleEditSubject=(id,name,desc,optional)=>{
     setTableFlag(false)
     setAddFlag(false)
     setEditFlag(true)
     setSubjectId(id)
     setSubjectName(name)
     setDesc(desc)
+    setOpt(optional)    
   }
 
   const handleGoBack=()=>{
@@ -266,7 +293,7 @@ const SubjectTable = () => {
     </div>
    
     {!tableFlag && addFlag && !editFlag && <CreateSubject grades={grades} setLoading={setLoading} handleGoBack={handleGoBack}/> }
-    {!tableFlag && !addFlag && editFlag && <EditSubject id={subjectId} desc={desc} name={subjectName} setLoading={setLoading} handleGoBack={handleGoBack}/> }
+    {!tableFlag && !addFlag && editFlag && <EditSubject id={subjectId} desc={desc} name={subjectName} setLoading={setLoading} handleGoBack={handleGoBack} opt={opt}/> }
     
     
     {tableFlag && !addFlag && !editFlag && 
@@ -374,6 +401,9 @@ const SubjectTable = () => {
                     <TableCell className={classes.tableCell}>
                       {subject.subject.subject_description}
                     </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {(subject.subject.is_optional)?'Yes':'No'}
+                    </TableCell>
                     <TableCell
                       className={classes.tableCell}
                     >
@@ -385,7 +415,7 @@ const SubjectTable = () => {
                       </IconButton>
 
                       <IconButton
-                        onClick={e=>handleEditSubject(subject.subject.id,subject.subject.subject_name,subject.subject.subject_description)}
+                        onClick={e=>handleEditSubject(subject.subject.id,subject.subject.subject_name,subject.subject.subject_description,subject.subject.is_optional)}
                         title='Edit Subject'
                       >
                         <EditOutlinedIcon style={{color:'#fe6b6b'}} />

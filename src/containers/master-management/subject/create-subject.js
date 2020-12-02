@@ -1,5 +1,5 @@
 import React , { useContext, useState } from 'react';
-import { Grid, TextField, Button, useTheme } from '@material-ui/core';
+import { Grid, TextField, Button, useTheme, Switch, FormControlLabel } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import endpoints from '../../../config/endpoints';
@@ -16,8 +16,13 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [sections,setSections]=useState([])
+  const [optional,setOptional] = useState(false)
 
   const {role_details}=JSON.parse(localStorage.getItem('userDetails'))
+
+  const handleChange = (event) => {
+    setOptional(event.target.checked)
+  }
 
   const handleGrade = (event, value) => {
     if(value)
@@ -66,14 +71,16 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
         section_name:selectedSection.section__section_name,
         section_id:selectedSection.section_id,
         branch_id:role_details.branch[0],
-        description:description
+        description:description,
+        is_optional:optional
       }).then(result=>{
       if (result.data.status_code === 201) {
         setSubjectName('')
         setSelectedGrade('')
         setSelectedSection('')
         setDescription('')
-        setLoading(false);
+        setLoading(false)
+        setOptional(false)
         setAlert('success', 'Subject added successfully!');
       } else {
         setLoading(false);
@@ -169,6 +176,23 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
             />
           </Grid>
         </Grid>
+        <Grid container spacing={5}>
+          <Grid item xs={12} sm={4}>
+            <FormControlLabel
+              className='switchLabel'
+              control={
+                <Switch 
+                checked={optional} 
+                onChange={handleChange} 
+                name="optional" 
+                color="primary"
+                />}
+                label={optional?'Optional':'Not-Optional'}
+              />
+          </Grid>
+        </Grid>
+       
+       
         </div>
         <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '10px'}} >
         <Grid item xs={6} sm={2} className={isMobile?'':'addEditButtonsPadding'}>
