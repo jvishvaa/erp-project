@@ -1,11 +1,11 @@
 import React , { useContext, useState } from 'react';
-import { Grid, TextField, Button, useTheme } from '@material-ui/core';
+import { Grid, TextField, Button, useTheme, Switch, FormControlLabel } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
-const EditSubject = ({id,name,desc,handleGoBack,setLoading}) => {
+const EditSubject = ({id,name,desc,handleGoBack,setLoading,opt}) => {
 
   const subName=name.split("_").pop()
   const { setAlert } = useContext(AlertNotificationContext);
@@ -13,27 +13,34 @@ const EditSubject = ({id,name,desc,handleGoBack,setLoading}) => {
   const [description,setDescription]=useState(desc || '')
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+  const [optional,setOptional] = useState(opt||false)
 
+  const handleChange = (event) => {
+    setOptional(event.target.checked)
+  }
  
   const handleSubmit = (e) => {
     e.preventDefault()
     setLoading(true);
     let request={}
     request['subject_id']=id
-      if((subjectName!==subName && subjectName!=="")||(description!==desc && description!==""))
+      if((subjectName!==subName && subjectName!=="")||(description!==desc && description!=="")||(optional!==opt && optional!==""))
       {
         if(subjectName!==subName && subjectName!=="")
         request['subject_name']=subjectName
         if(description!==desc && description!=="")
         request['subject_description']=description
+        if(optional!==opt && optional!=="")
+        request['is_optional']=optional
 
         axiosInstance.put(endpoints.masterManagement.updateSubject,request).then(result=>{
           if (result.status === 200) {
             handleGoBack()
             setSubjectName('')
             setDescription('')
-            setLoading(false);
-            setAlert('success', "Subject updated successfully!");
+            setOptional(false)
+            setLoading(false)
+            setAlert('success', "Subject updated successfully!")
           } else {            
             setLoading(false);
             setAlert('error', "Network Error!");
@@ -86,6 +93,21 @@ const EditSubject = ({id,name,desc,handleGoBack,setLoading}) => {
               name='description'
               onChange={e=>setDescription(e.target.value)}
             />
+          </Grid>
+        </Grid>
+        <Grid container spacing={5}>
+          <Grid item xs={12} sm={4}>
+            <FormControlLabel
+              className='switchLabel'
+              control={
+                <Switch 
+                checked={optional} 
+                onChange={handleChange} 
+                name="optional" 
+                color="primary"
+                />}
+                label={optional?'Optional':'Not-Optional'}
+              />
           </Grid>
         </Grid>
         </div>
