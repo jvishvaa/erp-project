@@ -132,16 +132,16 @@ const AcademicYearTable = () => {
         if (result.status === 200) {
             setDelFlag(!delFlag);
             setLoading(false);
-            setAlert('success', 'Academic Year deleted successfully!');
+            setAlert('success', result.data.message);
         }
         else {
           setLoading(false);
-          setAlert('error', "Network Error!");
+          setAlert('error', result.data.message);
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', "Academic Year couldn't be deleted!");
+        setAlert('error', error.message);
       });
     setOpenDeleteModal(false);
   };
@@ -179,11 +179,11 @@ const AcademicYearTable = () => {
             setAcademicYear(result.data.result.results);
           }
         } else {
-          setAlert('error', 'Network Error');
+          setAlert('error', result.data.message);
         }
       })
       .catch((error) => {
-        setAlert('error', 'Academic Year Unavailable!');
+        setAlert('error', error.message);
       });
   }, [delFlag, goBackFlag, page]);
 

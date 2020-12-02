@@ -40,14 +40,14 @@ const EditSubject = ({id,name,desc,handleGoBack,setLoading,opt}) => {
             setDescription('')
             setOptional(false)
             setLoading(false)
-            setAlert('success', "Subject updated successfully!")
+            setAlert('success', result.data.message)
           } else {            
             setLoading(false);
-            setAlert('error', "Network Error!");
+            setAlert('error',result.data.message)
           }
         }).catch((error)=>{
           setLoading(false);
-          setAlert('error', "Section couldn't be updated!");
+          setAlert('error', error.message);
         })
       }
       else
@@ -71,7 +71,7 @@ const EditSubject = ({id,name,desc,handleGoBack,setLoading,opt}) => {
               style={{ width: '100%' }}
               size='small'
               value={subjectName}
-              inputProps={{pattern:'^[a-zA-Z0-9 ]+',maxLength:10}}
+              inputProps={{pattern:'^[a-zA-Z0-9 ]+',maxLength:20}}
               name='subname'
               onChange={e=>setSubjectName(e.target.value)}
             />

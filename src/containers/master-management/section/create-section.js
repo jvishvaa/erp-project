@@ -36,14 +36,14 @@ const CreateSection = ({grades,setLoading,handleGoBack}) => {
       setSectionName('')
       setSelectedGrade('')
       setLoading(false);
-      setAlert('success', "Section added successfully!");
+      setAlert('success', result.data.message);
     } else {        
       setLoading(false);
-      setAlert('error', "Network Error!");
+      setAlert('error', result.data.message);
     }
     }).catch((error)=>{
       setLoading(false);        
-      setAlert('error', "Section couldn't be created!");
+      setAlert('error', error.message);
     })
     };
 
@@ -62,7 +62,7 @@ const CreateSection = ({grades,setLoading,handleGoBack}) => {
               size='small'
               value={sectionName}
               style={{ width: '100%' }}
-              inputProps={{pattern:'^[a-zA-Z0-9 ]+',maxLength:10}}
+              inputProps={{pattern:'^[a-zA-Z0-9 ]+',maxLength:20}}
               name='secname'
               onChange={e=>setSectionName(e.target.value)}
               required

@@ -131,7 +131,6 @@ const HomeworkAdmin = () => {
   const [hwratio, setHwratio] = useState(false)
   const [topPerformers, setTopPerformers] = useState(false)
   const [ratingData,setRatingData]=useState([{'low_range':'','upper_range':'','star':'','is_display':false}])
-  const [subjectData,setSubjectData]=useState([])
   const [mandatorySubjects,setMandatorySubjects]=useState([])
   const [optionalSubjects,setOptionalSubjects]=useState([])
   const [otherSubjects,setOtherSubjects]=useState([])
@@ -165,19 +164,18 @@ const HomeworkAdmin = () => {
         setHwratio(false)
         setPrior('')
         setPost('')
-        setSubjectData([])
         setMandatorySubjects([])
         setOptionalSubjects([])
         setOtherSubjects([])
         setLoading(false)
-        setAlert('success', 'Configuration submitted successfully!')
+        setAlert('success', result.data.message)
       } else {
         setLoading(false)
-        setAlert('error','Network Error!')
+        setAlert('error',result.data.message)
       }
       }).catch((error)=>{
         setLoading(false)
-        setAlert('error', "Configuration couldn't be created!");
+        setAlert('error', error.message);
       })
     };
 
@@ -192,7 +190,7 @@ const HomeworkAdmin = () => {
   const handleCheckSubject = (event,id,index) => {
 
     let value = event.target.checked
-    const list=[...subjectData]
+    const list=[...rowData.subject_data]
     let name=event.target.name
 
     if(name==='is_mandatory' && value)
@@ -270,12 +268,18 @@ const HomeworkAdmin = () => {
             setAlert('error', result.data.message)
             setSections([])
             setSectionDisplay([])
+            setRowData({})
+            setRatingData([{'low_range':'','upper_range':'','star':'','is_display':false}])
           }
         })
         .catch(error => {
           setAlert('error', error.message);
           setSections([])
           setSectionDisplay([])
+          setRowData({})
+          setPrior('')
+          setPost('')
+          setRatingData([{'low_range':'','upper_range':'','star':'','is_display':false}])
         })
     }
     else {
@@ -283,6 +287,10 @@ const HomeworkAdmin = () => {
       setSearchSection('')
       setSections([])
       setSectionDisplay([])
+      setRowData({})
+      setPrior('')
+      setPost('')
+      setRatingData([{'low_range':'','upper_range':'','star':'','is_display':false}])
     }
   }
 
@@ -291,6 +299,10 @@ const HomeworkAdmin = () => {
     setSectionDisplay(value)
     if (value) {
       setSearchSection(value.section_id)
+    }
+    else{
+      setRowData({})
+      setRatingData([{'low_range':'','upper_range':'','star':'','is_display':false}])
     }
   }
 
@@ -317,7 +329,6 @@ const HomeworkAdmin = () => {
         if (result.data.status_code === 200) {
           setRowData(result.data.result[0])
           setRatingData(result.data.result[0].hw_ration)
-          setSubjectData(result.data.result[0].subject_data)
           setPrior(result.data.result[0].prior_data[0].prior_class)
           setPost(result.data.result[0].prior_data[0].post_class)
           setHwratio(result.data.result[0].prior_data[0].is_hw_ration)
@@ -327,18 +338,14 @@ const HomeworkAdmin = () => {
           setPrior('')
           setPost('')
           setRatingData([{'low_range':'','upper_range':'','star':'','is_display':false}])
-          setSubjectData([])
           setHwratio(false)
           setTopPerformers(false)
-          setAlert('error', 'Network Error!')
+          setAlert('error', result.data.description)
         }
       })
       .catch((error) => {
-        setRowData({})
         setPrior('')
         setPost('')
-        setRatingData([{'low_range':'','upper_range':'','star':'','is_display':false}])
-        setSubjectData([])
         setHwratio(false)
         setTopPerformers(false)
       })
@@ -565,9 +572,9 @@ const HomeworkAdmin = () => {
                 ))}
               </TableRow>
             </TableHead>
-            {subjectData ?
-              <TableBody>
-                {subjectData.map((row, index) => {
+            {rowData.subject_data?
+              (<TableBody>
+                {rowData.subject_data.map((row, index) => {
                   return (
                     <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
                       <TableCell className={classes.tableCell}>
@@ -603,9 +610,9 @@ const HomeworkAdmin = () => {
                     </TableRow>
                   )
                 })}
-              </TableBody>
+              </TableBody>)
               :
-              <TableBody>
+              (<TableBody>
                 <div style={
                   {
                     display: 'flex',
@@ -618,7 +625,7 @@ const HomeworkAdmin = () => {
                   }}>
                   Sorry! No Data Available
               </div>
-              </TableBody>
+              </TableBody>)
             }
           </Table>
         </TableContainer>
@@ -639,8 +646,6 @@ const HomeworkAdmin = () => {
         </Button>
         </Grid>
       </Grid>
-
-
     </Layout>
     </>
   )

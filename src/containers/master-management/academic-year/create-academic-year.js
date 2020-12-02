@@ -23,15 +23,15 @@ const CreateAcademicYear = ({setLoading,handleGoBack}) => {
       {
         setSessionYear('')
         setLoading(false);
-        setAlert('success', "Academic Year added successfully!");
+        setAlert('success', result.data.message);
       }
     } else {
       setLoading(false);
-      setAlert('error', "Network Error!");
+      setAlert('error', result.data.message);
     }
     }).catch((error)=>{
       setLoading(false);
-      setAlert('error', "Academic Year couldn't be created!");
+      setAlert('error', error.message);
     })
     };
 

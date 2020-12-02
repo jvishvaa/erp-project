@@ -167,16 +167,16 @@ const SectionTable = () => {
           {
             setDelFlag(!delFlag);
             setLoading(false);
-            setAlert('success', 'Section deleted successfully!');
+            setAlert('success', result.data.message);
           }
         } else {
           setLoading(false);
-          setAlert('error', "Network Error!");
+          setAlert('error', result.data.message);
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', "Section couldn't be deleted!");
+        setAlert('error', error.message);
       });
     setOpenDeleteModal(false);
   };
@@ -204,11 +204,11 @@ const SectionTable = () => {
       if (result.status === 200) {
         setGrades(result.data.data);
       } else {
-        setAlert('error', 'Network Error!');
+        setAlert('error', result.data.message);
       }
     })
     .catch((error) => {
-      setAlert('error', 'Grades Unavailable!');
+      setAlert('error', error.message);
     });
   },[])
 
@@ -222,11 +222,11 @@ const SectionTable = () => {
           setTotalCount(result.data.result.count);
           setSections(result.data.result.results);
         } else {
-          setAlert('error', 'Network Error!');
+          setAlert('error', result.data.message);
         }
       })
       .catch((error) => {
-        setAlert('error', 'Section Unavailable!');
+        setAlert('error', error.message);
       });
 
   }, [delFlag, goBackFlag, page, searchGrade, searchSection]);

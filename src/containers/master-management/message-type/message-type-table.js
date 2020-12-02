@@ -129,16 +129,16 @@ const MessageTypeTable = () => {
         if (result.status === 200) {
             setDelFlag(!delFlag);
             setLoading(false);
-            setAlert('success', 'Message Type deleted successfully!');
+            setAlert('success', result.data.message);
         }
         else {
           setLoading(false);
-          setAlert('error', "Network Error!");
+          setAlert('error', result.data.message);
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', "Message Type couldn't be deleted!");
+        setAlert('error', error.message);
       });
     setOpenDeleteModal(false);
   };
@@ -176,11 +176,11 @@ const MessageTypeTable = () => {
             setMessageType(result.data.data.results);
           }
         } else {
-          setAlert('error', 'Network Error');
+          setAlert('error', result.data.message);
         }
       })
       .catch((error) => {
-        setAlert('error', 'Message Type Unavailable!');
+        setAlert('error', error.message);
       });
   }, [delFlag, goBackFlag, page]);
 

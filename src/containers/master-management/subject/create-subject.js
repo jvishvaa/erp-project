@@ -81,14 +81,14 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
         setDescription('')
         setLoading(false)
         setOptional(false)
-        setAlert('success', 'Subject added successfully!');
+        setAlert('success', result.data.message)
       } else {
         setLoading(false);
-        setAlert('error','Network Error!')
+        setAlert('error',result.data.message)
       }
       }).catch((error)=>{
         setLoading(false);
-        setAlert('error', "Subject couldn't be created!");
+        setAlert('error', error.message)
       })
     };
 

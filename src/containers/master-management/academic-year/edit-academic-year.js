@@ -28,20 +28,15 @@ const EditAcademicYear = ({id,year,handleGoBack,setLoading}) => {
           handleGoBack()
           setSessionYear('')
           setLoading(false);
-          setAlert('success', "Academic Year updated successfully!");
+          setAlert('success', result.data.message);
       }
-      else if(result.data.status_code===204)
-      {
-        setLoading(false);
-        setAlert('warning', "Academic Year already exists!");
-      } 
       else {
         setLoading(false);
-        setAlert('error', "Network Error!");
+        setAlert('error', result.data.message);
       }
       }).catch((error)=>{
         setLoading(false);
-        setAlert('error', "Academic Year couldn't be updated!");
+        setAlert('error', error.message);
       })
     }
     else

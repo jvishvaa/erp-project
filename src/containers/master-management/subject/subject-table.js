@@ -216,14 +216,14 @@ const SubjectTable = () => {
       if (result.status === 200) {
         setDelFlag(!delFlag)
         setLoading(false);
-        setAlert('success', "Subject deleted successfully!");
+        setAlert('success', result.data.message);
       } else {
         setLoading(false);
-        setAlert('error', "Network Error!");
+        setAlert('error',result.data.message)
       }
       }).catch((error)=>{
-        setLoading(false);
-        setAlert('error', "Subject couldn't be deleted!");
+        setLoading(false)
+        setAlert('error', error.message)
       })
     setOpenDeleteModal(false)
   };
@@ -248,12 +248,12 @@ const SubjectTable = () => {
       if (result.status === 200) {
         setGrades(result.data.data);
       } else {
-        setAlert('error', 'Network Error!');
+        setAlert('error',result.data.message)
         setGrades([])
       }
     })
     .catch((error)=>{
-      setAlert('error', 'Grades Unavailable!');
+      setAlert('error', error.message);
       setGrades([])
     })
   },[])
@@ -265,11 +265,11 @@ const SubjectTable = () => {
           setTotalCount(result.data.result.count)
           setSubjects(result.data.result.results)
         } else {
-          setAlert('error', 'Network Error!');
+          setAlert('error',result.data.message)
         }
       })
       .catch((error)=>{
-        setAlert('error', 'Subject Unavailable!');
+        setAlert('error', error.message);
       })
   },[goBackFlag,delFlag,page,searchGrade,searchSection,searchSubject])
       
