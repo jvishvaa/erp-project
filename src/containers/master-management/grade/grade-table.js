@@ -150,16 +150,16 @@ const GradeTable = () => {
           {
             setDelFlag(!delFlag);
             setLoading(false);
-            setAlert('success', 'Grade deleted successfully!');
+            setAlert('success', result.data.message);
           }
         } else {
           setLoading(false);
-          setAlert('error', "Network Error!");
+          setAlert('error', result.data.message);
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', "Grade couldn't be deleted!");
+        setAlert('error', error.message);
       });
     setOpenDeleteModal(false);
   };
@@ -192,11 +192,11 @@ const GradeTable = () => {
             setGrades(result.data.result.results);
           }
         } else {
-          setAlert('error', 'Network Error');
+          setAlert('error', result.data.message);
         }
       })
       .catch((error) => {
-        setAlert('error', 'Grade Unavailable!');
+        setAlert('error', error.message);
       });
   }, [delFlag, goBackFlag, page, searchGrade]);
 

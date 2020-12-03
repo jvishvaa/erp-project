@@ -29,14 +29,14 @@ const EditSection = ({id,name,handleGoBack,setLoading}) => {
           handleGoBack()
           setSectionName('')
           setLoading(false);
-          setAlert('success', "Section updated successfully!");
+          setAlert('success', result.data.message);
         } else {
           setLoading(false);
-          setAlert('error', "Network Error!");
+          setAlert('error', result.data.message);
         }
       }).catch((error)=>{
         setLoading(false);
-        setAlert('error', "Section couldn't be updated!");
+        setAlert('error', error.message);
       })
     }
     else
@@ -59,7 +59,7 @@ const EditSection = ({id,name,handleGoBack,setLoading}) => {
               size='small'
               style={{ width: '100%' }}
               value={sectionName}
-              inputProps={{pattern:'^[a-zA-Z0-9 ]+',maxLength:10}}
+              inputProps={{pattern:'^[a-zA-Z0-9 ]+',maxLength:20}}
               name='secname'
               onChange={e=>setSectionName(e.target.value)}
             />

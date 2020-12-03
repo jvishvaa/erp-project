@@ -22,20 +22,20 @@ const CreateMessageType = ({setLoading,handleGoBack}) => {
     if (result.data.status_code === 201) {
         setCategoryName('')
         setLoading(false);
-        setAlert('success',"Message Type created successfully!");
+        setAlert('success',result.data.message);
     }
     else if(result.data.status_code===409){
         setCategoryName('')
         setLoading(false);
-        setAlert('warning',"Message Type already exists!");
+        setAlert('warning',result.data.message);
     } 
     else {
       setLoading(false);
-      setAlert('error', "Network Error!");
+      setAlert('error', result.data.message);
     }
     }).catch((error)=>{
       setLoading(false);
-      setAlert('error', "Message Type couldn't be created!");
+      setAlert('error', error.message)
     })
     };
 
