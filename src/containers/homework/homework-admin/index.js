@@ -136,50 +136,85 @@ const HomeworkAdmin = () => {
   const [optionalSubjects,setOptionalSubjects]=useState([])
   const [otherSubjects,setOtherSubjects]=useState([])
 
+  // if(ratingData){
+  //   for(let i=0;i<ratingData.length;i++){
+  //     if(ratingData[i]['low_range']===''){
+  //       debugger
+  //       setAlert('error','Lower Range can\'t be empty for rating number '+ (i+1))
+  //       break
+  //     }else if(ratingData[i]['upper_range']===''){
+  //       setAlert('error','Upper Range can\'t be empty for rating number '+ (i+1))
+  //       break
+  //     }else if(ratingData[i]['star']===''){
+  //       setAlert('error','Star can\'t be empty for rating number '+ (i+1))
+  //       break
+  //     }else if(ratingData[i]['low_range']&&ratingData[i]['upper_range']){
+  //       if(ratingData[i]['low_range']>=ratingData[i]['upper_range'])
+  //       setAlert('error','Lower Range can\'t be greater than or equal to Upper Range for rating number '+ (i+1))
+  //       break
+  //     }
+  //   }
+  // }
+
   const handleSubmit = (e) => {
       e.preventDefault()
-      setLoading(true)
-      axiosInstance.post(endpoints.homework.createConfig,{
-          "branch":role_details.branch[0],
-          "grade" :searchGrade,
-          "section":searchSection,
-          "subject_config":
-          {
-            "mandatory_subjects":mandatorySubjects,
-            "optional_subjects":optionalSubjects,
-            "others_subjects":otherSubjects,
-            "prior_class":prior,
-            "post_class":post,
-            "is_hw_ration":hwratio,
-            "is_top_performers":topPerformers
-          },
-          "hw_ration":ratingData
-      }).then(result=>{
-      if (result.data.status_code === 200) {
-        setRowData({hw_ration:[],subject_data:[],prior_data:[]})
-        setRatingData([])
-        setSearchGrade('')
-        setSearchSection('')
-        setSectionDisplay([])
-        setGradeDisplay([])
-        setTopPerformers(false)
-        setHwratio(false)
-        setPrior('')
-        setPost('')
-        setMandatorySubjects([])
-        setOptionalSubjects([])
-        setOtherSubjects([])
-        setLoading(false)
-        setAlert('success', result.data.message)
-      } else {
-        setLoading(false)
-        setAlert('error',result.data.message)
+      if(searchGrade===''){
+        setAlert('error','Grade not selected')
+      }else if(searchSection===''){
+        setAlert('error','Section not selected')
+      }else if(prior===''){
+        setAlert('error','Prior days cannot be empty')
+      }else if(post===''){
+        setAlert('error','Post days cannot be empty')
+      }else if((mandatorySubjects.length+optionalSubjects.length+otherSubjects.length)!==(rowData.subject_data.length)){
+        setAlert('error','A subject should be either mandatory, optional or other but can\'t be empty')
+      }else if(mandatorySubjects.length===0){
+        setAlert('error','Atleast one subject should be mandatory')
+      }else if(optionalSubjects.length===0){
+        setAlert('error','Atleast one subject should be optional')
+      }else if(otherSubjects.length===0){
+        setAlert('error','Atleast one subject should be other than mandatory and optional')
+      }else {
+        setLoading(true)
+          axiosInstance.post(endpoints.homework.createConfig,{
+            "branch":role_details.branch[0],
+            "grade" :searchGrade,
+            "section":searchSection,
+            "subject_config":
+            {
+              "mandatory_subjects":mandatorySubjects,
+              "optional_subjects":optionalSubjects,
+              "others_subjects":otherSubjects,
+              "prior_class":prior,
+              "post_class":post,
+              "is_hw_ration":hwratio,
+              "is_top_performers":topPerformers
+            },
+            "hw_ration":ratingData
+          }).then(result=>{
+          if (result.data.status_code === 200) {
+            setLoading(false)
+            setAlert('success', result.data.message)
+          } else {
+            setLoading(false)
+            setAlert('error',result.data.description)
+          }
+          }).catch((error)=>{
+            setLoading(false)
+            setAlert('error', error.message);
+        })
       }
-      }).catch((error)=>{
-        setLoading(false)
-        setAlert('error', error.message);
-      })
-    };
+    }
+
+    /*Validation for Edit*/
+    // else if(searchGrade
+    //   &&searchSection
+    //   &&(prior===rowData.prior_data[0].prior_class)
+    //   &&(post===rowData.post_data[0].prior_class)
+    //   &&(hwratio=== rowData.prior_data[0].is_hw_ration)
+    //   &&(topPerformers===rowData.prior_data[0].is_top_performers)){
+       
+    // }
 
   const handleHwratio = (event) => {
     setHwratio(event.target.checked)
@@ -360,7 +395,6 @@ const HomeworkAdmin = () => {
             else if(arr[i]['is_other'])
             otherSubjects.push(arr[i]['subject_id'])
           }
-          
           setRowData(result.data.result[0])
           setPrior(result.data.result[0].prior_data[0].prior_class)
           setPost(result.data.result[0].prior_data[0].post_class)
@@ -398,6 +432,7 @@ const HomeworkAdmin = () => {
             size='small'
             onChange={handleGrade}
             id='grade'
+            required
             value={gradeDisplay}
             options={grades}
             getOptionLabel={(option) => option?.grade_name}
@@ -418,6 +453,7 @@ const HomeworkAdmin = () => {
             size='small'
             onChange={handleSection}
             id='section'
+            required
             value={sectionDisplay}
             options={sections}
             getOptionLabel={(option) => option?.section__section_name}
@@ -442,6 +478,7 @@ const HomeworkAdmin = () => {
           type="text"
           className="inputText"
           value={prior}
+          required
           placeholder="No. of Days"
           maxLength="2"
           pattern="^[0-9]{1,2}"
@@ -457,6 +494,7 @@ const HomeworkAdmin = () => {
           type="text"
           className="inputText"
           value={post}
+          required
           placeholder="No. of Days"
           maxLength="2"
           pattern="^[0-9]{1,2}"
@@ -524,6 +562,7 @@ const HomeworkAdmin = () => {
                           id='lower'
                           placeholder='Lower'
                           variant='outlined'
+                          required
                           value={row.low_range}
                           inputProps={{ maxLength: 3, pattern: '^[0-9]$' }}
                           size='small'
@@ -539,6 +578,7 @@ const HomeworkAdmin = () => {
                           placeholder='Upper'
                           variant='outlined'
                           size='small'
+                          required
                           value={row.upper_range}
                           inputProps={{ maxLength: 3, pattern: '^[0-9]$' }}
                           name='upper_range'
@@ -553,6 +593,7 @@ const HomeworkAdmin = () => {
                           placeholder='Star'
                           variant='outlined'
                           size='small'
+                          required
                           value={row.star}
                           inputProps={{ maxLength: 1, pattern: '^[0-9]$' }}
                           name='star'
