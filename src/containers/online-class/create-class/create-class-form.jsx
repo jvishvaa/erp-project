@@ -41,8 +41,8 @@ const CreateClassForm = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [subjects, setSubjects] = useState([]);
   const [moduleId, setModuleId] = useState();
-  const [selectedGrades, setSelectedGrades] = useState(null);
-  const [selectedSections, setSelectedSections] = useState(null);
+  const [selectedGrades, setSelectedGrades] = useState([]);
+  const [selectedSections, setSelectedSections] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState([]);
   const {
     listGradesCreateClass,
@@ -95,11 +95,12 @@ const CreateClassForm = () => {
   }, []);
 
   useEffect(() => {
-    // const filteredSelectedSections = sections.filter(
-    //   (data) =>
-    //     selectedSections.findIndex((sec) => sec.section_id == data.section_id) > -1
-    // );
-    // setSelectedSections(filteredSelectedSections);
+    // maintain selection when grade is changed
+    const filteredSelectedSections = sections.filter(
+      (data) =>
+        selectedSections.findIndex((sec) => sec.section_id == data.section_id) > -1
+    );
+    setSelectedSections(filteredSelectedSections);
   }, [sections]);
 
   useEffect(() => {
@@ -112,7 +113,7 @@ const CreateClassForm = () => {
         coHosts: [],
       }));
       dispatch(resetContext());
-      setSelectedGrades(null);
+      setSelectedGrades([]);
       dispatch(listGradesCreateClass());
     }
   }, [isCreated]);
@@ -129,14 +130,16 @@ const CreateClassForm = () => {
 
       if (response) {
         if (selectedSubject) {
-          const filteredSelectedSubject = response.filter(
-            (data) => selectedSubject.subject__id == data.subject__id
+          const filteredSelectedSubject = selectedSubject.filter(
+            (data) =>
+              response.findIndex((res) => res.subject__id == data.subject__id) > -1
           );
           console.log('filtered subjects ', filteredSelectedSubject);
 
-          setSelectedSubject(
-            filteredSelectedSubject.length > 0 ? filteredSelectedSubject[0] : null
-          );
+          // setSelectedSubject(
+          //   filteredSelectedSubject.length > 0 ? filteredSelectedSubject[0] : null
+          // );
+          setSelectedSubject(filteredSelectedSubject);
         }
       }
     } catch (error) {
@@ -147,7 +150,8 @@ const CreateClassForm = () => {
 
   const handleGrade = (event, value) => {
     dispatch(clearFilteredStudents());
-    setSelectedGrades(value.length > 0 ? value[0] : null);
+    // setSelectedGrades(value.length > 0 ? value[0] : null);
+    setSelectedGrades(value);
     if (value.length) {
       const ids = value.map((el) => el.grade_id);
       setOnlineClass((prevState) => ({ ...prevState, gradeIds: ids }));
@@ -172,7 +176,8 @@ const CreateClassForm = () => {
 
   const handleSection = (event, value) => {
     dispatch(clearFilteredStudents());
-    setSelectedSections(value.length > 0 ? value[0] : null);
+    // setSelectedSections(value.length > 0 ? value[0] : null);
+    setSelectedSections(value);
     if (value.length) {
       const ids = value.map((el) => el.id);
       const sectionIds = value.map((el) => el.section_id);
@@ -184,7 +189,7 @@ const CreateClassForm = () => {
     dispatch(clearTutorEmailValidation());
     setOnlineClass((prevState) => ({
       ...prevState,
-      subject: '',
+      subject: [],
       tutorEmail: '',
       coHosts: [],
     }));
@@ -192,10 +197,12 @@ const CreateClassForm = () => {
 
   const handleSubject = (event, value) => {
     setSelectedSubject(value);
-    if (value) {
-      setOnlineClass((prevState) => ({ ...prevState, subject: value.subject__id }));
+    if (value.length) {
+      const subjectIds = value.map((sub) => sub.subject__id);
+      // setOnlineClass((prevState) => ({ ...prevState, subject: value.subject__id }));
+      setOnlineClass((prevState) => ({ ...prevState, subject: subjectIds }));
     } else {
-      setOnlineClass((prevState) => ({ ...prevState, subject: '' }));
+      setOnlineClass((prevState) => ({ ...prevState, subject: [] }));
     }
     dispatch(clearTutorEmailValidation());
     setOnlineClass((prevState) => ({
@@ -422,8 +429,8 @@ const CreateClassForm = () => {
 
   const handleClear = () => {
     setFormKey(new Date());
-    setSelectedGrades(null);
-    setSelectedSections(null);
+    setSelectedGrades([]);
+    setSelectedSections([]);
     setSelectedSubject(null);
     setOnlineClass((prevState) => ({
       ...prevState,
@@ -499,9 +506,11 @@ const CreateClassForm = () => {
             <Grid item xs={12} sm={2}>
               <Autocomplete
                 size='small'
+                multiple
                 onChange={(e, value) => {
                   console.log('gradeValue ', value);
-                  handleGrade(e, value ? [value] : []);
+                  // handleGrade(e, value ? [value] : []);
+                  handleGrade(e, value);
                 }}
                 id='create__class-grade'
                 options={grades}
@@ -522,10 +531,12 @@ const CreateClassForm = () => {
             {onlineClass.gradeIds.length ? (
               <Grid item xs={12} sm={2}>
                 <Autocomplete
+                  multiple
                   key={sectionSelectorKey}
                   size='small'
                   onChange={(e, value) => {
-                    handleSection(e, value ? [value] : []);
+                    // handleSection(e, value ? [value] : []);  //uncomment for single
+                    handleSection(e, value);
                   }}
                   id='create__class-section'
                   options={sections}
@@ -551,6 +562,7 @@ const CreateClassForm = () => {
             {onlineClass.sectionIds.length ? (
               <Grid item xs={12} sm={2}>
                 <Autocomplete
+                  multiple
                   size='small'
                   id='create__class-subject'
                   options={subjects}
@@ -566,7 +578,6 @@ const CreateClassForm = () => {
                       variant='outlined'
                       label='Subject'
                       placeholder='Subject'
-                      required
                     />
                   )}
                 />
