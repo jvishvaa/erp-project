@@ -33,6 +33,7 @@ import HomeworkCard from './containers/homework/homework-card';
 import Profile from './containers/profile/profile';
 import { fetchLoggedInUserDetails } from './redux/actions';
 import TeacherHomework from './containers/homework/teacher-homework';
+import AddHomework from './containers/homework/teacher-homework/add-homework';
 
 const theme = createMuiTheme({
   palette: {
@@ -156,6 +157,9 @@ function App() {
                 </Route>
                 <Route exact path='/homework/teacher'>
                   {({ match }) => <TeacherHomework match={match} />}
+                </Route>
+                <Route exact path='/homework/add/:date/:subject/:id'>
+                  {({ match }) => <AddHomework match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

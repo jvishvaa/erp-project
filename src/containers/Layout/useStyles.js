@@ -80,6 +80,13 @@ const useStyles = makeStyles((theme) => ({
   },
   toolbar: {
     padding: '10px 15px',
+    maxHeight: '64px',
+    [`${theme.breakpoints.up('xs')} and (orientation: landscape)`]: {
+      minHeight: '64px',
+    },
+    [theme.breakpoints.up('sm')]: {
+      minHeight: '64px',
+    },
   },
   drawer: {
     width: drawerWidth,
@@ -202,6 +209,7 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(4),
     paddingLeft: 0,
     paddingRight: 0,
+    height: `calc(100% - 64px)`,
   },
   desktopToolbarComponents: {
     [theme.breakpoints.down('sm')]: {

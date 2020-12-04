@@ -20,7 +20,7 @@ const DrawerMenu = ({ navigationItems, superUser, onClick }) => {
   }, []);
   return (
     <>
-      {superUser && (
+      {!superUser && (
         <SuperUserMenu
           onClickMenuItem={onClick}
           openMenu={openMenu}

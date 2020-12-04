@@ -3,7 +3,7 @@ import './homework-card.css';
 import { Grid, useTheme, Paper, Typography, Divider } from '@material-ui/core';
 import Layout from '../Layout';
 
-const HomeworkCard = () => {
+const HomeworkCard = ({ data }) => {
   let arr = [];
   for (let i = 0; i < 20; i++) {
     if (i % 5 === 0) arr.push({ name: 'Sankalp Khanna', marks: '14/50' });
@@ -16,10 +16,8 @@ const HomeworkCard = () => {
     <Grid item sm={4}>
       <Paper className='hwcard'>
         <div className='cardHeader'>
-          <div className='subjectName'>4B : English</div>
-          <div>
-            12<sup>th</sup> November
-          </div>
+          <div className='subjectName'>{data.subject}</div>
+          <div>{data.date}</div>
         </div>
         <div className='divider'></div>
         <div className='cardHeaderSub'>Evaluated students :</div>
