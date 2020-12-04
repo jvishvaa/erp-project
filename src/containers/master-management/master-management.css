@@ -56,3 +56,7 @@
 .cancelButton {
   background-color: #e0e0e0 !important;
 }
+
+.switchLabel .MuiTypography-body1 {
+  font-weight: 600 !important;
+}

@@ -65,4 +65,8 @@ export default {
     getUsers: '/erp_user/global-search/',
     singleUser: '/erp_user/',
   },
+  homework: {
+    completeData: '/academic/list_admin_homework/',
+    createConfig: '/academic/homework-admin-configuration/',
+  }
 };

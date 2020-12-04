@@ -1,0 +1,42 @@
+
+.containerClass {
+    width: 90%;
+    margin: 1.25rem 3%;
+    display: flex;
+    justify-content:flex-start;
+}
+
+.labelTag {
+    font-size: 1.25rem;
+    border-radius: .5rem 0 0 .5rem;
+    font-weight: 500;
+    background: white;
+    padding: .625rem;
+    box-shadow: 0px 0px 10px -5px #fe6b6b;
+    border-right:none ;
+    color: #014b7e;
+    width: 85%;
+}
+
+.inputText::-webkit-input-placeholder {
+    color: rgb(255,255,255,0.5);
+    font-size: 0.875rem;
+}
+.inputText::-moz-placeholder {
+    color: white;
+    font-size: 0.875rem;
+}
+
+.inputText {
+    border: none;
+    box-shadow: 0px 0px 10px -2px #fe6b6b;
+    border-left: none;
+    border-radius: 0 .5rem .5rem 0;
+    outline: none;
+    font-size: 1.56rem;
+    font-weight: 500;
+    background-color: #fe6b6b;
+    color: white;
+    width: 10%;
+    padding: .625rem;
+}
