@@ -69,7 +69,7 @@ const SubjectCard = (props) => {
           </Grid>
         </Grid>
         <Grid item container>
-          <Grid item xs={6}>
+          <Grid item xs={8}>
             <Box>
               <Typography
                 className={classes.title}
@@ -88,6 +88,30 @@ const SubjectCard = (props) => {
                 color='secondary'
               >
                 {subject.subject_description}
+              </Typography>
+            </Box>
+          </Grid>
+
+          <Grid item xs={4} className={classes.textRight}>
+            <Box>
+              <Typography
+                className={classes.title}
+                variant='p'
+                component='p'
+                color='secondary'
+              >
+                Optional
+              </Typography>
+            </Box>
+            <Box>
+              <Typography
+                className={classes.content}
+                variant='p'
+                component='p'
+                color='secondary'
+                align='right'
+              >
+                {subject.is_optional?'Yes':'No'}
               </Typography>
             </Box>
           </Grid>

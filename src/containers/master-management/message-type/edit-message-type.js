@@ -26,20 +26,16 @@ const EditMessageType = ({id,category,handleGoBack,setLoading}) => {
           handleGoBack()
           setCategoryName('')
           setLoading(false);
-          setAlert('success', "Message type updated successfully!");
+          setAlert('success', result.data.message);
       }
-      else if(result.data.status_code===204)
+      else
       {
         setLoading(false);
-        setAlert('warning', "Message type already exists!");
+        setAlert('warning', result.data.message);
       } 
-      else {
-        setLoading(false);
-        setAlert('error', "Network Error!");
-      }
       }).catch((error)=>{
         setLoading(false);
-        setAlert('error', "Message type couldn't be updated!");
+        setAlert('error', error.message);
       })
     }
     else

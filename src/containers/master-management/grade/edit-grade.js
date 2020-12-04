@@ -33,15 +33,15 @@ const EditGrade = ({id,name,type,handleGoBack,setLoading}) => {
           setGradeName('')
           setGradeType('')
           setLoading(false);
-          setAlert('success', "Grade updated successfully!");
+          setAlert('success', result.data.message);
         }
       } else {
         setLoading(false);
-        setAlert('error', "Network Error!");
+        setAlert('error', result.data.message);
       }
       }).catch((error)=>{
         setLoading(false);
-        setAlert('error', "Grade couldn't be updated!");
+        setAlert('error', error.message);
       })
     }
     else
@@ -64,7 +64,7 @@ const EditGrade = ({id,name,type,handleGoBack,setLoading}) => {
               variant='outlined'
               style={{ width: '100%' }}
               size='small'
-              inputProps={{maxLength:10}}
+              inputProps={{maxLength:20}}
               value={gradeName}
               name='gradename'
               onChange={e=>setGradeName(e.target.value)}
@@ -80,7 +80,7 @@ const EditGrade = ({id,name,type,handleGoBack,setLoading}) => {
               variant='outlined'
               size='small'
               style={{ width: '100%' }}
-              inputProps={{maxLength:10}}
+              inputProps={{maxLength:20}}
               value={gradeType}
               name='gradetype'
               onChange={e=>setGradeType(e.target.value)}

@@ -26,15 +26,15 @@ const CreateGrade = ({setLoading,handleGoBack}) => {
         setGradeName('')
         setGradeType('')
         setLoading(false);
-        setAlert('success', "Grade added successfully!");
+        setAlert('success', result.data.message);
       }
     } else {
       setLoading(false);
-      setAlert('error', "Network Error!");
+      setAlert('error', result.data.message);
     }
     }).catch((error)=>{
       setLoading(false);
-      setAlert('error', "Grade couldn't be created!");
+      setAlert('error', error.message);
     })
     };
 
@@ -51,7 +51,7 @@ const CreateGrade = ({setLoading,handleGoBack}) => {
               variant='outlined'
               size='small'
               value={gradeName}
-              inputProps={{maxLength:10}}
+              inputProps={{maxLength:20}}
               name='gradename'
               onChange={e=>setGradeName(e.target.value)}
               required
@@ -67,7 +67,7 @@ const CreateGrade = ({setLoading,handleGoBack}) => {
               size='small'
               style={{ width: '100%' }}
               value={gradeType}
-              inputProps={{maxLength:10}}
+              inputProps={{maxLength:20}}
               name='gradetype'
               onChange={e=>setGradeType(e.target.value)}
               required

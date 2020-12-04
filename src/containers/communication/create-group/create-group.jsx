@@ -803,18 +803,24 @@ const CreateGroup = withRouter(({ history, ...props }) => {
             <Grid container className='create_group_custom_button_wrapper' spacing={5}>
               {!next && edit ? (
                 <Grid xs={12} lg={3} className='create_group_custom_button' item>
-                  <Button variant='contained' className="custom_button_master labelColor" size='medium' onClick={handleEditCancel}>
+                  <Button
+                    variant='contained'
+                    className='custom_button_master labelColor'
+                    size='medium'
+                    onClick={handleEditCancel}
+                  >
                     CANCEL
                   </Button>
                 </Grid>
               ) : null}
               {next ? (
                 <Grid xs={12} lg={3} className='create_group_custom_button' item>
-                  <Button 
-                  variant='contained' 
-                  className="custom_button_master labelColor" 
-                  size='medium' 
-                  onClick={handleback}>
+                  <Button
+                    variant='contained'
+                    className='custom_button_master labelColor'
+                    size='medium'
+                    onClick={handleback}
+                  >
                     BACK
                   </Button>
                 </Grid>
@@ -822,39 +828,42 @@ const CreateGroup = withRouter(({ history, ...props }) => {
               {next ? (
                 edit ? (
                   <Grid xs={12} lg={3} className='create_group_custom_button' item>
-                    <Button 
-                    variant='contained' 
-                    style={{color:'white'}}  
-                    className="custom_button_master" 
-                    size='medium' 
-                    onClick={editGroup}>
+                    <Button
+                      variant='contained'
+                      style={{ color: 'white' }}
+                      className='custom_button_master'
+                      size='medium'
+                      onClick={editGroup}
+                    >
                       EDIT GROUP
-                    </Button>     
+                    </Button>
                   </Grid>
                 ) : (
                   <Grid xs={12} lg={3} className='create_group_custom_button' item>
-                    <Button 
-                    variant='contained' 
-                    style={{color:'white'}} 
-                    onClick={createGroup} 
-                    color ="primary" 
-                    className="custom_button_master" 
-                    size='medium'>
+                    <Button
+                      variant='contained'
+                      style={{ color: 'white' }}
+                      onClick={createGroup}
+                      color='primary'
+                      className='custom_button_master'
+                      size='medium'
+                    >
                       CREATE GROUP
                     </Button>
                   </Grid>
                 )
               ) : (
                 <Grid xs={12} lg={3} className='create_group_custom_button' item>
-                   <Button 
-                    variant='contained' 
-                    style={{color:'white'}} 
+                  <Button
+                    variant='contained'
+                    style={{ color: 'white' }}
                     onClick={handlenext}
-                    color ="primary" 
-                    className="custom_button_master" 
-                    size='medium'>
-                      NEXT
-                    </Button>
+                    color='primary'
+                    className='custom_button_master'
+                    size='medium'
+                  >
+                    NEXT
+                  </Button>
                 </Grid>
               )}
             </Grid>

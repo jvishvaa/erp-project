@@ -1,4 +1,3 @@
-import qs from 'qs';
 import axios from '../../config/axios';
 
 export const userManagementActions = {
