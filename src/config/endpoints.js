@@ -59,7 +59,7 @@ export default {
     updateAcademicYear: '/erp_user/update-academic-year/',
     createAcademicYear: '/erp_user/create-academic-year/',
     messageTypeTable: '/communication/communicate-type/',
-    updateMessageType: '/communication/'
+    updateMessageType: '/communication/',
   },
   gloabSearch: {
     getUsers: '/erp_user/global-search/',
@@ -68,5 +68,10 @@ export default {
   homework: {
     completeData: '/academic/list_admin_homework/',
     createConfig: '/academic/homework-admin-configuration/',
-  }
+  },
+  homeworkStudent: {
+    getStudentSubjects: '/academic/student-homework/?module_id=1',
+    getTopPerformer: '/academic/hw-top-performer/',
+    getRating: '/academic/student_subject_rating/',
+  },
 };
