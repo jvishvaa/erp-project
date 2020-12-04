@@ -22,6 +22,11 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import CancelIcon from '@material-ui/icons/Cancel';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import Button from '@material-ui/core/Button';
 import './styles.scss';
 import { uploadFile } from '../../redux/actions';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
@@ -36,10 +41,19 @@ const QuestionCard = ({
   const [attachments, setAttachments] = useState([]);
   const [attachmentPreviews, setAttachmentPreviews] = useState([]);
   const [enableAttachments, setEnableAttachments] = useState(false);
+  const [openAttachmentModal, setOpenAttachmentModal] = useState(false);
   const [fileUploadInProgress, setFileUploadInProgress] = useState(false);
   const firstUpdate = useRef(true);
   const fileUploadInput = useRef(null);
   const { setAlert } = useContext(AlertNotificationContext);
+
+  const openAttchmentsModal = () => {
+    setOpenAttachmentModal(true);
+  };
+
+  const closeAttachmentsModal = () => {
+    setOpenAttachmentModal(false);
+  };
 
   const onChange = (field, value) => {
     handleChange(index, field, value);
@@ -60,6 +74,17 @@ const QuestionCard = ({
     }
   };
 
+  const removeAttachment = (index) => {
+    setAttachmentPreviews((prevState) => [
+      ...prevState.slice(0, index),
+      ...prevState.slice(index + 1),
+    ]);
+    setAttachments((prevState) => [
+      ...prevState.slice(0, index),
+      ...prevState.slice(index + 1),
+    ]);
+  };
+
   useEffect(() => {
     if (firstUpdate.current) {
       firstUpdate.current = false;
@@ -71,6 +96,26 @@ const QuestionCard = ({
 
   return (
     <div className='question-container'>
+      <Dialog maxWidth='sm' open={openAttachmentModal} onClose={closeAttachmentsModal}>
+        <DialogTitle color='primary'>Attachments</DialogTitle>
+        <DialogContent style={{ maxHeight: '60vh', overflow: 'auto' }}>
+          <Grid container>
+            {attachmentPreviews.map((preview, index) => (
+              <Grid item md='4' spacing={2}>
+                <IconButton onClick={() => removeAttachment(index)}>
+                  <CancelIcon style={{ width: '25px' }} className='disabled-icon' />
+                </IconButton>
+                <img src={preview} alt='preview' style={{ width: '100%' }} />
+              </Grid>
+            ))}
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={closeAttachmentsModal}>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Card className='question-card'>
         <CardContent>
           <Grid container>
@@ -84,7 +129,6 @@ const QuestionCard = ({
                     onChange={(e) => {
                       onChange('question', e.target.value);
                     }}
-                    inputProps={{ maxLength: 20 }}
                     label='Question'
                     autoFocus
                     multiline
@@ -124,13 +168,23 @@ const QuestionCard = ({
                   )}
                 </div>
                 <div>
-                  {attachmentPreviews.map((url) => (
+                  {attachmentPreviews.slice(0, 2).map((url) => (
                     <img
                       src={url}
                       alt='preview'
                       style={{ width: '45px', margin: '5px' }}
                     />
                   ))}
+                  {attachmentPreviews.length > 2 && (
+                    <Typography
+                      component='h5'
+                      color='primary'
+                      onClick={openAttchmentsModal}
+                      style={{ cursor: 'pointer', marginTop: '5px' }}
+                    >
+                      View all attachments
+                    </Typography>
+                  )}
                 </div>
               </Grid>
             </Grid>
@@ -203,6 +257,7 @@ const QuestionCard = ({
           onClick={() => {
             addNewQuestion(index + 1);
           }}
+          title='Add Question'
         >
           <AddCircleOutlineIcon color='primary' />
         </IconButton>
@@ -212,6 +267,7 @@ const QuestionCard = ({
             onClick={() => {
               removeQuestion(index);
             }}
+            title='Remove Question'
           >
             <CancelIcon className='disabled-icon' />
           </IconButton>
