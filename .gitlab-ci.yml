@@ -31,10 +31,10 @@ deploy_dev:
       - forever stopall
       - forever start --uid "erp" -a -l forever.log -o out.log -e err.log $(which serve) -s /home/ubuntu/build -l 3000 
     environment:
-      name: erp_revamp_frontend
+      name: ERP_Revamp_Central-Prod-frontend
       url: 
     tags:
-      - erp_revamp_frontend
+      - ERP_Revamp_Central-Prod-frontend
     only:
       - develop
  

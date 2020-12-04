@@ -415,12 +415,24 @@ const MessageLog = withRouter(({ history, ...props }) => {
           <div className='create_group_filter_container'>
             <Grid container className='message_log_container' spacing={5}>
               <Grid xs={12} lg={3} item>
-                <Button variant='contained' onClick={handleClearAll} className="custom_button_master labelColor" size='medium'>
+                <Button
+                  variant='contained'
+                  onClick={handleClearAll}
+                  className='custom_button_master labelColor'
+                  size='medium'
+                >
                   Clear All
                 </Button>
               </Grid>
               <Grid xs={12} lg={3} item>
-                <Button  onClick={handleFilterCheck} variant='contained' style={{color:'white'}} color ="primary" className="custom_button_master" size='medium'>
+                <Button
+                  onClick={handleFilterCheck}
+                  variant='contained'
+                  style={{ color: 'white' }}
+                  color='primary'
+                  className='custom_button_master'
+                  size='medium'
+                >
                   FILTER
                 </Button>
               </Grid>
