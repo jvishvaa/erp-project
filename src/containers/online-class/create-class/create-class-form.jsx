@@ -215,14 +215,21 @@ const CreateClassForm = () => {
   useEffect(() => {
     let listStudentUrl = `branch_ids=${branch.join(',')}`;
     const { gradeIds, sectionIds, subject } = onlineClass;
-    if (gradeIds.length && !sectionIds.length) {
-      listStudentUrl = `branch_ids=${branch.join(',')}&grade_ids=${gradeIds.join(',')}`;
-    } else if (gradeIds.length && sectionIds.length) {
+    // if (gradeIds.length && !sectionIds.length) {
+    //   listStudentUrl = `branch_ids=${branch.join(',')}&grade_ids=${gradeIds.join(',')}`;
+    // } else if (gradeIds.length && sectionIds.length) {
+    //   listStudentUrl = `section_mapping_ids=${sectionIds.join(
+    //     ','
+    //   )}&subject_ids=${subject.join(',')}`;
+    // }
+    if (gradeIds.length && sectionIds.length && subject.length) {
       listStudentUrl = `section_mapping_ids=${sectionIds.join(
         ','
       )}&subject_ids=${subject.join(',')}`;
+
+      dispatch(listStudents(listStudentUrl));
     }
-    dispatch(listStudents(listStudentUrl));
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onlineClass.gradeIds, onlineClass.sectionIds, onlineClass.subject]);
 
