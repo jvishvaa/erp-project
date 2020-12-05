@@ -1,0 +1,29 @@
+@import '../../assets/styles/variables';
+.roles-table {
+  .table-header-row {
+    tr {
+      th {
+        position: sticky;
+        top: 0;
+        margin: '10px 0';
+        &:not(:last-child) {
+          &:after {
+            content: '';
+            width: 2px;
+            background-color: $primary-color;
+            height: 60%;
+            position: absolute;
+            border-radius: 5px;
+            right: 0;
+            transform: translateY(-10%);
+          }
+        }
+      }
+    }
+  }
+  .table-pagination {
+    color: $secondary-color;
+    text-align: center;
+    font-weight: 600;
+  }
+}

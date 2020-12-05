@@ -1,0 +1,13 @@
+.custom_multiselect_wrapper .MuiChip-deleteIcon{
+	color: #FF6B6B !important;
+}
+
+.custom_multiselect_wrapper .MuiSelect-select{
+	border-radius: 5px !important;
+}
+.custom_multiselect_wrapper  label + .MuiInput-formControl{
+    margin-top: 3px !important;
+}
+.custom_multiselect_wrapper .MuiIconButton-label{
+	color: #FF6B6B !important;
+}

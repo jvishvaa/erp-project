@@ -1,0 +1,80 @@
+@import '../../assets/styles/variables';
+.user-management-container {
+  .form-grid {
+    @media screen and (max-width: 960px) {
+      .MuiGrid-item {
+        &:not(.profile-img-container) {
+          order: 2;
+        }
+        .profile-img-container {
+          display: flex;
+          justify-content: center;
+        }
+      }
+    }
+  }
+
+  .stepper {
+    padding-bottom: 0;
+    .MuiStepIcon-root {
+      &.MuiStepIcon-active {
+        .MuiStepIcon-text {
+          fill: #ffffff;
+        }
+      }
+      &:not(.MuiStepIcon-active) {
+        circle {
+          stroke: $primary-color;
+        }
+        .MuiStepIcon-text {
+          fill: $primary-color;
+        }
+      }
+    }
+  }
+
+  .school-details-form-container,
+  .parent-form-container,
+  .user-details-form-container,
+  .guardian-form-container {
+    // width: 95%;
+    // margin: 20px auto;
+    margin: 20px 0;
+
+    .MuiFormControl-root {
+      .MuiSvgIcon-root {
+        color: #ff6b6b;
+      }
+    }
+  }
+  .form-action-btn-container {
+    // width: 95%;
+    // margin: 20px auto;
+    margin: 20px 0;
+  }
+  .bread-crumbs-container {
+    // width: 95%;
+    // margin: 20px auto;
+    margin: 20px 0;
+  }
+  .bulk-upload-check-box-container,
+  .bulk-upload-container {
+    // width: 95%;
+    // margin: 20px auto;
+    margin: 20px 0;
+    .MuiFormControl-root {
+      .MuiSvgIcon-root {
+        color: #ff6b6b;
+      }
+    }
+    a {
+      color: #ff6b6b;
+    }
+  }
+
+  .create-user-container,
+  .edit-user-container {
+    width: 95%;
+    margin: 20px auto;
+  }
+}

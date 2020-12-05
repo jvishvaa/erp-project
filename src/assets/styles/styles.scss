@@ -1,0 +1,29 @@
+html {
+  font-size: 16px;
+}
+
+body {
+  height: 100vh;
+}
+
+#root,
+.App {
+  height: 100%;
+}
+
+.disabled-btn {
+  background-color: #e2e2e2 !important;
+  color: #9f9f9f !important;
+}
+
+.disabled-icon {
+  color: #9f9f9f;
+}
+
+.MuiButton-contained {
+  &.MuiButton-containedPrimary {
+    .MuiButton-label {
+      color: #ffffff;
+    }
+  }
+}

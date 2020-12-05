@@ -1,0 +1,62 @@
+.MuiPaginationItem-textPrimary.Mui-selected  {
+  color: white !important;
+}
+
+.custom_button_master{
+  width: 100% !important;
+  text-transform: uppercase;
+	cursor: pointer;
+  outline: none !important;
+}
+
+.paginateData{
+  width: 95%;
+  display: flex;
+  justify-content: center;
+  padding: 10px 20px !important;
+}
+
+.paginateData .MuiTypography-colorInherit{
+  font-weight: bold !important;
+  color: #014b7e;
+}
+
+.paginateMobileMargin {
+  margin-top: -20px !important;
+}
+
+.hideGridItem{
+    display: none !important;
+}
+
+.removePadding.MuiIconButton-root {
+  padding: 0 !important;
+}
+
+.filterPadding {
+  padding: 20px 10px 20px 20px !important;
+}
+
+.addButtonPadding {
+  padding: 15px 10px 15px 20px !important;
+}
+
+.addEditPadding {
+  padding: 30px 20px 20px 20px !important;
+}
+
+.addEditButtonsPadding {
+  padding: 10px 20px 20px 20px !important;
+}
+
+.labelColor {
+  color: rgb(140, 140, 140) !important;
+}
+
+.cancelButton {
+  background-color: #e0e0e0 !important;
+}
+
+.switchLabel .MuiTypography-body1 {
+  font-weight: 600 !important;
+}

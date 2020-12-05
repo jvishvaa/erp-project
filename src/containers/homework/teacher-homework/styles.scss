@@ -1,0 +1,131 @@
+@import '../../../assets/styles/variables';
+/* .homework_table_wrapper .message_log_table tr th:not(:last-child):after {
+	content: '';
+	height: 100%;
+	width: 1px;
+	position: absolute;
+	right: 0;
+	top: 50%;
+	transform: translateY(-50%);
+	background-color: #ff6b6b;
+  }
+  .homework_table_wrapper .message_log_table tr td:not(:last-child):after {
+	content: '';
+	height: 100%;
+	width: 1px;
+	position: absolute;
+	right: 0;
+	top: 50%;
+	transform: translateY(-50%);
+	background-color: #ff6b6b;
+  } */
+.message_log_wrapper {
+  .homework_table_wrapper {
+    border: 1px solid #ff6b6b;
+    box-shadow: none;
+  }
+  .homework_table_wrapper .MuiTableCell-root:not(:last-child) {
+    border-right: 1px solid #ff6b6b;
+  }
+  .homework_table_wrapper .MuiTableRow-root:not(:last-child) .MuiTableCell-root {
+    border-bottom: 1px solid #ff6b6b !important;
+  }
+  .homework_table_wrapper .MuiTableHead-root .MuiTableCell-root {
+    border-bottom: 1px solid #ff6b6b !important;
+  }
+  .selected {
+    background-color: antiquewhite;
+  }
+  .homework_table {
+    margin-top: 0% !important;
+    border-radius: 10px !important;
+    overflow-y: auto;
+    max-height: 10000px !important;
+  }
+  .homework_table_wrapper {
+    border-radius: 10px !important;
+    box-shadow: none !important;
+  }
+  .homework_header {
+    text-transform: capitalize;
+  }
+  .homework_block {
+    color: #014b7e;
+    font-weight: 600;
+  }
+  .homework_block_wrapper {
+    display: flex;
+    width: 95%;
+    padding-bottom: 1%;
+    margin: 20px auto;
+    border-bottom: 1px solid #cfcfcf;
+    align-items: center;
+  }
+
+  .icon-desc-container {
+    display: flex;
+    flex-direction: space-around;
+    align-items: center;
+    margin-left: 1rem;
+    color: $secondary-color;
+  }
+
+  .MuiBadge-root {
+    vertical-align: unset;
+    .MuiBadge-badge {
+      color: #ffffff;
+      &.MuiBadge-anchorOriginTopRightRectangle {
+        transform: scale(1) translate(25%, -25%);
+      }
+    }
+  }
+
+  .date-picker-container {
+    margin: 0 1rem;
+    .MuiSvgIcon-root {
+      fill: $primary-color;
+    }
+  }
+}
+.add-homework-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .add-homework-inner-container {
+    padding: 20px 2.5%;
+    background: white;
+    flex: 1;
+    .add-homework-title-container {
+      display: flex;
+      width: 60%;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+  }
+  .form-field {
+    width: 30%;
+    margin-bottom: 20px;
+    @media screen and (max-width: 768px) {
+      width: 100%;
+    }
+  }
+
+  .finish-btn-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 1rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+.selected-col {
+  background-color: #fededf;
+}
+
+.no-wrap-col {
+  white-space: nowrap;
+}

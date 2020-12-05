@@ -1,0 +1,23 @@
+.assign_role_button{
+	font-size: 0.9rem;
+    padding: 8%;
+    border: none;
+    border-radius: 5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    outline: none !important;
+    color: white;
+    background-color: #FF6B6B;
+    margin: 5% 0%;
+}
+.assign_role_select_all_wrapper{
+	color: #014B7E;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 2%;
+    margin-bottom: -2%;
+}
+.assign_role_select_all_checkbox{
+	transform: scale(1.5);
+	margin-right: 1%;
+}

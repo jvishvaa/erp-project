@@ -1,0 +1,125 @@
+@import '../../../../assets/styles/variables';
+
+.viewclass__management-container {
+  h6,
+  h5 {
+    font-size: 18px !important;
+  }
+
+  min-height: 600px;
+  background-color: #fff;
+  // filter component
+  .filters__container {
+    background-color: #fafafa !important;
+    padding: 20px 2.5%;
+    margin: 0 auto;
+    // padding: 50px 0 0 0;
+
+    .viewmanagement-tabs-container {
+      margin-left: -30px;
+    }
+
+    .viewclass__management-btn {
+      color: white;
+      width: 100%;
+    }
+
+    .cancelled-class-check {
+      margin-top: 0px !important;
+    }
+
+    svg {
+      fill: $primary-color;
+    }
+
+    .MuiTextField-root {
+      width: 100%;
+    }
+  }
+
+  // table component
+  .viewclass__management-table {
+    width: 98%;
+    margin: 10px auto 0px auto !important;
+
+    .progress-center {
+      position: absolute;
+      left: 50%;
+      margin-top: 100px;
+    }
+
+    .viewclass__table-head {
+      th {
+        font-weight: bold;
+        color: $secondary-color;
+      }
+
+      th:not(:last-child) {
+        position: relative;
+      }
+
+      th:not(:last-child)::after {
+        content: '';
+        height: 50%;
+        width: 2px;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: $primary-color;
+      }
+    }
+
+    .viewclass__table-body {
+      td {
+        color: $secondary-color;
+      }
+    }
+
+    .pagination__container {
+      margin-top: 20px;
+
+      .view-class-pagination p {
+        color: $secondary-color;
+        font-weight: bold !important;
+      }
+
+      .view-class-pagination .MuiTablePagination-actions {
+        color: $secondary-color;
+      }
+    }
+
+    .expand-management {
+      display: none;
+      cursor: pointer;
+      color: $primary-color;
+    }
+  }
+}
+
+@media only screen and(max-width:600px) {
+  .viewclass__management-table {
+    .hide {
+      display: none;
+    }
+
+    .show {
+      display: table-cell;
+    }
+  }
+
+  .filters__container {
+    .viewmanagement-tabs-container {
+      margin-left: 0px !important;
+    }
+  }
+
+  .viewclass__management-table {
+    .expand-management {
+      float: right;
+      margin: 0px 20px 0px 0px;
+      margin-right: 20px;
+      display: block !important;
+    }
+  }
+}

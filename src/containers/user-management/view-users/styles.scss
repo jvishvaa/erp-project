@@ -1,0 +1,67 @@
+@import '../../../assets/styles/variables';
+.common-table {
+  width: 100%;
+  .table-header-row {
+    background-color: '#ffffff';
+    tr {
+      th {
+        position: sticky;
+        top: 0;
+        margin: '10px 0';
+        color: $secondary-color !important;
+        &:not(:last-child) {
+          &:after {
+            content: '';
+            width: 2px;
+            background-color: $primary-color;
+            height: 60%;
+            position: absolute;
+            border-radius: 5px;
+            right: 0;
+            transform: translateY(-10%);
+          }
+        }
+      }
+    }
+  }
+  .table-pagination {
+    color: $secondary-color;
+  }
+}
+
+.pagination-white {
+  button.Mui-selected {
+    color: #ffffff;
+  }
+}
+
+.view-users-page {
+  .spacer {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .bread-crumbs-container {
+    width: 100%;
+    .page_title {
+      margin: 0;
+    }
+  }
+  .inner-container {
+    width: 95%;
+    margin: 0 auto;
+    .form-container {
+      .MuiFormControl-root {
+        .MuiSvgIcon-root {
+          color: #ff6b6b;
+        }
+      }
+    }
+  }
+  .table-pagination {
+    color: $secondary-color;
+    .MuiTablePagination-caption {
+      font-weight: 600;
+    }
+  }
+}

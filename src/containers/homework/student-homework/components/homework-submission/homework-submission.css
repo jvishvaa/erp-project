@@ -1,0 +1,61 @@
+.homework_type_item{
+	border: 1px solid #ff6b6b;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+    padding: 10% 15%;
+    color: #014b7e;
+    font-size: 1rem;
+	font-weight: 600;
+	text-transform: capitalize;
+}
+.homework_block_questionwise_check{
+	margin-left: 50%;
+	color: #014b7e;
+    font-size: 1rem;
+}
+.homework_submit_questions_wrapper{
+	display: flex;
+	margin: 20px auto;
+	width: 95%;
+}
+.homework_submit_questions{
+	border-bottom: 1px solid #ff6b6b;
+    width: 80%;
+	color: #014b7e;
+	position: relative;
+}
+.homework_submit_tag{
+	font-size: 1rem;
+}
+.homework_question{
+	position: absolute;
+	font-size: 1rem;
+	bottom: 0;
+	left: 0;
+}
+.homework_submit_questions_attachment{
+	width: 30% !important;
+}
+.non_selected_homework_type_item{
+	cursor: pointer;
+}
+.homework_block{
+	text-transform: capitalize;
+}
+.homework_type_wrapper{
+	width: 185px;
+}
+.homework_submit_wrapper{
+	border: 1px solid #ff6b6b;
+	border-radius: 10px;
+}
+.homework_submit_button_wrapper{
+	display: flex;
+    width: 30%;
+    margin: 2%;
+    margin-left: 65%;
+}
+.homework_submit_button_cancel{
+	margin-right: 20px !important;
+}
