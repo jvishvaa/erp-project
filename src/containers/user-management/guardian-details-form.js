@@ -1,7 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
-import React from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import Typography from '@material-ui/core/Typography';
-import AttachFileIcon from '@material-ui/icons/AttachFile';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
@@ -13,10 +12,10 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import Box from '@material-ui/core/Box';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
-
 import { useStyles } from './useStyles';
 import resolveValidationSchema from './schemas/guardian-details';
 import ImageUpload from '../../components/image-upload';
+import { ContainerContext } from '../../containers/Layout';
 import './styles.scss';
 
 const GuardianDetailsForm = ({
@@ -27,6 +26,7 @@ const GuardianDetailsForm = ({
   showGuardianForm,
   isSubmitting,
 }) => {
+  const { containerRef } = useContext(ContainerContext);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const classes = useStyles();
@@ -59,6 +59,11 @@ const GuardianDetailsForm = ({
     validateOnBlur: false,
     validateOnChange: false,
   });
+  useEffect(() => {
+    // pageTop.current.scrollIntoView();
+    containerRef.current.scrollTop = 0;
+    console.log('scrollTop ', containerRef.current.scrollTop);
+  }, []);
   return (
     <>
       {showParentForm && (
@@ -208,7 +213,7 @@ const GuardianDetailsForm = ({
           <Divider className={classes.divider} />
           <div className='details-container parent-form-container'>
             <Typography variant='h5' gutterBottom color='primary'>
-              Mothers's Details
+              Mother's Details
             </Typography>
             <Grid
               container

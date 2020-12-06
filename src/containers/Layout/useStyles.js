@@ -127,7 +127,6 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     height: '100vh',
-    overflow: 'auto',
   },
   search: {
     position: 'relative',
@@ -210,6 +209,7 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: 0,
     paddingRight: 0,
     height: `calc(100% - 64px)`,
+    overflow: 'auto',
   },
   desktopToolbarComponents: {
     [theme.breakpoints.down('sm')]: {

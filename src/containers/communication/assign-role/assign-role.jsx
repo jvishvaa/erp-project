@@ -15,6 +15,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CustomSelectionTable from '../custom-selection-table/custom-selection-table';
@@ -33,6 +34,7 @@ const AssignRole = (props) => {
   const [selectedRole, setSelectedRole] = useState('');
   const [pageno, setPageno] = useState(1);
   const [assignedRole, setAssigenedRole] = useState(false);
+  const [assignedRoleError, setAssignedRoleError] = useState(false);
   const [totalPage, setTotalPage] = useState(0);
   const [usersRow, setUsersRow] = useState([]);
   const [completeData, setCompleteData] = useState([]);
@@ -316,6 +318,13 @@ const AssignRole = (props) => {
     }
   };
 
+  const clearSelectAll = () => {
+    const tempSelectAll = selectAllObj?.map((obj) => ({ ...obj, selectAll: false }));
+    if (tempSelectAll.length) {
+      setSelectAllObj(tempSelectAll);
+    }
+  };
+
   const assignRole = async () => {
     const assignRoleApi = endpoints.communication.assignRole;
     const selectionArray = [];
@@ -332,6 +341,11 @@ const AssignRole = (props) => {
       setRoleError('Please select some Role');
       return;
     }
+    // if (!assignedRole) {
+    //   setAssignedRoleError('Please select a role to be assigned');
+    //   return;
+    // }
+
     setSelectectUserError('');
     try {
       const response = await axiosInstance.post(
@@ -364,6 +378,7 @@ const AssignRole = (props) => {
         setSelectAllObj([]);
         setSelectectUserError('');
         setAssigenedRole(true);
+        clearSelectAll();
       } else {
         setAlert('error', response.data.message);
       }
@@ -408,6 +423,8 @@ const AssignRole = (props) => {
     }
   }, [pageno, assignedRole, clearAll, filterCheck]);
 
+  const checkAll = selectAllObj[pageno - 1]?.selectAll || false;
+  console.log('rerendering ', checkAll, selectAllObj, pageno - 1);
   return (
     <Layout>
       <div className='assign-role-container'>
@@ -695,13 +712,14 @@ const AssignRole = (props) => {
                     </MenuItem>
                   ))}
                 </Select>
+                <FormHelperText style={{ color: 'red' }}>{roleError}</FormHelperText>
               </FormControl>
             </Grid>
             <Grid item md={4} xs={6}>
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={selectAllObj[pageno - 1]?.selectAll}
+                    checked={checkAll}
                     onChange={handleSelectAll}
                     color='primary'
                   />
@@ -805,7 +823,14 @@ const AssignRole = (props) => {
               justify={isMobile && 'center'}
             >
               <Grid item md={4}>
-                <Button onClick={assignRole}>ASSIGN ROLE</Button>
+                <Button
+                  onClick={assignRole}
+                  variant='contained'
+                  color='primary'
+                  disabled={!selectedRole}
+                >
+                  ASSIGN ROLE
+                </Button>
               </Grid>
             </Grid>
           </>

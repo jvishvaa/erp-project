@@ -3,7 +3,7 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-debugger */
 /* eslint-disable react/prop-types */
-import React, { useContext, useState, useEffect, useRef } from 'react';
+import React, { useContext, useState, useEffect, useRef, createContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { throttle, debounce } from 'throttle-debounce';
 import Drawer from '@material-ui/core/Drawer';
@@ -65,7 +65,10 @@ import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import SettingsIcon from '@material-ui/icons/Settings';
 import UserInfo from '../../components/user-info';
 
+export const ContainerContext = createContext();
+
 const Layout = ({ children, history }) => {
+  const containerRef = useRef(null);
   const dispatch = useDispatch();
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { role_details: roleDetails } =
@@ -146,6 +149,9 @@ const Layout = ({ children, history }) => {
       userDetails = JSON.parse(userDetails);
       const { is_superuser } = userDetails;
       setSuperUser(is_superuser);
+    }
+    if (containerRef.scrollTop > 50) {
+      containerRef.scrollTop = 0;
     }
   }, []);
 
@@ -798,7 +804,11 @@ const Layout = ({ children, history }) => {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
-        <div className={classes.container}>{children}</div>
+        <ContainerContext.Provider value={{ containerRef }}>
+          <div className={classes.container} ref={containerRef}>
+            {children}
+          </div>
+        </ContainerContext.Provider>
       </main>
     </div>
   );
