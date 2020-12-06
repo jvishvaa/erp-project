@@ -211,6 +211,7 @@ const UserDetailsForm = ({
             size='small'
             inputVariant='outlined'
             fullWidth
+            label='Date of birth'
           />
         </MuiPickersUtilsProvider>
         <FormHelperText style={{ color: 'red' }}>
