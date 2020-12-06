@@ -56,23 +56,34 @@ const ViewClassStudent = (props) => {
     // const now = new Date(currentServerTime);
     if (startTime) {
       const difference = new Date(moment(startTime).format('llll')) - now;
-      setTimeout(() => {
+      if (difference < 0) {
         setHasClassStarted(true);
-      }, difference);
+      } else {
+        setTimeout(() => {
+          setHasClassStarted(true);
+        }, difference);
+      }
     }
     if (joinTime) {
       const difference = new Date(moment(joinTime).format('llll')) - now;
+
       setTimeout(() => {
         setIsJoinTime(true);
       }, difference);
     }
     if (endTime) {
       const difference = new Date(moment(endTime).format('llll')) - now;
-      setTimeout(() => {
+      if (difference < 0) {
         setHasClassStarted(false);
         setHasClassEnded(true);
         setIsJoinTime(false);
-      }, difference);
+      } else {
+        setTimeout(() => {
+          setHasClassStarted(false);
+          setHasClassEnded(true);
+          setIsJoinTime(false);
+        }, difference);
+      }
     }
   }, []);
 
