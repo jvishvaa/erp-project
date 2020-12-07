@@ -132,12 +132,17 @@ class CreateRole extends Component {
     });
     const { setAlert } = this.context;
     if (requestData.length > 0) {
+      if (!roleName.trim().length) {
+        setAlert('error', 'Please provide a role name');
+        return;
+      }
       const reqObj = {
         role_name: roleName,
         Module: requestData,
       };
       createRole(reqObj)
         .then(() => {
+          setAlert('success', 'Role created successfully');
           history.push('/role-management');
         })
         .catch(() => {
