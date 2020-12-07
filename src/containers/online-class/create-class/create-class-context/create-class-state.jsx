@@ -175,6 +175,10 @@ const CreateclassProvider = (props) => {
     }
   };
 
+  const clearStudentsList = () => {
+    dispatch(success([], LIST_STUDENT_SUCCESS));
+  };
+
   const clearTutorEmailValidation = () => {
     return { type: CLEAR_VALIDATION };
   };
@@ -256,6 +260,7 @@ const CreateclassProvider = (props) => {
         listTutorEmails,
         listSectionAndSubjects,
         clearTutorEmailsList,
+        clearStudentsList,
       }}
     >
       {children}

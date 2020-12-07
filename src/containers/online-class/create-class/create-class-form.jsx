@@ -49,7 +49,7 @@ const CreateClassForm = () => {
   const [moduleId, setModuleId] = useState();
   const [selectedGrades, setSelectedGrades] = useState([]);
   const [selectedSections, setSelectedSections] = useState([]);
-  const [selectedSubject, setSelectedSubject] = useState([]);
+  const [selectedSubject, setSelectedSubject] = useState(null);
   const [tutorNotAvailableMsg, setTutorNotAvailableMessage] = useState('');
   const [branches, setBranches] = useState([]);
   const {
@@ -75,6 +75,7 @@ const CreateClassForm = () => {
     tutorEmailsLoading,
     listSectionAndSubjects,
     clearTutorEmailsList,
+    clearStudentsList,
   } = useContext(CreateclassContext);
   const { setAlert } = useContext(AlertNotificationContext);
 
@@ -219,8 +220,9 @@ const CreateClassForm = () => {
 
   const handleSubject = (event, value) => {
     setSelectedSubject(value);
-    if (value.length) {
-      const subjectIds = value.map((sub) => sub.subject__id);
+    const transformedValue = value ? [value] : null;
+    if (transformedValue?.length) {
+      const subjectIds = transformedValue.map((sub) => sub.subject__id);
       // setOnlineClass((prevState) => ({ ...prevState, subject: value.subject__id }));
       setOnlineClass((prevState) => ({ ...prevState, subject: subjectIds }));
     } else {
@@ -249,6 +251,8 @@ const CreateClassForm = () => {
       )}&subject_ids=${subject.join(',')}`;
 
       dispatch(listStudents(listStudentUrl));
+    } else {
+      clearStudentsList();
     }
     // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -545,7 +549,7 @@ const CreateClassForm = () => {
   useEffect(() => {
     if (!onlineClass.tutorEmail) {
       setSelectedSections([]);
-      setSelectedSubject([]);
+      setSelectedSubject(null);
     }
   }, [onlineClass.tutorEmail]);
 
@@ -680,7 +684,6 @@ const CreateClassForm = () => {
             {onlineClass.tutorEmail ? (
               <Grid item xs={12} sm={2}>
                 <Autocomplete
-                  multiple
                   size='small'
                   id='create__class-subject'
                   options={subjects}
