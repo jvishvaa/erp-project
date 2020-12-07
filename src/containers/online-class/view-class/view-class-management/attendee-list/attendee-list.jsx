@@ -17,6 +17,8 @@ import {
   Checkbox,
   Switch,
 } from '@material-ui/core';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import { useHistory } from 'react-router-dom';
 import './attendee-list.scss';
 import { Pagination } from '@material-ui/lab';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
@@ -37,6 +39,7 @@ const AttendeeList = (props) => {
   const [loading, setLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isHidden, setIsHidden] = useState(window.innerWidth < 600);
+  const history = useHistory();
 
   const pageSize = 10;
 
@@ -131,6 +134,17 @@ const AttendeeList = (props) => {
     <Layout>
       <div className='breadcrumb-container'>
         <CommonBreadcrumbs componentName='Online Class' childComponentName='View Class' />
+        <div className='back-btn-container' style={{ marginTop: '1rem' }}>
+          <Button
+            variant='contained'
+            startIcon={<ArrowBackIcon />}
+            color='primary'
+            size='small'
+            onClick={() => history.push('/online-class/view-class')}
+          >
+            Back
+          </Button>
+        </div>
       </div>
       <div className='attendeelist-filters'>
         <Grid container spacing={2}>
