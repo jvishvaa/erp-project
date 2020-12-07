@@ -180,7 +180,7 @@ const BulkUpload = () => {
               />
             </Box>
           </Grid>
-          <Grid item xs={12} sm={3}>
+          <Grid item xs={12} sm={3} style={isMobile?{margin:'0 0 20px 0'}:{}}>
             <Box className={classes.centerInMobile}>
               <Autocomplete
                 size='small'
@@ -225,7 +225,7 @@ const BulkUpload = () => {
                     return (
                       <TableRow hover bulkdata='checkbox' tabIndex={-1} key={index}>
                         <TableCell className={classes.tableCell}>
-                          {data.created_at}
+                          {data.created_at?.substring(0,data.created_at.indexOf('T'))}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
                           {data.success_count}
