@@ -1,10 +1,14 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
 import {
   Grid,
   TextField,
   Button,
   SwipeableDrawer,
   CircularProgress,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
@@ -32,18 +36,22 @@ import './create-class.scss';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
+import { fetchBranchesForCreateUser } from '../../../redux/actions';
 
 const CreateClassForm = () => {
+  const tutorEmailRef = useRef(null);
   const [onlineClass, setOnlineClass] = useState(initialFormStructure);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [formKey, setFormKey] = useState(new Date());
   const [sectionSelectorKey, setSectionSelectorKey] = useState(new Date());
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [subjects, setSubjects] = useState([]);
+  // const [subjects, setSubjects] = useState([]);
   const [moduleId, setModuleId] = useState();
-  const [selectedGrades, setSelectedGrades] = useState(null);
-  const [selectedSections, setSelectedSections] = useState(null);
-  const [selectedSubject, setSelectedSubject] = useState([]);
+  const [selectedGrades, setSelectedGrades] = useState([]);
+  const [selectedSections, setSelectedSections] = useState([]);
+  const [selectedSubject, setSelectedSubject] = useState(null);
+  const [tutorNotAvailableMsg, setTutorNotAvailableMessage] = useState('');
+  const [branches, setBranches] = useState([]);
   const {
     listGradesCreateClass,
     listSectionsCreateClass,
@@ -55,6 +63,7 @@ const CreateClassForm = () => {
     isValidatingTutorEmail,
     grades = [],
     sections = [],
+    subjects = [],
     clearFilteredStudents,
     filteredStudents,
     createNewOnlineClass,
@@ -64,13 +73,27 @@ const CreateClassForm = () => {
     listTutorEmails,
     tutorEmails: tutorEmailList,
     tutorEmailsLoading,
+    listSectionAndSubjects,
+    clearTutorEmailsList,
+    clearStudentsList,
   } = useContext(CreateclassContext);
   const { setAlert } = useContext(AlertNotificationContext);
 
   const {
     role_details: { branch = [], erp_user_id: erpUser },
     user_id: userId,
+    is_superuser: isSuperUser,
   } = JSON.parse(localStorage.getItem('userDetails')) || {};
+
+  const fetchBranches = () => {
+    fetchBranchesForCreateUser().then((data) => {
+      const transformedData = data?.map((obj) => ({
+        id: obj.id,
+        branch_name: obj.branch_name,
+      }));
+      setBranches(transformedData);
+    });
+  };
 
   useEffect(() => {
     dispatch(listGradesCreateClass(moduleId));
@@ -92,14 +115,16 @@ const CreateClassForm = () => {
         }
       });
     }
+    fetchBranches();
   }, []);
 
   useEffect(() => {
-    // const filteredSelectedSections = sections.filter(
-    //   (data) =>
-    //     selectedSections.findIndex((sec) => sec.section_id == data.section_id) > -1
-    // );
-    // setSelectedSections(filteredSelectedSections);
+    // maintain selection when grade is changed
+    const filteredSelectedSections = sections.filter(
+      (data) =>
+        selectedSections.findIndex((sec) => sec.section_id == data.section_id) > -1
+    );
+    setSelectedSections(filteredSelectedSections);
   }, [sections]);
 
   useEffect(() => {
@@ -112,51 +137,54 @@ const CreateClassForm = () => {
         coHosts: [],
       }));
       dispatch(resetContext());
-      setSelectedGrades(null);
+      setSelectedGrades([]);
       dispatch(listGradesCreateClass());
     }
   }, [isCreated]);
 
-  const listSubjects = async (gradeids, sectionIds) => {
-    try {
-      const { data } = await axiosInstance(
-        `${endpoints.academics.subjects}?branch=${branch.join(',')}&grade=${gradeids.join(
-          ','
-        )}&section=${sectionIds.join(',')}&module_id=${moduleId}`
-      );
-      setSubjects(data.data);
-      const response = data.data;
+  // const listSubjects = async (gradeids, sectionIds) => {
+  //   try {
+  //     const { data } = await axiosInstance(
+  //       `${endpoints.academics.subjects}?branch=${branch.join(',')}&grade=${gradeids.join(
+  //         ','
+  //       )}&section=${sectionIds.join(',')}&module_id=${moduleId}`
+  //     );
+  //     setSubjects(data.data);
+  //     const response = data.data;
 
-      if (response) {
-        if (selectedSubject) {
-          const filteredSelectedSubject = response.filter(
-            (data) => selectedSubject.subject__id == data.subject__id
-          );
-          console.log('filtered subjects ', filteredSelectedSubject);
+  //     if (response) {
+  //       if (selectedSubject) {
+  //         const filteredSelectedSubject = selectedSubject.filter(
+  //           (data) =>
+  //             response.findIndex((res) => res.subject__id == data.subject__id) > -1
+  //         );
+  //         console.log('filtered subjects ', filteredSelectedSubject);
 
-          setSelectedSubject(
-            filteredSelectedSubject.length > 0 ? filteredSelectedSubject[0] : null
-          );
-        }
-      }
-    } catch (error) {
-      console.log('error in fetching subjects ', error);
-      setAlert('error', 'Failed to load subjects');
-    }
-  };
+  //         // setSelectedSubject(
+  //         //   filteredSelectedSubject.length > 0 ? filteredSelectedSubject[0] : null
+  //         // );
+  //         setSelectedSubject(filteredSelectedSubject);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.log('error in fetching subjects ', error);
+  //     setAlert('error', 'Failed to load subjects');
+  //   }
+  // };
 
   const handleGrade = (event, value) => {
     dispatch(clearFilteredStudents());
-    setSelectedGrades(value.length > 0 ? value[0] : null);
+    // setSelectedGrades(value.length > 0 ? value[0] : null);
+    setSelectedGrades(value);
     if (value.length) {
       const ids = value.map((el) => el.grade_id);
       setOnlineClass((prevState) => ({ ...prevState, gradeIds: ids }));
       // listSubjects(ids);
-      dispatch(listSectionsCreateClass(ids, moduleId));
+      //     dispatch(listSectionsCreateClass(ids, moduleId));
       dispatch(clearTutorEmailValidation());
     } else {
       setOnlineClass((prevState) => ({ ...prevState, gradeIds: [] }));
-      setSubjects([]);
+      //setSubjects([]);
       dispatch(clearTutorEmailValidation());
     }
     setSectionSelectorKey(new Date());
@@ -172,50 +200,63 @@ const CreateClassForm = () => {
 
   const handleSection = (event, value) => {
     dispatch(clearFilteredStudents());
-    setSelectedSections(value.length > 0 ? value[0] : null);
+    // setSelectedSections(value.length > 0 ? value[0] : null);
+    setSelectedSections(value);
     if (value.length) {
       const ids = value.map((el) => el.id);
       const sectionIds = value.map((el) => el.section_id);
       setOnlineClass((prevState) => ({ ...prevState, sectionIds: ids }));
-      listSubjects(onlineClass.gradeIds, sectionIds);
+      //     listSubjects(onlineClass.gradeIds, sectionIds);  subjects and sections are now fetched when tutor email is selected
     } else {
       setOnlineClass((prevState) => ({ ...prevState, sectionIds: [] }));
     }
     dispatch(clearTutorEmailValidation());
     setOnlineClass((prevState) => ({
       ...prevState,
-      subject: '',
-      tutorEmail: '',
+      subject: [],
       coHosts: [],
     }));
   };
 
   const handleSubject = (event, value) => {
     setSelectedSubject(value);
-    if (value) {
-      setOnlineClass((prevState) => ({ ...prevState, subject: value.subject__id }));
+    const transformedValue = value ? [value] : null;
+    if (transformedValue?.length) {
+      const subjectIds = transformedValue.map((sub) => sub.subject__id);
+      // setOnlineClass((prevState) => ({ ...prevState, subject: value.subject__id }));
+      setOnlineClass((prevState) => ({ ...prevState, subject: subjectIds }));
     } else {
-      setOnlineClass((prevState) => ({ ...prevState, subject: '' }));
+      setOnlineClass((prevState) => ({ ...prevState, subject: [] }));
     }
     dispatch(clearTutorEmailValidation());
     setOnlineClass((prevState) => ({
       ...prevState,
-      tutorEmail: '',
       coHosts: [],
     }));
   };
 
   useEffect(() => {
     let listStudentUrl = `branch_ids=${branch.join(',')}`;
-    const { gradeIds, sectionIds } = onlineClass;
-    if (gradeIds.length && !sectionIds.length) {
-      listStudentUrl = `branch_ids=${branch.join(',')}&grade_ids=${gradeIds.join(',')}`;
-    } else if (gradeIds.length && sectionIds.length) {
-      listStudentUrl = `section_mapping_ids=${sectionIds.join(',')}`;
+    const { gradeIds, sectionIds, subject } = onlineClass;
+    // if (gradeIds.length && !sectionIds.length) {
+    //   listStudentUrl = `branch_ids=${branch.join(',')}&grade_ids=${gradeIds.join(',')}`;
+    // } else if (gradeIds.length && sectionIds.length) {
+    //   listStudentUrl = `section_mapping_ids=${sectionIds.join(
+    //     ','
+    //   )}&subject_ids=${subject.join(',')}`;
+    // }
+    if (gradeIds.length && sectionIds.length && subject.length) {
+      listStudentUrl = `section_mapping_ids=${sectionIds.join(
+        ','
+      )}&subject_ids=${subject.join(',')}`;
+
+      dispatch(listStudents(listStudentUrl));
+    } else {
+      clearStudentsList();
     }
-    dispatch(listStudents(listStudentUrl));
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onlineClass.gradeIds, onlineClass.sectionIds]);
+  }, [onlineClass.gradeIds, onlineClass.sectionIds, onlineClass.subject]);
 
   const toggleDrawer = () => {
     setIsDrawerOpen((prevState) => !prevState);
@@ -230,15 +271,17 @@ const CreateClassForm = () => {
     if (onlineClass.coHosts.length > 0) {
       const index = onlineClass.coHosts.findIndex((host) => host === value);
       if (index) {
-        console.log('before splicing ', onlineClass.coHosts);
         const coHosts = onlineClass.coHosts.slice();
         coHosts.splice(index, 1);
-        console.log('before splicing ', coHosts);
-
         setOnlineClass((prevState) => ({ ...prevState, coHosts }));
       }
     }
     setOnlineClass((prevState) => ({ ...prevState, tutorEmail: value }));
+    if (value) {
+      dispatch(
+        listSectionAndSubjects(value.roles, moduleId, value.user_id, isSuperUser ? 1 : 0)
+      );
+    }
   };
 
   const handleBlur = (e) => {
@@ -266,7 +309,6 @@ const CreateClassForm = () => {
     setOnlineClass((prevState) => ({
       ...prevState,
       selectedDate: value,
-      tutorEmail: '',
     }));
   };
   const handleTimeChange = (event) => {
@@ -293,14 +335,14 @@ const CreateClassForm = () => {
     }
 
     dispatch(clearTutorEmailValidation());
-    setOnlineClass((prevState) => ({ ...prevState, selectedTime: time, tutorEmail: '' }));
+    setOnlineClass((prevState) => ({ ...prevState, selectedTime: time }));
   };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     if (name === 'duration') {
       dispatch(clearTutorEmailValidation());
-      setOnlineClass((prevState) => ({ ...prevState, [name]: value, tutorEmail: '' }));
+      setOnlineClass((prevState) => ({ ...prevState, [name]: value }));
       return;
     }
     if (name === 'joinLimit' && Number(value) > 300) {
@@ -364,7 +406,8 @@ const CreateClassForm = () => {
     //   return;
     // }
     const startTime = `${selectedDate} ${getFormatedTime(selectedTime)}`;
-    const tutorEmails = [tutorEmail, ...coHosts];
+    const coHostEmails = coHosts.map((coHost) => coHost.email);
+    const tutorEmails = [tutorEmail.email, ...coHostEmails];
 
     const formdata = new FormData();
     formdata.append('user_id', userId);
@@ -422,8 +465,8 @@ const CreateClassForm = () => {
 
   const handleClear = () => {
     setFormKey(new Date());
-    setSelectedGrades(null);
-    setSelectedSections(null);
+    setSelectedGrades([]);
+    setSelectedSections([]);
     setSelectedSubject(null);
     setOnlineClass((prevState) => ({
       ...prevState,
@@ -435,14 +478,41 @@ const CreateClassForm = () => {
   };
 
   const fetchTutorEmails = () => {
-    const { selectedDate, selectedTime, duration } = onlineClass;
+    // const { selectedDate, selectedTime, duration } = onlineClass;
+    // const data = {
+    //   branchId: branch.join(','),
+    //   gradeId: onlineClass.gradeIds.join(','),
+    //   sectionIds: onlineClass.sectionIds.join(','),
+    //   subjectId: onlineClass.subject,
+    // };
+    // listTutorEmails(selectedDate, selectedTime, duration, data);
     const data = {
-      branchId: branch.join(','),
-      gradeId: onlineClass.gradeIds.join(','),
-      sectionIds: onlineClass.sectionIds.join(','),
-      subjectId: onlineClass.subject,
+      branchIds: branch.join(','),
+      gradeIds: onlineClass.gradeIds.join(','),
     };
-    listTutorEmails(selectedDate, selectedTime, duration, data);
+
+    listTutorEmails(data);
+  };
+
+  const checkTutorAvailability = async () => {
+    const { selectedDate, selectedTime, duration } = onlineClass;
+
+    const startTime = `${selectedDate} ${getFormatedTime(selectedTime)}`;
+
+    try {
+      const { data } = await axiosInstance.get(
+        `/erp_user/check-tutor-time/?tutor_email=${onlineClass.tutorEmail.email}&start_time=${startTime}&duration=${duration}`
+      );
+      if (data.status_code === '200') {
+        if (data.message === 'Tutor is available') {
+          setTutorNotAvailableMessage('');
+        } else {
+          setTutorNotAvailableMessage('Selected tutor is not available. Select another');
+        }
+      }
+    } catch (error) {
+      setTutorNotAvailableMessage('Selected tutor is not available. Select another');
+    }
   };
 
   useEffect(() => {
@@ -451,9 +521,11 @@ const CreateClassForm = () => {
       onlineClass.subject &&
       onlineClass.gradeIds.length &&
       onlineClass.selectedDate &&
-      onlineClass.selectedTime
+      onlineClass.selectedTime &&
+      onlineClass.tutorEmail
     ) {
-      fetchTutorEmails();
+      // fetchTutorEmails();
+      checkTutorAvailability();
     }
   }, [
     onlineClass.duration,
@@ -461,7 +533,35 @@ const CreateClassForm = () => {
     onlineClass.gradeIds.length,
     onlineClass.selectedDate,
     onlineClass.selectedTime,
+    onlineClass.tutorEmail,
   ]);
+
+  useEffect(() => {
+    if (branch.length && selectedGrades.length) {
+      fetchTutorEmails();
+      tutorEmailRef.current.scrollIntoView();
+      tutorEmailRef.current.focus();
+    } else {
+      clearTutorEmailsList();
+    }
+  }, [selectedGrades]);
+
+  useEffect(() => {
+    if (!onlineClass.tutorEmail) {
+      setSelectedSections([]);
+      setSelectedSubject(null);
+    }
+  }, [onlineClass.tutorEmail]);
+
+  const createBtnDisabled =
+    !onlineClass.duration ||
+    !onlineClass.subject ||
+    !onlineClass.gradeIds.length ||
+    !onlineClass.selectedDate ||
+    !onlineClass.selectedTime ||
+    !onlineClass.tutorEmail ||
+    creatingOnlineClass ||
+    tutorNotAvailableMsg;
 
   return (
     <div className='create__class' key={formKey}>
@@ -497,11 +597,42 @@ const CreateClassForm = () => {
               />
             </Grid>
             <Grid item xs={12} sm={2}>
+              {/* <Autocomplete
+                size='small'
+                contentEditable={false}
+                value={branches && branches[0]}
+                disableClearable
+                getOptionLabel={(option) => option?.branch_name}
+                options={branches}
+                renderInput={(params) => (
+                  <TextField
+                    className='create__class-textfield'
+                    {...params}
+                    variant='outlined'
+                    label='Branch'
+                    placeholder='Branch'
+                    contentEditable={false}
+                  />
+                )}
+
+              /> */}
+              <FormControl variant='outlined' fullWidth size='small'>
+                <InputLabel id='demo-simple-select-outlined-label'>Branches</InputLabel>
+                <Select value={5} label='Branches'>
+                  {branches.map((branch) => (
+                    <MenuItem value={branch.id}>{branch.branch_name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={2}>
               <Autocomplete
                 size='small'
+                multiple
                 onChange={(e, value) => {
                   console.log('gradeValue ', value);
-                  handleGrade(e, value ? [value] : []);
+                  // handleGrade(e, value ? [value] : []);
+                  handleGrade(e, value);
                 }}
                 id='create__class-grade'
                 options={grades}
@@ -519,13 +650,15 @@ const CreateClassForm = () => {
                 )}
               />
             </Grid>
-            {onlineClass.gradeIds.length ? (
+            {onlineClass.tutorEmail ? (
               <Grid item xs={12} sm={2}>
                 <Autocomplete
+                  multiple
                   key={sectionSelectorKey}
                   size='small'
                   onChange={(e, value) => {
-                    handleSection(e, value ? [value] : []);
+                    // handleSection(e, value ? [value] : []);  //uncomment for single
+                    handleSection(e, value);
                   }}
                   id='create__class-section'
                   options={sections}
@@ -548,7 +681,7 @@ const CreateClassForm = () => {
             ) : (
               ''
             )}
-            {onlineClass.sectionIds.length ? (
+            {onlineClass.tutorEmail ? (
               <Grid item xs={12} sm={2}>
                 <Autocomplete
                   size='small'
@@ -566,7 +699,6 @@ const CreateClassForm = () => {
                       variant='outlined'
                       label='Subject'
                       placeholder='Subject'
-                      required
                     />
                   )}
                 />
@@ -574,36 +706,40 @@ const CreateClassForm = () => {
             ) : (
               ''
             )}
-            <Grid item xs={12} sm={2}>
-              <TextField
-                size='small'
-                className='create__class-textfield'
-                id='class-duration'
-                label='Duration (mins)'
-                variant='outlined'
-                type='number'
-                name='duration'
-                onChange={handleChange}
-                required
-                InputProps={{ inputProps: { min: 0, maxLength: 3 } }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={2}>
-              <TextField
-                size='small'
-                className='create__class-textfield'
-                id='class-join-limit'
-                label='Join limit'
-                variant='outlined'
-                type='number'
-                name='joinLimit'
-                value={onlineClass.joinLimit}
-                onChange={handleChange}
-                placeholder='Maximum 300'
-                required
-                InputProps={{ inputProps: { min: 0 } }}
-              />
-            </Grid>
+            {onlineClass.tutorEmail && (
+              <>
+                <Grid item xs={12} sm={2}>
+                  <TextField
+                    size='small'
+                    className='create__class-textfield'
+                    id='class-duration'
+                    label='Duration (mins)'
+                    variant='outlined'
+                    type='number'
+                    name='duration'
+                    onChange={handleChange}
+                    required
+                    InputProps={{ inputProps: { min: 0, maxLength: 3 } }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={2}>
+                  <TextField
+                    size='small'
+                    className='create__class-textfield'
+                    id='class-join-limit'
+                    label='Join limit'
+                    variant='outlined'
+                    type='number'
+                    name='joinLimit'
+                    value={onlineClass.joinLimit}
+                    onChange={handleChange}
+                    placeholder='Maximum 300'
+                    required
+                    InputProps={{ inputProps: { min: 0 } }}
+                  />
+                </Grid>
+              </>
+            )}
           </Grid>
           <Grid container spacing={3} className='create-class-container'>
             <MuiPickersUtilsProvider utils={MomentUtils}>
@@ -651,10 +787,12 @@ const CreateClassForm = () => {
                 size='small'
                 id='create__class-tutor-email'
                 options={tutorEmailList}
+                getOptionLabel={(option) => option.email}
                 filterSelectedOptions
                 value={onlineClass.tutorEmail}
                 onChange={handleTutorEmail}
                 disabled={tutorEmailsLoading}
+                ref={tutorEmailRef}
                 renderInput={(params) => (
                   <TextField
                     size='small'
@@ -667,6 +805,8 @@ const CreateClassForm = () => {
                   />
                 )}
               />
+
+              <span className='alert__email'>{tutorNotAvailableMsg}</span>
               {/* <TextField
                 className='create__class-textfield'
                 id='class-tutor-email'
@@ -739,8 +879,9 @@ const CreateClassForm = () => {
                 multiple
                 id='create__class-tutor-email'
                 options={tutorEmailList.filter(
-                  (email) => email !== onlineClass.tutorEmail
+                  (email) => email.email !== onlineClass.tutorEmail?.email
                 )}
+                getOptionLabel={(option) => option.email}
                 filterSelectedOptions
                 value={onlineClass.coHosts}
                 onChange={handleCoHost}
@@ -832,7 +973,7 @@ const CreateClassForm = () => {
             </Grid>
             <Grid item xs={12} sm={2}>
               <Button
-                disabled={creatingOnlineClass}
+                disabled={createBtnDisabled}
                 variant='contained'
                 color='primary'
                 size='medium'
