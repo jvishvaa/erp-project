@@ -126,6 +126,10 @@ class EditRole extends Component {
     const { setAlert } = this.context;
 
     if (requestData.length > 0) {
+      if (!roleName.trim().length) {
+        setAlert('error', 'Please provide a role name');
+        return;
+      }
       const reqObj = {
         role_id: roleId,
         role_name: roleName,
@@ -134,6 +138,7 @@ class EditRole extends Component {
       editRole(reqObj)
         .then(() => {
           history.push('/role-management');
+          setAlert('success', 'Role updated successfully');
         })
         .catch((error) => {
           console.log('update role error ', error);

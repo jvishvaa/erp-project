@@ -12,12 +12,7 @@ const OnlineClassResourceCell = (props) => {
     data: {
       id,
       scope,
-      online_class: {
-        id: classId,
-        start_time: startTime,
-        subject: { subject_name: subjectName },
-        title,
-      },
+      online_class: { id: classId, start_time: startTime, subject, title },
     },
     isHidden,
   } = props || {};
@@ -42,7 +37,7 @@ const OnlineClassResourceCell = (props) => {
           {currentPage * 10 - (10 - index - 1)}
         </TableCell>
         <TableCell align='center'>{title}</TableCell>
-        <TableCell align='center'>{subjectName}</TableCell>
+        <TableCell align='center'>{subject?.subject_name}</TableCell>
         <TableCell align='center'>{startTime}</TableCell>
         <TableCell align='center'>
           {scope === true ? <Button onClick={handleClick}>Upload resource</Button> : ''}
