@@ -6,6 +6,7 @@ import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { Skeleton } from '@material-ui/lab';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import {
@@ -157,6 +158,7 @@ class EditRole extends Component {
       modulePermissionsRequestData,
       setModulePermissionsRequestData,
       classes,
+      history,
     } = this.props;
 
     const { roleName } = this.props;
@@ -167,6 +169,17 @@ class EditRole extends Component {
             componentName='Role Management'
             childComponentName='Edit Role'
           />
+          <div className='back-btn-container' style={{ marginTop: '1rem' }}>
+            <Button
+              variant='contained'
+              startIcon={<ArrowBackIcon />}
+              color='primary'
+              size='small'
+              onClick={() => history.push('/role-management')}
+            >
+              Back
+            </Button>
+          </div>
         </div>
         <Grid container spacing={2} alignItems='center' className={classes.formContainer}>
           <Grid item>

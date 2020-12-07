@@ -204,8 +204,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
     paddingLeft: 0,
     paddingRight: 0,
     height: `calc(100% - 64px)`,

@@ -202,6 +202,7 @@ const GuardianDetailsForm = ({
                     </Grid> */}
               <Grid item md={4} xs={12} className='profile-img-container'>
                 <ImageUpload
+                  id='father-image'
                   value={formik.values.father_photo}
                   onChange={(value) => {
                     formik.setFieldValue('father_photo', value);
@@ -338,6 +339,7 @@ const GuardianDetailsForm = ({
 
               <Grid item md={4} xs={12} className='profile-img-container'>
                 <ImageUpload
+                  id='mother-image'
                   value={formik.values.mother_photo}
                   onChange={(value) => {
                     formik.setFieldValue('mother_photo', value);
