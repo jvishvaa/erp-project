@@ -418,7 +418,7 @@ const CustomScopeModal = ({
       </DialogContent>
       <DialogActions className={classes.actionButtonContainer}>
         <Button autoFocus onClick={handleClose}>
-          Confirm
+          Close
         </Button>
       </DialogActions>
     </Dialog>

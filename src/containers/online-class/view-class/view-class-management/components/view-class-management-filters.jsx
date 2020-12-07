@@ -170,6 +170,7 @@ const ViewClassManagementFilters = () => {
     setGradeIds([]);
     setSectionIds([]);
     setSubjectIds([]);
+    setSelectedGrades([]);
     setIsCancelSelected(false);
     setStartDate(moment().format('YYYY-MM-DD'));
     setEndDate(moment().format('YYYY-MM-DD'));
