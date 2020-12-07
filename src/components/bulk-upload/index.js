@@ -108,6 +108,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
   const [searchGrade, setSearchGrade] = useState([])
   const [searchSection, setSearchSection] = useState([])
   const [searchGradeId, setSearchGradeId] = useState('')
+  const [sectionDisp,setSectionDisp]=useState({})
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'))
   const { role_details } = JSON.parse(localStorage.getItem('userDetails'))
@@ -177,6 +178,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
         setFile(null);
         onUploadSuccess();
         setAlert('success', 'File uploaded successfully');
+        setUploadFlag(false)
       }
       else {
         if (!branch) {
@@ -191,6 +193,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
       }
     } catch (error) {
       setAlert('error', 'Failed to upload');
+      setUploadFlag(false)
     }
   };
 
@@ -209,6 +212,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
       setSections([])
       setSubjects([])
       setSearchSection([])
+      setSectionDisp('')
       axiosInstance.get(`${endpoints.academics.sections}?branch_id=${role_details.branch[0]}&grade_id=${value.grade_id}`)
         .then(result => {
           if (result.data.status_code === 200) {
@@ -220,6 +224,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
             setSections([])
             setSearchSection([])
             setSubjects([])
+            setSectionDisp('')
           }
         })
         .catch(error => {
@@ -227,6 +232,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
           setSections([])
           setSearchSection([])
           setSubjects([])
+          setSectionDisp('')
         })
     }
     else {
@@ -235,12 +241,14 @@ const BulkUpload = ({ onUploadSuccess }) => {
       setSearchSection([])
       setSubjects([])
       setSearchGradeId('')
+      setSectionDisp('')
     }
   }
 
   const handleSection = (event, value) => {
 
     if (value) {
+      setSectionDisp(value)
       setSearchSection([value])
       setSubjects([])
       axiosInstance.get(`${endpoints.academics.subjects}?branch=${role_details.branch[0]}&grade=${searchGradeId}&section=${value.section_id}`)
@@ -251,16 +259,19 @@ const BulkUpload = ({ onUploadSuccess }) => {
           else {
             setAlert('error', result.data.message)
             setSubjects([])
+            setSectionDisp('')
           }
         })
         .catch(error => {
           setAlert('error', error.message);
           setSubjects([])
+          setSectionDisp('')
         })
     }
     else {
       setSearchSection(sections)
       setSubjects([])
+      setSectionDisp('')
     }
   }
 
@@ -335,6 +346,8 @@ const BulkUpload = ({ onUploadSuccess }) => {
         </Grid>
       </Grid>
       {branch &&
+      <>
+        <hr />
         <Grid container spacing={isMobile ? 3 : 5}>
           <Grid item xs={12} className={isMobile ? '' : 'addButtonPadding'}>
             <h2 style={{ color: '#014B7e' }}>Suggestions:</h2>
@@ -393,7 +406,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
               </TableContainer>
             </Paper>
           </Grid>
-          {searchGrade.length === 1 &&
+          {searchGrade.length === 1 && searchSection &&
             <Grid item xs sm={4}>
               <Autocomplete
                 style={{ width: '100%' }}
@@ -401,6 +414,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
                 onChange={handleSection}
                 id='section'
                 options={sections}
+                value={sectionDisp}
                 getOptionLabel={(option) => option?.section__section_name}
                 filterSelectedOptions
                 renderInput={(params) => (
@@ -448,7 +462,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
               </Paper>
             </Grid>
           }
-          {searchSection.length === 1 &&
+          {searchGradeId && sectionDisp && subjects.length>0 &&
             <Grid item xs sm={4}>
               <Paper className={`${classes.root} common-table`}>
                 <TableContainer className={classes.container}>
@@ -467,7 +481,6 @@ const BulkUpload = ({ onUploadSuccess }) => {
                         ))}
                       </TableRow>
                     </TableHead>
-                    {subjects.length>0 &&
                     <TableBody>
                       {subjects.map((subject, index) => {
                         return (
@@ -482,26 +495,13 @@ const BulkUpload = ({ onUploadSuccess }) => {
                         );
                       })}
                     </TableBody>
-                    }
-                    {subjects.length===0 &&
-                    <TableBody style={
-                      {
-                        display: 'flex',
-                        justifyContent: 'center',
-                        margin: '25% 25%',
-                        fontSize: '16px',
-                        color: '#fe6b6b',
-                        width: '100%',
-                      }}>
-                      Sorry! No Subjects Available.
-                    </TableBody>
-                    } 
                   </Table>
                 </TableContainer>
               </Paper>
             </Grid>
           }
         </Grid>
+        </>
       }
     </>
   );

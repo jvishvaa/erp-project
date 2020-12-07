@@ -6,6 +6,7 @@ import EditUser from './edit-user';
 import Layout from '../Layout';
 import ViewUsers from './view-users/view-users';
 import AssignRole from '../communication/assign-role/assign-role';
+import BulkUpload from './bulk-upload/bulk-upload'
 import './styles.scss';
 
 const RoutesIndex = () => {
@@ -19,6 +20,9 @@ const RoutesIndex = () => {
         </Route>
         <Route path={`${match.url}/view-users`} exact>
           {({ match, history }) => <ViewUsers match={match} history={history} />}
+        </Route>
+        <Route path={`${match.url}/bulk-upload`} exact>
+          {({ match, history }) => <BulkUpload match={match} history={history} />}
         </Route>
         <Route path={`${match.url}/assign-role`} exact>
           {({ match, history }) => <AssignRole match={match} history={history} />}
