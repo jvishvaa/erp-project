@@ -24,6 +24,8 @@ import {
   LIST_TUTOR_EMAILS_REQUEST,
   LIST_TUTOR_EMAILS_SUCCESS,
   LIST_TUTOR_EMAILS_FAILURE,
+  LIST_SUBJECT_SUCCESS,
+  LIST_SUBJECT_FAILURE,
 } from './create-class-constants';
 import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
@@ -38,6 +40,7 @@ const CreateclassProvider = (props) => {
   const initalState = {
     grades: [],
     sections: [],
+    subjects: [],
     studentList: [],
     filteredStudents: [],
     errorLoadingStudents: '',
@@ -69,23 +72,43 @@ const CreateclassProvider = (props) => {
     return { type, payload: error };
   }
 
-  const listTutorEmails = async (selectedDate, selectedTime, duration, info) => {
+  // const listTutorEmails = async (selectedDate, selectedTime, duration, info) => {
+  //   dispatch(request(LIST_TUTOR_EMAILS_REQUEST));
+  //   const startTime = `${selectedDate} ${getFormatedTime(selectedTime)}`;
+  //   const { role_details: roleDetails } =
+  //     JSON.parse(localStorage.getItem('userDetails')) || {};
+  //   const { branchId, gradeId, sectionIds, subjectId } = info;
+
+  //   try {
+  //     const { data } = await axiosInstance.get(
+  //       `/erp_user/tutor_availability_check/?erp_user_id=${roleDetails.erp_user_id}&start_time=${startTime}&duration=${duration}&branch_id=${branchId}&grade_id=${gradeId}&section_id=${sectionIds}&subject_id=${subjectId}`
+  //     );
+  //     if (data.status === 'success')
+  //       dispatch(success(data.data, LIST_TUTOR_EMAILS_SUCCESS));
+  //     else throw new Error(data.message);
+  //   } catch (error) {
+  //     dispatch(failure(error));
+  //   }
+  // };
+
+  const listTutorEmails = async (reqData) => {
+    const { branchIds, gradeIds } = reqData;
     dispatch(request(LIST_TUTOR_EMAILS_REQUEST));
-    const startTime = `${selectedDate} ${getFormatedTime(selectedTime)}`;
-    const { role_details: roleDetails } =
-      JSON.parse(localStorage.getItem('userDetails')) || {};
-    const { branchId, gradeId, sectionIds, subjectId } = info;
 
     try {
       const { data } = await axiosInstance.get(
-        `/erp_user/tutor_availability_check/?erp_user_id=${roleDetails.erp_user_id}&start_time=${startTime}&duration=${duration}&branch_id=${branchId}&grade_id=${gradeId}&section_id=${sectionIds}&subject_id=${subjectId}`
+        `/erp_user/teacher-list/?branch_id=${branchIds}&grade_id=${gradeIds}`
       );
       if (data.status === 'success')
         dispatch(success(data.data, LIST_TUTOR_EMAILS_SUCCESS));
       else throw new Error(data.message);
     } catch (error) {
-      dispatch(failure(error));
+      dispatch(failure(error, LIST_TUTOR_EMAILS_FAILURE));
     }
+  };
+
+  const clearTutorEmailsList = () => {
+    dispatch(success([], LIST_TUTOR_EMAILS_SUCCESS));
   };
 
   const listGradesCreateClass = async (moduleId) => {
@@ -119,6 +142,23 @@ const CreateclassProvider = (props) => {
       }
     } catch (error) {
       dispatch(failure(error, LIST_SECTION_FAILURE));
+    }
+  };
+
+  const listSectionAndSubjects = async (roleId, moduleId, erpId, isSuperUser) => {
+    try {
+      const { data } = await axiosInstance.get(
+        `/erp_user/sub-sec-list/?role=${roleId}&module_id=${moduleId}&erp_id=${erpId}&is_super=${isSuperUser}`
+      );
+      if (data.status === 'success') {
+        const { section, subject } = data.data;
+        dispatch(success(section, LIST_SECTION_SUCCESS));
+        dispatch(success(subject, LIST_SUBJECT_SUCCESS));
+        console.log('sections subjects ', section, subject);
+      }
+    } catch (error) {
+      dispatch(failure(error, LIST_SECTION_FAILURE));
+      dispatch(failure(error, LIST_SUBJECT_FAILURE));
     }
   };
 
@@ -214,6 +254,8 @@ const CreateclassProvider = (props) => {
         createNewOnlineClass,
         resetContext,
         listTutorEmails,
+        listSectionAndSubjects,
+        clearTutorEmailsList,
       }}
     >
       {children}
