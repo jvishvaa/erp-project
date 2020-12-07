@@ -79,4 +79,53 @@
       }
     }
   }
+
+  .date-picker-container {
+    margin: 0 1rem;
+    .MuiSvgIcon-root {
+      fill: $primary-color;
+    }
+  }
+}
+.add-homework-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .add-homework-inner-container {
+    padding: 20px 2.5%;
+    background: white;
+    flex: 1;
+    .add-homework-title-container {
+      display: flex;
+      width: 60%;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+  }
+  .form-field {
+    width: 30%;
+    margin-bottom: 20px;
+    @media screen and (max-width: 768px) {
+      width: 100%;
+    }
+  }
+
+  .finish-btn-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 1rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+.selected-col {
+  background-color: #fededf;
+}
+
+.no-wrap-col {
+  white-space: nowrap;
 }

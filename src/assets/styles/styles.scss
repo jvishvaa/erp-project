@@ -4,6 +4,7 @@ html {
 
 body {
   height: 100vh;
+  overflow: hidden;
 }
 
 #root,
@@ -14,6 +15,10 @@ body {
 .disabled-btn {
   background-color: #e2e2e2 !important;
   color: #9f9f9f !important;
+}
+
+.disabled-icon {
+  color: #9f9f9f;
 }
 
 .MuiButton-contained {

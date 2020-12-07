@@ -43,24 +43,6 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.background.secondary,
     paddingBottom: theme.spacing(2),
   },
-  cardsPagination: {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    position: 'fixed',
-    bottom: 0,
-    left: 0,
-    padding: '1rem',
-    backgroundColor: '#ffffff',
-    zIndex: 100,
-  },
-  centerInMobile: {
-    width: '100%',
-    display: 'flex',
-    [theme.breakpoints.down('sm')]: {
-      justifyContent: 'center',
-    },
-  },
   columnHeader: {
     color: `${theme.palette.secondary.main} !important`,
     fontWeight: 600,
@@ -247,7 +229,7 @@ const GradeTable = () => {
               color='primary' 
               size="small" 
               style={{color:'white'}} 
-              title="Add Subject" 
+              title="Add Grade" 
               onClick={handleAddGrade}>
                 Add Grade
               </Button>
