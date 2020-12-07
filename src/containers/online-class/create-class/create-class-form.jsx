@@ -330,15 +330,15 @@ const CreateClassForm = () => {
     // }
 
     // if the selected date is today. Selected time should always be future time
-    const isFuture = new Date(event) > new Date();
-    if (selectedDate === moment(new Date()).format('YYYY-MM-DD') && !isFuture) {
-      setAlert(
-        'error',
-        'You cannot create a class for the time that has passed. Please select a future time',
-        5000
-      );
-      return;
-    }
+    // const isFuture = new Date(event) > new Date();
+    // if (selectedDate === moment(new Date()).format('YYYY-MM-DD') && !isFuture) {
+    //   setAlert(
+    //     'error',
+    //     'You cannot create a class for the time that has passed. Please select a future time',
+    //     5000
+    //   );
+    //   return;
+    // }
 
     dispatch(clearTutorEmailValidation());
     setOnlineClass((prevState) => ({ ...prevState, selectedTime: time }));
@@ -400,13 +400,13 @@ const CreateClassForm = () => {
     //   }
     // }
 
-    if (isBetweenNonSchedulingTime(selectedTime)) {
-      setAlert(
-        'error',
-        'Classes cannot be scheduled between 9PM and 6AM. Please check the Start Time.'
-      );
-      return;
-    }
+    // if (isBetweenNonSchedulingTime(selectedTime)) {
+    //   setAlert(
+    //     'error',
+    //     'Classes cannot be scheduled between 9PM and 6AM. Please check the Start Time.'
+    //   );
+    //   return;
+    // }
     // if (!isTutorEmailValid) {
     //   setAlert('error', 'Tutor email is not valid');
     //   return;
