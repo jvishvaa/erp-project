@@ -692,7 +692,12 @@ const CreateClassForm = () => {
                 <Autocomplete
                   size='small'
                   id='create__class-subject'
-                  options={subjects}
+                  options={subjects.filter(
+                    (sub) =>
+                      selectedSections.findIndex(
+                        (sec) => sec.section_id === sub.section__id
+                      ) > -1
+                  )}
                   getOptionLabel={(option) => option.subject__subject_name}
                   filterSelectedOptions
                   value={selectedSubject}
