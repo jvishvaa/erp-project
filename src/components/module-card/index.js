@@ -433,6 +433,7 @@ export default function ModuleCard({
         case 'my_branch':
           objToApply = {
             ...objToApply,
+            my_branch: checked,
             my_grade: checked,
             my_section: checked,
             my_subject: checked,
@@ -441,6 +442,8 @@ export default function ModuleCard({
         case 'my_grade':
           objToApply = {
             ...objToApply,
+            my_branch: checked,
+            my_grade: checked,
             my_section: checked,
             my_subject: checked,
           };
@@ -448,6 +451,18 @@ export default function ModuleCard({
         case 'my_section':
           objToApply = {
             ...objToApply,
+            my_branch: checked,
+            my_grade: checked,
+            my_section: checked,
+            my_subject: checked,
+          };
+          break;
+        case 'my_subject':
+          objToApply = {
+            ...objToApply,
+            my_branch: checked,
+            my_grade: checked,
+            my_section: checked,
             my_subject: checked,
           };
           break;
