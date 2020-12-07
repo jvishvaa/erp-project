@@ -4,7 +4,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
 import useStyles from './useStyles';
 
-const ImageUpload = ({ value, onChange }) => {
+const ImageUpload = ({ id, value, onChange }) => {
   const [image, setImage] = useState(null);
   const classes = useStyles();
   const themeContext = useTheme();
@@ -48,13 +48,16 @@ const ImageUpload = ({ value, onChange }) => {
             Delete Image
           </button>
         ) : (
-          <label htmlFor='image' className={classes.imageUploadBtn}>
+          <label
+            htmlFor={id ? `image=${id}` : 'image'}
+            className={classes.imageUploadBtn}
+          >
             Attach Image
             <input
               style={{ visibility: 'hidden', position: 'absolute' }}
               type='file'
-              id='image'
-              name='image'
+              id={id ? `image=${id}` : 'image'}
+              name={id ? `image=${id}` : 'image'}
               onChange={(e) => {
                 e.persist();
                 if (e.target.files && e.target.files[0]) {
