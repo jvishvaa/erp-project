@@ -53,6 +53,7 @@ const ViewClassManagementFilters = () => {
   const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
   const [gradeIds, setGradeIds] = useState([]);
   const [sectionIds, setSectionIds] = useState([]);
+  const [sectionMappingIds,setSectionMappingIds]=useState([])
   const [subjectIds, setSubjectIds] = useState([]);
   const [clearKey, setClearKey] = useState(new Date());
   const [subjects, setSubjects] = useState([]);
@@ -117,6 +118,7 @@ const ViewClassManagementFilters = () => {
       setGradeIds([]);
       setSubjects([]);
       setSectionIds([]);
+      setSectionMappingIds([])
     }
   };
 
@@ -125,9 +127,12 @@ const ViewClassManagementFilters = () => {
     if (value.length) {
       const ids = value.map((el) => el.section_id);
       setSectionIds(ids);
+      const mapIds = value.map((el) => el.id);
+      setSectionMappingIds(mapIds)
       listSubjects(gradeIds, ids);
     } else {
       setSectionIds([]);
+      setSectionMappingIds([])
     }
   };
 
@@ -152,8 +157,8 @@ const ViewClassManagementFilters = () => {
       url += `&subject_id=${subjectIds.join(',')}`;
     }
 
-    if (sectionIds.length) {
-      url += `&section_mapping_ids=${sectionIds.join(',')}`;
+    if (sectionMappingIds.length) {
+      url += `&section_mapping_ids=${sectionMappingIds.join(',')}`;
       if (gradeIds.length > 1) {
         url += `&grade_ids=${gradeIds.join(',')}`;
       }
@@ -172,6 +177,7 @@ const ViewClassManagementFilters = () => {
   const handleClear = () => {
     setGradeIds([]);
     setSectionIds([]);
+    setSectionMappingIds([])
     setSubjectIds([]);
     setSelectedGrades([]);
     setIsCancelSelected(false);
