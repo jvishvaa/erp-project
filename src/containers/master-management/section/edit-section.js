@@ -25,7 +25,7 @@ const EditSection = ({id,name,handleGoBack,setLoading}) => {
       request['section_id']=id
       axiosInstance.put(endpoints.masterManagement.updateSection,request)
       .then(result=>{
-        if (result.status === 200) {
+        if (result.data.status_code === 200) {
           handleGoBack()
           setSectionName('')
           setLoading(false);
