@@ -1,6 +1,7 @@
 /* eslint-disable import/no-absolute-path */
 /* eslint-disable global-require */
 import React, { useEffect, useState, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Input from '@material-ui/core/Input';
@@ -125,12 +126,12 @@ const BulkUpload = ({ onUploadSuccess }) => {
   const [searchGrade, setSearchGrade] = useState([])
   const [searchSection, setSearchSection] = useState([])
   const [searchGradeId, setSearchGradeId] = useState('')
-  const [sectionDisp,setSectionDisp]=useState({})
-  const genders=[{'id':'1','gender':'Male'},{'id':'2','gender':'Female'},{'id':'3','gender':'Other'}]
+  const [sectionDisp, setSectionDisp] = useState({})
+  const genders = [{ 'id': '1', 'gender': 'Male' }, { 'id': '2', 'gender': 'Female' }, { 'id': '3', 'gender': 'Other' }]
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'))
   const { role_details } = JSON.parse(localStorage.getItem('userDetails'))
-
+  const history = useHistory()
   const { setAlert } = useContext(AlertNotificationContext);
 
   const getBranches = async () => {
@@ -170,7 +171,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
           }
         })
         .catch((error) => {
-          setAlert('error', error.message);
+          setAlert('error', error.message)
           setGrades([])
           setSearchGrade([])
         })
@@ -182,36 +183,43 @@ const BulkUpload = ({ onUploadSuccess }) => {
     setFile(file);
   };
 
-  const handleFileUpload = async () => {
-    try {
-      const formData = new FormData();
-      formData.append('branch', branch);
-      formData.append('academic_year', year);
-      formData.append('file', file);
-      if (branch && year && file) {
-        setUploadFlag(true)
-        await axios.post('/erp_user/upload_bulk_user/', formData);
-        setBranch(null);
-        setYear(null);
-        setFile(null);
-        onUploadSuccess();
-        setAlert('success', 'File uploaded successfully');
-        setUploadFlag(false)
+  const handleFileUpload = () => {
+    const formData = new FormData();
+    formData.append('branch', branch);
+    formData.append('academic_year', year);
+    formData.append('file', file);
+    if (branch && year && file) {
+      setUploadFlag(true)
+      axios.post('/erp_user/upload_bulk_user/', formData)
+        .then(result => {
+          if (result.data.status_code === 200) {
+            setBranch(null);
+            setYear(null);
+            setFile(null);
+            onUploadSuccess();
+            setAlert('success', result.data.message);
+            setUploadFlag(false)
+            history.push('/user-management/bulk-upload')
+          } else {
+            setAlert('error', result.data.description);
+            setUploadFlag(false)
+          }
+        })
+        .catch(error => {
+          setAlert('error', error.response.data.description);
+          setUploadFlag(false)
+        })
+    }
+    else {
+      if (!branch) {
+        setAlert('error', 'Branch is required!')
       }
-      else {
-        if (!branch) {
-          setAlert('error', 'Branch is required!')
-        }
-        else if (!year) {
-          setAlert('error', 'Year is required!')
-        }
-        else if (!file) {
-          setAlert('error', 'File is required!')
-        }
+      else if (!year) {
+        setAlert('error', 'Year is required!')
       }
-    } catch (error) {
-      setAlert('error', 'Failed to upload');
-      setUploadFlag(false)
+      else if (!file) {
+        setAlert('error', 'File is required!')
+      }
     }
   };
 
@@ -367,83 +375,28 @@ const BulkUpload = ({ onUploadSuccess }) => {
         </Grid>
       </Grid>
       {branch &&
-      <>
-        <hr />
-        <Grid container spacing={isMobile ? 3 : 5}>
-          <Grid item xs={12} className={isMobile ? '' : 'addButtonPadding'}>
-            <h2 style={{ color: '#014B7e' }}>Suggestions:</h2>
-          </Grid>
-          <Grid item xs={12} sm={3} >
-            <Autocomplete
-              size='small'
-              onChange={handleGrade}
-              style={{ width: '100%' }}
-              id='grade'
-              options={grades}
-              getOptionLabel={(option) => option?.grade__grade_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Grades'
-                  placeholder='Grades'
-                  required
-                />
-              )}
-            />
-            <Paper className={`${classes.root} common-table`}>
-              <TableContainer className={classes.container}>
-                <Table stickyHeader aria-label='sticky table'>
-                  <TableHead className='table-header-row'>
-                    <TableRow>
-                      {columnsGrade.map((column) => (
-                        <TableCell
-                          key={column.id}
-                          align={column.align}
-                          style={{ minWidth: column.minWidth }}
-                          className={classes.columnHeader}
-                        >
-                          {column.label}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {searchGrade.map((grade, index) => {
-                      return (
-                        <TableRow hover grade='checkbox' tabIndex={-1} key={`grade_suggestion_list${index}`}>
-                          <TableCell className={classes.tableCell}>
-                            {grade.grade_id}
-                          </TableCell>
-                          <TableCell className={classes.tableCell}>
-                            {grade.grade__grade_name}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Paper>
-          </Grid>
-          {searchGrade.length === 1 && searchSection &&
-            <Grid item xs sm={3}>
+        <>
+          <hr />
+          <Grid container spacing={isMobile ? 3 : 5}>
+            <Grid item xs={12} className={isMobile ? '' : 'addButtonPadding'}>
+              <h2 style={{ color: '#014B7e' }}>Suggestions:</h2>
+            </Grid>
+            <Grid item xs={12} sm={3} >
               <Autocomplete
-                style={{ width: '100%' }}
                 size='small'
-                onChange={handleSection}
-                id='section'
-                options={sections}
-                value={sectionDisp}
-                getOptionLabel={(option) => option?.section__section_name}
+                onChange={handleGrade}
+                style={{ width: '100%' }}
+                id='grade'
+                options={grades}
+                getOptionLabel={(option) => option?.grade__grade_name}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
                     {...params}
                     variant='outlined'
-                    label='Sections'
-                    placeholder='Sections'
+                    label='Grades'
+                    placeholder='Grades'
+                    required
                   />
                 )}
               />
@@ -452,7 +405,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
                   <Table stickyHeader aria-label='sticky table'>
                     <TableHead className='table-header-row'>
                       <TableRow>
-                        {columnsSection.map((column) => (
+                        {columnsGrade.map((column) => (
                           <TableCell
                             key={column.id}
                             align={column.align}
@@ -465,14 +418,14 @@ const BulkUpload = ({ onUploadSuccess }) => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {searchSection.map((section, index) => {
+                      {searchGrade.map((grade, index) => {
                         return (
-                          <TableRow hover section='checkbox' tabIndex={-1} key={`section_suggestion_list${index}`}>
+                          <TableRow hover grade='checkbox' tabIndex={-1} key={`grade_suggestion_list${index}`}>
                             <TableCell className={classes.tableCell}>
-                              {section.section_id}
+                              {grade.grade_id}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
-                              {section.section__section_name}
+                              {grade.grade__grade_name}
                             </TableCell>
                           </TableRow>
                         );
@@ -482,84 +435,139 @@ const BulkUpload = ({ onUploadSuccess }) => {
                 </TableContainer>
               </Paper>
             </Grid>
-          }
-          {searchGradeId && sectionDisp && subjects.length>0 &&
-            <Grid item xs sm={3}>
-              <Paper className={`${classes.root} common-table`}>
-                <TableContainer className={classes.container}>
-                  <Table stickyHeader aria-label='sticky table'>
-                    <TableHead className='table-header-row'>
-                      <TableRow>
-                        {columnsSubject.map((column) => (
-                          <TableCell
-                            key={column.id}
-                            align={column.align}
-                            style={{ minWidth: column.minWidth }}
-                            className={classes.columnHeader}
-                          >
-                            {column.label}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {subjects.map((subject, index) => {
-                        return (
-                          <TableRow hover subject='checkbox' tabIndex={-1} key={`subject_suggestion_list${index}`}>
-                            <TableCell className={classes.tableCell}>
-                              {subject.subject__id}
+            {searchGrade.length === 1 && searchSection &&
+              <Grid item xs sm={3}>
+                <Autocomplete
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={handleSection}
+                  id='section'
+                  options={sections}
+                  value={sectionDisp}
+                  getOptionLabel={(option) => option?.section__section_name}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Sections'
+                      placeholder='Sections'
+                    />
+                  )}
+                />
+                <Paper className={`${classes.root} common-table`}>
+                  <TableContainer className={classes.container}>
+                    <Table stickyHeader aria-label='sticky table'>
+                      <TableHead className='table-header-row'>
+                        <TableRow>
+                          {columnsSection.map((column) => (
+                            <TableCell
+                              key={column.id}
+                              align={column.align}
+                              style={{ minWidth: column.minWidth }}
+                              className={classes.columnHeader}
+                            >
+                              {column.label}
                             </TableCell>
-                            <TableCell className={classes.tableCell}>
-                              {subject.subject__subject_name}
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {searchSection.map((section, index) => {
+                          return (
+                            <TableRow hover section='checkbox' tabIndex={-1} key={`section_suggestion_list${index}`}>
+                              <TableCell className={classes.tableCell}>
+                                {section.section_id}
+                              </TableCell>
+                              <TableCell className={classes.tableCell}>
+                                {section.section__section_name}
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Paper>
+              </Grid>
+            }
+            {searchGradeId && sectionDisp && subjects.length > 0 &&
+              <Grid item xs sm={3}>
+                <Paper className={`${classes.root} common-table`}>
+                  <TableContainer className={classes.container}>
+                    <Table stickyHeader aria-label='sticky table'>
+                      <TableHead className='table-header-row'>
+                        <TableRow>
+                          {columnsSubject.map((column) => (
+                            <TableCell
+                              key={column.id}
+                              align={column.align}
+                              style={{ minWidth: column.minWidth }}
+                              className={classes.columnHeader}
+                            >
+                              {column.label}
                             </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Paper>
-            </Grid>
-          }
-          {searchGradeId && sectionDisp && subjects.length>0 &&
-            <Grid item xs sm={3}>
-              <Paper className={`${classes.root} common-table`}>
-                <TableContainer className={classes.container}>
-                  <Table stickyHeader aria-label='sticky table'>
-                    <TableHead className='table-header-row'>
-                      <TableRow>
-                        {columnsGender.map((column) => (
-                          <TableCell
-                            key={column.id}
-                            align={column.align}
-                            style={{ minWidth: column.minWidth }}
-                            className={classes.columnHeader}
-                          >
-                            {column.label}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {genders.map((row, index) => {
-                        return (
-                          <TableRow hover gender='checkbox' tabIndex={-1} key={`gender_list${index}`}>
-                            <TableCell className={classes.tableCell}>
-                              {row.id}
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {subjects.map((subject, index) => {
+                          return (
+                            <TableRow hover subject='checkbox' tabIndex={-1} key={`subject_suggestion_list${index}`}>
+                              <TableCell className={classes.tableCell}>
+                                {subject.subject__id}
+                              </TableCell>
+                              <TableCell className={classes.tableCell}>
+                                {subject.subject__subject_name}
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Paper>
+              </Grid>
+            }
+            {searchGradeId && sectionDisp && subjects.length > 0 &&
+              <Grid item xs sm={3}>
+                <Paper className={`${classes.root} common-table`}>
+                  <TableContainer className={classes.container}>
+                    <Table stickyHeader aria-label='sticky table'>
+                      <TableHead className='table-header-row'>
+                        <TableRow>
+                          {columnsGender.map((column) => (
+                            <TableCell
+                              key={column.id}
+                              align={column.align}
+                              style={{ minWidth: column.minWidth }}
+                              className={classes.columnHeader}
+                            >
+                              {column.label}
                             </TableCell>
-                            <TableCell className={classes.tableCell}>
-                              {row.gender}
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Paper>
-            </Grid>
-          }
-        </Grid>
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {genders.map((row, index) => {
+                          return (
+                            <TableRow hover gender='checkbox' tabIndex={-1} key={`gender_list${index}`}>
+                              <TableCell className={classes.tableCell}>
+                                {row.id}
+                              </TableCell>
+                              <TableCell className={classes.tableCell}>
+                                {row.gender}
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Paper>
+              </Grid>
+            }
+          </Grid>
         </>
       }
     </>

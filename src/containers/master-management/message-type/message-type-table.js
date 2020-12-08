@@ -170,13 +170,13 @@ const MessageTypeTable = () => {
         `${endpoints.masterManagement.messageTypeTable}?page=${page}&page_size=${limit}`
       )
       .then((result) => {
-        if (result.status === 200) {
+        if (result.data.status_code === 200) {
           {
             setTotalCount(result.data.data.count);
             setMessageType(result.data.data.results);
           }
         } else {
-          setAlert('error', result.data.message);
+          setAlert('error', result.data.error_msg);
         }
       })
       .catch((error) => {
