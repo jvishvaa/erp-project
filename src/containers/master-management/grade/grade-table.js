@@ -168,13 +168,13 @@ const GradeTable = () => {
         `${endpoints.masterManagement.grades}?page=${page}&page_size=${limit}&grade_name=${searchGrade}`
       )
       .then((result) => {
-        if (result.status === 200) {
+        if (result.data.status_code === 200) {
           {
             setTotalCount(result.data.result.count);
             setGrades(result.data.result.results);
           }
         } else {
-          setAlert('error', result.data.message);
+          setAlert('error', result.data.error_message);
         }
       })
       .catch((error) => {

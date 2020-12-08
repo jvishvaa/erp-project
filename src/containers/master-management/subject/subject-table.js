@@ -213,7 +213,7 @@ const SubjectTable = () => {
         'is_delete': true,
         'subject_id': subjectId
       }).then(result=>{
-      if (result.status === 200) {
+      if (result.data.status_code === 200) {
         setDelFlag(!delFlag)
         setLoading(false);
         setAlert('success', result.data.message);
@@ -261,11 +261,11 @@ const SubjectTable = () => {
   useEffect(()=>{
       axiosInstance.get(`${endpoints.masterManagement.subjects}?page=${page}&page_size=${limit}&grade=${searchGrade}&subject=${searchSubject}&section=${searchSection}`)
       .then(result=>{
-        if (result.status === 200) {
+        if (result.data.status_code === 200) {
           setTotalCount(result.data.result.count)
           setSubjects(result.data.result.results)
         } else {
-          setAlert('error',result.data.message)
+          setAlert('error',result.data.error_message)
         }
       })
       .catch((error)=>{
