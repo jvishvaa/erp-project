@@ -381,6 +381,10 @@ const BulkUpload = ({ onUploadSuccess }) => {
             <Grid item xs={12} className={isMobile ? '' : 'addButtonPadding'}>
               <h2 style={{ color: '#014B7e' }}>Suggestions:</h2>
             </Grid>
+            <Grid item xs={12}>
+              <Paper>
+              </Paper>
+            </Grid>
             <Grid item xs={12} sm={3} >
               <Autocomplete
                 size='small'

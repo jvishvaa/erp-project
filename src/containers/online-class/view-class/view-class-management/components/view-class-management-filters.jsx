@@ -123,7 +123,7 @@ const ViewClassManagementFilters = () => {
   const handleSection = (event, value) => {
     setSelectedSections(value);
     if (value.length) {
-      const ids = value.map((el) => el.id);
+      const ids = value.map((el) => el.section_id);
       setSectionIds(ids);
       listSubjects(gradeIds, ids);
     } else {
