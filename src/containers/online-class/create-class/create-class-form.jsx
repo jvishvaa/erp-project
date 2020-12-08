@@ -274,6 +274,7 @@ const CreateClassForm = () => {
 
   const handleTutorEmail = (event, value) => {
     // const { value } = event.target;
+    const { gradeIds } = onlineClass;
     if (onlineClass.coHosts.length > 0) {
       const index = onlineClass.coHosts.findIndex((host) => host === value);
       if (index) {
@@ -285,7 +286,7 @@ const CreateClassForm = () => {
     setOnlineClass((prevState) => ({ ...prevState, tutorEmail: value }));
     if (value) {
       dispatch(
-        listSectionAndSubjects(value.roles, moduleId, value.user_id, isSuperUser ? 1 : 0)
+        listSectionAndSubjects(value.roles, moduleId, value.user_id, isSuperUser ? 1 : 0,gradeIds)
       );
     }
   };
@@ -636,7 +637,6 @@ const CreateClassForm = () => {
                 size='small'
                 multiple
                 onChange={(e, value) => {
-                  console.log('gradeValue ', value);
                   // handleGrade(e, value ? [value] : []);
                   handleGrade(e, value);
                 }}
@@ -692,7 +692,7 @@ const CreateClassForm = () => {
                 <Autocomplete
                   size='small'
                   id='create__class-subject'
-                  options={subjects.filter(
+                  options={subjects?.filter(
                     (sub) =>
                       selectedSections.findIndex(
                         (sec) => sec.section_id === sub.section__id
