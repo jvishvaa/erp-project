@@ -123,7 +123,7 @@ const ViewClassManagementFilters = () => {
   const handleSection = (event, value) => {
     setSelectedSections(value);
     if (value.length) {
-      const ids = value.map((el) => el.section_id);
+      const ids = value.map((el) => el.id);
       setSectionIds(ids);
       listSubjects(gradeIds, ids);
     } else {
@@ -154,6 +154,9 @@ const ViewClassManagementFilters = () => {
 
     if (sectionIds.length) {
       url += `&section_mapping_ids=${sectionIds.join(',')}`;
+      if (gradeIds.length > 1) {
+        url += `&grade_ids=${gradeIds.join(',')}`;
+      }
     } else if (gradeIds.length) {
       url += `&grade_ids=${gradeIds.join(',')}`;
     }

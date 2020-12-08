@@ -210,12 +210,12 @@ export default function ModuleCard({
         currSubModule,
         unCheckScopeDependenciesForModules[scope]
       );
-      unCheckScopeDependenciesForModules[scope].forEach((scopeName) => {
-        if (currSubModule[scopeName] == true) {
-          // parent scope is checked
-          unCheckScopeDependencies.push(scopeToDisplayNameMapping[scopeName]);
-        }
-      });
+      // unCheckScopeDependenciesForModules[scope].forEach((scopeName) => {
+      //   if (currSubModule[scopeName] == true) {
+      //     // parent scope is checked
+      //     unCheckScopeDependencies.push(scopeToDisplayNameMapping[scopeName]);
+      //   }
+      // });
 
       if (unCheckScopeDependencies.length > 0) {
         setAlert(
@@ -256,12 +256,12 @@ export default function ModuleCard({
         currSubModule,
         unCheckScopeDependenciesForModules[scope]
       );
-      unCheckScopeDependenciesForModules[scope].forEach((scopeName) => {
-        if (currSubModule[scopeName] == true) {
-          // parent scope is checked
-          unCheckScopeDependencies.push(scopeToDisplayNameMapping[scopeName]);
-        }
-      });
+      // unCheckScopeDependenciesForModules[scope].forEach((scopeName) => {
+      //   if (currSubModule[scopeName] == true) {
+      //     // parent scope is checked
+      //     unCheckScopeDependencies.push(scopeToDisplayNameMapping[scopeName]);
+      //   }
+      // });
 
       if (safeToUnsetValues) {
         const { clonedArray, index } = findAndApplyScope(

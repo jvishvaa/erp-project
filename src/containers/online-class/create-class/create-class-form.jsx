@@ -259,6 +259,12 @@ const CreateClassForm = () => {
   }, [onlineClass.gradeIds, onlineClass.sectionIds, onlineClass.subject]);
 
   const toggleDrawer = () => {
+    const { gradeIds, sectionIds } = onlineClass;
+
+    if (!gradeIds.length || !sectionIds.length || !selectedSubject) {
+      setAlert('error', 'Please provide values for grade section and subjects');
+      return;
+    }
     setIsDrawerOpen((prevState) => !prevState);
   };
 
@@ -315,24 +321,24 @@ const CreateClassForm = () => {
     const { selectedDate } = onlineClass;
     const time = new Date(event);
     // selected time should not be between 9pm and 6am
-    if (isBetweenNonSchedulingTime(time)) {
-      setAlert(
-        'error',
-        'Classes cannot be scheduled between 9PM and 6AM. Please check the Start Time.'
-      );
-      return;
-    }
+    // if (isBetweenNonSchedulingTime(time)) {
+    //   setAlert(
+    //     'error',
+    //     'Classes cannot be scheduled between 9PM and 6AM. Please check the Start Time.'
+    //   );
+    //   return;
+    // }
 
     // if the selected date is today. Selected time should always be future time
-    const isFuture = new Date(event) > new Date();
-    if (selectedDate === moment(new Date()).format('YYYY-MM-DD') && !isFuture) {
-      setAlert(
-        'error',
-        'You cannot create a class for the time that has passed. Please select a future time',
-        5000
-      );
-      return;
-    }
+    // const isFuture = new Date(event) > new Date();
+    // if (selectedDate === moment(new Date()).format('YYYY-MM-DD') && !isFuture) {
+    //   setAlert(
+    //     'error',
+    //     'You cannot create a class for the time that has passed. Please select a future time',
+    //     5000
+    //   );
+    //   return;
+    // }
 
     dispatch(clearTutorEmailValidation());
     setOnlineClass((prevState) => ({ ...prevState, selectedTime: time }));
@@ -394,13 +400,13 @@ const CreateClassForm = () => {
     //   }
     // }
 
-    if (isBetweenNonSchedulingTime(selectedTime)) {
-      setAlert(
-        'error',
-        'Classes cannot be scheduled between 9PM and 6AM. Please check the Start Time.'
-      );
-      return;
-    }
+    // if (isBetweenNonSchedulingTime(selectedTime)) {
+    //   setAlert(
+    //     'error',
+    //     'Classes cannot be scheduled between 9PM and 6AM. Please check the Start Time.'
+    //   );
+    //   return;
+    // }
     // if (!isTutorEmailValid) {
     //   setAlert('error', 'Tutor email is not valid');
     //   return;
@@ -686,7 +692,12 @@ const CreateClassForm = () => {
                 <Autocomplete
                   size='small'
                   id='create__class-subject'
-                  options={subjects}
+                  options={subjects.filter(
+                    (sub) =>
+                      selectedSections.findIndex(
+                        (sec) => sec.section_id === sub.section__id
+                      ) > -1
+                  )}
                   getOptionLabel={(option) => option.subject__subject_name}
                   filterSelectedOptions
                   value={selectedSubject}
@@ -850,7 +861,12 @@ const CreateClassForm = () => {
           </Grid>
           <Grid container className='create-class-container' spacing={2}>
             <Grid item>
-              <Button variant='contained' color='primary' onClick={toggleDrawer}>
+              <Button
+                variant='contained'
+                color='primary'
+                onClick={toggleDrawer}
+                disabled={!onlineClass.tutorEmail}
+              >
                 Filter students
               </Button>
             </Grid>
@@ -866,40 +882,43 @@ const CreateClassForm = () => {
               <FilterStudents />
             </SwipeableDrawer>
           </Grid>
-          <hr className='horizontal-line' />
-          {/* {onlineClass.tutorEmail && ( */}
-          <Grid container className='create-class-container' spacing={2}>
-            <Grid item xs={12}>
-              <h2 className='co_host-title'>Co-Host</h2>
-            </Grid>
+          {onlineClass.tutorEmail && (
+            <>
+              {' '}
+              <hr className='horizontal-line' />
+              {/* {onlineClass.tutorEmail && ( */}
+              <Grid container className='create-class-container' spacing={2}>
+                <Grid item xs={12}>
+                  <h2 className='co_host-title'>Co-Host</h2>
+                </Grid>
 
-            <Grid item xs={11} sm={5}>
-              <Autocomplete
-                size='small'
-                multiple
-                id='create__class-tutor-email'
-                options={tutorEmailList.filter(
-                  (email) => email.email !== onlineClass.tutorEmail?.email
-                )}
-                getOptionLabel={(option) => option.email}
-                filterSelectedOptions
-                value={onlineClass.coHosts}
-                onChange={handleCoHost}
-                disabled={tutorEmailsLoading}
-                renderInput={(params) => (
-                  <TextField
+                <Grid item xs={11} sm={5}>
+                  <Autocomplete
                     size='small'
-                    className='create__class-textfield'
-                    {...params}
-                    variant='outlined'
-                    label='Tutor Email'
-                    placeholder='Tutor Email'
+                    multiple
+                    id='create__class-tutor-email'
+                    options={tutorEmailList.filter(
+                      (email) => email.email !== onlineClass.tutorEmail?.email
+                    )}
+                    getOptionLabel={(option) => option.email}
+                    filterSelectedOptions
+                    value={onlineClass.coHosts}
+                    onChange={handleCoHost}
+                    disabled={tutorEmailsLoading}
+                    renderInput={(params) => (
+                      <TextField
+                        size='small'
+                        className='create__class-textfield'
+                        {...params}
+                        variant='outlined'
+                        label='Tutor Email'
+                        placeholder='Tutor Email'
+                      />
+                    )}
                   />
-                )}
-              />
-            </Grid>
+                </Grid>
 
-            {/* {onlineClass.coHosts.map((el, index) => (
+                {/* {onlineClass.coHosts.map((el, index) => (
               <>
                 <Grid item xs={11} sm={5} key={el}>
                   <TextField
@@ -944,8 +963,10 @@ const CreateClassForm = () => {
                   />
                 </Grid>
               </>
-            ))}*/}
-          </Grid>
+            ))} */}
+              </Grid>
+            </>
+          )}
           {/* )} */}
           {/* <Grid container>
             <Button
