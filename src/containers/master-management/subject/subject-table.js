@@ -245,7 +245,7 @@ const SubjectTable = () => {
   useEffect(()=>{
     axiosInstance.get(endpoints.masterManagement.gradesDrop)
     .then(result=>{
-      if (result.status === 200) {
+      if (result.data.status_code === 200) {
         setGrades(result.data.data);
       } else {
         setAlert('error',result.data.message)

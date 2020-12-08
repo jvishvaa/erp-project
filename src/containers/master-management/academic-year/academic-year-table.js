@@ -129,7 +129,7 @@ const AcademicYearTable = () => {
         academic_year_id: yearId,
       })
       .then((result) => {
-        if (result.status === 200) {
+        if (result.data.status_code === 200) {
             setDelFlag(!delFlag);
             setLoading(false);
             setAlert('success', result.data.message);

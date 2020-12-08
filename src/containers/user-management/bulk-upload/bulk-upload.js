@@ -153,7 +153,7 @@ const BulkUpload = () => {
           <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
               componentName='User Management'
-              childComponentName='Bulk Upload'
+              childComponentName='Bulk Upload Status'
             />
           </div>
         </div>

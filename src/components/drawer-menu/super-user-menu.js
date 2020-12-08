@@ -118,7 +118,7 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
               {/* <MenuIcon name={child.child_name} /> */}
               {/* {menuIcon(child.child_name)} */}
             </ListItemIcon>
-            <ListItemText primary={`Bulk Upload`} className='menu-item-text' />
+            <ListItemText primary={`Bulk Upload Status`} className='menu-item-text' />
           </ListItem>
 
           <ListItem

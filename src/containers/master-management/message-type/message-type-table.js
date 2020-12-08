@@ -126,7 +126,7 @@ const MessageTypeTable = () => {
     axiosInstance
       .delete(`${endpoints.masterManagement.updateMessageType}${messageTypeId}/communicate-type/`)
       .then((result) => {
-        if (result.status === 200) {
+        if (result.data.status_code === 200) {
             setDelFlag(!delFlag);
             setLoading(false);
             setAlert('success', result.data.message);

@@ -163,7 +163,7 @@ const SectionTable = () => {
         is_delete: true,
       })
       .then((result) => {
-        if (result.status === 200) {
+        if (result.data.status_code === 200) {
           {
             setDelFlag(!delFlag);
             setLoading(false);

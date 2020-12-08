@@ -1,6 +1,6 @@
 /* eslint-disable import/no-absolute-path */
 /* eslint-disable global-require */
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
@@ -25,6 +25,7 @@ import axiosInstance from '../../config/axios';
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
+    boxShadow:'none'
   },
   container: {
     maxHeight: '40vh'
@@ -115,6 +116,8 @@ const columnsGender = [
 const BulkUpload = ({ onUploadSuccess }) => {
   const [branch, setBranch] = useState(null);
   const [branchList, setBranchList] = useState([]);
+  const [branchDisplay,setBranchDisplay]=useState({})
+  const [yearDisplay,setYearDisplay]=useState({})
   const [year, setYear] = useState(null);
   const [yearList, setYearList] = useState([]);
   const [file, setFile] = useState(null);
@@ -133,6 +136,38 @@ const BulkUpload = ({ onUploadSuccess }) => {
   const { role_details } = JSON.parse(localStorage.getItem('userDetails'))
   const history = useHistory()
   const { setAlert } = useContext(AlertNotificationContext);
+  const fileRef=useRef()
+
+  const guidelines = [
+    '{user_first_name} is a required field, Example: Vikash',	
+    '{user_middle_name} is a non-required field, Example: Kumar',	
+    '{user_last_name} is a required field, Example: Singh',	
+    '{date_of_birth} is a mandatory field with following format (YYYY-MM-DD)',
+    '{contact} is a mandatory field Example: 996565xxxx',
+    '{email} is a mandatory field Example: john.doe@gmail.com',
+    '{address} is a mandatory field Example: Next to Brookfield Mall',	
+    '{gender} is a mandatory field in which ID has to be passed for Male, Female and Others as 0, 1, 2 respectively',	
+    // 'profile',	
+    // 'Grade',	
+    // 'Section',	
+    // 'Subject',	
+    // 'father_first_name',	
+    // 'father_middle_name',	
+    // 'father_last_name',	
+    // 'father_email',	
+    // 'father_contact',	
+    // 'mother_first_name',	
+    // 'mother_middle_name',	
+    // 'mother_last_name',	
+    // 'mother_email',	
+    // 'mother_contact',	
+    // 'guardian_first_name',
+    // 'guardian_middle_name',	
+    // 'guardian_last_name',	
+    // 'guardian_email',	
+    // 'guardian_mobile',	
+    // 'parent_address'
+  ]
 
   const getBranches = async () => {
     try {
@@ -183,6 +218,14 @@ const BulkUpload = ({ onUploadSuccess }) => {
     setFile(file);
   };
 
+  const handleClearAll = () => {
+    setBranchDisplay('')
+    setYearDisplay('')
+    setBranch(null);
+    setYear(null);  
+    fileRef.current.value=null;
+  }
+
   const handleFileUpload = () => {
     const formData = new FormData();
     formData.append('branch', branch);
@@ -225,6 +268,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
 
   const handleBranchChange = (event, data) => {
     setBranch(data?.id);
+    setBranchDisplay(data)
     setSearchGrade([])
     setSearchSection([])
     setSubjects([])
@@ -232,6 +276,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
 
   const handleYearChange = (event, data) => {
     setYear(data?.id);
+    setYearDisplay(data)
   };
 
   const handleGrade = (event, value) => {
@@ -312,6 +357,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
             size='small'
             id='create__class-subject'
             options={branchList}
+            value={branchDisplay}
             getOptionLabel={(option) => option.branch_name}
             filterSelectedOptions
             onChange={handleBranchChange}
@@ -334,6 +380,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
             size='small'
             id='create__class-subject'
             options={yearList}
+            value={yearDisplay}
             getOptionLabel={(option) => option.session_year}
             filterSelectedOptions
             onChange={handleYearChange}
@@ -353,7 +400,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
         </Grid>
         <Grid item md={3} xs={12}>
           <Box display='flex' flexDirection='column'>
-            <Input type='file' required onChange={handleFileChange} />
+            <Input type='file' inputRef={fileRef} onChange={handleFileChange} />
             <Box display='flex' flexDirection='row' style={{ color: 'gray' }}>
               <Box p={1}>
                 {`Download Format: `}
@@ -368,24 +415,49 @@ const BulkUpload = ({ onUploadSuccess }) => {
             </Box>
           </Box>
         </Grid>
-        <Grid item md={3} xs={12}>
+        <Grid item md={3} xs={0} style={isMobile?{display:'none'}:{display:'block'}}/> 
+        <Grid item md={2} xs={6}>
+           <Button variant='contained' className="custom_button_master labelColor" size='medium'onClick={handleClearAll}>Clear All</Button>
+        </Grid>
+        <Grid item md={2} xs={6}>
           {uploadFlag ?
-            <Button disabled style={{ color: 'white', opacity: '0.7' }}>Uploading</Button>
-            : <Button variant='contained' color='primary' onClick={handleFileUpload}>Upload</Button>}
+            <Button disabled style={{ color: 'white', opacity: '0.7', width:'100%' }} size='medium'>Uploading</Button>
+            : <Button variant='contained' style={{color:'white'}} color ="primary" className="custom_button_master" size='medium' onClick={handleFileUpload}>Upload</Button>}
         </Grid>
       </Grid>
       {branch &&
         <>
-          <hr />
-          <Grid container spacing={isMobile ? 3 : 5}>
-            <Grid item xs={12} className={isMobile ? '' : 'addButtonPadding'}>
-              <h2 style={{ color: '#014B7e' }}>Suggestions:</h2>
+          <hr style={{backgroundColor:'#e2e2e2',border:'none',height:'1px'}}/>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <h2 style={{ color: '#014B7e' }}>Guidelines:</h2>
             </Grid>
             <Grid item xs={12}>
-              <Paper>
+              <Paper className={classes.root}>
+                {guidelines.map((val,i)=>
+                  (<div 
+                  style={isMobile?
+                    {
+                      padding:'5px',
+                      margin:'10px',
+                      fontSize:'12px',
+                      fontWeight:'500',
+                      color:'#014b7e',
+                    }:{
+                      padding:'5px',
+                      margin:'10px auto',
+                      fontSize:'16px',
+                      fontWeight:'500',
+                      color:'#014b7e',
+                    }}>
+                      {i+1}.)&nbsp;{val}
+                  </div>))}
               </Paper>
             </Grid>
-            <Grid item xs={12} sm={3} >
+            <Grid item xs={12}>
+              <h2 style={{ color: '#014B7e' }}>Suggestions:</h2>
+            </Grid>
+            <Grid item xs={12} sm={4} >
               <Autocomplete
                 size='small'
                 onChange={handleGrade}
@@ -440,7 +512,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
               </Paper>
             </Grid>
             {searchGrade.length === 1 && searchSection &&
-              <Grid item xs sm={3}>
+              <Grid item xs sm={4}>
                 <Autocomplete
                   style={{ width: '100%' }}
                   size='small'
@@ -496,7 +568,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
               </Grid>
             }
             {searchGradeId && sectionDisp && subjects.length > 0 &&
-              <Grid item xs sm={3}>
+              <Grid item xs sm={4}>
                 <Paper className={`${classes.root} common-table`}>
                   <TableContainer className={classes.container}>
                     <Table stickyHeader aria-label='sticky table'>
@@ -533,7 +605,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
                 </Paper>
               </Grid>
             }
-            {searchGradeId && sectionDisp && subjects.length > 0 &&
+            {/* {searchGradeId && sectionDisp && subjects.length > 0 &&
               <Grid item xs sm={3}>
                 <Paper className={`${classes.root} common-table`}>
                   <TableContainer className={classes.container}>
@@ -570,7 +642,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
                   </TableContainer>
                 </Paper>
               </Grid>
-            }
+            } */}
           </Grid>
         </>
       }
