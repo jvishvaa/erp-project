@@ -22,6 +22,7 @@ const ViewClassStudent = (props) => {
       join_time: joinTime,
       id: meetingId,
       zoom_meeting: {
+        is_canceled:canceledTag,
         id: zoomId,
         online_class: {
           id: olClassId,
@@ -195,6 +196,7 @@ const ViewClassStudent = (props) => {
         </Grid>
         <Grid item xs={12}>
           <Grid container spacing={3}>
+            {!canceledTag?
             <Grid item xs={12} sm={6}>
               {!isAccepted ? (
                 <Button
@@ -218,6 +220,18 @@ const ViewClassStudent = (props) => {
                 </Button>
               )}
             </Grid>
+            :
+            <Grid item xs={12} sm={6}>
+                <Button
+                  className='viewclass__student-btn'
+                  variant='contained'
+                  color='primary'
+                  disabled={canceledTag}
+                  onClick={handleClassAccept}
+                >
+                  Canceled Class
+                </Button>
+            </Grid>}
             {isResourceAvailable ? (
               <Grid item xs={12} sm={6}>
                 <Button
