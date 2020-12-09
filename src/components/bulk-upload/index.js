@@ -25,7 +25,6 @@ import axiosInstance from '../../config/axios';
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
-    boxShadow:'none'
   },
   container: {
     maxHeight: '40vh'
@@ -139,14 +138,14 @@ const BulkUpload = ({ onUploadSuccess }) => {
   const fileRef=useRef()
 
   const guidelines = [
-    '{user_first_name} is a required field, Example: Vikash',	
-    '{user_middle_name} is a non-required field, Example: Kumar',	
-    '{user_last_name} is a required field, Example: Singh',	
-    '{date_of_birth} is a mandatory field with following format (YYYY-MM-DD)',
-    '{contact} is a mandatory field Example: 996565xxxx',
-    '{email} is a mandatory field Example: john.doe@gmail.com',
-    '{address} is a mandatory field Example: Next to Brookfield Mall',	
-    '{gender} is a mandatory field in which ID has to be passed for Male, Female and Others as 0, 1, 2 respectively',	
+    {'name':'user_first_name', 'field':' is a required field, Example: Vikash'},	
+    {'name':'user_middle_name', 'field':' is a non-required field, Example: Kumar'},	
+    {'name':'user_last_name', 'field':' is a required field, Example: Singh'},	
+    {'name':'date_of_birth', 'field':' is a mandatory field with following format (YYYY-MM-DD)'},
+    {'name':'contact', 'field':' is a mandatory field Example: 996565xxxx'},
+    {'name':'email' , 'field':' is a mandatory field Example: john.doe@gmail.com'},
+    {'name':'address', 'field':' is a mandatory field Example: Next to Brookfield Mall'},	
+    {'name':'gender', 'field':' is a mandatory field in which ID has to be passed for Male, Female and Others as 0, 1, 2 respectively'},	
     // 'profile',	
     // 'Grade',	
     // 'Section',	
@@ -434,24 +433,15 @@ const BulkUpload = ({ onUploadSuccess }) => {
             </Grid>
             <Grid item xs={12}>
               <Paper className={classes.root}>
-                {guidelines.map((val,i)=>
-                  (<div 
-                  style={isMobile?
-                    {
-                      padding:'5px',
-                      margin:'10px',
-                      fontSize:'12px',
-                      fontWeight:'500',
-                      color:'#014b7e',
-                    }:{
-                      padding:'5px',
-                      margin:'10px auto',
-                      fontSize:'16px',
-                      fontWeight:'500',
-                      color:'#014b7e',
-                    }}>
-                      {i+1}.)&nbsp;{val}
-                  </div>))}
+                {guidelines.map((val,i)=>{
+                  return(
+                    <div style={{color:'#014b7e',fontSize:'16px',padding:'10px'}}>
+                      {i+1}.&nbsp;
+                      <span style={{color:'#fe6b6b',fontWeight:'600'}}>{val.name}</span>
+                      <span>{val.field}</span>
+                    </div>
+                  )
+                })}
               </Paper>
             </Grid>
             <Grid item xs={12}>
