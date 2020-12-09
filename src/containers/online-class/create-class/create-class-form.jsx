@@ -49,7 +49,7 @@ const CreateClassForm = () => {
   const [moduleId, setModuleId] = useState();
   const [selectedGrades, setSelectedGrades] = useState([]);
   const [selectedSections, setSelectedSections] = useState([]);
-  const [selectedSubject, setSelectedSubject] = useState(null);
+  const [selectedSubject, setSelectedSubject] = useState([]);
   const [tutorNotAvailableMsg, setTutorNotAvailableMessage] = useState('');
   const [branches, setBranches] = useState([]);
   const {
@@ -193,7 +193,7 @@ const CreateClassForm = () => {
       ...prevState,
       tutorEmail: '',
       sectionIds: [],
-      subject: '',
+      subject: [],
       coHosts: [],
     }));
   };
@@ -219,14 +219,22 @@ const CreateClassForm = () => {
   };
 
   const handleSubject = (event, value) => {
+    dispatch(clearFilteredStudents());
     setSelectedSubject(value);
-    const transformedValue = value ? [value] : null;
-    if (transformedValue?.length) {
-      const subjectIds = transformedValue.map((sub) => sub.subject__id);
-      // setOnlineClass((prevState) => ({ ...prevState, subject: value.subject__id }));
+    // const transformedValue = value ? [value] : null;
+    // if (transformedValue?.length) {
+    //   const subjectIds = transformedValue.map((sub) => sub.subject__id);
+    //   // setOnlineClass((prevState) => ({ ...prevState, subject: value.subject__id }));
+    //   setOnlineClass((prevState) => ({ ...prevState, subject: subjectIds }));
+    // } else {
+    //   setOnlineClass((prevState) => ({ ...prevState, subject: [] }));
+    // }
+    if(value.length) {
+      const subjectIds = value.map((el) => el.subject__id);
       setOnlineClass((prevState) => ({ ...prevState, subject: subjectIds }));
-    } else {
-      setOnlineClass((prevState) => ({ ...prevState, subject: [] }));
+    }
+    else {
+      setOnlineClass((prevState) => ({ ...prevState, subjectIds: [] }));
     }
     dispatch(clearTutorEmailValidation());
     setOnlineClass((prevState) => ({
@@ -474,7 +482,7 @@ const CreateClassForm = () => {
     setFormKey(new Date());
     setSelectedGrades([]);
     setSelectedSections([]);
-    setSelectedSubject(null);
+    setSelectedSubject([]);
     setOnlineClass((prevState) => ({
       ...prevState,
       ...initialFormStructure,
@@ -556,7 +564,7 @@ const CreateClassForm = () => {
   useEffect(() => {
     if (!onlineClass.tutorEmail) {
       setSelectedSections([]);
-      setSelectedSubject(null);
+      setSelectedSubject([]);
     }
   }, [onlineClass.tutorEmail]);
 
@@ -690,6 +698,7 @@ const CreateClassForm = () => {
             {onlineClass.tutorEmail ? (
               <Grid item xs={12} sm={2}>
                 <Autocomplete
+                  multiple
                   size='small'
                   id='create__class-subject'
                   options={subjects?.filter(

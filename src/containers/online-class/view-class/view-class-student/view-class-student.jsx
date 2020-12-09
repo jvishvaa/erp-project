@@ -28,7 +28,7 @@ const ViewClassStudent = (props) => {
           start_time: startTime,
           end_time: endTime,
           title = '',
-          subject: { subject_name: subjectName = '' },
+          subject: subjectName,
           join_limit: joinLimit,
         },
       } = {},
@@ -169,7 +169,7 @@ const ViewClassStudent = (props) => {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <Typography variant='h6' gutterBottom color='secondary'>
-                {subjectName}
+                {subjectName[0]?.subject_name.substring(subjectName[0]?.subject_name.lastIndexOf("_")+1)}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
