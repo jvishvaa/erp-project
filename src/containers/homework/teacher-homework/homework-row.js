@@ -4,7 +4,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import HomeworkCol from './homework-col';
 
-const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol }) => {
+const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol, handleViewHomework }) => {
   const history = useHistory();
   const navigateToAddScreen = ({ date, subject, subjectId }) => {
     history.push(`/homework/add/${date}/${subject}/${subjectId}`);
@@ -26,13 +26,20 @@ const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol }) => {
                 subjectId: col.id,
               });
             }}
-            handleNavigationToAddScreen={() =>
+            handleNavigationToAddScreen={() => {
               navigateToAddScreen({
                 date: data.date,
                 subject: col.subject_name,
                 subjectId: col.id,
-              })
-            }
+              });
+            }}
+            handleViewHomework={() => {
+              handleViewHomework({
+                date: data.date,
+                subject: col.subject_name,
+                subjectId: col.id,
+              });
+            }}
           />
         ) : (
           <TableCell className='no-wrap-col'>{data.date}</TableCell>

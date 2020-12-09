@@ -9,7 +9,13 @@ import hwEvaluatedIcon from '../../../assets/images/hw-evaluated.svg';
 import submitted from '../../../assets/images/student-submitted.svg';
 import { Badge } from '@material-ui/core';
 
-const HomeworkCol = ({ data, isSelected, handleClick, handleNavigationToAddScreen }) => {
+const HomeworkCol = ({
+  data,
+  isSelected,
+  handleClick,
+  handleNavigationToAddScreen,
+  handleViewHomework,
+}) => {
   const history = useHistory();
   const { student_submitted: studentSubmitted, hw_evaluated: hwEvaluated } = data;
 
@@ -20,11 +26,17 @@ const HomeworkCol = ({ data, isSelected, handleClick, handleNavigationToAddScree
           <AddCircleOutlineIcon color='primary' />
         </IconButton>
       ) : (
-        <SvgIcon
-          component={() => (
-            <img style={{ width: '35px', padding: '5px' }} src={hwGiven} alt='hwGiven' />
-          )}
-        />
+        <IconButton onClick={handleViewHomework}>
+          <SvgIcon
+            component={() => (
+              <img
+                style={{ width: '35px', padding: '5px' }}
+                src={hwGiven}
+                alt='hwGiven'
+              />
+            )}
+          />
+        </IconButton>
       )}
       {studentSubmitted > 0 && (
         <Badge

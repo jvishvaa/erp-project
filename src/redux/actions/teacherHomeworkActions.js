@@ -8,6 +8,12 @@ export const teacherHomeworkActions = {
   FETCH_TEACHER_HOMEWORK_SUCCESS: 'FETCH_TEACHER_HOMEWORK_SUCCESS',
   FETCH_TEACHER_HOMEWORK_FAILURE: 'FETCH_TEACHER_HOMEWORK_FAILURE',
   SET_SELECTED_HOME_WORK: 'SET_SELECTED_HOME_WORK',
+  FETCH_TEACHER_HOMEWORK_DETAIL_BY_ID_REQUEST:
+    'FETCH_TEACHER_HOMEWORK_DETAIL_BY_ID_REQUEST',
+  FETCH_TEACHER_HOMEWORK_DETAIL_BY_ID_SUCCESS:
+    'FETCH_TEACHER_HOMEWORK_DETAIL_BY_ID_SUCCESS',
+  FETCH_TEACHER_HOMEWORK_DETAIL_BY_ID_FAILURE:
+    'FETCH_TEACHER_HOMEWORK_DETAIL_BY_ID_FAILURE',
 };
 
 const {
@@ -18,6 +24,9 @@ const {
   FETCH_TEACHER_HOMEWORK_SUCCESS,
   FETCH_TEACHER_HOMEWORK_FAILURE,
   SET_SELECTED_HOME_WORK,
+  FETCH_TEACHER_HOMEWORK_DETAIL_BY_ID_REQUEST,
+  FETCH_TEACHER_HOMEWORK_DETAIL_BY_ID_SUCCESS,
+  FETCH_TEACHER_HOMEWORK_DETAIL_BY_ID_FAILURE,
 } = teacherHomeworkActions;
 
 export const addHomeWork = (data) => async (dispatch) => {
@@ -30,6 +39,19 @@ export const addHomeWork = (data) => async (dispatch) => {
   } catch (e) {
     dispatch({ type: ADD_HOMEWORK_FAILURE });
     throw new Error(e);
+  }
+};
+
+export const fetchTeacherHomeworkDetailsById = (id) => async (dispatch) => {
+  dispatch({ type: FETCH_TEACHER_HOMEWORK_DETAIL_BY_ID_REQUEST });
+  try {
+    const response = await axios.get(`/academic/${id}/hw-questions/?hw_status=1`);
+    dispatch({
+      type: FETCH_TEACHER_HOMEWORK_DETAIL_BY_ID_SUCCESS,
+      data: response.data.data,
+    });
+  } catch (error) {
+    dispatch({ type: FETCH_TEACHER_HOMEWORK_DETAIL_BY_ID_FAILURE });
   }
 };
 
