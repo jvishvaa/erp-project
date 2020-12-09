@@ -142,10 +142,11 @@ const BulkUpload = ({ onUploadSuccess }) => {
     {'name':'user_middle_name', 'field':' is a non-required field, Example: Kumar'},	
     {'name':'user_last_name', 'field':' is a required field, Example: Singh'},	
     {'name':'date_of_birth', 'field':' is a mandatory field with following format (YYYY-MM-DD)'},
-    {'name':'contact', 'field':' is a mandatory field Example: 996565xxxx'},
-    {'name':'email' , 'field':' is a mandatory field Example: john.doe@gmail.com'},
-    {'name':'address', 'field':' is a mandatory field Example: Next to Brookfield Mall'},	
+    {'name':'contact', 'field':' is a mandatory field, Example: 996565xxxx'},
+    {'name':'email' , 'field':' is a mandatory field, Example: john.doe@gmail.com'},
+    {'name':'address', 'field':' is a mandatory field, Example: Next to Brookfield Mall'},	
     {'name':'gender', 'field':' is a mandatory field in which ID has to be passed for Male, Female and Others as 0, 1, 2 respectively'},	
+    {'name':'How to use Suggestions ?', 'field':' From the following dropdowns select grade & section and use the respective Id\'s for user creation'}
     // 'profile',	
     // 'Grade',	
     // 'Section',	
@@ -559,7 +560,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
             }
             {searchGradeId && sectionDisp && subjects.length > 0 &&
               <Grid item xs sm={4}>
-                <Paper className={`${classes.root} common-table`}>
+                <Paper className={`${classes.root} common-table`} style={isMobile?{}:{marginTop:'40px'}}>
                   <TableContainer className={classes.container}>
                     <Table stickyHeader aria-label='sticky table'>
                       <TableHead className='table-header-row'>

@@ -269,8 +269,8 @@ const CreateClassForm = () => {
   const toggleDrawer = () => {
     const { gradeIds, sectionIds } = onlineClass;
 
-    if (!gradeIds.length || !sectionIds.length || !selectedSubject) {
-      setAlert('error', 'Please provide values for grade section and subjects');
+    if (!gradeIds.length || !sectionIds.length || !selectedSubject.length) {
+      setAlert('error', 'Please provide values for sections and subjects');
       return;
     }
     setIsDrawerOpen((prevState) => !prevState);
@@ -717,8 +717,8 @@ const CreateClassForm = () => {
                       className='create__class-textfield'
                       {...params}
                       variant='outlined'
-                      label='Subject'
-                      placeholder='Subject'
+                      label='Subjects'
+                      placeholder='Subjects'
                     />
                   )}
                 />
