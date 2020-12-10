@@ -138,6 +138,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
   const fileRef=useRef()
 
   const guidelines = [
+    {'name':'','field':'Please don\'t remove or manipulate any header'},
     {'name':'user_first_name', 'field':' is a required field, Example: Vikash'},	
     {'name':'user_middle_name', 'field':' is a non-required field, Example: Kumar'},	
     {'name':'user_last_name', 'field':' is a required field, Example: Singh'},	
@@ -400,7 +401,9 @@ const BulkUpload = ({ onUploadSuccess }) => {
         </Grid>
         <Grid item md={3} xs={12}>
           <Box display='flex' flexDirection='column'>
-            <Input type='file' inputRef={fileRef} onChange={handleFileChange} />
+            <Input type='file' inputRef={fileRef} 
+            inputProps={{accept:".xlsx,.xls"}} 
+            onChange={handleFileChange} />
             <Box display='flex' flexDirection='row' style={{ color: 'gray' }}>
               <Box p={1}>
                 {`Download Format: `}
