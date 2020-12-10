@@ -104,8 +104,8 @@ const OnlineClassFilter = () => {
   };
 
   const handleGrade = (event, value) => {
-    setSelectedGrades(value);
     if (value.length) {
+      setSelectedGrades(value);
       const ids = value.map((el) => el.grade_id);
       setGradeIds(ids);
       // listSubjects(ids);
@@ -114,12 +114,15 @@ const OnlineClassFilter = () => {
       setGradeIds([]);
       setSubjects([]);
       setSectionIds([]);
+      setSectionMappingIds([])
+      setSelectedSections([])
+      setSelectedGrades([])
     }
   };
 
   const handleSection = (event, value) => {
-    setSelectedSections(value);
     if (value.length) {
+      setSelectedSections(value);
       const ids = value.map((el) => el.section_id);
       setSectionIds(ids);
       const mapIds = value.map((el) => el.id);
@@ -127,6 +130,9 @@ const OnlineClassFilter = () => {
       listSubjects(gradeIds, ids);
     } else {
       setSectionIds([]);
+      setSectionMappingIds([])
+      setSubjectIds([])
+      setSelectedSubjects([])
     }
   };
 
@@ -161,9 +167,14 @@ const OnlineClassFilter = () => {
   };
 
   const handleSubject = (event, value) => {
-    setSelectedSubjects(value);
-    const ids = value.map((el) => el.subject__id);
-    setSubjectIds(ids);
+    if(value.length) {
+      setSelectedSubjects(value);
+      const ids = value.map((el) => el.subject__id);
+      setSubjectIds(ids);
+    }else {
+      setSubjectIds([])
+      setSelectedSubjects([])
+    }
   };
 
   const handleClear = () => {
@@ -173,6 +184,7 @@ const OnlineClassFilter = () => {
     setSectionMappingIds([])
     setSelectedGrades([])
     setSelectedSections([])
+    setSelectedSubjects([])
     setIsCancelSelected(false);
     setStartDate(moment().format('YYYY-MM-DD'));
     setEndDate(moment().format('YYYY-MM-DD'));

@@ -213,7 +213,7 @@ const ViewClassStudent = (props) => {
                   className='viewclass__student-btn'
                   variant='contained'
                   color='primary'
-                  disabled={!isJoinTime}
+                  disabled={!isJoinTime || hasClassEnded}
                   onClick={handleClassJoin}
                 >
                   Join Class

@@ -108,30 +108,36 @@ const ViewClassManagementFilters = () => {
   };
 
   const handleGrade = (event, value) => {
-    setSelectedGrades(value);
     if (value.length) {
+      setSelectedGrades(value);
       const ids = value.map((el) => el.grade_id);
       setGradeIds(ids);
       // listSubjects(ids);
       dispatch(listSections(ids, moduleId));
     } else {
-      setGradeIds([]);
-      setSubjects([]);
-      setSectionIds([]);
+      setGradeIds([])
+      setSubjectIds([])
+      setSectionIds([])
       setSectionMappingIds([])
+      setSelectedSections([])
+      setSelectedGrades([])
+      setSelectedSubjects([])
     }
   };
 
   const handleSection = (event, value) => {
-    setSelectedSections(value);
     if (value.length) {
+      setSelectedSections(value);
       const ids = value.map((el) => el.section_id);
       setSectionIds(ids);
       const mapIds = value.map((el) => el.id);
-      setSectionMappingIds(mapIds)
+      setSectionMappingIds(mapIds);      
       listSubjects(gradeIds, ids);
     } else {
       setSectionIds([]);
+      setSectionMappingIds([])
+      setSubjectIds([])
+      setSelectedSubjects([])
     }
   };
 
@@ -168,18 +174,24 @@ const ViewClassManagementFilters = () => {
   };
 
   const handleSubject = (event, value) => {
-    const ids = value.map((el) => el.subject__id);
-    setSubjectIds(ids);
-    setSelectedSubjects(value);
+    if(value.length) {
+      setSelectedSubjects(value);
+      const ids = value.map((el) => el.subject__id);
+      setSubjectIds(ids)
+    } else {
+      setSubjectIds([])
+      setSelectedSubjects([])
+    }
   };
 
   const handleClear = () => {
     setGradeIds([]);
     setSectionIds([]);
-    setSectionMappingIds([])
     setSubjectIds([]);
+    setSectionMappingIds([])
+    setSelectedSubjects([]) 
     setSelectedGrades([]);
-    setSelectedSections([]);
+    setSelectedSections([])
     setIsCancelSelected(false);
     setStartDate(moment().format('YYYY-MM-DD'));
     setEndDate(moment().format('YYYY-MM-DD'));
