@@ -356,7 +356,7 @@ const GuardianDetailsForm = ({
           <Divider className={classes.divider} />
           <div className='details-container guardian-form-container'>
             <Typography variant='h5' gutterBottom color='primary'>
-              Guardian's Details
+              Guardian Details
             </Typography>
             <Grid container spacing={4}>
               <Grid item md={4} xs={12}>
