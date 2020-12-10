@@ -132,7 +132,6 @@ const ViewClassManagementFilters = () => {
       listSubjects(gradeIds, ids);
     } else {
       setSectionIds([]);
-      setSectionMappingIds([])
     }
   };
 
@@ -180,6 +179,7 @@ const ViewClassManagementFilters = () => {
     setSectionMappingIds([])
     setSubjectIds([]);
     setSelectedGrades([]);
+    setSelectedSections([]);
     setIsCancelSelected(false);
     setStartDate(moment().format('YYYY-MM-DD'));
     setEndDate(moment().format('YYYY-MM-DD'));
