@@ -60,6 +60,7 @@ const OnlineClassFilter = () => {
   const [selectedGrades, setSelectedGrades] = useState([]);
   const [selectedSections, setSelectedSections] = useState([]);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
+  const [sectionMappingIds,setSectionMappingIds]=useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
   const {
@@ -121,6 +122,8 @@ const OnlineClassFilter = () => {
     if (value.length) {
       const ids = value.map((el) => el.section_id);
       setSectionIds(ids);
+      const mapIds = value.map((el) => el.id);
+      setSectionMappingIds(mapIds)
       listSubjects(gradeIds, ids);
     } else {
       setSectionIds([]);
@@ -149,8 +152,8 @@ const OnlineClassFilter = () => {
       url += `&subject_id=${subjectIds.join(',')}`;
     }
 
-    if (sectionIds.length) {
-      url += `&section_mapping_ids=${sectionIds.join(',')}`;
+    if (sectionMappingIds.length) {
+      url += `&section_mapping_ids=${sectionMappingIds.join(',')}`;
     } else if (gradeIds.length) {
       url += `&grade_ids=${gradeIds.join(',')}`;
     }
@@ -167,6 +170,9 @@ const OnlineClassFilter = () => {
     setGradeIds([]);
     setSectionIds([]);
     setSubjectIds([]);
+    setSectionMappingIds([])
+    setSelectedGrades([])
+    setSelectedSections([])
     setIsCancelSelected(false);
     setStartDate(moment().format('YYYY-MM-DD'));
     setEndDate(moment().format('YYYY-MM-DD'));

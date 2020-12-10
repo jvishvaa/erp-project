@@ -79,7 +79,7 @@ const TopPerformerCard = withRouter(({ history, ...props }) => {
             </span>
             <span
               className='top_performer_icon'
-              onMouseEnter={() => handleTopPerformer(index, subject.id)}
+              onClick={() => handleTopPerformer(index, subject.id)}
               onMouseLeave={handleTopPerformerRemove}
             >
               <SvgIcon
