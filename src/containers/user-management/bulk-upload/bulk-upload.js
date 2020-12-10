@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 const columns = [
-  { id: 'data', label: 'Date', minWidth: 100 },
+  { id: 'data', label: 'Date - Time', minWidth: 100 },
   { id: 'success_count', label: 'Success Count', minWidth: 100 },
   { id: 'failure_count', label: 'Failure Count', minWidth: 100 },
   { id: 'uploaded_excel', label: 'Uploaded Excel', minWidth: 100 },
@@ -225,7 +225,8 @@ const BulkUpload = () => {
                     return (
                       <TableRow hover bulkdata='checkbox' tabIndex={-1} key={index}>
                         <TableCell className={classes.tableCell}>
-                          {data.created_at?.substring(0,data.created_at.indexOf('T'))}
+                          {data.created_at?.substring(0,data.created_at.indexOf('T'))}&nbsp;<span style={{color:'#fe6b6b',fontWeight:'600'}}>-</span>&nbsp;
+                          {data.created_at?.substring(data.created_at.indexOf('T')+1,data.created_at.indexOf('T')+6)}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
                           {data.success_count}
