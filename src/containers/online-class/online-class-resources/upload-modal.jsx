@@ -15,7 +15,6 @@ import {
   EditOutlined as EditIcon,
   OpenInBrowserOutlined as OpenIcon,
 } from '@material-ui/icons';
-
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -569,16 +568,16 @@ const UploadModal = ({ id, onClose, isMobile, type }) => {
 
   return (
     <div className={classes.container}>
-      <Grid container>
-        <Grid item xs={0} sm={3} style={isMobile?{display:'none'}:{}}/>
+      <Grid container justifyContent="space-between" alignItems='center'>
+        <Grid item xs sm style={isMobile?{display:'none'}:{}}/>
         <Grid item xs={11} sm={6}>
           <Typography variant={isMobile ? 'h4' : 'h4'} className={classes.heading}>
             Upload <span style={{ textTransform: 'capitalize' }}>{type}</span> Files
           </Typography>
         </Grid>
-        <Grid item  xs={0} sm={2}  style={isMobile?{display:'none'}:{}}/>
-        <Grid item xs={1} sm={1} >
-          <CloseIcon color='primary' cursor='pointer' onClick={onClose}/>
+        <Grid item  xs sm  style={isMobile?{display:'none'}:{}}/>
+        <Grid item xs={1} sm={1}>
+          <HighlightOffIcon cursor='pointer' onClick={onClose} style={isMobile?{}:{marginLeft:'40px',marginBottom:'30px'}}/>
         </Grid>
       </Grid>
       <Divider />

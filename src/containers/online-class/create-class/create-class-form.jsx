@@ -637,7 +637,7 @@ const CreateClassForm = () => {
               /> */}
               <FormControl variant='outlined' fullWidth size='small'>
                 <InputLabel id='demo-simple-select-outlined-label'>Branches</InputLabel>
-                <Select value={5} label='Branches'>
+                <Select label='Branches'>
                   {branches.map((branch) => (
                     <MenuItem value={branch.id}>{branch.branch_name}</MenuItem>
                   ))}
