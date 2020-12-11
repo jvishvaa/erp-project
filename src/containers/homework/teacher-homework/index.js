@@ -29,10 +29,14 @@ import hwEvaluated from '../../../assets/images/hw-evaluated.svg';
 import submitted from '../../../assets/images/student-submitted.svg';
 import HomeWorkCard from '../homework-card';
 import './styles.scss';
-import qs from 'qs';
-import { fetchTeacherHomeworkDetails, setSelectedHomework } from '../../../redux/actions';
+import {
+  fetchTeacherHomeworkDetails,
+  setSelectedHomework,
+  fetchStudentsListForTeacherHomework,
+} from '../../../redux/actions';
 import HomeworkRow from './homework-row';
 import ViewHomework from './view-homework';
+import ViewHomeworkSubmission from './view-homework-submission';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -68,10 +72,16 @@ const TeacherHomework = withRouter(
     homeworkRows,
     fetchingTeacherHomework,
     onSetSelectedHomework,
+    evaluatedStudents,
+    unevaluatedStudents,
+    submittedStudents,
+    fetchingStudentLists,
+    fetchStudentLists,
     history,
     ...props
   }) => {
     const [value, setValue] = useState([null, null]);
+    const [activeView, setActiveView] = useState('list-homework');
     const classes = useStyles();
     const { setAlert } = useContext(AlertNotificationContext);
     const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -85,19 +95,30 @@ const TeacherHomework = withRouter(
     const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
     const [endDate, setEndDate] = useState(getDaysAfter(moment(), 7));
     const [viewHomework, setViewHomework] = useState({
-      isOpen: false,
       subjectId: '',
       date: '',
       subjectName: '',
     });
 
-    const handleViewHomework = ({ date, subject: subjectName, subjectId }) => {
+    const [receivedHomework, setReceivedHomework] = useState({
+      studentHomeworkId: '',
+      date: '',
+      subjectName: '',
+    });
+
+    const handleViewHomework = ({
+      date,
+      subject: subjectName,
+      subjectId,
+      homeworkId,
+    }) => {
       setViewHomework({
-        isOpen: true,
         subjectId,
         date,
         subjectName,
+        homeworkId,
       });
+      setActiveView('view-homework');
     };
 
     const handleStartDateChange = (date) => {
@@ -114,8 +135,40 @@ const TeacherHomework = withRouter(
       getTeacherHomeworkDetails(2, startDate, date);
     };
 
+    const handleSelectCol = (col) => {
+      fetchStudentLists(42);
+      setSelectedCol(col);
+      onSetSelectedHomework(col);
+    };
+
+    const handleChangeActiveView = (view) => {
+      setActiveView(view);
+    };
+
+    const handleViewReceivedHomework = (studentHomeworkId) => {
+      setReceivedHomework({
+        studentHomeworkId,
+        date: selectedCol.date,
+        subject: selectedCol.subject,
+      });
+      handleChangeActiveView('view-received-homework');
+    };
+
+    const handleCloseView = () => {
+      setViewHomework({
+        subjectId: '',
+        date: '',
+        subjectName: '',
+      });
+      setReceivedHomework({
+        studentHomeworkId: '',
+        date: '',
+        subjectName: '',
+      });
+      setActiveView('list-homework');
+    };
+
     useEffect(() => {
-      console.log('dytes***', startDate, endDate);
       getTeacherHomeworkDetails(2, startDate, endDate);
     }, [getTeacherHomeworkDetails, startDate, endDate]);
 
@@ -123,17 +176,7 @@ const TeacherHomework = withRouter(
 
     renderRef.current += 1;
 
-    console.log(
-      'rerenders ',
-      renderRef.current,
-      homeworkCols.length,
-      homeworkRows.length,
-      startDate,
-      endDate
-    );
-    // useEffect(() => {
-    //   console.log('dytes***', startDate, endDate);
-    // }, []);
+    const tableContainer = useRef(null);
 
     return (
       <>
@@ -206,12 +249,22 @@ const TeacherHomework = withRouter(
                   </MuiPickersUtilsProvider>
                 </div>
               </div>
-              {viewHomework.isOpen ? (
+              {activeView === 'view-homework' && (
                 <ViewHomework
                   viewHomework={viewHomework}
                   setViewHomework={setViewHomework}
+                  onClose={handleCloseView}
                 />
-              ) : (
+              )}
+
+              {activeView === 'view-received-homework' && (
+                <ViewHomeworkSubmission
+                  homework={receivedHomework}
+                  onClose={handleCloseView}
+                />
+              )}
+
+              {activeView === 'list-homework' && (
                 <div className='create_group_filter_container'>
                   <Grid container className='homework_container' spacing={2}>
                     <Grid xs={12} md={8} item>
@@ -227,7 +280,10 @@ const TeacherHomework = withRouter(
                           <CircularProgress color='primary' />
                         </div>
                       ) : (
-                        <Paper className={`homework_table_wrapper ${classes.root}`}>
+                        <Paper
+                          className={`homework_table_wrapper ${classes.root}`}
+                          ref={tableContainer}
+                        >
                           <TableContainer
                             className={`table table-shadow homework_table ${classes.container}`}
                           >
@@ -252,10 +308,7 @@ const TeacherHomework = withRouter(
                                     data={row}
                                     cols={homeworkCols}
                                     selectedCol={selectedCol}
-                                    setSelectedCol={(col) => {
-                                      setSelectedCol(col);
-                                      onSetSelectedHomework(col);
-                                    }}
+                                    setSelectedCol={handleSelectCol}
                                     handleViewHomework={handleViewHomework}
                                   />
                                 ))}
@@ -265,7 +318,17 @@ const TeacherHomework = withRouter(
                         </Paper>
                       )}
                     </Grid>
-                    {selectedCol.subject && <HomeWorkCard data={selectedCol} />}
+                    {selectedCol.subject && (
+                      <HomeWorkCard
+                        height={tableContainer.current?.offsetHeight}
+                        data={selectedCol}
+                        evaluatedStudents={evaluatedStudents}
+                        unevaluatedStudents={unevaluatedStudents}
+                        submittedStudents={submittedStudents}
+                        loading={fetchingStudentLists}
+                        onClick={handleViewReceivedHomework}
+                      />
+                    )}
                   </Grid>
                 </div>
               )}
@@ -281,6 +344,10 @@ const mapStateToProps = (state) => ({
   homeworkCols: state.teacherHomework.homeworkCols,
   homeworkRows: state.teacherHomework.homeworkRows,
   fetchingTeacherHomework: state.teacherHomework.fetchingTeacherHomework,
+  evaluatedStudents: state.teacherHomework.evaluatedStudents,
+  submittedStudents: state.teacherHomework.submittedStudents,
+  unevaluatedStudents: state.teacherHomework.unevaluatedStudents,
+  fetchingStudentLists: state.teacherHomework.fetchingStudentLists,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -289,6 +356,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   onSetSelectedHomework: (data) => {
     dispatch(setSelectedHomework(data));
+  },
+  fetchStudentLists: (id) => {
+    dispatch(fetchStudentsListForTeacherHomework(id));
   },
 });
 

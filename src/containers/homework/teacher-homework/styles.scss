@@ -152,12 +152,14 @@
     color: #014b7e;
     font-size: 1rem;
   }
-  .homework_submit_questions_wrapper {
-    display: flex;
+  .homework-question-container {
     margin: 20px auto;
     width: 95%;
+    &:nth-child(1) {
+      margin-top: 2rem;
+    }
   }
-  .homework_submit_questions {
+  .homework-question {
     border-bottom: 1px solid #ff6b6b;
     width: 80%;
     color: #014b7e;
@@ -166,11 +168,9 @@
   .homework_submit_tag {
     font-size: 1rem;
   }
-  .homework_question {
-    position: absolute;
+  .question {
     font-size: 1rem;
-    bottom: 0;
-    left: 0;
+    padding: 1.5rem 0 0.5rem;
   }
   .homework_submit_questions_attachment {
     width: 30% !important;
@@ -196,5 +196,50 @@
   }
   .homework_submit_button_cancel {
     margin-right: 20px !important;
+  }
+  .attachments-container {
+    .header {
+      margin: 1rem 0;
+    }
+    .attachments-list {
+      display: flex;
+      margin: 1rem 0;
+      .attachment {
+        width: 150px;
+      }
+    }
+  }
+
+  .file-card-container {
+    position: relative;
+    height: 100%;
+    &:hover {
+      .overlay-container {
+        opacity: 1;
+      }
+    }
+    .overlay-container {
+      padding: 0.5rem;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      width: 100%;
+      opacity: 0;
+      transition: 0.3s ease;
+      .overlay {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+        background-color: rgba($color: #000000, $alpha: 0.5);
+        .action-buttons {
+          margin: auto 0;
+        }
+      }
+    }
   }
 }

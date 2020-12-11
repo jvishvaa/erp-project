@@ -9,8 +9,17 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
+import { SRLWrapper } from 'simple-react-lightbox';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
+import GetAppIcon from '@material-ui/icons/GetApp';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import { Carousel } from 'react-responsive-carousel';
+import { useLightbox } from 'simple-react-lightbox';
+
 import {
   Grid,
   TextField,
@@ -31,6 +40,8 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import { fetchTeacherHomeworkDetailsById } from '../../../redux/actions';
+import placeholder from '../../../assets/images/placeholder_small.jpg';
+import Attachment from './attachment';
 
 const useStyles = makeStyles((theme) => ({
   attachmentIcon: {
@@ -60,9 +71,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ViewHomework = withRouter(
-  ({ history, viewHomework, setViewHomework, getHomeworkDetailsById, ...props }) => {
+  ({
+    history,
+    viewHomework,
+    getHomeworkDetailsById,
+    selectedHomeworkDetails,
+    onClose,
+    ...props
+  }) => {
+    const themeContext = useTheme();
+    const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
     const classes = useStyles();
-    const { isOpen, subjectId, date, subjectName } = viewHomework || {};
+    const { isOpen, subjectId, date, subjectName, homeworkId } = viewHomework || {};
     const [isQuestionWise, setIsQuestionWise] = useState(false);
     const [allQuestionAttachment, setAllQuestionAttachment] = useState([]);
     const [questionRecord, setQuestionRecord] = useState([
@@ -70,9 +90,7 @@ const ViewHomework = withRouter(
       { question: 'This is the test2 ?', attachment: [] },
       { question: 'This is the test3 ?', attachment: [] },
     ]);
-    const handleHomeworkCancel = () => {
-      setViewHomework({ isOpen: false, subjectId: '', date: '', subjectName: '' });
-    };
+
     const handleHomeworkSubmit = () => {};
 
     const uploadFileHandler = (e, index) => {
@@ -93,27 +111,8 @@ const ViewHomework = withRouter(
       setQuestionRecord(tempQuestionRecord);
     };
 
-    const FileRow = (props) => {
-      const { file, onClose, className } = props;
-      return (
-        <div className={className}>
-          <Grid container spacing={2} alignItems='center'>
-            <Grid item xs={12} md={8}>
-              <Typography className='file_name_container' variant='span'>
-                {file.name}
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={3}>
-              <CloseIcon style={{ color: '#ff6b6b' }} onClick={onClose} />
-            </Grid>
-          </Grid>
-          <Divider />
-        </div>
-      );
-    };
-
     useEffect(() => {
-      getHomeworkDetailsById(42);
+      getHomeworkDetailsById(homeworkId);
     }, []);
 
     return (
@@ -123,7 +122,7 @@ const ViewHomework = withRouter(
             <div className='homework_type'>
               <div
                 className='homework_type_item non_selected_homework_type_item'
-                onClick={handleHomeworkCancel}
+                onClick={onClose}
               >
                 All Homeworks
               </div>
@@ -140,19 +139,51 @@ const ViewHomework = withRouter(
                 <div className='homework_block homework_submit_tag'>
                   Homework - {subjectName?.split('_')[2]}, {date}
                 </div>
-                <div className='homework_block_questionwise_check'>
-                  <Checkbox
-                    onChange={() => {
-                      setIsQuestionWise(!isQuestionWise);
-                    }}
-                    color='primary'
-                    checked={isQuestionWise}
-                  />
-                  <span>Upload question wise</span>
-                </div>
               </div>
 
-              {questionRecord.map((questionItem, index) => (
+              {selectedHomeworkDetails?.map((question, index) => (
+                <div
+                  className='homework-question-container'
+                  key={`homework_student_question_${index}`}
+                >
+                  <div className='homework-question'>
+                    <div className='question'>{question.question}</div>
+                  </div>
+                  <div className='attachments-container'>
+                    <Typography component='h4' color='primary' className='header'>
+                      Attachments
+                    </Typography>
+                    <div className='attachments-list'>
+                      {question.question_files.map((url, i) => (
+                        <div className='attachment'>
+                          <Attachment
+                            key={`homework_student_question_attachment_${i}`}
+                            fileUrl={url}
+                            fileName={`Attachment-${i + 1}`}
+                            urlPrefix={`${endpoints.s3}/homework`}
+                            index={i}
+                          />
+                        </div>
+                      ))}
+                      <div style={{ position: 'absolute', visibility: 'hidden' }}>
+                        <SRLWrapper>
+                          {question.question_files.map((url, i) => (
+                            <img
+                              src={`${endpoints.s3}/homework/${url}`}
+                              onError={(e) => {
+                                e.target.src = placeholder;
+                              }}
+                              alt={`Attachment-${i + 1}`}
+                            />
+                          ))}
+                        </SRLWrapper>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {/* {questionRecord.map((questionItem, index) => (
                 <div
                   className='homework_submit_questions_wrapper'
                   key={`homework_student_question_${index}`}
@@ -183,9 +214,9 @@ const ViewHomework = withRouter(
                     </Grid>
                     <Grid item xs={10}>
                       {questionItem.attachment.map((file, i) => (
-                        <FileRow
+                        <FileCard
                           key={`homework_student_question_attachment_${i}`}
-                          file={file}
+                          fileName={file}
                           onClose={() => removeFileHandler(index, i)}
                           className={classes.fileRow}
                         />
@@ -193,14 +224,14 @@ const ViewHomework = withRouter(
                     </Grid>
                   </Grid>
                 </div>
-              ))}
+              ))} */}
 
               <div className='homework_submit_button_wrapper'>
                 <Button
                   variant='contained'
                   className='custom_button_master labelColor homework_submit_button_cancel'
                   size='medium'
-                  onClick={handleHomeworkCancel}
+                  onClick={onClose}
                 >
                   CANCEL
                 </Button>
@@ -223,7 +254,9 @@ const ViewHomework = withRouter(
   }
 );
 
-const mapStateToProps = (dispatch) => ({});
+const mapStateToProps = (state) => ({
+  selectedHomeworkDetails: state.teacherHomework.selectedHomeworkDetails,
+});
 
 const mapDispatchToProps = (dispatch) => ({
   getHomeworkDetailsById: (id) => {

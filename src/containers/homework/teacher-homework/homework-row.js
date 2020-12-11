@@ -24,6 +24,7 @@ const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol, handleViewHomewo
                 date: data.date,
                 subject: col.subject_name,
                 subjectId: col.id,
+                homeworkId: data[col.subject_name].hw_id,
               });
             }}
             handleNavigationToAddScreen={() => {
@@ -38,6 +39,7 @@ const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol, handleViewHomewo
                 date: data.date,
                 subject: col.subject_name,
                 subjectId: col.id,
+                homeworkId: data[col.subject_name].hw_id,
               });
             }}
           />

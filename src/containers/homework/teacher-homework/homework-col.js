@@ -21,60 +21,69 @@ const HomeworkCol = ({
 
   return (
     <TableCell className={isSelected ? 'selected-col' : ''}>
-      {!data.hasOwnProperty('student_submitted') ? (
-        <IconButton onClick={handleNavigationToAddScreen}>
-          <AddCircleOutlineIcon color='primary' />
-        </IconButton>
-      ) : (
-        <IconButton onClick={handleViewHomework}>
-          <SvgIcon
-            component={() => (
-              <img
-                style={{ width: '35px', padding: '5px' }}
-                src={hwGiven}
-                alt='hwGiven'
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        {!data.hasOwnProperty('student_submitted') ? (
+          <IconButton onClick={handleNavigationToAddScreen}>
+            <AddCircleOutlineIcon color='primary' />
+          </IconButton>
+        ) : (
+          <>
+            <IconButton onClick={handleViewHomework}>
+              <SvgIcon
+                component={() => (
+                  <img
+                    style={{ width: '35px', padding: '5px' }}
+                    src={hwGiven}
+                    alt='hwGiven'
+                  />
+                )}
               />
-            )}
-          />
-        </IconButton>
-      )}
-      {studentSubmitted > 0 && (
-        <Badge
-          badgeContent={studentSubmitted}
-          color='primary'
-          style={{ cursor: 'pointer' }}
-          onClick={handleClick}
-        >
-          <SvgIcon
-            component={() => (
-              <img
-                style={{ width: '35px', padding: '5px' }}
-                src={submitted}
-                alt='submitted'
-              />
-            )}
-            style={{ cursor: 'pointer' }}
-          />
-        </Badge>
-      )}
-      {hwEvaluated > 0 && (
-        <Badge
-          badgeContent={hwEvaluated}
-          color='primary'
-          style={{ cursor: 'pointer' }}
-          onClick={handleClick}
-        >
-          <SvgIcon
-            component={() => (
-              <img
-                style={{ width: '35px', padding: '5px' }}
-                src={hwEvaluatedIcon}
-                alt='hwEvaluated'
-              />
-            )}
-          />
-        </Badge>
-      )}
+            </IconButton>
+            {/* {/* {studentSubmitted > 0 && ( */}
+            <IconButton onClick={handleClick}>
+              <Badge
+                badgeContent={studentSubmitted}
+                color='primary'
+                style={{ cursor: 'pointer' }}
+                onClick={handleClick}
+              >
+                <SvgIcon
+                  component={() => (
+                    <img
+                      style={{ width: '35px', padding: '5px' }}
+                      src={submitted}
+                      alt='submitted'
+                    />
+                  )}
+                  style={{ cursor: 'pointer' }}
+                />
+              </Badge>
+            </IconButton>
+            {/* )} */}
+
+            {/* {hwEvaluated > 0 && ( */}
+            <IconButton onClick={handleClick}>
+              <Badge
+                badgeContent={hwEvaluated}
+                color='primary'
+                style={{ cursor: 'pointer' }}
+                onClick={handleClick}
+              >
+                <SvgIcon
+                  component={() => (
+                    <img
+                      style={{ width: '35px', padding: '5px' }}
+                      src={hwEvaluatedIcon}
+                      alt='hwEvaluated'
+                    />
+                  )}
+                />
+              </Badge>
+            </IconButton>
+            {/* )} */}
+          </>
+        )}
+      </div>
     </TableCell>
   );
 };
