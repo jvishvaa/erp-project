@@ -104,8 +104,8 @@ const OnlineClassFilter = () => {
   };
 
   const handleGrade = (event, value) => {
+    setSelectedGrades(value);
     if (value.length) {
-      setSelectedGrades(value);
       const ids = value.map((el) => el.grade_id);
       setGradeIds(ids);
       // listSubjects(ids);
@@ -121,8 +121,8 @@ const OnlineClassFilter = () => {
   };
 
   const handleSection = (event, value) => {
+    setSelectedSections(value);
     if (value.length) {
-      setSelectedSections(value);
       const ids = value.map((el) => el.section_id);
       setSectionIds(ids);
       const mapIds = value.map((el) => el.id);
@@ -167,14 +167,9 @@ const OnlineClassFilter = () => {
   };
 
   const handleSubject = (event, value) => {
-    if(value.length) {
       setSelectedSubjects(value);
       const ids = value.map((el) => el.subject__id);
       setSubjectIds(ids);
-    }else {
-      setSubjectIds([])
-      setSelectedSubjects([])
-    }
   };
 
   const handleClear = () => {
@@ -287,7 +282,7 @@ const OnlineClassFilter = () => {
         ) : (
           ''
         )}
-        {sectionIds.length ? (
+        {sectionMappingIds.length ? (
           <Grid item xs={12} sm={4}>
             <Autocomplete
               key={clearKey}

@@ -292,6 +292,7 @@ const GuardianDetailsForm = ({
                   <OutlinedInput
                     id='mother_mobile'
                     name='mother_mobile'
+                    inputProps={{ maxLength: 10 }}
                     onChange={formik.handleChange}
                     value={formik.values.mother_mobile}
                     label='Mobile no.'
@@ -433,6 +434,7 @@ const GuardianDetailsForm = ({
                     name='guardian_mobile'
                     onChange={formik.handleChange}
                     value={formik.values.guardian_mobile}
+                    inputProps={{maxLength:10}}
                     label='Mobile no.'
                   />
                   <FormHelperText style={{ color: 'red' }}>
