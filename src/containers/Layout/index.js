@@ -344,6 +344,10 @@ const Layout = ({ children, history }) => {
         history.push('/user-management/create-user');
         break;
       }
+      case 'bulk-upload': {
+        history.push('/user-management/bulk-upload');
+        break;
+      }
       case 'view-users': {
         history.push('/user-management/view-users');
         break;

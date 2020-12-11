@@ -60,6 +60,7 @@ const OnlineClassFilter = () => {
   const [selectedGrades, setSelectedGrades] = useState([]);
   const [selectedSections, setSelectedSections] = useState([]);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
+  const [sectionMappingIds,setSectionMappingIds]=useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
   const {
@@ -113,6 +114,9 @@ const OnlineClassFilter = () => {
       setGradeIds([]);
       setSubjects([]);
       setSectionIds([]);
+      setSectionMappingIds([])
+      setSelectedSections([])
+      setSelectedGrades([])
     }
   };
 
@@ -121,9 +125,14 @@ const OnlineClassFilter = () => {
     if (value.length) {
       const ids = value.map((el) => el.section_id);
       setSectionIds(ids);
+      const mapIds = value.map((el) => el.id);
+      setSectionMappingIds(mapIds)
       listSubjects(gradeIds, ids);
     } else {
       setSectionIds([]);
+      setSectionMappingIds([])
+      setSubjectIds([])
+      setSelectedSubjects([])
     }
   };
 
@@ -149,8 +158,8 @@ const OnlineClassFilter = () => {
       url += `&subject_id=${subjectIds.join(',')}`;
     }
 
-    if (sectionIds.length) {
-      url += `&section_mapping_ids=${sectionIds.join(',')}`;
+    if (sectionMappingIds.length) {
+      url += `&section_mapping_ids=${sectionMappingIds.join(',')}`;
     } else if (gradeIds.length) {
       url += `&grade_ids=${gradeIds.join(',')}`;
     }
@@ -158,15 +167,19 @@ const OnlineClassFilter = () => {
   };
 
   const handleSubject = (event, value) => {
-    setSelectedSubjects(value);
-    const ids = value.map((el) => el.subject__id);
-    setSubjectIds(ids);
+      setSelectedSubjects(value);
+      const ids = value.map((el) => el.subject__id);
+      setSubjectIds(ids);
   };
 
   const handleClear = () => {
     setGradeIds([]);
     setSectionIds([]);
     setSubjectIds([]);
+    setSectionMappingIds([])
+    setSelectedGrades([])
+    setSelectedSections([])
+    setSelectedSubjects([])
     setIsCancelSelected(false);
     setStartDate(moment().format('YYYY-MM-DD'));
     setEndDate(moment().format('YYYY-MM-DD'));
@@ -269,7 +282,7 @@ const OnlineClassFilter = () => {
         ) : (
           ''
         )}
-        {sectionIds.length ? (
+        {sectionMappingIds.length ? (
           <Grid item xs={12} sm={4}>
             <Autocomplete
               key={clearKey}

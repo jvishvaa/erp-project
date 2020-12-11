@@ -11,11 +11,13 @@ import {
 } from '@material-ui/core';
 import {
   CloudUpload as UploadIcon,
-  HighlightOffOutlined as CloseIcon,
   AddCircleOutline as AddIcon,
   EditOutlined as EditIcon,
   OpenInBrowserOutlined as OpenIcon,
 } from '@material-ui/icons';
+
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import CloseIcon from '@material-ui/icons/Close';
 
 import { fileUploadStyles, fileUploadButton, fileRow } from './uploadModal.styles';
 import Modal from './modal';
@@ -107,17 +109,21 @@ const FileRow = ({ file, onClose, className, isExisting, resourceType, uploadTyp
   };
 
   const imageClickHandler = (src) => {
-    axiosInstance
-      .get(src, {
-        responseType: 'blob',
-      })
-      .then((res) => {
-        const url = window.URL.createObjectURL(res.data);
-        window.open(url);
-      })
-      .catch((err) => {
-        setAlert('error', 'Failed To Get Image');
-      });
+    if(src)
+    window.open(src)
+    else
+    setAlert('error', 'Failed To Get Image');
+    // axiosInstance
+    //   .get(src, {
+    //     responseType: 'blob',
+    //   })
+    //   .then((res) => {
+    //     const url = window.URL.createObjectURL(res);
+    //     window.open(url);
+    //   })
+    //   .catch((err) => {
+    //     setAlert('error', 'Failed To Get Image');
+    //   });
   };
 
   const getView = (resourceType) => {
@@ -204,7 +210,7 @@ const FileRow = ({ file, onClose, className, isExisting, resourceType, uploadTyp
           <Typography variant='h6'>{isExisting ? name : file.name}</Typography>
         </Grid>
         <Grid item xs={6} md={2}>
-          <CloseIcon onClick={onClose} className={classes.icon} />
+          <HighlightOffIcon onClick={onClose} className={classes.icon} />
         </Grid>
         {resourceType ? (
           <Grid item xs={2}>
@@ -517,7 +523,7 @@ const UploadModal = ({ id, onClose, isMobile, type }) => {
           <Grid item xs={4} md={1}>
             <Tooltip title='Remove'>
               <IconButton onClick={() => removeLinkHandler(i, isExisting, item.id)}>
-                <CloseIcon />
+                <HighlightOffIcon />
               </IconButton>
             </Tooltip>
           </Grid>
@@ -563,9 +569,18 @@ const UploadModal = ({ id, onClose, isMobile, type }) => {
 
   return (
     <div className={classes.container}>
-      <Typography variant={isMobile ? 'h6' : 'h4'} className={classes.heading}>
-        Upload <span style={{ textTransform: 'capitalize' }}>{type}</span> Files
-      </Typography>
+      <Grid container>
+        <Grid item xs={0} sm={3} style={isMobile?{display:'none'}:{}}/>
+        <Grid item xs={11} sm={6}>
+          <Typography variant={isMobile ? 'h4' : 'h4'} className={classes.heading}>
+            Upload <span style={{ textTransform: 'capitalize' }}>{type}</span> Files
+          </Typography>
+        </Grid>
+        <Grid item  xs={0} sm={2}  style={isMobile?{display:'none'}:{}}/>
+        <Grid item xs={1} sm={1} >
+          <CloseIcon color='primary' cursor='pointer' onClick={onClose}/>
+        </Grid>
+      </Grid>
       <Divider />
       {existingUpload.map((file, i) => {
         return (

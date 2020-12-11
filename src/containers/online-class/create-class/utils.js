@@ -11,7 +11,7 @@ export const emailRegExp = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 
 export const initialFormStructure = {
   title: '',
-  subject: '',
+  subject: [],
   duration: '',
   joinLimit: '',
   startDate: '',
@@ -19,6 +19,7 @@ export const initialFormStructure = {
   tutorEmail: '',
   gradeIds: [],
   sectionIds: [],
+  subjectIds: [],
   selectedDate: moment(new Date()).format('YYYY-MM-DD'),
   selectedTime: new Date(),
   coHosts: [],

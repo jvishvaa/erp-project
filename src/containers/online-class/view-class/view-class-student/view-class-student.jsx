@@ -22,13 +22,14 @@ const ViewClassStudent = (props) => {
       join_time: joinTime,
       id: meetingId,
       zoom_meeting: {
+        is_canceled:canceledTag,
         id: zoomId,
         online_class: {
           id: olClassId,
           start_time: startTime,
           end_time: endTime,
           title = '',
-          subject: { subject_name: subjectName = '' },
+          subject: subjectName,
           join_limit: joinLimit,
         },
       } = {},
@@ -169,7 +170,7 @@ const ViewClassStudent = (props) => {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <Typography variant='h6' gutterBottom color='secondary'>
-                {subjectName}
+                {subjectName[0]?.subject_name.substring(subjectName[0]?.subject_name.lastIndexOf("_")+1)}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -195,6 +196,7 @@ const ViewClassStudent = (props) => {
         </Grid>
         <Grid item xs={12}>
           <Grid container spacing={3}>
+            {!canceledTag?
             <Grid item xs={12} sm={6}>
               {!isAccepted ? (
                 <Button
@@ -211,13 +213,25 @@ const ViewClassStudent = (props) => {
                   className='viewclass__student-btn'
                   variant='contained'
                   color='primary'
-                  disabled={!isJoinTime}
+                  disabled={!isJoinTime || hasClassEnded}
                   onClick={handleClassJoin}
                 >
                   Join Class
                 </Button>
               )}
             </Grid>
+            :
+            <Grid item xs={12} sm={6}>
+                <Button
+                  className='viewclass__student-btn'
+                  variant='contained'
+                  color='primary'
+                  disabled={canceledTag}
+                  onClick={handleClassAccept}
+                >
+                  Canceled Class
+                </Button>
+            </Grid>}
             {isResourceAvailable ? (
               <Grid item xs={12} sm={6}>
                 <Button

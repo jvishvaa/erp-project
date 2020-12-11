@@ -36,13 +36,13 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
           }
           else
           {
-            setAlert('error','Network Error!')
+            setAlert('error',result.data.message)
             setSections([])
             setSelectedSection([])
           }
         })
         .catch(error=>{
-          setAlert('error', 'Sections Unavailable!');
+          setAlert('error', error.message);
           setSelectedSection([])
           setSections([])
         })

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { useDispatch } from 'react-redux';
+import SimpleReactLightbox from 'simple-react-lightbox';
 import CreateGroup from './containers/communication/create-group/create-group';
 import ViewGroup from './containers/communication/view-group/view-group';
 import MessageCredit from './containers/communication/message-credit/message-credit';
@@ -35,7 +36,7 @@ import { fetchLoggedInUserDetails } from './redux/actions';
 import TeacherHomework from './containers/homework/teacher-homework';
 import HomeworkAdmin from './containers/homework/homework-admin';
 import AddHomework from './containers/homework/teacher-homework/add-homework';
-import SimpleReactLightbox from 'simple-react-lightbox';
+import BulkUpload from './containers/user-management/bulk-upload/bulk-upload';
 
 const theme = createMuiTheme({
   palette: {

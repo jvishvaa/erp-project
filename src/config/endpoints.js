@@ -11,6 +11,10 @@ export default {
   profile: {
     userDetails: '/erp_user/user-data/',
   },
+  userManagement: {
+    bulkUpload: '/erp_user/uploaded-users-status/',
+    academicYear: '/erp_user/list-academic_year/'
+  },
   communication: {
     roles: '/erp_user/roles/',
     branches: '/erp_user/branch/',

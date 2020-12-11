@@ -163,7 +163,7 @@ const SectionTable = () => {
         is_delete: true,
       })
       .then((result) => {
-        if (result.status === 200) {
+        if (result.data.status_code === 200) {
           {
             setDelFlag(!delFlag);
             setLoading(false);
@@ -218,11 +218,11 @@ const SectionTable = () => {
         `${endpoints.masterManagement.sectionsTable}?page=${page}&page_size=${limit}&section=${searchSection}&grade=${searchGrade}`
       )
       .then((result) => {
-        if (result.status === 200) {
+        if (result.data.status_code === 200) {
           setTotalCount(result.data.result.count);
           setSections(result.data.result.results);
         } else {
-          setAlert('error', result.data.message);
+          setAlert('error', result.data.error_message);
         }
       })
       .catch((error) => {
