@@ -138,7 +138,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
   const fileRef=useRef()
 
   const guidelines = [
-    {'name':'','field':'Please don\'t remove any header or manipulate in the file format'},
+    {'name':'','field':'Please don\'t remove or manipulate any header in the file format'},
     {'name':'user_first_name', 'field':' is a required field, Example: Vikash'},	
     {'name':'user_middle_name', 'field':' is a non-required field, Example: Kumar'},	
     {'name':'user_last_name', 'field':' is a required field, Example: Singh'},	
