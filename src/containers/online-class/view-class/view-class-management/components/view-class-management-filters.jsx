@@ -108,8 +108,8 @@ const ViewClassManagementFilters = () => {
   };
 
   const handleGrade = (event, value) => {
+    setSelectedGrades(value);
     if (value.length) {
-      setSelectedGrades(value);
       const ids = value.map((el) => el.grade_id);
       setGradeIds(ids);
       // listSubjects(ids);
@@ -126,8 +126,8 @@ const ViewClassManagementFilters = () => {
   };
 
   const handleSection = (event, value) => {
+    setSelectedSections(value);
     if (value.length) {
-      setSelectedSections(value);
       const ids = value.map((el) => el.section_id);
       setSectionIds(ids);
       const mapIds = value.map((el) => el.id);
@@ -138,6 +138,7 @@ const ViewClassManagementFilters = () => {
       setSectionMappingIds([])
       setSubjectIds([])
       setSelectedSubjects([])
+      setSelectedSections([])
     }
   };
 
@@ -174,14 +175,9 @@ const ViewClassManagementFilters = () => {
   };
 
   const handleSubject = (event, value) => {
-    if(value.length) {
-      setSelectedSubjects(value);
-      const ids = value.map((el) => el.subject__id);
-      setSubjectIds(ids)
-    } else {
-      setSubjectIds([])
-      setSelectedSubjects([])
-    }
+    setSelectedSubjects(value);
+    const ids = value.map((el) => el.subject__id);
+    setSubjectIds(ids);
   };
 
   const handleClear = () => {
