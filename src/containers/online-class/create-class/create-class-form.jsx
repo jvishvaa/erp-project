@@ -99,10 +99,6 @@ const CreateClassForm = () => {
     dispatch(listGradesCreateClass(moduleId));
   }, [moduleId]);
 
-  useEffect(()=>{
-    setTimeout(()=>setOnlineClass((prevState) => ({ ...prevState, selectedTime: new Date() })),30000)
-  },[new Date()])
-
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
