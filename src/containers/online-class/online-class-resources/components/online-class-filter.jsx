@@ -117,6 +117,7 @@ const OnlineClassFilter = () => {
       setSectionMappingIds([])
       setSelectedSections([])
       setSelectedGrades([])
+      setSelectedSubjects([])
     }
   };
 
@@ -133,6 +134,7 @@ const OnlineClassFilter = () => {
       setSectionMappingIds([])
       setSubjectIds([])
       setSelectedSubjects([])
+      setSelectedSections([])
     }
   };
 
@@ -282,7 +284,7 @@ const OnlineClassFilter = () => {
         ) : (
           ''
         )}
-        {sectionMappingIds.length ? (
+        {sectionIds.length ? (
           <Grid item xs={12} sm={4}>
             <Autocomplete
               key={clearKey}
