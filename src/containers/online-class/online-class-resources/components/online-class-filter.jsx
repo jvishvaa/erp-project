@@ -133,6 +133,7 @@ const OnlineClassFilter = () => {
       setSectionMappingIds([])
       setSubjectIds([])
       setSelectedSubjects([])
+      setSelectedSections([])
     }
   };
 

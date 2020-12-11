@@ -138,7 +138,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
   const fileRef=useRef()
 
   const guidelines = [
-    {'name':'','field':'Please don\'t remove or manipulate any header'},
+    {'name':'','field':'Please don\'t remove any header or manipulate in the file format'},
     {'name':'user_first_name', 'field':' is a required field, Example: Vikash'},	
     {'name':'user_middle_name', 'field':' is a non-required field, Example: Kumar'},	
     {'name':'user_last_name', 'field':' is a required field, Example: Singh'},	
@@ -215,8 +215,17 @@ const BulkUpload = ({ onUploadSuccess }) => {
 
   const handleFileChange = (event) => {
     const { files } = event.target;
-    const file = files[0];
-    setFile(file);
+    const fil = files[0];
+    if(fil.name.lastIndexOf('.xls')>0||fil.name.lastIndexOf('.xlsx')>0)
+    {
+      setFile(fil)
+    }
+    else
+    {
+      setFile(null)
+      fileRef.current.value=null;
+      setAlert('error','Only excel file is acceptable either with .xls or .xlsx extension')
+    }
   };
 
   const handleClearAll = () => {
@@ -232,40 +241,40 @@ const BulkUpload = ({ onUploadSuccess }) => {
     formData.append('branch', branch);
     formData.append('academic_year', year);
     formData.append('file', file);
-    if (branch && year && file) {
-      setUploadFlag(true)
-      axios.post('/erp_user/upload_bulk_user/', formData)
-        .then(result => {
-          if (result.data.status_code === 200) {
-            setBranch(null);
-            setYear(null);
-            setFile(null);
-            onUploadSuccess();
-            setAlert('success', result.data.message);
+      if (branch && year && file) {
+        setUploadFlag(true)
+        axios.post('/erp_user/upload_bulk_user/', formData)
+          .then(result => {
+            if (result.data.status_code === 200) {
+              setBranch(null);
+              setYear(null);
+              setFile(null);
+              onUploadSuccess();
+              setAlert('success', result.data.message);
+              setUploadFlag(false)
+              history.push('/user-management/bulk-upload')
+            } else {
+              setAlert('error', result.data.description);
+              setUploadFlag(false)
+            }
+          })
+          .catch(error => {
+            setAlert('error', error.response.data.description);
             setUploadFlag(false)
-            history.push('/user-management/bulk-upload')
-          } else {
-            setAlert('error', result.data.description);
-            setUploadFlag(false)
-          }
-        })
-        .catch(error => {
-          setAlert('error', error.response.data.description);
-          setUploadFlag(false)
-        })
-    }
-    else {
-      if (!branch) {
-        setAlert('error', 'Branch is required!')
+          })
       }
-      else if (!year) {
-        setAlert('error', 'Year is required!')
-      }
-      else if (!file) {
-        setAlert('error', 'File is required!')
+      else {
+        if (!branch) {
+          setAlert('error', 'Branch is required!')
+        }
+        else if (!year) {
+          setAlert('error', 'Year is required!')
+        }
+        else if (!file) {
+          setAlert('error', 'File is required!')
+        }
       }
     }
-  };
 
   const handleBranchChange = (event, data) => {
     setBranch(data?.id);
