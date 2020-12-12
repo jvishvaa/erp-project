@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { useDispatch } from 'react-redux';
+import SimpleReactLightbox from 'simple-react-lightbox';
 import CreateGroup from './containers/communication/create-group/create-group';
 import ViewGroup from './containers/communication/view-group/view-group';
 import MessageCredit from './containers/communication/message-credit/message-credit';
@@ -35,7 +36,7 @@ import { fetchLoggedInUserDetails } from './redux/actions';
 import TeacherHomework from './containers/homework/teacher-homework';
 import HomeworkAdmin from './containers/homework/homework-admin';
 import AddHomework from './containers/homework/teacher-homework/add-homework';
-import BulkUpload from './containers/user-management/bulk-upload/bulk-upload'
+import BulkUpload from './containers/user-management/bulk-upload/bulk-upload';
 
 const theme = createMuiTheme({
   palette: {
@@ -80,96 +81,100 @@ function App() {
   return (
     <div className='App'>
       <Router>
-        <AlertNotificationProvider>
-          <OnlineclassViewProvider>
-            <ThemeProvider theme={theme}>
-              <Switch>
-                <Route path='/profile'>{({ match }) => <Profile match={match} />}</Route>
-                <Route path='/role-management'>
-                  {({ match }) => <RoleManagement match={match} />}
-                </Route>
-                <Route path='/user-management'>
-                  {({ match }) => <UserManagement match={match} />}
-                </Route>
-                {/* <Route exact path='/view-users'>
+        <SimpleReactLightbox>
+          <AlertNotificationProvider>
+            <OnlineclassViewProvider>
+              <ThemeProvider theme={theme}>
+                <Switch>
+                  <Route path='/profile'>
+                    {({ match }) => <Profile match={match} />}
+                  </Route>
+                  <Route path='/role-management'>
+                    {({ match }) => <RoleManagement match={match} />}
+                  </Route>
+                  <Route path='/user-management'>
+                    {({ match }) => <UserManagement match={match} />}
+                  </Route>
+                  {/* <Route exact path='/view-users'>
                   {({ match }) => <ViewUsers match={match} />}
                 </Route> */}
-                <Route path='/communication/messagelog'>
-                  {({ match }) => <MessageLog match={match} />}
-                </Route>
-                <Route path='/dashboard'>
-                  {({ match }) => <Dashboard match={match} />}
-                </Route>
-                <Route exact path='/'>
-                  {({ match, history }) => <Login match={match} history={history} />}
-                </Route>
-                {/* <Route exact path='/assignrole'>
+                  <Route path='/communication/messagelog'>
+                    {({ match }) => <MessageLog match={match} />}
+                  </Route>
+                  <Route path='/dashboard'>
+                    {({ match }) => <Dashboard match={match} />}
+                  </Route>
+                  <Route exact path='/'>
+                    {({ match, history }) => <Login match={match} history={history} />}
+                  </Route>
+                  {/* <Route exact path='/assignrole'>
                   {({ match }) => <AssignRole match={match} />}
                 </Route> */}
-                <Route exact path='/communication/addgroup'>
-                  {({ match }) => <CreateGroup match={match} />}
-                </Route>
-                <Route exact path='/communication/smscredit'>
-                  {({ match }) => <MessageCredit match={match} />}
-                </Route>
-                <Route exact path='/communication/viewgroup'>
-                  {({ match }) => <ViewGroup match={match} />}
-                </Route>
-                <Route exact path='/communication/sendmessage'>
-                  {({ match }) => <SendMessage match={match} />}
-                </Route>
-                <Route exact path='/online-class/create-class'>
-                  {({ match }) => <CreateClass match={match} />}
-                </Route>
-                <Route exact path='/online-class/view-class'>
-                  {({ match }) => <ViewClassManagement match={match} />}
-                </Route>
-                <Route exact path='/online-class/resource'>
-                  {({ match }) => <OnlineClassResource match={match} />}
-                </Route>
-                <Route exact path='/online-class/attendee-list/:id'>
-                  {({ match }) => <AttendeeList match={match} />}
-                </Route>
-                <Route exact path='/online-class/attend-class'>
-                  {({ match }) => <ViewClassStudentCollection match={match} />}
-                </Route>
+                  <Route exact path='/communication/addgroup'>
+                    {({ match }) => <CreateGroup match={match} />}
+                  </Route>
+                  <Route exact path='/communication/smscredit'>
+                    {({ match }) => <MessageCredit match={match} />}
+                  </Route>
+                  <Route exact path='/communication/viewgroup'>
+                    {({ match }) => <ViewGroup match={match} />}
+                  </Route>
+                  <Route exact path='/communication/sendmessage'>
+                    {({ match }) => <SendMessage match={match} />}
+                  </Route>
+                  <Route exact path='/online-class/create-class'>
+                    {({ match }) => <CreateClass match={match} />}
+                  </Route>
+                  <Route exact path='/online-class/view-class'>
+                    {({ match }) => <ViewClassManagement match={match} />}
+                  </Route>
+                  <Route exact path='/online-class/resource'>
+                    {({ match }) => <OnlineClassResource match={match} />}
+                  </Route>
+                  <Route exact path='/online-class/attendee-list/:id'>
+                    {({ match }) => <AttendeeList match={match} />}
+                  </Route>
+                  <Route exact path='/online-class/attend-class'>
+                    {({ match }) => <ViewClassStudentCollection match={match} />}
+                  </Route>
 
-                <Route exact path='/master-mgmt/subject-table'>
-                  {({ match }) => <SubjectTable match={match} />}
-                </Route>
-                <Route exact path='/master-mgmt/section-table'>
-                  {({ match }) => <SectionTable match={match} />}
-                </Route>
-                <Route exact path='/master-mgmt/grade-table'>
-                  {({ match }) => <GradeTable match={match} />}
-                </Route>
-                <Route exact path='/master-mgmt/academic-year-table'>
-                  {({ match }) => <AcademicYearTable match={match} />}
-                </Route>
-                <Route exact path='/master-mgmt/message-type-table'>
-                  {({ match }) => <MessageTypeTable match={match} />}
-                </Route>
+                  <Route exact path='/master-mgmt/subject-table'>
+                    {({ match }) => <SubjectTable match={match} />}
+                  </Route>
+                  <Route exact path='/master-mgmt/section-table'>
+                    {({ match }) => <SectionTable match={match} />}
+                  </Route>
+                  <Route exact path='/master-mgmt/grade-table'>
+                    {({ match }) => <GradeTable match={match} />}
+                  </Route>
+                  <Route exact path='/master-mgmt/academic-year-table'>
+                    {({ match }) => <AcademicYearTable match={match} />}
+                  </Route>
+                  <Route exact path='/master-mgmt/message-type-table'>
+                    {({ match }) => <MessageTypeTable match={match} />}
+                  </Route>
 
-                <Route exact path='/homework/homework-card'>
-                  {({ match }) => <HomeworkCard match={match} />}
-                </Route>
+                  <Route exact path='/homework/homework-card'>
+                    {({ match }) => <HomeworkCard match={match} />}
+                  </Route>
 
-                <Route exact path='/homework/student'>
-                  {({ match }) => <StudentHomework match={match} />}
-                </Route>
-                <Route exact path='/homework/teacher'>
-                  {({ match }) => <TeacherHomework match={match} />}
-                </Route>
-                <Route exact path='/homework/add/:date/:subject/:id'>
-                  {({ match }) => <AddHomework match={match} />}
-                </Route>
-                <Route exact path='/homework/admin'>
-                  {({ match }) => <HomeworkAdmin match={match} />}
-                </Route>
-              </Switch>
-            </ThemeProvider>
-          </OnlineclassViewProvider>
-        </AlertNotificationProvider>
+                  <Route exact path='/homework/student'>
+                    {({ match }) => <StudentHomework match={match} />}
+                  </Route>
+                  <Route exact path='/homework/teacher'>
+                    {({ match }) => <TeacherHomework match={match} />}
+                  </Route>
+                  <Route exact path='/homework/add/:date/:subject/:id'>
+                    {({ match }) => <AddHomework match={match} />}
+                  </Route>
+                  <Route exact path='/homework/admin'>
+                    {({ match }) => <HomeworkAdmin match={match} />}
+                  </Route>
+                </Switch>
+              </ThemeProvider>
+            </OnlineclassViewProvider>
+          </AlertNotificationProvider>
+        </SimpleReactLightbox>
       </Router>
     </div>
   );

@@ -78,4 +78,5 @@ export default {
     getTopPerformer: '/academic/hw-top-performer/',
     getRating: '/academic/student_subject_rating/',
   },
+  s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
 };
