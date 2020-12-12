@@ -6,7 +6,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -26,14 +26,15 @@ import {
   Attachment as AttachmentIcon,
   HighlightOffOutlined as CloseIcon,
 } from '@material-ui/icons';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
 import axiosInstance from '../../../../../config/axios';
 import endpoints from '../../../../../config/endpoints';
-import './homework-submission.css';
+import './homework-submission.scss';
 import { SRLWrapper } from 'simple-react-lightbox';
 import placeholder from '../../../../../assets/images/placeholder_small.jpg';
 import Attachment from '../../../teacher-homework/attachment';
-import '../../../teacher-homework/styles.scss'
 
 const useStyles = makeStyles((theme) => ({
   attachmentIcon: {
@@ -77,7 +78,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     setHomeworkSubmission({ isOpen: false, subjectId: '', date: '', subjectName: '' });
   };
   const handleHomeworkSubmit = () => {};
-  const [subjectQuestions,setSubjectQuestions]=useState([])
+  const [subjectQuestions, setSubjectQuestions] = useState([]);
   const uploadFileHandler = (e, index) => {
     if (e.target.files[0]) {
       const tempQuestionRecord = questionRecord.slice();
@@ -87,16 +88,17 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     }
   };
 
-  useEffect(()=>{
-    axiosInstance.get(`/academic/42/hw-questions/?hw_status=1`)
-    .then(result=>{
-      setSubjectQuestions(result.data.data)
-    })
-    .catch(error=>{
-      // setAlert('error',)
-    })
-  },[])
-  
+  useEffect(() => {
+    axiosInstance
+      .get(`/academic/42/hw-questions/?hw_status=1`)
+      .then((result) => {
+        setSubjectQuestions(result.data.data);
+      })
+      .catch((error) => {
+        // setAlert('error',)
+      });
+  }, []);
+
   const removeFileHandler = (questionIndex, i) => {
     const tempQuestionRecord = questionRecord.slice();
     const newFiles = questionRecord[questionIndex].attachment.filter(
@@ -123,6 +125,19 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
         <Divider />
       </div>
     );
+  };
+
+  const scrollableContainer = useRef(null);
+  const handleScroll = (dir) => {
+    if (dir === 'left') {
+      scrollableContainer.current.scrollLeft -= 150;
+    } else {
+      scrollableContainer.current.scrollLeft += 150;
+      console.log(
+        scrollableContainer.current.scrollLeft,
+        scrollableContainer.current.scrollRight
+      );
+    }
   };
 
   return (
@@ -160,15 +175,15 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
               </div>
             </div>
 
-            {subjectQuestions.map((questionItem, index) => (
+            {subjectQuestions.map((question, index) => (
               <div
-                className='homework_submit_questions_wrapper'
+                className='homework-question-container'
                 key={`homework_student_question_${index}`}
               >
-                <div className='homework_submit_questions'>
-                  <span className='homework_question'>{questionItem.question}</span>
+                <div className='homework-question'>
+                  <span className='question'>{question.question}</span>
                 </div>
-                <Grid
+                {/* <Grid
                   container
                   className='homework_submit_questions_attachment'
                   alignItems='center'
@@ -188,27 +203,69 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                         className={classes.fileInput}
                       />
                     </IconButton>
-                  </Grid>
+                  </Grid> */}
 
-                  <div className='attachments-container'>
-                    <Typography component='h4' color='primary' className='header'>
-                      Attachments
-                    </Typography>
-                    <div className='attachments-list'>
-                      {questionItem.question_files.map((url, i) => (
-                        <div className='attachment'>
-                          <Attachment
-                            key={`homework_student_question_attachment_${i}`}
-                            fileUrl={url}
-                            fileName={`Attachment-${i + 1}`}
-                            urlPrefix={`${endpoints.s3}/homework`}
-                            index={i}
-                          />
-                        </div>
+                <div className='attachments-container'>
+                  <Typography component='h4' color='primary' className='header'>
+                    Attachments
+                  </Typography>
+                  <div className='attachments-list-outer-container'>
+                    <div className='prev-btn'>
+                      <IconButton onClick={() => handleScroll('left')}>
+                        <ArrowBackIosIcon />
+                      </IconButton>
+                    </div>
+                    <div
+                      className='attachments-list'
+                      ref={scrollableContainer}
+                      onScroll={(e) => {
+                        e.preventDefault();
+                        console.log('scrolled');
+                      }}
+                    >
+                      {question.question_files.map((url, i) => (
+                        <>
+                          <div className='attachment'>
+                            <Attachment
+                              key={`homework_student_question_attachment_${i}`}
+                              fileUrl={url}
+                              fileName={`Attachment-${i + 1}`}
+                              urlPrefix={`${endpoints.s3}/homework`}
+                              index={i}
+                            />
+                          </div>
+                          {/* <div className='attachment'>
+                            <Attachment
+                              key={`homework_student_question_attachment_${i}`}
+                              fileUrl={url}
+                              fileName={`Attachment-${i + 1}`}
+                              urlPrefix={`${endpoints.s3}/homework`}
+                              index={i}
+                            />
+                          </div>
+                          <div className='attachment'>
+                            <Attachment
+                              key={`homework_student_question_attachment_${i}`}
+                              fileUrl={url}
+                              fileName={`Attachment-${i + 1}`}
+                              urlPrefix={`${endpoints.s3}/homework`}
+                              index={i}
+                            />
+                          </div> */}
+                          {/* <div className='attachment'>
+                  <Attachment
+                    key={`homework_student_question_attachment_${i}`}
+                    fileUrl={url}
+                    fileName={`Attachment-${i + 1}`}
+                    urlPrefix={`${endpoints.s3}/homework`}
+                    index={i}
+                  />
+                </div> */}
+                        </>
                       ))}
                       <div style={{ position: 'absolute', visibility: 'hidden' }}>
                         <SRLWrapper>
-                          {questionItem.question_files.map((url, i) => (
+                          {question.question_files.map((url, i) => (
                             <img
                               src={`${endpoints.s3}/homework/${url}`}
                               onError={(e) => {
@@ -220,9 +277,17 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                         </SRLWrapper>
                       </div>
                     </div>
+                    <div className='next-btn'>
+                      <IconButton onClick={() => handleScroll('right')}>
+                        <ArrowForwardIosIcon color='primary' />
+                      </IconButton>
+                    </div>
                   </div>
-              
-                  {/* <Grid item xs={10}>
+                </div>
+              </div>
+            ))}
+
+            {/* <Grid item xs={10}>
                     {questionItem.attachment.map((file, i) => (
                       <FileRow
                         key={`homework_student_question_attachment_${i}`}
@@ -232,9 +297,9 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                       />
                     ))}
                   </Grid> */}
-                </Grid>
-              </div>
-            ))}
+            {/* </Grid> */}
+            {/* </div> */}
+            {/* ))} */}
 
             <div className='homework_submit_button_wrapper'>
               <Button
