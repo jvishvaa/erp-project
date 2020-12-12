@@ -30,6 +30,10 @@ import { AlertNotificationContext } from '../../../../../context-api/alert-conte
 import axiosInstance from '../../../../../config/axios';
 import endpoints from '../../../../../config/endpoints';
 import './homework-submission.css';
+import { SRLWrapper } from 'simple-react-lightbox';
+import placeholder from '../../../../../assets/images/placeholder_small.jpg';
+import Attachment from '../../../teacher-homework/attachment';
+import '../../../teacher-homework/styles.scss'
 
 const useStyles = makeStyles((theme) => ({
   attachmentIcon: {
@@ -73,7 +77,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     setHomeworkSubmission({ isOpen: false, subjectId: '', date: '', subjectName: '' });
   };
   const handleHomeworkSubmit = () => {};
-
+  const [subjectQuestions,setSubjectQuestions]=useState([])
   const uploadFileHandler = (e, index) => {
     if (e.target.files[0]) {
       const tempQuestionRecord = questionRecord.slice();
@@ -83,6 +87,16 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     }
   };
 
+  useEffect(()=>{
+    axiosInstance.get(`/academic/42/hw-questions/?hw_status=1`)
+    .then(result=>{
+      setSubjectQuestions(result.data.data)
+    })
+    .catch(error=>{
+      // setAlert('error',)
+    })
+  },[])
+  
   const removeFileHandler = (questionIndex, i) => {
     const tempQuestionRecord = questionRecord.slice();
     const newFiles = questionRecord[questionIndex].attachment.filter(
@@ -146,7 +160,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
               </div>
             </div>
 
-            {questionRecord.map((questionItem, index) => (
+            {subjectQuestions.map((questionItem, index) => (
               <div
                 className='homework_submit_questions_wrapper'
                 key={`homework_student_question_${index}`}
@@ -175,7 +189,40 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                       />
                     </IconButton>
                   </Grid>
-                  <Grid item xs={10}>
+
+                  <div className='attachments-container'>
+                    <Typography component='h4' color='primary' className='header'>
+                      Attachments
+                    </Typography>
+                    <div className='attachments-list'>
+                      {questionItem.question_files.map((url, i) => (
+                        <div className='attachment'>
+                          <Attachment
+                            key={`homework_student_question_attachment_${i}`}
+                            fileUrl={url}
+                            fileName={`Attachment-${i + 1}`}
+                            urlPrefix={`${endpoints.s3}/homework`}
+                            index={i}
+                          />
+                        </div>
+                      ))}
+                      <div style={{ position: 'absolute', visibility: 'hidden' }}>
+                        <SRLWrapper>
+                          {questionItem.question_files.map((url, i) => (
+                            <img
+                              src={`${endpoints.s3}/homework/${url}`}
+                              onError={(e) => {
+                                e.target.src = placeholder;
+                              }}
+                              alt={`Attachment-${i + 1}`}
+                            />
+                          ))}
+                        </SRLWrapper>
+                      </div>
+                    </div>
+                  </div>
+              
+                  {/* <Grid item xs={10}>
                     {questionItem.attachment.map((file, i) => (
                       <FileRow
                         key={`homework_student_question_attachment_${i}`}
@@ -184,7 +231,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                         className={classes.fileRow}
                       />
                     ))}
-                  </Grid>
+                  </Grid> */}
                 </Grid>
               </div>
             ))}
