@@ -626,10 +626,14 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                   <Grid xs={12} lg={3} item>
                     <Grid className='homework_right_wrapper' container>
                       <Grid lg={12} className='homework_right_wrapper_items' item>
-                        <HomeworkTimeline />
+                        {studentHomeworkData.header.is_hw_ration && 
+                          <HomeworkTimeline />
+                        }
                       </Grid>
                       <Grid lg={12} className='homework_right_wrapper_items' item>
-                        <TopPerformerCard subjects={mendaterySubjects} />
+                        {studentHomeworkData.header.is_top_performers &&
+                          <TopPerformerCard subjects={mendaterySubjects} />
+                        }
                       </Grid>
                     </Grid>
                   </Grid>

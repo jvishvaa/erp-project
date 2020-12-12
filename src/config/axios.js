@@ -2,9 +2,9 @@ import axios from 'axios';
 
 const axiosInstance = axios.create({
   baseURL: `${window.location.origin}/qbox`,
-  //baseURL: 'https://erpnew.letseduvate.com/qbox',
+  // baseURL: 'https://erpnew.letseduvate.com/qbox',
   // baseURL: 'http://13.234.252.195:443',
-  //baseURL: 'http://localhost:8000/qbox',
+  // baseURL: 'http://localhost:8000/qbox',
 });
 
 // ****** enable the following code to attach authorization headers on each request and for logging out when an unauthorize request is send *****//

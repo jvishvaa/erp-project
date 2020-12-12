@@ -90,10 +90,11 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   useEffect(()=>{
     axiosInstance.get(`/academic/42/hw-questions/?hw_status=1`)
     .then(result=>{
+      if(result.data.status_code===200)
       setSubjectQuestions(result.data.data)
     })
     .catch(error=>{
-      // setAlert('error',)
+      // setAlert('error',error,mes)
     })
   },[])
   
