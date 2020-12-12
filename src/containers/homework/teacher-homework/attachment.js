@@ -11,42 +11,44 @@ const Attachment = (props) => {
   const { openLightbox } = useLightbox();
 
   return (
-    <div className='file-card-container'>
-      <div className='overlay-container'>
-        <div className='overlay'>
-          <Typography
-            component='h6'
-            style={{ color: '#ffffff', textAlign: 'center', position: 'absolute' }}
-          >
-            {fileName}
-          </Typography>
-          <div className='action-buttons'>
-            <IconButton
-              onClick={() => {
-                openLightbox();
-              }}
+    <>
+      <div className='file-card-container'>
+        <div className='overlay-container'>
+          <div className='overlay'>
+            <Typography
+              component='h6'
+              style={{ color: '#ffffff', textAlign: 'center', position: 'absolute' }}
             >
-              <VisibilityIcon style={{ color: '#ffffff' }} />
-            </IconButton>
+              {fileName}
+            </Typography>
+            <div className='action-buttons'>
+              <IconButton
+                onClick={() => {
+                  openLightbox();
+                }}
+              >
+                <VisibilityIcon style={{ color: '#ffffff' }} />
+              </IconButton>
 
-            <IconButton>
-              <a href={`${urlPrefix}/${fileUrl}`} download>
-                <GetAppIcon style={{ color: '#ffffff' }} />
-              </a>
-            </IconButton>
+              <IconButton>
+                <a href={`${urlPrefix}/${fileUrl}`} download>
+                  <GetAppIcon style={{ color: '#ffffff' }} />
+                </a>
+              </IconButton>
+            </div>
           </div>
         </div>
+        <img
+          className='attachment-file'
+          src={`${urlPrefix}/${fileUrl}`}
+          alt='file'
+          onError={(e) => {
+            e.target.src = placeholder;
+          }}
+          style={{ width: '100%', padding: '0.5rem' }}
+        />
       </div>
-      <img
-        className='attachment-file'
-        src={`${urlPrefix}/${fileUrl}`}
-        alt='file'
-        onError={(e) => {
-          e.target.src = placeholder;
-        }}
-        style={{ width: '100%', padding: '0.5rem' }}
-      />
-    </div>
+    </>
   );
 };
 

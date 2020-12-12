@@ -75,7 +75,7 @@ const ViewHomework = withRouter(
     return (
       <div className='view-homework-container create_group_filter_container'>
         <Grid container spacing={2} className='message_log_container'>
-          <Grid item className='homework_type_wrapper'>
+          <Grid item md={2} className='homework_type_wrapper'>
             <div className='homework_type'>
               <div
                 className='homework_type_item non_selected_homework_type_item'
@@ -90,7 +90,7 @@ const ViewHomework = withRouter(
               </div>
             </div>
           </Grid>
-          <Grid item lg={10}>
+          <Grid item md={10}>
             <div className='homework_submit_wrapper'>
               <div className='homework_block_wrapper'>
                 <div className='homework_block homework_submit_tag'>
@@ -131,8 +131,8 @@ const ViewHomework = withRouter(
                 </div>
                 <div>
                   <FormControl variant='outlined' fullWidth size='small'>
-                    <InputLabel htmlFor='component-outlined'>Overall remarks</InputLabel>
-                    <OutlinedInput id='remarks' name='remarks' label='Overall remarks' />
+                    <InputLabel htmlFor='component-outlined'>Overall score</InputLabel>
+                    <OutlinedInput id='score' name='remarks' label='Overall remarks' />
                   </FormControl>
                 </div>
               </div>
