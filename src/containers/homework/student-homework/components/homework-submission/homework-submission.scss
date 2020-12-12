@@ -61,77 +61,79 @@
 }
 
 .homework-question-container {
-  margin: 20px auto;
-  width: 95%;
-  &:nth-child(1) {
-    margin-top: 2rem;
-  }
-
-  .homework-question {
-    border-bottom: 1px solid #ff6b6b;
-    width: 80%;
-    color: #014b7e;
-    position: relative;
-  }
-
-  .attachments-container {
-    .header {
-      margin: 1rem 0;
+  &.student-view {
+    margin: 20px auto;
+    width: 95%;
+    &:nth-child(1) {
+      margin-top: 2rem;
     }
-    .attachments-list-outer-container {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      .prev-btn,
-      .next-btn {
-        width: 45px;
-      }
-      .attachments-list {
-        &::-webkit-scrollbar {
-          display: none;
-        }
-        scroll-behavior: smooth;
-        flex-grow: 1;
-        overflow-x: auto;
-        display: flex;
+
+    .homework-question {
+      border-bottom: 1px solid #ff6b6b;
+      width: 80%;
+      color: #014b7e;
+      position: relative;
+    }
+
+    .attachments-container {
+      .header {
         margin: 1rem 0;
-        width: calc(100% - 90px);
-        .attachment {
-          flex-shrink: 0;
-          width: 150px;
+      }
+      .attachments-list-outer-container {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        .prev-btn,
+        .next-btn {
+          width: 45px;
+        }
+        .attachments-list {
+          &::-webkit-scrollbar {
+            display: none;
+          }
+          scroll-behavior: smooth;
+          flex-grow: 1;
+          overflow-x: auto;
+          display: flex;
+          margin: 1rem 0;
+          width: calc(100% - 90px);
+          .attachment {
+            flex-shrink: 0;
+            width: 150px;
+          }
         }
       }
     }
-  }
 
-  .file-card-container {
-    position: relative;
-    height: 100%;
-    &:hover {
-      .overlay-container {
-        opacity: 1;
-      }
-    }
-    .overlay-container {
-      padding: 0.5rem;
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
+    .file-card-container {
+      position: relative;
       height: 100%;
-      width: 100%;
-      opacity: 0;
-      transition: 0.3s ease;
-      .overlay {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+      &:hover {
+        .overlay-container {
+          opacity: 1;
+        }
+      }
+      .overlay-container {
+        padding: 0.5rem;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
         height: 100%;
         width: 100%;
-        background-color: rgba($color: #000000, $alpha: 0.5);
-        .action-buttons {
-          margin: auto 0;
+        opacity: 0;
+        transition: 0.3s ease;
+        .overlay {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          height: 100%;
+          width: 100%;
+          background-color: rgba($color: #000000, $alpha: 0.5);
+          .action-buttons {
+            margin: auto 0;
+          }
         }
       }
     }

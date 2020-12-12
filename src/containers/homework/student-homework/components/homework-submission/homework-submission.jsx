@@ -177,7 +177,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
 
             {subjectQuestions.map((question, index) => (
               <div
-                className='homework-question-container'
+                className='homework-question-container student-view'
                 key={`homework_student_question_${index}`}
               >
                 <div className='homework-question'>
