@@ -84,16 +84,16 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const handleHomeworkSubmit = () => {
 
     let count = 0
-    if(isQuestionWise)
-    for (let i = 0; i < attachmentDataDisplay.length; i++) {
-      if (attachmentDataDisplay[i].length > 0)
-        count += 1
-    }
+    if (isQuestionWise)
+      for (let i = 0; i < attachmentDataDisplay.length; i++) {
+        if (attachmentDataDisplay[i].length > 0)
+          count += 1
+      }
     else
-    for (let i = 0; i < bulkData.length; i++) {
-      if (bulkData[i].length > 0)
-        count += 1
-    }
+      for (let i = 0; i < bulkData.length; i++) {
+        if (bulkData[i].length > 0)
+          count += 1
+      }
 
     let requestData = {
       "homework": homeworkSubmission.homeworkId,
@@ -303,137 +303,208 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
             </div>
 
 
-            {subjectQuestions.map((question, index) => (
-              <div
-                className='homework-question-container student-view'
-                key={`homework_student_question_${index}`}
-              >
-                <div className='homework-question'>
-                  <span className='question'>{homeworkSubmission.status === 1 ? question.question : question.id}</span>
-                </div>
-
-                {isQuestionWise &&
-                  <Grid
-                    container
-                    className='homework_submit_questions_attachment'
-                    alignItems='center'
-                    spacing={2}
-                    justify='space-between'
+            {homeworkSubmission.status === 1 &&
+              <>
+                {subjectQuestions.map((question, index) => (
+                  <div
+                    className='homework-question-container student-view'
+                    key={`homework_student_question_${index}`}
                   >
-                    <Grid item xs={2} className={classes.wrapper}>
-                      <IconButton
-                        fontSize='small'
-                        disableRipple
-                        component='label'
-                        className={classes.attachmentIcon}
-                      >
-                        <AttachmentIcon fontSize='small' className={classes.Attachment} />
-                        <input
-                          type='file'
-                          onChange={(e) => uploadFileHandler(e, index)}
-                          className={classes.fileInput}
-                        />
-                      </IconButton>
-                    </Grid>
-                    <Grid item xs={10}>
-                      {attachmentDataDisplay[index]?.map((file, i) => (
-                        <FileRow
-                          key={`homework_student_question_attachment_${i}`}
-                          file={file}
-                          index={i}
-                          onClose={() => removeFileHandler(index, i)}
-                        />
-                      ))}
-                    </Grid>
-                  </Grid>
-                }
+                    <div className='homework-question'>
+                      <span className='question'>{question.question}</span>
+                    </div>
 
-                {((homeworkSubmission.status === 1 && question.question_files.length > 0)||
-                (homeworkSubmission.status === 2 && question.question_file.length > 0))
-                &&
-                  <div className='attachments-container'>
-                    <Typography component='h4' color='primary' className='header'>
-                      Attachments
-                  </Typography>
-                    <div className='attachments-list-outer-container'>
-                      <div className='prev-btn'>
-                        <IconButton onClick={() => handleScroll('left')}>
-                          <ArrowBackIosIcon />
-                        </IconButton>
-                      </div>
-                      <div
-                        className='attachments-list'
-                        ref={scrollableContainer}
-                        onScroll={(e) => {
-                          e.preventDefault();
-                          console.log('scrolled');
-                        }}
+                    {isQuestionWise &&
+                      <Grid
+                        container
+                        className='homework_submit_questions_attachment'
+                        alignItems='center'
+                        spacing={2}
+                        justify='space-between'
                       >
-                        {homeworkSubmission.status === 1 &&
-                          question.question_files.map((url, i) => (
-                            <>
-                              <div className='attachment'>
-                                <Attachment
-                                  key={`homework_student_question_attachment_${i}`}
-                                  fileUrl={url}
-                                  fileName={`Attachment-${i + 1}`}
-                                  urlPrefix={`${endpoints.s3}/homework`}
-                                  index={i}
-                                />
-                              </div>
-                            </>
-                          ))
-                        }
-                        {homeworkSubmission.status === 2 &&
-                          question.question_file.map((url, i) => (
-                            <>
-                              <div className='attachment'>
-                                <Attachment
-                                  key={`homework_student_question_attachment_${i}`}
-                                  fileUrl={url}
-                                  fileName={`Attachment-${i + 1}`}
-                                  urlPrefix={`${endpoints.s3}/homework`}
-                                  index={i}
-                                />
-                              </div>
-                            </>
-                          ))
-                        }
-                        <div style={{ position: 'absolute', visibility: 'hidden' }}>
-                          <SRLWrapper>
-                            {homeworkSubmission.status === 1 &&
-                              question.question_files.map((url, i) => (
-                                <img
-                                  src={`${endpoints.s3}/homework/${url}`}
-                                  onError={(e) => {
-                                    e.target.src = placeholder;
-                                  }}
-                                  alt={`Attachment-${i + 1}`}
-                                />
-                              ))}
+                        <Grid item xs={2} className={classes.wrapper}>
+                          <IconButton
+                            fontSize='small'
+                            disableRipple
+                            component='label'
+                            className={classes.attachmentIcon}
+                          >
+                            <AttachmentIcon fontSize='small' className={classes.Attachment} />
+                            <input
+                              type='file'
+                              onChange={(e) => uploadFileHandler(e, index)}
+                              className={classes.fileInput}
+                            />
+                          </IconButton>
+                        </Grid>
+                        <Grid item xs={10}>
+                          {attachmentDataDisplay[index]?.map((file, i) => (
+                            <FileRow
+                              key={`homework_student_question_attachment_${i}`}
+                              file={file}
+                              index={i}
+                              onClose={() => removeFileHandler(index, i)}
+                            />
+                          ))}
+                        </Grid>
+                      </Grid>
+                    }
+
+                    {((homeworkSubmission.status === 1 && question.question_files.length > 0) ||
+                      (homeworkSubmission.status === 2 && question.question_file.length > 0)) &&
+                      (question.question_files.length > 0) &&
+                      <div className='attachments-container'>
+                        <Typography component='h4' color='primary' className='header'>
+                          Attachments
+                  </Typography>
+                        <div className='attachments-list-outer-container'>
+                          <div className='prev-btn'>
+                            <IconButton onClick={() => handleScroll('left')}>
+                              <ArrowBackIosIcon />
+                            </IconButton>
+                          </div>
+                          <div
+                            className='attachments-list'
+                            ref={scrollableContainer}
+                            onScroll={(e) => {
+                              e.preventDefault();
+                              console.log('scrolled');
+                            }}
+                          >
+                            {/* {homeworkSubmission.status === 1 && */}
+                            {question.question_files.map((url, i) => (
+                              <>
+                                <div className='attachment'>
+                                  <Attachment
+                                    key={`homework_student_question_attachment_${i}`}
+                                    fileUrl={url}
+                                    fileName={`Attachment-${i + 1}`}
+                                    urlPrefix={`${endpoints.s3}/homework`}
+                                    index={i}
+                                  />
+                                </div>
+                              </>
+                            ))
+                            }
+                            {/* } */}
                             {homeworkSubmission.status === 2 &&
                               question.question_file.map((url, i) => (
-                                <img
-                                  src={`${endpoints.s3}/homework/${url}`}
-                                  onError={(e) => {
-                                    e.target.src = placeholder;
-                                  }}
-                                  alt={`Attachment-${i + 1}`}
-                                />
-                              ))}
-                          </SRLWrapper>
+                                <>
+                                  <div className='attachment'>
+                                    <Attachment
+                                      key={`homework_student_question_attachment_${i}`}
+                                      fileUrl={url}
+                                      fileName={`Attachment-${i + 1}`}
+                                      urlPrefix={`${endpoints.s3}/homework`}
+                                      index={i}
+                                    />
+                                  </div>
+                                </>
+                              ))
+                            }
+                            <div style={{ position: 'absolute', visibility: 'hidden' }}>
+                              <SRLWrapper>
+                                {question.question_files.map((url, i) => (
+                                  <img
+                                    src={`${endpoints.s3}/homework/${url}`}
+                                    onError={(e) => {
+                                      e.target.src = placeholder;
+                                    }}
+                                    alt={`Attachment-${i + 1}`}
+                                  />
+                                ))}
+                                {homeworkSubmission.status === 2 &&
+                                  question.question_file.map((url, i) => (
+                                    <img
+                                      src={`${endpoints.s3}/homework/${url}`}
+                                      onError={(e) => {
+                                        e.target.src = placeholder;
+                                      }}
+                                      alt={`Attachment-${i + 1}`}
+                                    />
+                                  ))}
+                              </SRLWrapper>
+                            </div>
+                          </div>
+                          <div className='next-btn'>
+                            <IconButton onClick={() => handleScroll('right')}>
+                              <ArrowForwardIosIcon color='primary' />
+                            </IconButton>
+                          </div>
                         </div>
                       </div>
-                      <div className='next-btn'>
-                        <IconButton onClick={() => handleScroll('right')}>
-                          <ArrowForwardIosIcon color='primary' />
-                        </IconButton>
-                      </div>
-                    </div>
+                    }
                   </div>
-                }
-              </div>
-            ))}
+                ))}
+              </>
+            }
+
+            {/* {homeworkSubmission.status === 2 &&
+              <>
+                {subjectQuestions.map((question, index) => (
+                  <div
+                    className='homework-question-container student-view'
+                    key={`homework_student_question_${index}`}
+                  >
+                    {(question.question_files.length > 0) &&
+                      <div className='attachments-container'>
+                        <Typography component='h4' color='primary' className='header'>
+                          Attachments
+                  </Typography>
+                        <div className='attachments-list-outer-container'>
+                          <div className='prev-btn'>
+                            <IconButton onClick={() => handleScroll('left')}>
+                              <ArrowBackIosIcon />
+                            </IconButton>
+                          </div>
+                          <div
+                            className='attachments-list'
+                            ref={scrollableContainer}
+                            onScroll={(e) => {
+                              e.preventDefault();
+                              console.log('scrolled');
+                            }}
+                          >
+
+                            {subjectQuestions.map((question, i) => (
+                              <>
+                                <div className='attachment'>
+                                  <Attachment
+                                    key={`homework_student_question_attachment_${i}`}
+                                    fileUrl={question.question_file}
+                                    fileName={`Attachment-${i + 1}`}
+                                    urlPrefix={`${endpoints.s3}/homework`}
+                                    index={i}
+                                  />
+                                </div>
+                              </>
+                            ))}
+                            <div style={{ position: 'absolute', visibility: 'hidden' }}>
+                              <SRLWrapper>
+                                {subjectQuestions.map((question, i) => (
+                                  <img
+                                    src={`${endpoints.s3}/homework/${url}`}
+                                    onError={(e) => {
+                                      e.target.src = placeholder;
+                                    }}
+                                    alt={`Attachment-${i + 1}`}
+                                  />
+                                ))}
+                              </SRLWrapper>
+                            </div>
+                          </div>
+                          <div className='next-btn'>
+                            <IconButton onClick={() => handleScroll('right')}>
+                              <ArrowForwardIosIcon color='primary' />
+                            </IconButton>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                ))}
+              </>
+            } */}
 
             {homeworkSubmission.status === 1 ?
               <div style={{ margin: '15px' }}>

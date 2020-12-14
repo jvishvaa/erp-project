@@ -80,5 +80,6 @@ export default {
     fileUpload: '/academic/upload-question-file/',
     submitHomework: '/academic/homework-submission/',
   },
-  s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
+  // s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
+  s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/'
 };

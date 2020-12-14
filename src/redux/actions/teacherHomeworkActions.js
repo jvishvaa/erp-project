@@ -93,10 +93,7 @@ export const fetchTeacherHomeworkDetails = (moduleId, startDate, endDate) => asy
   dispatch({ type: FETCH_TEACHER_HOMEWORK_REQUEST });
   try {
     const response = await axios.get(
-      `/academic/student-homework/?module_id=${moduleId}`
-
-      // &start_date=${startDate}&end_date=${endDate}
-
+      `/academic/student-homework/?module_id=${moduleId}&start_date=${startDate}&end_date=${endDate}`
     );
     const { header, rows } = response.data.data;
     // const {
