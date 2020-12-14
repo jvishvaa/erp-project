@@ -66,7 +66,7 @@ const SubmittedQuestion = ({
         </Button>
       </div>
       <div className='homework-question'>
-        <div className='question'>{question.question}</div>
+        <div className='question'>{question.homework_question}</div>
       </div>
       <div className='attachments-container'>
         <Typography component='h4' color='primary' className='header'>
@@ -86,7 +86,7 @@ const SubmittedQuestion = ({
               console.log('scrolled');
             }}
           >
-            {question.question_file.map((url, i) => (
+            {question.submitted_files.map((url, i) => (
               <>
                 <div className='attachment'>
                   <Attachment
@@ -128,7 +128,7 @@ const SubmittedQuestion = ({
             ))}
             <div style={{ position: 'absolute', visibility: 'hidden' }}>
               <SRLWrapper>
-                {question.question_file.map((url, i) => (
+                {question.submitted_files.map((url, i) => (
                   <img
                     src={`${endpoints.s3}/homework/${url}`}
                     onError={(e) => {

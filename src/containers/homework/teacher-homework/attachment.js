@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLightbox } from 'simple-react-lightbox';
 
 import { IconButton, Typography } from '@material-ui/core';
@@ -8,6 +8,7 @@ import placeholder from '../../../assets/images/placeholder_small.jpg';
 
 const Attachment = (props) => {
   const { fileName, urlPrefix, fileUrl, index } = props;
+  const [imagePreviewNotAvailable, setImagePreviewNotAvailable] = useState(false);
   const { openLightbox } = useLightbox();
 
   return (
@@ -21,21 +22,23 @@ const Attachment = (props) => {
             >
               {fileName}
             </Typography>
-            <div className='action-buttons'>
-              <IconButton
-                onClick={() => {
-                  openLightbox();
-                }}
-              >
-                <VisibilityIcon style={{ color: '#ffffff' }} />
-              </IconButton>
+            {!imagePreviewNotAvailable && (
+              <div className='action-buttons'>
+                <IconButton
+                  onClick={() => {
+                    openLightbox();
+                  }}
+                >
+                  <VisibilityIcon style={{ color: '#ffffff' }} />
+                </IconButton>
 
-              <IconButton>
-                <a href={`${urlPrefix}/${fileUrl}`} download>
-                  <GetAppIcon style={{ color: '#ffffff' }} />
-                </a>
-              </IconButton>
-            </div>
+                <IconButton>
+                  <a href={`${urlPrefix}/${fileUrl}`} download>
+                    <GetAppIcon style={{ color: '#ffffff' }} />
+                  </a>
+                </IconButton>
+              </div>
+            )}
           </div>
         </div>
         <img
@@ -44,6 +47,7 @@ const Attachment = (props) => {
           alt='file'
           onError={(e) => {
             e.target.src = placeholder;
+            setImagePreviewNotAvailable(true);
           }}
           style={{ width: '100%', padding: '0.5rem' }}
         />
