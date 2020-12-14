@@ -19,6 +19,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Grid, TextField, Button, SvgIcon, Icon, Slide } from '@material-ui/core';
 import MomentUtils from '@date-io/moment';
+import moment from 'moment';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -74,11 +75,12 @@ const StudentHomework = withRouter(({ history, ...props }) => {
     subjectId: '',
     date: '',
     subjectName: '',
+    status: 1,
   });
   const [loading, setLoading] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [selectedFromDate, setSelectedFromDate] = useState();
-  const [selectedToDate, setSelectedToDate] = useState();
+  const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
+  const [endDate, setEndDate] = useState(getDaysAfter(moment(), 6));
   const [selectedOtherLanguages, setSelectedOtherLanguages] = useState();
   const [selectedOtherSubjects, setSelectedOtherSubjects] = useState();
   const [optionalSubjects, setOptionalSubjects] = useState([]);
@@ -157,7 +159,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
   const getTableDetails = async () => {
     try {
       const result = await axiosInstance.get(
-        endpoints.homeworkStudent.getStudentSubjects
+        `${endpoints.homeworkStudent.getStudentSubjects}&start_date=${startDate}&end_date=${endDate}`
       );
       if (result.data.status_code === 200) {
         setStudentHomeworkData(result.data.data);
@@ -276,25 +278,48 @@ const StudentHomework = withRouter(({ history, ...props }) => {
     setIsSelectedCell({ row, index });
   };
 
-  const handleOpenHomework = (id, classDate, subjectName) => {
+  const handleOpenHomework = (id, classDate, subjectName, status) => {
     setHomeworkSubmission({
       isOpen: true,
-      subjectId: id,
+      homeworkId: id,
       date: classDate,
       subjectName,
+      status,
     });
   };
-  const handleFromDateChange = (event, value) => {
-    setSelectedFromDate(value);
+
+  const handleStartDateChange = (date) => {
+    const endDate = getDaysAfter(date.clone(), 6);
+    setEndDate(endDate);
+    setStartDate(date.format('YYYY-MM-DD'));
+    // getTeacherHomeworkDetails(2, date, endDate);
   };
 
-  const handleToDateChange = (event, value) => {
-    setSelectedToDate(value);
+  const handleEndDateChange = (date) => {
+    const startDate = getDaysBefore(date.clone(), 6);
+    setStartDate(startDate);
+    setEndDate(date.format('YYYY-MM-DD'));
+    // getTeacherHomeworkDetails(2, startDate, date);
   };
+
+  function getDaysAfter(date, amount) {
+    return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
+  }
+  function getDaysBefore(date, amount) {
+    return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
+  }
+
+  // const handleFromDateChange = (event, value) => {
+  //   setSelectedFromDate(value);
+  // };
+
+  // const handleToDateChange = (event, value) => {
+  //   setSelectedToDate(value);
+  // };
 
   useEffect(() => {
     getTableDetails();
-  }, []);
+  }, [homeworkSubmission.isOpen, startDate, endDate]);
 
   useEffect(() => {
     if (studentHomeworkData.rows.length) {
@@ -326,14 +351,15 @@ const StudentHomework = withRouter(({ history, ...props }) => {
               <MuiPickersUtilsProvider utils={MomentUtils} className='date_provider'>
                 <Grid item xs={12} sm={3}>
                   <KeyboardDatePicker
-                    margin='normal'
+                    // clearable
+                    // margin='normal'
                     id='date-picker-dialog'
-                    label='From'
+                    label='Start Date'
                     className='message_log_date_piker'
                     format='YYYY-MM-DD'
-                    value={selectedFromDate}
-                    onChange={handleFromDateChange}
-                    maxDate={new Date()}
+                    value={startDate}
+                    onChange={(date) => handleStartDateChange(date)}
+                    // maxDate={new Date()}
                     KeyboardButtonProps={{
                       'aria-label': 'change date',
                     }}
@@ -343,12 +369,12 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                   <KeyboardDatePicker
                     margin='normal'
                     id='date-picker-dialog'
-                    label='To'
+                    label='End Date'
                     className='message_log_date_piker'
                     format='YYYY-MM-DD'
-                    value={selectedToDate}
-                    onChange={handleToDateChange}
-                    maxDate={new Date()}
+                    value={endDate}
+                    onChange={(date) => handleEndDateChange(date)}
+                    // maxDate={new Date()}
                     KeyboardButtonProps={{
                       'aria-label': 'change date',
                     }}
@@ -431,132 +457,190 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                 setHomeworkSubmission={setHomeworkSubmission}
               />
             ) : (
-              <div className='create_group_filter_container'>
-                <Grid container className='homework_container' spacing={2}>
-                  <Grid xs={12} lg={9} item>
-                    <Paper className={`homework_table_wrapper ${classes.root}`}>
-                      <TableContainer
-                        className={`table table-shadow homework_table ${classes.container}`}
-                      >
-                        <Table stickyHeader aria-label='sticky table'>
-                          <TableHead className='view_groups_header'>
-                            <TableRow>
-                              {messageRows.header.map((headers, i) =>
-                                headers.isOptional ? (
-                                  <TableCell className='homework_header homework_header_dropdown_wrapper'>
-                                    <span className='homework_student_header_count'>
-                                      {optionalSubjects.length}
-                                    </span>
-                                    <Autocomplete
-                                      size='small'
-                                      onChange={handleOtherLanguage}
-                                      value={selectedOtherLanguages}
-                                      id='message_log-branch'
-                                      className='homework_student_other_language'
-                                      options={optionalSubjects}
-                                      getOptionLabel={(option) => option?.subject_slag}
-                                      filterSelectedOptions
-                                      disableClearable
-                                      renderInput={(params) => (
-                                        <TextField
-                                          className='homework_student_other_language-textfield'
-                                          {...params}
-                                          placeholder='Languages'
-                                        />
-                                      )}
-                                    />
-                                  </TableCell>
-                                ) : headers.isOthers ? (
-                                  <TableCell className='homework_header homework_header_dropdown_wrapper'>
-                                    <span className='homework_student_header_count'>
-                                      {otherSubjects.length}
-                                    </span>
-                                    <Autocomplete
-                                      size='small'
-                                      onChange={handleOtherSubject}
-                                      value={selectedOtherSubjects}
-                                      id='message_log-branch'
-                                      className='homework_student_other_language'
-                                      options={otherSubjects}
-                                      getOptionLabel={(option) => option?.subject_slag}
-                                      filterSelectedOptions
-                                      disableClearable
-                                      renderInput={(params) => (
-                                        <TextField
-                                          className='homework_student_other_language-textfield'
-                                          {...params}
-                                          placeholder='Others'
-                                        />
-                                      )}
-                                    />
-                                  </TableCell>
-                                ) : (
-                                  <TableCell className='homework_header'>
-                                    {headers.subject_slag}
-                                  </TableCell>
-                                )
-                              )}
-                            </TableRow>
-                          </TableHead>
-                          <TableBody className='table_body'>
-                            {messageRows.rows.map((row, rowIndex) => (
-                              <TableRow
-                                // onClick={() => handleUserDetails(row.id)}
-                                key={`message_log_details${rowIndex}`}
-                              >
+                <div className='create_group_filter_container'>
+                  <Grid container className='homework_container' spacing={2}>
+                    <Grid xs={12} lg={9} item>
+                      <Paper className={`homework_table_wrapper ${classes.root}`}>
+                        <TableContainer
+                          className={`table table-shadow homework_table ${classes.container}`}
+                        >
+                          <Table stickyHeader aria-label='sticky table'>
+                            <TableHead className='view_groups_header'>
+                              <TableRow>
                                 {messageRows.header.map((headers, i) =>
-                                  headers.subject_slag === 'date' ? (
-                                    <TableCell>{row.date}</TableCell>
-                                  ) : row[headers.subject_slag].isHomework ? (
-                                    <TableCell
-                                      align='middle'
-                                      onClick={() => handleCellClick(rowIndex, i)}
-                                      className={
-                                        isSelectedCell.row === rowIndex &&
-                                        isSelectedCell.index === i
-                                          ? 'selected'
-                                          : 'not_selected'
-                                      }
-                                    >
-                                      {row[headers.subject_slag].isSubmited ? (
-                                        <SvgIcon
-                                          component={() => (
-                                            <img
-                                              style={{
-                                                width: '35px',
-                                                padding: '5px',
-                                                cursor: 'pointer',
-                                              }}
-                                              src={hwGiven}
-                                              alt='given'
+                                  headers.isOptional ? (
+                                    <TableCell className='homework_header homework_header_dropdown_wrapper'>
+                                      <span className='homework_student_header_count'>
+                                        {optionalSubjects.length}
+                                      </span>
+                                      <Autocomplete
+                                        size='small'
+                                        onChange={handleOtherLanguage}
+                                        value={selectedOtherLanguages}
+                                        id='message_log-branch'
+                                        className='homework_student_other_language'
+                                        options={optionalSubjects}
+                                        getOptionLabel={(option) => option?.subject_slag}
+                                        filterSelectedOptions
+                                        disableClearable
+                                        contentEditable
+                                        renderInput={(params) => (
+                                          <TextField
+                                            className='homework_student_other_language-textfield'
+                                            {...params}
+                                            placeholder='Languages'
+                                          />
+                                        )}
+                                      />
+                                    </TableCell>
+                                  ) : headers.isOthers ? (
+                                    <TableCell className='homework_header homework_header_dropdown_wrapper'>
+                                      <span className='homework_student_header_count'>
+                                        {otherSubjects.length}
+                                      </span>
+                                      <Autocomplete
+                                        size='small'
+                                        onChange={handleOtherSubject}
+                                        value={selectedOtherSubjects}
+                                        id='message_log-branch'
+                                        className='homework_student_other_language'
+                                        options={otherSubjects}
+                                        getOptionLabel={(option) => option?.subject_slag}
+                                        filterSelectedOptions
+                                        disableClearable
+                                        renderInput={(params) => (
+                                          <TextField
+                                            className='homework_student_other_language-textfield'
+                                            {...params}
+                                            placeholder='Others'
+                                          />
+                                        )}
+                                      />
+                                    </TableCell>
+                                  ) : (
+                                        <TableCell className='homework_header'>
+                                          {headers.subject_slag}
+                                        </TableCell>
+                                      )
+                                )}
+                              </TableRow>
+                            </TableHead>
+                            <TableBody className='table_body'>
+                              {messageRows.rows.map((row, rowIndex) => (
+                                <TableRow
+                                  // onClick={() => handleUserDetails(row.id)}
+                                  key={`message_log_details${rowIndex}`}
+                                >
+                                  {messageRows.header.map((headers, i) =>
+                                    headers.subject_slag === 'date' ? (
+                                      <TableCell>{row.date}</TableCell>
+                                    ) : row[headers.subject_slag].isHomework ? (
+                                      <TableCell
+                                        align='middle'
+                                        onClick={() => handleCellClick(rowIndex, i)}
+                                        className={
+                                          isSelectedCell.row === rowIndex &&
+                                            isSelectedCell.index === i
+                                            ? 'selected'
+                                            : 'not_selected'
+                                        }
+                                      >
+                                        {row[headers.subject_slag].isSubmited ? (
+                                          <span
+                                            onClick={() =>
+                                              handleOpenHomework(
+                                                row[headers.subject_slag].homeworkId,
+                                                row.date,
+                                                headers.subject_slag,
+                                                2
+                                              )
+                                            }
+                                          >
+                                            <SvgIcon
+                                              component={() => (
+                                                <img
+                                                  style={{
+                                                    width: '35px',
+                                                    padding: '5px',
+                                                    cursor: 'pointer',
+                                                  }}
+                                                  src={hwGiven}
+                                                  alt='given'
+                                                />
+                                              )}
                                             />
-                                          )}
-                                        />
-                                      ) : new Date(
+                                          </span>
+                                        ) : new Date(
                                           new Date().getFullYear(),
                                           new Date().getMonth(),
                                           new Date().getDate()
                                         ) >= new Date(row.date) ? (
-                                        <SvgIcon
-                                          component={() => (
-                                            <img
-                                              className='hw_not_submitted'
-                                              src={hwFileNotSubmitted}
-                                              alt='homeworkunopened'
-                                            />
-                                          )}
-                                        />
-                                      ) : null}
-                                      {row[headers.subject_slag].isOpened ? (
-                                        <span
-                                          onClick={() =>
-                                            handleOpenHomework(
-                                              row[headers.subject_slag].id,
-                                              row.date,
-                                              headers.subject_slag
-                                            )
-                                          }
-                                        >
+                                              <SvgIcon
+                                                component={() => (
+                                                  <img
+                                                    className='hw_not_submitted'
+                                                    src={hwFileNotSubmitted}
+                                                    alt='homeworkunopened'
+                                                  />
+                                                )}
+                                              />
+                                            ) : null}
+                                        {!row[headers.subject_slag].isSubmited ?
+                                          <>
+                                            {row[headers.subject_slag].isOpened ? (
+                                              <span
+                                                onClick={() =>
+                                                  handleOpenHomework(
+                                                    row[headers.subject_slag].homeworkId,
+                                                    row.date,
+                                                    headers.subject_slag,
+                                                    1
+                                                  )
+                                                }
+                                              >
+                                                <SvgIcon
+                                                  component={() => (
+                                                    <img
+                                                        style={{
+                                                        width: '35px',
+                                                        padding: '5px',
+                                                        cursor: 'pointer',
+                                                      }}
+                                                      src={hwFileOpened}
+                                                      alt='homeworkopened'
+                                                    />
+                                                  )}
+                                                />
+                                              </span>
+                                            ) : (
+                                                <span
+                                                  onClick={() =>
+                                                    handleOpenHomework(
+                                                      row[headers.subject_slag].homeworkId,
+                                                      row.date,
+                                                      headers.subject_slag,
+                                                      1
+                                                    )
+                                                  }
+                                                >
+                                                  <SvgIcon
+                                                    component={() => (
+                                                      <img
+                                                        style={{
+                                                          width: '35px',
+                                                          padding: '5px',
+                                                          cursor: 'pointer',
+                                                        }}
+                                                        src={hwFileUnopened}
+                                                        alt='homeworkunopened'
+                                                      />
+                                                    )}
+                                                  />
+                                                </span>
+                                              )}
+                                          </>
+                                          : null}
+                                        {row[headers.subject_slag].isEvaluted ? (
                                           <SvgIcon
                                             component={() => (
                                               <img
@@ -565,77 +649,41 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                                   padding: '5px',
                                                   cursor: 'pointer',
                                                 }}
-                                                src={hwFileOpened}
-                                                alt='homeworkopened'
+                                                src={studentHomeworkEvaluted}
+                                                alt='homeworkEvaluted'
                                               />
                                             )}
                                           />
-                                        </span>
-                                      ) : (
-                                        <span
-                                          onClick={() =>
-                                            handleOpenHomework(
-                                              row[headers.subject_slag].id,
-                                              row.date,
-                                              headers.subject_slag
-                                            )
-                                          }
-                                        >
-                                          <SvgIcon
-                                            component={() => (
-                                              <img
-                                                style={{
-                                                  width: '35px',
-                                                  padding: '5px',
-                                                  cursor: 'pointer',
-                                                }}
-                                                src={hwFileUnopened}
-                                                alt='homeworkunopened'
-                                              />
-                                            )}
-                                          />
-                                        </span>
-                                      )}
-                                      {row[headers.subject_slag].isEvaluted ? (
-                                        <SvgIcon
-                                          component={() => (
-                                            <img
-                                              style={{
-                                                width: '35px',
-                                                padding: '5px',
-                                                cursor: 'pointer',
-                                              }}
-                                              src={studentHomeworkEvaluted}
-                                              alt='homeworkEvaluted'
-                                            />
-                                          )}
-                                        />
-                                      ) : null}
-                                    </TableCell>
-                                  ) : (
-                                    <TableCell />
-                                  )
-                                )}
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                    </Paper>
-                  </Grid>
-                  <Grid xs={12} lg={3} item>
-                    <Grid className='homework_right_wrapper' container>
-                      <Grid lg={12} className='homework_right_wrapper_items' item>
-                        <HomeworkTimeline />
-                      </Grid>
-                      <Grid lg={12} className='homework_right_wrapper_items' item>
-                        <TopPerformerCard subjects={mendaterySubjects} />
+                                        ) : null}
+                                      </TableCell>
+                                    ) : (
+                                          <TableCell />
+                                        )
+                                  )}
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                      </Paper>
+                    </Grid>
+                    <Grid xs={12} lg={3} item>
+                      <Grid className='homework_right_wrapper' container>
+                        <Grid lg={12} className='homework_right_wrapper_items' item>
+                          {studentHomeworkData.header.is_hw_ration &&
+                            <HomeworkTimeline />
+                          }
+                        </Grid>
+                        <Grid lg={12} className='homework_right_wrapper_items' item>
+                          {studentHomeworkData.header.is_top_performers &&
+                            <TopPerformerCard subjects={mendaterySubjects} />
+                          }
+                        </Grid>
                       </Grid>
                     </Grid>
                   </Grid>
-                </Grid>
-              </div>
-            )}
+                </div>
+              )}
           </div>
         </div>
       </Layout>

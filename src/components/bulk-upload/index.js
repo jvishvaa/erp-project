@@ -195,7 +195,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
 
   useEffect(() => {
     if (branch)
-      axiosInstance.get(`${endpoints.academics.grades}?branch_id=5`)
+      axiosInstance.get(`${endpoints.academics.grades}?branch_id=${branch}`)
         .then(result => {
           if (result.status === 200) {
             setGrades(result.data.data);
@@ -297,7 +297,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
       setSubjects([])
       setSearchSection([])
       setSectionDisp('')
-      axiosInstance.get(`${endpoints.academics.sections}?branch_id=${role_details.branch[0]}&grade_id=${value.grade_id}`)
+      axiosInstance.get(`${endpoints.academics.sections}?branch_id=${branch}&grade_id=${value.grade_id}`)
         .then(result => {
           if (result.data.status_code === 200) {
             setSections(result.data.data)
@@ -335,7 +335,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
       setSectionDisp(value)
       setSearchSection([value])
       setSubjects([])
-      axiosInstance.get(`${endpoints.academics.subjects}?branch=${role_details.branch[0]}&grade=${searchGradeId}&section=${value.section_id}`)
+      axiosInstance.get(`${endpoints.academics.subjects}?branch=${branch}&grade=${searchGradeId}&section=${value.section_id}`)
         .then(result => {
           if (result.data.status_code === 200) {
             setSubjects(result.data.data)

@@ -77,6 +77,9 @@ export default {
     getStudentSubjects: '/academic/student-homework/?module_id=1',
     getTopPerformer: '/academic/hw-top-performer/',
     getRating: '/academic/student_subject_rating/',
+    fileUpload: '/academic/upload-question-file/',
+    submitHomework: '/academic/homework-submission/',
   },
-  s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
+  // s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
+  s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com'
 };

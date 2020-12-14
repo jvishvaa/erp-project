@@ -1,0 +1,183 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
+
+.homework_type_item {
+  border: 1px solid #ff6b6b;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  text-align: center;
+  padding: 10% 15%;
+  color: #014b7e;
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.homework_block_questionwise_check {
+  // margin-left: 50%;
+  color: #014b7e;
+  font-size: 1rem;
+}
+.homework_submit_questions_wrapper {
+  display: flex;
+  margin: 20px auto;
+  width: 95%;
+}
+.homework_submit_questions {
+  border-bottom: 1px solid #ff6b6b;
+  width: 80%;
+  color: #014b7e;
+  position: relative;
+}
+.homework_submit_tag {
+  font-size: 1rem;
+}
+.homework_question {
+  position: absolute;
+  font-size: 1rem;
+  bottom: 0;
+  left: 0;
+}
+.homework_submit_questions_attachment {
+  width: 30% !important;
+}
+.non_selected_homework_type_item {
+  cursor: pointer;
+}
+.homework_block {
+  text-transform: capitalize;
+}
+.homework_type_wrapper {
+  width: 185px;
+}
+.homework_submit_wrapper {
+  border: 1px solid #ff6b6b;
+  border-radius: 10px;
+}
+.homework_submit_button_wrapper {
+  display: flex;
+  width: 30%;
+  margin: 2%;
+  margin-left: 65%;
+}
+.homework_submit_button_cancel {
+  margin-right: 20px !important;
+}
+.homework_block_wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+.bulkUploadButton {
+  margin-left: 25%;
+}
+
+.commentBoxStyle>.MuiOutlinedInput-root {
+  border: 1px solid #ff6b6b;
+  border-radius: 10px;
+} 
+.instructionBox>.MuiOutlinedInput-root {
+  background-color: #BCF1FF;
+  color: #014b7e;
+  border: 1px solid red;
+  border-radius: 10px;
+  font-size: 18px;
+} 
+
+.file_row {
+  border: 1px solid #DFDFDF;
+  display: flex;
+  flex-direction: row;
+  border-radius: 5px;
+  width: 70%; 
+  opacity: 1;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5px;
+  font: normal normal normal 14px/16px Raleway;
+}
+.file_name_container {
+  color: #014b7e;
+  align-self: center;
+}
+.file_close {
+  align-self: end;
+}
+
+.homework-question-container {
+  &.student-view {
+    margin: 20px auto;
+    width: 95%;
+    &:nth-child(1) {
+      margin-top: 2rem;
+    }
+
+    .homework-question {
+      border-bottom: 1px solid #ff6b6b;
+      width: 80%;
+      color: #014b7e;
+      position: relative;
+    }
+
+    .attachments-container {
+      .header {
+        margin: 1rem 0;
+      }
+      .attachments-list-outer-container {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        .prev-btn,
+        .next-btn {
+          width: 45px;
+        }
+        .attachments-list {
+          &::-webkit-scrollbar {
+            display: none;
+          }
+          scroll-behavior: smooth;
+          flex-grow: 1;
+          overflow-x: auto;
+          display: flex;
+          margin: 1rem 0;
+          width: calc(100% - 90px);
+          .attachment {
+            flex-shrink: 0;
+            width: 150px;
+          }
+        }
+      }
+    }
+
+    .file-card-container {
+      position: relative;
+      height: 100%;
+      &:hover {
+        .overlay-container {
+          opacity: 1;
+        }
+      }
+      .overlay-container {
+        padding: 0.5rem;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 100%;
+        width: 100%;
+        opacity: 0;
+        transition: 0.3s ease;
+        .overlay {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          height: 100%;
+          width: 100%;
+          background-color: rgba($color: #000000, $alpha: 0.5);
+          .action-buttons {
+            margin: auto 0;
+          }
+        }
+      }
+    }
+  }
+}

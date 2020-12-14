@@ -38,8 +38,9 @@
     text-align: center;
     color: white;
     font-weight: 600;
-    border-radius: 5px;
-    padding: 2%;
+    border-radius: 11px;
+	padding: 2%;
+	text-transform: capitalize;
     display: inline-block;
 }
 .subject_rating_subject_name{
@@ -47,7 +48,8 @@
     color: #014b7e;
     display: inline-block;
     width: 60%;
-    vertical-align: text-bottom;
+	vertical-align: text-bottom;
+	text-transform: capitalize;
 }
 .subject_rating{
 	font-size: 1.3rem;

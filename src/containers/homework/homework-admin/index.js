@@ -156,6 +156,17 @@ const HomeworkAdmin = () => {
   //   }
   // }
 
+
+  // else if((mandatorySubjects.length+optionalSubjects.length+otherSubjects.length)!==(rowData.subject_data.length)){
+  //   setAlert('error','A subject should be either mandatory, optional or other but can\'t be empty')
+  // }else if(mandatorySubjects.length===0 && rowData.subject_data.length>=3){
+  //   setAlert('error','Atleast one subject should be mandatory')
+  // }else if(optionalSubjects.length===0 && rowData.subject_data.length>=3){
+  //   setAlert('error','Atleast one subject should be optional')
+  // }else if(otherSubjects.length===0 && rowData.subject_data.length>=3){
+  //   setAlert('error','Atleast one subject should be other than mandatory and optional')
+  // }
+
   const handleSubmit = (e) => {
       e.preventDefault()
       if(searchGrade===''){
@@ -166,14 +177,6 @@ const HomeworkAdmin = () => {
         setAlert('error','Prior days cannot be empty')
       }else if(post===''){
         setAlert('error','Post days cannot be empty')
-      }else if((mandatorySubjects.length+optionalSubjects.length+otherSubjects.length)!==(rowData.subject_data.length)){
-        setAlert('error','A subject should be either mandatory, optional or other but can\'t be empty')
-      }else if(mandatorySubjects.length===0){
-        setAlert('error','Atleast one subject should be mandatory')
-      }else if(optionalSubjects.length===0){
-        setAlert('error','Atleast one subject should be optional')
-      }else if(otherSubjects.length===0){
-        setAlert('error','Atleast one subject should be other than mandatory and optional')
       }else {
         setLoading(true)
           axiosInstance.post(endpoints.homework.createConfig,{
@@ -201,7 +204,7 @@ const HomeworkAdmin = () => {
           }
           }).catch((error)=>{
             setLoading(false)
-            setAlert('error', error.message);
+            setAlert('error', error.response.data.description);
         })
       }
     }
