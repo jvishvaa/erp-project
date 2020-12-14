@@ -32,6 +32,7 @@ const HomeworkTimeline = withRouter(({ history, ...props }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [totalHomework, setTotalHomework] = useState();
   const [submittedHomework, setSubmittedHomework] = useState();
+
   //   [
   //     {
   //       subject: 87,
@@ -79,7 +80,11 @@ const HomeworkTimeline = withRouter(({ history, ...props }) => {
   };
   const getRating = async () => {
     try {
-      const result = await axiosInstance.get(`${endpoints.homeworkStudent.getRating}`);
+      let request=endpoints.homeworkStudent.getRating
+      if(selectedDays) {
+        request+= `?duration=${selectedDays.substring(0,2)}`
+      }
+      const result = await axiosInstance.get(request);
       if (result.data.status_code === 200) {
         setRating(result.data.data);
         if (result.data.data.length) {
@@ -102,7 +107,7 @@ const HomeworkTimeline = withRouter(({ history, ...props }) => {
 
   useEffect(() => {
     getRating();
-  }, []);
+  }, [selectedDays]);
   return (
     <>
       <div className='subject-homework-details-wrapper'>
@@ -115,6 +120,7 @@ const HomeworkTimeline = withRouter(({ history, ...props }) => {
             id='message_log-branch'
             className='rating_days'
             options={days}
+            filterSelectedOptions
             getOptionLabel={(option) => option}
             disableClearable
             renderInput={(params) => (
@@ -237,7 +243,7 @@ const HomeworkTimeline = withRouter(({ history, ...props }) => {
                       className='subject_rating_wrapper'
                       key={`ratiting_subject_row${index}`}
                     >
-                      <span className='subject_rating_first_letter'>S</span>{' '}
+                      <span className='subject_rating_first_letter'>{subject.subject_name.substring(0,1)}</span>{' '}
                       <span className='subject_rating_subject_name'>
                         {subject.subject_name}
                       </span>

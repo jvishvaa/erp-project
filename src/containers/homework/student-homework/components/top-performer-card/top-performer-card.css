@@ -46,6 +46,7 @@
     display: inline-table;
 	width: 60%;
 	margin: 0% 2%;
+	text-transform: capitalize;
     vertical-align: baseline;
 }
 .top_performer_icon{
