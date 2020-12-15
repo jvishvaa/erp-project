@@ -6,7 +6,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useRef, useContext, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { SRLWrapper } from 'simple-react-lightbox';
@@ -15,6 +15,8 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
@@ -79,36 +81,20 @@ const ViewHomework = withRouter(
     onClose,
     ...props
   }) => {
+    const scrollableContainer = useRef(null);
     const themeContext = useTheme();
     const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
     const classes = useStyles();
     const { isOpen, subjectId, date, subjectName, homeworkId } = viewHomework || {};
     const [isQuestionWise, setIsQuestionWise] = useState(false);
-    const [allQuestionAttachment, setAllQuestionAttachment] = useState([]);
-    const [questionRecord, setQuestionRecord] = useState([
-      { question: 'This is the test1 ?', attachment: [] },
-      { question: 'This is the test2 ?', attachment: [] },
-      { question: 'This is the test3 ?', attachment: [] },
-    ]);
 
-    const handleHomeworkSubmit = () => {};
-
-    const uploadFileHandler = (e, index) => {
-      if (e.target.files[0]) {
-        const tempQuestionRecord = questionRecord.slice();
-        const newFiles = [...questionRecord[index].attachment, e.target.files[0]];
-        tempQuestionRecord[index].attachment = newFiles;
-        setQuestionRecord(tempQuestionRecord);
+    const handleScroll = (dir) => {
+      if (dir === 'left') {
+        scrollableContainer.current.scrollLeft -= 150;
+      } else {
+        scrollableContainer.current.scrollLeft += 150;
+        console.log(scrollableContainer.current.scrollLeft);
       }
-    };
-
-    const removeFileHandler = (questionIndex, i) => {
-      const tempQuestionRecord = questionRecord.slice();
-      const newFiles = questionRecord[questionIndex].attachment.filter(
-        (_, index) => index !== i
-      );
-      tempQuestionRecord[questionIndex].attachment = newFiles;
-      setQuestionRecord(tempQuestionRecord);
     };
 
     useEffect(() => {
@@ -153,7 +139,7 @@ const ViewHomework = withRouter(
                     <Typography component='h4' color='primary' className='header'>
                       Attachments
                     </Typography>
-                    <div className='attachments-list'>
+                    {/* <div className='attachments-list'>
                       {question.question_files.map((url, i) => (
                         <div className='attachment'>
                           <Attachment
@@ -177,6 +163,80 @@ const ViewHomework = withRouter(
                             />
                           ))}
                         </SRLWrapper>
+                      </div>
+                    </div> */}
+                    <div className='attachments-list-outer-container'>
+                      <div className='prev-btn'>
+                        <IconButton onClick={() => handleScroll('left')}>
+                          <ArrowBackIosIcon />
+                        </IconButton>
+                      </div>
+                      <div
+                        className='attachments-list'
+                        ref={scrollableContainer}
+                        onScroll={(e) => {
+                          e.preventDefault();
+                          console.log('scrolled');
+                        }}
+                      >
+                        {question.question_files.map((url, i) => (
+                          <>
+                            <div className='attachment'>
+                              <Attachment
+                                key={`homework_student_question_attachment_${i}`}
+                                fileUrl={url}
+                                fileName={`Attachment-${i + 1}`}
+                                urlPrefix={`${endpoints.s3}/homework`}
+                                index={i}
+                              />
+                            </div>
+                            <div className='attachment'>
+                              <Attachment
+                                key={`homework_student_question_attachment_${i}`}
+                                fileUrl={url}
+                                fileName={`Attachment-${i + 1}`}
+                                urlPrefix={`${endpoints.s3}/homework`}
+                                index={i}
+                              />
+                            </div>
+                            <div className='attachment'>
+                              <Attachment
+                                key={`homework_student_question_attachment_${i}`}
+                                fileUrl={url}
+                                fileName={`Attachment-${i + 1}`}
+                                urlPrefix={`${endpoints.s3}/homework`}
+                                index={i}
+                              />
+                            </div>
+                            {/* <div className='attachment'>
+                  <Attachment
+                    key={`homework_student_question_attachment_${i}`}
+                    fileUrl={url}
+                    fileName={`Attachment-${i + 1}`}
+                    urlPrefix={`${endpoints.s3}/homework`}
+                    index={i}
+                  />
+                </div> */}
+                          </>
+                        ))}
+                        <div style={{ position: 'absolute', visibility: 'hidden' }}>
+                          <SRLWrapper>
+                            {question.question_files.map((url, i) => (
+                              <img
+                                src={`${endpoints.s3}/homework/${url}`}
+                                onError={(e) => {
+                                  e.target.src = placeholder;
+                                }}
+                                alt={`Attachment-${i + 1}`}
+                              />
+                            ))}
+                          </SRLWrapper>
+                        </div>
+                      </div>
+                      <div className='next-btn'>
+                        <IconButton onClick={() => handleScroll('right')}>
+                          <ArrowForwardIosIcon color='primary' />
+                        </IconButton>
                       </div>
                     </div>
                   </div>

@@ -20,6 +20,8 @@ const SubmittedQuestion = ({
   onPrev,
   activeQuestion,
   totalQuestions,
+  onOpenInPenTool,
+  correctedQuestions,
 }) => {
   const scrollableContainer = useRef(null);
   const handleScroll = (dir) => {
@@ -66,7 +68,7 @@ const SubmittedQuestion = ({
         </Button>
       </div>
       <div className='homework-question'>
-        <div className='question'>{question.question}</div>
+        <div className='question'>{question.homework_question}</div>
       </div>
       <div className='attachments-container'>
         <Typography component='h4' color='primary' className='header'>
@@ -86,7 +88,7 @@ const SubmittedQuestion = ({
               console.log('scrolled');
             }}
           >
-            {question.question_file.map((url, i) => (
+            {question.submitted_files.map((url, i) => (
               <>
                 <div className='attachment'>
                   <Attachment
@@ -95,9 +97,11 @@ const SubmittedQuestion = ({
                     fileName={`Attachment-${i + 1}`}
                     urlPrefix={`${endpoints.s3}/homework`}
                     index={i}
+                    penTool
+                    onOpenInPenTool={onOpenInPenTool}
                   />
                 </div>
-                <div className='attachment'>
+                {/* <div className='attachment'>
                   <Attachment
                     key={`homework_student_question_attachment_${i}`}
                     fileUrl={url}
@@ -114,7 +118,7 @@ const SubmittedQuestion = ({
                     urlPrefix={`${endpoints.s3}/homework`}
                     index={i}
                   />
-                </div>
+                </div> */}
                 {/* <div className='attachment'>
                   <Attachment
                     key={`homework_student_question_attachment_${i}`}
@@ -128,7 +132,7 @@ const SubmittedQuestion = ({
             ))}
             <div style={{ position: 'absolute', visibility: 'hidden' }}>
               <SRLWrapper>
-                {question.question_file.map((url, i) => (
+                {question.submitted_files.map((url, i) => (
                   <img
                     src={`${endpoints.s3}/homework/${url}`}
                     onError={(e) => {
@@ -147,6 +151,90 @@ const SubmittedQuestion = ({
           </div>
         </div>
       </div>
+      {correctedQuestions.length && (
+        <div className='attachments-container'>
+          <Typography component='h4' color='primary' className='header'>
+            Evaluated
+          </Typography>
+          <div className='attachments-list-outer-container'>
+            <div className='prev-btn'>
+              <IconButton onClick={() => handleScroll('left')}>
+                <ArrowBackIosIcon />
+              </IconButton>
+            </div>
+            <div
+              className='attachments-list'
+              // ref={scrollableContainer}
+              onScroll={(e) => {
+                e.preventDefault();
+                console.log('scrolled');
+              }}
+            >
+              {correctedQuestions.map((url, i) => (
+                <>
+                  <div className='attachment'>
+                    <Attachment
+                      key={`homework_student_question_attachment_${i}`}
+                      fileUrl={url}
+                      preview
+                      fileName={`Attachment-${i + 1}`}
+                      urlPrefix={`${endpoints.s3}/homework`}
+                      index={i}
+                      penTool
+                      onOpenInPenTool={onOpenInPenTool}
+                    />
+                  </div>
+                  {/* <div className='attachment'>
+                  <Attachment
+                    key={`homework_student_question_attachment_${i}`}
+                    fileUrl={url}
+                    fileName={`Attachment-${i + 1}`}
+                    urlPrefix={`${endpoints.s3}/homework`}
+                    index={i}
+                  />
+                </div>
+                <div className='attachment'>
+                  <Attachment
+                    key={`homework_student_question_attachment_${i}`}
+                    fileUrl={url}
+                    fileName={`Attachment-${i + 1}`}
+                    urlPrefix={`${endpoints.s3}/homework`}
+                    index={i}
+                  />
+                </div> */}
+                  {/* <div className='attachment'>
+                  <Attachment
+                    key={`homework_student_question_attachment_${i}`}
+                    fileUrl={url}
+                    fileName={`Attachment-${i + 1}`}
+                    urlPrefix={`${endpoints.s3}/homework`}
+                    index={i}
+                  />
+                </div> */}
+                </>
+              ))}
+              <div style={{ position: 'absolute', visibility: 'hidden' }}>
+                <SRLWrapper>
+                  {question.submitted_files.map((url, i) => (
+                    <img
+                      src={`${endpoints.s3}/homework/${url}`}
+                      onError={(e) => {
+                        e.target.src = placeholder;
+                      }}
+                      alt={`Attachment-${i + 1}`}
+                    />
+                  ))}
+                </SRLWrapper>
+              </div>
+            </div>
+            <div className='next-btn'>
+              <IconButton onClick={() => handleScroll('right')}>
+                <ArrowForwardIosIcon color='primary' />
+              </IconButton>
+            </div>
+          </div>
+        </div>
+      )}
       <div style={{ display: 'flex' }}>
         <div style={{ width: '50%', marginRight: '1rem' }}>
           <FormControl variant='outlined' fullWidth size='small'>
