@@ -19,6 +19,8 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import { fetchSubmittedHomeworkDetails } from '../../../redux/actions';
 
 import SubmittedQuestion from './submitted-question';
+import DescriptiveTestcorrectionModule from '../../../components/EvaluationTool';
+// /EvaluationTool/descriptiveTestcorrectionModule";
 
 const useStyles = makeStyles((theme) => ({
   attachmentIcon: {
@@ -65,12 +67,55 @@ const ViewHomework = withRouter(
     const classes = useStyles();
     const { date, subject, studentHomeworkId } = homework || {};
     const [activeQuestion, setActiveQuestion] = useState(1);
+    const [questionsState, setQuestionsState] = useState([]);
+    const [penToolOpen, setPenToolOpen] = useState(false);
+    const [penToolUrl, setPenToolUrl] = useState('');
 
     const handleHomeworkSubmit = () => {};
 
+    const openInPenTool = (url) => {
+      setPenToolUrl(url);
+      // setPenToolOpen(true);
+    };
+
+    const handleCloseCorrectionModal = () => {
+      setPenToolUrl('');
+
+      // setPenToolOpen(false);
+    };
+
+    const fetchHomeworkDetails = async () => {
+      const questions = await getSubmittedHomeworkDetails(studentHomeworkId);
+      console.log('questions ', questions);
+      const initialQuestionsState = questions.map((q) => ({
+        id: q.id,
+        corrected_submissions: [],
+      }));
+      setQuestionsState(initialQuestionsState);
+    };
+
     useEffect(() => {
-      getSubmittedHomeworkDetails(studentHomeworkId);
+      fetchHomeworkDetails();
     }, []);
+
+    useEffect(() => {
+      if (penToolUrl) {
+        setPenToolOpen(true);
+      } else {
+        setPenToolOpen(false);
+      }
+    }, [penToolUrl]);
+
+    const mediaContent = {
+      file_content: penToolUrl,
+      // file_content:
+      //   'https://erp-revamp.s3.ap-south-1.amazonaws.com/homework/2020-12-14%2013:58:08.817012_Screenshot%20from%202020-11-18%2015-16-37.png',
+      // file_content:
+      //   'https://image.shutterstock.com/image-photo/bright-spring-view-cameo-island-260nw-1048185397.jpg',
+      id: 1,
+      splitted_media: null,
+    };
+    const desTestDetails = [{ asessment_response: { evaluvated_result: '' } }];
 
     return (
       <div className='view-homework-container create_group_filter_container'>
@@ -101,6 +146,11 @@ const ViewHomework = withRouter(
               {submittedHomeworkDetails?.length && (
                 <SubmittedQuestion
                   question={submittedHomeworkDetails[activeQuestion - 1]}
+                  correctedQuestions={
+                    questionsState.length
+                      ? questionsState[activeQuestion - 1].corrected_submissions
+                      : []
+                  }
                   activeQuestion={activeQuestion}
                   totalQuestions={totalSubmittedQuestions}
                   onNext={() => {
@@ -111,6 +161,7 @@ const ViewHomework = withRouter(
                   onPrev={() => {
                     setActiveQuestion((prev) => (prev > 1 ? prev - 1 : prev));
                   }}
+                  onOpenInPenTool={openInPenTool}
                 />
               )}
             </div>
@@ -151,6 +202,31 @@ const ViewHomework = withRouter(
             </div>
           </Grid>
         </Grid>
+        {penToolOpen && (
+          <DescriptiveTestcorrectionModule
+            desTestDetails={desTestDetails}
+            mediaContent={mediaContent}
+            handleClose={handleCloseCorrectionModal}
+            alert={undefined}
+            open={penToolOpen}
+            callBackOnPageChange={() => {}}
+            handleSaveFile={(file) => {
+              console.log('file obj from base64', file);
+              // setImagePreview(URL.createObjectURL(file));
+              // setIsEvaluvate(false);
+              const index = activeQuestion - 1;
+              const modifiedQuestion = { ...questionsState[index] };
+              modifiedQuestion.corrected_submissions.push(URL.createObjectURL(file));
+              const newQuestionsState = [
+                ...questionsState.slice(0, index),
+                modifiedQuestion,
+                ...questionsState.slice(index + 1),
+              ];
+              setQuestionsState(newQuestionsState);
+              setPenToolUrl(null);
+            }}
+          />
+        )}
       </div>
     );
   }
@@ -165,7 +241,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   getSubmittedHomeworkDetails: (id) => {
-    dispatch(fetchSubmittedHomeworkDetails(id));
+    return dispatch(fetchSubmittedHomeworkDetails(id));
   },
 });
 

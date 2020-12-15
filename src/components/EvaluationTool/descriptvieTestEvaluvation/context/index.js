@@ -5,11 +5,11 @@ import React, {
   useContext,
   useCallback,
   useEffect,
-} from "react";
-import axios from "axios";
-import html2canvas from "html2canvas";
-import fileDownload from "js-file-download";
-import _ from "lodash";
+} from 'react';
+import axios from 'axios';
+import html2canvas from 'html2canvas';
+import fileDownload from 'js-file-download';
+import _ from 'lodash';
 
 // import { urls } from "../../../../../urls";
 
@@ -18,7 +18,7 @@ export const DescriptiveTestContext = createContext();
 export function useDescriptvieContex() {
   const context = useContext(DescriptiveTestContext);
   if (context === undefined) {
-    throw new Error("error happened");
+    throw new Error('error happened');
   }
   return context;
 }
@@ -32,27 +32,25 @@ export function DescriptiveTestContextProvider({
   callBackOnPageChange,
   handleSaveFile,
 }) {
-  const [
-    { asessment_response: { evaluvated_result: evlRes } = {} },
-  ] = desTestDetails;
+  const [{ asessment_response: { evaluvated_result: evlRes } = {} }] = desTestDetails;
 
-  const [tool, setTool] = useState("");
+  const [tool, setTool] = useState('');
   const [pageNumber, setPage] = useState(1);
   const [open, setOpen] = useState(false);
   const [totalPages, setTotalPages] = useState();
   const [url, setUrl] = useState();
   const [drawing, setDrawing] = useState();
   const [loading, setLoading] = useState(false);
-  const [mediaImg, setMedia] = useState("");
+  const [mediaImg, setMedia] = useState('');
   const [isPending, setIsPending] = useState(false);
   const [correctionLoading, setCorrectionLoading] = useState(false);
   const [isDownloaded, setIsDownloaded] = useState(false);
   const [correctedPaperImg, setCorrectedPaper] = useState([]);
   const [isSaved, setisSave] = useState(false);
   const [pendingPageNumber, setPendingPageNumber] = useState();
-  const [pdfState, setPdfState] = useState("NS");
+  const [pdfState, setPdfState] = useState('NS');
   const [angleInDegrees, setAngleInDegrees] = useState(0);
-  const [rotation, setRotation] = useState("");
+  const [rotation, setRotation] = useState('');
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
   const [mediaId, setMediaId] = useState(0);
@@ -69,7 +67,7 @@ export function DescriptiveTestContextProvider({
     if (updateTool !== tool) {
       setTool(updateTool);
     } else {
-      setTool("");
+      setTool('');
     }
   };
   const handleInitialZoom = (mode) => {
@@ -79,7 +77,7 @@ export function DescriptiveTestContextProvider({
     let x = 0;
     let y = 0;
 
-    if (mode === "zoom in") {
+    if (mode === 'zoom in') {
       x = xA;
       y = yA;
     } else {
@@ -96,7 +94,7 @@ export function DescriptiveTestContextProvider({
     let y = 1.5;
     let mg = 10;
     if (zoom && Object.keys(zoom).length) {
-      if (mode === "zoom in") {
+      if (mode === 'zoom in') {
         if (sX === 0.5) {
           x = 1;
           y = 1;
@@ -152,27 +150,26 @@ export function DescriptiveTestContextProvider({
   };
   const enableRotation = (event, updateRotation) => {
     if (updateRotation !== rotation) {
-      console.log(event, updateRotation, "rotatt");
-      if (updateRotation === "rRight") {
+      console.log(event, updateRotation, 'rotatt');
+      if (updateRotation === 'rRight') {
         rotateClockWise();
       } else {
         rotateCounterClockWise();
       }
       // rotateClockWise()
     } else {
-      setTool("");
+      setTool('');
     }
   };
   const getPaperImage = useCallback(
     (evlRes) => {
-      console.log(mediaId, "medii");
+      console.log(mediaId, 'medii');
       let res =
         evlRes &&
         evlRes.filter((e) => e.actual_paper_id === mediaId)[0] &&
-        evlRes.filter((e) => e.actual_paper_id === mediaId)[0]
-          .corrected_paper_image;
+        evlRes.filter((e) => e.actual_paper_id === mediaId)[0].corrected_paper_image;
       // console.log(res, 'reee')
-      console.log(res, "res");
+      console.log(res, 'res');
       if (!res) {
         // console.log(res, 'reee22')
         res =
@@ -180,7 +177,7 @@ export function DescriptiveTestContextProvider({
           evlRes.filter((e) => e.actual_paper_id === mediaId)[0] &&
           evlRes.filter((e) => e.actual_paper_id === mediaId)[0]
             .pdf_corrected_paper_image;
-        console.log(res, "res");
+        console.log(res, 'res');
       }
 
       return res;
@@ -194,16 +191,15 @@ export function DescriptiveTestContextProvider({
 
   const getResData = useCallback(() => {
     // eslint-disable-next-line no-debugger
-    debugger;
-    const res =
-      evlRes && evlRes.filter((e) => e.actual_paper_id === mediaId)[0];
+    // debugger;
+    const res = evlRes && evlRes.filter((e) => e.actual_paper_id === mediaId)[0];
 
     let angl = 0;
     let width = 0;
     let height = 0;
-    console.log(res, "res in this");
+    console.log(res, 'res in this');
     if (res) {
-      console.log(angl, "inside");
+      console.log(angl, 'inside');
       angl =
         res.rotated_angle === null || res.rotated_angle === undefined
           ? 0
@@ -211,7 +207,7 @@ export function DescriptiveTestContextProvider({
       width = res.width || 0;
       height = res.height || 0;
     }
-    console.log(angl, "out side");
+    console.log(angl, 'out side');
 
     return { angl, width, height };
   }, [evlRes, mediaId]);
@@ -226,7 +222,7 @@ export function DescriptiveTestContextProvider({
     setMediaId(mediaId);
     const { angl, width, height } = getResData();
     const totalPagesCount = splittedMedia && splittedMedia.length;
-    console.log(paperImage, "pp");
+    console.log(paperImage, 'pp');
     setDrawing(paperImage);
     setUrl(mediaUrl);
     setTotalPages(totalPagesCount);
@@ -279,7 +275,7 @@ export function DescriptiveTestContextProvider({
 
   function rotateClockWise() {
     let anglDgree = angleInDegrees + 90;
-    console.log(angleInDegrees, "clock wise", anglDgree);
+    console.log(angleInDegrees, 'clock wise', anglDgree);
     if (anglDgree > 360) {
       setAngleInDegrees(90);
     } else {
@@ -345,7 +341,7 @@ export function DescriptiveTestContextProvider({
   ]);
 
   const base64StringtoFile = (base64String, filename) => {
-    let arr = base64String.split(",");
+    let arr = base64String.split(',');
     let mime = arr[0].match(/:(.*?);/)[1];
     // eslint-disable-next-line no-undef
     let bstr = atob(arr[1]);
@@ -358,7 +354,7 @@ export function DescriptiveTestContextProvider({
     return new File([u8arr], filename, { type: mime });
   };
   const sendFormdata = async (data) => {
-    if (data.operation === "manualSave") {
+    if (data.operation === 'manualSave') {
       setisSave(true);
       // alert.warning("wait for 10 sec updating changes ...");
     }
@@ -370,91 +366,93 @@ export function DescriptiveTestContextProvider({
       setWidth(data.viewWidth);
     }
 
-    console.log(data.viewHeight, data.viewWidth, "eeee------>");
+    console.log(data.viewHeight, data.viewWidth, 'eeee------>');
 
     const [
       { id, online_test_assessment: { assessment_id: assId } = {} } = {},
     ] = desTestDetails;
     let formdata = new FormData();
-    let correctedPaper = "";
+    let correctedPaper = '';
     setCorrectionLoading(true);
     const urlCopy = url;
-    let extenstion = urlCopy.split(".").pop();
-    let ext = extenstion === "JPG" ? "jpg" : extenstion;
+    let extenstion = urlCopy.split('.').pop();
+    let ext = extenstion === 'JPG' ? 'jpg' : extenstion;
     console.log(ext);
     window.scrollTo(0, 0);
-    html2canvas(document.getElementById("editor-evaluvation-container"), {
+    html2canvas(document.getElementById('editor-evaluvation-container'), {
       logging: false,
       useCORS: true,
       scrollX: 0,
       scrollY: 0,
       // scrollY: -window.scrollY
-    }).then((canvas) => {
-      setTimeout(() => {
-        correctedPaper = canvas.toDataURL();
-        // console.log(correctedPaper, '88888888888888888888888888')
-        let myFilename = String(new Date().getTime()) + "." + "png";
-        setCorrectionLoading(false);
-        if (correctedPaper && data.image) {
-          const fileObj = base64StringtoFile(correctedPaper, myFilename);
-          formdata.set("onlinetest_instance", id);
-          formdata.set("assessment_id", assId);
-          if (ext === "pdf") {
-            formdata.set("page_number", pageNumber);
-            formdata.set("width", data.viewWidth);
-            formdata.set("height", data.viewHeight);
+    })
+      .then((canvas) => {
+        setTimeout(() => {
+          correctedPaper = canvas.toDataURL();
+          // console.log(correctedPaper, '88888888888888888888888888')
+          let myFilename = String(new Date().getTime()) + '.' + 'png';
+          setCorrectionLoading(false);
+          if (correctedPaper && data.image) {
+            const fileObj = base64StringtoFile(correctedPaper, myFilename);
+            formdata.set('onlinetest_instance', id);
+            formdata.set('assessment_id', assId);
+            if (ext === 'pdf') {
+              formdata.set('page_number', pageNumber);
+              formdata.set('width', data.viewWidth);
+              formdata.set('height', data.viewHeight);
+            }
+            formdata.set('corrected_paper_image', data.image);
+            formdata.set('corrected_paper', fileObj);
+            formdata.set('actual_paper_id', mediaId);
+            formdata.set('is_paper_corrected', 'true');
+            formdata.set('rotated_angle', angleInDegrees);
+
+            handleSaveFile(fileObj);
+
+            //         axios
+            //           .post(urls.TeacherEvalDesTest, formdata, {
+            //             headers: {
+            //               Authorization: "Bearer " + localStorage.getItem("id_token"),
+            //               "Content-Type": "multipart/formData",
+            //             },
+            //           })
+            //           .then((res) => {
+            //             alert.success("Saved successfully");
+            //             if (data.operation === "manualSave") {
+            //               setisSave(false);
+            //             }
+            //             // console.log(res.data)
+            //             const {
+            //               data: {
+            //                 data: [
+            //                   { asessment_response: { evaluvated_result: evlRes } = {} },
+            //                 ] = [],
+            //               } = {},
+            //             } = res;
+            //             // console.log(res.data)
+            //             setCorrectedPaper(evlRes);
+            //             const image = getPaperImage(evlRes);
+            //             // console.log(image, evlRes)
+            //             setDrawing(image);
+            //           })
+            //           .catch((err) => {
+            //             console.log(err);
+            //             alert.error("Something went wrong with correction");
+            //           });
+          } else {
+            // alert.warning("please make changes and save");
+            console.log('else case triggered ', correctedPaper, data.image);
           }
-          formdata.set("corrected_paper_image", data.image);
-          formdata.set("corrected_paper", fileObj);
-          formdata.set("actual_paper_id", mediaId);
-          formdata.set("is_paper_corrected", "true");
-          formdata.set("rotated_angle", angleInDegrees);
-
-          handleSaveFile(fileObj);
-
-          //         axios
-          //           .post(urls.TeacherEvalDesTest, formdata, {
-          //             headers: {
-          //               Authorization: "Bearer " + localStorage.getItem("id_token"),
-          //               "Content-Type": "multipart/formData",
-          //             },
-          //           })
-          //           .then((res) => {
-          //             alert.success("Saved successfully");
-          //             if (data.operation === "manualSave") {
-          //               setisSave(false);
-          //             }
-          //             // console.log(res.data)
-          //             const {
-          //               data: {
-          //                 data: [
-          //                   { asessment_response: { evaluvated_result: evlRes } = {} },
-          //                 ] = [],
-          //               } = {},
-          //             } = res;
-          //             // console.log(res.data)
-          //             setCorrectedPaper(evlRes);
-          //             const image = getPaperImage(evlRes);
-          //             // console.log(image, evlRes)
-          //             setDrawing(image);
-          //           })
-          //           .catch((err) => {
-          //             console.log(err);
-          //             alert.error("Something went wrong with correction");
-          //           });
-        } else {
-          // alert.warning("please make changes and save");
-          console.log("else case triggered ", correctedPaper, data.image);
-        }
-      }, 3000);
-    });
+        }, 3000);
+      })
+      .catch((error) => console.log('error in converting to canvas', error));
     //   window.scrollTo(
     //     0,
     //     document.body.scrollHeight || document.documentElement.scrollHeight
     //   );
   };
   const onChange = (data) => {
-    console.log(data, "***ad");
+    console.log(data, '***ad');
     const mediaImg = data.containerImg;
     setMedia(mediaImg);
     if (data.image) {
@@ -468,8 +466,7 @@ export function DescriptiveTestContextProvider({
       ? correctedPaperImg.filter((e) => e.actual_paper_id === mediaId)[0]
           .corrected_paper_content
       : evlRes.filter((e) => e.actual_paper_id === mediaId)[0] &&
-        evlRes.filter((e) => e.actual_paper_id === mediaId)[0]
-          .corrected_paper_content;
+        evlRes.filter((e) => e.actual_paper_id === mediaId)[0].corrected_paper_content;
 
     if (!fUrl) {
       fUrl = correctedPaperImg.filter((e) => e.actual_paper_id === mediaId)[0]
@@ -484,12 +481,12 @@ export function DescriptiveTestContextProvider({
   };
 
   const downloadPdfFile = (type) => {
-    console.log("type** ", type);
+    console.log('type** ', type);
     let media = url;
     const urlCopy = url;
-    let params = "";
-    let extenstion = urlCopy.split(".").pop();
-    if (extenstion === "pdf" && type === "corrected") {
+    let params = '';
+    let extenstion = urlCopy.split('.').pop();
+    if (extenstion === 'pdf' && type === 'corrected') {
       // media = urls.imageASpdf;
       // params = { actual_paper_id: mediaId }
       // axios
@@ -510,19 +507,19 @@ export function DescriptiveTestContextProvider({
       //     console.log(err);
       //   });
     } else {
-      if (type === "corrected") {
+      if (type === 'corrected') {
         media = getFileUrl();
         //for testing
         media =
-          "https://image.shutterstock.com/image-photo/bright-spring-view-cameo-island-260nw-1048185397.jpg";
+          'https://image.shutterstock.com/image-photo/bright-spring-view-cameo-island-260nw-1048185397.jpg';
       }
-      const method = "GET";
+      const method = 'GET';
       const url = media;
       axios
         .request({
           url,
           method,
-          responseType: "blob",
+          responseType: 'blob',
         })
         .then(({ data }) => {
           fileDownload(data, `${type}Paper.${extenstion}`);

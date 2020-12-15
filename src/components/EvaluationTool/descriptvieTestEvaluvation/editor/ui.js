@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
-import pdfjsLib from "pdfjs-dist";
-import DrawingLayer from "./layers/drawing";
-import "./correction_styles.css";
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import pdfjsLib from 'pdfjs-dist';
+import DrawingLayer from './layers/drawing';
+import './correction_styles.css';
 import {
   marginStyleAngle,
   marginPDFStyle,
   marginStyleBelowWindowSize,
   marginStyleAngleReverse,
-} from "./connstant";
+} from './connstant';
 
 // The workerSrc property shall be specified.
 // pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.js'
@@ -48,7 +48,7 @@ function CorrectionComponent({
   // const [cImg, setImg] = useState()
 
   const urlCopy = url;
-  const extenstion = urlCopy.split(".").pop();
+  const extenstion = urlCopy.split('.').pop();
 
   const renderPagePdf = useCallback(() => {
     if (canvasElement.current && url) {
@@ -74,43 +74,43 @@ function CorrectionComponent({
   }, [pageNumber, scale, url]);
 
   useEffect(() => {
-    var canvas = canvasElement.current;
+    const canvas = canvasElement.current;
+
     // let offCanvas = document.getElementById('off-canvas')
     if (canvas) {
-      console.log("comeeee herr");
-      const context = canvas.getContext("2d");
+      console.log('comeeee herr');
+      const context = canvas.getContext('2d');
       // const offContext = offCanvas.getContext('2d')
       const pgUrl =
         splittedMedia && splittedMedia.length
-          ? splittedMedia.filter((e) => e.page_number === pageNumber)[0]
-              .file_content
+          ? splittedMedia.filter((e) => e.page_number === pageNumber)[0].file_content
           : url;
-      console.log(pgUrl, "++++++++++++++++++++++++++++", url);
+      console.log(pgUrl, '++++++++++++++++++++++++++++', url);
       // eslint-disable-next-line no-undef
 
       // eslint-disable-next-line no-undef
 
-      if (extenstion === "pdf") {
+      if (extenstion === 'pdf') {
         renderPagePdf();
       }
       console.log(viewHeight, viewWidth);
       // eslint-disable-next-line no-undef
       var img = new Image();
       // img.src = pgUrl
-      img.crossOrigin = "anonymous";
-      img.id = "actual_image";
+      // img.crossOrigin = 'Anonymous';
+      img.id = 'actual_image';
       // imgRef.current = img
       // window.scrollTo(0, 0)
       // img.src = pgUrl
       img.onload = function () {
-        console.log("l-000000000000000000ding");
+        console.log('l-000000000000000000ding');
         console.log(img.width);
         // window.alert(`${img.width}, ${img.height}`)
         let width = 0;
         let height = 0;
 
-        width = extenstion === "pdf" ? viewWidth : img.width;
-        height = extenstion === "pdf" ? viewHeight : img.height;
+        width = extenstion === 'pdf' ? viewWidth : img.width;
+        height = extenstion === 'pdf' ? viewHeight : img.height;
 
         canvas.height = height;
         canvas.width = width;
@@ -141,15 +141,15 @@ function CorrectionComponent({
     // let ratio = '300'
     const { sX, sY, zoomAction, m } = zoom;
 
-    let margin = "5% 0% 0% 3%";
+    let margin = '5% 0% 0% 3%';
 
     if (hRef && hRef.current && wRef && wRef.current) {
       if (wRef.current > 1300) {
-        margin = "5% 0% 0% 0%";
+        margin = '5% 0% 0% 0%';
       }
       // ratio = (wRef.current - hRef.current) / 2 + 20
     }
-    console.log(angleInDegrees, "angggggggg--");
+    console.log(angleInDegrees, 'angggggggg--');
     if (
       angleInDegrees === 270 ||
       angleInDegrees === -270 ||
@@ -157,39 +157,39 @@ function CorrectionComponent({
       angleInDegrees === -90
     ) {
       // coX = `-${ratio}px`
-      margin = "32% 0% 0% 0%";
-      console.log(sX, "sXXXXX", m);
+      margin = '32% 0% 0% 0%';
+      console.log(sX, 'sXXXXX', m);
       let v = marginStyleAngle[String(sX)];
       if (sX <= 1) {
-        margin = "0%";
+        margin = '0%';
       } else {
         margin = sX <= 1.5 ? `${v}` : margin;
       }
     } else {
       let v = marginStyleAngleReverse[String(sX)];
-      console.log(v, "vbb");
+      console.log(v, 'vbb');
 
       margin = sX <= 1.5 ? `${v}` : margin;
     }
 
     let style = {
       width: containerWidth,
-      height: fullscreen ? "calc(100vh - 46px)" : containerHeight,
-      overflow: "auto",
+      height: fullscreen ? 'calc(100vh - 46px)' : containerHeight,
+      overflow: 'auto',
       // transform: `rotate(${angleInDegrees}deg)`,
       margin: margin,
     };
 
-    if (extenstion === "pdf") {
+    if (extenstion === 'pdf') {
       let v = marginPDFStyle[String(sX)];
-      console.log(v, "vbb");
-      margin = "5% auto";
+      console.log(v, 'vbb');
+      margin = '5% auto';
       margin = sX >= 1.5 ? `${v}` : margin;
 
       style.margin = margin;
     }
 
-    if (hRef && hRef.current && wRef && wRef.current && extenstion !== "pdf") {
+    if (hRef && hRef.current && wRef && wRef.current && extenstion !== 'pdf') {
       if (hRef && hRef.current && wRef && wRef.current < window.innerWidth) {
         if (
           angleInDegrees === 270 ||
@@ -198,40 +198,33 @@ function CorrectionComponent({
           angleInDegrees === -90
         ) {
           let v = marginStyleAngle[String(sX)];
-          margin = "32% auto";
+          margin = '32% auto';
           margin = sX >= 1.5 ? `${v}` : margin;
           style.margin = margin;
         } else {
           let v = marginStyleBelowWindowSize[String(sX)];
-          console.log(v, "vbb");
-          margin = "10% auto";
+          console.log(v, 'vbb');
+          margin = '10% auto';
           margin = sX >= 1.5 ? `${v}` : margin;
           style.margin = margin;
         }
       }
     }
 
-    console.log(zoom, "zoom");
+    console.log(zoom, 'zoom');
     let x = sX || 1;
 
     let y = sY || 1;
 
     style.transform =
-      zoomAction === "zoom in"
+      zoomAction === 'zoom in'
         ? `rotate(${angleInDegrees}deg) scale(${x},${y})`
         : `rotate(${angleInDegrees}deg)scale(${x},${y})`;
 
-    console.log(style, "stt");
+    console.log(style, 'stt');
 
     setStyle(style);
-  }, [
-    angleInDegrees,
-    containerHeight,
-    containerWidth,
-    extenstion,
-    fullscreen,
-    zoom,
-  ]);
+  }, [angleInDegrees, containerHeight, containerWidth, extenstion, fullscreen, zoom]);
 
   useEffect(() => {
     drawRotated();
@@ -239,7 +232,7 @@ function CorrectionComponent({
 
   useEffect(() => {
     if (pageRef && pageRef.current) {
-      console.log("gghhh", pageRef.current);
+      console.log('gghhh', pageRef.current);
       handleTotalPage(pageRef.current);
     }
   }, [handleTotalPage, pageRef]);
@@ -248,7 +241,7 @@ function CorrectionComponent({
     if (canvasElement.current && url) {
       // Asynchronous download of PDF
       setIsPending(true);
-      setPdfState("S");
+      setPdfState('S');
       var loadingTask = pdfjsLib.getDocument(url);
       loadingTask.promise.then(
         (pdf) => {
@@ -259,7 +252,7 @@ function CorrectionComponent({
             var viewport = page.getViewport({ scale: scale });
             var canvas = canvasElement.current;
             if (canvas) {
-              var context = canvas.getContext("2d");
+              var context = canvas.getContext('2d');
               canvas.height = viewport.height;
               canvas.width = viewport.width;
               setContainerHeight(viewport.height);
@@ -271,7 +264,7 @@ function CorrectionComponent({
               };
               var renderTask = page.render(renderContext);
               renderTask.promise.then(() => {
-                console.log("Page rendered");
+                console.log('Page rendered');
                 page.getAnnotations().then((annotations) => {
                   let newTextBoxes = [];
                   annotations.forEach((annotation) => {
@@ -286,7 +279,7 @@ function CorrectionComponent({
                   // setTextBoxes(newTextBoxes)
                 });
                 setIsPending(false);
-                setPdfState("C");
+                setPdfState('C');
               });
             }
           });
@@ -300,12 +293,10 @@ function CorrectionComponent({
   }, [pageNumber, scale, setIsPending, setPdfState, url]);
 
   useEffect(() => {
-    console.log(splittedMedia && !splittedMedia.length, splittedMedia);
-    if (extenstion === "pdf" && splittedMedia && !splittedMedia.length) {
+    if (extenstion === 'pdf' && splittedMedia && !splittedMedia.length) {
       renderPage();
     }
   }, [extenstion, renderPage, splittedMedia, url]);
-  console.log(viewHeight, viewWidth, "v56uunawencqwuhreqwcerici");
 
   // function drawCanvasWithMagnifier (isShow, point) {
   //   Ctx.clearRect(0, 0, canvas.width, canvas.height)// Clean canvas
@@ -335,19 +326,19 @@ function CorrectionComponent({
   // }
 
   return (
-    <div ref={divElement} style={style} id="editor-evaluvation-container">
+    <div ref={divElement} style={style} id='editor-evaluvation-container'>
       {/* <img src={penTool} /> */}
       <canvas
-        style={{ position: "absolute", left: 0, top: 0 }}
+        style={{ position: 'absolute', left: 0, top: 0 }}
         ref={canvasElement}
-        id="editor-evaluvation-drawing-layer"
+        id='editor-evaluvation-drawing-layer'
       />
       <DrawingLayer
         page={pageNumber}
         drawing={drawing}
         onChange={onChange}
-        enableEraser={tool === "eraser"}
-        enablePainting={tool === "paint"}
+        enableEraser={tool === 'eraser'}
+        enablePainting={tool === 'paint'}
         width={containerWidth}
         height={containerHeight}
         containerImg={canvasElement.current}
