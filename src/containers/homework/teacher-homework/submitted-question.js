@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 
-import { SRLWrapper } from 'simple-react-lightbox';
+import SimpleReactLightbox, { SRLWrapper } from 'simple-react-lightbox';
 
 import Attachment from './attachment';
 import endpoints from '../../../config/endpoints';
@@ -22,6 +22,7 @@ const SubmittedQuestion = ({
   totalQuestions,
   onOpenInPenTool,
   correctedQuestions,
+  onDeleteCorrectedAttachment,
 }) => {
   const scrollableContainer = useRef(null);
   const handleScroll = (dir) => {
@@ -80,107 +81,25 @@ const SubmittedQuestion = ({
               <ArrowBackIosIcon />
             </IconButton>
           </div>
-          <div
-            className='attachments-list'
-            ref={scrollableContainer}
-            onScroll={(e) => {
-              e.preventDefault();
-              console.log('scrolled');
-            }}
-          >
-            {question.submitted_files.map((url, i) => (
-              <>
-                <div className='attachment'>
-                  <Attachment
-                    key={`homework_student_question_attachment_${i}`}
-                    fileUrl={url}
-                    fileName={`Attachment-${i + 1}`}
-                    urlPrefix={`${endpoints.s3}/homework`}
-                    index={i}
-                    penTool
-                    onOpenInPenTool={onOpenInPenTool}
-                  />
-                </div>
-                {/* <div className='attachment'>
-                  <Attachment
-                    key={`homework_student_question_attachment_${i}`}
-                    fileUrl={url}
-                    fileName={`Attachment-${i + 1}`}
-                    urlPrefix={`${endpoints.s3}/homework`}
-                    index={i}
-                  />
-                </div>
-                <div className='attachment'>
-                  <Attachment
-                    key={`homework_student_question_attachment_${i}`}
-                    fileUrl={url}
-                    fileName={`Attachment-${i + 1}`}
-                    urlPrefix={`${endpoints.s3}/homework`}
-                    index={i}
-                  />
-                </div> */}
-                {/* <div className='attachment'>
-                  <Attachment
-                    key={`homework_student_question_attachment_${i}`}
-                    fileUrl={url}
-                    fileName={`Attachment-${i + 1}`}
-                    urlPrefix={`${endpoints.s3}/homework`}
-                    index={i}
-                  />
-                </div> */}
-              </>
-            ))}
-            <div style={{ position: 'absolute', visibility: 'hidden' }}>
-              <SRLWrapper>
-                {question.submitted_files.map((url, i) => (
-                  <img
-                    src={`${endpoints.s3}/homework/${url}`}
-                    onError={(e) => {
-                      e.target.src = placeholder;
-                    }}
-                    alt={`Attachment-${i + 1}`}
-                  />
-                ))}
-              </SRLWrapper>
-            </div>
-          </div>
-          <div className='next-btn'>
-            <IconButton onClick={() => handleScroll('right')}>
-              <ArrowForwardIosIcon color='primary' />
-            </IconButton>
-          </div>
-        </div>
-      </div>
-      {correctedQuestions.length && (
-        <div className='attachments-container'>
-          <Typography component='h4' color='primary' className='header'>
-            Evaluated
-          </Typography>
-          <div className='attachments-list-outer-container'>
-            <div className='prev-btn'>
-              <IconButton onClick={() => handleScroll('left')}>
-                <ArrowBackIosIcon />
-              </IconButton>
-            </div>
+          <SimpleReactLightbox>
             <div
               className='attachments-list'
-              // ref={scrollableContainer}
+              ref={scrollableContainer}
               onScroll={(e) => {
                 e.preventDefault();
                 console.log('scrolled');
               }}
             >
-              {correctedQuestions.map((url, i) => (
+              {question.submitted_files.map((url, i) => (
                 <>
                   <div className='attachment'>
                     <Attachment
                       key={`homework_student_question_attachment_${i}`}
                       fileUrl={url}
-                      preview
                       fileName={`Attachment-${i + 1}`}
                       urlPrefix={`${endpoints.s3}/homework`}
                       index={i}
-                      penTool
+                      actions={['preview', 'download', 'pentool']}
                       onOpenInPenTool={onOpenInPenTool}
                     />
                   </div>
@@ -227,6 +146,93 @@ const SubmittedQuestion = ({
                 </SRLWrapper>
               </div>
             </div>
+          </SimpleReactLightbox>
+          <div className='next-btn'>
+            <IconButton onClick={() => handleScroll('right')}>
+              <ArrowForwardIosIcon color='primary' />
+            </IconButton>
+          </div>
+        </div>
+      </div>
+      {correctedQuestions.length && (
+        <div className='attachments-container'>
+          <Typography component='h4' color='primary' className='header'>
+            Evaluated
+          </Typography>
+          <div className='attachments-list-outer-container'>
+            <div className='prev-btn'>
+              <IconButton onClick={() => handleScroll('left')}>
+                <ArrowBackIosIcon />
+              </IconButton>
+            </div>
+            <SimpleReactLightbox>
+              <div
+                className='attachments-list'
+                // ref={scrollableContainer}
+                onScroll={(e) => {
+                  e.preventDefault();
+                  console.log('scrolled');
+                }}
+              >
+                {correctedQuestions.map((url, i) => (
+                  <>
+                    <div className='attachment'>
+                      <Attachment
+                        key={`homework_student_question_attachment_${i}`}
+                        fileUrl={url}
+                        fileName={`Attachment-${i + 1}`}
+                        urlPrefix={`${endpoints.s3}/homework`}
+                        index={i}
+                        actions={['preview', 'delete', 'download']}
+                        onOpenInPenTool={onOpenInPenTool}
+                        onDelete={onDeleteCorrectedAttachment}
+                        preview
+                      />
+                    </div>
+                    {/* <div className='attachment'>
+                  <Attachment
+                    key={`homework_student_question_attachment_${i}`}
+                    fileUrl={url}
+                    fileName={`Attachment-${i + 1}`}
+                    urlPrefix={`${endpoints.s3}/homework`}
+                    index={i}
+                  />
+                </div>
+                <div className='attachment'>
+                  <Attachment
+                    key={`homework_student_question_attachment_${i}`}
+                    fileUrl={url}
+                    fileName={`Attachment-${i + 1}`}
+                    urlPrefix={`${endpoints.s3}/homework`}
+                    index={i}
+                  />
+                </div> */}
+                    {/* <div className='attachment'>
+                  <Attachment
+                    key={`homework_student_question_attachment_${i}`}
+                    fileUrl={url}
+                    fileName={`Attachment-${i + 1}`}
+                    urlPrefix={`${endpoints.s3}/homework`}
+                    index={i}
+                  />
+                </div> */}
+                  </>
+                ))}
+                <div style={{ position: 'absolute', visibility: 'hidden' }}>
+                  <SRLWrapper>
+                    {correctedQuestions.map((url, i) => (
+                      <img
+                        src={url}
+                        onError={(e) => {
+                          e.target.src = placeholder;
+                        }}
+                        alt={`Attachment-${i + 1}`}
+                      />
+                    ))}
+                  </SRLWrapper>
+                </div>
+              </div>
+            </SimpleReactLightbox>
             <div className='next-btn'>
               <IconButton onClick={() => handleScroll('right')}>
                 <ArrowForwardIosIcon color='primary' />
