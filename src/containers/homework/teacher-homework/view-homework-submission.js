@@ -78,6 +78,16 @@ const ViewHomework = withRouter(
       // setPenToolOpen(true);
     };
 
+    const deleteEvaluated = (index) => {
+      const currentQuestion = questionsState[activeQuestion - 1];
+      currentQuestion.corrected_submissions.splice(index, 1);
+      setQuestionsState([
+        ...questionsState.slice(0, index),
+        currentQuestion,
+        ...questionsState.slice(index + 1),
+      ]);
+    };
+
     const handleCloseCorrectionModal = () => {
       setPenToolUrl('');
 
@@ -162,6 +172,7 @@ const ViewHomework = withRouter(
                     setActiveQuestion((prev) => (prev > 1 ? prev - 1 : prev));
                   }}
                   onOpenInPenTool={openInPenTool}
+                  onDeleteCorrectedAttachment={deleteEvaluated}
                 />
               )}
             </div>

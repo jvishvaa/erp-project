@@ -9,7 +9,7 @@
 import React, { useRef, useContext, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { SRLWrapper } from 'simple-react-lightbox';
+import SimpleReactLightbox, { SRLWrapper } from 'simple-react-lightbox';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -171,68 +171,44 @@ const ViewHomework = withRouter(
                           <ArrowBackIosIcon />
                         </IconButton>
                       </div>
-                      <div
-                        className='attachments-list'
-                        ref={scrollableContainer}
-                        onScroll={(e) => {
-                          e.preventDefault();
-                          console.log('scrolled');
-                        }}
-                      >
-                        {question.question_files.map((url, i) => (
-                          <>
-                            <div className='attachment'>
-                              <Attachment
-                                key={`homework_student_question_attachment_${i}`}
-                                fileUrl={url}
-                                fileName={`Attachment-${i + 1}`}
-                                urlPrefix={`${endpoints.s3}/homework`}
-                                index={i}
-                              />
-                            </div>
-                            <div className='attachment'>
-                              <Attachment
-                                key={`homework_student_question_attachment_${i}`}
-                                fileUrl={url}
-                                fileName={`Attachment-${i + 1}`}
-                                urlPrefix={`${endpoints.s3}/homework`}
-                                index={i}
-                              />
-                            </div>
-                            <div className='attachment'>
-                              <Attachment
-                                key={`homework_student_question_attachment_${i}`}
-                                fileUrl={url}
-                                fileName={`Attachment-${i + 1}`}
-                                urlPrefix={`${endpoints.s3}/homework`}
-                                index={i}
-                              />
-                            </div>
-                            {/* <div className='attachment'>
-                  <Attachment
-                    key={`homework_student_question_attachment_${i}`}
-                    fileUrl={url}
-                    fileName={`Attachment-${i + 1}`}
-                    urlPrefix={`${endpoints.s3}/homework`}
-                    index={i}
-                  />
-                </div> */}
-                          </>
-                        ))}
-                        <div style={{ position: 'absolute', visibility: 'hidden' }}>
-                          <SRLWrapper>
-                            {question.question_files.map((url, i) => (
-                              <img
-                                src={`${endpoints.s3}/homework/${url}`}
-                                onError={(e) => {
-                                  e.target.src = placeholder;
-                                }}
-                                alt={`Attachment-${i + 1}`}
-                              />
-                            ))}
-                          </SRLWrapper>
+                      <SimpleReactLightbox>
+                        <div
+                          className='attachments-list'
+                          ref={scrollableContainer}
+                          onScroll={(e) => {
+                            e.preventDefault();
+                            console.log('scrolled');
+                          }}
+                        >
+                          {question.question_files.map((url, i) => (
+                            <>
+                              <div className='attachment'>
+                                <Attachment
+                                  key={`homework_student_question_attachment_${i}`}
+                                  fileUrl={url}
+                                  fileName={`Attachment-${i + 1}`}
+                                  urlPrefix={`${endpoints.s3}/homework`}
+                                  index={i}
+                                  actions={['preview', 'download']}
+                                />
+                              </div>
+                            </>
+                          ))}
+                          <div style={{ position: 'absolute', visibility: 'hidden' }}>
+                            <SRLWrapper>
+                              {question.question_files.map((url, i) => (
+                                <img
+                                  src={`${endpoints.s3}/homework/${url}`}
+                                  onError={(e) => {
+                                    e.target.src = placeholder;
+                                  }}
+                                  alt={`Attachment-${i + 1}`}
+                                />
+                              ))}
+                            </SRLWrapper>
+                          </div>
                         </div>
-                      </div>
+                      </SimpleReactLightbox>
                       <div className='next-btn'>
                         <IconButton onClick={() => handleScroll('right')}>
                           <ArrowForwardIosIcon color='primary' />
