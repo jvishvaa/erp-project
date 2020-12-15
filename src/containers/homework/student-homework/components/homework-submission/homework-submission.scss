@@ -62,10 +62,7 @@
 .homework_submit_button_cancel {
   margin-right: 20px !important;
 }
-.homework_block_wrapper {
-  display: flex;
-  justify-content: space-between;
-}
+
 .bulkUploadButton {
   margin-left: 25%;
 }
@@ -115,6 +112,9 @@
       width: 80%;
       color: #014b7e;
       position: relative;
+      padding-bottom:8px;
+      font-size: 18px;
+      // font: normal normal normal 18px Raleway;
     }
 
     .attachments-container {
