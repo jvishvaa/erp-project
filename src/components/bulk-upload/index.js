@@ -514,7 +514,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
                 </TableContainer>
               </Paper>
             </Grid>
-            {searchGrade.length === 1 && searchSection &&
+            {searchGradeId && searchSection &&
               <Grid item xs sm={4}>
                 <Autocomplete
                   style={{ width: '100%' }}
