@@ -21,8 +21,12 @@ const Countdown = (props) => {
       const hours = moment.duration(duration).hours();
       const minutes = moment.duration(duration).minutes();
       const seconds = moment.duration(duration).seconds();
-
-      setCountdownTime({ days, hours, minutes, seconds });
+      if(seconds < 0){
+        clearInterval(interval);
+        return;
+      }else{
+        setCountdownTime({ days, hours, minutes, seconds });
+      }
     }, 1000);
     return () => {
       clearInterval(interval);
@@ -30,14 +34,21 @@ const Countdown = (props) => {
   }, []);
   const { days, hours, minutes, seconds } = countdownTime;
   const nill = !days && !hours && !minutes && !seconds;
+ 
   return (
     <div>
-      {nill ? null : (
+      {
+        seconds !==0 ?  <>
+        Start&apos;s In:
+        {`${countdownTime.days}d ${countdownTime.hours}h ${countdownTime.minutes}m ${countdownTime.seconds}s`}
+      </> : "Class is ongoing"
+      }
+      {/* {nill ? null : (
         <>
           Start&apos;s In:
           {`${countdownTime.days}d ${countdownTime.hours}h ${countdownTime.minutes}m ${countdownTime.seconds}s`}
         </>
-      )}
+      )} */}
     </div>
   );
 };
