@@ -326,6 +326,7 @@ const AssignRole = (props) => {
   };
 
   const assignRole = async () => {
+    displayUsersList()
     const assignRoleApi = endpoints.communication.assignRole;
     const selectionArray = [];
     selectedUsers.forEach((item) => {
@@ -719,7 +720,7 @@ const AssignRole = (props) => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={checkAll}
+                    checked={!!checkAll}
                     onChange={handleSelectAll}
                     color='primary'
                   />
@@ -772,6 +773,7 @@ const AssignRole = (props) => {
                   : headers
               }
               rows={usersRow}
+              checkAll={checkAll}
               completeData={completeData}
               totalRows={totalPage}
               pageno={pageno}
