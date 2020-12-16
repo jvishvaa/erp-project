@@ -136,7 +136,9 @@ const TeacherHomework = withRouter(
     };
 
     const handleSelectCol = (col) => {
-      fetchStudentLists(42);
+      const { homeworkId } = col;
+      console.log('homework id', homeworkId);
+      fetchStudentLists(homeworkId);
       setSelectedCol(col);
       onSetSelectedHomework(col);
     };

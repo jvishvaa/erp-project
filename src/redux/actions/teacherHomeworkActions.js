@@ -82,8 +82,10 @@ export const fetchSubmittedHomeworkDetails = (id) => async (dispatch) => {
       data: response.data.data,
       totalQuestions: response.data.data.length,
     });
+    return response.data.data;
   } catch (error) {
     dispatch({ type: FETCH_SUBMITTED_HOMEWORK_DETAILS_FAILURE });
+    return [];
   }
 };
 
