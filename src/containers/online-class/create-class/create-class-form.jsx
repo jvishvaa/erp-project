@@ -1,4 +1,6 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
+import { withRouter } from 'react-router-dom';
+
 import {
   Grid,
   TextField,
@@ -38,7 +40,7 @@ import endpoints from '../../../config/endpoints';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { fetchBranchesForCreateUser } from '../../../redux/actions';
 
-const CreateClassForm = () => {
+const CreateClassForm = (props) => {
   const tutorEmailRef = useRef(null);
   const [onlineClass, setOnlineClass] = useState(initialFormStructure);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -388,6 +390,7 @@ const CreateClassForm = () => {
   };
 
   const validateForm = (e) => {
+    console.log(props, "props")
     e.preventDefault();
     const {
       title,
@@ -445,6 +448,9 @@ const CreateClassForm = () => {
       formdata.append('student_ids', filteredStudents.join(','));
 
     dispatch(createNewOnlineClass(formdata));
+    props.history.replace('/online-class/create-class');
+    // window.location.reload();
+
   };
 
   const handleCoHostBlur = async (index) => {
@@ -589,7 +595,7 @@ const CreateClassForm = () => {
       <div className='create-class-form-container'>
         <form
           autoComplete='off'
-          onSubmit={validateForm}
+          onSubmit={(e)=>validateForm(e)}
           key={formKey}
           className='create-class-form'
         >
@@ -1020,4 +1026,4 @@ const CreateClassForm = () => {
   );
 };
 
-export default CreateClassForm;
+export default withRouter(CreateClassForm);

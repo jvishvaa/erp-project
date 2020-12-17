@@ -326,7 +326,6 @@ const AssignRole = (props) => {
   };
 
   const assignRole = async () => {
-    displayUsersList()
     const assignRoleApi = endpoints.communication.assignRole;
     const selectionArray = [];
     selectedUsers.forEach((item) => {
@@ -334,6 +333,7 @@ const AssignRole = (props) => {
         selectionArray.push(ids);
       });
     });
+    displayUsersList()
     if (!selectionArray.length) {
       setSelectectUserError('Please select some users');
       return;
