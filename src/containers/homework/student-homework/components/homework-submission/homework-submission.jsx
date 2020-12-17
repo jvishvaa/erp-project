@@ -269,14 +269,14 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
         </Grid>
         <Grid item lg={10}>
           <div className='homework_submit_wrapper'>
-            <div className='homework_block_wrapper'>
+            <div className='homework_block_wrapper_submit'>
               <div className='homework_block homework_submit_tag'>
                 Homework - {subjectName}, {date}
               </div>
               {homeworkSubmission.status === 1 &&
-                <>
-                  {!isQuestionWise &&
-                    <div className='bulkUploadButton'>
+                <div className="checkWrapper">
+                  <div className='bulkUploadButton'>
+                    {!isQuestionWise &&
                       <Button
                         variant='contained'
                         color='primary'
@@ -292,8 +292,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                           onChange={e => handleBulkUpload(e)}
                         />
                       </Button>
-                    </div>
-                  }
+                    }
+                  </div>
                   <div className='homework_block_questionwise_check'>
                     <Checkbox
                       onChange={() => {
@@ -304,7 +304,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     />
                     <span>Upload question wise</span>
                   </div>
-                </>}
+                </div>
+              }
             </div>
 
             {subjectQuestions?.map((question, index) => (

@@ -13,7 +13,6 @@
   text-transform: capitalize;
 }
 .homework_block_questionwise_check {
-  // margin-left: 50%;
   color: #014b7e;
   font-size: 1rem;
 }
@@ -22,6 +21,17 @@
   margin: 20px auto;
   width: 95%;
 }
+
+.homework_block_wrapper {
+  display: flex;
+  // justify-content: space-between;
+}
+
+.homework_block_wrapper_submit {
+  display: flex;
+  justify-content: space-between;
+}
+
 .homework_submit_questions {
   border-bottom: 1px solid #ff6b6b;
   width: 80%;
@@ -63,9 +73,14 @@
   margin-right: 20px !important;
 }
 
-.bulkUploadButton {
-  margin-left: 25%;
+.checkWrapper {
+  display: flex;
 }
+
+.bulkUploadButton {
+  align-self: center;
+}
+
 
 .commentBoxStyle>.MuiOutlinedInput-root {
   border: 1px solid #ff6b6b;
