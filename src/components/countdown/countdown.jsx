@@ -21,7 +21,7 @@ const Countdown = (props) => {
       const hours = moment.duration(duration).hours();
       const minutes = moment.duration(duration).minutes();
       const seconds = moment.duration(duration).seconds();
-      if(seconds < 0){
+      if(seconds <= 0){
         clearInterval(interval);
         return;
       }else{
