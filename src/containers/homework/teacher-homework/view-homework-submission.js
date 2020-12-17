@@ -6,21 +6,41 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
-import { Grid, Button, FormControl, InputLabel, OutlinedInput } from '@material-ui/core';
+import {
+  Grid,
+  Button,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  Typography,
+  IconButton,
+} from '@material-ui/core';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+
+import SimpleReactLightbox, { SRLWrapper } from 'simple-react-lightbox';
+
+import Attachment from './attachment';
+import endpoints from '../../../config/endpoints';
 
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
-import { fetchSubmittedHomeworkDetails } from '../../../redux/actions';
+import {
+  fetchSubmittedHomeworkDetails,
+  evaluateHomework,
+  uploadFile,
+  finalEvaluationForHomework,
+} from '../../../redux/actions';
 
 import SubmittedQuestion from './submitted-question';
 import DescriptiveTestcorrectionModule from '../../../components/EvaluationTool';
-// /EvaluationTool/descriptiveTestcorrectionModule";
+import placeholder from '../../../assets/images/placeholder_small.jpg';
 
 const useStyles = makeStyles((theme) => ({
   attachmentIcon: {
@@ -60,32 +80,136 @@ const ViewHomework = withRouter(
     getSubmittedHomeworkDetails,
     submittedHomeworkDetails,
     totalSubmittedQuestions,
+    isQuestionwise,
+    collatedSubmissionFiles,
     ...props
   }) => {
+    const { setAlert } = useContext(AlertNotificationContext);
     const themeContext = useTheme();
     const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
     const classes = useStyles();
     const { date, subject, studentHomeworkId } = homework || {};
     const [activeQuestion, setActiveQuestion] = useState(1);
     const [questionsState, setQuestionsState] = useState([]);
+    const [collatedQuestionState, setCollatedQuestionState] = useState({});
     const [penToolOpen, setPenToolOpen] = useState(false);
     const [penToolUrl, setPenToolUrl] = useState('');
+    const [remark, setRemark] = useState(null);
+    const [score, setScore] = useState(null);
+    const [homeworkId, setHomeworkId] = useState(null);
 
-    const handleHomeworkSubmit = () => {};
+    const scrollableContainer = useRef(null);
+
+    const handleScroll = (dir) => {
+      if (dir === 'left') {
+        scrollableContainer.current.scrollLeft -= 150;
+      } else {
+        scrollableContainer.current.scrollLeft += 150;
+        console.log(
+          scrollableContainer.current.scrollLeft,
+          scrollableContainer.current.scrollRight
+        );
+      }
+    };
 
     const openInPenTool = (url) => {
       setPenToolUrl(url);
       // setPenToolOpen(true);
     };
 
-    const deleteEvaluated = (index) => {
-      const currentQuestion = questionsState[activeQuestion - 1];
-      currentQuestion.corrected_submissions.splice(index, 1);
+    const handleFinalEvaluationForHomework = async () => {
+      const reqData = {
+        remark,
+        score,
+      };
+      if (!remark) {
+        setAlert('error', 'Please provide a remark');
+        return;
+      }
+      if (!score) {
+        setAlert('error', 'Please provide a score');
+      }
+      try {
+        await finalEvaluationForHomework(homeworkId, reqData);
+        setAlert('success', 'Homework Evaluated');
+        onClose();
+      } catch (e) {
+        setAlert('error', 'Homework Evaluation Failed');
+      }
+    };
+
+    const evaluateAnswer = async () => {
+      let currentQuestion;
+      if (isQuestionwise) {
+        currentQuestion = questionsState[activeQuestion - 1];
+      } else {
+        currentQuestion = collatedQuestionState;
+
+        if (
+          currentQuestion.corrected_submission.length < collatedSubmissionFiles.length
+        ) {
+          setAlert('error', 'Please evaluate all the attachments');
+          return;
+        }
+      }
+      console.log('Evaluated answer ', currentQuestion);
+      const { id, ...reqData } = currentQuestion;
+      try {
+        await evaluateHomework(id, reqData);
+        setAlert('success', 'Evaluation Successfull');
+      } catch (e) {
+        setAlert('error', 'Evaluation failed');
+      }
+    };
+
+    const handleChangeQuestionState = (fieldName, value) => {
+      const index = activeQuestion - 1;
+      const currentQuestion = questionsState[index];
+      currentQuestion[fieldName] = value;
       setQuestionsState([
         ...questionsState.slice(0, index),
         currentQuestion,
         ...questionsState.slice(index + 1),
       ]);
+    };
+
+    const deleteEvaluated = (index) => {
+      if (isQuestionwise) {
+        const currentQuestion = questionsState[activeQuestion - 1];
+        currentQuestion.corrected_submission.splice(index, 1);
+        setQuestionsState([
+          ...questionsState.slice(0, index),
+          currentQuestion,
+          ...questionsState.slice(index + 1),
+        ]);
+      } else {
+        const currentQuestion = { ...collatedQuestionState };
+        currentQuestion.corrected_submission.splice(index, 1);
+        setCollatedQuestionState(currentQuestion);
+        // debugger;
+      }
+    };
+
+    const handleSaveEvaluatedFile = async (file) => {
+      const fd = new FormData();
+      fd.append('file', file);
+      const filePath = await uploadFile(fd);
+      if (isQuestionwise) {
+        const index = activeQuestion - 1;
+        const modifiedQuestion = { ...questionsState[index] };
+        modifiedQuestion.corrected_submission.push(filePath);
+        const newQuestionsState = [
+          ...questionsState.slice(0, index),
+          modifiedQuestion,
+          ...questionsState.slice(index + 1),
+        ];
+        setQuestionsState(newQuestionsState);
+      } else {
+        const modifiedQuestion = collatedQuestionState;
+        modifiedQuestion.corrected_submission.push(filePath);
+        setCollatedQuestionState(modifiedQuestion);
+      }
+      setPenToolUrl(null);
     };
 
     const handleCloseCorrectionModal = () => {
@@ -95,13 +219,25 @@ const ViewHomework = withRouter(
     };
 
     const fetchHomeworkDetails = async () => {
-      const questions = await getSubmittedHomeworkDetails(studentHomeworkId);
-      console.log('questions ', questions);
-      const initialQuestionsState = questions.map((q) => ({
-        id: q.id,
-        corrected_submissions: [],
-      }));
-      setQuestionsState(initialQuestionsState);
+      const data = await getSubmittedHomeworkDetails(studentHomeworkId);
+
+      const { hw_questions: hwQuestions, is_question_wise: isQuestionwise, id } = data;
+      console.log('fetched data ', data);
+      setHomeworkId(id);
+      if (isQuestionwise) {
+        const initialQuestionsState = hwQuestions.map((q) => ({
+          id: q.id,
+          remarks: '',
+          comments: '',
+          corrected_submission: q.evaluated_files,
+        }));
+        setQuestionsState(initialQuestionsState);
+      } else {
+        setCollatedQuestionState({
+          id: hwQuestions.id,
+          corrected_submission: hwQuestions.evaluated_files,
+        });
+      }
     };
 
     useEffect(() => {
@@ -153,12 +289,12 @@ const ViewHomework = withRouter(
                 </div>
               </div>
 
-              {submittedHomeworkDetails?.length && (
+              {isQuestionwise && submittedHomeworkDetails?.length && (
                 <SubmittedQuestion
                   question={submittedHomeworkDetails[activeQuestion - 1]}
                   correctedQuestions={
                     questionsState.length
-                      ? questionsState[activeQuestion - 1].corrected_submissions
+                      ? questionsState[activeQuestion - 1].corrected_submission
                       : []
                   }
                   activeQuestion={activeQuestion}
@@ -173,7 +309,155 @@ const ViewHomework = withRouter(
                   }}
                   onOpenInPenTool={openInPenTool}
                   onDeleteCorrectedAttachment={deleteEvaluated}
+                  onChangeQuestionsState={handleChangeQuestionState}
+                  evaluateAnswer={evaluateAnswer}
                 />
+              )}
+
+              {!isQuestionwise &&
+                submittedHomeworkDetails?.length &&
+                submittedHomeworkDetails.map((question) => (
+                  <div
+                    className='homework-question-container'
+                    key={`homework_student_question_${1}`}
+                  >
+                    <div className='homework-question'>
+                      <div className='question'>{question.question}</div>
+                    </div>
+                  </div>
+                ))}
+              {!isQuestionwise && (
+                <>
+                  {collatedSubmissionFiles?.length && (
+                    <div className='attachments-container with-margin'>
+                      <Typography component='h4' color='primary' className='header'>
+                        Attachments
+                      </Typography>
+                      <div className='attachments-list-outer-container'>
+                        <div className='prev-btn'>
+                          <IconButton onClick={() => handleScroll('left')}>
+                            <ArrowBackIosIcon />
+                          </IconButton>
+                        </div>
+                        <SimpleReactLightbox>
+                          <div
+                            className='attachments-list'
+                            ref={scrollableContainer}
+                            onScroll={(e) => {
+                              e.preventDefault();
+                              console.log('scrolled');
+                            }}
+                          >
+                            {collatedSubmissionFiles.map((url, i) => (
+                              <div className='attachment'>
+                                <Attachment
+                                  key={`homework_student_question_attachment_${i}`}
+                                  fileUrl={url}
+                                  fileName={`Attachment-${i + 1}`}
+                                  urlPrefix={`${endpoints.s3}/homework`}
+                                  index={i}
+                                  actions={['preview', 'download', 'pentool']}
+                                  onOpenInPenTool={openInPenTool}
+                                />
+                              </div>
+                            ))}
+                            <div style={{ position: 'absolute', visibility: 'hidden' }}>
+                              <SRLWrapper>
+                                {collatedSubmissionFiles.map((url, i) => (
+                                  <img
+                                    src={`${endpoints.s3}/homework/${url}`}
+                                    onError={(e) => {
+                                      e.target.src = placeholder;
+                                    }}
+                                    alt={`Attachment-${i + 1}`}
+                                  />
+                                ))}
+                              </SRLWrapper>
+                            </div>
+                          </div>
+                        </SimpleReactLightbox>
+                        <div className='next-btn'>
+                          <IconButton onClick={() => handleScroll('right')}>
+                            <ArrowForwardIosIcon color='primary' />
+                          </IconButton>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {collatedQuestionState.corrected_submission?.length > 0 && (
+                    <div className='attachments-container with-margin'>
+                      <Typography component='h4' color='primary' className='header'>
+                        Evaluated Attachments
+                      </Typography>
+                      <div className='attachments-list-outer-container'>
+                        <div className='prev-btn'>
+                          <IconButton onClick={() => handleScroll('left')}>
+                            <ArrowBackIosIcon />
+                          </IconButton>
+                        </div>
+                        <SimpleReactLightbox>
+                          <div
+                            className='attachments-list'
+                            ref={scrollableContainer}
+                            onScroll={(e) => {
+                              e.preventDefault();
+                              console.log('scrolled');
+                            }}
+                          >
+                            {collatedQuestionState.corrected_submission.map((url, i) => (
+                              <div className='attachment'>
+                                <Attachment
+                                  key={`homework_student_question_attachment_${i}`}
+                                  fileUrl={url}
+                                  fileName={`Attachment-${i + 1}`}
+                                  urlPrefix={`${endpoints.s3}/homework`}
+                                  index={i}
+                                  actions={['preview', 'download', 'delete']}
+                                  onOpenInPenTool={openInPenTool}
+                                  onDelete={deleteEvaluated}
+                                />
+                              </div>
+                            ))}
+                            <div style={{ position: 'absolute', visibility: 'hidden' }}>
+                              <SRLWrapper>
+                                {collatedQuestionState.corrected_submission?.length &&
+                                  collatedQuestionState.corrected_submission.map(
+                                    (url, i) => (
+                                      <img
+                                        src={`${endpoints.s3}/homework/${url}`}
+                                        onError={(e) => {
+                                          e.target.src = placeholder;
+                                        }}
+                                        alt={`Attachment-${i + 1}`}
+                                      />
+                                    )
+                                  )}
+                              </SRLWrapper>
+                            </div>
+                          </div>
+                        </SimpleReactLightbox>
+                        <div className='next-btn'>
+                          <IconButton onClick={() => handleScroll('right')}>
+                            <ArrowForwardIosIcon color='primary' />
+                          </IconButton>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <div
+                    style={{
+                      display: 'flex',
+                      width: '95%',
+                      margin: '20px auto',
+                      justifyContent: 'flex-end',
+                      marginTop: '1rem',
+                    }}
+                  >
+                    <Button variant='contained' color='primary' onClick={evaluateAnswer}>
+                      EVALUATE ANSWER
+                    </Button>
+                  </div>
+                </>
               )}
             </div>
             <div
@@ -188,24 +472,44 @@ const ViewHomework = withRouter(
                 <div style={{ width: '70%', marginRight: '1rem' }}>
                   <FormControl variant='outlined' fullWidth size='small'>
                     <InputLabel htmlFor='component-outlined'>Overall remarks</InputLabel>
-                    <OutlinedInput id='remarks' name='remarks' label='Overall remarks' />
+                    <OutlinedInput
+                      id='remarks'
+                      name='remarks'
+                      label='Overall remarks'
+                      onChange={(e) => {
+                        setRemark(e.target.value);
+                      }}
+                      value={remark}
+                    />
                   </FormControl>
                 </div>
                 <div>
                   <FormControl variant='outlined' fullWidth size='small'>
                     <InputLabel htmlFor='component-outlined'>Overall score</InputLabel>
-                    <OutlinedInput id='score' name='remarks' label='Overall remarks' />
+                    <OutlinedInput
+                      id='score'
+                      name='score'
+                      label='Overall score'
+                      onChange={(e) => {
+                        setScore(e.target.value);
+                      }}
+                      value={score}
+                    />
                   </FormControl>
                 </div>
               </div>
               <div style={{ width: '40%', display: 'flex', justifyContent: 'flex-end' }}>
                 <div style={{ marginRight: '1rem' }}>
-                  <Button variant='contained' className='disabled-btn'>
+                  <Button variant='contained' className='disabled-btn' onClick={onClose}>
                     Cancel
                   </Button>
                 </div>
                 <div>
-                  <Button variant='contained' color='primary'>
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    onClick={handleFinalEvaluationForHomework}
+                  >
                     EVALUATION DONE
                   </Button>
                 </div>
@@ -221,21 +525,7 @@ const ViewHomework = withRouter(
             alert={undefined}
             open={penToolOpen}
             callBackOnPageChange={() => {}}
-            handleSaveFile={(file) => {
-              console.log('file obj from base64', file);
-              // setImagePreview(URL.createObjectURL(file));
-              // setIsEvaluvate(false);
-              const index = activeQuestion - 1;
-              const modifiedQuestion = { ...questionsState[index] };
-              modifiedQuestion.corrected_submissions.push(URL.createObjectURL(file));
-              const newQuestionsState = [
-                ...questionsState.slice(0, index),
-                modifiedQuestion,
-                ...questionsState.slice(index + 1),
-              ];
-              setQuestionsState(newQuestionsState);
-              setPenToolUrl(null);
-            }}
+            handleSaveFile={handleSaveEvaluatedFile}
           />
         )}
       </div>
@@ -248,6 +538,8 @@ const mapStateToProps = (state) => ({
   totalSubmittedQuestions: state.teacherHomework.totalSubmittedQuestions,
   fetchingSubmittedHomeworkDetails:
     state.teacherHomework.fetchingSubmittedHomeworkDetails,
+  isQuestionwise: state.teacherHomework.isQuestionwise,
+  collatedSubmissionFiles: state.teacherHomework.collatedSubmissionFiles,
 });
 
 const mapDispatchToProps = (dispatch) => ({

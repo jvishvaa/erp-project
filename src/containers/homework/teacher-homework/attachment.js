@@ -76,9 +76,7 @@ const Attachment = (props) => {
         </div>
         <img
           className='attachment-file'
-          src={
-            preview ? fileUrl : `${urlPrefix}/${fileUrl}?${escape(new Date().getTime())}`
-          }
+          src={`${urlPrefix}/${fileUrl}?${escape(new Date().getTime())}`}
           alt='file'
           onError={(e) => {
             e.target.src = placeholder;

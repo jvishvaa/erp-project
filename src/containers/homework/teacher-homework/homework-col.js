@@ -40,12 +40,11 @@ const HomeworkCol = ({
               />
             </IconButton>
             {/* {/* {studentSubmitted > 0 && ( */}
-            <IconButton onClick={handleClick}>
+            <IconButton onClick={() => handleClick('submissionStats')}>
               <Badge
                 badgeContent={studentSubmitted}
                 color='primary'
                 style={{ cursor: 'pointer' }}
-                onClick={handleClick}
               >
                 <SvgIcon
                   component={() => (
@@ -62,7 +61,7 @@ const HomeworkCol = ({
             {/* )} */}
 
             {/* {hwEvaluated > 0 && ( */}
-            <IconButton onClick={handleClick}>
+            <IconButton onClick={() => handleClick('evaluationStats')}>
               <Badge
                 badgeContent={hwEvaluated}
                 color='primary'

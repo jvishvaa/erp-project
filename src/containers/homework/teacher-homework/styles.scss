@@ -20,6 +20,10 @@
 	background-color: #ff6b6b;
   } */
 .message_log_wrapper {
+  .date-container {
+    width: 95%;
+    margin: 20px auto;
+  }
   .homework_table_wrapper {
     border: 1px solid #ff6b6b;
     box-shadow: none;
@@ -198,6 +202,10 @@
     margin-right: 20px !important;
   }
   .attachments-container {
+    &.with-margin {
+      width: 95%;
+      margin: 20px auto;
+    }
     .header {
       margin: 1rem 0;
     }
