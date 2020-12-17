@@ -97,7 +97,8 @@ function CorrectionComponent({
       // eslint-disable-next-line no-undef
       var img = new Image();
       // img.src = pgUrl
-      // img.crossOrigin = 'Anonymous';
+      img.setAttribute('crossorigin', 'anonymous');
+      //  crossOrigin = 'Anonymous';
       img.id = 'actual_image';
       // imgRef.current = img
       // window.scrollTo(0, 0)
@@ -122,7 +123,7 @@ function CorrectionComponent({
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.drawImage(img, 0, 0, canvas.width, canvas.height);
       };
-      img.src = pgUrl;
+      img.src = `${pgUrl}??${escape(new Date().getTime())}`;
       imgRef.current = img;
     }
   }, [
