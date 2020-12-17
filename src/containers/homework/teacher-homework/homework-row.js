@@ -19,12 +19,13 @@ const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol, handleViewHomewo
             key={col.id}
             data={data[col.subject_name]}
             isSelected={isSelected}
-            handleClick={() => {
+            handleClick={(view) => {
               setSelectedCol({
                 date: data.date,
                 subject: col.subject_name,
                 subjectId: col.id,
                 homeworkId: data[col.subject_name].hw_id,
+                view,
               });
             }}
             handleNavigationToAddScreen={() => {

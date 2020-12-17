@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import Typography from '@material-ui/core/Typography';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -13,6 +13,7 @@ import Attachment from './attachment';
 import endpoints from '../../../config/endpoints';
 import placeholder from '../../../assets/images/placeholder_small.jpg';
 import { IconButton } from '@material-ui/core';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 const SubmittedQuestion = ({
   question,
@@ -23,8 +24,12 @@ const SubmittedQuestion = ({
   onOpenInPenTool,
   correctedQuestions,
   onDeleteCorrectedAttachment,
+  onChangeQuestionsState,
+  evaluateAnswer,
 }) => {
   const scrollableContainer = useRef(null);
+  const { setAlert } = useContext(AlertNotificationContext);
+
   const handleScroll = (dir) => {
     if (dir === 'left') {
       scrollableContainer.current.scrollLeft -= 150;
@@ -44,6 +49,14 @@ const SubmittedQuestion = ({
       scrollableContainer.current.scrollWidth
     );
   }, [scrollableContainer.current]);
+
+  const onEvaluate = () => {
+    if (correctedQuestions.length < question.submitted_files.length) {
+      setAlert('error', 'Please evaluate all attachments');
+    } else {
+      evaluateAnswer();
+    }
+  };
 
   return (
     <div className='homework-question-container' key={`homework_student_question_${1}`}>
@@ -69,7 +82,7 @@ const SubmittedQuestion = ({
         </Button>
       </div>
       <div className='homework-question'>
-        <div className='question'>{question.homework_question}</div>
+        <div className='question'>{question.question}</div>
       </div>
       <div className='attachments-container'>
         <Typography component='h4' color='primary' className='header'>
@@ -154,7 +167,7 @@ const SubmittedQuestion = ({
           </div>
         </div>
       </div>
-      {correctedQuestions.length && (
+      {correctedQuestions.length > 0 && (
         <div className='attachments-container'>
           <Typography component='h4' color='primary' className='header'>
             Evaluated
@@ -253,6 +266,7 @@ const SubmittedQuestion = ({
               rows={3}
               rowsMax={4}
               label='Comments'
+              onChange={(e) => onChangeQuestionsState('comments', e.target.value)}
             />
           </FormControl>
         </div>
@@ -267,9 +281,15 @@ const SubmittedQuestion = ({
               rows={3}
               rowsMax={4}
               label='Remarks'
+              onChange={(e) => onChangeQuestionsState('remarks', e.target.value)}
             />
           </FormControl>
         </div>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
+        <Button variant='contained' color='primary' onClick={onEvaluate}>
+          EVALUATE ANSWER
+        </Button>
       </div>
     </div>
   );
