@@ -24,12 +24,15 @@
 
 .homework_block_wrapper {
   display: flex;
-  // justify-content: space-between;
 }
 
 .homework_block_wrapper_submit {
   display: flex;
   justify-content: space-between;
+  width: 95%;
+  padding-bottom: 1%;
+  margin: 20px auto;
+  border-bottom: 1px solid #cfcfcf;
 }
 
 .homework_submit_questions {

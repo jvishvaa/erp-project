@@ -28,6 +28,7 @@ import {
   ListAltOutlined,
 } from '@material-ui/icons';
 
+import DescriptiveTestcorrectionModule from '../../../../../components/EvaluationTool';
 import CloseFileIcon from '../../../../../assets/images/Group 8460.svg';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
@@ -38,6 +39,9 @@ import './homework-submission.scss';
 import SimpleReactLightbox, { SRLWrapper } from 'simple-react-lightbox';
 import placeholder from '../../../../../assets/images/placeholder_small.jpg';
 import Attachment from '../../../teacher-homework/attachment';
+import {
+  uploadFile,
+} from '../../../../../redux/actions';
 
 const useStyles = makeStyles((theme) => ({
   attachmentIcon: {
@@ -81,7 +85,9 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const [subjectQuestions, setSubjectQuestions] = useState([]);
   const [isBulk, setIsBulk] = useState(false)
   const [submittedFilesBulk, setSubmittedFilesBulk] = useState([])
-
+  const [penToolOpen, setPenToolOpen] = useState(false)
+  const [penToolUrl, setPenToolUrl] = useState('');
+  const [penToolIndex,setPenToolIndex]=useState('');
 
   const handleHomeworkSubmit = () => {
 
@@ -250,6 +256,49 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     }
   };
 
+  const openInPenTool = (url,index) => {
+    setPenToolUrl(url);
+    setPenToolIndex(index)
+    // setPenToolOpen(true);
+  };
+
+  const handleCloseCorrectionModal = () => {
+    setPenToolUrl('');
+    setPenToolIndex('')
+    // setPenToolOpen(false);
+  };
+
+  const handleSaveEvaluatedFile = async (file) => {
+    const fd = new FormData();
+    fd.append('file', file);
+    const filePath = await uploadFile(fd);
+    // uploadFileHandler(penToolIndex)
+    const list = attachmentDataDisplay.slice();
+    list[penToolIndex] = [...attachmentDataDisplay[penToolIndex], filePath];
+    setAttachmentDataDisplay(list);
+    attachmentData[penToolIndex].attachments.push(filePath)
+    setPenToolUrl('');
+  };
+
+  const mediaContent = {
+    file_content: penToolUrl,
+    // file_content:
+    //   'https://erp-revamp.s3.ap-south-1.amazonaws.com/homework/2020-12-14%2013:58:08.817012_Screenshot%20from%202020-11-18%2015-16-37.png',
+    // file_content:
+    //   'https://image.shutterstock.com/image-photo/bright-spring-view-cameo-island-260nw-1048185397.jpg',
+    id: 1,
+    splitted_media: null,
+  };
+  const desTestDetails = [{ asessment_response: { evaluvated_result: '' } }];
+
+  useEffect(() => {
+    if (penToolUrl) {
+      setPenToolOpen(true);
+    } else {
+      setPenToolOpen(false);
+    }
+  }, [penToolUrl]);
+
   return (
     <div className='create_group_filter_container'>
       <Grid container spacing={2} className='message_log_container'>
@@ -269,7 +318,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
         </Grid>
         <Grid item lg={10}>
           <div className='homework_submit_wrapper'>
-            <div className='homework_block_wrapper_submit'>
+            <div className='homework_block_wrapper'>
               <div className='homework_block homework_submit_tag'>
                 Homework - {subjectName}, {date}
               </div>
@@ -307,6 +356,18 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                 </div>
               }
             </div>
+
+            {penToolOpen && (
+              <DescriptiveTestcorrectionModule
+                desTestDetails={desTestDetails}
+                mediaContent={mediaContent}
+                handleClose={handleCloseCorrectionModal}
+                alert={undefined}
+                open={penToolOpen}
+                callBackOnPageChange={() => { }}
+                handleSaveFile={handleSaveEvaluatedFile}
+              />
+            )}
 
             {subjectQuestions?.map((question, index) => (
               <div
@@ -381,7 +442,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                   fileName={`Attachment-${i + 1}`}
                                   urlPrefix={`${endpoints.s3}/homework`}
                                   index={i}
-                                  actions={['preview', 'download']}
+                                  onOpenInPenTool={(url)=>openInPenTool(url,index)}
+                                  actions={['preview', 'download', question.is_pen_editor_enable && 'pentool']}
                                 />
                               </div>
                             </>
