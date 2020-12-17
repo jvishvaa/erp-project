@@ -16,7 +16,16 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Grid, TextField, Button, SvgIcon, Badge, IconButton } from '@material-ui/core';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import MomentUtils from '@date-io/moment';
+import {
+  LocalizationProvider,
+  DateRangePicker,
+  DateRange,
+  DateRangeDelimiter,
+} from '@material-ui/pickers-4.2';
+// import MomentUtils as  from '@material-ui/pickers-4.2/adapter/moment';
+import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
+
+// import MomentUtils from '@date-io/moment';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import moment from 'moment';
 import { connect } from 'react-redux';
@@ -80,7 +89,7 @@ const TeacherHomework = withRouter(
     history,
     ...props
   }) => {
-    const [value, setValue] = useState([null, null]);
+    const [dateRange, setDateRange] = useState([moment().subtract(6, 'days'), moment()]);
     const [activeView, setActiveView] = useState('list-homework');
     const classes = useStyles();
     const { setAlert } = useContext(AlertNotificationContext);
@@ -135,7 +144,7 @@ const TeacherHomework = withRouter(
       getTeacherHomeworkDetails(2, startDate, date);
     };
 
-    const handleSelectCol = (col) => {
+    const handleSelectCol = (col, view) => {
       const { homeworkId } = col;
       console.log('homework id', homeworkId);
       fetchStudentLists(homeworkId);
@@ -171,8 +180,17 @@ const TeacherHomework = withRouter(
     };
 
     useEffect(() => {
-      getTeacherHomeworkDetails(2, startDate, endDate);
-    }, [getTeacherHomeworkDetails, startDate, endDate]);
+      const [startDate, endDate] = dateRange;
+      if (activeView === 'list-homework') {
+        if (startDate && endDate) {
+          getTeacherHomeworkDetails(
+            2,
+            startDate.format('YYYY-MM-DD'),
+            endDate.format('YYYY-MM-DD')
+          );
+        }
+      }
+    }, [getTeacherHomeworkDetails, dateRange, activeView]);
 
     const renderRef = useRef(0);
 
@@ -189,6 +207,75 @@ const TeacherHomework = withRouter(
               <CommonBreadcrumbs componentName='Homework' />
             </div>
             <div className='message_log_white_wrapper'>
+              <div className='date-container'>
+                <LocalizationProvider dateAdapter={MomentUtils}>
+                  {/* <div className='date-picker-container'>
+                    <MuiPickersUtilsProvider utils={MomentUtils}>
+                      <KeyboardDatePicker
+                        clearable
+                        value={startDate}
+                        placeholder='Start Date'
+                        onChange={(date) => handleStartDateChange(date)}
+                        format='YYYY-MM-DD'
+                        label='Start Date'
+                      />
+                    </MuiPickersUtilsProvider>
+                  </div>
+                  <div className='date-picker-container'>
+                    <MuiPickersUtilsProvider utils={MomentUtils}>
+                      <KeyboardDatePicker
+                        placeholder='End Date'
+                        value={endDate}
+                        onChange={(date) => handleEndDateChange(date)}
+                        format='YYYY-MM-DD'
+                        label='End Date'
+                      />
+                    </MuiPickersUtilsProvider>
+                  </div> */}
+                  <DateRangePicker
+                    startText='Select-dates'
+                    // endText='End-date'
+                    value={dateRange}
+                    // calendars='1'
+                    onChange={(newValue) => {
+                      console.log(newValue);
+                      setDateRange(newValue);
+                    }}
+                    renderInput={(
+                      // {
+                      //   inputProps: { value: startValue, ...restStartInputProps },
+                      //   ...startProps
+                      // },
+                      // {
+                      //   inputProps: { value: endValue, ...restEndInputProps },
+                      //   ...endProps
+                      // }
+                      { inputProps, ...startProps },
+                      // startProps,
+                      endProps
+                    ) => {
+                      console.log('startProps ', startProps, 'endProps', endProps);
+                      return (
+                        <>
+                          <TextField
+                            {...startProps}
+                            inputProps={{
+                              ...inputProps,
+                              value: `${inputProps.value} - ${endProps.inputProps.value}`,
+                              readOnly: true,
+                            }}
+                            size='small'
+                            style={{ minWidth: '250px' }}
+                          />
+                          {/* <TextField {...startProps} size='small' /> */}
+                          {/* <DateRangeDelimiter> to </DateRangeDelimiter> */}
+                          {/* <TextField {...endProps} size='small' /> */}
+                        </>
+                      );
+                    }}
+                  />
+                </LocalizationProvider>
+              </div>
               <div className='homework_block_wrapper'>
                 <div className='homework_block'>Weekly Time table</div>
                 <div className='icon-desc-container'>
@@ -227,29 +314,6 @@ const TeacherHomework = withRouter(
                   />
                   <span>HW Evaluated</span>
                 </div>
-                <div className='date-picker-container'>
-                  <MuiPickersUtilsProvider utils={MomentUtils}>
-                    <KeyboardDatePicker
-                      clearable
-                      value={startDate}
-                      placeholder='Start Date'
-                      onChange={(date) => handleStartDateChange(date)}
-                      format='YYYY-MM-DD'
-                      label='Start Date'
-                    />
-                  </MuiPickersUtilsProvider>
-                </div>
-                <div className='date-picker-container'>
-                  <MuiPickersUtilsProvider utils={MomentUtils}>
-                    <KeyboardDatePicker
-                      placeholder='End Date'
-                      value={endDate}
-                      onChange={(date) => handleEndDateChange(date)}
-                      format='YYYY-MM-DD'
-                      label='End Date'
-                    />
-                  </MuiPickersUtilsProvider>
-                </div>
               </div>
               {activeView === 'view-homework' && (
                 <ViewHomework
@@ -269,7 +333,7 @@ const TeacherHomework = withRouter(
               {activeView === 'list-homework' && (
                 <div className='create_group_filter_container'>
                   <Grid container className='homework_container' spacing={2}>
-                    <Grid xs={12} md={8} item>
+                    <Grid xs={12} md={selectedCol.subject ? 8 : 12} item>
                       {fetchingTeacherHomework ? (
                         <div
                           style={{

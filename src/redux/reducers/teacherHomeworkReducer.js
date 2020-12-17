@@ -13,6 +13,8 @@ const INITIAL_STATE = {
   fetchingStudentLists: false,
   submittedHomeworkDetails: [],
   totalSubmittedQuestions: 0,
+  isQuestionwise: true,
+  collatedSubmissionFiles: [],
   fetchingSubmittedHomeworkDetails: false,
 };
 
@@ -79,6 +81,8 @@ export default function reducer(state = INITIAL_STATE, action) {
         fetchingSubmittedHomeworkDetails: false,
         submittedHomeworkDetails: action.data,
         totalSubmittedQuestions: action.totalQuestions,
+        isQuestionwise: action.isQuestionwise,
+        collatedSubmissionFiles: action.collatedSubmissionFiles,
       };
     case teacherHomeworkActions.FETCH_SUBMITTED_HOMEWORK_DETAILS_FAILURE:
       return {

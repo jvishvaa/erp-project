@@ -77,11 +77,23 @@ export const fetchSubmittedHomeworkDetails = (id) => async (dispatch) => {
     const response = await axios.get(
       `/academic/stu-submited-data/?student_homework=${id}`
     );
-    dispatch({
-      type: FETCH_SUBMITTED_HOMEWORK_DETAILS_SUCCESS,
-      data: response.data.data,
-      totalQuestions: response.data.data.length,
-    });
+    const isQuestionwise = response.data.data.is_question_wise;
+    if (isQuestionwise) {
+      dispatch({
+        type: FETCH_SUBMITTED_HOMEWORK_DETAILS_SUCCESS,
+        data: response.data.data.hw_questions,
+        totalQuestions: response.data.data.hw_questions.length,
+        isQuestionwise,
+      });
+    } else {
+      dispatch({
+        type: FETCH_SUBMITTED_HOMEWORK_DETAILS_SUCCESS,
+        data: response.data.data.hw_questions.questions,
+        totalQuestions: response.data.data.hw_questions.questions.length,
+        collatedSubmissionFiles: response.data.data.hw_questions.submitted_files,
+        isQuestionwise,
+      });
+    }
     return response.data.data;
   } catch (error) {
     dispatch({ type: FETCH_SUBMITTED_HOMEWORK_DETAILS_FAILURE });
@@ -148,5 +160,28 @@ export const fetchStudentsListForTeacherHomework = (id) => async (dispatch) => {
     });
   } catch (error) {
     dispatch({ type: FETCH_STUDENT_LIST_FOR_TEACHER_HOMEWORK_FAILURE });
+  }
+};
+
+export const evaluateHomework = async (id, data) => {
+  try {
+    const response = await axios.put(`/academic/${id}/teacher-evaluation/`, data);
+    if (response.data.status_code === 201) {
+      return;
+    }
+  } catch (error) {
+    throw new Error();
+  }
+};
+
+export const finalEvaluationForHomework = async (id, data) => {
+  try {
+    const response = await axios.put(`/academic/${id}/evaluation-completed/`, data);
+    if (response.data.status_code === 200) {
+      return;
+    }
+    throw new Error();
+  } catch (error) {
+    throw new Error();
   }
 };
