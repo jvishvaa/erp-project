@@ -134,6 +134,7 @@ const CreateClassForm = () => {
       setOnlineClass((prevState) => ({
         ...prevState,
         ...initialFormStructure,
+        selectedTime: new Date(),
         coHosts: [],
       }));
       dispatch(resetContext());
@@ -326,6 +327,7 @@ const CreateClassForm = () => {
       selectedDate: value,
     }));
   };
+
   const handleTimeChange = (event) => {
     const { selectedDate } = onlineClass;
     const time = new Date(event);
@@ -348,7 +350,6 @@ const CreateClassForm = () => {
     //   );
     //   return;
     // }
-
     dispatch(clearTutorEmailValidation());
     setOnlineClass((prevState) => ({ ...prevState, selectedTime: time }));
   };
@@ -578,6 +579,10 @@ const CreateClassForm = () => {
     creatingOnlineClass ||
     tutorNotAvailableMsg;
 
+  useEffect(()=>{
+    setOnlineClass((prevState) => ({ ...prevState, selectedTime: new Date() }));
+  },[])
+
   return (
     <div className='create__class' key={formKey}>
       <div className='breadcrumb-container-create'>
@@ -786,6 +791,7 @@ const CreateClassForm = () => {
                   margin='none'
                   id='time-picker'
                   label='Start time'
+                  format="hh:mm A"
                   value={onlineClass.selectedTime}
                   onChange={handleTimeChange}
                   KeyboardButtonProps={{

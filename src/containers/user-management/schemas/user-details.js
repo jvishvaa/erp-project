@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-const phoneRegExp = /^\+?1?\d{9,15}$/;
+const phoneRegExp = /^\+?1?\d{10}$/;
 
 const validationSchema = Yup.object({
   first_name: Yup.string().required('Required'),

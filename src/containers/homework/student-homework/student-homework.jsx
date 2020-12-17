@@ -601,7 +601,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                                 <SvgIcon
                                                   component={() => (
                                                     <img
-                                                        style={{
+                                                      style={{
                                                         width: '35px',
                                                         padding: '5px',
                                                         cursor: 'pointer',
@@ -640,21 +640,33 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                               )}
                                           </>
                                           : null}
-                                        {row[headers.subject_slag].isEvaluted ? (
-                                          <SvgIcon
-                                            component={() => (
-                                              <img
-                                                style={{
-                                                  width: '35px',
-                                                  padding: '5px',
-                                                  cursor: 'pointer',
-                                                }}
-                                                src={studentHomeworkEvaluted}
-                                                alt='homeworkEvaluted'
+                                        {
+                                          row[headers.subject_slag].isEvaluted ? (
+                                            <span
+                                              onClick={() =>
+                                                handleOpenHomework(
+                                                  row[headers.subject_slag].homeworkId,
+                                                  row.date,
+                                                  headers.subject_slag,
+                                                  3
+                                                )
+                                              }
+                                            >
+                                              <SvgIcon
+                                                component={() => (
+                                                  <img
+                                                    style={{
+                                                      width: '35px',
+                                                      padding: '5px',
+                                                      cursor: 'pointer',
+                                                    }}
+                                                    src={studentHomeworkEvaluted}
+                                                    alt='homeworkEvaluted'
+                                                  />
+                                                )}
                                               />
-                                            )}
-                                          />
-                                        ) : null}
+                                            </span>
+                                          ) : null}
                                       </TableCell>
                                     ) : (
                                           <TableCell />
