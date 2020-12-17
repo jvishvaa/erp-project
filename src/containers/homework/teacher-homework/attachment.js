@@ -65,7 +65,7 @@ const Attachment = (props) => {
                   </IconButton>
                 )}
 
-                {actions.includes('delete') && (
+                {actions?.includes('delete') && (
                   <IconButton size='small' onClick={() => onDelete(index)}>
                     <DeleteIcon style={{ color: '#ffffff' }} />
                   </IconButton>
