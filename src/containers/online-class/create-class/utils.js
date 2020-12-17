@@ -21,7 +21,7 @@ export const initialFormStructure = {
   sectionIds: [],
   subjectIds: [],
   selectedDate: moment(new Date()).format('YYYY-MM-DD'),
-  selectedTime: new Date(),
+  selectedTime: new Date(), 
   coHosts: [],
 };
 
