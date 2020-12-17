@@ -140,9 +140,9 @@ const CreateClassForm = (props) => {
       }));
       dispatch(resetContext());
       setSelectedGrades([]);
-      dispatch(listGradesCreateClass());
+      dispatch(listGradesCreateClass(moduleId));
     }
-  }, [isCreated]);
+  }, [isCreated, moduleId]);
 
   // const listSubjects = async (gradeids, sectionIds) => {
   //   try {
@@ -389,8 +389,13 @@ const CreateClassForm = (props) => {
     setOnlineClass((prevState) => ({ ...prevState, coHosts: hosts }));
   };
 
+  const callGrades = () => {
+    console.log(moduleId, "moduleId")
+    dispatch(listGradesCreateClass(moduleId));
+
+  }
   const validateForm = (e) => {
-    console.log(props, "props")
+    callGrades()
     e.preventDefault();
     const {
       title,
@@ -448,7 +453,8 @@ const CreateClassForm = (props) => {
       formdata.append('student_ids', filteredStudents.join(','));
 
     dispatch(createNewOnlineClass(formdata));
-    props.history.replace('/online-class/create-class');
+  
+    
     // window.location.reload();
 
   };
@@ -583,7 +589,7 @@ const CreateClassForm = (props) => {
     !onlineClass.tutorEmail ||
     creatingOnlineClass ||
     tutorNotAvailableMsg;
-
+console.log(grades, "grades", moduleId)
   return (
     <div className='create__class' key={formKey}>
       <div className='breadcrumb-container-create'>
