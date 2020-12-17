@@ -333,7 +333,7 @@ const AssignRole = (props) => {
         selectionArray.push(ids);
       });
     });
-    displayUsersList()
+  
     if (!selectionArray.length) {
       setSelectectUserError('Please select some users');
       return;
@@ -367,6 +367,8 @@ const AssignRole = (props) => {
       );
       const { message, status_code: statusCode } = response.data;
       if (statusCode === 200) {
+        // props.history.push('/user-management/assign-role')
+        // displayUsersList()
         setAlert('success', message);
         setSelectedUsers([]);
         setRoleError('');
@@ -378,7 +380,7 @@ const AssignRole = (props) => {
         setSelectedSections([]);
         setSelectAllObj([]);
         setSelectectUserError('');
-        setAssigenedRole(true);
+        setAssigenedRole();
         clearSelectAll();
       } else {
         setAlert('error', response.data.message);
