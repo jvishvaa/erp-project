@@ -146,12 +146,13 @@ font-weight: 600;
 	.message_log_wrapper .homework_block_wrapper {
 		width: 100% !important;
 		border-bottom: 1px solid #cfcfcf;
-		align-items: center !important;;
-		display: grid !important;;
+		align-items: center !important;
+		display: grid !important;
 		grid-template-columns: auto auto !important;
 		font-size: 13px !important;
 		line-height: 30px !important;
-		padding: 10px
+		padding: 10px;
+		text-align: center;
 		
 
 	}
@@ -168,7 +169,10 @@ font-weight: 600;
 	.homework_right_wrapper_items{
 		padding:10px;
 	}
-	
+	.homework_block{
+		text-align: left;
+	    margin-left: 18px;
+	}
   }
 
   
