@@ -1,15 +1,35 @@
+@import '../../assets/styles/variables';
+
 .question-container {
-  width: 75%;
-  display: flex;
-  margin: 1rem 0;
+  // width: 75%;
+  // display: flex;
+  // margin: 1rem 0;
   .question-card {
-    width: 80%;
+    border: 1px solid $primary-color;
     .file-upload-input {
       display: none;
     }
     .question-ctrls-container {
-      display: flex;
-      align-items: center;
+      .question-ctrl-inner-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        &.max-attachments {
+          .question-ctrl-label {
+            font-size: 1rem;
+            color: $secondary-color;
+            margin-right: 0.5rem;
+          }
+        }
+        .question-ctrl {
+          width: 60%;
+          display: flex;
+          justify-content: space-around;
+          .MuiFormControlLabel-label {
+            font-size: 1rem;
+          }
+        }
+      }
     }
     .MuiBadge-root {
       .MuiBadge-badge {
@@ -17,4 +37,49 @@
       }
     }
   }
+  .question-btn-container {
+    .question-btn-inner-container {
+      margin: 20px 0;
+      .btn {
+        width: 100%;
+      }
+    }
+  }
+  // .attachments-container {
+  //   &.with-margin {
+  //     width: 95%;
+  //     margin: 20px auto;
+  //   }
+  //   .header {
+  //     margin: 1rem 0;
+  //   }
+  .attachments-grid {
+    width: 100%;
+    .attachments-list-outer-container {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      .prev-btn,
+      .next-btn {
+        width: 45px;
+      }
+      .attachments-list {
+        &::-webkit-scrollbar {
+          display: none;
+        }
+        scroll-behavior: smooth;
+        // flex-grow: 1;
+        // overflow-x: auto;
+        overflow: hidden;
+        display: flex;
+        margin: 1rem 0;
+        width: calc(100% - 90px);
+        .attachment {
+          flex-shrink: 0;
+          width: 150px;
+        }
+      }
+    }
+  }
+  // }
 }
