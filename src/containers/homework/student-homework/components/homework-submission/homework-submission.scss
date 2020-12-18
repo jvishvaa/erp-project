@@ -52,6 +52,7 @@
 }
 .homework_submit_questions_attachment {
   width: 30% !important;
+  display: flex;
 }
 .non_selected_homework_type_item {
   cursor: pointer;
@@ -106,7 +107,7 @@
   opacity: 1;
   align-items: center;
   justify-content: center;
-  margin-top: 5px;
+  margin: 5px;
   font: normal normal normal 14px/16px Raleway;
 }
 .file_name_container {

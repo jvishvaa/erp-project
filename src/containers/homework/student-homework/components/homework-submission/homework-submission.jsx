@@ -61,6 +61,7 @@ const useStyles = makeStyles((theme) => ({
   },
   fileRow: {
     padding: '6px',
+
   },
   modalButtons: {
     position: 'sticky',
@@ -272,7 +273,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     const fd = new FormData();
     fd.append('file', file);
     const filePath = await uploadFile(fd);
-    // uploadFileHandler(penToolIndex)
+    
     const list = attachmentDataDisplay.slice();
     list[penToolIndex] = [...attachmentDataDisplay[penToolIndex], filePath];
     setAttachmentDataDisplay(list);
@@ -282,10 +283,6 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
 
   const mediaContent = {
     file_content: penToolUrl,
-    // file_content:
-    //   'https://erp-revamp.s3.ap-south-1.amazonaws.com/homework/2020-12-14%2013:58:08.817012_Screenshot%20from%202020-11-18%2015-16-37.png',
-    // file_content:
-    //   'https://image.shutterstock.com/image-photo/bright-spring-view-cameo-island-260nw-1048185397.jpg',
     id: 1,
     splitted_media: null,
   };
@@ -318,7 +315,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
         </Grid>
         <Grid item lg={10}>
           <div className='homework_submit_wrapper'>
-            <div className='homework_block_wrapper'>
+            <div className='homework_block_wrapper_submit'>
               <div className='homework_block homework_submit_tag'>
                 Homework - {subjectName}, {date}
               </div>
@@ -378,14 +375,14 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   <span className='question'>{question.question}</span>
                 </div>
                 {isQuestionWise &&
-                  <Grid
-                    container
+                  <div
+                    // container
                     className='homework_submit_questions_attachment'
-                    alignItems='center'
-                    spacing={2}
-                    justify='space-between'
+                    // alignItems='center'
+                    // spacing={2}
+                    // justify='space-between'
                   >
-                    <Grid item xs={2} className={classes.wrapper}>
+                    {/* <Grid item xs={2} className={classes.wrapper}> */}
                       <IconButton
                         fontSize='small'
                         disableRipple
@@ -399,8 +396,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                           className={classes.fileInput}
                         />
                       </IconButton>
-                    </Grid>
-                    <Grid item xs={10}>
+                    {/* </Grid> */}
+                    {/* // <Grid item xs={10}> */}
                       {attachmentDataDisplay[index]?.map((file, i) => (
                         <FileRow
                           key={`homework_student_question_attachment_${i}`}
@@ -409,8 +406,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                           onClose={() => removeFileHandler(index, i)}
                         />
                       ))}
-                    </Grid>
-                  </Grid>
+                    {/* </Grid> */}
+                  </div>
                 }
 
                 {((homeworkSubmission.status === 1 || homeworkSubmission.status === 2 || homeworkSubmission.status === 3) && question.question_files?.length > 0) &&
@@ -473,8 +470,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                 }
                 {!isBulk &&
                   <>
-                    {(homeworkSubmission.status === 2 && question.submitted_files?.length > 0) ||
-                      (homeworkSubmission.status === 3 && question.evaluated_files?.length > 0)
+                    {((homeworkSubmission.status === 2 && question.submitted_files?.length > 0) ||
+                      (homeworkSubmission.status === 3 && question.evaluated_files?.length > 0))
                       &&
                       <div className='attachments-container'>
                         <Typography component='h4' color='primary' className='header'>
@@ -582,11 +579,11 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
 
             {isBulk &&
               <>
-                {(homeworkSubmission.status === 2 && submittedFilesBulk?.length > 0) &&
+                {((homeworkSubmission.status === 2 || homeworkSubmission.status === 3) && submittedFilesBulk?.length > 0) &&
                   <div className='homework-question-container student-view'>
                     <div className='attachments-container'>
                       <Typography component='h4' color='primary' className='header'>
-                        All Submitted Files
+                      {homeworkSubmission.status === 2?'All Submitted Files':'All Evaluated Files'}
                     </Typography>
                       <div className='attachments-list-outer-container'>
                         <div className='prev-btn'>
