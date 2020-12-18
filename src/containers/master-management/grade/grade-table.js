@@ -83,7 +83,7 @@ const GradeTable = () => {
   const [searchGrade, setSearchGrade] = useState('');
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
-  const [limit, setLimit] = useState(15);
+  const limit = 15;
   const [goBackFlag,setGoBackFlag]=useState(false)
   
   const themeContext = useTheme();
@@ -129,11 +129,9 @@ const GradeTable = () => {
       })
       .then((result) => {
         if (result.data.status_code === 200) {
-          {
             setDelFlag(!delFlag);
             setLoading(false);
             setAlert('success', result.data.message);
-          }
         } else {
           setLoading(false);
           setAlert('error', result.data.message);
@@ -169,10 +167,8 @@ const GradeTable = () => {
       )
       .then((result) => {
         if (result.data.status_code === 200) {
-          {
             setTotalCount(result.data.result.count);
             setGrades(result.data.result.results);
-          }
         } else {
           setAlert('error', result.data.error_message);
         }

@@ -86,7 +86,7 @@ const MessageTypeTable = () => {
   const [delFlag, setDelFlag] = useState(false);
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
-  const [limit, setLimit] = useState(15);
+  const limit = 15;
   const [goBackFlag,setGoBackFlag]=useState(false)
   
   const themeContext = useTheme();
@@ -171,10 +171,8 @@ const MessageTypeTable = () => {
       )
       .then((result) => {
         if (result.data.status_code === 200) {
-          {
             setTotalCount(result.data.data.count);
             setMessageType(result.data.data.results);
-          }
         } else {
           setAlert('error', result.data.error_msg);
         }

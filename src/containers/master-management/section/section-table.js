@@ -102,10 +102,9 @@ const SectionTable = () => {
   const [delFlag, setDelFlag] = useState(false);
   const [searchGrade, setSearchGrade] = useState('');
   const [searchSection, setSearchSection] = useState('');
-  const [widthFlag, setWidthFlag] = useState(false);
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
-  const [limit, setLimit] = useState(15);
+  const limit = 15;
   const [goBackFlag,setGoBackFlag]=useState(false)
 
 
@@ -164,11 +163,9 @@ const SectionTable = () => {
       })
       .then((result) => {
         if (result.data.status_code === 200) {
-          {
             setDelFlag(!delFlag);
             setLoading(false);
             setAlert('success', result.data.message);
-          }
         } else {
           setLoading(false);
           setAlert('error', result.data.message);
