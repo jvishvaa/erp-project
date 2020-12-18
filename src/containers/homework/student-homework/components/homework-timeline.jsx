@@ -138,6 +138,7 @@ const HomeworkTimeline = withRouter(({ history, ...props }) => {
               <SvgIcon
                 component={() => (
                   <img
+                  className="static-media"
                     style={{
                       width: '25px',
                       height: '25px',
@@ -174,6 +175,7 @@ const HomeworkTimeline = withRouter(({ history, ...props }) => {
               <SvgIcon
                 component={() => (
                   <img
+                  className="static-media"
                     style={{
                       width: '25px',
                       height: '25px',
@@ -210,6 +212,7 @@ const HomeworkTimeline = withRouter(({ history, ...props }) => {
               <SvgIcon
                 component={() => (
                   <img
+                  className="static-media"
                     style={{
                       width: '25px',
                       height: '25px',
@@ -251,6 +254,7 @@ const HomeworkTimeline = withRouter(({ history, ...props }) => {
                       <SvgIcon
                         component={() => (
                           <img
+                          className="static-media"
                             style={{
                               width: '20px',
                               height: '20px',

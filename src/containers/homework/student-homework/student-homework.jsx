@@ -346,7 +346,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
           <div className='message_log_breadcrumb_wrapper'>
             <CommonBreadcrumbs componentName='Homework' />
           </div>
-          <div className='create_group_filter_container'>
+          <div className='create_group_filter_container group-a'>
             <Grid container spacing={5} className='message_log_container'>
               <MuiPickersUtilsProvider utils={MomentUtils} className='date_provider'>
                 <Grid item xs={12} sm={3}>
@@ -361,7 +361,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                     onChange={(date) => handleStartDateChange(date)}
                     // maxDate={new Date()}
                     KeyboardButtonProps={{
-                      'aria-label': 'change date',
+                      'aria-label': 'change date', 
                     }}
                   />
                 </Grid>
