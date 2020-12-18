@@ -139,9 +139,9 @@ const CreateClassForm = () => {
       }));
       dispatch(resetContext());
       setSelectedGrades([]);
-      dispatch(listGradesCreateClass());
+      dispatch(listGradesCreateClass(moduleId));
     }
-  }, [isCreated]);
+  }, [isCreated,moduleId]);
 
   // const listSubjects = async (gradeids, sectionIds) => {
   //   try {
@@ -430,7 +430,6 @@ const CreateClassForm = () => {
     formdata.append('title', title);
     formdata.append('duration', duration);
     formdata.append('subject_id', subject);
-    formdata.append('join_limit', joinLimit);
     formdata.append('tutor_emails', tutorEmails.join(','));
     formdata.append('role', 'Student');
     formdata.append('start_time', startTime);
@@ -445,7 +444,12 @@ const CreateClassForm = () => {
     if (filteredStudents.length)
       formdata.append('student_ids', filteredStudents.join(','));
 
-    dispatch(createNewOnlineClass(formdata));
+    if(joinLimit>0) {
+      formdata.append('join_limit', joinLimit);
+      dispatch(createNewOnlineClass(formdata));
+    } else {
+      setAlert('warning','Join limit should be atleast 1.')
+    }
   };
 
   const handleCoHostBlur = async (index) => {
