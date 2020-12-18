@@ -240,9 +240,9 @@ const HomeworkAdmin = () => {
       list[index]['is_other']=false
 
       mandatorySubjects.push(id)
-      let filtered = optionalSubjects.filter(value=>value!=id)
+      let filtered = optionalSubjects.filter(value=>value!==id)
       setOptionalSubjects(filtered)
-      filtered = otherSubjects.filter(value=>value!=id)
+      filtered = otherSubjects.filter(value=>value!==id)
       setOtherSubjects(filtered)
     }
     else if(name==='is_optional' && value)
@@ -252,9 +252,9 @@ const HomeworkAdmin = () => {
       list[index]['is_other']=false
 
       optionalSubjects.push(id)
-      let filtered =  mandatorySubjects.filter(value=>value!=id)
+      let filtered =  mandatorySubjects.filter(value=>value!==id)
       setMandatorySubjects(filtered)
-      filtered = otherSubjects.filter(value=>value!=id)
+      filtered = otherSubjects.filter(value=>value!==id)
       setOtherSubjects(filtered)
     }
     else if(name==='is_other' && value)
@@ -264,9 +264,9 @@ const HomeworkAdmin = () => {
       list[index]['is_other']=true
 
       otherSubjects.push(id)
-      let filtered =  mandatorySubjects.filter(value=>value!=id)
+      let filtered =  mandatorySubjects.filter(value=>value!==id)
       setMandatorySubjects(filtered)
-      filtered = optionalSubjects.filter(value=>value!=id)
+      filtered = optionalSubjects.filter(value=>value!==id)
       setOptionalSubjects(filtered)
     }
     setRowData({...rowData,subject_data:list})

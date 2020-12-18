@@ -28,6 +28,7 @@ import {
   ListAltOutlined,
 } from '@material-ui/icons';
 
+import DescriptiveTestcorrectionModule from '../../../../../components/EvaluationTool';
 import CloseFileIcon from '../../../../../assets/images/Group 8460.svg';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
@@ -38,6 +39,9 @@ import './homework-submission.scss';
 import SimpleReactLightbox, { SRLWrapper } from 'simple-react-lightbox';
 import placeholder from '../../../../../assets/images/placeholder_small.jpg';
 import Attachment from '../../../teacher-homework/attachment';
+import {
+  uploadFile,
+} from '../../../../../redux/actions';
 
 const useStyles = makeStyles((theme) => ({
   attachmentIcon: {
@@ -57,6 +61,7 @@ const useStyles = makeStyles((theme) => ({
   },
   fileRow: {
     padding: '6px',
+
   },
   modalButtons: {
     position: 'sticky',
@@ -81,7 +86,9 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const [subjectQuestions, setSubjectQuestions] = useState([]);
   const [isBulk, setIsBulk] = useState(false)
   const [submittedFilesBulk, setSubmittedFilesBulk] = useState([])
-
+  const [penToolOpen, setPenToolOpen] = useState(false)
+  const [penToolUrl, setPenToolUrl] = useState('');
+  const [penToolIndex,setPenToolIndex]=useState('');
 
   const handleHomeworkSubmit = () => {
 
@@ -250,6 +257,45 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     }
   };
 
+  const openInPenTool = (url,index) => {
+    setPenToolUrl(url);
+    setPenToolIndex(index)
+    // setPenToolOpen(true);
+  };
+
+  const handleCloseCorrectionModal = () => {
+    setPenToolUrl('');
+    setPenToolIndex('')
+    // setPenToolOpen(false);
+  };
+
+  const handleSaveEvaluatedFile = async (file) => {
+    const fd = new FormData();
+    fd.append('file', file);
+    const filePath = await uploadFile(fd);
+    
+    const list = attachmentDataDisplay.slice();
+    list[penToolIndex] = [...attachmentDataDisplay[penToolIndex], filePath];
+    setAttachmentDataDisplay(list);
+    attachmentData[penToolIndex].attachments.push(filePath)
+    setPenToolUrl('');
+  };
+
+  const mediaContent = {
+    file_content: penToolUrl,
+    id: 1,
+    splitted_media: null,
+  };
+  const desTestDetails = [{ asessment_response: { evaluvated_result: '' } }];
+
+  useEffect(() => {
+    if (penToolUrl) {
+      setPenToolOpen(true);
+    } else {
+      setPenToolOpen(false);
+    }
+  }, [penToolUrl]);
+
   return (
     <div className='create_group_filter_container'>
       <Grid container spacing={2} className='message_log_container'>
@@ -269,14 +315,14 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
         </Grid>
         <Grid item lg={10}>
           <div className='homework_submit_wrapper'>
-            <div className='homework_block_wrapper'>
+            <div className='homework_block_wrapper_submit'>
               <div className='homework_block homework_submit_tag'>
                 Homework - {subjectName}, {date}
               </div>
               {homeworkSubmission.status === 1 &&
-                <>
-                  {!isQuestionWise &&
-                    <div className='bulkUploadButton'>
+                <div className="checkWrapper">
+                  <div className='bulkUploadButton'>
+                    {!isQuestionWise &&
                       <Button
                         variant='contained'
                         color='primary'
@@ -292,8 +338,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                           onChange={e => handleBulkUpload(e)}
                         />
                       </Button>
-                    </div>
-                  }
+                    }
+                  </div>
                   <div className='homework_block_questionwise_check'>
                     <Checkbox
                       onChange={() => {
@@ -304,8 +350,21 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     />
                     <span>Upload question wise</span>
                   </div>
-                </>}
+                </div>
+              }
             </div>
+
+            {penToolOpen && (
+              <DescriptiveTestcorrectionModule
+                desTestDetails={desTestDetails}
+                mediaContent={mediaContent}
+                handleClose={handleCloseCorrectionModal}
+                alert={undefined}
+                open={penToolOpen}
+                callBackOnPageChange={() => { }}
+                handleSaveFile={handleSaveEvaluatedFile}
+              />
+            )}
 
             {subjectQuestions?.map((question, index) => (
               <div
@@ -316,14 +375,14 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   <span className='question'>{question.question}</span>
                 </div>
                 {isQuestionWise &&
-                  <Grid
-                    container
+                  <div
+                    // container
                     className='homework_submit_questions_attachment'
-                    alignItems='center'
-                    spacing={2}
-                    justify='space-between'
+                    // alignItems='center'
+                    // spacing={2}
+                    // justify='space-between'
                   >
-                    <Grid item xs={2} className={classes.wrapper}>
+                    {/* <Grid item xs={2} className={classes.wrapper}> */}
                       <IconButton
                         fontSize='small'
                         disableRipple
@@ -337,8 +396,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                           className={classes.fileInput}
                         />
                       </IconButton>
-                    </Grid>
-                    <Grid item xs={10}>
+                    {/* </Grid> */}
+                    {/* // <Grid item xs={10}> */}
                       {attachmentDataDisplay[index]?.map((file, i) => (
                         <FileRow
                           key={`homework_student_question_attachment_${i}`}
@@ -347,8 +406,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                           onClose={() => removeFileHandler(index, i)}
                         />
                       ))}
-                    </Grid>
-                  </Grid>
+                    {/* </Grid> */}
+                  </div>
                 }
 
                 {((homeworkSubmission.status === 1 || homeworkSubmission.status === 2 || homeworkSubmission.status === 3) && question.question_files?.length > 0) &&
@@ -380,7 +439,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                   fileName={`Attachment-${i + 1}`}
                                   urlPrefix={`${endpoints.s3}/homework`}
                                   index={i}
-                                  actions={['preview', 'download']}
+                                  onOpenInPenTool={(url)=>openInPenTool(url,index)}
+                                  actions={['preview', 'download', question.is_pen_editor_enable && 'pentool']}
                                 />
                               </div>
                             </>
@@ -410,8 +470,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                 }
                 {!isBulk &&
                   <>
-                    {(homeworkSubmission.status === 2 && question.submitted_files?.length > 0) ||
-                      (homeworkSubmission.status === 3 && question.evaluated_files?.length > 0)
+                    {((homeworkSubmission.status === 2 && question.submitted_files?.length > 0) ||
+                      (homeworkSubmission.status === 3 && question.evaluated_files?.length > 0))
                       &&
                       <div className='attachments-container'>
                         <Typography component='h4' color='primary' className='header'>
@@ -519,11 +579,11 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
 
             {isBulk &&
               <>
-                {(homeworkSubmission.status === 2 && submittedFilesBulk?.length > 0) &&
+                {((homeworkSubmission.status === 2 || homeworkSubmission.status === 3) && submittedFilesBulk?.length > 0) &&
                   <div className='homework-question-container student-view'>
                     <div className='attachments-container'>
                       <Typography component='h4' color='primary' className='header'>
-                        All Submitted Files
+                      {homeworkSubmission.status === 2?'All Submitted Files':'All Evaluated Files'}
                     </Typography>
                       <div className='attachments-list-outer-container'>
                         <div className='prev-btn'>

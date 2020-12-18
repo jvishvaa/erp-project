@@ -377,7 +377,7 @@ const AssignRole = (props) => {
         setSelectedSections([]);
         setSelectAllObj([]);
         setSelectectUserError('');
-        setAssigenedRole(true);
+        setAssigenedRole();
         clearSelectAll();
       } else {
         setAlert('error', response.data.message);
