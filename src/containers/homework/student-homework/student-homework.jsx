@@ -177,40 +177,42 @@ const StudentHomework = withRouter(({ history, ...props }) => {
   const handleTableData = () => {
     const tempHeader = [{ subject_slag: 'date' }];
     const temprows = [];
-    studentHomeworkData.header.mandatory_subjects.forEach((items) => {
-      tempHeader.push({ ...items, isOptional: false, isOthers: false });
-    });
-    if (!selectedOtherLanguages) {
-      setSelectedOtherLanguages({
-        ...studentHomeworkData.header.optional_subjects[0],
-        isOptional: true,
-        isOthers: false,
-        isFirst: true,
+    if (Object.keys(studentHomeworkData.header).length) {
+      studentHomeworkData.header.mandatory_subjects.forEach((items) => {
+        tempHeader.push({ ...items, isOptional: false, isOthers: false });
       });
-      tempHeader.push({
-        ...studentHomeworkData.header.optional_subjects[0],
-        isOptional: true,
-        isFirst: true,
-      });
-    } else {
-      tempHeader.push(selectedOtherLanguages);
-    }
+      if (!selectedOtherLanguages) {
+        setSelectedOtherLanguages({
+          ...studentHomeworkData.header.optional_subjects[0],
+          isOptional: true,
+          isOthers: false,
+          isFirst: true,
+        });
+        tempHeader.push({
+          ...studentHomeworkData.header.optional_subjects[0],
+          isOptional: true,
+          isFirst: true,
+        });
+      } else {
+        tempHeader.push(selectedOtherLanguages);
+      }
 
-    if (!selectedOtherSubjects) {
-      setSelectedOtherSubjects({
-        ...studentHomeworkData.header.others_subjects[0],
-        isOptional: false,
-        isOthers: true,
-        isFirstOther: true,
-      });
-      tempHeader.push({
-        ...studentHomeworkData.header.others_subjects[0],
-        isOptional: false,
-        isOthers: true,
-        isFirstOther: true,
-      });
-    } else {
-      tempHeader.push(selectedOtherSubjects);
+      if (!selectedOtherSubjects) {
+        setSelectedOtherSubjects({
+          ...studentHomeworkData.header.others_subjects[0],
+          isOptional: false,
+          isOthers: true,
+          isFirstOther: true,
+        });
+        tempHeader.push({
+          ...studentHomeworkData.header.others_subjects[0],
+          isOptional: false,
+          isOthers: true,
+          isFirstOther: true,
+        });
+      } else {
+        tempHeader.push(selectedOtherSubjects);
+      }
     }
 
     studentHomeworkData.rows.forEach((items) => {
@@ -467,7 +469,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                           <Table stickyHeader aria-label='sticky table'>
                             <TableHead className='view_groups_header'>
                               <TableRow>
-                                {messageRows.header.map((headers, i) =>
+                                {messageRows.header?.map((headers, i) =>
                                   headers.isOptional ? (
                                     <TableCell className='homework_header homework_header_dropdown_wrapper'>
                                       <span className='homework_student_header_count'>
@@ -531,7 +533,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                   // onClick={() => handleUserDetails(row.id)}
                                   key={`message_log_details${rowIndex}`}
                                 >
-                                  {messageRows.header.map((headers, i) =>
+                                  {messageRows.header?.map((headers, i) =>
                                     headers.subject_slag === 'date' ? (
                                       <TableCell>{row.date}</TableCell>
                                     ) : row[headers.subject_slag].isHomework ? (
@@ -682,12 +684,12 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                     <Grid xs={12} lg={3} item>
                       <Grid className='homework_right_wrapper' container>
                         <Grid lg={12} className='homework_right_wrapper_items' item>
-                          {studentHomeworkData.header.is_hw_ration &&
+                          {studentHomeworkData.header?.is_hw_ration &&
                             <HomeworkTimeline />
                           }
                         </Grid>
                         <Grid lg={12} className='homework_right_wrapper_items' item>
-                          {studentHomeworkData.header.is_top_performers &&
+                          {studentHomeworkData.header?.is_top_performers &&
                             <TopPerformerCard subjects={mendaterySubjects} />
                           }
                         </Grid>
