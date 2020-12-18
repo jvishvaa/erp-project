@@ -27,7 +27,7 @@ const CreateMessageType = ({setLoading,handleGoBack}) => {
     else if(result.data.status_code===409){
         setCategoryName('')
         setLoading(false);
-        setAlert('warning',result.data.message);
+        setAlert('error',result.data.message);
     } 
     else {
       setLoading(false);

@@ -21,6 +21,9 @@ import {
   LIST_TUTOR_EMAILS_REQUEST,
   LIST_TUTOR_EMAILS_SUCCESS,
   LIST_TUTOR_EMAILS_FAILURE,
+  LIST_SUBJECT_REQUEST,
+  LIST_SUBJECT_SUCCESS,
+  LIST_SUBJECT_FAILURE,
 } from './create-class-constants';
 
 const createClassReducer = (state, action) => {
@@ -59,6 +62,15 @@ const createClassReducer = (state, action) => {
         ...state,
         loading: false,
       };
+
+    case LIST_SUBJECT_REQUEST:
+      return { ...state, loading: true };
+
+    case LIST_SUBJECT_SUCCESS:
+      return { ...state, subjects: action.payload, loading: false };
+
+    case LIST_SUBJECT_FAILURE:
+      return { ...state, subjects: action.payload, loading: false };
 
     // to get students based on mappings selected
     case LIST_STUDENT_REQUEST:

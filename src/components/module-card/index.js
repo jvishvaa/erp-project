@@ -31,11 +31,17 @@ const columns = [
   },
 ];
 
+// const unCheckScopeDependenciesForModules = {
+//   my_branch: [],
+//   my_grade: ['my_branch'],
+//   my_section: ['my_branch', 'my_grade'],
+//   my_subject: ['my_branch', 'my_grade', 'my_section'],
+// };
 const unCheckScopeDependenciesForModules = {
-  my_branch: [],
-  my_grade: ['my_branch'],
-  my_section: ['my_branch', 'my_grade'],
-  my_subject: ['my_branch', 'my_grade', 'my_section'],
+  my_branch: ['my_grade', 'my_section', 'my_subject'],
+  my_grade: ['my_section', 'my_subject'],
+  my_section: ['my_subject'],
+  my_subject: [],
 };
 
 const scopeToDisplayNameMapping = {
@@ -56,6 +62,7 @@ function findAndApplyScope(subModules, id, scope, checked) {
     case 'my_branch':
       objToApply = {
         ...objToApply,
+        my_branch: checked,
         my_grade: checked,
         my_section: checked,
         my_subject: checked,
@@ -64,6 +71,8 @@ function findAndApplyScope(subModules, id, scope, checked) {
     case 'my_grade':
       objToApply = {
         ...objToApply,
+        my_branch: checked,
+        my_grade: checked,
         my_section: checked,
         my_subject: checked,
       };
@@ -71,6 +80,18 @@ function findAndApplyScope(subModules, id, scope, checked) {
     case 'my_section':
       objToApply = {
         ...objToApply,
+        my_branch: checked,
+        my_grade: checked,
+        my_section: checked,
+        my_subject: checked,
+      };
+      break;
+    case 'my_subject':
+      objToApply = {
+        ...objToApply,
+        my_branch: checked,
+        my_grade: checked,
+        my_section: checked,
         my_subject: checked,
       };
       break;
@@ -189,12 +210,12 @@ export default function ModuleCard({
         currSubModule,
         unCheckScopeDependenciesForModules[scope]
       );
-      unCheckScopeDependenciesForModules[scope].forEach((scopeName) => {
-        if (currSubModule[scopeName] == true) {
-          // parent scope is checked
-          unCheckScopeDependencies.push(scopeToDisplayNameMapping[scopeName]);
-        }
-      });
+      // unCheckScopeDependenciesForModules[scope].forEach((scopeName) => {
+      //   if (currSubModule[scopeName] == true) {
+      //     // parent scope is checked
+      //     unCheckScopeDependencies.push(scopeToDisplayNameMapping[scopeName]);
+      //   }
+      // });
 
       if (unCheckScopeDependencies.length > 0) {
         setAlert(
@@ -235,12 +256,12 @@ export default function ModuleCard({
         currSubModule,
         unCheckScopeDependenciesForModules[scope]
       );
-      unCheckScopeDependenciesForModules[scope].forEach((scopeName) => {
-        if (currSubModule[scopeName] == true) {
-          // parent scope is checked
-          unCheckScopeDependencies.push(scopeToDisplayNameMapping[scopeName]);
-        }
-      });
+      // unCheckScopeDependenciesForModules[scope].forEach((scopeName) => {
+      //   if (currSubModule[scopeName] == true) {
+      //     // parent scope is checked
+      //     unCheckScopeDependencies.push(scopeToDisplayNameMapping[scopeName]);
+      //   }
+      // });
 
       if (safeToUnsetValues) {
         const { clonedArray, index } = findAndApplyScope(
@@ -412,6 +433,7 @@ export default function ModuleCard({
         case 'my_branch':
           objToApply = {
             ...objToApply,
+            my_branch: checked,
             my_grade: checked,
             my_section: checked,
             my_subject: checked,
@@ -420,6 +442,8 @@ export default function ModuleCard({
         case 'my_grade':
           objToApply = {
             ...objToApply,
+            my_branch: checked,
+            my_grade: checked,
             my_section: checked,
             my_subject: checked,
           };
@@ -427,6 +451,18 @@ export default function ModuleCard({
         case 'my_section':
           objToApply = {
             ...objToApply,
+            my_branch: checked,
+            my_grade: checked,
+            my_section: checked,
+            my_subject: checked,
+          };
+          break;
+        case 'my_subject':
+          objToApply = {
+            ...objToApply,
+            my_branch: checked,
+            my_grade: checked,
+            my_section: checked,
             my_subject: checked,
           };
           break;

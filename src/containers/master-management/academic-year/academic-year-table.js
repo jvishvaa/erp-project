@@ -129,7 +129,7 @@ const AcademicYearTable = () => {
         academic_year_id: yearId,
       })
       .then((result) => {
-        if (result.status === 200) {
+        if (result.data.status_code === 200) {
             setDelFlag(!delFlag);
             setLoading(false);
             setAlert('success', result.data.message);
@@ -173,13 +173,13 @@ const AcademicYearTable = () => {
         `${endpoints.masterManagement.academicYear}?page=${page}&page_size=${limit}`
       )
       .then((result) => {
-        if (result.status === 200) {
+        if (result.data.status_code === 200) {
           {
             setTotalCount(result.data.result.count);
             setAcademicYear(result.data.result.results);
           }
         } else {
-          setAlert('error', result.data.message);
+          setAlert('error', result.data.error_message);
         }
       })
       .catch((error) => {

@@ -21,7 +21,8 @@ const ViewClassTableCell = (props) => {
       online_class: {
         start_time: startTime,
         end_time: endTime,
-        subject: { subject_name: subjectName },
+        // subject: { subject_name: subjectName },
+        subject,
         title,
       },
       tutor_email: tutor,
@@ -82,7 +83,7 @@ const ViewClassTableCell = (props) => {
         {currentPage * 10 - (10 - index - 1)}
       </TableCell>
       <TableCell align='center'>{title}</TableCell>
-      <TableCell align='center'>{subjectName}</TableCell>
+      <TableCell align='center'>{subject[0]?.subject_name.substring(subject[0]?.subject_name.lastIndexOf("_")+1)}</TableCell>
       <TableCell align='center'>{startTime}</TableCell>
       <TableCell align='center' className={`${isHidden ? 'hide' : 'show'}`}>
         {attendedCount}

@@ -35,6 +35,7 @@ import { fetchLoggedInUserDetails } from './redux/actions';
 import TeacherHomework from './containers/homework/teacher-homework';
 import HomeworkAdmin from './containers/homework/homework-admin';
 import AddHomework from './containers/homework/teacher-homework/add-homework';
+import BulkUpload from './containers/user-management/bulk-upload/bulk-upload';
 
 const theme = createMuiTheme({
   palette: {

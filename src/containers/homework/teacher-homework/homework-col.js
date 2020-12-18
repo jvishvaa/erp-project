@@ -9,60 +9,81 @@ import hwEvaluatedIcon from '../../../assets/images/hw-evaluated.svg';
 import submitted from '../../../assets/images/student-submitted.svg';
 import { Badge } from '@material-ui/core';
 
-const HomeworkCol = ({ data, isSelected, handleClick, handleNavigationToAddScreen }) => {
+const HomeworkCol = ({
+  data,
+  isSelected,
+  handleClick,
+  handleNavigationToAddScreen,
+  handleViewHomework,
+}) => {
   const history = useHistory();
   const { student_submitted: studentSubmitted, hw_evaluated: hwEvaluated } = data;
 
   return (
     <TableCell className={isSelected ? 'selected-col' : ''}>
-      {!data.hasOwnProperty('student_submitted') ? (
-        <IconButton onClick={handleNavigationToAddScreen}>
-          <AddCircleOutlineIcon color='primary' />
-        </IconButton>
-      ) : (
-        <SvgIcon
-          component={() => (
-            <img style={{ width: '35px', padding: '5px' }} src={hwGiven} alt='hwGiven' />
-          )}
-        />
-      )}
-      {studentSubmitted > 0 && (
-        <Badge
-          badgeContent={studentSubmitted}
-          color='primary'
-          style={{ cursor: 'pointer' }}
-          onClick={handleClick}
-        >
-          <SvgIcon
-            component={() => (
-              <img
-                style={{ width: '35px', padding: '5px' }}
-                src={submitted}
-                alt='submitted'
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        {!data.hasOwnProperty('student_submitted') ? (
+          <IconButton onClick={handleNavigationToAddScreen}>
+            <AddCircleOutlineIcon color='primary' />
+          </IconButton>
+        ) : (
+          <>
+            <IconButton onClick={handleViewHomework}>
+              <SvgIcon
+                component={() => (
+                  <img
+                    style={{ width: '35px', padding: '5px' }}
+                    src={hwGiven}
+                    alt='hwGiven'
+                  />
+                )}
               />
-            )}
-            style={{ cursor: 'pointer' }}
-          />
-        </Badge>
-      )}
-      {hwEvaluated > 0 && (
-        <Badge
-          badgeContent={hwEvaluated}
-          color='primary'
-          style={{ cursor: 'pointer' }}
-          onClick={handleClick}
-        >
-          <SvgIcon
-            component={() => (
-              <img
-                style={{ width: '35px', padding: '5px' }}
-                src={hwEvaluatedIcon}
-                alt='hwEvaluated'
-              />
-            )}
-          />
-        </Badge>
-      )}
+            </IconButton>
+            {/* {/* {studentSubmitted > 0 && ( */}
+            <IconButton onClick={handleClick}>
+              <Badge
+                badgeContent={studentSubmitted}
+                color='primary'
+                style={{ cursor: 'pointer' }}
+                onClick={handleClick}
+              >
+                <SvgIcon
+                  component={() => (
+                    <img
+                      style={{ width: '35px', padding: '5px' }}
+                      src={submitted}
+                      alt='submitted'
+                    />
+                  )}
+                  style={{ cursor: 'pointer' }}
+                />
+              </Badge>
+            </IconButton>
+            {/* )} */}
+
+            {/* {hwEvaluated > 0 && ( */}
+            <IconButton onClick={handleClick}>
+              <Badge
+                badgeContent={hwEvaluated}
+                color='primary'
+                style={{ cursor: 'pointer' }}
+                onClick={handleClick}
+              >
+                <SvgIcon
+                  component={() => (
+                    <img
+                      style={{ width: '35px', padding: '5px' }}
+                      src={hwEvaluatedIcon}
+                      alt='hwEvaluated'
+                    />
+                  )}
+                />
+              </Badge>
+            </IconButton>
+            {/* )} */}
+          </>
+        )}
+      </div>
     </TableCell>
   );
 };

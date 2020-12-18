@@ -43,24 +43,6 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.background.secondary,
     paddingBottom: theme.spacing(2),
   },
-  cardsPagination: {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    position: 'fixed',
-    bottom: 0,
-    left: 0,
-    padding: '1rem',
-    backgroundColor: '#ffffff',
-    zIndex: 100,
-  },
-  centerInMobile: {
-    width: '100%',
-    display: 'flex',
-    [theme.breakpoints.down('sm')]: {
-      justifyContent: 'center',
-    },
-  },
   columnHeader: {
     color: `${theme.palette.secondary.main} !important`,
     fontWeight: 600,
@@ -146,7 +128,7 @@ const GradeTable = () => {
         grade_id: gradeId,
       })
       .then((result) => {
-        if (result.status === 200) {
+        if (result.data.status_code === 200) {
           {
             setDelFlag(!delFlag);
             setLoading(false);
@@ -186,13 +168,13 @@ const GradeTable = () => {
         `${endpoints.masterManagement.grades}?page=${page}&page_size=${limit}&grade_name=${searchGrade}`
       )
       .then((result) => {
-        if (result.status === 200) {
+        if (result.data.status_code === 200) {
           {
             setTotalCount(result.data.result.count);
             setGrades(result.data.result.results);
           }
         } else {
-          setAlert('error', result.data.message);
+          setAlert('error', result.data.error_message);
         }
       })
       .catch((error) => {
@@ -247,7 +229,7 @@ const GradeTable = () => {
               color='primary' 
               size="small" 
               style={{color:'white'}} 
-              title="Add Subject" 
+              title="Add Grade" 
               onClick={handleAddGrade}>
                 Add Grade
               </Button>

@@ -267,6 +267,8 @@ export default function FilterStudents() {
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <EnhancedTableToolbar numSelected={selected.length} />
+        <div style={{color:'#014b7e',fontWeight:'600',fontSize:'16px',margin:'10px'}}><span
+        style={{color:'#fe6b6b',fontSize:'18px'}} >**</span>Note:&nbsp;<span style={{fontWeight:'500'}}>Select from the following list of students to not permit them to attend the class.</span></div>
         <TableContainer>
           <Table
             className={`${classes.table} styled__table`}

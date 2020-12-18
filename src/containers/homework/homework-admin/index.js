@@ -105,7 +105,7 @@ const columns = [
   {
     id: 'addrating',
     label: 'Add Rating',
-    minWidth: 50,
+    minWidth: 200,
     align: 'center',
     labelAlign: 'center',
   },
@@ -114,7 +114,7 @@ const columns = [
 const HomeworkAdmin = () => {
   const classes = useStyles()
   const { setAlert } = useContext(AlertNotificationContext);
-  const [rowData, setRowData] = useState({})
+  const [rowData, setRowData] = useState({hw_ration:[],subject_data:[],prior_data:[]})
   const [loading, setLoading] = useState(false)
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -123,6 +123,7 @@ const HomeworkAdmin = () => {
   const [searchGrade, setSearchGrade] = useState('')
   const [searchSection, setSearchSection] = useState('')
   const [sectionDisplay, setSectionDisplay] = useState([])
+  const [gradeDisplay, setGradeDisplay] = useState([])
   const { role_details } = JSON.parse(localStorage.getItem('userDetails'))
   const [grades, setGrades] = useState([])
   const [sections, setSections] = useState([])
@@ -130,54 +131,93 @@ const HomeworkAdmin = () => {
   const [post, setPost] = useState()
   const [hwratio, setHwratio] = useState(false)
   const [topPerformers, setTopPerformers] = useState(false)
-  const [ratingData,setRatingData]=useState([{'low_range':'','upper_range':'','star':'','is_display':false}])
+  const [ratingData,setRatingData]=useState([])
   const [mandatorySubjects,setMandatorySubjects]=useState([])
   const [optionalSubjects,setOptionalSubjects]=useState([])
   const [otherSubjects,setOtherSubjects]=useState([])
 
+  // if(ratingData){
+  //   for(let i=0;i<ratingData.length;i++){
+  //     if(ratingData[i]['low_range']===''){
+  //       debugger
+  //       setAlert('error','Lower Range can\'t be empty for rating number '+ (i+1))
+  //       break
+  //     }else if(ratingData[i]['upper_range']===''){
+  //       setAlert('error','Upper Range can\'t be empty for rating number '+ (i+1))
+  //       break
+  //     }else if(ratingData[i]['star']===''){
+  //       setAlert('error','Star can\'t be empty for rating number '+ (i+1))
+  //       break
+  //     }else if(ratingData[i]['low_range']&&ratingData[i]['upper_range']){
+  //       if(ratingData[i]['low_range']>=ratingData[i]['upper_range'])
+  //       setAlert('error','Lower Range can\'t be greater than or equal to Upper Range for rating number '+ (i+1))
+  //       break
+  //     }
+  //   }
+  // }
+
+
+  // else if((mandatorySubjects.length+optionalSubjects.length+otherSubjects.length)!==(rowData.subject_data.length)){
+  //   setAlert('error','A subject should be either mandatory, optional or other but can\'t be empty')
+  // }else if(mandatorySubjects.length===0 && rowData.subject_data.length>=3){
+  //   setAlert('error','Atleast one subject should be mandatory')
+  // }else if(optionalSubjects.length===0 && rowData.subject_data.length>=3){
+  //   setAlert('error','Atleast one subject should be optional')
+  // }else if(otherSubjects.length===0 && rowData.subject_data.length>=3){
+  //   setAlert('error','Atleast one subject should be other than mandatory and optional')
+  // }
+
   const handleSubmit = (e) => {
       e.preventDefault()
-      setLoading(true)
-      axiosInstance.post(endpoints.homework.createConfig,{
-          "branch":role_details.branch[0],
-          "grade" :searchGrade,
-          "section":searchSection,
-          "subject_config":
-          {
-            "mandatory_subjects":mandatorySubjects,
-            "optional_subjects":optionalSubjects,
-            "others_subjects":otherSubjects,
-            "prior_class":prior,
-            "post_class":post,
-            "is_hw_ration":hwratio,
-            "is_top_performers":topPerformers
-          },
-          "hw_ration":ratingData
-      }).then(result=>{
-      if (result.data.status_code === 200) {
-        setRowData({})
-        setRatingData([{'low_range':'','upper_range':'','star':'','is_display':false}])
-        setSearchGrade('')
-        setSearchSection('')
-        setSectionDisplay([])
-        setTopPerformers(false)
-        setHwratio(false)
-        setPrior('')
-        setPost('')
-        setMandatorySubjects([])
-        setOptionalSubjects([])
-        setOtherSubjects([])
-        setLoading(false)
-        setAlert('success', result.data.message)
-      } else {
-        setLoading(false)
-        setAlert('error',result.data.message)
+      if(searchGrade===''){
+        setAlert('error','Grade not selected')
+      }else if(searchSection===''){
+        setAlert('error','Section not selected')
+      }else if(prior===''){
+        setAlert('error','Prior days cannot be empty')
+      }else if(post===''){
+        setAlert('error','Post days cannot be empty')
+      }else {
+        setLoading(true)
+          axiosInstance.post(endpoints.homework.createConfig,{
+            "branch":role_details.branch[0],
+            "grade" :searchGrade,
+            "section":searchSection,
+            "subject_config":
+            {
+              "mandatory_subjects":mandatorySubjects,
+              "optional_subjects":optionalSubjects,
+              "others_subjects":otherSubjects,
+              "prior_class":prior,
+              "post_class":post,
+              "is_hw_ration":hwratio,
+              "is_top_performers":topPerformers
+            },
+            "hw_ration":ratingData
+          }).then(result=>{
+          if (result.data.status_code === 200) {
+            setLoading(false)
+            setAlert('success', result.data.message)
+          } else {
+            setLoading(false)
+            setAlert('error',result.data.description)
+          }
+          }).catch((error)=>{
+            setLoading(false)
+            setAlert('error', error.response.data.description);
+        })
       }
-      }).catch((error)=>{
-        setLoading(false)
-        setAlert('error', error.message);
-      })
-    };
+    }
+
+    /*Validation for Edit*/
+    // else if(searchGrade
+    //   &&searchSection
+    //   &&(prior===rowData.prior_data[0].prior_class)
+    //   &&(post===rowData.post_data[0].prior_class)
+    //   &&(hwratio=== rowData.prior_data[0].is_hw_ration)
+    //   &&(topPerformers===rowData.prior_data[0].is_top_performers)){
+       
+    // }
 
   const handleHwratio = (event) => {
     setHwratio(event.target.checked)
@@ -257,8 +297,9 @@ const HomeworkAdmin = () => {
   const handleGrade = (event, value) => {
     if (value) {
       setSearchGrade(value.id)
-      setSectionDisplay('')
+      setSectionDisplay([])
       setSections([])
+      setGradeDisplay(value)
       axiosInstance.get(`${endpoints.masterManagement.sections}?branch_id=${role_details.branch[0]}&grade_id=${value.id}`)
         .then(result => {
           if (result.data.status_code === 200) {
@@ -268,18 +309,22 @@ const HomeworkAdmin = () => {
             setAlert('error', result.data.message)
             setSections([])
             setSectionDisplay([])
-            setRowData({})
-            setRatingData([{'low_range':'','upper_range':'','star':'','is_display':false}])
+            setRowData({hw_ration:[],subject_data:[],prior_data:[]})
+            setPrior('')
+            setPost('')
+            setRatingData([])
+            setGradeDisplay([])
           }
         })
         .catch(error => {
           setAlert('error', error.message);
           setSections([])
           setSectionDisplay([])
-          setRowData({})
+          setRowData({hw_ration:[],subject_data:[],prior_data:[]})
           setPrior('')
           setPost('')
-          setRatingData([{'low_range':'','upper_range':'','star':'','is_display':false}])
+          setRatingData([])
+          setGradeDisplay([])
         })
     }
     else {
@@ -287,22 +332,26 @@ const HomeworkAdmin = () => {
       setSearchSection('')
       setSections([])
       setSectionDisplay([])
-      setRowData({})
+      setGradeDisplay([])
+      setRowData({hw_ration:[],subject_data:[],prior_data:[]})
       setPrior('')
       setPost('')
-      setRatingData([{'low_range':'','upper_range':'','star':'','is_display':false}])
+      setRatingData([])
     }
   }
 
   const handleSection = (event, value) => {
-    setSearchSection('')
-    setSectionDisplay(value)
     if (value) {
       setSearchSection(value.section_id)
+      setSectionDisplay(value)
     }
     else{
-      setRowData({})
-      setRatingData([{'low_range':'','upper_range':'','star':'','is_display':false}])
+      setRowData({hw_ration:[],subject_data:[],prior_data:[]})
+      setPrior('')
+      setPost('')
+      setRatingData([])
+      setSearchSection('')
+      setSectionDisplay([])
     }
   }
 
@@ -312,12 +361,12 @@ const HomeworkAdmin = () => {
         if (result.status === 200) {
           setGrades(result.data.data);
         } else {
-          setAlert('error', 'Network Error!');
+          setAlert('error', result.data.message);
           setGrades([])
         }
       })
       .catch((error) => {
-        setAlert('error', 'Grades Unavailable!');
+        setAlert('error', error.message);
         setGrades([])
       })
   }, [])
@@ -327,17 +376,38 @@ const HomeworkAdmin = () => {
     axiosInstance.get(request)
       .then(result => {
         if (result.data.status_code === 200) {
+          let len=result.data.result[0].subject_data.length
+          if(len>0){
+            let lenhw=result.data.result[0].hw_ration.length
+            if(lenhw>0)
+            setRatingData(result.data.result[0].hw_ration)
+            else
+            setRatingData([{'low_range':'','upper_range':'','star':'','is_display':false}])
+          }
+          else{
+          setRatingData([])
+          }   
+
+          let arr = result.data.result[0].subject_data
+          for(let i=0;i<len;i++)
+          {           
+            if(arr[i]['is_mandatory'])
+            mandatorySubjects.push(arr[i]['subject_id'])
+            else if(arr[i]['is_optional'])
+            optionalSubjects.push(arr[i]['subject_id'])
+            else if(arr[i]['is_other'])
+            otherSubjects.push(arr[i]['subject_id'])
+          }
           setRowData(result.data.result[0])
-          setRatingData(result.data.result[0].hw_ration)
           setPrior(result.data.result[0].prior_data[0].prior_class)
           setPost(result.data.result[0].prior_data[0].post_class)
           setHwratio(result.data.result[0].prior_data[0].is_hw_ration)
           setTopPerformers(result.data.result[0].prior_data[0].is_top_performers)
         } else {
-          setRowData({})
+          setRowData({hw_ration:[],subject_data:[],prior_data:[]})
           setPrior('')
           setPost('')
-          setRatingData([{'low_range':'','upper_range':'','star':'','is_display':false}])
+          setRatingData([])
           setHwratio(false)
           setTopPerformers(false)
           setAlert('error', result.data.description)
@@ -365,6 +435,8 @@ const HomeworkAdmin = () => {
             size='small'
             onChange={handleGrade}
             id='grade'
+            required
+            value={gradeDisplay}
             options={grades}
             getOptionLabel={(option) => option?.grade_name}
             filterSelectedOptions
@@ -384,6 +456,7 @@ const HomeworkAdmin = () => {
             size='small'
             onChange={handleSection}
             id='section'
+            required
             value={sectionDisplay}
             options={sections}
             getOptionLabel={(option) => option?.section__section_name}
@@ -408,6 +481,7 @@ const HomeworkAdmin = () => {
           type="text"
           className="inputText"
           value={prior}
+          required
           placeholder="No. of Days"
           maxLength="2"
           pattern="^[0-9]{1,2}"
@@ -423,6 +497,7 @@ const HomeworkAdmin = () => {
           type="text"
           className="inputText"
           value={post}
+          required
           placeholder="No. of Days"
           maxLength="2"
           pattern="^[0-9]{1,2}"
@@ -479,7 +554,8 @@ const HomeworkAdmin = () => {
                 ))}
               </TableRow>
             </TableHead>
-              <TableBody>
+            {rowData.subject_data.length ?
+              (<TableBody>
                 {ratingData.map((row, index) => {
                   return (
                     <TableRow ratio='checkbox' tabIndex={-1} key={index}>
@@ -489,6 +565,7 @@ const HomeworkAdmin = () => {
                           id='lower'
                           placeholder='Lower'
                           variant='outlined'
+                          required
                           value={row.low_range}
                           inputProps={{ maxLength: 3, pattern: '^[0-9]$' }}
                           size='small'
@@ -504,6 +581,7 @@ const HomeworkAdmin = () => {
                           placeholder='Upper'
                           variant='outlined'
                           size='small'
+                          required
                           value={row.upper_range}
                           inputProps={{ maxLength: 3, pattern: '^[0-9]$' }}
                           name='upper_range'
@@ -518,6 +596,7 @@ const HomeworkAdmin = () => {
                           placeholder='Star'
                           variant='outlined'
                           size='small'
+                          required
                           value={row.star}
                           inputProps={{ maxLength: 1, pattern: '^[0-9]$' }}
                           name='star'
@@ -527,28 +606,41 @@ const HomeworkAdmin = () => {
                       </TableCell>
                       <TableCell className={classes.tableCell}>
                         <Checkbox
-                          checked={row.check}
+                          checked={row.is_display}
                           name='is_display'
                           onChange={(e) => handleRatingData(e, index)}
                           inputProps={{ 'aria-label': 'primary checkbox' }}
                           color='primary'
                         />
                       </TableCell>
+
                       <TableCell className={classes.tableCell}>
-                        {ratingData.length === (index + 1) ?
-                          (<IconButton onClick={handleAddRating}>
-                            <AddCircleOutline color='primary' />
-                          </IconButton>)
-                          :
+                        {ratingData.length !== 1 && 
                           (<IconButton onClick={() => handleRemoveRating(index)}>
                             <HighlightOffOutlined color='secondary' />
-                          </IconButton>)
-                        }
+                          </IconButton>)}
+                        {ratingData.length === (index + 1) &&
+                          (<IconButton onClick={handleAddRating}>
+                            <AddCircleOutline color='primary' />
+                          </IconButton>)}
                       </TableCell >
                     </TableRow>
                   );
                 })}
-              </TableBody>
+              </TableBody>)
+              :
+              (<TableBody style={
+                  {
+                    display: 'flex',
+                    justifyContent: 'center',
+                    margin: '25% 120%',
+                    fontSize: '16px',
+                    color: '#fe6b6b',
+                    width: '100%',
+                  }}>
+                  Sorry! No Data Available.
+              </TableBody>)
+            }
           </Table>
         </TableContainer>
       </Paper>
@@ -572,7 +664,7 @@ const HomeworkAdmin = () => {
                 ))}
               </TableRow>
             </TableHead>
-            {rowData.subject_data?
+            {rowData.subject_data.length ?
               (<TableBody>
                 {rowData.subject_data.map((row, index) => {
                   return (
@@ -618,7 +710,6 @@ const HomeworkAdmin = () => {
                     display: 'flex',
                     justifyContent: 'center',
                     margin: '25% 80%',
-                    fontWeight: '600',
                     fontSize: '16px',
                     color: '#fe6b6b',
                     width: '100%',

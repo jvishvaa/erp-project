@@ -211,7 +211,7 @@ class CreateUser extends Component {
     createUser(requestObjFormData)
       .then(() => {
         history.push('/user-management/view-users');
-        setAlert('success', 'User creatied');
+        setAlert('success', 'User created');
       })
       .catch(() => {
         setAlert('error', 'User creation failed');

@@ -11,6 +11,10 @@ export default {
   profile: {
     userDetails: '/erp_user/user-data/',
   },
+  userManagement: {
+    bulkUpload: '/erp_user/uploaded-users-status/',
+    academicYear: '/erp_user/list-academic_year/'
+  },
   communication: {
     roles: '/erp_user/roles/',
     branches: '/erp_user/branch/',
@@ -73,5 +77,9 @@ export default {
     getStudentSubjects: '/academic/student-homework/?module_id=1',
     getTopPerformer: '/academic/hw-top-performer/',
     getRating: '/academic/student_subject_rating/',
+    fileUpload: '/academic/upload-question-file/',
+    submitHomework: '/academic/homework-submission/',
   },
+  // s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
+  s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com'
 };

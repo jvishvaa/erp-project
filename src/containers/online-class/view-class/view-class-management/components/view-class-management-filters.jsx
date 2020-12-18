@@ -53,6 +53,7 @@ const ViewClassManagementFilters = () => {
   const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
   const [gradeIds, setGradeIds] = useState([]);
   const [sectionIds, setSectionIds] = useState([]);
+  const [sectionMappingIds,setSectionMappingIds]=useState([])
   const [subjectIds, setSubjectIds] = useState([]);
   const [clearKey, setClearKey] = useState(new Date());
   const [subjects, setSubjects] = useState([]);
@@ -114,9 +115,13 @@ const ViewClassManagementFilters = () => {
       // listSubjects(ids);
       dispatch(listSections(ids, moduleId));
     } else {
-      setGradeIds([]);
-      setSubjects([]);
-      setSectionIds([]);
+      setGradeIds([])
+      setSubjectIds([])
+      setSectionIds([])
+      setSectionMappingIds([])
+      setSelectedSections([])
+      setSelectedGrades([])
+      setSelectedSubjects([])
     }
   };
 
@@ -125,9 +130,15 @@ const ViewClassManagementFilters = () => {
     if (value.length) {
       const ids = value.map((el) => el.section_id);
       setSectionIds(ids);
+      const mapIds = value.map((el) => el.id);
+      setSectionMappingIds(mapIds);      
       listSubjects(gradeIds, ids);
     } else {
       setSectionIds([]);
+      setSectionMappingIds([])
+      setSubjectIds([])
+      setSelectedSubjects([])
+      setSelectedSections([])
     }
   };
 
@@ -152,8 +163,11 @@ const ViewClassManagementFilters = () => {
       url += `&subject_id=${subjectIds.join(',')}`;
     }
 
-    if (sectionIds.length) {
-      url += `&section_mapping_ids=${sectionIds.join(',')}`;
+    if (sectionMappingIds.length) {
+      url += `&section_mapping_ids=${sectionMappingIds.join(',')}`;
+      if (gradeIds.length > 1) {
+        url += `&grade_ids=${gradeIds.join(',')}`;
+      }
     } else if (gradeIds.length) {
       url += `&grade_ids=${gradeIds.join(',')}`;
     }
@@ -161,15 +175,19 @@ const ViewClassManagementFilters = () => {
   };
 
   const handleSubject = (event, value) => {
+    setSelectedSubjects(value);
     const ids = value.map((el) => el.subject__id);
     setSubjectIds(ids);
-    setSelectedSubjects(value);
   };
 
   const handleClear = () => {
     setGradeIds([]);
     setSectionIds([]);
     setSubjectIds([]);
+    setSectionMappingIds([])
+    setSelectedSubjects([]) 
+    setSelectedGrades([]);
+    setSelectedSections([])
     setIsCancelSelected(false);
     setStartDate(moment().format('YYYY-MM-DD'));
     setEndDate(moment().format('YYYY-MM-DD'));

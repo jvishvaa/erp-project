@@ -132,9 +132,9 @@ const RolesTable = ({ roles, onEdit, onDelete, count, limit, page, onChangePage 
       </TableContainer>
       <TablePagination
         component='div'
-        count={count}
-        rowsPerPage={limit}
-        page={page - 1}
+        count={count || 0}
+        rowsPerPage={limit || 0}
+        page={page - 1 || 0}
         onChangePage={(e, pageNo) => {
           onChangePage(pageNo + 1);
         }}

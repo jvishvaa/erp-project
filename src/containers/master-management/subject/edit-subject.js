@@ -34,7 +34,7 @@ const EditSubject = ({id,name,desc,handleGoBack,setLoading,opt}) => {
         request['is_optional']=optional
 
         axiosInstance.put(endpoints.masterManagement.updateSubject,request).then(result=>{
-          if (result.status === 200) {
+          if (result.data.status_code === 200) {
             handleGoBack()
             setSubjectName('')
             setDescription('')

@@ -178,7 +178,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
   };
 
   const handleMessagePagination = (event, page) => {
-    setMessageCurrentPageno(page);
+    setMessageCurrentPageno(page+1);
   };
 
   const getUserDatails = async (id) => {
