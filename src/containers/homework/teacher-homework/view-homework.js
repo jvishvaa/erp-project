@@ -12,15 +12,11 @@ import { withRouter } from 'react-router-dom';
 import SimpleReactLightbox, { SRLWrapper } from 'simple-react-lightbox';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import GetAppIcon from '@material-ui/icons/GetApp';
-import VisibilityIcon from '@material-ui/icons/Visibility';
+
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import { Carousel } from 'react-responsive-carousel';
-import { useLightbox } from 'simple-react-lightbox';
 
 import {
   Grid,
