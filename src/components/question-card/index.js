@@ -27,9 +27,18 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
-import './styles.scss';
+import CreateIcon from '@material-ui/icons/Create';
+import DeleteIcon from '@material-ui/icons/Delete';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import SimpleReactLightbox, { SRLWrapper } from 'simple-react-lightbox';
 import { uploadFile } from '../../redux/actions';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import placeholder from '../../assets/images/placeholder_small.jpg';
+import Attachment from '../../containers/homework/teacher-homework/attachment';
+import endpoints from '../../config/endpoints';
+
+import './styles.scss';
 
 const QuestionCard = ({
   addNewQuestion,
@@ -45,7 +54,17 @@ const QuestionCard = ({
   const [fileUploadInProgress, setFileUploadInProgress] = useState(false);
   const firstUpdate = useRef(true);
   const fileUploadInput = useRef(null);
+  const attachmentsRef = useRef(null);
   const { setAlert } = useContext(AlertNotificationContext);
+
+  const handleScroll = (dir) => {
+    if (dir === 'left') {
+      attachmentsRef.current.scrollLeft -= 150;
+    } else {
+      attachmentsRef.current.scrollLeft += 150;
+      console.log(attachmentsRef.current.scrollLeft, attachmentsRef.current.scrollRight);
+    }
+  };
 
   const openAttchmentsModal = () => {
     setOpenAttachmentModal(true);
@@ -65,7 +84,7 @@ const QuestionCard = ({
       setFileUploadInProgress(true);
       const filePath = await uploadFile(fd);
       setAttachments((prevState) => [...prevState, filePath]);
-      setAttachmentPreviews((prevState) => [...prevState, URL.createObjectURL(file)]);
+      setAttachmentPreviews((prevState) => [...prevState, filePath]);
       setFileUploadInProgress(false);
       setAlert('success', 'File upload success');
     } catch (e) {
@@ -95,7 +114,7 @@ const QuestionCard = ({
   }, [attachments]);
 
   return (
-    <div className='question-container'>
+    <Grid container className='question-container'>
       <Dialog maxWidth='sm' open={openAttachmentModal} onClose={closeAttachmentsModal}>
         <DialogTitle color='primary'>Attachments</DialogTitle>
         <DialogContent style={{ maxHeight: '60vh', overflow: 'auto' }}>
@@ -116,164 +135,249 @@ const QuestionCard = ({
           </Button>
         </DialogActions>
       </Dialog>
-      <Card className='question-card'>
-        <CardContent>
-          <Grid container>
-            <Grid item container>
-              <Grid item md={8}>
-                <FormControl variant='outlined' fullWidth size='small'>
-                  {/* <InputLabel htmlFor='component-outlined'>Question</InputLabel> */}
-                  <TextField
-                    id='question'
-                    name='question'
-                    onChange={(e) => {
-                      onChange('question', e.target.value);
-                    }}
-                    label='Question'
-                    autoFocus
-                    multiline
-                    rows={4}
-                    rowsMax={6}
-                  />
-                  <FormHelperText style={{ color: 'red' }}>
-                    {question.errors?.question}
-                  </FormHelperText>
-                </FormControl>
-              </Grid>
-              <Grid item md={4}>
-                <div>
-                  <input
-                    className='file-upload-input'
-                    type='file'
-                    name='attachments'
-                    onChange={(e) => {
-                      handleFileUpload(e.target.files[0]);
-                      // onChange('attachments', Array.from(e.target.files)[]);
-                    }}
-                    ref={fileUploadInput}
-                  />
-                  {fileUploadInProgress ? (
-                    <div>
-                      <CircularProgress
-                        color='primary'
-                        style={{ width: '25px', height: '25px', margin: '5px' }}
-                      />
-                    </div>
-                  ) : (
-                    <IconButton onClick={() => fileUploadInput.current.click()}>
-                      <Badge badgeContent={attachmentPreviews.length} color='primary'>
-                        <AttachFileIcon color='primary' />
-                      </Badge>
-                    </IconButton>
-                  )}
-                </div>
-                <div>
-                  {attachmentPreviews.slice(0, 2).map((url) => (
-                    <img
-                      src={url}
-                      alt='preview'
-                      style={{ width: '45px', margin: '5px' }}
+      <Grid item xs={12}>
+        <Card className='question-card'>
+          <CardContent>
+            <Grid container>
+              <Grid item container>
+                <Grid item xs={12}>
+                  <FormControl variant='outlined' fullWidth size='small'>
+                    {/* <InputLabel htmlFor='component-outlined'>Question</InputLabel> */}
+                    <TextField
+                      id='question'
+                      name='question'
+                      onChange={(e) => {
+                        onChange('question', e.target.value);
+                      }}
+                      label='Question'
+                      autoFocus
+                      multiline
+                      rows={4}
+                      rowsMax={6}
                     />
-                  ))}
-                  {attachmentPreviews.length > 2 && (
-                    <Typography
-                      component='h5'
-                      color='primary'
-                      onClick={openAttchmentsModal}
-                      style={{ cursor: 'pointer', marginTop: '5px' }}
+                    <FormHelperText style={{ color: 'red' }}>
+                      {question.errors?.question}
+                    </FormHelperText>
+                  </FormControl>
+                </Grid>
+                <Grid item md={4}>
+                  <div>
+                    <input
+                      className='file-upload-input'
+                      type='file'
+                      name='attachments'
+                      onChange={(e) => {
+                        handleFileUpload(e.target.files[0]);
+                        // onChange('attachments', Array.from(e.target.files)[]);
+                      }}
+                      ref={fileUploadInput}
+                    />
+                    {fileUploadInProgress ? (
+                      <div>
+                        <CircularProgress
+                          color='primary'
+                          style={{ width: '25px', height: '25px', margin: '5px' }}
+                        />
+                      </div>
+                    ) : (
+                      <IconButton onClick={() => fileUploadInput.current.click()}>
+                        <Badge badgeContent={attachmentPreviews.length} color='primary'>
+                          <AttachFileIcon color='primary' />
+                        </Badge>
+                      </IconButton>
+                    )}
+                  </div>
+                  <div>
+                    {/* {attachmentPreviews.slice(0, 2).map((url) => (
+                      <img
+                        src={url}
+                        alt='preview'
+                        style={{ width: '45px', margin: '5px' }}
+                      />
+                    ))}
+                    {attachmentPreviews.length > 2 && (
+                      <Typography
+                        component='h5'
+                        color='primary'
+                        onClick={openAttchmentsModal}
+                        style={{ cursor: 'pointer', marginTop: '5px' }}
+                      >
+                        View all attachments
+                      </Typography>
+                    )} */}
+                  </div>
+                </Grid>
+              </Grid>
+              {attachmentPreviews.length > 0 && (
+                <Grid item xs={12} className='attachments-grid'>
+                  <div className='attachments-list-outer-container'>
+                    <div className='prev-btn'>
+                      <IconButton onClick={() => handleScroll('left')}>
+                        <ArrowBackIosIcon />
+                      </IconButton>
+                    </div>
+                    <SimpleReactLightbox>
+                      <div
+                        className='attachments-list'
+                        ref={attachmentsRef}
+                        onScroll={(e) => {
+                          e.preventDefault();
+                          console.log('scrolled');
+                        }}
+                      >
+                        {attachmentPreviews.map((url, i) => (
+                          <>
+                            {Array.from({ length: 1 }, () => (
+                              <div className='attachment'>
+                                <Attachment
+                                  key={`homework_student_question_attachment_${i}`}
+                                  fileUrl={url}
+                                  fileName={`Attachment-${i + 1}`}
+                                  urlPrefix={`${endpoints.s3}/homework`}
+                                  index={i}
+                                  actions={['preview', 'download']}
+                                />
+                              </div>
+                            ))}
+                          </>
+                        ))}
+
+                        <div style={{ position: 'absolute', visibility: 'hidden' }}>
+                          <SRLWrapper>
+                            {attachmentPreviews.map((url, i) => (
+                              <img
+                                src={`${endpoints.s3}/homework/${url}`}
+                                onError={(e) => {
+                                  e.target.src = placeholder;
+                                }}
+                                alt={`Attachment-${i + 1}`}
+                              />
+                            ))}
+                          </SRLWrapper>
+                        </div>
+                      </div>
+                    </SimpleReactLightbox>
+                    <div className='next-btn'>
+                      <IconButton onClick={() => handleScroll('right')}>
+                        <ArrowForwardIosIcon color='primary' />
+                      </IconButton>
+                    </div>
+                  </div>
+                </Grid>
+              )}
+            </Grid>
+            <Grid container className='question-ctrls-container'>
+              <Grid item xs={12} md={4}>
+                <Box className='question-ctrl-inner-container'>
+                  <IconButton>
+                    <CloudUploadIcon color='primary' />
+                  </IconButton>
+
+                  <FormControlLabel
+                    className='question-ctrl'
+                    control={
+                      <Switch
+                        onChange={(e) => {
+                          setEnableAttachments(e.target.checked);
+                          onChange('is_attachment_enable', e.target.checked);
+                        }}
+                        name='checkedA'
+                        color='primary'
+                      />
+                    }
+                    label='File Upload'
+                    labelPlacement='start'
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Box className='question-ctrl-inner-container'>
+                  <IconButton>
+                    <CreateIcon color='primary' />
+                  </IconButton>
+                  <FormControlLabel
+                    className='question-ctrl'
+                    control={
+                      <Switch
+                        name='penTool'
+                        onChange={(e) => {
+                          onChange('penTool', e.target.checked);
+                        }}
+                        color='primary'
+                      />
+                    }
+                    label='Pen tool'
+                    labelPlacement='start'
+                  />
+                </Box>
+              </Grid>
+              {enableAttachments && (
+                <Grid item xs={12} md={4}>
+                  <Box className='question-ctrl-inner-container max-attachments'>
+                    <div className='question-ctrl-label'>Maximum number of files</div>
+
+                    <Select
+                      labelId='demo-customized-select-label'
+                      id='demo-customized-select'
+                      onChange={(e) => onChange('max_attachment', e.target.value)}
                     >
-                      View all attachments
-                    </Typography>
-                  )}
-                </div>
-              </Grid>
+                      {Array.from({ length: 10 }, (_, index) => (
+                        <MenuItem value={index + 1}>{index + 1}</MenuItem>
+                      ))}
+                    </Select>
+                  </Box>
+                </Grid>
+              )}
             </Grid>
-          </Grid>
-          <div className='question-ctrls-container'>
-            <Box>
-              <IconButton>
-                <CloudUploadIcon color='primary' />
-              </IconButton>
-
-              <FormControlLabel
-                control={
-                  <Switch
-                    onChange={(e) => {
-                      setEnableAttachments(e.target.checked);
-                      onChange('is_attachment_enable', e.target.checked);
-                    }}
-                    name='checkedA'
-                    color='primary'
-                  />
-                }
-                label='File Upload'
-              />
-            </Box>
-            <Box>
-              <FormControlLabel
-                control={
-                  <Switch
-                    name='penTool'
-                    onChange={(e) => {
-                      onChange('penTool', e.target.checked);
-                    }}
-                    color='primary'
-                  />
-                }
-                label='Pen tool Answer'
-              />
-            </Box>
+          </CardContent>
+        </Card>
+      </Grid>
+      <Grid item xs={12}>
+        <Grid item xs={12} className='question-btn-container'>
+          <div className='question-btn-inner-container '>
+            <Button
+              color='primary'
+              startIcon={<AddCircleOutlineIcon />}
+              onClick={() => {
+                addNewQuestion(index + 1);
+              }}
+              title='Add Question'
+              className='btn add-quesiton-btn outlined-btn'
+            >
+              Add another question
+            </Button>
           </div>
-          {enableAttachments && (
-            <Grid container spacing={2}>
-              <Grid item>
-                <Typography color='secondary' component='h4'>
-                  Maximum number of files
-                </Typography>
-              </Grid>
-
-              <Grid item>
-                {/* <FormControl>
-                  <InputLabel id='demo-customized-select-label'>
-                    Max Attachments
-                  </InputLabel> */}
-                <Select
-                  labelId='demo-customized-select-label'
-                  id='demo-customized-select'
-                  onChange={(e) => onChange('max_attachment', e.target.value)}
-                >
-                  {Array.from({ length: 10 }, (_, index) => (
-                    <MenuItem value={index + 1}>{index + 1}</MenuItem>
-                  ))}
-                </Select>
-                {/* </FormControl> */}
-              </Grid>
-            </Grid>
-          )}
-        </CardContent>
-      </Card>
-      <div className='add-question-btn'>
-        <IconButton
-          onClick={() => {
-            addNewQuestion(index + 1);
-          }}
-          title='Add Question'
-        >
-          <AddCircleOutlineIcon color='primary' />
-        </IconButton>
+        </Grid>
         {index > 0 && (
-          <IconButton
-            style={{ display: 'block' }}
-            onClick={() => {
-              removeQuestion(index);
-            }}
-            title='Remove Question'
-          >
-            <CancelIcon className='disabled-icon' />
-          </IconButton>
+          <Grid item xs={12} className='question-btn-container'>
+            <div className='question-btn-inner-container '>
+              <Button
+                variant='contained'
+                color='primary'
+                startIcon={<DeleteIcon />}
+                onClick={() => {
+                  removeQuestion(index);
+                }}
+                title='Remove Question'
+                className='btn remove-question-btn'
+              >
+                Remove question
+              </Button>
+            </div>
+          </Grid>
         )}
-      </div>
-    </div>
+        {/*        
+        <IconButton
+          style={{ display: 'block' }}
+          onClick={() => {
+            removeQuestion(index);
+          }}
+          title='Remove Question'
+        >
+          <CancelIcon className='disabled-icon' />
+        </IconButton>{' '} */}
+      </Grid>
+    </Grid>
   );
 };
 
