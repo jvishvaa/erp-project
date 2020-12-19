@@ -81,9 +81,21 @@
   display: flex;
 }
 
-.bulkUploadButton {
-  margin-left: 2.5%;
+.bulkContainer {
+  margin: 20px auto;
+  width: 95%;
+}
+
+.bulk_upload_attachments {
+  margin-top: 1%;
   display: flex;
+  flex-wrap: wrap;
+}
+
+.questionWiseAttachmentsContainer {
+  margin-top: 1%;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .commentBoxStyle>.MuiOutlinedInput-root {
@@ -103,7 +115,7 @@
   display: flex;
   flex-direction: row;
   border-radius: 5px;
-  width: 70%; 
+  width: 16%; 
   opacity: 1;
   align-items: center;
   justify-content: center;
@@ -117,10 +129,25 @@
 .file_close {
   align-self: end;
 }
-
-.remarkContainer {
-  margin: 15px;
+.overallContainer {
   display: flex;
+  justify-content: flex-start;
+  margin: 20px;
+  margin-bottom: -60px;
+}
+.scoreBox {
+  margin-right: 1.25rem;
+  bottom: 0 !important;
+}
+.scoreBox, .remarkBox {
+  padding: 12px;
+  width: 20%;
+  border-radius: 10px;
+  opacity: 1;
+  font-weight: 600;
+  font-size: 16px;
+  color: #014b7e;
+  border: 1px solid #ff6b6b;
 }
 
 .homework-question-container {
@@ -133,7 +160,7 @@
 
     .homework-question {
       border-bottom: 1px solid #ff6b6b;
-      width: 80%;
+      width: 100%;
       color: #014b7e;
       position: relative;
       padding-bottom:8px;

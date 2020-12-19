@@ -599,7 +599,7 @@ const CreateClassForm = (props) => {
     <div className='create__class' key={formKey}>
       <div className='breadcrumb-container-create'>
         <CommonBreadcrumbs
-          componentName='Online Class'
+          componentName=''
           childComponentName='Create Class'
         />
       </div>

@@ -95,23 +95,6 @@ const columnsSubject = [
   },
 ];
 
-const columnsGender = [
-  {
-    id: 'gender_id',
-    label: 'Id',
-    minWidth: 100,
-    align: 'center',
-    labelAlign: 'center',
-  },
-  {
-    id: 'gender',
-    label: 'Gender',
-    minWidth: 100,
-    align: 'center',
-    labelAlign: 'center',
-  },
-]
-
 const BulkUpload = ({ onUploadSuccess }) => {
   const [branch, setBranch] = useState(null);
   const [branchList, setBranchList] = useState([]);
@@ -608,44 +591,6 @@ const BulkUpload = ({ onUploadSuccess }) => {
                 </Paper>
               </Grid>
             }
-            {/* {searchGradeId && sectionDisp && subjects.length > 0 &&
-              <Grid item xs sm={3}>
-                <Paper className={`${classes.root} common-table`}>
-                  <TableContainer className={classes.container}>
-                    <Table stickyHeader aria-label='sticky table'>
-                      <TableHead className='table-header-row'>
-                        <TableRow>
-                          {columnsGender.map((column) => (
-                            <TableCell
-                              key={column.id}
-                              align={column.align}
-                              style={{ minWidth: column.minWidth }}
-                              className={classes.columnHeader}
-                            >
-                              {column.label}
-                            </TableCell>
-                          ))}
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {genders.map((row, index) => {
-                          return (
-                            <TableRow hover gender='checkbox' tabIndex={-1} key={`gender_list${index}`}>
-                              <TableCell className={classes.tableCell}>
-                                {row.id}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {row.gender}
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Paper>
-              </Grid>
-            } */}
           </Grid>
         </>
       }

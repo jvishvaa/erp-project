@@ -106,7 +106,7 @@ const HomeworkTimeline = ({setHomeworkTimelineDisplay}) => {
       }
     } catch (error) {
       setAlert('error', error.message);
-      // setHomeworkTimelineDisplay(false)
+      setHomeworkTimelineDisplay(false)
     }
   };
 
@@ -249,11 +249,15 @@ const HomeworkTimeline = ({setHomeworkTimelineDisplay}) => {
                       className='subject_rating_wrapper'
                       key={`ratiting_subject_row${index}`}
                     >
+                      <span className="nameContainer">
                       <span className='subject_rating_first_letter'>{subject.subject_name.substring(0,1)}</span>{' '}
                       <span className='subject_rating_subject_name'>
                         {subject.subject_name}
                       </span>
-                      <span className='subject_rating'>{subject.rating}/5</span>
+                      </span>
+                      <span className="starContainer">
+                      {/* <span className='subject_rating'>{subject.rating}/5</span> */}
+                      {[...Array(subject.rating)].map((e,i)=>(
                       <SvgIcon
                         component={() => (
                           <img
@@ -265,7 +269,9 @@ const HomeworkTimeline = ({setHomeworkTimelineDisplay}) => {
                             alt='submitted'
                           />
                         )}
-                      />
+                      />))
+                      }
+                      </span>
                     </div>
                   ))}
                 </Typography>
