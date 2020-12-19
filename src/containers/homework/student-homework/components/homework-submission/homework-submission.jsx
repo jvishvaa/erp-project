@@ -88,7 +88,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const [submittedFilesBulk, setSubmittedFilesBulk] = useState([])
   const [penToolOpen, setPenToolOpen] = useState(false)
   const [penToolUrl, setPenToolUrl] = useState('');
-  const [penToolIndex,setPenToolIndex]=useState('');
+  const [penToolIndex, setPenToolIndex] = useState('');
 
   const handleHomeworkSubmit = () => {
 
@@ -168,14 +168,17 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   }, []);
 
   const handleBulkUpload = (e) => {
+    e.persist()
     if (e.target.files[0]) {
       const formData = new FormData()
       formData.append('file', e.target.files[0])
       axiosInstance.post(`${endpoints.homeworkStudent.fileUpload}`, formData)
         .then(result => {
           if (result.data.status_code === 200) {
+            const list = bulkDataDisplay.slice()
+            list.push(e.target.files[0])
+            setBulkDataDisplay(list)
             bulkData.push(result.data.data)
-            bulkDataDisplay.push(e.target.files[0])
           }
         })
         .catch(error => {
@@ -183,6 +186,14 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
         })
     }
     console.log(bulkData)
+  }
+
+
+  const removeBulkFileHandler = (i) => {
+    const list = [...bulkDataDisplay]
+    list.splice(i, 1)
+    setBulkDataDisplay(list)
+    bulkData.splice(i, 1)
   }
 
   const uploadFileHandler = (e, index) => {
@@ -257,7 +268,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     }
   };
 
-  const openInPenTool = (url,index) => {
+  const openInPenTool = (url, index) => {
     setPenToolUrl(url);
     setPenToolIndex(index)
     // setPenToolOpen(true);
@@ -273,20 +284,29 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     const fd = new FormData();
     fd.append('file', file);
     const filePath = await uploadFile(fd);
-    
-    const list = attachmentDataDisplay.slice();
-    list[penToolIndex] = [...attachmentDataDisplay[penToolIndex], filePath];
-    setAttachmentDataDisplay(list);
-    attachmentData[penToolIndex].attachments.push(filePath)
-    setPenToolUrl('');
+
+    if (isQuestionWise) {
+      const list = attachmentDataDisplay.slice()
+      list[penToolIndex] = [...attachmentDataDisplay[penToolIndex], filePath]
+      setAttachmentDataDisplay(list)
+      attachmentData[penToolIndex].attachments.push(filePath)
+      setPenToolUrl('')
+    } else {
+      const list = bulkDataDisplay.slice()
+      list.push(filePath)
+      setBulkDataDisplay(list)
+      bulkData.push(filePath)
+      setPenToolUrl('')
+    }
   };
 
   const mediaContent = {
     file_content: penToolUrl,
     id: 1,
     splitted_media: null,
-  };
-  const desTestDetails = [{ asessment_response: { evaluvated_result: '' } }];
+  }
+
+  const desTestDetails = [{ asessment_response: { evaluvated_result: '' } }]
 
   useEffect(() => {
     if (penToolUrl) {
@@ -294,7 +314,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     } else {
       setPenToolOpen(false);
     }
-  }, [penToolUrl]);
+  }, [penToolUrl])
 
   return (
     <div className='create_group_filter_container'>
@@ -321,25 +341,6 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
               </div>
               {homeworkSubmission.status === 1 &&
                 <div className="checkWrapper">
-                  <div className='bulkUploadButton'>
-                    {!isQuestionWise &&
-                      <Button
-                        variant='contained'
-                        color='primary'
-                        style={{ color: 'white', width: '100%' }}
-                        component='label'
-                        size='small'
-                      >
-                        Collated file submission
-                  <input
-                          type='file'
-                          style={{ display: 'none' }}
-                          id='raised-button-file'
-                          onChange={e => handleBulkUpload(e)}
-                        />
-                      </Button>
-                    }
-                  </div>
                   <div className='homework_block_questionwise_check'>
                     <Checkbox
                       onChange={() => {
@@ -353,6 +354,37 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                 </div>
               }
             </div>
+            {homeworkSubmission.status === 1 && !isQuestionWise &&
+              (<div className='bulkUploadButton'>
+                <div>
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    style={{ color: 'white' }}
+                    component='label'
+                    size='small'
+                  >
+                    Collated file submission
+                  <input
+                      type='file'
+                      style={{ display: 'none' }}
+                      id='raised-button-file'
+                      onChange={e => handleBulkUpload(e)}
+                    />
+                  </Button>
+                </div>
+                <div className='homework_submit_questions_attachment'>
+                  {bulkDataDisplay.map((file, i) => (
+                    <FileRow
+                      key={`homework_student_question_attachment_bulk_${i}`}
+                      file={file}
+                      index={i}
+                      onClose={() => removeBulkFileHandler(i)}
+                    />
+                  ))}
+                </div>
+              </div>)}
+
 
             {penToolOpen && (
               <DescriptiveTestcorrectionModule
@@ -378,34 +410,34 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   <div
                     // container
                     className='homework_submit_questions_attachment'
-                    // alignItems='center'
-                    // spacing={2}
-                    // justify='space-between'
+                  // alignItems='center'
+                  // spacing={2}
+                  // justify='space-between'
                   >
                     {/* <Grid item xs={2} className={classes.wrapper}> */}
-                      <IconButton
-                        fontSize='small'
-                        disableRipple
-                        component='label'
-                        className={classes.attachmentIcon}
-                      >
-                        <AttachmentIcon fontSize='small' className={classes.Attachment} />
-                        <input
-                          type='file'
-                          onChange={(e) => uploadFileHandler(e, index)}
-                          className={classes.fileInput}
-                        />
-                      </IconButton>
+                    <IconButton
+                      fontSize='small'
+                      disableRipple
+                      component='label'
+                      className={classes.attachmentIcon}
+                    >
+                      <AttachmentIcon fontSize='small' className={classes.Attachment} />
+                      <input
+                        type='file'
+                        onChange={(e) => uploadFileHandler(e, index)}
+                        className={classes.fileInput}
+                      />
+                    </IconButton>
                     {/* </Grid> */}
                     {/* // <Grid item xs={10}> */}
-                      {attachmentDataDisplay[index]?.map((file, i) => (
-                        <FileRow
-                          key={`homework_student_question_attachment_${i}`}
-                          file={file}
-                          index={i}
-                          onClose={() => removeFileHandler(index, i)}
-                        />
-                      ))}
+                    {attachmentDataDisplay[index]?.map((file, i) => (
+                      <FileRow
+                        key={`homework_student_question_attachment_${i}`}
+                        file={file}
+                        index={i}
+                        onClose={() => removeFileHandler(index, i)}
+                      />
+                    ))}
                     {/* </Grid> */}
                   </div>
                 }
@@ -439,8 +471,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                   fileName={`Attachment-${i + 1}`}
                                   urlPrefix={`${endpoints.s3}/homework`}
                                   index={i}
-                                  onOpenInPenTool={(url)=>openInPenTool(url,index)}
-                                  actions={['preview', 'download', question.is_pen_editor_enable && 'pentool']}
+                                  onOpenInPenTool={(url) => openInPenTool(url, index)}
+                                  actions={['preview', 'download', homeworkSubmission.status === 1 && question.is_pen_editor_enable && 'pentool']}
                                 />
                               </div>
                             </>
@@ -573,7 +605,9 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                         </div>
                       </div>
                     }
-                  </>}
+                  </>
+                }
+
               </div>
             ))}
 
@@ -583,8 +617,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   <div className='homework-question-container student-view'>
                     <div className='attachments-container'>
                       <Typography component='h4' color='primary' className='header'>
-                      {homeworkSubmission.status === 2?'All Submitted Files':'All Evaluated Files'}
-                    </Typography>
+                        {homeworkSubmission.status === 2 ? 'All Submitted Files' : 'All Evaluated Files'}
+                      </Typography>
                       <div className='attachments-list-outer-container'>
                         <div className='prev-btn'>
                           <IconButton onClick={() => handleScroll('left')}>
@@ -647,6 +681,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                 <TextField
                   className='commentBoxStyle'
                   id='comments'
+                  size='small'
                   name='comments'
                   // onChange={(e) => {
                   //   onChange('question', e.target.value);
@@ -661,6 +696,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                 <div style={{ marginTop: '15px' }}>
                   <TextField
                     id='instruction'
+                    size='small'
                     name='instruction'
                     className='instructionBox'
                     variant='outlined'
@@ -674,6 +710,17 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
               </div>
               : null}
 
+            <div>
+            {/* {homeworkSubmission.status === 3 ?
+              <div className="overallContainer">
+                <div className="scoreBox">
+                  Overall Score
+                </div>
+                <div className="remarkBox">
+                  Overall Remark
+                </div>
+              </div>
+            : null} */}
 
             <div className='homework_submit_button_wrapper'>
               <Button
@@ -696,6 +743,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   Submit
               </Button>
               }
+            </div>
             </div>
           </div>
         </Grid>

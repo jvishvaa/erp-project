@@ -82,9 +82,9 @@
 }
 
 .bulkUploadButton {
-  align-self: center;
+  margin-left: 2.5%;
+  display: flex;
 }
-
 
 .commentBoxStyle>.MuiOutlinedInput-root {
   border: 1px solid #ff6b6b;
@@ -116,6 +116,11 @@
 }
 .file_close {
   align-self: end;
+}
+
+.remarkContainer {
+  margin: 15px;
+  display: flex;
 }
 
 .homework-question-container {

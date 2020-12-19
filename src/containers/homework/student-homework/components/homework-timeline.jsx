@@ -26,7 +26,7 @@ import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
 import './homework-timeline.css';
 
-const HomeworkTimeline = withRouter(({ history, ...props }) => {
+const HomeworkTimeline = ({setHomeworkTimelineDisplay}) => {
   const days = ['30 Days', '60 Days', '90 Days'];
   const [Ratings, setRating] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
@@ -96,18 +96,24 @@ const HomeworkTimeline = withRouter(({ history, ...props }) => {
           });
           setTotalHomework(tempTotalHw);
           setSubmittedHomework(tempSubmitedHw);
+           setHomeworkTimelineDisplay(true)
+        } else {
+           setHomeworkTimelineDisplay(false)
         }
       } else {
         setAlert('error', result.data.message);
+        // setHomeworkTimelineDisplay(false)
       }
     } catch (error) {
       setAlert('error', error.message);
+      // setHomeworkTimelineDisplay(false)
     }
   };
 
   useEffect(() => {
     getRating();
   }, [selectedDays]);
+  
   return (
     <>
       <div className='subject-homework-details-wrapper'>
@@ -270,6 +276,6 @@ const HomeworkTimeline = withRouter(({ history, ...props }) => {
       </div>
     </>
   );
-});
+};
 
 export default HomeworkTimeline;
