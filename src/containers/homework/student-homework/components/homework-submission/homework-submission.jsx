@@ -191,7 +191,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
         .then(result => {
           if (result.data.status_code === 200) {
             const list = bulkDataDisplay.slice()
-            if (fil.name.lastIndexOf(".pdf")) {
+            if (fil.name.lastIndexOf(".pdf")>0) {
               const arr = [...result.data.data];
               for (let k = 0; k < arr.length; k++) {
                 bulkData.push(arr[k]);
@@ -199,13 +199,13 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                 setBulkDataDisplay(list);
               }
             } else {
-              list.push(result.data.data)
-              setBulkDataDisplay(list)
-              bulkData.push(result.data.data)
+              list.push(e.target.files[0]);
+              setBulkDataDisplay(list);
+              bulkData.push(result.data.data);
             }
-            setAlert('success', result.data.message)
+            setAlert('success', result.data.message);
           } else {
-            setAlert('error', result.data.message)
+            setAlert('error', result.data.message);
           }
         })
         .catch(error => {
@@ -239,21 +239,22 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
         .then(result => {
           if (result.data.status_code === 200) {
             const list = attachmentDataDisplay.slice();
-            if (fil.name.lastIndexOf(".pdf")) {
-              const arr = [...result.data.data]
+            if (fil.name.lastIndexOf(".pdf")>0) {
+              const arr = [...result.data.data];
               for (let k = 0; k < arr.length; k++) {
-                attachmentData[index].attachments.push(arr[k])
-                list[index] = [...attachmentDataDisplay[index], arr[k]];
+                attachmentData[index].attachments.push(arr[k]);
+                // list[index] = [...attachmentDataDisplay[index], arr[k]];
+                list[index].push(arr[k])
                 setAttachmentDataDisplay(list);
               }
             } else {
-              list[index] = [...attachmentDataDisplay[index], result.data.data];
+              list[index] = [...attachmentDataDisplay[index],e.target.files[0]];
               setAttachmentDataDisplay(list);
-              attachmentData[index].attachments.push(result.data.data)
+              attachmentData[index].attachments.push(result.data.data);
             }
-            setAlert('success', result.data.message)
+            setAlert('success', result.data.message);
           } else {
-            setAlert('error', result.data.message)
+            setAlert('error', result.data.message);
           }
         })
         .catch(error => {
