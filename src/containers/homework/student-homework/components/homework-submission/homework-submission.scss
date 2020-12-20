@@ -98,8 +98,24 @@
   flex-wrap: wrap;
 }
 
+.descBox {
+  margin-top: 15px;
+  background-color: #BCF1FF;
+  color: #014b7e;
+  border: 1px solid red;
+  border-radius: 10px;
+  font-size: 18px;
+  width: 70%;
+  padding: 11px 18px;
+}
+
+.descBox::before {
+  content:'Instruction : ';
+  font-weight:600;
+}
+
 .commentBoxStyle>.MuiOutlinedInput-root {
-  border: 1px solid #ff6b6b;
+  // border: 1px solid #ff6b6b;
   border-radius: 10px;
 } 
 .instructionBox>.MuiOutlinedInput-root {
@@ -109,7 +125,6 @@
   border-radius: 10px;
   font-size: 18px;
 } 
-
 .file_row {
   border: 1px solid #DFDFDF;
   display: flex;

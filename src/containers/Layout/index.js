@@ -312,6 +312,10 @@ const Layout = ({ children, history }) => {
         history.push('/homework/admin');
         break;
       }
+      case 'Management View': {
+        history.push('/homework/coordinator');
+        break;
+      }
       case 'Student Homework': {
         history.push('/homework/student');
         break;

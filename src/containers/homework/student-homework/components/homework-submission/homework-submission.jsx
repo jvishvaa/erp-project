@@ -77,19 +77,22 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const { isOpen, subjectId, date, subjectName } = homeworkSubmission || {};
   const [isQuestionWise, setIsQuestionWise] = useState(false);
   const [allQuestionAttachment, setAllQuestionAttachment] = useState([]);
-  const [attachmentData, setAttachmentData] = useState([])
-  const [attachmentDataDisplay, setAttachmentDataDisplay] = useState([])
-  const [bulkData, setBulkData] = useState([])
-  const [bulkDataDisplay, setBulkDataDisplay] = useState([])
+  const [attachmentData, setAttachmentData] = useState([]);
+  const [attachmentDataDisplay, setAttachmentDataDisplay] = useState([]);
+  const [bulkData, setBulkData] = useState([]);
+  const [bulkDataDisplay, setBulkDataDisplay] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
   const [loadFlag, setLoadFlag] = useState(false)
   const [subjectQuestions, setSubjectQuestions] = useState([]);
-  const [isBulk, setIsBulk] = useState(false)
-  const [submittedFilesBulk, setSubmittedFilesBulk] = useState([])
+  const [isBulk, setIsBulk] = useState(false);
+  const [submittedFilesBulk, setSubmittedFilesBulk] = useState([]);
   const [penToolOpen, setPenToolOpen] = useState(false)
   const [penToolUrl, setPenToolUrl] = useState('');
   const [penToolIndex, setPenToolIndex] = useState('');
-
+  const [comment, setComment] = useState('');
+  const [desc, setDesc] = useState('');
+  const [overallRemark, setOverallRemark] = useState('');
+  const [overallScore, setOverallScore] = useState('');
   const handleHomeworkSubmit = () => {
 
     let count = 0
@@ -107,7 +110,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     let requestData = {
       "homework": homeworkSubmission.homeworkId,
       "is_question_wise": isQuestionWise,
-      "questions": isQuestionWise ? attachmentData : [{ 'attachments': bulkData }]
+      "questions": isQuestionWise ? attachmentData : [{ 'attachments': bulkData }],
+      "comment" : comment
     }
 
     if (count !== 0) {
@@ -138,12 +142,13 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
       .then((result) => {
         if (result.data.status_code === 200) {
           if (homeworkSubmission.status === 1) {
-            setSubjectQuestions(result.data.data);
-            for (let i = 0; i < result.data.data.length; i++) {
+            setSubjectQuestions(result.data.data.hw_questions);
+            setDesc(result.data.data.description);
+            for (let i = 0; i < result.data.data.hw_questions.length; i++) {
               attachmentDataDisplay.push([])
               attachmentData.push(
                 {
-                  "homework_question": result.data.data[i].id,
+                  "homework_question": result.data.data.hw_questions[i].id,
                   "attachments": []
                 }
               )
@@ -152,6 +157,10 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
             if (result.data.data.is_question_wise) {
               setIsBulk(false)
               setSubjectQuestions(result.data.data.hw_questions)
+              if (homeworkSubmission.status === 3) {
+                setOverallRemark(result.data.data.overall_remark)
+                setOverallScore(result.data.data.score)
+              }
             } else {
               setIsBulk(true)
               setSubjectQuestions(result.data.data.hw_questions.questions)
@@ -169,22 +178,31 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
 
   const handleBulkUpload = (e) => {
     e.persist()
-    if (e.target.files[0]) {
+    const fil = e.target.files[0]
+    if (fil.name.lastIndexOf(".pdf") > 0
+      || fil.name.lastIndexOf(".jpeg") > 0
+      || fil.name.lastIndexOf(".jpg") > 0
+      || fil.name.lastIndexOf(".png") > 0
+      || fil.name.lastIndexOf(".mp3") > 0
+      || fil.name.lastIndexOf(".mp4") > 0) {
       const formData = new FormData()
-      formData.append('file', e.target.files[0])
+      formData.append('file', fil);
       axiosInstance.post(`${endpoints.homeworkStudent.fileUpload}`, formData)
         .then(result => {
           if (result.data.status_code === 200) {
             const list = bulkDataDisplay.slice()
-            // if (e.target.files[0].name.lastIndexOf('.pdf') > 0
-            //   || e.target.files[0].name.lastIndexOf('.jpg') > 0) {
-            list.push(e.target.files[0])
-            setBulkDataDisplay(list)
-            bulkData.push(result.data.data)
-            // }
-            // else {
-            //   setAlert('error', 'Only video and image(.jpg, .jpeg) file is acceptable either with .xls or .xlsx extension')
-            // }
+            if (fil.name.lastIndexOf(".pdf")) {
+              const arr = [...result.data.data];
+              for (let k = 0; k < arr.length; k++) {
+                bulkData.push(arr[k]);
+                list.push(arr[k])
+                setBulkDataDisplay(list);
+              }
+            } else {
+              list.push(result.data.data)
+              setBulkDataDisplay(list)
+              bulkData.push(result.data.data)
+            }
             setAlert('success', result.data.message)
           } else {
             setAlert('error', result.data.message)
@@ -193,8 +211,9 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
         .catch(error => {
           // setAlert('error',error.message)
         })
+    } else {
+      setAlert('error', "Only image(.jpeg, .jpg, .png), audio(mp3), video(.mp4) and pdf(.pdf) are acceptable")
     }
-    console.log(bulkData)
   }
 
 
@@ -208,21 +227,30 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const uploadFileHandler = (e, index) => {
     e.persist()
     const fil = e.target.files[0]
-    if (fil && (fil.name.lastIndexOf(".pdf") > 0
+    if (fil.name.lastIndexOf(".pdf") > 0
       || fil.name.lastIndexOf(".jpeg") > 0
       || fil.name.lastIndexOf(".jpg") > 0
       || fil.name.lastIndexOf(".png") > 0
       || fil.name.lastIndexOf(".mp3") > 0
-      || fil.name.lastIndexOf(".mp4") > 0)) {
+      || fil.name.lastIndexOf(".mp4") > 0) {
       const formData = new FormData()
       formData.append('file', fil)
       axiosInstance.post(`${endpoints.homeworkStudent.fileUpload}`, formData)
         .then(result => {
           if (result.data.status_code === 200) {
             const list = attachmentDataDisplay.slice();
-            list[index] = [...attachmentDataDisplay[index], fil];
-            setAttachmentDataDisplay(list);
-            attachmentData[index].attachments.push(result.data.data)
+            if (fil.name.lastIndexOf(".pdf")) {
+              const arr = [...result.data.data]
+              for (let k = 0; k < arr.length; k++) {
+                attachmentData[index].attachments.push(arr[k])
+                list[index] = [...attachmentDataDisplay[index], arr[k]];
+                setAttachmentDataDisplay(list);
+              }
+            } else {
+              list[index] = [...attachmentDataDisplay[index], result.data.data];
+              setAttachmentDataDisplay(list);
+              attachmentData[index].attachments.push(result.data.data)
+            }
             setAlert('success', result.data.message)
           } else {
             setAlert('error', result.data.message)
@@ -284,14 +312,12 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
 
   const openInPenTool = (url, index) => {
     setPenToolUrl(url);
-    setPenToolIndex(index)
-    // setPenToolOpen(true);
+    setPenToolIndex(index);
   };
 
   const handleCloseCorrectionModal = () => {
     setPenToolUrl('');
-    setPenToolIndex('')
-    // setPenToolOpen(false);
+    setPenToolIndex('');
   };
 
   const handleSaveEvaluatedFile = async (file) => {
@@ -301,16 +327,16 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
 
     if (isQuestionWise) {
       const list = attachmentDataDisplay.slice()
-      list[penToolIndex] = [...attachmentDataDisplay[penToolIndex], filePath]
-      setAttachmentDataDisplay(list)
-      attachmentData[penToolIndex].attachments.push(filePath)
-      setPenToolUrl('')
+      list[penToolIndex] = [...attachmentDataDisplay[penToolIndex], filePath];
+      setAttachmentDataDisplay(list);
+      attachmentData[penToolIndex].attachments.push(filePath);
+      setPenToolUrl('');
     } else {
-      const list = bulkDataDisplay.slice()
-      list.push(filePath)
-      setBulkDataDisplay(list)
-      bulkData.push(filePath)
-      setPenToolUrl('')
+      const list = bulkDataDisplay.slice();
+      list.push(filePath);
+      setBulkDataDisplay(list);
+      bulkData.push(filePath);
+      setPenToolUrl('');
     }
   };
 
@@ -423,14 +449,14 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     <span className='question'>{question.question}</span>
                   </div>
                   {isQuestionWise &&
-                    <div className="questionWisettachmentsContainer">
+                    <div className="questionWiseAttachmentsContainer">
                       <IconButton
                         fontSize='small'
                         disableRipple
                         component='label'
                         className={classes.attachmentIcon}
                       >
-                        <AttachmentIcon fontSize='small'/>
+                        <AttachmentIcon fontSize='small' />
                         <input
                           type='file'
                           accept=".png, .jpg, .jpeg, .mp3, mp4, .pdf"
@@ -690,9 +716,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   id='comments'
                   size='small'
                   name='comments'
-                  // onChange={(e) => {
-                  //   onChange('question', e.target.value);
-                  // }}
+                  onChange={e=>setComment(e.target.value)}
                   multiline
                   rows={3}
                   rowsMax={5}
@@ -700,34 +724,23 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   variant='outlined'
                   style={{ width: '70%' }}
                 />
-                <div style={{ marginTop: '15px' }}>
-                  <TextField
-                    id='instruction'
-                    size='small'
-                    name='instruction'
-                    className='instructionBox'
-                    variant='outlined'
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                    defaultValue='Instruction by teacher / Deadline mention about assignment'
-                    style={{ width: '70%' }}
-                  />
+                <div className='descBox'>
+                  {desc}
                 </div>
               </div>
               : null}
 
-
-
             <div>
               {homeworkSubmission.status === 3 ?
                 <div className="overallContainer">
-                  <div className="scoreBox">
-                    Overall Score :
-                </div>
-                  <div className="remarkBox">
-                    Overall Remark :
-                </div>
+                  {overallScore &&
+                    <div className="scoreBox">
+                      Overall Score : {overallScore}
+                    </div>}
+                  {overallRemark &&
+                    <div className="remarkBox">
+                      Overall Remark : {overallRemark}
+                    </div>}
                 </div>
                 : null}
 
