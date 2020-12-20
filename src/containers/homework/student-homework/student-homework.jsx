@@ -88,6 +88,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
   const [otherSubjects, setOtherSubjects] = useState([]);
   const [moduleId, setModuleId] = useState();
   const [modulePermision, setModulePermision] = useState(true);
+  const [homeworkTimelineDisplay,setHomeworkTimelineDisplay] = useState(true)
 
   //   header: ['date', 'english', 'history', 'math', 'other', 'science'],
   //   rows: [
@@ -461,7 +462,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
             ) : (
                 <div className='create_group_filter_container'>
                   <Grid container className='homework_container' spacing={2}>
-                    <Grid xs={12} lg={9} item>
+                    <Grid xs={12} lg={(studentHomeworkData.header?.is_top_performers||!homeworkTimelineDisplay)?9:12} item>
                       <Paper className={`homework_table_wrapper ${classes.root}`}>
                         <TableContainer
                           className={`table table-shadow homework_table ${classes.container}`}
@@ -684,8 +685,8 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                     <Grid xs={12} lg={3} item>
                       <Grid className='homework_right_wrapper' container>
                         <Grid lg={12} className='homework_right_wrapper_items' item>
-                          {studentHomeworkData.header?.is_hw_ration &&
-                            <HomeworkTimeline />
+                          {(studentHomeworkData.header?.is_hw_ration && homeworkTimelineDisplay) &&
+                            <HomeworkTimeline setHomeworkTimelineDisplay={setHomeworkTimelineDisplay}/>
                           }
                         </Grid>
                         <Grid lg={12} className='homework_right_wrapper_items' item>
@@ -695,6 +696,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                         </Grid>
                       </Grid>
                     </Grid>
+                  
                   </Grid>
                 </div>
               )}

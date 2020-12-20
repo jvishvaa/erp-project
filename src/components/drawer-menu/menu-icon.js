@@ -6,6 +6,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import MessageIcon from '@material-ui/icons/Message';
 import SmsIcon from '@material-ui/icons/Sms';
 import EmailIcon from '@material-ui/icons/Email';
+import HomeWorkIcon from '@material-ui/icons/HomeWork';
 
 const menuIcon = (name) => {
   let icon = '';
@@ -50,7 +51,10 @@ const menuIcon = (name) => {
       icon = <EmailIcon />;
       break;
     }
-
+    case 'Homework': {
+      icon = <HomeWorkIcon />;
+      break;
+    }
     default:
       break;
   }

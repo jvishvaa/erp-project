@@ -177,7 +177,9 @@ const HomeworkAdmin = () => {
         setAlert('error','Prior days cannot be empty')
       }else if(post===''){
         setAlert('error','Post days cannot be empty')
-      }else {
+      } else if(mandatorySubjects.length>5) {
+        setAlert('error','Mandatory subjects can\'t exceed more than 5')
+      } else {
         setLoading(true)
           axiosInstance.post(endpoints.homework.createConfig,{
             "branch":role_details.branch[0],
@@ -372,6 +374,7 @@ const HomeworkAdmin = () => {
   }, [])
 
   useEffect(() => {
+    if(searchGrade&searchSection){
     let request = `${endpoints.homework.completeData}?branch=${role_details.branch[0]}&grade=${searchGrade}&section=${searchSection}`
     axiosInstance.get(request)
       .then(result => {
@@ -419,7 +422,8 @@ const HomeworkAdmin = () => {
         setHwratio(false)
         setTopPerformers(false)
       })
-  }, [searchGrade, searchSection])
+    }
+    }, [searchGrade, searchSection])
 
 
 

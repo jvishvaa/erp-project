@@ -26,7 +26,7 @@ import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
 import './homework-timeline.css';
 
-const HomeworkTimeline = withRouter(({ history, ...props }) => {
+const HomeworkTimeline = ({setHomeworkTimelineDisplay}) => {
   const days = ['30 Days', '60 Days', '90 Days'];
   const [Ratings, setRating] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
@@ -96,18 +96,24 @@ const HomeworkTimeline = withRouter(({ history, ...props }) => {
           });
           setTotalHomework(tempTotalHw);
           setSubmittedHomework(tempSubmitedHw);
+           setHomeworkTimelineDisplay(true)
+        } else {
+           setHomeworkTimelineDisplay(false)
         }
       } else {
         setAlert('error', result.data.message);
+        // setHomeworkTimelineDisplay(false)
       }
     } catch (error) {
       setAlert('error', error.message);
+      setHomeworkTimelineDisplay(false)
     }
   };
 
   useEffect(() => {
     getRating();
   }, [selectedDays]);
+  
   return (
     <>
       <div className='subject-homework-details-wrapper'>
@@ -243,11 +249,15 @@ const HomeworkTimeline = withRouter(({ history, ...props }) => {
                       className='subject_rating_wrapper'
                       key={`ratiting_subject_row${index}`}
                     >
+                      <span className="nameContainer">
                       <span className='subject_rating_first_letter'>{subject.subject_name.substring(0,1)}</span>{' '}
                       <span className='subject_rating_subject_name'>
                         {subject.subject_name}
                       </span>
-                      <span className='subject_rating'>{subject.rating}/5</span>
+                      </span>
+                      <span className="starContainer">
+                      {/* <span className='subject_rating'>{subject.rating}/5</span> */}
+                      {[...Array(subject.rating)].map((e,i)=>(
                       <SvgIcon
                         component={() => (
                           <img
@@ -259,7 +269,9 @@ const HomeworkTimeline = withRouter(({ history, ...props }) => {
                             alt='submitted'
                           />
                         )}
-                      />
+                      />))
+                      }
+                      </span>
                     </div>
                   ))}
                 </Typography>
@@ -270,6 +282,6 @@ const HomeworkTimeline = withRouter(({ history, ...props }) => {
       </div>
     </>
   );
-});
+};
 
 export default HomeworkTimeline;

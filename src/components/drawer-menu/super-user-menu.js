@@ -35,7 +35,7 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
         </ListItemIcon>
         <ListItemText className='menu-item-text'>Dashboard</ListItemText>
       </ListItem>
-      <ListItem
+      {/* <ListItem
         button
         className={
           history.location.pathname === '/homework/teacher' ? 'menu_selection' : null
@@ -49,7 +49,8 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
           <HomeWorkIcon />
         </ListItemIcon>
         <ListItemText className='menu-item-text'>Homework</ListItemText>
-      </ListItem>
+      </ListItem> */}
+     
       <ListItem
         button
         onClick={() => {
