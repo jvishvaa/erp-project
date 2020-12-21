@@ -349,6 +349,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
           <div className='message_log_breadcrumb_wrapper'>
             <CommonBreadcrumbs componentName='Homework' />
           </div>
+          {!homeworkSubmission.isOpen && 
           <div className='create_group_filter_container'>
             <Grid container spacing={5} className='message_log_container'>
               <MuiPickersUtilsProvider utils={MomentUtils} className='date_provider'>
@@ -386,7 +387,10 @@ const StudentHomework = withRouter(({ history, ...props }) => {
               </MuiPickersUtilsProvider>
             </Grid>
           </div>
+          }
           <div className='message_log_white_wrapper'>
+          
+            {!homeworkSubmission.isOpen &&
             <div className='homework_block_wrapper'>
               <div className='homework_block'>Weekly Time table</div>
               <div className='icon-desc-container'>
@@ -454,6 +458,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                 <span>HW not submitted</span>
               </div>
             </div>
+            } 
             {homeworkSubmission.isOpen ? (
               <HomeworkSubmission
                 homeworkSubmission={homeworkSubmission}
