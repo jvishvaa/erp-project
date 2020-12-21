@@ -64,7 +64,7 @@ export const fetchTeacherHomeworkDetailsById = (id) => async (dispatch) => {
     console.log('dispatching action with ', response.data.data);
     dispatch({
       type: FETCH_TEACHER_HOMEWORK_DETAIL_BY_ID_SUCCESS,
-      data: response.data.data,
+      data: response.data.data.hw_questions,
     });
   } catch (error) {
     dispatch({ type: FETCH_TEACHER_HOMEWORK_DETAIL_BY_ID_FAILURE });

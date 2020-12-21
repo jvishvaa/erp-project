@@ -6,6 +6,7 @@ import {
   FormHelperText,
   Button,
   Typography,
+  Grid,
 } from '@material-ui/core';
 import cuid from 'cuid';
 import { connect } from 'react-redux';
@@ -142,68 +143,76 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
         <div className='message_log_breadcrumb_wrapper'>
           <CommonBreadcrumbs componentName='Homework' childComponentName='Add' />
         </div>
-        <div className='add-homework-inner-container'>
-          <div className='add-homework-title-container'>
-            <Typography component='h3' color='secondary' style={{ fontWeight: 600 }}>
-              {`Subject: ${params.subject}`}
-            </Typography>
-            <Typography component='h3' color='secondary' style={{ fontWeight: 600 }}>
-              {`Date: ${params.date}`}
-            </Typography>
-          </div>
-          <div className='form-field'>
-            <FormControl variant='outlined' fullWidth size='small'>
-              <InputLabel htmlFor='component-outlined'>Title</InputLabel>
-              <OutlinedInput
-                id='title'
-                name='title'
-                onChange={() => {}}
-                inputProps={{ maxLength: 20 }}
-                label='Title'
-                autoFocus
-                onChange={(e) => {
-                  setName(e.target.value);
-                }}
+        <Grid container className='add-homework-inner-container'>
+          <Grid item xs={12} className='add-homework-title-container' md={4}>
+            <div className='nav-cards-container'>
+              <div className='nav-card'>
+                <div className='header-text text-center'>All Homeworks</div>
+              </div>
+              <div className='nav-card'>
+                <div className='header-text text-center'>{params.date}</div>
+                <div className='header-text text-center'>{params.subject}</div>
+              </div>
+            </div>
+          </Grid>
+
+          <Grid item container xs={12} md={8}>
+            <Grid item xs={12} className='form-field'>
+              <FormControl variant='outlined' fullWidth size='small'>
+                <InputLabel htmlFor='component-outlined'>Title</InputLabel>
+                <OutlinedInput
+                  id='title'
+                  name='title'
+                  onChange={() => {}}
+                  inputProps={{ maxLength: 20 }}
+                  label='Title'
+                  autoFocus
+                  onChange={(e) => {
+                    setName(e.target.value);
+                  }}
+                />
+                <FormHelperText style={{ color: 'red' }}>{errors.name}</FormHelperText>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} className='form-field'>
+              <FormControl variant='outlined' fullWidth size='small'>
+                <InputLabel htmlFor='component-outlined'>Description</InputLabel>
+                <OutlinedInput
+                  id='description'
+                  name='description'
+                  onChange={(e) => {
+                    setDescription(e.target.value);
+                  }}
+                  inputProps={{ maxLength: 150 }}
+                  multiline
+                  rows={4}
+                  rowsMax={6}
+                  label='Description'
+                />
+                <FormHelperText style={{ color: 'red' }}>
+                  {errors.description}
+                </FormHelperText>
+              </FormControl>
+            </Grid>
+            {questions.map((question, index) => (
+              <QuestionCard
+                key={question.id}
+                question={question}
+                index={index}
+                addNewQuestion={addNewQuestion}
+                handleChange={handleChange}
+                removeQuestion={removeQuestion}
               />
-              <FormHelperText style={{ color: 'red' }}>{errors.name}</FormHelperText>
-            </FormControl>
-          </div>
-          <div className='form-field'>
-            <FormControl variant='outlined' fullWidth size='small'>
-              <InputLabel htmlFor='component-outlined'>Description</InputLabel>
-              <OutlinedInput
-                id='description'
-                name='description'
-                onChange={(e) => {
-                  setDescription(e.target.value);
-                }}
-                inputProps={{ maxLength: 150 }}
-                multiline
-                rows={4}
-                rowsMax={6}
-                label='Description'
-              />
-              <FormHelperText style={{ color: 'red' }}>
-                {errors.description}
-              </FormHelperText>
-            </FormControl>
-          </div>
-          {questions.map((question, index) => (
-            <QuestionCard
-              key={question.id}
-              question={question}
-              index={index}
-              addNewQuestion={addNewQuestion}
-              handleChange={handleChange}
-              removeQuestion={removeQuestion}
-            />
-          ))}
-          <div className='finish-btn-container'>
-            <Button color='primary' onClick={handleAddHomeWork}>
-              Finish
-            </Button>
-          </div>
-        </div>
+            ))}
+            <Grid item xs={12}>
+              <div className='finish-btn-container'>
+                <Button className='btn' color='primary' onClick={handleAddHomeWork}>
+                  Finish
+                </Button>
+              </div>
+            </Grid>
+          </Grid>
+        </Grid>
       </div>
     </Layout>
   );

@@ -87,6 +87,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       minHeight: '64px',
     },
+    justifyContent:'space-between',
   },
   drawer: {
     width: drawerWidth,
@@ -127,6 +128,10 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     height: '100vh',
+    [theme.breakpoints.up('sm')]: {
+      width: `calc(100vw - ${theme.spacing(7) + 1}px)`,
+    },
+    [theme.breakpoints.down('xs')]: { width: '100vw' },
   },
   search: {
     position: 'relative',

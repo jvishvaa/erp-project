@@ -177,7 +177,9 @@ const HomeworkAdmin = () => {
         setAlert('error','Prior days cannot be empty')
       }else if(post===''){
         setAlert('error','Post days cannot be empty')
-      }else {
+      } else if(mandatorySubjects.length>5) {
+        setAlert('error','Mandatory subjects can\'t exceed more than 5')
+      } else {
         setLoading(true)
           axiosInstance.post(endpoints.homework.createConfig,{
             "branch":role_details.branch[0],
@@ -240,9 +242,9 @@ const HomeworkAdmin = () => {
       list[index]['is_other']=false
 
       mandatorySubjects.push(id)
-      let filtered = optionalSubjects.filter(value=>value!=id)
+      let filtered = optionalSubjects.filter(value=>value!==id)
       setOptionalSubjects(filtered)
-      filtered = otherSubjects.filter(value=>value!=id)
+      filtered = otherSubjects.filter(value=>value!==id)
       setOtherSubjects(filtered)
     }
     else if(name==='is_optional' && value)
@@ -252,9 +254,9 @@ const HomeworkAdmin = () => {
       list[index]['is_other']=false
 
       optionalSubjects.push(id)
-      let filtered =  mandatorySubjects.filter(value=>value!=id)
+      let filtered =  mandatorySubjects.filter(value=>value!==id)
       setMandatorySubjects(filtered)
-      filtered = otherSubjects.filter(value=>value!=id)
+      filtered = otherSubjects.filter(value=>value!==id)
       setOtherSubjects(filtered)
     }
     else if(name==='is_other' && value)
@@ -264,9 +266,9 @@ const HomeworkAdmin = () => {
       list[index]['is_other']=true
 
       otherSubjects.push(id)
-      let filtered =  mandatorySubjects.filter(value=>value!=id)
+      let filtered =  mandatorySubjects.filter(value=>value!==id)
       setMandatorySubjects(filtered)
-      filtered = optionalSubjects.filter(value=>value!=id)
+      filtered = optionalSubjects.filter(value=>value!==id)
       setOptionalSubjects(filtered)
     }
     setRowData({...rowData,subject_data:list})
@@ -372,6 +374,7 @@ const HomeworkAdmin = () => {
   }, [])
 
   useEffect(() => {
+    if(searchGrade&searchSection){
     let request = `${endpoints.homework.completeData}?branch=${role_details.branch[0]}&grade=${searchGrade}&section=${searchSection}`
     axiosInstance.get(request)
       .then(result => {
@@ -419,7 +422,8 @@ const HomeworkAdmin = () => {
         setHwratio(false)
         setTopPerformers(false)
       })
-  }, [searchGrade, searchSection])
+    }
+    }, [searchGrade, searchSection])
 
 
 

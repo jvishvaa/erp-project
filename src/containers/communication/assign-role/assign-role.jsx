@@ -333,6 +333,7 @@ const AssignRole = (props) => {
         selectionArray.push(ids);
       });
     });
+  
     if (!selectionArray.length) {
       setSelectectUserError('Please select some users');
       return;
@@ -366,6 +367,8 @@ const AssignRole = (props) => {
       );
       const { message, status_code: statusCode } = response.data;
       if (statusCode === 200) {
+        // props.history.push('/user-management/assign-role')
+        // displayUsersList()
         setAlert('success', message);
         setSelectedUsers([]);
         setRoleError('');
@@ -377,7 +380,7 @@ const AssignRole = (props) => {
         setSelectedSections([]);
         setSelectAllObj([]);
         setSelectectUserError('');
-        setAssigenedRole(true);
+        setAssigenedRole();
         clearSelectAll();
       } else {
         setAlert('error', response.data.message);
@@ -719,7 +722,7 @@ const AssignRole = (props) => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={checkAll}
+                    checked={!!checkAll}
                     onChange={handleSelectAll}
                     color='primary'
                   />
@@ -772,6 +775,7 @@ const AssignRole = (props) => {
                   : headers
               }
               rows={usersRow}
+              checkAll={checkAll}
               completeData={completeData}
               totalRows={totalPage}
               pageno={pageno}

@@ -30,6 +30,8 @@
 }
 .subject_rating_wrapper{
 	padding: 4% 0%;
+	display: flex;
+	justify-content: space-between;
 }
 .subject_rating_first_letter{
 	width: 28px;
@@ -44,11 +46,11 @@
     display: inline-block;
 }
 .subject_rating_subject_name{
-	border-bottom: 1px solid #ff6b6b;
+	/* border-bottom: 1px solid #ff6b6b; */
     color: #014b7e;
     display: inline-block;
-    width: 60%;
-	vertical-align: text-bottom;
+    /* width: 10%; */
+	/* vertical-align: text-bottom; */
 	text-transform: capitalize;
 }
 .subject_rating{
