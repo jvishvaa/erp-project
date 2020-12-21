@@ -87,6 +87,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       minHeight: '64px',
     },
+    justifyContent:'space-between',
   },
   drawer: {
     width: drawerWidth,

@@ -88,6 +88,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
   const [otherSubjects, setOtherSubjects] = useState([]);
   const [moduleId, setModuleId] = useState();
   const [modulePermision, setModulePermision] = useState(true);
+  const [homeworkTimelineDisplay, setHomeworkTimelineDisplay] = useState(true)
 
   //   header: ['date', 'english', 'history', 'math', 'other', 'science'],
   //   rows: [
@@ -177,40 +178,42 @@ const StudentHomework = withRouter(({ history, ...props }) => {
   const handleTableData = () => {
     const tempHeader = [{ subject_slag: 'date' }];
     const temprows = [];
-    studentHomeworkData.header.mandatory_subjects.forEach((items) => {
-      tempHeader.push({ ...items, isOptional: false, isOthers: false });
-    });
-    if (!selectedOtherLanguages) {
-      setSelectedOtherLanguages({
-        ...studentHomeworkData.header.optional_subjects[0],
-        isOptional: true,
-        isOthers: false,
-        isFirst: true,
+    if (Object.keys(studentHomeworkData.header).length) {
+      studentHomeworkData.header.mandatory_subjects.forEach((items) => {
+        tempHeader.push({ ...items, isOptional: false, isOthers: false });
       });
-      tempHeader.push({
-        ...studentHomeworkData.header.optional_subjects[0],
-        isOptional: true,
-        isFirst: true,
-      });
-    } else {
-      tempHeader.push(selectedOtherLanguages);
-    }
+      if (!selectedOtherLanguages) {
+        setSelectedOtherLanguages({
+          ...studentHomeworkData.header.optional_subjects[0],
+          isOptional: true,
+          isOthers: false,
+          isFirst: true,
+        });
+        tempHeader.push({
+          ...studentHomeworkData.header.optional_subjects[0],
+          isOptional: true,
+          isFirst: true,
+        });
+      } else {
+        tempHeader.push(selectedOtherLanguages);
+      }
 
-    if (!selectedOtherSubjects) {
-      setSelectedOtherSubjects({
-        ...studentHomeworkData.header.others_subjects[0],
-        isOptional: false,
-        isOthers: true,
-        isFirstOther: true,
-      });
-      tempHeader.push({
-        ...studentHomeworkData.header.others_subjects[0],
-        isOptional: false,
-        isOthers: true,
-        isFirstOther: true,
-      });
-    } else {
-      tempHeader.push(selectedOtherSubjects);
+      if (!selectedOtherSubjects) {
+        setSelectedOtherSubjects({
+          ...studentHomeworkData.header.others_subjects[0],
+          isOptional: false,
+          isOthers: true,
+          isFirstOther: true,
+        });
+        tempHeader.push({
+          ...studentHomeworkData.header.others_subjects[0],
+          isOptional: false,
+          isOthers: true,
+          isFirstOther: true,
+        });
+      } else {
+        tempHeader.push(selectedOtherSubjects);
+      }
     }
 
     studentHomeworkData.rows.forEach((items) => {
@@ -346,111 +349,115 @@ const StudentHomework = withRouter(({ history, ...props }) => {
           <div className='message_log_breadcrumb_wrapper'>
             <CommonBreadcrumbs componentName='Homework' />
           </div>
-          <div className='create_group_filter_container'>
-            <Grid container spacing={5} className='message_log_container'>
-              <MuiPickersUtilsProvider utils={MomentUtils} className='date_provider'>
-                <Grid item xs={12} sm={3}>
-                  <KeyboardDatePicker
-                    // clearable
-                    // margin='normal'
-                    id='date-picker-dialog'
-                    label='Start Date'
-                    className='message_log_date_piker'
-                    format='YYYY-MM-DD'
-                    value={startDate}
-                    onChange={(date) => handleStartDateChange(date)}
-                    // maxDate={new Date()}
-                    KeyboardButtonProps={{
-                      'aria-label': 'change date',
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={3}>
-                  <KeyboardDatePicker
-                    margin='normal'
-                    id='date-picker-dialog'
-                    label='End Date'
-                    className='message_log_date_piker'
-                    format='YYYY-MM-DD'
-                    value={endDate}
-                    onChange={(date) => handleEndDateChange(date)}
-                    // maxDate={new Date()}
-                    KeyboardButtonProps={{
-                      'aria-label': 'change date',
-                    }}
-                  />
-                </Grid>
-              </MuiPickersUtilsProvider>
-            </Grid>
-          </div>
-          <div className='message_log_white_wrapper'>
-            <div className='homework_block_wrapper'>
-              <div className='homework_block'>Weekly Time table</div>
-              <div className='icon-desc-container'>
-                <SvgIcon
-                  component={() => (
-                    <img
-                      style={{ width: '20px', marginRight: '5px' }}
-                      src={hwGiven}
-                      alt='given'
-                    />
-                  )}
-                />
-                <span>HW Submitted</span>
-              </div>
-              <div className='icon-desc-container'>
-                <SvgIcon
-                  component={() => (
-                    <img
-                      style={{ width: '20px', marginRight: '5px' }}
-                      src={hwFileOpened}
-                      alt='evaluated'
-                    />
-                  )}
-                />
-                <span>File Opened</span>
-              </div>
-              <div className='icon-desc-container'>
-                <SvgIcon
-                  component={() => (
-                    <img
-                      style={{ width: '20px', marginRight: '5px' }}
-                      src={hwFileUnopened}
-                      alt='submitted'
-                    />
-                  )}
-                />
-                <span>File unopened</span>
-              </div>
-              <div className='icon-desc-container'>
-                <SvgIcon
-                  component={() => (
-                    <img
-                      style={{ width: '20px', marginRight: '5px' }}
-                      src={studentHomeworkEvaluted}
-                      alt='submitted'
-                    />
-                  )}
-                />
-                <span>Evaluated</span>
-              </div>
-              <div className='icon-desc-container'>
-                <SvgIcon
-                  component={() => (
-                    <img
-                      style={{
-                        width: '20px',
-                        marginRight: '5px',
-                        border: '1px solid #ff6b6b',
+          {!homeworkSubmission.isOpen &&
+            <div className='create_group_filter_container'>
+              <Grid container spacing={5} className='message_log_container'>
+                <MuiPickersUtilsProvider utils={MomentUtils} className='date_provider'>
+                  <Grid item xs={12} sm={3}>
+                    <KeyboardDatePicker
+                      // clearable
+                      // margin='normal'
+                      id='date-picker-dialog'
+                      label='Start Date'
+                      className='message_log_date_piker'
+                      format='YYYY-MM-DD'
+                      value={startDate}
+                      onChange={(date) => handleStartDateChange(date)}
+                      // maxDate={new Date()}
+                      KeyboardButtonProps={{
+                        'aria-label': 'change date',
                       }}
-                      src={hwFileNotSubmitted}
-                      alt='homework not submitted'
                     />
-                  )}
-                />
-                <span>HW not submitted</span>
-              </div>
+                  </Grid>
+                  <Grid item xs={12} sm={3}>
+                    <KeyboardDatePicker
+                      margin='normal'
+                      id='date-picker-dialog'
+                      label='End Date'
+                      className='message_log_date_piker'
+                      format='YYYY-MM-DD'
+                      value={endDate}
+                      onChange={(date) => handleEndDateChange(date)}
+                      // maxDate={new Date()}
+                      KeyboardButtonProps={{
+                        'aria-label': 'change date',
+                      }}
+                    />
+                  </Grid>
+                </MuiPickersUtilsProvider>
+              </Grid>
             </div>
+          }
+          <div className='message_log_white_wrapper'>
+            {!homeworkSubmission.isOpen && 
+              <div className='homework_block_wrapper'>
+                <div className='homework_block'>Weekly Time table</div>
+                <div className='icon-desc-container'>
+                  <SvgIcon
+                    component={() => (
+                      <img
+                        style={{ width: '20px', marginRight: '5px' }}
+                        src={hwGiven}
+                        alt='given'
+                      />
+                    )}
+                  />
+                  <span>HW Submitted</span>
+                </div>
+                <div className='icon-desc-container'>
+                  <SvgIcon
+                    component={() => (
+                      <img
+                        style={{ width: '20px', marginRight: '5px' }}
+                        src={hwFileOpened}
+                        alt='evaluated'
+                      />
+                    )}
+                  />
+                  <span>File Opened</span>
+                </div>
+                <div className='icon-desc-container'>
+                  <SvgIcon
+                    component={() => (
+                      <img
+                        style={{ width: '20px', marginRight: '5px' }}
+                        src={hwFileUnopened}
+                        alt='submitted'
+                      />
+                    )}
+                  />
+                  <span>File unopened</span>
+                </div>
+                <div className='icon-desc-container'>
+                  <SvgIcon
+                    component={() => (
+                      <img
+                        style={{ width: '20px', marginRight: '5px' }}
+                        src={studentHomeworkEvaluted}
+                        alt='submitted'
+                      />
+                    )}
+                  />
+                  <span>Evaluated</span>
+                </div>
+                <div className='icon-desc-container'>
+                  <SvgIcon
+                    component={() => (
+                      <img
+                        style={{
+                          width: '20px',
+                          marginRight: '5px',
+                          border: '1px solid #ff6b6b',
+                        }}
+                        src={hwFileNotSubmitted}
+                        alt='homework not submitted'
+                      />
+                    )}
+                  />
+                  <span>HW not submitted</span>
+                </div>
+              </div>
+            }
             {homeworkSubmission.isOpen ? (
               <HomeworkSubmission
                 homeworkSubmission={homeworkSubmission}
@@ -459,7 +466,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
             ) : (
                 <div className='create_group_filter_container'>
                   <Grid container className='homework_container' spacing={2}>
-                    <Grid xs={12} lg={9} item>
+                    <Grid xs={12} lg={(studentHomeworkData.header?.is_top_performers || !homeworkTimelineDisplay) ? 9 : 12} item>
                       <Paper className={`homework_table_wrapper ${classes.root}`}>
                         <TableContainer
                           className={`table table-shadow homework_table ${classes.container}`}
@@ -467,7 +474,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                           <Table stickyHeader aria-label='sticky table'>
                             <TableHead className='view_groups_header'>
                               <TableRow>
-                                {messageRows.header.map((headers, i) =>
+                                {messageRows.header?.map((headers, i) =>
                                   headers.isOptional ? (
                                     <TableCell className='homework_header homework_header_dropdown_wrapper'>
                                       <span className='homework_student_header_count'>
@@ -531,7 +538,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                   // onClick={() => handleUserDetails(row.id)}
                                   key={`message_log_details${rowIndex}`}
                                 >
-                                  {messageRows.header.map((headers, i) =>
+                                  {messageRows.header?.map((headers, i) =>
                                     headers.subject_slag === 'date' ? (
                                       <TableCell>{row.date}</TableCell>
                                     ) : row[headers.subject_slag].isHomework ? (
@@ -682,17 +689,18 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                     <Grid xs={12} lg={3} item>
                       <Grid className='homework_right_wrapper' container>
                         <Grid lg={12} className='homework_right_wrapper_items' item>
-                          {studentHomeworkData.header.is_hw_ration &&
-                            <HomeworkTimeline />
+                          {(studentHomeworkData.header?.is_hw_ration && homeworkTimelineDisplay) &&
+                            <HomeworkTimeline setHomeworkTimelineDisplay={setHomeworkTimelineDisplay} />
                           }
                         </Grid>
                         <Grid lg={12} className='homework_right_wrapper_items' item>
-                          {studentHomeworkData.header.is_top_performers &&
+                          {studentHomeworkData.header?.is_top_performers &&
                             <TopPerformerCard subjects={mendaterySubjects} />
                           }
                         </Grid>
                       </Grid>
                     </Grid>
+
                   </Grid>
                 </div>
               )}

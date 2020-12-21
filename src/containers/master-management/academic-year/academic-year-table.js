@@ -86,7 +86,7 @@ const AcademicYearTable = () => {
   const [delFlag, setDelFlag] = useState(false);
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
-  const [limit, setLimit] = useState(15);
+  const limit = 15;
   const [goBackFlag,setGoBackFlag]=useState(false)
   
   const themeContext = useTheme();
