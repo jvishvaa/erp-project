@@ -175,7 +175,7 @@ const HomeworkTimeline = withRouter(({ history, ...props }) => {
               <SvgIcon
                 component={() => (
                   <img
-                  className="static-media"
+                    className="static-media"
                     style={{
                       width: '25px',
                       height: '25px',
@@ -211,7 +211,7 @@ const HomeworkTimeline = withRouter(({ history, ...props }) => {
             <Card className='homework_details_timeline-card'>
               <SvgIcon
                 component={() => (
-                  <img
+                  <img  
                   className="static-media"
                     style={{
                       width: '25px',
@@ -254,7 +254,42 @@ const HomeworkTimeline = withRouter(({ history, ...props }) => {
                       <SvgIcon
                         component={() => (
                           <img
-                          className="static-media"
+                            style={{
+                              width: '20px',
+                              height: '20px',
+                            }}
+                            src={Star}
+                            alt='submitted'
+                          />
+                        )}
+                      />
+                      <SvgIcon
+                        component={() => (
+                          <img
+                            style={{
+                              width: '20px',
+                              height: '20px',
+                            }}
+                            src={Star}
+                            alt='submitted'
+                          />
+                        )}
+                      />
+                      <SvgIcon
+                        component={() => (
+                          <img
+                            style={{
+                              width: '20px',
+                              height: '20px',
+                            }}
+                            src={Star}
+                            alt='submitted'
+                          />
+                        )}
+                      />
+                      <SvgIcon
+                        component={() => (
+                          <img
                             style={{
                               width: '20px',
                               height: '20px',
