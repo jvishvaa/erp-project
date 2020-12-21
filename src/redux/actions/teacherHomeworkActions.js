@@ -23,6 +23,7 @@ export const teacherHomeworkActions = {
   FETCH_SUBMITTED_HOMEWORK_DETAILS_REQUEST: 'FETCH_SUBMITTED_HOMEWORK_DETAILS_REQUEST',
   FETCH_SUBMITTED_HOMEWORK_DETAILS_SUCCESS: 'FETCH_SUBMITTED_HOMEWORK_DETAILS_SUCCESS',
   FETCH_SUBMITTED_HOMEWORK_DETAILS_FAILURE: 'FETCH_SUBMITTED_HOMEWORK_DETAILS_FAILURE',
+  ADD_HOMEWORK_SUCCESS_COORD:'ADD_HOMEWORK_SUCCESS_COORD'
 };
 
 const {
@@ -42,6 +43,7 @@ const {
   FETCH_SUBMITTED_HOMEWORK_DETAILS_REQUEST,
   FETCH_SUBMITTED_HOMEWORK_DETAILS_SUCCESS,
   FETCH_SUBMITTED_HOMEWORK_DETAILS_FAILURE,
+  ADD_HOMEWORK_SUCCESS_COORD,
 } = teacherHomeworkActions;
 
 export const addHomeWork = (data) => async (dispatch) => {
@@ -56,6 +58,8 @@ export const addHomeWork = (data) => async (dispatch) => {
     throw new Error(e);
   }
 };
+
+
 
 export const fetchTeacherHomeworkDetailsById = (id) => async (dispatch) => {
   dispatch({ type: FETCH_TEACHER_HOMEWORK_DETAIL_BY_ID_REQUEST });
@@ -185,3 +189,65 @@ export const finalEvaluationForHomework = async (id, data) => {
     throw new Error();
   }
 };
+
+
+
+
+export const addHomeWorkCoord=(data) => async (dispatch) => {
+  dispatch({ type: ADD_HOMEWORK_REQUEST });
+  try {
+    const response = await axios.post('/academic/upload-homework/', data);
+    dispatch({ type: ADD_HOMEWORK_SUCCESS_COORD,
+      data: data.user_id
+     });
+
+    return 'success';
+  } catch (e) {
+    dispatch({ type: ADD_HOMEWORK_FAILURE });
+    throw new Error(e);
+  }
+};
+
+//Added By Vijay============
+export const fetchCoordinateTeacherHomeworkDetails = (moduleId, startDate, endDate, user_id) => async (dispatch) => {
+  dispatch({ type: FETCH_TEACHER_HOMEWORK_REQUEST });
+  try {
+    const response = await axios.get(
+      `/academic/student-homework/?module_id=${moduleId}&start_date=${startDate}&end_date=${endDate}&teacher_id=${user_id}`
+    );
+    const { header, rows } = response.data.data;
+    // const {
+    //   mandatory_subjects: mandatorySubjects,
+    //   optional_subjects: optionSubjects,
+    //   others_subjects: otherSubjects,
+    // } = header;
+  //   const abb = {
+  //     "id": 1555,
+  //     "subject_name": "Grade2_SecA_Drawing_mmmy"
+  // };
+    // header[0].subject_name="Grade2_SecA_hindi1--CCCCCCC";
+    const homeworkColumns = [...header];
+    const homeworkRows = rows.map((row) => {
+      const obj = { date: row.class_date };
+      homeworkColumns.forEach((col) => {
+        const homeworkStatus = row.hw_details.find((detail) => detail.subject === col.id);
+        
+        obj[col.subject_name] = homeworkStatus
+          ? { hw_id: homeworkStatus.id, ...homeworkStatus.status }
+          : {};
+      });
+      // console.log(obj,"---------------");
+      return obj;
+    });
+    homeworkColumns.unshift('Date');
+    dispatch({
+      type: FETCH_TEACHER_HOMEWORK_SUCCESS,
+      data: { homeworkColumns, homeworkRows },
+    });
+    console.log(response);
+  } catch (e) {
+    // console.log('error ', e);
+    dispatch({ type: FETCH_TEACHER_HOMEWORK_FAILURE });
+  }
+};
+

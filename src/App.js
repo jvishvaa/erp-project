@@ -36,6 +36,9 @@ import TeacherHomework from './containers/homework/teacher-homework';
 import HomeworkAdmin from './containers/homework/homework-admin';
 import AddHomework from './containers/homework/teacher-homework/add-homework';
 import BulkUpload from './containers/user-management/bulk-upload/bulk-upload';
+import CoordinatorHomework from './containers/homework/coordinator-homework';
+import AddHomeworkCoord from './containers/homework/coordinator-homework/add-homework';
+
 
 const theme = createMuiTheme({
   palette: {
@@ -166,6 +169,15 @@ function App() {
                 <Route exact path='/homework/admin'>
                   {({ match }) => <HomeworkAdmin match={match} />}
                 </Route>
+                <Route exact path='/homework/coordinator'>
+                  {/* added by Vijay to display particular teacher details */}
+                  {({ match }) => <CoordinatorHomework match={match} />}
+                </Route>
+                <Route exact path='/homework/cadd/:date/:subject/:id/:coord_selected_teacher_id'>
+                  {({ match }) => <AddHomeworkCoord match={match} />}
+                </Route>
+
+
               </Switch>
             </ThemeProvider>
           </OnlineclassViewProvider>
