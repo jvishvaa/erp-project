@@ -124,6 +124,9 @@
           align-items: center;
           justify-content: center;
           height: 55px;
+          &:first-child {
+            margin-right: 1rem;
+          }
         }
         @media screen and (min-width: 768px) {
           flex-direction: column;
@@ -164,6 +167,15 @@
 }
 
 .view-homework-container {
+  .evaluate-answer-btn-container {
+    display: flex;
+    justify-content: flex-end;
+    margin: 1rem;
+
+    @media screen and (max-width: 768px) {
+      justify-content: center;
+    }
+  }
   .homework_type_item {
     border: 1px solid #ff6b6b;
     border-radius: 10px;
@@ -191,12 +203,45 @@
     &:nth-child(1) {
       margin-top: 2rem;
     }
+    .comments-remarks-container {
+      display: flex;
+      flex-wrap: wrap;
+      .item {
+        width: calc(50% - 0.5rem);
+
+        @media screen and (max-width: 768px) {
+          width: 100%;
+          margin-bottom: 1rem;
+        }
+
+        &.comment {
+          margin-right: 1rem;
+          @media screen and (max-width: 768px) {
+            margin-right: 0;
+          }
+        }
+      }
+    }
+    .evaluate-answer-btn-container {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 1rem;
+
+      @media screen and (max-width: 768px) {
+        justify-content: center;
+      }
+    }
   }
   .homework-question {
     border-bottom: 1px solid #ff6b6b;
     width: 80%;
     color: #014b7e;
     position: relative;
+
+    @media screen and (max-width: 768px) {
+      width: 100%;
+      text-align: left;
+    }
   }
   .homework_submit_tag {
     font-size: 1rem;
@@ -229,6 +274,59 @@
   }
   .homework_submit_button_cancel {
     margin-right: 20px !important;
+  }
+  .overall-evaluation-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+    .input-container {
+      display: flex;
+      width: 60%;
+      flex-wrap: wrap;
+      .remark {
+        width: 70%;
+        margin-right: 1rem;
+        @media screen and (max-width: 768px) {
+          width: 100%;
+          margin: 1rem 0;
+        }
+      }
+      .score {
+        @media screen and (max-width: 768px) {
+          width: 100%;
+          margin: 0 0 1rem;
+        }
+      }
+
+      @media screen and (max-width: 768px) {
+        width: 100%;
+      }
+    }
+    .btn-container {
+      width: 40%;
+      display: flex;
+      justify-content: flex-end;
+      flex-wrap: wrap-reverse;
+
+      @media screen and (max-width: 768px) {
+        width: 100%;
+        justify-content: center;
+      }
+      .cancel-btn {
+        margin-right: 1rem;
+        @media screen and (max-width: 768px) {
+          width: 100%;
+          margin: 0;
+        }
+      }
+      .done-btn {
+        @media screen and (max-width: 768px) {
+          width: 100%;
+          margin: 1rem 0;
+        }
+      }
+    }
   }
 }
 
@@ -298,5 +396,44 @@
         }
       }
     }
+  }
+}
+
+/**common***/
+
+.nav-cards-container {
+  display: flex;
+
+  .nav-card {
+    width: 50%;
+    border: 1px solid $primary-color;
+    height: 100%;
+    padding: 0.5rem 1.25rem;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 55px;
+    &:first-child {
+      margin-right: 1rem;
+    }
+  }
+  @media screen and (min-width: 768px) {
+    flex-direction: column;
+    .nav-card {
+      width: 100%;
+      height: max-content;
+      margin: 0 0 20px;
+    }
+  }
+}
+
+.header-text {
+  color: $secondary-color;
+  font-weight: 600;
+  font-size: 1rem;
+  @media screen and (max-width: 768px) {
+    font-size: 0.85rem;
   }
 }

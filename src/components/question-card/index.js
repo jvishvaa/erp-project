@@ -180,7 +180,10 @@ const QuestionCard = ({
                         />
                       </div>
                     ) : (
-                      <IconButton onClick={() => fileUploadInput.current.click()}>
+                      <IconButton
+                        onClick={() => fileUploadInput.current.click()}
+                        title='Attach files'
+                      >
                         <Badge badgeContent={attachmentPreviews.length} color='primary'>
                           <AttachFileIcon color='primary' />
                         </Badge>
