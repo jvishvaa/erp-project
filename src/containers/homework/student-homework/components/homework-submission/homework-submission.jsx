@@ -678,7 +678,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                   <Attachment
                                     key={`homework_student_question_attachment_${i}`}
                                     fileUrl={url}
-                                    fileName={`Attachment-${i + 1}`}
+                                    f2000000837ileName={`Attachment-${i + 1}`}
                                     urlPrefix={`${endpoints.s3}/homework`}
                                     index={i}
                                     actions={['preview', 'download']}
