@@ -6,7 +6,7 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableBody from '@material-ui/core/TableBody';
@@ -14,7 +14,15 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { Grid, TextField, Button, SvgIcon, Badge, IconButton } from '@material-ui/core';
+import {
+  Grid,
+  TextField,
+  Button,
+  SvgIcon,
+  Badge,
+  IconButton,
+  useMediaQuery,
+} from '@material-ui/core';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import {
   LocalizationProvider,
@@ -56,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: '5px',
     marginTop: '5px',
     [theme.breakpoints.down('xs')]: {
-      width: '87vw',
+      width: '100',
       margin: 'auto',
     },
   },
@@ -115,6 +123,10 @@ const TeacherHomework = withRouter(
       subjectName: '',
     });
 
+    const themeContext = useTheme();
+
+    const isMobile = useMediaQuery(themeContext.breakpoints.down('md'));
+
     const handleViewHomework = ({
       date,
       subject: subjectName,
@@ -149,6 +161,9 @@ const TeacherHomework = withRouter(
       console.log('homework id', homeworkId);
       fetchStudentLists(homeworkId);
       setSelectedCol(col);
+      if (isMobile) {
+        setActiveView('card-view');
+      }
       onSetSelectedHomework(col);
     };
 
@@ -330,10 +345,10 @@ const TeacherHomework = withRouter(
                 />
               )}
 
-              {activeView === 'list-homework' && (
-                <div className='create_group_filter_container'>
-                  <Grid container className='homework_container' spacing={2}>
-                    <Grid xs={12} md={selectedCol.subject ? 8 : 12} item>
+              <div className='create_group_filter_container'>
+                <Grid container className='homework_container' spacing={2}>
+                  {activeView === 'list-homework' && (
+                    <Grid xs={12} md={selectedCol?.subject ? 8 : 12} item>
                       {fetchingTeacherHomework ? (
                         <div
                           style={{
@@ -384,7 +399,10 @@ const TeacherHomework = withRouter(
                         </Paper>
                       )}
                     </Grid>
-                    {selectedCol.subject && (
+                  )}
+                  {activeView !== 'view-homework' &&
+                    activeView !== 'view-received-homework' &&
+                    selectedCol.subject && (
                       <HomeWorkCard
                         height={tableContainer.current?.offsetHeight}
                         data={selectedCol}
@@ -393,11 +411,14 @@ const TeacherHomework = withRouter(
                         submittedStudents={submittedStudents}
                         loading={fetchingStudentLists}
                         onClick={handleViewReceivedHomework}
+                        onClose={() => {
+                          setActiveView('list-homework');
+                          setSelectedCol({});
+                        }}
                       />
                     )}
-                  </Grid>
-                </div>
-              )}
+                </Grid>
+              </div>
             </div>
           </div>
         </Layout>

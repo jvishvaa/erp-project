@@ -7,7 +7,9 @@ import {
   Typography,
   Divider,
   CircularProgress,
+  IconButton,
 } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 
 const HomeworkCard = ({
   data,
@@ -17,13 +19,14 @@ const HomeworkCard = ({
   submittedStudents,
   loading,
   onClick,
+  onClose,
 }) => {
   const { subject, date, view } = data;
   console.log('view ', view);
   return (
     // <Layout>
 
-    <Grid item sm={4}>
+    <Grid item xs={12} sm={4}>
       <Paper
         className='hwcard'
         style={{ height, display: 'flex', flexDirection: 'column' }}
@@ -31,6 +34,11 @@ const HomeworkCard = ({
         <div className='cardHeader'>
           <div className='subjectName'>{subject}</div>
           <div>{date}</div>
+          <div>
+            <IconButton onClick={onClose}>
+              <CloseIcon />
+            </IconButton>
+          </div>
         </div>
         <div className='divider'></div>
         {view === 'evaluationStats' && (
