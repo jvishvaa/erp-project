@@ -7,10 +7,12 @@ import {
   Button,
   Typography,
   Grid,
+  useMediaQuery,
 } from '@material-ui/core';
 import cuid from 'cuid';
 import { connect } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
+import { useTheme } from '@material-ui/core/styles';
 import Layout from '../../Layout';
 import QuestionCard from '../../../components/question-card';
 import { addHomeWork, setSelectedHomework } from '../../../redux/actions';
@@ -44,6 +46,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const history = useHistory();
   const params = useParams();
+  const themeContext = useTheme();
 
   const validateHomework = () => {
     let isFormValid = true;
@@ -146,7 +149,12 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
         <Grid container className='add-homework-inner-container'>
           <Grid item xs={12} className='add-homework-title-container' md={4}>
             <div className='nav-cards-container'>
-              <div className='nav-card'>
+              <div
+                className='nav-card'
+                onClick={() => {
+                  history.push('/homework/teacher');
+                }}
+              >
                 <div className='header-text text-center'>All Homeworks</div>
               </div>
               <div className='nav-card'>
