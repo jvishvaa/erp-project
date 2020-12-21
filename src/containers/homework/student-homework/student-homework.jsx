@@ -160,7 +160,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
   const getTableDetails = async () => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.homeworkStudent.getStudentSubjects}&start_date=${startDate}&end_date=${endDate}`
+        `${endpoints.homeworkStudent.getStudentSubjects}?module_id=${moduleId}&start_date=${startDate}&end_date=${endDate}`
       );
       if (result.data.status_code === 200) {
         setStudentHomeworkData(result.data.data);
@@ -321,8 +321,28 @@ const StudentHomework = withRouter(({ history, ...props }) => {
   // };
 
   useEffect(() => {
-    getTableDetails();
-  }, [homeworkSubmission.isOpen, startDate, endDate]);
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Homework' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Student Homework') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (moduleId) {
+      getTableDetails();
+    }
+  }, [homeworkSubmission.isOpen, startDate, endDate, moduleId]);
 
   useEffect(() => {
     if (studentHomeworkData.rows.length) {
@@ -389,7 +409,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
             </div>
           }
           <div className='message_log_white_wrapper'>
-            {!homeworkSubmission.isOpen && 
+            {!homeworkSubmission.isOpen &&
               <div className='homework_block_wrapper'>
                 <div className='homework_block'>Weekly Time table</div>
                 <div className='icon-desc-container'>
