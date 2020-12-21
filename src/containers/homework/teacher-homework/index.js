@@ -123,6 +123,9 @@ const TeacherHomework = withRouter(
       subjectName: '',
     });
 
+    const [datePopperOpen, setDatePopperOpen] = useState(false);
+
+    const [teacherModuleId, setTeacherModuleId] = useState(null);
     const themeContext = useTheme();
 
     const isMobile = useMediaQuery(themeContext.breakpoints.down('md'));
@@ -146,7 +149,7 @@ const TeacherHomework = withRouter(
       const endDate = getDaysAfter(date.clone(), 7);
       setEndDate(endDate);
       setStartDate(date.format('YYYY-MM-DD'));
-      getTeacherHomeworkDetails(2, date, endDate);
+      getTeacherHomeworkDetails(3384, date, endDate);
     };
 
     const handleEndDateChange = (date) => {
@@ -191,27 +194,62 @@ const TeacherHomework = withRouter(
         date: '',
         subjectName: '',
       });
+      setSelectedCol({});
       setActiveView('list-homework');
     };
 
     useEffect(() => {
       const [startDate, endDate] = dateRange;
-      if (activeView === 'list-homework') {
-        if (startDate && endDate) {
-          getTeacherHomeworkDetails(
-            2,
-            startDate.format('YYYY-MM-DD'),
-            endDate.format('YYYY-MM-DD')
-          );
+      if (teacherModuleId) {
+        if (activeView === 'list-homework') {
+          if (startDate && endDate) {
+            getTeacherHomeworkDetails(
+              teacherModuleId,
+              startDate.format('YYYY-MM-DD'),
+              endDate.format('YYYY-MM-DD')
+            );
+          }
         }
       }
-    }, [getTeacherHomeworkDetails, dateRange, activeView]);
+    }, [getTeacherHomeworkDetails, dateRange, activeView, teacherModuleId]);
+
+    useEffect(() => {
+      const homeworkModule = NavData?.filter(
+        (parent) => parent.parent_modules === 'Homework'
+      );
+      console.log('homeworkModule ', homeworkModule);
+      const teacherModuleId =
+        homeworkModule.length > 0
+          ? homeworkModule[0].child_module.filter(
+              (child) => child.child_name === 'Teacher Homework'
+            )
+          : null;
+
+      if (NavData && NavData.length) {
+        NavData.forEach((item) => {
+          if (
+            item.parent_modules === 'Homework' &&
+            item.child_module &&
+            item.child_module.length > 0
+          ) {
+            item.child_module.forEach((item) => {
+              if (item.child_name === 'Teacher Homework') {
+                setTeacherModuleId(item.child_id);
+                console.log('item.child_id ', item.child_id);
+              }
+            });
+          }
+        });
+      }
+    }, []);
 
     const renderRef = useRef(0);
 
     renderRef.current += 1;
 
     const tableContainer = useRef(null);
+
+    console.log('popper open', datePopperOpen);
 
     return (
       <>
@@ -248,13 +286,18 @@ const TeacherHomework = withRouter(
                     </MuiPickersUtilsProvider>
                   </div> */}
                   <DateRangePicker
+                    disableCloseOnSelect={false}
                     startText='Select-dates'
+                    PopperProps={{ open: datePopperOpen }}
                     // endText='End-date'
                     value={dateRange}
                     // calendars='1'
                     onChange={(newValue) => {
-                      console.log(newValue);
-                      setDateRange(newValue);
+                      console.log('onChange truggered', newValue);
+                      const [startDate, endDate] = newValue;
+                      const sevenDaysAfter = moment(startDate).add(6, 'days');
+                      setDateRange([startDate, sevenDaysAfter]);
+                      setDatePopperOpen(false);
                     }}
                     renderInput={(
                       // {
@@ -281,6 +324,10 @@ const TeacherHomework = withRouter(
                             }}
                             size='small'
                             style={{ minWidth: '250px' }}
+                            onClick={() => {
+                              console.log('triggered');
+                              setDatePopperOpen(true);
+                            }}
                           />
                           {/* <TextField {...startProps} size='small' /> */}
                           {/* <DateRangeDelimiter> to </DateRangeDelimiter> */}
