@@ -74,7 +74,7 @@ export default {
     createConfig: '/academic/homework-admin-configuration/',
   },
   homeworkStudent: {
-    getStudentSubjects: '/academic/student-homework/?module_id=1',
+    getStudentSubjects: '/academic/student-homework/',
     getTopPerformer: '/academic/hw-top-performer/',
     getRating: '/academic/student_subject_rating/',
     fileUpload: '/academic/upload-question-file/',
