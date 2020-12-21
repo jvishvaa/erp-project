@@ -1,0 +1,302 @@
+@import '../../../assets/styles/variables';
+/* .homework_table_wrapper .message_log_table tr th:not(:last-child):after {
+	content: '';
+	height: 100%;
+	width: 1px;
+	position: absolute;
+	right: 0;
+	top: 50%;
+	transform: translateY(-50%);
+	background-color: #ff6b6b;
+  }
+  .homework_table_wrapper .message_log_table tr td:not(:last-child):after {
+	content: '';
+	height: 100%;
+	width: 1px;
+	position: absolute;
+	right: 0;
+	top: 50%;
+	transform: translateY(-50%);
+	background-color: #ff6b6b;
+  } */
+.message_log_wrapper {
+  .date-container {
+    width: 95%;
+    margin: 20px auto;
+  }
+  .homework_table_wrapper {
+    border: 1px solid #ff6b6b;
+    box-shadow: none;
+  }
+  .homework_table_wrapper .MuiTableCell-root:not(:last-child) {
+    border-right: 1px solid #ff6b6b;
+  }
+  .homework_table_wrapper .MuiTableRow-root:not(:last-child) .MuiTableCell-root {
+    border-bottom: 1px solid #ff6b6b !important;
+  }
+  .homework_table_wrapper .MuiTableHead-root .MuiTableCell-root {
+    border-bottom: 1px solid #ff6b6b !important;
+  }
+  .selected {
+    background-color: antiquewhite;
+  }
+  .homework_table {
+    margin-top: 0% !important;
+    border-radius: 10px !important;
+    overflow-y: auto;
+    max-height: 10000px !important;
+  }
+  .homework_table_wrapper {
+    border-radius: 10px !important;
+    box-shadow: none !important;
+  }
+  .homework_header {
+    text-transform: capitalize;
+  }
+  .homework_block {
+    color: #014b7e;
+    font-weight: 600;
+  }
+  .homework_block_wrapper {
+    display: flex;
+    width: 95%;
+    padding-bottom: 1%;
+    margin: 20px auto;
+    border-bottom: 1px solid #cfcfcf;
+    align-items: center;
+  }
+
+  .icon-desc-container {
+    display: flex;
+    flex-direction: space-around;
+    align-items: center;
+    margin-left: 1rem;
+    color: $secondary-color;
+  }
+
+  .MuiBadge-root {
+    vertical-align: unset;
+    .MuiBadge-badge {
+      color: #ffffff;
+      &.MuiBadge-anchorOriginTopRightRectangle {
+        transform: scale(1) translate(25%, -25%);
+      }
+    }
+  }
+
+  .date-picker-container {
+    margin: 0 1rem;
+    .MuiSvgIcon-root {
+      fill: $primary-color;
+    }
+  }
+}
+.add-homework-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  .header-text {
+    color: $secondary-color;
+    font-weight: 600;
+    font-size: 1rem;
+    @media screen and (max-width: 768px) {
+      font-size: 0.85rem;
+    }
+  }
+
+  .add-homework-inner-container {
+    padding: 20px 2.5%;
+    background: white;
+    flex: 1;
+    .add-homework-title-container {
+      margin: 0 0 20px;
+      .nav-cards-container {
+        display: flex;
+
+        .nav-card {
+          width: 50%;
+          border: 1px solid $primary-color;
+          height: 100%;
+          padding: 0.5rem 1.25rem;
+          border-radius: 10px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 55px;
+        }
+        @media screen and (min-width: 768px) {
+          flex-direction: column;
+          .nav-card {
+            width: 300px;
+            height: max-content;
+            margin: 0 0 20px;
+          }
+        }
+      }
+    }
+  }
+  .form-field {
+    width: 30%;
+    margin-bottom: 20px;
+    @media screen and (max-width: 768px) {
+      width: 100%;
+    }
+  }
+
+  .finish-btn-container {
+    width: 100%;
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    .btn {
+      width: 100%;
+    }
+  }
+}
+
+.selected-col {
+  background-color: #fededf;
+}
+
+.no-wrap-col {
+  white-space: nowrap;
+}
+
+.view-homework-container {
+  .homework_type_item {
+    border: 1px solid #ff6b6b;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+    padding: 0.25rem 0.5rem;
+    color: #014b7e;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    div {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+  .homework_block_questionwise_check {
+    margin-left: 50%;
+    color: #014b7e;
+    font-size: 1rem;
+  }
+  .homework-question-container {
+    margin: 20px auto;
+    width: 95%;
+    &:nth-child(1) {
+      margin-top: 2rem;
+    }
+  }
+  .homework-question {
+    border-bottom: 1px solid #ff6b6b;
+    width: 80%;
+    color: #014b7e;
+    position: relative;
+  }
+  .homework_submit_tag {
+    font-size: 1rem;
+  }
+  .question {
+    font-size: 1rem;
+    padding: 1.5rem 0 0.5rem;
+  }
+  .homework_submit_questions_attachment {
+    width: 30% !important;
+  }
+  .non_selected_homework_type_item {
+    cursor: pointer;
+  }
+  .homework_block {
+    text-transform: capitalize;
+  }
+  .homework_type_wrapper {
+    width: 185px;
+  }
+  .homework_submit_wrapper {
+    border: 1px solid #ff6b6b;
+    border-radius: 10px;
+  }
+  .homework_submit_button_wrapper {
+    display: flex;
+    width: 30%;
+    margin: 2%;
+    margin-left: 65%;
+  }
+  .homework_submit_button_cancel {
+    margin-right: 20px !important;
+  }
+}
+
+.add-homework-container,
+.view-homework-container {
+  .attachments-container {
+    &.with-margin {
+      width: 95%;
+      margin: 20px auto;
+    }
+    .header {
+      margin: 1rem 0;
+    }
+    .attachments-list-outer-container {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      .prev-btn,
+      .next-btn {
+        width: 45px;
+      }
+      .attachments-list {
+        &::-webkit-scrollbar {
+          display: none;
+        }
+        scroll-behavior: smooth;
+        flex-grow: 1;
+        overflow-x: auto;
+        display: flex;
+        margin: 1rem 0;
+        width: calc(100% - 90px);
+        .attachment {
+          flex-shrink: 0;
+          width: 150px;
+        }
+      }
+    }
+  }
+  .file-card-container {
+    position: relative;
+    height: 100%;
+    &:hover {
+      .overlay-container {
+        opacity: 1;
+      }
+    }
+    .overlay-container {
+      padding: 0.5rem;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      width: 100%;
+      opacity: 0;
+      transition: 0.3s ease;
+      .overlay {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+        background-color: rgba($color: #000000, $alpha: 0.5);
+        .action-buttons {
+          margin: auto 0;
+        }
+      }
+    }
+  }
+}
