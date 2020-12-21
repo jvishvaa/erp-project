@@ -16,6 +16,7 @@ const INITIAL_STATE = {
   isQuestionwise: true,
   collatedSubmissionFiles: [],
   fetchingSubmittedHomeworkDetails: false,
+  selectedTeacherByCoordinatorToCreateHw: false,
 };
 
 export default function reducer(state = INITIAL_STATE, action) {
@@ -89,6 +90,9 @@ export default function reducer(state = INITIAL_STATE, action) {
         ...state,
         fetchingSubmittedHomeworkDetails: false,
       };
+      case teacherHomeworkActions.ADD_HOMEWORK_SUCCESS_COORD:
+      return { ...state, selectedTeacherByCoordinatorToCreateHw: action.data };
+
     default:
       return state;
   }
