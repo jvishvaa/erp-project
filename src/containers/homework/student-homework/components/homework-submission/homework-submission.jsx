@@ -85,7 +85,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const [loadFlag, setLoadFlag] = useState(false)
   const [subjectQuestions, setSubjectQuestions] = useState([]);
   const [isBulk, setIsBulk] = useState(false);
-  const [submittedFilesBulk, setSubmittedFilesBulk] = useState([]);
+  const [submittedEvaluatedFilesBulk, setSubmittedEvaluatedFilesBulk] = useState([]);
   const [penToolOpen, setPenToolOpen] = useState(false)
   const [penToolUrl, setPenToolUrl] = useState('');
   const [penToolIndex, setPenToolIndex] = useState('');
@@ -164,7 +164,11 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
             } else {
               setIsBulk(true)
               setSubjectQuestions(result.data.data.hw_questions.questions)
-              setSubmittedFilesBulk(result.data.data.hw_questions.submitted_files)
+              if (homeworkSubmission.status === 2) {
+                setSubmittedEvaluatedFilesBulk(result.data.data.hw_questions.submitted_files)
+              } else if (homeworkSubmission.status === 3) {
+                setSubmittedEvaluatedFilesBulk(result.data.data.hw_questions.evaluated_files)
+              }              
             }
           }
         } else {
@@ -647,7 +651,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
 
             {isBulk &&
               <>
-                {((homeworkSubmission.status === 2 || homeworkSubmission.status === 3) && submittedFilesBulk?.length > 0) &&
+                {((homeworkSubmission.status === 2 || homeworkSubmission.status === 3) && submittedEvaluatedFilesBulk?.length > 0) &&
                   <div className='homework-question-container student-view'>
                     <div className='attachments-container'>
                       <Typography component='h4' color='primary' className='header'>
@@ -668,7 +672,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                               console.log('scrolled');
                             }}
                           >
-                            {submittedFilesBulk?.map((url, i) => (
+                            {submittedEvaluatedFilesBulk?.map((url, i) => (
                               <>
                                 <div className='attachment'>
                                   <Attachment
@@ -685,7 +689,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                             }
                             <div style={{ position: 'absolute', visibility: 'hidden' }}>
                               <SRLWrapper>
-                                {submittedFilesBulk.map((url, i) => (
+                                {submittedEvaluatedFilesBulk?.map((url, i) => (
                                   <img
                                     src={`${endpoints.s3}/homework/${url}`}
                                     onError={(e) => {
