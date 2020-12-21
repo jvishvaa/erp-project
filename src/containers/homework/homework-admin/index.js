@@ -149,33 +149,30 @@ const HomeworkAdmin = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-  //   if (ratingData) {
-  //     for (let i = 0; i < ratingData.length; i++) {
-  //       if (ratingData[i]['low_range'] === '') {
-  //         // setAlert('error', 'Lower Range can\'t be empty for rating number ' + (i + 1));
-  //         setAllClear(1);
-  //         break;
-  //       } else if (ratingData[i]['upper_range'] === '') {
-  //         // setAlert('error', 'Upper Range can\'t be empty for rating number ' + (i + 1)+' and can\'t exceed 1.0');
-  //         setAllClear(2);
-  //         break;
-  //       } else if (ratingData[i]['star'] === '') {
-  //         // setAlert('error', 'Star can\'t be empty for rating number ' + (i + 1)+' and can\'t exceed 5.');
-  //         setAllClear(3);
-  //         break;
-  //       } else if (ratingData[i]['low_range'] && ratingData[i]['upper_range']) {
-  //         if (ratingData[i]['low_range'] >= ratingData[i]['upper_range']) {
-  //           setAllClear(4);
-  //           // setAlert('error', 'Lower Range can\'t be greater than or equal to Upper Range for rating number ' + (i + 1));
-  //           break;
-  //       }
-  //     }
-  //   }
-  // }
-  console.log(mandatorySubjects)
-  console.log(optionalSubjects)
-  console.log(otherSubjects)
-  
+    //   if (ratingData) {
+    //     for (let i = 0; i < ratingData.length; i++) {
+    //       if (ratingData[i]['low_range'] === '') {
+    //         // setAlert('error', 'Lower Range can\'t be empty for rating number ' + (i + 1));
+    //         setAllClear(1);
+    //         break;
+    //       } else if (ratingData[i]['upper_range'] === '') {
+    //         // setAlert('error', 'Upper Range can\'t be empty for rating number ' + (i + 1)+' and can\'t exceed 1.0');
+    //         setAllClear(2);
+    //         break;
+    //       } else if (ratingData[i]['star'] === '') {
+    //         // setAlert('error', 'Star can\'t be empty for rating number ' + (i + 1)+' and can\'t exceed 5.');
+    //         setAllClear(3);
+    //         break;
+    //       } else if (ratingData[i]['low_range'] && ratingData[i]['upper_range']) {
+    //         if (ratingData[i]['low_range'] >= ratingData[i]['upper_range']) {
+    //           setAllClear(4);
+    //           // setAlert('error', 'Lower Range can\'t be greater than or equal to Upper Range for rating number ' + (i + 1));
+    //           break;
+    //       }
+    //     }
+    //   }
+    // }
+
     if (searchGrade === '') {
       setAlert('error', 'Grade not selected');
     } else if (searchSection === '') {
@@ -184,8 +181,8 @@ const HomeworkAdmin = () => {
       setAlert('error', 'Prior days cannot be empty');
     } else if (post === '') {
       setAlert('error', 'Post days cannot be empty');
-    } else if (mandatorySubjects.length > 5 ) {
-      setAlert('error', 'Mandatory subjects can\'t exceed 5');
+    } else if (mandatorySubjects.length > 5 || mandatorySubjects.length === 0) {
+      setAlert('error', 'Number of mandatory subjects must lie between 1 and 5');
     } else {
       setLoading(true)
       axiosInstance.post(endpoints.homework.createConfig, {
@@ -225,7 +222,6 @@ const HomeworkAdmin = () => {
   //   &&(post===rowData.post_data[0].prior_class)
   //   &&(hwratio=== rowData.prior_data[0].is_hw_ration)
   //   &&(topPerformers===rowData.prior_data[0].is_top_performers)){
-
   // }
 
   const handleHwratio = (event) => {
@@ -242,34 +238,46 @@ const HomeworkAdmin = () => {
     const list = [...rowData.subject_data];
     let name = event.target.name;
 
-    if (name === 'is_mandatory' && value) {
-      list[index]['is_mandatory'] = true;
+    if (name === 'is_mandatory') {
+      if (value) {
+        list[index]['is_mandatory'] = true;
+        mandatorySubjects.push(id);
+      } else {
+        list[index]['is_mandatory'] = false;
+        mandatorySubjects.splice(mandatorySubjects.indexOf(id), 1);
+      }
       list[index]['is_optional'] = false;
       list[index]['is_other'] = false;
-
-      mandatorySubjects.push(id);
       let filtered = optionalSubjects.filter(value => value !== id);
       setOptionalSubjects(filtered);
       filtered = otherSubjects.filter(value => value !== id);
       setOtherSubjects(filtered);
     }
-    else if (name === 'is_optional' && value) {
+    else if (name === 'is_optional') {
+      if (value) {
+        list[index]['is_optional'] = true;
+        optionalSubjects.push(id);
+      } else {
+        list[index]['is_optional'] = false;
+        optionalSubjects.splice(optionalSubjects.indexOf(id), 1);
+      }
       list[index]['is_mandatory'] = false;
-      list[index]['is_optional'] = true;
       list[index]['is_other'] = false;
-
-      optionalSubjects.push(id);
       let filtered = mandatorySubjects.filter(value => value !== id);
       setMandatorySubjects(filtered);
       filtered = otherSubjects.filter(value => value !== id);
       setOtherSubjects(filtered);
     }
-    else if (name === 'is_other' && value) {
+    else if (name === 'is_other') {
+      if (value) {
+        list[index]['is_other'] = true;
+        otherSubjects.push(id);
+      } else {
+        list[index]['is_other'] = false;
+        otherSubjects.splice(otherSubjects.indexOf(id), 1);
+      }
       list[index]['is_mandatory'] = false;
       list[index]['is_optional'] = false;
-      list[index]['is_other'] = true;
-
-      otherSubjects.push(id);
       let filtered = mandatorySubjects.filter(value => value !== id);
       setMandatorySubjects(filtered);
       filtered = optionalSubjects.filter(value => value !== id);
@@ -306,6 +314,9 @@ const HomeworkAdmin = () => {
       setSectionDisplay([])
       setSections([])
       setGradeDisplay(value)
+      setOtherSubjects([])
+      setMandatorySubjects([])
+      setOptionalSubjects([])
       axiosInstance.get(`${endpoints.masterManagement.sections}?branch_id=${role_details.branch[0]}&grade_id=${value.id}`)
         .then(result => {
           if (result.data.status_code === 200) {
@@ -348,6 +359,9 @@ const HomeworkAdmin = () => {
 
   const handleSection = (event, value) => {
     if (value) {
+      setOtherSubjects([])
+      setMandatorySubjects([])
+      setOptionalSubjects([])
       setSearchSection(value.section_id)
       setSectionDisplay(value)
     }
@@ -379,9 +393,6 @@ const HomeworkAdmin = () => {
 
   useEffect(() => {
     if (searchGrade & searchSection) {
-      setOtherSubjects([])
-      setMandatorySubjects([])
-      setOptionalSubjects([])
       let request = `${endpoints.homework.completeData}?branch=${role_details.branch[0]}&grade=${searchGrade}&section=${searchSection}`
       axiosInstance.get(request)
         .then(result => {
@@ -397,19 +408,18 @@ const HomeworkAdmin = () => {
             else {
               setRatingData([])
             }
-
-            let arr = result.data.result[0].subject_data
+            let arr = [...result.data.result[0].subject_data];
             for (let i = 0; i < len; i++) {
-              if (arr[i]['is_mandatory']===true)
-                mandatorySubjects.push(arr[i]['subject_id'])
-              else if (arr[i]['is_optional']===true)
-                optionalSubjects.push(arr[i]['subject_id'])
-              else if (arr[i]['is_other']===true)
-                otherSubjects.push(arr[i]['subject_id'])
+              if (arr[i]['is_mandatory'] === true) {
+                mandatorySubjects.push(arr[i]['subject_id']);
+              }
+              else if (arr[i]['is_optional'] === true) {
+                optionalSubjects.push(arr[i]['subject_id']);
+              }
+              else if (arr[i]['is_other'] === true) {
+                otherSubjects.push(arr[i]['subject_id']);
+              }
             }
-            console.log(mandatorySubjects)
-            console.log(optionalSubjects)
-            console.log(otherSubjects)
             setRowData(result.data.result[0])
             setPrior(result.data.result[0].prior_data[0].prior_class)
             setPost(result.data.result[0].prior_data[0].post_class)
@@ -581,7 +591,7 @@ const HomeworkAdmin = () => {
                             required
                             type="number"
                             value={row.low_range}
-                            InputProps={{ inputProps: { min: 0.0, max: 1.0 ,step: 0.01} }}
+                            InputProps={{ inputProps: { min: 0.0, max: 1.0, step: 0.01 } }}
                             size='small'
                             name='low_range'
                             autoComplete="off"
@@ -596,9 +606,9 @@ const HomeworkAdmin = () => {
                             variant='outlined'
                             size='small'
                             required
-                            type="number" 
+                            type="number"
                             value={row.upper_range}
-                            InputProps={{ inputProps: { min: 0.0, max: 1.0 ,step: 0.01} }}
+                            InputProps={{ inputProps: { min: 0.0, max: 1.0, step: 0.01 } }}
                             name='upper_range'
                             autoComplete="off"
                             onChange={(e) => handleRatingData(e, index)}
