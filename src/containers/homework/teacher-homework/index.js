@@ -260,123 +260,104 @@ const TeacherHomework = withRouter(
               <CommonBreadcrumbs componentName='Homework' />
             </div>
             <div className='message_log_white_wrapper'>
-              <div className='date-container'>
-                <LocalizationProvider dateAdapter={MomentUtils}>
-                  {/* <div className='date-picker-container'>
-                    <MuiPickersUtilsProvider utils={MomentUtils}>
-                      <KeyboardDatePicker
-                        clearable
-                        value={startDate}
-                        placeholder='Start Date'
-                        onChange={(date) => handleStartDateChange(date)}
-                        format='YYYY-MM-DD'
-                        label='Start Date'
-                      />
-                    </MuiPickersUtilsProvider>
+              {activeView !== 'view-homework' && activeView !== 'view-received-homework' && (
+                <div className='date-container'>
+                  <LocalizationProvider dateAdapter={MomentUtils}>
+                    <DateRangePicker
+                      disableCloseOnSelect={false}
+                      startText='Select-dates'
+                      PopperProps={{ open: datePopperOpen }}
+                      // endText='End-date'
+                      value={dateRange}
+                      // calendars='1'
+                      onChange={(newValue) => {
+                        console.log('onChange truggered', newValue);
+                        const [startDate, endDate] = newValue;
+                        const sevenDaysAfter = moment(startDate).add(6, 'days');
+                        setDateRange([startDate, sevenDaysAfter]);
+                        setDatePopperOpen(false);
+                      }}
+                      renderInput={(
+                        // {
+                        //   inputProps: { value: startValue, ...restStartInputProps },
+                        //   ...startProps
+                        // },
+                        // {
+                        //   inputProps: { value: endValue, ...restEndInputProps },
+                        //   ...endProps
+                        // }
+                        { inputProps, ...startProps },
+                        // startProps,
+                        endProps
+                      ) => {
+                        console.log('startProps ', startProps, 'endProps', endProps);
+                        return (
+                          <>
+                            <TextField
+                              {...startProps}
+                              inputProps={{
+                                ...inputProps,
+                                value: `${inputProps.value} - ${endProps.inputProps.value}`,
+                                readOnly: true,
+                              }}
+                              size='small'
+                              style={{ minWidth: '250px' }}
+                              onClick={() => {
+                                console.log('triggered');
+                                setDatePopperOpen(true);
+                              }}
+                            />
+                            {/* <TextField {...startProps} size='small' /> */}
+                            {/* <DateRangeDelimiter> to </DateRangeDelimiter> */}
+                            {/* <TextField {...endProps} size='small' /> */}
+                          </>
+                        );
+                      }}
+                    />
+                  </LocalizationProvider>
+                </div>
+              )}
+              {activeView !== 'view-homework' && activeView !== 'view-received-homework' && (
+                <div className='homework_block_wrapper'>
+                  <div className='homework_block'>Weekly Time table</div>
+                  <div className='icon-desc-container'>
+                    <SvgIcon
+                      component={() => (
+                        <img
+                          style={{ width: '20px', marginRight: '5px' }}
+                          src={hwGiven}
+                          alt='given'
+                        />
+                      )}
+                    />
+                    <span>HW given</span>
                   </div>
-                  <div className='date-picker-container'>
-                    <MuiPickersUtilsProvider utils={MomentUtils}>
-                      <KeyboardDatePicker
-                        placeholder='End Date'
-                        value={endDate}
-                        onChange={(date) => handleEndDateChange(date)}
-                        format='YYYY-MM-DD'
-                        label='End Date'
-                      />
-                    </MuiPickersUtilsProvider>
-                  </div> */}
-                  <DateRangePicker
-                    disableCloseOnSelect={false}
-                    startText='Select-dates'
-                    PopperProps={{ open: datePopperOpen }}
-                    // endText='End-date'
-                    value={dateRange}
-                    // calendars='1'
-                    onChange={(newValue) => {
-                      console.log('onChange truggered', newValue);
-                      const [startDate, endDate] = newValue;
-                      const sevenDaysAfter = moment(startDate).add(6, 'days');
-                      setDateRange([startDate, sevenDaysAfter]);
-                      setDatePopperOpen(false);
-                    }}
-                    renderInput={(
-                      // {
-                      //   inputProps: { value: startValue, ...restStartInputProps },
-                      //   ...startProps
-                      // },
-                      // {
-                      //   inputProps: { value: endValue, ...restEndInputProps },
-                      //   ...endProps
-                      // }
-                      { inputProps, ...startProps },
-                      // startProps,
-                      endProps
-                    ) => {
-                      console.log('startProps ', startProps, 'endProps', endProps);
-                      return (
-                        <>
-                          <TextField
-                            {...startProps}
-                            inputProps={{
-                              ...inputProps,
-                              value: `${inputProps.value} - ${endProps.inputProps.value}`,
-                              readOnly: true,
-                            }}
-                            size='small'
-                            style={{ minWidth: '250px' }}
-                            onClick={() => {
-                              console.log('triggered');
-                              setDatePopperOpen(true);
-                            }}
-                          />
-                          {/* <TextField {...startProps} size='small' /> */}
-                          {/* <DateRangeDelimiter> to </DateRangeDelimiter> */}
-                          {/* <TextField {...endProps} size='small' /> */}
-                        </>
-                      );
-                    }}
-                  />
-                </LocalizationProvider>
-              </div>
-              <div className='homework_block_wrapper'>
-                <div className='homework_block'>Weekly Time table</div>
-                <div className='icon-desc-container'>
-                  <SvgIcon
-                    component={() => (
-                      <img
-                        style={{ width: '20px', marginRight: '5px' }}
-                        src={hwGiven}
-                        alt='given'
-                      />
-                    )}
-                  />
-                  <span>HW given</span>
+                  <div className='icon-desc-container'>
+                    <SvgIcon
+                      component={() => (
+                        <img
+                          style={{ width: '20px', marginRight: '5px' }}
+                          src={submitted}
+                          alt='submitted'
+                        />
+                      )}
+                    />
+                    <span>Students submitted</span>
+                  </div>
+                  <div className='icon-desc-container'>
+                    <SvgIcon
+                      component={() => (
+                        <img
+                          style={{ width: '20px', marginRight: '5px' }}
+                          src={hwEvaluated}
+                          alt='evaluated'
+                        />
+                      )}
+                    />
+                    <span>HW Evaluated</span>
+                  </div>
                 </div>
-                <div className='icon-desc-container'>
-                  <SvgIcon
-                    component={() => (
-                      <img
-                        style={{ width: '20px', marginRight: '5px' }}
-                        src={submitted}
-                        alt='submitted'
-                      />
-                    )}
-                  />
-                  <span>Students submitted</span>
-                </div>
-                <div className='icon-desc-container'>
-                  <SvgIcon
-                    component={() => (
-                      <img
-                        style={{ width: '20px', marginRight: '5px' }}
-                        src={hwEvaluated}
-                        alt='evaluated'
-                      />
-                    )}
-                  />
-                  <span>HW Evaluated</span>
-                </div>
-              </div>
+              )}
               {activeView === 'view-homework' && (
                 <ViewHomework
                   viewHomework={viewHomework}
@@ -384,14 +365,12 @@ const TeacherHomework = withRouter(
                   onClose={handleCloseView}
                 />
               )}
-
               {activeView === 'view-received-homework' && (
                 <ViewHomeworkSubmission
                   homework={receivedHomework}
                   onClose={handleCloseView}
                 />
               )}
-
               <div className='create_group_filter_container'>
                 <Grid container className='homework_container' spacing={2}>
                   {activeView === 'list-homework' && (
