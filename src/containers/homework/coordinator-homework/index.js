@@ -104,7 +104,7 @@ const CoordinatorTeacherHomework = withRouter(
     const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
     const [isEmail, setIsEmail] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [moduleId, setModuleId] = useState();
+    const [moduleIdCord, setModuleIdCord] = useState();
     const [modulePermision, setModulePermision] = useState(true);
     const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
     const [endDate, setEndDate] = useState(getDaysAfter(moment(), 7));
@@ -123,6 +123,24 @@ const CoordinatorTeacherHomework = withRouter(
       date: '',
       subjectName: '',
     });
+
+    useEffect(() => {
+      if (NavData && NavData.length) {
+        NavData.forEach((item) => {
+          if (
+            item.parent_modules === 'Homework' &&
+            item.child_module &&
+            item.child_module.length > 0
+          ) {
+            item.child_module.forEach((item) => {
+              if (item.child_name === 'Management View') {
+                setModuleIdCord(item.child_id);
+              }
+            });
+          }
+        });
+      }
+    }, []);
 
     const handleViewHomework = ({
       date,
@@ -143,14 +161,14 @@ const CoordinatorTeacherHomework = withRouter(
       const endDate = getDaysAfter(date.clone(), 7);
       setEndDate(endDate);
       setStartDate(date.format('YYYY-MM-DD'));
-      getCoordinateTeacherHomeworkDetails(2, date, endDate, selectedTeacherUser_id);
+      getCoordinateTeacherHomeworkDetails(moduleIdCord, date, endDate, selectedTeacherUser_id);
     };
 
     const handleEndDateChange = (date) => {
       const startDate = getDaysBefore(date.clone(), 7);
       setStartDate(startDate);
       setEndDate(date.format('YYYY-MM-DD'));
-      getCoordinateTeacherHomeworkDetails(2, startDate, date, selectedTeacherUser_id);
+      getCoordinateTeacherHomeworkDetails(moduleIdCord, startDate, date, selectedTeacherUser_id);
     };
 
     const handleSelectCol = (col, view) => {
@@ -190,7 +208,7 @@ const CoordinatorTeacherHomework = withRouter(
 
     useEffect(() => {
       getTeacherListApi();
-    }, [getCoordinateTeacherHomeworkDetails, dateRange, activeView]);
+    }, [getCoordinateTeacherHomeworkDetails, dateRange, activeView,moduleIdCord]);
 
     const getTeacherListApi = async () => {
       const [startDate, endDate] = dateRange;
@@ -232,7 +250,7 @@ const CoordinatorTeacherHomework = withRouter(
               // );
 
               getCoordinateTeacherHomeworkDetails(
-                2,
+                moduleIdCord,
                 startDate.format('YYYY-MM-DD'),
                 endDate.format('YYYY-MM-DD'),
                 newCoorTechID
@@ -254,10 +272,11 @@ const CoordinatorTeacherHomework = withRouter(
       if(value?.user_id > 0){
         setSelectedTeacherUser_id(value?.user_id);
         setselectedCoTeacherOptValue(value);
-        getCoordinateTeacherHomeworkDetails(2, startDate, endDate, value.user_id);
+        getCoordinateTeacherHomeworkDetails(moduleIdCord, startDate, endDate, value.user_id);
       }
      
     };
+    
 
     const renderRef = useRef(0);
 
@@ -512,14 +531,14 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   getCoordinateTeacherHomeworkDetails: (
-    moduleId,
+    moduleIdCord,
     startDate,
     endDate,
     selectedTeacherUser_id
   ) => {
     dispatch(
       fetchCoordinateTeacherHomeworkDetails(
-        moduleId,
+        moduleIdCord,
         startDate,
         endDate,
         selectedTeacherUser_id
