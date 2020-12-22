@@ -102,8 +102,8 @@ const StudenthomeworkMobileScreen = (props) => {
                         let day = new Date(name.date)
                         var dayName = day.toString().split(' ')[0];
                         return(
-                            <>
-                                 <ListItem>
+                            <div  key={index}>
+                                 <ListItem >
                                 <ListItemAvatar>
                                 <Avatar  className={'avatar-day'}>{dayName.substring(0, 1)}</Avatar>
                                 </ListItemAvatar>
@@ -158,7 +158,7 @@ const StudenthomeworkMobileScreen = (props) => {
                                 </ListItemSecondaryAction>
                                 </ListItem>
                                 <Divider variant="inset" component="li" />
-                            </>
+                            </div>
 
                         )
                     })
