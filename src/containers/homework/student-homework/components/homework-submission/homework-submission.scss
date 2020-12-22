@@ -104,7 +104,7 @@
   color: #014b7e;
   border: 1px solid red;
   border-radius: 10px;
-  font-size: 18px;
+  font-size: 16px;
   width: 70%;
   padding: 11px 18px;
 }
@@ -174,7 +174,7 @@
     }
 
     .homework-question {
-      border-bottom: 1px solid #ff6b6b;
+      // border-bottom: 1px solid #ff6b6b;
       width: 100%;
       color: #014b7e;
       position: relative;
@@ -253,7 +253,7 @@
     display: flex;
     flex-direction: row;
     border-radius: 5px;
-    width: 60%;
+    width: 42%;
     opacity: 1;
     align-items: center;
     justify-content: center;
@@ -264,10 +264,10 @@
     float: left;
 }
 .file_close span img{
-  margin-left: 35px;
+  margin-left: 50px;
 }
 .file_name_container {
-  font-size: 18px;
+  font-size: 14px;
 }
 .commentBoxStyle{
   width: 100% !important;
@@ -333,31 +333,47 @@ display: block !important;
   margin: 0 auto !important;
  
 }
-.makeStyles-attachmentIcon-46{
-  margin-left: 275px !important;
+#file-icon{
+  margin-left: 275px ;
 }
+// .makeStyles-attachmentIcon-46{
+//   margin-left: 275px ;
+// }
 .homework-question-container.student-view .homework-question {
   width: 100%;
   color: #014b7e;
   position: relative;
   padding-bottom: 8px;
-  font-size: 18px;
+  font-size: 16px;
 }
 // .file_row:last-child {
 //   border-bottom: 1px solid #ff6b6b;
 // }
 .questionWiseAttachmentsContainer{
-  border-bottom: 1px solid #ff6b6b;
+   border-bottom: 1px solid #ff6b6b;
 }
-.homework-question-container.student-view .homework-question::before{
-  border-bottom: 1px solid #ff6b6b;
+.homework-question-container.student-view .homework-question{
+  // border-bottom: 1px solid #ff6b6b;
 }
 
-.homework-question-container.student-view .homework-question::after{
-  border-bottom: none;
+.MuiButton-sizeSmall{
+  width: 100%;
 }
 .commentBoxStyle{
   padding-top: 40px!important;
+}
+.MuiInputBase-inputMultiline{
+  font-size: 14px;
+}
+.homework_submit_tag{
+  font-size: 10px;
+  margin-top: 16px;
+  width: 40%;
+  margin-left: 3px;
+}
+
+.homework_block_questionwise_check{
+  font-size: 12px;
 }
 }
 
