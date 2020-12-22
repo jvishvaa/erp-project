@@ -177,6 +177,74 @@ font-weight: 600;
 	.homework_details_timeline-card{
 		border-radius: 15px  !important;
 	}
+	.mobile-screen-subject-button button{
+		background: white;
+		color: red;
+		border: 1px solid #FF6B6B;
+		border-radius: 10px;
+		
+	  }
+	
+	  .mobile-screen-subject-button{
+		background: #E5E5E5;
+		padding: 20px;
+		display: flex;
+    	justify-content: space-evenly;
+	  }
+	  .mobile-screen-subject-button button:focus {
+		border: 1px solid #FF6B6B;
+		background: red;
+		color: white;
+	  }
+	  .mobile-screen-subject-button button:blur(0) {
+		border: 1px solid #FF6B6B;
+		background: red;
+		color: white;
+	  }
+
+	  .mobile-screen-subject-button span{
+		  font-size: 14px;
+	  }
+	  .create_group_filter_container{
+		  padding: 0px;
+	  }
+	  pre {
+		margin: 20px 0;
+		padding: 20px;
+		/* background: #fafafa; */
+	  }
+	  .MuiListItemAvatar-root .avatar-day{
+		  font-size: 15px;
+		  color: #014B7E;
+	  }
+	  .round { border-radius: 50%; }
+	  
+
+	  .MuiListItemText-primary{
+		margin-bottom: 13px;
+	
+	  }
+	  .MuiTypography-body1{
+		  font-size: 14px !important;
+	  }
+	  .avatar-day{
+		width: 28px !important;
+		height: 28px !important;
+		border: red !important;
+		
+	  }
+	  .mobile-icon-container{
+		display: flex;
+		justify-content: space-around;
+	  }
+	  .icon-text{
+		color: #014B7E;
+		font-size: 10px;
+	  }
+	  .MuiDivider-inset {
+		margin-left: 72px !important;
+		margin-right: 30px  !important;
+	}
   }
 
   

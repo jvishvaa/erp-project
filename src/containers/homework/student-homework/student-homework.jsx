@@ -17,7 +17,9 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { Grid, TextField, Button, SvgIcon, Icon, Slide } from '@material-ui/core';
+import { Grid, TextField, Button, SvgIcon, Icon, Slide , useTheme} from '@material-ui/core';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+
 import MomentUtils from '@date-io/moment';
 import moment from 'moment';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -37,7 +39,8 @@ import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import Layout from '../../Layout';
 import './student-homework.css';
-
+import StudenthomeworkMobileScreen from './student-homework-mobile-screen';
+import MobileIconScreen from './student-homework-mobileScreen-Icon'
 const useStyles = makeStyles((theme) => ({
   root: {
     '& > *': {
@@ -58,6 +61,9 @@ const useStyles = makeStyles((theme) => ({
 
 const StudentHomework = withRouter(({ history, ...props }) => {
   const classes = useStyles();
+  const themeContext = useTheme();
+  const isMobileRender = useMediaQuery(themeContext.breakpoints.down('sm'));
+  
   const { setAlert } = useContext(AlertNotificationContext);
   const [isHidden, setIsHidden] = useState(window.innerWidth < 600);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 600);
@@ -243,6 +249,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
         });
       }
       temprows.push(tempobj);
+      // console.log(temprows, "temprows")
     });
     setMessageRows({ header: tempHeader, rows: temprows });
   };
@@ -361,6 +368,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
     }
   }, [selectedOtherSubjects]);
 
+ 
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
@@ -409,9 +417,12 @@ const StudentHomework = withRouter(({ history, ...props }) => {
             </div>
           }
           <div className='message_log_white_wrapper'>
-            {!homeworkSubmission.isOpen &&
+           {
+              isMobile ? <MobileIconScreen />:
+           
+            !homeworkSubmission.isOpen &&
               <div className='homework_block_wrapper'>
-                <div className='homework_block'>Weekly Time table</div>
+                <div className='homework_block'>Weekly Time table </div>
                 <div className='icon-desc-container'>
                   <SvgIcon
                     component={() => (
@@ -478,13 +489,17 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                 </div>
               </div>
             }
+
+
             {homeworkSubmission.isOpen ? (
               <HomeworkSubmission
                 homeworkSubmission={homeworkSubmission}
                 setHomeworkSubmission={setHomeworkSubmission}
               />
             ) : (
-                <div className='create_group_filter_container'>
+                <div className='create_group_filter_container for-mobile'>
+                   {
+                  isMobile ? <StudenthomeworkMobileScreen mobileScreenResponse={messageRows} /> :
                   <Grid container className='homework_container' spacing={2}>
                     <Grid xs={12} lg={(studentHomeworkData.header?.is_top_performers || !homeworkTimelineDisplay) ? 9 : 12} item>
                       <Paper className={`homework_table_wrapper ${classes.root}`}>
@@ -722,6 +737,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                     </Grid>
 
                   </Grid>
+            }
                 </div>
               )}
           </div>
