@@ -247,3 +247,91 @@
     }
   }
 }
+@media only screen and (max-width: 768px) {
+  .file_row {
+    border: 1px solid #DFDFDF;
+    display: flex;
+    flex-direction: row;
+    border-radius: 5px;
+    width: 60%;
+    opacity: 1;
+    align-items: center;
+    justify-content: center;
+    margin: 5px;
+    font: normal normal normal 14px/16px Raleway;
+    left: 15p;
+    margin-left: 63px;
+}
+.file_close span img{
+  margin-left: 35px;
+}
+.file_name_container {
+  font-size: 18px;
+}
+.commentBoxStyle{
+  width: 100% !important;
+}
+.descBox{
+  width: 100%;
+}
+.homework_submit_button_wrapper {
+  display: block;
+  margin: 0 auto;
+width: 166px;
+ 
+}
+.homework_submit_wrapper{
+  height: auto !important;
+  width: 346px;
+
+}
+.custom_button_master{ 
+  margin-top: 10px !important;
+  height: 42px;
+  margin-bottom: 10px !important;
+}
+.homework_submit_button_cancel{
+  height: 34px;
+}
+.homework-question{
+  margin-left: 15px !important;
+  text-align: left !important;
+  
+}
+.homework-question .questionWiseAttachmentsContainer{
+  display: block !important;
+}
+
+.questionWiseAttachmentsContainer {
+  float: right !important;
+}
+.homework-question-container.student-view .homework-question {
+  top: 42px;
+  
+}
+.homework-question-container.student-view .homework-question {
+  width: 92%;
+}
+.attachments-container{
+  margin-top: 60px !important;
+}
+.file_row:after {
+  width: 70% ;
+}
+.MuiIconButton-label:after{
+  margin-left: 244px !important;
+}
+.questionWiseAttachmentsContainer:after {
+  float: right !important;
+}
+.questionWiseAttachmentsContainer::after {
+display: block !important;
+}
+
+.homework_type_wrapper{
+  margin: 0 auto !important;
+ 
+}
+}
+
+

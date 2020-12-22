@@ -367,12 +367,12 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
         <Grid item className='homework_type_wrapper'>
           <div className='homework_type'>
             <div
-              className='homework_type_item non_selected_homework_type_item'
+              className='homework_type_item non_selected_homework_type_item all-homeWorks'
               onClick={handleHomeworkCancel}
             >
               All Homeworks
             </div>
-            <div className='homework_type_item selected'>
+            <div className='homework_type_item selected all-homeWorks'>
               <div>{date}</div>
               <div>{subjectName}</div>
             </div>

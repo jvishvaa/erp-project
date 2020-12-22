@@ -168,7 +168,7 @@ const HomeworkTimeline = ({setHomeworkTimelineDisplay}) => {
                 </Typography>
                 <Typography
                   variant='body2'
-                  className='homework_timeline_card_info'
+                  className='homework_timeline_card_info info-card-info'
                   component='p'
                 >
                   {totalHomework}
@@ -205,7 +205,7 @@ const HomeworkTimeline = ({setHomeworkTimelineDisplay}) => {
                 </Typography>
                 <Typography
                   variant='body2'
-                  className='homework_timeline_card_info'
+                  className='homework_timeline_card_info info-card-info'
                   component='p'
                 >
                   {submittedHomework}
