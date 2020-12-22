@@ -99,10 +99,8 @@ const StudenthomeworkMobileScreen = (props) => {
             <List dense={dense}>
                 {
                     subJson.map((name, index) =>{
-                        // console.log(name, "name")
                         let day = new Date(name.date)
                         var dayName = day.toString().split(' ')[0];
-                        console.log(typeof dayName, "dayName")
                         return(
                             <>
                                  <ListItem>
