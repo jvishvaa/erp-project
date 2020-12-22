@@ -4,9 +4,9 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
-import React, { useContext, useState, useEffect, useRef } from 'react';
+import React, { useContext, useState, useEffect, useRef, useSelector } from 'react';
 import { withRouter } from 'react-router-dom';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableBody from '@material-ui/core/TableBody';
@@ -14,16 +14,10 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import {
-  Grid,
-  TextField,
-  Button,
-  SvgIcon,
-  Badge,
-  IconButton,
-  useMediaQuery,
-} from '@material-ui/core';
-import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { Grid, TextField, Button, SvgIcon, Badge, IconButton } from '@material-ui/core';
+import axiosInstance from '../../../config/axios';
+import endpoints from '../../../config/endpoints';
+// import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import {
   LocalizationProvider,
   DateRangePicker,
@@ -35,6 +29,8 @@ import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 
 // import MomentUtils from '@date-io/moment';
 import CircularProgress from '@material-ui/core/CircularProgress';
+
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -47,7 +43,7 @@ import submitted from '../../../assets/images/student-submitted.svg';
 import HomeWorkCard from '../homework-card';
 import './styles.scss';
 import {
-  fetchTeacherHomeworkDetails,
+  fetchCoordinateTeacherHomeworkDetails,
   setSelectedHomework,
   fetchStudentsListForTeacherHomework,
 } from '../../../redux/actions';
@@ -64,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: '5px',
     marginTop: '5px',
     [theme.breakpoints.down('xs')]: {
-      width: '100',
+      width: '87vw',
       margin: 'auto',
     },
   },
@@ -82,9 +78,9 @@ function getDaysBefore(date, amount) {
   return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
 }
 
-const TeacherHomework = withRouter(
+const CoordinatorTeacherHomework = withRouter(
   ({
-    getTeacherHomeworkDetails,
+    getCoordinateTeacherHomeworkDetails,
     homeworkCols,
     homeworkRows,
     fetchingTeacherHomework,
@@ -95,6 +91,7 @@ const TeacherHomework = withRouter(
     fetchingStudentLists,
     fetchStudentLists,
     history,
+    selectedTeacherByCoordinatorToCreateHw,
     ...props
   }) => {
     const [dateRange, setDateRange] = useState([moment().subtract(6, 'days'), moment()]);
@@ -111,6 +108,10 @@ const TeacherHomework = withRouter(
     const [modulePermision, setModulePermision] = useState(true);
     const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
     const [endDate, setEndDate] = useState(getDaysAfter(moment(), 7));
+
+    const [selectedCoTeacherOptValue, setselectedCoTeacherOptValue] = useState([]);
+    const [selectedCoTeacherOpt, setSelectedCoTeacherOpt] = useState([]);
+    const [selectedTeacherUser_id, setSelectedTeacherUser_id] = useState();
     const [viewHomework, setViewHomework] = useState({
       subjectId: '',
       date: '',
@@ -122,13 +123,6 @@ const TeacherHomework = withRouter(
       date: '',
       subjectName: '',
     });
-
-    const [datePopperOpen, setDatePopperOpen] = useState(false);
-
-    const [teacherModuleId, setTeacherModuleId] = useState(null);
-    const themeContext = useTheme();
-
-    const isMobile = useMediaQuery(themeContext.breakpoints.down('md'));
 
     const handleViewHomework = ({
       date,
@@ -149,14 +143,14 @@ const TeacherHomework = withRouter(
       const endDate = getDaysAfter(date.clone(), 7);
       setEndDate(endDate);
       setStartDate(date.format('YYYY-MM-DD'));
-      getTeacherHomeworkDetails(3384, date, endDate);
+      getCoordinateTeacherHomeworkDetails(2, date, endDate, selectedTeacherUser_id);
     };
 
     const handleEndDateChange = (date) => {
       const startDate = getDaysBefore(date.clone(), 7);
       setStartDate(startDate);
       setEndDate(date.format('YYYY-MM-DD'));
-      getTeacherHomeworkDetails(2, startDate, date);
+      getCoordinateTeacherHomeworkDetails(2, startDate, date, selectedTeacherUser_id);
     };
 
     const handleSelectCol = (col, view) => {
@@ -164,9 +158,6 @@ const TeacherHomework = withRouter(
       console.log('homework id', homeworkId);
       fetchStudentLists(homeworkId);
       setSelectedCol(col);
-      if (isMobile) {
-        setActiveView('card-view');
-      }
       onSetSelectedHomework(col);
     };
 
@@ -194,62 +185,85 @@ const TeacherHomework = withRouter(
         date: '',
         subjectName: '',
       });
-      setSelectedCol({});
       setActiveView('list-homework');
     };
 
     useEffect(() => {
+      getTeacherListApi();
+    }, [getCoordinateTeacherHomeworkDetails, dateRange, activeView]);
+
+    const getTeacherListApi = async () => {
       const [startDate, endDate] = dateRange;
-      if (teacherModuleId) {
-        if (activeView === 'list-homework') {
-          if (startDate && endDate) {
-            getTeacherHomeworkDetails(
-              teacherModuleId,
-              startDate.format('YYYY-MM-DD'),
-              endDate.format('YYYY-MM-DD')
+      try {
+        setLoading(true);
+        // alert(2, startDate, endDate);
+        const result = await axiosInstance.get(
+          endpoints.coordinatorTeacherHomeworkApi.getAllTeacherList,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        // const resultOptions = [];
+        if (result.status === 200) {
+          setSelectedCoTeacherOpt(result.data.result);
+          setselectedCoTeacherOptValue(result.data.result[0]);          
+          let newCoorTechID = result.data.result[0].user_id;
+          setSelectedTeacherUser_id(result.data.result[0].user_id);
+
+
+          if (selectedTeacherByCoordinatorToCreateHw !== false) {
+            let myResult = result.data.result.filter(
+              (item) => item.user_id == selectedTeacherByCoordinatorToCreateHw
             );
+            // console.log(myResult, '=========myResult===');
+            newCoorTechID = myResult[0].user_id;
+            setselectedCoTeacherOptValue(myResult[0]);
+            setSelectedTeacherUser_id(newCoorTechID);
+          } 
+
+          if (activeView === 'list-homework') {
+            if (startDate && endDate) {
+              // getCoordinateTeacherHomeworkDetails(
+              //   2,
+              //   startDate.format('YYYY-MM-DD'),
+              //   endDate.format('YYYY-MM-DD')
+              // );
+
+              getCoordinateTeacherHomeworkDetails(
+                2,
+                startDate.format('YYYY-MM-DD'),
+                endDate.format('YYYY-MM-DD'),
+                newCoorTechID
+              );
+            }
           }
+          setLoading(false);
+        } else {
+          setAlert('error', result.data.message);
+          setLoading(false);
         }
+      } catch (error) {
+        setAlert('error', error.message);
+        setLoading(false);
       }
-    }, [getTeacherHomeworkDetails, dateRange, activeView, teacherModuleId]);
+    };
 
-    useEffect(() => {
-      const homeworkModule = NavData?.filter(
-        (parent) => parent.parent_modules === 'Homework'
-      );
-      console.log('homeworkModule ', homeworkModule);
-      const teacherModuleId =
-        homeworkModule.length > 0
-          ? homeworkModule[0].child_module.filter(
-              (child) => child.child_name === 'Teacher Homework'
-            )
-          : null;
-
-      if (NavData && NavData.length) {
-        NavData.forEach((item) => {
-          if (
-            item.parent_modules === 'Homework' &&
-            item.child_module &&
-            item.child_module.length > 0
-          ) {
-            item.child_module.forEach((item) => {
-              if (item.child_name === 'Teacher Homework') {
-                setTeacherModuleId(item.child_id);
-                console.log('item.child_id ', item.child_id);
-              }
-            });
-          }
-        });
+    const handleCoordinateTeacher = (e, value) => {
+      if(value?.user_id > 0){
+        setSelectedTeacherUser_id(value?.user_id);
+        setselectedCoTeacherOptValue(value);
+        getCoordinateTeacherHomeworkDetails(2, startDate, endDate, value.user_id);
       }
-    }, []);
+     
+    };
 
     const renderRef = useRef(0);
 
     renderRef.current += 1;
 
     const tableContainer = useRef(null);
-
-    console.log('popper open', datePopperOpen);
 
     return (
       <>
@@ -260,104 +274,139 @@ const TeacherHomework = withRouter(
               <CommonBreadcrumbs componentName='Homework' />
             </div>
             <div className='message_log_white_wrapper'>
-              {activeView !== 'view-homework' && activeView !== 'view-received-homework' && (
-                <div className='date-container'>
-                  <LocalizationProvider dateAdapter={MomentUtils}>
-                    <DateRangePicker
-                      disableCloseOnSelect={false}
-                      startText='Select-dates'
-                      PopperProps={{ open: datePopperOpen }}
-                      // endText='End-date'
-                      value={dateRange}
-                      // calendars='1'
-                      onChange={(newValue) => {
-                        console.log('onChange truggered', newValue);
-                        const [startDate, endDate] = newValue;
-                        const sevenDaysAfter = moment(startDate).add(6, 'days');
-                        setDateRange([startDate, sevenDaysAfter]);
-                        setDatePopperOpen(false);
-                      }}
-                      renderInput={(
-                        // {
-                        //   inputProps: { value: startValue, ...restStartInputProps },
-                        //   ...startProps
-                        // },
-                        // {
-                        //   inputProps: { value: endValue, ...restEndInputProps },
-                        //   ...endProps
-                        // }
-                        { inputProps, ...startProps },
-                        // startProps,
-                        endProps
-                      ) => {
-                        console.log('startProps ', startProps, 'endProps', endProps);
-                        return (
-                          <>
-                            <TextField
-                              {...startProps}
-                              inputProps={{
-                                ...inputProps,
-                                value: `${inputProps.value} - ${endProps.inputProps.value}`,
-                                readOnly: true,
-                              }}
-                              size='small'
-                              style={{ minWidth: '250px' }}
-                              onClick={() => {
-                                console.log('triggered');
-                                setDatePopperOpen(true);
-                              }}
-                            />
-                            {/* <TextField {...startProps} size='small' /> */}
-                            {/* <DateRangeDelimiter> to </DateRangeDelimiter> */}
-                            {/* <TextField {...endProps} size='small' /> */}
-                          </>
-                        );
-                      }}
+              <div className='date-container'>
+                <Grid container spacing={5}>
+                  <Grid item xs={3}>
+                    <Autocomplete
+                      size='small'
+                      id='Teacher'
+                      options={selectedCoTeacherOpt}
+                      getOptionLabel={(option) => option?.name}
+                      onChange={handleCoordinateTeacher}
+                      // filterSelectedOptions
+                      value={selectedCoTeacherOptValue}
+                      renderInput={(params) => (
+                        <TextField
+                          className=''
+                          {...params}
+                          variant='outlined'
+                          label='Teacher'
+                          placeholder='Teacher'
+                        />
+                      )}
                     />
-                  </LocalizationProvider>
+                  </Grid>
+
+                  <Grid item xs={4}>
+                    <LocalizationProvider dateAdapter={MomentUtils}>
+                      {/* <div className='date-picker-container'>
+                    <MuiPickersUtilsProvider utils={MomentUtils}>
+                      <KeyboardDatePicker
+                        clearable
+                        value={startDate}
+                        placeholder='Start Date'
+                        onChange={(date) => handleStartDateChange(date)}
+                        format='YYYY-MM-DD'
+                        label='Start Date'
+                      />
+                    </MuiPickersUtilsProvider>
+                  </div>
+                  <div className='date-picker-container'>
+                    <MuiPickersUtilsProvider utils={MomentUtils}>
+                      <KeyboardDatePicker
+                        placeholder='End Date'
+                        value={endDate}
+                        onChange={(date) => handleEndDateChange(date)}
+                        format='YYYY-MM-DD'
+                        label='End Date'
+                      />
+                    </MuiPickersUtilsProvider>
+                  </div> */}
+                      <DateRangePicker
+                        startText='Select-dates'
+                        // endText='End-date'
+                        value={dateRange}
+                        // calendars='1'
+                        onChange={(newValue) => {
+                          console.log(newValue);
+                          setDateRange(newValue);
+                        }}
+                        renderInput={(
+                          // {
+                          //   inputProps: { value: startValue, ...restStartInputProps },
+                          //   ...startProps
+                          // },
+                          // {
+                          //   inputProps: { value: endValue, ...restEndInputProps },
+                          //   ...endProps
+                          // }
+                          { inputProps, ...startProps },
+                          // startProps,
+                          endProps
+                        ) => {
+                          console.log('startProps ', startProps, 'endProps', endProps);
+                          return (
+                            <>
+                              <TextField
+                                {...startProps}
+                                inputProps={{
+                                  ...inputProps,
+                                  value: `${inputProps.value} - ${endProps.inputProps.value}`,
+                                  readOnly: true,
+                                }}
+                                size='small'
+                                style={{ minWidth: '250px' }}
+                              />
+                              {/* <TextField {...startProps} size='small' /> */}
+                              {/* <DateRangeDelimiter> to </DateRangeDelimiter> */}
+                              {/* <TextField {...endProps} size='small' /> */}
+                            </>
+                          );
+                        }}
+                      />
+                    </LocalizationProvider>
+                  </Grid>
+                </Grid>
+              </div>
+              <div className='homework_block_wrapper'>
+                <div className='homework_block'>Weekly Time table</div>
+                <div className='icon-desc-container'>
+                  <SvgIcon
+                    component={() => (
+                      <img
+                        style={{ width: '20px', marginRight: '5px' }}
+                        src={hwGiven}
+                        alt='given'
+                      />
+                    )}
+                  />
+                  <span>HW given</span>
                 </div>
-              )}
-              {activeView !== 'view-homework' && activeView !== 'view-received-homework' && (
-                <div className='homework_block_wrapper'>
-                  <div className='homework_block'>Weekly Time table</div>
-                  <div className='icon-desc-container'>
-                    <SvgIcon
-                      component={() => (
-                        <img
-                          style={{ width: '20px', marginRight: '5px' }}
-                          src={hwGiven}
-                          alt='given'
-                        />
-                      )}
-                    />
-                    <span>HW given</span>
-                  </div>
-                  <div className='icon-desc-container'>
-                    <SvgIcon
-                      component={() => (
-                        <img
-                          style={{ width: '20px', marginRight: '5px' }}
-                          src={submitted}
-                          alt='submitted'
-                        />
-                      )}
-                    />
-                    <span>Students submitted</span>
-                  </div>
-                  <div className='icon-desc-container'>
-                    <SvgIcon
-                      component={() => (
-                        <img
-                          style={{ width: '20px', marginRight: '5px' }}
-                          src={hwEvaluated}
-                          alt='evaluated'
-                        />
-                      )}
-                    />
-                    <span>HW Evaluated</span>
-                  </div>
+                <div className='icon-desc-container'>
+                  <SvgIcon
+                    component={() => (
+                      <img
+                        style={{ width: '20px', marginRight: '5px' }}
+                        src={submitted}
+                        alt='submitted'
+                      />
+                    )}
+                  />
+                  <span>Students submitted</span>
                 </div>
-              )}
+                <div className='icon-desc-container'>
+                  <SvgIcon
+                    component={() => (
+                      <img
+                        style={{ width: '20px', marginRight: '5px' }}
+                        src={hwEvaluated}
+                        alt='evaluated'
+                      />
+                    )}
+                  />
+                  <span>HW Evaluated</span>
+                </div>
+              </div>
               {activeView === 'view-homework' && (
                 <ViewHomework
                   viewHomework={viewHomework}
@@ -365,16 +414,18 @@ const TeacherHomework = withRouter(
                   onClose={handleCloseView}
                 />
               )}
+
               {activeView === 'view-received-homework' && (
                 <ViewHomeworkSubmission
                   homework={receivedHomework}
                   onClose={handleCloseView}
                 />
               )}
-              <div className='create_group_filter_container'>
-                <Grid container className='homework_container' spacing={2}>
-                  {activeView === 'list-homework' && (
-                    <Grid xs={12} md={selectedCol?.subject ? 8 : 12} item>
+
+              {activeView === 'list-homework' && (
+                <div className='create_group_filter_container'>
+                  <Grid container className='homework_container' spacing={2}>
+                    <Grid xs={12} md={selectedCol.subject ? 8 : 12} item>
                       {fetchingTeacherHomework ? (
                         <div
                           style={{
@@ -417,6 +468,7 @@ const TeacherHomework = withRouter(
                                     selectedCol={selectedCol}
                                     setSelectedCol={handleSelectCol}
                                     handleViewHomework={handleViewHomework}
+                                    coord_selected_teacher_id={selectedTeacherUser_id}
                                   />
                                 ))}
                               </TableBody>
@@ -425,10 +477,7 @@ const TeacherHomework = withRouter(
                         </Paper>
                       )}
                     </Grid>
-                  )}
-                  {activeView !== 'view-homework' &&
-                    activeView !== 'view-received-homework' &&
-                    selectedCol.subject && (
+                    {selectedCol.subject && (
                       <HomeWorkCard
                         height={tableContainer.current?.offsetHeight}
                         data={selectedCol}
@@ -437,14 +486,11 @@ const TeacherHomework = withRouter(
                         submittedStudents={submittedStudents}
                         loading={fetchingStudentLists}
                         onClick={handleViewReceivedHomework}
-                        onClose={() => {
-                          setActiveView('list-homework');
-                          setSelectedCol({});
-                        }}
                       />
                     )}
-                </Grid>
-              </div>
+                  </Grid>
+                </div>
+              )}
             </div>
           </div>
         </Layout>
@@ -461,11 +507,24 @@ const mapStateToProps = (state) => ({
   submittedStudents: state.teacherHomework.submittedStudents,
   unevaluatedStudents: state.teacherHomework.unevaluatedStudents,
   fetchingStudentLists: state.teacherHomework.fetchingStudentLists,
+  selectedTeacherByCoordinatorToCreateHw:state.teacherHomework.selectedTeacherByCoordinatorToCreateHw,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getTeacherHomeworkDetails: (moduleId, startDate, endDate) => {
-    dispatch(fetchTeacherHomeworkDetails(moduleId, startDate, endDate));
+  getCoordinateTeacherHomeworkDetails: (
+    moduleId,
+    startDate,
+    endDate,
+    selectedTeacherUser_id
+  ) => {
+    dispatch(
+      fetchCoordinateTeacherHomeworkDetails(
+        moduleId,
+        startDate,
+        endDate,
+        selectedTeacherUser_id
+      )
+    );
   },
   onSetSelectedHomework: (data) => {
     dispatch(setSelectedHomework(data));
@@ -475,4 +534,4 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TeacherHomework);
+export default connect(mapStateToProps, mapDispatchToProps)(CoordinatorTeacherHomework);

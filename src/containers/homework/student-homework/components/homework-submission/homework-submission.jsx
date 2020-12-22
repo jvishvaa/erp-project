@@ -95,16 +95,16 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const [overallScore, setOverallScore] = useState('');
   const handleHomeworkSubmit = () => {
 
-    let count = 0
+    let count = 0;
     if (isQuestionWise)
       for (let i = 0; i < attachmentDataDisplay.length; i++) {
         if (attachmentDataDisplay[i].length > 0)
-          count += 1
+          count += 1;
       }
     else
       for (let i = 0; i < bulkData.length; i++) {
         if (bulkData[i].length > 0)
-          count += 1
+          count += 1;
       }
 
     let requestData = {
@@ -167,6 +167,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
               if (homeworkSubmission.status === 2) {
                 setSubmittedEvaluatedFilesBulk(result.data.data.hw_questions.submitted_files)
               } else if (homeworkSubmission.status === 3) {
+                setOverallRemark(result.data.data.overall_remark)
+                setOverallScore(result.data.data.score)
                 setSubmittedEvaluatedFilesBulk(result.data.data.hw_questions.evaluated_files)
               }              
             }
@@ -678,7 +680,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                   <Attachment
                                     key={`homework_student_question_attachment_${i}`}
                                     fileUrl={url}
-                                    f2000000837ileName={`Attachment-${i + 1}`}
+                                    fileName={`Attachment-${i + 1}`}
                                     urlPrefix={`${endpoints.s3}/homework`}
                                     index={i}
                                     actions={['preview', 'download']}
@@ -729,9 +731,11 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   variant='outlined'
                   style={{ width: '70%' }}
                 />
+                {desc &&
                 <div className='descBox'>
                   {desc}
                 </div>
+                }
               </div>
               : null}
 

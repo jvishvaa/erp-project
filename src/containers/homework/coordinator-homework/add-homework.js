@@ -7,15 +7,13 @@ import {
   Button,
   Typography,
   Grid,
-  useMediaQuery,
 } from '@material-ui/core';
 import cuid from 'cuid';
 import { connect } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { useTheme } from '@material-ui/core/styles';
 import Layout from '../../Layout';
 import QuestionCard from '../../../components/question-card';
-import { addHomeWork, setSelectedHomework } from '../../../redux/actions';
+import { addHomeWorkCoord, setSelectedHomework } from '../../../redux/actions';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
@@ -29,7 +27,7 @@ const validateQuestions = (obj) => {
   return { error, errorObj };
 };
 
-const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
+const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [errors, setErrors] = useState({ name: '', description: '' });
@@ -46,7 +44,6 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const history = useHistory();
   const params = useParams();
-  const themeContext = useTheme();
 
   const validateHomework = () => {
     let isFormValid = true;
@@ -78,7 +75,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
   const handleAddHomeWork = async () => {
     const isFormValid = validateHomework();
     if (isFormValid) {
-      console.log('submitting form');
+      // console.log('submitting COORDINATOR form');
       const reqObj = {
         name,
         description,
@@ -90,12 +87,13 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
           delete qObj.id;
           return qObj;
         }),
+        user_id:params.coord_selected_teacher_id,
       };
       try {
         const response = await onAddHomework(reqObj);
-        console.log('add response ', response);
+        // console.log('add response bycoordinator====== ', response);
         setAlert('success', 'Homework added');
-        history.push('/homework/teacher');
+        history.push('/homework/coordinator');
       } catch (error) {
         setAlert('error', 'Failed to add homework');
       }
@@ -149,12 +147,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
         <Grid container className='add-homework-inner-container'>
           <Grid item xs={12} className='add-homework-title-container' md={4}>
             <div className='nav-cards-container'>
-              <div
-                className='nav-card'
-                onClick={() => {
-                  history.push('/homework/teacher');
-                }}
-              >
+              <div className='nav-card'>
                 <div className='header-text text-center'>All Homeworks</div>
               </div>
               <div className='nav-card'>
@@ -232,10 +225,10 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   onAddHomework: (reqObj) => {
-    return dispatch(addHomeWork(reqObj));
+    return dispatch(addHomeWorkCoord(reqObj));
   },
   onSetSelectedHomework: (data) => {
     dispatch(setSelectedHomework(data));
   },
 });
-export default connect(mapStateToProps, mapDispatchToProps)(AddHomework);
+export default connect(mapStateToProps, mapDispatchToProps)(AddHomeworkCord);

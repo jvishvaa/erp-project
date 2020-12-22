@@ -145,14 +145,7 @@ const SubmittedQuestion = ({
                 </div> */}
                 </>
               ))}
-              <div
-                style={{
-                  position: 'absolute',
-                  width: '0',
-                  height: '0',
-                  visibility: 'hidden',
-                }}
-              >
+              <div style={{ position: 'absolute', visibility: 'hidden' }}>
                 <SRLWrapper>
                   {question.submitted_files.map((url, i) => (
                     <img
@@ -161,7 +154,6 @@ const SubmittedQuestion = ({
                         e.target.src = placeholder;
                       }}
                       alt={`Attachment-${i + 1}`}
-                      style={{ width: '0', height: '0' }}
                     />
                   ))}
                 </SRLWrapper>
@@ -239,14 +231,7 @@ const SubmittedQuestion = ({
                 </div> */}
                   </>
                 ))}
-                <div
-                  style={{
-                    position: 'absolute',
-                    width: '0',
-                    height: '0',
-                    visibility: 'hidden',
-                  }}
-                >
+                <div style={{ position: 'absolute', visibility: 'hidden' }}>
                   <SRLWrapper>
                     {correctedQuestions.map((url, i) => (
                       <img
@@ -255,7 +240,6 @@ const SubmittedQuestion = ({
                           e.target.src = placeholder;
                         }}
                         alt={`Attachment-${i + 1}`}
-                        style={{ width: '0', height: '0' }}
                       />
                     ))}
                   </SRLWrapper>
@@ -270,8 +254,8 @@ const SubmittedQuestion = ({
           </div>
         </div>
       )}
-      <div className='comments-remarks-container' style={{ display: 'flex' }}>
-        <div className='item comment'>
+      <div style={{ display: 'flex' }}>
+        <div style={{ width: '50%', marginRight: '1rem' }}>
           <FormControl variant='outlined' fullWidth size='small'>
             <InputLabel htmlFor='component-outlined'>Comments</InputLabel>
             <OutlinedInput
@@ -286,7 +270,7 @@ const SubmittedQuestion = ({
             />
           </FormControl>
         </div>
-        <div className='item'>
+        <div style={{ flexGrow: '1' }}>
           <FormControl variant='outlined' fullWidth size='small'>
             <InputLabel htmlFor='component-outlined'>Remarks</InputLabel>
             <OutlinedInput
@@ -302,7 +286,7 @@ const SubmittedQuestion = ({
           </FormControl>
         </div>
       </div>
-      <div className='evaluate-answer-btn-container'>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
         <Button variant='contained' color='primary' onClick={onEvaluate}>
           EVALUATE ANSWER
         </Button>
