@@ -180,7 +180,7 @@ font-weight: 600;
 	}
 	.mobile-screen-subject-button button{
 		background: white;
-		color: red;
+		color: #FF6B6B;
 		border: 1px solid #FF6B6B;
 		border-radius: 10px;
 		
@@ -189,7 +189,7 @@ font-weight: 600;
 	  .mobile-screen-subject-button{
 		background: #E5E5E5;
 		padding: 20px;
-		/* display: flex; */
+		display: flex;
     	justify-content: space-evenly;
 	  }
 	  .mobile-screen-subject-button button:focus {
@@ -232,7 +232,7 @@ font-weight: 600;
 	  .avatar-day{
 		width: 28px !important;
 		height: 28px !important;
-		border: red !important;
+		/* border: red !important; */
 		
 	  }
 	  .mobile-icon-container{
@@ -249,7 +249,7 @@ font-weight: 600;
 	}
 	.mobile-screen-subject-button{
 		overflow: auto;
-    white-space: nowrap;
+   	 white-space: nowrap;
 	}
 	.MuiInputLabel-shrink{
 		color: #014B7E !important;
@@ -268,6 +268,80 @@ font-weight: 600;
 	}
 	.MuiOutlinedInput-notchedOutline{
 		border-color: 1px #DBDBDB !important;
+	}
+	.day-icon {
+		width: 30px;
+		height: 30px;
+		border-radius: 25px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-right: 1rem;
+		font-weight: 600;
+		color: #014B7E;
+		font-size: 12px;
+		border: 1px solid #014B7E;
+	  }
+	  .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline {
+		border-color: 1px #DBDBDB ;
+	  }
+	  /* #popUp{
+		position: absolute;
+		
+		margin-left: 198px;
+		top: 1px;
+	  } */
+
+	  #popUp span{
+		position: absolute;
+		/* top: 302px; */
+		right: 121px;
+		border-radius: 28%;
+		background-color: white;
+		color: #FF6B6B;
+		width: 15px;
+		height: 18px;
+		font-size: 13px
+		
+	}
+	.MuiDialog-paperScrollPaper{
+		width: 259px;
+		height: 249px;
+		border-radius: 10px !important;
+	}
+	.list-item-text{
+		text-align: center;
+		/* border: 1px solid #707070; */
+		border-top: none;
+    	border-left: none;
+    	border-right: none;
+		
+	}
+
+	.list-item-text .MuiTypography-displayBlock{
+		border: 1px solid #DBDBDB;
+		border-top: none;
+   		border-left: none;
+    	border-right: none;
+	}
+	.list-item-text.class:empty { 
+		border: none;
+	}
+	.list-item-text span{
+		font-size: 20px !important;
+		margin-bottom: 5px !important;
+	}
+	.list-ul{
+		top:0px;
+	}
+	.mobile-modal1{
+		display: none;
+	}
+	.MuiPickersDateRangePickerInput-root{
+		margin: 0 auto;
+		margin-left: 10px;
+		/* width: 85%; */
+		
 	}
   }
 

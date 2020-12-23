@@ -1,0 +1,119 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import { SvgIcon } from '@material-ui/core';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemText from '@material-ui/core/ListItemText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
+import PersonIcon from '@material-ui/icons/Person';
+import AddIcon from '@material-ui/icons/Add';
+import { blue } from '@material-ui/core/colors';
+import CancelIcon from '../../../assets/images/Cancel-icon.svg';
+import './student-homework.css';
+const emails = ['username@gmail.com', 'user02@gmail.com'];
+const useStyles = makeStyles({
+  avatar: {
+    backgroundColor: blue[100],
+    color: blue[600],
+  },
+});
+
+function SimpleDialog(props) {
+  const classes = useStyles();
+  const { onClose, selectedValue, open } = props;
+
+  const handleClose = () => {
+    onClose(selectedValue);
+  };
+
+  const handleListItemClick = (value) => {
+    onClose(value);
+  };
+
+  const getSubjectDetiels = (e, name, subjectWise) => {
+   let filaJson =[]
+    for(let i of subjectWise){
+      filaJson.push({
+        subject:i[name],
+        date: i['date']
+      })
+    
+    }
+   
+    props.showSubjectWise(filaJson)
+  }
+  const filtered = props.subject.subjectName.filter(function (el) {
+    return el.subject_slag != null;
+  });
+
+  return (
+    <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
+      <SvgIcon
+        component={() => (
+          <img
+            onClose={handleClose}
+            style={{ width: '28px', marginLeft: '201px', marginTop: '11px' }}
+            src={CancelIcon}
+            alt='CancelIcon'
+          />
+        )}
+      />
+
+      <List className="list-ul">
+        {filtered.map((subName, index) => {
+          return (
+            <ListItem button onClick={() => handleListItemClick(subName.subject_slag)} key={index}>
+              { subName.subject_slag !== "date" &&
+                <ListItemText className="list-item-text"
+                  onClick={(e)=>getSubjectDetiels(e, subName.subject_slag, props.subjectWise)}
+                  primary={subName.subject_slag !== "date" &&
+                    subName.subject_slag !== undefined && subName.subject_slag} style={{ fontSize: '20px' }} />}
+            </ListItem>
+
+          )
+        }
+        )}
+
+      </List>
+    </Dialog>
+  );
+}
+
+SimpleDialog.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
+  selectedValue: PropTypes.string.isRequired,
+  subject: PropTypes.string.isRequired,
+  showSubjectWise: PropTypes.func.isRequired,
+  subjectWise: PropTypes.string
+};
+
+export default function MobileOptional(props) {
+  const [open, setOpen] = React.useState(false);
+  const [selectedValue, setSelectedValue] = React.useState(emails[1]);
+
+  const handleClickOpen = () => {
+    //   props.showSubjectWise()
+    setOpen(true);
+  };
+
+  const handleClose = (value) => {
+    setOpen(false);
+    setSelectedValue(value);
+  };
+
+  return (
+    <div className={"mobile-modal" + props.index} id="popUp">
+      <strong variant="outlined" color="primary"  onClick={handleClickOpen}>
+        {props.count}
+      </strong>
+      <SimpleDialog selectedValue={selectedValue} open={open} subject={props} 
+      subjectWise={props.subject}
+      showSubjectWise={props.showSubjectWise} onClose={handleClose} />
+    </div>
+  );
+}
