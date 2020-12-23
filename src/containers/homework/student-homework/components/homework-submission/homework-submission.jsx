@@ -111,21 +111,21 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
       "homework": homeworkSubmission.homeworkId,
       "is_question_wise": isQuestionWise,
       "questions": isQuestionWise ? attachmentData : [{ 'attachments': bulkData }],
-      "comment" : comment
+      "comment": comment
     }
 
     if (count !== 0) {
       axiosInstance.post(`${endpoints.homeworkStudent.submitHomework}`, requestData)
         .then(result => {
           if (result.data.status_code === 201) {
-            setAlert('success', result.data.message)
-            handleHomeworkCancel()
+            setAlert('success', result.data.message);
+            handleHomeworkCancel();
           }
           else
-            setAlert('error', result.data.message)
+            setAlert('error', result.data.message);
         })
         .catch(error => {
-          setAlert('error', error.message)
+          setAlert('error', error.message);
         })
     }
     else
@@ -170,7 +170,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                 setOverallRemark(result.data.data.overall_remark)
                 setOverallScore(result.data.data.score)
                 setSubmittedEvaluatedFilesBulk(result.data.data.hw_questions.evaluated_files)
-              }              
+              }
             }
           }
         } else {
@@ -184,7 +184,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
 
   const handleBulkUpload = (e) => {
     e.persist()
-    const fil = e.target.files[0]
+    const fil = e.target.files && e.target.files[0] ? e.target.files[0] : null;
     if (fil.name.lastIndexOf(".pdf") > 0
       || fil.name.lastIndexOf(".jpeg") > 0
       || fil.name.lastIndexOf(".jpg") > 0
@@ -197,7 +197,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
         .then(result => {
           if (result.data.status_code === 200) {
             const list = bulkDataDisplay.slice()
-            if (fil.name.lastIndexOf(".pdf")>0) {
+            if (fil.name.lastIndexOf(".pdf") > 0) {
               const arr = [...result.data.data];
               for (let k = 0; k < arr.length; k++) {
                 bulkData.push(arr[k]);
@@ -245,7 +245,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
         .then(result => {
           if (result.data.status_code === 200) {
             const list = attachmentDataDisplay.slice();
-            if (fil.name.lastIndexOf(".pdf")>0) {
+            if (fil.name.lastIndexOf(".pdf") > 0) {
               const arr = [...result.data.data];
               for (let k = 0; k < arr.length; k++) {
                 attachmentData[index].attachments.push(arr[k]);
@@ -254,7 +254,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                 setAttachmentDataDisplay(list);
               }
             } else {
-              list[index] = [...attachmentDataDisplay[index],e.target.files[0]];
+              list[index] = [...attachmentDataDisplay[index], e.target.files[0]];
               setAttachmentDataDisplay(list);
               attachmentData[index].attachments.push(result.data.data);
             }
@@ -723,7 +723,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   id='comments'
                   size='small'
                   name='comments'
-                  onChange={e=>setComment(e.target.value)}
+                  onChange={e => setComment(e.target.value)}
                   multiline
                   rows={3}
                   rowsMax={5}
@@ -732,9 +732,9 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   style={{ width: '70%' }}
                 />
                 {desc &&
-                <div className='descBox'>
-                  {desc}
-                </div>
+                  <div className='descBox'>
+                    {desc}
+                  </div>
                 }
               </div>
               : null}
