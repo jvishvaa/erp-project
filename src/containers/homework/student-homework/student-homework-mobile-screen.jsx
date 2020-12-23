@@ -68,9 +68,12 @@ const StudenthomeworkMobileScreen = (props) => {
     const  handleStatusChange =()=> {
         let finalJson =[]
         const jsonValue = props.mobileScreenResponse ? props.mobileScreenResponse.rows: null;
+        for(let  j of  jsonValue) {
+            setSubjectName(Object.keys(j))
+        }
        for(let i of jsonValue){
             finalJson.push({
-                subject: i['English'],
+                subject: i[subJectName[1]],
                 date: i['date']
             })
         }
@@ -80,14 +83,14 @@ const StudenthomeworkMobileScreen = (props) => {
 
  }, [props])
 
- 
+ console.log(props.mobileScreenResponse, "props.mobileScreenResponse.header")
     return(
         <div className="mobile-screen-container">
             <div className="mobile-screen-subject-button">
                 {
                     props && props.mobileScreenResponse.header.map((headerName, index) =>{
-                        return !headerName.isOptional  && headerName.subject_slag !=='date' &&
-                         <Button variant="outlined" color="secondary" key={index} onClick={()=>showSubjectWise(headerName.subject_slag, props.mobileScreenResponse.rows, index)}>
+                        return !headerName.isOptional  && headerName.subject_slag !=='date' &&  headerName.subject_slag !== undefined &&
+                         <Button variant="outlined" style={{marginRight: '10px'}} color="secondary" key={index} onClick={()=>showSubjectWise(headerName.subject_slag, props.mobileScreenResponse.rows, index)}>
                         {headerName.subject_slag}
                     </Button>
                     })
@@ -115,7 +118,7 @@ const StudenthomeworkMobileScreen = (props) => {
                                 <ListItemSecondaryAction>
                                     <IconButton edge="end" aria-label="delete">
                                         {
-                                            name.subject.isOpened === true ?   <SvgIcon
+                                            name.subject && name.subject.isOpened && <SvgIcon
                                             component={() => (
                                             <img
                                                 style={{ width: '25px', marginRight: '5px' }}
@@ -123,7 +126,7 @@ const StudenthomeworkMobileScreen = (props) => {
                                                 alt='evaluated'
                                             /> 
                                             )}
-                                        /> :null
+                                        /> 
 
                                         }
 

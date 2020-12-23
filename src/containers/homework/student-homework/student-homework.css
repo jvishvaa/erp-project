@@ -188,18 +188,19 @@ font-weight: 600;
 	  .mobile-screen-subject-button{
 		background: #E5E5E5;
 		padding: 20px;
-		display: flex;
+		/* display: flex; */
     	justify-content: space-evenly;
 	  }
 	  .mobile-screen-subject-button button:focus {
 		border: 1px solid #FF6B6B;
-		background: red;
+		background: #FF6B6B;
 		color: white;
+		border-radius: 10px;
 	  }
 	  .mobile-screen-subject-button button:blur(0) {
 		border: 1px solid #FF6B6B;
-		background: red;
 		color: white;
+		border-radius: 10px;
 	  }
 
 	  .mobile-screen-subject-button span{
@@ -244,6 +245,10 @@ font-weight: 600;
 	  .MuiDivider-inset {
 		margin-left: 72px !important;
 		margin-right: 30px  !important;
+	}
+	.mobile-screen-subject-button{
+		overflow: auto;
+    white-space: nowrap;
 	}
   }
 
