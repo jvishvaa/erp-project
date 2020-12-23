@@ -107,6 +107,7 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
               <SvgIcon
                 component={() => (
                   <img
+                  className="static-media"
                     style={{
                       width: '25px',
                       height: '25px',
@@ -130,7 +131,7 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
                 </Typography>
                 <Typography
                   variant='body2'
-                  className='homework_timeline_card_info'
+                  className='homework_timeline_card_info info-card-info'
                   component='p'
                 >
                   {totalHomework}
@@ -143,6 +144,7 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
               <SvgIcon
                 component={() => (
                   <img
+                    className="static-media"
                     style={{
                       width: '25px',
                       height: '25px',
@@ -166,7 +168,7 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
                 </Typography>
                 <Typography
                   variant='body2'
-                  className='homework_timeline_card_info'
+                  className='homework_timeline_card_info info-card-info'
                   component='p'
                 >
                   {submittedHomework}
@@ -178,7 +180,8 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
             <Card className='homework_details_timeline-card'>
               <SvgIcon
                 component={() => (
-                  <img
+                  <img  
+                  className="static-media"
                     style={{
                       width: '25px',
                       height: '25px',

@@ -8,8 +8,9 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
+
 import {
   Grid,
   TextField,
@@ -42,6 +43,9 @@ import Attachment from '../../../teacher-homework/attachment';
 import {
   uploadFile,
 } from '../../../../../redux/actions';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+
+
 
 const useStyles = makeStyles((theme) => ({
   attachmentIcon: {
@@ -283,7 +287,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     return (
       <div className='file_row'>
         <div className='file_name_container'>
-          Attachment {index + 1}
+          File {index + 1}
         </div>
         <div className='file_close'>
           <span
@@ -369,12 +373,12 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
         <Grid item className='homework_type_wrapper'>
           <div className='homework_type'>
             <div
-              className='homework_type_item non_selected_homework_type_item'
+              className='homework_type_item non_selected_homework_type_item all-homeWorks'
               onClick={handleHomeworkCancel}
             >
               All Homeworks
             </div>
-            <div className='homework_type_item selected'>
+            <div className='homework_type_item selected all-homeWorks'>
               <div>{date}</div>
               <div>{subjectName}</div>
             </div>
@@ -459,6 +463,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     <div className="questionWiseAttachmentsContainer">
                       <IconButton
                         fontSize='small'
+                        id="file-icon"
                         disableRipple
                         component='label'
                         className={classes.attachmentIcon}
