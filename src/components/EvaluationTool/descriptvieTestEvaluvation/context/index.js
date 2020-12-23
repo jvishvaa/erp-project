@@ -60,7 +60,7 @@ export function DescriptiveTestContextProvider({
   const [isReset, setIsReset] = useState(false);
   const delayedCallback = _.debounce((data) => {
     sendFormdata(data);
-  }, 5000);
+  }, 2000);
   // console.log(evlRes.rotated_angle)
   // console.log()
   const enableTool = (event, updateTool) => {
@@ -387,63 +387,63 @@ export function DescriptiveTestContextProvider({
       // scrollY: -window.scrollY
     })
       .then((canvas) => {
-        setTimeout(() => {
-          correctedPaper = canvas.toDataURL();
-          // console.log(correctedPaper, '88888888888888888888888888')
-          let myFilename = String(new Date().getTime()) + '.' + 'png';
-          setCorrectionLoading(false);
-          if (correctedPaper && data.image) {
-            const fileObj = base64StringtoFile(correctedPaper, myFilename);
-            formdata.set('onlinetest_instance', id);
-            formdata.set('assessment_id', assId);
-            if (ext === 'pdf') {
-              formdata.set('page_number', pageNumber);
-              formdata.set('width', data.viewWidth);
-              formdata.set('height', data.viewHeight);
-            }
-            formdata.set('corrected_paper_image', data.image);
-            formdata.set('corrected_paper', fileObj);
-            formdata.set('actual_paper_id', mediaId);
-            formdata.set('is_paper_corrected', 'true');
-            formdata.set('rotated_angle', angleInDegrees);
-
-            handleSaveFile(fileObj);
-
-            //         axios
-            //           .post(urls.TeacherEvalDesTest, formdata, {
-            //             headers: {
-            //               Authorization: "Bearer " + localStorage.getItem("id_token"),
-            //               "Content-Type": "multipart/formData",
-            //             },
-            //           })
-            //           .then((res) => {
-            //             alert.success("Saved successfully");
-            //             if (data.operation === "manualSave") {
-            //               setisSave(false);
-            //             }
-            //             // console.log(res.data)
-            //             const {
-            //               data: {
-            //                 data: [
-            //                   { asessment_response: { evaluvated_result: evlRes } = {} },
-            //                 ] = [],
-            //               } = {},
-            //             } = res;
-            //             // console.log(res.data)
-            //             setCorrectedPaper(evlRes);
-            //             const image = getPaperImage(evlRes);
-            //             // console.log(image, evlRes)
-            //             setDrawing(image);
-            //           })
-            //           .catch((err) => {
-            //             console.log(err);
-            //             alert.error("Something went wrong with correction");
-            //           });
-          } else {
-            // alert.warning("please make changes and save");
-            console.log('else case triggered ', correctedPaper, data.image);
+        // setTimeout(() => {
+        correctedPaper = canvas.toDataURL();
+        // console.log(correctedPaper, '88888888888888888888888888')
+        let myFilename = String(new Date().getTime()) + '.' + 'png';
+        setCorrectionLoading(false);
+        if (correctedPaper && data.image) {
+          const fileObj = base64StringtoFile(correctedPaper, myFilename);
+          formdata.set('onlinetest_instance', id);
+          formdata.set('assessment_id', assId);
+          if (ext === 'pdf') {
+            formdata.set('page_number', pageNumber);
+            formdata.set('width', data.viewWidth);
+            formdata.set('height', data.viewHeight);
           }
-        }, 3000);
+          formdata.set('corrected_paper_image', data.image);
+          formdata.set('corrected_paper', fileObj);
+          formdata.set('actual_paper_id', mediaId);
+          formdata.set('is_paper_corrected', 'true');
+          formdata.set('rotated_angle', angleInDegrees);
+
+          handleSaveFile(fileObj);
+
+          //         axios
+          //           .post(urls.TeacherEvalDesTest, formdata, {
+          //             headers: {
+          //               Authorization: "Bearer " + localStorage.getItem("id_token"),
+          //               "Content-Type": "multipart/formData",
+          //             },
+          //           })
+          //           .then((res) => {
+          //             alert.success("Saved successfully");
+          //             if (data.operation === "manualSave") {
+          //               setisSave(false);
+          //             }
+          //             // console.log(res.data)
+          //             const {
+          //               data: {
+          //                 data: [
+          //                   { asessment_response: { evaluvated_result: evlRes } = {} },
+          //                 ] = [],
+          //               } = {},
+          //             } = res;
+          //             // console.log(res.data)
+          //             setCorrectedPaper(evlRes);
+          //             const image = getPaperImage(evlRes);
+          //             // console.log(image, evlRes)
+          //             setDrawing(image);
+          //           })
+          //           .catch((err) => {
+          //             console.log(err);
+          //             alert.error("Something went wrong with correction");
+          //           });
+        } else {
+          // alert.warning("please make changes and save");
+          console.log('else case triggered ', correctedPaper, data.image);
+        }
+        // }, 3000);
       })
       .catch((error) => console.log('error in converting to canvas', error));
     //   window.scrollTo(

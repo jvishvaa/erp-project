@@ -13,7 +13,10 @@ const INITIAL_STATE = {
   fetchingStudentLists: false,
   submittedHomeworkDetails: [],
   totalSubmittedQuestions: 0,
+  isQuestionwise: true,
+  collatedSubmissionFiles: [],
   fetchingSubmittedHomeworkDetails: false,
+  selectedTeacherByCoordinatorToCreateHw: false,
 };
 
 export default function reducer(state = INITIAL_STATE, action) {
@@ -79,12 +82,17 @@ export default function reducer(state = INITIAL_STATE, action) {
         fetchingSubmittedHomeworkDetails: false,
         submittedHomeworkDetails: action.data,
         totalSubmittedQuestions: action.totalQuestions,
+        isQuestionwise: action.isQuestionwise,
+        collatedSubmissionFiles: action.collatedSubmissionFiles,
       };
     case teacherHomeworkActions.FETCH_SUBMITTED_HOMEWORK_DETAILS_FAILURE:
       return {
         ...state,
         fetchingSubmittedHomeworkDetails: false,
       };
+      case teacherHomeworkActions.ADD_HOMEWORK_SUCCESS_COORD:
+      return { ...state, selectedTeacherByCoordinatorToCreateHw: action.data };
+
     default:
       return state;
   }

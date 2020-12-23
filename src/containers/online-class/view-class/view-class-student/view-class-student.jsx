@@ -66,11 +66,19 @@ const ViewClassStudent = (props) => {
       }
     }
     if (joinTime) {
-      const difference = new Date(moment(joinTime).format('llll')) - now;
+      // const difference = new Date(moment(joinTime).format('llll')) - now;
+      const difference = moment(joinTime).diff(moment.now());
+      const duration = moment.duration(difference, 'milliseconds');
+      const days = moment.duration(duration).days();
+      const hours = moment.duration(duration).hours();
+      const minutes = moment.duration(duration).minutes();
+      const seconds = moment.duration(duration).seconds();
+      if(minutes <= 5){
+        setTimeout(() => {
+          setIsJoinTime(true);
+        }, difference);
 
-      setTimeout(() => {
-        setIsJoinTime(true);
-      }, difference);
+      }
     }
     if (endTime) {
       const difference = new Date(moment(endTime).format('llll')) - now;

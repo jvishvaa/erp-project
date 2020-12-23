@@ -1,4 +1,6 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
+import { withRouter } from 'react-router-dom';
+
 import {
   Grid,
   TextField,
@@ -38,7 +40,7 @@ import endpoints from '../../../config/endpoints';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { fetchBranchesForCreateUser } from '../../../redux/actions';
 
-const CreateClassForm = () => {
+const CreateClassForm = (props) => {
   const tutorEmailRef = useRef(null);
   const [onlineClass, setOnlineClass] = useState(initialFormStructure);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -134,13 +136,14 @@ const CreateClassForm = () => {
       setOnlineClass((prevState) => ({
         ...prevState,
         ...initialFormStructure,
+        selectedTime: new Date(),
         coHosts: [],
       }));
       dispatch(resetContext());
       setSelectedGrades([]);
-      dispatch(listGradesCreateClass());
+      dispatch(listGradesCreateClass(moduleId));
     }
-  }, [isCreated]);
+  }, [isCreated, moduleId]);
 
   // const listSubjects = async (gradeids, sectionIds) => {
   //   try {
@@ -326,6 +329,7 @@ const CreateClassForm = () => {
       selectedDate: value,
     }));
   };
+
   const handleTimeChange = (event) => {
     const { selectedDate } = onlineClass;
     const time = new Date(event);
@@ -348,7 +352,6 @@ const CreateClassForm = () => {
     //   );
     //   return;
     // }
-
     dispatch(clearTutorEmailValidation());
     setOnlineClass((prevState) => ({ ...prevState, selectedTime: time }));
   };
@@ -387,7 +390,13 @@ const CreateClassForm = () => {
     setOnlineClass((prevState) => ({ ...prevState, coHosts: hosts }));
   };
 
+  const callGrades = () => {
+    console.log(moduleId, "moduleId")
+    dispatch(listGradesCreateClass(moduleId));
+
+  }
   const validateForm = (e) => {
+    callGrades()
     e.preventDefault();
     const {
       title,
@@ -429,7 +438,6 @@ const CreateClassForm = () => {
     formdata.append('title', title);
     formdata.append('duration', duration);
     formdata.append('subject_id', subject);
-    formdata.append('join_limit', joinLimit);
     formdata.append('tutor_emails', tutorEmails.join(','));
     formdata.append('role', 'Student');
     formdata.append('start_time', startTime);
@@ -444,7 +452,12 @@ const CreateClassForm = () => {
     if (filteredStudents.length)
       formdata.append('student_ids', filteredStudents.join(','));
 
-    dispatch(createNewOnlineClass(formdata));
+    if(joinLimit>0) {
+      formdata.append('join_limit', joinLimit);
+      dispatch(createNewOnlineClass(formdata));
+    } else {
+      setAlert('warning','Join limit should be atleast 1.')
+    }
   };
 
   const handleCoHostBlur = async (index) => {
@@ -578,18 +591,22 @@ const CreateClassForm = () => {
     creatingOnlineClass ||
     tutorNotAvailableMsg;
 
+  useEffect(()=>{
+    setOnlineClass((prevState) => ({ ...prevState, selectedTime: new Date() }));
+  },[])
+
   return (
     <div className='create__class' key={formKey}>
       <div className='breadcrumb-container-create'>
         <CommonBreadcrumbs
-          componentName='Online Class'
+          componentName=''
           childComponentName='Create Class'
         />
       </div>
       <div className='create-class-form-container'>
         <form
           autoComplete='off'
-          onSubmit={validateForm}
+          onSubmit={(e)=>validateForm(e)}
           key={formKey}
           className='create-class-form'
         >
@@ -786,6 +803,7 @@ const CreateClassForm = () => {
                   margin='none'
                   id='time-picker'
                   label='Start time'
+                  format="hh:mm A"
                   value={onlineClass.selectedTime}
                   onChange={handleTimeChange}
                   KeyboardButtonProps={{
@@ -1020,4 +1038,4 @@ const CreateClassForm = () => {
   );
 };
 
-export default CreateClassForm;
+export default withRouter(CreateClassForm);

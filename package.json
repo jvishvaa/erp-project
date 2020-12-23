@@ -9,6 +9,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/pickers": "^3.2.10",
+    "@material-ui/pickers-4.2": "npm:@material-ui/pickers@^4.0.0-alpha.12",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
@@ -19,6 +20,7 @@
     "html2canvas": "^1.0.0-rc.7",
     "js-file-download": "^0.4.12",
     "lodash": "^4.17.20",
+    "materialui-daterange-picker": "^1.1.92",
     "moment": "^2.29.1",
     "pdfjs-dist": "^2.5.207",
     "qs": "^6.9.4",
@@ -32,6 +34,7 @@
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
+    "rifm": "^0.12.0",
     "simple-react-lightbox": "^3.3.4-2",
     "throttle-debounce": "^3.0.1",
     "yup": "^0.29.3"

@@ -1,3 +1,4 @@
+import { Hidden } from '@material-ui/core';
 import { fade, makeStyles } from '@material-ui/core/styles';
 
 const drawerWidth = 300;
@@ -87,7 +88,11 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       minHeight: '64px',
     },
+<<<<<<< HEAD
     justifyContent:'space-between',
+=======
+    justifyContent: 'space-between',
+>>>>>>> fd41f64c1530f295df13651fecc2de8ae13b12f1
   },
   drawer: {
     width: drawerWidth,
@@ -124,10 +129,18 @@ const useStyles = makeStyles((theme) => ({
   menuItemText: {
     color: '#ffffff',
   },
-  appBarSpacer: theme.mixins.toolbar,
+  appBarSpacer: {
+    // minHeight: theme.mixins.toolbar.minHeight,
+    minHeight: '64px',
+  },
   content: {
-    flexGrow: 1,
+    // flexGrow: 1,
     height: '100vh',
+    [theme.breakpoints.up('sm')]: {
+      width: `calc(100vw - ${theme.spacing(7) + 1}px)`,
+    },
+    [theme.breakpoints.down('xs')]: { width: '100vw' },
+    overflow: 'hidden',
   },
   search: {
     position: 'relative',

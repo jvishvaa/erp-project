@@ -266,7 +266,7 @@ const ViewHomework = withRouter(
     return (
       <div className='view-homework-container create_group_filter_container'>
         <Grid container spacing={2} className='message_log_container'>
-          {/* <Grid item md={2} className='homework_type_wrapper'>
+          <Grid item md={2} className='homework_type_wrapper'>
             <div className='homework_type'>
               <div
                 className='homework_type_item non_selected_homework_type_item'
@@ -280,20 +280,8 @@ const ViewHomework = withRouter(
                 <div>{subject?.split('_')[2]}</div>
               </div>
             </div>
-          </Grid> */}
-          <Grid item xs={12} className='add-homework-title-container' md={2}>
-            <div className='nav-cards-container'>
-              <div className='nav-card' onClick={onClose}>
-                <div className='header-text text-center'>All Homeworks</div>
-              </div>
-              <div className='nav-card'>
-                <div className='header-text text-center'>{date}</div>
-                <div className='header-text text-center'>{subject?.split('_')[1]}</div>
-                <div className='header-text text-center'>{subject?.split('_')[2]}</div>
-              </div>
-            </div>
           </Grid>
-          <Grid item xs={12} md={10}>
+          <Grid item md={10}>
             <div className='homework_submit_wrapper'>
               <div className='homework_block_wrapper'>
                 <div className='homework_block homework_submit_tag'>
@@ -373,14 +361,7 @@ const ViewHomework = withRouter(
                                 />
                               </div>
                             ))}
-                            <div
-                              style={{
-                                position: 'absolute',
-                                width: '0',
-                                height: '0',
-                                visibility: 'hidden',
-                              }}
-                            >
+                            <div style={{ position: 'absolute', visibility: 'hidden' }}>
                               <SRLWrapper>
                                 {collatedSubmissionFiles.map((url, i) => (
                                   <img
@@ -389,7 +370,6 @@ const ViewHomework = withRouter(
                                       e.target.src = placeholder;
                                     }}
                                     alt={`Attachment-${i + 1}`}
-                                    style={{ width: '0', height: '0' }}
                                   />
                                 ))}
                               </SRLWrapper>
@@ -438,14 +418,7 @@ const ViewHomework = withRouter(
                                 />
                               </div>
                             ))}
-                            <div
-                              style={{
-                                position: 'absolute',
-                                width: '0',
-                                height: '0',
-                                visibility: 'hidden',
-                              }}
-                            >
+                            <div style={{ position: 'absolute', visibility: 'hidden' }}>
                               <SRLWrapper>
                                 {collatedQuestionState.corrected_submission?.length &&
                                   collatedQuestionState.corrected_submission.map(
@@ -456,13 +429,11 @@ const ViewHomework = withRouter(
                                           e.target.src = placeholder;
                                         }}
                                         alt={`Attachment-${i + 1}`}
-                                        style={{ width: '0', height: '0' }}
                                       />
                                     )
                                   )}
                               </SRLWrapper>
-                            </div>{' '}
-                            */}
+                            </div>
                           </div>
                         </SimpleReactLightbox>
                         <div className='next-btn'>
@@ -473,7 +444,15 @@ const ViewHomework = withRouter(
                       </div>
                     </div>
                   )}
-                  <div className='evaluate-answer-btn-container'>
+                  <div
+                    style={{
+                      display: 'flex',
+                      width: '95%',
+                      margin: '20px auto',
+                      justifyContent: 'flex-end',
+                      marginTop: '1rem',
+                    }}
+                  >
                     <Button variant='contained' color='primary' onClick={evaluateAnswer}>
                       EVALUATE ANSWER
                     </Button>
@@ -481,9 +460,16 @@ const ViewHomework = withRouter(
                 </>
               )}
             </div>
-            <div className='overall-evaluation-container'>
-              <div className='input-container'>
-                <div className='remark'>
+            <div
+              className=''
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                marginTop: '1rem',
+              }}
+            >
+              <div className='input-container' style={{ display: 'flex', width: '60%' }}>
+                <div style={{ width: '70%', marginRight: '1rem' }}>
                   <FormControl variant='outlined' fullWidth size='small'>
                     <InputLabel htmlFor='component-outlined'>Overall remarks</InputLabel>
                     <OutlinedInput
@@ -497,7 +483,7 @@ const ViewHomework = withRouter(
                     />
                   </FormControl>
                 </div>
-                <div className='score'>
+                <div>
                   <FormControl variant='outlined' fullWidth size='small'>
                     <InputLabel htmlFor='component-outlined'>Overall score</InputLabel>
                     <OutlinedInput
@@ -512,13 +498,13 @@ const ViewHomework = withRouter(
                   </FormControl>
                 </div>
               </div>
-              <div className='btn-container'>
-                <div className='cancel-btn'>
+              <div style={{ width: '40%', display: 'flex', justifyContent: 'flex-end' }}>
+                <div style={{ marginRight: '1rem' }}>
                   <Button variant='contained' className='disabled-btn' onClick={onClose}>
                     Cancel
                   </Button>
                 </div>
-                <div className='done-btn'>
+                <div>
                   <Button
                     variant='contained'
                     color='primary'

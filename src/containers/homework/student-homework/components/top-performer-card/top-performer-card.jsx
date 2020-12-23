@@ -44,6 +44,8 @@ const TopPerformerCard = withRouter(({ history, ...props }) => {
         setShowTopPerformer(true);
         setShowTopPerformerIndex(index);
       } else {
+        setShowTopPerformer(true);
+        setShowTopPerformerIndex(index);
         setAlert('error', result.data.message);
       }
     } catch (error) {
@@ -94,9 +96,9 @@ const TopPerformerCard = withRouter(({ history, ...props }) => {
                   />
                 )}
               />
-              {showTopPerformerIndex === index &&
+              {(showTopPerformerIndex === index &&
               showTopPerformer &&
-              topPerformer.length ? (
+              topPerformer.length>=0) ? (
                 <span className='tooltiptext'>
                   {topPerformer.map((student, index) => (
                     <div
@@ -106,6 +108,7 @@ const TopPerformerCard = withRouter(({ history, ...props }) => {
                       {index + 1}. {`${student.first_name} ${student.last_name}`}
                     </div>
                   ))}
+                  {topPerformer.length<=0 && <div className='student_details_info'>No Record Available!</div>}
                 </span>
               ) : null}
             </span>

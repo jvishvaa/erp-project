@@ -3,12 +3,12 @@ import { useHistory } from 'react-router-dom';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import HomeworkCol from './homework-col';
-import moment from 'moment';
 
-const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol, handleViewHomework }) => {
+const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol, handleViewHomework, coord_selected_teacher_id}) => {
+  // console.log(coord_selected_teacher_id,"dddd")
   const history = useHistory();
   const navigateToAddScreen = ({ date, subject, subjectId }) => {
-    history.push(`/homework/add/${date}/${subject}/${subjectId}`);
+    history.push(`/homework/cadd/${date}/${subject}/${subjectId}/${coord_selected_teacher_id}`);
   };
   return (
     <TableRow>
@@ -27,6 +27,7 @@ const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol, handleViewHomewo
                 subjectId: col.id,
                 homeworkId: data[col.subject_name].hw_id,
                 view,
+                coord_selected_teacher_id
               });
             }}
             handleNavigationToAddScreen={() => {
@@ -34,6 +35,7 @@ const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol, handleViewHomewo
                 date: data.date,
                 subject: col.subject_name,
                 subjectId: col.id,
+                coord_selected_teacher_id
               });
             }}
             handleViewHomework={() => {
@@ -42,18 +44,12 @@ const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol, handleViewHomewo
                 subject: col.subject_name,
                 subjectId: col.id,
                 homeworkId: data[col.subject_name].hw_id,
+                coord_selected_teacher_id
               });
             }}
           />
         ) : (
-          <TableCell className='no-wrap-col'>
-            <div>
-              <div className='day-icon'>
-                {moment(data.date).format('dddd').split('')[0]}
-              </div>
-              {data.date}
-            </div>
-          </TableCell>
+          <TableCell className='no-wrap-col'>{data.date}</TableCell>
         );
       })}
     </TableRow>

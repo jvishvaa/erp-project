@@ -1,4 +1,4 @@
-import React, { useReducer, createContext, useContext } from 'react';
+import React, { useReducer, createContext, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import createClassReducer from './create-class-reducer';
 import {
@@ -212,7 +212,7 @@ const CreateclassProvider = (props) => {
       dispatch(failure(error, VERIFY_TUTOREMAIL_FAILURE));
     }
   };
-
+  
   const createNewOnlineClass = async (formdata) => {
     dispatch(request(CREATE_NEW_CLASS_REQUEST));
     try {

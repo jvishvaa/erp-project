@@ -308,6 +308,22 @@ const Layout = ({ children, history }) => {
         history.push('/create-class');
         break;
       }
+      case 'Configuration': {
+        history.push('/homework/admin');
+        break;
+      }
+      case 'Management View': {
+        history.push('/homework/coordinator');
+        break;
+      }
+      case 'Student Homework': {
+        history.push('/homework/student');
+        break;
+      }
+      case 'Teacher Homework': {
+        history.push('/homework/teacher');
+        break;
+      }
       case 'Communication': {
         history.push('/communication');
         break;
