@@ -155,7 +155,22 @@ const StudenthomeworkMobileScreen = (props) => {
                                                 <ListItemSecondaryAction>
                                                     <IconButton edge="end" aria-label="delete">
                                                         {
-                                                            name.subject && name.subject.isOpened === true && <SvgIcon
+                                                            name.subject && name.subject.isOpened === true && 
+                                                            name.subject.isSubmited === true && 
+                                                            <SvgIcon
+                                                                component={() => (
+                                                                    <img
+                                                                        style={{ width: '25px', marginRight: '5px' }}
+                                                                        src={hwSubmitted}
+                                                                        alt='evaluated'
+                                                                    />
+                                                                )}
+                                                            />
+
+                                                        }
+                                                        {
+                                                           name.subject && name.subject.isOpened === true  &&  name.subject && name.subject.isSubmited === false &&
+                                                           <SvgIcon
                                                                 component={() => (
                                                                     <img
                                                                         style={{ width: '25px', marginRight: '5px' }}
@@ -164,11 +179,22 @@ const StudenthomeworkMobileScreen = (props) => {
                                                                     />
                                                                 )}
                                                             />
-
+                                                        }
+                                                        {
+                                                           name.subject && name.subject.isOpened === false &&
+                                                           <SvgIcon
+                                                                component={() => (
+                                                                    <img
+                                                                        style={{ width: '25px', marginRight: '5px' }}
+                                                                        src={hwFileUnopened}
+                                                                        alt='evaluated'
+                                                                    />
+                                                                )}
+                                                            />
                                                         }
 
                                                         {
-                                                            name.subject && name.subject.isEvaluted === true && <SvgIcon
+                                                            name.subject && name.subject.isEvaluted === true &&  name.subject.isSubmited && <SvgIcon
                                                                 component={() => (
                                                                     <img
                                                                         style={{ width: '25px', marginRight: '5px' }}
@@ -180,17 +206,7 @@ const StudenthomeworkMobileScreen = (props) => {
                                                         }
 
 
-                                                        {
-                                                           name.subject && name.subject.isSubmited === true && <SvgIcon
-                                                                component={() => (
-                                                                    <img
-                                                                        style={{ width: '25px', marginRight: '5px' }}
-                                                                        src={hwSubmitted}
-                                                                        alt='evaluated'
-                                                                    />
-                                                                )}
-                                                            />
-                                                        }
+                                                        
 
 
 
