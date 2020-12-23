@@ -4,7 +4,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
-import React, { useContext, useState, useEffect, useRef, useSelector } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -14,6 +14,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import GetAppIcon from '@material-ui/icons/GetApp';
 import { Grid, TextField, Button, SvgIcon, Badge, IconButton } from '@material-ui/core';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
@@ -95,6 +96,10 @@ const CoordinatorTeacherHomework = withRouter(
     ...props
   }) => {
     const [dateRange, setDateRange] = useState([moment().subtract(6, 'days'), moment()]);
+    const [dateRangeTechPer, setDateRangeTechPer] = useState([
+      moment().subtract(6, 'days'),
+      moment(),
+    ]);
     const [activeView, setActiveView] = useState('list-homework');
     const classes = useStyles();
     const { setAlert } = useContext(AlertNotificationContext);
@@ -108,6 +113,8 @@ const CoordinatorTeacherHomework = withRouter(
     const [modulePermision, setModulePermision] = useState(true);
     const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
     const [endDate, setEndDate] = useState(getDaysAfter(moment(), 7));
+    const [startDateTechPer, setStartDateTechPer] = useState(moment().format('YYYY-MM-DD'));
+    const [endDateTechPer, setEndDateTechPer] = useState(getDaysAfter(moment(), 7));
 
     const [selectedCoTeacherOptValue, setselectedCoTeacherOptValue] = useState([]);
     const [selectedCoTeacherOpt, setSelectedCoTeacherOpt] = useState([]);
@@ -157,23 +164,33 @@ const CoordinatorTeacherHomework = withRouter(
       setActiveView('view-homework');
     };
 
-    const handleStartDateChange = (date) => {
-      const endDate = getDaysAfter(date.clone(), 7);
-      setEndDate(endDate);
-      setStartDate(date.format('YYYY-MM-DD'));
-      getCoordinateTeacherHomeworkDetails(moduleIdCord, date, endDate, selectedTeacherUser_id);
-    };
+    // const handleStartDateChange = (date) => {
+    //   const endDate = getDaysAfter(date.clone(), 7);
+    //   setEndDate(endDate);
+    //   setStartDate(date.format('YYYY-MM-DD'));
+    //   getCoordinateTeacherHomeworkDetails(
+    //     moduleIdCord,
+    //     date,
+    //     endDate,
+    //     selectedTeacherUser_id
+    //   );
+    // };
 
-    const handleEndDateChange = (date) => {
-      const startDate = getDaysBefore(date.clone(), 7);
-      setStartDate(startDate);
-      setEndDate(date.format('YYYY-MM-DD'));
-      getCoordinateTeacherHomeworkDetails(moduleIdCord, startDate, date, selectedTeacherUser_id);
-    };
+    // const handleEndDateChange = (date) => {
+    //   const startDate = getDaysBefore(date.clone(), 7);
+    //   setStartDate(startDate);
+    //   setEndDate(date.format('YYYY-MM-DD'));
+    //   getCoordinateTeacherHomeworkDetails(
+    //     moduleIdCord,
+    //     startDate,
+    //     date,
+    //     selectedTeacherUser_id
+    //   );
+    // };
 
     const handleSelectCol = (col, view) => {
       const { homeworkId } = col;
-      console.log('homework id', homeworkId);
+      // console.log('homework id', homeworkId);
       fetchStudentLists(homeworkId);
       setSelectedCol(col);
       onSetSelectedHomework(col);
@@ -208,10 +225,11 @@ const CoordinatorTeacherHomework = withRouter(
 
     useEffect(() => {
       getTeacherListApi();
-    }, [getCoordinateTeacherHomeworkDetails, dateRange, activeView,moduleIdCord]);
+    }, [getCoordinateTeacherHomeworkDetails, dateRange, activeView, moduleIdCord]);
 
     const getTeacherListApi = async () => {
       const [startDate, endDate] = dateRange;
+
       try {
         setLoading(true);
         // alert(2, startDate, endDate);
@@ -226,29 +244,22 @@ const CoordinatorTeacherHomework = withRouter(
         // const resultOptions = [];
         if (result.status === 200) {
           setSelectedCoTeacherOpt(result.data.result);
-          setselectedCoTeacherOptValue(result.data.result[0]);          
+          setselectedCoTeacherOptValue(result.data.result[0]);
           let newCoorTechID = result.data.result[0].user_id;
           setSelectedTeacherUser_id(result.data.result[0].user_id);
-
 
           if (selectedTeacherByCoordinatorToCreateHw !== false) {
             let myResult = result.data.result.filter(
               (item) => item.user_id == selectedTeacherByCoordinatorToCreateHw
             );
-            // console.log(myResult, '=========myResult===');
+
             newCoorTechID = myResult[0].user_id;
             setselectedCoTeacherOptValue(myResult[0]);
             setSelectedTeacherUser_id(newCoorTechID);
-          } 
+          }
 
           if (activeView === 'list-homework') {
             if (startDate && endDate) {
-              // getCoordinateTeacherHomeworkDetails(
-              //   2,
-              //   startDate.format('YYYY-MM-DD'),
-              //   endDate.format('YYYY-MM-DD')
-              // );
-
               getCoordinateTeacherHomeworkDetails(
                 moduleIdCord,
                 startDate.format('YYYY-MM-DD'),
@@ -269,15 +280,61 @@ const CoordinatorTeacherHomework = withRouter(
     };
 
     const handleCoordinateTeacher = (e, value) => {
-      if(value?.user_id > 0){
+      if (value?.user_id > 0) {
         setSelectedTeacherUser_id(value?.user_id);
         setselectedCoTeacherOptValue(value);
-        getCoordinateTeacherHomeworkDetails(moduleIdCord, startDate, endDate, value.user_id);
+        getCoordinateTeacherHomeworkDetails(
+          moduleIdCord,
+          startDate,
+          endDate,
+          value.user_id
+        );
       }
-     
     };
-    
 
+    const downloadGetTeacherPerformanceListApi = async () => {
+      const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
+      // console.log('file will downloade', startDateTechPer, endDateTechPer);
+      try {
+        setLoading(true);
+        if (startDateTechPer && startDateTechPer) {
+          const dwURL = `${
+            endpoints.coordinatorTeacherHomeworkApi.getTecherPerformance
+          }?start_date=${startDateTechPer.format(
+            'YYYY-MM-DD'
+          )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}`;
+
+          const result = await axiosInstance.get(dwURL, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            responseType: 'blob', //important
+          });
+          if (result.status === 200) {
+            // console.log(result, '===========================');
+            setLoading(false);
+            const downloadUrl = window.URL.createObjectURL(new Blob([result.data]));
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.setAttribute(
+              'download',
+              'Teacher_performance_' +
+                startDateTechPer.format('YYYY-MM-DD') +
+                '_' +
+                endDateTechPer.format('YYYY-MM-DD') +
+                '.xls'
+            ); //any other extension
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            setAlert('success', "File downloaded successfully");
+          }
+        }
+      } catch (error) {
+          setAlert('error', error.message);
+        setLoading(false);
+      }
+    };
     const renderRef = useRef(0);
 
     renderRef.current += 1;
@@ -347,7 +404,7 @@ const CoordinatorTeacherHomework = withRouter(
                         value={dateRange}
                         // calendars='1'
                         onChange={(newValue) => {
-                          console.log(newValue);
+                          // console.log(newValue);
                           setDateRange(newValue);
                         }}
                         renderInput={(
@@ -363,7 +420,7 @@ const CoordinatorTeacherHomework = withRouter(
                           // startProps,
                           endProps
                         ) => {
-                          console.log('startProps ', startProps, 'endProps', endProps);
+                          // console.log('startProps ', startProps, 'endProps', endProps);
                           return (
                             <>
                               <TextField
@@ -384,6 +441,41 @@ const CoordinatorTeacherHomework = withRouter(
                         }}
                       />
                     </LocalizationProvider>
+                  </Grid>
+                  <Grid item xs={3} container>
+                    <LocalizationProvider dateAdapter={MomentUtils}>
+                      <DateRangePicker
+                        startText='Select-date-range'
+                        value={dateRangeTechPer}
+                        onChange={(newValue) => {
+                          // console.log(newValue);
+                          setDateRangeTechPer(newValue);
+                        }}
+                        renderInput={({ inputProps, ...startProps }, endProps) => {
+                          // console.log('startProps ', startProps, 'endProps', endProps);
+                          return (
+                            <>
+                              <TextField
+                                {...startProps}
+                                inputProps={{
+                                  ...inputProps,
+                                  value: `${inputProps.value} - ${endProps.inputProps.value}`,
+                                  readOnly: true,
+                                }}
+                                size='small'
+                                style={{ minWidth: '250px' }}
+                              />
+                            </>
+                          );
+                        }}
+                      />
+                    </LocalizationProvider>
+                  </Grid>
+
+                  <Grid item xs={2}>
+                    <button className='bulk-upload-container' style={{cursor:"pointer"}} onClick={downloadGetTeacherPerformanceListApi}>
+                    <GetAppIcon color='primary' />
+                    </button>                   
                   </Grid>
                 </Grid>
               </div>
@@ -526,7 +618,8 @@ const mapStateToProps = (state) => ({
   submittedStudents: state.teacherHomework.submittedStudents,
   unevaluatedStudents: state.teacherHomework.unevaluatedStudents,
   fetchingStudentLists: state.teacherHomework.fetchingStudentLists,
-  selectedTeacherByCoordinatorToCreateHw:state.teacherHomework.selectedTeacherByCoordinatorToCreateHw,
+  selectedTeacherByCoordinatorToCreateHw:
+    state.teacherHomework.selectedTeacherByCoordinatorToCreateHw,
 });
 
 const mapDispatchToProps = (dispatch) => ({

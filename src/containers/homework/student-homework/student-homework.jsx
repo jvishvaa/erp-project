@@ -737,7 +737,8 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                       <Grid className='homework_right_wrapper' container>
                         <Grid lg={12} className='homework_right_wrapper_items' item>
                           {(studentHomeworkData.header?.is_hw_ration && homeworkTimelineDisplay) &&
-                            <HomeworkTimeline setHomeworkTimelineDisplay={setHomeworkTimelineDisplay} />
+                            <HomeworkTimeline setHomeworkTimelineDisplay={setHomeworkTimelineDisplay} 
+                            moduleId={moduleId}/>
                           }
                         </Grid>
                         <Grid lg={12} className='homework_right_wrapper_items' item>

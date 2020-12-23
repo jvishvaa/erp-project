@@ -26,50 +26,13 @@ import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
 import './homework-timeline.css';
 
-const HomeworkTimeline = ({setHomeworkTimelineDisplay}) => {
+const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
   const days = ['30 Days', '60 Days', '90 Days'];
   const [Ratings, setRating] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
   const [totalHomework, setTotalHomework] = useState();
   const [submittedHomework, setSubmittedHomework] = useState();
 
-  //   [
-  //     {
-  //       subject: 87,
-  //       subject_name: 'Science',
-  //       hw_given: 1,
-  //       hw_submitted: 0,
-  //       rating: 4,
-  //     },
-  //     {
-  //       subject: 93,
-  //       subject_name: 'aa',
-  //       hw_given: 1,
-  //       hw_submitted: 0,
-  //       rating: 4,
-  //     },
-  //     {
-  //       subject: 94,
-  //       subject_name: 'python',
-  //       hw_given: 5,
-  //       hw_submitted: 0,
-  //       rating: 4,
-  //     },
-  //     {
-  //       subject: 95,
-  //       subject_name: 'django',
-  //       hw_given: 7,
-  //       hw_submitted: 1,
-  //       rating: 4,
-  //     },
-  //     {
-  //       subject: 96,
-  //       subject_name: 'DRF',
-  //       hw_given: 5,
-  //       hw_submitted: 0,
-  //       rating: 4,
-  //     },
-  //   ];
   const [selectedDays, setSelectedDays] = useState('30 Days');
   const handleDayChange = (event, value) => {
     if (value) {
@@ -80,25 +43,25 @@ const HomeworkTimeline = ({setHomeworkTimelineDisplay}) => {
   };
   const getRating = async () => {
     try {
-      let request=endpoints.homeworkStudent.getRating
-      if(selectedDays) {
-        request+= `?duration=${selectedDays.substring(0,2)}`
+      let request = `${endpoints.homeworkStudent.getRating}?module_id=${moduleId}`
+      if (selectedDays) {
+        request += `&duration=${selectedDays.substring(0, 2)}`
       }
       const result = await axiosInstance.get(request);
       if (result.data.status_code === 200) {
-        setRating(result.data.data);
-        if (result.data.data.length) {
-          let tempTotalHw = 0;
-          let tempSubmitedHw = 0;
-          result.data.data.forEach((items) => {
-            tempTotalHw += Number(items.hw_given);
-            tempSubmitedHw += Number(items.hw_submitted);
-          });
-          setTotalHomework(tempTotalHw);
-          setSubmittedHomework(tempSubmitedHw);
-           setHomeworkTimelineDisplay(true)
+        setRating(result.data.data.subject_rating);
+        if (result.data.data.subject_rating.length) {
+          // let tempTotalHw = 0;
+          // let tempSubmitedHw = 0;
+          // result.data.data.forEach((items) => {
+          //   tempTotalHw += Number(items.hw_given);
+          //   tempSubmitedHw += Number(items.hw_submitted);
+          // });
+          setTotalHomework(result.data.data.hw_given);
+          setSubmittedHomework(result.data.data.hw_submitted);
+          setHomeworkTimelineDisplay(true);
         } else {
-           setHomeworkTimelineDisplay(false)
+          setHomeworkTimelineDisplay(false)
         }
       } else {
         setAlert('error', result.data.message);
@@ -112,8 +75,8 @@ const HomeworkTimeline = ({setHomeworkTimelineDisplay}) => {
 
   useEffect(() => {
     getRating();
-  }, [selectedDays]);
-  
+  }, [selectedDays, moduleId]);
+
   return (
     <>
       <div className='subject-homework-details-wrapper'>
@@ -253,27 +216,27 @@ const HomeworkTimeline = ({setHomeworkTimelineDisplay}) => {
                       key={`ratiting_subject_row${index}`}
                     >
                       <span className="nameContainer">
-                      <span className='subject_rating_first_letter'>{subject.subject_name.substring(0,1)}</span>{' '}
-                      <span className='subject_rating_subject_name'>
-                        {subject.subject_name}
-                      </span>
+                        <span className='subject_rating_first_letter'>{subject.subject_name.substring(0, 1)}</span>{' '}
+                        <span className='subject_rating_subject_name'>
+                          {subject.subject_name}
+                        </span>
                       </span>
                       <span className="starContainer">
-                      {/* <span className='subject_rating'>{subject.rating}/5</span> */}
-                      {[...Array(subject.rating)].map((e,i)=>(
-                      <SvgIcon
-                        component={() => (
-                          <img
-                            style={{
-                              width: '20px',
-                              height: '20px',
-                            }}
-                            src={Star}
-                            alt='submitted'
-                          />
-                        )}
-                      />))
-                      }
+                        {/* <span className='subject_rating'>{subject.rating}/5</span> */}
+                        {[...Array(subject.rating)].map((e, i) => (
+                          <SvgIcon
+                            component={() => (
+                              <img
+                                style={{
+                                  width: '20px',
+                                  height: '20px',
+                                }}
+                                src={Star}
+                                alt='submitted'
+                              />
+                            )}
+                          />))
+                        }
                       </span>
                     </div>
                   ))}

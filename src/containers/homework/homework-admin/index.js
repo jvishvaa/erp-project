@@ -135,8 +135,7 @@ const HomeworkAdmin = () => {
   const [mandatorySubjects, setMandatorySubjects] = useState([])
   const [optionalSubjects, setOptionalSubjects] = useState([])
   const [otherSubjects, setOtherSubjects] = useState([])
-  const [allClear, setAllClear] = useState(0)
-
+  const [required, setRequired] = useState({ lower: '', upper: '', star: '', index: '' });
   // else if((mandatorySubjects.length+optionalSubjects.length+otherSubjects.length)!==(rowData.subject_data.length)){
   //   setAlert('error','A subject should be either mandatory, optional or other but can\'t be empty')
   // }else if(mandatorySubjects.length===0 && rowData.subject_data.length>=3){
@@ -149,29 +148,53 @@ const HomeworkAdmin = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    //   if (ratingData) {
-    //     for (let i = 0; i < ratingData.length; i++) {
-    //       if (ratingData[i]['low_range'] === '') {
-    //         // setAlert('error', 'Lower Range can\'t be empty for rating number ' + (i + 1));
-    //         setAllClear(1);
-    //         break;
-    //       } else if (ratingData[i]['upper_range'] === '') {
-    //         // setAlert('error', 'Upper Range can\'t be empty for rating number ' + (i + 1)+' and can\'t exceed 1.0');
-    //         setAllClear(2);
-    //         break;
-    //       } else if (ratingData[i]['star'] === '') {
-    //         // setAlert('error', 'Star can\'t be empty for rating number ' + (i + 1)+' and can\'t exceed 5.');
-    //         setAllClear(3);
-    //         break;
-    //       } else if (ratingData[i]['low_range'] && ratingData[i]['upper_range']) {
-    //         if (ratingData[i]['low_range'] >= ratingData[i]['upper_range']) {
-    //           setAllClear(4);
-    //           // setAlert('error', 'Lower Range can\'t be greater than or equal to Upper Range for rating number ' + (i + 1));
-    //           break;
-    //       }
-    //     }
-    //   }
-    // }
+
+    let clear = true;
+    for (let i = 0; i < ratingData.length; i++) {
+      if (ratingData[i]['low_range'] && ratingData[i]['upper_range'] && ratingData[i]['star']) {
+        if (ratingData[i]['low_range'] < 0.1) {
+          clear = false;
+          setAlert('warning', 'Lower Range can\'t be less than 0.1 for rating number '+(i+1));
+          break;
+        }
+        else if (ratingData[i]['upper_range'] > 1.0) {
+          clear = false;
+          setAlert('warning', 'Upper Range can\'t be more than 1.0 for rating number '+(i+1));
+          break;
+        }
+        else if (ratingData[i]['low_range'] >= ratingData[i]['upper_range']) {
+          clear = false;
+          setAlert('warning', 'Lower Range can\'t be greater than or equal to Upper Range for rating number '+(i+1));
+          break;
+        }
+        else if (ratingData[i]['star'] < 1 || ratingData[i]['star'] > 5) {
+          clear = false;
+          setAlert('warning', 'Stars must lie between 1 and 5 for rating number '+(i+1));
+          break;
+        }
+      }
+    }
+    // setRequired({ lower: '', upper: '', star: '', index: '' });
+    for (let i = 0; i < ratingData.length; i++) {
+      if (ratingData[i]['low_range'] === '') {
+        clear = false;
+        setAlert('warning', 'Lower range can\'t be empty for rating ' + (i + 1));
+        break;
+        // setRequired(prevState => ({ ...prevState, lower: true, index: i }));
+      }
+      if (ratingData[i]['upper_range'] === '') {
+        clear = false;
+        setAlert('warning', 'Upper range can\'t be empty for rating ' + (i + 1));
+        break;
+        // setRequired(prevState => ({ ...prevState, upper: true, index: i }));
+      }
+      if (ratingData[i]['star'] === '') {
+        clear = false;
+        setAlert('warning', 'Stars can\'t be empty for rating ' + (i + 1));
+        break;
+        // setRequired(prevState => ({ ...prevState, star: true, index: i }));
+      }
+    }
 
     if (searchGrade === '') {
       setAlert('error', 'Grade not selected');
@@ -183,7 +206,8 @@ const HomeworkAdmin = () => {
       setAlert('error', 'Post days cannot be empty');
     } else if (mandatorySubjects.length > 5 || mandatorySubjects.length === 0) {
       setAlert('error', 'Number of mandatory subjects must lie between 1 and 5');
-    } else {
+    } else if (clear) {
+      debugger
       setLoading(true)
       axiosInstance.post(endpoints.homework.createConfig, {
         "branch": role_details.branch[0],
@@ -589,14 +613,14 @@ const HomeworkAdmin = () => {
                             placeholder='Lower'
                             variant='outlined'
                             required
-                            type="number"
                             value={row.low_range}
-                            InputProps={{ inputProps: { min: 0.0, max: 1.0, step: 0.01 } }}
+                            inputProps={{ maxLength: 3 ,accept:'^[01]?(\.)[0-9]{1}$'}}
                             size='small'
                             name='low_range'
                             autoComplete="off"
                             onChange={(e) => handleRatingData(e, index)}
                           />
+                          {/* <div style={(required.lower && required?.index === index) ? { visibility: 'visible', color: 'red' } : { visibility: 'hidden' }}>Required</div> */}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
                           <TextField
@@ -606,13 +630,13 @@ const HomeworkAdmin = () => {
                             variant='outlined'
                             size='small'
                             required
-                            type="number"
                             value={row.upper_range}
-                            InputProps={{ inputProps: { min: 0.0, max: 1.0, step: 0.01 } }}
+                            inputProps={{ maxLength: 3 ,accept:'^[01]?(\.)[0-9]{1}$'}}
                             name='upper_range'
                             autoComplete="off"
                             onChange={(e) => handleRatingData(e, index)}
                           />
+                          {/* <div style={(required.upper && required?.index === index) ? { visibility: 'visible', color: 'red' } : { visibility: 'hidden' }}>Required</div> */}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
                           <TextField
@@ -622,13 +646,13 @@ const HomeworkAdmin = () => {
                             variant='outlined'
                             size='small'
                             required
-                            type="number"
+                            inputProps={{ maxLength: 1}}
                             value={row.star}
-                            InputProps={{ inputProps: { min: 1, max: 5 } }}
                             name='star'
                             autoComplete="off"
                             onChange={(e) => handleRatingData(e, index)}
                           />
+                          {/* <div style={(required.star && required?.index === index) ? { visibility: 'visible', color: 'red' } : { visibility: 'hidden' }}>Required</div> */}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
                           <Checkbox
