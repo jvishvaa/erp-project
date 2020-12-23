@@ -40,7 +40,9 @@ import endpoints from '../../../config/endpoints';
 import Layout from '../../Layout';
 import './student-homework.css';
 import StudenthomeworkMobileScreen from './student-homework-mobile-screen';
-import MobileIconScreen from './student-homework-mobileScreen-Icon'
+import MobileIconScreen from './student-homework-mobileScreen-Icon';
+import MobileDatepicker from './student-homework-mobile-datepicker';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     '& > *': {
@@ -380,6 +382,12 @@ const StudentHomework = withRouter(({ history, ...props }) => {
           {!homeworkSubmission.isOpen &&
             <div className='create_group_filter_container'>
               <Grid container spacing={5} className='message_log_container'>
+                {
+                     isMobile ?  <MobileDatepicker  
+                     onChange={(date) => handleEndDateChange(date)}
+                     handleStartDateChange={handleStartDateChange} 
+                     handleEndDateChange={handleEndDateChange} /> :
+                
                 <MuiPickersUtilsProvider utils={MomentUtils} className='date_provider'>
                   <Grid item xs={12} sm={3}>
                     <KeyboardDatePicker
@@ -398,6 +406,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                     />
                   </Grid>
                   <Grid item xs={12} sm={3}>
+                    
                     <KeyboardDatePicker
                       margin='normal'
                       id='date-picker-dialog'
@@ -411,8 +420,11 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                         'aria-label': 'change date',
                       }}
                     />
+
+                    
                   </Grid>
                 </MuiPickersUtilsProvider>
+          }
               </Grid>
             </div>
           }

@@ -158,7 +158,8 @@ font-weight: 600;
 
 	}
 	.MuiGrid-spacing-xs-5{
-		padding: 20px
+		padding: 20px;
+		margin: 0px !important;
 	}
 	.create_group_filter_container {
 		padding: 0px 2.5%; 
@@ -250,6 +251,23 @@ font-weight: 600;
 		overflow: auto;
     white-space: nowrap;
 	}
+	.MuiInputLabel-shrink{
+		color: #014B7E !important;
+    	font-size: 14px !important;
+	}
+	.MuiOutlinedInput-marginDense{
+		border-radius: 10px !important;
+    	border-color: 1px #DBDBDB !important;
+	}
+	.MuiPickersDateRangePickerInput-root input{
+		color: #014B7E !important;
+    	font-size: 12px !important;
+	}
+	.MuiPickersDateRangePickerInput-root p{
+		display: none !important;
+	}
+	.MuiOutlinedInput-notchedOutline{
+		border-color: 1px #DBDBDB !important;
+	}
   }
 
-  
