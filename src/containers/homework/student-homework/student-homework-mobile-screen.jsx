@@ -107,7 +107,7 @@ const StudenthomeworkMobileScreen = (props) => {
         }
         findOptional()
     }, [props])
-
+    console.log(props.mobileScreenResponse.rows, "props.mobileScreenResponse.header")
     return (
         <div className="mobile-screen-container">
             <div className="mobile-screen-subject-button">
@@ -155,7 +155,7 @@ const StudenthomeworkMobileScreen = (props) => {
                                                 <ListItemSecondaryAction>
                                                     <IconButton edge="end" aria-label="delete">
                                                         {
-                                                            name.subject && name.subject.isOpened && <SvgIcon
+                                                            name.subject && name.subject.isOpened === true && <SvgIcon
                                                                 component={() => (
                                                                     <img
                                                                         style={{ width: '25px', marginRight: '5px' }}
@@ -168,11 +168,11 @@ const StudenthomeworkMobileScreen = (props) => {
                                                         }
 
                                                         {
-                                                            name.subject.isEvaluted && <SvgIcon
+                                                            name.subject && name.subject.isEvaluted === true && <SvgIcon
                                                                 component={() => (
                                                                     <img
                                                                         style={{ width: '25px', marginRight: '5px' }}
-                                                                        src={hwSubmitted}
+                                                                        src={studentHomeworkEvaluted}
                                                                         alt='evaluated'
                                                                     />
                                                                 )}
@@ -181,7 +181,7 @@ const StudenthomeworkMobileScreen = (props) => {
 
 
                                                         {
-                                                            name.subject.isSubmited && <SvgIcon
+                                                           name.subject && name.subject.isSubmited === true && <SvgIcon
                                                                 component={() => (
                                                                     <img
                                                                         style={{ width: '25px', marginRight: '5px' }}
