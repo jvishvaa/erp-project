@@ -118,14 +118,14 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
       axiosInstance.post(`${endpoints.homeworkStudent.submitHomework}`, requestData)
         .then(result => {
           if (result.data.status_code === 201) {
-            setAlert('success', result.data.message)
-            handleHomeworkCancel()
+            setAlert('success', result.data.message);
+            handleHomeworkCancel();
           }
           else
-            setAlert('error', result.data.message)
+            setAlert('error', result.data.message);
         })
         .catch(error => {
-          setAlert('error', error.message)
+          setAlert('error', error.message);
         })
     }
     else
