@@ -292,10 +292,10 @@ font-weight: 600;
 		top: 1px;
 	  } */
 
-	  #popUp span{
+	  #popUp {
 		position: absolute;
 		/* top: 302px; */
-		right: 121px;
+		right: 51px;
 		border-radius: 28%;
 		background-color: white;
 		color: #FF6B6B;
@@ -342,6 +342,9 @@ font-weight: 600;
 		margin-left: 10px;
 		/* width: 85%; */
 		
+	}
+	.mobile-modal{
+		position: sticky !important;
 	}
   }
 

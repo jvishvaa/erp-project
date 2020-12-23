@@ -107,7 +107,7 @@ export default function MobileOptional(props) {
   };
 
   return (
-    <div className={"mobile-modal" + props.index} id="popUp">
+    <div className={"mobile-modal"} id="popUp">
       <strong variant="outlined" color="primary"  onClick={handleClickOpen}>
         {props.count}
       </strong>
