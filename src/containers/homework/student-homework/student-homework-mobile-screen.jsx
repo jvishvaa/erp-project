@@ -100,21 +100,21 @@ const StudenthomeworkMobileScreen = (props) => {
 
                 }
             }
-            console.log(subjects, 'subjects')
+            // console.log(subjects, 'subjects')
             setOptionalLength(subjects)
 
         }
         findOptional()
     }, [props])
    
-    // console.log( props.mobileScreenResponse, " props.mobileScreenResponse")
+    //  console.log( props.mobileScreenResponse, " props.mobileScreenResponse")
     return (
         <div className="mobile-screen-container">
             <div className="mobile-screen-subject-button"  style={{display: 'flex'}}>
                 
                 {
                     props && props.mobileScreenResponse.header.map((headerName, index) => {
-                        // console.log(headerName.isOptional, "headerName")
+                    // console.log(headerName, "headerName")
                       return(
                           <div className="mobile-button-without-opt" >
                              
@@ -129,14 +129,15 @@ const StudenthomeworkMobileScreen = (props) => {
                            
                             <div className="modal-button-popup">
                             {
-                                headerName.isOptional === true && <MobileOptional count={ headerName.isOptional === true && headerName.subject_slag.length && optionalLength.length}
+                                headerName && headerName.isOptional === true ? <MobileOptional 
+                                // count={ headerName.isOptional === true && headerName.subject_slag.length && optionalLength.length}
                                 subjectName={props.mobileScreenResponse.header}
                                 subject={props.mobileScreenResponse.rows}
                                 showSubjectWise={setMobileJson}
                                 nameofSubject={headerName.isOptional === true && headerName.subject_slag}
                                 options={optionalLength}
                             />
-                            }
+                           :null }
                         </div>
                           </div>
                       )

@@ -63,18 +63,18 @@ function SimpleDialog(props) {
       />
 
       <List className="list-ul">
-        {props.options.map((subName, index) => {
+        { props && props.options !== undefined && props.options ? props.options.map((subName, index) => {
           return (
             <ListItem button onClick={() => handleListItemClick(subName)} key={index}>
-              { subName.subject_slag !== "date" &&
+            
                 <ListItemText className="list-item-text"
                   onClick={(e)=>getSubjectDetiels(e, subName, props.subjectWise)}
-                  primary={subName} style={{ fontSize: '20px' }} />}
+                  primary={subName} style={{ fontSize: '20px' }} />
             </ListItem>
 
           )
         }
-        )}
+        ): null}
 
       </List>
     </Dialog>
