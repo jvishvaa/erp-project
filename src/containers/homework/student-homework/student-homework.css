@@ -418,6 +418,9 @@ font-weight: 600;
 	.mobile-button-without-opt span button:last-child {
 		margin-left: 22px;
 	  }
+	  .mobile-icon{
+		  margin-top: 10px;
+	  }
 	  
   }
 
