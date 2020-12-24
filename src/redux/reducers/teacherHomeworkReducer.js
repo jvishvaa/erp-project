@@ -91,6 +91,7 @@ export default function reducer(state = INITIAL_STATE, action) {
         fetchingSubmittedHomeworkDetails: false,
       };
       case teacherHomeworkActions.ADD_HOMEWORK_SUCCESS_COORD:
+      case teacherHomeworkActions.SET_TEACHER_HOMEWORK_ID_FROM_CORD_SUCCESS:
       return { ...state, selectedTeacherByCoordinatorToCreateHw: action.data };
 
     default:
