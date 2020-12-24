@@ -383,10 +383,10 @@ const StudentHomework = withRouter(({ history, ...props }) => {
             <div className='create_group_filter_container'>
               <Grid container spacing={5} className='message_log_container'>
                 {
-                  isMobile ? <MobileDatepicker
+                  isMobile ? <div className="mobile-date-picker"><MobileDatepicker
                     onChange={(date) => handleEndDateChange(date)}
                     handleStartDateChange={handleStartDateChange}
-                    handleEndDateChange={handleEndDateChange} /> :
+                    handleEndDateChange={handleEndDateChange} /></div> :
 
                     <MuiPickersUtilsProvider utils={MomentUtils} className='date_provider'>
                       <Grid item xs={12} sm={3}>

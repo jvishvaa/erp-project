@@ -94,34 +94,53 @@ const StudenthomeworkMobileScreen = (props) => {
             const subjects = []
             for (let k of options) {
                 // console.log(k, "opo")
-                if (k.isOptional === false) {
+                if (k.isOptional === true) {
                     subjects.push(k.subject_slag)
 
 
                 }
             }
+            console.log(subjects, 'subjects')
             setOptionalLength(subjects)
 
         }
         findOptional()
     }, [props])
    
+    // console.log( props.mobileScreenResponse, " props.mobileScreenResponse")
     return (
         <div className="mobile-screen-container">
-            <div className="mobile-screen-subject-button">
-                <MobileOptional count={optionalLength !== null && optionalLength.length}
-                    subjectName={props.mobileScreenResponse.header}
-                    subject={props.mobileScreenResponse.rows}
-                    showSubjectWise={setMobileJson}
-                />
+            <div className="mobile-screen-subject-button"  style={{display: 'flex'}}>
+                
                 {
                     props && props.mobileScreenResponse.header.map((headerName, index) => {
-                        return headerName.subject_slag !== 'date' && headerName.subject_slag !== undefined &&
-                            <span key={index}>
-                                <Button variant="outlined" style={{ marginRight: '10px' }} color="secondary" key={index} onClick={() => showSubjectWise(headerName.subject_slag, props.mobileScreenResponse.rows, index)}>
-                                    {headerName.subject_slag}
-                                </Button>
-                            </span>
+                        // console.log(headerName.isOptional, "headerName")
+                      return(
+                          <div className="mobile-button-without-opt" >
+                             
+                            {
+                              !headerName.isOptional &&  headerName.subject_slag !== 'date' && headerName.subject_slag !== undefined &&
+                                <span key={index} className="sub-btn">
+                                    <Button variant="outlined" style={{ marginRight: '10px' }} color="secondary" key={index} onClick={() => showSubjectWise(headerName.subject_slag, props.mobileScreenResponse.rows, index)}>
+                                        {headerName.subject_slag}
+                                    </Button>
+                                </span>
+                            }
+                           
+                            <div className="modal-button-popup">
+                            {
+                                headerName.isOptional === true && <MobileOptional count={ headerName.isOptional === true && headerName.subject_slag.length && optionalLength.length}
+                                subjectName={props.mobileScreenResponse.header}
+                                subject={props.mobileScreenResponse.rows}
+                                showSubjectWise={setMobileJson}
+                                nameofSubject={headerName.isOptional === true && headerName.subject_slag}
+                                options={optionalLength}
+                            />
+                            }
+                        </div>
+                          </div>
+                      )
+                        
                     })
                 }
             </div>
@@ -133,7 +152,7 @@ const StudenthomeworkMobileScreen = (props) => {
                                 subJson.map((name, index) => {
                                     return (
                                         <div key={index}>
-                                            <ListItem >
+                                            <ListItem className="mobile-screen-list-item">
                                                 <ListItemAvatar>
                                                     <div className='day-icon'>
                                                         {moment(name.date).format('dddd').split('')[0]}
@@ -141,6 +160,7 @@ const StudenthomeworkMobileScreen = (props) => {
 
                                                 </ListItemAvatar>
                                                 <ListItemText
+                                                    className="dates"
                                                     primary={name.date}
                                                 // secondary={secondary ? 'Secondary text' : null}
                                                 />
