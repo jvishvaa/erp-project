@@ -284,7 +284,9 @@ font-weight: 600;
 		display: none !important;
 	}
 
-	
+	/* .MuiOutlinedInput-notchedOutline{
+		border-color: 1px #DBDBDB !important;
+	} */
 	.day-icon {
 		width: 30px;
 		height: 30px;
@@ -382,7 +384,7 @@ font-weight: 600;
 		height: 38px;
 	  }
 	 .modal-button-popup  {
-		margin-left: -52px;
+		margin-left: -22px;
 		margin-right: 75px;
 	  }
 	 .modal-popup-opt-count {
@@ -399,12 +401,19 @@ font-weight: 600;
 		
 	}
 
-	.mobile-button-without-opt span button:last-child {
-		margin-left: 22px;
-	  }
+
 	  .mobile-icon{
 		  margin-top: 10px;
 	  }
+	  .mobile-screen-subject-button .mobile-button-without-opt .sub-btn .mb-btn:last-child{
+		margin-left: 55px !important;
+		/* margin-right: -59px; */
+	  }
+
+	  .mobile-screen-subject-button .mobile-button-without-opt:first-child{
+		margin-right: -63px;
+	  }
 	  
+
   }
 

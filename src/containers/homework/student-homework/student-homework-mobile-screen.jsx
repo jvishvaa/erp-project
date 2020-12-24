@@ -56,7 +56,6 @@ const StudenthomeworkMobileScreen = (props) => {
     const showSubjectWise = (subName, rowWiseSub) => {
         let finalJson = []
         for (let i of rowWiseSub) {
-            console.log(i, "iiiiii")
             finalJson.push({
                 subject: i[subName],
                 date: i['date'],
@@ -109,22 +108,12 @@ const StudenthomeworkMobileScreen = (props) => {
         findOptional()
     }, [props])
 
-    const handleSubmitted = (name) =>{
-       console.log(name, "name")
-        // onClick={() =>
-        //     handleOpenHomework(
-        //       row[headers.subject_slag].homeworkId,
-        //       row.date,
-        //       headers.subject_slag,
-        //       2
-        //     )
-        //   }
-    }
+  
    
-    //  console.log( props.mobileScreenResponse, " props.mobileScreenResponse")
+     console.log( props.mobileScreenResponse, " props.mobileScreenResponse")
     return (
         <div className="mobile-screen-container">
-            <div className="mobile-screen-subject-button"  style={{display: 'flex'}}>
+            <div className="mobile-screen-subject-button"  style={{display: 'flex' , justifyContent:'flex-start'}}>
                 
                 {
                     props && props.mobileScreenResponse.header.map((headerName, index) => {
@@ -134,11 +123,11 @@ const StudenthomeworkMobileScreen = (props) => {
                              
                             {
                               !headerName.isOptional &&  headerName.subject_slag !== 'date' && headerName.subject_slag !== undefined &&
-                                <span key={index} className="sub-btn">
-                                    <Button variant="outlined" style={{ marginRight: '10px' }} color="secondary" key={index} onClick={() => showSubjectWise(headerName.subject_slag, props.mobileScreenResponse.rows, index)}>
+                                <div key={index} className="sub-btn">
+                                    <Button variant="outlined" className="mb-btn" style={{ marginRight: '10px' }} color="secondary" key={index} onClick={() => showSubjectWise(headerName.subject_slag, props.mobileScreenResponse.rows, index)}>
                                         {headerName.subject_slag}
                                     </Button>
-                                </span>
+                                </div>
                             }
                            
                             <div className="modal-button-popup">
