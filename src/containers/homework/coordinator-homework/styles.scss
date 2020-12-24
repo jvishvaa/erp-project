@@ -479,8 +479,24 @@
 .date-container {
   @media screen and (max-width: 768px) {
     display: flex;
-  flex-direction: column-reverse;
+    flex-direction: column-reverse;
   }  
+}
+
+.bulk_container {
+  display: flex;
+}
+
+.download_button {
+  margin-left: 25px;
+  align-self: flex-start;
+}
+
+.vertical_divider {
+  height: 40px;
+  width: 1px;
+  margin: 15px 25px;
+  background-color: #0000001F;
 }
 
 //homework list mobile view

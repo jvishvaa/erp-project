@@ -339,7 +339,6 @@ const CoordinatorTeacherHomework = withRouter(
     const downloadGetTeacherPerformanceListApi = async () => {
       const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
       // console.log('file will downloade', startDateTechPer, endDateTechPer);
-      alert(selectedTeacherByCoordinatorToCreateHw)
       try {
         setLoading(true);
         if (startDateTechPer && startDateTechPer) {
@@ -400,6 +399,7 @@ const CoordinatorTeacherHomework = withRouter(
             <div className='message_log_white_wrapper'>
               {activeView !== 'view-homework' && activeView !== 'view-received-homework' && (
                 <Grid container className='date-container' spacing={3}>
+                  
                   <Grid item xs={12} sm={3}>
                     <Grid className={classes.paper}>
                       <Autocomplete
@@ -479,24 +479,22 @@ const CoordinatorTeacherHomework = withRouter(
                       </LocalizationProvider>
                     </Grid>
                   </Grid>
-                  {isMobile && (
+                  {isMobile ? (
                     <Grid item xs={12}>
                       <Divider />
                     </Grid>
-                  )}
-                  
-                  <Grid item xs={9} sm={3}>
-                    <Grid className={classes.paper}>
+                  ):
+                  <div className="vertical_divider"></div>}    
+                   
+                  <Grid item xs={12} sm={4} className='bulk_container'>
                       <LocalizationProvider dateAdapter={MomentUtils}>
                         <DateRangePicker
                           startText='Select-date-range'
                           value={dateRangeTechPer}
                           onChange={(newValue) => {
-                            // console.log(newValue);
                             setDateRangeTechPer(newValue);
                           }}
                           renderInput={({ inputProps, ...startProps }, endProps) => {
-                            // console.log('startProps ', startProps, 'endProps', endProps);
                             return (
                               <>
                                 <TextField
@@ -514,12 +512,8 @@ const CoordinatorTeacherHomework = withRouter(
                           }}
                         />
                       </LocalizationProvider>
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={3} sm={3}>
-                    <Grid className={classes.paper}>
-                      <button
-                        className='bulk-upload-container tab-list-item '
+                      <div className="download_button">
+                      <Button
                         style={{
                           cursor: 'pointer',
                           backgroundColor: '#ffffff',
@@ -529,9 +523,10 @@ const CoordinatorTeacherHomework = withRouter(
                         onClick={downloadGetTeacherPerformanceListApi}
                       >
                         <GetAppIcon color='primary' />
-                      </button>
-                    </Grid>
+                      </Button>
+                      </div>
                   </Grid>
+                
                 </Grid>
               )}
               {activeView !== 'view-homework' &&
