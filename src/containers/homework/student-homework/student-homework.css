@@ -118,7 +118,9 @@ font-weight: 600;
 	padding:  0%;
 	margin: 0%;
 }
-
+.MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline {
+	border-color: #DBDBDB !important;
+}
 
 @media only screen and (max-width: 768px) {
 	/* For mobile phones: */
@@ -188,9 +190,10 @@ font-weight: 600;
 	
 	  .mobile-screen-subject-button{
 		background: #E5E5E5;
-		padding: 20px;
-		display: flex;
-    	justify-content: space-evenly;
+		padding: 6px;
+		padding-bottom: 18px;
+		/* display: flex; */
+    	justify-content: flex-start;
 	  }
 	  .mobile-screen-subject-button button:focus {
 		border: 1px solid #FF6B6B;
@@ -293,16 +296,16 @@ font-weight: 600;
 	  } */
 
 	  #popUp {
-		position: absolute;
+		/* position: absolute; */
 		/* top: 302px; */
-		right: 51px;
+		/* right: 51px; */
 		border-radius: 28%;
 		background-color: white;
 		color: #FF6B6B;
 		width: 15px;
 		height: 18px;
-		font-size: 13px
-		
+		font-size: 13px;
+		margin-left: 86px;
 	}
 	.MuiDialog-paperScrollPaper{
 		width: 259px;
@@ -338,13 +341,22 @@ font-weight: 600;
 		display: none;
 	}
 	.MuiPickersDateRangePickerInput-root{
-		margin: 0 auto;
-		margin-left: 10px;
-		/* width: 85%; */
+		/* margin: 0 auto;
+		margin-left: 10px; */
+		width: 85%;
 		
 	}
 	.mobile-modal{
 		position: sticky !important;
+	}
+	.MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline {
+		border-color: none !important;
+	}
+	.create_group_filter_container .PrivateNotchedOutline-root-40{
+		border: 1px solid #DBDBDB;
+	}
+	fieldset.PrivateNotchedOutline-root-40.MuiOutlinedInput-notchedOutline{
+		border: 1px solid #DBDBDB;
 	}
   }
 

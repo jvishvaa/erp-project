@@ -111,6 +111,12 @@ const StudenthomeworkMobileScreen = (props) => {
     return (
         <div className="mobile-screen-container">
             <div className="mobile-screen-subject-button">
+            <MobileOptional count={optionalLength !== null && optionalLength.length}
+                                     
+                                     subjectName={props.mobileScreenResponse.header}
+                                     subject={props.mobileScreenResponse.rows}
+                                     showSubjectWise={setMobileJson}
+                                 />
 
                 {
                     props && props.mobileScreenResponse.header.map((headerName, index) => {
@@ -124,12 +130,7 @@ const StudenthomeworkMobileScreen = (props) => {
                                 </>
                     })
                 }
-                             <MobileOptional count={optionalLength !== null && optionalLength.length}
-                                     
-                                        subjectName={props.mobileScreenResponse.header}
-                                        subject={props.mobileScreenResponse.rows}
-                                        showSubjectWise={setMobileJson}
-                                    />
+                            
 
             </div>
             <div className="mobile-screen-content">
