@@ -79,3 +79,46 @@
 .homework_timeline_card_subject{
 	margin: 0% 8% !important;
 }
+@media only screen and (max-width: 768px) {
+	.homework_timeline_container{
+		display: block !important;
+	}
+.homework_timeline_received_submitted{
+	padding: 10px !important;
+}
+.static-media{
+	width: 30px !important;
+    height: 43px !important;
+    margin-top: 5px !important;
+    margin-right: 24px !important;
+    float: right !important;
+}
+.homework_timeline_card_tag{
+	padding: 10px !important;
+}
+.homework_right_wrapper_items{
+	width: 100%;
+}
+
+.subject_rating_wrapper {
+	display: flex;
+}
+.subject_rating_wrapper .sub-string{
+	width: 28px;
+    height: 28px;
+    background: #00D191;
+    text-align: center;
+    color: white;
+    font-weight: 600;
+    border-radius: 11px;
+    padding: 2%;
+    text-transform: capitalize;
+	display: inline-block;
+	/* margin-left: -61px; */
+
+}
+.info-card-info {
+	font-size: 24px !important;
+}
+
+}

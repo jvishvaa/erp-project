@@ -118,3 +118,302 @@ font-weight: 600;
 	padding:  0%;
 	margin: 0%;
 }
+.MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline {
+	border-color: #DBDBDB !important;
+}
+
+@media only screen and (max-width: 768px) {
+	/* For mobile phones: */
+	.group-a{
+		background: #F9F9F9 !important; 
+
+	}
+	.message_log_breadcrumb_wrapper {
+		background: #F9F9F9 !important;
+	}
+	.create_group_filter_container{
+		background: #F9F9F9 !important;
+	}
+	
+	/* .MuiFormControl-root{
+		right: 0px;
+		width: 100%;
+	} */
+		
+	/* .MuiPaper-rounded{
+		width:100%
+	} */
+	/* .message_log_wrapper .homework_block_wrapper {
+		display: block;
+	} */
+	/* .message_log_wrapper .homework_block_wrapper {
+		width: 90% !important;
+		border-bottom: 1px solid #cfcfcf;
+		align-items: center !important;
+		display: grid !important;
+		grid-template-columns: auto auto !important;
+		font-size: 13px !important;
+		line-height: 30px !important;
+		text-align: center;
+		
+
+	} */
+	/* .MuiGrid-spacing-xs-5{
+		padding: 20px;
+		margin: 0px !important;
+	} */
+	.create_group_filter_container  .date-ranger{
+		margin-bottom: 20px;
+	}
+	.create_group_filter_container .mobile-date-picker{
+		padding: 20px;
+		margin: 0px !important;
+		
+	}
+	/* .create_group_filter_container {
+		padding: 0px 2.5%; 
+		margin: 0 auto;
+	} */
+	/* .subject-homework-tag {
+		text-align: left;
+	} */
+		/* .homework_right_wrapper_items{
+			padding:10px;
+		} */
+	/* .homework_block{
+		text-align: left;
+	    margin-left: 18px;
+	} */
+	/* .homework_details_timeline-card{
+		border-radius: 15px  !important;
+	} */
+	.mobile-screen-subject-button button{
+		background: white;
+		color: #FF6B6B;
+		border: 1px solid #FF6B6B;
+		border-radius: 10px;
+		
+	  }
+	
+	  .mobile-screen-subject-button{
+		background: #E5E5E5;
+		padding: 12px;
+		padding-bottom: 18px;
+		/* display: flex; */
+    	justify-content: flex-start;
+	  }
+	  .mobile-screen-subject-button button:focus {
+		border: 1px solid #FF6B6B;
+		background: #FF6B6B;
+		color: white;
+		border-radius: 10px;
+	  }
+	  .mobile-screen-subject-button button:blur(0) {
+		border: 1px solid #FF6B6B;
+		color: white;
+		border-radius: 10px;
+	  }
+
+	  .mobile-screen-subject-button span{
+		  font-size: 14px;
+	  }
+	  .create_group_filter_container{
+		  padding: 0px;
+	  }
+	  /* pre {
+		margin: 20px 0;
+		padding: 20px;
+		
+	  } */
+	  /* .MuiListItemAvatar-root .avatar-day{
+		  font-size: 15px;
+		  color: #014B7E;
+	  } */
+	  /* .round { border-radius: 50%; } */
+	  
+
+	  /* .MuiListItemText-primary{
+		margin-bottom: 13px;
+	
+	  } */
+	  /* .MuiTypography-body1{
+		  font-size: 14px !important;
+	  } */
+	  /* .avatar-day{
+		width: 28px !important;
+		height: 28px !important;
+		
+	  } */
+
+	  .mobile-icon-container{
+		display: flex;
+		justify-content: space-around;
+	  }
+	  .icon-text{
+		color: #014B7E;
+		font-size: 10px;
+	  }
+	  /* .MuiDivider-inset {
+		margin-left: 72px !important;
+		margin-right: 30px  !important;
+	}
+	 */
+	.mobile-screen-subject-button{
+		overflow: auto;
+   		 white-space: nowrap;
+	}
+	
+	.mobile-date-picker .date-ranger label{
+		color: #014B7E !important;
+    	font-size: 14px !important;
+	}
+	.mobile-date-picker .date-ranger fieldset{
+		border-radius: 10px !important;
+    	border-color: 1px #DBDBDB !important;
+	}
+
+	.mobile-date-picker{
+		width: 100%;
+		margin-right: 40px;
+	}
+	.date-ranger input{
+		color: #014B7E !important;
+    	font-size: 12px !important;
+	}
+	.date-ranger  p{
+		display: none !important;
+	}
+
+	/* .MuiOutlinedInput-notchedOutline{
+		border-color: 1px #DBDBDB !important;
+	} */
+	.day-icon {
+		width: 30px;
+		height: 30px;
+		border-radius: 25px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-right: 1rem;
+		font-weight: 600;
+		color: #014B7E;
+		font-size: 12px;
+		border: 1px solid #014B7E;
+	  }
+
+	  .dates span{
+		  font-size: 16px;
+	  }
+
+	 .MuiDivider-inset{
+		margin-right: 40px !important;
+	
+	  }
+
+	  #popUp {
+		 right: 51px;
+		border-radius: 28%;
+		background-color: white;
+		color: #FF6B6B;
+		width: 15px;
+		height: 18px;
+		font-size: 13px;
+		margin-left: 56px;
+	}
+	.MuiDialog-paperScrollPaper{
+		width: 259px;
+		border-radius: 10px !important;
+	}
+	.list-item-text{
+		text-align: center;
+		border-top: none;
+    	border-left: none;
+    	border-right: none;
+		
+	}
+
+	.list-item-text .MuiTypography-displayBlock{
+		border: 1px solid #DBDBDB;
+		border-top: none;
+   		border-left: none;
+    	border-right: none;
+	}
+	.list-item-text.class:empty { 
+		border: none;
+	}
+	.list-item-text span{
+		font-size: 20px !important;
+		margin-bottom: 5px !important;
+	}
+	.list-ul{
+		top:0px;
+	}
+	.mobile-modal1{
+		display: none;
+	}
+	
+	.mobile-modal{
+		position: sticky !important;
+	}
+	.MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline {
+		border-color: none !important;
+	}
+	.create_group_filter_container .PrivateNotchedOutline-root-40{
+		border: 1px solid #DBDBDB;
+	}
+	fieldset.PrivateNotchedOutline-root-40.MuiOutlinedInput-notchedOutline{
+		border: 1px solid #DBDBDB;
+	}
+	.MuiDialog-scrollPaper{
+		margin-top: 28px;
+	}
+	.mobile-screen-subject-button{
+		color: white;
+		margin: 0 auto;
+    	position: relative;
+	
+	}
+
+	#popUp {
+		top: 5px;
+		position: absolute;
+		border-radius: 50%;
+		color: red;
+	  }
+	  .modal-optional-button-count{
+		height: 38px;
+	  }
+	 .modal-button-popup  {
+		margin-left: -22px;
+		margin-right: 75px;
+	  }
+	 .modal-popup-opt-count {
+		background: white;
+		border-radius: 10px;
+		color: #FF6B6B;
+		position: absolute;
+		top: -15px;
+		right: -2px;
+		padding: 2px 10px;
+		border-radius: 10% 40% 10% 30%;
+		width: 22px;
+		height: 27px;
+		
+	}
+
+
+	  .mobile-icon{
+		  margin-top: 10px;
+	  }
+	  .mobile-screen-subject-button .mobile-button-without-opt .sub-btn .mb-btn:last-child{
+		margin-left: 55px !important;
+		/* margin-right: -59px; */
+	  }
+
+	  .mobile-screen-subject-button .mobile-button-without-opt:first-child{
+		margin-right: -103px;
+	  }
+	  
+
+  }
+

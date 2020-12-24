@@ -268,7 +268,7 @@ const Layout = ({ children, history }) => {
     >
       <MenuItem onClick={(e) => history.push('/profile')}>
         <IconButton aria-label='my profile' color='inherit'>
-          <PermIdentityIcon color='primary' style={{ fontSize: '2rem' }} />
+          <PermIdentityIcon color='primary' style={{ fontSize: '2rem'}} />
         </IconButton>
         <p style={{ color: '#014B7E' }}>My Profile</p>
       </MenuItem>
