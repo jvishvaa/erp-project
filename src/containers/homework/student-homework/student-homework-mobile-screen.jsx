@@ -56,9 +56,11 @@ const StudenthomeworkMobileScreen = (props) => {
     const showSubjectWise = (subName, rowWiseSub) => {
         let finalJson = []
         for (let i of rowWiseSub) {
+            console.log(i, "iiiiii")
             finalJson.push({
                 subject: i[subName],
-                date: i['date']
+                date: i['date'],
+                subName: subName
             })
         }
         setSubJson(finalJson);
@@ -106,6 +108,18 @@ const StudenthomeworkMobileScreen = (props) => {
         }
         findOptional()
     }, [props])
+
+    const handleSubmitted = (name) =>{
+       console.log(name, "name")
+        // onClick={() =>
+        //     handleOpenHomework(
+        //       row[headers.subject_slag].homeworkId,
+        //       row.date,
+        //       headers.subject_slag,
+        //       2
+        //     )
+        //   }
+    }
    
     //  console.log( props.mobileScreenResponse, " props.mobileScreenResponse")
     return (
@@ -174,6 +188,15 @@ const StudenthomeworkMobileScreen = (props) => {
                                                             <SvgIcon
                                                                 component={() => (
                                                                     <img
+                                                                    onClick={()=> {
+                                                                        props.handleOpenHomework(
+                                                                            name.subject.homeworkId,
+                                                                            name.date,
+                                                                            name.subName,
+                                                                            2
+                                                                            
+                                                                        )
+                                                                    }}
                                                                         style={{ width: '25px', marginRight: '5px' }}
                                                                         src={hwSubmitted}
                                                                         alt='evaluated'
@@ -187,6 +210,15 @@ const StudenthomeworkMobileScreen = (props) => {
                                                             <SvgIcon
                                                                 component={() => (
                                                                     <img
+                                                                    onClick={()=> {
+                                                                        props.handleOpenHomework(
+                                                                            name.subject.homeworkId,
+                                                                            name.date,
+                                                                            name.subName,
+                                                                            1
+                                                                            
+                                                                        )
+                                                                    }}
                                                                         style={{ width: '25px', marginRight: '5px' }}
                                                                         src={hwFileOpened}
                                                                         alt='evaluated'
@@ -211,6 +243,15 @@ const StudenthomeworkMobileScreen = (props) => {
                                                             name.subject && name.subject.isEvaluted === true && name.subject.isSubmited && <SvgIcon
                                                                 component={() => (
                                                                     <img
+                                                                    onClick={()=> {
+                                                                        props.handleOpenHomework(
+                                                                            name.subject.homeworkId,
+                                                                            name.date,
+                                                                            name.subName,
+                                                                            3
+                                                                            
+                                                                        )
+                                                                    }}
                                                                         style={{ width: '25px', marginRight: '5px' }}
                                                                         src={studentHomeworkEvaluted}
                                                                         alt='evaluated'
