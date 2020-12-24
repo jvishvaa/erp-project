@@ -27,6 +27,7 @@ function SimpleDialog(props) {
   const { onClose, selectedValue, open } = props;
 
   const handleClose = () => {
+  
     onClose(selectedValue);
   };
 
@@ -49,13 +50,12 @@ function SimpleDialog(props) {
   const filtered = props.subject.subjectName.filter(function (el) {
     return el.subject_slag != null;
   });
-
   return (
     <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
       <SvgIcon
         component={() => (
           <img
-            onClose={handleClose}
+          onClick={handleClose}
             style={{ width: '28px', marginLeft: '201px', marginTop: '11px' }}
             src={CancelIcon}
             alt='CancelIcon'
@@ -64,19 +64,18 @@ function SimpleDialog(props) {
       />
 
       <List className="list-ul">
-        {filtered.map((subName, index) => {
+        { props && props.options !== undefined && props.options ? props.options.map((subName, index) => {
           return (
-            <ListItem button onClick={() => handleListItemClick(subName.subject_slag)} key={index}>
-              { subName.subject_slag !== "date" &&
+            <ListItem button onClick={() => handleListItemClick(subName)} key={index}>
+            
                 <ListItemText className="list-item-text"
-                  onClick={(e)=>getSubjectDetiels(e, subName.subject_slag, props.subjectWise)}
-                  primary={subName.subject_slag !== "date" &&
-                    subName.subject_slag !== undefined && subName.subject_slag} style={{ fontSize: '20px' }} />}
+                  onClick={(e)=>getSubjectDetiels(e, subName, props.subjectWise)}
+                  primary={subName} style={{ fontSize: '20px' }} />
             </ListItem>
 
           )
         }
-        )}
+        ): null}
 
       </List>
     </Dialog>
@@ -89,15 +88,15 @@ SimpleDialog.propTypes = {
   selectedValue: PropTypes.string.isRequired,
   subject: PropTypes.string.isRequired,
   showSubjectWise: PropTypes.func.isRequired,
-  subjectWise: PropTypes.string
+  subjectWise: PropTypes.string,
+  options: PropTypes.string
 };
 
 export default function MobileOptional(props) {
   const [open, setOpen] = React.useState(false);
-  const [selectedValue, setSelectedValue] = React.useState(emails[1]);
+  const [selectedValue, setSelectedValue] = React.useState(props.options[1] || null);
 
   const handleClickOpen = () => {
-    //   props.showSubjectWise()
     setOpen(true);
   };
 
@@ -105,15 +104,17 @@ export default function MobileOptional(props) {
     setOpen(false);
     setSelectedValue(value);
   };
-
+  // console.log(props.options, "nameofSubject", selectedValue)
   return (
     <div className={"mobile-modal"} id="popUp">
-      <strong variant="outlined" color="primary"  onClick={handleClickOpen}>
-        {props.count}
-      </strong>
-      <SimpleDialog selectedValue={selectedValue} open={open} subject={props} 
+      <Button variant="outlined" color="primary"  onClick={handleClickOpen} className="modal-optional-button-count">
+        {props.nameofSubject}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <p className="modal-popup-opt-count">{props.options.length}</p>
+      </Button>
+      <SimpleDialog selectedValue={false} open={open} subject={props} 
       subjectWise={props.subject}
-      showSubjectWise={props.showSubjectWise} onClose={handleClose} />
+      showSubjectWise={props.showSubjectWise} onClose={handleClose}
+      options={props.options} />
     </div>
   );
 }

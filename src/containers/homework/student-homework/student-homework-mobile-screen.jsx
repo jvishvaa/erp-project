@@ -58,7 +58,8 @@ const StudenthomeworkMobileScreen = (props) => {
         for (let i of rowWiseSub) {
             finalJson.push({
                 subject: i[subName],
-                date: i['date']
+                date: i['date'],
+                subName: subName
             })
         }
         setSubJson(finalJson);
@@ -94,34 +95,56 @@ const StudenthomeworkMobileScreen = (props) => {
             const subjects = []
             for (let k of options) {
                 // console.log(k, "opo")
-                if (k.isOptional === false) {
+                if (k.isOptional === true) {
                     subjects.push(k.subject_slag)
 
 
                 }
             }
+            // console.log(subjects, 'subjects')
             setOptionalLength(subjects)
 
         }
         findOptional()
     }, [props])
+
+  
    
+     console.log( props.mobileScreenResponse, " props.mobileScreenResponse")
     return (
         <div className="mobile-screen-container">
-            <div className="mobile-screen-subject-button">
-                <MobileOptional count={optionalLength !== null && optionalLength.length}
-                    subjectName={props.mobileScreenResponse.header}
-                    subject={props.mobileScreenResponse.rows}
-                    showSubjectWise={setMobileJson}
-                />
+            <div className="mobile-screen-subject-button"  style={{display: 'flex' , justifyContent:'flex-start'}}>
+                
                 {
                     props && props.mobileScreenResponse.header.map((headerName, index) => {
-                        return headerName.subject_slag !== 'date' && headerName.subject_slag !== undefined &&
-                            <span key={index}>
-                                <Button variant="outlined" style={{ marginRight: '10px' }} color="secondary" key={index} onClick={() => showSubjectWise(headerName.subject_slag, props.mobileScreenResponse.rows, index)}>
-                                    {headerName.subject_slag}
-                                </Button>
-                            </span>
+                    // console.log(headerName, "headerName")
+                      return(
+                          <div className="mobile-button-without-opt" >
+                             
+                            {
+                              !headerName.isOptional &&  headerName.subject_slag !== 'date' && headerName.subject_slag !== undefined &&
+                                <div key={index} className="sub-btn">
+                                    <Button variant="outlined" className="mb-btn" style={{ marginRight: '10px' }} color="secondary" key={index} onClick={() => showSubjectWise(headerName.subject_slag, props.mobileScreenResponse.rows, index)}>
+                                        {headerName.subject_slag}
+                                    </Button>
+                                </div>
+                            }
+                           
+                            <div className="modal-button-popup">
+                            {
+                                headerName && headerName.isOptional === true ? <MobileOptional 
+                                // count={ headerName.isOptional === true && headerName.subject_slag.length && optionalLength.length}
+                                subjectName={props.mobileScreenResponse.header}
+                                subject={props.mobileScreenResponse.rows}
+                                showSubjectWise={setMobileJson}
+                                nameofSubject={headerName.isOptional === true && headerName.subject_slag}
+                                options={optionalLength}
+                            />
+                           :null }
+                        </div>
+                          </div>
+                      )
+                        
                     })
                 }
             </div>
@@ -133,7 +156,7 @@ const StudenthomeworkMobileScreen = (props) => {
                                 subJson.map((name, index) => {
                                     return (
                                         <div key={index}>
-                                            <ListItem >
+                                            <ListItem className="mobile-screen-list-item">
                                                 <ListItemAvatar>
                                                     <div className='day-icon'>
                                                         {moment(name.date).format('dddd').split('')[0]}
@@ -141,6 +164,7 @@ const StudenthomeworkMobileScreen = (props) => {
 
                                                 </ListItemAvatar>
                                                 <ListItemText
+                                                    className="dates"
                                                     primary={name.date}
                                                 // secondary={secondary ? 'Secondary text' : null}
                                                 />
@@ -153,6 +177,15 @@ const StudenthomeworkMobileScreen = (props) => {
                                                             <SvgIcon
                                                                 component={() => (
                                                                     <img
+                                                                    onClick={()=> {
+                                                                        props.handleOpenHomework(
+                                                                            name.subject.homeworkId,
+                                                                            name.date,
+                                                                            name.subName,
+                                                                            2
+                                                                            
+                                                                        )
+                                                                    }}
                                                                         style={{ width: '25px', marginRight: '5px' }}
                                                                         src={hwSubmitted}
                                                                         alt='evaluated'
@@ -166,6 +199,15 @@ const StudenthomeworkMobileScreen = (props) => {
                                                             <SvgIcon
                                                                 component={() => (
                                                                     <img
+                                                                    onClick={()=> {
+                                                                        props.handleOpenHomework(
+                                                                            name.subject.homeworkId,
+                                                                            name.date,
+                                                                            name.subName,
+                                                                            1
+                                                                            
+                                                                        )
+                                                                    }}
                                                                         style={{ width: '25px', marginRight: '5px' }}
                                                                         src={hwFileOpened}
                                                                         alt='evaluated'
@@ -190,6 +232,15 @@ const StudenthomeworkMobileScreen = (props) => {
                                                             name.subject && name.subject.isEvaluted === true && name.subject.isSubmited && <SvgIcon
                                                                 component={() => (
                                                                     <img
+                                                                    onClick={()=> {
+                                                                        props.handleOpenHomework(
+                                                                            name.subject.homeworkId,
+                                                                            name.date,
+                                                                            name.subName,
+                                                                            3
+                                                                            
+                                                                        )
+                                                                    }}
                                                                         style={{ width: '25px', marginRight: '5px' }}
                                                                         src={studentHomeworkEvaluted}
                                                                         alt='evaluated'

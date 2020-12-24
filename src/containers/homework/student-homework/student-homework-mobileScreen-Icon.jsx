@@ -15,7 +15,7 @@ const MobileIconScreen = () =>{
                 <SvgIcon
                 component={() => (
                 <img
-                style={{ width: '25px', marginRight: '5px' }}
+                style={{ width: '22px', marginRight: '5px' }}
                     src={hwFileUnopened}
                         alt='evaluated'
                 />
@@ -28,7 +28,7 @@ const MobileIconScreen = () =>{
                     <SvgIcon
                     component={() => (
                     <img
-                    style={{ width: '25px', marginRight: '5px' }}
+                    style={{ width: '22px', marginRight: '5px' }}
                         src={hwFileOpened}
                             alt='evaluated'
                     />
@@ -40,7 +40,7 @@ const MobileIconScreen = () =>{
                     <SvgIcon
                     component={() => (
                     <img
-                    style={{ width: '25px', marginRight: '5px' }}
+                    style={{ width: '22px', marginRight: '5px' }}
                         src={hwSubmitted}
                             alt='evaluated'
                     />
@@ -53,7 +53,7 @@ const MobileIconScreen = () =>{
                     <SvgIcon
                     component={() => (
                     <img
-                    style={{ width: '25px', marginRight: '5px' }}
+                    style={{ width: '22px', marginRight: '5px' }}
                         src={studentHomeworkEvaluted}
                             alt='evaluated'
                     />
@@ -66,7 +66,7 @@ const MobileIconScreen = () =>{
                     <SvgIcon
                     component={() => (
                     <img
-                    style={{ width: '25px', marginRight: '5px' }}
+                    style={{ width: '22px', marginRight: '5px' }}
                         src={Expired}
                             alt='evaluated'
                     />

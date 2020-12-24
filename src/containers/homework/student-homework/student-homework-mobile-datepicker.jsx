@@ -22,7 +22,7 @@ import './student-homework.css';
     const [datePopperOpen, setDatePopperOpen] = useState(false);
 
       return(
-        <>
+        <div className="date-ranger">
           <LocalizationProvider dateAdapter={MomentUtils}>
            <DateRangePicker  
            disableCloseOnSelect={false}
@@ -55,7 +55,7 @@ import './student-homework.css';
                     readOnly: true,
                   }}
                   size='small'
-                  style={{ minWidth: '250px' }}
+                   style={{ minWidth: '300px' }}
                   onClick={() => {
                     // console.log('triggered');
                     setDatePopperOpen(true);
@@ -67,7 +67,7 @@ import './student-homework.css';
           }}
           /> 
         </LocalizationProvider>
-        </>
+        </div>
       )
   }
 

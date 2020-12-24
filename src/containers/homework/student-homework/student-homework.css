@@ -125,27 +125,28 @@ font-weight: 600;
 @media only screen and (max-width: 768px) {
 	/* For mobile phones: */
 	.group-a{
-		background-color: #F9F9F9;
+		background: #F9F9F9 !important; 
 
 	}
 	.message_log_breadcrumb_wrapper {
-		background-color: #F9F9F9;
+		background: #F9F9F9 !important;
+	}
+	.create_group_filter_container{
+		background: #F9F9F9 !important;
 	}
 	
-	.MuiFormControl-root{
+	/* .MuiFormControl-root{
 		right: 0px;
 		width: 100%;
-	}
-	.makeStyles-root-1  {
-		/* width: 100%; */
-	}	
-	.MuiPaper-rounded{
+	} */
+		
+	/* .MuiPaper-rounded{
 		width:100%
-	}
-	.message_log_wrapper .homework_block_wrapper {
+	} */
+	/* .message_log_wrapper .homework_block_wrapper {
 		display: block;
-	}
-	.message_log_wrapper .homework_block_wrapper {
+	} */
+	/* .message_log_wrapper .homework_block_wrapper {
 		width: 90% !important;
 		border-bottom: 1px solid #cfcfcf;
 		align-items: center !important;
@@ -153,33 +154,39 @@ font-weight: 600;
 		grid-template-columns: auto auto !important;
 		font-size: 13px !important;
 		line-height: 30px !important;
-		/* padding: 10px; */
 		text-align: center;
-		/* left: 5px; */
 		
 
-	}
-	.MuiGrid-spacing-xs-5{
+	} */
+	/* .MuiGrid-spacing-xs-5{
 		padding: 20px;
 		margin: 0px !important;
+	} */
+	.create_group_filter_container  .date-ranger{
+		margin-bottom: 20px;
 	}
-	.create_group_filter_container {
+	.create_group_filter_container .mobile-date-picker{
+		padding: 20px;
+		margin: 0px !important;
+		
+	}
+	/* .create_group_filter_container {
 		padding: 0px 2.5%; 
 		margin: 0 auto;
-	}
-	.subject-homework-tag {
+	} */
+	/* .subject-homework-tag {
 		text-align: left;
-	}
-	.homework_right_wrapper_items{
-		padding:10px;
-	}
-	.homework_block{
+	} */
+		/* .homework_right_wrapper_items{
+			padding:10px;
+		} */
+	/* .homework_block{
 		text-align: left;
 	    margin-left: 18px;
-	}
-	.homework_details_timeline-card{
+	} */
+	/* .homework_details_timeline-card{
 		border-radius: 15px  !important;
-	}
+	} */
 	.mobile-screen-subject-button button{
 		background: white;
 		color: #FF6B6B;
@@ -190,7 +197,7 @@ font-weight: 600;
 	
 	  .mobile-screen-subject-button{
 		background: #E5E5E5;
-		padding: 6px;
+		padding: 12px;
 		padding-bottom: 18px;
 		/* display: flex; */
     	justify-content: flex-start;
@@ -213,31 +220,31 @@ font-weight: 600;
 	  .create_group_filter_container{
 		  padding: 0px;
 	  }
-	  pre {
+	  /* pre {
 		margin: 20px 0;
 		padding: 20px;
-		/* background: #fafafa; */
-	  }
-	  .MuiListItemAvatar-root .avatar-day{
+		
+	  } */
+	  /* .MuiListItemAvatar-root .avatar-day{
 		  font-size: 15px;
 		  color: #014B7E;
-	  }
-	  .round { border-radius: 50%; }
+	  } */
+	  /* .round { border-radius: 50%; } */
 	  
 
-	  .MuiListItemText-primary{
+	  /* .MuiListItemText-primary{
 		margin-bottom: 13px;
 	
-	  }
-	  .MuiTypography-body1{
+	  } */
+	  /* .MuiTypography-body1{
 		  font-size: 14px !important;
-	  }
-	  .avatar-day{
+	  } */
+	  /* .avatar-day{
 		width: 28px !important;
 		height: 28px !important;
-		/* border: red !important; */
 		
-	  }
+	  } */
+
 	  .mobile-icon-container{
 		display: flex;
 		justify-content: space-around;
@@ -246,32 +253,40 @@ font-weight: 600;
 		color: #014B7E;
 		font-size: 10px;
 	  }
-	  .MuiDivider-inset {
+	  /* .MuiDivider-inset {
 		margin-left: 72px !important;
 		margin-right: 30px  !important;
 	}
+	 */
 	.mobile-screen-subject-button{
 		overflow: auto;
-   	 white-space: nowrap;
+   		 white-space: nowrap;
 	}
-	.MuiInputLabel-shrink{
+	
+	.mobile-date-picker .date-ranger label{
 		color: #014B7E !important;
     	font-size: 14px !important;
 	}
-	.MuiOutlinedInput-marginDense{
+	.mobile-date-picker .date-ranger fieldset{
 		border-radius: 10px !important;
     	border-color: 1px #DBDBDB !important;
 	}
-	.MuiPickersDateRangePickerInput-root input{
+
+	.mobile-date-picker{
+		width: 100%;
+		margin-right: 40px;
+	}
+	.date-ranger input{
 		color: #014B7E !important;
     	font-size: 12px !important;
 	}
-	.MuiPickersDateRangePickerInput-root p{
+	.date-ranger  p{
 		display: none !important;
 	}
-	.MuiOutlinedInput-notchedOutline{
+
+	/* .MuiOutlinedInput-notchedOutline{
 		border-color: 1px #DBDBDB !important;
-	}
+	} */
 	.day-icon {
 		width: 30px;
 		height: 30px;
@@ -285,36 +300,32 @@ font-weight: 600;
 		font-size: 12px;
 		border: 1px solid #014B7E;
 	  }
-	  .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline {
-		border-color: 1px #DBDBDB ;
+
+	  .dates span{
+		  font-size: 16px;
 	  }
-	  /* #popUp{
-		position: absolute;
-		
-		margin-left: 198px;
-		top: 1px;
-	  } */
+
+	 .MuiDivider-inset{
+		margin-right: 40px !important;
+	
+	  }
 
 	  #popUp {
-		/* position: absolute; */
-		/* top: 302px; */
-		/* right: 51px; */
+		 right: 51px;
 		border-radius: 28%;
 		background-color: white;
 		color: #FF6B6B;
 		width: 15px;
 		height: 18px;
 		font-size: 13px;
-		margin-left: 86px;
+		margin-left: 56px;
 	}
 	.MuiDialog-paperScrollPaper{
 		width: 259px;
-		height: 249px;
 		border-radius: 10px !important;
 	}
 	.list-item-text{
 		text-align: center;
-		/* border: 1px solid #707070; */
 		border-top: none;
     	border-left: none;
     	border-right: none;
@@ -340,12 +351,7 @@ font-weight: 600;
 	.mobile-modal1{
 		display: none;
 	}
-	.MuiPickersDateRangePickerInput-root{
-		/* margin: 0 auto;
-		margin-left: 10px; */
-		width: 85%;
-		
-	}
+	
 	.mobile-modal{
 		position: sticky !important;
 	}
@@ -358,5 +364,56 @@ font-weight: 600;
 	fieldset.PrivateNotchedOutline-root-40.MuiOutlinedInput-notchedOutline{
 		border: 1px solid #DBDBDB;
 	}
+	.MuiDialog-scrollPaper{
+		margin-top: 28px;
+	}
+	.mobile-screen-subject-button{
+		color: white;
+		margin: 0 auto;
+    	position: relative;
+	
+	}
+
+	#popUp {
+		top: 5px;
+		position: absolute;
+		border-radius: 50%;
+		color: red;
+	  }
+	  .modal-optional-button-count{
+		height: 38px;
+	  }
+	 .modal-button-popup  {
+		margin-left: -22px;
+		margin-right: 75px;
+	  }
+	 .modal-popup-opt-count {
+		background: white;
+		border-radius: 10px;
+		color: #FF6B6B;
+		position: absolute;
+		top: -15px;
+		right: -2px;
+		padding: 2px 10px;
+		border-radius: 10% 40% 10% 30%;
+		width: 22px;
+		height: 27px;
+		
+	}
+
+
+	  .mobile-icon{
+		  margin-top: 10px;
+	  }
+	  .mobile-screen-subject-button .mobile-button-without-opt .sub-btn .mb-btn:last-child{
+		margin-left: 55px !important;
+		/* margin-right: -59px; */
+	  }
+
+	  .mobile-screen-subject-button .mobile-button-without-opt:first-child{
+		margin-right: -103px;
+	  }
+	  
+
   }
 
