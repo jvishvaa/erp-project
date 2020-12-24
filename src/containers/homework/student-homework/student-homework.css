@@ -284,9 +284,7 @@ font-weight: 600;
 		display: none !important;
 	}
 
-	/* .MuiOutlinedInput-notchedOutline{
-		border-color: 1px #DBDBDB !important;
-	} */
+	
 	.day-icon {
 		width: 30px;
 		height: 30px;
@@ -309,11 +307,6 @@ font-weight: 600;
 		margin-right: 40px !important;
 	
 	  }
-	  
-	  /* .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline {
-		border-color: 1px #DBDBDB ;
-	  } */
-	 
 
 	  #popUp {
 		 right: 51px;
@@ -356,10 +349,7 @@ font-weight: 600;
 	.mobile-modal1{
 		display: none;
 	}
-	/* .MuiPickersDateRangePickerInput-root{
-		width: 85%;
-		
-	} */
+	
 	.mobile-modal{
 		position: sticky !important;
 	}
@@ -372,9 +362,6 @@ font-weight: 600;
 	fieldset.PrivateNotchedOutline-root-40.MuiOutlinedInput-notchedOutline{
 		border: 1px solid #DBDBDB;
 	}
-
-
-
 	.MuiDialog-scrollPaper{
 		margin-top: 28px;
 	}
@@ -382,14 +369,11 @@ font-weight: 600;
 		color: white;
 		margin: 0 auto;
     	position: relative;
-		/* position: absolute; */
 	
 	}
 
 	#popUp {
-		/* position: relative; */
 		top: 5px;
-		/* right: -10px; */
 		position: absolute;
 		border-radius: 50%;
 		color: red;
@@ -402,17 +386,17 @@ font-weight: 600;
 		margin-right: 75px;
 	  }
 	 .modal-popup-opt-count {
-		/* margin-left: 0px; */
 		background: white;
 		border-radius: 10px;
 		color: #FF6B6B;
-		/* border-radius: 12px 40px 12px 42px;  */
 		position: absolute;
-		top: -18px;
+		top: -15px;
 		right: -2px;
 		padding: 2px 10px;
-		border-radius: 19% 60% 10% 50%;
-		/* width: 14px; */
+		border-radius: 10% 40% 10% 30%;
+		width: 22px;
+		height: 27px;
+		
 	}
 
 	.mobile-button-without-opt span button:last-child {
