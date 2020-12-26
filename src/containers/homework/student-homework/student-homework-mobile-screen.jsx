@@ -110,7 +110,7 @@ const StudenthomeworkMobileScreen = (props) => {
 
   
    
-     console.log( props.mobileScreenResponse, " props.mobileScreenResponse")
+    //  console.log( props.mobileScreenResponse, " props.mobileScreenResponse")
     return (
         <div className="mobile-screen-container">
             <div className="mobile-screen-subject-button"  style={{display: 'flex' , justifyContent:'flex-start'}}>

@@ -94,7 +94,7 @@ SimpleDialog.propTypes = {
 
 export default function MobileOptional(props) {
   const [open, setOpen] = React.useState(false);
-  const [selectedValue, setSelectedValue] = React.useState(props.options[1] || null);
+  const [selectedValue, setSelectedValue] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -104,12 +104,12 @@ export default function MobileOptional(props) {
     setOpen(false);
     setSelectedValue(value);
   };
-  // console.log(props.options, "nameofSubject", selectedValue)
+  //  console.log(props.options, "nameofSubject", selectedValue)
   return (
     <div className={"mobile-modal"} id="popUp">
       <Button variant="outlined" color="primary"  onClick={handleClickOpen} className="modal-optional-button-count">
         {props.nameofSubject}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <p className="modal-popup-opt-count">{props.options.length}</p>
+        <p className="modal-popup-opt-count">{props.options && props.options.length}</p>
       </Button>
       <SimpleDialog selectedValue={false} open={open} subject={props} 
       subjectWise={props.subject}
