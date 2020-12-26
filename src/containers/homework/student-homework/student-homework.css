@@ -35,6 +35,13 @@
   background-color: #FFECEC;
   position: relative;
 }
+
+.icon-desc-container-desk {
+	display: flex;
+	align-items: center;
+	margin-right: 20px;
+}
+
 .homework_table {
   margin-top: 0% !important;
   border-radius: 10px !important;
