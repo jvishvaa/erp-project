@@ -97,6 +97,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const [desc, setDesc] = useState('');
   const [overallRemark, setOverallRemark] = useState('');
   const [overallScore, setOverallScore] = useState('');
+  const [attachmentCount, setAttachmentCount] = useState([])
   const handleHomeworkSubmit = () => {
 
     let count = 0;
@@ -149,6 +150,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
             setSubjectQuestions(result.data.data.hw_questions);
             setDesc(result.data.data.description);
             for (let i = 0; i < result.data.data.hw_questions.length; i++) {
+              attachmentCount.push(0)
               attachmentDataDisplay.push([])
               attachmentData.push(
                 {
@@ -234,44 +236,49 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     bulkData.splice(i, 1)
   }
 
-  const uploadFileHandler = (e, index) => {
+  const uploadFileHandler = (e, index, maxVal) => {
     e.persist()
-    const fil = e.target.files[0]
-    if (fil.name.lastIndexOf(".pdf") > 0
-      || fil.name.lastIndexOf(".jpeg") > 0
-      || fil.name.lastIndexOf(".jpg") > 0
-      || fil.name.lastIndexOf(".png") > 0
-      || fil.name.lastIndexOf(".mp3") > 0
-      || fil.name.lastIndexOf(".mp4") > 0) {
-      const formData = new FormData()
-      formData.append('file', fil)
-      axiosInstance.post(`${endpoints.homeworkStudent.fileUpload}`, formData)
-        .then(result => {
-          if (result.data.status_code === 200) {
-            const list = attachmentDataDisplay.slice();
-            if (fil.name.lastIndexOf(".pdf") > 0) {
-              const arr = [...result.data.data];
-              for (let k = 0; k < arr.length; k++) {
-                attachmentData[index].attachments.push(arr[k]);
-                // list[index] = [...attachmentDataDisplay[index], arr[k]];
-                list[index].push(arr[k])
-                setAttachmentDataDisplay(list);
-              }
-            } else {
-              list[index] = [...attachmentDataDisplay[index], e.target.files[0]];
-              setAttachmentDataDisplay(list);
-              attachmentData[index].attachments.push(result.data.data);
-            }
-            setAlert('success', result.data.message);
-          } else {
-            setAlert('error', result.data.message);
-          }
-        })
-        .catch(error => {
-          // setAlert('error',error.response.result.error_msg)
-        })
+    if (maxVal === attachmentCount[index]) {
+      setAlert('warning', `Can\'t upload more than ${maxVal} attachments for question ${index + 1}`);
     } else {
-      setAlert('error', "Only image(.jpeg, .jpg, .png), audio(mp3), video(.mp4) and pdf(.pdf) are acceptable")
+      attachmentCount[index]++;
+      const fil = e.target.files[0]
+      if (fil.name.lastIndexOf(".pdf") > 0
+        || fil.name.lastIndexOf(".jpeg") > 0
+        || fil.name.lastIndexOf(".jpg") > 0
+        || fil.name.lastIndexOf(".png") > 0
+        || fil.name.lastIndexOf(".mp3") > 0
+        || fil.name.lastIndexOf(".mp4") > 0) {
+        const formData = new FormData()
+        formData.append('file', fil)
+        axiosInstance.post(`${endpoints.homeworkStudent.fileUpload}`, formData)
+          .then(result => {
+            if (result.data.status_code === 200) {
+              const list = attachmentDataDisplay.slice();
+              if (fil.name.lastIndexOf(".pdf") > 0) {
+                const arr = [...result.data.data];
+                for (let k = 0; k < arr.length; k++) {
+                  attachmentData[index].attachments.push(arr[k]);
+                  // list[index] = [...attachmentDataDisplay[index], arr[k]];
+                  list[index].push(arr[k])
+                  setAttachmentDataDisplay(list);
+                }
+              } else {
+                list[index] = [...attachmentDataDisplay[index], e.target.files[0]];
+                setAttachmentDataDisplay(list);
+                attachmentData[index].attachments.push(result.data.data);
+              }
+              setAlert('success', result.data.message);
+            } else {
+              setAlert('error', result.data.message);
+            }
+          })
+          .catch(error => {
+            // setAlert('error',error.response.result.error_msg)
+          })
+      } else {
+        setAlert('error', "Only image(.jpeg, .jpg, .png), audio(mp3), video(.mp4) and pdf(.pdf) are acceptable")
+      }
     }
   }
 
@@ -280,6 +287,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     listDisplay.splice(i, 1)
     setAttachmentDataDisplay([...attachmentDataDisplay.slice(0, questionIndex), listDisplay, ...attachmentDataDisplay.slice(questionIndex + 1)])
     attachmentData[questionIndex].attachments.splice(i, 1)
+    attachmentCount[questionIndex]--;
   }
 
   const FileRow = (props) => {
@@ -472,7 +480,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                         <input
                           type='file'
                           accept=".png, .jpg, .jpeg, .mp3, mp4, .pdf"
-                          onChange={(e) => uploadFileHandler(e, index)}
+                          onChange={(e) => uploadFileHandler(e, index, question.max_attachment)}
                           className={classes.fileInput}
                         />
                       </IconButton>
