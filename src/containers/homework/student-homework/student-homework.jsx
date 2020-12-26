@@ -383,7 +383,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
             <div className='create_group_filter_container'>
               <Grid container spacing={5} className='message_log_container'>
                 {
-                  <div className="mobile-date-picker" style={!isMobile && { marginLeft: '20px' }}>
+                  <div className="mobile-date-picker">
                     <MobileDatepicker
                       onChange={(date) => handleEndDateChange(date)}
                       handleStartDateChange={handleStartDateChange}
