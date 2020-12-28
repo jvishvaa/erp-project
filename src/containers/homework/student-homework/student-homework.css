@@ -47,6 +47,14 @@
 	background-color: #F3F3F3 !important;	
 } */
 
+.mobile-date-picker input{
+	color: #014B7E;
+	font-size: 15px;
+}
+.mobile-date-picker label{
+	font-weight: 600;
+	/* font-size: 15px; */
+}
 .create_group_filter_container .tb-header tr th{
 	background-color: #F3F3F3 !important;
 }
