@@ -98,6 +98,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
   const [modulePermision, setModulePermision] = useState(true);
   const [homeworkTimelineDisplay, setHomeworkTimelineDisplay] = useState(true)
 
+
   //   header: ['date', 'english', 'history', 'math', 'other', 'science'],
   //   rows: [
   // 	{
@@ -430,9 +431,9 @@ const StudentHomework = withRouter(({ history, ...props }) => {
               </Grid>
             </div>
           }
-          <div className='message_log_white_wrapper' style={{marginTop: '45px'}}>
+          <div className='message_log_white_wrapper'>
             {
-              isMobile ? <MobileIconScreen /> :
+              isMobile ? <MobileIconScreen  isOpen={homeworkSubmission.isOpen} /> :
 
                 !homeworkSubmission.isOpen &&
                 <div className='homework_block_wrapper'>
