@@ -78,13 +78,13 @@ const QuestionCard = ({
     handleChange(index, field, value);
   };
   const handleFileUpload = async (file) => {
-    try {
+       try {
       const fd = new FormData();
       fd.append('file', file);
       setFileUploadInProgress(true);
       const filePath = await uploadFile(fd);
-      setAttachments((prevState) => [...prevState, filePath]);
-      setAttachmentPreviews((prevState) => [...prevState, filePath]);
+      setAttachments((prevState) => [...prevState, ...filePath]);
+      setAttachmentPreviews((prevState) => [...prevState, ...filePath]);
       setFileUploadInProgress(false);
       setAlert('success', 'File upload success');
     } catch (e) {
@@ -338,7 +338,7 @@ const QuestionCard = ({
       <Grid item xs={12}>
         <Grid item xs={12} className='question-btn-container'>
           <div className='question-btn-inner-container '>
-            <Button
+            {/* <Button
               color='primary'
               startIcon={<AddCircleOutlineIcon />}
               onClick={() => {
@@ -348,7 +348,7 @@ const QuestionCard = ({
               className='btn add-quesiton-btn outlined-btn'
             >
               Add another question
-            </Button>
+            </Button> */}
           </div>
         </Grid>
         {index > 0 && (
@@ -356,7 +356,7 @@ const QuestionCard = ({
             <div className='question-btn-inner-container '>
               <Button
                 variant='contained'
-                color='primary'
+                color='default'
                 startIcon={<DeleteIcon />}
                 onClick={() => {
                   removeQuestion(index);
