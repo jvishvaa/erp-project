@@ -18,6 +18,75 @@
 	transform: translateY(-50%);
 	background-color: #ff6b6b;
   } */
+  /* .message_log_breadcrumb_wrapper  .create_group_filter_container{
+	background: #F9F9F9;
+  } */
+  .for-mobile .subject-homework-details-wrapper{
+	margin-top: 3px;
+  }
+  .create_group_filter_container {
+	padding: 0px 2.5%;
+/*  */
+  }
+  .date-web{ 
+	 margin-top: 10px;
+
+  }
+  .table-date{
+	  display: flex;
+  }
+.create_group_filter_container table  .tb-header tr th{
+	  color: #FF6B6B !important;
+	
+  }
+  .create_group_filter_container table thead tr   .MuiTableCell-stickyHeader .MuiAutocomplete-hasPopupIcon input{
+	color: #FF6B6B !important;
+	
+}
+/* .makeStyles-content-22 .message_log_breadcrumb_wrapper .create_group_filter_container{
+	background-color: #F3F3F3 !important;	
+} */
+
+.mobile-date-picker input{
+	color: #014B7E;
+	font-size: 15px;
+}
+.mobile-date-picker label{
+	font-weight: 600;
+	/* font-size: 15px; */
+}
+.create_group_filter_container .tb-header tr th{
+	background-color: #F3F3F3 !important;
+}
+  .day-icon {
+	width: 40px;
+	height: 40px;
+	border-radius: 25px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-right: 1rem;
+	font-weight: 600;
+	border: 1px solid #014B7E;
+  }
+  .message_log_breadcrumb_wrapper{
+	background: #F9F9F9;
+  }
+.mobile-date-picker{
+	margin-left: 20px;
+	margin-top: 20px;
+}
+ 
+ .create_group_filter_container fieldset{
+	border-radius: 10px;
+	
+ } 
+.create_group_filter_container label{
+	color: #014B7E;
+}
+.create_group_filter_container label:focus{
+	color: #014B7E !important;
+}
 .homework_table_wrapper {
   border: 1px solid #ff6b6b;
   box-shadow: none;
@@ -40,6 +109,8 @@
 	display: flex;
 	align-items: center;
 	margin-right: 20px;
+	padding: 7px;
+	margin-top: 10px;
 }
 
 .homework_table {
@@ -56,19 +127,33 @@
   text-transform: capitalize;
 }
 .homework_block {
-	color: #014b7e;
-	font-weight: 600;
+  color: #014b7e;
+  font-weight: 600;
 }
-
-.homework_block_wrapper {
+ .message_log_white_wrapper .homework_block_wrapper {
   display: flex;
   width: 95%;
   padding-bottom: 1%;
   margin: 20px auto;
-  border-bottom: 1px solid #cfcfcf;
+  border: 1px solid #DBDBDB;
+  border-radius: 15px;
+  margin-top: 20px;
+  margin-left: 37px;
+  /* width: 1006px; */
+  height: 76px;
+
+
 }
 .not_selected{
 	position: relative;
+}
+.hw_not_submitted{
+	position: absolute;
+    top: 0;
+    right: 0;
+    border-left: 1px solid #ff6b6b;
+    border-bottom: 1px solid #ff6b6b;
+    width: 20px;
 }
 .subject-homework-details-wrapper{
     font-size: 1rem !important;
@@ -111,7 +196,7 @@ font-weight: 600;
 }
 .homework_right_wrapper{
 	padding: 0%;
-	margin-top: 5px;
+	/* margin-top: -110px; */
     margin-left: 5px;
 }
 .homework_right_wrapper_items{
@@ -122,6 +207,9 @@ font-weight: 600;
 	border-color: #DBDBDB !important;
 }
 
+.create_group_filter_container .MuiFormHelperText-marginDense{
+	display: none;
+}
 @media only screen and (max-width: 768px) {
 	/* For mobile phones: */
 	.group-a{
@@ -166,9 +254,12 @@ font-weight: 600;
 		margin-bottom: 20px;
 	}
 	.create_group_filter_container .mobile-date-picker{
-		padding: 20px;
+		padding-bottom: 20px;
 		margin: 0px !important;
 		
+	}
+	.page_title{
+		padding: 20px;
 	}
 	/* .create_group_filter_container {
 		padding: 0px 2.5%; 
@@ -251,7 +342,7 @@ font-weight: 600;
 	  }
 	  .icon-text{
 		color: #014B7E;
-		font-size: 10px;
+		font-size: 14px;
 	  }
 	  /* .MuiDivider-inset {
 		margin-left: 72px !important;
@@ -265,7 +356,7 @@ font-weight: 600;
 	
 	.mobile-date-picker .date-ranger label{
 		color: #014B7E !important;
-    	font-size: 14px !important;
+    	font-size: 20px !important;
 	}
 	.mobile-date-picker .date-ranger fieldset{
 		border-radius: 10px !important;
@@ -278,7 +369,7 @@ font-weight: 600;
 	}
 	.date-ranger input{
 		color: #014B7E !important;
-    	font-size: 12px !important;
+    	font-size: 14px !important;
 	}
 	.date-ranger  p{
 		display: none !important;
@@ -395,9 +486,10 @@ font-weight: 600;
 		top: -15px;
 		right: -2px;
 		padding: 2px 10px;
-		border-radius: 10% 40% 10% 30%;
-		width: 22px;
-		height: 27px;
+		border-radius: 2px 10px 2px 2px;
+		/* border-radius: 20% 40% 10% 30%; */
+		width: 2px;
+		height: 20px;
 		
 	}
 
@@ -406,14 +498,23 @@ font-weight: 600;
 		  margin-top: 10px;
 	  }
 	  .mobile-screen-subject-button .mobile-button-without-opt .sub-btn .mb-btn:last-child{
-		margin-left: 55px !important;
-		/* margin-right: -59px; */
+		margin-left: 10px !important; 
+		/* margin-right: -59px !important; ; */
 	  }
 
 	  .mobile-screen-subject-button .mobile-button-without-opt:first-child{
-		margin-right: -103px;
+		margin-right: -63px  ;
 	  }
 	  
-
+	.mobile-button-without-opt .modal-button-popup #popUp .MuiButton-outlinedPrimary{
+		margin-left: -26px;
+	}
+	.homework_timeline_container .MuiPaper-rounded{
+		border-radius: 10px;
+	}
+	.homework_right_wrapper .subject-homework-tag{
+		text-align: left;
+    	margin-top: 3px;
+	}
   }
 

@@ -1,5 +1,6 @@
 import React, { useState} from 'react';
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
+import DateRangeIcon from '@material-ui/icons/DateRange';
 import moment from 'moment';
 import {
   Grid,
@@ -9,6 +10,7 @@ import {
   Badge,
   IconButton,
   useMediaQuery,
+  
 } from '@material-ui/core';
 import {
     LocalizationProvider,
@@ -18,7 +20,7 @@ import {
   } from '@material-ui/pickers-4.2';
 import './student-homework.css';
   const MobileDatepicker = (props) =>{
-    const [dateRange, setDateRange] = useState([moment().add(6, 'days'), moment()]);
+    const [dateRange, setDateRange] = useState([moment().subtract(6, 'days'), moment()]);
     const [datePopperOpen, setDatePopperOpen] = useState(false);
 
       return(
@@ -30,6 +32,7 @@ import './student-homework.css';
           PopperProps={{ open: datePopperOpen }}
           // endText='End-date'
           value={dateRange}
+        
           // calendars='1'
           onChange={(newValue) => {
             // console.log('onChange truggered', newValue);
@@ -47,12 +50,15 @@ import './student-homework.css';
            
             return (
               <>
+              
                 <TextField
                   {...startProps}
                   inputProps={{
                     ...inputProps,
                     value: `${inputProps.value} - ${endProps.inputProps.value}`,
                     readOnly: true,
+                    endAdornment: (<DateRangeIcon />)
+                    
                   }}
                   size='small'
                    style={{ minWidth: '300px' }}
@@ -61,7 +67,7 @@ import './student-homework.css';
                     setDatePopperOpen(true);
                   }}
                 />
-               
+             
               </>
             );
           }}
