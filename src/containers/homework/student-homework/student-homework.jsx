@@ -495,7 +495,6 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                           style={{
                             width: '25px',
                             marginRight: '5px',
-                            border: '1px solid #ff6b6b',
                           }}
                           src={hwFileNotSubmitted}
                           alt='homework not submitted'
@@ -510,6 +509,8 @@ const StudentHomework = withRouter(({ history, ...props }) => {
 
             {homeworkSubmission.isOpen ? (
               <HomeworkSubmission
+                loading={loading}
+                setLoading={setLoading}
                 homeworkSubmission={homeworkSubmission}
                 setHomeworkSubmission={setHomeworkSubmission}
               />
@@ -633,6 +634,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                                     <img
                                                       style={{
                                                         width: '35px',
+                                                        height: '35px',
                                                         padding: '5px',
                                                         cursor: 'pointer',
                                                       }}
@@ -650,7 +652,11 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                                   <SvgIcon
                                                     component={() => (
                                                       <img
-                                                        className='hw_not_submitted'
+                                                        style={{
+                                                          width: '35px',
+                                                          height: '35px',
+                                                          padding: '5px',
+                                                        }}
                                                         src={hwFileNotSubmitted}
                                                         alt='homeworkunopened'
                                                       />
@@ -675,6 +681,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                                         <img
                                                           style={{
                                                             width: '35px',
+                                                            height: '35px',
                                                             padding: '5px',
                                                             cursor: 'pointer',
                                                           }}
@@ -700,6 +707,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                                           <img
                                                             style={{
                                                               width: '35px',
+                                                              height: '35px',
                                                               padding: '5px',
                                                               cursor: 'pointer',
                                                             }}
@@ -729,6 +737,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                                       <img
                                                         style={{
                                                           width: '35px',
+                                                          height: '35px',
                                                           padding: '5px',
                                                           cursor: 'pointer',
                                                         }}
