@@ -375,8 +375,8 @@ const StudentHomework = withRouter(({ history, ...props }) => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div className='message_log_wrapper'>
-          <div className='message_log_breadcrumb_wrapper'>
+        <div className='message_log_wrapper' style={{backgroundColor: '#F9F9F9'}}>
+          <div className='message_log_breadcrumb_wrapper' style={{backgroundColor: '#F9F9F9'}}>
             <CommonBreadcrumbs componentName='Homework' />
           </div>
           {!homeworkSubmission.isOpen &&
@@ -430,67 +430,67 @@ const StudentHomework = withRouter(({ history, ...props }) => {
               </Grid>
             </div>
           }
-          <div className='message_log_white_wrapper'>
+          <div className='message_log_white_wrapper' style={{marginTop: '45px'}}>
             {
               isMobile ? <MobileIconScreen /> :
 
                 !homeworkSubmission.isOpen &&
                 <div className='homework_block_wrapper'>
-                  <div className='homework_block icon-desc-container-desk'>Weekly Time table </div>
+                  <div className='homework_block icon-desc-container-desk' style={{fontSize: '16px', color: '#014b7e'}}>Weekly Time table </div>
                   <div className='icon-desc-container-desk'>
                     <SvgIcon
                       component={() => (
                         <img
-                          style={{ width: '20px', marginRight: '5px' }}
+                          style={{ width: '25px', marginRight: '5px' }}
                           src={hwGiven}
                           alt='given'
                         />
                       )}
                     />
-                    <span>HW Submitted</span>
+                    <span style={{fontSize: '16px', color: '#014b7e'}}>HW Submitted</span>
                   </div>
                   <div className='icon-desc-container-desk'>
                     <SvgIcon
                       component={() => (
                         <img
-                          style={{ width: '20px', marginRight: '5px' }}
+                          style={{ width: '25px', marginRight: '5px' }}
                           src={hwFileOpened}
                           alt='evaluated'
                         />
                       )}
                     />
-                    <span>File Opened</span>
+                    <span style={{fontSize: '16px', color: '#014b7e'}}>File Opened</span>
                   </div>
                   <div className='icon-desc-container-desk'>
                     <SvgIcon
                       component={() => (
                         <img
-                          style={{ width: '20px', marginRight: '5px' }}
+                          style={{ width: '25px', marginRight: '5px' }}
                           src={hwFileUnopened}
                           alt='submitted'
                         />
                       )}
                     />
-                    <span>File unopened</span>
+                    <span style={{fontSize: '16px', color: '#014b7e'}}>File unopened</span>
                   </div>
                   <div className='icon-desc-container-desk'>
                     <SvgIcon
                       component={() => (
                         <img
-                          style={{ width: '20px', marginRight: '5px' }}
+                          style={{ width: '25px', marginRight: '5px' }}
                           src={studentHomeworkEvaluted}
                           alt='submitted'
                         />
                       )}
                     />
-                    <span>Evaluated</span>
+                    <span style={{fontSize: '16px', color: '#014b7e'}}>Evaluated</span>
                   </div>
                   <div className='icon-desc-container-desk'>
                     <SvgIcon
                       component={() => (
                         <img
                           style={{
-                            width: '20px',
+                            width: '25px',
                             marginRight: '5px',
                             border: '1px solid #ff6b6b',
                           }}
@@ -499,7 +499,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                         />
                       )}
                     />
-                    <span>HW not submitted</span>
+                    <span style={{fontSize: '16px', color: '#014b7e'}}>HW not submitted</span>
                   </div>
                 </div>
             }
@@ -513,7 +513,13 @@ const StudentHomework = withRouter(({ history, ...props }) => {
             ) : (
                 <div className='create_group_filter_container for-mobile'>
                   {
-                    isMobile ? <StudenthomeworkMobileScreen mobileScreenResponse={messageRows} handleOpenHomework={handleOpenHomework} /> :
+                    isMobile ? <StudenthomeworkMobileScreen mobileScreenResponse={messageRows} handleOpenHomework={handleOpenHomework} 
+                    studentHomeworkData={studentHomeworkData}
+                    homeworkTimelineDisplay={homeworkTimelineDisplay}
+                    setHomeworkTimelineDisplay={setHomeworkTimelineDisplay}
+                    moduleId={moduleId}
+                    mendaterySubjects={mendaterySubjects}
+                    /> :
                       <Grid container className='homework_container' spacing={2}>
                         <Grid xs={12} lg={(studentHomeworkData.header?.is_top_performers || !homeworkTimelineDisplay) ? 9 : 12} item>
                           <Paper className={`homework_table_wrapper ${classes.root}`}>
@@ -521,7 +527,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                               className={`table table-shadow homework_table ${classes.container}`}
                             >
                               <Table stickyHeader aria-label='sticky table'>
-                                <TableHead className='view_groups_header'>
+                                <TableHead className='view_groups_header tb-header'>
                                   <TableRow>
                                     {messageRows.header?.map((headers, i) =>
                                       headers.isOptional ? (
@@ -555,6 +561,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                             {otherSubjects.length}
                                           </span>
                                           <Autocomplete
+                                          style={{color: '#FF6B6B'}}
                                             size='small'
                                             onChange={handleOtherSubject}
                                             value={selectedOtherSubjects}
@@ -589,7 +596,13 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                     >
                                       {messageRows.header?.map((headers, i) =>
                                         headers.subject_slag === 'date' ? (
-                                          <TableCell>{row.date}</TableCell>
+                                          <TableCell>
+                                            <div className="table-date">
+                                               <div className='day-icon'>
+                                                        {moment(row.date).format('dddd').split('')[0]}
+                                                    </div>
+                                            <div className="date-web">{row.date}</div>
+                                            </div></TableCell>
                                         ) : row[headers.subject_slag].isHomework ? (
                                           <TableCell
                                             align='middle'

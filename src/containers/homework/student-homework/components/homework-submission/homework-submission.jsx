@@ -98,6 +98,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const [overallRemark, setOverallRemark] = useState('');
   const [overallScore, setOverallScore] = useState('');
   const [attachmentCount, setAttachmentCount] = useState([])
+  const [calssNameWise, setClassName]= useState('')
   const handleHomeworkSubmit = () => {
 
     let count = 0;
@@ -386,9 +387,11 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
             >
               All Homeworks
             </div>
-            <div className='homework_type_item selected all-homeWorks'>
-              <div>{date}</div>
-              <div>{subjectName}</div>
+            <div className='homework_type_item selected all-homeWorks home-sub'>
+              <div className="date-sub-home">
+                <div>{date}</div>
+                <div>{subjectName}</div>
+              </div>
             </div>
           </div>
         </Grid>
@@ -404,6 +407,12 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     <Checkbox
                       onChange={() => {
                         setIsQuestionWise(!isQuestionWise);
+                        if(!isQuestionWise){
+                          setClassName('upload-wise')
+                        }else{
+                          setClassName('')
+
+                        }
                       }}
                       color='primary'
                       checked={isQuestionWise}
@@ -464,11 +473,11 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   className='homework-question-container student-view'
                   key={`homework_student_question_${index}`}
                 >
-                  <div className='homework-question'>
+                  <div className={`homework-question ${calssNameWise}`} >
                     <span className='question'>{question.question}</span>
                   </div>
                   {isQuestionWise &&
-                    <div className="questionWiseAttachmentsContainer">
+                    <div className="questionWiseAttachmentsContainer ">
                       <IconButton
                         fontSize='small'
                         id="file-icon"
