@@ -130,7 +130,7 @@
   display: flex;
   flex-direction: row;
   border-radius: 5px;
-  width: 16%; 
+  width: 10%; 
   opacity: 1;
   align-items: center;
   justify-content: center;
@@ -140,6 +140,7 @@
 .file_name_container {
   color: #014b7e;
   align-self: center;
+  // margin: auto;
 }
 .file_close {
   align-self: end;
@@ -253,14 +254,12 @@
     display: flex;
     flex-direction: row;
     border-radius: 5px;
-    width: 42%;
+    width: 40%;
     opacity: 1;
     align-items: center;
     justify-content: center;
     margin: 5px;
     font: normal normal normal 14px/16px Raleway;
-    margin-bottom: 20px;
-    // margin-left: 63px;
     float: left;
 }
 .file_close span img{
@@ -352,9 +351,9 @@ display: block !important;
 .questionWiseAttachmentsContainer{
    border-bottom: 1px solid #ff6b6b;
 }
-.homework-question-container.student-view .homework-question{
-  // border-bottom: 1px solid #ff6b6b;
-}
+// .homework-question-container.student-view .homework-question{
+//   // border-bottom: 1px solid #ff6b6b;
+// }
 
 .MuiButton-sizeSmall{
   width: 100%;

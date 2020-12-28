@@ -56,9 +56,10 @@
   text-transform: capitalize;
 }
 .homework_block {
-  color: #014b7e;
-  font-weight: 600;
+	color: #014b7e;
+	font-weight: 600;
 }
+
 .homework_block_wrapper {
   display: flex;
   width: 95%;
@@ -68,14 +69,6 @@
 }
 .not_selected{
 	position: relative;
-}
-.hw_not_submitted{
-	position: absolute;
-    top: 0;
-    right: 0;
-    border-left: 1px solid #ff6b6b;
-    border-bottom: 1px solid #ff6b6b;
-    width: 20px;
 }
 .subject-homework-details-wrapper{
     font-size: 1rem !important;
