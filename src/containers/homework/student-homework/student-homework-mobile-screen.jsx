@@ -20,6 +20,8 @@ import hwSubmitted from '../../../assets/images/hw-given.svg';
 import Divider from '@material-ui/core/Divider';
 import moment from 'moment';
 import MobileOptional from './student-homework-mobile-optional-screen';
+import HomeworkTimeline from './components/homework-timeline';
+import TopPerformerCard from './components/top-performer-card/top-performer-card';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -131,8 +133,9 @@ const StudenthomeworkMobileScreen = (props) => {
                             }
                            
                             <div className="modal-button-popup">
+                                {/* {console.log(headerName, "headerName")} */}
                             {
-                                headerName && headerName.isOptional === true ? <MobileOptional 
+                                headerName && headerName.isOptional === true && headerName.subject_slag !==undefined ? <MobileOptional 
                                 // count={ headerName.isOptional === true && headerName.subject_slag.length && optionalLength.length}
                                 subjectName={props.mobileScreenResponse.header}
                                 subject={props.mobileScreenResponse.rows}
@@ -265,6 +268,21 @@ const StudenthomeworkMobileScreen = (props) => {
                             }
 
                         </List>
+                        <Grid xs={12} lg={3} item style={{padding: '5px', marginRight: '10px'}}>
+                          <Grid className='homework_right_wrapper' container>
+                            <Grid lg={12} className='homework_right_wrapper_items' item >
+                              {(props && props.studentHomeworkData.header?.is_hw_ration && props.homeworkTimelineDisplay) &&
+                                <HomeworkTimeline setHomeworkTimelineDisplay={props.setHomeworkTimelineDisplay}
+                                  moduleId={props.moduleId} />
+                              }
+                            </Grid>
+                            <Grid lg={12} className='homework_right_wrapper_items' item>
+                              {props.studentHomeworkData.header?.is_top_performers &&
+                                <TopPerformerCard subjects={props.mendaterySubjects} />
+                              }
+                            </Grid>
+                          </Grid>
+                        </Grid>
                     </div>
                 </Grid>
 

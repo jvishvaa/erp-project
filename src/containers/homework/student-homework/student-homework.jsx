@@ -511,7 +511,13 @@ const StudentHomework = withRouter(({ history, ...props }) => {
             ) : (
                 <div className='create_group_filter_container for-mobile'>
                   {
-                    isMobile ? <StudenthomeworkMobileScreen mobileScreenResponse={messageRows} handleOpenHomework={handleOpenHomework} /> :
+                    isMobile ? <StudenthomeworkMobileScreen mobileScreenResponse={messageRows} handleOpenHomework={handleOpenHomework} 
+                    studentHomeworkData={studentHomeworkData}
+                    homeworkTimelineDisplay={homeworkTimelineDisplay}
+                    setHomeworkTimelineDisplay={setHomeworkTimelineDisplay}
+                    moduleId={moduleId}
+                    mendaterySubjects={mendaterySubjects}
+                    /> :
                       <Grid container className='homework_container' spacing={2}>
                         <Grid xs={12} lg={(studentHomeworkData.header?.is_top_performers || !homeworkTimelineDisplay) ? 9 : 12} item>
                           <Paper className={`homework_table_wrapper ${classes.root}`}>
