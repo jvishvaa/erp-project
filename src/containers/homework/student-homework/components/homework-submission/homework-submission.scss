@@ -102,7 +102,7 @@
   margin-top: 15px;
   background-color: #BCF1FF;
   color: #014b7e;
-  border: 1px solid red;
+  border: 1px solid #ff6b6b;
   border-radius: 10px;
   font-size: 16px;
   width: 70%;
@@ -251,6 +251,12 @@
   .homework_type{
     display: flex !important;
   }
+  .checkWrapper{
+    margin-left: 54px;
+  }
+  .homework_block_wrapper_submit{
+    display: block;
+  }
   .homework_type_item{
     width: 100%;
     border: 1px solid #ff6b6b;
@@ -299,7 +305,7 @@ width: 166px;
 }
 .homework_submit_wrapper{
   height: auto !important;
-  width: 346px;
+  width: 335px;
 
 }
 .custom_button_master{ 
@@ -319,9 +325,9 @@ width: 166px;
   display: block !important;
 }
 
-.questionWiseAttachmentsContainer {
-  float: right !important;
-}
+// .questionWiseAttachmentsContainer {
+//   float: right !important;
+// }
 .homework-question-container.student-view .homework-question {
   top: 42px;
   
@@ -338,11 +344,25 @@ width: 166px;
 .MuiIconButton-label:after{
   margin-left: 244px !important;
 }
-.questionWiseAttachmentsContainer:after {
-  float: right !important;
+// .questionWiseAttachmentsContainer:after {
+//   float: right !important;
+// }
+// .questionWiseAttachmentsContainer::after {
+// display: block !important;
+// }
+
+.create_group_filter_container .MuiGrid-grid-lg-10{
+  padding: 20px !important;
 }
-.questionWiseAttachmentsContainer::after {
-display: block !important;
+.homework-question{
+  border-bottom: 1px solid #ff6b6b;
+}
+.upload-wise{
+  border-bottom: none;
+}
+
+.MuiSvgIcon-colorPrimary {
+  color: none; 
 }
 
 .homework_type_wrapper{
@@ -367,9 +387,18 @@ display: block !important;
 // }
 .questionWiseAttachmentsContainer{
    border-bottom: 1px solid #ff6b6b;
+   margin-left: 7px;
+    margin-right: 0px
 }
-.homework-question-container.student-view .homework-question{
-  // border-bottom: 1px solid #ff6b6b;
+.MuiGrid-spacing-xs-2 > .MuiGrid-item {
+  padding: 0px; 
+}
+.homework_type_wrapper {
+  margin-top: 25px;
+}
+
+.home-sub{
+  margin-left: 72px !important;
 }
 
 // .MuiButton-sizeSmall{

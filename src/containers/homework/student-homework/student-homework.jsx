@@ -383,59 +383,61 @@ const StudentHomework = withRouter(({ history, ...props }) => {
             <div className='create_group_filter_container'>
               <Grid container spacing={5} className='message_log_container'>
                 {
-                  isMobile ? <div className="mobile-date-picker"><MobileDatepicker
-                    onChange={(date) => handleEndDateChange(date)}
-                    handleStartDateChange={handleStartDateChange}
-                    handleEndDateChange={handleEndDateChange} /></div> :
+                  <div className="mobile-date-picker">
+                    <MobileDatepicker
+                      onChange={(date) => handleEndDateChange(date)}
+                      handleStartDateChange={handleStartDateChange}
+                      handleEndDateChange={handleEndDateChange} />
+                  </div>
 
-                    <MuiPickersUtilsProvider utils={MomentUtils} className='date_provider'>
-                      <Grid item xs={12} sm={3}>
-                        <KeyboardDatePicker
-                          // clearable
-                          // margin='normal'
-                          id='date-picker-dialog'
-                          label='Start Date'
-                          className='message_log_date_piker'
-                          format='YYYY-MM-DD'
-                          value={startDate}
-                          onChange={(date) => handleStartDateChange(date)}
-                          // maxDate={new Date()}
-                          KeyboardButtonProps={{
-                            'aria-label': 'change date',
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={3}>
+                  // <MuiPickersUtilsProvider utils={MomentUtils} className='date_provider'>
+                  //   <Grid item xs={12} sm={3}>
+                  //     <KeyboardDatePicker
+                  //       // clearable
+                  //       // margin='normal'
+                  //       id='date-picker-dialog'
+                  //       label='Start Date'
+                  //       className='message_log_date_piker'
+                  //       format='YYYY-MM-DD'
+                  //       value={startDate}
+                  //       onChange={(date) => handleStartDateChange(date)}
+                  //       // maxDate={new Date()}
+                  //       KeyboardButtonProps={{
+                  //         'aria-label': 'change date',
+                  //       }}
+                  //     />
+                  //   </Grid>
+                  //   <Grid item xs={12} sm={3}>
 
-                        <KeyboardDatePicker
-                          margin='normal'
-                          id='date-picker-dialog'
-                          label='End Date'
-                          className='message_log_date_piker'
-                          format='YYYY-MM-DD'
-                          value={endDate}
-                          onChange={(date) => handleEndDateChange(date)}
-                          // maxDate={new Date()}
-                          KeyboardButtonProps={{
-                            'aria-label': 'change date',
-                          }}
-                        />
+                  //     <KeyboardDatePicker
+                  //       margin='normal'
+                  //       id='date-picker-dialog'
+                  //       label='End Date'
+                  //       className='message_log_date_piker'
+                  //       format='YYYY-MM-DD'
+                  //       value={endDate}
+                  //       onChange={(date) => handleEndDateChange(date)}
+                  //       // maxDate={new Date()}
+                  //       KeyboardButtonProps={{
+                  //         'aria-label': 'change date',
+                  //       }}
+                  //     />
 
 
-                      </Grid>
-                    </MuiPickersUtilsProvider>
+                  //   </Grid>
+                  // </MuiPickersUtilsProvider>
                 }
               </Grid>
             </div>
           }
           <div className='message_log_white_wrapper'>
             {
-              isMobile ? <MobileIconScreen  /> :
+              isMobile ? <MobileIconScreen /> :
 
                 !homeworkSubmission.isOpen &&
                 <div className='homework_block_wrapper'>
-                  <div className='homework_block'>Weekly Time table </div>
-                  <div className='icon-desc-container'>
+                  <div className='homework_block icon-desc-container-desk'>Weekly Time table </div>
+                  <div className='icon-desc-container-desk'>
                     <SvgIcon
                       component={() => (
                         <img
@@ -447,7 +449,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                     />
                     <span>HW Submitted</span>
                   </div>
-                  <div className='icon-desc-container'>
+                  <div className='icon-desc-container-desk'>
                     <SvgIcon
                       component={() => (
                         <img
@@ -459,7 +461,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                     />
                     <span>File Opened</span>
                   </div>
-                  <div className='icon-desc-container'>
+                  <div className='icon-desc-container-desk'>
                     <SvgIcon
                       component={() => (
                         <img
@@ -471,7 +473,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                     />
                     <span>File unopened</span>
                   </div>
-                  <div className='icon-desc-container'>
+                  <div className='icon-desc-container-desk'>
                     <SvgIcon
                       component={() => (
                         <img
@@ -483,7 +485,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                     />
                     <span>Evaluated</span>
                   </div>
-                  <div className='icon-desc-container'>
+                  <div className='icon-desc-container-desk'>
                     <SvgIcon
                       component={() => (
                         <img

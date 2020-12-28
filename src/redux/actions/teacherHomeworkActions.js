@@ -23,7 +23,9 @@ export const teacherHomeworkActions = {
   FETCH_SUBMITTED_HOMEWORK_DETAILS_REQUEST: 'FETCH_SUBMITTED_HOMEWORK_DETAILS_REQUEST',
   FETCH_SUBMITTED_HOMEWORK_DETAILS_SUCCESS: 'FETCH_SUBMITTED_HOMEWORK_DETAILS_SUCCESS',
   FETCH_SUBMITTED_HOMEWORK_DETAILS_FAILURE: 'FETCH_SUBMITTED_HOMEWORK_DETAILS_FAILURE',
-  ADD_HOMEWORK_SUCCESS_COORD:'ADD_HOMEWORK_SUCCESS_COORD'
+  ADD_HOMEWORK_SUCCESS_COORD:'ADD_HOMEWORK_SUCCESS_COORD',
+  SET_TEACHER_HOMEWORK_ID_FROM_CORD:"SET_TEACHER_HOMEWORK_ID_FROM_CORD",
+  SET_TEACHER_HOMEWORK_ID_FROM_CORD_SUCCESS:"SET_TEACHER_HOMEWORK_ID_FROM_CORD_SUCCESS"
 };
 
 const {
@@ -44,6 +46,8 @@ const {
   FETCH_SUBMITTED_HOMEWORK_DETAILS_SUCCESS,
   FETCH_SUBMITTED_HOMEWORK_DETAILS_FAILURE,
   ADD_HOMEWORK_SUCCESS_COORD,
+  SET_TEACHER_HOMEWORK_ID_FROM_CORD,
+  SET_TEACHER_HOMEWORK_ID_FROM_CORD_SUCCESS,
 } = teacherHomeworkActions;
 
 export const addHomeWork = (data) => async (dispatch) => {
@@ -248,6 +252,21 @@ export const fetchCoordinateTeacherHomeworkDetails = (moduleId, startDate, endDa
   } catch (e) {
     // console.log('error ', e);
     dispatch({ type: FETCH_TEACHER_HOMEWORK_FAILURE });
+  }
+};
+
+
+export const setTeacherUserIDCoord=(data) => async (dispatch) => {
+  dispatch({ type: SET_TEACHER_HOMEWORK_ID_FROM_CORD });
+  try {
+    dispatch({ type: SET_TEACHER_HOMEWORK_ID_FROM_CORD_SUCCESS,
+      data: data.user_id
+     });
+
+    return 'success';
+  } catch (e) {
+    dispatch({ type: ADD_HOMEWORK_FAILURE });
+    throw new Error(e);
   }
 };
 
