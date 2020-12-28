@@ -20,7 +20,7 @@ import {
   } from '@material-ui/pickers-4.2';
 import './student-homework.css';
   const MobileDatepicker = (props) =>{
-    const [dateRange, setDateRange] = useState([moment().add(6, 'days'), moment()]);
+    const [dateRange, setDateRange] = useState([moment().subtract(6, 'days'), moment()]);
     const [datePopperOpen, setDatePopperOpen] = useState(false);
 
       return(
@@ -57,7 +57,7 @@ import './student-homework.css';
                     ...inputProps,
                     value: `${inputProps.value} - ${endProps.inputProps.value}`,
                     readOnly: true,
-                    // endAdornment: (<DateRangeIcon />)
+                    endAdornment: (<DateRangeIcon />)
                     
                   }}
                   size='small'
