@@ -112,7 +112,7 @@ const StudenthomeworkMobileScreen = (props) => {
 
 
 
-    console.log(props.mobileScreenResponse, " props.mobileScreenResponse")
+    // console.log(props.mobileScreenResponse, " props.mobileScreenResponse")
     return (
         <div className="mobile-screen-container">
             <div className="mobile-screen-subject-button" style={{ display: 'flex', justifyContent: 'flex-start' }}>
@@ -222,6 +222,15 @@ const StudenthomeworkMobileScreen = (props) => {
                                                             <SvgIcon
                                                                 component={() => (
                                                                     <img
+                                                                    onClick={() => {
+                                                                        props.handleOpenHomework(
+                                                                            name.subject.homeworkId,
+                                                                            name.date,
+                                                                            name.subName,
+                                                                            1
+
+                                                                        )
+                                                                    }}
                                                                         style={{ width: '25px', marginRight: '5px' }}
                                                                         src={hwFileUnopened}
                                                                         alt='evaluated'

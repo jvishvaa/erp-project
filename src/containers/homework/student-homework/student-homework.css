@@ -21,6 +21,9 @@
   /* .message_log_breadcrumb_wrapper  .create_group_filter_container{
 	background: #F9F9F9;
   } */
+  .message_log_white_wrapper{
+	  margin-top: 45px
+  }
   .for-mobile .subject-homework-details-wrapper{
 	margin-top: 3px;
   }
@@ -212,6 +215,12 @@ font-weight: 600;
 }
 @media only screen and (max-width: 768px) {
 	/* For mobile phones: */
+	.hide-mob-icon{
+		display: none;
+	}
+	.message_log_white_wrapper {
+		margin-top: 1px;
+	}
 	.group-a{
 		background: #F9F9F9 !important; 
 

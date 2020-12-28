@@ -7,9 +7,9 @@ import Expired from '../../../assets/images/Expired-small.svg';
 import hwSubmitted from '../../../assets/images/File-submitted-small.svg';
 import './student-homework.css';
 
-const MobileIconScreen = () =>{
+const MobileIconScreen = (props) =>{
     return(
-        <div className="mobile-icon">
+        <div className={`mobile-icon ${props.hidemobileIcon}`} >
             <div className="mobile-icon-container">
                 <div className="icon-file-unopened">
                 <SvgIcon

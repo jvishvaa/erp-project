@@ -97,6 +97,8 @@ const StudentHomework = withRouter(({ history, ...props }) => {
   const [moduleId, setModuleId] = useState();
   const [modulePermision, setModulePermision] = useState(true);
   const [homeworkTimelineDisplay, setHomeworkTimelineDisplay] = useState(true)
+  const[hidemobileIcon, setHidemobileIcon] =  useState('');
+
 
   //   header: ['date', 'english', 'history', 'math', 'other', 'science'],
   //   rows: [
@@ -291,6 +293,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
   };
 
   const handleOpenHomework = (id, classDate, subjectName, status) => {
+    setHidemobileIcon("hide-mob-icon")
     setHomeworkSubmission({
       isOpen: true,
       homeworkId: id,
@@ -430,9 +433,9 @@ const StudentHomework = withRouter(({ history, ...props }) => {
               </Grid>
             </div>
           }
-          <div className='message_log_white_wrapper' style={{marginTop: '45px'}}>
+          <div className='message_log_white_wrapper'>
             {
-              isMobile ? <MobileIconScreen /> :
+              isMobile ? <MobileIconScreen hidemobileIcon={hidemobileIcon} /> :
 
                 !homeworkSubmission.isOpen &&
                 <div className='homework_block_wrapper'>
