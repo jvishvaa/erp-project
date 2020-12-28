@@ -22,7 +22,7 @@
 	background: #F9F9F9;
   } */
   .for-mobile .subject-homework-details-wrapper{
-	margin-top: 13px;
+	margin-top: 3px;
   }
   .create_group_filter_container {
 	padding: 0px 2.5%;
@@ -139,7 +139,7 @@
   border-radius: 15px;
   margin-top: 20px;
   margin-left: 37px;
-  width: 1006px;
+  /* width: 1006px; */
   height: 76px;
 
 
@@ -196,7 +196,7 @@ font-weight: 600;
 }
 .homework_right_wrapper{
 	padding: 0%;
-	margin-top: -110px;
+	/* margin-top: -110px; */
     margin-left: 5px;
 }
 .homework_right_wrapper_items{
