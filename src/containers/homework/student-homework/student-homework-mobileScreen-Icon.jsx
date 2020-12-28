@@ -9,7 +9,9 @@ import './student-homework.css';
 
 const MobileIconScreen = (props) =>{
     return(
-        <div className={`mobile-icon ${props.hidemobileIcon}`} >
+        <>
+        {!props.isOpen &&
+        <div className={`mobile-icon`} >
             <div className="mobile-icon-container">
                 <div className="icon-file-unopened">
                 <SvgIcon
@@ -76,6 +78,8 @@ const MobileIconScreen = (props) =>{
                 </div>
             </div>
         </div>
+}
+        </>
     )
 }
 
