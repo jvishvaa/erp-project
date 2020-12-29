@@ -43,9 +43,9 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
   };
   const getRating = async () => {
     try {
-      let request = `${endpoints.homeworkStudent.getRating}?module_id=${moduleId}`
+      let request = `${endpoints.homeworkStudent.getRating}?module_id=${moduleId}`;
       if (selectedDays) {
-        request += `&duration=${selectedDays.substring(0, 2)}`
+        request += `&duration=${selectedDays.substring(0, 2)}`;
       }
       const result = await axiosInstance.get(request);
       if (result.data.status_code === 200) {
@@ -61,7 +61,7 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
           setSubmittedHomework(result.data.data.hw_submitted);
           setHomeworkTimelineDisplay(true);
         } else {
-          setHomeworkTimelineDisplay(false)
+          setHomeworkTimelineDisplay(false);
         }
       } else {
         setAlert('error', result.data.message);
@@ -69,7 +69,7 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
       }
     } catch (error) {
       setAlert('error', error.message);
-      setHomeworkTimelineDisplay(false)
+      setHomeworkTimelineDisplay(false);
     }
   };
 
@@ -107,7 +107,7 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
               <SvgIcon
                 component={() => (
                   <img
-                  className="static-media"
+                    className='static-media'
                     style={{
                       width: '25px',
                       height: '25px',
@@ -144,7 +144,7 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
               <SvgIcon
                 component={() => (
                   <img
-                    className="static-media"
+                    className='static-media'
                     style={{
                       width: '25px',
                       height: '25px',
@@ -180,8 +180,8 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
             <Card className='homework_details_timeline-card'>
               <SvgIcon
                 component={() => (
-                  <img  
-                  className="static-media"
+                  <img
+                    className='static-media'
                     style={{
                       width: '25px',
                       height: '25px',
@@ -210,7 +210,7 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
                   className='homework_timeline_card_info'
                   component='p'
                 >
-                  {Ratings.map((subject, index) => (
+                  {/* {Ratings.map((subject, index) => (
                     <div
                       className='subject_rating_wrapper'
                       key={`ratiting_subject_row${index}`}
@@ -222,24 +222,24 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
                         </span>
                       </span>
                       <span className="starContainer">
-                        {/* <span className='subject_rating'>{subject.rating}/5</span> */}
-                        {[...Array(subject.rating)].map((e, i) => (
-                          <SvgIcon
-                            component={() => (
-                              <img
-                                style={{
-                                  width: '20px',
-                                  height: '20px',
-                                }}
-                                src={Star}
-                                alt='submitted'
-                              />
-                            )}
-                          />))
-                        }
+                    <span className='subject_rating'>{subject.rating}/5</span> 
+                      {[...Array(subject.rating)].map((e,i)=>(
+                      <SvgIcon
+                        component={() => (
+                          <img
+                            style={{
+                              width: '20px',
+                              height: '20px',
+                            }}
+                            src={Star}
+                            alt='submitted'
+                          />
+                        )}
+                      />))
+                      }
                       </span>
                     </div>
-                  ))}
+                  ))} */}
                 </Typography>
               </CardContent>
             </Card>
