@@ -51,11 +51,11 @@ const SubmittedQuestion = ({
   }, [scrollableContainer.current]);
 
   const onEvaluate = () => {
-    if (correctedQuestions.length < question.submitted_files.length) {
-      setAlert('error', 'Please evaluate all attachments');
-    } else {
-      evaluateAnswer();
-    }
+    // if (correctedQuestions.length < question.submitted_files.length) {
+    //   setAlert('error', 'Please evaluate all attachments');
+    // } else {
+    evaluateAnswer();
+    // }
   };
 
   return (
