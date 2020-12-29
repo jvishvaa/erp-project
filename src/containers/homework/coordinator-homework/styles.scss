@@ -19,6 +19,31 @@
 	transform: translateY(-50%);
 	background-color: #ff6b6b;
   } */
+  // .message_log_wrapper.teacher-homework .homework_block_wrapper{
+  //   width: 95% !important;
+  // }
+  // .homework_block_wrapper{
+  //   margin: 30px !important;
+  // }
+  .homework_block_wrapper{
+    border: 1px solid #DBDBDB !important;
+    border-radius: 15px !important;
+  }
+  .message_log_white_wrapper .date-container fieldset{
+    border-radius: 10px;
+  }
+  .message_log_white_wrapper .date-container input {
+    font-size: 15px;
+    color: #014B7E !important;
+
+  }
+  .date-container label{
+    color: #014B7E !important;
+    font-weight: 600;
+  }
+  .date-container .MuiPickersDateRangePickerInput-root   .MuiFormHelperText-marginDense{
+    display: none;
+  }
 .message_log_wrapper {
   &.teacher-homework {
     .date-container {
@@ -63,7 +88,7 @@
     }
     .homework_block_wrapper {
       display: flex;
-      width: 100%;
+      width: 100% !important;
       padding-bottom: 1%;
       margin: 20px 0;
       border: 1px solid #dbdbdb;
@@ -520,3 +545,12 @@
       display: flex;
       flex-direction: column-reverse; 
   }
+
+.message_log_wrapper .create_group_filter_container .homework_block_wrapper .MuiGrid-grid-xs-12{
+  display: flex !important;
+}
+
+// .block-wrapper{
+//     margin: 0 auto !important;
+//     margin-top: 30px !important;
+// }
