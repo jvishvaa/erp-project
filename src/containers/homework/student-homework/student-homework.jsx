@@ -98,6 +98,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
   const [modulePermision, setModulePermision] = useState(true);
   const [homeworkTimelineDisplay, setHomeworkTimelineDisplay] = useState(true)
 
+
   //   header: ['date', 'english', 'history', 'math', 'other', 'science'],
   //   rows: [
   // 	{
@@ -430,9 +431,9 @@ const StudentHomework = withRouter(({ history, ...props }) => {
               </Grid>
             </div>
           }
-          <div className='message_log_white_wrapper' style={{marginTop: '45px'}}>
+          <div className='message_log_white_wrapper'>
             {
-              isMobile ? <MobileIconScreen /> :
+              isMobile ? <MobileIconScreen  isOpen={homeworkSubmission.isOpen} /> :
 
                 !homeworkSubmission.isOpen &&
                 <div className='homework_block_wrapper'>
@@ -492,7 +493,6 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                           style={{
                             width: '25px',
                             marginRight: '5px',
-                            border: '1px solid #ff6b6b',
                           }}
                           src={hwFileNotSubmitted}
                           alt='homework not submitted'
@@ -507,6 +507,8 @@ const StudentHomework = withRouter(({ history, ...props }) => {
 
             {homeworkSubmission.isOpen ? (
               <HomeworkSubmission
+                loading={loading}
+                setLoading={setLoading}
                 homeworkSubmission={homeworkSubmission}
                 setHomeworkSubmission={setHomeworkSubmission}
               />
@@ -630,6 +632,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                                     <img
                                                       style={{
                                                         width: '35px',
+                                                        height: '35px',
                                                         padding: '5px',
                                                         cursor: 'pointer',
                                                       }}
@@ -647,7 +650,11 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                                   <SvgIcon
                                                     component={() => (
                                                       <img
-                                                        className='hw_not_submitted'
+                                                        style={{
+                                                          width: '35px',
+                                                          height: '35px',
+                                                          padding: '5px',
+                                                        }}
                                                         src={hwFileNotSubmitted}
                                                         alt='homeworkunopened'
                                                       />
@@ -672,6 +679,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                                         <img
                                                           style={{
                                                             width: '35px',
+                                                            height: '35px',
                                                             padding: '5px',
                                                             cursor: 'pointer',
                                                           }}
@@ -697,6 +705,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                                           <img
                                                             style={{
                                                               width: '35px',
+                                                              height: '35px',
                                                               padding: '5px',
                                                               cursor: 'pointer',
                                                             }}
@@ -726,6 +735,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                                       <img
                                                         style={{
                                                           width: '35px',
+                                                          height: '35px',
                                                           padding: '5px',
                                                           cursor: 'pointer',
                                                         }}

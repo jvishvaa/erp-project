@@ -7,9 +7,11 @@ import Expired from '../../../assets/images/Expired-small.svg';
 import hwSubmitted from '../../../assets/images/File-submitted-small.svg';
 import './student-homework.css';
 
-const MobileIconScreen = () =>{
+const MobileIconScreen = (props) =>{
     return(
-        <div className="mobile-icon">
+        <>
+        {!props.isOpen &&
+        <div className={`mobile-icon`} >
             <div className="mobile-icon-container">
                 <div className="icon-file-unopened">
                 <SvgIcon
@@ -76,6 +78,8 @@ const MobileIconScreen = () =>{
                 </div>
             </div>
         </div>
+}
+        </>
     )
 }
 

@@ -2,9 +2,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
 
 
-// .homework_submit_wrapper .homework-question {
-//   border-bottom: 1px solid #ff6b6b;
-// }
+.homework_submit_wrapper .homework-question {
+  border-bottom: 1px solid #ff6b6b;
+}
 .homework_type_item {
   border: 1px solid #ff6b6b;
   border-radius: 10px;
@@ -134,7 +134,7 @@
   display: flex;
   flex-direction: row;
   border-radius: 5px;
-  width: 16%; 
+  width: 10%; 
   opacity: 1;
   align-items: center;
   justify-content: center;
@@ -362,17 +362,17 @@ width: 166px;
   border-bottom: 1px solid #ff6b6b;
 }
 .upload-wise{
-  border-bottom: none;
+  border-bottom: none !important;
 }
 
 .MuiSvgIcon-colorPrimary {
   color: none; 
 }
 
-.homework_type_wrapper{
-  // margin: 0 auto !important;
+// .homework_type_wrapper{
+//   // margin: 0 auto !important;
  
-}
+// }
 #file-icon{
   margin-left: 275px ;
 }
@@ -405,6 +405,9 @@ width: 166px;
   margin-left: 72px !important;
 }
 
+.homework_submit_wrapper .commentBoxStyle{
+  margin-top: 50px;
+}
 // .MuiButton-sizeSmall{
 //   width: 100%;
 // }
