@@ -303,10 +303,10 @@ font-weight: 600;
     	justify-content: flex-start;
 	  }
 	  .mobile-screen-subject-button button:focus {
-		border: 1px solid #FF6B6B;
-		background: #FF6B6B;
-		color: white;
-		border-radius: 10px;
+		border: 1px solid #FF6B6B !important;
+		background: #FF6B6B !important;
+		color: white !important;
+		border-radius: 10px !important;
 	  }
 	  .mobile-screen-subject-button button:blur(0) {
 		border: 1px solid #FF6B6B;
@@ -507,7 +507,7 @@ font-weight: 600;
 		  margin-top: 10px;
 	  }
 	  .mobile-screen-subject-button .mobile-button-without-opt .sub-btn .mb-btn:last-child{
-		margin-left: 10px !important; 
+		margin-left: 5px !important; 
 		/* margin-right: -59px !important; ; */
 	  }
 

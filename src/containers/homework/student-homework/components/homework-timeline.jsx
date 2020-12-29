@@ -81,7 +81,7 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
     <>
       <div className='subject-homework-details-wrapper'>
         <div className='subject-homework-tag-wrapper'>
-          <div className='subject-homework-tag'>Rating</div>
+          <div className='subject-homework-tag'>Homework timeline</div>
           <Autocomplete
             size='small'
             onChange={handleDayChange}
