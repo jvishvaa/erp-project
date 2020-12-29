@@ -29,16 +29,16 @@ const HomeworkCard = ({
     <Grid item xs={12} sm={4}>
       <Paper
         className='hwcard'
-        style={{ height, display: 'flex', flexDirection: 'column' }}
+        style={{ height, display: 'flex', flexDirection: 'column', position: 'relative' }}
       >
+        <div className='close-icon'>
+          <IconButton onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        </div>
         <div className='cardHeader'>
           <div className='subjectName'>{subject}</div>
           <div>{date}</div>
-          <div>
-            <IconButton onClick={onClose}>
-              <CloseIcon />
-            </IconButton>
-          </div>
         </div>
         <div className='divider'></div>
         {view === 'evaluationStats' && (

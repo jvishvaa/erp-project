@@ -9,6 +9,7 @@ import {
   Grid,
   useMediaQuery,
 } from '@material-ui/core';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import cuid from 'cuid';
 import { connect } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
@@ -46,6 +47,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const history = useHistory();
   const params = useParams();
+  const [queIndexCounter, setQueIndexCounter] = useState(0);
   const themeContext = useTheme();
 
   const validateHomework = () => {
@@ -78,7 +80,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
   const handleAddHomeWork = async () => {
     const isFormValid = validateHomework();
     if (isFormValid) {
-      console.log('submitting form');
+      // console.log('submitting form');
       const reqObj = {
         name,
         description,
@@ -93,7 +95,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
       };
       try {
         const response = await onAddHomework(reqObj);
-        console.log('add response ', response);
+        // console.log('add response ', response);
         setAlert('success', 'Homework added');
         history.push('/homework/teacher');
       } catch (error) {
@@ -212,13 +214,40 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
                 removeQuestion={removeQuestion}
               />
             ))}
-            <Grid item xs={12}>
+
+            <Grid container item xs={12} spacing={1}>
+              <Grid item xs={12} md={6} className='form-field'>
+                <div className='finish-btn-container'>
+                  <Button
+                    startIcon={<AddCircleOutlineIcon />}
+                    onClick={() => {
+                      setQueIndexCounter(queIndexCounter + 1);
+                      addNewQuestion(queIndexCounter + 1);
+                    }}
+                    title='Add Question'
+                    className='btn add-quesiton-btn outlined-btn'
+                    color='primary'
+                    variant="outlined"
+                  >
+                    Add another question
+                  </Button>
+                </div>
+              </Grid>
+              <Grid item xs={12} md={6} className='form-field'>
+                <div className='finish-btn-container'>
+                  <Button className='btn' color='primary' onClick={handleAddHomeWork}>
+                    Finish
+                  </Button>
+                </div>
+              </Grid>
+            </Grid>
+            {/* <Grid item xs={12}>
               <div className='finish-btn-container'>
                 <Button className='btn' color='primary' onClick={handleAddHomeWork}>
                   Finish
                 </Button>
               </div>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Grid>
       </div>

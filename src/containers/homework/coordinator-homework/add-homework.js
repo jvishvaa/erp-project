@@ -8,9 +8,11 @@ import {
   Typography,
   Grid,
 } from '@material-ui/core';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import cuid from 'cuid';
 import { connect } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
+import { useTheme } from '@material-ui/core/styles';
 import Layout from '../../Layout';
 import QuestionCard from '../../../components/question-card';
 import { addHomeWorkCoord, setSelectedHomework } from '../../../redux/actions';
@@ -41,9 +43,11 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
       penTool: false,
     },
   ]);
+  const [queIndexCounter, setQueIndexCounter] = useState(0);
   const { setAlert } = useContext(AlertNotificationContext);
   const history = useHistory();
   const params = useParams();
+  const themeContext = useTheme();
 
   const validateHomework = () => {
     let isFormValid = true;
@@ -87,13 +91,13 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
           delete qObj.id;
           return qObj;
         }),
-        user_id:params.coord_selected_teacher_id,
+        user_id: params.coord_selected_teacher_id,
       };
       try {
         const response = await onAddHomework(reqObj);
         // console.log('add response bycoordinator====== ', response);
         setAlert('success', 'Homework added');
-        history.push('/homework/coordinator');
+        history.push('/homework/coordinator/');
       } catch (error) {
         setAlert('error', 'Failed to add homework');
       }
@@ -106,7 +110,7 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
       {
         id: cuid(),
         question: '',
-        attachments: '',
+        attachments: [],
         is_attachment_enable: false,
         max_attachment: 5,
         penTool: false,
@@ -120,6 +124,9 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
       ...prevState.slice(0, index),
       ...prevState.slice(index + 1),
     ]);
+    // if (questions && questions.length > 0) {
+    //   setQueIndexCounter(questions.length - 1);
+    // }
   };
 
   const handleChange = (index, field, value) => {
@@ -147,8 +154,15 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
         <Grid container className='add-homework-inner-container'>
           <Grid item xs={12} className='add-homework-title-container' md={4}>
             <div className='nav-cards-container'>
-              <div className='nav-card'>
-                <div className='header-text text-center'>All Homeworks</div>
+              <div
+                className='nav-card'
+                onClick={() => {
+                  history.push('/homework/coordinator/');
+                }}
+              >
+                <div className='header-text text-center non_selected_homework_type_item'>
+                  All Homeworks
+                </div>
               </div>
               <div className='nav-card'>
                 <div className='header-text text-center'>{params.date}</div>
@@ -205,13 +219,33 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
                 removeQuestion={removeQuestion}
               />
             ))}
-            <Grid item xs={12}>
-              <div className='finish-btn-container'>
-                <Button className='btn' color='primary' onClick={handleAddHomeWork}>
-                  Finish
-                </Button>
-              </div>
-            </Grid>
+
+            <Grid container item xs={12} spacing={1}>
+              <Grid item xs={12} md={6} className='form-field'>
+                <div className='finish-btn-container'>
+                  <Button
+                    startIcon={<AddCircleOutlineIcon />}
+                    onClick={() => {
+                      setQueIndexCounter(queIndexCounter + 1);
+                      addNewQuestion(queIndexCounter + 1);
+                    }}
+                    title='Add Question'
+                    className='btn add-quesiton-btn outlined-btn'
+                    color='primary'
+                    variant='outlined'
+                  >
+                    Add another question
+                  </Button>
+                </div>
+              </Grid>
+              <Grid item xs={12} md={6} className='form-field'>
+                <div className='finish-btn-container'>
+                  <Button className='btn' color='primary' onClick={handleAddHomeWork}>
+                    Finish
+                  </Button>
+                </div>
+              </Grid>
+            </Grid>            
           </Grid>
         </Grid>
       </div>

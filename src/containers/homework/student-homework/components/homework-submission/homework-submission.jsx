@@ -8,8 +8,9 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
+
 import {
   Grid,
   TextField,
@@ -42,6 +43,10 @@ import Attachment from '../../../teacher-homework/attachment';
 import {
   uploadFile,
 } from '../../../../../redux/actions';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { set } from 'lodash';
+
+
 
 const useStyles = makeStyles((theme) => ({
   attachmentIcon: {
@@ -73,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
 
 const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const classes = useStyles();
-  const { homeworkSubmission, setHomeworkSubmission } = props || {};
+  const { homeworkSubmission, setHomeworkSubmission, setLoading } = props || {};
   const { isOpen, subjectId, date, subjectName } = homeworkSubmission || {};
   const [isQuestionWise, setIsQuestionWise] = useState(false);
   const [allQuestionAttachment, setAllQuestionAttachment] = useState([]);
@@ -93,6 +98,9 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const [desc, setDesc] = useState('');
   const [overallRemark, setOverallRemark] = useState('');
   const [overallScore, setOverallScore] = useState('');
+  const [attachmentCount, setAttachmentCount] = useState([]);
+  const [maxCount, setMaxCount] = useState(0);
+  const [calssNameWise, setClassName]= useState('')
   const handleHomeworkSubmit = () => {
 
     let count = 0;
@@ -111,21 +119,21 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
       "homework": homeworkSubmission.homeworkId,
       "is_question_wise": isQuestionWise,
       "questions": isQuestionWise ? attachmentData : [{ 'attachments': bulkData }],
-      "comment" : comment
+      "comment": comment
     }
 
     if (count !== 0) {
       axiosInstance.post(`${endpoints.homeworkStudent.submitHomework}`, requestData)
         .then(result => {
           if (result.data.status_code === 201) {
-            setAlert('success', result.data.message)
-            handleHomeworkCancel()
+            setAlert('success', result.data.message);
+            handleHomeworkCancel();
           }
           else
-            setAlert('error', result.data.message)
+            setAlert('error', result.data.message);
         })
         .catch(error => {
-          setAlert('error', error.message)
+          setAlert('error', error.message);
         })
     }
     else
@@ -137,6 +145,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   };
 
   useEffect(() => {
+    let maxVal=0;
     axiosInstance
       .get(`/academic/${homeworkSubmission.homeworkId}/hw-questions/?hw_status=${homeworkSubmission.status}&module_id=1`)
       .then((result) => {
@@ -145,137 +154,193 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
             setSubjectQuestions(result.data.data.hw_questions);
             setDesc(result.data.data.description);
             for (let i = 0; i < result.data.data.hw_questions.length; i++) {
-              attachmentDataDisplay.push([])
+              attachmentCount.push(0);
+              attachmentDataDisplay.push([]);
               attachmentData.push(
                 {
                   "homework_question": result.data.data.hw_questions[i].id,
                   "attachments": []
                 }
-              )
+              );
+              maxVal += result.data.data.hw_questions[i].max_attachment;
             }
+            setMaxCount(maxVal);
           } else if (homeworkSubmission.status === 2 || homeworkSubmission.status === 3) {
             if (result.data.data.is_question_wise) {
-              setIsBulk(false)
-              setSubjectQuestions(result.data.data.hw_questions)
+              setIsBulk(false);
+              setSubjectQuestions(result.data.data.hw_questions);
               if (homeworkSubmission.status === 3) {
-                setOverallRemark(result.data.data.overall_remark)
-                setOverallScore(result.data.data.score)
+                setOverallRemark(result.data.data.overall_remark);
+                setOverallScore(result.data.data.score);
               }
             } else {
-              setIsBulk(true)
-              setSubjectQuestions(result.data.data.hw_questions.questions)
+              setIsBulk(true);
+              setSubjectQuestions(result.data.data.hw_questions.questions);
               if (homeworkSubmission.status === 2) {
-                setSubmittedEvaluatedFilesBulk(result.data.data.hw_questions.submitted_files)
+                setSubmittedEvaluatedFilesBulk(result.data.data.hw_questions.submitted_files);
               } else if (homeworkSubmission.status === 3) {
-                setOverallRemark(result.data.data.overall_remark)
-                setOverallScore(result.data.data.score)
-                setSubmittedEvaluatedFilesBulk(result.data.data.hw_questions.evaluated_files)
-              }              
+                setOverallRemark(result.data.data.overall_remark);
+                setOverallScore(result.data.data.score);
+                setSubmittedEvaluatedFilesBulk(result.data.data.hw_questions.evaluated_files);
+              }
             }
           }
         } else {
-          setAlert('error', result.data.message)
+          setAlert('error', result.data.message);
         }
       })
       .catch((error) => {
-        setAlert('error', error.message)
+        setAlert('error', error.message);
       });
   }, []);
 
   const handleBulkUpload = (e) => {
     e.persist()
-    const fil = e.target.files[0]
-    if (fil.name.lastIndexOf(".pdf") > 0
-      || fil.name.lastIndexOf(".jpeg") > 0
-      || fil.name.lastIndexOf(".jpg") > 0
-      || fil.name.lastIndexOf(".png") > 0
-      || fil.name.lastIndexOf(".mp3") > 0
-      || fil.name.lastIndexOf(".mp4") > 0) {
-      const formData = new FormData()
-      formData.append('file', fil);
-      axiosInstance.post(`${endpoints.homeworkStudent.fileUpload}`, formData)
-        .then(result => {
-          if (result.data.status_code === 200) {
-            const list = bulkDataDisplay.slice()
-            if (fil.name.lastIndexOf(".pdf")>0) {
-              const arr = [...result.data.data];
-              for (let k = 0; k < arr.length; k++) {
-                bulkData.push(arr[k]);
-                list.push(arr[k])
-                setBulkDataDisplay(list);
-              }
-            } else {
-              list.push(e.target.files[0]);
-              setBulkDataDisplay(list);
-              bulkData.push(result.data.data);
-            }
-            setAlert('success', result.data.message);
-          } else {
-            setAlert('error', result.data.message);
-          }
-        })
-        .catch(error => {
-          // setAlert('error',error.message)
-        })
+    if (bulkDataDisplay.length >= maxCount) {
+      setAlert('warning', `Can\'t upload more than ${maxCount} attachments in total.`);
     } else {
-      setAlert('error', "Only image(.jpeg, .jpg, .png), audio(mp3), video(.mp4) and pdf(.pdf) are acceptable")
+      const fil = e.target.files[0] || null;
+      if (fil.name.lastIndexOf(".pdf") > 0
+        || fil.name.lastIndexOf(".jpeg") > 0
+        || fil.name.lastIndexOf(".jpg") > 0
+        || fil.name.lastIndexOf(".png") > 0
+        || fil.name.lastIndexOf(".mp3") > 0
+        || fil.name.lastIndexOf(".mp4") > 0) {
+        setLoading(true);
+        const formData = new FormData()
+        formData.append('file', fil);
+        axiosInstance.post(`${endpoints.homeworkStudent.fileUpload}`, formData)
+          .then(result => {
+            if (result.data.status_code === 200) {
+              const list = bulkDataDisplay.slice()
+              if (fil.name.lastIndexOf(".pdf") > 0) {
+                const arr = [...result.data.data];
+                for (let k = 0; k < arr.length; k++) {
+                  bulkData.push(arr[k]);
+                  list.push(arr[k])
+                  setBulkDataDisplay(list);
+                }
+                setLoading(false);
+              } else {
+                list.push(e.target.files[0]);
+                setBulkDataDisplay(list);
+                bulkData.push(result.data.data);
+                setLoading(false);
+              }
+              setAlert('success', result.data.message);
+            } else {
+              setLoading(false);
+              setAlert('error', result.data.message);
+            }
+          })
+          .catch(error => {
+            setLoading(false);
+            // setAlert('error',error.message)
+          })
+      } else {
+        setLoading(false);
+        setAlert('error', "Only image(.jpeg, .jpg, .png), audio(mp3), video(.mp4) and pdf(.pdf) are acceptable")
+      }
     }
   }
 
 
   const removeBulkFileHandler = (i) => {
-    const list = [...bulkDataDisplay]
-    list.splice(i, 1)
-    setBulkDataDisplay(list)
-    bulkData.splice(i, 1)
+    const list = [...bulkDataDisplay];
+    setLoading(true);
+    axiosInstance.post(`${endpoints.deleteFromS3}`, {
+      "file_name": `homework/${list[i]}`
+    }).then(result => {
+      if (result.data.status_code === 204) {
+        list.splice(i, 1);
+        setBulkDataDisplay(list);
+        bulkData.splice(i, 1);
+        setAlert('success', result.data.message);
+        setLoading(false);
+      } else {
+        setAlert('error', result.data.message);
+        setLoading(false);
+      }
+    }).catch(error => {
+      setAlert('error', error.message);
+      setLoading(false);
+    })
+
   }
 
-  const uploadFileHandler = (e, index) => {
-    e.persist()
-    const fil = e.target.files[0]
-    if (fil.name.lastIndexOf(".pdf") > 0
-      || fil.name.lastIndexOf(".jpeg") > 0
-      || fil.name.lastIndexOf(".jpg") > 0
-      || fil.name.lastIndexOf(".png") > 0
-      || fil.name.lastIndexOf(".mp3") > 0
-      || fil.name.lastIndexOf(".mp4") > 0) {
-      const formData = new FormData()
-      formData.append('file', fil)
-      axiosInstance.post(`${endpoints.homeworkStudent.fileUpload}`, formData)
-        .then(result => {
-          if (result.data.status_code === 200) {
-            const list = attachmentDataDisplay.slice();
-            if (fil.name.lastIndexOf(".pdf")>0) {
-              const arr = [...result.data.data];
-              for (let k = 0; k < arr.length; k++) {
-                attachmentData[index].attachments.push(arr[k]);
-                // list[index] = [...attachmentDataDisplay[index], arr[k]];
-                list[index].push(arr[k])
+  const uploadFileHandler = (e, index, maxVal) => {
+    e.persist();
+    if (attachmentCount[index] >= maxVal) {
+      setAlert('warning', `Can\'t upload more than ${maxVal} attachments for question ${index + 1}`);
+    }
+    else {
+      const fil = e.target.files[0];
+      if (fil.name.lastIndexOf(".pdf") > 0
+        || fil.name.lastIndexOf(".jpeg") > 0
+        || fil.name.lastIndexOf(".jpg") > 0
+        || fil.name.lastIndexOf(".png") > 0
+        || fil.name.lastIndexOf(".mp3") > 0
+        || fil.name.lastIndexOf(".mp4") > 0) {
+        setLoading(true);
+        const formData = new FormData()
+        formData.append('file', fil)
+        axiosInstance.post(`${endpoints.homeworkStudent.fileUpload}`, formData)
+          .then(result => {
+            if (result.data.status_code === 200) {
+              const list = attachmentDataDisplay.slice();
+              if (fil.name.lastIndexOf(".pdf") > 0) {
+                const arr = [...result.data.data];
+                for (let k = 0; k < arr.length; k++) {
+                  attachmentCount[index]++;
+                  attachmentData[index].attachments.push(arr[k]);
+                  list[index].push(arr[k])
+                  setAttachmentDataDisplay(list);
+                }
+                setLoading(false);
+              } else {
+                attachmentCount[index]++;
+                list[index] = [...attachmentDataDisplay[index], result.data.data];
                 setAttachmentDataDisplay(list);
+                attachmentData[index].attachments.push(result.data.data);
+                setLoading(false);
               }
+              setAlert('success', result.data.message);
             } else {
-              list[index] = [...attachmentDataDisplay[index],e.target.files[0]];
-              setAttachmentDataDisplay(list);
-              attachmentData[index].attachments.push(result.data.data);
+              setLoading(false);
+              setAlert('error', result.data.message);
             }
-            setAlert('success', result.data.message);
-          } else {
-            setAlert('error', result.data.message);
-          }
-        })
-        .catch(error => {
-          // setAlert('error',error.response.result.error_msg)
-        })
-    } else {
-      setAlert('error', "Only image(.jpeg, .jpg, .png), audio(mp3), video(.mp4) and pdf(.pdf) are acceptable")
+          })
+          .catch(error => {
+            setLoading(false);
+            // setAlert('error',error.response.result.error_msg)
+          })
+      } else {
+        setAlert('error', "Only image(.jpeg, .jpg, .png), audio(mp3), video(.mp4) and pdf(.pdf) are acceptable")
+      }
     }
   }
 
   const removeFileHandler = (questionIndex, i) => {
-    const listDisplay = [...attachmentDataDisplay[questionIndex]]
-    listDisplay.splice(i, 1)
-    setAttachmentDataDisplay([...attachmentDataDisplay.slice(0, questionIndex), listDisplay, ...attachmentDataDisplay.slice(questionIndex + 1)])
-    attachmentData[questionIndex].attachments.splice(i, 1)
+    const listDisplay = [...attachmentDataDisplay[questionIndex]];
+    setLoading(true);
+    axiosInstance.post(`${endpoints.deleteFromS3}`, {
+      "file_name": `homework/${listDisplay[i]}`
+    }).then(result => {
+      if (result.data.status_code === 204) {
+        listDisplay.splice(i, 1);
+        setAttachmentDataDisplay([...attachmentDataDisplay.slice(0, questionIndex), listDisplay, ...attachmentDataDisplay.slice(questionIndex + 1)]);
+        attachmentData[questionIndex].attachments.splice(i, 1);
+        attachmentCount[questionIndex]--;
+        setAlert('success', result.data.message);
+        setLoading(false);
+      } else {
+        setAlert('error', result.data.message);
+        setLoading(false);
+      }
+    }).catch(error => {
+      setAlert('error', error.message);
+      setLoading(false);
+    })
   }
 
   const FileRow = (props) => {
@@ -283,7 +348,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     return (
       <div className='file_row'>
         <div className='file_name_container'>
-          Attachment {index + 1}
+          File {index + 1}
         </div>
         <div className='file_close'>
           <span
@@ -369,14 +434,16 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
         <Grid item className='homework_type_wrapper'>
           <div className='homework_type'>
             <div
-              className='homework_type_item non_selected_homework_type_item'
+              className='homework_type_item non_selected_homework_type_item all-homeWorks'
               onClick={handleHomeworkCancel}
             >
               All Homeworks
             </div>
-            <div className='homework_type_item selected'>
-              <div>{date}</div>
-              <div>{subjectName}</div>
+            <div className='homework_type_item selected all-homeWorks home-sub'>
+              <div className="date-sub-home">
+                <div>{date}</div>
+                <div>{subjectName}</div>
+              </div>
             </div>
           </div>
         </Grid>
@@ -392,11 +459,17 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     <Checkbox
                       onChange={() => {
                         setIsQuestionWise(!isQuestionWise);
+                        if(!isQuestionWise){
+                          setClassName('upload-wise')
+                        }else{
+                          setClassName('')
+
+                        }
                       }}
                       color='primary'
                       checked={isQuestionWise}
                     />
-                    <span>Upload question wise</span>
+                    <span>Upload Question Wise</span>
                   </div>
                 </div>
               }
@@ -411,7 +484,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     component='label'
                     size='small'
                   >
-                    Collated file submission
+                    Bulk Upload
                   <input
                       type='file'
                       accept=".png, .jpg, .jpeg, .mp3, mp4, .pdf"
@@ -449,16 +522,17 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
             {subjectQuestions?.map((question, index) => (
               <>
                 <div
-                  className='homework-question-container student-view'
+                  className={`homework-question-container student-view ${calssNameWise}`}
                   key={`homework_student_question_${index}`}
                 >
-                  <div className='homework-question'>
+                  <div className={`homework-question ${calssNameWise}`} >
                     <span className='question'>{question.question}</span>
                   </div>
                   {isQuestionWise &&
-                    <div className="questionWiseAttachmentsContainer">
+                    <div className="questionWiseAttachmentsContainer ">
                       <IconButton
                         fontSize='small'
+                        id="file-icon"
                         disableRipple
                         component='label'
                         className={classes.attachmentIcon}
@@ -467,7 +541,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                         <input
                           type='file'
                           accept=".png, .jpg, .jpeg, .mp3, mp4, .pdf"
-                          onChange={(e) => uploadFileHandler(e, index)}
+                          onChange={(e) => uploadFileHandler(e, index, question.max_attachment)}
                           className={classes.fileInput}
                         />
                       </IconButton>
@@ -723,7 +797,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   id='comments'
                   size='small'
                   name='comments'
-                  onChange={e=>setComment(e.target.value)}
+                  onChange={e => setComment(e.target.value)}
                   multiline
                   rows={3}
                   rowsMax={5}
@@ -732,9 +806,9 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   style={{ width: '70%' }}
                 />
                 {desc &&
-                <div className='descBox'>
-                  {desc}
-                </div>
+                  <div className='descBox'>
+                    {desc}
+                  </div>
                 }
               </div>
               : null}
@@ -779,7 +853,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
           </div>
         </Grid>
       </Grid>
-    </div>);
+    </div>
+  );
 });
 
 export default HomeworkSubmission;

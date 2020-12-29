@@ -1,6 +1,11 @@
 /* eslint-disable no-nested-ternary */
 import React, { useContext, useEffect, useState } from 'react';
 import { Button, TableCell, TableRow } from '@material-ui/core';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
 import { useHistory } from 'react-router-dom';
 import { OnlineclassViewContext } from '../../../online-class-context/online-class-state';
 
@@ -39,6 +44,8 @@ const ViewClassTableCell = (props) => {
   const [hasClassEnded, setHasClassEnded] = useState(false);
   const [isJoinTime, setIsJoinTime] = useState(false);
   const [isHost, setIsHost] = useState(true);
+  const[cancelId,setCancelId]=useState(null);
+  const [cancelAlert,setCancelAlert]=useState(false);
 
   const history = useHistory();
 
@@ -69,9 +76,22 @@ const ViewClassTableCell = (props) => {
     debugger;
   };
 
-  const handleCancel = (classId) => {
-    dispatch(cancelClass(classId));
+  const handleCancel =  async (classId) => {
+    console.log(classId)
+    setCancelId(classId)
+    setCancelAlert(true);
+  
+  //  await dispatch(cancelClass(cancelId));
   };
+ const handleClassCancel=()=>{
+   setCancelId(null);
+   setCancelAlert(false);
+ }
+ const handleCancelConfirm =()=>{
+   console.log(cancelId)
+  dispatch(cancelClass(cancelId));
+  setCancelAlert(false);
+  }
 
   const handleAttendee = () => {
     history.push(`/online-class/attendee-list/${id}`);
@@ -114,6 +134,30 @@ const ViewClassTableCell = (props) => {
           </>
         )}
       </TableCell>
+
+      <Dialog open={cancelAlert} onClick={handleClassCancel} >
+          <DialogTitle
+            style={{ cursor: 'move', color: '#014b7e' }}
+            id='draggable-dialog-title'
+          >
+           Cancel Class
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to cancel this class ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button className='labelColor cancelButton' onClick={handleClassCancel}>
+              Cancel
+            </Button>
+            <Button color='primary' onClick={handleCancelConfirm}>
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+
       {currentManagementTab === 0 ? (
         <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
           {scope === true ? (
@@ -134,6 +178,9 @@ const ViewClassTableCell = (props) => {
       ) : (
         ''
       )}
+
+
+
       <TableCell className={`${isHidden ? 'hide' : 'show'}`}>
         <Button
           variant='contained'

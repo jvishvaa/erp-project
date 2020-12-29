@@ -101,7 +101,23 @@ const ViewHomework = withRouter(
     return (
       <div className='view-homework-container create_group_filter_container'>
         <Grid container spacing={2} className='message_log_container'>
-          <Grid item className='homework_type_wrapper'>
+          <Grid item xs={12} className='add-homework-title-container' md={2}>
+            <div className='nav-cards-container'>
+              <div className='nav-card' onClick={onClose}>
+                <div className='header-text text-center non_selected_homework_type_item'>All Homeworks</div>
+              </div>
+              <div className='nav-card'>
+                <div className='header-text text-center'>{date}</div>
+                <div className='header-text text-center'>
+                  {subjectName?.split('_')[1]}
+                </div>
+                <div className='header-text text-center'>
+                  {subjectName?.split('_')[2]}
+                </div>
+              </div>
+            </div>
+          </Grid>
+          {/* <Grid item xs={12} className='homework_type_wrapper'>
             <div className='homework_type'>
               <div
                 className='homework_type_item non_selected_homework_type_item'
@@ -115,8 +131,8 @@ const ViewHomework = withRouter(
                 <div>{subjectName?.split('_')[2]}</div>
               </div>
             </div>
-          </Grid>
-          <Grid item lg={10}>
+          </Grid> */}
+          <Grid item xs={12} md={10}>
             <div className='homework_submit_wrapper'>
               <div className='homework_block_wrapper'>
                 <div className='homework_block homework_submit_tag'>
@@ -136,32 +152,6 @@ const ViewHomework = withRouter(
                     <Typography component='h4' color='primary' className='header'>
                       Attachments
                     </Typography>
-                    {/* <div className='attachments-list'>
-                      {question.question_files.map((url, i) => (
-                        <div className='attachment'>
-                          <Attachment
-                            key={`homework_student_question_attachment_${i}`}
-                            fileUrl={url}
-                            fileName={`Attachment-${i + 1}`}
-                            urlPrefix={`${endpoints.s3}/homework`}
-                            index={i}
-                          />
-                        </div>
-                      ))}
-                      <div style={{ position: 'absolute', visibility: 'hidden' }}>
-                        <SRLWrapper>
-                          {question.question_files.map((url, i) => (
-                            <img
-                              src={`${endpoints.s3}/homework/${url}`}
-                              onError={(e) => {
-                                e.target.src = placeholder;
-                              }}
-                              alt={`Attachment-${i + 1}`}
-                            />
-                          ))}
-                        </SRLWrapper>
-                      </div>
-                    </div> */}
                     <div className='attachments-list-outer-container'>
                       <div className='prev-btn'>
                         <IconButton onClick={() => handleScroll('left')}>
@@ -191,7 +181,14 @@ const ViewHomework = withRouter(
                               </div>
                             </>
                           ))}
-                          <div style={{ position: 'absolute', visibility: 'hidden' }}>
+                          <div
+                            style={{
+                              position: 'absolute',
+                              width: '0',
+                              height: '0',
+                              visibility: 'hidden',
+                            }}
+                          >
                             <SRLWrapper>
                               {question.question_files.map((url, i) => (
                                 <img
@@ -200,6 +197,7 @@ const ViewHomework = withRouter(
                                     e.target.src = placeholder;
                                   }}
                                   alt={`Attachment-${i + 1}`}
+                                  style={{ width: '0', height: '0' }}
                                 />
                               ))}
                             </SRLWrapper>
@@ -216,49 +214,6 @@ const ViewHomework = withRouter(
                 </div>
               ))}
 
-              {/* {questionRecord.map((questionItem, index) => (
-                <div
-                  className='homework_submit_questions_wrapper'
-                  key={`homework_student_question_${index}`}
-                >
-                  <div className='homework_submit_questions'>
-                    <span className='homework_question'>{questionItem.question}</span>
-                  </div>
-                  <Grid
-                    container
-                    className='homework_submit_questions_attachment'
-                    alignItems='center'
-                    spacing={2}
-                    justify='space-between'
-                  >
-                    <Grid item xs={2} className={classes.wrapper}>
-                      <IconButton
-                        fontSize='small'
-                        // component={AttachmentIcon}
-                        className={classes.attachmentIcon}
-                      >
-                        <AttachmentIcon fontSize='small' className={classes.Attachment} />
-                        <input
-                          type='file'
-                          onChange={(e) => uploadFileHandler(e, index)}
-                          className={classes.fileInput}
-                        />
-                      </IconButton>
-                    </Grid>
-                    <Grid item xs={10}>
-                      {questionItem.attachment.map((file, i) => (
-                        <FileCard
-                          key={`homework_student_question_attachment_${i}`}
-                          fileName={file}
-                          onClose={() => removeFileHandler(index, i)}
-                          className={classes.fileRow}
-                        />
-                      ))}
-                    </Grid>
-                  </Grid>
-                </div>
-              ))} */}
-
               <div className='homework_submit_button_wrapper'>
                 <Button
                   variant='contained'
@@ -268,16 +223,6 @@ const ViewHomework = withRouter(
                 >
                   CANCEL
                 </Button>
-                {/* <Button
-                  variant='contained'
-                  style={{ color: 'white' }}
-                  onClick={handleHomeworkSubmit}
-                  color='primary'
-                  className='custom_button_master'
-                  size='medium'
-                >
-                  Submit
-                </Button> */}
               </div>
             </div>
           </Grid>

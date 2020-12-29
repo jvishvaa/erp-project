@@ -10,8 +10,17 @@
   opacity: 1;
   box-shadow: none;
   height: 44rem;
-  padding: 2.5rem;
+  padding: 50px 2rem 1.5rem;
   // background: #ffffff 0% 0% no-repeat padding-box !important;
+  @media screen and (max-width: 768px) {
+    padding: 50px 1rem 1rem;
+  }
+}
+
+.close-icon {
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 .cardHeader {
@@ -27,18 +36,20 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  display: inline-block;
 }
 
 .cardHeader div:nth-child(1) {
-  width: 60%;
-  display: flex;
-  align-items: center;
+  width: 50%;
+  // display: flex;
+  // align-items: center;
+  text-align: left;
 }
 
 .cardHeader div:nth-child(2) {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
+  // display: flex;
+  // justify-content: flex-end;
+  // align-items: center;
 }
 
 .divider {
@@ -72,7 +83,7 @@
 }
 
 .subjectName {
-  margin-top: 8px;
+  // margin-top: 8px;
 }
 
 .innerBox {

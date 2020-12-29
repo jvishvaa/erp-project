@@ -32,8 +32,10 @@
   }
 
   .page_title {
-    font-size: 0.9rem;
+    font-size: 1rem;
     margin: auto;
+    text-align: left;
+    /* background-color: #F9F9F9; */
   }
   .addgroup_next_button {
     margin: auto;

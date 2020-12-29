@@ -125,10 +125,18 @@ const ViewHomework = withRouter(
       if (!remark) {
         setAlert('error', 'Please provide a remark');
         return;
+      } else if (reqData.remark && reqData.remark.trim() == '') {
+        setAlert('error', 'Please provide a remark');
+        return;
       }
       if (!score) {
         setAlert('error', 'Please provide a score');
+        return;
+      } else if (reqData.score && reqData.score.trim() == '') {
+        setAlert('error', 'Please provide a score');
+        return;
       }
+
       try {
         await finalEvaluationForHomework(homeworkId, reqData);
         setAlert('success', 'Homework Evaluated');
