@@ -78,13 +78,18 @@ const QuestionCard = ({
     handleChange(index, field, value);
   };
   const handleFileUpload = async (file) => {
-       try {
+    try {
       const fd = new FormData();
       fd.append('file', file);
       setFileUploadInProgress(true);
       const filePath = await uploadFile(fd);
-      setAttachments((prevState) => [...prevState, ...filePath]);
-      setAttachmentPreviews((prevState) => [...prevState, ...filePath]);
+      if (file.type === 'application/pdf') {
+        setAttachments((prevState) => [...prevState, ...filePath]);
+        setAttachmentPreviews((prevState) => [...prevState, ...filePath]);
+      } else {
+        setAttachments((prevState) => [...prevState, filePath]);
+        setAttachmentPreviews((prevState) => [...prevState, filePath]);
+      }
       setFileUploadInProgress(false);
       setAlert('success', 'File upload success');
     } catch (e) {
