@@ -26,7 +26,7 @@ import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
 import './homework-timeline.css';
 
-const HomeworkTimeline = ({setHomeworkTimelineDisplay}) => {
+const HomeworkTimeline = ({ setHomeworkTimelineDisplay }) => {
   const days = ['30 Days', '60 Days', '90 Days'];
   const [Ratings, setRating] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
@@ -80,9 +80,9 @@ const HomeworkTimeline = ({setHomeworkTimelineDisplay}) => {
   };
   const getRating = async () => {
     try {
-      let request=endpoints.homeworkStudent.getRating
-      if(selectedDays) {
-        request+= `?duration=${selectedDays.substring(0,2)}`
+      let request = endpoints.homeworkStudent.getRating;
+      if (selectedDays) {
+        request += `?duration=${selectedDays.substring(0, 2)}`;
       }
       const result = await axiosInstance.get(request);
       if (result.data.status_code === 200) {
@@ -96,9 +96,9 @@ const HomeworkTimeline = ({setHomeworkTimelineDisplay}) => {
           });
           setTotalHomework(tempTotalHw);
           setSubmittedHomework(tempSubmitedHw);
-           setHomeworkTimelineDisplay(true)
+          setHomeworkTimelineDisplay(true);
         } else {
-           setHomeworkTimelineDisplay(false)
+          setHomeworkTimelineDisplay(false);
         }
       } else {
         setAlert('error', result.data.message);
@@ -106,14 +106,14 @@ const HomeworkTimeline = ({setHomeworkTimelineDisplay}) => {
       }
     } catch (error) {
       setAlert('error', error.message);
-      setHomeworkTimelineDisplay(false)
+      setHomeworkTimelineDisplay(false);
     }
   };
 
   useEffect(() => {
     getRating();
   }, [selectedDays]);
-  
+
   return (
     <>
       <div className='subject-homework-details-wrapper'>
@@ -244,7 +244,7 @@ const HomeworkTimeline = ({setHomeworkTimelineDisplay}) => {
                   className='homework_timeline_card_info'
                   component='p'
                 >
-                  {Ratings.map((subject, index) => (
+                  {/* {Ratings.map((subject, index) => (
                     <div
                       className='subject_rating_wrapper'
                       key={`ratiting_subject_row${index}`}
@@ -256,7 +256,7 @@ const HomeworkTimeline = ({setHomeworkTimelineDisplay}) => {
                       </span>
                       </span>
                       <span className="starContainer">
-                      {/* <span className='subject_rating'>{subject.rating}/5</span> */}
+                    <span className='subject_rating'>{subject.rating}/5</span> 
                       {[...Array(subject.rating)].map((e,i)=>(
                       <SvgIcon
                         component={() => (
@@ -273,7 +273,7 @@ const HomeworkTimeline = ({setHomeworkTimelineDisplay}) => {
                       }
                       </span>
                     </div>
-                  ))}
+                  ))} */}
                 </Typography>
               </CardContent>
             </Card>

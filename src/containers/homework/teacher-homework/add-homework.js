@@ -108,7 +108,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
       {
         id: cuid(),
         question: '',
-        attachments: '',
+        attachments: [],
         is_attachment_enable: false,
         max_attachment: 5,
         penTool: false,
