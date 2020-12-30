@@ -26,6 +26,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  InputAdornment,
 } from '@material-ui/core';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import {
@@ -34,6 +35,7 @@ import {
   DateRange,
   DateRangeDelimiter,
 } from '@material-ui/pickers-4.2';
+import DateRangeIcon from '@material-ui/icons/DateRange';
 // import MomentUtils as  from '@material-ui/pickers-4.2/adapter/moment';
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 
@@ -318,10 +320,22 @@ const TeacherHomework = withRouter(
                           <>
                             <TextField
                               {...startProps}
-                              inputProps={{
+                              InputProps={{
                                 ...inputProps,
-                                value: `${inputProps.value} - ${endProps.inputProps.value}`,
+                                value: `${moment(inputProps.value).format(
+                                  'DD-MM-YYYY'
+                                )} - ${moment(endProps.inputProps.value).format(
+                                  'DD-MM-YYYY'
+                                )}`,
                                 readOnly: true,
+                                endAdornment: (
+                                  <InputAdornment position='start'>
+                                    <DateRangeIcon
+                                      style={{ width: '35px' }}
+                                      color='primary'
+                                    />
+                                  </InputAdornment>
+                                ),
                               }}
                               size='small'
                               style={{ minWidth: '250px' }}
