@@ -315,11 +315,11 @@
     margin-top: 1rem;
     flex-wrap: wrap;
     .input-container {
-      display: flex;
-      width: 60%;
-      flex-wrap: wrap;
+      // display: flex;
+      width: 100% !important;
+      // flex-wrap: wrap;
       .remark {
-        width: 70%;
+        width: 100% !important;
         margin-right: 1rem;
         @media screen and (max-width: 768px) {
           width: 100%;
@@ -337,11 +337,27 @@
         width: 100%;
       }
     }
+    .button-container{
+      display: flex !important;
+      
+    }
+    .button-container .cancel-btn {
+      align-items: right !important;
+    }
+    .done-btn{
+      align-items: right !important;
+    }
+    .score{
+      width: 72% !important;
+      margin-right: 8px !important;
+    
+    }
     .btn-container {
-      width: 40%;
-      display: flex;
-      justify-content: flex-end;
-      flex-wrap: wrap-reverse;
+      width: 100% !important;
+      margin-top: 10px;
+      display: flex !important;
+      // justify-content: flex-end;
+      // flex-wrap: wrap-reverse;
 
       @media screen and (max-width: 768px) {
         width: 100%;
@@ -496,4 +512,36 @@
     justify-content: center;
     align-items: center;
   }
+}
+
+.table-cont{
+  display: flex;
+}
+
+.create_group_filter_container .hwcard{
+  //  margin: 0px 0px 0px 30px;
+  margin-top: 5px;
+   margin-left: 5px !important;
+}
+
+
+.message_log_white_wrapper .view-homework .home-wrapper{
+  width: 100% !important;
+}
+
+.view-homework .table-cont table thead tr th {
+  color: #FF6B6B !important;
+  background:#F3F3F3 !important;
+}
+
+.message_log_wrapper.teacher-homework .homework_block_wrapper{
+  width: 100% !important;
+}
+
+.MuiPickersPopper-root{
+  transform: translate3d(55px, 179px, 0px) !important;
+  top:46px;
+}
+.home-work-date-subject-name{
+  width: 80% !important;
 }

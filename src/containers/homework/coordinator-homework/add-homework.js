@@ -123,10 +123,7 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
     setQuestions((prevState) => [
       ...prevState.slice(0, index),
       ...prevState.slice(index + 1),
-    ]);
-    // if (questions && questions.length > 0) {
-    //   setQueIndexCounter(questions.length - 1);
-    // }
+    ]);    
   };
 
   const handleChange = (index, field, value) => {

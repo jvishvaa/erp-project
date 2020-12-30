@@ -505,6 +505,8 @@ const ViewHomework = withRouter(
                     />
                   </FormControl>
                 </div>
+              </div>
+              <div className='btn-container'>
                 <div className='score'>
                   <FormControl variant='outlined' fullWidth size='small'>
                     <InputLabel htmlFor='component-outlined'>Overall score</InputLabel>
@@ -519,8 +521,7 @@ const ViewHomework = withRouter(
                     />
                   </FormControl>
                 </div>
-              </div>
-              <div className='btn-container'>
+                <div className="button-container">
                 <div className='cancel-btn'>
                   <Button variant='contained' className='disabled-btn' onClick={onClose}>
                     Cancel
@@ -534,6 +535,7 @@ const ViewHomework = withRouter(
                   >
                     EVALUATION DONE
                   </Button>
+                </div>
                 </div>
               </div>
             </div>

@@ -83,6 +83,9 @@
 	.homework_timeline_container{
 		display: block !important;
 	}
+	.subject_rating_first_letter{
+		padding: 4px
+	}
 .homework_timeline_received_submitted{
 	padding: 10px !important;
 }

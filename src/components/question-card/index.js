@@ -7,7 +7,7 @@ import {
   Typography,
   Badge,
 } from '@material-ui/core';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+// import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
@@ -79,19 +79,31 @@ const QuestionCard = ({
   };
   const handleFileUpload = async (file) => {
     try {
-      const fd = new FormData();
-      fd.append('file', file);
-      setFileUploadInProgress(true);
-      const filePath = await uploadFile(fd);
-      if (file.type === 'application/pdf') {
-        setAttachments((prevState) => [...prevState, ...filePath]);
-        setAttachmentPreviews((prevState) => [...prevState, ...filePath]);
+      // console.log(file,"=====File=====");
+      if (
+        file.name.lastIndexOf('.pdf') > 0 ||
+        file.name.lastIndexOf('.jpeg') > 0 ||
+        file.name.lastIndexOf('.jpg') > 0 ||
+        file.name.lastIndexOf('.png') > 0 ||
+        file.name.lastIndexOf('.mp3') > 0 ||
+        file.name.lastIndexOf('.mp4') > 0
+      ) {
+        const fd = new FormData();
+        fd.append('file', file);
+        setFileUploadInProgress(true);
+        const filePath = await uploadFile(fd);
+        if (file.type === 'application/pdf') {
+          setAttachments((prevState) => [...prevState, ...filePath]);
+          setAttachmentPreviews((prevState) => [...prevState, ...filePath]);
+        } else {
+          setAttachments((prevState) => [...prevState, filePath]);
+          setAttachmentPreviews((prevState) => [...prevState, filePath]);
+        }
+        setFileUploadInProgress(false);
+        setAlert('success', 'File uploaded successfully');
       } else {
-        setAttachments((prevState) => [...prevState, filePath]);
-        setAttachmentPreviews((prevState) => [...prevState, filePath]);
+        setAlert('error', 'Please upload valid file');
       }
-      setFileUploadInProgress(false);
-      setAlert('success', 'File upload success');
     } catch (e) {
       setFileUploadInProgress(false);
       setAlert('error', 'File upload failed');
@@ -171,6 +183,7 @@ const QuestionCard = ({
                       className='file-upload-input'
                       type='file'
                       name='attachments'
+                      accept='.png, .jpg, .jpeg, .mp3, mp4, .pdf'
                       onChange={(e) => {
                         handleFileUpload(e.target.files[0]);
                         // onChange('attachments', Array.from(e.target.files)[]);
@@ -185,14 +198,18 @@ const QuestionCard = ({
                         />
                       </div>
                     ) : (
+                      <>
+                      
                       <IconButton
                         onClick={() => fileUploadInput.current.click()}
                         title='Attach files'
                       >
                         <Badge badgeContent={attachmentPreviews.length} color='primary'>
-                          <AttachFileIcon color='primary' />
-                        </Badge>
+                          <AttachFileIcon color='primary' />                          
+                        </Badge>                        
                       </IconButton>
+                      <small style={{ width: '100%' }} >{" "}Accepted files: jpeg,jpg,mp3,mp4,pdf,png</small>
+                      </>
                     )}
                   </div>
                   <div>

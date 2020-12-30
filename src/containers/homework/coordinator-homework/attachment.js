@@ -40,7 +40,7 @@ const Attachment = (props) => {
                 {actions?.includes('preview') && (
                   <IconButton
                     onClick={() => {
-                      openLightbox();
+                      openLightbox(index);
                     }}
                     size='small'
                   >

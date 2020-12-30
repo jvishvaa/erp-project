@@ -400,7 +400,7 @@ const CoordinatorTeacherHomework = withRouter(
               {activeView !== 'view-homework' && activeView !== 'view-received-homework' && (
                 <Grid container className='date-container' spacing={3}>
                   
-                  <Grid item xs={12} sm={3}>
+                  <Grid item xs={12} sm={3} className="date-container2">
                     <Grid className={classes.paper}>
                       <Autocomplete
                         size='small'
@@ -422,7 +422,7 @@ const CoordinatorTeacherHomework = withRouter(
                       />
                     </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={3}>
+                  <Grid item xs={12} sm={3}  className="date-container3">
                     <Grid className={classes.paper}>
                       <LocalizationProvider dateAdapter={MomentUtils}>
                         <DateRangePicker
@@ -480,7 +480,7 @@ const CoordinatorTeacherHomework = withRouter(
                     </Grid>
                   </Grid>
                   {isMobile ? (
-                    <Grid item xs={12}>
+                    <Grid item xs={12}  className="date-container4">
                       <Divider />
                     </Grid>
                   ):
@@ -587,9 +587,10 @@ const CoordinatorTeacherHomework = withRouter(
                 />
               )}
               <div className='create_group_filter_container'>
-                <Grid container className='homework_container' spacing={2}>
+                <Grid container className='homework_container' spacing={2} >
                   {activeView === 'list-homework' && !isMobile && (
-                    <Grid xs={12} md={selectedCol?.subject ? 8 : 12} item>
+                    <div>
+                  
                       {activeView !== 'view-homework' &&
                         activeView !== 'view-received-homework' && (
                           <div className='homework_block_wrapper'>
@@ -644,6 +645,7 @@ const CoordinatorTeacherHomework = withRouter(
                           <CircularProgress color='primary' />
                         </div>
                       ) : (
+                        <Grid xs={12} md={selectedCol?.subject ? 8 : 12} item className="home-work-grid">
                         <Paper
                           className={`homework_table_wrapper ${classes.root}`}
                           ref={tableContainer}
@@ -681,8 +683,9 @@ const CoordinatorTeacherHomework = withRouter(
                             </Table>
                           </TableContainer>
                         </Paper>
-                      )}
                     </Grid>
+                      )}
+                    </div>
                   )}
                   {activeView === 'list-homework' && isMobile && (
                     <Tabs
@@ -756,7 +759,7 @@ const CoordinatorTeacherHomework = withRouter(
                                                   )}
                                                 />
                                               </IconButton>
-
+                                                      
                                               {data.student_submitted > 0 && (
                                                 <IconButton
                                                   onClick={() => {

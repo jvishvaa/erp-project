@@ -115,6 +115,12 @@ const SubmittedQuestion = ({
     // }
   };
 
+  let qu = [];
+  if(question){
+    qu.push(question)
+
+  }
+// console.log(qu, "question")
   return (
     <div className='homework-question-container' key={`homework_student_question_${1}`}>
       <div
@@ -127,9 +133,9 @@ const SubmittedQuestion = ({
         >{`${activeQuestion}/${totalQuestions}`}</Typography>
         <Button
           variant='contained'
-          color='primary'
+          color='#9f9f9f'
           onClick={onPrev}
-          style={{ marginRight: '0.5rem' }}
+          style={{ marginRight: '0.5rem' , backgroundColor: '#e0e0e0', color : '#9f9f9f' }}
           size='small'
         >
           Previous
@@ -139,7 +145,12 @@ const SubmittedQuestion = ({
         </Button>
       </div>
       <div className='homework-question'>
-        <div className='question'>{question.question}</div>
+          {
+            qu.map((ele, index) =>{
+              return  <div className='question'>Q{index+1}: {ele.question}</div>
+
+            })
+          }
       </div>
       <div className='attachments-container'>
         <Typography component='h4' color='primary' className='header'>
@@ -278,7 +289,6 @@ const SubmittedQuestion = ({
                         actions={['preview', 'delete', 'download']}
                         onOpenInPenTool={onOpenInPenTool}
                         onDelete={onDeleteCorrectedAttachment}
-                        preview
                       />
                     </div>
                     {/* <div className='attachment'>
@@ -321,7 +331,7 @@ const SubmittedQuestion = ({
                   <SRLWrapper>
                     {correctedQuestions.map((url, i) => (
                       <img
-                        src={url}
+                        src={`${endpoints.s3}/homework/${url}`}
                         onError={(e) => {
                           e.target.src = placeholder;
                         }}

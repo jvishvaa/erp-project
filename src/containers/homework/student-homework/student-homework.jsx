@@ -375,7 +375,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
-      <Layout>
+      <Layout className="layout-container">
         <div className='message_log_wrapper' style={{backgroundColor: '#F9F9F9'}}>
           <div className='message_log_breadcrumb_wrapper' style={{backgroundColor: '#F9F9F9'}}>
             <CommonBreadcrumbs componentName='Homework' />
@@ -437,19 +437,20 @@ const StudentHomework = withRouter(({ history, ...props }) => {
 
                 !homeworkSubmission.isOpen &&
                 <div className='homework_block_wrapper'>
-                  <div className='homework_block icon-desc-container-desk' style={{fontSize: '16px', color: '#014b7e'}}>Weekly Time table </div>
+                  <div className='homework_block icon-desc-container-desk' style={{fontSize: '16px', color: '#014b7e', marginLeft: '15px'}}>Homeworks </div>
                   <div className='icon-desc-container-desk'>
                     <SvgIcon
                       component={() => (
                         <img
                           style={{ width: '25px', marginRight: '5px' }}
-                          src={hwGiven}
-                          alt='given'
+                          src={hwFileUnopened}
+                          alt='submitted'
                         />
                       )}
                     />
-                    <span style={{fontSize: '16px', color: '#014b7e'}}>HW Submitted</span>
+                    <span style={{fontSize: '16px', color: '#014b7e'}}>Unopened</span>
                   </div>
+                 
                   <div className='icon-desc-container-desk'>
                     <SvgIcon
                       component={() => (
@@ -467,13 +468,14 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                       component={() => (
                         <img
                           style={{ width: '25px', marginRight: '5px' }}
-                          src={hwFileUnopened}
-                          alt='submitted'
+                          src={hwGiven}
+                          alt='given'
                         />
                       )}
                     />
-                    <span style={{fontSize: '16px', color: '#014b7e'}}>File unopened</span>
+                    <span style={{fontSize: '16px', color: '#014b7e'}}>Submitted</span>
                   </div>
+                 
                   <div className='icon-desc-container-desk'>
                     <SvgIcon
                       component={() => (
@@ -499,7 +501,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                         />
                       )}
                     />
-                    <span style={{fontSize: '16px', color: '#014b7e'}}>HW not submitted</span>
+                    <span style={{fontSize: '16px', color: '#014b7e'}}>Submitted</span>
                   </div>
                 </div>
             }
@@ -764,7 +766,8 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                               {(studentHomeworkData.header?.is_hw_ration && homeworkTimelineDisplay) &&
                                 <HomeworkTimeline setHomeworkTimelineDisplay={setHomeworkTimelineDisplay}
                                   moduleId={moduleId} />
-                              }
+                                }
+                                
                             </Grid>
                             <Grid lg={12} className='homework_right_wrapper_items' item>
                               {studentHomeworkData.header?.is_top_performers &&

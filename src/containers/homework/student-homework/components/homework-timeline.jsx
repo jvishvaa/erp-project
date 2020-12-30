@@ -81,7 +81,7 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
     <>
       <div className='subject-homework-details-wrapper'>
         <div className='subject-homework-tag-wrapper'>
-          <div className='subject-homework-tag'>Rating</div>
+          <div className='subject-homework-tag'>Homework timeline</div>
           <Autocomplete
             size='small'
             onChange={handleDayChange}
@@ -172,6 +172,7 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
                   component='p'
                 >
                   {submittedHomework}
+                  
                 </Typography>
               </CardContent>
             </Card>
@@ -210,7 +211,7 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
                   className='homework_timeline_card_info'
                   component='p'
                 >
-                  {/* {Ratings.map((subject, index) => (
+                  {Ratings.map((subject, index) => (
                     <div
                       className='subject_rating_wrapper'
                       key={`ratiting_subject_row${index}`}
@@ -239,7 +240,7 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
                       }
                       </span>
                     </div>
-                  ))} */}
+                  ))}
                 </Typography>
               </CardContent>
             </Card>
