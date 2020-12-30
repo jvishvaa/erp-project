@@ -373,7 +373,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
 
 
   return (
-    <>
+    <div className="layout-container-div">
       {loading ? <Loading message='Loading...' /> : null}
       <Layout className="layout-container">
         <div className='message_log_wrapper' style={{backgroundColor: '#F9F9F9'}}>
@@ -550,13 +550,18 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                             filterSelectedOptions
                                             disableClearable
                                             contentEditable
+                                            // renderOption={(o) => <button>o</button>}
                                             renderInput={(params) => (
+                                              <>
                                               <TextField
                                                 className='homework_student_other_language-textfield'
                                                 {...params}
                                                 placeholder='Languages'
+                                                
                                               />
+                                              </>
                                             )}
+                                            
                                           />
                                         </TableCell>
                                       ) : headers.isOthers ? (
@@ -784,7 +789,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
           </div>
         </div>
       </Layout>
-    </>
+    </div>
   );
 });
 
