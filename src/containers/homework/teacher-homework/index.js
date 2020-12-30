@@ -60,6 +60,7 @@ import ViewHomework from './view-homework';
 import ViewHomeworkSubmission from './view-homework-submission';
 import { Tabs, Tab } from '../../../components/custom-tabs';
 import hwEvaluatedIcon from '../../../assets/images/hw-evaluated.svg';
+import expiredIcon from '../../../assets/images/Expired.svg';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 const useStyles = makeStyles((theme) => ({
@@ -369,6 +370,18 @@ const TeacherHomework = withRouter(
                       />
                       <span>Evaluated</span>
                     </div>
+                    <div className='icon-desc-container'>
+                      <SvgIcon
+                        component={() => (
+                          <img
+                            style={{ width: '20px', marginRight: '5px' }}
+                            src={expiredIcon}
+                            alt='expired'
+                          />
+                        )}
+                      />
+                      <span>Expired</span>
+                    </div>
                   </div>
                 )}
 
@@ -403,7 +416,7 @@ const TeacherHomework = withRouter(
                                   />
                                 )}
                               />
-                              <span>HW given</span>
+                              <span>Assigned</span>
                             </div>
                             <div className='icon-desc-container'>
                               <SvgIcon
@@ -427,7 +440,19 @@ const TeacherHomework = withRouter(
                                   />
                                 )}
                               />
-                              <span>HW Evaluated</span>
+                              <span>Evaluated</span>
+                            </div>
+                            <div className='icon-desc-container'>
+                              <SvgIcon
+                                component={() => (
+                                  <img
+                                    style={{ width: '20px', marginRight: '5px' }}
+                                    src={expiredIcon}
+                                    alt='evaluated'
+                                  />
+                                )}
+                              />
+                              <span>Expired</span>
                             </div>
                           </div>
                         )}
@@ -459,7 +484,7 @@ const TeacherHomework = withRouter(
                                   {homeworkCols.map((col) => {
                                     return typeof col === 'object' ? (
                                       <TableCell>
-                                        {col.subject_name.split("_").join("/")}
+                                        {col.subject_name.split('_').join('/')}
                                       </TableCell>
                                     ) : (
                                       <TableCell>{col}</TableCell>
@@ -622,6 +647,22 @@ const TeacherHomework = withRouter(
                                                       )}
                                                     />
                                                   </Badge>
+                                                </IconButton>
+                                              )}
+                                              {!data.canUpload > 0 && (
+                                                <IconButton>
+                                                  <SvgIcon
+                                                    component={() => (
+                                                      <img
+                                                        style={{
+                                                          width: '35px',
+                                                          padding: '5px',
+                                                        }}
+                                                        src={expiredIcon}
+                                                        alt='hw expired'
+                                                      />
+                                                    )}
+                                                  />
                                                 </IconButton>
                                               )}
                                             </>
