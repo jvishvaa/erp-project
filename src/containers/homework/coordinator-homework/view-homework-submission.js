@@ -152,12 +152,12 @@ const ViewHomework = withRouter(
       } else {
         currentQuestion = collatedQuestionState;
 
-        if (
-          currentQuestion.corrected_submission.length < collatedSubmissionFiles.length
-        ) {
-          setAlert('error', 'Please evaluate all the attachments');
-          return;
-        }
+        // if (
+        //   currentQuestion.corrected_submission.length < collatedSubmissionFiles.length
+        // ) {
+        //   setAlert('error', 'Please evaluate all the attachments');
+        //   return;
+        // }
       }
       console.log('Evaluated answer ', currentQuestion);
       const { id, ...reqData } = currentQuestion;
@@ -291,7 +291,9 @@ const ViewHomework = withRouter(
           <Grid item xs={12} className='add-homework-title-container' md={2}>
             <div className='nav-cards-container'>
               <div className='nav-card' onClick={onClose}>
-                <div className='header-text text-center non_selected_homework_type_item'>All Homeworks</div>
+                <div className='header-text text-center non_selected_homework_type_item'>
+                  All Homeworks
+                </div>
               </div>
               <div className='nav-card'>
                 <div className='header-text text-center'>{date}</div>

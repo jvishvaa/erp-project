@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import Typography from '@material-ui/core/Typography';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -28,34 +28,91 @@ const SubmittedQuestion = ({
   evaluateAnswer,
 }) => {
   const scrollableContainer = useRef(null);
+  const submittedAttachmentsOuterContainer = useRef(null);
+  const submittedAttachmentsInnerContainer = useRef(null);
+  const evaluatedAttachmentsOuterContainer = useRef(null);
+  const evaluatedAttachmentsInnerContainer = useRef(null);
   const { setAlert } = useContext(AlertNotificationContext);
+  const [showSubmittedAttachmentArrows, setShowSubmittedAttachmentArrows] = useState(
+    false
+  );
+  const [showEvaluatedAttachmentArrows, setShowEvaluatedAttachmentArrows] = useState(
+    false
+  );
 
   const handleScroll = (dir) => {
     if (dir === 'left') {
-      scrollableContainer.current.scrollLeft -= 150;
+      submittedAttachmentsInnerContainer.current.scrollLeft -= 150;
     } else {
-      scrollableContainer.current.scrollLeft += 150;
-      console.log(
-        scrollableContainer.current.scrollLeft,
-        scrollableContainer.current.scrollRight
-      );
+      submittedAttachmentsInnerContainer.current.scrollLeft += 150;
     }
   };
+  const handleScrollEvaluated = (dir) => {
+    if (dir === 'left') {
+      evaluatedAttachmentsInnerContainer.current.scrollLeft -= 150;
+    } else {
+      evaluatedAttachmentsInnerContainer.current.scrollLeft += 150;
+    }
+  };
+  // useEffect(() => {
+  //   // if(scrollableContainer.current.offsetWidth > = )
+  //   console.log(
+  //     'scroll width offset width ',
+  //     scrollableContainer.current.offsetWidth,
+  //     scrollableContainer.current.scrollWidth
+  //   );
+  // }, [scrollableContainer.current]);
+
   useEffect(() => {
-    // if(scrollableContainer.current.offsetWidth > = )
-    console.log(
-      'scroll width offset width ',
-      scrollableContainer.current.offsetWidth,
-      scrollableContainer.current.scrollWidth
-    );
-  }, [scrollableContainer.current]);
+    // console.log(
+    //   'scroll widths outer inner ',
+    //   submittedAttachmentsInnerContainer.current.clientWidth,
+    //   submittedAttachmentsInnerContainer.current.scrollWidth
+    // );
+
+    // console.log(
+    //   'scroll widths outer inner ',
+    //   submittedAttachmentsOuterContainer.current.scrollWidth,
+    //   submittedAttachmentsInnerContainer.current.scrollWidth
+    // );
+    if (submittedAttachmentsInnerContainer.current) {
+      console.log(
+        'submittedscroll widths outer inner ',
+        submittedAttachmentsOuterContainer.current.clientWidth,
+        submittedAttachmentsInnerContainer.current.scrollWidth
+      );
+      if (
+        submittedAttachmentsInnerContainer.current.clientWidth <
+        submittedAttachmentsInnerContainer.current.scrollWidth
+      ) {
+        setShowSubmittedAttachmentArrows(true);
+      } else {
+        setShowSubmittedAttachmentArrows(false);
+      }
+    }
+    if (evaluatedAttachmentsInnerContainer.current) {
+      console.log(
+        'evaluated scroll widths outer inner ',
+        evaluatedAttachmentsInnerContainer.current.clientWidth,
+        evaluatedAttachmentsInnerContainer.current.scrollWidth
+      );
+      if (
+        evaluatedAttachmentsInnerContainer.current.clientWidth <
+        evaluatedAttachmentsInnerContainer.current.scrollWidth
+      ) {
+        setShowEvaluatedAttachmentArrows(true);
+      } else {
+        setShowEvaluatedAttachmentArrows(false);
+      }
+    }
+  }, [correctedQuestions.length, question.submitted_files.length]);
 
   const onEvaluate = () => {
-    if (correctedQuestions.length < question.submitted_files.length) {
-      setAlert('error', 'Please evaluate all attachments');
-    } else {
-      evaluateAnswer();
-    }
+    // if (correctedQuestions.length < question.submitted_files.length) {
+    //   setAlert('error', 'Please evaluate all attachments');
+    // } else {
+    evaluateAnswer();
+    // }
   };
 
   let qu = [];
@@ -99,20 +156,26 @@ const SubmittedQuestion = ({
         <Typography component='h4' color='primary' className='header'>
           Attachments
         </Typography>
-        <div className='attachments-list-outer-container'>
+        <div
+          className='attachments-list-outer-container'
+          ref={submittedAttachmentsOuterContainer}
+        >
           <div className='prev-btn'>
-            <IconButton onClick={() => handleScroll('left')}>
-              <ArrowBackIosIcon />
-            </IconButton>
+            {showSubmittedAttachmentArrows && (
+              <IconButton onClick={() => handleScroll('left')}>
+                <ArrowBackIosIcon />
+              </IconButton>
+            )}
           </div>
           <SimpleReactLightbox>
             <div
               className='attachments-list'
-              ref={scrollableContainer}
+              // ref={scrollableContainer}
               onScroll={(e) => {
                 e.preventDefault();
                 console.log('scrolled');
               }}
+              ref={submittedAttachmentsInnerContainer}
             >
               {question.submitted_files.map((url, i) => (
                 <>
@@ -180,9 +243,11 @@ const SubmittedQuestion = ({
             </div>
           </SimpleReactLightbox>
           <div className='next-btn'>
-            <IconButton onClick={() => handleScroll('right')}>
-              <ArrowForwardIosIcon color='primary' />
-            </IconButton>
+            {showSubmittedAttachmentArrows && (
+              <IconButton onClick={() => handleScroll('right')}>
+                <ArrowForwardIosIcon color='primary' />
+              </IconButton>
+            )}
           </div>
         </div>
       </div>
@@ -191,11 +256,16 @@ const SubmittedQuestion = ({
           <Typography component='h4' color='primary' className='header'>
             Evaluated
           </Typography>
-          <div className='attachments-list-outer-container'>
+          <div
+            className='attachments-list-outer-container'
+            ref={evaluatedAttachmentsOuterContainer}
+          >
             <div className='prev-btn'>
-              <IconButton onClick={() => handleScroll('left')}>
-                <ArrowBackIosIcon />
-              </IconButton>
+              {showEvaluatedAttachmentArrows && (
+                <IconButton onClick={() => handleScrollEvaluated('left')}>
+                  <ArrowBackIosIcon />
+                </IconButton>
+              )}
             </div>
             <SimpleReactLightbox>
               <div
@@ -205,6 +275,7 @@ const SubmittedQuestion = ({
                   e.preventDefault();
                   console.log('scrolled');
                 }}
+                ref={evaluatedAttachmentsInnerContainer}
               >
                 {correctedQuestions.map((url, i) => (
                   <>
@@ -274,9 +345,11 @@ const SubmittedQuestion = ({
               </div>
             </SimpleReactLightbox>
             <div className='next-btn'>
-              <IconButton onClick={() => handleScroll('right')}>
-                <ArrowForwardIosIcon color='primary' />
-              </IconButton>
+              {showEvaluatedAttachmentArrows && (
+                <IconButton onClick={() => handleScrollEvaluated('right')}>
+                  <ArrowForwardIosIcon color='primary' />
+                </IconButton>
+              )}
             </div>
           </div>
         </div>
