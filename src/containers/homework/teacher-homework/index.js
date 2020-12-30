@@ -109,7 +109,10 @@ const TeacherHomework = withRouter(
     history,
     ...props
   }) => {
-    const [dateRange, setDateRange] = useState([moment().subtract(6, 'days'), moment()]);
+    const [dateRange, setDateRange] = useState([
+      moment().startOf('isoWeek'),
+      moment().endOf('week'),
+    ]);
     const [activeView, setActiveView] = useState('list-homework');
     const classes = useStyles();
     const { setAlert } = useContext(AlertNotificationContext);

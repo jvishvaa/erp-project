@@ -319,6 +319,7 @@ const ViewHomework = withRouter(
                   }
                   activeQuestion={activeQuestion}
                   totalQuestions={totalSubmittedQuestions}
+                  hideNextPrevButton={totalSubmittedQuestions <= 1}
                   onNext={() => {
                     setActiveQuestion((prev) =>
                       prev < totalSubmittedQuestions ? prev + 1 : prev
@@ -521,21 +522,25 @@ const ViewHomework = withRouter(
                     />
                   </FormControl>
                 </div>
-                <div className="button-container">
-                <div className='cancel-btn'>
-                  <Button variant='contained' className='disabled-btn' onClick={onClose}>
-                    Cancel
-                  </Button>
-                </div>
-                <div className='done-btn'>
-                  <Button
-                    variant='contained'
-                    color='primary'
-                    onClick={handleFinalEvaluationForHomework}
-                  >
-                    EVALUATION DONE
-                  </Button>
-                </div>
+                <div className='button-container'>
+                  <div className='cancel-btn'>
+                    <Button
+                      variant='contained'
+                      className='disabled-btn'
+                      onClick={onClose}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                  <div className='done-btn'>
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      onClick={handleFinalEvaluationForHomework}
+                    >
+                      EVALUATION DONE
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
