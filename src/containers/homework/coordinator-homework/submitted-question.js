@@ -204,10 +204,9 @@ const SubmittedQuestion = ({
                         fileName={`Attachment-${i + 1}`}
                         urlPrefix={`${endpoints.s3}/homework`}
                         index={i}
-                        actions={['preview', 'delete', 'download']}
+                        actions={['preview', 'download', 'delete']}
                         onOpenInPenTool={onOpenInPenTool}
                         onDelete={onDeleteCorrectedAttachment}
-                        preview
                       />
                     </div>
                     {/* <div className='attachment'>
@@ -250,7 +249,7 @@ const SubmittedQuestion = ({
                   <SRLWrapper>
                     {correctedQuestions.map((url, i) => (
                       <img
-                        src={url}
+                        src={`${endpoints.s3}/homework/${url}`}
                         onError={(e) => {
                           e.target.src = placeholder;
                         }}

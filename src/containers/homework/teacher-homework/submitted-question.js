@@ -289,7 +289,6 @@ const SubmittedQuestion = ({
                         actions={['preview', 'delete', 'download']}
                         onOpenInPenTool={onOpenInPenTool}
                         onDelete={onDeleteCorrectedAttachment}
-                        preview
                       />
                     </div>
                     {/* <div className='attachment'>
@@ -332,7 +331,7 @@ const SubmittedQuestion = ({
                   <SRLWrapper>
                     {correctedQuestions.map((url, i) => (
                       <img
-                        src={url}
+                        src={`${endpoints.s3}/homework/${url}`}
                         onError={(e) => {
                           e.target.src = placeholder;
                         }}
