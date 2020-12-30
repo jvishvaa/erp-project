@@ -292,7 +292,7 @@ const ViewHomework = withRouter(
             <div className='nav-cards-container'>
               <div className='nav-card' onClick={onClose}>
                 <div className='header-text text-center non_selected_homework_type_item'>
-                  All Homeworks
+                  All Homeworks 
                 </div>
               </div>
               <div className='nav-card'>

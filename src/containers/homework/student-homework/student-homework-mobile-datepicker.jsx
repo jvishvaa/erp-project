@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import moment from 'moment';
@@ -10,25 +10,25 @@ import {
   Badge,
   IconButton,
   useMediaQuery,
-  
+  InputAdornment
 } from '@material-ui/core';
 import {
-    LocalizationProvider,
-    DateRangePicker,
-    DateRange,
-    DateRangeDelimiter,
-  } from '@material-ui/pickers-4.2';
+  LocalizationProvider,
+  DateRangePicker,
+  DateRange,
+  DateRangeDelimiter,
+} from '@material-ui/pickers-4.2';
 import './student-homework.css';
-  const MobileDatepicker = (props) =>{
-    const [dateRange, setDateRange] = useState([moment().subtract(6, 'days'), moment()]);
-    const [datePopperOpen, setDatePopperOpen] = useState(false);
+const MobileDatepicker = (props) => {
+  const [dateRange, setDateRange] = useState([moment().subtract(6, 'days'), moment()]);
+  const [datePopperOpen, setDatePopperOpen] = useState(false);
 
-      return(
-        <div className="date-ranger">
-          <LocalizationProvider dateAdapter={MomentUtils}>
-           <DateRangePicker  
-           disableCloseOnSelect={false}
-          startText='Date Range' 
+  return (
+    <div className="date-ranger">
+      <LocalizationProvider dateAdapter={MomentUtils}>
+        <DateRangePicker
+          disableCloseOnSelect={false}
+          startText='Date Range'
           PopperProps={{ open: datePopperOpen }}
           // endText='End-date'
           value={dateRange}
@@ -48,34 +48,43 @@ import './student-homework.css';
             { inputProps, ...startProps },
             endProps
           ) => {
-           
+
             return (
               <>
-              
                 <TextField
                   {...startProps}
-                  inputProps={{
+                  InputProps={{
                     ...inputProps,
-                    value: `${inputProps.value} - ${endProps.inputProps.value}`,
+                    value: `${moment(inputProps.value).format(
+                      'DD-MM-YYYY'
+                    )} - ${moment(endProps.inputProps.value).format(
+                      'DD-MM-YYYY'
+                    )}`,
                     readOnly: true,
-                    endAdornment: (<DateRangeIcon />)
-                    
+                    endAdornment: (
+                      <InputAdornment position='start'>
+                        <DateRangeIcon
+                          style={{ width: '35px' }}
+                          color='primary'
+                        />
+                      </InputAdornment>
+                    ),
                   }}
                   size='small'
-                   style={{ minWidth: '300px' }}
+                  style={{ minWidth: '250px' }}
                   onClick={() => {
-                    // console.log('triggered');
+                    console.log('triggered');
                     setDatePopperOpen(true);
                   }}
                 />
-             
+
               </>
             );
           }}
-          /> 
-        </LocalizationProvider>
-        </div>
-      )
-  }
+        />
+      </LocalizationProvider>
+    </div>
+  )
+}
 
-  export default MobileDatepicker;
+export default MobileDatepicker;

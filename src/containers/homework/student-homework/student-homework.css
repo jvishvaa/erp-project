@@ -21,6 +21,15 @@
   /* .message_log_breadcrumb_wrapper  .create_group_filter_container{
 	background: #F9F9F9;
   } */
+  .message_log_breadcrumb_wrapper{
+	  margin: 0px !important;
+  }
+  .message_log_breadcrumb_wrapper .page_title{
+	padding-left: 37px;
+  }
+  .create_group_filter_container .date-ranger{
+	  margin-top: 20px;
+  }
   .starContainer{
 	width: 35%;
 }

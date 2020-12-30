@@ -437,7 +437,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
               className='homework_type_item non_selected_homework_type_item all-homeWorks'
               onClick={handleHomeworkCancel}
             >
-              All Homeworks
+              All Homeworks 
             </div>
             <div className='homework_type_item selected all-homeWorks home-sub'>
               <div className="date-sub-home">
@@ -528,7 +528,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   key={`homework_student_question_${index}`}
                 >
                   <div className={`homework-question ${calssNameWise}`} >
-                    <span className='question'>{question.question}</span>
+                    <span className='question'>Q{index+1}: {question.question}</span>
                   </div>
                   {isQuestionWise &&
                     <div className="questionWiseAttachmentsContainer ">
