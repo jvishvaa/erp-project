@@ -42,7 +42,12 @@ import './student-homework.css';
 import StudenthomeworkMobileScreen from './student-homework-mobile-screen';
 import MobileIconScreen from './student-homework-mobileScreen-Icon';
 import MobileDatepicker from './student-homework-mobile-datepicker';
-
+///
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 const useStyles = makeStyles((theme) => ({
   root: {
     '& > *': {
@@ -371,6 +376,9 @@ const StudentHomework = withRouter(({ history, ...props }) => {
     }
   }, [selectedOtherSubjects]);
 
+  // const mydiv = document.getElementById("MuiAutocomplete-hasPopupIcon");
+  // var newcontent = document.createElement('div');
+  // newcontent.innerHTML = "bar";
 
   return (
     <div className="layout-container-div">
@@ -550,13 +558,14 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                             filterSelectedOptions
                                             disableClearable
                                             contentEditable
-                                            // renderOption={(o) => <button>o</button>}
+                                           
                                             renderInput={(params) => (
                                               <>
                                               <TextField
                                                 className='homework_student_other_language-textfield'
                                                 {...params}
                                                 placeholder='Languages'
+                                                
                                                 
                                               />
                                               </>
