@@ -32,7 +32,8 @@ import './student-homework.css';
           PopperProps={{ open: datePopperOpen }}
           // endText='End-date'
           value={dateRange}
-        
+          keyboardIcon={<DateRangeIcon />}
+
           // calendars='1'
           onChange={(newValue) => {
             // console.log('onChange truggered', newValue);
