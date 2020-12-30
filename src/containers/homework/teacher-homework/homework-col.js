@@ -7,6 +7,7 @@ import { useHistory } from 'react-router-dom';
 import hwGiven from '../../../assets/images/hw-given.svg';
 import hwEvaluatedIcon from '../../../assets/images/hw-evaluated.svg';
 import submitted from '../../../assets/images/student-submitted.svg';
+import expiredIcon from '../../../assets/images/Expired.svg';
 import { Badge } from '@material-ui/core';
 import AddHomework from '../../../assets/images/AddHomework.svg';
 
@@ -16,6 +17,7 @@ const HomeworkCol = ({
   handleClick,
   handleNavigationToAddScreen,
   handleViewHomework,
+  isExpired,
 }) => {
   const history = useHistory();
   const { student_submitted: studentSubmitted, hw_evaluated: hwEvaluated } = data;
@@ -37,61 +39,74 @@ const HomeworkCol = ({
             {/* <AddCircleOutlineIcon color='primary' /> */}
           </IconButton>
         ) : (
-            <>
-              <IconButton onClick={handleViewHomework}>
+          <>
+            <IconButton onClick={handleViewHomework}>
+              <SvgIcon
+                component={() => (
+                  <img
+                    style={{ width: '35px', padding: '5px' }}
+                    src={hwGiven}
+                    alt='hwGiven'
+                  />
+                )}
+              />
+            </IconButton>
+            {studentSubmitted > 0 && (
+              <IconButton onClick={() => handleClick('submissionStats')}>
+                <Badge
+                  badgeContent={studentSubmitted}
+                  color='primary'
+                  style={{ cursor: 'pointer' }}
+                >
+                  <SvgIcon
+                    component={() => (
+                      <img
+                        style={{ width: '35px', padding: '5px' }}
+                        src={submitted}
+                        alt='submitted'
+                      />
+                    )}
+                    style={{ cursor: 'pointer' }}
+                  />
+                </Badge>
+              </IconButton>
+            )}
+
+            {hwEvaluated > 0 && (
+              <IconButton onClick={() => handleClick('evaluationStats')}>
+                <Badge
+                  badgeContent={hwEvaluated}
+                  color='primary'
+                  style={{ cursor: 'pointer' }}
+                  onClick={handleClick}
+                >
+                  <SvgIcon
+                    component={() => (
+                      <img
+                        style={{ width: '35px', padding: '5px' }}
+                        src={hwEvaluatedIcon}
+                        alt='hwEvaluated'
+                      />
+                    )}
+                  />
+                </Badge>
+              </IconButton>
+            )}
+            {isExpired && (
+              <IconButton title='Homework expired'>
                 <SvgIcon
                   component={() => (
                     <img
                       style={{ width: '35px', padding: '5px' }}
-                      src={hwGiven}
-                      alt='hwGiven'
+                      src={expiredIcon}
+                      alt='hw expired'
                     />
                   )}
                 />
               </IconButton>
-              {studentSubmitted > 0 && (
-                <IconButton onClick={() => handleClick('submissionStats')}>
-                  <Badge
-                    badgeContent={studentSubmitted}
-                    color='primary'
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <SvgIcon
-                      component={() => (
-                        <img
-                          style={{ width: '35px', padding: '5px' }}
-                          src={submitted}
-                          alt='submitted'
-                        />
-                      )}
-                      style={{ cursor: 'pointer' }}
-                    />
-                  </Badge>
-                </IconButton>
-              )}
-
-              {hwEvaluated > 0 && (
-                <IconButton onClick={() => handleClick('evaluationStats')}>
-                  <Badge
-                    badgeContent={hwEvaluated}
-                    color='primary'
-                    style={{ cursor: 'pointer' }}
-                    onClick={handleClick}
-                  >
-                    <SvgIcon
-                      component={() => (
-                        <img
-                          style={{ width: '35px', padding: '5px' }}
-                          src={hwEvaluatedIcon}
-                          alt='hwEvaluated'
-                        />
-                      )}
-                    />
-                  </Badge>
-                </IconButton>
-              )}
-            </>
-          )}
+            )}
+          </>
+        )}
       </div>
     </TableCell>
   );
