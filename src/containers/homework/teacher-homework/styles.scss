@@ -114,6 +114,9 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  .message_log_breadcrumb_wrapper {
+    height: 25px;
+  }
   .header-text {
     color: $secondary-color;
     font-weight: 600;
@@ -124,9 +127,14 @@
   }
 
   .add-homework-inner-container {
+    height: calc(100% - 65px);
     padding: 20px 2.5%;
     background: white;
     flex: 1;
+    .homework-create-questions-container {
+      height: 100%;
+      overflow: auto;
+    }
     .add-homework-title-container {
       margin: 0 0 20px;
       .nav-cards-container {
@@ -150,7 +158,7 @@
         @media screen and (min-width: 768px) {
           flex-direction: column;
           .nav-card {
-            width: 300px;
+            width: 100% !important;
             height: max-content;
             margin: 0 0 20px;
           }
@@ -337,20 +345,18 @@
         width: 100%;
       }
     }
-    .button-container{
+    .button-container {
       display: flex !important;
-      
     }
     .button-container .cancel-btn {
       align-items: right !important;
     }
-    .done-btn{
+    .done-btn {
       align-items: right !important;
     }
-    .score{
+    .score {
       width: 72% !important;
       margin-right: 8px !important;
-    
     }
     .btn-container {
       width: 100% !important;
@@ -514,34 +520,33 @@
   }
 }
 
-.table-cont{
+.table-cont {
   display: flex;
 }
 
-.create_group_filter_container .hwcard{
+.create_group_filter_container .hwcard {
   //  margin: 0px 0px 0px 30px;
   margin-top: 5px;
-   margin-left: 5px !important;
+  margin-left: 5px !important;
 }
 
-
-.message_log_white_wrapper .view-homework .home-wrapper{
+.message_log_white_wrapper .view-homework .home-wrapper {
   width: 100% !important;
 }
 
 .view-homework .table-cont table thead tr th {
-  color: #FF6B6B !important;
-  background:#F3F3F3 !important;
+  color: #ff6b6b !important;
+  background: #f3f3f3 !important;
 }
 
-.message_log_wrapper.teacher-homework .homework_block_wrapper{
+.message_log_wrapper.teacher-homework .homework_block_wrapper {
   width: 100% !important;
 }
 
-.MuiPickersPopper-root{
+.MuiPickersPopper-root {
   transform: translate3d(55px, 179px, 0px) !important;
-  top:46px;
+  top: 46px;
 }
-.home-work-date-subject-name{
+.home-work-date-subject-name {
   width: 80% !important;
 }

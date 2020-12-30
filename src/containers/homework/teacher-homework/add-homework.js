@@ -148,8 +148,8 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
         <div className='message_log_breadcrumb_wrapper'>
           <CommonBreadcrumbs componentName='Homework' childComponentName='Add' />
         </div>
-        <Grid container className='add-homework-inner-container'>
-          <Grid item xs={12} className='add-homework-title-container' md={4}>
+        <Grid container className='add-homework-inner-container' spacing={2}>
+          <Grid item xs={12} className='add-homework-title-container' md={2}>
             <div className='nav-cards-container'>
               <div
                 className='nav-card'
@@ -166,7 +166,13 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
             </div>
           </Grid>
 
-          <Grid item container xs={12} md={8}>
+          <Grid
+            item
+            className='homework-create-questions-container'
+            container
+            xs={12}
+            md={10}
+          >
             <Grid item xs={12} className='form-field'>
               <FormControl variant='outlined' fullWidth size='small'>
                 <InputLabel htmlFor='component-outlined'>Title</InputLabel>
@@ -227,7 +233,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
                     title='Add Question'
                     className='btn add-quesiton-btn outlined-btn'
                     color='primary'
-                    variant="outlined"
+                    variant='outlined'
                   >
                     Add another question
                   </Button>
