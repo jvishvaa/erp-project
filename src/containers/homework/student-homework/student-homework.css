@@ -21,6 +21,9 @@
   /* .message_log_breadcrumb_wrapper  .create_group_filter_container{
 	background: #F9F9F9;
   } */
+  .starContainer{
+	width: 35%;
+}
   .message_log_white_wrapper{
 	  margin-top: 45px
   }
@@ -215,6 +218,38 @@ font-weight: 600;
 }
 @media only screen and (max-width: 768px) {
 	/* For mobile phones: */
+	/* .makeStyles-root-3 .makeStyles-container-35 .message_log_wrapper{
+		overflow-x: hidden !important;
+	} */
+	.body {
+		padding-top: 0px;
+	}
+	.rating_days{
+		background: white;
+		border: none !important;
+		width: 236px;
+	}
+	.MuiAutocomplete-hasPopupIcon .MuiAutocomplete-inputRoot[class*="MuiOutlinedInput-root"], .MuiAutocomplete-hasClearIcon .MuiAutocomplete-inputRoot[class*="MuiOutlinedInput-root"] {
+		padding-right: 20px !important;
+	}
+	.rating_days input[type="text"]{
+		color: #FF6B6B !important;
+		font-size: 14px;
+		margin-left: 22px;
+		font-weight: 600;
+	}
+	.rivateNotchedOutline-root-40{
+		top: none !important;
+	}
+	.rating_days .MuiSvgIcon-root{
+		color: #FF6B6B !important;
+	}
+	.subject-homework-tag-wrapper fieldset {
+		border: 1px white !important;
+	}
+	.MuiAutocomplete-endAdornment{
+		top: 3px;
+	}
 	.hide-mob-icon{
 		display: none;
 	}
@@ -261,6 +296,7 @@ font-weight: 600;
 	} */
 	.create_group_filter_container  .date-ranger{
 		margin-bottom: 20px;
+		margin-top: 20px;
 	}
 	.create_group_filter_container .mobile-date-picker{
 		padding-bottom: 20px;
@@ -310,7 +346,7 @@ font-weight: 600;
 	  }
 	  .mobile-screen-subject-button button:blur(0) {
 		border: 1px solid #FF6B6B;
-		color: white;
+		color: white !important;
 		border-radius: 10px;
 	  }
 
@@ -523,7 +559,14 @@ font-weight: 600;
 	}
 	.homework_right_wrapper .subject-homework-tag{
 		text-align: left;
-    	margin-top: 3px;
+    	margin-top: 9px;
+	}
+	.starContainer{
+		width: 40%;
+		text-align: justify;
+	}
+	.message_log_breadcrumb_wrapper{
+		margin: 0;
 	}
   }
 
