@@ -26,6 +26,7 @@ const SubmittedQuestion = ({
   onDeleteCorrectedAttachment,
   onChangeQuestionsState,
   evaluateAnswer,
+  hideNextPrevButton,
 }) => {
   const scrollableContainer = useRef(null);
   const submittedAttachmentsOuterContainer = useRef(null);
@@ -116,11 +117,10 @@ const SubmittedQuestion = ({
   };
 
   let qu = [];
-  if(question){
-    qu.push(question)
-
+  if (question) {
+    qu.push(question);
   }
-// console.log(qu, "question")
+  // console.log(qu, "question")
   return (
     <div className='homework-question-container' key={`homework_student_question_${1}`}>
       <div
@@ -131,26 +131,35 @@ const SubmittedQuestion = ({
           component='h5'
           style={{ marginRight: '1rem' }}
         >{`${activeQuestion}/${totalQuestions}`}</Typography>
-        <Button
-          variant='contained'
-          color='#9f9f9f'
-          onClick={onPrev}
-          style={{ marginRight: '0.5rem' , backgroundColor: '#e0e0e0', color : '#9f9f9f' }}
-          size='small'
-        >
-          Previous
-        </Button>
-        <Button variant='contained' size='small' color='primary' onClick={onNext}>
-          Next
-        </Button>
+        {!hideNextPrevButton && (
+          <>
+            <Button
+              variant='contained'
+              color='#9f9f9f'
+              onClick={onPrev}
+              style={{
+                marginRight: '0.5rem',
+                backgroundColor: '#e0e0e0',
+                color: '#9f9f9f',
+              }}
+              size='small'
+            >
+              Previous
+            </Button>
+            <Button variant='contained' size='small' color='primary' onClick={onNext}>
+              Next
+            </Button>
+          </>
+        )}
       </div>
       <div className='homework-question'>
-          {
-            qu.map((ele, index) =>{
-              return  <div className='question'>Q{index+1}: {ele.question}</div>
-
-            })
-          }
+        {qu.map((ele, index) => {
+          return (
+            <div className='question'>
+              Q{index + 1}: {ele.question}
+            </div>
+          );
+        })}
       </div>
       <div className='attachments-container'>
         <Typography component='h4' color='primary' className='header'>
