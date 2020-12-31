@@ -495,7 +495,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   </Button>
                                    
                 </div>
-                <small style={{ width: '100%' }} >{" "}Accepted files: jpeg,jpg,mp3,mp4,pdf,png</small>
+                <small style={{ width: '100%',color: '#014b7e' }} >{" "}Accepted files: jpeg,jpg,mp3,mp4,pdf,png</small>
                 <div className="bulk_upload_attachments">
                   {bulkDataDisplay.map((file, i) => (
                     <FileRow
@@ -547,7 +547,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                           className={classes.fileInput}
                         />
                       </IconButton>                      
-                      <small style={{ width: '100%' }} >{" "}Accepted files: jpeg,jpg,mp3,mp4,pdf,png</small>                      
+                      <small style={{ width: '100%',color: '#014b7e' }} >{" "}Accepted files: jpeg,jpg,mp3,mp4,pdf,png</small>                      
                       {attachmentDataDisplay[index]?.map((file, i) => (
                         <FileRow
                           key={`homework_student_question_attachment_${i}`}
