@@ -336,31 +336,39 @@
     justify-content: space-between;
     margin-top: 1rem;
     flex-wrap: wrap;
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
     .input-container {
       // display: flex;
-      width: 100% !important;
+      width: 70% !important;
       // flex-wrap: wrap;
       .remark {
-        width: 100% !important;
+        width: 70% !important;
         margin-right: 1rem;
         @media screen and (max-width: 768px) {
-          width: 100%;
+          width: 100% !important;
           margin: 1rem 0;
         }
       }
       .score {
         @media screen and (max-width: 768px) {
-          width: 100%;
+          width: 100% !important;
           margin: 0 0 1rem;
         }
       }
 
       @media screen and (max-width: 768px) {
-        width: 100%;
+        width: 100% !important;
       }
     }
     .button-container {
       display: flex !important;
+      flex-wrap: wrap;
+
+      @media screen and (max-width: 768px) {
+        flex-direction: column-reverse;
+      }
     }
     .button-container .cancel-btn {
       align-items: right !important;
@@ -369,18 +377,18 @@
       align-items: right !important;
     }
     .score {
-      width: 72% !important;
+      // width: 30% !important;
       margin-right: 8px !important;
     }
     .btn-container {
-      width: 100% !important;
-      margin-top: 10px;
+      width: 30% !important;
+      // margin-top: 10px;
       display: flex !important;
       // justify-content: flex-end;
       // flex-wrap: wrap-reverse;
 
       @media screen and (max-width: 768px) {
-        width: 100%;
+        width: 100% !important;
         justify-content: center;
       }
       .cancel-btn {
@@ -482,6 +490,8 @@
 
 .nav-cards-container {
   display: flex;
+  width: 95%;
+  margin: auto;
 
   .nav-card {
     width: 50%;
