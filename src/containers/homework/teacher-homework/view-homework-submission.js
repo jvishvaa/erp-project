@@ -184,12 +184,13 @@ const ViewHomework = withRouter(
     const deleteEvaluated = (index) => {
       if (isQuestionwise) {
         const currentQuestion = questionsState[activeQuestion - 1];
-        currentQuestion.corrected_submission.splice(index, 1);
-        setQuestionsState([
-          ...questionsState.slice(0, index),
-          currentQuestion,
-          ...questionsState.slice(index + 1),
-        ]);
+        const valueToRemove = currentQuestion.corrected_submission[index];
+        currentQuestion.corrected_submission = currentQuestion.corrected_submission.filter(
+          function (item) {
+            return item !== valueToRemove;
+          }
+        );
+        setQuestionsState([...questionsState, currentQuestion]); 
       } else {
         const currentQuestion = { ...collatedQuestionState };
         currentQuestion.corrected_submission.splice(index, 1);

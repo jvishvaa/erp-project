@@ -393,7 +393,7 @@ const CoordinatorTeacherHomework = withRouter(
       <>
         {loading ? <Loading message='Loading...' /> : null}
         <Layout>
-          <div className=' teacher-homework message_log_wrapper'>
+          <div className=' teacher-homework-coordinator message_log_wrapper-coordinator'>
             <div className='message_log_breadcrumb_wrapper'>
               <CommonBreadcrumbs componentName='Homework' />
             </div>
