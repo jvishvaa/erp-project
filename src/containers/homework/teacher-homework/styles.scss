@@ -119,6 +119,7 @@
   flex-direction: column;
   .message_log_breadcrumb_wrapper {
     height: 25px;
+    margin: 20px auto !important;
   }
   .header-text {
     color: $secondary-color;
