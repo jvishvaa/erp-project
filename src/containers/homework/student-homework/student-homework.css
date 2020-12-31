@@ -28,6 +28,10 @@
 	min-width: 147px !important;
     
   }
+  .message_log_white_wrapper{
+	margin-top: 40px;
+	/* padding: 0px; */
+  }
   .message_log_white_wrapper .for-mobile table thead tr .MuiTableCell-stickyHeader .MuiInput-underline{
 	border-bottom: 1px solid #F3F3F3;
 
@@ -250,7 +254,6 @@ font-weight: 600;
 	/* .makeStyles-root-3 .makeStyles-container-35 .message_log_wrapper{
 		overflow-x: hidden !important;
 	} */
-
 	
 	.makeStyles-container-35 {
 		padding-top: 0px !important;
@@ -600,5 +603,9 @@ font-weight: 600;
 	.message_log_breadcrumb_wrapper{
 		margin: 0;
 	}
+	.message_log_white_wrapper{
+		margin-top: 0px;
+		padding: 1px 0px;
+	  }
   }
 
