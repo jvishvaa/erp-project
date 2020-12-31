@@ -429,167 +429,163 @@ const TeacherHomework = withRouter(
               <div className='create_group_filter_container'>
                 <Grid container className='homework_container' spacing={2}>
                   {activeView === 'list-homework' && !isMobile && (
-                    <Grid xs={12}>
-                      <div className='view-homework'>
-                        {activeView !== 'view-homework' &&
-                          activeView !== 'view-received-homework' && (
-                            <div className={`homework_block_wrapper`}>
-                              {/* <div className='homework_block'>Weekly Time table</div> */}
-                              <div className='icon-desc-container'>
-                                <SvgIcon
-                                  component={() => (
-                                    <img
-                                      style={{ width: '25px', marginRight: '5px' }}
-                                      src={AddHomework}
-                                      alt='AddHomework'
-                                    />
-                                  )}
-                                />
-                                <span style={{ fontSize: '16px' }}>Add Homework</span>
-                              </div>
-                              <div className='icon-desc-container'>
-                                <SvgIcon
-                                  component={() => (
-                                    <img
-                                      style={{ width: '25px', marginRight: '5px' }}
-                                      src={hwEvaluated}
-                                      alt='evaluated'
-                                    />
-                                  )}
-                                />
-                                <span style={{ fontSize: '16px' }}>HW Evaluated</span>
-                              </div>
-                              <div className='icon-desc-container'>
-                                <SvgIcon
-                                  component={() => (
-                                    <img
-                                      style={{ width: '25px', marginRight: '5px' }}
-                                      src={hwGiven}
-                                      alt='given'
-                                    />
-                                  )}
-                                />
-                                <span style={{ fontSize: '16px' }}>HW Assigned</span>
-                              </div>
-                              <div className='icon-desc-container'>
-                                <SvgIcon
-                                  component={() => (
-                                    <img
-                                      style={{ width: '25px', marginRight: '5px' }}
-                                      src={submitted}
-                                      alt='submitted'
-                                    />
-                                  )}
-                                />
-                                <span style={{ fontSize: '16px' }}>
-                                  Students submitted
-                                </span>
-                              </div>
-                              <div className='icon-desc-container'>
-                                <SvgIcon
-                                  component={() => (
-                                    <img
-                                      style={{ width: '25px', marginRight: '5px' }}
-                                      src={CancelIcon}
-                                      alt='CancelIcon'
-                                    />
-                                  )}
-                                />
-                                <span>Evaluated</span>
-                              </div>
-                              <div className='icon-desc-container'>
-                                <SvgIcon
-                                  component={() => (
-                                    <img
-                                      style={{ width: '20px', marginRight: '5px' }}
-                                      src={expiredIcon}
-                                      alt='evaluated'
-                                    />
-                                  )}
-                                />
-                                <span style={{ fontSize: '16px' }}>Expired</span>
-                              </div>
+                    <>
+                      {activeView !== 'view-homework' &&
+                        activeView !== 'view-received-homework' && (
+                          <Grid item xs={12} className={`homework_block_wrapper`}>
+                            {/* <div className='homework_block'>Weekly Time table</div> */}
+                            <div className='icon-desc-container'>
+                              <SvgIcon
+                                component={() => (
+                                  <img
+                                    style={{ width: '25px', marginRight: '5px' }}
+                                    src={AddHomework}
+                                    alt='AddHomework'
+                                  />
+                                )}
+                              />
+                              <span style={{ fontSize: '16px' }}>Add Homework</span>
                             </div>
-                          )}
-                        {fetchingTeacherHomework ? (
-                          <div
-                            style={{
-                              height: '60vh',
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                            }}
-                          >
-                            <CircularProgress color='primary' />
-                          </div>
-                        ) : (
-                          <Grid
-                            xs={12}
-                            md={selectedCol?.subject ? 9 : 12}
-                            item
-                            className='table-cont'
-                          >
-                            <Paper
-                              className={`homework_table_wrapper ${classes.root}`}
-                              ref={tableContainer}
-                            >
-                              <TableContainer
-                                className={`table table-shadow homework_table ${classes.container}`}
-                              >
-                                <Table stickyHeader aria-label='sticky table'>
-                                  <TableHead className='view_groups_header'>
-                                    <TableRow className='tr-row'>
-                                      {/* {messageRows.header.map((headers, i) => (
-                              <TableCell className='homework_header'>{headers}</TableCell>
-                            ))} */}
-                                      {homeworkCols.map((col) => {
-                                        return typeof col === 'object' ? (
-                                          <TableCell>
-                                            {col.subject_name.split('_').join('/')}
-                                          </TableCell>
-                                        ) : (
-                                          <TableCell>{col}</TableCell>
-                                        );
-                                      })}
-                                    </TableRow>
-                                  </TableHead>
-                                  <TableBody className='table_body'>
-                                    {homeworkRows.map((row) => (
-                                      <HomeworkRow
-                                        data={row}
-                                        cols={homeworkCols}
-                                        selectedCol={selectedCol}
-                                        setSelectedCol={handleSelectCol}
-                                        handleViewHomework={handleViewHomework}
-                                      />
-                                    ))}
-                                  </TableBody>
-                                </Table>
-                              </TableContainer>
-                            </Paper>
-                            {activeView !== 'view-homework' &&
-                              activeView !== 'view-received-homework' &&
-                              selectedCol.subject && (
-                                <HomeWorkCard
-                                  // height={tableContainer.current?.offsetHeight}
-                                  height='100%'
-                                  data={selectedCol}
-                                  evaluatedStudents={evaluatedStudents}
-                                  unevaluatedStudents={unevaluatedStudents}
-                                  submittedStudents={submittedStudents}
-                                  loading={fetchingStudentLists}
-                                  onClick={handleViewReceivedHomework}
-                                  onClose={() => {
-                                    setActiveView('list-homework');
-                                    setSelectedCol({});
-                                  }}
-                                />
-                              )}
+                            <div className='icon-desc-container'>
+                              <SvgIcon
+                                component={() => (
+                                  <img
+                                    style={{ width: '25px', marginRight: '5px' }}
+                                    src={hwEvaluated}
+                                    alt='evaluated'
+                                  />
+                                )}
+                              />
+                              <span style={{ fontSize: '16px' }}>HW Evaluated</span>
+                            </div>
+                            <div className='icon-desc-container'>
+                              <SvgIcon
+                                component={() => (
+                                  <img
+                                    style={{ width: '25px', marginRight: '5px' }}
+                                    src={hwGiven}
+                                    alt='given'
+                                  />
+                                )}
+                              />
+                              <span style={{ fontSize: '16px' }}>HW Assigned</span>
+                            </div>
+                            <div className='icon-desc-container'>
+                              <SvgIcon
+                                component={() => (
+                                  <img
+                                    style={{ width: '25px', marginRight: '5px' }}
+                                    src={submitted}
+                                    alt='submitted'
+                                  />
+                                )}
+                              />
+                              <span style={{ fontSize: '16px' }}>Students submitted</span>
+                            </div>
+                            <div className='icon-desc-container'>
+                              <SvgIcon
+                                component={() => (
+                                  <img
+                                    style={{ width: '25px', marginRight: '5px' }}
+                                    src={CancelIcon}
+                                    alt='CancelIcon'
+                                  />
+                                )}
+                              />
+                              <span>Evaluated</span>
+                            </div>
+                            <div className='icon-desc-container'>
+                              <SvgIcon
+                                component={() => (
+                                  <img
+                                    style={{ width: '20px', marginRight: '5px' }}
+                                    src={expiredIcon}
+                                    alt='evaluated'
+                                  />
+                                )}
+                              />
+                              <span style={{ fontSize: '16px' }}>Expired</span>
+                            </div>
                           </Grid>
                         )}
-                      </div>
-                    </Grid>
+                      {fetchingTeacherHomework ? (
+                        <div
+                          style={{
+                            height: '60vh',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <CircularProgress color='primary' />
+                        </div>
+                      ) : (
+                        <Grid
+                          xs={12}
+                          md={selectedCol?.subject ? 9 : 12}
+                          item
+                          className='table-cont'
+                        >
+                          <Paper
+                            className={`homework_table_wrapper ${classes.root}`}
+                            ref={tableContainer}
+                          >
+                            <TableContainer
+                              className={`table table-shadow homework_table ${classes.container}`}
+                            >
+                              <Table stickyHeader aria-label='sticky table'>
+                                <TableHead className='view_groups_header'>
+                                  <TableRow className='tr-row'>
+                                    {/* {messageRows.header.map((headers, i) => (
+                              <TableCell className='homework_header'>{headers}</TableCell>
+                            ))} */}
+                                    {homeworkCols.map((col) => {
+                                      return typeof col === 'object' ? (
+                                        <TableCell>
+                                          {col.subject_name.split('_').join('/')}
+                                        </TableCell>
+                                      ) : (
+                                        <TableCell>{col}</TableCell>
+                                      );
+                                    })}
+                                  </TableRow>
+                                </TableHead>
+                                <TableBody className='table_body'>
+                                  {homeworkRows.map((row) => (
+                                    <HomeworkRow
+                                      data={row}
+                                      cols={homeworkCols}
+                                      selectedCol={selectedCol}
+                                      setSelectedCol={handleSelectCol}
+                                      handleViewHomework={handleViewHomework}
+                                    />
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </TableContainer>
+                          </Paper>
+                        </Grid>
+                      )}
+                    </>
                   )}
+                  {activeView !== 'view-homework' &&
+                    activeView !== 'view-received-homework' &&
+                    selectedCol.subject && (
+                      <HomeWorkCard
+                        // height={tableContainer.current?.offsetHeight}
+                        height='100%'
+                        data={selectedCol}
+                        evaluatedStudents={evaluatedStudents}
+                        unevaluatedStudents={unevaluatedStudents}
+                        submittedStudents={submittedStudents}
+                        loading={fetchingStudentLists}
+                        onClick={handleViewReceivedHomework}
+                        onClose={() => {
+                          setActiveView('list-homework');
+                          setSelectedCol({});
+                        }}
+                      />
+                    )}
                   {activeView === 'list-homework' && isMobile && (
                     <Tabs
                       defaultActiveTab={
