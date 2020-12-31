@@ -173,7 +173,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
             xs={12}
             md={10}
           >
-            <div style={{ width: '95%', margin: 'auto' }}>
+            <div style={{ width: '95%', margin: '0 auto' }}>
               <Grid item xs={12} className='form-field'>
                 <FormControl variant='outlined' fullWidth size='small'>
                   <InputLabel htmlFor='component-outlined'>Title</InputLabel>
