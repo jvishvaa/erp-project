@@ -640,7 +640,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                               <div className='day-icon'>
                                                 {moment(row.date).format('dddd').split('')[0]}
                                               </div>
-                                              <div className="date-web">{row.date}</div>
+                                              <div className="date-web">{moment(row.date).format('DD-MM-YYYY')}</div>
                                             </div></TableCell>
                                         ) : row[headers.subject_slag].isHomework ? (
                                           <TableCell
