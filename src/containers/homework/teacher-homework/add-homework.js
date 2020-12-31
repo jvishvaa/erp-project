@@ -173,87 +173,89 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
             xs={12}
             md={10}
           >
-            <Grid item xs={12} className='form-field'>
-              <FormControl variant='outlined' fullWidth size='small'>
-                <InputLabel htmlFor='component-outlined'>Title</InputLabel>
-                <OutlinedInput
-                  id='title'
-                  name='title'
-                  onChange={() => {}}
-                  inputProps={{ maxLength: 20 }}
-                  label='Title'
-                  autoFocus
-                  onChange={(e) => {
-                    setName(e.target.value);
-                  }}
-                />
-                <FormHelperText style={{ color: 'red' }}>{errors.name}</FormHelperText>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} className='form-field'>
-              <FormControl variant='outlined' fullWidth size='small'>
-                <InputLabel htmlFor='component-outlined'>Description</InputLabel>
-                <OutlinedInput
-                  id='description'
-                  name='description'
-                  onChange={(e) => {
-                    setDescription(e.target.value);
-                  }}
-                  inputProps={{ maxLength: 150 }}
-                  multiline
-                  rows={4}
-                  rowsMax={6}
-                  label='Description'
-                />
-                <FormHelperText style={{ color: 'red' }}>
-                  {errors.description}
-                </FormHelperText>
-              </FormControl>
-            </Grid>
-            {questions.map((question, index) => (
-              <QuestionCard
-                key={question.id}
-                question={question}
-                index={index}
-                addNewQuestion={addNewQuestion}
-                handleChange={handleChange}
-                removeQuestion={removeQuestion}
-              />
-            ))}
-
-            <Grid container item xs={12} spacing={1}>
-              <Grid item xs={12} md={6} className='form-field'>
-                <div className='finish-btn-container'>
-                  <Button
-                    startIcon={<AddCircleOutlineIcon />}
-                    onClick={() => {
-                      setQueIndexCounter(queIndexCounter + 1);
-                      addNewQuestion(queIndexCounter + 1);
+            <div style={{ width: '95%', margin: '0 auto' }}>
+              <Grid item xs={12} className='form-field'>
+                <FormControl variant='outlined' fullWidth size='small'>
+                  <InputLabel htmlFor='component-outlined'>Title</InputLabel>
+                  <OutlinedInput
+                    id='title'
+                    name='title'
+                    onChange={() => {}}
+                    inputProps={{ maxLength: 20 }}
+                    label='Title'
+                    autoFocus
+                    onChange={(e) => {
+                      setName(e.target.value);
                     }}
-                    title='Add Question'
-                    className='btn add-quesiton-btn outlined-btn'
-                    color='primary'
-                    variant='outlined'
-                  >
-                    Add another question
-                  </Button>
-                </div>
+                  />
+                  <FormHelperText style={{ color: 'red' }}>{errors.name}</FormHelperText>
+                </FormControl>
               </Grid>
-              <Grid item xs={12} md={6} className='form-field'>
-                <div className='finish-btn-container'>
-                  <Button className='btn' color='primary' onClick={handleAddHomeWork}>
-                    Finish
-                  </Button>
-                </div>
+              <Grid item xs={12} className='form-field'>
+                <FormControl variant='outlined' fullWidth size='small'>
+                  <InputLabel htmlFor='component-outlined'>Description</InputLabel>
+                  <OutlinedInput
+                    id='description'
+                    name='description'
+                    onChange={(e) => {
+                      setDescription(e.target.value);
+                    }}
+                    inputProps={{ maxLength: 150 }}
+                    multiline
+                    rows={4}
+                    rowsMax={6}
+                    label='Description'
+                  />
+                  <FormHelperText style={{ color: 'red' }}>
+                    {errors.description}
+                  </FormHelperText>
+                </FormControl>
               </Grid>
-            </Grid>
-            {/* <Grid item xs={12}>
+              {questions.map((question, index) => (
+                <QuestionCard
+                  key={question.id}
+                  question={question}
+                  index={index}
+                  addNewQuestion={addNewQuestion}
+                  handleChange={handleChange}
+                  removeQuestion={removeQuestion}
+                />
+              ))}
+
+              <Grid container item xs={12} spacing={1}>
+                <Grid item xs={12} md={6} className='form-field'>
+                  <div className='finish-btn-container'>
+                    <Button
+                      startIcon={<AddCircleOutlineIcon />}
+                      onClick={() => {
+                        setQueIndexCounter(queIndexCounter + 1);
+                        addNewQuestion(queIndexCounter + 1);
+                      }}
+                      title='Add Question'
+                      className='btn add-quesiton-btn outlined-btn'
+                      color='primary'
+                      variant='outlined'
+                    >
+                      Add another question
+                    </Button>
+                  </div>
+                </Grid>
+                <Grid item xs={12} md={6} className='form-field'>
+                  <div className='finish-btn-container'>
+                    <Button className='btn' color='primary' onClick={handleAddHomeWork}>
+                      Finish
+                    </Button>
+                  </div>
+                </Grid>
+              </Grid>
+              {/* <Grid item xs={12}>
               <div className='finish-btn-container'>
                 <Button className='btn' color='primary' onClick={handleAddHomeWork}>
                   Finish
                 </Button>
               </div>
             </Grid> */}
+            </div>
           </Grid>
         </Grid>
       </div>

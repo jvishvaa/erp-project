@@ -67,6 +67,9 @@
       padding-bottom: 1%;
       margin: 20px 0;
       border: 1px solid #dbdbdb;
+      &.no-border {
+        border: 0 !important;
+      }
       align-items: center;
       padding: 1rem;
       border-radius: 5px;
@@ -116,6 +119,7 @@
   flex-direction: column;
   .message_log_breadcrumb_wrapper {
     height: 25px;
+    margin: 20px auto !important;
   }
   .header-text {
     color: $secondary-color;
@@ -132,16 +136,22 @@
     background: white;
     flex: 1;
     .homework-create-questions-container {
-      height: 100%;
+      height: calc(100% - 75px) !important;
+      @media screen and (min-width: 768px) {
+        height: 100% !important;
+      }
       overflow: auto;
     }
     .add-homework-title-container {
       margin: 0 0 20px;
       .nav-cards-container {
         display: flex;
+        @media screen and (min-width: 768px) {
+          height: 55px !important;
+        }
 
         .nav-card {
-          width: 50%;
+          width: 42%;
           border: 1px solid $primary-color;
           height: 100%;
           padding: 0.5rem 1.25rem;
@@ -176,11 +186,14 @@
 
   .finish-btn-container {
     width: 100%;
-    margin: 20px 0;
+    margin: 0 !important;
     display: flex;
     justify-content: center;
     .btn {
       width: 100%;
+    }
+    @media screen and (min-width: 768px) {
+      margin: 20px 0;
     }
   }
 }
@@ -307,6 +320,8 @@
   .homework_submit_wrapper {
     border: 1px solid #ff6b6b;
     border-radius: 10px;
+    width: 95% !important;
+    margin: auto !important;
   }
   .homework_submit_button_wrapper {
     display: flex;
@@ -322,31 +337,39 @@
     justify-content: space-between;
     margin-top: 1rem;
     flex-wrap: wrap;
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
     .input-container {
       // display: flex;
-      width: 100% !important;
+      width: 70% !important;
       // flex-wrap: wrap;
       .remark {
-        width: 100% !important;
+        width: 70% !important;
         margin-right: 1rem;
         @media screen and (max-width: 768px) {
-          width: 100%;
+          width: 100% !important;
           margin: 1rem 0;
         }
       }
       .score {
         @media screen and (max-width: 768px) {
-          width: 100%;
+          width: 100% !important;
           margin: 0 0 1rem;
         }
       }
 
       @media screen and (max-width: 768px) {
-        width: 100%;
+        width: 100% !important;
       }
     }
     .button-container {
       display: flex !important;
+      flex-wrap: wrap;
+
+      @media screen and (max-width: 768px) {
+        flex-direction: column-reverse;
+      }
     }
     .button-container .cancel-btn {
       align-items: right !important;
@@ -355,18 +378,18 @@
       align-items: right !important;
     }
     .score {
-      width: 72% !important;
+      // width: 30% !important;
       margin-right: 8px !important;
     }
     .btn-container {
-      width: 100% !important;
-      margin-top: 10px;
+      width: 30% !important;
+      // margin-top: 10px;
       display: flex !important;
       // justify-content: flex-end;
       // flex-wrap: wrap-reverse;
 
       @media screen and (max-width: 768px) {
-        width: 100%;
+        width: 100% !important;
         justify-content: center;
       }
       .cancel-btn {
@@ -468,6 +491,8 @@
 
 .nav-cards-container {
   display: flex;
+  width: 95%;
+  margin: auto;
 
   .nav-card {
     width: 50%;
@@ -528,6 +553,11 @@
   //  margin: 0px 0px 0px 30px;
   margin-top: 5px;
   margin-left: 5px !important;
+  @media screen and (max-width: 768px) {
+    margin-left: 0 !important;
+    margin: 1rem !important;
+    width: 100%;
+  }
 }
 
 .message_log_white_wrapper .view-homework .home-wrapper {

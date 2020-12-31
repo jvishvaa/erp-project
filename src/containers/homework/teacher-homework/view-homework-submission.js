@@ -303,7 +303,7 @@ const ViewHomework = withRouter(
           </Grid>
           <Grid item xs={12} md={10}>
             <div className='homework_submit_wrapper'>
-              <div className='homework_block_wrapper'>
+              <div className='homework_block_wrapper no-border'>
                 <div className='homework_block homework_submit_tag'>
                   Homework - {subject?.split('_')[2]}, {date}
                 </div>
@@ -506,8 +506,6 @@ const ViewHomework = withRouter(
                     />
                   </FormControl>
                 </div>
-              </div>
-              <div className='btn-container'>
                 <div className='score'>
                   <FormControl variant='outlined' fullWidth size='small'>
                     <InputLabel htmlFor='component-outlined'>Overall score</InputLabel>
@@ -522,6 +520,8 @@ const ViewHomework = withRouter(
                     />
                   </FormControl>
                 </div>
+              </div>
+              <div className='btn-container'>
                 <div className='button-container'>
                   <div className='cancel-btn'>
                     <Button

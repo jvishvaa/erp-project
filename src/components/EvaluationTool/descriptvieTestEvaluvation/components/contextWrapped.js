@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Button, Tooltip, IconButton, Typography } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 // import InputLabel from '@material-ui/core/InputLabel'
@@ -103,6 +103,51 @@ function Evaluvation(props) {
     setDrawedChanges(data);
   };
 
+  const dragToolbar = (elmnt) => {
+    let pos1 = 0;
+    let pos2 = 0;
+    let pos3 = 0;
+    let pos4 = 0;
+
+    function elementDrag(e) {
+      e = e || window.event;
+      e.preventDefault();
+      // calculate the new cursor position:
+      pos1 = pos3 - e.clientX;
+      pos2 = pos4 - e.clientY;
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      // set the element's new position:
+      elmnt.style.top = elmnt.offsetTop - pos2 + 'px';
+      elmnt.style.left = elmnt.offsetLeft - pos1 + 'px';
+      console.log('mousedown', elmnt);
+    }
+
+    function closeDragElement() {
+      /* stop moving when mouse button is released:*/
+      document.onmouseup = null;
+      document.onmousemove = null;
+    }
+
+    function dragMouseDown(e) {
+      e = e || window.event;
+      e.preventDefault();
+      // get the mouse cursor position at startup:
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      document.onmouseup = closeDragElement;
+      // call a function whenever the cursor moves:
+      document.onmousemove = elementDrag;
+      console.log('mousedown');
+    }
+
+    elmnt.onmousedown = dragMouseDown;
+  };
+
+  useEffect(() => {
+    dragToolbar(document.querySelector('.evaluvation_tool_bar'));
+  }, []);
+
   const containerStyle = {
     background: fullscreen ? 'white' : 'none',
     overflow: fullscreen ? 'auto' : 'none',
@@ -124,7 +169,7 @@ function Evaluvation(props) {
           }}
           className={`evaluvation_tool_bar ${classes.toolbar}`}
         >
-          <Button
+          {/* <Button
             onClick={() => handleCloseMenu()}
             aria-label='download'
             style={{
@@ -150,7 +195,7 @@ function Evaluvation(props) {
                 </Select>
               </FormControl>
             )}
-          </Button>
+          </Button> */}
           {totalPages ? (
             <Button
               onClick={onClickPrevious}
@@ -189,11 +234,13 @@ function Evaluvation(props) {
               </Tooltip>
             </Button>
           ) : null}
+          {/* <div className='evaluation-toolbar-btn-grp'> */}
           <ToggleButtonGroup
             exclusive
             value={tool}
             onChange={enableTool}
             aria-label='text formatting'
+            className='tool-group'
           >
             &nbsp;&nbsp;&nbsp;
             <ToggleButton
@@ -227,6 +274,7 @@ function Evaluvation(props) {
             value={zoom}
             onChange={enableZoom}
             aria-label='text formatting'
+            className='tool-group'
           >
             <ToggleButton
               value='zoom in'
@@ -256,6 +304,7 @@ function Evaluvation(props) {
             value={rotation}
             onChange={enableRotation}
             aria-label='text formatting'
+            className='tool-group'
           >
             <ToggleButton
               value='rLeft'
@@ -280,6 +329,7 @@ function Evaluvation(props) {
               </Tooltip>
             </ToggleButton>
           </ToggleButtonGroup>
+          {/* </div> */}
           <Button
             onClick={onClickFullscreen}
             aria-label='next'
