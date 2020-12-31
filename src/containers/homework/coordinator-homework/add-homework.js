@@ -144,7 +144,7 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
 
   return (
     <Layout>
-      <div className='add-homework-container'>
+      <div className='add-homework-container-coordinator'>
         <div className='message_log_breadcrumb_wrapper'>
           <CommonBreadcrumbs componentName='Homework' childComponentName='Add' />
         </div>

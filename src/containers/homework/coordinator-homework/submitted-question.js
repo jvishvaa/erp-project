@@ -59,7 +59,7 @@ const SubmittedQuestion = ({
   };
 
   return (
-    <div className='homework-question-container' key={`homework_student_question_${1}`}>
+    <div className='homework-question-container-coordinator' key={`homework_student_question_${1}`}>
       <div
         className='button-container'
         style={{ display: 'flex', justifyContent: 'flex-end' }}

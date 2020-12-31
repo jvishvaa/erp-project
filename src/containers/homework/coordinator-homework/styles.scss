@@ -19,7 +19,7 @@
 	transform: translateY(-50%);
 	background-color: #ff6b6b;
   } */
-  // .message_log_wrapper.teacher-homework .homework_block_wrapper{
+  // .message_log_wrapper-coordinator.teacher-homework-coordinator .homework_block_wrapper{
   //   width: 95% !important;
   // }
   // .homework_block_wrapper{
@@ -44,8 +44,8 @@
   .date-container .MuiPickersDateRangePickerInput-root   .MuiFormHelperText-marginDense{
     display: none;
   }
-.message_log_wrapper {
-  &.teacher-homework {
+.message_log_wrapper-coordinator {
+  &.teacher-homework-coordinator {
     .date-container {
       width: 95%;
       margin: 20px auto;
@@ -135,7 +135,7 @@
     }
   }
 }
-.add-homework-container {
+.add-homework-container-coordinator {
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -225,7 +225,7 @@
   }
 }
 
-.view-homework-container {
+.view-homework-container-coordinator {
   .evaluate-answer-btn-container {
     display: flex;
     justify-content: flex-end;
@@ -256,7 +256,7 @@
     color: #014b7e;
     font-size: 1rem;
   }
-  .homework-question-container {
+  .homework-question-container-coordinator {
     margin: 20px auto;
     width: 95%;
     &:nth-child(1) {
@@ -393,8 +393,8 @@
   }
 }
 
-.add-homework-container,
-.view-homework-container {
+.add-homework-container-coordinator,
+.view-homework-container-coordinator {
   .attachments-container {
     &.with-margin {
       width: 95%;
@@ -428,7 +428,7 @@
       }
     }
   }
-  .file-card-container {
+  .file-card-container-coordinator {
     position: relative;
     height: 100%;
     &:hover {
@@ -546,7 +546,7 @@
       flex-direction: column-reverse; 
   }
 
-.message_log_wrapper .create_group_filter_container .homework_block_wrapper .MuiGrid-grid-xs-12{
+.message_log_wrapper-coordinator .create_group_filter_container .homework_block_wrapper .MuiGrid-grid-xs-12{
   display: flex !important;
 }
 

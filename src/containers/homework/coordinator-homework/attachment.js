@@ -26,7 +26,7 @@ const Attachment = (props) => {
 
   return (
     <>
-      <div className='file-card-container'>
+      <div className='file-card-container-coordinator'>
         <div className='overlay-container'>
           <div className='overlay'>
             <Typography

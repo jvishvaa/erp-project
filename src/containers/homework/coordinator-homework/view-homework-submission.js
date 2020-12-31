@@ -183,12 +183,13 @@ const ViewHomework = withRouter(
     const deleteEvaluated = (index) => {
       if (isQuestionwise) {
         const currentQuestion = questionsState[activeQuestion - 1];
-        currentQuestion.corrected_submission.splice(index, 1);
-        setQuestionsState([
-          ...questionsState.slice(0, index),
-          currentQuestion,
-          ...questionsState.slice(index + 1),
-        ]);
+        const valueToRemove = currentQuestion.corrected_submission[index];
+        currentQuestion.corrected_submission = currentQuestion.corrected_submission.filter(
+          function (item) {
+            return item !== valueToRemove;
+          }
+        );
+        setQuestionsState([...questionsState, currentQuestion]); 
       } else {
         const currentQuestion = { ...collatedQuestionState };
         currentQuestion.corrected_submission.splice(index, 1);
@@ -271,7 +272,7 @@ const ViewHomework = withRouter(
     const desTestDetails = [{ asessment_response: { evaluvated_result: '' } }];
 
     return (
-      <div className='view-homework-container create_group_filter_container'>
+      <div className='view-homework-container-coordinator create_group_filter_container'>
         <Grid container spacing={2} className='message_log_container'>
           {/* <Grid item md={2} className='homework_type_wrapper'>
             <div className='homework_type'>
@@ -339,7 +340,7 @@ const ViewHomework = withRouter(
                 submittedHomeworkDetails?.length &&
                 submittedHomeworkDetails.map((question) => (
                   <div
-                    className='homework-question-container'
+                    className='homework-question-container-coordinator'
                     key={`homework_student_question_${1}`}
                   >
                     <div className='homework-question'>
@@ -470,8 +471,7 @@ const ViewHomework = withRouter(
                                     )
                                   )}
                               </SRLWrapper>
-                            </div>{' '}
-                            */}
+                            </div>
                           </div>
                         </SimpleReactLightbox>
                         <div className='next-btn'>
