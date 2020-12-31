@@ -303,7 +303,7 @@ const ViewHomework = withRouter(
           </Grid>
           <Grid item xs={12} md={10}>
             <div className='homework_submit_wrapper'>
-              <div className='homework_block_wrapper'>
+              <div className='homework_block_wrapper no-border'>
                 <div className='homework_block homework_submit_tag'>
                   Homework - {subject?.split('_')[2]}, {date}
                 </div>

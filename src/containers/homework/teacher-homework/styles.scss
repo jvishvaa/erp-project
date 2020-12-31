@@ -67,6 +67,9 @@
       padding-bottom: 1%;
       margin: 20px 0;
       border: 1px solid #dbdbdb;
+      &.no-border {
+        border: 0 !important;
+      }
       align-items: center;
       padding: 1rem;
       border-radius: 5px;
@@ -132,16 +135,22 @@
     background: white;
     flex: 1;
     .homework-create-questions-container {
-      height: 100%;
+      height: calc(100% - 75px) !important;
+      @media screen and (min-width: 768px) {
+        height: 100% !important;
+      }
       overflow: auto;
     }
     .add-homework-title-container {
       margin: 0 0 20px;
       .nav-cards-container {
         display: flex;
+        @media screen and (min-width: 768px) {
+          height: 55px !important;
+        }
 
         .nav-card {
-          width: 50%;
+          width: 42%;
           border: 1px solid $primary-color;
           height: 100%;
           padding: 0.5rem 1.25rem;
@@ -176,11 +185,14 @@
 
   .finish-btn-container {
     width: 100%;
-    margin: 20px 0;
+    margin: 0 !important;
     display: flex;
     justify-content: center;
     .btn {
       width: 100%;
+    }
+    @media screen and (min-width: 768px) {
+      margin: 20px 0;
     }
   }
 }
@@ -307,6 +319,8 @@
   .homework_submit_wrapper {
     border: 1px solid #ff6b6b;
     border-radius: 10px;
+    width: 95% !important;
+    margin: auto !important;
   }
   .homework_submit_button_wrapper {
     display: flex;
@@ -528,6 +542,11 @@
   //  margin: 0px 0px 0px 30px;
   margin-top: 5px;
   margin-left: 5px !important;
+  @media screen and (max-width: 768px) {
+    margin-left: 0 !important;
+    margin: 1rem !important;
+    width: 100%;
+  }
 }
 
 .message_log_white_wrapper .view-homework .home-wrapper {
