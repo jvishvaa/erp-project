@@ -92,7 +92,7 @@ const HomeworkCol = ({
                 </Badge>
               </IconButton>
             )}
-            {isExpired && (
+            {isExpired ? (
               <IconButton title='Homework expired'>
                 <SvgIcon
                   component={() => (
@@ -103,6 +103,19 @@ const HomeworkCol = ({
                     />
                   )}
                 />
+              </IconButton>
+            ) : (
+              <IconButton onClick={handleNavigationToAddScreen}>
+                <SvgIcon
+                  component={() => (
+                    <img
+                      style={{ width: '25px', marginRight: '5px' }}
+                      src={AddHomework}
+                      alt='submitted'
+                    />
+                  )}
+                />
+                {/* <AddCircleOutlineIcon color='primary' /> */}
               </IconButton>
             )}
           </>
