@@ -65,6 +65,7 @@
 }
 .homework_type_wrapper {
   width: 185px;
+  margin-top: 25px;
 }
 .homework_submit_wrapper {
   border: 1px solid #ff6b6b;
@@ -93,8 +94,8 @@
   margin-top: 1%;
   display: flex;
   flex-wrap: wrap;
+  
 }
-
 .questionWiseAttachmentsContainer {
   margin-top: 1%;
   display: flex;
@@ -407,9 +408,9 @@
   .MuiGrid-spacing-xs-2 > .MuiGrid-item {
     padding: 0px;
   }
-  .homework_type_wrapper {
-    margin-top: 25px;
-  }
+  // .homework_type_wrapper {
+  //   margin-top: 25px;
+  // }
 
   .home-sub {
     margin-left: 72px !important;
