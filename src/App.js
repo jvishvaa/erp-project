@@ -176,7 +176,7 @@ function App() {
                 <Route exact path='/homework/cadd/:date/:subject/:id/:coord_selected_teacher_id'>
                   {({ match }) => <AddHomeworkCoord match={match} />}
                 </Route>
-                <Route exact path='/lesson-report'>
+                <Route exact path='/lesson-plan-report'>
                 {({ match }) => <LessonReport match={match} />}
                  </Route>
 
