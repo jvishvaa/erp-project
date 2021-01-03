@@ -6,6 +6,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Collapse from '@material-ui/core/Collapse';
 import Divider from '@material-ui/core/Divider';
 import PeopleIcon from '@material-ui/icons/People';
+import ImportContactsIcon from '@material-ui/icons/ImportContacts';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountOutlined';
 import ExpandLess from '@material-ui/icons/ExpandLess';
@@ -19,6 +20,7 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
   const classes = useStyles();
   const userMenuOpen = openMenu === 'user-management';
   const masterMenuOpen = openMenu === 'master-management';
+  const lessonMenuOpen = openMenu === 'lesson-plan';
 
   return (
     <>
@@ -255,18 +257,57 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
 
       <ListItem
         button
-        className={
-          history.location.pathname === '/role-management' ? 'menu_selection' : null
-        }
         onClick={() => {
-          onClickMenuItem('role-management');
+          onChangeMenuState('lesson-plan');
         }}
       >
         <ListItemIcon className={classes.menuItemIcon}>
-          <AssignmentIndIcon />
+        <ImportContactsIcon />
         </ListItemIcon>
-        <ListItemText className='menu-item-text'>Role management</ListItemText>
+        <ListItemText className='menu-item-text'>Lesson Planning</ListItemText>
+        {lessonMenuOpen ? (
+          <ExpandLess className={classes.expandIcons} />
+        ) : (
+          <ExpandMore className={classes.expandIcons} />
+        )}
       </ListItem>
+      
+      <Collapse in={lessonMenuOpen}>
+        <Divider />
+        <List>
+          <ListItem
+            button
+            className={
+              history.location.pathname === '/lesson-plan/view'
+                ? 'menu_selection'
+                : null
+            }
+            onClick={() => {
+              onClickMenuItem('lesson-plan-view');
+            }}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+            </ListItemIcon>
+            <ListItemText primary={`View`} className='menu-item-text' />
+          </ListItem>
+
+          <ListItem
+            button
+            className={
+              history.location.pathname === '/lesson-plan/report'
+                ? 'menu_selection'
+                : null
+            }
+            onClick={() => {
+              onClickMenuItem('lesson-plan-report');
+            }}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+            </ListItemIcon>
+            <ListItemText primary='Report' className='menu-item-text' />
+          </ListItem>
+        </List>
+      </Collapse>
     </>
   );
 };
