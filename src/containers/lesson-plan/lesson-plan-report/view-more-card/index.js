@@ -4,9 +4,9 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme, IconButton, SvgIcon } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import './view-more.css';
-import endpoints from '../../../config/endpoints';
-import download from '../../../assets/images/download.svg';
-import downloadAll from '../../../assets/images/downloadAll.svg';
+// import endpoints from '../../../../../config/endpoints';
+// import download from '../../../assets/images/download.svg';
+// import downloadAll from '../../../assets/images/downloadAll.svg';
 
 const ViewMoreCard = ({ viewMoreData, setViewMore, filterDataDown, periodDataForView, bulkDownloadPath }) => {
     const themeContext = useTheme();

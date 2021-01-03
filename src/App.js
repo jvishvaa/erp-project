@@ -38,7 +38,7 @@ import AddHomework from './containers/homework/teacher-homework/add-homework';
 import BulkUpload from './containers/user-management/bulk-upload/bulk-upload';
 import CoordinatorHomework from './containers/homework/coordinator-homework';
 import AddHomeworkCoord from './containers/homework/coordinator-homework/add-homework';
-import LessonReport from './containers/lesson-report';
+import LessonReport from './containers/lesson-plan/lesson-plan-report';
 
 const theme = createMuiTheme({
   palette: {

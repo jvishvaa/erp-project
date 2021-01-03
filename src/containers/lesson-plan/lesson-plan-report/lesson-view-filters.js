@@ -6,9 +6,9 @@ import { Grid, TextField, Button, useTheme } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import endpoints from '../../config/endpoints';
-import axiosInstance from '../../config/axios';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import endpoints from '../../../config/endpoints';
+import axiosInstance from '../../../config/axios';
 import axios from 'axios';
 import moment from 'moment';
 import {

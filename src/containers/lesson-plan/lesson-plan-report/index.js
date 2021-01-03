@@ -5,18 +5,18 @@ import { Grid, useTheme,SvgIcon } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import Layout from '../Layout';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
-import endpoints from '../../config/endpoints';
-import axiosInstance from '../../config/axios';
+import Layout from '../../Layout';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
+import endpoints from '../../../config/endpoints';
+import axiosInstance from '../../../config/axios';
 import './lesson.css';
-import Loading from '../../components/loader/loader';
+import Loading from '../../../components/loader/loader';
 import PeriodCard from './period-card';
 import LessonViewFilters from './lesson-view-filters';
 import ViewMoreCard from './view-more-card';
-import unfiltered from '../../assets/images/unfiltered.svg'
-import selectfilter from '../../assets/images/selectfilter.svg';
+import unfiltered from '../../../assets/images/unfiltered.svg'
+import selectfilter from '../../../assets/images/selectfilter.svg';
 
 const useStyles = makeStyles((theme) => ({
     root: {

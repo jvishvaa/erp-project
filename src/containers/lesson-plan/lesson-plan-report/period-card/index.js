@@ -8,9 +8,9 @@ import Box from '@material-ui/core/Box';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import useStyles from './useStyles';
-import endpoints from '../../../config/endpoints';
-import axiosInstance from '../../../config/axios';
-import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import endpoints from '../../../../config/endpoints';
+import axiosInstance from '../../../../config/axios';
+import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 
 const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore, viewMore, chapterId, chapterName,setLoading}) => {
 
