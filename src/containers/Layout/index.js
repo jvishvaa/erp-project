@@ -400,7 +400,14 @@ const Layout = ({ children, history }) => {
         history.push('/homework/teacher');
         break;
       }
-
+      case 'lesson-plan-view': {
+        history.push('/lesson-plan/view');
+        break;
+      }
+      case 'lesson-plan-report': {
+        history.push('/lesson-plan/report');
+        break;
+      }
       default:
         break;
     }
