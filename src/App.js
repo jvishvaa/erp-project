@@ -38,7 +38,7 @@ import AddHomework from './containers/homework/teacher-homework/add-homework';
 import BulkUpload from './containers/user-management/bulk-upload/bulk-upload';
 import CoordinatorHomework from './containers/homework/coordinator-homework';
 import AddHomeworkCoord from './containers/homework/coordinator-homework/add-homework';
-import LessonPlan from './containers/lesson-plan/';
+import LessonReport from './containers/lesson-report';
 
 const theme = createMuiTheme({
   palette: {
@@ -176,8 +176,8 @@ function App() {
                 <Route exact path='/homework/cadd/:date/:subject/:id/:coord_selected_teacher_id'>
                   {({ match }) => <AddHomeworkCoord match={match} />}
                 </Route>
-                <Route exact path='/lesson-plan'>
-                {({ match }) => <LessonPlan match={match} />}
+                <Route exact path='/lesson-report'>
+                {({ match }) => <LessonReport match={match} />}
                  </Route>
 
 

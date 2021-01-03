@@ -80,6 +80,14 @@ export default {
     fileUpload: '/academic/upload-question-file/',
     submitHomework: '/academic/homework-submission/',
   },
+  lessonReport:{
+    volumes:'/lesson_plan/list-volume/',
+    subjects:'/academic/lesson-plan-subjects/',
+    
+    lessonList:'/academic/lesson-completed-report/',
+    lessonViewMoreData:'/academic/user-chapters-details/',
+
+  },
   coordinatorTeacherHomeworkApi:{
     getAllTeacherList:'/academic/teachers-list/',
     getTecherPerformance:'/academic/hw-teacher-performance/'
