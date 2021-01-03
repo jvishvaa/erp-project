@@ -1,3 +1,4 @@
+const baseURLCentral = 'http://13.232.30.169/qbox';
 export default {
   auth: {
     login: '/auth/login/',
@@ -84,6 +85,16 @@ export default {
     getAllTeacherList:'/academic/teachers-list/',
     getTecherPerformance:'/academic/hw-teacher-performance/'
   },
+  lessonPlan: {
+    periodData: `${baseURLCentral}/lesson_plan/chapter-period/`,
+    periodCardData: `${baseURLCentral}/lesson_plan/lesson/`,
+    academicYearList: `${baseURLCentral}/lesson_plan/list-session/`,
+    volumeList: `${baseURLCentral}/lesson_plan/list-volume/`,
+    gradeSubjectMappingList: `/academic/lesson-plan-subjects/`,
+    chapterList: `/academic/central-chapters-list/`,
+    bulkDownload: `${baseURLCentral}/lesson_plan/bulk_download/`,
+    s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
+  },  
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
 };

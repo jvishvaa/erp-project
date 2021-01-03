@@ -482,7 +482,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     color='primary'
                     style={{ color: 'white' }}
                     component='label'
-                    size='small'
+                    size='medium'
                   >
                     Bulk Upload
                   <input
@@ -737,10 +737,12 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                         {homeworkSubmission.status === 2 ? 'All Submitted Files' : 'All Evaluated Files'}
                       </Typography>
                       <div className='attachments-list-outer-container'>
+                        {}
                         <div className='prev-btn'>
+                          {submittedEvaluatedFilesBulk.length>5 &&
                           <IconButton onClick={() => handleScroll('left')}>
                             <ArrowBackIosIcon />
-                          </IconButton>
+                          </IconButton>}
                         </div>
                         <SimpleReactLightbox>
                           <div
@@ -781,11 +783,12 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                             </div>
                           </div>
                         </SimpleReactLightbox>
+                        {submittedEvaluatedFilesBulk.length>5 &&
                         <div className='next-btn'>
                           <IconButton onClick={() => handleScroll('right')}>
                             <ArrowForwardIosIcon color='primary' />
                           </IconButton>
-                        </div>
+                        </div>}
                       </div>
                     </div>
                   </div>
