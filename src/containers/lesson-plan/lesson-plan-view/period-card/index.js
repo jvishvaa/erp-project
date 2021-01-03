@@ -3,18 +3,16 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { Button, useTheme, IconButton, Menu, MenuItem, SvgIcon } from '@material-ui/core';
+import { Button, useTheme, IconButton, SvgIcon } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import GetAppIcon from '@material-ui/icons/GetApp';
 import useStyles from './useStyles';
-import endpoints from '../../../config/endpoints';
-import axiosInstance from '../../../config/axios';
+import endpoints from '../../../../config/endpoints';
+import axiosInstance from '../../../../config/axios';
 import axios from 'axios';
-import '../../lesson-plan/lesson.css';
-import downloadAll from '../../../assets/images/downloadAll.svg';
-
-import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import '../lesson.css';
+import downloadAll from '../../../../assets/images/downloadAll.svg';
+import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 
 const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore, viewMore, filterDataDown, setLoading, index }) => {
 

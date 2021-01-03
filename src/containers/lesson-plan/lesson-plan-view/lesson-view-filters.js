@@ -3,9 +3,9 @@ import Divider from '@material-ui/core/Divider';
 import { Grid, TextField, Button, useTheme } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import endpoints from '../../config/endpoints';
-import axiosInstance from '../../config/axios';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import endpoints from '../../../config/endpoints';
+import axiosInstance from '../../../config/axios';
 import axios from 'axios';
 import './lesson.css';
 
@@ -210,7 +210,7 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
                     onChange={handleAcademicYear}
                     id='academic-year'
                     className="dropdownIcon"
-                    value={filterData.year}
+                    value={filterData?.year}
                     options={academicYearDropdown}
                     getOptionLabel={(option) => option?.session_year}
                     filterSelectedOptions
@@ -231,7 +231,7 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
                     onChange={handleVolume}
                     id='volume'
                     className="dropdownIcon"
-                    value={filterData.volume}
+                    value={filterData?.volume}
                     options={volumeDropdown}
                     getOptionLabel={(option) => option?.volume_name}
                     filterSelectedOptions
@@ -252,7 +252,7 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
                     onChange={handleBranch}
                     id='branch'
                     className="dropdownIcon"
-                    value={filterData.branch}
+                    value={filterData?.branch}
                     options={branchDropdown}
                     getOptionLabel={(option) => option?.branch_name}
                     filterSelectedOptions
@@ -273,7 +273,7 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
                     onChange={handleGrade}
                     id='grade'
                     className="dropdownIcon"
-                    value={filterData.grade}
+                    value={filterData?.grade}
                     options={gradeDropdown}
                     getOptionLabel={(option) => option?.grade__grade_name}
                     filterSelectedOptions
@@ -294,7 +294,7 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
                     onChange={handleSubject}
                     id='subject'
                     className="dropdownIcon"
-                    value={filterData.subject}
+                    value={filterData?.subject}
                     options={subjectDropdown}
                     getOptionLabel={(option) => option?.subject_name}
                     filterSelectedOptions
@@ -315,7 +315,7 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
                     onChange={handleChapter}
                     id='chapter'
                     className="dropdownIcon"
-                    value={filterData.chapter}
+                    value={filterData?.chapter}
                     options={chapterDropdown}
                     getOptionLabel={(option) => option?.chapter_name}
                     filterSelectedOptions

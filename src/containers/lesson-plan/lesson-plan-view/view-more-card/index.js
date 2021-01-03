@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import Paper from '@material-ui/core/Paper';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useTheme, IconButton, SvgIcon, TextField, Button } from '@material-ui/core';
+import { useTheme, IconButton, SvgIcon, Button } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import './view-more.css';
-import endpoints from '../../../config/endpoints';
-import download from '../../../assets/images/download.svg';
-import downloadAll from '../../../assets/images/downloadAll.svg';
+import endpoints from '../../../../config/endpoints';
+import download from '../../../../assets/images/download.svg';
+import downloadAll from '../../../../assets/images/downloadAll.svg';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 const ViewMoreCard = ({ viewMoreData, setViewMore, filterDataDown, periodDataForView, bulkDownloadPath }) => {
