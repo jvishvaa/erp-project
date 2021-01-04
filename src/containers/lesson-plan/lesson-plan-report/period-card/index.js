@@ -12,7 +12,7 @@ import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 
-const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore, viewMore, chapterId, chapterName,setLoading}) => {
+const PeriodCard = ({ lesson, index,setPeriodDataForView, setViewMoreData, setViewMore, viewMore, chapterId, chapterName,setLoading}) => {
 
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -28,7 +28,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
   const handleClose = () => {
     setAnchorEl(null);
   };
-console.log(lesson,'===========')
+console.log(lesson,'===========',index)
   const handleViewMore = () => {
     axiosInstance.get(`${endpoints.lessonReport.lessonViewMoreData}?central_gs_mapping_id=${lesson.central_gs_mapping_id}&volume_id=${lesson.volume_id}&academic_year_id=${lesson.academic_year_id}&completed_by=${lesson.completed_by}`)
       .then(result => {
