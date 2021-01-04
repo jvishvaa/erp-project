@@ -45,6 +45,7 @@ const LessonPlan = () => {
     const [periodDataForView, setPeriodDataForView] = useState({});
     const [bulkDownloadPath, setBulkDownloadPath] = useState('');
     const [filterDataDown, setFilterDataDown] = useState({});
+    const [completedStatus, setCompletedStatus] = useState(false);
     // const limit = 9;
     // const { role_details } = JSON.parse(localStorage.getItem('userDetails'));
     const themeContext = useTheme();
@@ -125,6 +126,7 @@ const LessonPlan = () => {
                                             index={i}
                                             filterDataDown={filterDataDown}
                                             period={period}
+                                            setCompletedStatus={setCompletedStatus}
                                             viewMore={viewMore}
                                             setLoading={setLoading}
                                             setViewMore={setViewMore}
@@ -138,6 +140,7 @@ const LessonPlan = () => {
                             {viewMore && viewMoreData?.length > 0 &&
                                 <div style={isMobile ? { width: '95%', margin: '10px auto' } : { width: '60%', margin: '10px 0' }}>
                                     <ViewMoreCard
+                                        completedStatus={completedStatus}
                                         viewMoreData={viewMoreData}
                                         setViewMore={setViewMore}
                                         filterDataDown={filterDataDown}

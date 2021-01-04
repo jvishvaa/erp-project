@@ -11,6 +11,10 @@
     color: #ff6b6b;
 }
 
+.roundedBox {
+    border-radius: 10px;
+}
+
 .cardsContainer {
     display: flex;
 }

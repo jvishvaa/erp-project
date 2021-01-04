@@ -14,7 +14,7 @@ import '../lesson.css';
 import downloadAll from '../../../../assets/images/downloadAll.svg';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 
-const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore, viewMore, filterDataDown, setLoading, index }) => {
+const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore, viewMore, filterDataDown, setLoading, index, setCompletedStatus }) => {
 
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -45,6 +45,13 @@ const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore
           setViewMoreData(result.data.result);
           setPeriodDataForView(period);
           setSelectedIndex(index);
+          axiosInstance.get(`${endpoints.lessonPlan.periodCompletedStatus}?subject=${filterDataDown?.subject.id}&chapter=${filterDataDown?.chapter.id}&period=${period?.id}`)
+          .then(result=>{
+            setCompletedStatus(result.data.is_completed);
+          })
+          .catch(error=>{
+            setAlert('error',error.message);
+          })
         } else {
           setLoading(false);
           setViewMore(false);

@@ -146,6 +146,21 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
 
       <ListItem
         button
+        className={
+          history.location.pathname === '/role-management' ? 'menu_selection' : null
+        }
+        onClick={() => {
+          onClickMenuItem('role-management');
+        }}
+      >
+        <ListItemIcon className={classes.menuItemIcon}>
+          <AssignmentIndIcon />
+        </ListItemIcon>
+        <ListItemText className='menu-item-text'>Role management</ListItemText>
+      </ListItem>
+
+      <ListItem
+        button
         onClick={() => {
           onChangeMenuState('master-management');
         }}
