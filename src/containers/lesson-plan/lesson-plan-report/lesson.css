@@ -1,0 +1,29 @@
+.createButton button{
+    padding: 4.8px;
+}
+
+.MuiSvgIcon-root .dropdownIcon {
+    color: #ff6b6b;
+}
+
+.MuiIconButton-root.moreHorizIcon {
+    padding: 0px;
+    color: #ff6b6b;
+}
+
+.cardsContainer {
+    display: flex;
+}
+
+@media screen and (max-width:768px) {
+    .cardsContainer {
+        flex-direction: column;
+    }
+}
+.periodDataUnavailable {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 5%;
+}

@@ -124,6 +124,7 @@ const ViewClassManagementFilters = () => {
       setSelectedSubjects([])
     }
   };
+  console.log(gradeIds,'hey')
 
   const handleSection = (event, value) => {
     setSelectedSections(value);
