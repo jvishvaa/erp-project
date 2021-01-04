@@ -181,8 +181,6 @@ function App() {
                 <Route exact path='/lesson-plan/report'>
                 {({ match }) => <LessonReport match={match} />}
                  </Route>
-
-
                 <Route exact path='/lesson-plan/view'>
                   {({ match }) => <LessonPlan match={match} />}
                 </Route>
