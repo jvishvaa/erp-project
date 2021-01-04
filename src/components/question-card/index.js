@@ -7,7 +7,7 @@ import {
   Typography,
   Badge,
 } from '@material-ui/core';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+// import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
@@ -79,14 +79,31 @@ const QuestionCard = ({
   };
   const handleFileUpload = async (file) => {
     try {
-      const fd = new FormData();
-      fd.append('file', file);
-      setFileUploadInProgress(true);
-      const filePath = await uploadFile(fd);
-      setAttachments((prevState) => [...prevState, filePath]);
-      setAttachmentPreviews((prevState) => [...prevState, filePath]);
-      setFileUploadInProgress(false);
-      setAlert('success', 'File upload success');
+      // console.log(file,"=====File=====");
+      if (
+        file.name.lastIndexOf('.pdf') > 0 ||
+        file.name.lastIndexOf('.jpeg') > 0 ||
+        file.name.lastIndexOf('.jpg') > 0 ||
+        file.name.lastIndexOf('.png') > 0 ||
+        file.name.lastIndexOf('.mp3') > 0 ||
+        file.name.lastIndexOf('.mp4') > 0
+      ) {
+        const fd = new FormData();
+        fd.append('file', file);
+        setFileUploadInProgress(true);
+        const filePath = await uploadFile(fd);
+        if (file.type === 'application/pdf') {
+          setAttachments((prevState) => [...prevState, ...filePath]);
+          setAttachmentPreviews((prevState) => [...prevState, ...filePath]);
+        } else {
+          setAttachments((prevState) => [...prevState, filePath]);
+          setAttachmentPreviews((prevState) => [...prevState, filePath]);
+        }
+        setFileUploadInProgress(false);
+        setAlert('success', 'File uploaded successfully');
+      } else {
+        setAlert('error', 'Please upload valid file');
+      }
     } catch (e) {
       setFileUploadInProgress(false);
       setAlert('error', 'File upload failed');
@@ -166,6 +183,7 @@ const QuestionCard = ({
                       className='file-upload-input'
                       type='file'
                       name='attachments'
+                      accept='.png, .jpg, .jpeg, .mp3, mp4, .pdf'
                       onChange={(e) => {
                         handleFileUpload(e.target.files[0]);
                         // onChange('attachments', Array.from(e.target.files)[]);
@@ -180,14 +198,20 @@ const QuestionCard = ({
                         />
                       </div>
                     ) : (
-                      <IconButton
-                        onClick={() => fileUploadInput.current.click()}
-                        title='Attach files'
-                      >
-                        <Badge badgeContent={attachmentPreviews.length} color='primary'>
-                          <AttachFileIcon color='primary' />
-                        </Badge>
-                      </IconButton>
+                      <>
+                        <IconButton
+                          onClick={() => fileUploadInput.current.click()}
+                          title='Attach files'
+                        >
+                          <Badge badgeContent={attachmentPreviews.length} color='primary'>
+                            <AttachFileIcon color='primary' />
+                          </Badge>
+                        </IconButton>
+                        <small style={{ width: '100%', color: '#014b7e' }}>
+                          {' '}
+                          Accepted files: jpeg,jpg,mp3,mp4,pdf,png
+                        </small>
+                      </>
                     )}
                   </div>
                   <div>
@@ -338,7 +362,7 @@ const QuestionCard = ({
       <Grid item xs={12}>
         <Grid item xs={12} className='question-btn-container'>
           <div className='question-btn-inner-container '>
-            <Button
+            {/* <Button
               color='primary'
               startIcon={<AddCircleOutlineIcon />}
               onClick={() => {
@@ -348,7 +372,7 @@ const QuestionCard = ({
               className='btn add-quesiton-btn outlined-btn'
             >
               Add another question
-            </Button>
+            </Button> */}
           </div>
         </Grid>
         {index > 0 && (
@@ -356,7 +380,7 @@ const QuestionCard = ({
             <div className='question-btn-inner-container '>
               <Button
                 variant='contained'
-                color='primary'
+                color='default'
                 startIcon={<DeleteIcon />}
                 onClick={() => {
                   removeQuestion(index);

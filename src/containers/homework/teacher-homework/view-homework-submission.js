@@ -184,12 +184,13 @@ const ViewHomework = withRouter(
     const deleteEvaluated = (index) => {
       if (isQuestionwise) {
         const currentQuestion = questionsState[activeQuestion - 1];
-        currentQuestion.corrected_submission.splice(index, 1);
-        setQuestionsState([
-          ...questionsState.slice(0, index),
-          currentQuestion,
-          ...questionsState.slice(index + 1),
-        ]);
+        const valueToRemove = currentQuestion.corrected_submission[index];
+        currentQuestion.corrected_submission = currentQuestion.corrected_submission.filter(
+          function (item) {
+            return item !== valueToRemove;
+          }
+        );
+        setQuestionsState([...questionsState, currentQuestion]); 
       } else {
         const currentQuestion = { ...collatedQuestionState };
         currentQuestion.corrected_submission.splice(index, 1);
@@ -303,7 +304,7 @@ const ViewHomework = withRouter(
           </Grid>
           <Grid item xs={12} md={10}>
             <div className='homework_submit_wrapper'>
-              <div className='homework_block_wrapper'>
+              <div className='homework_block_wrapper no-border'>
                 <div className='homework_block homework_submit_tag'>
                   Homework - {subject?.split('_')[2]}, {date}
                 </div>
@@ -319,6 +320,7 @@ const ViewHomework = withRouter(
                   }
                   activeQuestion={activeQuestion}
                   totalQuestions={totalSubmittedQuestions}
+                  hideNextPrevButton={totalSubmittedQuestions <= 1}
                   onNext={() => {
                     setActiveQuestion((prev) =>
                       prev < totalSubmittedQuestions ? prev + 1 : prev
@@ -521,19 +523,25 @@ const ViewHomework = withRouter(
                 </div>
               </div>
               <div className='btn-container'>
-                <div className='cancel-btn'>
-                  <Button variant='contained' className='disabled-btn' onClick={onClose}>
-                    Cancel
-                  </Button>
-                </div>
-                <div className='done-btn'>
-                  <Button
-                    variant='contained'
-                    color='primary'
-                    onClick={handleFinalEvaluationForHomework}
-                  >
-                    EVALUATION DONE
-                  </Button>
+                <div className='button-container'>
+                  <div className='cancel-btn'>
+                    <Button
+                      variant='contained'
+                      className='disabled-btn'
+                      onClick={onClose}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                  <div className='done-btn'>
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      onClick={handleFinalEvaluationForHomework}
+                    >
+                      EVALUATION DONE
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>

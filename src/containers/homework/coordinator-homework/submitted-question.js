@@ -51,15 +51,15 @@ const SubmittedQuestion = ({
   }, [scrollableContainer.current]);
 
   const onEvaluate = () => {
-    if (correctedQuestions.length < question.submitted_files.length) {
-      setAlert('error', 'Please evaluate all attachments');
-    } else {
-      evaluateAnswer();
-    }
+    // if (correctedQuestions.length < question.submitted_files.length) {
+    //   setAlert('error', 'Please evaluate all attachments');
+    // } else {
+    evaluateAnswer();
+    // }
   };
 
   return (
-    <div className='homework-question-container' key={`homework_student_question_${1}`}>
+    <div className='homework-question-container-coordinator' key={`homework_student_question_${1}`}>
       <div
         className='button-container'
         style={{ display: 'flex', justifyContent: 'flex-end' }}
@@ -204,10 +204,9 @@ const SubmittedQuestion = ({
                         fileName={`Attachment-${i + 1}`}
                         urlPrefix={`${endpoints.s3}/homework`}
                         index={i}
-                        actions={['preview', 'delete', 'download']}
+                        actions={['preview', 'download', 'delete']}
                         onOpenInPenTool={onOpenInPenTool}
                         onDelete={onDeleteCorrectedAttachment}
-                        preview
                       />
                     </div>
                     {/* <div className='attachment'>
@@ -250,7 +249,7 @@ const SubmittedQuestion = ({
                   <SRLWrapper>
                     {correctedQuestions.map((url, i) => (
                       <img
-                        src={url}
+                        src={`${endpoints.s3}/homework/${url}`}
                         onError={(e) => {
                           e.target.src = placeholder;
                         }}

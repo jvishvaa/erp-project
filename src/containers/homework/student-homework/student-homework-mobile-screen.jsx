@@ -167,7 +167,7 @@ const StudenthomeworkMobileScreen = (props) => {
                                                 </ListItemAvatar>
                                                 <ListItemText
                                                     className="dates"
-                                                    primary={name.date}
+                                                    primary= {moment(name.date).format('DD-MM-YYYY')}
                                                 // secondary={secondary ? 'Secondary text' : null}
                                                 />
 

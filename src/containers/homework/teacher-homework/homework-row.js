@@ -20,6 +20,7 @@ const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol, handleViewHomewo
             key={col.id}
             data={data[col.subject_name]}
             isSelected={isSelected}
+            isExpired={!data.canUpload}
             handleClick={(view) => {
               setSelectedCol({
                 date: data.date,
@@ -51,7 +52,7 @@ const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol, handleViewHomewo
               <div className='day-icon'>
                 {moment(data.date).format('dddd').split('')[0]}
               </div>
-              {data.date}
+              {moment(data.date).format('DD-MM-YYYY')}
             </div>
           </TableCell>
         );

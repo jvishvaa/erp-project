@@ -42,6 +42,12 @@ import './student-homework.css';
 import StudenthomeworkMobileScreen from './student-homework-mobile-screen';
 import MobileIconScreen from './student-homework-mobileScreen-Icon';
 import MobileDatepicker from './student-homework-mobile-datepicker';
+///
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -97,7 +103,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
   const [moduleId, setModuleId] = useState();
   const [modulePermision, setModulePermision] = useState(true);
   const [homeworkTimelineDisplay, setHomeworkTimelineDisplay] = useState(true)
-
+  const [selectSub, setSelectSub] = useState('');
 
   //   header: ['date', 'english', 'history', 'math', 'other', 'science'],
   //   rows: [
@@ -258,12 +264,15 @@ const StudentHomework = withRouter(({ history, ...props }) => {
   };
 
   const handleOtherLanguage = (event, value) => {
+    setSelectSub(event.target.value)
+    console.log(value, "poopo", event.target.value)
     if (value) {
       setSelectedOtherLanguages({
         ...value,
         isOptional: true,
         isOthers: false,
         isFirst: false,
+        
       });
     } else {
       setSelectedOtherLanguages();
@@ -371,13 +380,16 @@ const StudentHomework = withRouter(({ history, ...props }) => {
     }
   }, [selectedOtherSubjects]);
 
+  // const mydiv = document.getElementById("MuiAutocomplete-hasPopupIcon");
+  // var newcontent = document.createElement('div');
+  // newcontent.innerHTML = "bar";
 
   return (
-    <>
+    <div className="layout-container-div">
       {loading ? <Loading message='Loading...' /> : null}
-      <Layout>
-        <div className='message_log_wrapper' style={{backgroundColor: '#F9F9F9'}}>
-          <div className='message_log_breadcrumb_wrapper' style={{backgroundColor: '#F9F9F9'}}>
+      <Layout className="layout-container">
+        <div className='message_log_wrapper' style={{ backgroundColor: '#F9F9F9' }}>
+          <div className='message_log_breadcrumb_wrapper' style={{ backgroundColor: '#F9F9F9' }}>
             <CommonBreadcrumbs componentName='Homework' />
           </div>
           {!homeworkSubmission.isOpen &&
@@ -433,35 +445,11 @@ const StudentHomework = withRouter(({ history, ...props }) => {
           }
           <div className='message_log_white_wrapper'>
             {
-              isMobile ? <MobileIconScreen  isOpen={homeworkSubmission.isOpen} /> :
+              isMobile ? <MobileIconScreen isOpen={homeworkSubmission.isOpen} /> :
 
                 !homeworkSubmission.isOpen &&
                 <div className='homework_block_wrapper'>
-                  <div className='homework_block icon-desc-container-desk' style={{fontSize: '16px', color: '#014b7e'}}>Weekly Time table </div>
-                  <div className='icon-desc-container-desk'>
-                    <SvgIcon
-                      component={() => (
-                        <img
-                          style={{ width: '25px', marginRight: '5px' }}
-                          src={hwGiven}
-                          alt='given'
-                        />
-                      )}
-                    />
-                    <span style={{fontSize: '16px', color: '#014b7e'}}>HW Submitted</span>
-                  </div>
-                  <div className='icon-desc-container-desk'>
-                    <SvgIcon
-                      component={() => (
-                        <img
-                          style={{ width: '25px', marginRight: '5px' }}
-                          src={hwFileOpened}
-                          alt='evaluated'
-                        />
-                      )}
-                    />
-                    <span style={{fontSize: '16px', color: '#014b7e'}}>File Opened</span>
-                  </div>
+                  <div className='homework_block icon-desc-container-desk' style={{ fontSize: '16px', color: '#014b7e', marginLeft: '15px' }}>Homeworks </div>
                   <div className='icon-desc-container-desk'>
                     <SvgIcon
                       component={() => (
@@ -472,8 +460,34 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                         />
                       )}
                     />
-                    <span style={{fontSize: '16px', color: '#014b7e'}}>File unopened</span>
+                    <span style={{ fontSize: '16px', color: '#014b7e' }}>Unopened</span>
                   </div>
+
+                  <div className='icon-desc-container-desk'>
+                    <SvgIcon
+                      component={() => (
+                        <img
+                          style={{ width: '25px', marginRight: '5px' }}
+                          src={hwFileOpened}
+                          alt='evaluated'
+                        />
+                      )}
+                    />
+                    <span style={{ fontSize: '16px', color: '#014b7e' }}>File Opened</span>
+                  </div>
+                  <div className='icon-desc-container-desk'>
+                    <SvgIcon
+                      component={() => (
+                        <img
+                          style={{ width: '25px', marginRight: '5px' }}
+                          src={hwGiven}
+                          alt='given'
+                        />
+                      )}
+                    />
+                    <span style={{ fontSize: '16px', color: '#014b7e' }}>Submitted</span>
+                  </div>
+
                   <div className='icon-desc-container-desk'>
                     <SvgIcon
                       component={() => (
@@ -484,7 +498,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                         />
                       )}
                     />
-                    <span style={{fontSize: '16px', color: '#014b7e'}}>Evaluated</span>
+                    <span style={{ fontSize: '16px', color: '#014b7e' }}>Evaluated</span>
                   </div>
                   <div className='icon-desc-container-desk'>
                     <SvgIcon
@@ -499,7 +513,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                         />
                       )}
                     />
-                    <span style={{fontSize: '16px', color: '#014b7e'}}>HW not submitted</span>
+                    <span style={{ fontSize: '16px', color: '#014b7e' }}>Submitted</span>
                   </div>
                 </div>
             }
@@ -515,12 +529,12 @@ const StudentHomework = withRouter(({ history, ...props }) => {
             ) : (
                 <div className='create_group_filter_container for-mobile'>
                   {
-                    isMobile ? <StudenthomeworkMobileScreen mobileScreenResponse={messageRows} handleOpenHomework={handleOpenHomework} 
-                    studentHomeworkData={studentHomeworkData}
-                    homeworkTimelineDisplay={homeworkTimelineDisplay}
-                    setHomeworkTimelineDisplay={setHomeworkTimelineDisplay}
-                    moduleId={moduleId}
-                    mendaterySubjects={mendaterySubjects}
+                    isMobile ? <StudenthomeworkMobileScreen mobileScreenResponse={messageRows} handleOpenHomework={handleOpenHomework}
+                      studentHomeworkData={studentHomeworkData}
+                      homeworkTimelineDisplay={homeworkTimelineDisplay}
+                      setHomeworkTimelineDisplay={setHomeworkTimelineDisplay}
+                      moduleId={moduleId}
+                      mendaterySubjects={mendaterySubjects}
                     /> :
                       <Grid container className='homework_container' spacing={2}>
                         <Grid xs={12} lg={(studentHomeworkData.header?.is_top_performers || !homeworkTimelineDisplay) ? 9 : 12} item>
@@ -531,12 +545,29 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                               <Table stickyHeader aria-label='sticky table'>
                                 <TableHead className='view_groups_header tb-header'>
                                   <TableRow>
+                                    {console.log(selectedOtherLanguages, "selectedOtherLanguages", selectSub)}
                                     {messageRows.header?.map((headers, i) =>
                                       headers.isOptional ? (
                                         <TableCell className='homework_header homework_header_dropdown_wrapper'>
                                           <span className='homework_student_header_count'>
                                             {optionalSubjects.length}
                                           </span>
+                                          {/* <Select
+                                            value={ selectedOtherLanguages  ? selectedOtherLanguages.subject_slag : selectSub}
+                                            onChange={(event) => handleOtherLanguage(event)}
+                                            className={classes.selectEmpty}
+                                            inputProps={{ 'aria-label': 'Without label' }}
+                                          >
+                                            {
+                                              optionalSubjects && optionalSubjects.map((subName) => {
+                                                return (<MenuItem value={subName.subject_slag}>
+                                                          {subName.subject_slag}
+                                                       </MenuItem>
+                                                       )
+                                              })
+                                            }
+                                              <Button type="btn">Close</Button>
+                                          </Select> */}
                                           <Autocomplete
                                             size='small'
                                             onChange={handleOtherLanguage}
@@ -548,13 +579,19 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                             filterSelectedOptions
                                             disableClearable
                                             contentEditable
+                                           
                                             renderInput={(params) => (
+                                              <>
                                               <TextField
                                                 className='homework_student_other_language-textfield'
                                                 {...params}
                                                 placeholder='Languages'
+                                                
+                                                
                                               />
+                                              </>
                                             )}
+                                            
                                           />
                                         </TableCell>
                                       ) : headers.isOthers ? (
@@ -563,7 +600,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                             {otherSubjects.length}
                                           </span>
                                           <Autocomplete
-                                          style={{color: '#FF6B6B'}}
+                                            style={{ color: '#FF6B6B' }}
                                             size='small'
                                             onChange={handleOtherSubject}
                                             value={selectedOtherSubjects}
@@ -600,10 +637,10 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                         headers.subject_slag === 'date' ? (
                                           <TableCell>
                                             <div className="table-date">
-                                               <div className='day-icon'>
-                                                        {moment(row.date).format('dddd').split('')[0]}
-                                                    </div>
-                                            <div className="date-web">{row.date}</div>
+                                              <div className='day-icon'>
+                                                {moment(row.date).format('dddd').split('')[0]}
+                                              </div>
+                                              <div className="date-web">{moment(row.date).format('DD-MM-YYYY')}</div>
                                             </div></TableCell>
                                         ) : row[headers.subject_slag].isHomework ? (
                                           <TableCell
@@ -765,6 +802,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                 <HomeworkTimeline setHomeworkTimelineDisplay={setHomeworkTimelineDisplay}
                                   moduleId={moduleId} />
                               }
+
                             </Grid>
                             <Grid lg={12} className='homework_right_wrapper_items' item>
                               {studentHomeworkData.header?.is_top_performers &&
@@ -781,7 +819,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
           </div>
         </div>
       </Layout>
-    </>
+    </div>
   );
 });
 

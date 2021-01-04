@@ -26,7 +26,7 @@ const HomeworkCard = ({
   return (
     // <Layout>
 
-    <Grid item xs={12} sm={4}>
+    <Grid item xs={12} md={3} className='hwcard-container' style={{ display: 'flex' }}>
       <Paper
         className='hwcard'
         style={{ height, display: 'flex', flexDirection: 'column', position: 'relative' }}

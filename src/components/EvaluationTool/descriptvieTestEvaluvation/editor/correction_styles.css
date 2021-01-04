@@ -1,31 +1,48 @@
 .evaluvation_tool_bar {
-    display:flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: fit-content !important;
-    align-self: flex-end;
-    background: whitesmoke ;
-    position: sticky;
-    top: 64px;
-    z-index:1000;
-    height: 46px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.07), 
-                0 2px 4px rgba(0,0,0,0.07), 
-                0 4px 8px rgba(0,0,0,0.07), 
-                0 8px 16px rgba(0,0,0,0.07),
-                0 16px 32px rgba(0,0,0,0.07), 
-                0 32px 64px rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: fit-content !important;
+  align-self: flex-end;
+  background: whitesmoke;
+  position: absolute;
+  top: 64px;
+  z-index: 1000;
+  height: 46px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.07),
+    0 4px 8px rgba(0, 0, 0, 0.07), 0 8px 16px rgba(0, 0, 0, 0.07),
+    0 16px 32px rgba(0, 0, 0, 0.07), 0 32px 64px rgba(0, 0, 0, 0.07);
+}
+
+@media screen and (max-width: 768px) {
+  .evaluvation_tool_bar {
+    flex-direction: column;
+    width: 65px !important;
+    height: max-content;
+  }
+  .evaluvation_tool_bar .tool-group {
+    flex-direction: column;
+  }
 }
 #editor-evaluvation-container {
-    position: relative;
-    top: 0px;
+  position: relative;
+  top: 0px;
 }
 .img-magnifier-glass {
-    position: absolute;
-    border: 3px solid #000;
-    border-radius: 50%;
-    cursor: none;
-    /*Set the size of the magnifier glass:*/
-    width: 100px;
-    height: 100px;
-  }
+  position: absolute;
+  border: 3px solid #000;
+  border-radius: 50%;
+  cursor: none;
+  /*Set the size of the magnifier glass:*/
+  width: 100px;
+  height: 100px;
+}
+.evaluvation_parent_container {
+  height: calc(100% - 64px);
+  margin-top: 64px;
+}
+
+.evaluvation_parent_container .loading_container {
+  height: 100%;
+  display: flex;
+}

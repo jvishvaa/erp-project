@@ -59,7 +59,7 @@ import {
   fetchCoordinateTeacherHomeworkDetails,
   setSelectedHomework,
   fetchStudentsListForTeacherHomework,
-  setTeacherUserIDCoord
+  setTeacherUserIDCoord,
 } from '../../../redux/actions';
 import HomeworkRow from './homework-row';
 import ViewHomework from './view-homework';
@@ -267,7 +267,6 @@ const CoordinatorTeacherHomework = withRouter(
       }
     }, [getCoordinateTeacherHomeworkDetails, dateRange, activeView, teacherModuleId]);
 
-   
     const getTeacherListApi = async () => {
       const [startDate, endDate] = dateRange;
 
@@ -300,7 +299,7 @@ const CoordinatorTeacherHomework = withRouter(
             setSelectedTeacherUser_id(newCoorTechID);
             setFirstTeacherUserIdOnloadCordinatorHomewok(myResult[0]);
           }
-          
+
           if (activeView === 'list-homework') {
             if (startDate && endDate) {
               getCoordinateTeacherHomeworkDetails(
@@ -322,7 +321,7 @@ const CoordinatorTeacherHomework = withRouter(
       }
     };
 
-    const handleCoordinateTeacher = (e,value) => {
+    const handleCoordinateTeacher = (e, value) => {
       if (value?.user_id > 0) {
         setFirstTeacherUserIdOnloadCordinatorHomewok(value);
         setSelectedTeacherUser_id(value?.user_id);
@@ -346,7 +345,9 @@ const CoordinatorTeacherHomework = withRouter(
             endpoints.coordinatorTeacherHomeworkApi.getTecherPerformance
           }?start_date=${startDateTechPer.format(
             'YYYY-MM-DD'
-          )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&user_id=${selectedTeacherByCoordinatorToCreateHw}`;
+          )}&end_date=${endDateTechPer.format(
+            'YYYY-MM-DD'
+          )}&user_id=${selectedTeacherByCoordinatorToCreateHw}`;
 
           const result = await axiosInstance.get(dwURL, {
             headers: {
@@ -392,15 +393,14 @@ const CoordinatorTeacherHomework = withRouter(
       <>
         {loading ? <Loading message='Loading...' /> : null}
         <Layout>
-          <div className=' teacher-homework message_log_wrapper'>
+          <div className=' teacher-homework-coordinator message_log_wrapper-coordinator'>
             <div className='message_log_breadcrumb_wrapper'>
               <CommonBreadcrumbs componentName='Homework' />
             </div>
             <div className='message_log_white_wrapper'>
               {activeView !== 'view-homework' && activeView !== 'view-received-homework' && (
                 <Grid container className='date-container' spacing={3}>
-                  
-                  <Grid item xs={12} sm={3}>
+                  <Grid item xs={12} sm={3} className='date-container2'>
                     <Grid className={classes.paper}>
                       <Autocomplete
                         size='small'
@@ -422,7 +422,7 @@ const CoordinatorTeacherHomework = withRouter(
                       />
                     </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={3}>
+                  <Grid item xs={12} sm={3} className='date-container3'>
                     <Grid className={classes.paper}>
                       <LocalizationProvider dateAdapter={MomentUtils}>
                         <DateRangePicker
@@ -480,39 +480,40 @@ const CoordinatorTeacherHomework = withRouter(
                     </Grid>
                   </Grid>
                   {isMobile ? (
-                    <Grid item xs={12}>
+                    <Grid item xs={12} className='date-container4'>
                       <Divider />
                     </Grid>
-                  ):
-                  <div className="vertical_divider"></div>}    
-                   
+                  ) : (
+                    <div className='vertical_divider'></div>
+                  )}
+
                   <Grid item xs={12} sm={4} className='bulk_container'>
-                      <LocalizationProvider dateAdapter={MomentUtils}>
-                        <DateRangePicker
-                          startText='Select-date-range'
-                          value={dateRangeTechPer}
-                          onChange={(newValue) => {
-                            setDateRangeTechPer(newValue);
-                          }}
-                          renderInput={({ inputProps, ...startProps }, endProps) => {
-                            return (
-                              <>
-                                <TextField
-                                  {...startProps}
-                                  inputProps={{
-                                    ...inputProps,
-                                    value: `${inputProps.value} - ${endProps.inputProps.value}`,
-                                    readOnly: true,
-                                  }}
-                                  size='small'
-                                  style={{ minWidth: '100%' }}
-                                />
-                              </>
-                            );
-                          }}
-                        />
-                      </LocalizationProvider>
-                      <div className="download_button">
+                    <LocalizationProvider dateAdapter={MomentUtils}>
+                      <DateRangePicker
+                        startText='Select-date-range'
+                        value={dateRangeTechPer}
+                        onChange={(newValue) => {
+                          setDateRangeTechPer(newValue);
+                        }}
+                        renderInput={({ inputProps, ...startProps }, endProps) => {
+                          return (
+                            <>
+                              <TextField
+                                {...startProps}
+                                inputProps={{
+                                  ...inputProps,
+                                  value: `${inputProps.value} - ${endProps.inputProps.value}`,
+                                  readOnly: true,
+                                }}
+                                size='small'
+                                style={{ minWidth: '100%' }}
+                              />
+                            </>
+                          );
+                        }}
+                      />
+                    </LocalizationProvider>
+                    <div className='download_button'>
                       <Button
                         style={{
                           cursor: 'pointer',
@@ -524,9 +525,8 @@ const CoordinatorTeacherHomework = withRouter(
                       >
                         <GetAppIcon color='primary' />
                       </Button>
-                      </div>
+                    </div>
                   </Grid>
-                
                 </Grid>
               )}
               {activeView !== 'view-homework' &&
@@ -589,7 +589,7 @@ const CoordinatorTeacherHomework = withRouter(
               <div className='create_group_filter_container'>
                 <Grid container className='homework_container' spacing={2}>
                   {activeView === 'list-homework' && !isMobile && (
-                    <Grid xs={12} md={selectedCol?.subject ? 8 : 12} item>
+                    <>
                       {activeView !== 'view-homework' &&
                         activeView !== 'view-received-homework' && (
                           <div className='homework_block_wrapper'>
@@ -644,45 +644,52 @@ const CoordinatorTeacherHomework = withRouter(
                           <CircularProgress color='primary' />
                         </div>
                       ) : (
-                        <Paper
-                          className={`homework_table_wrapper ${classes.root}`}
-                          ref={tableContainer}
+                        <Grid
+                          xs={12}
+                          md={selectedCol?.subject ? 8 : 12}
+                          item
+                          className='home-work-grid'
                         >
-                          <TableContainer
-                            className={`table table-shadow homework_table ${classes.container}`}
+                          <Paper
+                            className={`homework_table_wrapper ${classes.root}`}
+                            ref={tableContainer}
                           >
-                            <Table stickyHeader aria-label='sticky table'>
-                              <TableHead className='view_groups_header'>
-                                <TableRow>
-                                  {/* {messageRows.header.map((headers, i) => (
+                            <TableContainer
+                              className={`table table-shadow homework_table ${classes.container}`}
+                            >
+                              <Table stickyHeader aria-label='sticky table'>
+                                <TableHead className='view_groups_header'>
+                                  <TableRow>
+                                    {/* {messageRows.header.map((headers, i) => (
                               <TableCell className='homework_header'>{headers}</TableCell>
                             ))} */}
-                                  {homeworkCols.map((col) => {
-                                    return typeof col === 'object' ? (
-                                      <TableCell>{col.subject_name}</TableCell>
-                                    ) : (
-                                      <TableCell>{col}</TableCell>
-                                    );
-                                  })}
-                                </TableRow>
-                              </TableHead>
-                              <TableBody className='table_body'>
-                                {homeworkRows.map((row) => (
-                                  <HomeworkRow
-                                    data={row}
-                                    cols={homeworkCols}
-                                    selectedCol={selectedCol}
-                                    setSelectedCol={handleSelectCol}
-                                    handleViewHomework={handleViewHomework}
-                                    coord_selected_teacher_id={selectedTeacherUser_id}
-                                  />
-                                ))}
-                              </TableBody>
-                            </Table>
-                          </TableContainer>
-                        </Paper>
+                                    {homeworkCols.map((col) => {
+                                      return typeof col === 'object' ? (
+                                        <TableCell>{col.subject_name}</TableCell>
+                                      ) : (
+                                        <TableCell>{col}</TableCell>
+                                      );
+                                    })}
+                                  </TableRow>
+                                </TableHead>
+                                <TableBody className='table_body'>
+                                  {homeworkRows.map((row) => (
+                                    <HomeworkRow
+                                      data={row}
+                                      cols={homeworkCols}
+                                      selectedCol={selectedCol}
+                                      setSelectedCol={handleSelectCol}
+                                      handleViewHomework={handleViewHomework}
+                                      coord_selected_teacher_id={selectedTeacherUser_id}
+                                    />
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </TableContainer>
+                          </Paper>
+                        </Grid>
                       )}
-                    </Grid>
+                    </>
                   )}
                   {activeView === 'list-homework' && isMobile && (
                     <Tabs

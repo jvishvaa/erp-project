@@ -12,6 +12,7 @@ import { withRouter } from 'react-router-dom';
 import SimpleReactLightbox, { SRLWrapper } from 'simple-react-lightbox';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import moment from 'moment';
 
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
@@ -40,6 +41,8 @@ import endpoints from '../../../config/endpoints';
 import { fetchTeacherHomeworkDetailsById } from '../../../redux/actions';
 import placeholder from '../../../assets/images/placeholder_small.jpg';
 import Attachment from './attachment';
+import './styles.scss';
+import ViewHomeworkQuestion from './view-homework-question';
 
 const useStyles = makeStyles((theme) => ({
   attachmentIcon: {
@@ -106,7 +109,9 @@ const ViewHomework = withRouter(
                 <div className='header-text text-center'>All Homeworks</div>
               </div>
               <div className='nav-card'>
-                <div className='header-text text-center'>{date}</div>
+                <div className='header-text text-center'>
+                  {moment(date).format('DD-MM-YYYY')}
+                </div>
                 <div className='header-text text-center'>
                   {subjectName?.split('_')[1]}
                 </div>
@@ -133,84 +138,15 @@ const ViewHomework = withRouter(
           </Grid> */}
           <Grid item xs={12} md={10}>
             <div className='homework_submit_wrapper'>
-              <div className='homework_block_wrapper'>
+              <div className='homework_block_wrapper home-work-date-subject-name no-border'>
                 <div className='homework_block homework_submit_tag'>
-                  Homework - {subjectName?.split('_')[2]}, {date}
+                  Homework - {subjectName?.split('_')[2]},{' '}
+                  {moment(date).format('DD-MM-YYYY')}
                 </div>
               </div>
 
               {selectedHomeworkDetails?.map((question, index) => (
-                <div
-                  className='homework-question-container'
-                  key={`homework_student_question_${index}`}
-                >
-                  <div className='homework-question'>
-                    <div className='question'>{question.question}</div>
-                  </div>
-                  <div className='attachments-container'>
-                    <Typography component='h4' color='primary' className='header'>
-                      Attachments
-                    </Typography>
-                    <div className='attachments-list-outer-container'>
-                      <div className='prev-btn'>
-                        <IconButton onClick={() => handleScroll('left')}>
-                          <ArrowBackIosIcon />
-                        </IconButton>
-                      </div>
-                      <SimpleReactLightbox>
-                        <div
-                          className='attachments-list'
-                          ref={scrollableContainer}
-                          onScroll={(e) => {
-                            e.preventDefault();
-                            console.log('scrolled');
-                          }}
-                        >
-                          {question.question_files.map((url, i) => (
-                            <>
-                              <div className='attachment'>
-                                <Attachment
-                                  key={`homework_student_question_attachment_${i}`}
-                                  fileUrl={url}
-                                  fileName={`Attachment-${i + 1}`}
-                                  urlPrefix={`${endpoints.s3}/homework`}
-                                  index={i}
-                                  actions={['preview', 'download']}
-                                />
-                              </div>
-                            </>
-                          ))}
-                          <div
-                            style={{
-                              position: 'absolute',
-                              width: '0',
-                              height: '0',
-                              visibility: 'hidden',
-                            }}
-                          >
-                            <SRLWrapper>
-                              {question.question_files.map((url, i) => (
-                                <img
-                                  src={`${endpoints.s3}/homework/${url}`}
-                                  onError={(e) => {
-                                    e.target.src = placeholder;
-                                  }}
-                                  alt={`Attachment-${i + 1}`}
-                                  style={{ width: '0', height: '0' }}
-                                />
-                              ))}
-                            </SRLWrapper>
-                          </div>
-                        </div>
-                      </SimpleReactLightbox>
-                      <div className='next-btn'>
-                        <IconButton onClick={() => handleScroll('right')}>
-                          <ArrowForwardIosIcon color='primary' />
-                        </IconButton>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <ViewHomeworkQuestion question={question} index={index} />
               ))}
 
               <div className='homework_submit_button_wrapper'>
@@ -219,6 +155,7 @@ const ViewHomework = withRouter(
                   className='custom_button_master labelColor homework_submit_button_cancel'
                   size='medium'
                   onClick={onClose}
+                  style={{ borderRadius: '10px' }}
                 >
                   CANCEL
                 </Button>

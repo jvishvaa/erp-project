@@ -9,6 +9,7 @@ import {
   Grid,
   useMediaQuery,
 } from '@material-ui/core';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import cuid from 'cuid';
 import { connect } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
@@ -46,6 +47,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const history = useHistory();
   const params = useParams();
+  const [queIndexCounter, setQueIndexCounter] = useState(0);
   const themeContext = useTheme();
 
   const validateHomework = () => {
@@ -78,7 +80,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
   const handleAddHomeWork = async () => {
     const isFormValid = validateHomework();
     if (isFormValid) {
-      console.log('submitting form');
+      // console.log('submitting form');
       const reqObj = {
         name,
         description,
@@ -93,7 +95,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
       };
       try {
         const response = await onAddHomework(reqObj);
-        console.log('add response ', response);
+        // console.log('add response ', response);
         setAlert('success', 'Homework added');
         history.push('/homework/teacher');
       } catch (error) {
@@ -108,7 +110,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
       {
         id: cuid(),
         question: '',
-        attachments: '',
+        attachments: [],
         is_attachment_enable: false,
         max_attachment: 5,
         penTool: false,
@@ -146,8 +148,8 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
         <div className='message_log_breadcrumb_wrapper'>
           <CommonBreadcrumbs componentName='Homework' childComponentName='Add' />
         </div>
-        <Grid container className='add-homework-inner-container'>
-          <Grid item xs={12} className='add-homework-title-container' md={4}>
+        <Grid container className='add-homework-inner-container' spacing={2}>
+          <Grid item xs={12} className='add-homework-title-container' md={2}>
             <div className='nav-cards-container'>
               <div
                 className='nav-card'
@@ -164,61 +166,96 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
             </div>
           </Grid>
 
-          <Grid item container xs={12} md={8}>
-            <Grid item xs={12} className='form-field'>
-              <FormControl variant='outlined' fullWidth size='small'>
-                <InputLabel htmlFor='component-outlined'>Title</InputLabel>
-                <OutlinedInput
-                  id='title'
-                  name='title'
-                  onChange={() => {}}
-                  inputProps={{ maxLength: 20 }}
-                  label='Title'
-                  autoFocus
-                  onChange={(e) => {
-                    setName(e.target.value);
-                  }}
+          <Grid
+            item
+            className='homework-create-questions-container'
+            container
+            xs={12}
+            md={10}
+          >
+            <div style={{ width: '95%', margin: '0 auto' }}>
+              <Grid item xs={12} className='form-field'>
+                <FormControl variant='outlined' fullWidth size='small'>
+                  <InputLabel htmlFor='component-outlined'>Title</InputLabel>
+                  <OutlinedInput
+                    id='title'
+                    name='title'
+                    onChange={() => {}}
+                    inputProps={{ maxLength: 20 }}
+                    label='Title'
+                    autoFocus
+                    onChange={(e) => {
+                      setName(e.target.value);
+                    }}
+                  />
+                  <FormHelperText style={{ color: 'red' }}>{errors.name}</FormHelperText>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} className='form-field'>
+                <FormControl variant='outlined' fullWidth size='small'>
+                  <InputLabel htmlFor='component-outlined'>Description</InputLabel>
+                  <OutlinedInput
+                    id='description'
+                    name='description'
+                    onChange={(e) => {
+                      setDescription(e.target.value);
+                    }}
+                    inputProps={{ maxLength: 150 }}
+                    multiline
+                    rows={4}
+                    rowsMax={6}
+                    label='Description'
+                  />
+                  <FormHelperText style={{ color: 'red' }}>
+                    {errors.description}
+                  </FormHelperText>
+                </FormControl>
+              </Grid>
+              {questions.map((question, index) => (
+                <QuestionCard
+                  key={question.id}
+                  question={question}
+                  index={index}
+                  addNewQuestion={addNewQuestion}
+                  handleChange={handleChange}
+                  removeQuestion={removeQuestion}
                 />
-                <FormHelperText style={{ color: 'red' }}>{errors.name}</FormHelperText>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} className='form-field'>
-              <FormControl variant='outlined' fullWidth size='small'>
-                <InputLabel htmlFor='component-outlined'>Description</InputLabel>
-                <OutlinedInput
-                  id='description'
-                  name='description'
-                  onChange={(e) => {
-                    setDescription(e.target.value);
-                  }}
-                  inputProps={{ maxLength: 150 }}
-                  multiline
-                  rows={4}
-                  rowsMax={6}
-                  label='Description'
-                />
-                <FormHelperText style={{ color: 'red' }}>
-                  {errors.description}
-                </FormHelperText>
-              </FormControl>
-            </Grid>
-            {questions.map((question, index) => (
-              <QuestionCard
-                key={question.id}
-                question={question}
-                index={index}
-                addNewQuestion={addNewQuestion}
-                handleChange={handleChange}
-                removeQuestion={removeQuestion}
-              />
-            ))}
-            <Grid item xs={12}>
+              ))}
+
+              <Grid container item xs={12} spacing={1}>
+                <Grid item xs={12} md={6} className='form-field'>
+                  <div className='finish-btn-container'>
+                    <Button
+                      startIcon={<AddCircleOutlineIcon />}
+                      onClick={() => {
+                        setQueIndexCounter(queIndexCounter + 1);
+                        addNewQuestion(queIndexCounter + 1);
+                      }}
+                      title='Add Question'
+                      className='btn add-quesiton-btn outlined-btn'
+                      color='primary'
+                      variant='outlined'
+                    >
+                      Add another question
+                    </Button>
+                  </div>
+                </Grid>
+                <Grid item xs={12} md={6} className='form-field'>
+                  <div className='finish-btn-container'>
+                    <Button className='btn' color='primary' onClick={handleAddHomeWork}>
+                      Finish
+                    </Button>
+                  </div>
+                </Grid>
+              </Grid>
+              {/* <Grid item xs={12}>
               <div className='finish-btn-container'>
                 <Button className='btn' color='primary' onClick={handleAddHomeWork}>
                   Finish
                 </Button>
               </div>
-            </Grid>
+            </Grid> */}
+            </div>
           </Grid>
         </Grid>
       </div>

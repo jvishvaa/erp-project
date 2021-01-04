@@ -99,7 +99,7 @@ const ViewHomework = withRouter(
     }, []);
 
     return (
-      <div className='view-homework-container create_group_filter_container'>
+      <div className='view-homework-container-coordinator create_group_filter_container'>
         <Grid container spacing={2} className='message_log_container'>
           <Grid item xs={12} className='add-homework-title-container' md={2}>
             <div className='nav-cards-container'>
@@ -142,7 +142,7 @@ const ViewHomework = withRouter(
 
               {selectedHomeworkDetails && !!selectedHomeworkDetails.length && selectedHomeworkDetails?.map((question, index) => (
                 <div
-                  className='homework-question-container'
+                  className='homework-question-container-coordinator'
                   key={`homework_student_question_${index}`}
                 >
                   <div className='homework-question'>
