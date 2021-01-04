@@ -22,7 +22,7 @@ const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore
   const classes = useStyles();
   const [showMenu, setShowMenu] = useState(false);
   const [showPeriodIndex, setShowPeriodIndex] = useState();
-  const [selectedIndex, setSelectedIndex]=useState();
+  const [selectedIndex, setSelectedIndex] = useState();
 
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
@@ -40,18 +40,23 @@ const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore
     axios.get(`${endpoints.lessonPlan.periodCardData}?lesson_plan_id=${period.id}`)
       .then(result => {
         if (result.data.status_code === 200) {
-          setLoading(false);
-          setViewMore(true);
-          setViewMoreData(result.data.result);
-          setPeriodDataForView(period);
-          setSelectedIndex(index);
-          axiosInstance.get(`${endpoints.lessonPlan.periodCompletedStatus}?subject=${filterDataDown?.subject.id}&chapter=${filterDataDown?.chapter.id}&period=${period?.id}`)
-          .then(result=>{
-            setCompletedStatus(result.data.is_completed);
-          })
-          .catch(error=>{
-            setAlert('error',error.message);
-          })
+          if (result.data.result?.length > 0) {
+            setLoading(false);
+            setViewMore(true);
+            setViewMoreData(result.data.result);
+            setPeriodDataForView(period);
+            setSelectedIndex(index);
+            axiosInstance.get(`${endpoints.lessonPlan.periodCompletedStatus}?subject=${filterDataDown?.subject.id}&chapter=${filterDataDown?.chapter.id}&period=${period?.id}`)
+              .then(result => {
+                setCompletedStatus(result.data.is_completed);
+              })
+              .catch(error => {
+                setAlert('error', error.message);
+              })
+          } else {
+            setLoading(false);
+            setAlert('error', 'No data available');
+          }
         } else {
           setLoading(false);
           setViewMore(false);

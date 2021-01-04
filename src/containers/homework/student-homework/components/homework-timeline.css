@@ -6,13 +6,15 @@
 }
 .subject-homework-tag-wrapper{
 	display: flex;
-	margin: 0% 0% 5%;
+	margin: 5%;
 }
 .subject-homework-tag{
 	color: #014b7e;
-    font-size: 1rem;
+    font-size: 1.1rem;
 	font-weight: 600;
 	width: 100%;
+	margin-left:0.9rem;
+	align-self: center;
 }
 .rating_days .MuiInputBase-input{
 	color: #014b7e !important;
@@ -22,11 +24,16 @@
 }
 .rating_days{
 	width: 245px;
-    background: #fddfde;
+	background: #fddfde;
+	border-radius: 10px;
+	outline: none;
 }
 .homework_details_timeline-card{
 	box-shadow: none !important;
 	border: 1px solid #CCCCCC;
+	margin-top: 1.5%;
+	border-radius: 10px !important;
+	margin: 5%;
 }
 .subject_rating_wrapper{
 	padding: 4% 0%;
@@ -58,12 +65,49 @@
 	color: #014b7e;
 	margin: 0% 1%;
 }
+
+.receivedSubmittedContainer {
+	position: relative;
+	display: flex;
+	background: linear-gradient(256deg, #FEF9AC,#FFDBDB);
+	opacity: 1;
+	width: 100%;
+	height: 110px;
+	justify-content: space-between;
+}
+.finishedHomeworkTag {
+	color: #014b7e;
+	font-size: 1.1rem;
+	margin-left: 1.50rem;
+	margin-top: 0.5rem;
+}
+.submittedHomeworkTag {
+	color: #014b7e;
+	font-size: 3rem;
+	margin-left: 1.50rem;
+	/* letter-spacing: 1px; */
+	margin-right:2px;
+}
+.totalHomeworkTag {
+	color: #014b7e;
+	font-size: 1.5rem;
+}
+.slashClass {
+	margin:0px 5px 0px 2.5px;
+}
+.maleFemaleContainer {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	align-self: flex-start;
+}
+
 .homework_timeline_card_tag{
 	color: #014b7e;
 	display: flex;
 }
 .homework_details_timeline-card_content{
-	padding: 8px !important;
+	padding: 12px 12px !important;
 }
 .homework_timeline_card_info{
 	color: #014b7e;
@@ -72,6 +116,7 @@
 	display: flex;
 	flex-direction: row;
 	margin-bottom: 3%;
+	font-size: 1.1rem !important;
 }
 .homework_details_timeline_subjects{
 	margin: auto;
@@ -79,6 +124,7 @@
 .homework_timeline_card_subject{
 	margin: 0% 8% !important;
 }
+
 @media only screen and (max-width: 768px) {
 	.homework_timeline_container{
 		display: block !important;
@@ -97,12 +143,12 @@
     float: right !important;
 }
 .homework_timeline_card_tag{
+	font-size: 1.1rem !important;
 	padding: 10px !important;
 }
 .homework_right_wrapper_items{
 	width: 100%;
 }
-
 .subject_rating_wrapper {
 	display: flex;
 }
@@ -118,7 +164,6 @@
     text-transform: capitalize;
 	display: inline-block;
 	/* margin-left: -61px; */
-
 }
 .info-card-info {
 	font-size: 24px !important;
