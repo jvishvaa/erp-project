@@ -30,6 +30,8 @@ deploy_dev:
       - sudo cp -r build/ /home/ubuntu/
       - forever stopall
       - forever start --uid "erp" -a -l forever.log -o out.log -e err.log $(which serve) -s /home/ubuntu/build -l 3000 
+      - sonar-scanner   -Dsonar.projectKey=ERP-Revamp-User-Frontend   -Dsonar.sources=.   -Dsonar.host.url=http://3.6.23.199:9000   -Dsonar.login=40cf8e68959fee394596fa649b681f0f5875aef9 > sonar.log
+      - cat sonar.log | grep -i browse
     environment:
       name: erp_revamp_frontend
       url: 
