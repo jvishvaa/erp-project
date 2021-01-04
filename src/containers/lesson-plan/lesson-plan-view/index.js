@@ -103,6 +103,7 @@ const LessonPlan = () => {
                     <div style={{ width: '95%', margin: '20px auto' }}>
                         <CommonBreadcrumbs
                             componentName='Lesson Plan'
+                            childComponentName='View'
                         />
                     </div>
                 </div>

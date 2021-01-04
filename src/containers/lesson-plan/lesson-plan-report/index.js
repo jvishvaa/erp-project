@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React, { useContext, useEffect, useState } from 'react';
 import Paper from '@material-ui/core/Paper';
-import { Grid, useTheme,SvgIcon } from '@material-ui/core';
+import { Grid, useTheme, SvgIcon } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -10,7 +10,7 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
-import './lesson.css';
+import './lesson-report.css';
 import Loading from '../../../components/loader/loader';
 import PeriodCard from './period-card';
 import LessonViewFilters from './lesson-view-filters';
@@ -40,9 +40,7 @@ const LessonReport = () => {
     const [loading, setLoading] = useState(false);
     const [viewMore, setViewMore] = useState(false);
     const [viewMoreData, setViewMoreData] = useState({});
-    const [chapterId, setChapterId] = useState();
-    const [chapterName, setChapterName] = useState();
-    const [periodDataForView, setPeriodDataForView]=useState({});
+    const [periodDataForView, setPeriodDataForView] = useState({});
     // const limit = 9;
     // const { role_details } = JSON.parse(localStorage.getItem('userDetails'));
     const themeContext = useTheme();
@@ -52,34 +50,29 @@ const LessonReport = () => {
         setPage(page);
     };
 
-    const handleLessonList = (gradeId,subjectIds,volumeId,startDate,endDate) => {
-        console.log(gradeId,subjectIds,volumeId,startDate,endDate,'===')
+    const handleLessonList = (gradeId, subjectIds, volumeId, startDate, endDate) => {
+        console.log(gradeId, subjectIds, volumeId, startDate, endDate, '===')
         setLoading(true);
         setPeriodData([]);
-        // http://127.0.0.1:8000/qbox/academic/lesson-completed-report/grade=54&page=1&subjects=121&volume_id=0
         axiosInstance.get(`${endpoints.lessonReport.lessonList}?grade=${gradeId}&page=${page}&subjects=${subjectIds}&volume_id=${volumeId}&start_date=${startDate.format(
             'YYYY-MM-DD'
-          )}&end_date=${endDate.format('YYYY-MM-DD')}`)
+        )}&end_date=${endDate.format('YYYY-MM-DD')}`)
             .then(result => {
                 console.log(result)
                 if (result.data.status_code === 200) {
                     setTotalCount(result.data.result.count)
                     setLoading(false);
                     setPeriodData(result.data.result.results);
-                    // setChapterId(searchChapter);
                 } else {
                     setLoading(false);
                     setAlert('error', result.data.description);
-                    setChapterId();
                 }
             })
             .catch((error) => {
                 setLoading(false);
                 setAlert('error', error.message);
-                setChapterId();
             })
     }
-console.log(periodData,'xyz')
     return (
         <>
             {loading ? <Loading message='Loading...' /> : null}
@@ -87,7 +80,8 @@ console.log(periodData,'xyz')
                 <div>
                     <div style={{ width: '95%', margin: '20px auto' }}>
                         <CommonBreadcrumbs
-                            componentName='Lesson Report'
+                            componentName='Lesson Plan'
+                            childComponentName='Report'
                         />
                     </div>
                 </div>
@@ -96,59 +90,37 @@ console.log(periodData,'xyz')
                     setPeriodData={setPeriodData}
                     setViewMore={setViewMore}
                     setViewMoreData={setViewMoreData}
-                    setChapterName={setChapterName}
                 />
 
                 <Paper className={classes.root}>
-                {periodData?.length > 0 ?
-                    (<div className="cardsContainer">
-                        <Grid container style={{ width: '95%', margin: '10px 0' }} spacing={5}>
-                            {periodData.map((period, i) => (
-                                <Grid item xs={12} sm={viewMore ? 6 : 4}>
-                                    <PeriodCard
-                                        lesson={period}
-                                        // academicYearId={}
-                                        // chapterId={chapterId}
-                                        // period={period}
-                                        viewMore={viewMore}
-                                        setLoading={setLoading}
-                                        setViewMore={setViewMore}
-                                        setViewMoreData={setViewMoreData}
-                                        // chapterName={chapterName}
-                                        setPeriodDataForView={setPeriodDataForView}
-                                    />
-                                </Grid>
-                            ))}
-                            {periodData.map((period, i) => (
-                                <Grid item xs={12} sm={viewMore ? 6 : 4}>
-                                    <PeriodCard
-                                        lesson={period}
+                    {periodData?.length > 0 ?
+                        (<div className="cardsContainer">
+                            <Grid container style={{ width: '95%', margin: '10px 0' }} spacing={5}>
+                                {periodData.map((period, i) => (
+                                    <Grid item xs={12} sm={viewMore ? 6 : 4}>
+                                        <PeriodCard
+                                            lesson={period}
+                                            viewMore={viewMore}
+                                            setLoading={setLoading}
+                                            setViewMore={setViewMore}
+                                            setViewMoreData={setViewMoreData}
+                                            setPeriodDataForView={setPeriodDataForView}
+                                        />
+                                    </Grid>
+                                ))}
 
-                                        // chapterId={chapterId}
-                                        // period={period}
-                                        lesson={period}
-                                        setLoading={setLoading}
-                                        viewMore={viewMore}
-                                        setViewMore={setViewMore}
-                                        setViewMoreData={setViewMoreData}
-                                        // chapterName={chapterName}
-                                        setPeriodDataForView={setPeriodDataForView}
-                                    />
-                                </Grid>
-                            ))}
-                        </Grid>
+                            </Grid>
 
-                        {viewMore && viewMoreData?.length > 0 &&
-                            <div style={isMobile ? { width: '95%', margin: '10px auto' } : { width: '60%', margin: '10px 0' }}>
-                                <ViewMoreCard
-                                    viewMoreData={viewMoreData}
-                                    setViewMore={setViewMore}
-                                    chapterName={chapterName}
-                                    periodDataForView={periodDataForView}
-                                />
-                            </div>}
-                            
-                        </div>):(
+                            {viewMore && viewMoreData?.length > 0 &&
+                                <div style={isMobile ? { width: '95%', margin: '10px auto' } : { width: '60%', margin: '10px 0' }}>
+                                    <ViewMoreCard
+                                        viewMoreData={viewMoreData}
+                                        setViewMore={setViewMore}
+                                        periodDataForView={periodDataForView}
+                                    />
+                                </div>}
+
+                        </div>) : (
                             <div className="periodDataUnavailable">
                                 <SvgIcon
                                     component={() => (
@@ -169,8 +141,8 @@ console.log(periodData,'xyz')
                             </div>
                         )}
 
-                   
-                    
+
+
 
                     {/* <div className="paginateData paginateMobileMargin">
                         <Pagination

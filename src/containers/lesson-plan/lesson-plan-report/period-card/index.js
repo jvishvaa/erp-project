@@ -3,32 +3,20 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { Button, useTheme, IconButton, Menu, MenuItem } from '@material-ui/core';
+import { Button, useTheme } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import GetAppIcon from '@material-ui/icons/GetApp';
 import useStyles from './useStyles';
 import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 
-const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore, viewMore, chapterId, chapterName,setLoading}) => {
+const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading}) => {
 
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-console.log(lesson,'===========')
+  
   const handleViewMore = () => {
     axiosInstance.get(`${endpoints.lessonReport.lessonViewMoreData}?central_gs_mapping_id=${lesson.central_gs_mapping_id}&volume_id=${lesson.volume_id}&academic_year_id=${lesson.academic_year_id}&completed_by=${lesson.completed_by}`)
       .then(result => {
@@ -47,7 +35,6 @@ console.log(lesson,'===========')
         }
       })
       .catch((error) => {
-        // setLoading(false);
         setViewMore(false);
         setViewMoreData({});
         setAlert('error', error.message);
@@ -94,14 +81,6 @@ console.log(lesson,'===========')
               </Typography>
           </Box>
           <Box>
-            {/* <Typography
-              className={classes.content}
-              variant='p'
-              component='p'
-              color='secondary'
-            >
-              {period.updated_at.substring(0, 10)}
-            </Typography> */}
           </Box>
         </Grid>
         <Grid item xs={6} className={classes.textRight}> 
