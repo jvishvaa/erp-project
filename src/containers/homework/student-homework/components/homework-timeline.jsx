@@ -107,8 +107,8 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
           <div>
             <div className="finishedHomeworkTag">Homeworks finished</div>
             <div>
-              <span className="submittedHomeworkTag">{submittedHomework}</span>
-              <span className="totalHomeworkTag"><span className="slashClass">/</span>{totalHomework}</span>
+              <span className="submittedHomeworkTag">{submittedHomework>0?submittedHomework:'0'}</span>
+              <span className="totalHomeworkTag"><span className="slashClass">/</span>{totalHomework>0?totalHomework:'0'}</span>
             </div>
           </div>
           <div className="maleFemaleContainer">
