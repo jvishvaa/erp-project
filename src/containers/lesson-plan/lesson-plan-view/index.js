@@ -46,10 +46,11 @@ const LessonPlan = () => {
     const [bulkDownloadPath, setBulkDownloadPath] = useState('');
     const [filterDataDown, setFilterDataDown] = useState({});
     const [completedStatus, setCompletedStatus] = useState(false);
-    // const limit = 9;
+    const limit = 9;
     // const { role_details } = JSON.parse(localStorage.getItem('userDetails'));
     const themeContext = useTheme();
     const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+    const [chapterSearch, setChapterSearch] = useState();
 
     const handlePagination = (event, page) => {
         setPage(page);
@@ -58,12 +59,15 @@ const LessonPlan = () => {
     const handlePeriodList = (searchChapter) => {
         setLoading(true);
         setPeriodData([]);
-        axios.get(`${endpoints.lessonPlan.periodData}?chapter=${searchChapter}`)
+        setChapterSearch(searchChapter);
+        axios.get(`${endpoints.lessonPlan.periodData}?chapter=${searchChapter}&page_number=${page}&page_size=${limit}`)
             .then(result => {
                 if (result.data.status_code === 200) {
-                    // setTotalCount(result.data.result.count)
+                    setTotalCount(result.data.count);
                     setLoading(false);
                     setPeriodData(result.data.result);
+                    setViewMore(false);
+                    setViewMoreData({});
                 } else {
                     setLoading(false);
                     setAlert('error', result.data.description);
@@ -74,6 +78,11 @@ const LessonPlan = () => {
                 setAlert('error', error.message);
             })
     }
+
+    useEffect(()=>{
+        if(page && chapterSearch)
+        handlePeriodList(chapterSearch)
+    },[page])
 
     useEffect(() => {
         const formData = new FormData();
@@ -170,15 +179,15 @@ const LessonPlan = () => {
                             </div>
                         )}
 
-                    {/* <div className="paginateData paginateMobileMargin">
+                    <div className="paginateData paginateMobileMargin">
                         <Pagination
                             onChange={handlePagination}
                             style={{ marginTop: 25 }}
-                            count={totalCount}
+                            count={Math.ceil(totalCount/limit)}
                             color='primary'
                             page={page}
                         />
-                    </div> */}
+                    </div>
                 </Paper>
 
             </Layout >

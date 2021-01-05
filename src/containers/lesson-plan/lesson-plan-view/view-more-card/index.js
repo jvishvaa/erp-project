@@ -108,7 +108,7 @@ const ViewMoreCard = ({ viewMoreData, setViewMore, filterDataDown, periodDataFor
                             <div className="bodyContent">
                                 <div>{file}</div>
                                 <div>
-                                    <a href={`${endpoints.s3}lesson_plan/${file}/`} target="_blank">
+                                    <a href={`${endpoints.lessonPlan.s3}dev/lesson_plan_file/${session_year}/${volume_name}/${grade__grade_name}/${subject_name}/${chapter_name}/${periodDataForView?.period_name}/${p?.document_type}/${file}/`} target="_blank">
                                         <SvgIcon
                                             component={() => (
                                                 <img

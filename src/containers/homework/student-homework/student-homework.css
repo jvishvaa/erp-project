@@ -196,10 +196,11 @@
 }
 .subject-homework-details-wrapper{
     font-size: 1rem !important;
-    padding: 5%;
+	/* padding: 5%; */
     border: 1px solid #ff6b6b;
-    border-radius: 10px;
+    border-radius: 20px;
 }
+
 .subject-homework-details-tag{
 	margin: 0% 0% 5%;
 }

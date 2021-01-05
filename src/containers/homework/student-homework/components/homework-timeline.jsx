@@ -22,6 +22,8 @@ import ReceivedIcon from '../../../../assets/images/receivedIcon.svg';
 import SubmittedIcon from '../../../../assets/images/submitedIcon.svg';
 import RatingIcon from '../../../../assets/images/ratingIcon1.svg';
 import Star from '../../../../assets/images/XMLID_16_.svg';
+import MaleRating from '../../../../assets/images/malerating.svg';
+import FemaleRating from '../../../../assets/images/femalerating.svg';
 import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
 import './homework-timeline.css';
@@ -32,7 +34,7 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [totalHomework, setTotalHomework] = useState();
   const [submittedHomework, setSubmittedHomework] = useState();
-
+  const {role_details:{gender}}=JSON.parse(localStorage.getItem('userDetails'));
   const [selectedDays, setSelectedDays] = useState('30 Days');
   const handleDayChange = (event, value) => {
     if (value) {
@@ -81,7 +83,6 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
     <>
       <div className='subject-homework-details-wrapper'>
         <div className='subject-homework-tag-wrapper'>
-          <div className='subject-homework-tag'>Homework timeline</div>
           <Autocomplete
             size='small'
             onChange={handleDayChange}
@@ -100,83 +101,36 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
               />
             )}
           />
+          <div className='subject-homework-tag'>Timeline</div>
         </div>
-        <Grid container className='homework_timeline_container' spacing={2}>
-          <Grid className='homework_timeline_received_submitted' lg={6} item>
-            <Card className='homework_details_timeline-card'>
-              <SvgIcon
-                component={() => (
-                  <img
-                    className='static-media'
-                    style={{
-                      width: '25px',
-                      height: '25px',
-                      marginTop: '5px',
-                      marginRight: '3px',
-                      float: 'right',
-                    }}
-                    src={ReceivedIcon}
-                    alt='submitted'
-                  />
-                )}
-              />
-              <CardContent className='homework_details_timeline-card_content'>
-                <Typography
-                  variant='body2'
-                  className='homework_timeline_card_tag'
-                  color='#014b7e'
-                  component='h6'
-                >
-                  Received
-                </Typography>
-                <Typography
-                  variant='body2'
-                  className='homework_timeline_card_info info-card-info'
-                  component='p'
-                >
-                  {totalHomework}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid className='homework_timeline_received_submitted' lg={6} item>
-            <Card className='homework_details_timeline-card'>
-              <SvgIcon
-                component={() => (
-                  <img
-                    className='static-media'
-                    style={{
-                      width: '25px',
-                      height: '25px',
-                      marginTop: '5px',
-                      marginRight: '3px',
-                      float: 'right',
-                    }}
-                    src={SubmittedIcon}
-                    alt='submitted'
-                  />
-                )}
-              />
-              <CardContent className='homework_details_timeline-card_content'>
-                <Typography
-                  variant='body2'
-                  className='homework_timeline_card_tag'
-                  color='#014b7e'
-                  component='h6'
-                >
-                  Submitted
-                </Typography>
-                <Typography
-                  variant='body2'
-                  className='homework_timeline_card_info info-card-info'
-                  component='p'
-                >
-                  {submittedHomework}
-                  
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
+        <div className="receivedSubmittedContainer">
+          <div>
+            <div className="finishedHomeworkTag">Homeworks finished</div>
+            <div>
+              <span className="submittedHomeworkTag">{submittedHomework>0?submittedHomework:'0'}</span>
+              <span className="totalHomeworkTag"><span className="slashClass">/</span>{totalHomework>0?totalHomework:'0'}</span>
+            </div>
+          </div>
+          <div className="maleFemaleContainer">
+            <SvgIcon
+              component={() => (
+                <img
+                  style={gender==='1'?{
+                    width: '166px',
+                    height: '150px',
+                    marginRight: '-20px',
+                  }:{
+                    width: '166px',
+                    height: '150px',
+                    marginRight:'-10px',
+                  }}
+                  src={gender==='1'?MaleRating:FemaleRating}
+                />
+              )}
+            />
+          </div>
+        </div>
+        <Grid container className='homework_timeline_container' spacing={5}>
           <Grid className='homework_timeline_rating' lg={12} item>
             <Card className='homework_details_timeline-card'>
               <SvgIcon
@@ -223,21 +177,20 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
                         </span>
                       </span>
                       <span className="starContainer">
-                    <span className='subject_rating'>{subject.rating}/5</span> 
-                      {[...Array(subject.rating)].map((e,i)=>(
-                      <SvgIcon
-                        component={() => (
-                          <img
-                            style={{
-                              width: '20px',
-                              height: '20px',
-                            }}
-                            src={Star}
-                            alt='submitted'
-                          />
-                        )}
-                      />))
-                      }
+                        {[...Array(subject.rating)].map((e, i) => (
+                          <SvgIcon
+                            component={() => (
+                              <img
+                                style={{
+                                  width: '20px',
+                                  height: '20px',
+                                }}
+                                src={Star}
+                                alt='submitted'
+                              />
+                            )}
+                          />))
+                        }
                       </span>
                     </div>
                   ))}

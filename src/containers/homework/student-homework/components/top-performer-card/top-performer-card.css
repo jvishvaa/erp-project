@@ -4,7 +4,7 @@
 	border: 1px solid #ff6b6b;
 	position: relative !important;
 	color: #014b7e !important;
-	border-radius: 10px !important;
+	border-radius: 20px !important;
 	padding: 5% 5% 10%;
 }
 .top-performer-header{
@@ -21,7 +21,7 @@
 .top-performer-subject{
 	font-size: 1rem;
     width: 80%;
-	border-bottom: 1px solid  #ff6b6b;
+	border-bottom: 1px solid  #FFC4C4;
 	margin-bottom: 2%;
 	position: relative;
 }
@@ -35,17 +35,17 @@
     bottom: 0;
 }
 .top-performer-row-index{
-	margin: auto 2%;;
+	margin: auto 2%;
 }
 .top-performer-row{
 	margin: 3% 0% !important;
 }
 .top_performer_rating_subject_name{
-	border-bottom: 1px solid #ff6b6b;
+	border-bottom: 1px solid #FFC4C4;
     color: #014b7e;
     display: inline-table;
 	width: 60%;
-	margin: 0% 2%;
+	margin: 2% 2%;
 	text-transform: capitalize;
     vertical-align: baseline;
 }
@@ -58,7 +58,7 @@
 	width: 120px;
 	background-color: #555;
 	color: #fff;
-	text-align: left;
+	text-align: center;
 	border-radius: 6px;
 	padding: 5px 0;
 	position: absolute;
