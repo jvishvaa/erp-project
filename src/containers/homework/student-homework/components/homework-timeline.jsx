@@ -116,13 +116,13 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
               component={() => (
                 <img
                   style={gender==='1'?{
-                    width: '166px',
+                    width: '100px',
                     height: '150px',
-                    marginRight: '-20px',
+                    marginRight: '5px',
                   }:{
-                    width: '166px',
+                    width: '115px',
                     height: '150px',
-                    marginRight:'-10px',
+                    marginRight:'5px',
                   }}
                   src={gender==='1'?MaleRating:FemaleRating}
                 />
