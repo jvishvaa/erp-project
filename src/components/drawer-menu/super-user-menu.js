@@ -279,7 +279,7 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
         <ListItemIcon className={classes.menuItemIcon}>
         <ImportContactsIcon />
         </ListItemIcon>
-        <ListItemText className='menu-item-text'>Lesson Planning</ListItemText>
+        <ListItemText className='menu-item-text'>Lesson Plan</ListItemText>
         {lessonMenuOpen ? (
           <ExpandLess className={classes.expandIcons} />
         ) : (

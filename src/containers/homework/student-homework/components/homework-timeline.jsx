@@ -34,7 +34,7 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [totalHomework, setTotalHomework] = useState();
   const [submittedHomework, setSubmittedHomework] = useState();
-  const {role_details:{gender}}=JSON.parse(localStorage.getItem('userDetails'));
+  const { role_details: { gender } } = JSON.parse(localStorage.getItem('userDetails'));
   const [selectedDays, setSelectedDays] = useState('30 Days');
   const handleDayChange = (event, value) => {
     if (value) {
@@ -51,26 +51,23 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
       }
       const result = await axiosInstance.get(request);
       if (result.data.status_code === 200) {
-        setRating(result.data.data.subject_rating);
-        if (result.data.data.subject_rating.length) {
-          // let tempTotalHw = 0;
-          // let tempSubmitedHw = 0;
-          // result.data.data.forEach((items) => {
-          //   tempTotalHw += Number(items.hw_given);
-          //   tempSubmitedHw += Number(items.hw_submitted);
-          // });
-          setTotalHomework(result.data.data.hw_given);
-          setSubmittedHomework(result.data.data.hw_submitted);
-          setHomeworkTimelineDisplay(true);
+        let res = result.data.data;
+        if (Object.keys(res).length > 0) {
+          if (res.subject_rating.length > 0) {
+            setTotalHomework(res.hw_given);
+            setSubmittedHomework(res.hw_submitted);
+            setRating(res.subject_rating);
+            setHomeworkTimelineDisplay(true);
+          }
         } else {
           setHomeworkTimelineDisplay(false);
         }
       } else {
-        setAlert('error', result.data.message);
-        // setHomeworkTimelineDisplay(false)
+        // setAlert('error', result.data.message);
+        setHomeworkTimelineDisplay(false)
       }
     } catch (error) {
-      setAlert('error', error.message);
+      // setAlert('error', error.message);
       setHomeworkTimelineDisplay(false);
     }
   };
@@ -107,24 +104,24 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
           <div>
             <div className="finishedHomeworkTag">Homeworks finished</div>
             <div>
-              <span className="submittedHomeworkTag">{submittedHomework>0?submittedHomework:'0'}</span>
-              <span className="totalHomeworkTag"><span className="slashClass">/</span>{totalHomework>0?totalHomework:'0'}</span>
+              <span className="submittedHomeworkTag">{submittedHomework > 0 ? submittedHomework : '0'}</span>
+              <span className="totalHomeworkTag"><span className="slashClass">/</span>{totalHomework > 0 ? totalHomework : '0'}</span>
             </div>
           </div>
           <div className="maleFemaleContainer">
             <SvgIcon
               component={() => (
                 <img
-                  style={gender==='1'?{
-                    width: '166px',
+                  style={gender === '1' ? {
+                    width: '100px',
                     height: '150px',
-                    marginRight: '-20px',
-                  }:{
-                    width: '166px',
-                    height: '150px',
-                    marginRight:'-10px',
-                  }}
-                  src={gender==='1'?MaleRating:FemaleRating}
+                    marginRight: '5px',
+                  } : {
+                      width: '115px',
+                      height: '150px',
+                      marginRight: '5px',
+                    }}
+                  src={gender === '1' ? MaleRating : FemaleRating}
                 />
               )}
             />
