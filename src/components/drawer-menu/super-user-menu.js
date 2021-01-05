@@ -267,6 +267,20 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
         </ListItemIcon>
         <ListItemText className='menu-item-text'>Role management</ListItemText>
       </ListItem>
+      <ListItem
+        button
+        className={
+          history.location.pathname === '/subject/grade/mapping' ? 'menu_selection' : null
+        }
+        onClick={() => {
+          onClickMenuItem('mapping');
+        }}
+      >
+        <ListItemIcon className={classes.menuItemIcon}>
+          <AssignmentIndIcon />
+        </ListItemIcon>
+        <ListItemText className='menu-item-text'>Mapping</ListItemText>
+      </ListItem>
     </>
   );
 };

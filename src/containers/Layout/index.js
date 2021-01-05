@@ -400,6 +400,10 @@ const Layout = ({ children, history }) => {
         history.push('/homework/teacher');
         break;
       }
+      case 'mapping': {
+        history.push('/subject/grade/mapping');
+        break;
+      }
 
       default:
         break;

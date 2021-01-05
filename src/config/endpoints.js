@@ -84,6 +84,17 @@ export default {
     getAllTeacherList:'/academic/teachers-list/',
     getTecherPerformance:'/academic/hw-teacher-performance/'
   },
+  mappingStudentGrade: {
+    branch: '/erp_user/branch/',
+    grade: '/erp_user/grademapping/',
+    subjects: '/academic/lesson-plan-subjects/',
+    central: '/academic/central-grade-subjects/',
+    schoolGsMapping: '/academic/school-gs-mapping-details/',
+    assign: '/academic/school-subjects-mapping/',
+    updateAssign: '/academic',
+    delete: '/academic'
+
+  },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
 };
