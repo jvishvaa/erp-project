@@ -203,7 +203,7 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
 
     return (
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
-            <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
+            <Grid item xs={12} sm={4} className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
                 <Autocomplete
                     style={{ width: '100%' }}
                     size='small'
@@ -224,7 +224,7 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
                     )}
                 />
             </Grid>
-            <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
+            <Grid item xs={12} sm={4} className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
                 <Autocomplete
                     style={{ width: '100%' }}
                     size='small'
@@ -245,7 +245,7 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
                     )}
                 />
             </Grid>
-            <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
+            <Grid item xs={12} sm={4} className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
                 <Autocomplete
                     style={{ width: '100%' }}
                     size='small'
@@ -266,7 +266,7 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
                     )}
                 />
             </Grid>
-            <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
+            <Grid item xs={12} sm={4} className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
                 <Autocomplete
                     style={{ width: '100%' }}
                     size='small'
@@ -287,7 +287,7 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
                     )}
                 />
             </Grid>
-            <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
+            <Grid item xs={12} sm={4} className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
                 <Autocomplete
                     style={{ width: '100%' }}
                     size='small'
@@ -308,7 +308,7 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
                     )}
                 />
             </Grid>
-            <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
+            <Grid item xs={12} sm={4} className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
                 <Autocomplete
                     style={{ width: '100%' }}
                     size='small'

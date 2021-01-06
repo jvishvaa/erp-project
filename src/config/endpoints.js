@@ -84,10 +84,8 @@ export default {
   lessonReport:{
     volumes:'/lesson_plan/list-volume/',
     subjects:'/academic/lesson-plan-subjects/',
-    
     lessonList:'/academic/lesson-completed-report/',
     lessonViewMoreData:'/academic/user-chapters-details/',
-
   },
   coordinatorTeacherHomeworkApi:{
     getAllTeacherList:'/academic/teachers-list/',
@@ -100,6 +98,8 @@ export default {
     volumeList: `${baseURLCentral}/lesson_plan/list-volume/`,
     gradeSubjectMappingList: `/academic/lesson-plan-subjects/`,
     chapterList: `/academic/central-chapters-list/`,
+    periodCompleted: '/academic/lessonplan-completed-status/',
+    periodCompletedStatus: '/academic/lesson-status/',
     bulkDownload: `${baseURLCentral}/lesson_plan/bulk_download/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },  

@@ -82,6 +82,7 @@ const ViewHomework = withRouter(
     totalSubmittedQuestions,
     isQuestionwise,
     collatedSubmissionFiles,
+    fetchingSubmittedHomeworkDetails,
     ...props
   }) => {
     const { setAlert } = useContext(AlertNotificationContext);
@@ -121,6 +122,7 @@ const ViewHomework = withRouter(
       const reqData = {
         remark,
         score,
+        
       };
       if (!remark) {
         setAlert('error', 'Please provide a remark');
@@ -239,6 +241,7 @@ const ViewHomework = withRouter(
           remarks: '',
           comments: '',
           corrected_submission: q.evaluated_files,
+          evaluated_files:[]
         }));
         setQuestionsState(initialQuestionsState);
       } else {
@@ -271,7 +274,7 @@ const ViewHomework = withRouter(
       splitted_media: null,
     };
     const desTestDetails = [{ asessment_response: { evaluvated_result: '' } }];
-
+  console.log(fetchingSubmittedHomeworkDetails,'reduxxxx',submittedHomeworkDetails,totalSubmittedQuestions)
     return (
       <div className='view-homework-container create_group_filter_container'>
         <Grid container spacing={2} className='message_log_container'>
@@ -323,7 +326,11 @@ const ViewHomework = withRouter(
                   hideNextPrevButton={totalSubmittedQuestions <= 1}
                   onNext={() => {
                     setActiveQuestion((prev) =>
-                      prev < totalSubmittedQuestions ? prev + 1 : prev
+                      {
+                        return(
+                          prev < totalSubmittedQuestions ? prev + 1 : prev
+                          
+                          )}
                     );
                   }}
                   onPrev={() => {
