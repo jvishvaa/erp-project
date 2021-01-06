@@ -158,6 +158,20 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
         </ListItemIcon>
         <ListItemText className='menu-item-text'>Role management</ListItemText>
       </ListItem>
+      <ListItem
+        button
+        className={
+          history.location.pathname === '/discussion-forum' ? 'menu_selection' : null
+        }
+        onClick={() => {
+          onClickMenuItem('discussion-forum');
+        }}
+      >
+        <ListItemIcon className={classes.menuItemIcon}>
+          <AssignmentIndIcon />
+        </ListItemIcon>
+        <ListItemText className='menu-item-text'>Discussion Forum</ListItemText>
+      </ListItem>
 
       <ListItem
         button

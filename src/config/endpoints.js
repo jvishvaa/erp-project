@@ -103,6 +103,12 @@ export default {
     bulkDownload: `${baseURLCentral}/lesson_plan/bulk_download/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },  
+  discussionForum:{
+   categoryList: '/academic/categories/',
+   branch: '/erp_user/branch/',
+   grade:'/erp_user/grademapping/',
+   filterCategory: '/academic/posts/',
+  },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
 };

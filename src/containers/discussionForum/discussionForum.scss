@@ -1,0 +1,282 @@
+
+
+.ds-forum{
+    margin-left: 10px !important;
+    color: #014B7E !important;
+    font-size: 16px;
+}
+
+.df-btn-container{
+    display: flex;
+    margin-bottom: 25px;
+    margin-top: 18px;
+}
+
+.df-btn-container .df-filter{
+    margin-left: 25px;
+}
+.df-container{
+    margin: 5px;
+    background-color: #F9F9F9;
+}
+
+.df-btn-container .df-filter button{
+    background-color : #FF6B6B;
+    border-radius: 10px;
+    width: 166px;
+    font-size: 12px;
+
+}
+
+.df-btn-container .df-clear-all button{
+    border-radius: 10px;
+    width: 166px;
+
+}
+.activity-ask .df-btn-question-container{
+    margin: 20px;
+}
+
+.df-btn-question-container .df-activity button{
+    background-color: #FF6B6B;
+    border-radius: 10px;
+    width: 166px;
+    margin-left: 25px;
+}
+
+
+.df-btn-question-container .df-ask button{
+    background-color: #F9F9F9;
+    border-radius: 10px;
+    width: 166px;
+    border-style: solid;
+    border-color: #FF6B6B;
+}
+.df-ask{
+    border-style: solid;
+    border-color: #FF6B6B;
+    border-radius: 12px;
+}
+.df-btn-question-container  .df-ask button{
+    font-size: 12px;
+}
+.df-btn-question-container  .df-ask button img{
+   width: 9px;
+}
+
+ .df-activity button {
+     font-size: 12px;
+ }
+.df-btn-question-container .df-ask button span{
+    color: #FF6B6B;
+    border-color: #FF6B6B;
+}
+
+
+.df{
+    border: 1px solid #F9F9F9;
+    border-left: none;
+    border-right: none;
+}
+body{
+    background-color: white !important;
+}
+
+.df-btn-container .df-clear-all button{
+    color: #8C8C8C !important;
+    font-size: 12px;
+}
+////////////Enviroment card cssss//////////////////////////////
+.env-card{
+    width: 303px;
+    margin-top: 40px
+}
+.view-more-btn{
+    // float: right;
+    margin-right: 8px;
+    
+}
+
+.env-card .view-more-btn {
+    display: flex;
+    justify-content: space-between;
+}
+
+.env-card .view-more-btn button span{
+    font-size: 12px;
+    width: 126px;
+    border-radius: 10px;
+
+}
+
+.text-name{
+    display: flex;
+    justify-content: space-between;
+}
+
+.text-name .covid-19{
+    text-align: left;
+    color: #042955;
+    font-size: 14px;
+}
+
+.text-name .online-learning{
+    text-align: center;
+    color: #042955;
+    font-size: 14px;
+
+}
+
+.text-name .student{ 
+    text-align: right;
+    color: #042955;
+    font-size: 14px;
+}
+
+.user-name-icon{
+    display: flex;
+    justify-content: space-between;
+}
+
+.user-info{
+    background-color: #DDEF96;
+    // height: 44px;
+   
+}
+
+.desciption{
+    width: 300px;
+    height: 155px;
+    text-align: justify;
+    padding: 8px;
+}
+.env-card{
+    // border: 1px solid #DDEF96;
+    border-radius: 10px;
+}
+
+.env-card-container .env-card .MuiCardContent-root{
+    padding: 0px;
+
+}
+
+.env-card .text-name{
+    padding: 8px;
+}
+// .env-card .user-name-icon{
+//     padding: 8px;
+// }
+
+// .env-card{
+//     display: flex !important;
+//     justify-content: space-between !important;
+// }
+
+.env-card .MuiCardContent-root .user-name-icon{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.MuiGrid-spacing-xs-2 > .MuiGrid-item {
+     padding: 0px; 
+}
+
+.category-dropdown{
+    margin-left: 20px;
+}
+
+.env-container .env-card .MuiCard-root{
+    overflow: unset;
+}
+
+///////////////////////////Viewmore css goes here/////////////
+.view-more-info{
+    padding: 40px
+}
+
+.view-more-info .header-view .header-view-text{
+    font-size: 30px;
+    margin-top: 35px;
+    color: #042955 
+}
+
+.view-more-info .header-view .user-name-icon-view img{
+margin-top: 20px;
+width: 32px
+}
+
+.header-view{
+    display: flex;
+}
+.text-name-view{
+    display: flex;
+    margin-top: 20px;
+    justify-content: space-evenly;
+}
+
+.header-view .textView-header{
+    flex-basis: 60%;
+    max-width: 63.666667%;
+
+}
+.header-view .text-name-view{
+    margin-left: 250px;
+    font-size: 20px;
+    color: #042955;
+    font-weight: 600;
+}
+
+.user-name-icon-view{
+    display: flex;
+}
+
+.time-hours{
+    display: flex;
+    font-size: 20px;
+    justify-content: flex-end;
+    color: #042955;
+    margin-top: 12px;
+    // font-weight: 600;
+}
+
+.header-view .icon-header{
+    flex-basis: 60%;
+    max-width: 63.666667%;
+}
+
+.view-more-date{
+    margin-left: 30px;
+}
+
+.user-name-icon-view .icon-headers{
+    display: flex;
+  
+}
+
+.user-name-icon-view .user-name-icon-view{
+    margin-top: 20px;
+   
+}
+
+
+.view-more-container .view-more-info .view-more-desciption .desciption-view{
+    font-size: 16px;
+    color: #042955;
+    text-align: justify;
+    margin-top: 10px;
+    // border-bottom: 1px solid rgb(226, 226, 226);
+}
+
+.view-more-container .like-ans{
+    margin-top: 40px;
+    max-width: 88.666667%;
+    padding: 27px;
+    color: #E2E2E2;
+
+}
+
+.like-ans .like-ans-button{
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
