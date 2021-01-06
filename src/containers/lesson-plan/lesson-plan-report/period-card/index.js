@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext,useState} from 'react';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
@@ -11,6 +11,7 @@ import useStyles from './useStyles';
 import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
+import { useStaticState } from '@material-ui/pickers';
 
 const PeriodCard = ({ lesson, index,setPeriodDataForView, setViewMoreData, setViewMore, viewMore, chapterId, chapterName,setLoading}) => {
 
@@ -21,6 +22,8 @@ const PeriodCard = ({ lesson, index,setPeriodDataForView, setViewMoreData, setVi
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
+  let clickedItem=[]
+  let c;
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -30,6 +33,8 @@ const PeriodCard = ({ lesson, index,setPeriodDataForView, setViewMoreData, setVi
   };
 console.log(lesson,'===========',index)
   const handleViewMore = () => {
+    
+    console.log(index,'clickeditem')  
     axiosInstance.get(`${endpoints.lessonReport.lessonViewMoreData}?central_gs_mapping_id=${lesson.central_gs_mapping_id}&volume_id=${lesson.volume_id}&academic_year_id=${lesson.academic_year_id}&completed_by=${lesson.completed_by}`)
       .then(result => {
         console.log(result.data,'ooo')
@@ -54,9 +59,9 @@ console.log(lesson,'===========',index)
         setPeriodDataForView();
       })
   }
-
+  console.log(clickedItem,'indexxx')
   return (
-    <Paper className={classes.root} style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }}>
+    <Paper className={index===c?classes.selectedRoot:classes.root} style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }}>
       <Grid container spacing={2}>
         <Grid item xs={8}>
           <Box>
@@ -112,6 +117,7 @@ console.log(lesson,'===========',index)
             color="primary"
             className="custom_button_master"
             size='small'
+            key={index}
             onClick={handleViewMore}
           >
             VIEW MORE

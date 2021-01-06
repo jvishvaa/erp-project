@@ -122,10 +122,11 @@ const LessonReport = () => {
                     />
                   </Grid>
                 ))}
-                {periodData.map((period, i) => (
+                {/* {periodData.map((period, i) => (
                   <Grid item xs={12} sm={viewMore ? 6 : 4}>
                     <PeriodCard
                       lesson={period}
+                      index={i}
                       // chapterId={chapterId}
                       // period={period}
                       lesson={period}
@@ -137,7 +138,7 @@ const LessonReport = () => {
                       setPeriodDataForView={setPeriodDataForView}
                     />
                   </Grid>
-                ))}
+                ))} */}
               </Grid>
 
               {viewMore && viewMoreData?.length > 0 && (

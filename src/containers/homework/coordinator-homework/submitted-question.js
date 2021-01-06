@@ -303,7 +303,7 @@ const SubmittedQuestion = ({
       </div>
       <div className='evaluate-answer-btn-container'>
         <Button variant='contained' color='primary' onClick={onEvaluate}>
-          EVALUATE ANSWER
+          SAVE
         </Button>
       </div>
     </div>
