@@ -40,7 +40,7 @@ import CoordinatorHomework from './containers/homework/coordinator-homework';
 import AddHomeworkCoord from './containers/homework/coordinator-homework/add-homework';
 import LessonReport from './containers/lesson-plan/lesson-plan-report';
 import LessonPlan from './containers/lesson-plan/lesson-plan-view';
-
+import { TeacherBlog } from './containers/blog';
 
 const theme = createMuiTheme({
   palette: {
@@ -175,14 +175,20 @@ function App() {
                   {/* added by Vijay to display particular teacher details */}
                   {({ match }) => <CoordinatorHomework match={match} />}
                 </Route>
-                <Route exact path='/homework/cadd/:date/:subject/:id/:coord_selected_teacher_id'>
+                <Route
+                  exact
+                  path='/homework/cadd/:date/:subject/:id/:coord_selected_teacher_id'
+                >
                   {({ match }) => <AddHomeworkCoord match={match} />}
                 </Route>
                 <Route exact path='/lesson-plan/report'>
-                {({ match }) => <LessonReport match={match} />}
-                 </Route>
+                  {({ match }) => <LessonReport match={match} />}
+                </Route>
                 <Route exact path='/lesson-plan/view'>
                   {({ match }) => <LessonPlan match={match} />}
+                </Route>
+                <Route exact path='/blog/teacher'>
+                  {({ match }) => <TeacherBlog match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>
