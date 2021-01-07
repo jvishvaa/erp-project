@@ -1,14 +1,23 @@
+.env-name{
+    padding-top: 15px;
+}
 
+.env-name .catname-df-forum{
+    padding-top: 11px;
+}
 
+.env-container{
+    margin: 0px 0px 0px 40px;
+}
 .ds-forum{
-    margin-left: 10px !important;
+    // margin-left: 10px !important;
     color: #014B7E !important;
     font-size: 16px;
 }
 
 .df-btn-container{
     display: flex;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     margin-top: 18px;
 }
 
@@ -33,8 +42,10 @@
     width: 166px;
 
 }
-.activity-ask .df-btn-question-container{
-    margin: 20px;
+.env-container .df-btn-question-container{
+    // margin: 20px;
+    margin-left: 20px;
+    margin-bottom: 11px;
 }
 
 .df-btn-question-container .df-activity button{
@@ -86,15 +97,26 @@ body{
     color: #8C8C8C !important;
     font-size: 12px;
 }
+
+.env-container .catname-df-forum{
+    flex-basis: 7.666667%;
+
+}
 ////////////Enviroment card cssss//////////////////////////////
+
+.env-container.ev-view-card{
+    flex-basis: 30.333333% !important;
+}
 .env-card{
     width: 303px;
-    margin-top: 40px
+    margin-top: 40px;
+    // margin-left: 50px;
 }
-.view-more-btn{
+.env-card .view-more-btn{
     // float: right;
-    margin-right: 8px;
-    
+    // margin-right: 8px;
+    padding-left: 26px;
+    padding-right: 26px;
 }
 
 .env-card .view-more-btn {
@@ -111,19 +133,22 @@ body{
 
 .text-name{
     display: flex;
-    justify-content: space-between;
+    // justify-content: space-between;
 }
 
 .text-name .covid-19{
     text-align: left;
     color: #042955;
     font-size: 14px;
+    font-weight: 600;
+   
 }
 
 .text-name .online-learning{
     text-align: center;
     color: #042955;
     font-size: 14px;
+    font-weight: 600;
 
 }
 
@@ -131,6 +156,7 @@ body{
     text-align: right;
     color: #042955;
     font-size: 14px;
+    font-weight: 600;
 }
 
 .user-name-icon{
@@ -138,17 +164,19 @@ body{
     justify-content: space-between;
 }
 
-.user-info{
-    background-color: #DDEF96;
-    // height: 44px;
-   
+
+
+.env-card .user-info:nth-child(odd) {
+//   background-color: #FEE4D4 !important;
+  height: 40px;
 }
+
 
 .desciption{
     width: 300px;
     height: 155px;
     text-align: justify;
-    padding: 8px;
+    padding: 18px;
 }
 .env-card{
     // border: 1px solid #DDEF96;
@@ -161,7 +189,8 @@ body{
 }
 
 .env-card .text-name{
-    padding: 8px;
+    padding: 4px;
+    padding-left: 15px;
 }
 // .env-card .user-name-icon{
 //     padding: 8px;
@@ -189,11 +218,23 @@ body{
     overflow: unset;
 }
 
+.env-card .MuiDivider-root{
+    margin: none !important;
+}
+
+.env-card .v-btn{
+    width: 100%;
+    padding: 5px;
+}
+
 ///////////////////////////Viewmore css goes here/////////////
 .view-more-info{
     padding: 40px
 }
 
+.env-container .env-card.MuiDivider-middle{
+    // margin: none;
+}
 .view-more-info .header-view .header-view-text{
     font-size: 30px;
     margin-top: 35px;
@@ -280,3 +321,95 @@ width: 32px
     justify-content: space-around;
     margin-top: 20px;
 }
+
+.view-more-info{
+    background-color: white;
+}
+
+.ds-forum{
+    background-color: #F9F9F9;
+    padding-left: 20px;
+}
+.view-more button:hover{
+background-color: red;
+}
+
+// .hide {
+//     display: none;
+//   }
+
+//  .like-button-view:hover + .hide {
+//     display: block;
+//     color: red;
+//     background-color: yellow;
+//   }
+
+//   .cards {
+//     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+//     transition: 0.3s;
+//     width: 40%;
+//   }
+  
+//   .cards:hover {
+//     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+//   }
+  
+//   .containers {
+//     padding: 2px 16px;
+//   }
+
+// .MuiPopover-paper {
+//     outline: 0;
+//     position: absolute;
+//     max-width: calc(100% - 32px);
+//     min-width: 100px;
+//     max-height: calc(100% - 32px);
+//     min-height: 16px;
+//     overflow-x: hidden;
+//     overflow-y: auto;
+//     border: 1px solid red;
+//     background-color: #F9F9F9 !important;
+//     width: 157px;
+//     left : 441px !important;
+//     top: 500px !important
+// }
+
+.pops .MuiPopover-paper{
+    // left : 650px ;
+    // top: 560px !important;
+    background-color: #F9F9F9 !important;
+    border: 1px solid #F9AB5D;
+    border-radius: 10px;
+    width: 358px;
+    height: 135px;
+
+}
+
+.pop-overs .MuiPaper-root{
+    background-color: #F9F9F9 !important;
+    border: 1px solid #F9AB5D;
+    border-radius: 10px !important;
+    width: 108px !important;
+    box-shadow: none;
+
+    // height: 135px;
+
+}
+.tool-tip{
+    left: 40px !important;
+    // top : 0px !important;
+    border: 2px solid #FF6B6B !important;
+    height: 143px;
+    width: 362px;
+    background: white;
+    border-radius: 7px;
+    overflow: auto;
+    max-height: 100vh;  
+    // border-style: red;
+    // border-color: transparent transparent black transparent;
+}
+// .pops .MuiPopover-paper::after {
+//     border-style: solid !important;
+//     border-color: transparent transparent red transparent !important;
+//   }
+  

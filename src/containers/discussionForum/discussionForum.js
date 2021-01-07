@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { SvgIcon, Button, Grid, FormControl, TextField, Divider } from '@material-ui/core';
 import Layout from '../Layout';
@@ -13,6 +13,8 @@ import endpoints from '../../config/endpoints';
 import Viewmore from './viewMore';
 import Pagination from '@material-ui/lab/Pagination';
 import './discussionForum.scss';
+import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+
 
 const Discussionforum = () => {
     const [categoryListRes, setcategoryListRes] = useState([]);
@@ -24,9 +26,10 @@ const Discussionforum = () => {
     const [gradeValue, setGradeValue] = useState(null);
     const [isViewmoreView, setisViewmoreView] = useState(false);
     const [viewMoreList, setViewMoreList] = useState(null);
-    const [PostListResPagenation ,setPostListResPagenation]= useState(null);
+    const [PostListResPagenation, setPostListResPagenation] = useState(null);
     const [page, setPage] = React.useState(1);
-    
+    const { setAlert } = useContext(AlertNotificationContext);
+
 
     useEffect(() => {
         const getCategoryList = () => {
@@ -96,16 +99,23 @@ const Discussionforum = () => {
         })
     }
     useEffect(() => {
-       
+
         getPostList()
 
     }, [...postListRes]);
 
     const getPostList = () => {
         axiosInstance.get(`${endpoints.discussionForum.filterCategory}`).then(res => {
-            setPostListRes(res.data.data.results);
-            setPostListResPagenation(res.data.data)
+            // console.log(res, "popop")
+            if (res.data.status_code === 200) {
+                setPostListRes(res.data.data.results);
+                setPostListResPagenation(res.data.data)
+            } else {
+                setAlert('error', res.data.message)
+            }
+
         }).catch(err => {
+            setAlert('error', err.message)
             console.log(err)
         })
     }
@@ -121,26 +131,26 @@ const Discussionforum = () => {
     }
     const handleViewmore = (list) => {
         console.log(list, "list")
-         setViewMoreList(list)
+        setViewMoreList(list)
         setisViewmoreView(true)
     }
-const handlePageChange = (event, value) => {
-    setPage(value);
+    const handlePageChange = (event, value) => {
+        setPage(value);
 
-}
-    console.log(PostListResPagenation, "PostListResPagenation")
+    }
+    // console.log(PostListResPagenation, "PostListResPagenation")
     return (
         <Layout>
-         <div className={`bread-crumbs-container ds-forum`}>
+            <div className={`bread-crumbs-container ds-forum`}>
                 <CommonBreadcrumbs
                     componentName='Discussion Forum'
                 />
             </div>
-          {  !isViewmoreView &&   <div className="df-container" >
+            {  !isViewmoreView && <div className="df-container" >
                 <Grid container spacing={2}>
-                    <Grid item xs={10} style={{ display: 'flex', marginTop: 30, marginLeft: 20, borderBottom:'1px solid #E2E2E2', }}>
+                    <Grid item xs={10} style={{ display: 'flex', marginTop: 30, marginLeft: 20, borderBottom: '1px solid #E2E2E2', }}>
                         <div className="branch-dropdown">
-                            <Grid item xs={4} sm={2} style={{marginBottom: 20}}>
+                            <Grid item xs={4} sm={2} style={{ marginBottom: 20 }}>
                                 <FormControl className={`select-form`}>
                                     <Autocomplete
                                         // {...defaultProps}
@@ -238,9 +248,9 @@ const handlePageChange = (event, value) => {
 
 
 
-                  
+
                     </Grid>
-                    <Grid item xs={10} style={{ display: 'flex', borderBottom:'1px solid #E2E2E2', marginLeft: '20px'}} divider className="df">
+                    <Grid item xs={10} style={{ display: 'flex', marginLeft: '20px' }} divider className="df">
                         <div className="df-btn-container">
                             <div className="df-clear-all">
                                 <Button variant="contained" className="df-clear" onClick={clearAll}>
@@ -271,10 +281,32 @@ const handlePageChange = (event, value) => {
                             </Button>
                             </div>
                         </div>
-                       
+
                     </Grid>
-                   
-                    <Grid item xs={8} className="activity-ask">
+
+
+                </Grid>
+            </div>
+            }
+            {   !isViewmoreView && <div className="env-container" >
+                 <Grid item xs={12} className="catname-df-forum">
+                    <div className="env-name" style={{ display: 'flex', borderBottom: '1px solid #E2E2E2' }}>
+                        
+
+                        {
+                            postListRes && postListRes.map((catName, index) => {
+                                return (
+                                    <Grid item xs={2} className="catname-df-forum">
+                                        <div className="cat-name">
+                                            <span style={{ color: '#014B7E', fontSize: '16px' }}>{catName.categories.category_name}</span>
+
+                                        </div>
+                                    </Grid>
+                                )
+                            })
+                        }
+                        <div style={{display: 'flex'}}>
+                        <span style={{ color: '#014B7E', fontSize: '18px', paddingTop: 10, marginLeft: 100, fontWeight: 600 }}>Number of discussion: {PostListResPagenation && PostListResPagenation.limit}</span>
                         <div className="df-btn-question-container" style={{ display: 'flex' }} >
                             <div className="df-ask">
                                 <Button variant="contained">
@@ -306,28 +338,33 @@ const handlePageChange = (event, value) => {
                             </Button>
                             </div>
                         </div>
-                    </Grid>
-                </Grid>
-            </div>
-            }
-           {   !isViewmoreView && <div className="env-container" style={{ padding: 40 }}>
-                <div className="env-name" style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #E2E2E2' }}>
-                    <span style={{ color: '#FF6B6B', fontSize: '16px' }}>Enviroment</span>
-                    <span style={{ color: '#014B7E', fontSize: '18px' }}>Number of discussion: {PostListResPagenation && PostListResPagenation.limit}</span>
-                </div>
-                <div className="env-card-container" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        </div>
+                       
+                    </div>
+                </Grid> 
+                
+                <div className="env-card-container" style={{ display: 'grid', gridTemplateColumns: 'auto auto auto',width: '70%' }}>
                     {
-                        postListRes && postListRes.slice(0, 4).map((list, index) => {
-                            return <Enviroment list={list} handleViewmore={handleViewmore} />
+                        postListRes && postListRes.map((list, index) => {
+                            // console.log(list, "list")
+                            return <Grid container  >
+                                <Grid item xs={6} className="ev-view-card">
+                                <Grid item xs={3} className="ev-view-card">
+                                    <Enviroment list={list} index={index} handleViewmore={handleViewmore} />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+
                         })
                     }
 
                 </div>
-            </div>}
-            <div className="view-more-container">
-            {
-              isViewmoreView && <Viewmore viewMoreList={viewMoreList} />
+            </div>
             }
+            <div className="view-more-container">
+                {
+                    isViewmoreView && <Viewmore viewMoreList={viewMoreList} />
+                }
             </div>
             {/* <div className="pagination-cont">
                 <Pagination 

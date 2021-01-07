@@ -6,14 +6,22 @@ import moment from 'moment';
 import Award from '../../assets/images/award.svg'
 import Answer from '../../assets/images/answer.svg'
 import LikeIcon from '../../assets/images/Likesmall.svg';
+import Hoverlist from './hoverList';
 import './discussionForum.scss';
 
 
 
 const Viewmore = (props) => {
+    const [hoverDiv, setHover] = React.useState(false);
 
     const { viewMoreList } = props;
-    console.log(viewMoreList, "viewMoreList")
+
+    const changeBackground = () => {
+        setHover(true)
+    }
+    const setHoverFalse = () => {
+        setHover(false)
+    }
     return (
         <div className="view-more-info">
             <Grid container spacing={3}>
@@ -72,7 +80,9 @@ const Viewmore = (props) => {
                         <Divider variant="middle" className="divider" />
                         <div className="like-ans-button">
                             <div className="like-button-view">
-                            <Button variant="contained" className="like-clear" >
+                                <Button variant="contained" className="like-clear-view-more"
+                                    onMouseOut={setHoverFalse}
+                                    onMouseOver={changeBackground}>
                                     <SvgIcon
                                         component={() => (
                                             <img
@@ -82,10 +92,11 @@ const Viewmore = (props) => {
                                             />
                                         )}
                                     />
-                                    </Button>
+                                </Button>
+                                {hoverDiv && <Hoverlist />}
                             </div>
                             <div className="ans-button-view">
-                            <Button variant="contained" className="ans-clear" >
+                                <Button variant="contained" className="ans-clear" >
                                     <SvgIcon
                                         component={() => (
                                             <img
@@ -95,10 +106,10 @@ const Viewmore = (props) => {
                                             />
                                         )}
                                     />
-                                    </Button>
+                                </Button>
                             </div>
                             <div className="award-button-view">
-                            <Button variant="contained" className="award-clear" >
+                                <Button variant="contained" className="award-clear" >
                                     <SvgIcon
                                         component={() => (
                                             <img
@@ -108,13 +119,20 @@ const Viewmore = (props) => {
                                             />
                                         )}
                                     />
-                                    </Button>
+                                </Button>
                             </div>
                         </div>
                     </Grid>
 
+
                 </Grid>
+
             </Grid>
+
+
+
+
+
         </div>
     )
 }
