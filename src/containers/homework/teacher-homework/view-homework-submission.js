@@ -122,7 +122,6 @@ const ViewHomework = withRouter(
       const reqData = {
         remark,
         score,
-        
       };
       if (!remark) {
         setAlert('error', 'Please provide a remark');
@@ -173,9 +172,11 @@ const ViewHomework = withRouter(
     };
 
     const handleChangeQuestionState = (fieldName, value) => {
+      console.log(fieldName, value, 'fffffff');
       const index = activeQuestion - 1;
       const currentQuestion = questionsState[index];
       currentQuestion[fieldName] = value;
+      console.log({ currentQuestion });
       setQuestionsState([
         ...questionsState.slice(0, index),
         currentQuestion,
@@ -192,7 +193,7 @@ const ViewHomework = withRouter(
             return item !== valueToRemove;
           }
         );
-        setQuestionsState([...questionsState, currentQuestion]); 
+        setQuestionsState([...questionsState, currentQuestion]);
       } else {
         const currentQuestion = { ...collatedQuestionState };
         currentQuestion.corrected_submission.splice(index, 1);
@@ -241,7 +242,7 @@ const ViewHomework = withRouter(
           remarks: '',
           comments: '',
           corrected_submission: q.evaluated_files,
-          evaluated_files:[]
+          evaluated_files: [],
         }));
         setQuestionsState(initialQuestionsState);
       } else {
@@ -274,7 +275,12 @@ const ViewHomework = withRouter(
       splitted_media: null,
     };
     const desTestDetails = [{ asessment_response: { evaluvated_result: '' } }];
-  console.log(fetchingSubmittedHomeworkDetails,'reduxxxx',submittedHomeworkDetails,totalSubmittedQuestions)
+    console.log(
+      fetchingSubmittedHomeworkDetails,
+      'reduxxxx',
+      submittedHomeworkDetails,
+      totalSubmittedQuestions
+    );
     return (
       <div className='view-homework-container create_group_filter_container'>
         <Grid container spacing={2} className='message_log_container'>
@@ -325,13 +331,9 @@ const ViewHomework = withRouter(
                   totalQuestions={totalSubmittedQuestions}
                   hideNextPrevButton={totalSubmittedQuestions <= 1}
                   onNext={() => {
-                    setActiveQuestion((prev) =>
-                      {
-                        return(
-                          prev < totalSubmittedQuestions ? prev + 1 : prev
-                          
-                          )}
-                    );
+                    setActiveQuestion((prev) => {
+                      return prev < totalSubmittedQuestions ? prev + 1 : prev;
+                    });
                   }}
                   onPrev={() => {
                     setActiveQuestion((prev) => (prev > 1 ? prev - 1 : prev));
@@ -514,7 +516,7 @@ const ViewHomework = withRouter(
                     />
                   </FormControl>
                 </div>
-                <div className='score'>
+                <div className='score' style={{marginTop:10}}>
                   <FormControl variant='outlined' fullWidth size='small'>
                     <InputLabel htmlFor='component-outlined'>Overall score</InputLabel>
                     <OutlinedInput
