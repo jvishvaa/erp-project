@@ -390,7 +390,7 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
                 </Button>
             </Grid>
             {overviewSynopsis?.map(obj => (
-                <Grid item xs={6} sm={2} className={isMobile ? '' : 'filterPadding'}>
+                <Grid item xs={6} sm={2}  className={isMobile ? '' : 'addButtonPadding'}>
                     <a className="underlineRemove" href={`${endpoints.lessonPlan.s3}dev/${obj.lesson_type === '1' ? 'synopsis_file' : 'overview_file'}/${filterData?.year?.session_year}/${filterData?.volume?.volume_name}/${filterData?.grade?.grade__grade_name}/${filterData?.subject?.subject_name}/pdf/${obj?.media_file[0]}`} >
                         <div className="overviewSynopsisContainer">
                             <div className="overviewSynopsisTag">{obj.lesson_type === '1' ? 'Synopsis' : 'Overview'}</div>
@@ -398,7 +398,7 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
                                 <SvgIcon
                                     component={() => (
                                         <img
-                                            style={{ height: '20px', width: '20px' }}
+                                            style={{ height: '25px', width: '25px' }}
                                             src={download}
                                             title={`Download ${obj.lesson_type === '1' ? 'Synopsis' : 'Overview'}`}
                                         />
@@ -409,7 +409,7 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
                     </a>
                 </Grid>
             ))}
-            {isMobile && <Grid item xs={3} sm={0} />}
+            {/* {isMobile && <Grid item xs={3} sm={0} />} */}
         </Grid>
     );
 }

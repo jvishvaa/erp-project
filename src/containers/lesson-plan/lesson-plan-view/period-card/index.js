@@ -146,7 +146,6 @@ const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore
             >
               <IconButton
                 className="moreHorizIcon"
-                disableRipple
                 color='primary'
               >
                 <MoreHorizIcon />
@@ -156,7 +155,7 @@ const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore
                   <div className="tooltipContainer">
                     <span className='tooltiptext'>
                       Download All
-                      <IconButton onClick={handleBulkDownload}>
+                      <IconButton onClick={handleBulkDownload} className="bulkDownloadIconPeriodCard">
                         <SvgIcon
                           component={() => (
                             <img

@@ -61,6 +61,7 @@
     position: sticky;
     position: -webkit-sticky;
     top: 0; 
+    z-index: 1;
 }
 
 .leftHeader, .rightHeader {
@@ -123,7 +124,7 @@ padding: 0;
 .bodyContent {
     font-size: 1rem;
     color: #014b7e;
-    margin: 0 auto;
+    margin: 15px auto;
     display: flex;
     justify-content: space-between;
 }
@@ -152,5 +153,9 @@ padding: 0;
     bottom: 0%;
     padding: 20px;
     width: 60%;
+  }
+  .downloadAllContainer {
+    margin-left: 20px;
+    margin-bottom: 10px;
   }
 }
