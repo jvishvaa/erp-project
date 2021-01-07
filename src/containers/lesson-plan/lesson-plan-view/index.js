@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React, { useContext, useEffect, useState } from 'react';
 import Paper from '@material-ui/core/Paper';
-import { Grid, useTheme, SvgIcon } from '@material-ui/core';
+import { Grid, useTheme, SvgIcon, IconButton } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -18,6 +18,8 @@ import LessonViewFilters from './lesson-view-filters';
 import ViewMoreCard from './view-more-card';
 import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
+import hidefilter from '../../../assets/images/hidefilter.svg';
+import showfilter from '../../../assets/images/showfilter.svg';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -43,14 +45,15 @@ const LessonPlan = () => {
     const [viewMore, setViewMore] = useState(false);
     const [viewMoreData, setViewMoreData] = useState({});
     const [periodDataForView, setPeriodDataForView] = useState({});
-    const [bulkDownloadPath, setBulkDownloadPath] = useState('');
     const [filterDataDown, setFilterDataDown] = useState({});
     const [completedStatus, setCompletedStatus] = useState(false);
     const limit = 9;
-    // const { role_details } = JSON.parse(localStorage.getItem('userDetails'));
+    const [isFilter, setIsFilter] = useState(true);
     const themeContext = useTheme();
     const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
     const [chapterSearch, setChapterSearch] = useState();
+    const [periodColor, setPeriodColor] = useState(false);
+    const [selectedIndex, setSelectedIndex] = useState(-1);
 
     const handlePagination = (event, page) => {
         setPage(page);
@@ -60,105 +63,109 @@ const LessonPlan = () => {
         setLoading(true);
         setPeriodData([]);
         setChapterSearch(searchChapter);
-        axios.get(`${endpoints.lessonPlan.periodData}?chapter=${searchChapter}&page_number=${page}&page_size=${limit}`)
-            .then(result => {
-                if (result.data.status_code === 200) {
-                    setTotalCount(result.data.count);
-                    setLoading(false);
-                    setPeriodData(result.data.result);
-                    setViewMore(false);
-                    setViewMoreData({});
-                } else {
-                    setLoading(false);
-                    setAlert('error', result.data.description);
-                }
-            })
+        axios.get(`${endpoints.lessonPlan.periodData}?chapter=${searchChapter}&page_number=${page}&page_size=${limit}`, {
+            headers: {
+                'x-api-key': 'vikash@12345#1231',
+            }
+        }).then(result => {
+            if (result.data.status_code === 200) {
+                setTotalCount(result.data.count);
+                setLoading(false);
+                setPeriodData(result.data.result);
+                setViewMore(false);
+                setViewMoreData({});
+            } else {
+                setLoading(false);
+                setAlert('error', result.data.description);
+            }
+        })
             .catch((error) => {
                 setLoading(false);
                 setAlert('error', error.message);
             })
     }
 
-    useEffect(()=>{
-        if(page && chapterSearch)
-        handlePeriodList(chapterSearch)
-    },[page])
-
     useEffect(() => {
-        const formData = new FormData();
-        formData.append('academic_year', 13);
-        formData.append('volume', 2);
-        formData.append('grade', 3);
-        formData.append('subject', 4);
-        formData.append('chapter', 5);
-        formData.append('period', 6);
-        axios.post(`${endpoints.lessonPlan.bulkDownload}`, formData)
-            .then(result => {
-                if (result.data.status_code === 200) {
-                    setBulkDownloadPath(result.data.result);
-                } else {
-                    setAlert('error', result.data.message);
-                }
-            })
-            .catch(error => {
-                setAlert('error', error.message);
-            })
-    }, []);
+        if (page && chapterSearch)
+            handlePeriodList(chapterSearch)
+    }, [page]);
 
     return (
         <>
             {loading ? <Loading message='Loading...' /> : null}
             <Layout>
-                <div>
+                <div className={isMobile ? 'breadCrumbFilterRow' : null}>
                     <div style={{ width: '95%', margin: '20px auto' }}>
                         <CommonBreadcrumbs
                             componentName='Lesson Plan'
                             childComponentName='View'
                         />
                     </div>
+                    {isMobile ?
+                        <div className="hideShowFilterIcon">
+                            <IconButton onClick={() => setIsFilter(!isFilter)}>
+                                <SvgIcon
+                                    component={() => (
+                                        <img
+                                            style={{ height: '20px', width: '25px' }}
+                                            src={isFilter ? hidefilter : showfilter}
+                                        />
+                                    )}
+                                />
+                            </IconButton>
+                        </div>
+                        : null}
                 </div>
-                <LessonViewFilters
-                    handlePeriodList={handlePeriodList}
-                    setPeriodData={setPeriodData}
-                    setViewMore={setViewMore}
-                    setViewMoreData={setViewMoreData}
-                    setFilterDataDown={setFilterDataDown}
-                />
+                {(!isMobile || (isMobile && isFilter)) &&
+                    (<LessonViewFilters
+                        handlePeriodList={handlePeriodList}
+                        setPeriodData={setPeriodData}
+                        setViewMore={setViewMore}
+                        setViewMoreData={setViewMoreData}
+                        setFilterDataDown={setFilterDataDown}
+                        setSelectedIndex={setSelectedIndex}
+                    />)}
 
                 <Paper className={classes.root}>
                     {periodData?.length > 0 ?
-                        (<div className="cardsContainer">
-                            <Grid container style={{ width: '95%', margin: '10px 0' }} spacing={5}>
-                                {periodData.map((period, i) => (
-                                    <Grid item xs={12} sm={viewMore ? 6 : 4}>
-                                        <PeriodCard
-                                            index={i}
-                                            filterDataDown={filterDataDown}
-                                            period={period}
-                                            setCompletedStatus={setCompletedStatus}
-                                            viewMore={viewMore}
-                                            setLoading={setLoading}
+                        (
+                            <Grid container style={isMobile ? { width: '95%', margin: '20px auto' } : { width: '100%', margin: '20px auto' }} spacing={5}>
+                                <Grid item xs={12} sm={(viewMore && viewMoreData?.length > 0) ? 7 : 12}>
+                                    <Grid container spacing={isMobile ? 3 : 5}>
+                                        {periodData.map((period, i) => (
+                                            <Grid item xs={12} style={isMobile ? { marginLeft: '-8px' } : null} sm={(viewMore && viewMoreData?.length > 0) ? 6 : 4}>
+                                                <PeriodCard
+                                                    index={i}
+                                                    filterDataDown={filterDataDown}
+                                                    period={period}
+                                                    setSelectedIndex={setSelectedIndex}
+                                                    periodColor={selectedIndex === i ? true : false}
+                                                    setPeriodColor={setPeriodColor}
+                                                    viewMore={viewMore}
+                                                    setLoading={setLoading}
+                                                    setViewMore={setViewMore}
+                                                    setViewMoreData={setViewMoreData}
+                                                    setPeriodDataForView={setPeriodDataForView}
+                                                    setCompletedStatus={setCompletedStatus}
+                                                />
+                                            </Grid>
+                                        ))}
+                                    </Grid>
+                                </Grid>
+                                {(viewMore && viewMoreData?.length > 0) &&
+                                    <Grid item xs={12} sm={5} style={{ width: '100%' }}>
+                                        <ViewMoreCard
+                                            completedStatus={completedStatus}
+                                            viewMoreData={viewMoreData}
                                             setViewMore={setViewMore}
-                                            setViewMoreData={setViewMoreData}
-                                            setPeriodDataForView={setPeriodDataForView}
+                                            setSelectedIndex={setSelectedIndex}
+                                            filterDataDown={filterDataDown}
+                                            periodDataForView={periodDataForView}
                                         />
                                     </Grid>
-                                ))}
+                                }
                             </Grid>
-
-                            {viewMore && viewMoreData?.length > 0 &&
-                                <div style={isMobile ? { width: '95%', margin: '10px auto' } : { width: '60%', margin: '10px 0' }}>
-                                    <ViewMoreCard
-                                        completedStatus={completedStatus}
-                                        viewMoreData={viewMoreData}
-                                        setViewMore={setViewMore}
-                                        filterDataDown={filterDataDown}
-                                        periodDataForView={periodDataForView}
-                                        bulkDownloadPath={bulkDownloadPath}
-                                    />
-                                </div>
-                            }
-                        </div>) : (
+                        ) : (
                             <div className="periodDataUnavailable">
                                 <SvgIcon
                                     component={() => (
@@ -178,18 +185,18 @@ const LessonPlan = () => {
                                 />
                             </div>
                         )}
-
-                    <div className="paginateData paginateMobileMargin">
-                        <Pagination
-                            onChange={handlePagination}
-                            style={{ marginTop: 25 }}
-                            count={Math.ceil(totalCount/limit)}
-                            color='primary'
-                            page={page}
-                        />
-                    </div>
+                    {periodData?.length > 0 &&
+                        <div className="paginateData paginateMobileMargin">
+                            <Pagination
+                                onChange={handlePagination}
+                                style={{ marginTop: 25 }}
+                                count={Math.ceil(totalCount / limit)}
+                                color='primary'
+                                page={page}
+                            />
+                        </div>
+                    }
                 </Paper>
-
             </Layout >
         </>
     );

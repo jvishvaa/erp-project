@@ -14,7 +14,7 @@ import '../lesson.css';
 import downloadAll from '../../../../assets/images/downloadAll.svg';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 
-const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore, viewMore, filterDataDown, setLoading, index, setCompletedStatus }) => {
+const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore, viewMore, filterDataDown, setLoading, index, setCompletedStatus, periodColor, setPeriodColor, setSelectedIndex }) => {
 
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -22,7 +22,6 @@ const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore
   const classes = useStyles();
   const [showMenu, setShowMenu] = useState(false);
   const [showPeriodIndex, setShowPeriodIndex] = useState();
-  const [selectedIndex, setSelectedIndex] = useState();
 
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
@@ -36,36 +35,41 @@ const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore
 
   const handleViewMore = (index) => {
     setLoading(true);
-    setSelectedIndex();
-    axios.get(`${endpoints.lessonPlan.periodCardData}?lesson_plan_id=${period.id}`)
-      .then(result => {
-        if (result.data.status_code === 200) {
-          if (result.data.result?.length > 0) {
-            setLoading(false);
-            setViewMore(true);
-            setViewMoreData(result.data.result);
-            setPeriodDataForView(period);
-            setSelectedIndex(index);
-            axiosInstance.get(`${endpoints.lessonPlan.periodCompletedStatus}?subject=${filterDataDown?.subject.id}&chapter=${filterDataDown?.chapter.id}&period=${period?.id}`)
-              .then(result => {
-                setCompletedStatus(result.data.is_completed);
-              })
-              .catch(error => {
-                setAlert('error', error.message);
-              })
-          } else {
-            setLoading(false);
-            setAlert('error', 'No data available');
-          }
+    axios.get(`${endpoints.lessonPlan.periodCardData}?lesson_plan_id=${period.id}`, {
+      headers: {
+        'x-api-key': 'vikash@12345#1231',
+      }
+    }).then(result => {
+      if (result.data.status_code === 200) {
+        if (result.data.result?.length > 0) {
+          setLoading(false);
+          setViewMore(true);
+          setViewMoreData(result.data.result);
+          setPeriodDataForView(period);
+          setSelectedIndex(index);
+          setPeriodColor(true);
+          axiosInstance.get(`${endpoints.lessonPlan.periodCompletedStatus}?subject=${filterDataDown?.subject.id}&chapter=${filterDataDown?.chapter.id}&period=${period?.id}`)
+            .then(result => {
+              setCompletedStatus(result.data.is_completed);
+            })
+            .catch(error => {
+              setAlert('error', error.message);
+            })
         } else {
           setLoading(false);
-          setViewMore(false);
-          setViewMoreData({});
-          setPeriodDataForView();
-          setAlert('error', result.data.message);
-          setSelectedIndex();
+          setPeriodColor(true);
+          setAlert('error', 'No data available');
         }
-      })
+      } else {
+        setLoading(false);
+        setViewMore(false);
+        setViewMoreData({});
+        setPeriodDataForView();
+        setAlert('error', result.data.message);
+        setSelectedIndex(-1);
+        setPeriodColor(true);
+      }
+    })
       .catch((error) => {
         setLoading(false);
         setViewMore(false);
@@ -73,40 +77,42 @@ const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore
         setPeriodDataForView();
         setAlert('error', error.message);
         setSelectedIndex();
+        setPeriodColor(true);
       })
   }
 
-  const handleBulkDownload = (index) => {
+  const handleBulkDownload = () => {
     const formData = new FormData();
-    formData.append('academic_year', filterDataDown?.year.id);
-    formData.append('volume', filterDataDown?.volume.id);
-    formData.append('grade', filterDataDown?.grade.id);
-    formData.append('subject', filterDataDown?.subject.id);
-    formData.append('chapter', filterDataDown?.chapter.id);
-    formData.append('period', period.id);
-    axios.post(`${endpoints.lessonPlan.bulkDownload}`, formData)
-      .then(result => {
-        if (result.data.status_code === 200) {
-          let a = document.createElement("a");
-          if (typeof a.download === "undefined") {
-            window.location.href = result.data.result;
-          } else {
-            a.href = result.data.result;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-          }
+    formData.append('academic_year', filterDataDown?.year?.session_year);
+    formData.append('volume', filterDataDown?.volume?.volume_name);
+    formData.append('grade', filterDataDown?.grade?.grade__grade_name);
+    formData.append('subject', filterDataDown?.subject?.subject_name);
+    formData.append('chapter', filterDataDown?.chapter?.chapter_name);
+    formData.append('period', period.period_name);
+    axios.post(`${endpoints.lessonPlan.bulkDownload}`, formData, {
+      headers: {
+        'x-api-key': 'vikash@12345#1231',
+      }
+    }).then(result => {
+      if (result.data.status_code === 200) {
+        let a = document.createElement("a");
+        if (result.data.result) {
+          a.href = result.data.result;
+          a.click();
+          a.remove();
         } else {
-          setAlert('error', result.data.description);
+          setAlert('error', 'Nothing to download!');
         }
-      })
-      .catch(error => {
-        setAlert('error', error.message);
-      })
+      } else {
+        setAlert('error', result.data.description);
+      }
+    }).catch(error => {
+      setAlert('error', error.message);
+    })
   }
 
   return (
-    <Paper className={classes.root} style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }}>
+    <Paper className={periodColor ? classes.selectedRoot : classes.root} style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }}>
       <Grid container spacing={2}>
         <Grid item xs={8}>
           <Box>
@@ -191,16 +197,17 @@ const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore
           </Box>
         </Grid>
         <Grid item xs={6} className={classes.textRight}>
-          <Button
-            variant='contained'
-            style={{ color: 'white' }}
-            color="primary"
-            className="custom_button_master"
-            size='small'
-            onClick={() => handleViewMore(index)}
-          >
-            VIEW MORE
-          </Button>
+          {!periodColor &&
+            <Button
+              variant='contained'
+              style={{ color: 'white' }}
+              color="primary"
+              className="custom_button_master"
+              size='small'
+              onClick={() => handleViewMore(index)}
+            >
+              VIEW MORE
+          </Button>}
         </Grid>
       </Grid>
     </Paper>

@@ -76,6 +76,38 @@
       flex-direction: column;
   }
 
+  .breadCrumbFilterRow {
+    display: flex;
+    margin-left: -5px;
+    margin-right: 10px;
+    justify-content: space-between;
+  }
+
+  .hideShowFilterIcon {
+    align-self: center;
+  }
+
+  .underlineRemove {
+    text-decoration: none;
+  }
+
+  .overviewSynopsisContainer {
+    display: flex;
+    width: 70%;
+    border-radius: 10px;
+    padding: 10px;
+  }
+
+  .overviewSynopsisTag {
+    font-size: 16px;
+    font-weight: 600;
+    color: #014b7e;
+  }
+  
+  .overviewSynopsisIcon {
+    margin-left:4px;
+  }
+
 @media screen and (max-width:768px) {
     .cardsContainer {
         flex-direction: column;
