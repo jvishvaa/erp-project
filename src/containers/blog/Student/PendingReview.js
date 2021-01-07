@@ -7,7 +7,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import { withRouter } from 'react-router-dom';
 import CardMedia from '@material-ui/core/CardMedia';
-import GridList from './gridList';
+// import GridList from './gridList';
 
 const styles = (theme) => ({
   //   root: {

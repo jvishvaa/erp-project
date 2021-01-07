@@ -3,7 +3,7 @@
 /* eslint-disable react/no-unused-state */
 import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
-import { Grid, Button } from '@material-ui/core';
+import { Grid, Button, Divider } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
@@ -17,6 +17,7 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import Layout from '../../Layout';
 import MobileDatepicker from './datePicker';
 import PendingReview from './PendingReview';
+import GridList from '../Components/gridList';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -64,7 +65,7 @@ const styles = (theme) => ({
     // margin: '20px',
   },
 });
-class TeacherBlog extends Component {
+class StudentDashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -101,6 +102,32 @@ class TeacherBlog extends Component {
   render() {
     const { classes } = this.props;
     const { tabValue } = this.state;
+    const arr = [
+      {
+        title: 'Title 1',
+        Data: '25.12.1997',
+      },
+      {
+        title: 'Title 2',
+        Data: '03.12.1997',
+      },
+      {
+        title: 'Messi = Goat',
+        Data: '03.12.1997',
+      },
+      {
+        title: 'Title 4',
+        Data: '25.12.1997',
+      },
+      {
+        title: 'Title 6',
+        Data: '03.12.1997',
+      },
+      {
+        title: 'Messi is Goat',
+        Data: '03.12.1997',
+      },
+    ];
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -143,7 +170,7 @@ class TeacherBlog extends Component {
                     <Grid item>
                       <Button
                         color='primary'
-                        style={{ fontSize: 'small', margin: '20px' }}
+                        style={{ fontSize: 'small', margin: '20px', width: 150 }}
                         size='small'
                         variant='contained'
                       >
@@ -152,7 +179,7 @@ class TeacherBlog extends Component {
                     </Grid>
                     <Grid item>
                       <Button
-                        style={{ fontSize: 'small', margin: '20px' }}
+                        style={{ fontSize: 'small', margin: '20px', width: 150 }}
                         color='primary'
                         size='small'
                         variant='contained'
@@ -160,26 +187,14 @@ class TeacherBlog extends Component {
                         Filter
                       </Button>
                     </Grid>
-                  </Grid>
-                  <Grid container spacing={2}>
                     <Grid item>
                       <Button
+                        style={{ fontSize: 'small', margin: '20px', width: 150 }}
                         color='primary'
-                        style={{ fontSize: 'small', margin: '20px' }}
                         size='small'
                         variant='contained'
                       >
                         Published Blogs
-                      </Button>
-                    </Grid>
-                    <Grid item>
-                      <Button
-                        style={{ fontSize: 'small', margin: '20px' }}
-                        color='primary'
-                        size='small'
-                        variant='contained'
-                      >
-                        Blog Dashboard
                       </Button>
                     </Grid>
                   </Grid>
@@ -194,15 +209,35 @@ class TeacherBlog extends Component {
                           onChange={this.handleTabChange}
                           aria-label='simple tabs example'
                         >
-                          <Tab label='Pending Review' {...a11yProps(0)} />
+                          <Tab label='Published' {...a11yProps(0)} />
                           <Tab label='Reviewed' {...a11yProps(1)} />
+                          <Tab label='Drafted' {...a11yProps(2)} />
+                          <Tab label='Deleted' {...a11yProps(3)} />
                         </Tabs>
+                        <Divider variant='middle' />
+                        <li style={{ listStyleType: 'none' }}>
+                          <Typography
+                            align='right'
+                            className={classes.dividerInset}
+                            style={{ font: '#014b7e', fontWeight: 600 }}
+                            display='block'
+                            variant='caption'
+                          >
+                            Number of Blogs
+                          </Typography>
+                        </li>
                         {/* </AppBar> */}
                         <TabPanel value={tabValue} index={0}>
-                          <PendingReview />
+                          <GridList arr={arr} />
                         </TabPanel>
                         <TabPanel value={tabValue} index={1}>
                           Item Two
+                        </TabPanel>
+                        <TabPanel value={tabValue} index={2}>
+                          Item Three
+                        </TabPanel>
+                        <TabPanel value={tabValue} index={3}>
+                          Item Four
                         </TabPanel>
                       </div>
                     </Grid>
@@ -216,4 +251,4 @@ class TeacherBlog extends Component {
     );
   }
 }
-export default withStyles(styles)(TeacherBlog);
+export default withStyles(styles)(StudentDashboard);
