@@ -101,8 +101,9 @@ export default {
     periodCompleted: '/academic/lessonplan-completed-status/',
     periodCompletedStatus: '/academic/lesson-status/',
     bulkDownload: `${baseURLCentral}/lesson_plan/bulk_download/`,
+    overviewSynopsis: `${baseURLCentral}/lesson_plan/list-lesson-overview/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },  
-  s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
+  s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
   deleteFromS3: '/academic/delete-file/',
 };
