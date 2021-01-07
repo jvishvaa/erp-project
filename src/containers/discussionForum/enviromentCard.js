@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -10,7 +10,7 @@ import Likeicon from '../../assets/images/Likenew.svg';
 import { SvgIcon } from '@material-ui/core';
 import Answer from '../../assets/images/answernew.svg';
 import Award from '../../assets/images/awardnew.svg'
-import Usericon from '../../assets/images/user.svg'
+// import Usericon from '../../assets/images/user.svg'
 import './discussionForum.scss';
 import moment from 'moment';
 import Avatar from '@material-ui/core/Avatar';
@@ -21,6 +21,7 @@ import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import Popper from '@material-ui/core/Popper';
 import Fade from '@material-ui/core/Fade';
+import useInfiniteScroll from "./infiniteScroll";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -43,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.background.paper,
     },
     typography: {
-        margin :1,
+        margin: 1,
         paddingTop: 7
     }
 
@@ -53,21 +54,33 @@ export default function Enviroment(props) {
     const classes = useStyles();
     const bull = <span className={classes.bullet}>•</span>;
     const [callLike, setCallLike] = React.useState(false);
-    const [likeList, setLikelist] = React.useState([]);
+    const [likeList, setLikelist] = useState(Array.from(Array(30).keys(), n => n + 1));;
     const [anchorEl, setAnchorEl] = React.useState(null);
+    // const [isFetching, setIsFetching] = useState(false);
+    const [isFetching, setIsFetching] = useInfiniteScroll(fetchMoreListItems);
+
 
     const handleClick = (event, list) => {
         setAnchorEl(anchorEl ? null : event.currentTarget);
         fetchPostLike(list)
     };
 
+    function fetchMoreListItems() {
+        setTimeout(() => {
+            setLikelist(prevState => ([...prevState, ...Array.from(Array(20).keys(), n => n + prevState.length + 1)]));
+            setIsFetching(false);
+        }, 2000);
+    }
+
+
+
+
     const open = Boolean(anchorEl);
     const id = open ? 'transitions-popper' : undefined;
 
     const fetchPostLike = (list) => {
-        // setCallLike(true)URL: http://127.0.0.1:8000/qbox/academic/posts-like-users/?post=3&type=1
+
         axiosInstance.get(`${endpoints.discussionForum.postLike}?post=${list.id}&&type=1`).then((res) => {
-            //  console.log(res, "popo")
             setLikelist(res.data.result.results)
         }).catch(err => {
             console.log(err)
@@ -78,6 +91,7 @@ export default function Enviroment(props) {
     const setTrueLikeFasle = () => {
         setCallLike(false)
     }
+
 
     const { list, index, handleViewmore } = props;
     return (
@@ -149,7 +163,7 @@ export default function Enviroment(props) {
                 <Divider variant="middle" />
                 <CardActions>
                     <div className="env-icns tooltip" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <IconButton onClick={(e)=>handleClick(e, list)}>
+                        <IconButton onClick={(e) => handleClick(e, list)}>
                             <SvgIcon
                                 component={() => (
                                     <img
@@ -167,19 +181,18 @@ export default function Enviroment(props) {
                                         <div className={classes.paper}>
                                             {
                                                 likeList && likeList.map((name, index) => {
-
                                                     return (
-                                                        <div className="line-name" key={index} style={{ display: 'flex', justifyContent:'space-between' }}>
-                                                           <div style={{display: 'flex', }}>
-                                                            <Avatar style={{
-                                                                width: ' 27px', height: ' 27px',margin: 10, fontSize: '14px',
-                                                               
-                                                                backgroundColor: '#F9AB5D'
-                                                            }}>{name.first_name.substring(0, 2)}</Avatar>
-                                                            <Typography className={classes.typography}>{name.first_name} {name.last_name}</Typography>
-                                                               </div> 
-                                                            <Typography className={classes.typography}>{name.like_creation_ago}</Typography>
+                                                        <div className="line-name" key={index} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                            <div style={{ display: 'flex', }}>
+                                                                <Avatar style={{
+                                                                    width: ' 27px', height: ' 27px', margin: 10, fontSize: '14px',
 
+                                                                    backgroundColor: '#F9AB5D'
+                                                                }}>{name.first_name && name.first_name.substring(0, 2)}</Avatar>
+                                                                <Typography className={classes.typography}>{name && name.first_name} {name && name.last_name}</Typography>
+                                                            </div>
+                                                            <Typography className={classes.typography}>{name && name.like_creation_ago}</Typography>
+                                                            {isFetching && 'Fetching more list items...'}
                                                         </div>
                                                     )
                                                 })
