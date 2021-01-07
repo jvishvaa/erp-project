@@ -116,15 +116,16 @@ const LessonPlan = () => {
                         </div>
                         : null}
                 </div>
-                {(!isMobile || (isMobile && isFilter)) &&
-                    (<LessonViewFilters
+                <div className={!isMobile ? 'showFilters' : isFilter?'showFilters':'hideFilters'}>
+                    <LessonViewFilters
                         handlePeriodList={handlePeriodList}
                         setPeriodData={setPeriodData}
                         setViewMore={setViewMore}
                         setViewMoreData={setViewMoreData}
                         setFilterDataDown={setFilterDataDown}
                         setSelectedIndex={setSelectedIndex}
-                    />)}
+                    />
+                </div>
 
                 <Paper className={classes.root}>
                     {periodData?.length > 0 ?
