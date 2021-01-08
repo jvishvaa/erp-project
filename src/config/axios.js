@@ -12,7 +12,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(async function (config) {
   const user = await localStorage.getItem('userDetails');
   const requestConfig = config;
-  // requestConfig.headers['x-api-key'] = 'vikash@12345#1231';
+  // requestConfig.headers['x-api-key']= "vikash@12345#1231";
   if (user) {
     requestConfig.headers.Authorization = `Bearer ${JSON.parse(user).token}`;
   }

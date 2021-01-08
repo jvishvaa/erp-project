@@ -234,7 +234,7 @@ const ViewHomework = withRouter(
       const data = await getSubmittedHomeworkDetails(studentHomeworkId);
 
       const { hw_questions: hwQuestions, is_question_wise: isQuestionwise, id } = data;
-      console.log('fetched data ', data,hwQuestions);
+      console.log('fetched data ', data, hwQuestions);
       setHomeworkId(id);
       if (isQuestionwise) {
         const initialQuestionsState = hwQuestions.map((q) => ({
@@ -242,7 +242,7 @@ const ViewHomework = withRouter(
           remarks: q.remark,
           comments: q.comment,
           corrected_submission: q.evaluated_files,
-          evaluated_files: [],
+          evaluated_files: q.submitted_files,
         }));
         setQuestionsState(initialQuestionsState);
       } else {
@@ -325,6 +325,16 @@ const ViewHomework = withRouter(
                   correctedQuestions={
                     questionsState.length
                       ? questionsState[activeQuestion - 1].corrected_submission
+                      : []
+                  }
+                  remark={
+                    questionsState.length
+                      ? questionsState[activeQuestion - 1].remarks
+                      : []
+                  }
+                  comment={
+                    questionsState.length
+                      ? questionsState[activeQuestion - 1].comments
                       : []
                   }
                   activeQuestion={activeQuestion}
@@ -481,7 +491,6 @@ const ViewHomework = withRouter(
                                   )}
                               </SRLWrapper>
                             </div>{' '}
-                            */}
                           </div>
                         </SimpleReactLightbox>
                         <div className='next-btn'>
@@ -494,7 +503,7 @@ const ViewHomework = withRouter(
                   )}
                   <div className='evaluate-answer-btn-container'>
                     <Button variant='contained' color='primary' onClick={evaluateAnswer}>
-                      EVALUATE ANSWER
+                      SAVE
                     </Button>
                   </div>
                 </>
@@ -516,7 +525,7 @@ const ViewHomework = withRouter(
                     />
                   </FormControl>
                 </div>
-                <div className='score' style={{marginTop:10}}>
+                <div className='score' style={{ marginTop: 10 }}>
                   <FormControl variant='outlined' fullWidth size='small'>
                     <InputLabel htmlFor='component-outlined'>Overall score</InputLabel>
                     <OutlinedInput

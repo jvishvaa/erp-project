@@ -29,6 +29,8 @@ const SubmittedQuestion = ({
   submittedHomeworkDetails,
   totalSubmittedQuestions,
   hideNextPrevButton,
+  remark,
+  comment,
 }) => {
   const scrollableContainer = useRef(null);
   const submittedAttachmentsOuterContainer = useRef(null);
@@ -47,7 +49,7 @@ const SubmittedQuestion = ({
   ]);
   const [defaultComment, setDefaultComment] = useState([]);
 
-  const [remark, setRemark] = useState('');
+  // const [remark, setRemark] = useState('');
 
   console.log(defaultCommentRemarks, 'yessss', totalSubmittedQuestions);
   const handleScroll = (dir) => {
@@ -384,10 +386,7 @@ const SubmittedQuestion = ({
               rows={3}
               rowsMax={4}
               label='Comments'
-              placeholder='Comments'
-              // value={defaultCommentRemarks[0][0].comment || ''}
-              // value={qu.map(ele => {ele.question})}
-              value={question.comment}
+              value={comment}
               onChange={(e) => onChangeQuestionsState('comments', e.target.value)}
             />
           </FormControl>
@@ -403,7 +402,7 @@ const SubmittedQuestion = ({
               rows={3}
               rowsMax={4}
               label='Remarks'
-              value={question.remarks}
+              value={remark}
               onChange={(e) => onChangeQuestionsState('remarks', e.target.value)}
             />
           </FormControl>

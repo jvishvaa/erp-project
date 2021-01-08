@@ -189,7 +189,7 @@ const ViewHomework = withRouter(
             return item !== valueToRemove;
           }
         );
-        setQuestionsState([...questionsState, currentQuestion]); 
+        setQuestionsState([...questionsState, currentQuestion]);
       } else {
         const currentQuestion = { ...collatedQuestionState };
         currentQuestion.corrected_submission.splice(index, 1);
@@ -235,9 +235,10 @@ const ViewHomework = withRouter(
       if (isQuestionwise) {
         const initialQuestionsState = hwQuestions.map((q) => ({
           id: q.id,
-          remarks: '',
-          comments: '',
+          remarks: q.remark,
+          comments: q.comment,
           corrected_submission: q.evaluated_files,
+          evaluated_files: q.submitted_files,
         }));
         setQuestionsState(initialQuestionsState);
       } else {
@@ -293,7 +294,7 @@ const ViewHomework = withRouter(
             <div className='nav-cards-container'>
               <div className='nav-card' onClick={onClose}>
                 <div className='header-text text-center non_selected_homework_type_item'>
-                  All Homeworks 
+                  All Homeworks
                 </div>
               </div>
               <div className='nav-card'>
@@ -317,6 +318,16 @@ const ViewHomework = withRouter(
                   correctedQuestions={
                     questionsState.length
                       ? questionsState[activeQuestion - 1].corrected_submission
+                      : []
+                  }
+                  remark={
+                    questionsState.length
+                      ? questionsState[activeQuestion - 1].remarks
+                      : []
+                  }
+                  comment={
+                    questionsState.length
+                      ? questionsState[activeQuestion - 1].comments
                       : []
                   }
                   activeQuestion={activeQuestion}
@@ -484,7 +495,7 @@ const ViewHomework = withRouter(
                   )}
                   <div className='evaluate-answer-btn-container'>
                     <Button variant='contained' color='primary' onClick={evaluateAnswer}>
-                      EVALUATE ANSWER
+                      SAVE
                     </Button>
                   </div>
                 </>

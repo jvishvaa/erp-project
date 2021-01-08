@@ -26,6 +26,8 @@ const SubmittedQuestion = ({
   onDeleteCorrectedAttachment,
   onChangeQuestionsState,
   evaluateAnswer,
+  remark,
+  comment,
 }) => {
   const scrollableContainer = useRef(null);
   const { setAlert } = useContext(AlertNotificationContext);
@@ -281,6 +283,7 @@ const SubmittedQuestion = ({
               rows={3}
               rowsMax={4}
               label='Comments'
+              value={comment}
               onChange={(e) => onChangeQuestionsState('comments', e.target.value)}
             />
           </FormControl>
@@ -296,6 +299,7 @@ const SubmittedQuestion = ({
               rows={3}
               rowsMax={4}
               label='Remarks'
+              value={remark}
               onChange={(e) => onChangeQuestionsState('remarks', e.target.value)}
             />
           </FormControl>
