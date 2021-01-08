@@ -190,7 +190,7 @@ const ViewHomework = withRouter(
             return item !== valueToRemove;
           }
         );
-        setQuestionsState([...questionsState, currentQuestion]); 
+        setQuestionsState([...questionsState, currentQuestion]);
       } else {
         const currentQuestion = { ...collatedQuestionState };
         currentQuestion.corrected_submission.splice(index, 1);
@@ -236,9 +236,10 @@ const ViewHomework = withRouter(
       if (isQuestionwise) {
         const initialQuestionsState = hwQuestions.map((q) => ({
           id: q.id,
-          remarks: '',
-          comments: '',
+          remarks: q.remark,
+          comments: q.comment,
           corrected_submission: q.evaluated_files,
+          evaluated_files: q.submitted_files,
         }));
         setQuestionsState(initialQuestionsState);
       } else {
@@ -316,6 +317,16 @@ const ViewHomework = withRouter(
                   correctedQuestions={
                     questionsState.length
                       ? questionsState[activeQuestion - 1].corrected_submission
+                      : []
+                  }
+                  remark={
+                    questionsState.length
+                      ? questionsState[activeQuestion - 1].remarks
+                      : []
+                  }
+                  comment={
+                    questionsState.length
+                      ? questionsState[activeQuestion - 1].comments
                       : []
                   }
                   activeQuestion={activeQuestion}
