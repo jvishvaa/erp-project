@@ -34,6 +34,7 @@ export default function UpdateDeltePopoverClick() {
         <MoreHorizIcon  onClick={handleClick}/>
       
       <Popover
+         arrow={true}
         className="pop-overs"
         id={"praveen"}
         open={open}

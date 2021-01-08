@@ -6,11 +6,14 @@ import Filter from '../../assets/images/Filter.svg';
 import Activity from '../../assets/images/activity.svg';
 import Ask from '../../assets/images/Ask.svg';
 import Clearall from '../../assets/images/🔍-Product-Icons.svg'
+import Filtericon from '../../assets/images/Filter Icon.svg'
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import Enviroment from './enviromentCard';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import Viewmore from './viewMore';
+import IconButton from '@material-ui/core/IconButton';
+
 import Pagination from '@material-ui/lab/Pagination';
 import './discussionForum.scss';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
@@ -106,7 +109,7 @@ const Discussionforum = () => {
 
     const getPostList = () => {
         axiosInstance.get(`${endpoints.discussionForum.filterCategory}`).then(res => {
-            // console.log(res, "popop")
+            //  console.log(res.data, "popop")
             if (res.data.status_code === 200) {
                 setPostListRes(res.data.data.results);
                 setPostListResPagenation(res.data.data)
@@ -241,7 +244,7 @@ const Discussionforum = () => {
                                     {/* <FormHelperText style={{marginLeft: '20px', color: 'red'}}>{error && error.errorMessage && error.errorMessage.branchError}</FormHelperText> */}
 
                                 </FormControl>
-
+                                {/*  */}
                             </Grid>
                         </div>
 
@@ -306,7 +309,7 @@ const Discussionforum = () => {
                             })
                         }
                         <div style={{display: 'flex'}}>
-                        <span style={{ color: '#014B7E', fontSize: '18px', paddingTop: 10, marginLeft: 100, fontWeight: 600 }}>Number of discussion: {PostListResPagenation && PostListResPagenation.limit}</span>
+                        <span style={{ color: '#014B7E', fontSize: '18px', paddingTop: 10, marginLeft: 157, fontWeight: 600 }}>Number of discussion: {PostListResPagenation && PostListResPagenation.limit}</span>
                         <div className="df-btn-question-container" style={{ display: 'flex' }} >
                             <div className="df-ask">
                                 <Button variant="contained">
@@ -343,7 +346,7 @@ const Discussionforum = () => {
                     </div>
                 </Grid> 
                 
-                <div className="env-card-container" style={{ display: 'grid', gridTemplateColumns: 'auto auto auto',width: '70%' }}>
+                <div className="env-card-container" style={{ display: 'grid', gridTemplateColumns: 'auto auto auto auto', width: '95%' }}>
                     {
                         postListRes && postListRes.map((list, index) => {
                             // console.log(list, "list")

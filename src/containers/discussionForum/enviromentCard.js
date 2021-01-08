@@ -175,7 +175,7 @@ export default function Enviroment(props) {
                                     />
                                 )}
                             />
-                            <Popper id={id} open={open} anchorEl={anchorEl} transition className="tool-tip">
+                            <Popper id={id} open={open} anchorEl={anchorEl} transition className="tool-tip" arrow={true}>
                                 {({ TransitionProps }) => (
                                     <Fade {...TransitionProps} timeout={350}>
                                         <div className={classes.paper}>
