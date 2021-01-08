@@ -24,9 +24,9 @@ const Discussionforum = () => {
     const [branch, setBranchRes] = useState([]);
     const [gradeRes, setGradeRes] = useState([]);
     const [postListRes, setPostListRes] = useState([]);
-    const [categoryValue, setCategoryValue] = useState(null);
+    const [categoryValue, setCategoryValue] = useState('');
     const [branchValue, setBranchValue] = useState(null);
-    const [gradeValue, setGradeValue] = useState(null);
+    const [gradeValue, setGradeValue] = useState('');
     const [isViewmoreView, setisViewmoreView] = useState(false);
     const [viewMoreList, setViewMoreList] = useState(null);
     const [PostListResPagenation, setPostListResPagenation] = useState(null);
@@ -94,13 +94,95 @@ const Discussionforum = () => {
         }
     }
 
-    const callFilter = () => {
-        axiosInstance.get(`${endpoints.discussionForum.filterCategory}?category=${categoryValue.id}&grade=${gradeValue.grade_id}`).then(res => {
-            setPostListRes(res.data.data.results.slice(0, 1))
-        }).catch(err => {
-            console.log(err)
-        })
+    const validate = (formData) =>{
+        let input = formData;
+        let errors = {};
+        let isValid = true;
+        if (!input["categoryValue"]) {
+            isValid = false;
+            errors["categoryValue"] = "Please enter your event category.";
+        }
+
+        if (!input["gradeValue"]) {
+            isValid = false;
+            errors["gradeValue"] = "Please enter your event grade.";
+        }
+
+        let errorPayload = {
+            errors,
+            isValid
+        };
+    
+        return errorPayload;
+
+        
     }
+
+    const callFilter = () => {
+        // axiosInstance.get(`${endpoints.discussionForum.filterCategory}?category=${categoryValue.id}&grade=${gradeValue.grade_id}`).then(res => {
+        //     console.log(res, "0009")
+        //     if(res.data.status_code === 200){
+        //         setPostListRes(res.data.data.results.slice(0, 1))
+
+        //     }else{
+        //         setAlert('error', res.data.message)
+        //     }
+        // }).catch(err => {
+        //     console.log(err)
+        // })
+        const body = {
+            categoryValue: categoryValue,
+            gradeValue: gradeValue
+        }
+        filterValid(body)
+    }
+
+    const filterValid = (body) => {
+        // console.log(body.gradeValue.grade_id, "body")
+            if(body && body.gradeValue !==null && body.gradeValue.grade_id !== undefined &&  body && body.gradeValue.grade_id !== null && body && body.categoryValue.id === undefined){
+                alert("grade")
+                axiosInstance.get(`${endpoints.discussionForum.filterCategory}?grade=${gradeValue.grade_id}`).then(res => {
+                    if(res.data.status_code === 200){
+                        setPostListRes(res.data.data.results.slice(0, 1))
+        
+                    }else{
+                        setAlert('error', res.data.message)
+                    }
+                }).catch(err => {
+                    setAlert('error', err.message)
+                    console.log(err)
+                })
+
+               
+            }
+            else if(body && body.categoryValue.id !== undefined  && body.gradeValue.grade_id === undefined ){
+                alert("category")
+                axiosInstance.get(`${endpoints.discussionForum.filterCategory}?category=${categoryValue.id}`).then(res => {
+                    if(res.data.data.results.length){
+                        setPostListRes(res.data.data.results.slice(0, 1))
+
+                    }
+                }).catch(err => {
+                    setAlert('error', err.message)
+                    console.log(err)
+                })
+            }
+            else  if(body.categoryValue.id && body.gradeValue.grade_id ){
+                alert("all")
+                axiosInstance.get(`${endpoints.discussionForum.filterCategory}?category=${categoryValue.id}&grade=${gradeValue.grade_id}`).then(res => {
+                    if(res.data.status_code === 200){
+                        setPostListRes(res.data.data.results.slice(0, 1))
+        
+                    }else{
+                        setAlert('error', res.data.message)
+                    }
+                }).catch(err => {
+                    setAlert('error', err.message)
+                    console.log(err)
+                })
+            }
+    }
+
     useEffect(() => {
 
         getPostList()

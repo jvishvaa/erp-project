@@ -1,5 +1,6 @@
 .env-name{
     padding-top: 15px;
+    margin-bottom: 5px;
 }
 
 .env-name .catname-df-forum{
@@ -147,10 +148,13 @@ body{
 .text-name .online-learning{
     text-align: center;
     color: #042955;
-    font-size: 14px;
+    font-size: 14px !important;
     font-weight: 600;
 
 }
+.time-hours    .online-learning{
+    font-size: 18px !important;  
+} 
 
 .text-name .student{ 
     text-align: right;
@@ -232,7 +236,7 @@ body{
 
 ///////////////////////////Viewmore css goes here/////////////
 .view-more-info{
-    padding: 40px
+    padding: 20px
 }
 .user-name-icon-view {
     display: flex;
@@ -300,6 +304,7 @@ width: 32px
 
 .view-more-date{
     margin-left: 30px;
+    font-size: 18px;
 }
 
 .user-name-icon-view .icon-headers{
@@ -318,7 +323,7 @@ width: 32px
     color: #042955;
     text-align: justify;
     margin-top: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 25px;
     // border-bottom: 1px solid rgb(226, 226, 226);
 }
 
@@ -397,7 +402,7 @@ background-color: red;
 
 .view-more-post{
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly;
     // margin-top: 5px;
     // padding: 10px;
     background: #F9F9F9;
@@ -555,14 +560,23 @@ body {
 opacity: 1;
 }
 
-.comment-avatar{
-    display: flex;
-}
+// .comment-avatar{
+//     display: flex;
+// }
 
 .last-seen{
-    margin-top: 4px;
-    margin-left: 60px;
+    // margin-top: 4px;
+    // margin-left: 60px;
     color: #042955;
+}
+.comment-avatar .ans-creation_ago{
+    flex-basis: 23.333333% !important;
+    max-width: 23.333333% !important;
+
+}
+.comment-avatar  .fname-last{
+    max-width: 33.333333%;
+    flex-basis: 24.333333%;
 }
 
 .comment-pragraph{
@@ -576,10 +590,20 @@ opacity: 1;
 }
 
 .replay{
-    float: right;
+    display: flex;
+    justify-content: flex-end;
 }
 
 .re-btn{
     text-decoration: none;
     color: #78B5F3;
+    padding-top: 13px;
+}
+
+.comment-avatar-lastseen{
+    display: flex;
+}
+.user-view-name-nfo-avatar{
+    padding: 3px;
+    padding-left: 10px;
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Usericon from '../../assets/images/user.svg'
-import { SvgIcon, Typography, Divider, Button } from '@material-ui/core';
+import { SvgIcon, Typography, Divider, Button, } from '@material-ui/core';
 import moment from 'moment';
 import Award from '../../assets/images/award.svg'
 import Answer from '../../assets/images/answer.svg'
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     typography: {
         margin: 1,
         paddingTop: 12,
-        fontSize:12
+        fontSize: 12
     }
 
 }));
@@ -49,8 +49,9 @@ const Viewmore = (props) => {
 
     // const [hoverDiv, setHover] = React.useState(false);
     const [inputBox, setInputBox] = React.useState(false);
-    const [likeList, setLikelist] =  React.useState([]);
+    const [likeList, setLikelist] = React.useState([]);
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [answers, setAnswers] = React.useState([]);
     const { viewMoreList } = props;
     const open = Boolean(anchorEl);
     const id = open ? 'transitions-popper' : undefined;
@@ -60,7 +61,6 @@ const Viewmore = (props) => {
         setAnchorEl(anchorEl ? null : event.currentTarget);
         axiosInstance.get(`${endpoints.discussionForum.postLike}?post=${list.id}&&type=1`).then((res) => {
             setLikelist(res.data.result.results)
-            console.log(res, "ppopo")
         }).catch(err => {
             console.log(err)
         })
@@ -68,7 +68,22 @@ const Viewmore = (props) => {
 
     }
 
-    const openAnswerBox = () => {
+    const openAnswerBox = (e, viewMoreList) => {
+
+        setInputBox(!inputBox);
+        setAnchorEl(anchorEl ? null : '');
+        axiosInstance.get(`${endpoints.discussionForum.postLike}?post=${viewMoreList.id}&&type=2`).then((res) => {
+            //    console.log(res, "popopo")
+            if (res.data.status_code === 200) {
+                setAnswers(res.data.result.results)
+            }
+        }).catch(err => {
+            console.log(err)
+        })
+    }
+
+    const openLikeBox = () => {
+        console.log(viewMoreList, "viewMoreList")
         setInputBox(!inputBox);
         setAnchorEl(anchorEl ? null : '');
     }
@@ -132,7 +147,7 @@ const Viewmore = (props) => {
                 <Grid item xs={8}>
                     <div className="view-more-post">
                         <div className="post-like">
-                            <IconButton onClick={(event)=>fetchPostLike(event, viewMoreList)}>
+                            <IconButton onClick={(event) => fetchPostLike(event, viewMoreList)}>
                                 <SvgIcon
                                     component={() => (
                                         <img
@@ -142,32 +157,32 @@ const Viewmore = (props) => {
                                         />
                                     )}
                                 />
-                                  <Popper id={id} open={open} anchorEl={anchorEl} transition className="tool-tip" arrow={true} style={{marginLeft: 60,}}>
-                                {({ TransitionProps }) => (
-                                    <Fade {...TransitionProps} timeout={350}>
-                                        <div className={classes.paper}>
-                                            {
-                                                likeList && likeList.map((name, index) => {
-                                                    return (
-                                                        <div className="line-name" key={index} style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                                            <div style={{ display: 'flex', }}>
-                                                                <Avatar style={{
-                                                                    width: ' 27px', height: ' 27px', margin: 10, fontSize: '14px',
+                                <Popper id={id} open={open} anchorEl={anchorEl} transition className="tool-tip" arrow={true} style={{ marginLeft: 60, }}>
+                                    {({ TransitionProps }) => (
+                                        <Fade {...TransitionProps} timeout={350}>
+                                            <div className={classes.paper}>
+                                                {
+                                                    likeList && likeList.map((name, index) => {
+                                                        return (
+                                                            <div className="line-name" key={index} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                                <div style={{ display: 'flex', }}>
+                                                                    <Avatar style={{
+                                                                        width: ' 27px', height: ' 27px', margin: 10, fontSize: '14px',
 
-                                                                    backgroundColor: '#F9AB5D'
-                                                                }}>{name.first_name && name.first_name.substring(0, 2)}</Avatar>
-                                                                <Typography className={classes.typography}>{name && name.first_name} {name && name.last_name}</Typography>
+                                                                        backgroundColor: '#F9AB5D'
+                                                                    }}>{name.first_name && name.first_name.substring(0, 2)}</Avatar>
+                                                                    <Typography className={classes.typography}>{name && name.first_name} {name && name.last_name}</Typography>
+                                                                </div>
+                                                                <Typography className={classes.typography}>{name && name.like_creation_ago}</Typography>
+                                                                {/* {isFetching && 'Fetching more list items...'} */}
                                                             </div>
-                                                            <Typography className={classes.typography}>{name && name.like_creation_ago}</Typography>
-                                                            {/* {isFetching && 'Fetching more list items...'} */}
-                                                        </div>
-                                                    )
-                                                })
-                                            }
-                                        </div>
-                                    </Fade>
-                                )}
-                            </Popper>
+                                                        )
+                                                    })
+                                                }
+                                            </div>
+                                        </Fade>
+                                    )}
+                                </Popper>
                             </IconButton>
                         </div>
                         <div>
@@ -182,7 +197,7 @@ const Viewmore = (props) => {
                             />
                         </div>
                         <div className="post-answer">
-                            <IconButton onClick={openAnswerBox}>
+                            <IconButton onClick={(e) => openAnswerBox(e, viewMoreList)}>
                                 <SvgIcon
                                     component={() => (
                                         <img
@@ -207,7 +222,7 @@ const Viewmore = (props) => {
                             />
                         </div>
                         <div className="post-award">
-                            <IconButton onClick={openAnswerBox}>
+                            <IconButton >
                                 <SvgIcon
                                     component={() => (
                                         <img
@@ -231,52 +246,71 @@ const Viewmore = (props) => {
                                 </Avatar>
                                 <span className="user-view-name-nfo">
                                     {viewMoreList.post_by.first_name} {viewMoreList.post_by.last_name}
-                                </span></span>
+                                </span>
+                            </span>
 
                             <input class="form-field" type="text" placeholder="Type comment your comment here..." />
 
                         </div>
                         <div className="comment-box">
-                            <div className="comment-avatar">
-                                <div className="comment-avatar-lastseen">
-                                    <Avatar style={{ width: ' 25px', height: ' 25px', fontSize: '16px', }}>
-                                        {viewMoreList.post_by.first_name.substring(0, 2)}
-                                    </Avatar>
-                                </div>
-                                <div className="last-seen">
-                                    <div>{moment(viewMoreList.post_at).format('d')} days ago</div>
-                                </div>
+                            {
+                                answers && answers.map((ans, index) => {
+                                    console.log(ans, "popo")
+                                    return (
+                                        <>
+                                            <div className="comment-avatar" key={index}>
+                                                <div className="comment-avatar-lastseen">
+                                                    <Grid container spacing={2}>
+                                                    <Grid item xs={12} style={{display: 'flex'}}>
+                                                            <Grid item xs={4} style={{display: 'flex'}} className="fname-last">
+                                                                <Avatar style={{ width: ' 25px', height: ' 25px', fontSize: '16px', }}>
+                                                                    {ans.first_name.substring(0, 2)}
+                                                                </Avatar>
 
-                            </div>
-                            <div className="comment">
-                                <p className="comment-pragraph">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nisl eros,
-                                pulvinar facilisis justo mollis, auctor consequat urna. Morbi a bibendum metus.
-                                Donec scelerisque sollicitudin enim eu venenatis. Duis tincidunt laoreet ex,
-                                in pretium orci vestibulum eget. Class aptent taciti sociosqu ad litora torquent
-                                per conubia nostra, per inceptos himenaeos. Duis pharetra luctus lacus ut
-                                vestibulum. Maecenas ipsum lacus, lacinia quis posuere ut, pulvinar vitae dolor.
-                                Integer eu nibh at nisi ullamcorper sagittis id vel leo. Integer feugiat
-                                faucibus libero, at maximus nisl suscipit posuere. Morbi nec enim nunc.
-                                Phasellus bibendum turpis ut ipsum egestas, sed sollicitudin elit convallis.
-                                Cras pharetra mi tristique sapien vestibulum lobortis. Nam eget bibendum metus,
-                            non dictum mauris. Nulla at tellus sagittis, viverra est a, bibendum metus.</p>
+                                                                <span className="user-view-name-nfo-avatar" style={{ width: ' 100%', }}>
+                                                                    {ans.first_name} {ans.last_name}
+                                                                </span>
+                                                            </Grid>
+                                                        <Grid item xs={4} className="ans-creation_ago">
+                                                        <div className="last-seen"><span>{ans.creation_ago}</span></div>
+                                                        </Grid>
+                                                    </Grid>
+                                                    </Grid>
 
-                            </div>
-                            <div className="replay">
-                                <a href="#" className="re-btn">Replay</a>
-                                <IconButton onClick={openAnswerBox}>
-                                    <SvgIcon
-                                        component={() => (
-                                            <img
-                                                style={{ width: '36px', marginRight: '5px' }}
-                                                src={LikeIcon}
-                                                alt='given'
-                                            />
-                                        )}
-                                    />
-                                </IconButton>
+                                                </div>
 
-                            </div>
+
+                                            </div>
+                                            <div className="comment">
+                                                <p className="comment-pragraph">{ans.answer}</p>
+                                                {/* {console.log(answers, "answersanswers")}
+                                {
+                                    answers && answers.slice(0,1).map((ans, index) => {
+                                        return  <p className="comment-pragraph">{ans.answer}</p>
+                                    })
+                                } */}
+
+                                            </div>
+                                            <div className="replay">
+                                                <a href="#" className="re-btn">Reply</a>
+                                                <IconButton onClick={openLikeBox}>
+                                                    <SvgIcon
+                                                        component={() => (
+                                                            <img
+                                                                style={{ width: '36px', marginRight: '5px' }}
+                                                                src={LikeIcon}
+                                                                alt='given'
+                                                            />
+                                                        )}
+                                                    />
+                                                </IconButton>
+
+                                            </div></>
+
+                                    )
+                                })
+                            }
+
                         </div>
                     </Grid>
                 }
