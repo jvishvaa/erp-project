@@ -140,7 +140,6 @@ const Discussionforum = () => {
     const filterValid = (body) => {
         // console.log(body.gradeValue.grade_id, "body")
             if(body && body.gradeValue !==null && body.gradeValue.grade_id !== undefined &&  body && body.gradeValue.grade_id !== null && body && body.categoryValue.id === undefined){
-                alert("grade")
                 axiosInstance.get(`${endpoints.discussionForum.filterCategory}?grade=${gradeValue.grade_id}`).then(res => {
                     if(res.data.status_code === 200){
                         setPostListRes(res.data.data.results.slice(0, 1))
@@ -156,7 +155,6 @@ const Discussionforum = () => {
                
             }
             else if(body && body.categoryValue.id !== undefined  && body.gradeValue.grade_id === undefined ){
-                alert("category")
                 axiosInstance.get(`${endpoints.discussionForum.filterCategory}?category=${categoryValue.id}`).then(res => {
                     if(res.data.data.results.length){
                         setPostListRes(res.data.data.results.slice(0, 1))
@@ -168,7 +166,6 @@ const Discussionforum = () => {
                 })
             }
             else  if(body.categoryValue.id && body.gradeValue.grade_id ){
-                alert("all")
                 axiosInstance.get(`${endpoints.discussionForum.filterCategory}?category=${categoryValue.id}&grade=${gradeValue.grade_id}`).then(res => {
                     if(res.data.status_code === 200){
                         setPostListRes(res.data.data.results.slice(0, 1))
