@@ -94,6 +94,7 @@ export default function Enviroment(props) {
 
 
     const { list, index, handleViewmore } = props;
+    // console.log(list, "list")
     return (
         <div className="env-card">
             <Card className={classes.root} style={{ border: index % 2 === 0 ? '1px solid #FEE4D4' : '1px solid #DDEF96' }}>
@@ -130,7 +131,9 @@ export default function Enviroment(props) {
                                     aria-label='show more'
                                     aria-haspopup='true'
 
-                                    style={{ margin: ' 0px 0px 0px 30px', color: "red" }}
+                                    style={{ margin: ' 0px 0px 0px 30px', color: "red",
+                                       
+                                }}
                                 >
                                     <UpdateDeltePopoverClick />
                                 </IconButton>
@@ -168,13 +171,16 @@ export default function Enviroment(props) {
                                 component={() => (
                                     <img
 
-                                        style={{ width: '20px', marginLeft: 20 }}
+                                        style={{ width: '20px', marginLeft: 20 , backgroundColor: list.is_like === true ? 'red' : ''}}
                                         src={Likeicon}
                                         alt='given'
 
                                     />
+                                    
                                 )}
+                                
                             />
+                           
                             <Popper id={id} open={open} anchorEl={anchorEl} transition className="tool-tip" arrow={true}>
                                 {({ TransitionProps }) => (
                                     <Fade {...TransitionProps} timeout={350}>
@@ -201,6 +207,7 @@ export default function Enviroment(props) {
                                     </Fade>
                                 )}
                             </Popper>
+                            {/* <p> {list.like_count}</p> */}
                         </IconButton>
                         <SvgIcon
                             component={() => (
