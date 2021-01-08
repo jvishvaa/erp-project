@@ -56,6 +56,7 @@ const Viewmore = (props) => {
     const id = open ? 'transitions-popper' : undefined;
 
     const fetchPostLike = (event, list) => {
+        setInputBox(!inputBox)
         setAnchorEl(anchorEl ? null : event.currentTarget);
         axiosInstance.get(`${endpoints.discussionForum.postLike}?post=${list.id}&&type=1`).then((res) => {
             setLikelist(res.data.result.results)
@@ -68,7 +69,8 @@ const Viewmore = (props) => {
     }
 
     const openAnswerBox = () => {
-        setInputBox(!inputBox)
+        setInputBox(!inputBox);
+        setAnchorEl(anchorEl ? null : '');
     }
     return (
         <div className="view-more-info">
