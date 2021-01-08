@@ -10,14 +10,26 @@ import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 
-const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading}) => {
+const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex}) => {
 
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const classes = useStyles();
+  // const [showPeriodIndex, setShowPeriodIndex] = useState();
+
+  const handlePeriodMenuOpen = (index, id) => {
+    // setShowMenu(true);
+    // setShowPeriodIndex(index);
+  };
+
+  const handlePeriodMenuClose = (index) => {
+    // setShowMenu(false);
+    // setShowPeriodIndex();
+  };
   
   const handleViewMore = () => {
+    setLoading(true)
     axiosInstance.get(`${endpoints.lessonReport.lessonViewMoreData}?central_gs_mapping_id=${lesson.central_gs_mapping_id}&volume_id=${lesson.volume_id}&academic_year_id=${lesson.academic_year_id}&completed_by=${lesson.completed_by}`)
       .then(result => {
         console.log(result.data,'ooo')
@@ -26,12 +38,16 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
           setViewMore(true);
           setViewMoreData(result.data.result);
           setPeriodDataForView(lesson);
+          setSelectedIndex(index);
+          setPeriodColor(true);
         } else {
           setLoading(false);
           setViewMore(false);
           setViewMoreData({});
           setAlert('error', result.data.message);
           setPeriodDataForView();
+          setSelectedIndex(-1);
+          setPeriodColor(true);
         }
       })
       .catch((error) => {
@@ -39,11 +55,13 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
         setViewMoreData({});
         setAlert('error', error.message);
         setPeriodDataForView();
+        setSelectedIndex(-1);
+        setPeriodColor(true);
       })
   }
 
   return (
-    <Paper className={classes.root} style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }}>
+    <Paper className={periodColor?classes.selectedRoot:classes.root} style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }}>
       <Grid container spacing={2}>
         <Grid item xs={8}>
           <Box>
@@ -85,6 +103,8 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
         </Grid>
         <Grid item xs={6} className={classes.textRight}> 
           {/* {!viewMore && */}
+
+         {!periodColor && 
           <Button
             variant='contained'
             style={{ color: 'white' }}
@@ -94,7 +114,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
             onClick={handleViewMore}
           >
             VIEW MORE
-          </Button>
+          </Button>}
            {/* } */}
         </Grid>
       </Grid>
