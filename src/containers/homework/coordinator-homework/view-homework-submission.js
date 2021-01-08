@@ -517,7 +517,7 @@ const ViewHomework = withRouter(
                     />
                   </FormControl>
                 </div>
-                <div className='score'>
+                <div className='score' style={{ marginTop: 10 }}>
                   <FormControl variant='outlined' fullWidth size='small'>
                     <InputLabel htmlFor='component-outlined'>Overall score</InputLabel>
                     <OutlinedInput
