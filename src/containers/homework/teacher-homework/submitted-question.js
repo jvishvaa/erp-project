@@ -6,14 +6,14 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Button from '@material-ui/core/Button';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-
+import { connect } from 'react-redux';
 import SimpleReactLightbox, { SRLWrapper } from 'simple-react-lightbox';
-
 import Attachment from './attachment';
 import endpoints from '../../../config/endpoints';
 import placeholder from '../../../assets/images/placeholder_small.jpg';
 import { IconButton } from '@material-ui/core';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+// import { connect } from 'formik';
 
 const SubmittedQuestion = ({
   question,
@@ -26,7 +26,11 @@ const SubmittedQuestion = ({
   onDeleteCorrectedAttachment,
   onChangeQuestionsState,
   evaluateAnswer,
+  submittedHomeworkDetails,
+  totalSubmittedQuestions,
   hideNextPrevButton,
+  remark,
+  comment,
 }) => {
   const scrollableContainer = useRef(null);
   const submittedAttachmentsOuterContainer = useRef(null);
@@ -40,7 +44,14 @@ const SubmittedQuestion = ({
   const [showEvaluatedAttachmentArrows, setShowEvaluatedAttachmentArrows] = useState(
     false
   );
+  const [defaultCommentRemarks, setdefaultCommentRemarks] = useState([
+    submittedHomeworkDetails,
+  ]);
+  const [defaultComment, setDefaultComment] = useState([]);
 
+  // const [remark, setRemark] = useState('');
+
+  console.log(defaultCommentRemarks, 'yessss', totalSubmittedQuestions);
   const handleScroll = (dir) => {
     if (dir === 'left') {
       submittedAttachmentsInnerContainer.current.scrollLeft -= 150;
@@ -120,7 +131,8 @@ const SubmittedQuestion = ({
   if (question) {
     qu.push(question);
   }
-  // console.log(qu, "question")
+  // console.log(submittedHomeworkDetails,'helllllllll',totalSubmittedQuestions,'ques',qu,question)
+  console.log(qu, 'uuuuuuu', question);
   return (
     <div className='homework-question-container' key={`homework_student_question_${1}`}>
       <div
@@ -156,7 +168,7 @@ const SubmittedQuestion = ({
         {qu.map((ele, index) => {
           return (
             <div className='question'>
-              Q{index + 1}: {ele.question}
+              Q{index + 1}: {ele.question}:{ele.comment}
             </div>
           );
         })}
@@ -374,6 +386,7 @@ const SubmittedQuestion = ({
               rows={3}
               rowsMax={4}
               label='Comments'
+              value={comment}
               onChange={(e) => onChangeQuestionsState('comments', e.target.value)}
             />
           </FormControl>
@@ -389,6 +402,7 @@ const SubmittedQuestion = ({
               rows={3}
               rowsMax={4}
               label='Remarks'
+              value={remark}
               onChange={(e) => onChangeQuestionsState('remarks', e.target.value)}
             />
           </FormControl>
@@ -396,11 +410,17 @@ const SubmittedQuestion = ({
       </div>
       <div className='evaluate-answer-btn-container'>
         <Button variant='contained' color='primary' onClick={onEvaluate}>
-          EVALUATE ANSWER
+          SAVE
         </Button>
       </div>
     </div>
   );
 };
 
-export default SubmittedQuestion;
+const mapStateToProps = (state) => ({
+  submittedHomeworkDetails: state.teacherHomework.submittedHomeworkDetails,
+  totalSubmittedQuestions: state.teacherHomework.totalSubmittedQuestions,
+});
+
+export default connect(mapStateToProps)(SubmittedQuestion);
+// export default SubmittedQuestion;

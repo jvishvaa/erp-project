@@ -82,6 +82,7 @@ const ViewHomework = withRouter(
     totalSubmittedQuestions,
     isQuestionwise,
     collatedSubmissionFiles,
+    fetchingSubmittedHomeworkDetails,
     ...props
   }) => {
     const { setAlert } = useContext(AlertNotificationContext);
@@ -171,9 +172,11 @@ const ViewHomework = withRouter(
     };
 
     const handleChangeQuestionState = (fieldName, value) => {
+      console.log(fieldName, value, 'fffffff');
       const index = activeQuestion - 1;
       const currentQuestion = questionsState[index];
       currentQuestion[fieldName] = value;
+      console.log({ currentQuestion });
       setQuestionsState([
         ...questionsState.slice(0, index),
         currentQuestion,
@@ -190,7 +193,7 @@ const ViewHomework = withRouter(
             return item !== valueToRemove;
           }
         );
-        setQuestionsState([...questionsState, currentQuestion]); 
+        setQuestionsState([...questionsState, currentQuestion]);
       } else {
         const currentQuestion = { ...collatedQuestionState };
         currentQuestion.corrected_submission.splice(index, 1);
@@ -231,14 +234,15 @@ const ViewHomework = withRouter(
       const data = await getSubmittedHomeworkDetails(studentHomeworkId);
 
       const { hw_questions: hwQuestions, is_question_wise: isQuestionwise, id } = data;
-      console.log('fetched data ', data);
+      console.log('fetched data ', data, hwQuestions);
       setHomeworkId(id);
       if (isQuestionwise) {
         const initialQuestionsState = hwQuestions.map((q) => ({
           id: q.id,
-          remarks: '',
-          comments: '',
+          remarks: q.remark,
+          comments: q.comment,
           corrected_submission: q.evaluated_files,
+          evaluated_files: q.submitted_files,
         }));
         setQuestionsState(initialQuestionsState);
       } else {
@@ -271,7 +275,12 @@ const ViewHomework = withRouter(
       splitted_media: null,
     };
     const desTestDetails = [{ asessment_response: { evaluvated_result: '' } }];
-
+    console.log(
+      fetchingSubmittedHomeworkDetails,
+      'reduxxxx',
+      submittedHomeworkDetails,
+      totalSubmittedQuestions
+    );
     return (
       <div className='view-homework-container create_group_filter_container'>
         <Grid container spacing={2} className='message_log_container'>
@@ -318,13 +327,23 @@ const ViewHomework = withRouter(
                       ? questionsState[activeQuestion - 1].corrected_submission
                       : []
                   }
+                  remark={
+                    questionsState.length
+                      ? questionsState[activeQuestion - 1].remarks
+                      : []
+                  }
+                  comment={
+                    questionsState.length
+                      ? questionsState[activeQuestion - 1].comments
+                      : []
+                  }
                   activeQuestion={activeQuestion}
                   totalQuestions={totalSubmittedQuestions}
                   hideNextPrevButton={totalSubmittedQuestions <= 1}
                   onNext={() => {
-                    setActiveQuestion((prev) =>
-                      prev < totalSubmittedQuestions ? prev + 1 : prev
-                    );
+                    setActiveQuestion((prev) => {
+                      return prev < totalSubmittedQuestions ? prev + 1 : prev;
+                    });
                   }}
                   onPrev={() => {
                     setActiveQuestion((prev) => (prev > 1 ? prev - 1 : prev));
@@ -472,7 +491,6 @@ const ViewHomework = withRouter(
                                   )}
                               </SRLWrapper>
                             </div>{' '}
-                            */}
                           </div>
                         </SimpleReactLightbox>
                         <div className='next-btn'>
@@ -485,7 +503,7 @@ const ViewHomework = withRouter(
                   )}
                   <div className='evaluate-answer-btn-container'>
                     <Button variant='contained' color='primary' onClick={evaluateAnswer}>
-                      EVALUATE ANSWER
+                      SAVE
                     </Button>
                   </div>
                 </>
@@ -507,7 +525,7 @@ const ViewHomework = withRouter(
                     />
                   </FormControl>
                 </div>
-                <div className='score'>
+                <div className='score' style={{ marginTop: 10 }}>
                   <FormControl variant='outlined' fullWidth size='small'>
                     <InputLabel htmlFor='component-outlined'>Overall score</InputLabel>
                     <OutlinedInput

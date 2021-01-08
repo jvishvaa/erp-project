@@ -8,6 +8,7 @@ import hwGiven from '../../../assets/images/hw-given.svg';
 import hwEvaluatedIcon from '../../../assets/images/hw-evaluated.svg';
 import submitted from '../../../assets/images/student-submitted.svg';
 import { Badge } from '@material-ui/core';
+import AddHomework from '../../../assets/images/AddHomework.svg';
 
 const HomeworkCol = ({
   data,
@@ -24,7 +25,15 @@ const HomeworkCol = ({
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         {!data.hasOwnProperty('student_submitted') ? (
           <IconButton onClick={handleNavigationToAddScreen}>
-            <AddCircleOutlineIcon color='primary' />
+          <SvgIcon
+              component={() => (
+                <img
+                  style={{ width: '25px', marginRight: '5px' }}
+                  src={AddHomework}
+                  alt='submitted'
+                />
+              )}
+            />
           </IconButton>
         ) : (
           <>
