@@ -234,13 +234,13 @@ const ViewHomework = withRouter(
       const data = await getSubmittedHomeworkDetails(studentHomeworkId);
 
       const { hw_questions: hwQuestions, is_question_wise: isQuestionwise, id } = data;
-      console.log('fetched data ', data);
+      console.log('fetched data ', data,hwQuestions);
       setHomeworkId(id);
       if (isQuestionwise) {
         const initialQuestionsState = hwQuestions.map((q) => ({
           id: q.id,
-          remarks: '',
-          comments: '',
+          remarks: q.remark,
+          comments: q.comment,
           corrected_submission: q.evaluated_files,
           evaluated_files: [],
         }));

@@ -8,7 +8,6 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { connect } from 'react-redux';
 import SimpleReactLightbox, { SRLWrapper } from 'simple-react-lightbox';
-
 import Attachment from './attachment';
 import endpoints from '../../../config/endpoints';
 import placeholder from '../../../assets/images/placeholder_small.jpg';
@@ -388,7 +387,7 @@ const SubmittedQuestion = ({
               placeholder='Comments'
               // value={defaultCommentRemarks[0][0].comment || ''}
               // value={qu.map(ele => {ele.question})}
-              value={qu[0].comment}
+              value={question.comment}
               onChange={(e) => onChangeQuestionsState('comments', e.target.value)}
             />
           </FormControl>
@@ -404,7 +403,7 @@ const SubmittedQuestion = ({
               rows={3}
               rowsMax={4}
               label='Remarks'
-              value={qu?qu[0].remark: 'sssss'}
+              value={question.remarks}
               onChange={(e) => onChangeQuestionsState('remarks', e.target.value)}
             />
           </FormControl>

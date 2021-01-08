@@ -41,10 +41,11 @@ const LessonReport = () => {
     const [viewMore, setViewMore] = useState(false);
     const [viewMoreData, setViewMoreData] = useState({});
     const [periodDataForView, setPeriodDataForView] = useState({});
-    // const limit = 9;
-    // const { role_details } = JSON.parse(localStorage.getItem('userDetails'));
+    const limit = 9;
     const themeContext = useTheme();
     const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+    const [periodColor, setPeriodColor]=useState(false);
+    const [selectedIndex, setSelectedIndex] = useState(-1);
 
     const handlePagination = (event, page) => {
         setPage(page);
@@ -94,33 +95,44 @@ const LessonReport = () => {
 
                 <Paper className={classes.root}>
                     {periodData?.length > 0 ?
-                        (<div className="cardsContainer">
-                            <Grid container style={{ width: '95%', margin: '10px 0' }} spacing={5}>
+                        (
+                        <Grid container style={isMobile ? { width: '95%', margin: '20px auto' } : { width: '100%', margin: '20px auto' }} spacing={5}>
+                          <Grid item xs={12} sm={(viewMore && viewMoreData?.length > 0) ? 7 : 12}>
+                              <Grid container spacing={isMobile ? 3 : 5}>
                                 {periodData.map((period, i) => (
-                                    <Grid item xs={12} sm={viewMore ? 6 : 4}>
+                                    <Grid item xs={12} style={isMobile ? { marginLeft: '-8px' } : null} sm={(viewMore && viewMoreData?.length > 0) ? 6 : 4}>
                                         <PeriodCard
+                                            index={i}
                                             lesson={period}
                                             viewMore={viewMore}
                                             setLoading={setLoading}
                                             setViewMore={setViewMore}
                                             setViewMoreData={setViewMoreData}
                                             setPeriodDataForView={setPeriodDataForView}
+                                            setSelectedIndex={setSelectedIndex}
+                                            setSelectedIndex={setSelectedIndex}
+                                            periodColor={selectedIndex===i?true:false}
+                                            setPeriodColor={setPeriodColor}
                                         />
                                     </Grid>
                                 ))}
-
+                                </Grid>
                             </Grid>
 
                             {viewMore && viewMoreData?.length > 0 &&
-                                <div style={isMobile ? { width: '95%', margin: '10px auto' } : { width: '60%', margin: '10px 0' }}>
+                                <Grid item xs={12} sm={5} style={{ width: '100%' }}>
                                     <ViewMoreCard
                                         viewMoreData={viewMoreData}
                                         setViewMore={setViewMore}
                                         periodDataForView={periodDataForView}
+                                        setSelectedIndex={setSelectedIndex}
+                                        setSelectedIndex={setSelectedIndex}
                                     />
-                                </div>}
+                                </Grid>
+                                }
 
-                        </div>) : (
+                        </Grid>
+                        ) : (
                             <div className="periodDataUnavailable">
                                 <SvgIcon
                                     component={() => (
@@ -144,15 +156,15 @@ const LessonReport = () => {
 
 
 
-                    {/* <div className="paginateData paginateMobileMargin">
+                    <div className="paginateData paginateMobileMargin">
                         <Pagination
                             onChange={handlePagination}
                             style={{ marginTop: 25 }}
-                            count={totalCount}
+                            count={Math.ceil(totalCount / limit)}
                             color='primary'
                             page={page}
                         />
-                    </div> */}
+                    </div>
                 </Paper>
 
             </Layout >

@@ -1,13 +1,15 @@
-import React from 'react';
+import React,{useContext} from 'react';
 import Paper from '@material-ui/core/Paper';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme, IconButton, SvgIcon } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import './view-more.css';
+import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 
-const ViewMoreCard = ({ viewMoreData, setViewMore, periodDataForView }) => {
+const ViewMoreCard = ({ viewMoreData, setViewMore, periodDataForView,setSelectedIndex    }) => {
     const themeContext = useTheme();
     const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+    const { setAlert } = useContext(AlertNotificationContext);
 
     return (
         <Paper className="rootViewMore">
@@ -23,7 +25,10 @@ const ViewMoreCard = ({ viewMoreData, setViewMore, periodDataForView }) => {
                 <div className="rightHeader">
                     <div className="headerTitle closeIcon">
                         <IconButton
-                            onClick={() => setViewMore(false)}
+                            onClick={() => {
+                                setViewMore(false);
+                                setSelectedIndex(-1);
+                            }}
                         >
                             <CloseIcon color='primary' />
                         </IconButton>
