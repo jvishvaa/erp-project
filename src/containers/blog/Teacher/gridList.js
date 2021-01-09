@@ -1,59 +1,114 @@
-import React, { Component } from 'react';
-import withStyles from '@material-ui/core/styles/withStyles';
+/* eslint-disable react/jsx-wrap-multilines */
+import React from 'react';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { Grid, Card, Button, Typography, Divider } from '@material-ui/core';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import { Grid, Card, Button, Typography } from '@material-ui/core';
-
-const styles = (theme) => ({
+import CardHeader from '@material-ui/core/CardHeader';
+import Tooltip from '@material-ui/core/Tooltip';
+import { withRouter } from 'react-router-dom';
+import IconButton from '@material-ui/core/IconButton';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import List from '@material-ui/core/List';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItem from '@material-ui/core/ListItem';
+// import Card from '@material-ui/core/Card';
+const LightTooltip = withStyles((theme) => ({
+  tooltip: {
+    backgroundColor: theme.palette.common.white,
+    color: 'rgba(0, 0, 0, 0.87)',
+    boxShadow: theme.shadows[1],
+    fontSize: 11,
+  },
+}))(Tooltip);
+const useStyles = makeStyles((theme) => ({
   root: {
-    width: '100%',
     flexGrow: 1,
-    // overflow: 'scroll',
   },
-  Card: {
-    margin: 20,
+  card: {
+    // backgroundColor: 'red',
+    // padding: theme.spacing(2),
     textAlign: 'center',
-    color: theme.palette.text.secondary,
-    border: '1px solid red',
-    borderRadius: '16px',
+    margin: theme.spacing(1),
+    backgroundColor: 'grey',
+    // color: theme.palette.text.secondary,
   },
-});
-class GridList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+}));
 
-  render() {
-    const { classes } = this.props;
-    return (
-      <table style={{ border: '1px solid red' }}>
-        <tr style={{ border: '1px solid red' }}>
-          <td>
-            <Card className={classes.Card} style={{ width: '555px', height: '260px' }}>
-              <CardActionArea>
-                <CardMedia
-                  className={classes.media}
-                  image='/static/images/cards/contemplative-reptile.jpg'
-                  title='Contemplative Reptile'
-                />
-                <CardContent>
+function GridList(props) {
+  const classes = useStyles();
+  const { data } = props;
+
+  return (
+    <div className={classes.root}>
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          {/* <Card style={{ backgroundColor: 'yellow' }} className={classes.card}> */}
+          <Grid item>
+            <Card className={classes.card} style={{ width: '100%', height: '200px' }}>
+              <CardHeader
+                action={
+                  <LightTooltip
+                    interactive
+                    title={
+                      <>
+                        <List component='nav' aria-label='main mailbox folders'>
+                          <ListItem button>
+                            <ListItemText
+                              secondary={
+                                <Typography
+                                  style={{ color: '#ff6b6b' }}
+                                  variant='subtitle2'
+                                  onClick={() => console.log('hi')}
+                                >
+                                  Edit
+                                </Typography>
+                              }
+                            />
+                          </ListItem>
+                          <ListItem button>
+                            <ListItemText
+                              secondary={
+                                <Typography
+                                  style={{ color: '#ff6b6b' }}
+                                  variant='subtitle2'
+                                >
+                                  Delete
+                                </Typography>
+                              }
+                            />
+                          </ListItem>
+                        </List>
+                      </>
+                    }
+                    dataow
+                  >
+                    <IconButton aria-label='settings'>
+                      <MoreHorizIcon />
+                    </IconButton>
+                  </LightTooltip>
+                }
+                subheader={
                   <Typography gutterBottom variant='body2' align='left' component='p'>
-                    Lizard
+                    {data[0].Data}
                   </Typography>
+                }
+              />
+
+              <CardActionArea>
+                <CardContent>
                   <Typography
                     variant='body2'
                     style={{
-                      marginTop: '45px',
+                      marginTop: '-5px',
                       fontSize: 'x-large',
                       fontWeight: 'bolder',
                     }}
                     color='textSecondary'
                     component='p'
                   >
-                    Lizards are a widespread group of squamate reptiles.
+                    {data[0].title}
                   </Typography>
                 </CardContent>
               </CardActionArea>
@@ -61,36 +116,409 @@ class GridList extends Component {
                 <Button
                   size='small'
                   color='primary'
-                  style={{ bottom: '-25px', width: 150 }}
+                  style={{ bottom: '-15px', width: 150 }}
+                  onClick={() => props.history.push('/blog/teacher/contentView')}
                 >
                   Read more
                 </Button>
+                {/* <Route path='/hello' component={ContentView} /> */}
               </CardActions>
             </Card>
-          </td>
-          <td>
-            <Card className={classes.Card} style={{ width: '265px', height: '390px' }}>
-              <CardActionArea>
-                <CardMedia
-                  className={classes.media}
-                  image='/static/images/cards/contemplative-reptile.jpg'
-                  title='Contemplative Reptile'
+          </Grid>
+          {/* </Card> */}
+          {/* <Card style={{ backgroundColor: 'yellow' }} className={classes.card}> */}
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <Card style={{ width: '100%', height: '290px' }} className={classes.card}>
+                <CardHeader
+                  action={
+                    <LightTooltip
+                      interactive
+                      title={
+                        <>
+                          <List component='nav' aria-label='main mailbox folders'>
+                            <ListItem button>
+                              <ListItemText
+                                secondary={
+                                  <Typography
+                                    style={{ color: '#ff6b6b' }}
+                                    variant='subtitle2'
+                                    onClick={() => console.log('hi')}
+                                  >
+                                    Edit
+                                  </Typography>
+                                }
+                              />
+                            </ListItem>
+                            <ListItem button>
+                              <ListItemText
+                                secondary={
+                                  <Typography
+                                    style={{ color: '#ff6b6b' }}
+                                    variant='subtitle2'
+                                  >
+                                    Delete
+                                  </Typography>
+                                }
+                              />
+                            </ListItem>
+                          </List>
+                        </>
+                      }
+                      dataow
+                    >
+                      <IconButton aria-label='settings'>
+                        <MoreHorizIcon />
+                      </IconButton>
+                    </LightTooltip>
+                  }
+                  subheader={
+                    <Typography gutterBottom variant='body2' align='left' component='p'>
+                      {data[0].Data}
+                    </Typography>
+                  }
                 />
-                <CardContent>
+                <CardActionArea>
+                  <CardContent>
+                    <Typography
+                      variant='body2'
+                      style={{
+                        marginTop: '0px',
+                        fontSize: 'x-large',
+                        fontWeight: 'bolder',
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    >
+                      {data[0].title}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+                <CardActions style={{ float: 'right' }}>
+                  <Button
+                    size='small'
+                    color='primary'
+                    style={{ bottom: '-100px', width: 150 }}
+                    onClick={() => this.props.history.push('/blog/teacher/contentView')}
+                  >
+                    Read more
+                  </Button>
+                  {/* <Route path='/hello' component={ContentView} /> */}
+                </CardActions>
+              </Card>
+            </Grid>
+            <Grid item xs={6}>
+              <Card
+                style={{ backgroundColor: 'grey', width: '100%', height: '290px' }}
+                className={classes.card}
+              >
+                <CardHeader
+                  action={
+                    <LightTooltip
+                      interactive
+                      title={
+                        <>
+                          <List component='nav' aria-label='main mailbox folders'>
+                            <ListItem button>
+                              <ListItemText
+                                secondary={
+                                  <Typography
+                                    style={{ color: '#ff6b6b' }}
+                                    variant='subtitle2'
+                                    onClick={() => console.log('hi')}
+                                  >
+                                    Edit
+                                  </Typography>
+                                }
+                              />
+                            </ListItem>
+                            <ListItem button>
+                              <ListItemText
+                                secondary={
+                                  <Typography
+                                    style={{ color: '#ff6b6b' }}
+                                    variant='subtitle2'
+                                  >
+                                    Delete
+                                  </Typography>
+                                }
+                              />
+                            </ListItem>
+                          </List>
+                        </>
+                      }
+                      dataow
+                    >
+                      <IconButton aria-label='settings'>
+                        <MoreHorizIcon />
+                      </IconButton>
+                    </LightTooltip>
+                  }
+                  subheader={
+                    <Typography gutterBottom variant='body2' align='left' component='p'>
+                      {data[0].Data}
+                    </Typography>
+                  }
+                />
+                <CardActionArea>
+                  <CardContent>
+                    <Typography
+                      variant='body2'
+                      style={{
+                        marginTop: '0px',
+                        fontSize: 'x-large',
+                        fontWeight: 'bolder',
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    >
+                      {data[1].title}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+                <CardActions style={{ float: 'right' }}>
+                  <Button
+                    size='small'
+                    color='primary'
+                    style={{ bottom: '-100px', width: 150 }}
+                    onClick={() => this.props.history.push('/blog/teacher/contentView')}
+                  >
+                    Read more
+                  </Button>
+                  {/* <Route path='/hello' component={ContentView} /> */}
+                </CardActions>
+              </Card>
+            </Grid>
+          </Grid>
+          {/* </Card> */}
+        </Grid>
+        <Grid item xs={6}>
+          {/* <Card style={{ backgroundColor: 'yellow' }} className={classes.card}> */}
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <Card style={{ width: '100%', height: '290px' }} className={classes.card}>
+                <CardHeader
+                  action={
+                    <LightTooltip
+                      interactive
+                      title={
+                        <>
+                          <List component='nav' aria-label='main mailbox folders'>
+                            <ListItem button>
+                              <ListItemText
+                                secondary={
+                                  <Typography
+                                    style={{ color: '#ff6b6b' }}
+                                    variant='subtitle2'
+                                    onClick={() => console.log('hi')}
+                                  >
+                                    Edit
+                                  </Typography>
+                                }
+                              />
+                            </ListItem>
+                            <ListItem button>
+                              <ListItemText
+                                secondary={
+                                  <Typography
+                                    style={{ color: '#ff6b6b' }}
+                                    variant='subtitle2'
+                                  >
+                                    Delete
+                                  </Typography>
+                                }
+                              />
+                            </ListItem>
+                          </List>
+                        </>
+                      }
+                      dataow
+                    >
+                      <IconButton aria-label='settings'>
+                        <MoreHorizIcon />
+                      </IconButton>
+                    </LightTooltip>
+                  }
+                  subheader={
+                    <Typography gutterBottom variant='body2' align='left' component='p'>
+                      {data[2].Data}
+                    </Typography>
+                  }
+                />
+                <CardActionArea>
+                  <CardContent>
+                    <Typography
+                      variant='body2'
+                      style={{
+                        marginTop: '0px',
+                        fontSize: 'x-large',
+                        fontWeight: 'bolder',
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    >
+                      {data[2].title}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+                <CardActions style={{ float: 'right' }}>
+                  <Button
+                    size='small'
+                    color='primary'
+                    style={{ bottom: '-100px', width: 150 }}
+                    onClick={() => this.props.history.push('/blog/teacher/contentView')}
+                  >
+                    Read more
+                  </Button>
+                  {/* <Route path='/hello' component={ContentView} /> */}
+                </CardActions>
+              </Card>
+            </Grid>
+            <Grid item xs={6}>
+              <Card style={{ width: '100%', height: '290px' }} className={classes.card}>
+                <CardHeader
+                  action={
+                    <LightTooltip
+                      interactive
+                      title={
+                        <>
+                          <List component='nav' aria-label='main mailbox folders'>
+                            <ListItem button>
+                              <ListItemText
+                                secondary={
+                                  <Typography
+                                    style={{ color: '#ff6b6b' }}
+                                    variant='subtitle2'
+                                    onClick={() => console.log('hi')}
+                                  >
+                                    Edit
+                                  </Typography>
+                                }
+                              />
+                            </ListItem>
+                            <ListItem button>
+                              <ListItemText
+                                secondary={
+                                  <Typography
+                                    style={{ color: '#ff6b6b' }}
+                                    variant='subtitle2'
+                                  >
+                                    Delete
+                                  </Typography>
+                                }
+                              />
+                            </ListItem>
+                          </List>
+                        </>
+                      }
+                      dataow
+                    >
+                      <IconButton aria-label='settings'>
+                        <MoreHorizIcon />
+                      </IconButton>
+                    </LightTooltip>
+                  }
+                  subheader={
+                    <Typography gutterBottom variant='body2' align='left' component='p'>
+                      {data[3].Data}
+                    </Typography>
+                  }
+                />
+                <CardActionArea>
+                  <CardContent>
+                    <Typography
+                      variant='body2'
+                      style={{
+                        marginTop: '0px',
+                        fontSize: 'x-large',
+                        fontWeight: 'bolder',
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    >
+                      {data[3].title}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+                <CardActions style={{ float: 'right' }}>
+                  <Button
+                    size='small'
+                    color='primary'
+                    style={{ bottom: '-100px', width: 150 }}
+                    onClick={() => props.history.push('/blog/teacher/contentView')}
+                  >
+                    Read more
+                  </Button>
+                  {/* <Route path='/hello' component={ContentView} /> */}
+                </CardActions>
+              </Card>
+            </Grid>
+          </Grid>
+          {/* </Card> */}
+          {/* <Card style={{ backgroundColor: 'yellow' }} className={classes.card}> */}
+          <Grid item>
+            <Card style={{ width: '100%', height: '200px' }} className={classes.card}>
+              <CardHeader
+                action={
+                  <LightTooltip
+                    interactive
+                    title={
+                      <>
+                        <List component='nav' aria-label='main mailbox folders'>
+                          <ListItem button>
+                            <ListItemText
+                              secondary={
+                                <Typography
+                                  style={{ color: '#ff6b6b' }}
+                                  variant='subtitle2'
+                                  onClick={() => console.log('hi')}
+                                >
+                                  Edit
+                                </Typography>
+                              }
+                            />
+                          </ListItem>
+                          <ListItem button>
+                            <ListItemText
+                              secondary={
+                                <Typography
+                                  style={{ color: '#ff6b6b' }}
+                                  variant='subtitle2'
+                                >
+                                  Delete
+                                </Typography>
+                              }
+                            />
+                          </ListItem>
+                        </List>
+                      </>
+                    }
+                    dataow
+                  >
+                    <IconButton aria-label='settings'>
+                      <MoreHorizIcon />
+                    </IconButton>
+                  </LightTooltip>
+                }
+                subheader={
                   <Typography gutterBottom variant='body2' align='left' component='p'>
-                    Lizard
+                    {data[4].Data}
                   </Typography>
+                }
+              />
+              <CardActionArea>
+                <CardContent>
                   <Typography
                     variant='body2'
                     style={{
-                      marginTop: '45px',
+                      marginTop: '-5px',
                       fontSize: 'x-large',
                       fontWeight: 'bolder',
                     }}
                     color='textSecondary'
                     component='p'
                   >
-                    Lizards are a widespread group of squamate reptiles.
+                    {data[4].title}
                   </Typography>
                 </CardContent>
               </CardActionArea>
@@ -98,94 +526,20 @@ class GridList extends Component {
                 <Button
                   size='small'
                   color='primary'
-                  style={{ bottom: '-115px', width: 150 }}
+                  style={{ bottom: '-15px', width: 150 }}
+                  onClick={() => this.props.history.push('/blog/teacher/contentView')}
                 >
                   Read more
                 </Button>
+                {/* <Route path='/hello' component={ContentView} /> */}
               </CardActions>
             </Card>
-          </td>
-          <td>
-            <Card className={classes.Card} style={{ width: '265px', height: '390px' }}>
-              <CardActionArea>
-                <CardMedia
-                  className={classes.media}
-                  image='/static/images/cards/contemplative-reptile.jpg'
-                  title='Contemplative Reptile'
-                />
-                <CardContent>
-                  <Typography gutterBottom variant='body2' align='left' component='p'>
-                    Lizard
-                  </Typography>
-                  <Typography
-                    variant='body2'
-                    style={{
-                      marginTop: '45px',
-                      fontSize: 'x-large',
-                      fontWeight: 'bolder',
-                    }}
-                    color='textSecondary'
-                    component='p'
-                  >
-                    Lizards are a widespread group of squamate reptiles.
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-              <CardActions style={{ float: 'right' }}>
-                <Button
-                  size='small'
-                  color='primary'
-                  style={{ bottom: '-115px', width: 150 }}
-                >
-                  Read more
-                </Button>
-              </CardActions>
-            </Card>
-          </td>
-        </tr>
-        <tr style={{ border: '1px solid red' }}>
-          <td style={{ border: '1px solid red' }}> hello</td>
-          <td style={{ border: '1px solid red' }}>
-            <Card className={classes.Card} style={{ width: '555px', height: '260px' }}>
-              <CardActionArea>
-                <CardMedia
-                  className={classes.media}
-                  image='/static/images/cards/contemplative-reptile.jpg'
-                  title='Contemplative Reptile'
-                />
-                <CardContent>
-                  <Typography gutterBottom variant='body2' align='left' component='p'>
-                    Lizard
-                  </Typography>
-                  <Typography
-                    variant='body2'
-                    style={{
-                      marginTop: '45px',
-                      fontSize: 'x-large',
-                      fontWeight: 'bolder',
-                    }}
-                    color='textSecondary'
-                    component='p'
-                  >
-                    Lizards are a widespread group of squamate reptiles.
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-              <CardActions style={{ float: 'right' }}>
-                <Button
-                  size='small'
-                  color='primary'
-                  style={{ bottom: '-25px', width: 150 }}
-                >
-                  Read more
-                </Button>
-              </CardActions>
-            </Card>
-          </td>
-        </tr>
-      </table>
-    );
-  }
+          </Grid>
+          {/* </Card> */}
+        </Grid>
+      </Grid>
+    </div>
+  );
 }
 
-export default withStyles(styles)(GridList);
+export default withRouter(GridList);

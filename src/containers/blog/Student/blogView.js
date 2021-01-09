@@ -18,11 +18,19 @@ import {
 } from '@material-ui/core';
 import Rating from '@material-ui/lab/Rating';
 import Avatar from '@material-ui/core/Avatar';
+import { withRouter } from 'react-router-dom';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 // import { withRouter } from 'react-router-dom';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import moment from 'moment';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-import SideBar from './sideBar';
 import Layout from '../../Layout';
+import SideBar from './sideBar';
+import axios from '../../../config/axios';
+import endpoints from '../../../config/endpoints';
 
 const styles = (theme) => ({
   root: {
@@ -68,19 +76,59 @@ const StyledRating = withStyles({
     color: '#ff3d47',
   },
 })(Rating);
-class ContentView extends Component {
+class BlogView extends Component {
   constructor(props) {
     super(props);
     this.state = {
       relatedBlog: true,
       starsRating: 0,
       feedBack: false,
+      commentOpen: false,
+      data: this.props.location.state.data && this.props.location.state.data,
+      // blogId:
     };
   }
 
+  componentDidMount() {
+    console.log(this.state.data);
+  }
+
+  handleCommentChange = (event) => {
+    this.setState({ comment: event.target.value });
+  };
+
+  submitComment = (type) => {
+    if (type === 'Submit') {
+      const { comment, blogId } = this.state;
+      const formData = new FormData();
+      // formData.set('blog_id', blogId);
+      formData.set('content', 7);
+      formData.set('comment', comment);
+
+      axios
+        .post(`${endpoints.blog.Blog}`, formData)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            this.props.history.push({
+              pathname: '/blog/student/dashboard',
+            });
+          } else {
+            console.log(result.data.message);
+          }
+        })
+        .catch((error) => {
+          // setAlert('error', error.message);
+          // setSections([]);
+          // setSearchSection([]);
+          // setSubjects([]);
+          // setSectionDisp('');
+        });
+    }
+  };
+
   render() {
     const { classes } = this.props;
-    const { relatedBlog, starsRating, feedBack } = this.state;
+    const { relatedBlog, starsRating, feedBack, commentOpen, data } = this.state;
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -107,18 +155,14 @@ class ContentView extends Component {
                           component='h2'
                           style={{ marginBottom: 10 }}
                         >
-                          Title
+                          {data.title}
                         </Typography>
-                        <CardMedia
-                          className={classes.media}
-                          image='https://en.as.com/en/imagenes/2020/02/09/football/1581260503_252075_noticia_normal.jpg'
-                          title='Contemplative Reptile'
-                        />
+                        <CardMedia className={classes.media} image={data.thumbnail} />
                         <CardHeader
                           className={classes.author}
                           avatar={
                             <Avatar aria-label='recipe' className={classes.avatar}>
-                              R
+                              {data.author.first_name.charAt(0)}
                             </Avatar>
                           }
                           //   action={
@@ -126,35 +170,43 @@ class ContentView extends Component {
                           //       <MoreVertIcon />
                           //     </IconButton>
                           //   }
-                          title='Shrimp and Chorizo Paella'
-                          subheader='September 14, 2016'
+                          title={data.author.first_name}
+                          subheader={moment(data.created_at).format('MMM DD YYYY')}
                         />
                         <CardContent>
                           <Typography variant='body2' color='textSecondary' component='p'>
-                            Lizards are a widespread group of squamate reptiles, with over
-                            6,000 species, ranging across all continents except Antarctica
+                            {data.content}
                           </Typography>
                         </CardContent>
                         <CardActions>
-                          <Button
-                            size='small'
-                            color='primary'
-                            onClick={() => {
-                              this.setState({
-                                relatedBlog: !relatedBlog,
-                                feedBack: false,
-                              });
-                            }}
+                          <ExpansionPanel
+                            onClick={() => this.setState({ commentOpen: !commentOpen })}
+                            style={{ width: '100%' }}
                           >
-                            {relatedBlog ? 'Add Review' : 'View Related Blog'}
-                          </Button>
-                          <Button
-                            size='small'
-                            color='primary'
-                            onClick={() => this.setState({ feedBack: true })}
-                          >
-                            Add Feedback
-                          </Button>
+                            <ExpansionPanelSummary>
+                              <Button
+                                size='small'
+                                color='primary'
+                                onClick={() =>
+                                  this.submitComment(
+                                    commentOpen ? 'Submit' : 'Add Comment'
+                                  )}
+                              >
+                                {commentOpen ? 'Submit' : 'Add Comment'}
+                              </Button>
+                            </ExpansionPanelSummary>
+                            <ExpansionPanelDetails>
+                              <TextField
+                                fullWidth
+                                id='outlined-textarea'
+                                label='Multiline Placeholder'
+                                placeholder='Placeholder'
+                                multiline
+                                variant='outlined'
+                                onChange={(e) => this.handleCommentChange(e)}
+                              />
+                            </ExpansionPanelDetails>
+                          </ExpansionPanel>
                         </CardActions>
                       </Card>
                     </Grid>
@@ -199,89 +251,8 @@ class ContentView extends Component {
                             </Button>
                           </CardContent>
                         </Card>
-                      ) : relatedBlog ? (
-                        <>
-                          <SideBar />
-                        </>
                       ) : (
-                        <Card className={classes.reviewCard}>
-                          <CardContent>
-                            <Typography
-                              align='center'
-                              component='h2'
-                              style={{ fontWeight: 500 }}
-                              variant='body1'
-                            >
-                              Review
-                            </Typography>
-                            <Divider variant='middle' />
-                            <Typography
-                              align='center'
-                              color='textPrimary'
-                              component='h2'
-                              variant='overline'
-                            >
-                              CLARITY
-                            </Typography>
-                            <StyledRating
-                              name='size-medium'
-                              defaultValue={starsRating}
-                              emptyIcon={
-                                <StarBorderIcon color='primary' fontSize='inherit' />
-                              }
-                            />
-                            <TextField
-                              id='outlined-textarea'
-                              placeholder='Add Review'
-                              multiline
-                              variant='outlined'
-                            />
-                            <Divider variant='middle' />
-                            <Typography
-                              align='center'
-                              color='textPrimary'
-                              component='p'
-                              variant='overline'
-                            >
-                              GRAMMER
-                            </Typography>
-                            <StyledRating
-                              name='size-medium'
-                              defaultValue={starsRating}
-                              emptyIcon={
-                                <StarBorderIcon color='primary' fontSize='inherit' />
-                              }
-                            />
-                            <TextField
-                              id='outlined-textarea'
-                              placeholder='Add Review'
-                              multiline
-                              variant='outlined'
-                            />
-                            <Divider variant='middle' />
-                            <Typography
-                              align='center'
-                              color='textPrimary'
-                              component='p'
-                              variant='overline'
-                            >
-                              STRUCTURE
-                            </Typography>
-                            <StyledRating
-                              name='size-medium'
-                              defaultValue={starsRating}
-                              emptyIcon={
-                                <StarBorderIcon color='primary' fontSize='inherit' />
-                              }
-                            />
-                            <TextField
-                              id='outlined-textarea'
-                              placeholder='Add Review'
-                              multiline
-                              variant='outlined'
-                            />
-                          </CardContent>
-                        </Card>
+                        <SideBar />
                       )}
                     </Grid>
                   </Grid>
@@ -294,4 +265,4 @@ class ContentView extends Component {
     );
   }
 }
-export default withStyles(styles)(ContentView);
+export default withRouter(withStyles(styles)(BlogView));

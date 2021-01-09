@@ -3,7 +3,7 @@
 /* eslint-disable react/no-unused-state */
 import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
-import { Grid, Button, Divider } from '@material-ui/core';
+import { Grid, Button, Divider, GridList } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
@@ -16,7 +16,8 @@ import Box from '@material-ui/core/Box';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
 import MobileDatepicker from './datePicker';
-import PendingReview from './PendingReview';
+// import PendingReview from './PendingReview';
+import gridList from '../Components/gridList';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -101,6 +102,32 @@ class StudentDashboard extends Component {
   render() {
     const { classes } = this.props;
     const { tabValue } = this.state;
+    const arr = [
+      {
+        title: 'Title 1',
+        Data: '25.12.1997',
+      },
+      {
+        title: 'Title 2',
+        Data: '03.12.1997',
+      },
+      {
+        title: 'Messi = Goat',
+        Data: '03.12.1997',
+      },
+      {
+        title: 'Title 4',
+        Data: '25.12.1997',
+      },
+      {
+        title: 'Title 6',
+        Data: '03.12.1997',
+      },
+      {
+        title: 'Messi is Goat',
+        Data: '03.12.1997',
+      },
+    ];
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -201,7 +228,7 @@ class StudentDashboard extends Component {
                         </li>
                         {/* </AppBar> */}
                         <TabPanel value={tabValue} index={0}>
-                          <PendingReview />
+                          <gridList data={arr} />
                         </TabPanel>
                         <TabPanel value={tabValue} index={1}>
                           Item Two

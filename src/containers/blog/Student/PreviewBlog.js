@@ -19,9 +19,11 @@ import {
 import Rating from '@material-ui/lab/Rating';
 import Avatar from '@material-ui/core/Avatar';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
-// import { withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
+import axios from '../../../config/axios';
+import endpoints from '../../../config/endpoints';
 
 const styles = (theme) => ({
   root: {
@@ -74,8 +76,58 @@ class ContentView extends Component {
       relatedBlog: true,
       starsRating: 0,
       feedBack: false,
+      genreId: this.props.location.state.genreId,
+      title: this.props.location.state.title,
+      content: this.props.location.state.textEditorContent,
+      studentName: this.props.location.state.studentName,
+      date: this.props.location.state.creationDate,
+      file: this.props.location.state.file,
     };
   }
+
+  componentDidMount() {
+    const { file } = this.state;
+    const imageUrl = URL.createObjectURL(file[0]);
+    this.setState({ imageUrl });
+  }
+
+  WriteBlogNav = () => {
+    const { content, title, file } = this.state;
+    this.props.history.push({
+      pathname: '/blog/student/write-blog',
+      state: { content, title, file },
+    });
+  };
+
+  submitBlog = (type) => {
+    const { title, content, file, genreId } = this.state;
+    const formData = new FormData();
+    formData.set('title', title);
+    formData.set('content', content);
+    formData.set('thumbnail', file);
+    // formData.append('subject_id', subject_id);
+    formData.set('genre_id', genreId);
+    formData.set('status', type == 'draft' ? 2 : 8);
+
+    axios
+      .post(`${endpoints.blog.Blog}`, formData)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          this.props.history.push({
+            pathname: '/blog/student/dashboard',
+          });
+        } else {
+          console.log(result.data.message);
+        }
+      })
+      .catch((error) => {
+        // setAlert('error', error.message);
+        // setSections([]);
+        // setSearchSection([]);
+        // setSubjects([]);
+        // setSectionDisp('');
+      });
+  };
 
   render() {
     const { classes } = this.props;
@@ -106,40 +158,52 @@ class ContentView extends Component {
                           component='h2'
                           style={{ marginBottom: 10 }}
                         >
-                          Title
+                          {this.state.title}
                         </Typography>
                         <CardMedia
                           className={classes.media}
-                          image='https://en.as.com/en/imagenes/2020/02/09/football/1581260503_252075_noticia_normal.jpg'
+                          image={this.state.imageUrl}
                           title='Contemplative Reptile'
                         />
                         <CardHeader
                           className={classes.author}
                           avatar={
                             <Avatar aria-label='recipe' className={classes.avatar}>
-                              R
+                              {this.state.studentName && this.state.studentName.charAt(0)}
                             </Avatar>
                           }
-                          //   action={
-                          //     <IconButton aria-label='settings'>
-                          //       <MoreVertIcon />
-                          //     </IconButton>
-                          //   }
-                          title='Shrimp and Chorizo Paella'
-                          subheader='September 14, 2016'
+                          title={this.state.studentName}
+                          subheader={this.state.date}
                         />
                         <CardContent>
                           <Typography variant='body2' color='textSecondary' component='p'>
-                            Lizards are a widespread group of squamate reptiles, with over
-                            6,000 species, ranging across all continents except Antarctica
+                            {this.state.content}
                           </Typography>
                         </CardContent>
                         <CardActions>
-                          <Button style={{ width: 150 }} size='small' color='primary'>
+                          <Button
+                            style={{ width: 150 }}
+                            size='small'
+                            color='primary'
+                            onClick={this.WriteBlogNav}
+                          >
                             Edit
                           </Button>
-                          <Button style={{ width: 150 }} size='small' color='primary'>
+                          <Button
+                            style={{ width: 150 }}
+                            size='small'
+                            color='primary'
+                            onClick={() => this.submitBlog('Publish')}
+                          >
                             Publish
+                          </Button>
+                          <Button
+                            style={{ width: 150 }}
+                            size='small'
+                            color='primary'
+                            onClick={() => this.submitBlog('Draft')}
+                          >
+                            Draft
                           </Button>
                         </CardActions>
                       </Card>
@@ -195,4 +259,4 @@ class ContentView extends Component {
     );
   }
 }
-export default withStyles(styles)(ContentView);
+export default withRouter(withStyles(styles)(ContentView));

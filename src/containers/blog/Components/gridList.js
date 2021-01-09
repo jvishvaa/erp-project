@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 
 function GridList(props) {
   const classes = useStyles();
-  const { arr } = props;
+  const { data } = props;
 
   return (
     <div className={classes.root}>
@@ -82,7 +82,7 @@ function GridList(props) {
                         </List>
                       </>
                     }
-                    arrow
+                    dataow
                   >
                     <IconButton aria-label='settings'>
                       <MoreHorizIcon />
@@ -91,7 +91,7 @@ function GridList(props) {
                 }
                 subheader={
                   <Typography gutterBottom variant='body2' align='left' component='p'>
-                    {arr[0].Data}
+                    {data[0].Data}
                   </Typography>
                 }
               />
@@ -108,7 +108,7 @@ function GridList(props) {
                     color='textSecondary'
                     component='p'
                   >
-                    {arr[0].title}
+                    {data[0].title}
                   </Typography>
                 </CardContent>
               </CardActionArea>
@@ -165,7 +165,7 @@ function GridList(props) {
                           </List>
                         </>
                       }
-                      arrow
+                      dataow
                     >
                       <IconButton aria-label='settings'>
                         <MoreHorizIcon />
@@ -174,7 +174,7 @@ function GridList(props) {
                   }
                   subheader={
                     <Typography gutterBottom variant='body2' align='left' component='p'>
-                      {arr[0].Data}
+                      {data[0].Data}
                     </Typography>
                   }
                 />
@@ -190,7 +190,7 @@ function GridList(props) {
                       color='textSecondary'
                       component='p'
                     >
-                      {arr[0].title}
+                      {data[0].title}
                     </Typography>
                   </CardContent>
                 </CardActionArea>
@@ -247,7 +247,7 @@ function GridList(props) {
                           </List>
                         </>
                       }
-                      arrow
+                      dataow
                     >
                       <IconButton aria-label='settings'>
                         <MoreHorizIcon />
@@ -256,7 +256,7 @@ function GridList(props) {
                   }
                   subheader={
                     <Typography gutterBottom variant='body2' align='left' component='p'>
-                      {arr[0].Data}
+                      {data[0].Data}
                     </Typography>
                   }
                 />
@@ -272,7 +272,7 @@ function GridList(props) {
                       color='textSecondary'
                       component='p'
                     >
-                      {arr[1].title}
+                      {data[1].title}
                     </Typography>
                   </CardContent>
                 </CardActionArea>
@@ -332,7 +332,7 @@ function GridList(props) {
                           </List>
                         </>
                       }
-                      arrow
+                      dataow
                     >
                       <IconButton aria-label='settings'>
                         <MoreHorizIcon />
@@ -341,7 +341,7 @@ function GridList(props) {
                   }
                   subheader={
                     <Typography gutterBottom variant='body2' align='left' component='p'>
-                      {arr[2].Data}
+                      {data[2].Data}
                     </Typography>
                   }
                 />
@@ -357,7 +357,7 @@ function GridList(props) {
                       color='textSecondary'
                       component='p'
                     >
-                      {arr[2].title}
+                      {data[2].title}
                     </Typography>
                   </CardContent>
                 </CardActionArea>
@@ -411,7 +411,7 @@ function GridList(props) {
                           </List>
                         </>
                       }
-                      arrow
+                      dataow
                     >
                       <IconButton aria-label='settings'>
                         <MoreHorizIcon />
@@ -420,7 +420,7 @@ function GridList(props) {
                   }
                   subheader={
                     <Typography gutterBottom variant='body2' align='left' component='p'>
-                      {arr[3].Data}
+                      {data[3].Data}
                     </Typography>
                   }
                 />
@@ -436,7 +436,7 @@ function GridList(props) {
                       color='textSecondary'
                       component='p'
                     >
-                      {arr[3].title}
+                      {data[3].title}
                     </Typography>
                   </CardContent>
                 </CardActionArea>
@@ -493,7 +493,7 @@ function GridList(props) {
                         </List>
                       </>
                     }
-                    arrow
+                    dataow
                   >
                     <IconButton aria-label='settings'>
                       <MoreHorizIcon />
@@ -502,7 +502,7 @@ function GridList(props) {
                 }
                 subheader={
                   <Typography gutterBottom variant='body2' align='left' component='p'>
-                    {arr[4].Data}
+                    {data[4].Data}
                   </Typography>
                 }
               />
@@ -518,7 +518,7 @@ function GridList(props) {
                     color='textSecondary'
                     component='p'
                   >
-                    {arr[4].title}
+                    {data[4].title}
                   </Typography>
                 </CardContent>
               </CardActionArea>

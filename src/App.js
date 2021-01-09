@@ -46,6 +46,7 @@ import {
   WriteBlog,
   PreviewBlog,
   StudentDashboard,
+  BlogView,
 } from './containers/blog';
 
 const theme = createMuiTheme({
@@ -207,6 +208,9 @@ function App() {
                 </Route>
                 <Route exact path='/blog/student/preview-blog'>
                   {({ match }) => <PreviewBlog match={match} />}
+                </Route>
+                <Route exact path='/blog/student/view-blog'>
+                  {({ match }) => <BlogView match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

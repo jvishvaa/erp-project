@@ -22,13 +22,15 @@ import Avatar from '@material-ui/core/Avatar';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import Dropzone from 'react-dropzone';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import moment from 'moment';
 import { withRouter } from 'react-router-dom';
 // import { withRouter } from 'react-router-dom';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
 import TinyMce from '../../../components/TinyMCE/tinyMce';
 import PreviewBlog from './PreviewBlog';
-import RouterButton from '../../../components/RouterButton/RouterButton';
+import axios from '../../../config/axios';
+import endpoints from '../../../config/endpoints';
 
 // const PreviewBlogs = {
 //   label: 'Preview Blogs',
@@ -89,11 +91,98 @@ class WriteBlog extends Component {
       starsRating: 0,
       feedBack: false,
       key: 0,
-      title: '',
+      title:
+        this.props.location.state.title && this.props.location.state.title.length !== 0
+          ? this.props.location.state.title
+          : '',
       TITLE_CHARACTER_LIMIT: 100,
       Preview: false,
+      detail: this.props.location.state.detail,
+      role_details: JSON.parse(localStorage.getItem('userDetails')),
+      genreList: [],
+      creationDate: new Date(),
+      textEditorContent:
+        this.props.location.state.content &&
+        this.props.location.state.content.length !== 0
+          ? this.props.location.state.content
+          : '',
+      file:
+        this.props.location.state.file && this.props.location.state.file.length !== 0
+          ? this.props.location.state.file
+          : '',
     };
   }
+
+  componentDidMount() {
+    this.listSubjects();
+    this.listGenre();
+    const { creationDate } = this.state;
+    let studentName = JSON.parse(localStorage.getItem('userDetails'));
+    studentName = studentName.first_name.toString();
+    const date = moment(creationDate).format('DD-MM-YYYY');
+    this.setState({
+      studentName,
+      creationDate: date,
+      // textEditorContent: localStorage.getItem('blogContent'),
+    });
+  }
+
+  listGenre = () => {
+    axios
+      .get(`${endpoints.blog.genreList}`)
+      .then((res) => {
+        this.setState({ genreList: res.data.result });
+      })
+      .catch((error) => {});
+  };
+
+  listSubjects = async () => {
+    const { role_details } = this.state;
+    // const branchId = role_details.role_details.branch;
+    // const gradeId = [24];
+    // const sectionIds = [25];
+    axios
+      .get(`${endpoints.academics.subjects}`)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((error) => {});
+  };
+
+  handlePostBlog = () => {
+    const { title, textEditorContent, file, genreId } = this.state;
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('content', textEditorContent);
+    formData.append('thumbnail', file);
+    // formData.append('subject_id', subject_id);
+    formData.append('genre_id', genreId);
+    // formData.append('status', status_id);
+    // if (branch && year && file) {
+    // setUploadFlag(true);
+    console.log(formData);
+    // axios
+    //   .post('/erp_user/upload_bulk_user/', formData)
+    //   .then((result) => {
+    //     if (result.data.status_code === 200) {
+    // setBranch(null);
+    // setYear(null);
+    // setFile(null);
+    // onUploadSuccess();
+    // setAlert('success', result.data.message);
+    // setUploadFlag(false);
+    // history.push('/user-management/bulk-upload');
+    // } else {
+    // setAlert('error', result.data.description);
+    // setUploadFlag(false);
+    // }
+    // })
+    // .catch((error) => {
+    // setAlert('error', error.response.data.description);
+    // setUploadFlag(false);
+    // });
+    // }
+  };
 
   handleTextEditor = (content) => {
     const { blogId, isEdit } = this.state;
@@ -103,14 +192,17 @@ class WriteBlog extends Component {
     // eslint-disable-next-line no-param-reassign
     content = content.replace(/&nbsp;/g, '');
     this.setState({ textEditorContent: content, fadeIn: false });
+    // localStorage.setItem('blogContent', content);
   };
 
   handleTitle = (event) => {
+    console.log(event.target.value);
     this.setState({ title: event.target.value });
   };
 
   onDrop = (file) => {
     this.setState({ file });
+    console.log(file);
   };
 
   files = () => {
@@ -120,6 +212,25 @@ class WriteBlog extends Component {
         {file.name} -{file.size} bytes
       </li>
     ));
+  };
+
+  handleGenre = (data) => {
+    this.setState({ genreId: data.id });
+  };
+
+  PreviewBlogNav = () => {
+    const {
+      textEditorContent,
+      title,
+      genreId,
+      studentName,
+      creationDate,
+      file,
+    } = this.state;
+    this.props.history.push({
+      pathname: '/blog/student/preview-blog',
+      state: { studentName, creationDate, genreId, textEditorContent, title, file },
+    });
   };
 
   render() {
@@ -134,9 +245,19 @@ class WriteBlog extends Component {
       title,
       TITLE_CHARACTER_LIMIT,
       Preview,
+      genreList,
+      genreId,
+      studentName,
+      creationDate,
     } = this.state;
     return Preview ? (
-      <PreviewBlog hello='hi' />
+      <PreviewBlog
+        content={textEditorContent}
+        title={title}
+        genreId={genreId}
+        studentName={studentName}
+        date={creationDate}
+      />
     ) : (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -164,11 +285,12 @@ class WriteBlog extends Component {
                     <Autocomplete
                       size='small'
                       id='combo-box-demo'
-                      options={[]}
-                      getOptionLabel={(option) => option.title}
+                      options={genreList}
+                      getOptionLabel={(option) => option.genre}
                       style={{ width: 300 }}
+                      onChange={(e, data) => this.handleGenre(data)}
                       renderInput={(params) => (
-                        <TextField {...params} label='Combo box' variant='outlined' />
+                        <TextField {...params} label='Genre' variant='outlined' />
                       )}
                     />
                   </Grid>
@@ -185,6 +307,7 @@ class WriteBlog extends Component {
                       helperText={`Word Count: ${title.length}/${TITLE_CHARACTER_LIMIT}`}
                       onChange={this.handleTitle}
                       multiline
+                      value={this.state.title}
                       label='Blog Title'
                       size='medium'
                       fullWidth
@@ -260,7 +383,7 @@ class WriteBlog extends Component {
                         <Button
                           size='small'
                           style={{ width: 150 }}
-                          onClick={() => this.setState({ Preview: true })}
+                          onClick={this.PreviewBlogNav}
                           color='primary'
                         >
                           Preview Blog

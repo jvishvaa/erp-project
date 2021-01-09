@@ -8,16 +8,18 @@ import TextField from '@material-ui/core/TextField';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
+import { withRouter } from 'react-router-dom';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 // import { connect } from 'react-redux';
-// import { withRouter } from 'react-router-dom';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
 import MobileDatepicker from './datePicker';
-import PendingReview from './PendingReview';
-import GridList from '../Components/gridList';
+// import PendingReview from './PendingReview';
+import GridList from './gridList';
+import axios from '../../../config/axios';
+import endpoints from '../../../config/endpoints';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -70,7 +72,13 @@ class StudentDashboard extends Component {
     super(props);
     this.state = {
       tabValue: 0,
+      pageNo: 0,
+      pageSize: 6,
     };
+  }
+
+  componentDidMount() {
+    this.getBlog(2);
   }
 
   getDaysAfter = (date, amount) => {
@@ -97,37 +105,77 @@ class StudentDashboard extends Component {
 
   handleTabChange = (event, newValue) => {
     this.setState({ tabValue: newValue });
+    const blogTab = newValue === 0 ? 2 : newValue === 2 ? 8 : 2;
+    this.getBlog(blogTab);
+  };
+
+  WriteBlogNav = () => {
+    this.props.history.push({
+      pathname: '/blog/student/write-blog',
+      state: { gradeId: 'hello' },
+    });
+  };
+
+  getBlog = (status) => {
+    const { pageNo, pageSize } = this.state;
+    axios
+      .get(
+        `${endpoints.blog.Blog}?page_number=${
+          pageNo + 1
+        }&page_size=${pageSize}&status=${status}`
+      )
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          this.setState({ data: result.data.result.data });
+        } else {
+          console.log(result.data.message);
+        }
+      })
+      .catch((error) => {
+        // setAlert('error', error.message);
+        // setSections([]);
+        // setSearchSection([]);
+        // setSubjects([]);
+        // setSectionDisp('');
+      });
   };
 
   render() {
     const { classes } = this.props;
-    const { tabValue } = this.state;
-    const arr = [
-      {
-        title: 'Title 1',
-        Data: '25.12.1997',
-      },
-      {
-        title: 'Title 2',
-        Data: '03.12.1997',
-      },
-      {
-        title: 'Messi = Goat',
-        Data: '03.12.1997',
-      },
-      {
-        title: 'Title 4',
-        Data: '25.12.1997',
-      },
-      {
-        title: 'Title 6',
-        Data: '03.12.1997',
-      },
-      {
-        title: 'Messi is Goat',
-        Data: '03.12.1997',
-      },
-    ];
+    const { tabValue, data } = this.state;
+    // const arr = [
+    //   {
+    //     id: 1,
+    //     title: 'Title 2221',
+    //     Data: '25.12.1997',
+    //   },
+    //   {
+    //     id: 2,
+    //     title: 'Title 2',
+    //     Data: '03.12.1997',
+    //   },
+    //   {
+    //     id: 3,
+    //     title: 'Messi = Goat',
+    //     Data: '03.12.1997',
+    //   },
+    //   {
+    //     id: 4,
+    //     title: 'Title 4',
+    //     Data: '25.12.1997',
+    //   },
+    //   {
+    //     id: 5,
+    //     title: 'Title 6',
+    //     Data: '03.12.1997',
+    //   },
+    //   {
+    //     id: 6,
+    //     title: 'Messi is Goat',
+    //     Data: '03.12.1997',
+    //   },
+    // ];
+
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -197,7 +245,18 @@ class StudentDashboard extends Component {
                         Published Blogs
                       </Button>
                     </Grid>
+                    <Grid item>
+                      <Button
+                        style={{ fontSize: 'small', margin: '20px', width: 150 }}
+                        color='primary'
+                        size='small'
+                        onClick={this.WriteBlogNav}
+                      >
+                        Create New
+                      </Button>
+                    </Grid>
                   </Grid>
+                  <Divider variant='middle' />
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
                       <div className={classes.tabRoot}>
@@ -228,16 +287,16 @@ class StudentDashboard extends Component {
                         </li>
                         {/* </AppBar> */}
                         <TabPanel value={tabValue} index={0}>
-                          <GridList arr={arr} />
+                          {data && <GridList data={data} />}
                         </TabPanel>
                         <TabPanel value={tabValue} index={1}>
                           Item Two
                         </TabPanel>
                         <TabPanel value={tabValue} index={2}>
-                          Item Three
+                          {data && <GridList data={data} />}
                         </TabPanel>
                         <TabPanel value={tabValue} index={3}>
-                          Item Four
+                          {data && <GridList data={data} />}
                         </TabPanel>
                       </div>
                     </Grid>
@@ -251,4 +310,4 @@ class StudentDashboard extends Component {
     );
   }
 }
-export default withStyles(styles)(StudentDashboard);
+export default withRouter(withStyles(styles)(StudentDashboard));
