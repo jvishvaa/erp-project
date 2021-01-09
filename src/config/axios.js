@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-    baseURL: `${window.location.origin}/qbox`,
-  // baseURL: 'https://erpnew.letseduvate.com/qbox',
+       baseURL: `${window.location.origin}/qbox`,
+  //  baseURL: 'https://erpnew.letseduvate.com/qbox',
   // baseURL: 'http://13.234.252.195:443',
   // baseURL: 'http://localhost:8000/qbox',
 });
@@ -12,7 +12,6 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(async function (config) {
   const user = await localStorage.getItem('userDetails');
   const requestConfig = config;
-  // requestConfig.headers['x-api-key']= "vikash@12345#1231";
   if (user) {
     requestConfig.headers.Authorization = `Bearer ${JSON.parse(user).token}`;
   }

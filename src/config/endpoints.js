@@ -14,7 +14,7 @@ export default {
   },
   userManagement: {
     bulkUpload: '/erp_user/uploaded-users-status/',
-    academicYear: '/erp_user/list-academic_year/',
+    academicYear: '/erp_user/list-academic_year/'
   },
   communication: {
     roles: '/erp_user/roles/',
@@ -81,15 +81,15 @@ export default {
     fileUpload: '/academic/upload-question-file/',
     submitHomework: '/academic/homework-submission/',
   },
-  lessonReport: {
-    volumes: '/lesson_plan/list-volume/',
-    subjects: '/academic/lesson-plan-subjects/',
-    lessonList: '/academic/lesson-completed-report/',
-    lessonViewMoreData: '/academic/user-chapters-details/',
+  lessonReport:{
+    volumes:'/lesson_plan/list-volume/',
+    subjects:'/academic/lesson-plan-subjects/',
+    lessonList:'/academic/lesson-completed-report/',
+    lessonViewMoreData:'/academic/user-chapters-details/',
   },
-  coordinatorTeacherHomeworkApi: {
-    getAllTeacherList: '/academic/teachers-list/',
-    getTecherPerformance: '/academic/hw-teacher-performance/',
+  coordinatorTeacherHomeworkApi:{
+    getAllTeacherList:'/academic/teachers-list/',
+    getTecherPerformance:'/academic/hw-teacher-performance/'
   },
   lessonPlan: {
     periodData: `${baseURLCentral}/lesson_plan/chapter-period/`,
@@ -101,8 +101,14 @@ export default {
     periodCompleted: '/academic/lessonplan-completed-status/',
     periodCompletedStatus: '/academic/lesson-status/',
     bulkDownload: `${baseURLCentral}/lesson_plan/bulk_download/`,
-    overviewSynopsis: `${baseURLCentral}/lesson_plan/list-lesson-overview/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
+  },  
+  discussionForum:{
+   categoryList: '/academic/categories/',
+   branch: '/erp_user/branch/',
+   grade:'/erp_user/grademapping/',
+   filterCategory: '/academic/posts/',
+   postLike: '/academic/posts-like-users/',
   },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
