@@ -131,15 +131,16 @@ const Discussionforum = () => {
         //     console.log(err)
         // })
         const body = {
-            categoryValue: categoryValue,
-            gradeValue: gradeValue
+            categoryValue: categoryValue ? categoryValue: '',
+            gradeValue: gradeValue ? gradeValue: ''
         }
         filterValid(body)
     }
 
     const filterValid = (body) => {
         // console.log(body.gradeValue.grade_id, "body")
-            if(body && body.gradeValue !==null && body.gradeValue.grade_id !== undefined &&  body && body.gradeValue.grade_id !== null && body && body.categoryValue.id === undefined){
+            if(body && body.gradeValue !==null &&  body.categoryValue.id === undefined){
+               
                 axiosInstance.get(`${endpoints.discussionForum.filterCategory}?grade=${gradeValue.grade_id}`).then(res => {
                     if(res.data.status_code === 200){
                         setPostListRes(res.data.data.results.slice(0, 1))
@@ -149,12 +150,11 @@ const Discussionforum = () => {
                     }
                 }).catch(err => {
                     setAlert('error', err.message)
+               
                     console.log(err)
                 })
-
-               
             }
-            else if(body && body.categoryValue.id !== undefined  && body.gradeValue.grade_id === undefined ){
+            else if(body && body.categoryValue.id !== undefined  && body.gradeValue.grade_id === undefined){
                 axiosInstance.get(`${endpoints.discussionForum.filterCategory}?category=${categoryValue.id}`).then(res => {
                     if(res.data.data.results.length){
                         setPostListRes(res.data.data.results.slice(0, 1))
@@ -188,7 +188,6 @@ const Discussionforum = () => {
 
     const getPostList = () => {
         axiosInstance.get(`${endpoints.discussionForum.filterCategory}`).then(res => {
-            //  console.log(res.data, "popop")
             if (res.data.status_code === 200) {
                 setPostListRes(res.data.data.results);
                 setPostListResPagenation(res.data.data)
@@ -219,7 +218,6 @@ const Discussionforum = () => {
         setPage(value);
 
     }
-    // console.log(PostListResPagenation, "PostListResPagenation")
     return (
         <Layout>
             <div className={`bread-crumbs-container ds-forum`}>
