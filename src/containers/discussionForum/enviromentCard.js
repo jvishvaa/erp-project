@@ -108,7 +108,7 @@ export default function Enviroment(props) {
         setAnchorEl(null);
       };
     const { list, index, handleViewmore } = props;
-    // console.log(list, "list")
+   
     return (
         <div className="env-card">
             <Card className={classes.root} style={{ border: index % 2 === 0 ? '1px solid #FEE4D4' : '1px solid #DDEF96' }}>
@@ -224,6 +224,7 @@ export default function Enviroment(props) {
                             </Popper> : ''}
                           
                         </IconButton>
+                        <IconButton  onClick={() => handleViewmore(list, true)}>
                         <SvgIcon
                             component={() => (
                                 <img
@@ -233,6 +234,7 @@ export default function Enviroment(props) {
                                 />
                             )}
                         />
+                        </IconButton>
                         <SvgIcon
                             component={() => (
                                 <img
