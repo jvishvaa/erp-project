@@ -31,6 +31,8 @@ const Discussionforum = () => {
     const [viewMoreList, setViewMoreList] = useState(null);
     const [PostListResPagenation, setPostListResPagenation] = useState(null);
     const [page, setPage] = React.useState(1);
+    const [anstrue , setanstrue] = React.useState(false);
+
     const { setAlert } = useContext(AlertNotificationContext);
 
 
@@ -210,9 +212,10 @@ const Discussionforum = () => {
         setGradeValue(null);
         getPostList()
     }
-    const handleViewmore = (list) => {
+    const handleViewmore = (list, ansTrue) => {
         setViewMoreList(list)
         setisViewmoreView(true)
+        setanstrue(ansTrue)
     }
     const handlePageChange = (event, value) => {
         setPage(value);
@@ -223,6 +226,7 @@ const Discussionforum = () => {
             <div className={`bread-crumbs-container ds-forum`}>
                 <CommonBreadcrumbs
                     componentName='Discussion Forum'
+                    childComponentName={isViewmoreView ? "Post" : ''}
                 />
             </div>
             {  !isViewmoreView && <div className="df-container" >
@@ -442,7 +446,7 @@ const Discussionforum = () => {
             }
             <div className="view-more-container">
                 {
-                    isViewmoreView && <Viewmore viewMoreList={viewMoreList} />
+                    isViewmoreView && <Viewmore viewMoreList={viewMoreList} anstrue={anstrue} />
                 }
             </div>
             {/* <div className="pagination-cont">

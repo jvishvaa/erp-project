@@ -93,9 +93,13 @@ const Viewmore = (props) => {
 
     const openLikeBox = () => {
         console.log(viewMoreList, "viewMoreList")
-        // setInputBox(!inputBox);
         setAnchorEl(anchorEl ? null : '');
     }
+
+  
+    React.useEffect(() => {
+        setInputBox(props.anstrue);
+    }, [inputBox])
     return (
         <div className="view-more-info">
             <Grid container spacing={3}>
