@@ -212,7 +212,6 @@ const Discussionforum = () => {
         getPostList()
     }
     const handleViewmore = (list) => {
-        console.log(list, "list")
         setViewMoreList(list)
         setisViewmoreView(true)
     }
@@ -425,7 +424,7 @@ const Discussionforum = () => {
                     </div>
                 </Grid> 
                 
-                <div className="env-card-container" style={{ display: 'grid', gridTemplateColumns: 'auto auto auto auto', width: '95%' }}>
+                <div className="env-card-container" style={{ display: 'grid', gridTemplateColumns: 'auto auto auto auto', width: '93%' }}>
                     {
                         postListRes && postListRes.map((list, index) => {
                             // console.log(list, "list")

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Grid from '@material-ui/core/Grid';
 import Usericon from '../../assets/images/user.svg'
 import { SvgIcon, Typography, Divider, Button, } from '@material-ui/core';
@@ -52,15 +52,19 @@ const Viewmore = (props) => {
     const [likeList, setLikelist] = React.useState([]);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [answers, setAnswers] = React.useState([]);
+    const [showMenu, setShowMenu] = useState(false);
+    const [showPeriodIndex, setShowPeriodIndex] = useState();
+
+    
     const { viewMoreList } = props;
     const open = Boolean(anchorEl);
     const id = open ? 'transitions-popper' : undefined;
 
     const fetchPostLike = (event, list) => {
-        setInputBox(!inputBox)
         setAnchorEl(anchorEl ? null : event.currentTarget);
         axiosInstance.get(`${endpoints.discussionForum.postLike}?post=${list.id}&&type=1`).then((res) => {
-            setLikelist(res.data.result.results)
+            setLikelist(res.data.result.results);
+            setInputBox(false)
         }).catch(err => {
             console.log(err)
         })
@@ -68,13 +72,18 @@ const Viewmore = (props) => {
 
     }
 
-    const openAnswerBox = (e, viewMoreList) => {
 
-        setInputBox(!inputBox);
-        setAnchorEl(anchorEl ? null : '');
+  const handlePeriodMenuClose = (index) => {
+    setShowMenu(false);
+    setShowPeriodIndex();
+  };
+
+
+    const openAnswerBox = (e, viewMoreList) => {
         axiosInstance.get(`${endpoints.discussionForum.postLike}?post=${viewMoreList.id}&&type=2`).then((res) => {
-            //    console.log(res, "popopo")
             if (res.data.status_code === 200) {
+                setInputBox(!inputBox);
+                setAnchorEl(anchorEl ? null : '');
                 setAnswers(res.data.result.results)
             }
         }).catch(err => {
@@ -84,7 +93,7 @@ const Viewmore = (props) => {
 
     const openLikeBox = () => {
         console.log(viewMoreList, "viewMoreList")
-        setInputBox(!inputBox);
+        // setInputBox(!inputBox);
         setAnchorEl(anchorEl ? null : '');
     }
     return (
@@ -255,7 +264,7 @@ const Viewmore = (props) => {
                         <div className="comment-box">
                             {
                                 answers && answers.map((ans, index) => {
-                                    console.log(ans, "popo")
+                                   
                                     return (
                                         <>
                                             <div className="comment-avatar" key={index}>
@@ -293,7 +302,7 @@ const Viewmore = (props) => {
                                             </div>
                                             <div className="replay">
                                                 <a href="#" className="re-btn">Reply</a>
-                                                <IconButton onClick={openLikeBox}>
+                                                <IconButton>
                                                     <SvgIcon
                                                         component={() => (
                                                             <img

@@ -56,12 +56,19 @@ export default function Enviroment(props) {
     const [callLike, setCallLike] = React.useState(false);
     const [likeList, setLikelist] = useState(Array.from(Array(30).keys(), n => n + 1));;
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [popoverShow , setpopoverShow]  = React.useState(false);
     // const [isFetching, setIsFetching] = useState(false);
     const [isFetching, setIsFetching] = useInfiniteScroll(fetchMoreListItems);
+    const [showPeriodIndex, setShowPeriodIndex] = useState();
+    const [showMenu, setShowMenu] = useState(false);
 
 
-    const handleClick = (event, list) => {
+
+
+    const handleClick = (event, list, index) => {
+        setShowPeriodIndex(index)
         setAnchorEl(anchorEl ? null : event.currentTarget);
+        setpopoverShow(!popoverShow)
         fetchPostLike(list)
     };
 
@@ -72,7 +79,12 @@ export default function Enviroment(props) {
         }, 2000);
     }
 
-
+    const handlePeriodMenuClose = (index) => {
+        setShowMenu(false);
+        setShowPeriodIndex();
+      };
+    
+    
 
 
     const open = Boolean(anchorEl);
@@ -92,7 +104,9 @@ export default function Enviroment(props) {
         setCallLike(false)
     }
 
-
+    const handleClose = () => {
+        setAnchorEl(null);
+      };
     const { list, index, handleViewmore } = props;
     // console.log(list, "list")
     return (
@@ -165,8 +179,8 @@ export default function Enviroment(props) {
                 </CardContent>
                 <Divider variant="middle" />
                 <CardActions>
-                    <div className="env-icns tooltip" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <IconButton onClick={(e) => handleClick(e, list)}>
+                    <div onClick={(e) => handleClick(e, list, index)} onMouseLeave={handlePeriodMenuClose} className="env-icns tooltip" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <IconButton >
                             <SvgIcon
                                 component={() => (
                                     <img
@@ -180,8 +194,9 @@ export default function Enviroment(props) {
                                 )}
                                 
                             />
+                            {/* <Like likeList={likeList} /> */}
                            
-                            <Popper id={id} open={open} anchorEl={anchorEl} transition className="tool-tip" arrow={true}>
+                        {showPeriodIndex === index &&  likeList ?   <Popper id={index} open={open} anchorEl={anchorEl} transition className="tool-tip" >
                                 {({ TransitionProps }) => (
                                     <Fade {...TransitionProps} timeout={350}>
                                         <div className={classes.paper}>
@@ -206,8 +221,8 @@ export default function Enviroment(props) {
                                         </div>
                                     </Fade>
                                 )}
-                            </Popper>
-                            {/* <p> {list.like_count}</p> */}
+                            </Popper> : ''}
+                          
                         </IconButton>
                         <SvgIcon
                             component={() => (
