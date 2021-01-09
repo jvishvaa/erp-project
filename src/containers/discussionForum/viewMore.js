@@ -80,9 +80,10 @@ const Viewmore = (props) => {
 
 
     const openAnswerBox = (e, viewMoreList) => {
+        console.log(inputBox, "answers")
+        setInputBox(!inputBox);
         axiosInstance.get(`${endpoints.discussionForum.postLike}?post=${viewMoreList.id}&&type=2`).then((res) => {
             if (res.data.status_code === 200) {
-                setInputBox(!inputBox);
                 setAnchorEl(anchorEl ? null : '');
                 setAnswers(res.data.result.results)
             }
@@ -99,7 +100,8 @@ const Viewmore = (props) => {
   
     React.useEffect(() => {
         setInputBox(props.anstrue);
-    }, [inputBox])
+    }, []);
+    
     return (
         <div className="view-more-info">
             <Grid container spacing={3}>
@@ -250,7 +252,7 @@ const Viewmore = (props) => {
 
                     </div>
                 </Grid>
-                {inputBox &&
+                {inputBox === true &&
                     <Grid item xs={9}>
                         <div class="form-group">
                             <span className="input-name">
