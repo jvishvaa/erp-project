@@ -147,7 +147,8 @@ const Discussionforum = () => {
                
                 axiosInstance.get(`${endpoints.discussionForum.filterCategory}?grade=${gradeValue.grade_id}`).then(res => {
                     if(res.data.status_code === 200){
-                        setPostListRes(res.data.data.results.slice(0, 1))
+                        setPostListRes(res.data.data.results)
+
         
                     }else{
                         setAlert('error', res.data.message)
@@ -161,7 +162,7 @@ const Discussionforum = () => {
             else if(body && body.categoryValue.id !== undefined  && body.gradeValue.grade_id === undefined){
                 axiosInstance.get(`${endpoints.discussionForum.filterCategory}?category=${categoryValue.id}`).then(res => {
                     if(res.data.data.results.length){
-                        setPostListRes(res.data.data.results.slice(0, 1))
+                        setPostListRes(res.data.data.results)
 
                     }
                 }).catch(err => {
@@ -172,7 +173,8 @@ const Discussionforum = () => {
             else  if(body.categoryValue.id && body.gradeValue.grade_id ){
                 axiosInstance.get(`${endpoints.discussionForum.filterCategory}?category=${categoryValue.id}&grade=${gradeValue.grade_id}`).then(res => {
                     if(res.data.status_code === 200){
-                        setPostListRes(res.data.data.results.slice(0, 1))
+                        setPostListRes(res.data.data.results)
+
         
                     }else{
                         setAlert('error', res.data.message)
@@ -192,7 +194,7 @@ const Discussionforum = () => {
 
     const getPostList = () => {
         axiosInstance.get(`${endpoints.discussionForum.filterCategory}`).then(res => {
-            console.log(res.data, "res.data.data.results")
+            // console.log(res.data, "res.data.data.results")
             if (res.data.status_code === 200) {
                 setPostListRes(res.data.data.results);
                 setPostListResPagenation(res.data.data)
@@ -226,16 +228,12 @@ const Discussionforum = () => {
     }
     
     const deletPost = (id, index) =>{
-       console.log(id, "popopo")
        axiosInstance.delete(`${endpoints.discussionForum.deletePost}${id}/update-post/`).then(res => {
-        console.log(res, "popopo")
         if(res.data.status_code === 200){
-            setAlert('sucess', res.data.message)
+            setAlert('success',  res.data.message)
             const postList = postListRes ;
-            // console.log(postList, "postList")
             postList.splice(index,1);
             setPostListRes(postList)
-
         }
 
     }).catch(err => {
@@ -397,7 +395,7 @@ const Discussionforum = () => {
             </div>
             }
             {   !isViewmoreView && <div className="env-container" >
-                 <Grid item xs={12} className="catname-df-forum">
+                 <Grid item xs={10} className="catname-df-forum">
                     <div className="env-name" style={{ display: 'flex', borderBottom: '1px solid #E2E2E2' }}>
 
                         {
@@ -450,7 +448,7 @@ const Discussionforum = () => {
                     </div>
                 </Grid> 
                 
-                <div className="env-card-container" style={{ display: 'grid', gridTemplateColumns: 'auto auto auto auto', width: '93%' }}>
+                <div className="env-card-container" >
                     {
                         postListRes && postListRes.map((list, index) => {
                             return <Grid container  >
