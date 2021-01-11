@@ -81,11 +81,12 @@ export default {
     fileUpload: '/academic/upload-question-file/',
     submitHomework: '/academic/homework-submission/',
   },
-  lessonReport:{
-    volumes:'/lesson_plan/list-volume/',
-    subjects:'/academic/lesson-plan-subjects/',
-    lessonList:'/academic/lesson-completed-report/',
-    lessonViewMoreData:'/academic/user-chapters-details/',
+  lessonReport: {
+    volumes: '/lesson_plan/list-volume/',
+    subjects: '/academic/lesson-plan-subjects/',
+    lessonList: '/academic/lesson-completed-report/',
+    lessonViewMoreData: '/academic/user-chapters-details/',
+    teacherList:'/academic/lesson_plan_user_list/',
   },
   coordinatorTeacherHomeworkApi:{
     getAllTeacherList:'/academic/teachers-list/',

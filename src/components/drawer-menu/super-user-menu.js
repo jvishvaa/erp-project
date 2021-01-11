@@ -335,6 +335,21 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
             </ListItemIcon>
             <ListItemText primary='Report' className='menu-item-text' />
           </ListItem>
+          <ListItem
+            button
+            className={
+              history.location.pathname === '/lesson-plan/graph-report'
+                ? 'menu_selection'
+                : null
+            }
+            onClick={() => {
+              onClickMenuItem('lesson-plan-graph-report');
+            }}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+            </ListItemIcon>
+            <ListItemText primary='Graph Report' className='menu-item-text' />
+          </ListItem>
         </List>
       </Collapse>
     </>
