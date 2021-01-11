@@ -65,7 +65,7 @@ const Awardlist = (props) => {
                 style={{border: '1px solid #0455A6'}}
             >
                 {
-                   awardRes ?  awardRes && awardRes.map((awardName, index) => {
+                   awardRes && awardRes.length > 0 ?  awardRes && awardRes.map((awardName, index) => {
                         return (
                             <>
                                 <div className="line-name" key={index} style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -87,7 +87,7 @@ const Awardlist = (props) => {
                             </>
                         )
                     })
-                : 'No Awards Found'}
+                : <span style={{fontSize: 16, color:'#042955', padding: 8}}>No Awards Found</span>}
             </Popover>
             </div>
         </div>
