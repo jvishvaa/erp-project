@@ -20,11 +20,17 @@ export default function UpdateDeltePopoverClick(props) {
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
+   
   };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const deleteCall = (id, index) => {
+    deletPost(id, index);
+    handleClose()
+  }
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
@@ -49,7 +55,7 @@ export default function UpdateDeltePopoverClick(props) {
           horizontal: 'center',
         }}
       >
-        <Typography className={classes.typography} onClick={() => deletPost(list.id, index)}>DELETE POST</Typography>
+        <Typography className={classes.typography} onClick={() => deleteCall(list.id, index)}>DELETE POST</Typography>
         <Typography className={classes.typography}>EDIT POST</Typography>
       </Popover>
     </div>
