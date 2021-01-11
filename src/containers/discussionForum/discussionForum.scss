@@ -243,9 +243,9 @@ body{
     justify-content: space-between;
     //  margin-left: 170px;
  }
-.user-name-icon-view .icon-headers{
-    padding-left: 5px;
-}
+// .user-name-icon-view .icon-headers{
+//     padding-left: 5px;
+// }
 
 .env-container .env-card.MuiDivider-middle{
     // margin: none;
@@ -284,9 +284,9 @@ width: 32px
     font-weight: 600;
 }
 
-.user-name-icon-view{
-    display: flex;
-}
+// .user-name-icon-view{
+//     display: flex;
+// }
 
 .time-hours{
     display: flex;
@@ -313,10 +313,10 @@ width: 32px
   
 }
 
-.user-name-icon-view .user-name-icon-view{
-    margin-top: 20px;
+// .user-name-icon-view .user-name-icon-view{
+//     margin-top: 20px;
    
-}
+// }
 
 
 .view-more-container .view-more-info .view-more-desciption .desciption-view{
@@ -611,3 +611,132 @@ opacity: 1;
 .ds-forum .page_title{
     font-size: 16px;
 }
+
+////////////////////////////////////////////
+.popup {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid #0455A6;
+
+  }
+  
+  /* The actual popup */
+  .popup .popuptexts {
+    visibility: hidden;
+    width: 280px;
+    background-color: #F9F9F9;
+    color: #042955;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 7%;
+    margin-left: -80px;
+    border: 1px solid #0455A6;
+    font-size: 16px;
+    padding:5px;
+    overflow: scroll;
+    max-height: 159px;
+  }
+  
+  /* Popup arrow */
+  .popup .popuptexts::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #042955 transparent transparent transparent;
+  }
+  
+  /* Toggle this class - hide and show the popup */
+  .popup .show {
+    visibility: visible;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+  }
+  
+  /* Add animation (fade in the popup) */
+  @-webkit-keyframes fadeIn {
+    from {opacity: 0;} 
+    to {opacity: 1;}
+  }
+  
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+  }
+  
+  /////////award////
+  .awardPopup {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  /* The actual popup */
+  .awardPopup .simplePopup {
+    visibility: hidden;
+    width: 280px;
+    background-color: #F9F9F9;
+    color: #042955;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 7%;
+    margin-left: -80px;
+    border: 1px solid #0455A6;
+    font-size: 16px;
+    padding:5px;
+    overflow: scroll;
+    max-height: 159px;
+  }
+  
+  /* Popup arrow */
+  .awardPopup .simplePopup::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+  }
+  
+  /* Toggle this class - hide and show the popup */
+  .awardPopup .show {
+    visibility: visible;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+  }
+  .awardPopup .hide {
+    display: none;
+  }
+  
+  /* Add animation (fade in the popup) */
+  @-webkit-keyframes fadeIn {
+    from {opacity: 0;} 
+    to {opacity: 1;}
+  }
+  
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+  }
