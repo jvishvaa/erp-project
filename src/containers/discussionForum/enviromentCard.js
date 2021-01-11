@@ -218,7 +218,7 @@ export default function Enviroment(props) {
                                     <Fade {...TransitionProps} timeout={350}>
                                         <div className={classes.paper}>
                                             {
-                                                likeList && likeList.map((name, index) => {
+                                               likeList && likeList.length > 0 ?  likeList && likeList.map((name, index) => {
                                                     return (
                                                         <div className="line-name" key={index} style={{ display: 'flex', justifyContent: 'space-between' }}>
                                                             <div style={{ display: 'flex', }}>
@@ -234,7 +234,7 @@ export default function Enviroment(props) {
                                                         </div>
                                                     )
                                                 })
-                                            }
+                                            : <span style={{fontSize: 16, color:'#042955', padding: 8}}>No Likes Found</span>}
                                         </div>
                                     </Fade>
                                 )}
