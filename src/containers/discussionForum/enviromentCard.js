@@ -162,7 +162,7 @@ export default function Enviroment(props) {
                                     aria-haspopup='true'
 
                                     style={{
-                                        margin: ' 0px 0px 0px 30px', color: "red",
+                                        margin: ' 0px 0px 0px 60px', color: "red",
 
                                     }}
                                 >
@@ -197,7 +197,9 @@ export default function Enviroment(props) {
                 <Divider variant="middle" />
                 <CardActions>
                     <div className="env-icns tooltip" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <IconButton onClick={(e) => handleClick(e, list, index)} onMouseLeave={handlePeriodMenuClose}>
+                        <IconButton onClick={(e) => handleClick(e, list, index)} 
+                        onMouseLeave={handlePeriodMenuClose}
+                        >
                             <SvgIcon
                                 component={() => (
                                     <img
