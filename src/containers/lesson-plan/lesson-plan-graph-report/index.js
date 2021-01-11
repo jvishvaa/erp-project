@@ -241,9 +241,10 @@ const [centralGsMappingId , setCentralGsMappingId ]=useState('')
   };
 
   const handleFilter = () => {
+    const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
       setLoading(true)
     setNoFilterLogo(false);
-    axiosInstance.get(`${endpoints.lessonReport.lessonViewMoreData}?central_gs_mapping_id=${centralGsMappingId}&volume_id=${filterData.volume.id}&academic_year_id=${filterData.year.id}&completed_by=${filterData.teacher.user_id}`)
+    axiosInstance.get(`${endpoints.lessonReport.lessonViewMoreData}?central_gs_mapping_id=${centralGsMappingId}&volume_id=${filterData.volume.id}&academic_year_id=${filterData.year.id}&completed_by=${filterData.teacher.user_id}&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}`)
       .then(result => {
         //   console.log(result.data)
             if(result.data.status_code === 200){
@@ -254,6 +255,10 @@ const [centralGsMappingId , setCentralGsMappingId ]=useState('')
             }
 
       })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', error.message);
+    })
 
   };
 
