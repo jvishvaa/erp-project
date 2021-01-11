@@ -323,7 +323,7 @@ const Viewmore = (props) => {
                             <input class="form-field" type="text" placeholder="Type comment your comment here..." onChange={handleAnswerChange} />
 
                         </div>
-                        <div className="comment-box">
+                        {answers && answers.length > 0 ?  <div className="comment-box">
                             {
                                 answers ? answers && answers.map((ans, index) => {
 
@@ -376,7 +376,8 @@ const Viewmore = (props) => {
                                 })
                                     : ''}
 
-                        </div>
+                        </div>: ''}
+
                     </Grid>
                 }
             </Grid>
