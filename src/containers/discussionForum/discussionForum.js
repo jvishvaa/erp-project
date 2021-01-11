@@ -192,6 +192,7 @@ const Discussionforum = () => {
 
     const getPostList = () => {
         axiosInstance.get(`${endpoints.discussionForum.filterCategory}`).then(res => {
+            console.log(res.data, "res.data.data.results")
             if (res.data.status_code === 200) {
                 setPostListRes(res.data.data.results);
                 setPostListResPagenation(res.data.data)
