@@ -7,10 +7,10 @@ import './discussionForum.scss';
 
 const useStyles = makeStyles((theme) => ({
   typography: {
-      color: 'red',
-     padding: theme.spacing(1),
-     fontSize:12,
-    
+    color: 'red',
+    padding: theme.spacing(1),
+    fontSize: 12,
+
   },
 }));
 
@@ -28,13 +28,13 @@ export default function UpdateDeltePopoverClick(props) {
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
-const {list, deletPost ,index} = props
+  const { list, deletPost, index } = props
   return (
     <div>
-        <MoreHorizIcon  onClick={handleClick}/>
-      
+      <MoreHorizIcon onClick={handleClick} />
+
       <Popover
-         arrow={true}
+        arrow={true}
         className="pop-overs"
         id={"praveen"}
         open={open}
@@ -49,7 +49,7 @@ const {list, deletPost ,index} = props
           horizontal: 'center',
         }}
       >
-        <Typography className={classes.typography} onClick={()=>deletPost(list.id, index)}>DELETE POST</Typography>
+        <Typography className={classes.typography} onClick={() => deletPost(list.id, index)}>DELETE POST</Typography>
         <Typography className={classes.typography}>EDIT POST</Typography>
       </Popover>
     </div>
