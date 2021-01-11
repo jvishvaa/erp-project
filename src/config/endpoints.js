@@ -86,6 +86,7 @@ export default {
     subjects: '/academic/lesson-plan-subjects/',
     lessonList: '/academic/lesson-completed-report/',
     lessonViewMoreData: '/academic/user-chapters-details/',
+    teacherList:'/academic/lesson_plan_user_list/',
   },
   coordinatorTeacherHomeworkApi: {
     getAllTeacherList: '/academic/teachers-list/',
