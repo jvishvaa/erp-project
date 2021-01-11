@@ -8,8 +8,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import './view-more.css';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 // import Highcharts from 'highcharts';
-import highcharts3d from 'highcharts/highcharts-3d';
-import StackedBarChart from './StackedBar/StackedBar';
+
 
 const ViewMoreCard = ({
   viewMoreData,
@@ -20,7 +19,7 @@ const ViewMoreCard = ({
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const { setAlert } = useContext(AlertNotificationContext);
-  
+
   const configObj = {
     chart: {
       type: 'bar',
