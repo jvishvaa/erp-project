@@ -17,6 +17,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Pagination from '@material-ui/lab/Pagination';
 import './discussionForum.scss';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
 
 
 const Discussionforum = () => {
@@ -145,7 +147,8 @@ const Discussionforum = () => {
                
                 axiosInstance.get(`${endpoints.discussionForum.filterCategory}?grade=${gradeValue.grade_id}`).then(res => {
                     if(res.data.status_code === 200){
-                        setPostListRes(res.data.data.results.slice(0, 1))
+                        setPostListRes(res.data.data.results)
+
         
                     }else{
                         setAlert('error', res.data.message)
@@ -159,7 +162,7 @@ const Discussionforum = () => {
             else if(body && body.categoryValue.id !== undefined  && body.gradeValue.grade_id === undefined){
                 axiosInstance.get(`${endpoints.discussionForum.filterCategory}?category=${categoryValue.id}`).then(res => {
                     if(res.data.data.results.length){
-                        setPostListRes(res.data.data.results.slice(0, 1))
+                        setPostListRes(res.data.data.results)
 
                     }
                 }).catch(err => {
@@ -170,7 +173,8 @@ const Discussionforum = () => {
             else  if(body.categoryValue.id && body.gradeValue.grade_id ){
                 axiosInstance.get(`${endpoints.discussionForum.filterCategory}?category=${categoryValue.id}&grade=${gradeValue.grade_id}`).then(res => {
                     if(res.data.status_code === 200){
-                        setPostListRes(res.data.data.results.slice(0, 1))
+                        setPostListRes(res.data.data.results)
+
         
                     }else{
                         setAlert('error', res.data.message)
@@ -190,6 +194,7 @@ const Discussionforum = () => {
 
     const getPostList = () => {
         axiosInstance.get(`${endpoints.discussionForum.filterCategory}`).then(res => {
+            // console.log(res.data, "res.data.data.results")
             if (res.data.status_code === 200) {
                 setPostListRes(res.data.data.results);
                 setPostListResPagenation(res.data.data)
@@ -221,9 +226,27 @@ const Discussionforum = () => {
         setPage(value);
 
     }
+    
+    const deletPost = (id, index) =>{
+       axiosInstance.delete(`${endpoints.discussionForum.deletePost}${id}/update-post/`).then(res => {
+        if(res.data.status_code === 200){
+            setAlert('success',  res.data.message)
+            const postList = postListRes ;
+            postList.splice(index,1);
+            setPostListRes(postList)
+        }
+
+    }).catch(err => {
+        setAlert('error', err.message)
+        console.log(err)
+    })
+    }
+    const back= () => {
+        setisViewmoreView(false)
+    }
     return (
         <Layout>
-            <div className={`bread-crumbs-container ds-forum`}>
+            <div className={`bread-crumbs-container ds-forum`} onClick={back}>
                 <CommonBreadcrumbs
                     componentName='Discussion Forum'
                     childComponentName={isViewmoreView ? "Post" : ''}
@@ -372,24 +395,23 @@ const Discussionforum = () => {
             </div>
             }
             {   !isViewmoreView && <div className="env-container" >
-                 <Grid item xs={12} className="catname-df-forum">
+                 <Grid item xs={10} className="catname-df-forum">
                     <div className="env-name" style={{ display: 'flex', borderBottom: '1px solid #E2E2E2' }}>
-                        
 
                         {
                             postListRes && postListRes.map((catName, index) => {
                                 return (
                                     <Grid item xs={2} className="catname-df-forum">
                                         <div className="cat-name">
-                                            <span style={{ color: '#014B7E', fontSize: '16px' }}>{catName.categories.category_name}</span>
-
+                                            <span style={{  fontSize: '16px', color: index ===0 ? '#FF6B6B' : '#014B7E' }}>{catName.categories.category_name.charAt(0).toUpperCase() + catName.categories.category_name.slice(1)}</span>
+                                            {/* {index === 0 && <span className="tab-names" style={{border: '1px solid red', display:'block'}}></span>} */}
                                         </div>
                                     </Grid>
                                 )
                             })
                         }
                         <div style={{display: 'flex'}}>
-                        <span style={{ color: '#014B7E', fontSize: '18px', paddingTop: 10, marginLeft: 157, fontWeight: 600 }}>Number of discussion: {PostListResPagenation && PostListResPagenation.limit}</span>
+                        <span style={{ color: '#014B7E', fontSize: '18px', paddingTop: 10, marginLeft: 157, fontWeight: 600 }}>Number of discussion: {PostListResPagenation && PostListResPagenation.results.length}</span>
                         <div className="df-btn-question-container" style={{ display: 'flex' }} >
                             <div className="df-ask">
                                 <Button variant="contained">
@@ -426,14 +448,15 @@ const Discussionforum = () => {
                     </div>
                 </Grid> 
                 
-                <div className="env-card-container" style={{ display: 'grid', gridTemplateColumns: 'auto auto auto auto', width: '93%' }}>
+                <div className="env-card-container" >
                     {
                         postListRes && postListRes.map((list, index) => {
-                            // console.log(list, "list")
                             return <Grid container  >
                                 <Grid item xs={6} className="ev-view-card">
                                 <Grid item xs={3} className="ev-view-card">
-                                    <Enviroment list={list} index={index} handleViewmore={handleViewmore} />
+                                    <Enviroment list={list} index={index} handleViewmore={handleViewmore} 
+                                    deletPost={deletPost}
+                                    />
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -444,6 +467,7 @@ const Discussionforum = () => {
                 </div>
             </div>
             }
+            
             <div className="view-more-container">
                 {
                     isViewmoreView && <Viewmore viewMoreList={viewMoreList} anstrue={anstrue} />
