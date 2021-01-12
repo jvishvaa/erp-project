@@ -189,7 +189,6 @@ const handleCategoryNameChange = (e) => {
               onChange={handleNewType}
               id='category'
               required
-              // value={categoryTypeValue}
               options={categoryTypeChoices}
               getOptionLabel={(option) => option?.label}
               filterSelectedOptions
@@ -208,7 +207,6 @@ const handleCategoryNameChange = (e) => {
            <Grid item xs={12} sm={3}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
                <Autocomplete
                    style={{ width: '100%' }}
-                  //  value={categoryValue}
                    id="tags-outlined"
                    options={categoryListRes}
                    getOptionLabel={(option) => option.category_name}
@@ -235,7 +233,6 @@ const handleCategoryNameChange = (e) => {
           <Grid item xs={12} sm={3}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
           <Autocomplete
               style={{ width: '100%' }}
-              // value={subCategoryValue}
               id="tags-outlined"
               options={subCategoryListRes}
               getOptionLabel={(option) => option.sub_category_name}
@@ -249,9 +246,9 @@ const handleCategoryNameChange = (e) => {
 
                   />
               )}
-              onChange={(event, value) => {
-                  handleSubCategoryChange(event,value);
-              }}
+              onChange={
+                  handleSubCategoryChange
+              }
               getOptionSelected={(option, value) => value && option.id == value.sub_category_id}
           />
           </Grid>
