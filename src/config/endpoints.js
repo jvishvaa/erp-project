@@ -110,7 +110,14 @@ export default {
    grade:'/erp_user/grademapping/',
    filterCategory: '/academic/posts/',
    postLike: '/academic/posts-like-users/',
+   PostCategory : '/academic/create-category/',
+   CreateDissusionForum: '/academic/add-post/',
+   CreateCommentAndReplay: '/academic/create-answer-replay/',
+   AwardListAPI: '/academic/',
+   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+   deletePost: '/academic/'
   },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
 };
+
