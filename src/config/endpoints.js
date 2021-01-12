@@ -110,7 +110,8 @@ export default {
    grade:'/erp_user/grademapping/',
    filterCategory: '/academic/posts/',
    postLike: '/academic/posts-like-users/',
-   PostCategory : '/academic/create-category/'
+   PostCategory : '/academic/create-category/',
+   CreateDissusionForum: '/academic/add-post/'
    
   },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
