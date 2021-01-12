@@ -176,7 +176,6 @@ const CreateDiscussionForum = () => {
 }, []);
 
 const handleCategoryChange = (event,value) => {
-  console.log(value,"vvvvvvvvvvvvvvvvvvvvvvvvv")
   if (value && value.id) {
     setSelectedCategory(value.id);
     axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${value.id}&category_type=2`)
@@ -217,7 +216,6 @@ const handleSubCategoryChange = (event,value) => {
   }
 }
 const handleSubSubCategoryChange = (event,value) => {
-  console.log(value,"vvvvvvvvvvvv")
   if (value){
     setSelectedSubSubCategory(value.sub_sub_category_id)
   }
@@ -272,7 +270,6 @@ const getSectionApi = async () => {
 };
 
 const handleGrade = (event, value) => {
-  console.log(value,"@@@@@@@@@@@@@@")
   if (value) {
     
     setSelectedGrades(value);
@@ -284,7 +281,6 @@ const handleGrade = (event, value) => {
 
 
 const handleBranch = (event, value) => {
-  console.log(value,"@@@@@@@@@@@@@@@@@@2")
   if (value) {
     setSelectedBranch(value);
   } else {
@@ -292,9 +288,7 @@ const handleBranch = (event, value) => {
   }
 };
 const handleSection = (event, value) => {
-  console.log(value,"@@@@@@@@@@@@@@@@@@2")
   if (value) {
-    // const ids = value.map((el) => el.grade_id);
     const gradesId = [];
     gradeList
     .filter((item) => selectedGrades.includes(item['grade__grade_name']))
@@ -316,17 +310,14 @@ const handleTitleChange = (e) => {
     sectionsId.push(items.section_id);
   });
   setSelectedSectionIds(sectionsId)
-  console.log(e,"@@@@@@@@@@@@")
   setTitle(e.target.value);
 
 }
 
 const handleDescriptionChange = (e) => {
-  console.log(e,"@@@@@@@@@@@@")
   setDescription(e.target.value);
 
 }
-console.log(selectedGradeIds,"2@@@@@@@@@@@@@",selectedSectionIds)
 
   return (
    <>

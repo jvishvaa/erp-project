@@ -141,7 +141,6 @@ const CreateCategory = () => {
     getCategoryList();
 }, []);
 const handleCategoryChange = (event,value) => {
-  console.log(value,"vvvvvvvvvvvvvvvvvvvvvvvvv")
   if (value && value.id) {
     setCategoryValue(value.id);
     axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${value.id}&category_type=2`)
