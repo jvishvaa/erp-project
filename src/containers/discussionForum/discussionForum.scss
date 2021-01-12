@@ -104,6 +104,7 @@ body{
 }
 .cat-name {
     display: flex;
+    justify-content: space-between;
 }
 
 // .env-container .cat-name .catname-df-forum{
@@ -204,8 +205,9 @@ body{
 }
 .env-card-container{
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(4, 100px);
+  grid-template-columns: auto auto auto auto ;
+  grid-gap: 10px;
+  width: 93%;
 }
 
 .env-card .text-name{
@@ -753,4 +755,11 @@ opacity: 1;
   @keyframes fadeIn {
     from {opacity: 0;}
     to {opacity:1 ;}
+  }
+
+  .pagination-cont{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
   }
