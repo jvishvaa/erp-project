@@ -104,7 +104,7 @@ body{
 }
 .cat-name {
     display: flex;
-    justify-content: space-between;
+        justify-content: space-between;
 }
 
 // .env-container .cat-name .catname-df-forum{
@@ -118,7 +118,7 @@ body{
     flex-basis: 30.333333% !important;
 }
 .env-card{
-    width: 303px;
+    width: 95%;
     margin-top: 40px;
     // margin-left: 50px;
 }
@@ -205,9 +205,9 @@ body{
 }
 .env-card-container{
     display: grid;
-  grid-template-columns: auto auto auto auto ;
-  grid-gap: 10px;
-  width: 93%;
+     grid-template-columns: auto auto auto auto ;
+    grid-gap: 10px;
+    width: 93%;
 }
 
 .env-card .text-name{
@@ -428,24 +428,24 @@ background-color: red;
 }
 
 ///////////customize input box/////////////
-:root {
+// :root {
 
-    --input-color: #99A3BA;
-    --input-border: #CDD9ED;
-    --input-background: #fff;
-    --input-placeholder: #CBD1DC;
+//     --input-color: #99A3BA;
+//     --input-border: #CDD9ED;
+//     --input-background: #fff;
+//     --input-placeholder: #CBD1DC;
 
-    --input-border-focus: #275EFE;
+//     --input-border-focus: #275EFE;
 
-    --group-color: var(--input-color);
-    --group-border: var(--input-border);
-    --group-background: #EEF4FF;
+//     --group-color: var(--input-color);
+//     --group-border: var(--input-border);
+//     --group-background: #EEF4FF;
 
-    --group-color-focus: #fff;
-    --group-border-focus: var(--input-border-focus);
-    --group-background-focus: #678EFE;
+//     --group-color-focus: #fff;
+//     --group-border-focus: var(--input-border-focus);
+//     --group-background-focus: #678EFE;
 
-}
+// }
 
 .form-field {
     display: block;
@@ -762,4 +762,12 @@ opacity: 1;
     justify-content: center;
     align-items: center;
     margin-top: 40px;
+  }
+
+  @media screen and (max-width: 600px) {
+    .env-card-container {
+      width: 100%;
+      display: block;
+      margin-bottom: 20px;
+    }
   }
