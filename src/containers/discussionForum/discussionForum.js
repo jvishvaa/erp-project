@@ -22,8 +22,7 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
 
-const Discussionforum = (props) => {
-    const {match} = props
+const Discussionforum = () => {
     const [categoryListRes, setcategoryListRes] = useState([]);
     const [branch, setBranchRes] = useState([]);
     const [gradeRes, setGradeRes] = useState([]);
@@ -416,9 +415,7 @@ const Discussionforum = (props) => {
                         <span style={{ color: '#014B7E', fontSize: '18px', paddingTop: 10, marginLeft: 157, fontWeight: 600 }}>Number of discussion: {PostListResPagenation && PostListResPagenation.results.length}</span>
                         <div className="df-btn-question-container" style={{ display: 'flex' }} >
                             <div className="df-ask">
-                                <Button variant="contained"  
-              href={`${match.url}/create`}
-              color='primary'>
+                                <Button variant="contained">
                                     <SvgIcon
                                         component={() => (
                                             <img
