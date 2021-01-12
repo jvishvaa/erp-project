@@ -6,7 +6,6 @@ import moment from 'moment';
 import Award from '../../assets/images/award.svg'
 import Answer from '../../assets/images/answer.svg'
 import LikeIcon from '../../assets/images/Likesmall.svg';
-import Hoverlist from './hoverList';
 import Reactangular from '../../assets/images/Rectangle 2667.svg';
 import './discussionForum.scss';
 import IconButton from '@material-ui/core/IconButton';
@@ -78,13 +77,13 @@ const Viewmore = (props) => {
 
 
     const getAwardList = (event,list) => {
-        var popup = document.getElementById("myPopup");
-        popup.classList.toggle("show");
+        setAnchorEl(anchorEl ? null :'');
+        setInputBox(false);
         axiosInstance.get(`${endpoints.discussionForum.AwardListAPI}${list.id}/award-users-list/`).then(res => {
             if (res.data.status_code === 200) {
                 setAwardListRes(res.data.result.results);
-                setAnchorEl(anchorEl ? null :'');
-                setInputBox(false);
+                var popup = document.getElementById("myPopup");
+                popup.classList.toggle("show");
             }
         }).catch(err => {
             console.log(err)
@@ -100,9 +99,9 @@ const Viewmore = (props) => {
             if (res.data.status_code === 200) {
                 setAnchorEl(anchorEl ? null : '');
                 setAnswers(res.data.result.results);
+                setInputBox(!inputBox);
                 var popup = document.getElementById("myPopup");
                 popup.classList.remove("show");
-                setInputBox(!inputBox);
             }
         }).catch(err => {
             console.log(err)
@@ -323,7 +322,7 @@ const Viewmore = (props) => {
                             <input class="form-field" type="text" placeholder="Type comment your comment here..." onChange={handleAnswerChange} />
 
                         </div>
-                        <div className="comment-box">
+                        {answers && answers.length > 0 ?  <div className="comment-box">
                             {
                                 answers ? answers && answers.map((ans, index) => {
 
@@ -376,7 +375,8 @@ const Viewmore = (props) => {
                                 })
                                     : ''}
 
-                        </div>
+                        </div>: ''}
+
                     </Grid>
                 }
             </Grid>
