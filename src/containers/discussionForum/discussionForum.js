@@ -480,7 +480,7 @@ const Discussionforum = (props) => {
                 <div className="pagination-cont" style={{margin: '60px 0px 0px 650px'}}>
                     { !isViewmoreView && <Pagination
                         onChange={handlePageChange}
-                        count={Math.ceil(PostListResPagenation && PostListResPagenation.total_pages / PostListResPagenation && PostListResPagenation.limit)} color="secondary" 
+                        count={Math.ceil(PostListResPagenation && PostListResPagenation.total_pages )} color="secondary" 
                         />}
                 </div>
             </>
