@@ -20,9 +20,11 @@ import './discussionForum.scss';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import { withRouter } from 'react-router-dom';
 
 
-const Discussionforum = () => {
+const Discussionforum = (props) => {
+    const { match } = props
     const [categoryListRes, setcategoryListRes] = useState([]);
     const [branch, setBranchRes] = useState([]);
     const [gradeRes, setGradeRes] = useState([]);
@@ -34,8 +36,7 @@ const Discussionforum = () => {
     const [viewMoreList, setViewMoreList] = useState(null);
     const [PostListResPagenation, setPostListResPagenation] = useState(null);
     const [page, setPage] = React.useState(1);
-    const [anstrue , setanstrue] = React.useState(false);
-
+    const [anstrue, setanstrue] = React.useState(false);
     const { setAlert } = useContext(AlertNotificationContext);
 
 
@@ -99,92 +100,58 @@ const Discussionforum = () => {
         }
     }
 
-    const validate = (formData) =>{
-        let input = formData;
-        let errors = {};
-        let isValid = true;
-        if (!input["categoryValue"]) {
-            isValid = false;
-            errors["categoryValue"] = "Please enter your event category.";
-        }
-
-        if (!input["gradeValue"]) {
-            isValid = false;
-            errors["gradeValue"] = "Please enter your event grade.";
-        }
-
-        let errorPayload = {
-            errors,
-            isValid
-        };
-    
-        return errorPayload;
-
-        
-    }
 
     const callFilter = () => {
-        // axiosInstance.get(`${endpoints.discussionForum.filterCategory}?category=${categoryValue.id}&grade=${gradeValue.grade_id}`).then(res => {
-        //     console.log(res, "0009")
-        //     if(res.data.status_code === 200){
-        //         setPostListRes(res.data.data.results.slice(0, 1))
-
-        //     }else{
-        //         setAlert('error', res.data.message)
-        //     }
-        // }).catch(err => {
-        //     console.log(err)
-        // })
         const body = {
-            categoryValue: categoryValue ? categoryValue: '',
-            gradeValue: gradeValue ? gradeValue: ''
+            categoryValue: categoryValue ? categoryValue : '',
+            gradeValue: gradeValue ? gradeValue : ''
         }
         filterValid(body)
     }
 
     const filterValid = (body) => {
         // console.log(body.gradeValue.grade_id, "body")
-            if(body && body.gradeValue !==null &&  body.categoryValue.id === undefined){
-               
-                axiosInstance.get(`${endpoints.discussionForum.filterCategory}?grade=${gradeValue.grade_id}`).then(res => {
-                    if(res.data.status_code === 200){
-                        setPostListRes(res.data.data.results)
+        if (body && body.gradeValue !== null && body.categoryValue.id === undefined) {
 
-        
-                    }else{
-                        setAlert('error', res.data.message)
-                    }
-                }).catch(err => {
-                    setAlert('error', err.message)
-               
-                    console.log(err)
-                })
-            }
-            else if(body && body.categoryValue.id !== undefined  && body.gradeValue.grade_id === undefined){
-                axiosInstance.get(`${endpoints.discussionForum.filterCategory}?category=${categoryValue.id}`).then(res => {
-                    if(res.data.data.results.length){
-                        setPostListRes(res.data.data.results)
+            axiosInstance.get(`${endpoints.discussionForum.filterCategory}?grade=${gradeValue.grade_id}&page=${page}`).then(res => {
+                if (res.data.status_code === 200) {
+                    setPostListRes(res.data.data.results)
 
-                    }
-                }).catch(err => {
-                    setAlert('error', err.message)
-                    console.log(err)
-                })
-            }
-            else  if(body.categoryValue.id && body.gradeValue.grade_id ){
-                axiosInstance.get(`${endpoints.discussionForum.filterCategory}?category=${categoryValue.id}&grade=${gradeValue.grade_id}`).then(res => {
-                    if(res.data.status_code === 200){
-                        setPostListRes(res.data.data.results)
 
-        
-                    }else{
-                        setAlert('error', res.data.message)
-                    }
-                }).catch(err => {
-                    setAlert('error', err.message)
-                    console.log(err)
-                })
-            }
+                } else {
+                    setAlert('error', res.data.message)
+                }
+            }).catch(err => {
+                setAlert('error', err.message)
+
+                console.log(err)
+            })
+        }
+        else if (body && body.categoryValue.id !== undefined && body.gradeValue.grade_id === undefined) {
+            axiosInstance.get(`${endpoints.discussionForum.filterCategory}?category=${categoryValue.id}&page=${page}`).then(res => {
+                if (res.data.status_code === 200) {
+                    setPostListRes(res.data.data.results)
+                } 
+                // else {
+                //     setAlert('error', res.data.message)
+                // }
+            }).catch(err => {
+                setAlert('error', err.message)
+                console.log(err)
+            })
+        }
+        else if (body.categoryValue.id && body.gradeValue.grade_id) {
+            axiosInstance.get(`${endpoints.discussionForum.filterCategory}?category=${categoryValue.id}&grade=${gradeValue.grade_id}&page=${page}`).then(res => {
+                if (res.data.status_code === 200) {
+                    setPostListRes(res.data.data.results)
+                } else {
+                    setAlert('error', res.data.message)
+                }
+            }).catch(err => {
+                setAlert('error', err.message)
+                console.log(err)
+            })
+        }
     }
 
     useEffect(() => {
@@ -194,8 +161,7 @@ const Discussionforum = () => {
     }, [...postListRes]);
 
     const getPostList = () => {
-        axiosInstance.get(`${endpoints.discussionForum.filterCategory}`).then(res => {
-            // console.log(res.data, "res.data.data.results")
+        axiosInstance.get(`${endpoints.discussionForum.filterCategory}?&page=${page}`).then(res => {
             if (res.data.status_code === 200) {
                 setPostListRes(res.data.data.results);
                 setPostListResPagenation(res.data.data)
@@ -227,264 +193,301 @@ const Discussionforum = () => {
         setPage(value);
 
     }
-    
-    const deletPost = (id, index) =>{
-       axiosInstance.delete(`${endpoints.discussionForum.deletePost}${id}/update-post/`).then(res => {
-        if(res.data.status_code === 200){
-            setAlert('success',  res.data.message)
-            const postList = postListRes ;
-            postList.splice(index,1);
-            setPostListRes(postList)
+
+    const deletPost = (id, index) => {
+        axiosInstance.delete(`${endpoints.discussionForum.deletePost}${id}/update-post/`).then(res => {
+            if (res.data.status_code === 200) {
+                setAlert('success', res.data.message)
+                const postList = postListRes;
+                postList.splice(index, 1);
+                setPostListRes(postList)
+            }
+
+        }).catch(err => {
+            setAlert('error', err.message)
+            console.log(err)
+        })
+    }
+    const back = () => {
+        setisViewmoreView(false)
+    }
+
+    const navigateToCreatePage = () => {
+        props.history.push(`${match.url}/create`)
+    }
+
+    const validate = (formData) => {
+        let input = formData;
+        let errors = {};
+        let isValid = true;
+        if (!input["categoryValue"]) {
+            isValid = false;
+            errors["categoryValue"] = "Please enter your event category.";
         }
 
-    }).catch(err => {
-        setAlert('error', err.message)
-        console.log(err)
-    })
-    }
-    const back= () => {
-        setisViewmoreView(false)
+        if (!input["gradeValue"]) {
+            isValid = false;
+            errors["gradeValue"] = "Please enter your event grade.";
+        }
+
+        let errorPayload = {
+            errors,
+            isValid
+        };
+
+        return errorPayload;
+
+
     }
     return (
         <Layout>
-            <div className={`bread-crumbs-container ds-forum`} onClick={back}>
-                <CommonBreadcrumbs
-                    componentName='Discussion Forum'
-                    childComponentName={isViewmoreView ? "Post" : ''}
-                />
-            </div>
-            {  !isViewmoreView && <div className="df-container" >
-                <Grid container spacing={2}>
-                    <Grid item xs={10} style={{ display: 'flex', marginTop: 30, marginLeft: 20, borderBottom: '1px solid #E2E2E2', }}>
-                        <div className="branch-dropdown">
-                            <Grid item xs={4} sm={2} style={{ marginBottom: 20 }}>
-                                <FormControl className={`select-form`}>
-                                    <Autocomplete
-                                        // {...defaultProps}
-                                        style={{ width: 350 }}
-                                        // multiple
-                                        value={branchValue}
-                                        id="tags-outlined"
-                                        options={branch}
-                                        getOptionLabel={(option) => option.branch_name}
-                                        filterSelectedOptions
-                                        size="small"
-                                        renderInput={(params) => (
-                                            <TextField
-                                                {...params}
-                                                variant="outlined"
-                                                label="Branch"
+            <>
+                <div className={`bread-crumbs-container ds-forum`} onClick={back}>
+                    <CommonBreadcrumbs
+                        componentName='Discussion Forum'
+                        childComponentName={isViewmoreView ? "Post" : ''}
+                    />
+                </div>
+                {  !isViewmoreView && <div className="df-container" >
+                    <Grid container spacing={2}>
+                        <Grid item xs={10} style={{ display: 'flex', marginTop: 30, marginLeft: 20, borderBottom: '1px solid #E2E2E2', }}>
+                            <div className="branch-dropdown">
+                                <Grid item xs={4} sm={2} style={{ marginBottom: 20 }}>
+                                    <FormControl className={`select-form`}>
+                                        <Autocomplete
+                                            // {...defaultProps}
+                                            style={{ width: 350 }}
+                                            // multiple
+                                            value={branchValue}
+                                            id="tags-outlined"
+                                            options={branch}
+                                            getOptionLabel={(option) => option.branch_name}
+                                            filterSelectedOptions
+                                            size="small"
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                    variant="outlined"
+                                                    label="Branch"
 
-                                            />
-                                        )}
-                                        onChange={(e, value) => {
-                                            handleChangeBranch(value);
-                                        }}
-                                        getOptionSelected={(option, value) => value && option.id == value.id}
-                                    />
-                                    {/* <FormHelperText style={{marginLeft: '20px', color: 'red'}}>{error && error.errorMessage && error.errorMessage.branchError}</FormHelperText> */}
+                                                />
+                                            )}
+                                            onChange={(e, value) => {
+                                                handleChangeBranch(value);
+                                            }}
+                                            getOptionSelected={(option, value) => value && option.id == value.id}
+                                        />
+                                        {/* <FormHelperText style={{marginLeft: '20px', color: 'red'}}>{error && error.errorMessage && error.errorMessage.branchError}</FormHelperText> */}
 
-                                </FormControl>
+                                    </FormControl>
 
-                            </Grid>
-                        </div>
-                        <div className="grade-dropdown">
-                            <Grid item xs={4} sm={2}>
-                                <FormControl className={`subject-form`}>
-                                    <Autocomplete
-                                        // {...defaultProps}
-                                        style={{ width: 350, marginLeft: 20 }}
-                                        // multiple
-                                        required={true}
-                                        value={gradeValue}
-                                        id="tags-outlined"
-                                        options={gradeRes}
-                                        getOptionLabel={(option) => option.grade__grade_name}
-                                        filterSelectedOptions
-                                        size="small"
-                                        renderInput={(params) => (
-                                            <TextField
-                                                {...params}
-                                                variant="outlined"
-                                                label="Grade"
-
-                                            />
-                                        )}
-                                        onChange={(e, value) => {
-                                            handleGradeChange(value);
-                                        }}
-                                        getOptionSelected={(option, value) => value && option.id == value.id}
-                                    />
-                                    {/* <FormHelperText style={{marginLeft: '20px', color: 'red'}}>{error && error.errorMessage && error.errorMessage.erp_gradeError}</FormHelperText> */}
-                                </FormControl>
-                            </Grid>
-                        </div>
-
-                        <div className="category-dropdown">
-                            <Grid item xs={4} sm={2}>
-                                <FormControl className={`select-form`}>
-                                    <Autocomplete
-                                        style={{ width: 350 }}
-                                        // multiple
-                                        value={categoryValue}
-                                        id="tags-outlined"
-                                        options={categoryListRes}
-                                        getOptionLabel={(option) => option.category_name}
-                                        filterSelectedOptions
-                                        size="small"
-                                        renderInput={(params) => (
-                                            <TextField
-                                                {...params}
-                                                variant="outlined"
-                                                label="Category"
-
-                                            />
-                                        )}
-                                        onChange={(e, value) => {
-                                            handleCategoryChange(value);
-                                        }}
-                                        getOptionSelected={(option, value) => value && option.id == value.id}
-                                    />
-                                    {/* <FormHelperText style={{marginLeft: '20px', color: 'red'}}>{error && error.errorMessage && error.errorMessage.branchError}</FormHelperText> */}
-
-                                </FormControl>
-                                {/*  */}
-                            </Grid>
-                        </div>
-
-
-
-
-
-                    </Grid>
-                    <Grid item xs={10} style={{ display: 'flex', marginLeft: '20px' }} divider className="df">
-                        <div className="df-btn-container">
-                            <div className="df-clear-all">
-                                <Button variant="contained" className="df-clear" onClick={clearAll}>
-                                    <SvgIcon
-                                        component={() => (
-                                            <img
-                                                style={{ width: '12px', marginRight: '5px' }}
-                                                src={Clearall}
-                                                alt='given'
-                                            />
-                                        )}
-                                    />
-                                    Clear All</Button>
+                                </Grid>
                             </div>
-                            <div className="df-filter">
-                                <Button variant="contained" color="secondary" onClick={callFilter}>
-                                    <SvgIcon
-                                        component={() => (
-                                            <img
-                                                style={{ width: '12px', marginRight: '5px' }}
-                                                src={Filter}
-                                                alt='given'
-                                            />
-                                        )}
-                                    />
+                            <div className="grade-dropdown">
+                                <Grid item xs={4} sm={2}>
+                                    <FormControl className={`subject-form`}>
+                                        <Autocomplete
+                                            // {...defaultProps}
+                                            style={{ width: 350, marginLeft: 20 }}
+                                            // multiple
+                                            required={true}
+                                            value={gradeValue}
+                                            id="tags-outlined"
+                                            options={gradeRes}
+                                            getOptionLabel={(option) => option.grade__grade_name}
+                                            filterSelectedOptions
+                                            size="small"
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                    variant="outlined"
+                                                    label="Grade"
+
+                                                />
+                                            )}
+                                            onChange={(e, value) => {
+                                                handleGradeChange(value);
+                                            }}
+                                            getOptionSelected={(option, value) => value && option.id == value.id}
+                                        />
+                                        {/* <FormHelperText style={{marginLeft: '20px', color: 'red'}}>{error && error.errorMessage && error.errorMessage.erp_gradeError}</FormHelperText> */}
+                                    </FormControl>
+                                </Grid>
+                            </div>
+
+                            <div className="category-dropdown">
+                                <Grid item xs={4} sm={2}>
+                                    <FormControl className={`select-form`}>
+                                        <Autocomplete
+                                            style={{ width: 350 }}
+                                            // multiple
+                                            value={categoryValue}
+                                            id="tags-outlined"
+                                            options={categoryListRes}
+                                            getOptionLabel={(option) => option.category_name}
+                                            filterSelectedOptions
+                                            size="small"
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                    variant="outlined"
+                                                    label="Category"
+
+                                                />
+                                            )}
+                                            onChange={(e, value) => {
+                                                handleCategoryChange(value);
+                                            }}
+                                            getOptionSelected={(option, value) => value && option.id == value.id}
+                                        />
+                                        {/* <FormHelperText style={{marginLeft: '20px', color: 'red'}}>{error && error.errorMessage && error.errorMessage.branchError}</FormHelperText> */}
+
+                                    </FormControl>
+                                    {/*  */}
+                                </Grid>
+                            </div>
+
+
+
+
+
+                        </Grid>
+                        <Grid item xs={10} style={{ display: 'flex', marginLeft: '20px' }} divider className="df">
+                            <div className="df-btn-container">
+                                <div className="df-clear-all">
+                                    <Button variant="contained" className="df-clear" onClick={clearAll}>
+                                        <SvgIcon
+                                            component={() => (
+                                                <img
+                                                    style={{ width: '12px', marginRight: '5px' }}
+                                                    src={Clearall}
+                                                    alt='given'
+                                                />
+                                            )}
+                                        />
+                                    Clear All</Button>
+                                </div>
+                                <div className="df-filter">
+                                    <Button variant="contained" color="secondary" onClick={callFilter}>
+                                        <SvgIcon
+                                            component={() => (
+                                                <img
+                                                    style={{ width: '12px', marginRight: '5px' }}
+                                                    src={Filter}
+                                                    alt='given'
+                                                />
+                                            )}
+                                        />
 
                                 Filter
                             </Button>
+                                </div>
                             </div>
-                        </div>
+
+                        </Grid>
+
 
                     </Grid>
+                </div>
+                }
+                {   !isViewmoreView && <div className="env-container" >
+                    <Grid item xs={11} className="catname-df-forum">
+                        <div className="env-name" style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #E2E2E2' }}>
 
+                            <div className="cat-name">
+                                {
+                                    postListRes && postListRes.map((catName, index) => {
+                                        return (
+                                            <Grid item xs={2} className="catname-df-forum">
+                                                <span style={{ fontSize: '16px', color: index === 0 ? '#FF6B6B' : '#014B7E', marginLeft: index !== 0 ? 15 : null }}>{catName.categories.category_name.charAt(0).toUpperCase() + catName.categories.category_name.slice(1)}</span>
+                                                {index === 0 && <mark><span className="tab-names" style={{ border: '4px solid red', display: 'block', width: '50px' }}></span></mark>}
+                                            </Grid>
+                                        )
+                                    })
+                                }
+                            </div>
+                            <Divider variant="middle" />
 
-                </Grid>
-            </div>
-            }
-            {   !isViewmoreView && <div className="env-container" >
-                 <Grid item xs={10} className="catname-df-forum">
-                    <div className="env-name" style={{ display: 'flex', borderBottom: '1px solid #E2E2E2' }}>
-
-                        {
-                            postListRes && postListRes.map((catName, index) => {
-                                return (
-                                    <Grid item xs={2} className="catname-df-forum">
-                                        <div className="cat-name">
-                                            <span style={{  fontSize: '16px', color: index ===0 ? '#FF6B6B' : '#014B7E' }}>{catName.categories.category_name.charAt(0).toUpperCase() + catName.categories.category_name.slice(1)}</span>
-                                            {/* {index === 0 && <span className="tab-names" style={{border: '1px solid red', display:'block'}}></span>} */}
-                                        </div>
-                                    </Grid>
-                                )
-                            })
-                        }
-                        <div style={{display: 'flex'}}>
-                        <span style={{ color: '#014B7E', fontSize: '18px', paddingTop: 10, marginLeft: 157, fontWeight: 600 }}>Number of discussion: {PostListResPagenation && PostListResPagenation.results.length}</span>
-                        <div className="df-btn-question-container" style={{ display: 'flex' }} >
-                            <div className="df-ask">
-                                <Button variant="contained">
-                                    <SvgIcon
-                                        component={() => (
-                                            <img
-                                                style={{ width: '9px', marginRight: '5px' }}
-                                                src={Ask}
-                                                alt='given'
+                            <div style={{ display: 'flex' }}>
+                                <span style={{ color: '#014B7E', fontSize: '18px', paddingTop: 10, marginLeft: 238, fontWeight: 600 }}>Number of discussion: {postListRes && postListRes.length}</span>
+                                <div className="df-btn-question-container" style={{ display: 'flex' }} >
+                                    <div className="df-ask">
+                                        <Button variant="contained"
+                                            style={{ color: 'red' }}
+                                            onClick={navigateToCreatePage}
+                                            //   href={`${match.url}/create`}
+                                            color='primary'>
+                                            <SvgIcon
+                                                component={() => (
+                                                    <img
+                                                        style={{ width: '9px', marginRight: '5px' }}
+                                                        src={Ask}
+                                                        alt='given'
+                                                    />
+                                                )}
                                             />
-                                        )}
-                                    />
 
 
 
                                                   Ask</Button>
-                            </div>
-                            <div className="df-activity">
-                                <Button variant="contained" color="secondary">
-                                    <SvgIcon
-                                        component={() => (
-                                            <img
-                                                style={{ width: '12px', marginRight: '5px' }}
-                                                src={Activity}
-                                                alt='given'
+                                    </div>
+                                    <div className="df-activity">
+                                        <Button variant="contained" color="secondary">
+                                            <SvgIcon
+                                                component={() => (
+                                                    <img
+                                                        style={{ width: '12px', marginRight: '5px' }}
+                                                        src={Activity}
+                                                        alt='given'
+                                                    />
+                                                )}
                                             />
-                                        )}
-                                    />
 
                                 Activity
                             </Button>
+                                    </div>
+                                </div>
                             </div>
+
                         </div>
-                        </div>
-                       
-                    </div>
-                </Grid> 
-                
-                <div className="env-card-container" >
-                    {
-                        postListRes && postListRes.map((list, index) => {
+                    </Grid>
+
+                    <div className="env-card-container" >
+                        {
+                          postListRes && postListRes.length > 0 ?  postListRes && postListRes.map((list, index) =>{
                             return <Grid container  >
-                                <Grid item xs={6} className="ev-view-card">
-                                <Grid item xs={3} className="ev-view-card">
-                                    <Enviroment list={list} index={index} handleViewmore={handleViewmore} 
-                                    deletPost={deletPost}
+                            {/* <Grid item xs={11} className="ev-view-card"> */}
+                                {/* <Grid item xs={2} className="ev-view-card"> */}
+                                    <Enviroment list={list} index={index} handleViewmore={handleViewmore}
+                                        deletPost={deletPost}
                                     />
-                                </Grid>
-                            </Grid>
+                                {/* </Grid> */}
+                            {/* </Grid> */}
                         </Grid>
+                          })
+                       : <span style={{color: '#042955', marginTop: '50px'}}>No Results Found</span> }
 
-                        })
-                    }
-
+                    </div>
                 </div>
-            </div>
-            }
-            
-            <div className="view-more-container">
-                {
-                    isViewmoreView && <Viewmore viewMoreList={viewMoreList} anstrue={anstrue} />
                 }
-            </div>
-            {/* <div className="pagination-cont">
-                <Pagination 
-                onChange={handlePageChange}
-                count={PostListResPagenation && PostListResPagenation.total_pages} color="secondary" />
-            </div> */}
 
+                <div className="view-more-container">
+                    {
+                        isViewmoreView && <Viewmore viewMoreList={viewMoreList} anstrue={anstrue} />
+                    }
+                </div>
 
+                <div className="pagination-cont">
+                    { !isViewmoreView && <Pagination
+                        onChange={handlePageChange}
+                        count={Math.ceil(PostListResPagenation && PostListResPagenation.total_pages )} color="secondary" 
+                        />}
+                </div>
+            </>
+            
         </Layout>
+
     )
 }
 
-export default Discussionforum;
+export default withRouter(Discussionforum);

@@ -225,7 +225,7 @@ const LessonPlanGraphReport = ({
           setTeacherDropdown([]);
         });
     }
-    console.log(value[0].id, filterData.grade.grade_id, 'GRADEEE');
+    // console.log(value[0].id, filterData.grade.grade_id, 'GRADEEE');
     axiosInstance
       .get(
         `${endpoints.lessonPlan.chapterList}?gs_mapping_id=${value[0].id}&volume=${filterData.volume.id}&academic_year=${filterData.year.id}&branch=${filterData.grade.grade_id}`
