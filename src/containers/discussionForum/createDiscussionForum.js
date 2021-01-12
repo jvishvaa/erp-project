@@ -482,7 +482,7 @@ console.log(selectedGradeIds,"2@@@@@@@@@@@@@",selectedSectionIds)
                 defaultValue=''
                 placeholder="Title not more than 100 words"
                 variant='outlined'
-                style={{ width: '300%' }}
+                style={{ width: '100%' }}
                 inputProps={{ maxLength: 100 }}
                 onChange={(event,value)=>{handleTitleChange(event);}}
                 color='secondary'
@@ -499,7 +499,7 @@ console.log(selectedGradeIds,"2@@@@@@@@@@@@@",selectedSectionIds)
         label="Description"
         defaultValue=''
         variant='outlined'
-        style={{ width: '300%' }}
+        style={{ width: '100%' }}
         inputProps={{ maxLength: 100 }}
         onChange={(event,value)=>{handleDescriptionChange(event);}}
         color='secondary'

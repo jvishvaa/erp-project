@@ -397,7 +397,7 @@ const Discussionforum = (props) => {
                                 <Button variant="contained"  
               href={`${match.url}/create`}
               color='primary'>
-                                    {/* <SvgIcon
+                                    <SvgIcon
                                         component={() => (
                                             <img
                                                 style={{ width: '9px', marginRight: '5px' }}
@@ -405,7 +405,7 @@ const Discussionforum = (props) => {
                                                 alt='given'
                                             />
                                         )}
-                                    /> */}
+                                    />
 
 
 
