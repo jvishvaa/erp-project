@@ -156,7 +156,7 @@ const LessonViewFilters = ({
 
   useEffect(() => {
     axios
-      .get(`http://13.232.30.169/qbox/lesson_plan/list-session/`, {
+      .get(`${endpoints.lessonPlan.academicYearList}`, {
         headers: {
           'x-api-key': 'vikash@12345#1231',
         },
@@ -172,7 +172,7 @@ const LessonViewFilters = ({
         setAlert('error', error.message);
       });
     axios
-      .get('http://13.232.30.169/qbox/lesson_plan/list-volume/', {
+      .get(`${endpoints.lessonPlan.volumeList}`, {
         headers: {
           'x-api-key': 'vikash@12345#1231',
         },
