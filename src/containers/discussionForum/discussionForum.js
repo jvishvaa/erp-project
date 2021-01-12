@@ -12,6 +12,7 @@ import Enviroment from './enviromentCard';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import Viewmore from './viewMore';
+
 import IconButton from '@material-ui/core/IconButton';
 
 import Pagination from '@material-ui/lab/Pagination';
@@ -19,7 +20,8 @@ import './discussionForum.scss';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
 
-const Discussionforum = () => {
+const Discussionforum = (props) => {
+    const {match} = props
     const [categoryListRes, setcategoryListRes] = useState([]);
     const [branch, setBranchRes] = useState([]);
     const [gradeRes, setGradeRes] = useState([]);
@@ -392,8 +394,10 @@ const Discussionforum = () => {
                         <span style={{ color: '#014B7E', fontSize: '18px', paddingTop: 10, marginLeft: 157, fontWeight: 600 }}>Number of discussion: {PostListResPagenation && PostListResPagenation.limit}</span>
                         <div className="df-btn-question-container" style={{ display: 'flex' }} >
                             <div className="df-ask">
-                                <Button variant="contained">
-                                    <SvgIcon
+                                <Button variant="contained"  
+              href={`${match.url}/create`}
+              color='primary'>
+                                    {/* <SvgIcon
                                         component={() => (
                                             <img
                                                 style={{ width: '9px', marginRight: '5px' }}
@@ -401,9 +405,11 @@ const Discussionforum = () => {
                                                 alt='given'
                                             />
                                         )}
-                                    />
+                                    /> */}
 
-                                    Ask</Button>
+
+
+                                                  Ask</Button>
                             </div>
                             <div className="df-activity">
                                 <Button variant="contained" color="secondary">
