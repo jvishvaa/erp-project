@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Usericon from '../../assets/images/user.svg'
 import { SvgIcon, Typography, Divider, Button, } from '@material-ui/core';
@@ -54,13 +54,17 @@ const Viewmore = (props) => {
     const [answers, setAnswers] = React.useState([]);
     const [showMenu, setShowMenu] = useState(false);
     const [showPeriodIndex, setShowPeriodIndex] = useState();
+    const [ansChangeValue, setAnsChangeValue] = useState('');
+    const [awardRes, setAwardListRes] = React.useState([]);
 
-    
+
     const { viewMoreList } = props;
     const open = Boolean(anchorEl);
     const id = open ? 'transitions-popper' : undefined;
 
     const fetchPostLike = (event, list) => {
+        var popup = document.getElementById("myPopup");
+        popup.classList.remove("show");
         setAnchorEl(anchorEl ? null : event.currentTarget);
         axiosInstance.get(`${endpoints.discussionForum.postLike}?post=${list.id}&&type=1`).then((res) => {
             setLikelist(res.data.result.results);
@@ -73,35 +77,64 @@ const Viewmore = (props) => {
     }
 
 
-  const handlePeriodMenuClose = (index) => {
-    setShowMenu(false);
-    setShowPeriodIndex();
-  };
+    const getAwardList = (event,list) => {
+        var popup = document.getElementById("myPopup");
+        popup.classList.toggle("show");
+        axiosInstance.get(`${endpoints.discussionForum.AwardListAPI}${list.id}/award-users-list/`).then(res => {
+            if (res.data.status_code === 200) {
+                setAwardListRes(res.data.result.results);
+                setAnchorEl(anchorEl ? null :'');
+                setInputBox(false);
+            }
+        }).catch(err => {
+            console.log(err)
+        })
+
+    }
+
 
 
     const openAnswerBox = (e, viewMoreList) => {
-        console.log(inputBox, "answers")
-        setInputBox(!inputBox);
+      
         axiosInstance.get(`${endpoints.discussionForum.postLike}?post=${viewMoreList.id}&&type=2`).then((res) => {
             if (res.data.status_code === 200) {
                 setAnchorEl(anchorEl ? null : '');
-                setAnswers(res.data.result.results)
+                setAnswers(res.data.result.results);
+                var popup = document.getElementById("myPopup");
+                popup.classList.remove("show");
+                setInputBox(!inputBox);
             }
         }).catch(err => {
             console.log(err)
         })
     }
 
-    const openLikeBox = () => {
-        console.log(viewMoreList, "viewMoreList")
-        setAnchorEl(anchorEl ? null : '');
-    }
 
-  
+
+
     React.useEffect(() => {
         setInputBox(props.anstrue);
     }, []);
-    
+
+    const handleAnswerChange = (event) => {
+        setAnsChangeValue(event.target.value)
+    }
+    // const submitReplay = () => {
+    //    if(!ansChangeValue){
+    //        alert("Enter Value")
+    //    } else{
+    //        console.log(ansChangeValue, "ansChangeValue")
+    //    }
+    // }
+    // const openLikeBox = () => {
+    //     console.log(viewMoreList, "viewMoreList")
+    //     setAnchorEl(anchorEl ? null : '');
+    // }
+
+    //   const handlePeriodMenuClose = (index) => {
+    //     setShowMenu(false);
+    //     setShowPeriodIndex();
+    //   };
     return (
         <div className="view-more-info">
             <Grid container spacing={3}>
@@ -177,7 +210,7 @@ const Viewmore = (props) => {
                                         <Fade {...TransitionProps} timeout={350}>
                                             <div className={classes.paper}>
                                                 {
-                                                    likeList && likeList.map((name, index) => {
+                                                   likeList && likeList.length > 0 ?  likeList && likeList.map((name, index) => {
                                                         return (
                                                             <div className="line-name" key={index} style={{ display: 'flex', justifyContent: 'space-between' }}>
                                                                 <div style={{ display: 'flex', }}>
@@ -193,7 +226,7 @@ const Viewmore = (props) => {
                                                             </div>
                                                         )
                                                     })
-                                                }
+                                                : <span style={{fontSize: 16, color:'#042955', padding: 8}}>No Likes Found</span> }
                                             </div>
                                         </Fade>
                                     )}
@@ -236,8 +269,8 @@ const Viewmore = (props) => {
                                 )}
                             />
                         </div>
-                        <div className="post-award">
-                            <IconButton >
+                        <div className="post-award" >
+                            <IconButton onClick={(event) => getAwardList(event, viewMoreList)} className="popup">
                                 <SvgIcon
                                     component={() => (
                                         <img
@@ -247,6 +280,29 @@ const Viewmore = (props) => {
                                         />
                                     )}
                                 />
+                                <span class="popuptexts" id="myPopup">
+                                    {
+                                        awardRes && awardRes.length > 0 ? awardRes && awardRes.map((awardName, index) => {
+                                            return (
+                                                <>
+                                                    <div className="line-name" key={index} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                        <div style={{ display: 'flex', }}>
+                                                            <Avatar style={{
+                                                                width: ' 27px', height: ' 27px', margin: 10, fontSize: '14px',
+
+                                                                backgroundColor: '#F9AB5D'
+                                                            }}>{awardName.first_name && awardName.first_name.substring(0, 2)}</Avatar>
+                                                            <Typography className={classes.typography}>{awardName && awardName.first_name} {awardName && awardName.last_name}</Typography>
+                                                        </div>
+                                                        <Typography className={classes.typography}>{awardName && awardName.creation_ago}</Typography>
+                                                    </div>
+                                                    <img src={endpoints.discussionForum.s3 + awardName.award_file} style={{width: '28px', marginRight:'100px'}} />
+                                                </>
+                                            )
+                                        })
+                                    : <span style={{fontSize: 16, color:'#042955', padding: 8}}>No Awards Found</span>}
+                                </span>
+
                             </IconButton>
                         </div>
 
@@ -264,20 +320,20 @@ const Viewmore = (props) => {
                                 </span>
                             </span>
 
-                            <input class="form-field" type="text" placeholder="Type comment your comment here..." />
+                            <input class="form-field" type="text" placeholder="Type comment your comment here..." onChange={handleAnswerChange} />
 
                         </div>
                         <div className="comment-box">
                             {
-                                answers && answers.map((ans, index) => {
-                                   
+                                answers ? answers && answers.map((ans, index) => {
+
                                     return (
                                         <>
                                             <div className="comment-avatar" key={index}>
                                                 <div className="comment-avatar-lastseen">
                                                     <Grid container spacing={2}>
-                                                    <Grid item xs={12} style={{display: 'flex'}}>
-                                                            <Grid item xs={4} style={{display: 'flex'}} className="fname-last">
+                                                        <Grid item xs={12} style={{ display: 'flex' }}>
+                                                            <Grid item xs={4} style={{ display: 'flex' }} className="fname-last">
                                                                 <Avatar style={{ width: ' 25px', height: ' 25px', fontSize: '16px', }}>
                                                                     {ans.first_name.substring(0, 2)}
                                                                 </Avatar>
@@ -286,10 +342,10 @@ const Viewmore = (props) => {
                                                                     {ans.first_name} {ans.last_name}
                                                                 </span>
                                                             </Grid>
-                                                        <Grid item xs={4} className="ans-creation_ago">
-                                                        <div className="last-seen"><span>{ans.creation_ago}</span></div>
+                                                            <Grid item xs={4} className="ans-creation_ago">
+                                                                <div className="last-seen"><span>{ans.creation_ago}</span></div>
+                                                            </Grid>
                                                         </Grid>
-                                                    </Grid>
                                                     </Grid>
 
                                                 </div>
@@ -298,16 +354,9 @@ const Viewmore = (props) => {
                                             </div>
                                             <div className="comment">
                                                 <p className="comment-pragraph">{ans.answer}</p>
-                                                {/* {console.log(answers, "answersanswers")}
-                                {
-                                    answers && answers.slice(0,1).map((ans, index) => {
-                                        return  <p className="comment-pragraph">{ans.answer}</p>
-                                    })
-                                } */}
-
                                             </div>
                                             <div className="replay">
-                                                <a href="#" className="re-btn">Reply</a>
+                                                <a href="#" className="re-btn" >Reply</a>
                                                 <IconButton>
                                                     <SvgIcon
                                                         component={() => (
@@ -320,11 +369,12 @@ const Viewmore = (props) => {
                                                     />
                                                 </IconButton>
 
-                                            </div></>
+                                            </div>
+                                        </>
 
                                     )
                                 })
-                            }
+                                    : ''}
 
                         </div>
                     </Grid>
