@@ -245,6 +245,7 @@ const ViewHomework = withRouter(
         setCollatedQuestionState({
           id: hwQuestions.id,
           corrected_submission: hwQuestions.evaluated_files,
+          evaluated_files: hwQuestions.submitted_files,
         });
       }
     };

@@ -233,9 +233,17 @@ const ViewHomework = withRouter(
     const fetchHomeworkDetails = async () => {
       const data = await getSubmittedHomeworkDetails(studentHomeworkId);
 
-      const { hw_questions: hwQuestions, is_question_wise: isQuestionwise, id } = data;
+      const {
+        hw_questions: hwQuestions,
+        is_question_wise: isQuestionwise,
+        id,
+        overall_remark: overallRemark,
+        score,
+      } = data;
       console.log('fetched data ', data, hwQuestions);
       setHomeworkId(id);
+      setRemark(overallRemark);
+      setScore(score);
       if (isQuestionwise) {
         const initialQuestionsState = hwQuestions.map((q) => ({
           id: q.id,
@@ -249,8 +257,15 @@ const ViewHomework = withRouter(
         setCollatedQuestionState({
           id: hwQuestions.id,
           corrected_submission: hwQuestions.evaluated_files,
+          evaluated_files: hwQuestions.submitted_files,
+          remarks: hwQuestions.remark,
+          comments: hwQuestions.comment,
         });
       }
+    };
+
+    const handleCollatedQuestionState = (field, value) => {
+      setCollatedQuestionState((prev) => ({ ...prev, [field]: value }));
     };
 
     useEffect(() => {
@@ -501,6 +516,49 @@ const ViewHomework = withRouter(
                       </div>
                     </div>
                   )}
+                  <div
+                    className='comments-remarks-container'
+                    style={{ display: 'flex', width: '95%', margin: '0 auto' }}
+                  >
+                    <div className='item comment'>
+                      <FormControl variant='outlined' fullWidth size='small'>
+                        <InputLabel htmlFor='component-outlined'>Comments</InputLabel>
+                        <OutlinedInput
+                          id='comments'
+                          name='comments'
+                          inputProps={{ maxLength: 150 }}
+                          multiline
+                          rows={3}
+                          rowsMax={4}
+                          label='Comments'
+                          value={collatedQuestionState?.comments || ''}
+                          onChange={(e) => {
+                            handleCollatedQuestionState('comments', e.target.value);
+                          }}
+                          autoFocus
+                        />
+                      </FormControl>
+                    </div>
+                    <div className='item'>
+                      <FormControl variant='outlined' fullWidth size='small'>
+                        <InputLabel htmlFor='component-outlined'>Remarks</InputLabel>
+                        <OutlinedInput
+                          id='remarks'
+                          name='remarks'
+                          inputProps={{ maxLength: 150 }}
+                          multiline
+                          rows={3}
+                          rowsMax={4}
+                          label='Remarks'
+                          value={collatedQuestionState?.remarks || ''}
+                          onChange={(e) => {
+                            handleCollatedQuestionState('remarks', e.target.value);
+                          }}
+                          autoFocus
+                        />
+                      </FormControl>
+                    </div>
+                  </div>
                   <div className='evaluate-answer-btn-container'>
                     <Button variant='contained' color='primary' onClick={evaluateAnswer}>
                       SAVE
@@ -521,7 +579,7 @@ const ViewHomework = withRouter(
                       onChange={(e) => {
                         setRemark(e.target.value);
                       }}
-                      value={remark}
+                      value={remark || ''}
                     />
                   </FormControl>
                 </div>
@@ -535,7 +593,7 @@ const ViewHomework = withRouter(
                       onChange={(e) => {
                         setScore(e.target.value);
                       }}
-                      value={score}
+                      value={score || 0}
                     />
                   </FormControl>
                 </div>
