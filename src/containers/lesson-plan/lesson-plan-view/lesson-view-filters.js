@@ -192,7 +192,7 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
     }
 
     useEffect(() => {
-        axiosInstance.get(`${endpoints.communication.branches}`)
+        axiosInstance.get(`${endpoints.communication.branches}/`)
             .then(result => {
                 if (result.data.status_code === 200) {
                     setBranchDropdown(result.data.data);
@@ -368,7 +368,7 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
             <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'} style={{ paddingBottom: '0px' }}>
                 <Button
                     variant='contained'
-                    className="custom_button_master labelColor"
+                    className="custom_button_master labelColor modifyDesign"
                     size='medium'
                     onClick={handleClear}
                 >
@@ -382,7 +382,7 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
                     variant='contained'
                     style={{ color: 'white' }}
                     color="primary"
-                    className="custom_button_master"
+                    className="custom_button_master modifyDesign"
                     size='medium'
                     onClick={handleFilter}
                 >

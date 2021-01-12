@@ -172,7 +172,7 @@ const ViewMoreCard = ({ viewMoreData, setViewMore, filterDataDown, periodDataFor
                             variant='contained'
                             style={{ color: 'white' }}
                             color="primary"
-                            className="custom_button_master"
+                            className="custom_button_master modifyDesign"
                             size='small'
                             onClick={handleComplete}
                         >
