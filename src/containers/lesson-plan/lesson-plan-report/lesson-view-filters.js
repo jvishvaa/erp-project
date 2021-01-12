@@ -172,7 +172,7 @@ const LessonViewFilters = ({
         setAlert('error', error.message);
       });
     axios
-      .get('http://13.232.30.169/qbox/lesson_plan/list-volume/', {
+      .get(`${endpoints.lessonPlan.volumeList}`, {
         headers: {
           'x-api-key': 'vikash@12345#1231',
         },
