@@ -408,6 +408,14 @@ const Layout = ({ children, history }) => {
         history.push('/lesson-plan/report');
         break;
       }
+      case 'lesson-plan-graph-report': {
+        history.push('/lesson-plan/graph-report');
+        break;
+      }
+      case 'discussion-forum': {
+        history.push('/discussion-forum');
+        break;
+      }
       default:
         break;
     }

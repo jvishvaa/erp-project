@@ -81,11 +81,12 @@ export default {
     fileUpload: '/academic/upload-question-file/',
     submitHomework: '/academic/homework-submission/',
   },
-  lessonReport:{
-    volumes:'/lesson_plan/list-volume/',
-    subjects:'/academic/lesson-plan-subjects/',
-    lessonList:'/academic/lesson-completed-report/',
-    lessonViewMoreData:'/academic/user-chapters-details/',
+  lessonReport: {
+    volumes: '/lesson_plan/list-volume/',
+    subjects: '/academic/lesson-plan-subjects/',
+    lessonList: '/academic/lesson-completed-report/',
+    lessonViewMoreData: '/academic/user-chapters-details/',
+    teacherList:'/academic/lesson_plan_user_list/',
   },
   coordinatorTeacherHomeworkApi:{
     getAllTeacherList:'/academic/teachers-list/',
@@ -101,9 +102,22 @@ export default {
     periodCompleted: '/academic/lessonplan-completed-status/',
     periodCompletedStatus: '/academic/lesson-status/',
     bulkDownload: `${baseURLCentral}/lesson_plan/bulk_download/`,
-    overviewSynopsis: `${baseURLCentral}/lesson_plan/list-lesson-overview/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },  
-  s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
+  discussionForum:{
+   categoryList: '/academic/categories/',
+   branch: '/erp_user/branch/',
+   grade:'/erp_user/grademapping/',
+   filterCategory: '/academic/posts/',
+   postLike: '/academic/posts-like-users/',
+   PostCategory : '/academic/create-category/',
+   CreateDissusionForum: '/academic/add-post/',
+   CreateCommentAndReplay: '/academic/create-answer-replay/',
+   AwardListAPI: '/academic/',
+   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+   deletePost: '/academic/'
+  },
+  s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
   deleteFromS3: '/academic/delete-file/',
 };
+

@@ -40,7 +40,11 @@ import CoordinatorHomework from './containers/homework/coordinator-homework';
 import AddHomeworkCoord from './containers/homework/coordinator-homework/add-homework';
 import LessonReport from './containers/lesson-plan/lesson-plan-report';
 import LessonPlan from './containers/lesson-plan/lesson-plan-view';
+import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
 
+import Discussionforum from './containers/discussionForum/discussionForum';
+import  CreateCategory from './containers/discussionForum/createCategory';
+import CreateDiscussionForum from './containers/discussionForum/createDiscussionForum';
 
 const theme = createMuiTheme({
   palette: {
@@ -183,6 +187,18 @@ function App() {
                  </Route>
                 <Route exact path='/lesson-plan/view'>
                   {({ match }) => <LessonPlan match={match} />}
+                </Route>
+                <Route exact path='/lesson-plan/graph-report'>
+                  {({ match }) => <LessonPlanGraphReport match={match} />}
+                  </Route>
+                <Route exact path='/discussion-forum'>
+                  {({ match }) => <Discussionforum match={match} />}
+                </Route>
+                <Route exact path='/category/create'>
+                  {({ match }) => <CreateCategory match={match} />}
+                </Route>
+                <Route exact path='/discussion-forum/create'>
+                  {({ match }) => <CreateDiscussionForum match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

@@ -158,6 +158,20 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
         </ListItemIcon>
         <ListItemText className='menu-item-text'>Role management</ListItemText>
       </ListItem>
+      <ListItem
+        button
+        className={
+          history.location.pathname === '/discussion-forum' ? 'menu_selection' : null
+        }
+        onClick={() => {
+          onClickMenuItem('discussion-forum');
+        }}
+      >
+        <ListItemIcon className={classes.menuItemIcon}>
+          <AssignmentIndIcon />
+        </ListItemIcon>
+        <ListItemText className='menu-item-text'>Discussion Forum</ListItemText>
+      </ListItem>
 
       <ListItem
         button
@@ -320,6 +334,21 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
             <ListItemIcon className={classes.menuItemIcon}>
             </ListItemIcon>
             <ListItemText primary='Report' className='menu-item-text' />
+          </ListItem>
+          <ListItem
+            button
+            className={
+              history.location.pathname === '/lesson-plan/graph-report'
+                ? 'menu_selection'
+                : null
+            }
+            onClick={() => {
+              onClickMenuItem('lesson-plan-graph-report');
+            }}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+            </ListItemIcon>
+            <ListItemText primary='Graph Report' className='menu-item-text' />
           </ListItem>
         </List>
       </Collapse>
