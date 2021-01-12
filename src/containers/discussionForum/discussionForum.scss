@@ -1,6 +1,6 @@
 .env-name{
-    padding-top: 15px;
-    margin-bottom: 5px;
+    padding-top: 10px;
+    // margin-bottom: 5px;
 }
 
 .env-name .catname-df-forum{
@@ -64,13 +64,17 @@
     border-style: solid;
     border-color: #FF6B6B;
 }
-.df-ask{
-    border-style: solid;
-    border-color: #FF6B6B;
+.df-ask button{
+    border: 3px solid #FF6B6B ;
+    // border-color: #FF6B6B;
     border-radius: 12px;
 }
 .df-btn-question-container  .df-ask button{
     font-size: 12px;
+}
+
+.df-ask button .MuiButton-label{
+    color: #FF6B6B !important;
 }
 .df-btn-question-container  .df-ask button img{
    width: 9px;
@@ -98,11 +102,15 @@ body{
     color: #8C8C8C !important;
     font-size: 12px;
 }
-
-.env-container .catname-df-forum{
-    flex-basis: 7.666667%;
-
+.cat-name {
+    display: flex;
 }
+
+// .env-container .cat-name .catname-df-forum{
+//     // flex-basis: 0% !important;
+//     max-width: 8.666667% !important;
+
+// }
 ////////////Enviroment card cssss//////////////////////////////
 
 .env-container.ev-view-card{
