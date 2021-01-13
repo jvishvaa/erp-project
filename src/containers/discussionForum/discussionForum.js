@@ -115,7 +115,8 @@ const Discussionforum = (props) => {
 
             axiosInstance.get(`${endpoints.discussionForum.filterCategory}?grade=${gradeValue.grade_id}&page=${page}`).then(res => {
                 if (res.data.status_code === 200) {
-                    setPostListRes(res.data.data.results)
+                    setPostListRes(res.data.data.results);
+                    setPostListResPagenation(res.data.data.results)
 
 
                 } else {
@@ -130,7 +131,8 @@ const Discussionforum = (props) => {
         else if (body && body.categoryValue.id !== undefined && body.gradeValue.grade_id === undefined) {
             axiosInstance.get(`${endpoints.discussionForum.filterCategory}?category=${categoryValue.id}&page=${page}`).then(res => {
                 if (res.data.status_code === 200) {
-                    setPostListRes(res.data.data.results)
+                    setPostListRes(res.data.data.results);
+                    setPostListResPagenation(res.data.data.results)
                 } 
                 // else {
                 //     setAlert('error', res.data.message)
@@ -144,6 +146,7 @@ const Discussionforum = (props) => {
             axiosInstance.get(`${endpoints.discussionForum.filterCategory}?category=${categoryValue.id}&grade=${gradeValue.grade_id}&page=${page}`).then(res => {
                 if (res.data.status_code === 200) {
                     setPostListRes(res.data.data.results)
+                    setPostListResPagenation(res.data.data.results)
                 } else {
                     setAlert('error', res.data.message)
                 }
@@ -476,7 +479,6 @@ const Discussionforum = (props) => {
                         isViewmoreView && <Viewmore viewMoreList={viewMoreList} anstrue={anstrue} />
                     }
                 </div>
-
                 <div className="pagination-cont">
                     { !isViewmoreView && <Pagination
                         onChange={handlePageChange}
