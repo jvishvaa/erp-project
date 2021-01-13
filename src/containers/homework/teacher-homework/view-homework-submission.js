@@ -221,6 +221,7 @@ const ViewHomework = withRouter(
         setQuestionsState(newQuestionsState);
       } else {
         const modifiedQuestion = collatedQuestionState;
+        console.log('collatedQuestionState', collatedQuestionState);
         modifiedQuestion.corrected_submission.push(filePath);
         modifiedQuestion.evaluated_files.push(currentEvaluatedFileName);
 
@@ -260,9 +261,10 @@ const ViewHomework = withRouter(
         }));
         setQuestionsState(initialQuestionsState);
       } else {
+        // console.log('data homework ', hwQuestions, data);
         setCollatedQuestionState({
           id: hwQuestions.id,
-          corrected_submission: hwQuestions.q.corrected_files,
+          corrected_submission: hwQuestions.corrected_files,
           evaluated_files: hwQuestions.evaluated_files,
           remarks: hwQuestions.remark,
           comments: hwQuestions.comment,
@@ -417,7 +419,7 @@ const ViewHomework = withRouter(
                           >
                             {collatedSubmissionFiles.map((url, i) => {
                               const actions = ['preview', 'download'];
-                              if (!collatedQuestionState.evaluated_files.includes(url)) {
+                              if (!collatedQuestionState.evaluated_files?.includes(url)) {
                                 actions.push('pentool');
                               }
 

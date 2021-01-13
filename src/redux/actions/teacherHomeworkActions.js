@@ -174,7 +174,8 @@ export const evaluateHomework = async (id, data) => {
     const response = await axios.put(`/academic/${id}/teacher-evaluation/`, data);
     if (response.data.status_code === 200) {
       return;
-    }throw new Error();
+    }
+    throw new Error();
   } catch (error) {
     throw new Error();
   }
