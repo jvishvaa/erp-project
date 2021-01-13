@@ -234,7 +234,7 @@ export default function Enviroment(props) {
                                                         </div>
                                                     )
                                                 })
-                                            : <span style={{fontSize: 16, color:'#042955', padding: 8}}>No Likes Found</span>}
+                                            :''}
                                         </div>
                                     </Fade>
                                 )}

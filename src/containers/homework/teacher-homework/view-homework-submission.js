@@ -98,6 +98,7 @@ const ViewHomework = withRouter(
     const [remark, setRemark] = useState(null);
     const [score, setScore] = useState(null);
     const [homeworkId, setHomeworkId] = useState(null);
+    const [currentEvaluatedFileName, setcurrentEvaluatedFileName] = useState(null);
 
     const scrollableContainer = useRef(null);
 
@@ -113,8 +114,9 @@ const ViewHomework = withRouter(
       }
     };
 
-    const openInPenTool = (url) => {
+    const openInPenTool = (url, fileName) => {
       setPenToolUrl(url);
+      setcurrentEvaluatedFileName(fileName);
       // setPenToolOpen(true);
     };
 
@@ -210,6 +212,7 @@ const ViewHomework = withRouter(
         const index = activeQuestion - 1;
         const modifiedQuestion = { ...questionsState[index] };
         modifiedQuestion.corrected_submission.push(filePath);
+        modifiedQuestion.evaluated_files.push(currentEvaluatedFileName);
         const newQuestionsState = [
           ...questionsState.slice(0, index),
           modifiedQuestion,
@@ -218,10 +221,14 @@ const ViewHomework = withRouter(
         setQuestionsState(newQuestionsState);
       } else {
         const modifiedQuestion = collatedQuestionState;
+        console.log('collatedQuestionState', collatedQuestionState);
         modifiedQuestion.corrected_submission.push(filePath);
+        modifiedQuestion.evaluated_files.push(currentEvaluatedFileName);
+
         setCollatedQuestionState(modifiedQuestion);
       }
       setPenToolUrl(null);
+      setcurrentEvaluatedFileName(null);
     };
 
     const handleCloseCorrectionModal = () => {
@@ -233,24 +240,40 @@ const ViewHomework = withRouter(
     const fetchHomeworkDetails = async () => {
       const data = await getSubmittedHomeworkDetails(studentHomeworkId);
 
-      const { hw_questions: hwQuestions, is_question_wise: isQuestionwise, id } = data;
+      const {
+        hw_questions: hwQuestions,
+        is_question_wise: isQuestionwise,
+        id,
+        overall_remark: overallRemark,
+        score,
+      } = data;
       console.log('fetched data ', data, hwQuestions);
       setHomeworkId(id);
+      setRemark(overallRemark);
+      setScore(score);
       if (isQuestionwise) {
         const initialQuestionsState = hwQuestions.map((q) => ({
           id: q.id,
           remarks: q.remark,
           comments: q.comment,
-          corrected_submission: q.evaluated_files,
-          evaluated_files: q.submitted_files,
+          corrected_submission: q.corrected_files,
+          evaluated_files: q.evaluated_files,
         }));
         setQuestionsState(initialQuestionsState);
       } else {
+        // console.log('data homework ', hwQuestions, data);
         setCollatedQuestionState({
           id: hwQuestions.id,
-          corrected_submission: hwQuestions.evaluated_files,
+          corrected_submission: hwQuestions.corrected_files,
+          evaluated_files: hwQuestions.evaluated_files,
+          remarks: hwQuestions.remark,
+          comments: hwQuestions.comment,
         });
       }
+    };
+
+    const handleCollatedQuestionState = (field, value) => {
+      setCollatedQuestionState((prev) => ({ ...prev, [field]: value }));
     };
 
     useEffect(() => {
@@ -327,6 +350,11 @@ const ViewHomework = withRouter(
                       ? questionsState[activeQuestion - 1].corrected_submission
                       : []
                   }
+                  alreadyCorrectedQuestions={
+                    questionsState.length
+                      ? questionsState[activeQuestion - 1].evaluated_files
+                      : []
+                  }
                   remark={
                     questionsState.length
                       ? questionsState[activeQuestion - 1].remarks
@@ -389,19 +417,26 @@ const ViewHomework = withRouter(
                               console.log('scrolled');
                             }}
                           >
-                            {collatedSubmissionFiles.map((url, i) => (
-                              <div className='attachment'>
-                                <Attachment
-                                  key={`homework_student_question_attachment_${i}`}
-                                  fileUrl={url}
-                                  fileName={`Attachment-${i + 1}`}
-                                  urlPrefix={`${endpoints.s3}/homework`}
-                                  index={i}
-                                  actions={['preview', 'download', 'pentool']}
-                                  onOpenInPenTool={openInPenTool}
-                                />
-                              </div>
-                            ))}
+                            {collatedSubmissionFiles.map((url, i) => {
+                              const actions = ['preview', 'download'];
+                              if (!collatedQuestionState.evaluated_files?.includes(url)) {
+                                actions.push('pentool');
+                              }
+
+                              return (
+                                <div className='attachment'>
+                                  <Attachment
+                                    key={`homework_student_question_attachment_${i}`}
+                                    fileUrl={url}
+                                    fileName={`Attachment-${i + 1}`}
+                                    urlPrefix={`${endpoints.s3}/homework`}
+                                    index={i}
+                                    actions={actions}
+                                    onOpenInPenTool={openInPenTool}
+                                  />
+                                </div>
+                              );
+                            })}
                             <div
                               style={{
                                 position: 'absolute',
@@ -501,6 +536,49 @@ const ViewHomework = withRouter(
                       </div>
                     </div>
                   )}
+                  <div
+                    className='comments-remarks-container'
+                    style={{ display: 'flex', width: '95%', margin: '0 auto' }}
+                  >
+                    <div className='item comment'>
+                      <FormControl variant='outlined' fullWidth size='small'>
+                        <InputLabel htmlFor='component-outlined'>Comments</InputLabel>
+                        <OutlinedInput
+                          id='comments'
+                          name='comments'
+                          inputProps={{ maxLength: 150 }}
+                          multiline
+                          rows={3}
+                          rowsMax={4}
+                          label='Comments'
+                          value={collatedQuestionState?.comments || ''}
+                          onChange={(e) => {
+                            handleCollatedQuestionState('comments', e.target.value);
+                          }}
+                          autoFocus
+                        />
+                      </FormControl>
+                    </div>
+                    <div className='item'>
+                      <FormControl variant='outlined' fullWidth size='small'>
+                        <InputLabel htmlFor='component-outlined'>Remarks</InputLabel>
+                        <OutlinedInput
+                          id='remarks'
+                          name='remarks'
+                          inputProps={{ maxLength: 150 }}
+                          multiline
+                          rows={3}
+                          rowsMax={4}
+                          label='Remarks'
+                          value={collatedQuestionState?.remarks || ''}
+                          onChange={(e) => {
+                            handleCollatedQuestionState('remarks', e.target.value);
+                          }}
+                          autoFocus
+                        />
+                      </FormControl>
+                    </div>
+                  </div>
                   <div className='evaluate-answer-btn-container'>
                     <Button variant='contained' color='primary' onClick={evaluateAnswer}>
                       SAVE
@@ -521,7 +599,7 @@ const ViewHomework = withRouter(
                       onChange={(e) => {
                         setRemark(e.target.value);
                       }}
-                      value={remark}
+                      value={remark || ''}
                     />
                   </FormControl>
                 </div>
@@ -535,7 +613,7 @@ const ViewHomework = withRouter(
                       onChange={(e) => {
                         setScore(e.target.value);
                       }}
-                      value={score}
+                      value={score || 0}
                     />
                   </FormControl>
                 </div>
