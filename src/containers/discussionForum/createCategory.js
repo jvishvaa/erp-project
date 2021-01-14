@@ -90,13 +90,11 @@ const CreateCategory = () => {
       return activeTabContent()
     }
     else if (currentTab === 5) {
-      console.log(currentTab,"@@@@@@@@@@@@@@@@")
       return inActiveTabContent()
     }
   }
 
   const allTabContent = () =>{
-    console.log(categoryListRes,"@@@@@@@@@@")
     return <div>
     <Grid container spacing={2}>
     { categoryListRes && categoryListRes.length
@@ -110,16 +108,11 @@ const CreateCategory = () => {
         </IconButton>
       }
       style={{fontSize: '15px'}}
-      // title={item.category_name}
-      subheader={item.category_name}
-    />
-            {/* <CardContent>
-              <Typography >
-                {item.category_name}
-                  </Typography>
-            </CardContent> */}
-
-
+      title=
+      {
+          <p style={{ fontFamily: 'Open Sans', fontSize: '15px', fontWeight: 'Lighter' }}> {item.category_name} 
+          </p> }
+          />
           </Card>
           </Grid>
            
@@ -127,8 +120,6 @@ const CreateCategory = () => {
             })
         : ''
       }
-      {/* </Grid> */}
-      {/* </Grid> */}
     </Grid>
     </div>
   } 
@@ -146,29 +137,12 @@ const CreateCategory = () => {
         </IconButton>
       }
       style={{fontSize: '15px'}}
-      // title={item.category_name}
-      subheader={item.category_name}
-    />
-            {/* <CardContent>
-              <Typography >
-                {item.category_name}
-                  </Typography>
-            </CardContent> */}
-<Button
-              variant='contained'
-              style={{ color: 'white' }}
-              color="primary"
-              className="custom_button_master"
-              size='medium'
-              type='submit'
-              // onClick={handleSubmit}
-              // disabled={!categoryTypeChoicesValue || !categoryName }
-            >
-            Edit
-        </Button>
+      title=
+      {
+          <p style={{ fontFamily: 'Open Sans', fontSize: '15px', fontWeight: 'Lighter' }}> {item.category_name}  
+          </p> } />
           </Card>                        
           </Grid>
-                                                
           })
       : ''
     }
@@ -189,27 +163,14 @@ const CreateCategory = () => {
         </IconButton>
       }
       style={{fontSize: '15px'}}
-      title={item.category}
-      subheader={item.sub_category_name}
-    />
-            {/* <CardContent>
-              <Typography >
-                {item.category_name}
-                  </Typography>
-            </CardContent> */}
-            <Button
-              variant='contained'
-              style={{ color: 'white' }}
-              color="primary"
-              className="custom_button_master"
-              size='medium'
-              type='submit'
-              // onClick={handleSubmit}
-              // disabled={!categoryTypeChoicesValue || !categoryName }
-            >
-            Edit
-        </Button>
+      title=
+      {
+              <p style={{ fontFamily: 'Open Sans', fontSize: '15px', fontWeight: 'Lighter' }}> {item.category}  
 
+             </p> }
+      subheader ={
+        <p style={{ fontFamily: 'Open Sans', fontSize: '15px', fontWeight: 'Lighter' }}> {item.sub_category_name}  </p>
+      } />
           </Card>                        
           </Grid>
                                                 
@@ -233,27 +194,20 @@ const CreateCategory = () => {
         </IconButton>
       }
       style={{fontSize: '15px'}}
-      title={item.category}
-      subheader={item.sub_category_name}
-    />
-            <CardContent>
-              <Typography >
+      title=
+      {
+
+<p style={{ fontFamily: 'Open Sans', fontSize: '15px', fontWeight: 'Lighter' }}> {item.category}  
+
+</p> }subheader ={
+
+<p style={{ fontFamily: 'Open Sans', fontSize: '15px', fontWeight: 'Lighter' }}> 
+{item.sub_category_name}  < br />
+
                 {item.sub_sub_category_name}
-                  </Typography>
-            </CardContent>
-            <Button
-              variant='contained'
-              style={{ color: 'white',width :'166px' 
-              }}
-              color="primary"
-              // className="custom_button_master"
-              size='medium'
-              type='submit'
-              // onClick={handleSubmit}
-              // disabled={!categoryTypeChoicesValue || !categoryName }
-            >
-            Edit
-        </Button>
+  </p> }
+  />
+           
           </Card>    
 
           </Grid>
@@ -278,15 +232,17 @@ const CreateCategory = () => {
         </IconButton>
       }
       style={{fontSize: '15px'}}
-      title={item.category_name}
-      subheader={item.sub_category_name}
-    />
-            <CardContent>
-              <Typography >
-                {item.sub_sub_category_name}
-                  </Typography>
-            </CardContent> 
+      title= {
+        <p style={{ fontFamily: 'Open Sans', fontSize: '15px', fontWeight: 'Lighter' }}> {item.category}  
+</p>
 
+      }
+      subheader={
+        <p style={{ fontFamily: 'Open Sans', fontSize: '15px', fontWeight: 'Lighter' }}> 
+        {item.sub_category_name}  <br />
+      {item.sub_sub_category_name}</p>
+      }
+    />
           </Card>                        
           </Grid>
                                                 
@@ -310,14 +266,16 @@ const CreateCategory = () => {
         </IconButton>
       }
       style={{fontSize: '15px'}}
-      title={item.category_name}
-      subheader={item.sub_category_name}
-    />
-            <CardContent>
-              <Typography >
-                {item.sub_sub_category_name}
-                  </Typography>
-            </CardContent> 
+      title= {
+        <p style={{ fontFamily: 'Open Sans', fontSize: '15px', fontWeight: 'Lighter' }}> {item.category}  
+</p>
+
+      }
+      subheader={
+        <p style={{ fontFamily: 'Open Sans', fontSize: '15px', fontWeight: 'Lighter' }}> 
+        {item.sub_category_name}  <br />
+      {item.sub_sub_category_name}</p>
+      }/>
 
           </Card>                        
           </Grid>
