@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react'
 import Layout from '../Layout'
-import {  TextField, Grid, Button, useTheme } from '@material-ui/core'
+import {  TextField, Grid, Button, useTheme,Tabs, Tab ,Typography, Card, CardContent,CardHeader} from '@material-ui/core'
+import IconButton from '@material-ui/core/IconButton';
+
+import CheckCircle from '@material-ui/icons/CheckCircle';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -12,9 +15,9 @@ import Loading from '../../components/loader/loader';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '85%',
-    margin: '1.25rem 3%',
-    boxShadow: 'none'
+    width: '100%',
+    boxShadow: '0 5px 10px rgba(0,0,0,0.30), 0 5px 10px rgba(0,0,0,0.22)',
+    paddingLeft:'10%'
   },
   container: {
     maxHeight: '70vh',
@@ -45,7 +48,7 @@ const CreateCategory = () => {
   { label: 'Sub sub category', value: '3' }
 
   ] 
-
+  const [currentTab,setCurrentTab] =useState(0)
   const [categoryTypeChoicesValue,setCategoryTypeChoicesValue] =useState(1)
   const [categoryListRes, setcategoryListRes] = useState([]);
   const [subCategoryListRes,setSubCategoryListRes] =useState([]);
@@ -62,8 +65,216 @@ const CreateCategory = () => {
 
   
       
-   
+   const decideTab =() => {
+    if (currentTab === 0) {
+      return allTabContent()
+    } else if (currentTab === 1) {
+      return categoryTabContent()
+    }else if (currentTab === 2) {
+      return subCategoryTabContent()
+    }else if (currentTab === 3) {
+      return subSubCategoryTabContent()
+    }else if (currentTab === 4) {
+      return activeTabContent()
+    }
+    else if (currentTab === 5) {
+      return inActiveTabContent()
+    }
+  }
 
+  const allTabContent = () =>{
+    console.log(categoryListRes,"@@@@@@@@@@")
+    return <div> 
+      <Grid container spacing={2}>
+      { categoryListRes && categoryListRes.length
+        ? categoryListRes.map((item) => {
+          return <Grid item xs={12} sm={6} md={4}>
+            <Card className={classes.root} style={{ border: '1px solid #FEE4D4'  }}>
+            <CardHeader  style={{fontSize: '15px'}}
+        action={
+          <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+           {item.is_delete ? '': <CheckCircle  style={{ color: 'green' ,fontSize: '25px' }}/> }
+          </IconButton>
+        }
+        style={{fontSize: '15px'}}
+        // title={item.category_name}
+        subheader={item.category_name}
+      />
+              {/* <CardContent>
+                <Typography >
+                  {item.category_name}
+                    </Typography>
+              </CardContent> */}
+
+            </Card>                        
+            </Grid>
+                                                  
+            })
+        : ''
+      }
+    </Grid>
+      </div>
+  } 
+  const categoryTabContent= () =>{
+    return <div> 
+    <Grid container spacing={2}>
+    { categoryListRes && categoryListRes.length
+      ? categoryListRes.map((item) => {
+        return <Grid item xs={12} sm={6} md={4}>
+          <Card className={classes.root} style={{ border: '1px solid #FEE4D4'  }}>
+          <CardHeader  style={{fontSize: '15px'}}
+      action={
+        <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+         {item.is_delete ? '': <CheckCircle  style={{ color: 'green' ,fontSize: '25px' }}/> }
+        </IconButton>
+      }
+      style={{fontSize: '15px'}}
+      // title={item.category_name}
+      subheader={item.category_name}
+    />
+            {/* <CardContent>
+              <Typography >
+                {item.category_name}
+                  </Typography>
+            </CardContent> */}
+
+          </Card>                        
+          </Grid>
+                                                
+          })
+      : ''
+    }
+  </Grid>
+    </div>
+  }
+  const subCategoryTabContent= () =>{
+    return <div> 
+    <Grid container spacing={2}>
+    { categoryListRes && categoryListRes.length
+      ? categoryListRes.map((item) => {
+        return <Grid item xs={12} sm={6} md={4}>
+          <Card className={classes.root} style={{ border: '1px solid #FEE4D4'  }}>
+          <CardHeader  style={{fontSize: '15px'}}
+      action={
+        <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+         {item.is_delete ? '': <CheckCircle  style={{ color: 'green' ,fontSize: '25px' }}/> }
+        </IconButton>
+      }
+      style={{fontSize: '15px'}}
+      // title={item.category_name}
+      subheader={item.category_name}
+    />
+            {/* <CardContent>
+              <Typography >
+                {item.category_name}
+                  </Typography>
+            </CardContent> */}
+
+          </Card>                        
+          </Grid>
+                                                
+          })
+      : ''
+    }
+  </Grid>
+    </div>
+  }
+  const subSubCategoryTabContent= () =>{
+    return <div> 
+    <Grid container spacing={2}>
+    { categoryListRes && categoryListRes.length
+      ? categoryListRes.map((item) => {
+        return <Grid item xs={12} sm={6} md={4}>
+          <Card className={classes.root} style={{ border: '1px solid #FEE4D4'  }}>
+          <CardHeader  style={{fontSize: '15px'}}
+      action={
+        <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+         {item.is_delete ? '': <CheckCircle  style={{ color: 'green' ,fontSize: '25px' }}/> }
+        </IconButton>
+      }
+      style={{fontSize: '15px'}}
+      // title={item.category_name}
+      subheader={item.category_name}
+    />
+            {/* <CardContent>
+              <Typography >
+                {item.category_name}
+                  </Typography>
+            </CardContent> */}
+
+          </Card>                        
+          </Grid>
+                                                
+          })
+      : ''
+    }
+  </Grid>
+    </div>
+  }
+  const activeTabContent= () =>{
+    return <div> 
+    <Grid container spacing={2}>
+    { categoryListRes && categoryListRes.length
+      ? categoryListRes.map((item) => {
+        return <Grid item xs={12} sm={6} md={4}>
+          <Card className={classes.root} style={{ border: '1px solid #FEE4D4'  }}>
+          <CardHeader  style={{fontSize: '15px'}}
+      action={
+        <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+         {item.is_delete ? '': <CheckCircle  style={{ color: 'green' ,fontSize: '25px' }}/> }
+        </IconButton>
+      }
+      style={{fontSize: '15px'}}
+      // title={item.category_name}
+      subheader={item.category_name}
+    />
+            {/* <CardContent>
+              <Typography >
+                {item.category_name}
+                  </Typography>
+            </CardContent> */}
+
+          </Card>                        
+          </Grid>
+                                                
+          })
+      : ''
+    }
+  </Grid>
+    </div>
+  }
+  const inActiveTabContent= () =>{
+    return <div> 
+    <Grid container spacing={2}>
+    { categoryListRes && categoryListRes.length
+      ? categoryListRes.map((item) => {
+        return <Grid item xs={12} sm={6} md={4}>
+          <Card className={classes.root} style={{ border: '1px solid #FEE4D4'  }}>
+          <CardHeader  style={{fontSize: '15px'}}
+      action={
+        <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+         {item.is_delete ? '': <CheckCircle  style={{ color: 'green' ,fontSize: '25px' }}/> }
+        </IconButton>
+      }
+      style={{fontSize: '15px'}}
+      // title={item.category_name}
+      subheader={item.category_name}
+    />
+            {/* <CardContent>
+              <Typography >
+                {item.category_name}
+                  </Typography>
+            </CardContent> */}
+
+          </Card>                        
+          </Grid>
+                                                
+          })
+      : ''
+    }
+  </Grid>
+    </div>
+  }
    
 
  
@@ -80,6 +291,12 @@ const CreateCategory = () => {
 
   
     
+  }
+  const handleTabChange = (event,value) =>{
+    setCurrentTab(value)
+    // if (value === 2){
+    //   getSubCatgoryList()
+    // }
   }
 
 
@@ -284,6 +501,42 @@ const handleCategoryNameChange = (e) => {
         </Button>
           </Grid>
         </Grid>
+
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+
+            <Tabs value={currentTab} indicatorColor='primary'
+              // variant={mobileView < 1024 ? 'scrollable' : 'fullWidth'}
+              // scrollButtons={mobileView < 1024 ? 'on' : 'off'}
+
+              textColor='primary'
+              onChange={handleTabChange} aria-label='simple tabs example'>
+
+              <Tab label='All'
+
+              />
+              <Tab label='Category'
+
+              />
+              <Tab label='Sub Category'
+
+/>
+<Tab label='Sub sub category'
+
+              />
+              <Tab label='All'
+
+/>
+<Tab label='Active'
+
+/>
+<Tab label='In-Active'
+
+/>
+            </Tabs>
+          </Grid>
+        </Grid>{decideTab()}
+
       </Layout>
     </>
   )
