@@ -44,7 +44,6 @@ import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-re
 
 import Discussionforum from './containers/discussionForum/discussionForum';
 import  CreateCategory from './containers/discussionForum/createCategory';
-import EditCategory from './containers/discussionForum/editCategory'
 import CreateDiscussionForum from './containers/discussionForum/createDiscussionForum';
 
 const theme = createMuiTheme({
@@ -197,9 +196,6 @@ function App() {
                 </Route>
                 <Route exact path='/category/create'>
                   {({ match }) => <CreateCategory match={match} />}
-                </Route>
-                <Route exact path='/category/edit'>
-                  {({ match }) => <EditCategory match={match} />}
                 </Route>
                 <Route exact path='/discussion-forum/create'>
                   {({ match }) => <CreateDiscussionForum match={match} />}

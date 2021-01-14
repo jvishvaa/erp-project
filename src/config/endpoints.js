@@ -111,7 +111,6 @@ export default {
    filterCategory: '/academic/posts/',
    postLike: '/academic/posts-like-users/',
    PostCategory : '/academic/create-category/',
-   EditCategory :'/academic/update-category/',
    CreateDissusionForum: '/academic/add-post/',
    CreateCommentAndReplay: '/academic/create-answer-replay/',
    AwardListAPI: '/academic/',
