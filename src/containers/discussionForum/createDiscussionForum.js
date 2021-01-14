@@ -469,7 +469,7 @@ const handleEditorChange = (content, editor) => {
         </Grid>
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
 
-        <Grid item xs={12} sm={3}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+        <Grid item xs={12} sm={12}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
               <TextField
                 id='outlined-helperText'
                 label="Title"
@@ -488,18 +488,6 @@ const handleEditorChange = (content, editor) => {
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
 
 <Grid item xs={12} sm={12}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-      {/* <TextField
-        id='outlined-helperText'
-        label="Description"
-        defaultValue=''
-        variant='outlined'
-        style={{ width: '100%' }}
-        inputProps={{ maxLength: 100 }}
-        onChange={(event,value)=>{handleDescriptionChange(event);}}
-        color='secondary'
-        // helperText={`${title.length}/100`}
-        size='small'
-      /> */}
         <MyTinyEditor
                         id="Editor"
                         description={description}
