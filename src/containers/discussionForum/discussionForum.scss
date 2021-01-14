@@ -104,6 +104,7 @@ body{
 }
 .cat-name {
     display: flex;
+        justify-content: space-between;
 }
 
 // .env-container .cat-name .catname-df-forum{
@@ -117,7 +118,7 @@ body{
     flex-basis: 30.333333% !important;
 }
 .env-card{
-    width: 303px;
+    width: 80;
     margin-top: 40px;
     // margin-left: 50px;
 }
@@ -204,8 +205,9 @@ body{
 }
 .env-card-container{
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(4, 100px);
+     grid-template-columns: auto auto auto auto ;
+    grid-gap: 10px;
+    width: 93%;
 }
 
 .env-card .text-name{
@@ -426,24 +428,24 @@ background-color: red;
 }
 
 ///////////customize input box/////////////
-:root {
+// :root {
 
-    --input-color: #99A3BA;
-    --input-border: #CDD9ED;
-    --input-background: #fff;
-    --input-placeholder: #CBD1DC;
+//     --input-color: #99A3BA;
+//     --input-border: #CDD9ED;
+//     --input-background: #fff;
+//     --input-placeholder: #CBD1DC;
 
-    --input-border-focus: #275EFE;
+//     --input-border-focus: #275EFE;
 
-    --group-color: var(--input-color);
-    --group-border: var(--input-border);
-    --group-background: #EEF4FF;
+//     --group-color: var(--input-color);
+//     --group-border: var(--input-border);
+//     --group-background: #EEF4FF;
 
-    --group-color-focus: #fff;
-    --group-border-focus: var(--input-border-focus);
-    --group-background-focus: #678EFE;
+//     --group-color-focus: #fff;
+//     --group-border-focus: var(--input-border-focus);
+//     --group-background-focus: #678EFE;
 
-}
+// }
 
 .form-field {
     display: block;
@@ -548,6 +550,7 @@ body {
 
 .input-name{
     display: flex !important;
+    border: 1px solid #78B5F3 !important;
 }
 
 .input-name .user-view-name-nfo{
@@ -753,4 +756,19 @@ opacity: 1;
   @keyframes fadeIn {
     from {opacity: 0;}
     to {opacity:1 ;}
+  }
+
+  .pagination-cont{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+  }
+
+  @media screen and (max-width: 600px) {
+    .env-card-container {
+      width: 100%;
+      display: block;
+      margin-bottom: 20px;
+    }
   }

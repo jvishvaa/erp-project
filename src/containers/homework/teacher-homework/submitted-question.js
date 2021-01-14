@@ -31,6 +31,7 @@ const SubmittedQuestion = ({
   hideNextPrevButton,
   remark,
   comment,
+  alreadyCorrectedQuestions,
 }) => {
   const scrollableContainer = useRef(null);
   const submittedAttachmentsOuterContainer = useRef(null);
@@ -198,48 +199,27 @@ const SubmittedQuestion = ({
               }}
               ref={submittedAttachmentsInnerContainer}
             >
-              {question.submitted_files.map((url, i) => (
-                <>
-                  <div className='attachment'>
-                    <Attachment
-                      key={`homework_student_question_attachment_${i}`}
-                      fileUrl={url}
-                      fileName={`Attachment-${i + 1}`}
-                      urlPrefix={`${endpoints.s3}/homework`}
-                      index={i}
-                      actions={['preview', 'download', 'pentool']}
-                      onOpenInPenTool={onOpenInPenTool}
-                    />
-                  </div>
-                  {/* <div className='attachment'>
-                  <Attachment
-                    key={`homework_student_question_attachment_${i}`}
-                    fileUrl={url}
-                    fileName={`Attachment-${i + 1}`}
-                    urlPrefix={`${endpoints.s3}/homework`}
-                    index={i}
-                  />
-                </div>
-                <div className='attachment'>
-                  <Attachment
-                    key={`homework_student_question_attachment_${i}`}
-                    fileUrl={url}
-                    fileName={`Attachment-${i + 1}`}
-                    urlPrefix={`${endpoints.s3}/homework`}
-                    index={i}
-                  />
-                </div> */}
-                  {/* <div className='attachment'>
-                  <Attachment
-                    key={`homework_student_question_attachment_${i}`}
-                    fileUrl={url}
-                    fileName={`Attachment-${i + 1}`}
-                    urlPrefix={`${endpoints.s3}/homework`}
-                    index={i}
-                  />
-                </div> */}
-                </>
-              ))}
+              {question.submitted_files.map((url, i) => {
+                const actions = ['preview', 'download'];
+                if (!alreadyCorrectedQuestions.includes(url)) {
+                  actions.push('pentool');
+                }
+                return (
+                  <>
+                    <div className='attachment'>
+                      <Attachment
+                        key={`homework_student_question_attachment_${i}`}
+                        fileUrl={url}
+                        fileName={`Attachment-${i + 1}`}
+                        urlPrefix={`${endpoints.s3}/homework`}
+                        index={i}
+                        actions={actions}
+                        onOpenInPenTool={onOpenInPenTool}
+                      />
+                    </div>
+                  </>
+                );
+              })}
               <div
                 style={{
                   position: 'absolute',

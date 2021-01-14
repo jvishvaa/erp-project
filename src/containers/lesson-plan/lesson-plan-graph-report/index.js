@@ -42,10 +42,10 @@ const LessonPlanGraphReport = ({
   const [sectionDropdown, setSectionDropdown] = useState([]);
   const [teacherDropdown, setTeacherDropdown] = useState([]);
 
-  const [subjId,setSubjId] = useState([]);
-  const [graphData,setGraphData] =useState([]);
-// let centralGsMappingId 
-const [centralGsMappingId , setCentralGsMappingId ]=useState('')
+  const [subjId, setSubjId] = useState([]);
+  const [graphData, setGraphData] = useState([]);
+  // let centralGsMappingId
+  const [centralGsMappingId, setCentralGsMappingId] = useState('');
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [selectedCol, setSelectedCol] = useState({});
   const [loading, setLoading] = useState(false);
@@ -75,6 +75,8 @@ const [centralGsMappingId , setCentralGsMappingId ]=useState('')
 
   const [noFilterLogo, setNoFilterLogo] = useState(true);
   const [subjectList, setSubjectList] = useState([]);
+
+  const [mapId, setMapId] = useState('');
 
   const [filterData, setFilterData] = useState({
     year: '',
@@ -120,26 +122,28 @@ const [centralGsMappingId , setCentralGsMappingId ]=useState('')
     }
   };
 
-  const handleDateRangePicker=  (e,value)=>{
-      setDateRangeTechPer(e)
-    const startDate=e[0].format('YYYY-MM-DD');
-    const endDate=e[1]?.format('YYYY-MM-DD')
+  const handleDateRangePicker = (e, value) => {
+    setDateRangeTechPer(e);
+    const startDate = e[0].format('YYYY-MM-DD');
+    const endDate = e[1]?.format('YYYY-MM-DD');
     // console.log(filterData.grade.grade_id,filterData.volume.id,subjectIds,'ggggg')
-    axiosInstance.get(
-        `${endpoints.lessonReport.lessonList}?grade=${filterData.grade.grade_id}&page=${1}&subjects=${subjId}&volume_id=${filterData.volume.id}&start_date=${startDate}&end_date=${endDate}`)
-        .then(result=>{
-            if(result.data.status_code === 200){
-            const a=result.data.result.results
-            const aa=a?.map(a=>a.central_gs_mapping_id)
-            // centralGsMappingId=aa?.pop()
-            setCentralGsMappingId(aa?.pop())
-            // console.log(result.data.result.results,'OOOO',centralGsMappingId)
-            }else {
-                setAlert('error', result.data.message);
-            }
-        })
-        
-    }
+
+    // ><<<<<>>>>>>>>>>>NEED DISCUSSION WITH BACKEND<<<<<<<<<>>>>>>>>><<<
+    // axiosInstance.get(
+    //     `${endpoints.lessonReport.lessonList}?grade=${filterData.grade.grade_id}&page=${1}&subjects=${subjId}&volume_id=${filterData.volume.id}&start_date=${startDate}&end_date=${endDate}`)
+    //     .then(result=>{
+    //         if(result.data.status_code === 200){
+    //         const a=result.data.result.results
+    //         const aa=a?.map(a=>a.central_gs_mapping_id)
+    //         // centralGsMappingId=aa?.pop()
+    //         setCentralGsMappingId(aa?.pop())
+    //         // console.log(result.data.result.results,'OOOO',centralGsMappingId)
+    //         }else {
+    //             setAlert('error', result.data.message);
+    //         }
+    //     })
+    // ><<<<<>>>>>>>>>>>NEED DISCUSSION WITH BACKEND<<<<<<<<<>>>>>>>>><<<
+  };
 
   const handleGrade = (event, value) => {
     setFilterData({ ...filterData, grade: '', section: '', subject: '' });
@@ -185,7 +189,7 @@ const [centralGsMappingId , setCentralGsMappingId ]=useState('')
       setSectionDropdown([]);
     }
   };
-
+  console.log(filterData.grade, 'HHHHH');
   const handleSection = (event, value) => {
     // console.log(value);
     setFilterData({ ...filterData, section: '' });
@@ -196,35 +200,48 @@ const [centralGsMappingId , setCentralGsMappingId ]=useState('')
 
   const handleSubject = (event, value) => {
     setSubjectList([]);
-    if (value.length>0) {
-    //   console.log(value, 'vvvvvv');
+    if (value.length > 0) {
+      //   console.log(value, 'vvvvvv');
       const ids = value.map((el) => el.subject_id);
-      setSubjectIds(ids)
-      const sIds =value.map((el) => el.id);
-      setSubjId(sIds)
+      setSubjectIds(ids);
+      const sIds = value.map((el) => el.id);
+      setSubjId(sIds);
       setSubjectList(value);
-      axiosInstance.get(
+      axiosInstance
+        .get(
           `${endpoints.lessonReport.teacherList}?branch=${branchId}&grade=${filterData.grade?.grade_id}&section=${filterData.section?.section_id}&subject=${ids}&academic_year=${filterData.year?.id}`
-        ).then(result => {
+        )
+        .then((result) => {
           if (result.data.status_code === 200) {
             setTeacherDropdown(result.data.result);
             // console.log(result.data.result, 'RRRRRR');
-
           } else {
             setAlert('error', result.data.message);
             setTeacherDropdown([]);
-
           }
-        }).catch(error => {
+        })
+        .catch((error) => {
           setAlert('error', error.message);
           setTeacherDropdown([]);
-  
         });
-       
     }
-   
+    // console.log(value[0].id, filterData.grade.grade_id, 'GRADEEE');
+    axiosInstance
+      .get(
+        `${endpoints.lessonPlan.chapterList}?gs_mapping_id=${value[0].id}&volume=${filterData.volume.id}&academic_year=${filterData.year.id}&branch=${filterData.grade.grade_id}`
+      )
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setMapId(result.data.result.central_gs_mapping_id);
+        } else {
+          setAlert('error', result.data.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+        setTeacherDropdown([]);
+      });
   };
-
 
   const handleBranch = (event, value) => {
     setFilterData({ ...filterData, branch: '' });
@@ -235,31 +252,41 @@ const [centralGsMappingId , setCentralGsMappingId ]=useState('')
   const handleTeacher = (event, value) => {
     setFilterData({ ...filterData, teacher: '' });
     if (value) {
-        // console.log(value,'vvvvvvv')
+      // console.log(value,'vvvvvvv')
       setFilterData({ ...filterData, teacher: value });
     }
   };
 
   const handleFilter = () => {
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
-      setLoading(true)
+    setLoading(true);
     setNoFilterLogo(false);
-    axiosInstance.get(`${endpoints.lessonReport.lessonViewMoreData}?central_gs_mapping_id=${centralGsMappingId}&volume_id=${filterData.volume.id}&academic_year_id=${filterData.year.id}&completed_by=${filterData.teacher.user_id}&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}`)
-      .then(result => {
+    axiosInstance
+      .get(
+        `${
+          endpoints.lessonReport.lessonViewMoreData
+        }?central_gs_mapping_id=${mapId}&volume_id=${
+          filterData.volume.id
+        }&academic_year_id=${filterData.year.id}&completed_by=${
+          filterData.teacher.user_id
+        }&start_date=${startDateTechPer.format(
+          'YYYY-MM-DD'
+        )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}`
+      )
+      .then((result) => {
         //   console.log(result.data)
-            if(result.data.status_code === 200){
-                setLoading(false)
-                setGraphData(result.data.result)
-            }else{
-                setAlert('error', result.data.message);
-            }
-
+        if (result.data.status_code === 200) {
+          setLoading(false);
+          setGraphData(result.data.result);
+        } else {
+          setLoading(false);
+          setAlert('error', result.data.message);
+        }
       })
       .catch((error) => {
         setLoading(false);
         setAlert('error', error.message);
-    })
-
+      });
   };
 
   useEffect(() => {
@@ -351,7 +378,7 @@ const [centralGsMappingId , setCentralGsMappingId ]=useState('')
       // text: 'Source: WorldClimate.com'
     },
     xAxis: {
-      categories: graphData.map(e=>e.chapter_name),
+      categories: graphData.map((e) => e.chapter_name),
       labels: {
         style: {
           fontSize: '1rem',
@@ -372,9 +399,9 @@ const [centralGsMappingId , setCentralGsMappingId ]=useState('')
     },
     tooltip: {
       headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-    //   pointFormat:
-    //     '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-    //     '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+      //   pointFormat:
+      //     '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+      //     '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
       footerFormat: '</table>',
       shared: true,
       useHTML: true,
@@ -388,20 +415,20 @@ const [centralGsMappingId , setCentralGsMappingId ]=useState('')
     series: [
       {
         name: 'Total No. Of Periods',
-        data: graphData.map(e=>e.no_of_periods) ,
+        data: graphData.map((e) => e.no_of_periods),
         color: '#ff6b6b',
       },
       {
         name: 'Completed Periods',
-        data:graphData.map(e=>e.completed_periods) ,
+        data: graphData.map((e) => e.completed_periods),
         color: '#014b7e',
       },
     ],
   };
-console.log(graphData,'GGGG')
+  console.log(graphData, 'GGGG');
   return (
     <>
-     {loading ? <Loading message='Loading...' /> : null}
+      {loading ? <Loading message='Loading...' /> : null}
       <Layout>
         {loading ? <Loading message='Loading...' /> : null}
         <div>
@@ -572,7 +599,7 @@ console.log(graphData,'GGGG')
                 // onChange={(newValue) => {
                 //   setDateRangeTechPer(newValue);
                 // }}
-                onChange={e=> handleDateRangePicker(e)}
+                onChange={(e) => handleDateRangePicker(e)}
                 renderInput={({ inputProps, ...startProps }, endProps) => {
                   return (
                     <>

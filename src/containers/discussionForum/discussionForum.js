@@ -115,7 +115,8 @@ const Discussionforum = (props) => {
 
             axiosInstance.get(`${endpoints.discussionForum.filterCategory}?grade=${gradeValue.grade_id}&page=${page}`).then(res => {
                 if (res.data.status_code === 200) {
-                    setPostListRes(res.data.data.results)
+                    setPostListRes(res.data.data.results);
+                    setPostListResPagenation(res.data.data.results)
 
 
                 } else {
@@ -130,7 +131,8 @@ const Discussionforum = (props) => {
         else if (body && body.categoryValue.id !== undefined && body.gradeValue.grade_id === undefined) {
             axiosInstance.get(`${endpoints.discussionForum.filterCategory}?category=${categoryValue.id}&page=${page}`).then(res => {
                 if (res.data.status_code === 200) {
-                    setPostListRes(res.data.data.results)
+                    setPostListRes(res.data.data.results);
+                    setPostListResPagenation(res.data.data.results)
                 } 
                 // else {
                 //     setAlert('error', res.data.message)
@@ -144,6 +146,7 @@ const Discussionforum = (props) => {
             axiosInstance.get(`${endpoints.discussionForum.filterCategory}?category=${categoryValue.id}&grade=${gradeValue.grade_id}&page=${page}`).then(res => {
                 if (res.data.status_code === 200) {
                     setPostListRes(res.data.data.results)
+                    setPostListResPagenation(res.data.data.results)
                 } else {
                     setAlert('error', res.data.message)
                 }
@@ -399,7 +402,7 @@ const Discussionforum = (props) => {
                                     postListRes && postListRes.map((catName, index) => {
                                         return (
                                             <Grid item xs={2} className="catname-df-forum">
-                                                <span style={{ fontSize: '16px', color: index === 0 ? '#FF6B6B' : '#014B7E', marginLeft: index !== 0 ? 60 : '' }}>{catName.categories.category_name.charAt(0).toUpperCase() + catName.categories.category_name.slice(1)}</span>
+                                                <span style={{ fontSize: '16px', color: index === 0 ? '#FF6B6B' : '#014B7E', marginLeft: index !== 0 ? 15 : null }}>{catName.categories.category_name.charAt(0).toUpperCase() + catName.categories.category_name.slice(1)}</span>
                                                 {index === 0 && <mark><span className="tab-names" style={{ border: '4px solid red', display: 'block', width: '50px' }}></span></mark>}
                                             </Grid>
                                         )
@@ -456,13 +459,13 @@ const Discussionforum = (props) => {
                         {
                           postListRes && postListRes.length > 0 ?  postListRes && postListRes.map((list, index) =>{
                             return <Grid container  >
-                            <Grid item xs={6} className="ev-view-card">
-                                <Grid item xs={3} className="ev-view-card">
+                            {/* <Grid item xs={11} className="ev-view-card"> */}
+                                {/* <Grid item xs={2} className="ev-view-card"> */}
                                     <Enviroment list={list} index={index} handleViewmore={handleViewmore}
                                         deletPost={deletPost}
                                     />
-                                </Grid>
-                            </Grid>
+                                {/* </Grid> */}
+                            {/* </Grid> */}
                         </Grid>
                           })
                        : <span style={{color: '#042955', marginTop: '50px'}}>No Results Found</span> }
@@ -476,8 +479,7 @@ const Discussionforum = (props) => {
                         isViewmoreView && <Viewmore viewMoreList={viewMoreList} anstrue={anstrue} />
                     }
                 </div>
-
-                <div className="pagination-cont" style={{margin: '60px 0px 0px 650px'}}>
+                <div className="pagination-cont">
                     { !isViewmoreView && <Pagination
                         onChange={handlePageChange}
                         count={Math.ceil(PostListResPagenation && PostListResPagenation.total_pages )} color="secondary" 

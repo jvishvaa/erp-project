@@ -77,7 +77,7 @@ const Attachment = (props) => {
                   {actions?.includes('pentool') && (
                     <IconButton
                       size='small'
-                      onClick={() => onOpenInPenTool(`${urlPrefix}/${fileUrl}`)}
+                      onClick={() => onOpenInPenTool(`${urlPrefix}/${fileUrl}`, fileUrl)}
                     >
                       <CreateIcon style={{ color: '#ffffff' }} />
                     </IconButton>
