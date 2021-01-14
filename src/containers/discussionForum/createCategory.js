@@ -2,9 +2,13 @@ import React, { useState, useEffect, useContext } from 'react'
 import Layout from '../Layout'
 import {  TextField, Grid, Button, useTheme,Tabs, Tab ,Typography, Card, CardContent,CardHeader} from '@material-ui/core'
 import IconButton from '@material-ui/core/IconButton';
-
+import Cancel from '@material-ui/icons/Cancel'
 import CheckCircle from '@material-ui/icons/CheckCircle';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import Box from '@material-ui/core/Box';
+import Paper from '@material-ui/core/Paper';
+
+
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
@@ -34,6 +38,9 @@ const useStyles = makeStyles((theme) => ({
   tableCell: {
     color: theme.palette.secondary.main,
   },
+  rootG: {
+    flexGrow: 1,
+  },
 }));
 
 
@@ -48,10 +55,15 @@ const CreateCategory = () => {
   { label: 'Sub sub category', value: '3' }
 
   ] 
+  const [spacing, setSpacing] = React.useState(2);
   const [currentTab,setCurrentTab] =useState(0)
   const [categoryTypeChoicesValue,setCategoryTypeChoicesValue] =useState(1)
   const [categoryListRes, setcategoryListRes] = useState([]);
   const [subCategoryListRes,setSubCategoryListRes] =useState([]);
+  const [subCatListRes,setSubCatListRes] = useState([]);
+  const [subSubCatListRes,setSubSubCatListRes]=useState([]);
+  const [inActiveListRes,setInActiveListRes]=useState([]);
+  const [activeListRes,setActiveListRes]=useState([]);
   const [categoryValue, setCategoryValue] = useState('');
   const [subCategoryValue, setSubCategoryValue]=useState('');
   const[categoryTypeValue,setCategoryTypeValue] =useState('');
@@ -78,45 +90,14 @@ const CreateCategory = () => {
       return activeTabContent()
     }
     else if (currentTab === 5) {
+      console.log(currentTab,"@@@@@@@@@@@@@@@@")
       return inActiveTabContent()
     }
   }
 
   const allTabContent = () =>{
     console.log(categoryListRes,"@@@@@@@@@@")
-    return <div> 
-      <Grid container spacing={2}>
-      { categoryListRes && categoryListRes.length
-        ? categoryListRes.map((item) => {
-          return <Grid item xs={12} sm={6} md={4}>
-            <Card className={classes.root} style={{ border: '1px solid #FEE4D4'  }}>
-            <CardHeader  style={{fontSize: '15px'}}
-        action={
-          <IconButton aria-label="settings" style={{fontSize: '15px'}}>
-           {item.is_delete ? '': <CheckCircle  style={{ color: 'green' ,fontSize: '25px' }}/> }
-          </IconButton>
-        }
-        style={{fontSize: '15px'}}
-        // title={item.category_name}
-        subheader={item.category_name}
-      />
-              {/* <CardContent>
-                <Typography >
-                  {item.category_name}
-                    </Typography>
-              </CardContent> */}
-
-            </Card>                        
-            </Grid>
-                                                  
-            })
-        : ''
-      }
-    </Grid>
-      </div>
-  } 
-  const categoryTabContent= () =>{
-    return <div> 
+    return <div>
     <Grid container spacing={2}>
     { categoryListRes && categoryListRes.length
       ? categoryListRes.map((item) => {
@@ -125,7 +106,7 @@ const CreateCategory = () => {
           <CardHeader  style={{fontSize: '15px'}}
       action={
         <IconButton aria-label="settings" style={{fontSize: '15px'}}>
-         {item.is_delete ? '': <CheckCircle  style={{ color: 'green' ,fontSize: '25px' }}/> }
+         {item.is_delete ? <Cancel style={{ color: 'red' ,fontSize: '25px' }}/>: <CheckCircle  style={{ color: 'green' ,fontSize: '25px' }}/> }
         </IconButton>
       }
       style={{fontSize: '15px'}}
@@ -138,6 +119,53 @@ const CreateCategory = () => {
                   </Typography>
             </CardContent> */}
 
+
+          </Card>
+          </Grid>
+           
+                                                  
+            })
+        : ''
+      }
+      {/* </Grid> */}
+      {/* </Grid> */}
+    </Grid>
+    </div>
+  } 
+  const categoryTabContent= () =>{
+    return <div> 
+    <Grid container spacing={2}>
+    { categoryListRes && categoryListRes.length
+      ? categoryListRes.map((item) => {
+        return <Grid item xs={12} sm={6} md={4}>
+          <Card className={classes.root} style={{ border: '1px solid #FEE4D4'  }}>
+          <CardHeader  style={{fontSize: '15px'}}
+      action={
+        <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+         {item.is_delete ? <Cancel style={{ color: 'red' ,fontSize: '25px' }}/>: <CheckCircle  style={{ color: 'green' ,fontSize: '25px' }}/> }
+        </IconButton>
+      }
+      style={{fontSize: '15px'}}
+      // title={item.category_name}
+      subheader={item.category_name}
+    />
+            {/* <CardContent>
+              <Typography >
+                {item.category_name}
+                  </Typography>
+            </CardContent> */}
+<Button
+              variant='contained'
+              style={{ color: 'white' }}
+              color="primary"
+              className="custom_button_master"
+              size='medium'
+              type='submit'
+              // onClick={handleSubmit}
+              // disabled={!categoryTypeChoicesValue || !categoryName }
+            >
+            Edit
+        </Button>
           </Card>                        
           </Grid>
                                                 
@@ -150,25 +178,37 @@ const CreateCategory = () => {
   const subCategoryTabContent= () =>{
     return <div> 
     <Grid container spacing={2}>
-    { categoryListRes && categoryListRes.length
-      ? categoryListRes.map((item) => {
+    { subCatListRes && subCatListRes.length
+      ? subCatListRes.map((item) => {
         return <Grid item xs={12} sm={6} md={4}>
-          <Card className={classes.root} style={{ border: '1px solid #FEE4D4'  }}>
+          <Card className={classes.root} style={{ border: '1px solid #FEE4D4' ,width:'350px' }}>
           <CardHeader  style={{fontSize: '15px'}}
       action={
         <IconButton aria-label="settings" style={{fontSize: '15px'}}>
-         {item.is_delete ? '': <CheckCircle  style={{ color: 'green' ,fontSize: '25px' }}/> }
+         {item.is_delete ? <Cancel style={{ color: 'red' ,fontSize: '25px' }}/>: <CheckCircle  style={{ color: 'green' ,fontSize: '25px' }}/> }
         </IconButton>
       }
       style={{fontSize: '15px'}}
-      // title={item.category_name}
-      subheader={item.category_name}
+      title={item.category}
+      subheader={item.sub_category_name}
     />
             {/* <CardContent>
               <Typography >
                 {item.category_name}
                   </Typography>
             </CardContent> */}
+            <Button
+              variant='contained'
+              style={{ color: 'white' }}
+              color="primary"
+              className="custom_button_master"
+              size='medium'
+              type='submit'
+              // onClick={handleSubmit}
+              // disabled={!categoryTypeChoicesValue || !categoryName }
+            >
+            Edit
+        </Button>
 
           </Card>                        
           </Grid>
@@ -182,27 +222,40 @@ const CreateCategory = () => {
   const subSubCategoryTabContent= () =>{
     return <div> 
     <Grid container spacing={2}>
-    { categoryListRes && categoryListRes.length
-      ? categoryListRes.map((item) => {
+    { subSubCatListRes && subSubCatListRes.length
+      ? subSubCatListRes.map((item) => {
         return <Grid item xs={12} sm={6} md={4}>
           <Card className={classes.root} style={{ border: '1px solid #FEE4D4'  }}>
           <CardHeader  style={{fontSize: '15px'}}
       action={
         <IconButton aria-label="settings" style={{fontSize: '15px'}}>
-         {item.is_delete ? '': <CheckCircle  style={{ color: 'green' ,fontSize: '25px' }}/> }
+         {item.is_delete ? <Cancel style={{ color: 'red' ,fontSize: '25px' }}/>: <CheckCircle  style={{ color: 'green' ,fontSize: '25px' }}/> }
         </IconButton>
       }
       style={{fontSize: '15px'}}
-      // title={item.category_name}
-      subheader={item.category_name}
+      title={item.category}
+      subheader={item.sub_category_name}
     />
-            {/* <CardContent>
+            <CardContent>
               <Typography >
-                {item.category_name}
+                {item.sub_sub_category_name}
                   </Typography>
-            </CardContent> */}
+            </CardContent>
+            <Button
+              variant='contained'
+              style={{ color: 'white',width :'166px' 
+              }}
+              color="primary"
+              // className="custom_button_master"
+              size='medium'
+              type='submit'
+              // onClick={handleSubmit}
+              // disabled={!categoryTypeChoicesValue || !categoryName }
+            >
+            Edit
+        </Button>
+          </Card>    
 
-          </Card>                        
           </Grid>
                                                 
           })
@@ -214,25 +267,25 @@ const CreateCategory = () => {
   const activeTabContent= () =>{
     return <div> 
     <Grid container spacing={2}>
-    { categoryListRes && categoryListRes.length
-      ? categoryListRes.map((item) => {
+    { activeListRes && activeListRes.length
+      ? activeListRes.map((item) => {
         return <Grid item xs={12} sm={6} md={4}>
           <Card className={classes.root} style={{ border: '1px solid #FEE4D4'  }}>
           <CardHeader  style={{fontSize: '15px'}}
       action={
         <IconButton aria-label="settings" style={{fontSize: '15px'}}>
-         {item.is_delete ? '': <CheckCircle  style={{ color: 'green' ,fontSize: '25px' }}/> }
+         {item.is_delete ? <Cancel style={{ color: 'red' ,fontSize: '25px' }}/>: <CheckCircle  style={{ color: 'green' ,fontSize: '25px' }}/> }
         </IconButton>
       }
       style={{fontSize: '15px'}}
-      // title={item.category_name}
-      subheader={item.category_name}
+      title={item.category_name}
+      subheader={item.sub_category_name}
     />
-            {/* <CardContent>
+            <CardContent>
               <Typography >
-                {item.category_name}
+                {item.sub_sub_category_name}
                   </Typography>
-            </CardContent> */}
+            </CardContent> 
 
           </Card>                        
           </Grid>
@@ -246,25 +299,25 @@ const CreateCategory = () => {
   const inActiveTabContent= () =>{
     return <div> 
     <Grid container spacing={2}>
-    { categoryListRes && categoryListRes.length
-      ? categoryListRes.map((item) => {
+    { inActiveListRes && inActiveListRes.length
+      ? inActiveListRes.map((item) => {
         return <Grid item xs={12} sm={6} md={4}>
           <Card className={classes.root} style={{ border: '1px solid #FEE4D4'  }}>
           <CardHeader  style={{fontSize: '15px'}}
       action={
         <IconButton aria-label="settings" style={{fontSize: '15px'}}>
-         {item.is_delete ? '': <CheckCircle  style={{ color: 'green' ,fontSize: '25px' }}/> }
+         {item.is_delete ? <Cancel style={{ color: 'red' ,fontSize: '25px' }}/>: <CheckCircle  style={{ color: 'green' ,fontSize: '25px' }}/> }
         </IconButton>
       }
       style={{fontSize: '15px'}}
-      // title={item.category_name}
-      subheader={item.category_name}
+      title={item.category_name}
+      subheader={item.sub_category_name}
     />
-            {/* <CardContent>
+            <CardContent>
               <Typography >
-                {item.category_name}
+                {item.sub_sub_category_name}
                   </Typography>
-            </CardContent> */}
+            </CardContent> 
 
           </Card>                        
           </Grid>
@@ -294,9 +347,6 @@ const CreateCategory = () => {
   }
   const handleTabChange = (event,value) =>{
     setCurrentTab(value)
-    // if (value === 2){
-    //   getSubCatgoryList()
-    // }
   }
 
 
@@ -354,9 +404,60 @@ const CreateCategory = () => {
             console.log(err)
         })
     }
-
     getCategoryList();
 }, []);
+useEffect(() => {
+  const getSubCategoryList = () => {
+    axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_type=2`)
+      .then((res) => {
+          setSubCatListRes(res.data.result)
+      }).catch(err => {
+          console.log(err)
+      })
+  }
+  getSubCategoryList();
+}, []);
+
+useEffect(() => {
+  const getSubSubCategoryList = () => {
+    axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_type=3`)
+      .then((res) => {
+          setSubSubCatListRes(res.data.result)
+      }).catch(err => {
+          console.log(err)
+      })
+  }
+  getSubSubCategoryList();
+}, []);
+
+useEffect(() => {
+  const getInActiveList = () => {
+    axiosInstance.get(`${endpoints.discussionForum.categoryList}?is_delete=True`)
+      .then((res) => {
+          setInActiveListRes(res.data.result)
+      }).catch(err => {
+          console.log(err)
+      })
+  }
+  getInActiveList();
+}, []);
+
+
+useEffect(() => {
+  const getActiveList = () => {
+    axiosInstance.get(`${endpoints.discussionForum.categoryList}?is_delete=False`)
+      .then((res) => {
+          setActiveListRes(res.data.result)
+      }).catch(err => {
+          console.log(err)
+      })
+  }
+  getActiveList();
+}, []);
+
+
+
+
 const handleCategoryChange = (event,value) => {
   if (value && value.id) {
     setCategoryValue(value.id);
@@ -524,9 +625,7 @@ const handleCategoryNameChange = (e) => {
 <Tab label='Sub sub category'
 
               />
-              <Tab label='All'
-
-/>
+          
 <Tab label='Active'
 
 />
