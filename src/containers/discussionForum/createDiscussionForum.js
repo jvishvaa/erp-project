@@ -9,7 +9,7 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import Loading from '../../components/loader/loader';
-
+import MyTinyEditor from './tinymce-editor'
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '85%',
@@ -46,7 +46,7 @@ const CreateDiscussionForum = () => {
   const [selectedSubCategory, setSelectedSubCategory] = useState('');
   const [selectedSubSubCategory, setSelectedSubSubCategory] = useState('');
   const [title,setTitle]=useState('');
-  const [description,setDescription]=useState('');
+  // const [description,setDescription]=useState('');
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false)
   const [selectedBranch, setSelectedBranch] = useState(null);
@@ -64,8 +64,11 @@ const CreateDiscussionForum = () => {
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [selectedGradeIds,setSelectedGradeIds] = useState([]);
   const [selectedSectionIds, setSelectedSectionIds] = useState([]);
-
+  const [openEditor, setOpenEditor] = useState(true);
   const [moduleId, setModuleId] = useState(8);
+  const [description, setDescription] = useState('');
+  const [descriptionDisplay, setDescriptionDisplay] = useState('');
+
 
 
   const handleSubmit = (e) => {
@@ -74,7 +77,7 @@ const CreateDiscussionForum = () => {
     let requestData= {}
       requestData = {
           "title": title,
-          "description": description,
+          "description": descriptionDisplay,
           "category": selectedSubSubCategory,
           "branch": selectedBranch.id,
           "grade": selectedGradeIds,
@@ -313,11 +316,12 @@ const handleTitleChange = (e) => {
   setTitle(e.target.value);
 
 }
+const handleEditorChange = (content, editor) => {
+  console.log(content,editor,"@@@@@@@@@@@@@@@@@@@",editor.getContent({ format: 'text' }))
+  setDescription(content);
+  setDescriptionDisplay(editor.getContent({ format: 'text' }));
+};
 
-const handleDescriptionChange = (e) => {
-  setDescription(e.target.value);
-
-}
 
   return (
    <>
@@ -484,8 +488,8 @@ const handleDescriptionChange = (e) => {
         </Grid>
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
 
-<Grid item xs={12} sm={3}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-      <TextField
+<Grid item xs={12} sm={12}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+      {/* <TextField
         id='outlined-helperText'
         label="Description"
         defaultValue=''
@@ -496,7 +500,14 @@ const handleDescriptionChange = (e) => {
         color='secondary'
         // helperText={`${title.length}/100`}
         size='small'
-      />
+      /> */}
+        <MyTinyEditor
+                        id="Editor"
+                        description={description}
+                        handleEditorChange={handleEditorChange}
+                        setOpenEditor={setOpenEditor}
+                    />
+
   </Grid>
 </Grid>
 
@@ -511,7 +522,7 @@ const handleDescriptionChange = (e) => {
               type='submit'
               onClick={handleSubmit}
               disabled={!selectedSubCategory || !selectedCategory ||!selectedSubSubCategory || !selectedBranch
-              ||!setTitle ||!setDescription }
+              ||!setTitle ||!setDescriptionDisplay }
             >
               Save
         </Button>
