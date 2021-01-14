@@ -37,21 +37,11 @@ const useStyles = makeStyles((theme) => ({
   
 
 
-const EditCategory = () => {
+const EditCategory = (props) => {
+  const catId =props.match.params.id
   const classes = useStyles()
-
-  const categoryTypeChoices=[ { label: 'Category', value: '1' },
-  { label: 'Sub category', value: '2' },
-  { label: 'Sub sub category', value: '3' }
-
-  ] 
-
   const [categoryTypeChoicesValue,setCategoryTypeChoicesValue] =useState(1)
   const [categoryListRes, setcategoryListRes] = useState([]);
-  const [subCategoryListRes,setSubCategoryListRes] =useState([]);
-  const [categoryValue, setCategoryValue] = useState('');
-  const [subCategoryValue, setSubCategoryValue]=useState('');
-  const[categoryTypeValue,setCategoryTypeValue] =useState('');
   const [categoryName,setCategoryName] =useState('');
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false)
@@ -67,45 +57,29 @@ const EditCategory = () => {
    
 
  
-  const handleNewType = (event, value) => {
-    if (value && value.value){
-    setCategoryTypeChoicesValue(value.value)
-    setCategoryTypeValue(value)
-    }
-    else{
-      setCategoryTypeChoicesValue(1)
-      setCategoryTypeValue('')
-
-    }
-
-  
-    
-  }
-
-
   const handleSubmit = (e) => {
     e.preventDefault()
     setLoading(true);
     let requestData= {}
     if (categoryTypeChoicesValue === "1"){
-      requestData = {
-        "category_name":categoryName,
-        "category_type":categoryTypeChoicesValue,
-      }
+      // requestData = {
+      //   "category_name":categoryName,
+      //   "category_type":categoryTypeChoicesValue,
+      // }
   
     } else if(categoryTypeChoicesValue === "2"){
-      requestData = {
-      "category_name":categoryName,
-      "category_type":categoryTypeChoicesValue,
-      "category_parent_id":  categoryValue
-      } 
+      // requestData = {
+      // "category_name":categoryName,
+      // "category_type":categoryTypeChoicesValue,
+      // "category_parent_id":  categoryValue
+      // } 
     }else if(categoryTypeChoicesValue === "3") {
-      requestData = {
-        "category_name":categoryName,
-        "category_type":categoryTypeChoicesValue,
-        "category_parent_id":  subCategoryValue
+      // requestData = {
+      //   "category_name":categoryName,
+      //   "category_type":categoryTypeChoicesValue,
+      //   "category_parent_id":  subCategoryValue
 
-      }
+      // }
     }
   
 
@@ -131,8 +105,11 @@ const EditCategory = () => {
 
   useEffect(() => {
     const getCategoryList = () => {
-        axiosInstance.get(endpoints.discussionForum.categoryList).then((res) => {
-            setcategoryListRes(res.data.result)
+      // axiosInstance.get(`${endpoints.discussionForum.categoryList}?id=${catId}`)
+      axiosInstance.get(`${endpoints.discussionForum.categoryList}?id=33`)
+
+      .then((res) => {
+            setcategoryListRes(res.data.result[0])
         }).catch(err => {
             console.log(err)
         })
@@ -140,36 +117,14 @@ const EditCategory = () => {
 
     getCategoryList();
 }, []);
-const handleCategoryChange = (event,value) => {
-  if (value && value.id) {
-    setCategoryValue(value.id);
-    axiosInstance.get(`${endpoints.discussionForum.categoryList}?category_id=${value.id}&category_type=2`)
-        .then(result => {
-            if (result.data.status_code === 200) {
-              setSubCategoryListRes(result.data.result);
-            }
-            else {
-                setAlert('error', result.data.message);
-            }
-        })
-        .catch(error => {
-            setAlert('error', error.message);
-        })
-}
-else {
-  setCategoryValue(null);
-  
-  }
-}
-const handleSubCategoryChange = (event,value) => {
-  if (value && value.sub_category_id){
-  setSubCategoryValue(value.sub_category_id)
-  }else{
-    setSubCategoryValue(null)
-  }
-}
 
 
+const handleSubCategoryNameChange = (e) => {
+  setCategoryName(e.target.value);
+};
+const handleSubSubCategoryNameChange = (e) => {
+  setCategoryName(e.target.value);
+};
 const handleCategoryNameChange = (e) => {
   setCategoryName(e.target.value);
 };
@@ -181,88 +136,49 @@ const handleCategoryNameChange = (e) => {
       <Layout>
 
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
-          <Grid item xs={12} sm={3}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onChange={handleNewType}
-              id='category'
-              required
-              options={categoryTypeChoices}
-              getOptionLabel={(option) => option?.label}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='New type'
-                  placeholder='New type'
-                />
-              )}
-            />
-          </Grid>
-          {categoryTypeChoicesValue === '2'  || categoryTypeChoicesValue === '3'  ?
+          
 
            <Grid item xs={12} sm={3}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-               <Autocomplete
-                   style={{ width: '100%' }}
-                   id="tags-outlined"
-                   options={categoryListRes}
-                   getOptionLabel={(option) => option.category_name}
-                   filterSelectedOptions
-                   size="small"
-                   renderInput={(params) => (
-                       <TextField
-                           {...params}
-                           variant="outlined"
-                           label=" Select category"
-
-                       />
-                   )}
-                   onChange={
-                       handleCategoryChange
-                   }
-                  //  getOptionSelected={(option, value) => value && option.id == value.id}
-               />
-               </Grid>
-        
-       : ''}
-        {categoryTypeChoicesValue === '3'  ?
-
-          <Grid item xs={12} sm={3}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-          <Autocomplete
-              style={{ width: '100%' }}
-              id="tags-outlined"
-              options={subCategoryListRes}
-              getOptionLabel={(option) => option.sub_category_name}
-              filterSelectedOptions
-              size="small"
-              renderInput={(params) => (
-                  <TextField
-                      {...params}
-                      variant="outlined"
-                      label=" Select sub category"
-
-                  />
-              )}
-              onChange={
-                  handleSubCategoryChange
-              }
-              getOptionSelected={(option, value) => value && option.id == value.sub_category_id}
-          />
-          </Grid>
-
-      : ''}
-          <Grid item xs={12} sm={3}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-              <TextField
+               <TextField
                 id='outlined-helperText'
-                label={ categoryTypeChoicesValue ==='3'?'Sub sub category name':
-                (categoryTypeChoicesValue === '2'?'Sub category name':'Category name')}
+                label="Category" 
                 defaultValue=''
+                value={categoryListRes && categoryListRes.category}
                 variant='outlined'
                 style={{ width: '100%' }}
                 inputProps={{ maxLength: 20 }}
-                onChange={(event,value)=>{handleCategoryNameChange(event);}}
+                onChange={handleCategoryNameChange}
+                color='secondary'
+                size='small'
+              />
+               </Grid>
+        
+
+          <Grid item xs={12} sm={3}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+           <TextField
+                id='outlined-helperText'
+                label="Sub category" 
+                defaultValue=''
+                value={categoryListRes && categoryListRes.sub_category_name}
+                variant='outlined'
+                style={{ width: '100%' }}
+                inputProps={{ maxLength: 20 }}
+                onChange={handleSubCategoryNameChange}
+                color='secondary'
+                size='small'
+              />
+          </Grid>
+
+          <Grid item xs={12} sm={3}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+              <TextField
+                id='outlined-helperText'
+                label="Sub sub category" 
+                defaultValue=''
+                value={categoryListRes && categoryListRes.sub_sub_category_name}
+                variant='outlined'
+                style={{ width: '100%' }}
+                inputProps={{ maxLength: 20 }}
+                onChange={handleSubSubCategoryNameChange}
                 color='secondary'
                 size='small'
               />
@@ -278,7 +194,6 @@ const handleCategoryNameChange = (e) => {
               size='medium'
               type='submit'
               onClick={handleSubmit}
-              disabled={!categoryTypeChoicesValue || !categoryName }
             >
               Save
         </Button>

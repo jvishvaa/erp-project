@@ -198,7 +198,7 @@ function App() {
                 <Route exact path='/category/create'>
                   {({ match }) => <CreateCategory match={match} />}
                 </Route>
-                <Route exact path='/category/edit/:id'>
+                <Route exact path='/category/edit'>
                   {({ match }) => <EditCategory match={match} />}
                 </Route>
                 <Route exact path='/discussion-forum/create'>
