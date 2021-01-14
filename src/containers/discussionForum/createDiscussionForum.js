@@ -317,7 +317,6 @@ const handleTitleChange = (e) => {
 
 }
 const handleEditorChange = (content, editor) => {
-  console.log(content,editor,"@@@@@@@@@@@@@@@@@@@",editor.getContent({ format: 'text' }))
   setDescription(content);
   setDescriptionDisplay(editor.getContent({ format: 'text' }));
 };
