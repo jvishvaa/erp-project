@@ -33,8 +33,8 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Add SMS Credit', Path: '/communication/smscredit' },
     { name: 'SMS&Email Log', Path: '/communication/messageLog' },
     { name: 'Management View', Path: '/lesson-plan/report' },
-    { name: 'Teacher View', Path: '/lesson-plan/view' },
-    { name: 'Student View', Path: '/lesson-plan/view' },
+    { name: 'Teacher View', Path: '/lesson-plan/teacher-view' },
+    { name: 'Student View', Path: '/lesson-plan/student-view' },
   ];
   // const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {

@@ -401,11 +401,11 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Teacher View': {
-        history.push('/lesson-plan/view');
+        history.push('/lesson-plan/teacher-view');
         break;
       }
       case 'Student View': {
-        history.push('/lesson-plan/view');
+        history.push('/lesson-plan/student-view');
         break;
       }
       case 'lesson-plan-graph-report': {
