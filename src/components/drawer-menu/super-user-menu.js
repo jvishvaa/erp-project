@@ -284,7 +284,7 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
           <ListItem
             button
             className={
-              history.location.pathname === '/master-mgmt/subject/grade/mapping'
+              history.location.pathname === '/subject/grade'
                 ? 'menu_selection'
                 : null
             }

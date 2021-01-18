@@ -393,7 +393,7 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'school-mapping': {
-        history.push('/master-mgmt/subject/grade/mapping');
+        history.push('/subject/grade');
         break;
       }
       case 'role-management': {
