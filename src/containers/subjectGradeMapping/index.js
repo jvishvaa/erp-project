@@ -205,7 +205,7 @@ const Subjectgrade = (props) => {
             if(valid.isValid === true){
                 axiosInstance.post(endpoints.mappingStudentGrade.assign, body).then(res => {
                     setAlert('success', res.data.message);
-                    props.history.push('/subject/grade')
+                    props.history.push('/master-mgmt/subject/grade/mapping')
                 }).catch(err => {
                     setAlert('error', err.message);
                     console.log(err)
@@ -230,7 +230,7 @@ const Subjectgrade = (props) => {
             axiosInstance.put(`${endpoints.mappingStudentGrade.updateAssign}/${updateId}/update-school-gs-mapping/`, body).then(res => {
                 // console.log(res, "res")
                 setAlert('success', res.data.message);
-                props.history.push('/subject/grade')
+                props.history.push('/master-mgmt/subject/grade/mapping')
             }).catch(err => {
                 setAlert('error', err.message);
                 console.log(err)
@@ -245,7 +245,7 @@ const Subjectgrade = (props) => {
         setGradeValue(null);
         setBranchValue(null);
         setSubjectValue([])
-        props.history.push('/subject/grade')
+        props.history.push('/master-mgmt/subject/grade/mapping')
     }
 
     const defaultProps = {
@@ -297,7 +297,7 @@ const Subjectgrade = (props) => {
             
             // console.log(window.performance.navigation.type, "window.performance.navigation.type")
             // if (window.performance.navigation.type === 1 || local.length < 0) {
-            //     props.history.push('/subject/grade')
+            //     props.history.push('/master-mgmt/subject/grade/mapping')
 
             // }
         }
