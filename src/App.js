@@ -45,6 +45,7 @@ import Discussionforum from './containers/discussionForum/discussionForum';
 import  CreateCategory from './containers/discussionForum/createCategory';
 import CreateDiscussionForum from './containers/discussionForum/createDiscussionForum';
 import Subjectgrade from './containers/subjectGradeMapping';
+import ListandFilter from './containers/subjectGradeMapping/listAndFilter';
 
 const theme = createMuiTheme({
   palette: {
@@ -159,6 +160,9 @@ function App() {
                 </Route>
                 <Route exact path='/master-mgmt/subject/grade/mapping'>
                   {({ match }) => <Subjectgrade match={match} />}
+                </Route>
+                <Route exact path='/subject/grade'>
+                  {({ match }) => <ListandFilter match={match} />}
                 </Route>
                 <Route exact path='/homework/homework-card'>
                   {({ match }) => <HomeworkCard match={match} />}
