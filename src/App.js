@@ -154,7 +154,9 @@ function App() {
                 <Route exact path='/master-mgmt/message-type-table'>
                   {({ match }) => <MessageTypeTable match={match} />}
                 </Route>
-
+                <Route exact path='/master-mgmt/subject/grade/mapping'>
+                  {({ match }) => <Subjectgrade match={match} />}
+                </Route>
                 <Route exact path='/homework/homework-card'>
                   {({ match }) => <HomeworkCard match={match} />}
                 </Route>
@@ -173,9 +175,6 @@ function App() {
                 </Route>
                 <Route exact path='/subject/grade'>
                   {({ match }) => <ListandFilter match={match} />}
-                </Route>
-                <Route exact path='/subject/grade/mapping'>
-                  {({ match }) => <Subjectgrade match={match} />}
                 </Route>
                 <Route exact path='/homework/coordinator'>
                   {/* added by Vijay to display particular teacher details */}

@@ -250,8 +250,27 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
             </ListItemIcon>
             <ListItemText primary='Message Type' className='menu-item-text' />
           </ListItem>
+
+          <ListItem
+            button
+            className={
+              history.location.pathname === '/master-mgmt/subject/grade/mapping'
+                ? 'menu_selection'
+                : null
+            }
+            onClick={() => {
+              onClickMenuItem('school-mapping');
+            }}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+              {/* <MenuIcon name={child.child_name} /> */}
+              {/* {menuIcon(child.child_name)} */}
+            </ListItemIcon>
+            <ListItemText primary='School Mapping' className='menu-item-text' />
+          </ListItem>
         </List>
       </Collapse>
+      
 
       <ListItem
         button
@@ -266,20 +285,6 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
           <AssignmentIndIcon />
         </ListItemIcon>
         <ListItemText className='menu-item-text'>Role management</ListItemText>
-      </ListItem>
-      <ListItem
-        button
-        className={
-          history.location.pathname === '/subject/grade/mapping' ? 'menu_selection' : null
-        }
-        onClick={() => {
-          onClickMenuItem('mapping');
-        }}
-      >
-        <ListItemIcon className={classes.menuItemIcon}>
-          <AssignmentIndIcon />
-        </ListItemIcon>
-        <ListItemText className='menu-item-text'>Mapping</ListItemText>
       </ListItem>
     </>
   );

@@ -392,6 +392,10 @@ const Layout = ({ children, history }) => {
         history.push('/master-mgmt/message-type-table');
         break;
       }
+      case 'school-mapping': {
+        history.push('/master-mgmt/subject/grade/mapping');
+        break;
+      }
       case 'role-management': {
         history.push('/role-management');
         break;
@@ -400,11 +404,6 @@ const Layout = ({ children, history }) => {
         history.push('/homework/teacher');
         break;
       }
-      case 'mapping': {
-        history.push('/subject/grade/mapping');
-        break;
-      }
-
       default:
         break;
     }
