@@ -1,3 +1,4 @@
+const baseURLCentral = 'http://13.232.30.169/qbox';
 export default {
   auth: {
     login: '/auth/login/',
@@ -80,6 +81,13 @@ export default {
     fileUpload: '/academic/upload-question-file/',
     submitHomework: '/academic/homework-submission/',
   },
+  lessonReport: {
+    volumes: '/lesson_plan/list-volume/',
+    subjects: '/academic/lesson-plan-subjects/',
+    lessonList: '/academic/lesson-completed-report/',
+    lessonViewMoreData: '/academic/user-chapters-details/',
+    teacherList:'/academic/lesson_plan_user_list/',
+  },
   coordinatorTeacherHomeworkApi:{
     getAllTeacherList:'/academic/teachers-list/',
     getTecherPerformance:'/academic/hw-teacher-performance/'
@@ -93,8 +101,33 @@ export default {
     assign: '/academic/school-subjects-mapping/',
     updateAssign: '/academic',
     delete: '/academic'
-
+  },
+  lessonPlan: {
+    periodData: `${baseURLCentral}/lesson_plan/chapter-period/`,
+    periodCardData: `${baseURLCentral}/lesson_plan/lesson/`,
+    academicYearList: `${baseURLCentral}/lesson_plan/list-session/`,
+    volumeList: `${baseURLCentral}/lesson_plan/list-volume/`,
+    gradeSubjectMappingList: `/academic/lesson-plan-subjects/`,
+    chapterList: `/academic/central-chapters-list/`,
+    periodCompleted: '/academic/lessonplan-completed-status/',
+    periodCompletedStatus: '/academic/lesson-status/',
+    bulkDownload: `${baseURLCentral}/lesson_plan/bulk_download/`,
+    s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
+  },  
+  discussionForum:{
+   categoryList: '/academic/categories/',
+   branch: '/erp_user/branch/',
+   grade:'/erp_user/grademapping/',
+   filterCategory: '/academic/posts/',
+   postLike: '/academic/posts-like-users/',
+   PostCategory : '/academic/create-category/',
+   CreateDissusionForum: '/academic/add-post/',
+   CreateCommentAndReplay: '/academic/create-answer-replay/',
+   AwardListAPI: '/academic/',
+   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+   deletePost: '/academic/'
   },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
 };
+

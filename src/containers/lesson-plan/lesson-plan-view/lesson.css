@@ -1,0 +1,124 @@
+.createButton button{
+    padding: 4.8px;
+}
+
+.MuiSvgIcon-root .dropdownIcon {
+    color: #ff6b6b;
+}
+
+.MuiIconButton-root.moreHorizIcon {
+    padding: 0px;
+    color: #ff6b6b;
+}
+
+.roundedBox {
+    border-radius: 10px;
+}
+
+.cardsContainer {
+    display: flex;
+}
+
+.periodDataUnavailable {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 5%;
+}
+
+.period_card_menu{
+	cursor: pointer;
+	position: relative;
+}
+.period_card_menu .tooltiptext {
+	visibility: hidden;
+	width: 150px;
+	background-color: #F9F9F9;
+	color: #ff6b6b;
+	text-align: left;
+    border-radius: 10px;
+    border: 1px solid #ff6b6b;
+	padding: 14px 10px;
+	position: absolute;
+	z-index: 1;
+	top: 135%;
+	left: 10%;
+	margin-left: -90px;
+	opacity: 0;
+	transition: opacity 0.3s;
+  }
+  
+  .period_card_menu .tooltiptext::after {
+	content: "";
+    position: absolute;
+	bottom: 100%;
+	left: 50%;
+	margin-left: 20px;
+	border-width: 7px;
+    border-style: solid;
+	border-color:  transparent transparent #ff6b6b transparent ;
+  }
+  
+  .period_card_menu:hover .tooltiptext {
+	visibility: visible;
+	opacity: 1;
+  }
+  
+  .tooltiptext {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1rem;
+  }
+
+  .tooltipContainer {
+      display: flex;
+      flex-direction: column;
+  }
+
+  .breadCrumbFilterRow {
+    display: flex;
+    margin-left: -5px;
+    margin-right: 10px;
+    justify-content: space-between;
+  }
+
+  .hideShowFilterIcon {
+    align-self: center;
+  }
+
+  .underlineRemove {
+    text-decoration: none;
+  }
+
+  .overviewSynopsisContainer {
+    display: flex;
+    padding: 10px;
+  }
+
+  .overviewSynopsisTag {
+    font-size: 16px;
+    font-weight: 600;
+    color: #014b7e;
+  }
+  
+  .overviewSynopsisIcon {
+    margin-left:4px;
+  }
+
+  .MuiIconButton-root.bulkDownloadIconPeriodCard {
+    padding: 0;
+  }
+
+  .showFilters {
+      display: block;
+  }
+  .hideFilters {
+      display: none;
+  }
+
+@media screen and (max-width:768px) {
+    .cardsContainer {
+        flex-direction: column;
+    }
+}

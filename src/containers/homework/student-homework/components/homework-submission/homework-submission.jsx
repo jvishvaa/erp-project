@@ -482,7 +482,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     color='primary'
                     style={{ color: 'white' }}
                     component='label'
-                    size='small'
+                    size='medium'
                   >
                     Bulk Upload
                   <input
@@ -495,7 +495,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   </Button>
                                    
                 </div>
-                <small style={{ width: '100%' }} >{" "}Accepted files: jpeg,jpg,mp3,mp4,pdf,png</small>
+                <small style={{ width: '100%',color: '#014b7e' }} >{" "}Accepted files: jpeg,jpg,mp3,mp4,pdf,png</small>
                 <div className="bulk_upload_attachments">
                   {bulkDataDisplay.map((file, i) => (
                     <FileRow
@@ -547,7 +547,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                           className={classes.fileInput}
                         />
                       </IconButton>                      
-                      <small style={{ width: '100%' }} >{" "}Accepted files: jpeg,jpg,mp3,mp4,pdf,png</small>                      
+                      <small style={{ width: '100%',color: '#014b7e' }} >{" "}Accepted files: jpeg,jpg,mp3,mp4,pdf,png</small>                      
                       {attachmentDataDisplay[index]?.map((file, i) => (
                         <FileRow
                           key={`homework_student_question_attachment_${i}`}
@@ -737,10 +737,12 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                         {homeworkSubmission.status === 2 ? 'All Submitted Files' : 'All Evaluated Files'}
                       </Typography>
                       <div className='attachments-list-outer-container'>
+                        {}
                         <div className='prev-btn'>
+                          {submittedEvaluatedFilesBulk.length>5 &&
                           <IconButton onClick={() => handleScroll('left')}>
                             <ArrowBackIosIcon />
-                          </IconButton>
+                          </IconButton>}
                         </div>
                         <SimpleReactLightbox>
                           <div
@@ -781,11 +783,12 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                             </div>
                           </div>
                         </SimpleReactLightbox>
+                        {submittedEvaluatedFilesBulk.length>5 &&
                         <div className='next-btn'>
                           <IconButton onClick={() => handleScroll('right')}>
                             <ArrowForwardIosIcon color='primary' />
                           </IconButton>
-                        </div>
+                        </div>}
                       </div>
                     </div>
                   </div>

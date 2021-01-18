@@ -22,11 +22,11 @@ const Attachment = (props) => {
   const [imagePreviewAvailable, setImagePreviewAvailable] = useState(true);
   const { openLightbox } = useLightbox();
 
-  console.log('actions', actions);
+  console.log('actions fileurl', actions, fileUrl);
 
   return (
     <>
-      <div className='file-card-container'>
+      <div className='file-card-container-coordinator'>
         <div className='overlay-container'>
           <div className='overlay'>
             <Typography
@@ -59,7 +59,7 @@ const Attachment = (props) => {
                 {actions?.includes('pentool') && (
                   <IconButton
                     size='small'
-                    onClick={() => onOpenInPenTool(`${urlPrefix}/${fileUrl}`)}
+                    onClick={() => onOpenInPenTool(`${urlPrefix}/${fileUrl}`, fileUrl)}
                   >
                     <CreateIcon style={{ color: '#ffffff' }} />
                   </IconButton>

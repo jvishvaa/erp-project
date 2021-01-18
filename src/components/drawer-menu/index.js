@@ -6,6 +6,7 @@ import './styles.scss';
 
 const resolveMenu = (url) => {
   if (url.includes('user-management')) return 'user-management';
+  // if (url.includes('lesson-plan')) return 'lesson-plan';
   if (url.includes('master-mgmt')) return 'master-management';
   if (url.includes('online-class')) return 'Online Class';
   if (url.includes('communication')) return 'Communication';

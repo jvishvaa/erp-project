@@ -199,16 +199,18 @@ const QuestionCard = ({
                       </div>
                     ) : (
                       <>
-                      
-                      <IconButton
-                        onClick={() => fileUploadInput.current.click()}
-                        title='Attach files'
-                      >
-                        <Badge badgeContent={attachmentPreviews.length} color='primary'>
-                          <AttachFileIcon color='primary' />                          
-                        </Badge>                        
-                      </IconButton>
-                      <small style={{ width: '100%' }} >{" "}Accepted files: jpeg,jpg,mp3,mp4,pdf,png</small>
+                        <IconButton
+                          onClick={() => fileUploadInput.current.click()}
+                          title='Attach files'
+                        >
+                          <Badge badgeContent={attachmentPreviews.length} color='primary'>
+                            <AttachFileIcon color='primary' />
+                          </Badge>
+                        </IconButton>
+                        <small style={{ width: '100%', color: '#014b7e' }}>
+                          {' '}
+                          Accepted files: jpeg,jpg,mp3,mp4,pdf,png
+                        </small>
                       </>
                     )}
                   </div>

@@ -404,6 +404,22 @@ const Layout = ({ children, history }) => {
         history.push('/homework/teacher');
         break;
       }
+      case 'lesson-plan-view': {
+        history.push('/lesson-plan/view');
+        break;
+      }
+      case 'lesson-plan-report': {
+        history.push('/lesson-plan/report');
+        break;
+      }
+      case 'lesson-plan-graph-report': {
+        history.push('/lesson-plan/graph-report');
+        break;
+      }
+      case 'discussion-forum': {
+        history.push('/discussion-forum');
+        break;
+      }
       default:
         break;
     }
