@@ -404,15 +404,19 @@ const Layout = ({ children, history }) => {
         history.push('/homework/teacher');
         break;
       }
-      case 'lesson-plan-view': {
-        history.push('/lesson-plan/view');
+      case 'Teacher View': {
+        history.push('/lesson-plan/teacher-view');
         break;
       }
-      case 'lesson-plan-report': {
+      case 'Student View': {
+        history.push('/lesson-plan/student-view');
+        break;
+      }
+      case 'Management Report': {
         history.push('/lesson-plan/report');
         break;
       }
-      case 'lesson-plan-graph-report': {
+      case 'Graphical Report': {
         history.push('/lesson-plan/graph-report');
         break;
       }

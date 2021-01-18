@@ -117,6 +117,27 @@
       display: none;
   }
 
+  .dropdownIcon .MuiInputBase-root {
+    border-radius: 10px;
+}
+
+.dropdownIcon  .MuiFormLabel-root {
+    color: #014b7e;
+} 
+
+.dropdownIcon .MuiFormLabel-root.Mui-focused {
+    color: #014b7e;
+    font-weight: 600;
+}
+
+.dropdownIcon .MuiButtonBase-root {
+    color: #ff6b6b;
+}
+
+.modifyDesign.MuiButton-root {
+  border-radius: 10px; 
+}
+
 @media screen and (max-width:768px) {
     .cardsContainer {
         flex-direction: column;

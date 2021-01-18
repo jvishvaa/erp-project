@@ -9,15 +9,16 @@ import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import axios from 'axios';
 import './lesson.css';
+import {useLocation} from "react-router-dom";
 
-const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setViewMoreData, setFilterDataDown, setSelectedIndex }) => {
+const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setViewMoreData, setFilterDataDown, setSelectedIndex, setLoading }) => {
 
     const { setAlert } = useContext(AlertNotificationContext);
     const themeContext = useTheme();
     const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
     const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px'
     const widerWidth = isMobile ? '98%' : '95%';
-
+    const location=useLocation();
     const [branchDropdown, setBranchDropdown] = useState([]);
     const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
     const [volumeDropdown, setVolumeDropdown] = useState([]);
@@ -56,7 +57,11 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
         setCentralGsMappingId();
     };
 
-
+    useEffect(()=>{
+        setLoading(true);
+        handleClear();
+        setLoading(false);
+    },[location.pathname])
 
     const handleAcademicYear = (event, value) => {
         setFilterData({ ...filterData, year: '' });
@@ -230,7 +235,7 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
         }).catch(error => {
             setAlert('error', error.message);
         })
-    }, [])
+    }, []);
 
     return (
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
@@ -368,7 +373,7 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
             <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'} style={{ paddingBottom: '0px' }}>
                 <Button
                     variant='contained'
-                    className="custom_button_master labelColor"
+                    className="custom_button_master labelColor modifyDesign"
                     size='medium'
                     onClick={handleClear}
                 >
@@ -382,7 +387,7 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
                     variant='contained'
                     style={{ color: 'white' }}
                     color="primary"
-                    className="custom_button_master"
+                    className="custom_button_master modifyDesign"
                     size='medium'
                     onClick={handleFilter}
                 >

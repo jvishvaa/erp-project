@@ -32,6 +32,10 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Send Message', Path: '/communication/sendmessage' },
     { name: 'Add SMS Credit', Path: '/communication/smscredit' },
     { name: 'SMS&Email Log', Path: '/communication/messageLog' },
+    { name: 'Teacher View', Path: '/lesson-plan/teacher-view' },
+    { name: 'Student View', Path: '/lesson-plan/student-view' },
+    { name: 'Management Report', Path: '/lesson-plan/report' },
+    { name: 'Graphical Report', Path: '/lesson-plan/graph-report' },
   ];
   // const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {

@@ -201,7 +201,7 @@ const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore
               variant='contained'
               style={{ color: 'white' }}
               color="primary"
-              className="custom_button_master"
+              className="custom_button_master modifyDesign"
               size='small'
               onClick={() => handleViewMore(index)}
             >

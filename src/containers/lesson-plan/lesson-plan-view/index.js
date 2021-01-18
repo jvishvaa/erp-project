@@ -21,7 +21,6 @@ import selectfilter from '../../../assets/images/selectfilter.svg';
 import hidefilter from '../../../assets/images/hidefilter.svg';
 import showfilter from '../../../assets/images/showfilter.svg';
 
-
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
@@ -124,6 +123,7 @@ const LessonPlan = () => {
                         setViewMoreData={setViewMoreData}
                         setFilterDataDown={setFilterDataDown}
                         setSelectedIndex={setSelectedIndex}
+                        setLoading={setLoading}
                     />
                 </div>
 
@@ -162,6 +162,7 @@ const LessonPlan = () => {
                                             setSelectedIndex={setSelectedIndex}
                                             filterDataDown={filterDataDown}
                                             periodDataForView={periodDataForView}
+                                            setLoading={setLoading}
                                         />
                                     </Grid>
                                 }
