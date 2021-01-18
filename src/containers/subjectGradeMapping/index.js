@@ -82,7 +82,7 @@ const Subjectgrade = (props) => {
     const handleGradeChange = (value) => {
         setGradeValue(value);
         if (value) {
-            axiosInstance.get(`${endpoints.mappingStudentGrade.subjects}?branch=${branchValue.id}&grade=${value.id}`).then(res => {
+            axiosInstance.get(`${endpoints.mappingStudentGrade.subjects}?branch=${branchValue.id}&grade=${value.grade_id}`).then(res => {
                 if (res.data.result) {
                     setSubjectRes(res.data.result)
                 }
