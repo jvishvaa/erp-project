@@ -38,10 +38,11 @@ import AddHomework from './containers/homework/teacher-homework/add-homework';
 import BulkUpload from './containers/user-management/bulk-upload/bulk-upload';
 import CoordinatorHomework from './containers/homework/coordinator-homework';
 import AddHomeworkCoord from './containers/homework/coordinator-homework/add-homework';
+import Subjectgrade from './containers/subjectGradeMapping/index';
+import ListandFilter from './containers/subjectGradeMapping/listAndFilter';
 import LessonReport from './containers/lesson-plan/lesson-plan-report';
 import LessonPlan from './containers/lesson-plan/lesson-plan-view';
 import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
-
 import Discussionforum from './containers/discussionForum/discussionForum';
 import  CreateCategory from './containers/discussionForum/createCategory';
 import CreateDiscussionForum from './containers/discussionForum/createDiscussionForum';
@@ -158,7 +159,9 @@ function App() {
                 <Route exact path='/master-mgmt/message-type-table'>
                   {({ match }) => <MessageTypeTable match={match} />}
                 </Route>
-
+                <Route exact path='/master-mgmt/subject/grade/mapping'>
+                  {({ match }) => <Subjectgrade match={match} />}
+                </Route>
                 <Route exact path='/homework/homework-card'>
                   {({ match }) => <HomeworkCard match={match} />}
                 </Route>
@@ -174,6 +177,9 @@ function App() {
                 </Route>
                 <Route exact path='/homework/admin'>
                   {({ match }) => <HomeworkAdmin match={match} />}
+                </Route>
+                <Route exact path='/subject/grade'>
+                  {({ match }) => <ListandFilter match={match} />}
                 </Route>
                 <Route exact path='/homework/coordinator'>
                   {/* added by Vijay to display particular teacher details */}
