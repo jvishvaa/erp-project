@@ -44,6 +44,7 @@ import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-re
 import Discussionforum from './containers/discussionForum/discussionForum';
 import  CreateCategory from './containers/discussionForum/createCategory';
 import CreateDiscussionForum from './containers/discussionForum/createDiscussionForum';
+import Subjectgrade from './containers/subjectGradeMapping';
 
 const theme = createMuiTheme({
   palette: {
@@ -155,6 +156,9 @@ function App() {
                 </Route>
                 <Route exact path='/master-mgmt/message-type-table'>
                   {({ match }) => <MessageTypeTable match={match} />}
+                </Route>
+                <Route exact path='/master-mgmt/subject/grade/mapping'>
+                  {({ match }) => <Subjectgrade match={match} />}
                 </Route>
                 <Route exact path='/homework/homework-card'>
                   {({ match }) => <HomeworkCard match={match} />}
