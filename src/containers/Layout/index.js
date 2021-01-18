@@ -408,7 +408,11 @@ const Layout = ({ children, history }) => {
         history.push('/lesson-plan/student-view');
         break;
       }
-      case 'lesson-plan-graph-report': {
+      case 'Management Report': {
+        history.push('/lesson-plan/report');
+        break;
+      }
+      case 'Graphical Report': {
         history.push('/lesson-plan/graph-report');
         break;
       }
