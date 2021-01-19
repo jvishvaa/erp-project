@@ -117,6 +117,7 @@ const Subjectgrade = (props) => {
                 })
                 for (let filterSub of filteCentral.subject) {
                     centralSub.push({
+                        grade_subject_id: filterSub.grade_subject_id, 
                         subject_id: filterSub.subject_id,
                         subject_name: filterSub.subject_name
                     })
@@ -198,7 +199,8 @@ const Subjectgrade = (props) => {
             central_grade_name: centralGradeValue && centralGradeValue.grade_name,
             central_subject: centralSubValue && centralSubValue.subject_id,
             // central_gs_mapping: gradeValue && gradeValue.id,
-            central_gs_mapping: centralGrade[0] && centralGrade[0].id, 
+            // central_gs_mapping: centralGrade[0] && centralGrade[0].id,
+            central_gs_mapping: centralSubValue && centralSubValue.grade_subject_id,
             central_subject_name: centralSubValue && centralSubValue.subject_name
         }
         if (!props.location.edit) {
