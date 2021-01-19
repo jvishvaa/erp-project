@@ -117,6 +117,14 @@ export default {
    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
    deletePost: '/academic/'
   },
+  circular:{
+    circularList:'/circular/upload-circular/',
+    viewMoreCircularData:'/circular/circular-details/',
+    fileUpload:'/circular/upload-circular-file/',
+    createCircular:'/circular/upload-circular/',
+    deleteCircular:'/circular/delete-circular/',
+    updateCircular:'/circular/update-circular/'
+  },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
 };

@@ -1,0 +1,73 @@
+
+
+
+.attachmentButtonContainer{
+    display: flex;
+    margin-bottom: 20px;
+    background-color: #ffffff;
+}
+  
+.file_row_image{
+display: flex;
+justify-content:space-around;
+padding: 10px 20px;
+border:1px solid #FF6B6B;
+border-radius: 10px;
+margin-left:28px;
+margin-bottom: 10px;
+margin-right: 10px;
+}
+
+.file_name_container{
+    justify-content: space-between;
+}
+
+.attchment_button.MuiButton-root{
+    text-transform: none;
+    background: white;
+    border: 1px solid #ff6b6b;
+    border-radius: 10px;
+    margin-left: 1.75rem;
+}
+
+.submit_button.MuiButton-root{
+    margin-top: 20px;
+    border:1px solid #FF6B6B;
+    border-radius: 10px;
+    margin-left:4.125rem;
+    width: 210px;
+
+}
+
+.divider_color.MuiDivider-root {
+    background-color: #014e7b;
+    margin-left: 5px;
+    margin-right: 1rem;
+    margin-left: 2rem;
+}
+.scrollable{
+    overflow-y: scroll;
+  scrollbar-width: thin;
+
+}
+  @media screen and (min-width: 600px) {
+    .descriptionBorder {
+        border: 1px solid #FF6B6B;
+        border-radius: 10px;
+        margin-left: 2.3125rem;
+        margin-right: 2.3125rem;
+        opacity:1;
+    }
+  }
+  
+  @media screen and (max-width: 600px) {
+    .descriptionBorder{
+        border: 1px solid #FF6B6B;
+        border-radius: 10px;
+        margin-left: 2.3125rem;
+        margin-right: 2.3125rem;
+        opacity:1;
+
+    }
+  }
+
