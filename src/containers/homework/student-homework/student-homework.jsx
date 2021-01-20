@@ -346,7 +346,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
           item.parent_modules === 'Homework' &&
           item.child_module &&
           item.child_module.length > 0
-        ) {
+          ) {
           item.child_module.forEach((item) => {
             if (item.child_name === 'Student Homework') {
               setModuleId(item.child_id);
@@ -545,7 +545,6 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                               <Table stickyHeader aria-label='sticky table'>
                                 <TableHead className='view_groups_header tb-header'>
                                   <TableRow>
-                                    {console.log(selectedOtherLanguages, "selectedOtherLanguages", selectSub)}
                                     {messageRows.header?.map((headers, i) =>
                                       headers.isOptional ? (
                                         <TableCell className='homework_header homework_header_dropdown_wrapper'>

@@ -41,13 +41,16 @@ import AddHomeworkCoord from './containers/homework/coordinator-homework/add-hom
 import LessonReport from './containers/lesson-plan/lesson-plan-report';
 import LessonPlan from './containers/lesson-plan/lesson-plan-view';
 import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
-
 import Discussionforum from './containers/discussionForum/discussionForum';
 import  CreateCategory from './containers/discussionForum/createCategory';
 import CreateDiscussionForum from './containers/discussionForum/createDiscussionForum';
 import CircularList from './containers/circular'
 import CreateCircular from './containers/circular/create-circular'
 import CircularStore from './containers/circular/context/CircularStore'
+import Subjectgrade from './containers/subjectGradeMapping';
+import ListandFilter from './containers/subjectGradeMapping/listAndFilter';
+import GeneralDairyList from './containers/general-dairy';
+import CreateGeneralDairy from './containers/general-dairy/create-dairy';
 
 const theme = createMuiTheme({
   palette: {
@@ -146,7 +149,6 @@ function App() {
                 <Route exact path='/online-class/attend-class'>
                   {({ match }) => <ViewClassStudentCollection match={match} />}
                 </Route>
-
                 <Route exact path='/master-mgmt/subject-table'>
                   {({ match }) => <SubjectTable match={match} />}
                 </Route>
@@ -162,11 +164,15 @@ function App() {
                 <Route exact path='/master-mgmt/message-type-table'>
                   {({ match }) => <MessageTypeTable match={match} />}
                 </Route>
-
+                <Route exact path='/master-mgmt/subject/grade/mapping'>
+                  {({ match }) => <Subjectgrade match={match} />}
+                </Route>
+                <Route exact path='/subject/grade'>
+                  {({ match }) => <ListandFilter match={match} />}
+                </Route>
                 <Route exact path='/homework/homework-card'>
                   {({ match }) => <HomeworkCard match={match} />}
                 </Route>
-
                 <Route exact path='/homework/student'>
                   {({ match }) => <StudentHomework match={match} />}
                 </Route>
@@ -186,12 +192,15 @@ function App() {
                 <Route exact path='/homework/cadd/:date/:subject/:id/:coord_selected_teacher_id'>
                   {({ match }) => <AddHomeworkCoord match={match} />}
                 </Route>
+                 <Route exact path='/lesson-plan/teacher-view'>
+                  {({ match }) => <LessonPlan match={match} />}
+                </Route>
+                <Route exact path='/lesson-plan/student-view'>
+                  {({ match }) => <LessonPlan match={match} />}
+                </Route>
                 <Route exact path='/lesson-plan/report'>
                 {({ match }) => <LessonReport match={match} />}
                  </Route>
-                <Route exact path='/lesson-plan/view'>
-                  {({ match }) => <LessonPlan match={match} />}
-                </Route>
                 <Route exact path='/lesson-plan/graph-report'>
                   {({ match }) => <LessonPlanGraphReport match={match} />}
                   </Route>
@@ -209,6 +218,12 @@ function App() {
                 </Route>
                 <Route exact path='/create-circular'>
                   {({ match }) => <CreateCircular match={match} />}
+                </Route>
+                <Route exact path='/general-dairy'>
+                  {({ match }) => <GeneralDairyList match={match} />}
+                </Route>
+                <Route exact path='/create/general-dairy'>
+                  {({ match }) => <CreateGeneralDairy match={match} />}
                 </Route>
               </Switch>
               </CircularStore>

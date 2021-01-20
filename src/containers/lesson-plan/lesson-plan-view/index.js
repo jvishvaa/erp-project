@@ -21,7 +21,6 @@ import selectfilter from '../../../assets/images/selectfilter.svg';
 import hidefilter from '../../../assets/images/hidefilter.svg';
 import showfilter from '../../../assets/images/showfilter.svg';
 
-
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
@@ -54,6 +53,8 @@ const LessonPlan = () => {
     const [chapterSearch, setChapterSearch] = useState();
     const [periodColor, setPeriodColor] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(-1);
+    const [centralGradeName, setCentralGradeName] = useState('');
+    const [centralSubjectName, setCentralSubjectName] = useState('');
 
     const handlePagination = (event, page) => {
         setPage(page);
@@ -124,6 +125,11 @@ const LessonPlan = () => {
                         setViewMoreData={setViewMoreData}
                         setFilterDataDown={setFilterDataDown}
                         setSelectedIndex={setSelectedIndex}
+                        setLoading={setLoading}
+                        setCentralGradeName={setCentralGradeName}
+                        setCentralSubjectName={setCentralSubjectName}
+                        centralGradeName={centralGradeName}
+                        centralSubjectName={centralSubjectName}
                     />
                 </div>
 
@@ -148,6 +154,8 @@ const LessonPlan = () => {
                                                     setViewMoreData={setViewMoreData}
                                                     setPeriodDataForView={setPeriodDataForView}
                                                     setCompletedStatus={setCompletedStatus}
+                                                    centralGradeName={centralGradeName}
+                                                    centralSubjectName={centralSubjectName}
                                                 />
                                             </Grid>
                                         ))}
@@ -162,6 +170,9 @@ const LessonPlan = () => {
                                             setSelectedIndex={setSelectedIndex}
                                             filterDataDown={filterDataDown}
                                             periodDataForView={periodDataForView}
+                                            setLoading={setLoading}
+                                            centralGradeName={centralGradeName}
+                                            centralSubjectName={centralSubjectName}
                                         />
                                     </Grid>
                                 }

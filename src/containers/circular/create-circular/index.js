@@ -43,9 +43,6 @@ const  CraeteCircular=()=> {
 
         //context
         const [state,setState] = useContext(Context)
-
-    
-
         const {isEdit, editData} = state;
         const{setIsEdit,setEditData}=setState;
 

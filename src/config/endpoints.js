@@ -88,9 +88,21 @@ export default {
     lessonViewMoreData: '/academic/user-chapters-details/',
     teacherList:'/academic/lesson_plan_user_list/',
   },
+
+
   coordinatorTeacherHomeworkApi:{
     getAllTeacherList:'/academic/teachers-list/',
     getTecherPerformance:'/academic/hw-teacher-performance/'
+  },
+  mappingStudentGrade: {
+    branch: '/erp_user/branch/',
+    grade: '/erp_user/grademapping/',
+    subjects: '/academic/lesson-plan-subjects/',
+    central: '/academic/central-grade-subjects/',
+    schoolGsMapping: '/academic/school-gs-mapping-details/',
+    assign: '/academic/school-subjects-mapping/',
+    updateAssign: '/academic',
+    delete: '/academic'
   },
   lessonPlan: {
     periodData: `${baseURLCentral}/lesson_plan/chapter-period/`,
@@ -102,6 +114,7 @@ export default {
     periodCompleted: '/academic/lessonplan-completed-status/',
     periodCompletedStatus: '/academic/lesson-status/',
     bulkDownload: `${baseURLCentral}/lesson_plan/bulk_download/`,
+    overviewSynopsis: `${baseURLCentral}/lesson_plan/list-lesson-overview/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },  
   discussionForum:{
@@ -125,7 +138,10 @@ export default {
     deleteCircular:'/circular/delete-circular/',
     updateCircular:'/circular/update-circular/'
   },
+  generalDairy:{
+    dairyList:'/academic/general-dairy-messages/',
+
+  },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
 };
-
