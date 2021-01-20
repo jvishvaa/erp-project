@@ -9,16 +9,28 @@ import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import axios from 'axios';
 import './lesson.css';
-import {useLocation} from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
-const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setViewMoreData, setFilterDataDown, setSelectedIndex, setLoading }) => {
+const LessonViewFilters = ({
+    handlePeriodList,
+    setPeriodData,
+    setViewMore,
+    setViewMoreData,
+    setFilterDataDown,
+    setSelectedIndex,
+    setLoading,
+    setCentralGradeName,
+    setCentralSubjectName,
+    centralGradeName,
+    centralSubjectName,
+}) => {
 
     const { setAlert } = useContext(AlertNotificationContext);
     const themeContext = useTheme();
     const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
     const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px'
     const widerWidth = isMobile ? '98%' : '95%';
-    const location=useLocation();
+    const location = useLocation();
     const [branchDropdown, setBranchDropdown] = useState([]);
     const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
     const [volumeDropdown, setVolumeDropdown] = useState([]);
@@ -27,7 +39,6 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
     const [chapterDropdown, setChapterDropdown] = useState([]);
     const [overviewSynopsis, setOverviewSynopsis] = useState([]);
     const [centralGsMappingId, setCentralGsMappingId] = useState();
-
     const [filterData, setFilterData] = useState({
         branch: '',
         year: '',
@@ -55,13 +66,15 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
         setOverviewSynopsis([]);
         setSelectedIndex(-1);
         setCentralGsMappingId();
+        setCentralSubjectName('');
+        setCentralGradeName('');
     };
 
-    useEffect(()=>{
+    useEffect(() => {
         setLoading(true);
         handleClear();
         setLoading(false);
-    },[location.pathname])
+    }, [location.pathname])
 
     const handleAcademicYear = (event, value) => {
         setFilterData({ ...filterData, year: '' });
@@ -146,7 +159,9 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
                     .then(result => {
                         if (result.data.status_code === 200) {
                             setChapterDropdown(result.data.result.chapter_list);
-                            setCentralGsMappingId(result.data.result.central_gs_mapping_id);
+                            setCentralGsMappingId(result.data.result?.central_gs_mapping_id);
+                            setCentralSubjectName(result.data.result?.central_subject_name);
+                            setCentralGradeName(result.data.result?.central_grade_name);
                         }
                         else {
                             setAlert('error', result.data.message);
@@ -395,8 +410,8 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
                 </Button>
             </Grid>
             {overviewSynopsis?.map(obj => (
-                <Grid item xs={6} sm={2}  className={isMobile ? '' : 'addButtonPadding'}>
-                    <a className="underlineRemove" href={`${endpoints.lessonPlan.s3}dev/${obj.lesson_type === '1' ? 'synopsis_file' : 'overview_file'}/${filterData?.year?.session_year}/${filterData?.volume?.volume_name}/${filterData?.grade?.grade__grade_name}/${filterData?.subject?.subject_name}/pdf/${obj?.media_file[0]}`} >
+                <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+                    <a className="underlineRemove" href={`${endpoints.lessonPlan.s3}dev/${obj.lesson_type === '1' ? 'synopsis_file' : 'overview_file'}/${filterData?.year?.session_year}/${filterData?.volume?.volume_name}/${centralGradeName}/${centralSubjectName}/pdf/${obj?.media_file[0]}`} >
                         <div className="overviewSynopsisContainer">
                             <div className="overviewSynopsisTag">{obj.lesson_type === '1' ? 'Synopsis' : 'Overview'}</div>
                             <div className="overviewSynopsisIcon">
