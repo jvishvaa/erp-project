@@ -13,6 +13,7 @@ import axios from 'axios';
 import '../lesson.css';
 import downloadAll from '../../../../assets/images/downloadAll.svg';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
+import { useLocation } from 'react-router-dom';
 
 const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore, viewMore, filterDataDown, setLoading, index, setCompletedStatus, periodColor, setPeriodColor, setSelectedIndex, centralGradeName, centralSubjectName }) => {
 
@@ -22,6 +23,7 @@ const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore
   const classes = useStyles();
   const [showMenu, setShowMenu] = useState(false);
   const [showPeriodIndex, setShowPeriodIndex] = useState();
+  const location = useLocation();
 
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
@@ -35,7 +37,11 @@ const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore
 
   const handleViewMore = (index) => {
     setLoading(true);
-    axios.get(`${endpoints.lessonPlan.periodCardData}?lesson_plan_id=${period.id}`, {
+    let request = `${endpoints.lessonPlan.periodCardData}?lesson_plan_id=${period.id}`;
+    if(location.pathname === "/lesson-plan/student-view") {
+      request+=`&student=1`;
+    } 
+    axios.get(request, {
       headers: {
         'x-api-key': 'vikash@12345#1231',
       }
