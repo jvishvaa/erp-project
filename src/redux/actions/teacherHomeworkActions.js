@@ -172,9 +172,10 @@ export const fetchStudentsListForTeacherHomework = (id) => async (dispatch) => {
 export const evaluateHomework = async (id, data) => {
   try {
     const response = await axios.put(`/academic/${id}/teacher-evaluation/`, data);
-    if (response.data.status_code === 201) {
+    if (response.data.status_code === 200) {
       return;
     }
+    throw new Error();
   } catch (error) {
     throw new Error();
   }

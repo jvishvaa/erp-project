@@ -20,7 +20,6 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
   const classes = useStyles();
   const userMenuOpen = openMenu === 'user-management';
   const masterMenuOpen = openMenu === 'master-management';
-  const lessonMenuOpen = openMenu === 'lesson-plan';
 
   return (
     <>
@@ -158,6 +157,20 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
         </ListItemIcon>
         <ListItemText className='menu-item-text'>Role management</ListItemText>
       </ListItem>
+      <ListItem
+        button
+        className={
+          history.location.pathname === '/discussion-forum' ? 'menu_selection' : null
+        }
+        onClick={() => {
+          onClickMenuItem('discussion-forum');
+        }}
+      >
+        <ListItemIcon className={classes.menuItemIcon}>
+          <AssignmentIndIcon />
+        </ListItemIcon>
+        <ListItemText className='menu-item-text'>Discussion Forum</ListItemText>
+      </ListItem>
 
       <ListItem
         button
@@ -267,59 +280,23 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
             </ListItemIcon>
             <ListItemText primary='Message Type' className='menu-item-text' />
           </ListItem>
-        </List>
-      </Collapse>
-
-      <ListItem
-        button
-        onClick={() => {
-          onChangeMenuState('lesson-plan');
-        }}
-      >
-        <ListItemIcon className={classes.menuItemIcon}>
-        <ImportContactsIcon />
-        </ListItemIcon>
-        <ListItemText className='menu-item-text'>Lesson Plan</ListItemText>
-        {lessonMenuOpen ? (
-          <ExpandLess className={classes.expandIcons} />
-        ) : (
-          <ExpandMore className={classes.expandIcons} />
-        )}
-      </ListItem>
-      
-      <Collapse in={lessonMenuOpen}>
-        <Divider />
-        <List>
-          <ListItem
-            button
-            className={
-              history.location.pathname === '/lesson-plan/view'
-                ? 'menu_selection'
-                : null
-            }
-            onClick={() => {
-              onClickMenuItem('lesson-plan-view');
-            }}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-            </ListItemIcon>
-            <ListItemText primary={`View`} className='menu-item-text' />
-          </ListItem>
 
           <ListItem
             button
             className={
-              history.location.pathname === '/lesson-plan/report'
+              history.location.pathname === '/subject/grade'
                 ? 'menu_selection'
                 : null
             }
             onClick={() => {
-              onClickMenuItem('lesson-plan-report');
+              onClickMenuItem('school-mapping');
             }}
           >
             <ListItemIcon className={classes.menuItemIcon}>
+              {/* <MenuIcon name={child.child_name} /> */}
+              {/* {menuIcon(child.child_name)} */}
             </ListItemIcon>
-            <ListItemText primary='Report' className='menu-item-text' />
+            <ListItemText primary='School Mapping' className='menu-item-text' />
           </ListItem>
         </List>
       </Collapse>

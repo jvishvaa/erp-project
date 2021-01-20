@@ -76,6 +76,68 @@
       flex-direction: column;
   }
 
+  .breadCrumbFilterRow {
+    display: flex;
+    margin-left: -5px;
+    margin-right: 10px;
+    justify-content: space-between;
+  }
+
+  .hideShowFilterIcon {
+    align-self: center;
+  }
+
+  .underlineRemove {
+    text-decoration: none;
+  }
+
+  .overviewSynopsisContainer {
+    display: flex;
+    padding: 10px;
+  }
+
+  .overviewSynopsisTag {
+    font-size: 16px;
+    font-weight: 600;
+    color: #014b7e;
+  }
+  
+  .overviewSynopsisIcon {
+    margin-left:4px;
+  }
+
+  .MuiIconButton-root.bulkDownloadIconPeriodCard {
+    padding: 0;
+  }
+
+  .showFilters {
+      display: block;
+  }
+  .hideFilters {
+      display: none;
+  }
+
+  .dropdownIcon .MuiInputBase-root {
+    border-radius: 10px;
+}
+
+.dropdownIcon  .MuiFormLabel-root {
+    color: #014b7e;
+} 
+
+.dropdownIcon .MuiFormLabel-root.Mui-focused {
+    color: #014b7e;
+    font-weight: 600;
+}
+
+.dropdownIcon .MuiButtonBase-root {
+    color: #ff6b6b;
+}
+
+.modifyDesign.MuiButton-root {
+  border-radius: 10px; 
+}
+
 @media screen and (max-width:768px) {
     .cardsContainer {
         flex-direction: column;

@@ -26,6 +26,9 @@ const SubmittedQuestion = ({
   onDeleteCorrectedAttachment,
   onChangeQuestionsState,
   evaluateAnswer,
+  remark,
+  comment,
+  alreadyCorrectedQuestions,
 }) => {
   const scrollableContainer = useRef(null);
   const { setAlert } = useContext(AlertNotificationContext);
@@ -59,7 +62,10 @@ const SubmittedQuestion = ({
   };
 
   return (
-    <div className='homework-question-container-coordinator' key={`homework_student_question_${1}`}>
+    <div
+      className='homework-question-container-coordinator'
+      key={`homework_student_question_${1}`}
+    >
       <div
         className='button-container'
         style={{ display: 'flex', justifyContent: 'flex-end' }}
@@ -103,48 +109,27 @@ const SubmittedQuestion = ({
                 console.log('scrolled');
               }}
             >
-              {question.submitted_files.map((url, i) => (
-                <>
-                  <div className='attachment'>
-                    <Attachment
-                      key={`homework_student_question_attachment_${i}`}
-                      fileUrl={url}
-                      fileName={`Attachment-${i + 1}`}
-                      urlPrefix={`${endpoints.s3}/homework`}
-                      index={i}
-                      actions={['preview', 'download', 'pentool']}
-                      onOpenInPenTool={onOpenInPenTool}
-                    />
-                  </div>
-                  {/* <div className='attachment'>
-                  <Attachment
-                    key={`homework_student_question_attachment_${i}`}
-                    fileUrl={url}
-                    fileName={`Attachment-${i + 1}`}
-                    urlPrefix={`${endpoints.s3}/homework`}
-                    index={i}
-                  />
-                </div>
-                <div className='attachment'>
-                  <Attachment
-                    key={`homework_student_question_attachment_${i}`}
-                    fileUrl={url}
-                    fileName={`Attachment-${i + 1}`}
-                    urlPrefix={`${endpoints.s3}/homework`}
-                    index={i}
-                  />
-                </div> */}
-                  {/* <div className='attachment'>
-                  <Attachment
-                    key={`homework_student_question_attachment_${i}`}
-                    fileUrl={url}
-                    fileName={`Attachment-${i + 1}`}
-                    urlPrefix={`${endpoints.s3}/homework`}
-                    index={i}
-                  />
-                </div> */}
-                </>
-              ))}
+              {question.submitted_files.map((url, i) => {
+                const actions = ['preview', 'download'];
+                if (!alreadyCorrectedQuestions.includes(url)) {
+                  actions.push('pentool');
+                }
+                return (
+                  <>
+                    <div className='attachment'>
+                      <Attachment
+                        key={`homework_student_question_attachment_${i}`}
+                        fileUrl={url}
+                        fileName={`Attachment-${i + 1}`}
+                        urlPrefix={`${endpoints.s3}/homework`}
+                        index={i}
+                        actions={['preview', 'download', 'pentool']}
+                        onOpenInPenTool={onOpenInPenTool}
+                      />
+                    </div>
+                  </>
+                );
+              })}
               <div
                 style={{
                   position: 'absolute',
@@ -281,6 +266,7 @@ const SubmittedQuestion = ({
               rows={3}
               rowsMax={4}
               label='Comments'
+              value={comment}
               onChange={(e) => onChangeQuestionsState('comments', e.target.value)}
             />
           </FormControl>
@@ -296,6 +282,7 @@ const SubmittedQuestion = ({
               rows={3}
               rowsMax={4}
               label='Remarks'
+              value={remark}
               onChange={(e) => onChangeQuestionsState('remarks', e.target.value)}
             />
           </FormControl>
@@ -303,7 +290,7 @@ const SubmittedQuestion = ({
       </div>
       <div className='evaluate-answer-btn-container'>
         <Button variant='contained' color='primary' onClick={onEvaluate}>
-          EVALUATE ANSWER
+          SAVE
         </Button>
       </div>
     </div>

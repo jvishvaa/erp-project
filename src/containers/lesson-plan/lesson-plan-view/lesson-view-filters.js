@@ -1,29 +1,44 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Divider from '@material-ui/core/Divider';
-import { Grid, TextField, Button, useTheme } from '@material-ui/core';
+import { Grid, TextField, Button, useTheme, SvgIcon } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import download from '../../../assets/images/downloadAll.svg';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import axios from 'axios';
 import './lesson.css';
+import { useLocation } from "react-router-dom";
 
-const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setViewMoreData, setFilterDataDown }) => {
+const LessonViewFilters = ({
+    handlePeriodList,
+    setPeriodData,
+    setViewMore,
+    setViewMoreData,
+    setFilterDataDown,
+    setSelectedIndex,
+    setLoading,
+    setCentralGradeName,
+    setCentralSubjectName,
+    centralGradeName,
+    centralSubjectName,
+}) => {
 
     const { setAlert } = useContext(AlertNotificationContext);
     const themeContext = useTheme();
     const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
     const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px'
     const widerWidth = isMobile ? '98%' : '95%';
-
+    const location = useLocation();
     const [branchDropdown, setBranchDropdown] = useState([]);
     const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
     const [volumeDropdown, setVolumeDropdown] = useState([]);
     const [gradeDropdown, setGradeDropdown] = useState([]);
     const [subjectDropdown, setSubjectDropdown] = useState([]);
     const [chapterDropdown, setChapterDropdown] = useState([]);
-
+    const [overviewSynopsis, setOverviewSynopsis] = useState([]);
+    const [centralGsMappingId, setCentralGsMappingId] = useState();
     const [filterData, setFilterData] = useState({
         branch: '',
         year: '',
@@ -48,9 +63,18 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
         setViewMoreData({});
         setViewMore(false);
         setFilterDataDown({});
+        setOverviewSynopsis([]);
+        setSelectedIndex(-1);
+        setCentralGsMappingId();
+        setCentralSubjectName('');
+        setCentralGradeName('');
     };
 
-
+    useEffect(() => {
+        setLoading(true);
+        handleClear();
+        setLoading(false);
+    }, [location.pathname])
 
     const handleAcademicYear = (event, value) => {
         setFilterData({ ...filterData, year: '' });
@@ -68,6 +92,7 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
 
     const handleBranch = (event, value) => {
         setFilterData({ ...filterData, branch: '', grade: '', subject: '', chapter: '' });
+        setOverviewSynopsis([]);
         if (value) {
             setFilterData({ ...filterData, branch: value, grade: '', subject: '', chapter: '' });
             axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=8`)
@@ -98,6 +123,7 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
 
     const handleGrade = (event, value) => {
         setFilterData({ ...filterData, grade: '', subject: '', chapter: '' });
+        setOverviewSynopsis([]);
         if (value && filterData.branch) {
             setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
             axiosInstance.get(`${endpoints.lessonPlan.gradeSubjectMappingList}?branch=${filterData.branch.id}&grade=${value.grade_id}`)
@@ -125,13 +151,17 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
 
     const handleSubject = (event, value) => {
         setFilterData({ ...filterData, subject: '', chapter: '' });
+        setOverviewSynopsis([]);
         if (filterData.grade && filterData.year && filterData.volume && value) {
             setFilterData({ ...filterData, subject: value, chapter: '' });
             if (value && filterData.branch && filterData.year && filterData.volume) {
                 axiosInstance.get(`${endpoints.lessonPlan.chapterList}?gs_mapping_id=${value.id}&volume=${filterData.volume.id}&academic_year=${filterData.year.id}&branch=${filterData.grade.grade_id}`)
                     .then(result => {
                         if (result.data.status_code === 200) {
-                            setChapterDropdown(result.data.result);
+                            setChapterDropdown(result.data.result.chapter_list);
+                            setCentralGsMappingId(result.data.result?.central_gs_mapping_id);
+                            setCentralSubjectName(result.data.result?.central_subject_name);
+                            setCentralGradeName(result.data.result?.central_grade_name);
                         }
                         else {
                             setAlert('error', result.data.message);
@@ -151,17 +181,32 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
 
     const handleChapter = (event, value) => {
         setFilterData({ ...filterData, chapter: '' });
+        setOverviewSynopsis([]);
         if (value) {
             setFilterData({ ...filterData, chapter: value });
         }
     };
 
     const handleFilter = () => {
+        setSelectedIndex(-1);
         if (filterData.chapter) {
             handlePeriodList(filterData.chapter.id);
             setFilterDataDown(filterData);
+            axios.get(`${endpoints.lessonPlan.overviewSynopsis}?volume=${filterData.volume.id}&grade_subject_mapping_id=${centralGsMappingId}&academic_year_id=${filterData.year.id}`, {
+                headers: {
+                    'x-api-key': 'vikash@12345#1231',
+                }
+            }).then(result => {
+                if (result.data.status_code === 200) {
+                    setOverviewSynopsis(result.data.result);
+                } else {
+                    setOverviewSynopsis([]);
+                }
+            }).catch(error => {
+                setAlert('error', error.message);
+            })
         } else {
-            setAlert('error', 'No chapter selected!');
+            setAlert('warning', 'Please select a chapter!');
             setFilterDataDown({});
         }
     }
@@ -178,28 +223,34 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
                 setBranchDropdown('error', error.message);
             })
 
-        axios.get(`${endpoints.lessonPlan.academicYearList}`)
-            .then(result => {
-                if (result.data.status_code === 200) {
-                    setAcademicYearDropdown(result.data.result.results);
-                } else {
-                    setAlert('error', result.data.message);
-                }
-            }).catch(error => {
-                setAlert('error', error.message);
-            })
+        axios.get(`${endpoints.lessonPlan.academicYearList}`, {
+            headers: {
+                'x-api-key': 'vikash@12345#1231',
+            }
+        }).then(result => {
+            if (result.data.status_code === 200) {
+                setAcademicYearDropdown(result.data.result.results);
+            } else {
+                setAlert('error', result.data.message);
+            }
+        }).catch(error => {
+            setAlert('error', error.message);
+        })
 
-        axios.get(`${endpoints.lessonPlan.volumeList}`)
-            .then(result => {
-                if (result.data.status_code === 200) {
-                    setVolumeDropdown(result.data.result.results);
-                } else {
-                    setAlert('error', result.data.message);
-                }
-            }).catch(error => {
-                setAlert('error', error.message);
-            })
-    }, [])
+        axios.get(`${endpoints.lessonPlan.volumeList}`, {
+            headers: {
+                'x-api-key': 'vikash@12345#1231',
+            }
+        }).then(result => {
+            if (result.data.status_code === 200) {
+                setVolumeDropdown(result.data.result.results);
+            } else {
+                setAlert('error', result.data.message);
+            }
+        }).catch(error => {
+            setAlert('error', error.message);
+        })
+    }, []);
 
     return (
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
@@ -329,34 +380,58 @@ const LessonViewFilters = ({ handlePeriodList, setPeriodData, setViewMore, setVi
                     )}
                 />
             </Grid>
-            {/* {!isMobile && <Grid item xs sm={4} />} */}
-            <Grid item xs={12} sm={12}>
-                <Divider />
-            </Grid>
-            <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+            {!isMobile &&
+                <Grid item xs={12} sm={12}>
+                    <Divider />
+                </Grid>}
+            {isMobile && <Grid item xs={3} />}
+            <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'} style={{ paddingBottom: '0px' }}>
                 <Button
                     variant='contained'
-                    className="custom_button_master labelColor"
+                    className="custom_button_master labelColor modifyDesign"
                     size='medium'
                     onClick={handleClear}
                 >
                     CLEAR ALL
                 </Button>
             </Grid>
+            {isMobile && <Grid item xs={3} />}
+            {isMobile && <Grid item xs={3} />}
             <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                 <Button
                     variant='contained'
                     style={{ color: 'white' }}
                     color="primary"
-                    className="custom_button_master"
+                    className="custom_button_master modifyDesign"
                     size='medium'
                     onClick={handleFilter}
                 >
                     FILTER
                 </Button>
             </Grid>
+            {overviewSynopsis?.map(obj => (
+                <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+                    <a className="underlineRemove" href={`${endpoints.lessonPlan.s3}dev/${obj.lesson_type === '1' ? 'synopsis_file' : 'overview_file'}/${filterData?.year?.session_year}/${filterData?.volume?.volume_name}/${centralGradeName}/${centralSubjectName}/pdf/${obj?.media_file[0]}`} >
+                        <div className="overviewSynopsisContainer">
+                            <div className="overviewSynopsisTag">{obj.lesson_type === '1' ? 'Synopsis' : 'Overview'}</div>
+                            <div className="overviewSynopsisIcon">
+                                <SvgIcon
+                                    component={() => (
+                                        <img
+                                            style={{ height: '25px', width: '25px' }}
+                                            src={download}
+                                            title={`Download ${obj.lesson_type === '1' ? 'Synopsis' : 'Overview'}`}
+                                        />
+                                    )}
+                                />
+                            </div>
+                        </div>
+                    </a>
+                </Grid>
+            ))}
+            {/* {isMobile && <Grid item xs={3} sm={0} />} */}
         </Grid>
     );
 }
 
-export default LessonViewFilters
+export default LessonViewFilters;

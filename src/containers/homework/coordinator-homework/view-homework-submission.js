@@ -97,6 +97,7 @@ const ViewHomework = withRouter(
     const [remark, setRemark] = useState(null);
     const [score, setScore] = useState(null);
     const [homeworkId, setHomeworkId] = useState(null);
+    const [currentEvaluatedFileName, setcurrentEvaluatedFileName] = useState(null);
 
     const scrollableContainer = useRef(null);
 
@@ -112,8 +113,10 @@ const ViewHomework = withRouter(
       }
     };
 
-    const openInPenTool = (url) => {
+    const openInPenTool = (url, fileName) => {
       setPenToolUrl(url);
+      setcurrentEvaluatedFileName(fileName);
+
       // setPenToolOpen(true);
     };
 
@@ -189,7 +192,7 @@ const ViewHomework = withRouter(
             return item !== valueToRemove;
           }
         );
-        setQuestionsState([...questionsState, currentQuestion]); 
+        setQuestionsState([...questionsState, currentQuestion]);
       } else {
         const currentQuestion = { ...collatedQuestionState };
         currentQuestion.corrected_submission.splice(index, 1);
@@ -206,6 +209,8 @@ const ViewHomework = withRouter(
         const index = activeQuestion - 1;
         const modifiedQuestion = { ...questionsState[index] };
         modifiedQuestion.corrected_submission.push(filePath);
+        modifiedQuestion.evaluated_files.push(currentEvaluatedFileName);
+
         const newQuestionsState = [
           ...questionsState.slice(0, index),
           modifiedQuestion,
@@ -215,9 +220,12 @@ const ViewHomework = withRouter(
       } else {
         const modifiedQuestion = collatedQuestionState;
         modifiedQuestion.corrected_submission.push(filePath);
+        modifiedQuestion.evaluated_files.push(currentEvaluatedFileName);
+
         setCollatedQuestionState(modifiedQuestion);
       }
       setPenToolUrl(null);
+      setcurrentEvaluatedFileName(null);
     };
 
     const handleCloseCorrectionModal = () => {
@@ -235,15 +243,19 @@ const ViewHomework = withRouter(
       if (isQuestionwise) {
         const initialQuestionsState = hwQuestions.map((q) => ({
           id: q.id,
-          remarks: '',
-          comments: '',
-          corrected_submission: q.evaluated_files,
+          remarks: q.remark,
+          comments: q.comment,
+          corrected_submission: q.corrected_files,
+          evaluated_files: q.evaluated_files,
         }));
         setQuestionsState(initialQuestionsState);
       } else {
         setCollatedQuestionState({
           id: hwQuestions.id,
-          corrected_submission: hwQuestions.evaluated_files,
+          corrected_submission: hwQuestions.corrected_files,
+          evaluated_files: hwQuestions.evaluated_files,
+          remarks: hwQuestions.remark,
+          comments: hwQuestions.comment,
         });
       }
     };
@@ -293,7 +305,7 @@ const ViewHomework = withRouter(
             <div className='nav-cards-container'>
               <div className='nav-card' onClick={onClose}>
                 <div className='header-text text-center non_selected_homework_type_item'>
-                  All Homeworks 
+                  All Homeworks
                 </div>
               </div>
               <div className='nav-card'>
@@ -317,6 +329,21 @@ const ViewHomework = withRouter(
                   correctedQuestions={
                     questionsState.length
                       ? questionsState[activeQuestion - 1].corrected_submission
+                      : []
+                  }
+                  alreadyCorrectedQuestions={
+                    questionsState.length
+                      ? questionsState[activeQuestion - 1].evaluated_files
+                      : []
+                  }
+                  remark={
+                    questionsState.length
+                      ? questionsState[activeQuestion - 1].remarks
+                      : []
+                  }
+                  comment={
+                    questionsState.length
+                      ? questionsState[activeQuestion - 1].comments
                       : []
                   }
                   activeQuestion={activeQuestion}
@@ -484,7 +511,7 @@ const ViewHomework = withRouter(
                   )}
                   <div className='evaluate-answer-btn-container'>
                     <Button variant='contained' color='primary' onClick={evaluateAnswer}>
-                      EVALUATE ANSWER
+                      SAVE
                     </Button>
                   </div>
                 </>
@@ -506,7 +533,7 @@ const ViewHomework = withRouter(
                     />
                   </FormControl>
                 </div>
-                <div className='score'>
+                <div className='score' style={{ marginTop: 10 }}>
                   <FormControl variant='outlined' fullWidth size='small'>
                     <InputLabel htmlFor='component-outlined'>Overall score</InputLabel>
                     <OutlinedInput

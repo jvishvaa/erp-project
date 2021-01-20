@@ -48,6 +48,12 @@ import {
   StudentDashboard,
   BlogView,
 } from './containers/blog';
+import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
+import Discussionforum from './containers/discussionForum/discussionForum';
+import  CreateCategory from './containers/discussionForum/createCategory';
+import CreateDiscussionForum from './containers/discussionForum/createDiscussionForum';
+import Subjectgrade from './containers/subjectGradeMapping';
+import ListandFilter from './containers/subjectGradeMapping/listAndFilter';
 
 const theme = createMuiTheme({
   palette: {
@@ -145,7 +151,6 @@ function App() {
                 <Route exact path='/online-class/attend-class'>
                   {({ match }) => <ViewClassStudentCollection match={match} />}
                 </Route>
-
                 <Route exact path='/master-mgmt/subject-table'>
                   {({ match }) => <SubjectTable match={match} />}
                 </Route>
@@ -161,11 +166,15 @@ function App() {
                 <Route exact path='/master-mgmt/message-type-table'>
                   {({ match }) => <MessageTypeTable match={match} />}
                 </Route>
-
+                <Route exact path='/master-mgmt/subject/grade/mapping'>
+                  {({ match }) => <Subjectgrade match={match} />}
+                </Route>
+                <Route exact path='/subject/grade'>
+                  {({ match }) => <ListandFilter match={match} />}
+                </Route>
                 <Route exact path='/homework/homework-card'>
                   {({ match }) => <HomeworkCard match={match} />}
                 </Route>
-
                 <Route exact path='/homework/student'>
                   {({ match }) => <StudentHomework match={match} />}
                 </Route>
@@ -188,11 +197,30 @@ function App() {
                 >
                   {({ match }) => <AddHomeworkCoord match={match} />}
                 </Route>
+                 <Route exact path='/lesson-plan/teacher-view'>
+                  {({ match }) => <LessonPlan match={match} />}
+                </Route>
+                <Route exact path='/lesson-plan/student-view'>
+                  {({ match }) => <LessonPlan match={match} />}
+                </Route>
                 <Route exact path='/lesson-plan/report'>
                   {({ match }) => <LessonReport match={match} />}
                 </Route>
                 <Route exact path='/lesson-plan/view'>
                   {({ match }) => <LessonPlan match={match} />}
+                {({ match }) => <LessonReport match={match} />}
+                 </Route>
+                <Route exact path='/lesson-plan/graph-report'>
+                  {({ match }) => <LessonPlanGraphReport match={match} />}
+                  </Route>
+                <Route exact path='/discussion-forum'>
+                  {({ match }) => <Discussionforum match={match} />}
+                </Route>
+                <Route exact path='/category/create'>
+                  {({ match }) => <CreateCategory match={match} />}
+                </Route>
+                <Route exact path='/discussion-forum/create'>
+                  {({ match }) => <CreateDiscussionForum match={match} />}
                 </Route>
                 <Route exact path='/blog/teacher'>
                   {({ match }) => <TeacherBlog match={match} />}

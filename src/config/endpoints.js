@@ -91,6 +91,16 @@ export default {
     getAllTeacherList: '/academic/teachers-list/',
     getTecherPerformance: '/academic/hw-teacher-performance/',
   },
+  mappingStudentGrade: {
+    branch: '/erp_user/branch/',
+    grade: '/erp_user/grademapping/',
+    subjects: '/academic/lesson-plan-subjects/',
+    central: '/academic/central-grade-subjects/',
+    schoolGsMapping: '/academic/school-gs-mapping-details/',
+    assign: '/academic/school-subjects-mapping/',
+    updateAssign: '/academic',
+    delete: '/academic'
+  },
   lessonPlan: {
     periodData: `${baseURLCentral}/lesson_plan/chapter-period/`,
     periodCardData: `${baseURLCentral}/lesson_plan/lesson/`,
@@ -101,6 +111,7 @@ export default {
     periodCompleted: '/academic/lessonplan-completed-status/',
     periodCompletedStatus: '/academic/lesson-status/',
     bulkDownload: `${baseURLCentral}/lesson_plan/bulk_download/`,
+    overviewSynopsis: `${baseURLCentral}/lesson_plan/list-lesson-overview/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },
   blog: {
