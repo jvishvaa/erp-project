@@ -14,6 +14,7 @@ import moment from 'moment';
 import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 // import './lesson.css';
+import '../circular/create-circular/create-circular.css'
 
 const CircularFilters = ({ handlePeriodList, setPeriodData, setViewMore, setViewMoreData, setFilterDataDown, setSelectedIndex }) => {
 
@@ -357,6 +358,9 @@ const CircularFilters = ({ handlePeriodList, setPeriodData, setViewMore, setView
                     FILTER
             </Button>
             </Grid>
+            <div>
+                <Divider orientation="vertical" style={{backgroundColor:'#014e7b',height:'40px',marginTop:'1rem',marginLeft:'2rem',marginRight:'1.25rem'}} />
+            </div>
             {isMobile && <Grid item xs={3} sm={0}/>}
             {isMobile && <Grid item xs={3} sm={0}/>}
             <Grid item xs={6} sm={2} className={isMobile ? 'createButton' : 'createButton addButtonPadding'}>

@@ -78,7 +78,7 @@ console.log(viewMoreData?.media,pic,'++++',branch.branch_name)
           //  onClick={handleBulkDownload}
            style={{fontSize:'1.1rem',color:'#ff6b6b'}}
             className="bulkDownloadIconViewMore">
-              <a href={`${endpoints.s3}/circular_files/${branch.branch_name}/${pic}`} target='blank'>
+              <a  target='_blank' href={`${endpoints.s3}/dev/circular_files/${branch.branch_name}/${pic}`}>
                             <SvgIcon
                                 component={() => (
                                     <img
@@ -87,7 +87,7 @@ console.log(viewMoreData?.media,pic,'++++',branch.branch_name)
                                         alt='downloadAll'
                                     />
                                 )}
-                            /></a>Download All
+                            /></a>Download All Attachments
                         </IconButton>
           </div>
         </div>

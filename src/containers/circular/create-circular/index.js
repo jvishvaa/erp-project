@@ -55,6 +55,7 @@ const  CraeteCircular=()=> {
     const [filterEvent,setFilterEvent] = useState(false)
 
 
+   
 
     console.log(state,'CCCCC',editData.circular_name)
 
@@ -73,7 +74,7 @@ const  CraeteCircular=()=> {
     const handleClear = () => {
         setFilterData(filterData.branch=[])
         setFilterData({
-            // branch: [],
+            branch: [],
             grade: [],
             section:[],
             role:''
@@ -257,16 +258,23 @@ const FileRow = (props) => {
             // sections:[75]
     })
         .then(result => {
-            console.log(result,'RESULT')
             if (result.data.status_code === 200) {
+                setTitle('')
+                setDescription('')
                 setAlert('success',result.data.message)
+                // setFilterData(filterData.branch=[])
+                // setFilterData({
+                //     branch: [],
+                //     grade: [],
+                //     section:[],
+                //     role:''
+                // });
+               
                 
             } else {
                 setAlert('error', result.data.message);
             }
-        }).catch((error) => {
-                setAlert('error', error.data.message);
-            })
+        })
     }
 
     const handleEdited =()=>{
@@ -279,6 +287,8 @@ const FileRow = (props) => {
         }).then(result=>{
             if(result.data.status_code===200){
                 setState({...state,isEdit:false});
+                setTitle('')
+                setDescription('')
                 setAlert('success',result.data.message)
             }else {
                 setAlert('error', result.data.message);
@@ -326,7 +336,7 @@ console.log(filterData,'=====',title,description,filePath)
                     onChange={handleBranch}
                     id='grade'
                     className="dropdownIcon"
-                    value={filterData?.branch[0]}
+                    value={filterData?.branch[0] || ''}
                     options={branchDropdown}
                     getOptionLabel={(option) => option?.branch_name}
                     filterSelectedOptions
@@ -347,7 +357,7 @@ console.log(filterData,'=====',title,description,filePath)
                     onChange={handleRole}
                     id='role'
                     className="dropdownIcon"
-                    value={filterData?.role}
+                    value={filterData?.role || ''}
                     // value={circularRole}
                     options={circularRole}
                     getOptionLabel={(option) => option?.name}
@@ -369,7 +379,7 @@ console.log(filterData,'=====',title,description,filePath)
                     onChange={handleGrade}
                     id='grade'
                     className="dropdownIcon"
-                    value={filterData?.grade[0]}
+                    value={filterData?.grade[0] || ''}
                     options={gradeDropdown}
                     getOptionLabel={(option) => option?.grade__grade_name}
                     filterSelectedOptions
@@ -390,7 +400,7 @@ console.log(filterData,'=====',title,description,filePath)
                     onChange={handleSection}
                     id='grade'
                     className="dropdownIcon"
-                    value={filterData?.section[0]}
+                    value={filterData?.section[0] || ''}
                     options={sectionDropdown}
                     getOptionLabel={(option) => option?.section__section_name}
                     filterSelectedOptions
