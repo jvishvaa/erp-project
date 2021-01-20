@@ -14,7 +14,7 @@ import '../lesson.css';
 import downloadAll from '../../../../assets/images/downloadAll.svg';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 
-const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore, viewMore, filterDataDown, setLoading, index, setCompletedStatus, periodColor, setPeriodColor, setSelectedIndex }) => {
+const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore, viewMore, filterDataDown, setLoading, index, setCompletedStatus, periodColor, setPeriodColor, setSelectedIndex, centralGradeName, centralSubjectName }) => {
 
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -85,10 +85,10 @@ const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore
     const formData = new FormData();
     formData.append('academic_year', filterDataDown?.year?.session_year);
     formData.append('volume', filterDataDown?.volume?.volume_name);
-    formData.append('grade', filterDataDown?.grade?.grade__grade_name);
-    formData.append('subject', filterDataDown?.subject?.subject_name);
+    formData.append('grade', centralGradeName);
+    formData.append('subject', centralSubjectName);
     formData.append('chapter', filterDataDown?.chapter?.chapter_name);
-    formData.append('period', period.period_name);
+    formData.append('period', period?.period_name);
     axios.post(`${endpoints.lessonPlan.bulkDownload}`, formData, {
       headers: {
         'x-api-key': 'vikash@12345#1231',

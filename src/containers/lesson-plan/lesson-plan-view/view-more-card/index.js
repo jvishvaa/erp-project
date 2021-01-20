@@ -12,7 +12,7 @@ import axiosInstance from '../../../../config/axios';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 
-const ViewMoreCard = ({ viewMoreData, setViewMore, filterDataDown, periodDataForView, completedStatus, setSelectedIndex, setLoading }) => {
+const ViewMoreCard = ({ viewMoreData, setViewMore, filterDataDown, periodDataForView, completedStatus, setSelectedIndex, setLoading, centralGradeName, centralSubjectName }) => {
     const themeContext = useTheme();
     const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
     const { setAlert } = useContext(AlertNotificationContext);
@@ -61,8 +61,8 @@ const ViewMoreCard = ({ viewMoreData, setViewMore, filterDataDown, periodDataFor
         const formData = new FormData();
         formData.append('academic_year', session_year);
         formData.append('volume', volume_name);
-        formData.append('grade', grade__grade_name);
-        formData.append('subject', subject_name);
+        formData.append('grade', centralGradeName);
+        formData.append('subject', centralSubjectName);
         formData.append('chapter', chapter_name);
         formData.append('period', periodDataForView?.period_name);
         axios.post(`${endpoints.lessonPlan.bulkDownload}`, formData, {
@@ -148,7 +148,7 @@ const ViewMoreCard = ({ viewMoreData, setViewMore, filterDataDown, periodDataFor
                             <div className="bodyContent">
                                 <div>{file}</div>
                                 <div>
-                                    <a href={`${endpoints.lessonPlan.s3}dev/lesson_plan_file/${session_year}/${volume_name}/${grade__grade_name}/${subject_name}/${chapter_name}/${periodDataForView?.period_name}/${p?.document_type}/${file}`} target="_blank">
+                                    <a href={`${endpoints.lessonPlan.s3}dev/lesson_plan_file/${session_year}/${volume_name}/${centralGradeName}/${centralSubjectName}/${chapter_name}/${periodDataForView?.period_name}/${p?.document_type}/${file}`} target="_blank">
                                         <SvgIcon
                                             component={() => (
                                                 <img
