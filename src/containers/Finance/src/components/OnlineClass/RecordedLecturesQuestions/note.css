@@ -1,0 +1,45 @@
+.note-icon{
+    color: rgb(93, 36, 73);
+      /* bottom: 10%;
+      right: 5%; */
+      font-size: 3rem !important;
+      background-color: rgb(255, 255, 255);
+      padding: 5px;
+      border-radius: 50%;
+      box-shadow: 1px 1px 3px 1px;
+      margin-bottom:88vh;
+      /* margin-left: 94%;
+      margin-top: 14px; */
+  }
+
+.notepad{
+  background-color:#FFF9F3;
+  /* box-shadow:2px 2px 2px #10ce0d; */
+  margin-left: 18px;
+  border-radius: 8px;
+  margin-top:14px;
+  font-size: 20px;
+  font-family: serif;
+  width: 95%;
+  outline: none;
+  padding: 5px;
+}
+.note__text{
+  font-size: 25px;
+  text-align: center;
+  color: white;
+}
+/* @media screen and (max-width: 480px) {
+  .notepad{
+    background-color:aliceblue;
+    box-shadow:2px 2px 2px #10ce0d;
+    margin-left: 155px;
+    border-radius: 8px;
+    margin-top:14px;
+    font-size: 20px;
+    font-family: serif;
+    width: 67%;
+    margin-right: -40px;
+    
+  }
+} */

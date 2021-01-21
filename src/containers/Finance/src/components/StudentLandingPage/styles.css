@@ -1,0 +1,201 @@
+/* code goes here */
+
+.student__landingpage--container {
+    background: linear-gradient(138.76deg, rgb(225, 231, 240) 33.72%, #F5B7BB 94.25%);
+    overflow: hidden;
+    position: relative;
+    font-size: 10px;
+}
+
+.studentlanding__logo {
+    width: 12em;
+    position: absolute;
+    top: 10px;
+    left: 2%;
+    background-image: url('https://letseduvate.s3.ap-south-1.amazonaws.com/prod/build/static/media/logo.56aee486.png');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.studentlanding__greetings--container {
+    position: absolute;
+    width: 45%;
+    top: 12%;
+    left: 3%;
+}
+
+
+.orchadio__logo {
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.orchadio__logo--yellow {
+    color: #FCA500;
+}
+
+.orchadio__logo--green {
+    color: rgb(72, 219, 53);
+}
+
+.orchadio__logo--red {
+    color: rgb(219, 53, 67);
+}
+
+.greeting__timeof_theday {
+    font-size: 4em;
+    color: #486876;
+    font-weight: normal;
+}
+
+.greeting__student--name {
+    font-size: 5em;
+    color: #486876;
+    font-weight: 700;
+    margin-top: -10px;
+}
+
+.studentlanding__announcement--container{
+    font-size: 3.5em;
+    font-weight: normal;
+    margin-top: 15px;
+    color: whitesmoke;
+    background-color:#486876;
+    padding: 0.5em;
+    border-radius: 20px;
+    animation: movein 1s ease-out 0s backwards;
+}
+
+.studentlanding__announcement--whatsnew {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.studentlanding__centerimage--container {
+    width: 60%;
+    height: 100%;
+    float: right;
+    position: relative;
+}
+
+.studentlanding__centerimage {
+    width: 80%;
+    float: right;
+    margin-right: 30px;
+}
+
+.studentlanding__studying {
+   position: absolute;
+   left: 60%;
+   top: 8%;
+   width: 75%;
+   transform: translate(-50%, 0);
+}
+
+.studentlanding__leftbottom--container {
+    position: absolute;
+    bottom: 0;
+    width: 400px !important;
+    transform: translateY(5%);
+}
+
+.studentlanding__leftbottomimage {
+    width: 100%;
+}
+
+.studentlanding__rightbottom--container {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100px !important;
+    transform: translateY(5%);
+}
+
+.studentlanding__rightbottomimage {
+    width: 100%;
+}
+
+.show__carousel {
+    display: block;
+}
+
+.hide__carousel {
+    display: none;
+}
+
+@keyframes movein {
+    0% {
+        transform: translateX(20%);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0%);
+        opacity: 1;
+    }
+}
+
+
+@media only screen and (max-width: 1440px) {
+    .student__landingpage--container {
+        font-size: 8px;
+    }
+
+    .studentlanding__announcement--container {
+        font-size: 3em;
+        border-radius: 10px;
+    }
+
+    .studentlanding__leftbottom--container {
+        width: 300px !important;
+    }
+
+    .studentlanding__rightbottom--container {
+        width: 80px !important;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    .student__landingpage--container {
+        font-size: 6px;
+    }
+
+    .studentlanding__announcement--container {
+        font-size: 3em;
+    }
+
+    .studentlanding__leftbottom--container {
+        width: 200px !important;
+    }
+
+    .studentlanding__rightbottom--container {
+        width: 60px !important;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .student__landingpage--container {
+        font-size: 6px;
+    }
+
+    .studentlanding__announcement--container {
+        font-size: 2em;
+    }
+
+    .studentlanding__leftbottom--container {
+        width: 150px !important;
+    }
+
+    .studentlanding__rightbottom--container {
+        width: 40px !important;
+    }
+
+    .studentlanding__greetings--container {
+        position: absolute;
+        width: 90%;
+        top: 45%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+}

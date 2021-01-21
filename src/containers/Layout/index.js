@@ -400,7 +400,10 @@ const Layout = ({ children, history }) => {
         history.push('/homework/teacher');
         break;
       }
-
+      case 'Normal Fee Type': {
+        history.push('/feeType/normalFeeType');
+        break;
+      }
       default:
         break;
     }

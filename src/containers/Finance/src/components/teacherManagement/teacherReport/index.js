@@ -1,0 +1,6 @@
+export { default as teacherHistory } from './teacherHistory'
+export { default as addteacherReport } from './addTeacherReport'
+export { default as viewteacherReport } from './viewTeacherReport'
+export { default as editTeacherReport } from './editTeacherReport'
+export { default as showTeacherReport } from './showTeacherReport'
+export { default as addteacherReport2 } from './addTeacherReport2'

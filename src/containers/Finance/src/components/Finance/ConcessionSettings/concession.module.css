@@ -1,0 +1,20 @@
+.modal__heading{
+    text-align: center;
+    padding-top: 15px;
+    margin-bottom: 15px;
+}
+.modal__remainbutton,
+.modal__updatebutton,
+.modal__addbutton{
+    display: inline-block;
+    position: absolute;
+}
+.modal__updatebutton,
+.modal__addbutton{
+    bottom: 5px;
+    right: 0px;
+}
+.modal__remainbutton{
+    bottom: 5px;
+    left: 0px;
+}

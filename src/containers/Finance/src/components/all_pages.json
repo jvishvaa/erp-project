@@ -1,0 +1,292 @@
+[{
+    "title":"Dashboard",
+    "description" : "Get insights about all sections in a single page",
+    "tags": ["dashboard","Main","Home"],
+    "link_type" : "internal",
+    "link" :"/dashboard"
+  },{
+    "title":"Staff",
+    "description" : "Get all staffs in a branch",
+    "tags":["staff","Employee","User"],
+    "link_type" : "internal",
+    "link" :"/staff"
+},{
+    "title":"Add Staff",
+    "description" : "Create staff for a branch",
+    "tags": ["add staff","Create Staff","Create User","Create Employee"],
+    "link_type" : "internal",
+    "link" :"/staff/add"
+  },{
+    "title":"Upload Excel",
+    "description" : "Upload staff details from  excel for a branch ",
+    "tags": ["upload excel","Upload User Details ","Upload Staff Details ","Upload Employee Details"],
+    "link_type" : "internal",
+    "link" :"/staff/upload"
+  }, {
+    "title":"Students",
+    "description" : "Get all students of selected grade in a branch",
+    "tags": ["student","Pupil"],
+    "link_type" : "internal",
+    "link" :"/student"
+  },{
+    "title":"Add Student",
+    "description" : "Create student",
+    "tags": ["add student","Create Student","Create Pupil"],
+    "link_type" : "internal",
+    "link" :"/student/add"
+  },{
+    "title":"Add Student Excel",
+    "description" : "upload a new  student  from excel for a branch",
+    "tags": [" add student excel","Upload Student Details","Upload Pupil Details"],
+    "link_type" : "internal",
+    "link" :"/student/addExcel"
+  },{
+    "title":"Subject",
+    "description" : "Get  all subjects ",
+    "tags": ["subject","Language ","Theory Subjects"],
+    "link_type" : "internal",
+    "link" :"/subject"
+  },{
+    "title":"Add Subject",
+    "description" : "Create Subject",
+    "tags": ["add subject","Create Subject","Create Language","Create Theory Subject"],
+    "link_type" : "internal",
+    "link" :"/subject/add"
+  },{
+    "title":"Subject Mapping",
+    "description" : "Get Subject Mapping of branch and grade  in a single page",
+    "tags": ["subject mapping"],
+    "link_type" : "internal",
+    "link" :"/subjectMapping"
+  },{
+    "title":"Add Subject Mapping",
+    "description" : "Create subject mapping",
+    "tags": ["add subject mapping","Create Subject Mapping"],
+    "link_type" : "internal",
+    "link" :"/subject/addMapping"
+  },{
+    "title":"Grade",
+    "description" : "Get  all grades  based on gradecategory ",
+    "tags": ["Level","grade","Rank"],
+    "link_type" : "internal",
+    "link" :"/grade"
+  },{
+    "title":"Add Grade",
+    "description" : "Create Grade",
+    "tags": ["add grade","Create Grade","Create Level","Create Rank"],
+    "link_type" : "internal",
+    "link" :"/grade/add"
+  },{
+    "title":"Grade Mapping",
+    "description" : "Get  all  Grade Mappings in a branch  ",
+    "tags": ["grade mapping","Level Mapping"],
+    "link_type" : "internal",
+    "link" :"/gradeMapping"
+  },{
+    "title":"Add Grade Mappinhg",
+    "description" : "Create Grade Mapping",
+    "tags": ["add grade mapping","Create Grade Mapping","Create Level Mapping"],
+    "link_type" : "internal",
+    "link" :"/gradeMapping/addGradeMapping"
+  },{
+    "title":"Section",
+    "description" : "Get all Sections ",
+    "tags": ["section","dashboard","main","home"],
+    "link_type" : "internal",
+    "link" :"/section"
+  },{
+    "title":"Add Section",
+    "description" : " Create Section",
+    "tags": ["add section"],
+    "link_type" : "internal",
+    "link" :"/section/add"
+  },{
+    "title":"Section Mapping",
+    "description" : "Get Section Mapping in a branch based on garde ",
+    "tags": ["section mapping"],
+    "link_type" : "internal",
+    "link" :"/sectionMapping"
+  },{
+    "title":"Add Section Mapping",
+    "description" : "Create Section mapping",
+    "tags": ["add section mapping","Create Section Mapping" ],
+    "link_type" : "internal",
+    "link" :"/sectionMapping/add"
+  },{
+    "title":"Branches",
+    "description" : "Get all branches ",
+    "tags": ["branch","Stream"],
+    "link_type" : "internal",
+    "link" :"/branch"
+  },{
+    "title":"Add Branch",
+    "description" : "Create Branch",
+    "tags": ["Craete Branch","Create Stream","add branch"],
+    "link_type" : "internal",
+    "link" :"/branch/add"
+  },
+  {
+    "title":"Session",
+    "description" : "Get  Session in a Academic year",
+    "tags": ["session"],
+    "link_type" : "internal",
+    "link" :"/session"
+  },{
+    "title":"Add Session Mapping",
+    "description" : "Create Session Mapping",
+    "tags": ["Create Session Mapping","add session mapping"],
+    "link_type" : "internal",
+    "link" :"/sessionMapping/add"
+  },{
+    "title":"Designation",
+    "description" : "Get  all Designations ",
+    "tags": ["designation","Position"],
+    "link_type" : "internal",
+    "link" :"/designation"
+  },{
+    "title":"Add Designation",
+    "description" : "Create Designation",
+    "tags": ["Create Designation","Create Position","add designation"],
+    "link_type" : "internal",
+    "link" :"/designation/add"
+  },{
+    "title":"Grade Category",
+    "description" : "Get  all Grade Categories ",
+    "tags": ["grade category","Level Category"],
+    "link_type" : "internal",
+    "link" :"/gradeCategory"
+  },{
+    "title":"Add Grade Category",
+    "description" : "Create Grade Category",
+    "tags": ["add grade category","Create Grade Category","Create Level category"],
+    "link_type" : "internal",
+    "link" :"/gradeCategory/addgradecategory"
+  },{
+    "title":"Role",
+    "description" : "Get all Roles",
+    "tags": ["role"],
+    "link_type" : "internal",
+    "link" :"/role"
+  },{
+    "title":"Add Role",
+    "description" : "Create Role",
+    "tags": ["add role","Create Role"],
+    "link_type" : "internal",
+    "link" :"/role/addRole"
+  },{
+    "title":"Department",
+    "description" : "Get  all Departments ",
+    "tags": ["department"],
+    "link_type" : "internal",
+    "link" :"/department"
+  },{
+    "title":"Add Department",
+    "description" : "Create Department",
+    "tags": ["add department","Create Department"],
+    "link_type" : "internal",
+    "link" :"/department/addDepartment"
+  },{
+    "title":"Calendar",
+    "description" : "Get all Events of a branch",
+    "tags": ["calendar"],
+    "link_type" : "internal",
+    "link" :"/calendar"
+  },{
+    "title":"Time Table",
+    "description" : "Get Timetable of a Branch based on Grade,section",
+    "tags": ["Schedule","time table"],
+    "link_type" : "internal",
+    "link" :"/timetable"
+  },{
+    "title":"Assign Subject Teacher",
+    "description" : " Assign a Subject to Teacher of a Branch based on Grade ,Section and AcademicYear",
+    "tags": ["Create Subject To a Teacher","allocate subject to teacher","assign subject tto teacher"],
+    "link_type" : "internal",
+    "link" :"/assignSubjectTeacher"
+  },{
+    "title":"Teacher Report",
+    "description" : "Get  Report of a Teacher in a Branch ",
+    "tags": ["teacher report","Staff Report"],
+    "link_type" : "internal",
+    "link" :"/teacher-report"
+  },{
+    "title":" Questbox Dashboard",
+    "description" : "Get all data based on subject ,grade",
+    "tags": ["questbox dashboard","questbox-main","questbox-home"],
+    "link_type" : "internal",
+    "link" :"/questbox/dashboard"
+  },{
+    "title":"Create Question",
+    "description" : "Create Question",
+    "tags": ["create question"],
+    "link_type" : "internal",
+    "link" :"/questbox/addquestion"
+  },{
+    "title":"Upload Question From Excel",
+    "description" : "Create Question From Excel",
+    "tags": ["upload question from excel"],
+    "link_type" : "internal",
+    "link" :"/questbox/uploadQuestionExcel"
+  },{
+    "title":"Create Question Paper",
+    "description" : "Create Question Paper",
+    "tags": ["create question paper"],
+    "link_type" : "internal",
+    "link" :"/questbox/createquestionpaper"
+  },{
+    "title":"View Question Paper",
+    "description" : "Get all Question Papers by applying filter",
+    "tags": ["view question paper","get question paper","list question paper"],
+    "link_type" : "internal",
+    "link" :"/questbox/questionpaper"
+  },{
+    "title":"List Question",
+    "description" : "Get all Questions by applying filter",
+    "tags": ["get question","view question","list question"],
+    "link_type" : "internal",
+    "link" :"/questbox/listquestion"
+  },{
+    "title":"List Comprehension Question ",
+    "description" : "Get all  Comprehension Questions by applying filter",
+    "tags": ["list comprehension question","view comprehension question","view comprehension question"],
+    "link_type" : "internal",
+    "link" :"/questbox/list_comprehension_question"
+  },{
+    "title":"Add Chapter",
+    "description" : "Create Chapter",
+    "tags": ["create chapter","add chapter"],
+    "link_type" : "internal",
+    "link" :"/questbox/addchapter"
+  },{
+    "title":"File Upload",
+    "description" : "Create File",
+    "tags": ["file uplaod","create file"],
+    "link_type" : "internal",
+    "link" :"/questbox/fileupload"
+  },{
+    "title":"View Files",
+    "description" : "Get  all Files in a single page",
+    "tags": ["view files","get files","list files"],
+    "link_type" : "internal",
+    "link" :"/questbox/viewfiles"
+  },{
+    "title":"Create Assessment",
+    "description" : "Create Assessment ",
+    "tags": ["create assessment","create test","create exam"],
+    "link_type" : "internal",
+    "link" :"/questbox/create_assessment"
+  },{
+    "title":"View Assessment",
+    "description" : "Get Assessment",
+    "tags": ["view assessment","get assessment","list assessment","list exams","view exams","get test","view test"],
+    "link_type" : "internal",
+    "link" :"/questbox/assessment/view"
+  },{
+    "title":"Upload Result From Excel",
+    "description" : "Create Result from Excel",
+    "tags": ["create result from excel"],
+    "link_type" : "internal",
+    "link" :"/questbox/upload_result_excel"
+  }
+]
+

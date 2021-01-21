@@ -1,0 +1,693 @@
+body {
+    font-family: 'Tenor Sans', sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Tenor Sans', sans-serif;
+    letter-spacing: normal;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/*nav section css*/
+/*section one css*/
+.aol-logo img {
+    width: 100%;
+    /*    display: block;
+    margin: 0 auto;*/
+}
+
+.nav__row {
+    background-color: #fff;
+    position: static;
+    padding: 20px 0px;
+    box-shadow: 0px 0px 10px gray;
+    top: 0;
+}
+
+.icon_count {
+    text-align: center;
+}
+
+.icon_count img {
+    width: 20px;
+}
+
+.icon_count hr {
+    float: right;
+    width: 70%;
+}
+
+.icon_count img {
+    width: 60px;
+    float: left;
+    margin: 0px;
+}
+
+.icon_count h3 {
+    font-size: 18px;
+    margin: 0px;
+    padding: 0px;
+}
+
+.vl {
+    border-left: 1px solid #f4b332;
+    height: 40px;
+}
+
+.home-banner {
+    background-image: url(../img/home.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    /*height: 65vh;*/
+    height: 450px;
+}
+
+.question__Icon img {
+    float: right;
+}
+
+.register-now {
+    margin-top: 8% !important;
+    margin-bottom: 8% !important;
+    text-align: center;
+    padding: 0px 30px;
+    color: #33B2C9;
+    border-style: dashed;
+    width: fit-content;
+    display: block;
+    margin: 0 auto;
+}
+
+.esp-text {
+    padding: 10px 0px;
+}
+
+.esp-text h2 {
+    font-size: 2.3rem;
+    padding: 10px;
+    color: #ff7066;
+}
+
+.esp-text p {
+    color: #000;
+}
+
+.register-btn a {
+    text-decoration: none;
+    color: #fff;
+}
+
+.register-btn {
+    background-color: #33B2C9 !important;
+    border-color: #33B2C9 !important;
+    width: 250px;
+    font-size: 24px;
+    box-shadow: 2px 3px 2px 3px #00000040;
+    border-radius: 0px;
+    margin-bottom: -4%;
+}
+
+.productively_free-online {
+    background-color: #fff;
+    border: 2px solid #33B2C9;
+    width: max-content;
+    padding: 10px !important;
+    margin-top: -40px !important;
+    display: block;
+    margin: 0 auto;
+}
+
+/*section one css*/
+/*common css */
+.section-2,
+.section-3,
+.section-4,
+.section-5 {
+    margin-bottom: 2%;
+    margin-top: 3%;
+}
+
+.dot {
+    color: red;
+}
+
+.online-vidoe h3 {
+    padding: 20px;
+    text-align: center;
+}
+
+.literacy-numeracy {
+    cursor: pointer;
+}
+
+/* Create three equal columns that floats next to each other */
+.end-section {
+    margin: 5% 0% 0%;
+}
+
+.footer-column {
+    float: left;
+    width: 33.33%;
+    padding: 10px;
+    height: 30px;
+    /* Should be removed. Only for demonstration */
+}
+
+/* Clear floats after the columns */
+.footer_row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/*common css*/
+/*section 3 css*/
+.howesp-work {
+    padding-top: 20px;
+    text-align: center;
+}
+
+.howesp-work h3 {
+    color: #ff7066;
+    font-size: 2rem;
+}
+
+.howesp-work h4 {
+    color: #33B2C9
+}
+
+.breadcrumb {
+    list-style: none;
+    overflow: hidden;
+    font: 18px Helvetica, Arial, Sans-Serif;
+    margin: 40px;
+    padding: 0;
+}
+
+.breadcrumb li {
+    float: left;
+}
+
+.breadcrumb li a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 0 10px 55px;
+    background: brown;
+    /* fallback color */
+    background: hsla(34, 85%, 35%, 1);
+    position: relative;
+    display: block;
+    float: left;
+}
+
+.breadcrumb li a:after {
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 50px solid transparent;
+    /* Go big on the size, and let overflow hide */
+    border-bottom: 50px solid transparent;
+    border-left: 30px solid hsla(34, 85%, 35%, 1);
+    position: absolute;
+    top: 50%;
+    margin-top: -50px;
+    left: 100%;
+    z-index: 2;
+}
+
+.breadcrumb li a:before {
+    content: " ";
+    display: block;
+    width: 0;
+    height: 0;
+    border-top: 50px solid transparent;
+    /* Go big on the size, and let overflow hide */
+    border-bottom: 50px solid transparent;
+    border-left: 30px solid white;
+    position: absolute;
+    top: 50%;
+    margin-top: -50px;
+    margin-left: 1px;
+    left: 100%;
+    z-index: 1;
+}
+
+.breadcrumb li:first-child a {
+    padding-left: 10px;
+}
+
+.breadcrumb li:nth-child(2) a {
+    background: hsla(34, 85%, 45%, 1);
+}
+
+.breadcrumb li:nth-child(2) a:after {
+    border-left-color: hsla(34, 85%, 45%, 1);
+}
+
+.breadcrumb li:nth-child(3) a {
+    background: hsla(34, 85%, 55%, 1);
+}
+
+.breadcrumb li:nth-child(3) a:after {
+    border-left-color: hsla(34, 85%, 55%, 1);
+}
+
+.breadcrumb li:nth-child(4) a {
+    background: hsla(34, 85%, 65%, 1);
+}
+
+.breadcrumb li:nth-child(4) a:after {
+    border-left-color: hsla(34, 85%, 65%, 1);
+}
+
+.breadcrumb li:nth-child(5) a {
+    background: hsla(34, 85%, 75%, 1);
+}
+
+.breadcrumb li:nth-child(5) a:after {
+    border-left-color: hsla(34, 85%, 75%, 1);
+}
+
+.breadcrumb li:last-child a {
+    background: transparent !important;
+    color: black;
+    pointer-events: none;
+    cursor: default;
+}
+
+.breadcrumb li:last-child a:after {
+    border: 0;
+}
+
+.breadcrumb li a:hover {
+    background: hsla(34, 85%, 25%, 1);
+}
+
+.breadcrumb li a:hover:after {
+    border-left-color: hsla(34, 85%, 25%, 1) !important;
+}
+
+.steps {
+    margin: 2rem;
+    padding: 0;
+    overflow: hidden;
+}
+
+.steps a {
+    color: white;
+    text-decoration: none;
+}
+
+.steps li {
+    float: left;
+    margin-left: -3px;
+    width: 32%;
+    height: 9rem;
+    text-align: center;
+    list-style-type: none;
+    padding: 0.5rem 2rem;
+    border-right: 3px solid white;
+    position: relative;
+}
+
+/* remove extra padding on the first object since it doesn't have an arrow to the left */
+.steps li:first-child {
+    padding-left: 5px;
+}
+
+.steps li p {
+    font-size: 1rem;
+    margin-bottom: 0;
+    margin-top: 10%;
+}
+
+.literacy-numeracy img {
+    display: block;
+    margin: 0 auto;
+}
+
+/* white arrow to the left to "erase" background (starting from the 2nd object) */
+.steps li:nth-child(n + 2)::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    border-left: 0px solid transparent;
+    border-top: 57px solid transparent;
+    border-bottom: 56px solid transparent;
+    width: 0;
+    height: 0;
+    content: " ";
+}
+
+.steps .step-1::after {
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -23px;
+    display: block;
+    border-left: 23px solid #F4B31C;
+    border-top: 70px solid transparent;
+    border-bottom: 75px solid transparent;
+    width: 0;
+    height: 0;
+    content: " ";
+}
+
+.steps .step-2::after {
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -29px;
+    display: block;
+    border-left: 30px solid #33B2C9;
+    border-top: 70px solid transparent;
+    border-bottom: 74px solid transparent;
+    width: 0;
+    height: 0;
+    content: " ";
+}
+
+.steps .step-3::after {
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -23px;
+    display: block;
+    border-left: 23px solid #ff7066;
+    border-top: 70px solid transparent;
+    border-bottom: 74px solid transparent;
+    width: 0;
+    height: 0;
+    content: " ";
+}
+
+/* Setup colors (both the background and the arrow) */
+
+/* Completed */
+.step-1 {
+    background-color: #F4B31C;
+}
+
+.step-2 {
+    background-color: #33B2C9;
+}
+
+.step-3 {
+    background-color: #ff7066;
+}
+
+/*.steps li::after {
+  border-left-color: #7c8437;
+}
+*/
+/* Current */
+.steps li.current {
+    background-color: #c36615;
+}
+
+.steps li.current::after {
+    border-left-color: #c36615;
+}
+
+/* Following */
+.steps li.current~li {
+    background-color: #ebebeb;
+}
+
+.steps li.current~li::after {
+    border-left-color: #ebebeb;
+}
+
+/* Hover for completed and current */
+/*f.steps li:hover {
+background-color: #fa6f65;
+}
+
+.steps li:hover::after {
+    border-left-color: #fa6f65;
+}*/
+
+/*section 3 css*/
+/*section 5 css*/
+.faq {
+    margin-top: 50%;
+}
+
+.faq ul li {
+    margin-bottom: 5%;
+    padding: 30%;
+    text-align: center;
+}
+
+.faq .f {
+    background: #F4B31C;
+}
+
+.faq .a {
+    background: #33B2C9;
+}
+
+.faq .q {
+    background: #ff7066;
+}
+
+.faq-div1 ul>li:last-child,
+.faq-div2 ul>li:last-child {
+    border-bottom: none;
+}
+
+.faq-div1 ul>li {
+    padding: 5px 10px;
+    height: 120px;
+}
+
+.faq-div2 ul>li {
+    padding: 5px 10px;
+    height: 120px;
+}
+
+.faq-div1 {
+    border: 2px dotted #F4B31C;
+}
+
+.faq-div2 {
+    border: 2px dotted #33B2C9;
+}
+
+.faq-div1 ul>li>h4 {
+    font-size: 1.2rem;
+    color: #33B2C9;
+}
+
+.faq-div2 ul>li>h4 {
+    font-size: 1.2rem;
+    color: #33B2C9;
+}
+
+.faq-div1 .everything-you {
+    text-align: center;
+    padding: 10px 10px;
+    font-size: 1.2rem;
+    color: #ff7066;
+    width: fit-content;
+}
+
+.faq-div2 .answer-to {
+    text-align: center;
+    padding: 10px 10px;
+    font-size: 1.2rem;
+    color: #33B2C9;
+    width: fit-content;
+}
+
+.faq-div1,
+.faq-div2 p {
+    margin: 0;
+    font-size: 14px;
+    text-align: justify;
+}
+
+hr {
+    width: 80%;
+    margin-top: 0rem;
+    margin-bottom: 0rem;
+    border: 0;
+    border-top: 1px solid #000;
+}
+
+.step-column {
+    float: left;
+    text-align: center;
+    width: 33.33%;
+    padding: 10px;
+    height: 30px;
+    /* Should be removed. Only for demonstration */
+}
+
+/* Clear floats after the columns */
+.step_row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/*section 5 css*/
+/*page css 2*/
+.page2Box {
+    margin: 50px 0px;
+    width: 100%;
+    height: auto;
+}
+
+.topbox1,
+.topbox2,
+.topbox3 {
+    height: 100px;
+    color: white
+}
+
+.bottomBox1,
+.bottomBox2,
+.bottomBox3 {
+    height: 300px;
+    position: relative;
+    z-index: 1;
+}
+
+
+
+
+
+.boxPara {
+    font-size: 24px;
+    line-height: 28px;
+    letter-spacing: 1.20px;
+}
+
+
+.topbox1,
+.bottomBox1 {
+    background-color: #f4b332;
+}
+
+.topbox2,
+.bottomBox2 {
+    background-color: #33b2c9 !important;
+}
+
+.topbox3,
+.bottomBox3 {
+    background-color: #fa6f65;
+}
+
+
+/*page css 4*/
+.page4 {
+    margin: 50px 0px;
+    width: 100%;
+    height: auto;
+    /* background-color: red; */
+}
+
+.opacity-0 {
+    opacity: 0;
+}
+
+.imgClass {
+    width: 100%;
+}
+
+.red-dotted-border {
+    width: 100%;
+    height: 100%;
+    border: 4px dotted red;
+}
+
+.yellow-dotted-border {
+    width: 100%;
+    height: 100%;
+    border: 4px dotted yellow;
+}
+
+
+
+/*page css 6*/
+.page6 {
+    margin: 50px 0px;
+    width: 100%;
+    height: auto;
+}
+
+.testimonialQuotesTopRow {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 10px;
+}
+
+
+.testimonialQuotesBottomRow {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-gap: 5px;
+}
+
+
+
+
+.testimonailHead {
+    margin: 0 auto;
+}
+/*bttom to top css*/
+#bottomTop {
+  display: inline-block;
+  background-color: #FF9800;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  transition: background-color .3s, 
+    opacity .5s, visibility .5s;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 1000;
+}
+#bottomTop::after {
+  content: "\f077";
+  font-family: FontAwesome;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 2em;
+  line-height: 50px;
+  color: #fff;
+}
+#bottomTop:hover {
+  cursor: pointer;
+  background-color: #fa6f65;
+}
+#bottomTop:active {
+  background-color: #fa6f65;
+}
+#bottomTop.show {
+  opacity: 1;
+  visibility: visible;
+}
+/*bottom to top*/

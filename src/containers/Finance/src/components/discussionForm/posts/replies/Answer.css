@@ -1,0 +1,32 @@
+.questionAsked {
+    color: #888 ;
+    margin-bottom: 15px;
+    display: block;
+    letter-spacing: 1px;
+}
+
+.questionAskedBy {
+    color: #888 ;
+    display: block;
+    letter-spacing: 1px;
+}
+
+.replyBtn {
+    margin-left: 90%;
+}
+
+.questionNew * {
+    margin: 10px 0px;
+    font-size: 1rem;
+    font-weight : bold;
+    letter-spacing: 1px;
+}
+
+
+    .colorBoxAnswer {
+        width: 10px;
+        height: 40%;
+        position: absolute;
+        top: 0; 
+        left: 0;
+    }

@@ -1,0 +1,592 @@
+.excelTable .MuiIconButton-root-61{
+    font-size: 12px !important;
+}
+.staff{
+    padding-bottom:50px;
+}
+.staff-heading{
+    padding-bottom:30px;
+    border-bottom:1px solid black;
+}
+.staff-body{
+    padding-top:30px;
+}
+.student-padding{
+    padding:20px;
+}
+
+.staff-btn{
+    position:relative;
+    left:-58px;
+}
+.studentSection-addStaffButton{
+    position:relative;
+}
+.view-question-paper{
+    height: 80px !important;
+    overflow: visible !important;
+}
+.form-group {
+  margin-bottom: 15px;
+}
+.form-control {
+  display: block;
+  width: 100%;
+  height: 34px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+  -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+       -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+          transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+.form-control:focus {
+  border-color: #66afe9;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+}
+.input-lg {
+  height: 35px;
+  padding: 10px 16px;
+  font-size: 18px;
+  line-height: 1.3333333;
+  border-radius: 6px;
+  width:200px;
+}
+.search-text{
+   position:relative;
+   top:10px;
+}
+.staff-table{
+   padding-left:0px;
+   padding-top:20px;
+   overflow: scroll;
+
+}
+.staff-table1{
+   margin:0 auto;
+}
+
+.staff-page{
+padding-left:0px;
+   padding-top:20px;
+}
+
+
+.staff-mapping-heading{
+   font-size:20px;
+}
+.close, .clear-filter{
+   position: relative;
+    left: 20px;
+    top: -30px;
+}
+.staff_mapping-subheading, .staff-option{
+   position:relative;
+}
+
+
+.student-section{
+  /* background:#FAFAFA;  */
+   padding-left:50px;
+   height:auto;
+   padding-bottom:80px;
+   min-height:100vh;
+   padding-right:0px;
+
+}
+.upload_excel_assessment{
+    margin-left: 50px;
+}
+.assessment_buttons{
+    /* margin-left: 30px; */
+    float: right;
+    display: flex;
+    justify-content: space-between;
+
+
+}
+.assessment_reacttable{
+    margin-left: 30px;
+}
+.assessment-header{
+    background: rgb(0, 119, 255);
+}
+.block_button{
+
+    cursor: not-allowed;
+  
+  }
+
+
+.ui.container {
+    width: 100vw!important;
+    margin: 0 !important;
+}
+.student-heading{
+    font-size:25px;
+}
+.ui.mini.breadcrumb {
+    background: transparent;
+}
+.student-section-studentDetails .ui.grid{
+   background:white;
+   margin-top:10px;
+}
+.student-section-studentDetails-row{
+       border-bottom:1px solid black;
+}
+.student-section-input{
+    position: relative;
+    left: 13px;
+    top: -24px;
+}
+.ui.grid+.grid {
+    margin-top: 1rem;
+    margin: 0 auto;
+    padding:16px;
+    padding-right:0px;
+}
+.ui.grid {
+    padding:12px 0px;
+}
+.student-section-activeStudents .ui.grid{
+    padding: 10px;
+}
+.student-addStudent-segment1-button1, .student-addStudent-segment1-button2{
+  padding-left:20px;
+}
+.student-section-activeStudents1 .ui.attached:not(.message)+.ui.attached.segment:not(.top) {
+    border-top: none;
+    width: 90vw;
+}
+.student-section-studentDetails .staff-table1{
+   margin:0 auto;
+}
+.ui.attached:not(.message)+.ui.attached.segment:not(.top) {
+    border-top: none;
+    width: 90vw !important;
+}
+.student-breadcrumb{
+   float:right;
+}
+.ui.segments:not(.horizontal)>.segment:first-child {
+    padding-bottom: 20px;
+}
+.student-addStudent-segment1-heading{
+  padding-left:20px;
+}
+
+.student-section-inputField{
+   padding-left:42px !important;
+   margin-right: 42px;
+}
+.student-section-inputField input{
+   padding-left:0px !important;
+}
+.student-section-inputField-button{
+    position: relative;
+    top: 24px;
+}
+.ui .grid{
+    padding-bottom:24px !important;
+}
+.student-section-excel-button{
+   margin-left:10px;
+}
+
+
+/*======================
+      Manage Subject
+=======================*/
+.right{
+   text-align:right;
+}
+
+
+/*======================
+      Add Staff
+=======================*/
+.student-section-inputField1{
+      padding-left: 40px !important;
+    padding-right: 20px !important;
+}
+.student-section-addstaff-button{
+   padding-left:22px !important;
+}
+.addSectionmapping-column{
+   padding-left:40px !important;
+}
+.addSessionMapping-button{
+    position:relative;
+    top:25px;
+}
+.ui.purple.button {
+    color:white;
+    background:#720D5D;
+    position: relative;
+    bottom: 11px;
+}
+
+.studentSection-Heading{
+    padding:20px;
+}
+
+/*======================
+      Section Mapping
+=======================*/
+.SectionMappingButton Button{
+    margin-left: -21px !important;
+    margin-bottom: 20px !important;
+}
+.sessionTable{
+    overflow-x: scroll !important;
+}
+
+/*======================
+      View Calendar
+=======================*/
+.student-section-viewCalendar-Button{
+      position: relative !important;
+      top: 24px !important;
+}
+.formargin .ui.segments:not(.horizontal)>.segment:only-child {
+  padding-bottom:40px;
+}
+
+
+@media only screen and (max-width: 767px) and (min-width: 320px){
+
+.student-section-activeStudents1 .ui.attached:not(.message)+.ui.attached.segment:not(.top) {
+    border-top: none;
+    width: 90vw;
+}
+.studentSection-addStaffButton{
+    left:-600px !important;
+}
+.ui.attached:not(.message)+.ui.attached.segment:not(.top) {
+    border-top: none;
+    width: 90vw !important;
+}
+.student-addStudent-segment1-button .ui.primary.button{
+    margin-left:40px;
+    margin-top:5px;
+   
+}
+.student-addStudent-parentSection{
+   position:relative !important;
+   left:0px !important;
+}
+.formargin .ui.segments:not(.horizontal)>.segment:only-child {
+  padding-bottom:40px;
+}
+
+}
+.ui.column.grid>[class*="fifteen wide mobile"].column, .ui.grid>.column.row>[class*="fifteen wide mobile"].column, .ui.grid>.row>[class*="fifteen wide mobile"].column, .ui.grid>[class*="fifteen wide mobile"].column {
+    width: 93.75%!important;
+    padding-left: 34px;
+    position: relative;
+    top:10px;
+}
+.fontSize .ui.blue.active.button{
+    font-size:11px !important;
+}
+
+/* add staff excel -By Neelabh*/
+.header{
+
+    background: white;
+}
+
+.inputfile{
+    padding:10px;
+    width:60%;
+    border-radius:5px;
+    -webkit-border-radius:5px;
+    -moz-border-radius:5px;
+    -ms-border-radius:5px;
+    -o-border-radius:5px;
+}
+/* added in  addstudentexcel */
+#tablecontent{
+    margin-top:20px;
+    width:100%;
+    overflow-x:scroll;
+}
+@media (max-width:1140px){
+#tablecontent2{
+    margin-top:20px;
+    width:100%;
+    overflow-x:scroll;
+}
+}
+.formargin{
+    margin-top:60px;
+}
+.formargin1{
+    margin-top:30px !important;
+}
+/* for add time table */
+@media (min-width:768px){
+.positionalignment{
+    position:relative;
+    top:23px;
+}
+}
+@media (max-width:767px){
+    .positionalignment{
+        position:relative;
+        top:10px;
+    }
+}
+.calender{
+    padding:10px;
+    border-radius:5px;
+    -webkit-border-radius:5px;
+    -moz-border-radius:5px;
+    -ms-border-radius:5px;
+    -o-border-radius:5px;
+}
+#removeborder>.ui.segment{
+    border:none;
+    box-shadow:none;
+}
+
+#removeborder > div.ui.segment > div > div.ui.attached.tabular.menu > a.active.item{
+    border-top:5px solid #3c8dbc;
+}
+
+#removeborder > div.ui.segment > div > div.ui.bottom.attached.segment.active.tab > form > div > div.field.forpositioning > div > button{
+    width:21vw;
+}
+#removeborder > div.ui.segment > div > div.ui.bottom.attached.segment.active.tab > form > div > div.field > div > button{
+    width:21vw;
+}
+#root > div > div.formargin > div > div > div > form > div:nth-child(2) > div.field.teacherdate > div > button{
+    width:22vw;
+}
+/* logout positioning */
+#profileButton > button{
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+/* switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 45px;
+    height: 26px;
+    outline: none;
+  }
+  .switch input {
+    position: absolute;
+    top: -99999px;
+    left: -99999px;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 34px;
+  }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  input:checked + .slider {
+    background-color: #00b300;
+  }
+  input:focus + .slider {
+    box-shadow: 0 0 1px #00b300;
+                }
+  input:checked + .slider:before {
+    -webkit-transform: translateX(18px);
+    
+}
+
+
+#noidea{
+    display: none;
+}
+
+.exact-filters {
+     display:none;
+}
+
+@media (max-width:440px)
+{
+.staffbutton{
+    position: relative;
+    top: 10px;
+    left: 32px;
+}
+.ui.blue.active.button{
+    margin-bottom:10px;
+}
+.student-section-studentDetails{
+    padding-left:0;
+    
+}
+#igotu{
+    margin-right:15px;
+}
+.inputfile{
+    width:100%;
+}
+
+
+}
+.student{
+    padding-top:10px ;
+}
+
+.col-shuffle{
+    height: 60px !important;
+    overflow: visible !important;
+    padding: 0 !important;
+
+  }
+  .notification{
+    position: sticky;
+    z-index:99;
+    top: 0; 
+    overflow: visible
+}  
+
+  .shuffle-section{
+      text-align: center !important;
+      padding: 13px !important;
+      overflow: visible !important;
+      word-break: 'break-word';
+      height: 20px;
+  }
+  .status-shuffle-approval{
+      font-weight: bold;
+  }
+
+  .notification-text{
+ 
+        background-color: black; /* Fallback color */
+        background-color: rgba(0,0,0, 0.4); /* Black w/opacity/see-through */
+        color: white;
+        font-weight: bold;
+        border: 3px solid #f1f1f1;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+        width: 20%;
+        padding: 20px;
+        text-align: center;
+      
+  }
+  .notification-body{
+    opacity :0.2
+  }
+  .delete-action{
+     padding-top: 0px;
+  }
+  .action{
+    padding-top: 10px; 
+  }
+  /* .student_{
+      padding-top:'30px';
+      text-align: center;
+  } */
+
+  @media screen and (max-width:5pc)
+  {
+     table.TABLE{
+         width: 1pc
+     }
+     .head{
+         width: 10px
+     }
+     .body{
+         width: 10px
+     }
+
+  }
+  .btn:hover{
+    color:green
+}
+.btn1:hover{
+    color:blue
+}
+/*
+.MuiButton-containedPrimary{
+    background-color: #fff !important
+} 
+.MuiButton-label{
+    color:#821057;
+    }
+*/    
+    
+  @media screen and (min-width:250px)
+ {
+     table.TABLE{
+         width: 80pc
+     }
+
+ }
+
+ @keyframes blink {
+    0% {
+         -webkit-transform: scale(1);
+         transform: scale(1);
+     }
+    50% {
+         -webkit-transform: scale(1.1);
+         transform: scale(1.1);
+     }
+     100% {
+       -webkit-transform: scale(1);
+       transform: scale(1);
+     }
+ }
+ .Image {
+     transition: .1s ease-in;
+     animation: blink 2s;
+     animation-iteration-count: infinite;
+     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+@keyframes blinker {
+from {opacity: 1.0;}
+to {opacity: 0.5;}
+}
+
+.ads{
+ transition: .5s ease-in-out;
+animation: blinker 1s;
+animation-iteration-count: infinite;
+direction: alternate;
+margin-top: -1px;
+text-align: center;
+text-shadow: blue;
+color: blue;
+font-weight: bold;
+}

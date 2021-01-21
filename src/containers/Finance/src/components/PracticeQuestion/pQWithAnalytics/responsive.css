@@ -1,0 +1,10 @@
+@media only screen and (max-width: 600px) {
+    .responsive-div {
+        flex-direction: column-reverse;
+        width: '100%';
+        /* border: 1px solid red; */
+    }
+    .responsive-width {
+        min-width: '100% !important';
+    }
+  }

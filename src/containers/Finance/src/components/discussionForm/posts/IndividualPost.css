@@ -1,0 +1,77 @@
+* {
+    padding : 0;
+    margin : 0;
+    box-sizing: border-box;
+}
+
+.post {
+    padding : 25px;
+    margin-bottom: 7px;
+}
+
+.colorBox {
+    width: 10px;
+    height: 50%;
+    position: absolute;
+    top: 0; 
+    left: 0;
+}
+.titleName {
+   margin: 3px  0px 15px 25px;
+   display: inline-block;
+   font-size: 0.9rem;
+   font-weight: bold;
+   letter-spacing: 2px;
+}
+
+.title {
+    margin: 10px  0px 5px 0px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+ }
+
+.question * {
+    
+    margin-bottom: 6px;
+    font-size: 1rem;
+    font-weight : bold;
+    letter-spacing: 1px;
+    width: 700px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+}
+
+
+
+.extraInfo {
+    margin: 8px 0px;
+    color: #888;
+}
+
+.like-span {
+    position: relative;
+    display: inline-block;
+    width : 20px;
+}
+
+.thumbsUp {
+    position: absolute;
+    bottom: 0;
+    padding-right: 5px;
+}
+
+
+.topInfo {
+    position: relative;
+    margin-bottom: 15px;
+    
+}
+
+.nameIcon {
+    position: absolute;
+    left: 0;
+    top : 0;
+}

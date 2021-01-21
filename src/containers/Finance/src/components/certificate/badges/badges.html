@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300&display=swap" rel="stylesheet">
+    <title>Badges module</title>
+</head>
+
+<body>
+    <style>
+        *{
+            font-family: 'Merriweather', serif;
+            margin: 0;
+            padding: 0;
+        }
+    .badges__section {
+        background-color: #fff;
+        width: 425px;
+        height: 519px;
+        padding: 0px 30px;
+        display: block;
+        margin: 5% auto;
+    }
+    .badges__box {
+        box-sizing: content-box;  
+        width: 425px;
+        height: 500px;
+        border: 4px solid #FEDE59;
+        border-bottom-right-radius: 50%;
+        border-bottom-left-radius: 50%;
+    }
+    .badges__card {
+        display: block;
+        margin: 10px auto;
+        /* background-color: #FEDE59; */
+        background-image: linear-gradient(to left, #FEDE59, #FEDE59 50%, #EFCF49 50%);
+        text-align: center;
+        width: 405px;
+        height: 475px;
+        border: 2px solid #ffdf59;
+        border-bottom-right-radius: 50%;
+        border-bottom-left-radius: 50%;
+    }
+    .badges__cardDark {
+        background-color: red;
+        text-align: center;
+        width: 202.5px;
+        height: 475px;
+        border: 2px solid #ffdf59;
+        border-bottom-left-radius: 50%;
+    }
+    hr {
+        width: 80%;
+        border-color: #272961;
+        display: block;
+        margin: 0 auto;
+    }
+    .badges__participant {
+        margin-top: 10%;
+    }
+    .badges__participant h1{
+        font-size: 45px;
+        color: #262262;
+        margin-top: 0;
+        margin-bottom: 0;
+        font-weight: 100;
+        font-family: 'Merriweather', serif; 
+    }
+    .badges__Quiz{
+        margin-top: 30%;
+    }
+    .badges__Quiz h1 {
+        font-size: 35px;
+        color: #262262;
+        margin-bottom: 0px;
+        font-weight: 100;
+        font-family: 'Merriweather', serif; 
+    }
+    .badges__Science h1{
+        margin-top: 10px;
+        margin-bottom: 0px;
+        font-size: 50px;
+        color: #262262;
+        font-weight: 100;
+        font-family: 'Merriweather', serif; 
+    } 
+    .badges__date h1{
+        font-size: 28px;
+        color: #000;
+        margin-top: 10px;
+        font-weight: 100;
+        font-family: 'Merriweather', serif; 
+    } 
+    </style>
+    <section class="badges__section">
+       <div class="badges__box">
+           <div class="badges__card">
+               <!-- <div class="badges__cardDark"></div> -->
+                <div class="badges__participant">
+                    <hr>
+                    <h1>PARTICIPANT</h1>
+                    <hr>
+                </div>
+                <div class="badges__Quiz">
+                    <h1>Quiz</h1>
+                </div>
+                <div class="badges__Science">
+                    <h1>SCIENCE</h1>
+                </div>
+                <div class="badges__date">
+                    <h1>23rd Sep, 2020</h1>
+                </div>    
+           </div>
+       </div>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,58 @@
+.homework-toolbar {
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    background: whitesmoke ;
+    position: sticky;
+    top: 82px;
+    z-index:1000;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.07), 
+                0 2px 4px rgba(0,0,0,0.07), 
+                0 4px 8px rgba(0,0,0,0.07), 
+                0 8px 16px rgba(0,0,0,0.07),
+                0 16px 32px rgba(0,0,0,0.07), 
+                0 32px 64px rgba(0,0,0,0.07);
+}
+
+
+.homework-mobile-toolbar {
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    background: whitesmoke ;
+    position: sticky;
+    top: 82px;
+    z-index:1000;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.07), 
+                0 2px 4px rgba(0,0,0,0.07), 
+                0 4px 8px rgba(0,0,0,0.07), 
+                0 8px 16px rgba(0,0,0,0.07),
+                0 16px 32px rgba(0,0,0,0.07), 
+                0 32px 64px rgba(0,0,0,0.07);
+}
+
+.homework-mobile-row {
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+@media only screen and (min-width: 600px) {
+    .homework-toolbar {
+        top: 66px;
+        z-index: 1000;
+    }
+    .homework-mobile-toolbar {
+        top: 66px;
+        z-index: 1000;
+    }
+  }
+
+  .rdrDefinedRangesWrapper {
+    font-size: 12px;
+    width: 226px;
+    border-right: solid 1px #eff2f7;
+    background: #fff;
+}

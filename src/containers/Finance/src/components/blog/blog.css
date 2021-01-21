@@ -1,0 +1,266 @@
+.write__blog--container {
+    padding: 30px;
+}
+
+.blog--form-label {
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 0.7px;
+    display: block;
+    margin-bottom: 5px;
+}
+.blog--form-label--draft{
+  font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 0.7px;
+    display: block;
+    margin-bottom: 5px;
+}
+.blog--form-input{
+    width: 100%;
+    padding: 11px;
+    border-radius: 5px;
+    border: 1px solid rgb(211, 211, 211);
+}
+.blog--form-inputReview{
+  width: 200px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid rgb(211, 211, 211);
+  height: 36px !important
+}
+.write__blog--grid-container {
+    margin: 30px 0px 20px  0px!important;
+}
+
+.rating__title {
+    /* font-size: 17px !important; */
+    margin: 10px 0 !important;
+}
+
+.rating__review {
+    margin: 10px 0 !important;
+}
+
+.rating__box--container {
+    padding: 20px 30px !important;
+}
+/* reviewerBlog css */
+  .branch__grade--sec {
+    display: flex;
+    margin: 5px;
+    padding: 10px;
+  }
+
+  .branch__grade--sec p {
+    margin-right : 10px;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .student__blog--author {
+    display: flex;
+    margin: 10px;
+  }
+  
+  .student__blog--author p {
+    font-size: 12px;
+    margin: 0 auto;
+    display: block;
+  }
+
+  .vl {
+    border-left: 1px solid #676767;
+    height: 22px;
+  }
+
+  .closemodal {
+      float: right;
+      cursor: pointer;
+  }
+/* reviewerBlog css */
+.blog__subject--selector{
+    width: 100%;
+    background: none;
+    padding: 8px;
+}
+
+.tox-tinymce{
+    min-height: 50vh !important;
+}
+
+.student__viewblog--toolbar {
+    background-color: rgb(235, 235, 235) !important;
+    padding: 10px 20px !important;
+}
+
+.entire__blog-page {
+  padding: 20px;
+  margin-top: 75px;
+}
+
+.blog_tab {
+  display: flex;
+  flex-grow: 1;
+  width: '100%';
+  padding: 20px;
+}
+
+.student__blog--media {
+  height: 0;
+  padding-top: 56.25%;
+  background: #9a9a9a;
+  background-position: center;
+  background-size: 100% 100%;
+  position: relative
+}
+
+.Read_Blog_Button {
+    cursor: pointer;
+    position: absolute;
+    top: 45%;
+    left: 30%;
+    padding: 8px 24px;
+    color: #fff;
+    border: 2px solid #fff;
+    text-align: center;
+    opacity: 0;
+    transition: 'opacity 0.35s ease'
+  }
+
+ .student__blog--overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.5s ease;
+ } 
+.onblog {
+  height: 390px;
+  width: 100%;
+}
+ .onblog:hover .student__blog--overlay {
+  display: block;
+  background: rgba(0, 0, 0, .3);
+}
+
+.onblog:hover .Read_Blog_Button {
+  opacity: 1;
+  border: solid 2px white;
+}
+
+.gselect__container {
+  margin: 0 auto;
+  display: block; 
+  width: 50%;
+}
+
+.entire__blog--thumbnail{
+  width: 100%;
+  height: 50vh;
+  background-position: center;
+  background-size: cover;
+}
+
+.thumbnail__image {
+  width: 130px;
+  height: 100px;
+  margin-top: 22px;
+}
+
+.thumbnail__close--icon {
+  position: absolute;
+  left: 150px;
+  top:30px;
+  color: #e74c3c;
+}
+
+.thumbnail__close--icon:hover{
+  cursor: pointer;
+}
+
+.tox-statusbar__wordcount{
+  font-size: 14px !important;
+  font-weight: bold !important;
+}
+.reviewer_submit{
+  float: right;
+    width: 200px;
+    margin-bottom: 20px !important;
+}
+.title_card-header {
+  padding: 10px;
+}
+ .title_card-header span{
+  font-size: 18px;
+    width: 270px;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+ }
+ .root_pagnation-tabs2 {
+  background-color: rgb(235, 235, 235) !important; 
+  flex-grow: 1;
+  padding: 0px 20px
+ }
+ .root_pagnation-tabs label{
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 0.7px;
+  display: block;
+  margin-bottom: 2px;
+  color: black;
+ }
+ .omselect_genre{
+   margin-top: 16px;
+ }
+ .preview-image{
+  margin-top:5rem;
+  margin-bottom:1rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  width:100% !important;
+ }
+
+.genre-header {
+  padding: 10px;
+}
+.blog--form-switch{
+  margin-left: 1%;
+}
+.dashbord__topbar{
+  display: flex;
+  padding-top: 12;
+  font-family: Arial ;
+  font-size: 1.15rem;
+  font-weight: bold;
+}
+@media screen and (max-width: 768px) {
+  .student__blog--author {
+    margin: 10px;
+    display: contents;
+  }
+  .blog--form-label--draft{
+    font-size: 16px;
+      font-weight: bold;
+      letter-spacing: 0.7px;
+      display: block;
+      margin-bottom: 5px;
+      margin-left: 27px;
+  }
+  .blog--form-switch{
+    margin-left:15%
+  }
+ 
+}
+
+
+
+
+
+
+ 
+

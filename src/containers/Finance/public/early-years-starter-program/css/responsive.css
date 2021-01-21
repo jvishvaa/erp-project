@@ -1,0 +1,253 @@
+/*// Extra small devices (portrait phones, less than 576px)*/
+/*// No media query since this is the default in Bootstrap*/
+
+/*// Small devices (landscape phones, 576px and up)*/
+*/ @media (min-width: 576px) {}
+
+/*// Medium devices (tablets, 768px and up)*/
+@media (min-width: 768px) {}
+
+/*// Large devices (desktops, 992px and up)*/
+@media (min-width: 992px) {
+    ...
+}
+
+/*// Extra large devices (large desktops, 1200px and up)*/
+@media (min-width: 1200px) {
+    ...
+}
+
+/*// portrait*/
+
+/*// Extra small devices (portrait phones, less than 576px)*/
+@media (max-width: 575.98px) {
+    .question__Icon img {
+    	float: none;
+    }
+
+    .topbox1,
+    .topbox2,
+    .topbox3 {
+        padding-top: 12px;
+        height: 100px;
+        color: white;
+    }
+
+    .nav-regi {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .vl {
+        display: none;
+    }
+
+    .margin__bottom {
+        margin-bottom: 5%;
+    }
+
+    .home-banner {
+        background-size: 100% 100%;
+        /*height: 50vh;*/
+        height: 400px;
+    }
+
+    .aol-logo img {
+        width: 100%;
+        display: block;
+        margin: 0 auto;
+    }
+
+    .register-now {
+        margin-top: 20% !important;
+    }
+
+    .question__Icon {
+        text-align: center;
+        float: none;
+    }
+
+    .register-now {
+        padding: 0px 15px;
+    }
+
+    /*home page css*/
+    .esp-text h2 {
+        font-size: 12px;
+    }
+
+    .productively_free-online h3 {
+        font-size: 14px;
+    }
+
+    /*home page css*/
+    /*.faq ul {
+    	display: flex;
+    }*/
+    .faq-div1 ul>li {
+        height: 150px;
+    }
+
+    .faq-div1 ul>li {
+        height: 150px;
+    }
+
+    .faq-div2 ul>li {
+        height: 150px;
+    }
+
+    .faq-div1,
+    .faq-div2 {
+        font-size: 12px;
+        text-align: -webkit-center;
+        margin-bottom: 2%;
+    }
+
+    /*steper css*/
+    .steps li {
+        width: 88%;
+        margin: 1%;
+        border-right: 0px solid white;
+    }
+
+    /*steper css*/
+    .faq ul li {
+        margin: 1%;
+        padding: 6%;
+        text-align: center;
+        width: 110px;
+    }
+
+    .faq ul {
+        display: flex;
+    }
+
+    .testimonailHead .testi-img {
+        width: inherit;
+    }
+}
+
+/*// Small devices (landscape phones, less than 768px)*/
+@media (max-width: 767.98px) {
+
+    /*home page css*/
+    .esp-text h2 {
+        font-size: 14px;
+    }
+
+    .productively_free-online {
+        width: auto;
+    }
+
+    .productively_free-online h3 {
+        font-size: 18px;
+    }
+
+    /*home page css*/
+
+    .faq-div1,
+    .faq-div2 {
+        margin-bottom: 2%;
+    }
+}
+
+/*// Medium devices (tablets, less than 992px)*/
+@media (max-width: 991.98px) {
+    .faq {
+        margin-top: 5%;
+    }
+
+    .faq ul {
+        display: flex;
+    }
+
+    .faq ul li {
+        width: 15rem;
+        margin: 1%;
+        padding: 8%;
+        text-align: center;
+    }
+
+}
+
+/*// Large devices (desktops, less than 1200px)*/
+@media (max-width: 1199.98px) {}
+
+/*// Extra large devices (large desktops)
+// No media query since the extra-large breakpoint has no upper bound on its width
+/*page rseponsive css -2*/
+@media only screen and (max-width : 1024px) {
+    .topBoxHead {
+        font-size: 30px;
+    }
+
+    .mainPageBox {
+        height: auto;
+        background-color: rgb(247, 247, 247);
+    }
+
+    .topbox2 {
+        box-shadow: -3px -3px 7px #fffffffb,
+            3px 3px 5px #5866666b;
+        ;
+    }
+
+}
+
+
+@media only screen and (min-width : 1025px) {
+
+
+    .arrow-left {
+        position: absolute;
+        top: calc(50% - 60px);
+        left: 110%;
+        width: 0;
+        height: 0;
+        border-top: 60px solid transparent;
+        border-bottom: 60px solid transparent;
+    }
+
+    .yellow-left {
+        border-left: 40px solid #dd9c14;
+    }
+
+
+    .blue-left {
+        border-left: 40px solid #85c7cf;
+    }
+
+    .arrow-right {
+        width: 0;
+        height: 0;
+        border-top: 50px solid transparent;
+        border-bottom: 50px solid transparent;
+        border-left: 40px solid white;
+        z-index: -10;
+    }
+}
+
+/*page css 6*/
+
+@media screen and (max-width: 768px) {
+    .testimonialQuotesTopRow {
+        display: grid;
+        width: 90%;
+        margin: 0 auto;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 5px;
+    }
+
+    .quoteImg {
+        display: none;
+    }
+
+    .testimonialQuotesBottomRow {
+        display: grid;
+        width: 100%;
+        width: 90%;
+        margin: 0 auto;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 5px;
+    }
+}

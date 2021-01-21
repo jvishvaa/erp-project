@@ -1,0 +1,46 @@
+.certificate__logo h3 {
+    text-transform: uppercase;
+    text-align: center;
+    background-color: #015471;
+    padding: 4px;
+    color: #fff;
+    width: fit-content;
+    display: block;
+    font-size: 10px;
+    margin: 0 auto;
+    margin-top: 3%;
+}
+.certificate__logo p {
+    color: #015471;
+    text-align: center;
+    font-size: 7px;
+    margin: 3%;
+}
+.input__editable--section1 {
+    margin-top: 0%;
+    text-align: center;
+}
+.input__editable--section2 .col {
+    background-color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    padding: 5px 0;
+    font-size: 0px;
+}
+.input__editable--section2 .col p {
+    display: initial;
+    color: #015471;
+    font-size: 4px;
+}
+.input__editable--section3 .col_sign {
+    margin-top: 0%;
+}
+.input__editable--section3 .col_date {
+    text-align: center;
+    margin-top: -16%;
+}
+.input__editable--section3 .col {
+    background-color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    padding: 7px 0;
+    font-size: 9px;
+}

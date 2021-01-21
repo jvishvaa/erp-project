@@ -1,0 +1,27 @@
+  @media screen and (max-width:70pc)
+  {
+    pageheadder{
+         width: 1pc
+     }
+     selectbr{
+         margin-left: 50pc
+     }
+     mdw{
+         margin-left: 10pc
+     }
+
+  }
+  @media screen and (min-width:250px)
+ {
+    pageheadder{
+         margin-Top:50pc
+     }
+    selectbr{
+        margin-left: 100%
+    }
+    mdv{
+        margin-left: 10px
+        
+    }
+
+ }

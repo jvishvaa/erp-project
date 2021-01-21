@@ -1,0 +1,9 @@
+.hoverEffect:hover{
+    background-color: rgba(131,49,86, 0.15);
+    /* color: ; */
+    /* font-weight: bolder; */
+    -ms-transform: scaleY(1.2); /* IE 9 */
+    -webkit-transform: scaleY(1.2); /* Safari 3-8 */
+    transform: scaleY(1.2);
+    /* transform: scaleX(1.1); */
+}

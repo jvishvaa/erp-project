@@ -1,0 +1,39 @@
+.question_paper_summary_container {
+    max-width: 350px;
+    counter-reset: my-awesome-counter;
+    list-style: none;
+    padding-left: 40px;
+  }
+  .question_paper_summary_container .question_paper_summary_list {
+    margin: 0 0 1.5rem 0;
+    counter-increment: my-awesome-counter;
+    position: relative;
+  }
+  .question_paper_summary_container .question_paper_summary_list::before {
+    content: counter(my-awesome-counter);
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: bold;
+    position: absolute;
+    --size: 25px;
+    left: calc(-1 * var(--size) - 10px);
+    line-height: var(--size);
+    width: var(--size);
+    height: var(--size);
+    top: 0;
+    /* transform: rotate(-10deg); */
+    background:#5d1049;
+    border-radius: 50%;
+    text-align: center;
+    box-shadow: 1px 1px 0 #999;
+    /* padding: 50; */
+  }
+  
+  body {
+    /* background: #191919; */
+    /* color: #eee; */
+    /* font-family: Lato, sans-serif; */
+    line-height: 1.4;
+    font-size: 100%;
+    margin: 2rem;
+  }
