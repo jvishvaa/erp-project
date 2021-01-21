@@ -46,6 +46,27 @@ const CreateGeneralDairy = () => {
           spacing={isMobile ? 3 : 5}
           style={{ width: widerWidth, margin: wider }}
         >
+        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+            <Autocomplete
+              style={{ width: '100%' }}
+              size='small'
+              //   onChange={handleBranch}
+              id='academic-year'
+              className='dropdownIcon'
+              //   value={filterData?.branch}
+              //   options={branchDropdown}
+              //   getOptionLabel={(option) => option?.branch_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Academic Year'
+                  placeholder='Academic Year'
+                />
+              )}
+            />
+          </Grid>
           <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
             <Autocomplete
               style={{ width: '100%' }}
