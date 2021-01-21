@@ -114,6 +114,19 @@ export default {
     overviewSynopsis: `${baseURLCentral}/lesson_plan/list-lesson-overview/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },  
+  discussionForum:{
+    categoryList: '/academic/categories/',
+    branch: '/erp_user/branch/',
+    grade:'/erp_user/grademapping/',
+    filterCategory: '/academic/posts/',
+    postLike: '/academic/posts-like-users/',
+    PostCategory : '/academic/create-category/',
+    CreateDissusionForum: '/academic/add-post/',
+    CreateCommentAndReplay: '/academic/create-answer-replay/',
+    AwardListAPI: '/academic/',
+    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    deletePost: '/academic/'
+   },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
 };
