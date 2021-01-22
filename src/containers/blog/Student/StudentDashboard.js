@@ -73,12 +73,12 @@ class StudentDashboard extends Component {
     this.state = {
       tabValue: 0,
       pageNo: 0,
-      pageSize: 6,
+      pageSize: 60,
     };
   }
 
   componentDidMount() {
-    this.getBlog(2);
+    this.getBlog(8);
   }
 
   getDaysAfter = (date, amount) => {
@@ -105,7 +105,7 @@ class StudentDashboard extends Component {
 
   handleTabChange = (event, newValue) => {
     this.setState({ tabValue: newValue });
-    const blogTab = newValue === 0 ? 2 : newValue === 2 ? 8 : 2;
+    const blogTab = newValue === 0 ? 8 : newValue === 2 ? 2 : newValue === 3 ? 1 : 3;
     this.getBlog(blogTab);
   };
 

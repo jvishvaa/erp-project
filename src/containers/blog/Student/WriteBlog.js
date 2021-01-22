@@ -269,7 +269,7 @@ class WriteBlog extends Component {
               <CommonBreadcrumbs componentName='Blog' />
               <div className='create_group_filter_container'>
                 <Grid container style={{ margin: 20 }}>
-                  <Grid item xs={12} sm={4}>
+                  {/* <Grid item xs={12} sm={4}>
                     <Autocomplete
                       size='small'
                       id='combo-box-demo'
@@ -280,7 +280,7 @@ class WriteBlog extends Component {
                         <TextField {...params} label='Combo box' variant='outlined' />
                       )}
                     />
-                  </Grid>
+                  </Grid> */}
                   <Grid item xs={12} sm={4}>
                     <Autocomplete
                       size='small'

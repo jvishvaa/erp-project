@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-wrap-multilines */
-import React, { useState } from 'react';
+import React, { useState ,useContext} from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import { Grid, Card, Button, Typography, Divider } from '@material-ui/core';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -14,6 +14,12 @@ import List from '@material-ui/core/List';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
 // import Card from '@material-ui/core/Card';
+import DeleteIcon from '@material-ui/icons/Delete';
+import endpoints from '../../../config/endpoints';
+
+import axiosInstance from '../../../config/axios';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+
 import Box from '@material-ui/core/Box';
 import moment from 'moment';
 
@@ -49,16 +55,41 @@ function GridList(props) {
   const [showMenu, setShowMenu] = useState(false);
   const [showPeriodIndex, setShowPeriodIndex] = useState();
   const [selectedIndex, setSelectedIndex] = useState();
-
+  const { setAlert } = useContext(AlertNotificationContext);
+  const [loading, setLoading] = useState(false)
+  
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
     setShowPeriodIndex(index);
   };
+  console.log(data.id,"@@@@")
 
   const handlePeriodMenuClose = (index) => {
     setShowMenu(false);
     setShowPeriodIndex();
   };
+  const handleDeleteBlog = (blogId) => {
+    let requestData = {
+      "blog_id": 3 ,
+      "status": "1"
+  
+    }
+axiosInstance.post(`${endpoints.blog.Blog}`, requestData)
+
+.then(result=>{
+if (result.data.status_code === 200) {
+  setLoading(false);
+  setAlert('success', result.data.message);
+} else {        
+  setLoading(false);
+  setAlert('error', result.data.message);
+}
+}).catch((error)=>{
+  setLoading(false);        
+  setAlert('error', error.message);
+})
+};
+
 
   return (
     <div className={classes.root}>
@@ -93,8 +124,19 @@ function GridList(props) {
                         </IconButton>
                         {showPeriodIndex === (data[0] && data[0].id) && showMenu ? (
                           <div className='tooltipContainer'>
-                            <span className='tooltiptext'>Download All</span>
-                            <span className='tooltiptext'>Download All</span>
+                            {/* <span className='tooltiptext'>Delete</span> */}
+                            <Button
+                              // variant='outlined'
+                              size='small'
+                              style={{ width: '70px' }}
+                              className={classes.button}
+                              color='secondary'
+                              startIcon={<DeleteIcon />}
+                              onClick={handleDeleteBlog}
+                            >
+                    {/* Delete */}
+                  </Button>
+                            {/* <span className='tooltiptext'>Download All</span> */}
                           </div>
                         ) : null}
                       </span>
