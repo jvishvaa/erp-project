@@ -1,5 +1,0 @@
-export * from './NormalFeeType'
-// export * from './MiscFeeType'
-// export * from './OtherFeeType'
-// export * from './RegistrationFeeType'
-// export * from './CurrFeeType'

@@ -55,6 +55,10 @@ const menuIcon = (name) => {
       icon = <HomeWorkIcon />;
       break;
     }
+    case 'Normal Fee Type': {
+      icon= AddCircleIcon;
+      break;
+    }
     default:
       break;
   }
