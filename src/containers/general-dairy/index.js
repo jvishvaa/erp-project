@@ -176,7 +176,7 @@ const GeneralDairyList = () => {
                             style={{ marginTop: 25 }}
                             count={Math.ceil(totalCount / limit)}
                             color='primary'
-                            page={page}
+                            // page={page}
                         />
                     </div>
                 </Paper>
