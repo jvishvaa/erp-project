@@ -33,6 +33,7 @@ import UserSwitcher from './userSwitcher'
 import { urls } from '../../../urls'
 import AddGuestChild from '../../aol/addGuestStudent'
 import StudentCount from '../../aol/studentCount'
+import { containerSizesSelector } from '@material-ui/data-grid'
 
 const styles = theme => ({
   paper: {
@@ -63,9 +64,10 @@ class Topbar extends React.Component {
 
     }
     this.handleCloseSnackbar = this.handleCloseSnackbar.bind(this)
-    this.userProfile = JSON.parse(localStorage.getItem('user_profile')).personal_info
+    this.userProfile = JSON.parse(localStorage.getItem('userDetails'))
     this.role = this.userProfile.role
     this.token = this.userProfile.token
+    console.log('token', this.token)
   }
   componentDidMount () {
     messages.subscribe(data => this.setState({ openSnackbar: true, snackbarData: data['firebase-messaging-msg-data'].notification.body }))

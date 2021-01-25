@@ -32,6 +32,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Send Message', Path: '/communication/sendmessage' },
     { name: 'Add SMS Credit', Path: '/communication/smscredit' },
     { name: 'SMS&Email Log', Path: '/communication/messageLog' },
+    {name: 'Normal Fee Type', Path: '/feeType/normalFeeType' }
   ];
   // const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {

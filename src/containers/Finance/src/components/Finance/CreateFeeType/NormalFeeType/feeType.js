@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Button, Fab, Grid } from '@material-ui/core/'
-
+import Layout from '../../../../../../Layout';
 import Select from 'react-select'
 import ReactTable from 'react-table'
 // import 'react-table/react-table.css'
@@ -309,6 +309,7 @@ class FeeType extends Component {
       )
     }
     return (
+      <Layout>
       <React.Fragment>
         <Grid container spacing={3} style={{ padding: 15 }}>
           {this.state.sessionData
@@ -378,6 +379,7 @@ class FeeType extends Component {
           {deleteModal}
         </Grid>
       </React.Fragment>
+      </Layout>
     )
   }
 }
