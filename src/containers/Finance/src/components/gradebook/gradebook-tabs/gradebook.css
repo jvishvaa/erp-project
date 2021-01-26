@@ -1,9 +1,0 @@
-.gradebook_remarks{
-    height: 100px !important;
-    overflow: visible !important;
-}
-
-
-.gradebook__cont > .pagination-bottom > .-pagination > .-center > .-pageSizeOptions{
-    display: none;
-}

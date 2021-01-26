@@ -37,7 +37,7 @@ import { filter } from './filter.reducer'
 import { view } from './view.reducer'
 import { filterIndex } from './filterIndex.reducer'
 import finance from '../components/Finance/store/reducer'
-import inventory from '../components/Inventory/store/reducer/inventory.reducer'
+// import inventory from '../components/Inventory/store/reducer/inventory.reducer'
 import { studentAssessment } from './studentAssessment.reducer'
 import { classgrouptypes } from './classGroupType.reducer'
 
@@ -79,7 +79,7 @@ const appReducer = combineReducers({
   listTests,
   onlineTest,
   finance,
-  inventory,
+  // inventory,
   studentAssessment,
   classgrouptypes
 })

@@ -1,5 +1,0 @@
-// class Navigator {
-//   constructor () {
-
-//   }
-// }

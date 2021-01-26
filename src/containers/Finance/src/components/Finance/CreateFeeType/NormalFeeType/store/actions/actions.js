@@ -28,7 +28,7 @@ export const fetchListNormalFee = (payload) => {
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
-        payload.alert.warning('Unable to load data')
+        // payload.alert.warning('Unable to load data')
       })
   }
 }
@@ -51,9 +51,9 @@ export const editNormalFeeList = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        payload.alert.success('Updated Successfully')
+        // payload.alert.success('Updated Successfully')
       }).catch(error => {
-        payload.alert.error('Something Went Wrong')
+        // payload.alert.error('Something Went Wrong')
         dispatch(actionTypes.dataLoaded())
         console.log(error)
       })
@@ -76,9 +76,9 @@ export const addNormalFeeList = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        payload.alert.success('Added Successfully')
+        // payload.alert.success('Added Successfully')
       }).catch(error => {
-        payload.alert.error('Something Went Wrong')
+        // payload.alert.error('Something Went Wrong')
         dispatch(actionTypes.dataLoaded())
         console.log(error)
       })
@@ -104,10 +104,10 @@ export const deleteNormalFeeList = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        payload.alert.success('Deleted Successfully')
+        // payload.alert.success('Deleted Successfully')
         // }
       }).catch(error => {
-        payload.alert.error('Something went wrong')
+        // payload.alert.error('Something went wrong')
         dispatch(actionTypes.dataLoaded())
         console.log(error)
       })

@@ -1,6 +1,0 @@
-export { default as CreateTest } from './createTest'
-export { default as ViewTests } from './viewTestHome'
-export { default as HandleTest } from './handleTest'
-export { default as StudentTests } from './studentTests'
-export { default as StudentPracticeTests } from './studentPracticeTest'
-export { default as ViewTestDetails } from './viewTestDetails'

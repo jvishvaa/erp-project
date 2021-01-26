@@ -11,7 +11,7 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon
 } from '@material-ui/icons'
-import '../../../css/staff.css'
+// import '../../../css/staff.css'
 import classes from './deleteModal.module.css'
 import { apiActions } from '../../../../_actions'
 import * as actionTypes from '../../store/actions'
@@ -114,6 +114,7 @@ class FeeType extends Component {
 
   renderTable = () => {
     let dataToShow = []
+    console.log("render table: ", this.props.normalFeeList)
     dataToShow = this.props.normalFeeList.map((val, i) => {
       return {
         Sr: i + 1,
@@ -385,11 +386,11 @@ class FeeType extends Component {
 }
 
 const mapStateToProps = state => ({
-  // user: state.authentication.user,
-  // session: state.academicSession.items,
-  // branches: state.finance.common.branchPerSession,
-  // normalFeeList: state.finance.normalFee.normalFeeList,
-  // dataLoading: state.finance.common.dataLoader
+  user: state.authentication.user,
+  session: state.academicSession.items,
+  branches: state.finance.common.branchPerSession,
+  normalFeeList: state.finance.normalFee.normalFeeList,
+  dataLoading: state.finance.common.dataLoader
 })
 
 const mapDispatchToProps = dispatch => ({
