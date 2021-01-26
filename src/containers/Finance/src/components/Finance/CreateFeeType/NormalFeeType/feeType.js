@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Button, Fab, Grid } from '@material-ui/core/'
+import { Button, Fab, Grid, Table, TableRow, TableCell, TableBody, TableHead
+} from '@material-ui/core/'
 import Layout from '../../../../../../Layout';
 import Select from 'react-select'
 import ReactTable from 'react-table'
@@ -112,45 +113,45 @@ class FeeType extends Component {
     this.deleteModalCloseHandler()
   }
 
-  renderTable = () => {
-    let dataToShow = []
-    console.log("render table: ", this.props.normalFeeList)
-    dataToShow = this.props.normalFeeList.map((val, i) => {
-      return {
-        Sr: i + 1,
-        id: val.id ? val.id : '',
-        fee_type_name: val.fee_type_name ? val.fee_type_name : '',
-        priority: Number.isInteger(val.priority) ? val.priority : '',
-        is_concession_applicable: val.is_concession_applicable ? 'Yes' : 'No',
-        is_service_based: val.is_service_based ? 'Yes' : 'No',
-        is_pro_rata: val.is_pro_rata ? 'Yes' : 'No',
-        is_allow_partial_amount: val.is_allow_partial_amount ? 'Yes' : 'No',
-        is_activity_based_fee: val.is_activity_based_fee ? 'Yes' : 'No',
-        is_refundable_fee: val.is_refundable_fee ? 'Yes' : 'No',
-        show_transaction_in_parent_login: val.show_transaction_in_parent_login ? 'Yes' : 'No',
-        Edit: (
-          <Fab
-            color='primary'
-            size='small'
-            onClick={() => this.showModalHandler(val.id)}
-          >
-            <EditIcon />
-          </Fab>
-        ),
-        Delete: (
-          <Fab
-            color='primary'
-            size='small'
-            onClick={() => this.deleteModalShowHandler(val.id)}
-            // startIcon={}
-          >
-            <DeleteIcon />
-          </Fab>
-        )
-      }
-    })
-    return dataToShow
-  }
+  // renderTable = () => {
+  //   let dataToShow = []
+  //   console.log("render table: ", this.props.normalFeeList)
+  //   dataToShow = this.props.normalFeeList.map((val, i) => {
+  //     return {
+  //       Sr: i + 1,
+  //       id: val.id ? val.id : '',
+  //       fee_type_name: val.fee_type_name ? val.fee_type_name : '',
+  //       priority: Number.isInteger(val.priority) ? val.priority : '',
+  //       is_concession_applicable: val.is_concession_applicable ? 'Yes' : 'No',
+  //       is_service_based: val.is_service_based ? 'Yes' : 'No',
+  //       is_pro_rata: val.is_pro_rata ? 'Yes' : 'No',
+  //       is_allow_partial_amount: val.is_allow_partial_amount ? 'Yes' : 'No',
+  //       is_activity_based_fee: val.is_activity_based_fee ? 'Yes' : 'No',
+  //       is_refundable_fee: val.is_refundable_fee ? 'Yes' : 'No',
+  //       show_transaction_in_parent_login: val.show_transaction_in_parent_login ? 'Yes' : 'No',
+  //       Edit: (
+  //         <Fab
+  //           color='primary'
+  //           size='small'
+  //           onClick={() => this.showModalHandler(val.id)}
+  //         >
+  //           <EditIcon />
+  //         </Fab>
+  //       ),
+  //       Delete: (
+  //         <Fab
+  //           color='primary'
+  //           size='small'
+  //           onClick={() => this.deleteModalShowHandler(val.id)}
+  //           // startIcon={}
+  //         >
+  //           <DeleteIcon />
+  //         </Fab>
+  //       )
+  //     }
+  //   })
+  //   return dataToShow
+  // }
 
   componentDidMount () {
     if (feeTypeState) {
@@ -159,116 +160,116 @@ class FeeType extends Component {
   }
 
   render () {
-    let viewFeeTable = null
-    if (this.props.normalFeeList && this.props.normalFeeList.length > 0) {
-      viewFeeTable = (<ReactTable
-        // pages={Math.ceil(this.props.viewBanksList.count / 20)}
-        data={this.renderTable()}
-        manual
-        columns={[
-          {
-            Header: 'Sr',
-            accessor: 'Sr',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Fee Type Name',
-            accessor: 'fee_type_name',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Priority',
-            accessor: 'priority',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Concession Applicable',
-            accessor: 'is_concession_applicable',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Service Based',
-            accessor: 'is_service_based',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Pro Rata',
-            accessor: 'is_pro_rata',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Partial Amount',
-            accessor: 'is_allow_partial_amount',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Activity Based Fee',
-            accessor: 'is_activity_based_fee',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Refundable Fee',
-            accessor: 'is_refundable_fee',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Transaction In Parent Login',
-            accessor: 'show_transaction_in_parent_login',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Edit',
-            accessor: 'Edit',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true,
-            style: {
-              paddingTop: '5px'
-            }
-          },
-          {
-            Header: 'Delete',
-            accessor: 'Delete',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true,
-            style: {
-              paddingTop: '5px',
-              paddingLeft: '29px'
-            }
-          }
-        ]}
-        filterable
-        sortable
-        defaultPageSize={10}
-        showPageSizeOptions={false}
-        className='-striped -highlight'
-        // Controlled props
-        // page={this.state.page}
-        // Callbacks
-        // onPageChange={page => this.pageChangeHandler(page)}
-      />)
-    }
+    // let viewFeeTable = null
+    // if (this.props.normalFeeList && this.props.normalFeeList.length > 0) {
+    //   viewFeeTable = (<ReactTable
+    //     // pages={Math.ceil(this.props.viewBanksList.count / 20)}
+    //     data={this.renderTable()}
+    //     manual
+    //     columns={[
+    //       {
+    //         Header: 'Sr',
+    //         accessor: 'Sr',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Fee Type Name',
+    //         accessor: 'fee_type_name',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Priority',
+    //         accessor: 'priority',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Concession Applicable',
+    //         accessor: 'is_concession_applicable',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Service Based',
+    //         accessor: 'is_service_based',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Pro Rata',
+    //         accessor: 'is_pro_rata',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Partial Amount',
+    //         accessor: 'is_allow_partial_amount',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Activity Based Fee',
+    //         accessor: 'is_activity_based_fee',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Refundable Fee',
+    //         accessor: 'is_refundable_fee',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Transaction In Parent Login',
+    //         accessor: 'show_transaction_in_parent_login',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Edit',
+    //         accessor: 'Edit',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true,
+    //         style: {
+    //           paddingTop: '5px'
+    //         }
+    //       },
+    //       {
+    //         Header: 'Delete',
+    //         accessor: 'Delete',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true,
+    //         style: {
+    //           paddingTop: '5px',
+    //           paddingLeft: '29px'
+    //         }
+    //       }
+    //     ]}
+    //     filterable
+    //     sortable
+    //     defaultPageSize={10}
+    //     showPageSizeOptions={false}
+    //     className='-striped -highlight'
+    //     // Controlled props
+    //     // page={this.state.page}
+    //     // Callbacks
+    //     // onPageChange={page => this.pageChangeHandler(page)}
+    //   />)
+    // }
     let modal = null
     if (this.state.showModal) {
       modal = (
@@ -373,6 +374,63 @@ class FeeType extends Component {
             {/* {this.state.showTable && this.props.normalFeeList && this.props.normalFeeList.length
               ? viewFeeTable
               : null} */}
+              {/* {'Aman' + this.props.normalFeeList } */}
+              {this.state.showTable ? 
+              <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell> Sr</TableCell>
+                      <TableCell> Fee Type Name</TableCell>
+                      <TableCell> Priority</TableCell>
+                      <TableCell> Concession Applicable</TableCell>
+                      <TableCell> Service Based</TableCell>
+                      <TableCell> Pro Rata</TableCell>
+                      <TableCell> Partial Amount</TableCell>
+                      <TableCell> Activity Based Fee</TableCell>
+                      <TableCell> Refundable Fee</TableCell>
+                      <TableCell>Transaction In Parent Login </TableCell>
+                      <TableCell>Edit</TableCell>
+                      <TableCell>Delete</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                  {this.props.normalFeeList && this.props.normalFeeList.map((val, i) => { 
+                    return (
+                  <TableRow>
+                     <TableCell> { i + 1 }</TableCell>
+                      {/* <TableCell>{ val.id} </TableCell> */}
+                      <TableCell>{val.fee_type_name ? val.fee_type_name : ''}</TableCell>
+                      <TableCell>{Number.isInteger(val.priority) ? val.priority : ''} </TableCell>
+                      <TableCell>{val.is_concession_applicable ? 'Yes' : 'No'} </TableCell>
+                      <TableCell> { val.is_service_based ? 'Yes' : 'No'} </TableCell>
+                      <TableCell> {val.is_pro_rata ? 'Yes' : 'No'} </TableCell>
+                      <TableCell>{val.is_allow_partial_amount ? 'Yes' : 'No'}</TableCell>
+                      <TableCell> {val.is_activity_based_fee ? 'Yes' : 'No'}</TableCell>
+                      <TableCell> {val.is_refundable_fee ? 'Yes' : 'No'}</TableCell>
+                      <TableCell> {val.show_transaction_in_parent_login ? 'Yes' : 'No' }</TableCell>
+                      <TableCell> <Fab
+            color='primary'
+            size='small'
+            onClick={() => this.showModalHandler(val.id)}
+          >
+            <EditIcon />
+          </Fab></TableCell>
+                      <TableCell>
+                      <Fab
+            color='primary'
+            size='small'
+            onClick={() => this.deleteModalShowHandler(val.id)}
+            // startIcon={}
+          >
+            <DeleteIcon />
+          </Fab>
+                      </TableCell>
+                  </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+              : []}
           </Grid>
           {this.props.dataLoading ? <CircularProgress open /> : null}
           {modal}

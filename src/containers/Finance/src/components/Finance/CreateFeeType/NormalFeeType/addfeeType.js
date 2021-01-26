@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-// import Select from 'react-select'
+import Select from 'react-select'
 import { Checkbox, FormControlLabel, Button, Grid, Divider } from '@material-ui/core/'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -85,7 +85,7 @@ class AddFeeType extends Component {
         <Grid container spacing={3} style={{ padding: 10, flexGrow: 1 }}>
           <Grid item xs={12}>
             <label>Branch*</label>
-            {/* <Select
+            <Select
               placeholder='Select Branch'
               value={this.state.branchData ? this.state.branchData : null}
               isMulti
@@ -99,7 +99,7 @@ class AddFeeType extends Component {
               }
 
               onChange={this.changehandlerbranch}
-            /> */}
+            />
           </Grid>
           <Grid item xs={6}>
             <label>Fee Type Name</label>
