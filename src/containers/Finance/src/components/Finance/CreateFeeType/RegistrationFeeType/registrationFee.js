@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 // import { Divider } from 'semantic-ui-react'
-import { Button, Fab, Grid } from '@material-ui/core/'
+import { Button, Fab, Grid, Table, TableRow, TableCell, TableBody, TableHead } from '@material-ui/core/'
 import {
   Add as AddIcon,
   Edit as EditIcon,
@@ -388,6 +388,50 @@ class RegistrationFee extends Component {
           {this.state.showTable && this.props.feeTypes.length
             ? <Grid item xs='12'>
               {/* {viewFeeTable} */}
+              {/* {this.state.showTable ?  */}
+              <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell> Sr</TableCell>
+                      <TableCell> Fee Type Name</TableCell>
+                      <TableCell> Fee Account</TableCell>
+                      <TableCell> Amount</TableCell>
+                      <TableCell>Edit</TableCell>
+                      <TableCell>Delete</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                  {this.props.feeTypes && this.props.feeTypes.map((val, i) => { 
+                    return (
+                  <TableRow>
+                     <TableCell> { i + 1 }</TableCell>
+                      {/* <TableCell>{ val.id} </TableCell> */}
+                      <TableCell>{val.fee_type_name ? val.fee_type_name : ''}</TableCell>
+                      <TableCell>{val.fee_account && val.fee_account.fee_account_name ? val.fee_account.fee_account_name : '-Assign Fee Account-'} </TableCell>
+                      <TableCell>{val.amount } </TableCell>
+                      <TableCell><div style={{ cursor: 'pointer' }}>
+              <Fab
+                color='primary'
+                size='small'
+                onClick={() => this.showModalHandler(val.id)}
+              >
+                <EditIcon />
+              </Fab>
+            </div></TableCell>
+                      <TableCell>
+                      <Fab
+              color='primary'
+              size='small'
+              onClick={() => this.deleteModalShowHandler(val.id)}
+            >
+              <DeleteIcon />
+            </Fab>       </TableCell>
+                  </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+              {/* : []} */}
             </Grid> : null}
 
         </Grid>

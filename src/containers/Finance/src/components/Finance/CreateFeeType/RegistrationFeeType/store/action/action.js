@@ -28,7 +28,7 @@ export const fetchListRegistrationFeeType = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        payload.alert.warning('Unale to load data')
+        // payload.alert.warning('Unale to load data')
         console.log(error)
       })
   }
@@ -50,10 +50,10 @@ export const updateRegistrationFeeType = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        payload.alert.success('Updated Successfully')
+        // payload.alert.success('Updated Successfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        payload.alert.warning('Unale to load data')
+        // payload.alert.warning('Unale to load data')
         console.log(error)
       })
   }
@@ -69,7 +69,7 @@ export const addRegistrationFeeType = (payload) => {
         }
       }).then(response => {
         if (response.status === 201) {
-          payload.alert.success('Added Successfully!')
+          // payload.alert.success('Added Successfully!')
           dispatch({
             type: ADD_REGISTRATION_FEE_TYPES,
             payload: {
@@ -80,7 +80,7 @@ export const addRegistrationFeeType = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        payload.alert.warning('Unable to add')
+        // payload.alert.warning('Unable to add')
         console.log(error)
       })
   }
@@ -103,10 +103,10 @@ export const deleteRegistrationFeeType = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        payload.alert.success('Deleted Successfully')
+        // payload.alert.success('Deleted Successfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        payload.alert.warning('Unale to load data')
+        // payload.alert.warning('Unale to load data')
         console.log(error)
       })
   }
@@ -130,7 +130,7 @@ export const fetchRemainingBranchesPerType = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        payload.alert.warning('Unale to load data')
+        // payload.alert.warning('Unale to load data')
         console.log(error)
       })
   }

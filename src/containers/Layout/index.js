@@ -412,7 +412,7 @@ const Layout = ({ children, history }) => {
         history.push('/feeType/CurricularFeeType');
         break;
       }
-      case 'Other Fee Type': {
+      case 'Add Transport Fees': {
         history.push('/feeType/OtherFeeType');
         break;
       }
