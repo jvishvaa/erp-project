@@ -44,6 +44,7 @@ import OtherFeeType from './containers/Finance/src/components/Finance/CreateFeeT
 import RegistrationFee from './containers/Finance/src/components/Finance/CreateFeeType/RegistrationFeeType/registrationFee.js'
 // import ManageFeeType from './containers/Finance/src/components/Finance/CreateFeePlan/manageFeeType.js'
 import CreateFeePlan from './containers/Finance/src/components/Finance/CreateFeePlan/createFeePlan.js'
+import ConcessionSettings from  './containers/Finance/src/components/Finance/ConcessionSettings/concessionSettings.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -190,6 +191,9 @@ function App() {
                 </Route>
                 <Route exact path='/feePlan/ViewFeePlan'>
                   {({ match }) => <CreateFeePlan match={match} />}
+                </Route>
+                <Route exact path='/finance/ConcessionSetting'>
+                  {({ match }) => <ConcessionSettings match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

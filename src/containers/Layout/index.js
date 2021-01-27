@@ -424,6 +424,10 @@ const Layout = ({ children, history }) => {
         history.push('/feePlan/ViewFeePlan');
         break;
       }
+      case 'Concession Settings': {
+        history.push('/finance/ConcessionSetting');
+        break;
+      }
       default:
         break;
     }

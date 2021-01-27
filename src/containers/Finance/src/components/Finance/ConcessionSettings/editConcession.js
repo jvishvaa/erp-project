@@ -7,7 +7,7 @@ import { Button, Grid } from '@material-ui/core/'
 
 import * as actionTypes from '../store/actions'
 // import classes from './concession.module.css'
-import '../../css/staff.css'
+// import '../../css/staff.css'
 
 class EditConcessionSettings extends Component {
   constructor (props) {
@@ -154,7 +154,7 @@ class EditConcessionSettings extends Component {
   }
 
   render () {
-    console.log('---props-----------------', this.props.listConcessionTypes.concession_type)
+    console.log('---props-----------------', this.props.listConcessionTypes && this.props.listConcessionTypes.concession_type)
     return (
       <React.Fragment>
         <Grid container spacing={3} style={{ padding: 15 }}>
@@ -172,7 +172,7 @@ class EditConcessionSettings extends Component {
               placeholder='Select Concession Type'
               name='concessionType'
               options={
-                this.props.listConcessionTypes.concession_type && this.props.listConcessionTypes.concession_type.length
+                this.props.listConcessionTypes && this.props.listConcessionTypes.concession_type && this.props.listConcessionTypes.concession_type.length
                   ? this.props.listConcessionTypes.concession_type.map(concession => ({
                     value: concession.id,
                     label: concession.type_name
