@@ -20,6 +20,7 @@ import AddFeeTypes from './addregistrationFee'
 import * as actionTypes from '../../store/actions'
 import Modal from '../../../../ui/Modal/modal'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
 
 // let feeTypeState = null
 
@@ -301,6 +302,7 @@ class RegistrationFee extends Component {
       )
     }
     return (
+      <Layout>
       <React.Fragment>
         <Grid container spacing={3} style={{ padding: 10 }}>
           {this.state.sessionData && this.state.branchData && this.state.currentFeetype
@@ -394,6 +396,7 @@ class RegistrationFee extends Component {
         {addFeeModal}
         {deleteModal}
       </React.Fragment>
+      </Layout>
     )
   }
 }

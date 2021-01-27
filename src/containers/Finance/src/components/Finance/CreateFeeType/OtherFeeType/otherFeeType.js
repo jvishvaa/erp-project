@@ -11,6 +11,7 @@ import EditOtherFee from './editOtherFee'
 import AddOtherFee from './addOtherFee'
 import Modal from '../../../../ui/Modal/modal'
 import { urls } from '../../../../urls'
+import Layout from '../../../../../../Layout'
 // import '../../../css/staff.css'
 
 const otherFee = {
@@ -353,6 +354,7 @@ class OtherFeeType extends Component {
       )
     }
     return (
+      <Layout>
       <React.Fragment>
         <div style={{ width: '100%', height: 150, backgroundColor: '#720D5D ', padding: 50, color: '#ffffff' }}>
           <Typography variant='h4' style={{ color: '#fff' }}>Fee Type</Typography>
@@ -464,6 +466,7 @@ class OtherFeeType extends Component {
         {modal}
         {addFeeModal}
       </React.Fragment>
+      </Layout>
     )
   }
 }
