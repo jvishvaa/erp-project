@@ -1,18 +1,19 @@
 import React, { Component } from 'react'
 // import { Divider } from 'semantic-ui-react'
 import { Button, Fab, Grid } from '@material-ui/core/'
-
-// import Select from 'react-select'
+import { Table, TableRow, TableCell, TableBody, TableHead
+} from '@material-ui/core/'
+import Select from 'react-select'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 // import { OmsFilterTable } from '../../../../ui'
-// import ReactTable from 'react-table'
+import ReactTable from 'react-table'
 // import 'react-table/react-table.css'
 import {
   Edit as EditIcon,
   Delete as DeleteIcon
 } from '@material-ui/icons'
-import '../../../css/staff.css'
+// import '../../../css/staff.css'
 import classes from './deleteModal.module.css'
 import { apiActions } from '../../../../_actions'
 import * as actionTypes from '../../store/actions'
@@ -20,6 +21,7 @@ import EditMiscFee from './editMiscFee'
 import AddMiscFee from './addMiscFee'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import Modal from '../../../../ui/Modal/modal'
+import Layout from '../../../../../../Layout'
 
 let feeTypeState = null
 
@@ -148,129 +150,129 @@ class MiscFeeType extends Component {
 
   render () {
     let viewFeeTable = null
-    // if (this.props.miscFeeList.length > 0) {
-    //   viewFeeTable = (<ReactTable
-    //     // pages={Math.ceil(this.props.viewBanksList.count / 20)}
-    //     data={this.renderTable()}
-    //     manual
-    //     columns={[
-    //       {
-    //         Header: 'Sr',
-    //         accessor: 'Sr',
-    //         inputFilterable: true,
-    //         exactFilterable: true,
-    //         sortable: true
-    //       },
-    //       {
-    //         Header: 'Fee Type Name',
-    //         accessor: 'fee_type_name',
-    //         inputFilterable: true,
-    //         exactFilterable: true,
-    //         sortable: true
-    //       },
-    //       {
-    //         Header: 'Multiple Records Allow',
-    //         accessor: 'is_multiple_records_allow',
-    //         inputFilterable: true,
-    //         exactFilterable: true,
-    //         sortable: true
-    //       },
-    //       {
-    //         Header: 'Individual Student Wise',
-    //         accessor: 'individual_student_wise',
-    //         inputFilterable: true,
-    //         exactFilterable: true,
-    //         sortable: true
-    //       },
-    //       {
-    //         Header: 'Partial Payments',
-    //         accessor: 'allow_partial_payments',
-    //         inputFilterable: true,
-    //         exactFilterable: true,
-    //         sortable: true
-    //       },
-    //       {
-    //         Header: 'Can Be Group',
-    //         accessor: 'can_be_group',
-    //         inputFilterable: true,
-    //         exactFilterable: true,
-    //         sortable: true
-    //       },
-    //       {
-    //         Header: 'Remarks',
-    //         accessor: 'is_allow_remarks',
-    //         inputFilterable: true,
-    //         exactFilterable: true,
-    //         sortable: true
-    //       },
-    //       {
-    //         Header: 'Excess Amount',
-    //         accessor: 'allow_excess_amount',
-    //         inputFilterable: true,
-    //         exactFilterable: true,
-    //         sortable: true
-    //       },
-    //       {
-    //         Header: 'Last Year Due',
-    //         accessor: 'is_last_year_due',
-    //         inputFilterable: true,
-    //         exactFilterable: true,
-    //         sortable: true
-    //       },
-    //       {
-    //         Header: 'Advance Fee',
-    //         accessor: 'is_advance_fee',
-    //         inputFilterable: true,
-    //         exactFilterable: true,
-    //         sortable: true
-    //       },
-    //       {
-    //         Header: 'Parent Enable',
-    //         accessor: 'is_parent_enable',
-    //         inputFilterable: true,
-    //         exactFilterable: true,
-    //         sortable: true
-    //       },
-    //       {
-    //         Header: 'Due Date',
-    //         accessor: 'set_due_date',
-    //         inputFilterable: true,
-    //         exactFilterable: true,
-    //         sortable: true
-    //       },
-    //       {
-    //         Header: 'Edit',
-    //         accessor: 'Edit',
-    //         inputFilterable: true,
-    //         exactFilterable: true,
-    //         sortable: true,
-    //         style: {
-    //           paddingTop: '10px'
-    //         }
-    //       },
-    //       {
-    //         Header: 'Delete',
-    //         accessor: 'Delete',
-    //         inputFilterable: true,
-    //         exactFilterable: true,
-    //         sortable: true,
-    //         style: {
-    //           paddingTop: '5px',
-    //           paddingLeft: '29px'
-    //         }
-    //       }
-    //     ]}
-    //     filterable
-    //     sortable
-    //     defaultPageSize={10}
-    //     showPageSizeOptions={false}
-    //     className='-striped -highlight'
-    //     // Controlled props
-    //     // page={this.state.page}
-    //     // Callbacks
-    //     // onPageChange={page => this.pageChangeHandler(page)}
-    //   />)
-    // }
+    if (this.props.miscFeeList.length > 0) {
+      viewFeeTable = (<ReactTable
+        // pages={Math.ceil(this.props.viewBanksList.count / 20)}
+        data={this.renderTable()}
+        manual
+        columns={[
+          {
+            Header: 'Sr',
+            accessor: 'Sr',
+            inputFilterable: true,
+            exactFilterable: true,
+            sortable: true
+          },
+          {
+            Header: 'Fee Type Name',
+            accessor: 'fee_type_name',
+            inputFilterable: true,
+            exactFilterable: true,
+            sortable: true
+          },
+          {
+            Header: 'Multiple Records Allow',
+            accessor: 'is_multiple_records_allow',
+            inputFilterable: true,
+            exactFilterable: true,
+            sortable: true
+          },
+          {
+            Header: 'Individual Student Wise',
+            accessor: 'individual_student_wise',
+            inputFilterable: true,
+            exactFilterable: true,
+            sortable: true
+          },
+          {
+            Header: 'Partial Payments',
+            accessor: 'allow_partial_payments',
+            inputFilterable: true,
+            exactFilterable: true,
+            sortable: true
+          },
+          {
+            Header: 'Can Be Group',
+            accessor: 'can_be_group',
+            inputFilterable: true,
+            exactFilterable: true,
+            sortable: true
+          },
+          {
+            Header: 'Remarks',
+            accessor: 'is_allow_remarks',
+            inputFilterable: true,
+            exactFilterable: true,
+            sortable: true
+          },
+          {
+            Header: 'Excess Amount',
+            accessor: 'allow_excess_amount',
+            inputFilterable: true,
+            exactFilterable: true,
+            sortable: true
+          },
+          {
+            Header: 'Last Year Due',
+            accessor: 'is_last_year_due',
+            inputFilterable: true,
+            exactFilterable: true,
+            sortable: true
+          },
+          {
+            Header: 'Advance Fee',
+            accessor: 'is_advance_fee',
+            inputFilterable: true,
+            exactFilterable: true,
+            sortable: true
+          },
+          {
+            Header: 'Parent Enable',
+            accessor: 'is_parent_enable',
+            inputFilterable: true,
+            exactFilterable: true,
+            sortable: true
+          },
+          {
+            Header: 'Due Date',
+            accessor: 'set_due_date',
+            inputFilterable: true,
+            exactFilterable: true,
+            sortable: true
+          },
+          {
+            Header: 'Edit',
+            accessor: 'Edit',
+            inputFilterable: true,
+            exactFilterable: true,
+            sortable: true,
+            style: {
+              paddingTop: '10px'
+            }
+          },
+          {
+            Header: 'Delete',
+            accessor: 'Delete',
+            inputFilterable: true,
+            exactFilterable: true,
+            sortable: true,
+            style: {
+              paddingTop: '5px',
+              paddingLeft: '29px'
+            }
+          }
+        ]}
+        filterable
+        sortable
+        defaultPageSize={10}
+        showPageSizeOptions={false}
+        className='-striped -highlight'
+        // Controlled props
+        // page={this.state.page}
+        // Callbacks
+        // onPageChange={page => this.pageChangeHandler(page)}
+      />)
+    }
 
     let modal = null
     if (this.state.showModal) {
@@ -309,6 +311,7 @@ class MiscFeeType extends Component {
       )
     }
     return (
+      <Layout>
       <React.Fragment>
         <Grid container spacing={3} style={{ padding: 15 }}>
           {this.state.sessionData
@@ -323,7 +326,7 @@ class MiscFeeType extends Component {
         <Grid container spacing={3} style={{ padding: 15 }}>
           <Grid item xs='3'>
             <label>Academic Year*</label>
-            {/* <Select
+            <Select
               placeholder='Select Year'
               value={this.state.sessionData ? this.state.sessionData : null}
               options={
@@ -331,11 +334,11 @@ class MiscFeeType extends Component {
                   ({ value: session, label: session })) : []
               }
               onChange={this.handleAcademicyear}
-            /> */}
+            />
           </Grid>
           <Grid item xs='3'>
             <label>Branch*</label>
-            {/* <Select
+            <Select
               placeholder='Select Branch'
               value={this.state.branchData ? this.state.branchData : null}
               options={
@@ -348,7 +351,7 @@ class MiscFeeType extends Component {
               }
 
               onChange={this.changehandlerbranch}
-            /> */}
+            />
           </Grid>
           <Grid item xs='3'>
             <Button
@@ -367,7 +370,61 @@ class MiscFeeType extends Component {
                     tableData={feeList}
                     tableFields={this.state.field}
                   /> */}
-              {viewFeeTable}
+              {/* {viewFeeTable} */}
+              <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell> Sr</TableCell>
+                      <TableCell> Fee Type Name</TableCell>
+                      <TableCell> Priority</TableCell>
+                      <TableCell> Concession Applicable</TableCell>
+                      <TableCell> Service Based</TableCell>
+                      <TableCell> Pro Rata</TableCell>
+                      <TableCell> Partial Amount</TableCell>
+                      <TableCell> Activity Based Fee</TableCell>
+                      <TableCell> Refundable Fee</TableCell>
+                      <TableCell>Transaction In Parent Login </TableCell>
+                      <TableCell>Edit</TableCell>
+                      <TableCell>Delete</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                  {this.props.miscFeeList && this.props.miscFeeList.map((val, i) => { 
+                    return (
+                  <TableRow>
+                     <TableCell> { i + 1 }</TableCell>
+                      {/* <TableCell>{ val.id} </TableCell> */}
+                      <TableCell>{val.fee_type_name ? val.fee_type_name : ''}</TableCell>
+                      <TableCell>{Number.isInteger(val.priority) ? val.priority : ''} </TableCell>
+                      <TableCell>{val.is_concession_applicable ? 'Yes' : 'No'} </TableCell>
+                      <TableCell> { val.is_service_based ? 'Yes' : 'No'} </TableCell>
+                      <TableCell> {val.is_pro_rata ? 'Yes' : 'No'} </TableCell>
+                      <TableCell>{val.is_allow_partial_amount ? 'Yes' : 'No'}</TableCell>
+                      <TableCell> {val.is_activity_based_fee ? 'Yes' : 'No'}</TableCell>
+                      <TableCell> {val.is_refundable_fee ? 'Yes' : 'No'}</TableCell>
+                      <TableCell> {val.show_transaction_in_parent_login ? 'Yes' : 'No' }</TableCell>
+                      <TableCell> <Fab
+            color='primary'
+            size='small'
+            onClick={() => this.showModalHandler(val.id)}
+          >
+            <EditIcon />
+          </Fab></TableCell>
+                      <TableCell>
+                      <Fab
+            color='primary'
+            size='small'
+            onClick={() => this.deleteModalShowHandler(val.id)}
+            // startIcon={}
+          >
+            <DeleteIcon />
+          </Fab>
+                      </TableCell>
+                  </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
             </Grid>
           </React.Fragment> : null}
 
@@ -377,16 +434,17 @@ class MiscFeeType extends Component {
         {addFeeModal}
         {deleteModal}
       </React.Fragment>
+      </Layout>
     )
   }
 }
 
 const mapStateToProps = state => ({
-  // user: state.authentication.user,
-  // session: state.academicSession.items,
-  // branches: state.finance.common.branchPerSession,
-  // miscFeeList: state.finance.miscFee.miscFeeList,
-  // dataLoading: state.finance.common.dataLoader
+  user: state.authentication.user,
+  session: state.academicSession.items,
+  branches: state.finance.common.branchPerSession,
+  miscFeeList: state.finance.miscFee.miscFeeList,
+  dataLoading: state.finance.common.dataLoader
 })
 
 const mapDispatchToProps = dispatch => ({

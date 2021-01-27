@@ -37,6 +37,7 @@ import HomeworkAdmin from './containers/homework/homework-admin';
 import AddHomework from './containers/homework/teacher-homework/add-homework';
 import BulkUpload from './containers/user-management/bulk-upload/bulk-upload';
 import FeeType from './containers/Finance/src/components/Finance/CreateFeeType/NormalFeeType/feeType.js'
+import MiscFeeType from './containers/Finance/src/components/Finance/CreateFeeType/MiscFeeType/miscFeeType';
 // import MiscFeeType from './containers/Finance/src/components/Finance/CreateFeeType/MiscFeeType/miscFeeType.js'
 const theme = createMuiTheme({
   palette: {
@@ -167,9 +168,9 @@ function App() {
                 <Route exact path='/homework/admin'>
                   {({ match }) => <HomeworkAdmin match={match} />}
                 </Route>
-                {/* <Route exact path='/feeType/normalFeeType'>
-                  {({ match }) => <FeeType match={match} />}
-                </Route> */}
+                <Route exact path='/feeType/miscFeeType'>
+                  {({ match }) => <MiscFeeType match={match} />}
+                </Route>
                 <Route exact path='/feeType/normalFeeType'>
                   {({ match }) => <FeeType match={match} />}
                 </Route>

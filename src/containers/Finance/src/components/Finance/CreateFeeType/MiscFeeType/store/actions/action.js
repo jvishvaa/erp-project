@@ -27,7 +27,7 @@ export const fetchListMiscFee = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        payload.alert.warning('Unale to load data')
+        // payload.alert.warning('Unable to load data')
         console.log(error)
       })
   }
@@ -55,7 +55,7 @@ export const deleteMiscFeeList = (payload) => {
         payload.alert.success('Deleted Successfully')
         // }
       }).catch(error => {
-        payload.alert.error('Something went wrong')
+        // payload.alert.error('Something went wrong')
         dispatch(actionTypes.dataLoaded())
         console.log(error)
       })
@@ -81,7 +81,7 @@ export const updateMiscFeeList = (payload) => {
         payload.alert.success('Updated Sucessfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        payload.alert.error('Something went wrong')
+        // payload.alert.error('Something went wrong')
         console.log(error)
       })
   }
@@ -106,7 +106,7 @@ export const addMiscFeeList = (payload) => {
         payload.alert.success('Added Successfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        payload.alert.error('Something went wrong')
+        // payload.alert.error('Something went wrong')
         console.log(error)
       })
   }

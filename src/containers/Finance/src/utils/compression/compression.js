@@ -1,5 +1,5 @@
 import imageCompression from 'browser-image-compression'
-import CompressionWorker from './compression.worker.js'
+import CompressionWorker from './compression.worker'
 
 /**
  * For files/data other than image decompression is neccesary.

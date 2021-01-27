@@ -13,6 +13,8 @@ import { authentication } from '../../../src/containers/Finance/src/_reducers/au
 import normalFeeListReducer from '../../../src/containers/Finance/src/components/Finance/CreateFeeType/NormalFeeType/store/reducers/normalFeeList.reducer.js'
 // /home/rana/ErpRevamp/erp-revamp-frontend/src/containers/Finance/src/components/Finance/CreateFeeType/NormalFeeType/store/reducers/normalFeeList.reducer.js
 import finance from '../../../src/containers/Finance/src/components/Finance/store/reducer'
+import { alert } from '../../../src/containers/Finance/src/_reducers/alert.reducer'
+
 export default combineReducers({
   auth,
   roleManagement,
@@ -24,4 +26,5 @@ export default combineReducers({
   authentication,
   normalFee: normalFeeListReducer,
   finance,
+  alert
 });

@@ -404,6 +404,10 @@ const Layout = ({ children, history }) => {
         history.push('/feeType/normalFeeType');
         break;
       }
+      case 'Misc. Fee Type': {
+        history.push('/feeType/miscFeeType');
+        break;
+      }
       default:
         break;
     }
