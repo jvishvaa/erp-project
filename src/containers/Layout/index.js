@@ -408,6 +408,10 @@ const Layout = ({ children, history }) => {
         history.push('/feeType/miscFeeType');
         break;
       }
+      case 'Curricular Fee Type': {
+        history.push('/feeType/CurricularFeeType');
+        break;
+      }
       default:
         break;
     }

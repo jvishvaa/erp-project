@@ -30,7 +30,7 @@ export const fetchCurrFeeList = (payload) => {
         if (err.response && (err.response.status === 400 || err.response.status === 404)) {
           payload.alert.warning(err.response.data.err_msg)
         } else {
-          payload.alert.warning('Something went Wrong!')
+          // payload.alert.warning('Something went Wrong!')
         }
 
         console.log(err)
@@ -48,7 +48,7 @@ export const addCurrFeeList = (payload) => {
         }
       }).then(response => {
         if (response.status === 201) {
-          payload.alert.success('Added Successfully!')
+          // payload.alert.success('Added Successfully!')
           dispatch({
             type: ADD_CURR_FEE,
             payload: {
@@ -62,7 +62,7 @@ export const addCurrFeeList = (payload) => {
         if (err.response && (err.response.status === 400 || err.response.status === 404)) {
           payload.alert.warning(err.response.data.err_msg)
         } else {
-          payload.alert.warning('Something went Wrong!')
+          // payload.alert.warning('Something went Wrong!')
         }
         console.log(err)
       })
@@ -79,7 +79,7 @@ export const updateCurrFeeList = (payload) => {
         }
       }).then(response => {
         if (response.status === 200) {
-          payload.alert.success('Updated Successfully!')
+          // payload.alert.success('Updated Successfully!')
           dispatch({
             type: UPDATE_CURR_FEE,
             payload: {
@@ -93,7 +93,7 @@ export const updateCurrFeeList = (payload) => {
         if (err.response && (err.response.status === 400 || err.response.status === 404)) {
           payload.alert.warning(err.response.data.err_msg)
         } else {
-          payload.alert.warning('Something went Wrong!')
+          // payload.alert.warning('Something went Wrong!')
         }
         console.log(err)
       })
@@ -110,7 +110,7 @@ export const deleteCurrFeeList = (payload) => {
         }
       }).then(response => {
         if (response.status === 200) {
-          payload.alert.success('Deleted Successfully!')
+          // payload.alert.success('Deleted Successfully!')
           dispatch({
             type: DELETE_CURR_FEE,
             payload: {
@@ -124,7 +124,7 @@ export const deleteCurrFeeList = (payload) => {
         if (err.response && (err.response.status === 400 || err.response.status === 404)) {
           payload.alert.warning(err.response.data.err_msg)
         } else {
-          payload.alert.warning('Something went Wrong!')
+          // payload.alert.warning('Something went Wrong!')
         }
         console.log(err)
       })

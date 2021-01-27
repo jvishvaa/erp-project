@@ -39,6 +39,7 @@ import BulkUpload from './containers/user-management/bulk-upload/bulk-upload';
 import FeeType from './containers/Finance/src/components/Finance/CreateFeeType/NormalFeeType/feeType.js'
 import MiscFeeType from './containers/Finance/src/components/Finance/CreateFeeType/MiscFeeType/miscFeeType';
 // import MiscFeeType from './containers/Finance/src/components/Finance/CreateFeeType/MiscFeeType/miscFeeType.js'
+import CurrFeeType from './containers/Finance/src/components/Finance/CreateFeeType/CurrFeeType/currFeeType.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -173,6 +174,9 @@ function App() {
                 </Route>
                 <Route exact path='/feeType/normalFeeType'>
                   {({ match }) => <FeeType match={match} />}
+                </Route>
+                <Route exact path='/feeType/CurricularFeeType'>
+                  {({ match }) => <CurrFeeType match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

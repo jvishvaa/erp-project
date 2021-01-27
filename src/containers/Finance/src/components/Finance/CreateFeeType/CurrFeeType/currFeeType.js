@@ -10,6 +10,7 @@ import { apiActions } from '../../../../_actions'
 import Modal from '../../../../ui/Modal/modal'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import classes from './deleteModal.module.css'
+import Layout from '../../../../../../Layout'
 
 const styles = theme => ({
   tableWrapper: {
@@ -285,7 +286,7 @@ class CurrFeeType extends Component {
     let addFeeModal = null
     if (showAddmodal) {
       addFeeModal = (
-        <Modal open={showAddmodal} click={this.hideAddModalHandler}>
+        <Modal open={showAddmodal} click={this.hideAddModalHandler} large>
           <h3 className={classes.modal__heading}>Add Curricular Fee Type</h3>
           <Divider />
           <Grid container spacing={3} style={{ flexGrow: 1, padding: 10 }}>
@@ -402,7 +403,7 @@ class CurrFeeType extends Component {
             </Grid>
             <Grid item xs={4}>
               <div className={classes.modal__remainbutton}>
-                <Button color='primary' variant='outlined' onClick={this.hideAddModalHandler}>Go Back</Button>
+                <Button color='primary' variant='contained' onClick={this.hideAddModalHandler}>Go Back</Button>
               </div>
             </Grid>
           </Grid>
@@ -411,7 +412,7 @@ class CurrFeeType extends Component {
             <Button color='primary' variant='contained' onClick={this.addHandler}>Save</Button>
           </div>
           <div className={classes.modal__remainbutton}>
-            <Button color='primary' variant='outlined' onClick={this.hideAddModalHandler}>Go Back</Button>
+            <Button color='primary' variant='contained' onClick={this.hideAddModalHandler}>Go Back</Button>
           </div>
         </Modal>
       )
@@ -485,6 +486,7 @@ class CurrFeeType extends Component {
       )
     }
     return (
+      <Layout>
       <React.Fragment>
         <Grid container spacing={3} style={{ padding: '15px' }}>
           <Grid item xs='10' />
@@ -540,6 +542,7 @@ class CurrFeeType extends Component {
         {deleteModal}
         {currFeeTable}
       </React.Fragment>
+      </Layout>
     )
   }
 }
