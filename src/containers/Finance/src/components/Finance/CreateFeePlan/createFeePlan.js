@@ -17,6 +17,7 @@ import * as actionTypes from '../store/actions'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 // import '../../css/staff.css'
 import classess from './deleteModal.module.css'
+import Layout from '../../../../../Layout'
 
 const CreatePlan = {
   label: 'Create Fee Plan',
@@ -271,6 +272,7 @@ class CreateFeePlan extends Component {
     }
 
     return (
+      <Layout>
       <React.Fragment>
         <Grid container spacing={3} style={{ padding: 15 }} >
           <Grid item xs={8} />
@@ -428,6 +430,7 @@ class CreateFeePlan extends Component {
           {addFeePlanGradeModal}
         </Grid>
       </React.Fragment>
+      </Layout>
     )
   }
 }

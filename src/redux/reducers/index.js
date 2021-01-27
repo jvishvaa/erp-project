@@ -14,6 +14,7 @@ import normalFeeListReducer from '../../../src/containers/Finance/src/components
 // /home/rana/ErpRevamp/erp-revamp-frontend/src/containers/Finance/src/components/Finance/CreateFeeType/NormalFeeType/store/reducers/normalFeeList.reducer.js
 import finance from '../../../src/containers/Finance/src/components/Finance/store/reducer'
 import { alert } from '../../../src/containers/Finance/src/_reducers/alert.reducer'
+import { branches } from '../../../src/containers/Finance/src/_reducers/branches.reducer.js'
 
 export default combineReducers({
   auth,
@@ -26,5 +27,6 @@ export default combineReducers({
   authentication,
   normalFee: normalFeeListReducer,
   finance,
-  alert
+  alert, 
+  branches
 });
