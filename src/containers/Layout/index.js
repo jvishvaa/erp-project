@@ -420,6 +420,10 @@ const Layout = ({ children, history }) => {
         history.push('/feeType/RegistrationFee');
         break;
       }
+      case 'View Fee Plan': {
+        history.push('/feePlan/ViewFeePlan');
+        break;
+      }
       default:
         break;
     }

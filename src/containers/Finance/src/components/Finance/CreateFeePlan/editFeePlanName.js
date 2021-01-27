@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom'
 import { Button, Grid } from '@material-ui/core/'
 import { connect } from 'react-redux'
 import { apiActions } from '../../../_actions'
-import '../../css/staff.css'
+// import '../../css/staff.css'
 import * as actionTypes from '../store/actions'
 
 class EditFeePlanName extends Component {

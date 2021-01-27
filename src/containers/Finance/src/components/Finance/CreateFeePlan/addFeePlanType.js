@@ -8,7 +8,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel/FormControlLabe
 import Select from 'react-select'
 import * as actionTypes from '../store/actions'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
-import '../../css/staff.css'
+// import '../../css/staff.css'
 
 const styles = theme => ({
   tableWrapper: {

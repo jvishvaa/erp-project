@@ -31,7 +31,7 @@ import MessageTypeTable from './containers/master-management/message-type/messag
 import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
 import HomeworkCard from './containers/homework/homework-card';
 import Profile from './containers/profile/profile';
-import { fetchLoggedInUserDetails } from './redux/actions';
+import { createFeePlan, fetchLoggedInUserDetails } from './redux/actions';
 import TeacherHomework from './containers/homework/teacher-homework';
 import HomeworkAdmin from './containers/homework/homework-admin';
 import AddHomework from './containers/homework/teacher-homework/add-homework';
@@ -42,6 +42,8 @@ import MiscFeeType from './containers/Finance/src/components/Finance/CreateFeeTy
 import CurrFeeType from './containers/Finance/src/components/Finance/CreateFeeType/CurrFeeType/currFeeType.js'
 import OtherFeeType from './containers/Finance/src/components/Finance/CreateFeeType/OtherFeeType/otherFeeType.js'
 import RegistrationFee from './containers/Finance/src/components/Finance/CreateFeeType/RegistrationFeeType/registrationFee.js'
+// import ManageFeeType from './containers/Finance/src/components/Finance/CreateFeePlan/manageFeeType.js'
+import CreateFeePlan from './containers/Finance/src/components/Finance/CreateFeePlan/createFeePlan.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -185,6 +187,9 @@ function App() {
                 </Route>
                 <Route exact path='/feeType/RegistrationFee'>
                   {({ match }) => <RegistrationFee match={match} />}
+                </Route>
+                <Route exact path='/feePlan/ViewFeePlan'>
+                  {({ match }) => <CreateFeePlan match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

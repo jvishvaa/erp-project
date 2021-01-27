@@ -57,9 +57,9 @@ export const fetchFeeTypeAndAccountList = (payload) => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
         if (error.response && error.response.status === 400) {
-          payload.alert.warning(error.response.data.err_msg)
+          // payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.warning('Unable to load data')
+          // payload.alert.warning('Unable to load data')
         }
       })
   }
@@ -86,9 +86,9 @@ export const fetchFeeTypeList = (payload) => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
         if (error.response && error.response.status === 400) {
-          payload.alert.warning(error.response.data.err_msg)
+          // payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.warning('Unable to load data')
+          // payload.alert.warning('Unable to load data')
         }
       })
   }
@@ -112,14 +112,14 @@ export const updateFeePlanGrades = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        payload.alert.success('Added Successfully')
+        // payload.alert.success('Added Successfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
         if (error.response && error.response.status === 400) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.error('Something Went Wrong')
+          // payload.alert.error('Something Went Wrong')
         }
       })
   }
@@ -146,7 +146,7 @@ export const feeAccountList = (payload) => {
         if (error.response && error.response.status === 400) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.warning('Unable to load data')
+          // payload.alert.warning('Unable to load data')
         }
         console.log(error)
       })
@@ -174,7 +174,7 @@ export const feeDisplayInstallment = (payload) => {
         if (error.response && error.response.status === 400) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.warning('Unable to load data')
+          // payload.alert.warning('Unable to load data')
         }
         console.log(error)
       })
@@ -197,13 +197,13 @@ export const feeCreateInstallment = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        payload.alert.success('Created Successfully')
+        // payload.alert.success('Created Successfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         if (error.response && error.response.status === 400) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.error('Something went wrong')
+          // payload.alert.error('Something went wrong')
         }
         console.log(error)
       })
@@ -231,7 +231,7 @@ export const feePlanTypeList = (payload) => {
         if (error.response && error.response.status === 400) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.error('Unable to load data')
+          // payload.alert.error('Unable to load data')
         }
         console.log(error)
       })
@@ -254,13 +254,13 @@ export const createFeeType = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        payload.alert.success('Added Successfully')
+        // payload.alert.success('Added Successfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         if (error.response && error.response.status === 400) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.error('Something Went Wrong')
+          // payload.alert.error('Something Went Wrong')
         }
         console.log(error)
       })
@@ -288,7 +288,7 @@ export const feeAccountListFromAcadId = (payload) => {
         if (error.response && error.response.status === 400) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.warning('Unable to load data')
+          // payload.alert.warning('Unable to load data')
         }
         console.log(error)
       })
@@ -311,13 +311,13 @@ export const updateInstallmentRecord = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        payload.alert.success('Updated Successfully')
+        // payload.alert.success('Updated Successfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         if (error.response && error.response.status === 400) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.error('Something went wrong')
+          // payload.alert.error('Something went wrong')
         }
         console.log(error)
       })
@@ -341,14 +341,14 @@ export const updateInstallmentAmount = (payload) => {
             feeTypeId
           }
         })
-        payload.alert.success('Updated Successfully')
+        // payload.alert.success('Updated Successfully')
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         if (error.response && error.response.status === 400) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.error('Something went wrong')
+          // payload.alert.error('Something went wrong')
         }
         console.log(error)
       })
@@ -376,7 +376,7 @@ export const fetchFeePlanList = (payload) => {
         if (error.response && error.response.status === 400) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.warning('Unable to load data')
+          // payload.alert.warning('Unable to load data')
         }
         console.log(error)
       })
@@ -399,13 +399,13 @@ export const updateFeePlan = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        payload.alert.success('Updated Successfully')
+        // payload.alert.success('Updated Successfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         if (error.response && error.response.status === 400) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.error('Something went wrong')
+          // payload.alert.error('Something went wrong')
         }
         console.log(error)
       })
@@ -429,13 +429,13 @@ export const deleteFeePlanGrades = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        payload.alert.success('Deleted Successfully')
+        // payload.alert.success('Deleted Successfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         if (error.response && error.response.status === 400) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.error('Something went wrong')
+          // payload.alert.error('Something went wrong')
         }
         console.log(error)
       })
@@ -466,7 +466,7 @@ export const deleteFeePlanInstallments = (payload) => {
         if (error.response && error.response.status === 400) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.error('Something went wrong')
+          // payload.alert.error('Something went wrong')
         }
         console.log(error)
       })
@@ -494,7 +494,7 @@ export const fetchFeeTypesPerBranch = (payload) => {
         if (error.response && error.response.status === 400) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.warning('Unable to load data')
+          // payload.alert.warning('Unable to load data')
         }
         console.log(error)
       })
@@ -520,9 +520,9 @@ export const fetchFeePlanYearApplicable = (payload) => {
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         if (error.response && error.response.status === 400) {
-          payload.alert.warning(error.response.data.err_msg)
+          // payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.warning('Unable to load data')
+          // payload.alert.warning('Unable to load data')
         }
         console.log(error)
       })
@@ -551,7 +551,7 @@ export const createFeePlan = (payload) => {
         if (error.response && error.response.status === 400) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.error('Something Went wrong')
+          // payload.alert.error('Something Went wrong')
         }
         console.log(error)
       })
@@ -580,7 +580,7 @@ export const createFeePlanTypeMap = (payload) => {
         if (error.response && error.response.status === 400) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.error('Something Went wrong')
+          // payload.alert.error('Something Went wrong')
         }
         console.log(error)
       })

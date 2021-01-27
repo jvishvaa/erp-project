@@ -366,7 +366,7 @@ export const fetchGradeList = (payload) => {
         dispatch(dataLoaded())
       }).catch(error => {
         dispatch(dataLoaded())
-        payload.alert.warning('Unable to load data')
+        // payload.alert.warning('Unable to load data')
         console.log(error)
       })
   }
@@ -391,7 +391,7 @@ export const fetchAllSectionsPerGrade = (payload) => {
       }).catch(error => {
         dispatch(dataLoaded())
         console.log(error)
-        payload.alert.warning('Unable to load data')
+        // payload.alert.warning('Unable to load data')
       })
   }
 }
@@ -415,7 +415,7 @@ export const fetchAllSectionsPerGradeAsAdmin = (payload) => {
       }).catch(error => {
         dispatch(dataLoaded())
         console.log(error)
-        payload.alert.warning('Unable to load data')
+        // payload.alert.warning('Unable to load data')
       })
   }
 }
@@ -436,7 +436,7 @@ export const feeTransactionReceipt = (payload) => {
       dispatch(dataLoaded())
     }).catch(err => {
       console.log(err)
-      payload.alert.warning('Something Went Wrong')
+      // payload.alert.warning('Something Went Wrong')
       dispatch(dataLoaded())
     })
   }

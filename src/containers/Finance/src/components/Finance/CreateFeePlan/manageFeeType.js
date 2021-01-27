@@ -20,9 +20,10 @@ import AddFeePlanType from './addFeePlanType'
 import * as actionTypes from '../store/actions'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 // import { urls } from '../../../urls'
-import '../../css/staff.css'
+// import '../../css/staff.css'
 // import EditInstallment from './editFinanaceInstallment'
 import FinanaceInstallment from './finanaceInstallment'
+import Layout from '../../../../../Layout';
 
 const styles = theme => ({
   tableWrapper: {
@@ -537,6 +538,7 @@ class ManageFeeType extends Component {
     }
 
     return (
+      <Layout>
       <React.Fragment>
         <Grid container spacing={3} style={{ padding: 15 }}>
           <Grid item xs='8'>
@@ -738,6 +740,7 @@ class ManageFeeType extends Component {
           {this.props.dataLoading ? <CircularProgress open /> : null}
         </Grid>
       </React.Fragment>
+      </Layout>
 
     )
   }

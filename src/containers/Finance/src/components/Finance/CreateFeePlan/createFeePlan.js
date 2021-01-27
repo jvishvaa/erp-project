@@ -9,13 +9,13 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import Select from 'react-select'
 import EditFeePlanName from './editFeePlanName'
-import { RouterButton } from '../../../ui'
+// import { RouterButton } from '../../../ui'
 // import { urls } from '../../../urls'
 import { apiActions } from '../../../_actions'
 import EModal from '../../../ui/Modal/modal'
 import * as actionTypes from '../store/actions'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
-import '../../css/staff.css'
+// import '../../css/staff.css'
 import classess from './deleteModal.module.css'
 
 const CreatePlan = {
@@ -275,7 +275,7 @@ class CreateFeePlan extends Component {
         <Grid container spacing={3} style={{ padding: 15 }} >
           <Grid item xs={8} />
           <Grid item xs={4} >
-            <RouterButton value={CreatePlan} />
+            {/* <RouterButton value={CreatePlan} /> */}
           </Grid>
         </Grid>
         <Grid container spacing={3} style={{ flexGrow: 1, padding: 15 }}>
@@ -402,7 +402,7 @@ class CreateFeePlan extends Component {
                                 </Table>
                               </TableCell>
                               <TableCell>
-                                <RouterButton
+                                {/* <RouterButton
                                   icon='clone'
                                   value={{
                                     basic: 'basic',
@@ -410,7 +410,7 @@ class CreateFeePlan extends Component {
                                     label: 'Manage Fee Type'
                                   }}
                                   id={row.id}
-                                />
+                                /> */}
                               </TableCell>
                             </TableRow>
                           </React.Fragment>
