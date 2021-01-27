@@ -131,7 +131,7 @@ export const fetchGradesPerBranch = (payload) => {
         dispatch(dataLoaded())
       }).catch(error => {
         dispatch(dataLoaded())
-        payload.alert.warning('Unable to load data')
+        // payload.alert.warning('Unable to load data')
         console.log(error)
       })
   }
@@ -633,7 +633,7 @@ export const fetchBranchAtAcc = (payload) => {
       })
       dispatch(dataLoaded())
     }).catch(err => {
-      payload.alert.warning('Unable To Load Branch')
+      // payload.alert.warning('Unable To Load Branch')
       dispatch(dataLoaded())
       console.log(err)
     })

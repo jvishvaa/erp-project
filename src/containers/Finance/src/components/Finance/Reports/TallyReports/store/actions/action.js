@@ -25,7 +25,7 @@ export const fetchFeeAccPerBranchAndAcad = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        payload.alert.warning('Unable to load data')
+        // payload.alert.warning('Unable to load data')
         console.log(error)
       })
   }
@@ -68,10 +68,10 @@ export const downloadTallyReports = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        payload.alert.success('Downloading...')
+        // payload.alert.success('Downloading...')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        payload.alert.error('Something Went Wrong')
+        // payload.alert.error('Something Went Wrong')
         console.log(error)
       })
   }

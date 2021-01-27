@@ -7,6 +7,7 @@ import { apiActions } from '../../../../_actions'
 import { urls } from '../../../../urls'
 import * as actionTypes from '../../store/actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout';
 
 // const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
 //   'July', 'August', 'September', 'October', 'November', 'December'
@@ -591,7 +592,8 @@ class TotalPaidReports extends Component {
       )
     }
     return (
-      <React.Fragment>
+      <Layout>      
+        <React.Fragment>
         <div style={{ padding: '15px' }}>
           <Grid container spacing={1}>
             <Grid item xs={4} style={{ padding: '15px' }}>
@@ -832,6 +834,7 @@ class TotalPaidReports extends Component {
         </div>
         {this.props.dataLoading ? <CircularProgress open /> : null}
       </React.Fragment>
+      </Layout>
     )
   }
 }

@@ -46,6 +46,9 @@ import RegistrationFee from './containers/Finance/src/components/Finance/CreateF
 import CreateFeePlan from './containers/Finance/src/components/Finance/CreateFeePlan/createFeePlan.js'
 import ConcessionSettings from  './containers/Finance/src/components/Finance/ConcessionSettings/concessionSettings.js'
 import Ledger from './containers/Finance/src/components/Finance/ExpenseManagement/Ledger/ledger.js'
+import TotalPaidReports from './containers/Finance/src/components/Finance/Reports/TotalPaidDueReports/totalPaidReports.js'
+import OtherFeeTotalPaidReports from './containers/Finance/src/components/Finance/Reports/TotalPaidDueReports/otherFeeTotalPaidDueReport.js'
+import TallyReports from './containers/Finance/src/components/Finance/Reports/TallyReports/tallyReports.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -198,6 +201,15 @@ function App() {
                 </Route>
                 <Route exact path='/finance/Ledger'>
                   {({ match }) => <Ledger match={match} />}
+                </Route>
+                <Route exact path='/finance/TotalPaidReport'>
+                  {({ match }) => <TotalPaidReports match={match} />}
+                </Route>
+                <Route exact path='/finance/OtherFeeTotalPaidReport'>
+                  {({ match }) => <OtherFeeTotalPaidReports match={match} />}
+                </Route>
+                <Route exact path='/finance/TallyReport'>
+                  {({ match }) => <TallyReports match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

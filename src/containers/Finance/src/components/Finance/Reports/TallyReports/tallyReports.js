@@ -7,6 +7,7 @@ import { apiActions } from '../../../../_actions'
 import { urls } from '../../../../urls'
 import * as actionTypes from '../../store/actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
 
 // const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
 //   'July', 'August', 'September', 'October', 'November', 'December'
@@ -290,6 +291,7 @@ class TallyReports extends Component {
         )
       }
       return (
+        <Layout>
         <React.Fragment>
           <Grid container spacing={3} style={{ padding: 15 }}>
             <Grid item xs='3' >
@@ -496,6 +498,7 @@ class TallyReports extends Component {
             {this.props.dataLoading ? <CircularProgress open /> : null}
           </Grid>
         </React.Fragment>
+        </Layout>
       )
     }
 }

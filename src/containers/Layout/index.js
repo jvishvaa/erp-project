@@ -432,6 +432,18 @@ const Layout = ({ children, history }) => {
         history.push('/finance/Ledger');
         break;
       }
+      case 'Total Paid and Due Report' : {
+        history.push('/finance/TotalPaidReport');
+        break;
+      }
+      case 'Other Fee Total Paid and Due Report': {
+        history.push('/finance/OtherFeeTotalPaidReport')
+        break;
+      }
+      case 'Tally Report': {
+        history.push('/finance/TallyReport')
+        break;
+      }
       default:
         break;
     }
