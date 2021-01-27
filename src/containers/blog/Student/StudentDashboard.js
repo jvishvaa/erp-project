@@ -6,6 +6,8 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import { Grid, Button, Divider } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import PropTypes from 'prop-types';
+import moment from 'moment';
+
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import { withRouter } from 'react-router-dom';
@@ -73,7 +75,10 @@ class StudentDashboard extends Component {
     this.state = {
       tabValue: 0,
       pageNo: 0,
-      pageSize: 60,
+      pageSize: 6,
+      startDate :moment().format('YYYY-MM-DD'),
+      // endDate :getDaysAfter(moment(), 6)
+
     };
   }
 
@@ -93,14 +98,12 @@ class StudentDashboard extends Component {
     const endDate = this.getDaysAfter(date.clone(), 6);
     this.setState({ endDate });
     this.setState({ startDate: date.format('YYYY-MM-DD') });
-    // getTeacherHomeworkDetails(2, date, endDate);
   };
 
   handleEndDateChange = (date) => {
     const startDate = this.getDaysBefore(date.clone(), 6);
     this.setState({ startDate });
-    this.setState({ endData: date.format('YYYY-MM-DD') });
-    // getTeacherHomeworkDetails(2, startDate, date);
+    this.setState({ endDate: date.format('YYYY-MM-DD') });
   };
 
   handleTabChange = (event, newValue) => {
@@ -122,11 +125,11 @@ class StudentDashboard extends Component {
       .get(
         `${endpoints.blog.Blog}?page_number=${
           pageNo + 1
-        }&page_size=${pageSize}&status=${status}`
+        }&page_size=${pageSize}&status=${status}&module_id=112`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
-          this.setState({ data: result.data.result.data });
+          this.setState({ data: result.data.result.data ,totalBlogs:result.data.result.total_blogs});
         } else {
           console.log(result.data.message);
         }
@@ -139,42 +142,48 @@ class StudentDashboard extends Component {
         // setSectionDisp('');
       });
   };
+  handleFilter = () =>
+  {
+    const { pageNo, pageSize ,tabValue,startDate,endDate} = this.state;
+    let tabStatus= ''
+    if(tabValue === 0){
+      tabStatus= 8
+    }
+    else if (tabValue === 1){
+      tabStatus = 3
+    }
+    else if (tabValue === 2){
+      tabStatus = 2
+    }else if (tabValue === 3){
+      tabStatus = 1
+    }
+    axios
+      .get(
+        `${endpoints.blog.Blog}?page_number=${
+          pageNo + 1
+        }&page_size=${pageSize}&status=${tabStatus}&module_id=112&start_date=${startDate}&end_date=${endDate}`
+      )
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          this.setState({ data: result.data.result.data ,totalBlogs:result.data.result.total_blogs});
+        } else {
+          console.log(result.data.message);
+        }
+      })
+      .catch((error) => {
+        // setAlert('error', error.message);
+        // setSections([]);
+        // setSearchSection([]);
+        // setSubjects([]);
+        // setSectionDisp('');
+      });
+
+  }
+
 
   render() {
     const { classes } = this.props;
-    const { tabValue, data } = this.state;
-    // const arr = [
-    //   {
-    //     id: 1,
-    //     title: 'Title 2221',
-    //     Data: '25.12.1997',
-    //   },
-    //   {
-    //     id: 2,
-    //     title: 'Title 2',
-    //     Data: '03.12.1997',
-    //   },
-    //   {
-    //     id: 3,
-    //     title: 'Messi = Goat',
-    //     Data: '03.12.1997',
-    //   },
-    //   {
-    //     id: 4,
-    //     title: 'Title 4',
-    //     Data: '25.12.1997',
-    //   },
-    //   {
-    //     id: 5,
-    //     title: 'Title 6',
-    //     Data: '03.12.1997',
-    //   },
-    //   {
-    //     id: 6,
-    //     title: 'Messi is Goat',
-    //     Data: '03.12.1997',
-    //   },
-    // ];
+    const { tabValue, data ,totalBlogs} = this.state;
 
     return (
       <div className='layout-container-div'>
@@ -196,7 +205,7 @@ class StudentDashboard extends Component {
                       />
                     </div>
                   </Grid>
-                  <Grid item xs={12} sm={4}>
+                  {/* <Grid item xs={12} sm={4}>
                     <div className='blog_input'>
                       <TextField
                         id='outlined-full-width'
@@ -211,11 +220,11 @@ class StudentDashboard extends Component {
                         variant='outlined'
                       />
                     </div>
-                  </Grid>
+                  </Grid> */}
                 </Grid>
                 <div style={{ margin: '20px' }}>
                   <Grid container>
-                    <Grid item>
+                    {/* <Grid item>
                       <Button
                         color='primary'
                         style={{ fontSize: 'small', margin: '20px', width: 150 }}
@@ -224,18 +233,20 @@ class StudentDashboard extends Component {
                       >
                         Clear All
                       </Button>
-                    </Grid>
+                    </Grid> */}
                     <Grid item>
                       <Button
                         style={{ fontSize: 'small', margin: '20px', width: 150 }}
                         color='primary'
                         size='small'
                         variant='contained'
+                        onClick={this.handleFilter}
+
                       >
                         Filter
                       </Button>
                     </Grid>
-                    <Grid item>
+                    {/* <Grid item>
                       <Button
                         style={{ fontSize: 'small', margin: '20px', width: 150 }}
                         color='primary'
@@ -244,7 +255,7 @@ class StudentDashboard extends Component {
                       >
                         Published Blogs
                       </Button>
-                    </Grid>
+                    </Grid> */}
                     <Grid item>
                       <Button
                         style={{ fontSize: 'small', margin: '20px', width: 150 }}
@@ -282,21 +293,21 @@ class StudentDashboard extends Component {
                             display='block'
                             variant='caption'
                           >
-                            Number of Blogs
+                            Number of Blogs {totalBlogs}
                           </Typography>
                         </li>
                         {/* </AppBar> */}
                         <TabPanel value={tabValue} index={0}>
-                          {data && <GridList data={data} />}
+                          {data && <GridList data={data}  tabValue={tabValue}/>}
                         </TabPanel>
                         <TabPanel value={tabValue} index={1}>
-                          Item Two
+                        {data && <GridList data={data} tabValue={tabValue} />}
                         </TabPanel>
                         <TabPanel value={tabValue} index={2}>
-                          {data && <GridList data={data} />}
+                          {data && <GridList data={data} tabValue={tabValue} />}
                         </TabPanel>
                         <TabPanel value={tabValue} index={3}>
-                          {data && <GridList data={data} />}
+                          {data && <GridList data={data} tabValue={tabValue} />}
                         </TabPanel>
                       </div>
                     </Grid>

@@ -47,6 +47,7 @@ const styles = (theme) => ({
   media: {
     height: 300,
     borderRadius: 16,
+    backgroundSize:'500px'
   },
   author: {
     marginTop: 20,
@@ -81,33 +82,37 @@ class ContentView extends Component {
       content: this.props.location.state.textEditorContent,
       studentName: this.props.location.state.studentName,
       date: this.props.location.state.creationDate,
-      file: this.props.location.state.file,
+      files: this.props.location.state.files,
     };
   }
 
   componentDidMount() {
-    const { file } = this.state;
-    const imageUrl = URL.createObjectURL(file[0]);
+    const { files } = this.state;
+    const imageUrl = URL.createObjectURL(files[0]);
     this.setState({ imageUrl });
   }
 
   WriteBlogNav = () => {
-    const { content, title, file } = this.state;
+    const { content, title, files ,genreId} = this.state;
     this.props.history.push({
       pathname: '/blog/student/write-blog',
-      state: { content, title, file },
+      state: { content, title, files,genreId },
     });
   };
 
   submitBlog = (type) => {
-    const { title, content, file, genreId } = this.state;
+    console.log(type,"@@@type")
+    const { title, content, files, genreId } = this.state;
     const formData = new FormData();
+    for (var i = 0; i < files.length; i++) {
+      formData.append('thumbnail',files[i]);
+    }
     formData.set('title', title);
     formData.set('content', content);
-    formData.set('thumbnail', file);
+    // formData.set('thumbnail', files[0]);
     // formData.append('subject_id', subject_id);
     formData.set('genre_id', genreId);
-    formData.set('status', type == 'draft' ? 2 : 8);
+    formData.set('status', type == 'Draft' ? 2 : 8);
 
     axios
       .post(`${endpoints.blog.Blog}`, formData)
@@ -208,15 +213,15 @@ class ContentView extends Component {
                         </CardActions>
                       </Card>
                     </Grid>
-                    <Grid item xs={3}>
+                    {/* <Grid item xs={3}>
                       <Typography
                         variant='body1'
                         component='p'
                         style={{ marginBottom: 10 }}
                       >
                         Saved Drafts
-                      </Typography>
-                      <Card className={classes.sideBlogs}>
+                      </Typography> */}
+                      {/* <Card className={classes.sideBlogs}>
                         <CardContent>
                           <Typography gutterBottom variant='h5' component='h2'>
                             Lizard
@@ -231,8 +236,8 @@ class ContentView extends Component {
                             Edit
                           </Button>
                         </CardActions>
-                      </Card>
-                      <Card className={classes.sideBlogs}>
+                      </Card> */}
+                      {/* <Card className={classes.sideBlogs}>
                         <CardContent>
                           <Typography gutterBottom variant='h5' component='h2'>
                             Lizard
@@ -247,8 +252,8 @@ class ContentView extends Component {
                             Edit
                           </Button>
                         </CardActions>
-                      </Card>
-                    </Grid>
+                      </Card> */}
+                    {/* </Grid> */}
                   </Grid>
                 </div>
               </div>

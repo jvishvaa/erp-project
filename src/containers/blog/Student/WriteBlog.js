@@ -87,6 +87,7 @@ class WriteBlog extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      // files:[],
       relatedBlog: true,
       starsRating: 0,
       feedBack: false,
@@ -95,6 +96,10 @@ class WriteBlog extends Component {
         this.props.location.state.title && this.props.location.state.title.length !== 0
           ? this.props.location.state.title
           : '',
+      genreId:
+          this.props.location.state.genreId && this.props.location.state.genreId.length !== 0
+            ? this.props.location.state.genreId
+            : '',
       TITLE_CHARACTER_LIMIT: 100,
       Preview: false,
       detail: this.props.location.state.detail,
@@ -106,11 +111,12 @@ class WriteBlog extends Component {
         this.props.location.state.content.length !== 0
           ? this.props.location.state.content
           : '',
-      file:
-        this.props.location.state.file && this.props.location.state.file.length !== 0
-          ? this.props.location.state.file
-          : '',
+      files:
+        this.props.location.state.files && this.props.location.state.files.length !== 0
+          ? this.props.location.state.files
+          : [],
     };
+    console.log(props,"222@@@@")
   }
 
   componentDidMount() {
@@ -150,12 +156,14 @@ class WriteBlog extends Component {
   };
 
   handlePostBlog = () => {
-    const { title, textEditorContent, file, genreId } = this.state;
+    const { title, textEditorContent, files, genreId } = this.state;
     const formData = new FormData();
+    for (var i = 0; i < files.length; i++) {
+      formData.append('thumbnail',files[i]);
+    }
+
     formData.append('title', title);
     formData.append('content', textEditorContent);
-    formData.append('thumbnail', file);
-    // formData.append('subject_id', subject_id);
     formData.append('genre_id', genreId);
     // formData.append('status', status_id);
     // if (branch && year && file) {
@@ -200,19 +208,31 @@ class WriteBlog extends Component {
     this.setState({ title: event.target.value });
   };
 
-  onDrop = (file) => {
-    this.setState({ file });
-    console.log(file);
+  onDrop = (files=[]) => {
+    console.log(files,"@@@")
+    this.setState({ files });
+    console.log(files);
   };
 
-  files = () => {
-    const { file } = this.state;
-    file.map((file) => (
-      <li key={file.name}>
-        {file.name} -{file.size} bytes
-      </li>
-    ));
-  };
+  // files = () => {
+  //   const { file } = this.state;
+  //   file.map((file) => (
+  //     <li key={file.name}>
+  //       {file.name} -{file.size} bytes
+  //     </li>
+  //   ));
+  // };
+  getFileNameAndSize = (files) => {
+    if (files.length) {
+      const fileName = this.state.files && this.state.files.map(file => (
+        <li key={file.name}>
+          {file.name} - {file.size} bytes
+        </li>
+      ))
+      return fileName
+    }
+    return null
+  }
 
   handleGenre = (data) => {
     this.setState({ genreId: data.id });
@@ -225,11 +245,11 @@ class WriteBlog extends Component {
       genreId,
       studentName,
       creationDate,
-      file,
+      files,
     } = this.state;
     this.props.history.push({
       pathname: '/blog/student/preview-blog',
-      state: { studentName, creationDate, genreId, textEditorContent, title, file },
+      state: { studentName, creationDate, genreId, textEditorContent, title, files },
     });
   };
 
@@ -334,7 +354,7 @@ class WriteBlog extends Component {
                       style={{ margin: 10 }}
                       variant='caption'
                     >
-                      Image resolution 1521*394
+                      {/* Image resolution 1521*394 */}
                     </Typography>
                     <Card className={classes.Card}>
                       <Dropzone onDrop={this.onDrop}>
@@ -361,15 +381,17 @@ class WriteBlog extends Component {
                                 {isDragAccept && 'All files will be accepted'}
                                 {isDragReject && 'Some files will be rejected'}
                                 {!isDragActive && (
-                                  <>
+                                  <> 
                                     <CloudUploadIcon
                                       color='primary'
                                       style={{ marginLeft: '45%', marginTop: '15%' }}
-                                    />
+                                    />drop file
                                   </>
                                 )}
+                                
                               </div>
-                              {files}
+                              {this.getFileNameAndSize(files)}
+                              {/* {files} */}
                             </CardContent>
                           </Card>
                         )}
@@ -377,14 +399,15 @@ class WriteBlog extends Component {
                       <Divider variant='middle' style={{ margin: 10 }} />
 
                       <CardActions>
-                        <Button size='small' style={{ width: 150 }} color='primary'>
+                        {/* <Button size='small' style={{ width: 150 }} color='primary'>
                           Save Draft
-                        </Button>
+                        </Button> */}
                         <Button
                           size='small'
                           style={{ width: 150 }}
                           onClick={this.PreviewBlogNav}
                           color='primary'
+                          disabled={!genreId || !files ||!title ||!textEditorContent}
                         >
                           Preview Blog
                         </Button>

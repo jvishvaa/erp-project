@@ -109,6 +109,8 @@ class ContentView extends Component {
                         >
                           Title
                         </Typography>
+                        {/* <CardMedia className={classes.media} image={data.thumbnail} /> */}
+
                         <CardMedia
                           className={classes.media}
                           image='https://en.as.com/en/imagenes/2020/02/09/football/1581260503_252075_noticia_normal.jpg'

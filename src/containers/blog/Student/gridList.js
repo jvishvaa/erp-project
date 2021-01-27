@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { useState ,useContext} from 'react';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { withStyles, makeStyles,useTheme } from '@material-ui/core/styles';
 import { Grid, Card, Button, Typography, Divider } from '@material-ui/core';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
@@ -16,7 +16,7 @@ import ListItem from '@material-ui/core/ListItem';
 // import Card from '@material-ui/core/Card';
 import DeleteIcon from '@material-ui/icons/Delete';
 import endpoints from '../../../config/endpoints';
-
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
@@ -52,17 +52,18 @@ const useStyles = makeStyles((theme) => ({
 function GridList(props) {
   const classes = useStyles();
   const { data } = props;
+  const {tabValue} = props.tabValue;
   const [showMenu, setShowMenu] = useState(false);
   const [showPeriodIndex, setShowPeriodIndex] = useState();
   const [selectedIndex, setSelectedIndex] = useState();
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false)
-  
+  const themeContext = useTheme();
+
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
     setShowPeriodIndex(index);
   };
-  console.log(data.id,"@@@@")
 
   const handlePeriodMenuClose = (index) => {
     setShowMenu(false);
@@ -70,25 +71,26 @@ function GridList(props) {
   };
   const handleDeleteBlog = (blogId) => {
     let requestData = {
-      "blog_id": 3 ,
+      "blog_id": blogId ,
       "status": "1"
   
     }
-axiosInstance.post(`${endpoints.blog.Blog}`, requestData)
+  axiosInstance.put(`${endpoints.blog.Blog}`, requestData)
 
-.then(result=>{
-if (result.data.status_code === 200) {
-  setLoading(false);
-  setAlert('success', result.data.message);
-} else {        
-  setLoading(false);
-  setAlert('error', result.data.message);
-}
-}).catch((error)=>{
-  setLoading(false);        
-  setAlert('error', error.message);
-})
+  .then(result=>{
+  if (result.data.status_code === 200) {
+    setLoading(false);
+    setAlert('success', result.data.message);
+  } else {        
+    setLoading(false);
+    setAlert('error', result.data.message);
+  }
+  }).catch((error)=>{
+    setLoading(false);        
+    setAlert('error', error.message);
+  })
 };
+console.log(props.tabValue,"@@22")
 
 
   return (
@@ -103,58 +105,37 @@ if (result.data.status_code === 200) {
                 style={{
                   width: '100%',
                   height: '200px',
+                  backgroundSize: '360px',
                   backgroundImage: `url(${data[0] && data[0].thumbnail})`,
                   display: data.length >= 1 ? '' : 'none',
                 }}
               >
                 <CardHeader
-                  action={
-                    <Box>
-                      <span
-                        className='period_card_menu'
-                        onClick={() => handlePeriodMenuOpen(data[0] && data[0].id)}
-                        onMouseLeave={handlePeriodMenuClose}
-                      >
-                        <IconButton
-                          className='moreHorizIcon'
-                          disableRipple
-                          color='primary'
-                        >
-                          <MoreHorizIcon />
-                        </IconButton>
-                        {showPeriodIndex === (data[0] && data[0].id) && showMenu ? (
-                          <div className='tooltipContainer'>
-                            {/* <span className='tooltiptext'>Delete</span> */}
-                            <Button
-                              // variant='outlined'
-                              size='small'
-                              style={{ width: '70px' }}
-                              className={classes.button}
-                              color='secondary'
-                              startIcon={<DeleteIcon />}
-                              onClick={handleDeleteBlog}
-                            >
-                    {/* Delete */}
-                  </Button>
-                            {/* <span className='tooltiptext'>Download All</span> */}
-                          </div>
-                        ) : null}
-                      </span>
-                    </Box>
-                  }
+                action=       {
+                  props.tabValue === 2 ?
+<IconButton
+                  title='Delete'
+                  // onClick={handleDeleteBlog(data)}
+                >
+                  <DeleteOutlinedIcon
+                    style={{ color: themeContext.palette.primary.main }}
+                  />
+                </IconButton>
+      : '' 
+              }
                   subheader={
                     <Typography
                       gutterBottom
                       variant='body2'
                       align='left'
                       component='p'
-                      style={{ color: 'white' }}
+                      style={{ color: 'black' }}
                     >
                       {data[0] && moment(data[0].created_at).format('MMM DD YYYY')}
                     </Typography>
                   }
                 />
-
+           
                 <CardActionArea>
                   <CardContent>
                     <Typography
@@ -163,7 +144,7 @@ if (result.data.status_code === 200) {
                         marginTop: '-5px',
                         fontSize: 'x-large',
                         fontWeight: 'bolder',
-                        color: 'white',
+                        color: 'black',
                       }}
                       color='textSecondary'
                       component='p'
@@ -185,6 +166,8 @@ if (result.data.status_code === 200) {
                   >
                     Read more
                   </Button>
+                  
+                
                   {/* <Route path='/hello' component={ContentView} /> */}
                 </CardActions>
               </Card>
@@ -198,51 +181,64 @@ if (result.data.status_code === 200) {
                     width: '100%',
                     height: '290px',
                     display: data.length >= 2 ? '' : 'none',
-                    backgroundImage: `url(${data[0] && data[0].thumbnail})`,
+                    backgroundSize: '360px',
+                    backgroundImage: `url(${data[1] && data[1].thumbnail})`,
                   }}
                   className={classes.card}
                 >
                   <CardHeader
                     action={
-                      <LightTooltip
-                        interactive
-                        title={
-                          <>
-                            <List component='nav' aria-label='main mailbox folders'>
-                              <ListItem button>
-                                <ListItemText
-                                  secondary={
-                                    <Typography
-                                      style={{ color: '#ff6b6b' }}
-                                      variant='subtitle2'
-                                      onClick={() => console.log('hi')}
-                                    >
-                                      Edit
-                                    </Typography>
-                                  }
-                                />
-                              </ListItem>
-                              <ListItem button>
-                                <ListItemText
-                                  secondary={
-                                    <Typography
-                                      style={{ color: '#ff6b6b' }}
-                                      variant='subtitle2'
-                                    >
-                                      Delete
-                                    </Typography>
-                                  }
-                                />
-                              </ListItem>
-                            </List>
-                          </>
-                        }
-                        dataow
-                      >
-                        <IconButton aria-label='settings'>
-                          <MoreHorizIcon />
-                        </IconButton>
-                      </LightTooltip>
+                      
+                      props.tabValue === 2 ?
+                    
+                    <Button
+                      size='small'
+                      type='button'
+                      startIcon={<DeleteIcon />}
+                      // onClick={handleDeleteBlog(data[0].id)}
+                    >
+          </Button> : '' 
+                      // <LightTooltip
+                      //   interactive
+                      //   title={
+                      //     <>
+                      //       <List component='nav' aria-label='main mailbox folders'>
+                      //         <ListItem button>
+                      //           <ListItemText
+                      //             secondary={
+                      //               <Typography
+                      //                 style={{ color: '#ff6b6b' }}
+                      //                 variant='subtitle2'
+                      //                 onClick={() => console.log('hi')}
+                      //               >
+                      //                 Edit
+                      //               </Typography>
+                      //             }
+                      //           />
+                      //         </ListItem>
+                      //         <ListItem button>
+                      //           <ListItemText
+                      //             secondary={
+                      //               <Typography
+                      //                 style={{ color: '#ff6b6b' }}
+                      //                 variant='subtitle2'
+                      //               >
+                      //                 Delete
+                                      
+                      //               </Typography>
+                                     
+                      //             }
+                      //           />
+                      //         </ListItem>
+                      //       </List>
+                      //     </>
+                      //   }
+                      //   dataow
+                      // >
+                      //   <IconButton aria-label='settings'>
+                      //     <MoreHorizIcon />
+                      //   </IconButton>
+                      // </LightTooltip>
                     }
                     subheader={
                       <Typography
@@ -250,7 +246,7 @@ if (result.data.status_code === 200) {
                         variant='body2'
                         align='left'
                         component='p'
-                        style={{ color: 'white' }}
+                        style={{ color: 'black' }}
                       >
                         {data[1] && moment(data[1].created_at).format('MMM DD YYYY')}
                       </Typography>
@@ -264,7 +260,7 @@ if (result.data.status_code === 200) {
                           marginTop: '0px',
                           fontSize: 'x-large',
                           fontWeight: 'bolder',
-                          color: 'white',
+                          color: 'black',
                         }}
                         color='textSecondary'
                         component='p'
@@ -297,51 +293,23 @@ if (result.data.status_code === 200) {
                     width: '100%',
                     height: '290px',
                     display: data.length >= 3 ? '' : 'none',
-                    backgroundImage: `url(${data[0] && data[0].thumbnail})`,
+                    backgroundSize: '360px',
+                    backgroundImage: `url(${data[3] && data[3].thumbnail})`,
                   }}
                   className={classes.card}
                 >
                   <CardHeader
                     action={
-                      <LightTooltip
-                        interactive
-                        title={
-                          <>
-                            <List component='nav' aria-label='main mailbox folders'>
-                              <ListItem button>
-                                <ListItemText
-                                  secondary={
-                                    <Typography
-                                      style={{ color: '#ff6b6b' }}
-                                      variant='subtitle2'
-                                      onClick={() => console.log('hi')}
-                                    >
-                                      Edit
-                                    </Typography>
-                                  }
-                                />
-                              </ListItem>
-                              <ListItem button>
-                                <ListItemText
-                                  secondary={
-                                    <Typography
-                                      style={{ color: '#ff6b6b' }}
-                                      variant='subtitle2'
-                                    >
-                                      Delete
-                                    </Typography>
-                                  }
-                                />
-                              </ListItem>
-                            </List>
-                          </>
-                        }
-                        dataow
-                      >
-                        <IconButton aria-label='settings'>
-                          <MoreHorizIcon />
-                        </IconButton>
-                      </LightTooltip>
+                      
+                      props.tabValue === 2 ?
+                    
+                    <Button
+                      size='small'
+                      type='button'
+                      startIcon={<DeleteIcon />}
+                      // onClick={handleDeleteBlog(data[0].id)}
+                    >
+          </Button> : '' 
                     }
                     subheader={
                       <Typography
@@ -349,7 +317,7 @@ if (result.data.status_code === 200) {
                         variant='body2'
                         align='left'
                         component='p'
-                        style={{ color: 'white' }}
+                        style={{ color: 'black' }}
                       >
                         {data[2] && moment(data[2].created_at).format('MMM DD YYYY')}
                       </Typography>
@@ -363,7 +331,7 @@ if (result.data.status_code === 200) {
                           marginTop: '0px',
                           fontSize: 'x-large',
                           fontWeight: 'bolder',
-                          color: 'white',
+                          color: 'black',
                         }}
                         color='textSecondary'
                         component='p'
@@ -401,51 +369,23 @@ if (result.data.status_code === 200) {
                     width: '100%',
                     height: '290px',
                     display: data.length >= 4 ? '' : 'none',
-                    backgroundImage: `url(${data[0] && data[0].thumbnail})`,
+                    backgroundSize: '360px',
+                    backgroundImage: `url(${data[4] && data[4].thumbnail})`,
                   }}
                   className={classes.card}
                 >
                   <CardHeader
                     action={
-                      <LightTooltip
-                        interactive
-                        title={
-                          <>
-                            <List component='nav' aria-label='main mailbox folders'>
-                              <ListItem button>
-                                <ListItemText
-                                  secondary={
-                                    <Typography
-                                      style={{ color: '#ff6b6b' }}
-                                      variant='subtitle2'
-                                      onClick={() => console.log('hi')}
-                                    >
-                                      Edit
-                                    </Typography>
-                                  }
-                                />
-                              </ListItem>
-                              <ListItem button>
-                                <ListItemText
-                                  secondary={
-                                    <Typography
-                                      style={{ color: '#ff6b6b' }}
-                                      variant='subtitle2'
-                                    >
-                                      Delete
-                                    </Typography>
-                                  }
-                                />
-                              </ListItem>
-                            </List>
-                          </>
-                        }
-                        dataow
-                      >
-                        <IconButton aria-label='settings'>
-                          <MoreHorizIcon />
-                        </IconButton>
-                      </LightTooltip>
+                     
+                      props.tabValue === 2 ?
+                    
+                    <Button
+                      size='small'
+                      type='button'
+                      startIcon={<DeleteIcon />}
+                      // onClick={handleDeleteBlog(data[0].id)}
+                    >
+          </Button> : '' 
                     }
                     subheader={
                       <Typography
@@ -453,7 +393,7 @@ if (result.data.status_code === 200) {
                         variant='body2'
                         align='left'
                         component='p'
-                        style={{ color: 'white' }}
+                        style={{ color: 'black' }}
                       >
                         {data[3] && moment(data[3].created_at).format('MMM DD YYYY')}
                       </Typography>
@@ -467,7 +407,7 @@ if (result.data.status_code === 200) {
                           marginTop: '0px',
                           fontSize: 'x-large',
                           fontWeight: 'bolder',
-                          color: 'white',
+                          color: 'black',
                         }}
                         color='textSecondary'
                         component='p'
@@ -498,52 +438,24 @@ if (result.data.status_code === 200) {
                   style={{
                     width: '100%',
                     height: '290px',
+                    backgroundSize: '360px',
                     display: data.length >= 5 ? '' : 'none',
-                    backgroundImage: `url(${data[0] && data[0].thumbnail})`,
+                    backgroundImage: `url(${data[3] && data[3].thumbnail})`,
                   }}
                   className={classes.card}
                 >
                   <CardHeader
                     action={
-                      <LightTooltip
-                        interactive
-                        title={
-                          <>
-                            <List component='nav' aria-label='main mailbox folders'>
-                              <ListItem button>
-                                <ListItemText
-                                  secondary={
-                                    <Typography
-                                      style={{ color: '#ff6b6b' }}
-                                      variant='subtitle2'
-                                      onClick={() => console.log('hi')}
-                                    >
-                                      Edit
-                                    </Typography>
-                                  }
-                                />
-                              </ListItem>
-                              <ListItem button>
-                                <ListItemText
-                                  secondary={
-                                    <Typography
-                                      style={{ color: '#ff6b6b' }}
-                                      variant='subtitle2'
-                                    >
-                                      Delete
-                                    </Typography>
-                                  }
-                                />
-                              </ListItem>
-                            </List>
-                          </>
-                        }
-                        dataow
-                      >
-                        <IconButton aria-label='settings'>
-                          <MoreHorizIcon />
-                        </IconButton>
-                      </LightTooltip>
+                      
+                      props.tabValue === 2 ?
+                    
+                    <Button
+                      size='small'
+                      type='button'
+                      startIcon={<DeleteIcon />}
+                      // onClick={handleDeleteBlog(data[0].id)}
+                    >
+          </Button> : '' 
                     }
                     subheader={
                       <Typography
@@ -551,7 +463,7 @@ if (result.data.status_code === 200) {
                         variant='body2'
                         align='left'
                         component='p'
-                        style={{ color: 'white' }}
+                        style={{ color: 'black' }}
                       >
                         {data[4] && moment(data[4].created_at).format('MMM DD YYYY')}
                       </Typography>
@@ -565,7 +477,7 @@ if (result.data.status_code === 200) {
                           marginTop: '0px',
                           fontSize: 'x-large',
                           fontWeight: 'bolder',
-                          color: 'white',
+                          color: 'black',
                         }}
                         color='textSecondary'
                         component='p'
@@ -600,51 +512,23 @@ if (result.data.status_code === 200) {
                   width: '100%',
                   height: '200px',
                   display: data.length === 6 ? '' : 'none',
-                  backgroundImage: `url(${data[0] && data[0].thumbnail})`,
+                  backgroundSize: '360px',
+                  backgroundImage: `url(${data[5] && data[5].thumbnail})`,
                 }}
                 className={classes.card}
               >
                 <CardHeader
                   action={
-                    <LightTooltip
-                      interactive
-                      title={
-                        <>
-                          <List component='nav' aria-label='main mailbox folders'>
-                            <ListItem button>
-                              <ListItemText
-                                secondary={
-                                  <Typography
-                                    style={{ color: '#ff6b6b' }}
-                                    variant='subtitle2'
-                                    onClick={() => console.log('hi')}
-                                  >
-                                    Edit
-                                  </Typography>
-                                }
-                              />
-                            </ListItem>
-                            <ListItem button>
-                              <ListItemText
-                                secondary={
-                                  <Typography
-                                    style={{ color: '#ff6b6b' }}
-                                    variant='subtitle2'
-                                  >
-                                    Delete
-                                  </Typography>
-                                }
-                              />
-                            </ListItem>
-                          </List>
-                        </>
-                      }
-                      dataow
+                  
+                    props.tabValue === 2 ?
+                    
+                    <Button
+                      size='small'
+                      type='button'
+                      startIcon={<DeleteIcon />}
+                      // onClick={handleDeleteBlog(data[0].id)}
                     >
-                      <IconButton aria-label='settings'>
-                        <MoreHorizIcon />
-                      </IconButton>
-                    </LightTooltip>
+          </Button> : '' 
                   }
                   subheader={
                     <Typography gutterBottom variant='body2' align='left' component='p'>
@@ -660,7 +544,7 @@ if (result.data.status_code === 200) {
                         marginTop: '-5px',
                         fontSize: 'x-large',
                         fontWeight: 'bolder',
-                        color: 'white',
+                        color: 'black',
                       }}
                       color='textSecondary'
                       component='p'
