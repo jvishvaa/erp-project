@@ -18,6 +18,7 @@ import * as actionTypes from '../../store/actions'
 // import classes from './feeStructure.module.css'
 // import Modal from '../../../../ui/Modal/modal'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
 
 const styles = theme => ({
   tableWrapper: {
@@ -186,6 +187,7 @@ const ChequeBounceReports = ({ classes, session, branches, fetchBranches, downlo
   }
 
   return (
+    <Layout>
     <React.Fragment>
       <Grid container spacing={3}>
         <Grid item xs={3} className={classes.item}>
@@ -248,6 +250,7 @@ const ChequeBounceReports = ({ classes, session, branches, fetchBranches, downlo
       </Grid>
       {dataLoading ? <CircularProgress open /> : null}
     </React.Fragment>
+    </Layout>
   )
 }
 

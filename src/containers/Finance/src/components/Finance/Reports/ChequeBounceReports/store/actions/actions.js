@@ -31,7 +31,7 @@ export const chequeBounceList = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        payload.alert.warning('Unable to load reports')
+        // payload.alert.warning('Unable to load reports')
         console.log(error)
       })
   }
@@ -79,10 +79,10 @@ export const downloadChequeBounceReports = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        payload.alert.success('Downloading...')
+        // payload.alert.success('Downloading...')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        payload.alert.error('Something Went Wrong')
+        // payload.alert.error('Something Went Wrong')
         console.log(error)
       })
   }

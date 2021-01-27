@@ -14,6 +14,7 @@ import * as actionTypes from '../../store/actions'
 // import classes from './feeStructure.module.css'
 // import Modal from '../../../../ui/Modal/modal'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
 
 const styles = theme => ({
   tableWrapper: {
@@ -77,7 +78,7 @@ const StudentShuffle = ({ classes, session, history, dataLoading, studentShuffle
 
   const requestHandler = (e) => {
     history.push({
-      pathname: '/finance/requestShuffle'
+      pathname: '/finance/Requestshuffle'
     })
   }
 
@@ -303,6 +304,7 @@ const StudentShuffle = ({ classes, session, history, dataLoading, studentShuffle
   }
 
   return (
+    <Layout>
     <React.Fragment>
       <Grid container direction='row' justify='flex-end' spacing={1}>
         <Grid item className={classes.item} xs={3}>
@@ -352,6 +354,7 @@ const StudentShuffle = ({ classes, session, history, dataLoading, studentShuffle
       {shuffleStatus && shuffleStatus.value === 1 ? pendingShuffleTable() : shuffleStatus && shuffleStatus.value === 2 ? approvedShuffleTable() : rejectedShuffleTable() }
       {dataLoading ? <CircularProgress open /> : null}
     </React.Fragment>
+    </Layout>
   )
 }
 

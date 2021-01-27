@@ -448,6 +448,22 @@ const Layout = ({ children, history }) => {
         history.push('/finance/ReceiptBook')
         break;
       }
+      case 'Wallet Report': {
+        history.push('/finance/WalletReport')
+        break;
+      }
+      case 'Concession Report': {
+        history.push('/finance/ConcessionReport')
+        break;
+      }
+      case 'Bounce Report': {
+        history.push('/finance/ChequeBounceReport')
+        break;
+      }
+      case 'Student Shuffle Requests': {
+        history.push('/finance/StudentShuffleRequest')
+        break;
+      }
       default:
         break;
     }

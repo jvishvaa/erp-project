@@ -7,6 +7,7 @@ import { apiActions } from '../../../../_actions'
 import { urls } from '../../../../urls'
 import * as actionTypes from '../../store/actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
 
 const WalletReport = ({ session, fetchGrades, fetchBranchAtAcc, fetchBranches, branchAtAcc, branches, downloadReports, dataLoading, grades, alert, user }) => {
   const [sessionData, setSessionData] = useState([])
@@ -125,6 +126,7 @@ const WalletReport = ({ session, fetchGrades, fetchBranchAtAcc, fetchBranches, b
     )
   }
   return (
+    <Layout>
     <React.Fragment>
       <div style={{ padding: '15px' }}>
         <Grid container spacing={1}>
@@ -172,6 +174,7 @@ const WalletReport = ({ session, fetchGrades, fetchBranchAtAcc, fetchBranches, b
       </div>
       {dataLoading ? <CircularProgress open /> : null}
     </React.Fragment>
+    </Layout>
   )
 }
 

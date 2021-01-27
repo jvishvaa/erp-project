@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import { apiActions } from '../../../../_actions'
 import * as actionTypes from '../../store/actions'
 import { urls } from '../../../../urls'
+import Layout from '../../../../../../Layout'
 
 class ConcessionReport extends Component {
   state = {
@@ -211,6 +212,7 @@ class ConcessionReport extends Component {
     }
 
     return (
+      <Layout>
       <div style={{ marginLeft: '20px', marginTop: '20px' }}>
         <Grid container spacing={3}>
           <Grid item xs='3' >
@@ -279,6 +281,7 @@ class ConcessionReport extends Component {
           }
         </Grid>
       </div>
+      </Layout>
     )
   }
 }

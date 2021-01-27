@@ -50,6 +50,11 @@ import TotalPaidReports from './containers/Finance/src/components/Finance/Report
 import OtherFeeTotalPaidReports from './containers/Finance/src/components/Finance/Reports/TotalPaidDueReports/otherFeeTotalPaidDueReport.js'
 import TallyReports from './containers/Finance/src/components/Finance/Reports/TallyReports/tallyReports.js'
 import ReceiptBookAdm from './containers/Finance/src/components/Finance/AdmissionReports/ReceiptBook/receiptBook.js'
+import WalletReport from './containers/Finance/src/components/Finance/Reports/WalletReport/walletReport.js'
+import ConcessionReport from './containers/Finance/src/components/Finance/BranchAccountant/ConcessionReport/ConcessionReport.js'
+import ChequeBounceReport from './containers/Finance/src/components/Finance/Reports/ChequeBounceReports/chequeBounceReports.js'
+import StudentShuffle from './containers/Finance/src/components/Finance/BranchAccountant/StudentShuffle/studentShuffle.js'
+// import RequestShuffle from './containers/Finance/src/components/Finance/BranchAccountant/StudentShuffle/requestShuffle.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -215,6 +220,21 @@ function App() {
                 <Route exact path='/finance/ReceiptBook'>
                   {({ match }) => <ReceiptBookAdm match={match} />}
                 </Route>
+                <Route exact path='/finance/WalletReport'>
+                  {({ match }) => <WalletReport match={match} />}
+                </Route>
+                <Route exact path='/finance/ConcessionReport'>
+                  {({ match }) => <ConcessionReport match={match} />}
+                </Route>
+                <Route exact path='/finance/ChequeBounceReport'>
+                  {({ match }) => <ChequeBounceReport match={match} />}
+                </Route>
+                <Route exact path='/finance/StudentShuffleRequest'>
+                  {({ match }) => <StudentShuffle match={match} />}
+                </Route>
+                {/* <Route exact path='/finance/Requestshuffle'>
+                  {({ match }) => <RequestShuffle match={match} />}
+                </Route> */}
               </Switch>
             </ThemeProvider>
           </OnlineclassViewProvider>

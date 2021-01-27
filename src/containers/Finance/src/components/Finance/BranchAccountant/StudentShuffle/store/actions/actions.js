@@ -30,7 +30,7 @@ export const fetchStudentShuffle = (payload) => {
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
-        payload.alert.warning('Unable to load Shuffle')
+        // payload.alert.warning('Unable to load Shuffle')
       })
   }
 }
@@ -46,9 +46,9 @@ export const sendApproveReject = (payload) => {
       }).then(response => {
         if (response.status === 200) {
           if (payload.data.to_approve_status === 'Approved') {
-            payload.alert.success('Approved Successfully!')
+            // payload.alert.success('Approved Successfully!')
           } else {
-            payload.alert.success('Rejected Successfully!')
+            // payload.alert.success('Rejected Successfully!')
           }
           dispatch({
             type: SEND_APPROVE_REJECT,
@@ -61,7 +61,7 @@ export const sendApproveReject = (payload) => {
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
-        payload.alert.warning('Unable to Approve/Reject')
+        // payload.alert.warning('Unable to Approve/Reject')
       })
   }
 }
@@ -76,7 +76,7 @@ export const initiateShuffleRequest = (payload) => {
         }
       }).then(response => {
         if (response.status === 201) {
-          payload.alert.success('Shuffle Request Initiated')
+          // payload.alert.success('Shuffle Request Initiated')
           dispatch({
             type: INITIATE_STUDENT_SHUFFLE,
             payload: {
@@ -93,7 +93,7 @@ export const initiateShuffleRequest = (payload) => {
         } else {
           dispatch(actionTypes.dataLoaded())
           console.log(error)
-          payload.alert.warning('Unable to initiate shuffle')
+          // payload.alert.warning('Unable to initiate shuffle')
         }
       })
   }
