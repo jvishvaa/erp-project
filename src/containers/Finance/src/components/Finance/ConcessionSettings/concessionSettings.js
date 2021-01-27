@@ -26,6 +26,7 @@ import EditConcessionSettings from './editConcession'
 import AddConcessionSettings from './addConcession'
 import ManageFees from './manageFees'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../Layout'
 
 const styles = theme => ({
   tableWrapper: {
@@ -246,6 +247,7 @@ class ConcessionSettings extends Component {
       )
     }
     return (
+      <Layout>
       <React.Fragment>
         <Grid container spacing={3} style={{ padding: 15 }}>
           <Grid item xs='7' />
@@ -345,6 +347,7 @@ class ConcessionSettings extends Component {
         {deleteModal}
         {this.props.dataLoading ? <CircularProgress open /> : null}
       </React.Fragment>
+      </Layout>
     )
   }
 }
