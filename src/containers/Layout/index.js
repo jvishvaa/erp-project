@@ -444,6 +444,10 @@ const Layout = ({ children, history }) => {
         history.push('/finance/TallyReport')
         break;
       }
+      case 'Receipt Book': {
+        history.push('/finance/ReceiptBook')
+        break;
+      }
       default:
         break;
     }

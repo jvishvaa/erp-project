@@ -49,6 +49,7 @@ import Ledger from './containers/Finance/src/components/Finance/ExpenseManagemen
 import TotalPaidReports from './containers/Finance/src/components/Finance/Reports/TotalPaidDueReports/totalPaidReports.js'
 import OtherFeeTotalPaidReports from './containers/Finance/src/components/Finance/Reports/TotalPaidDueReports/otherFeeTotalPaidDueReport.js'
 import TallyReports from './containers/Finance/src/components/Finance/Reports/TallyReports/tallyReports.js'
+import ReceiptBookAdm from './containers/Finance/src/components/Finance/AdmissionReports/ReceiptBook/receiptBook.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -210,6 +211,9 @@ function App() {
                 </Route>
                 <Route exact path='/finance/TallyReport'>
                   {({ match }) => <TallyReports match={match} />}
+                </Route>
+                <Route exact path='/finance/ReceiptBook'>
+                  {({ match }) => <ReceiptBookAdm match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>
