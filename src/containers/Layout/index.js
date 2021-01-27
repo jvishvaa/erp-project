@@ -428,6 +428,10 @@ const Layout = ({ children, history }) => {
         history.push('/finance/ConcessionSetting');
         break;
       }
+      case 'Ledger': {
+        history.push('/finance/Ledger');
+        break;
+      }
       default:
         break;
     }

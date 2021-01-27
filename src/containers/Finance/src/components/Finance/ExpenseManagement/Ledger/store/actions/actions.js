@@ -27,7 +27,7 @@ export const fetchLedgerList = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      payload.alert.warning('Something Went Wrong')
+      // payload.alert.warning('Something Went Wrong')
       console.log(err)
       dispatch(actionTypes.dataLoaded())
     })
@@ -58,7 +58,7 @@ export const addLedgerAccHead = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.log(err)
-      payload.alert.warning('Something Went Wrong')
+      // payload.alert.warning('Something Went Wrong')
       dispatch(actionTypes.dataLoaded())
     })
   }
@@ -86,7 +86,7 @@ export const deleteLedgerHead = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.log(err)
-      payload.alert.warning('Something Went Wrong')
+      // payload.alert.warning('Something Went Wrong')
       dispatch(actionTypes.dataLoaded())
     })
   }
@@ -116,7 +116,7 @@ export const editLedgerHead = (payload) => {
     }).catch(err => {
       console.log(err)
       dispatch(actionTypes.dataLoaded())
-      payload.alert.warning('Something Went Wrong')
+      // payload.alert.warning('Something Went Wrong')
     })
   }
 }
@@ -150,7 +150,7 @@ export const addLedgerEntry = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      alert.warning('Something Went Wrong')
+      // alert.warning('Something Went Wrong')
       console.log(err)
       dispatch(actionTypes.dataLoaded())
     })
@@ -183,7 +183,7 @@ export const editLedgerEntry = (payload) => {
     }).catch(err => {
       console.log(err)
       dispatch(actionTypes.dataLoaded())
-      alert.warning('Something Went Wrong')
+      // alert.warning('Something Went Wrong')
     })
   }
 }
@@ -217,7 +217,7 @@ export const deleteLedgerEntry = (payload) => {
     }).catch(err => {
       console.log(err)
       dispatch(actionTypes.dataLoaded())
-      alert.warning('Something Went Wrong')
+      // alert.warning('Something Went Wrong')
     })
   }
 }
@@ -239,7 +239,7 @@ export const addLedgerType = (payload) => {
       }
     }).then(response => {
       if (+response.status === 201) {
-        alert.success('Saved Successfully')
+        // alert.success('Saved Successfully')
         dispatch({
           type: ADD_LEDGER_TYPE,
           payload: {
@@ -247,12 +247,12 @@ export const addLedgerType = (payload) => {
           }
         })
       } else {
-        alert.warning('Unable To Save')
+        // alert.warning('Unable To Save')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.log(err)
-      alert.warning('Unable To Save')
+      // alert.warning('Unable To Save')
       dispatch(actionTypes.dataLoaded())
     })
   }

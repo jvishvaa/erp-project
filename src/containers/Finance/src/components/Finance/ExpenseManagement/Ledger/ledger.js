@@ -16,6 +16,7 @@ import classes from './ledger.module.css'
 import * as actionTypes from '../../store/actions'
 import Modal from '../../../../ui/Modal/modal'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
 
 const styles = theme => ({
   tableWrapper: {
@@ -684,15 +685,16 @@ class Ledger extends Component {
     }
 
     return (
+      <Layout>
       <div className={classes.ledgerContainer}>
         <Grid container spacing={3} style={{ padding: 15 }}>
           <Grid item xs='3'>
-            <Button variant='outlined' color='primary' onClick={this.showLedgerTypeModal}>
+            <Button variant='contained' color='primary' onClick={this.showLedgerTypeModal}>
                 Add Ledger Type
             </Button>
           </Grid>
           <Grid item xs='3'>
-            <Button variant='outlined' color='primary' onClick={this.showAccountHeadModal}>
+            <Button variant='contained' color='primary' onClick={this.showAccountHeadModal}>
                 Add Account Head
             </Button>
           </Grid>
@@ -706,6 +708,7 @@ class Ledger extends Component {
         {accountHeadEditModal}
         {ledgerType}
       </div>
+      </Layout>
     )
   }
 }
