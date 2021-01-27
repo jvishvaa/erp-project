@@ -412,6 +412,14 @@ const Layout = ({ children, history }) => {
         history.push('/feeType/CurricularFeeType');
         break;
       }
+      case 'Other Fee Type': {
+        history.push('/feeType/OtherFeeType');
+        break;
+      }
+      case 'App/Reg Fee Type': {
+        history.push('/feeType/RegistrationFee');
+        break;
+      }
       default:
         break;
     }

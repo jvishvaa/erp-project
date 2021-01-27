@@ -40,6 +40,8 @@ import FeeType from './containers/Finance/src/components/Finance/CreateFeeType/N
 import MiscFeeType from './containers/Finance/src/components/Finance/CreateFeeType/MiscFeeType/miscFeeType';
 // import MiscFeeType from './containers/Finance/src/components/Finance/CreateFeeType/MiscFeeType/miscFeeType.js'
 import CurrFeeType from './containers/Finance/src/components/Finance/CreateFeeType/CurrFeeType/currFeeType.js'
+import OtherFeeType from './containers/Finance/src/components/Finance/CreateFeeType/OtherFeeType/otherFeeType.js'
+import RegistrationFee from './containers/Finance/src/components/Finance/CreateFeeType/RegistrationFeeType/registrationFee.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -177,6 +179,12 @@ function App() {
                 </Route>
                 <Route exact path='/feeType/CurricularFeeType'>
                   {({ match }) => <CurrFeeType match={match} />}
+                </Route>
+                <Route exact path='/feeType/OtherFeeType'>
+                  {({ match }) => <OtherFeeType match={match} />}
+                </Route>
+                <Route exact path='/feeType/RegistrationFee'>
+                  {({ match }) => <RegistrationFee match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

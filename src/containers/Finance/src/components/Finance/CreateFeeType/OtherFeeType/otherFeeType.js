@@ -5,13 +5,13 @@ import Select from 'react-select'
 import { Typography, Paper, Button } from '@material-ui/core/'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { OmsFilterTable, OmsSelect } from '../../../../ui'
+// import { OmsFilterTable, OmsSelect } from '../../../../ui'
 import { apiActions } from '../../../../_actions'
 import EditOtherFee from './editOtherFee'
 import AddOtherFee from './addOtherFee'
 import Modal from '../../../../ui/Modal/modal'
 import { urls } from '../../../../urls'
-import '../../../css/staff.css'
+// import '../../../css/staff.css'
 
 const otherFee = {
   namespace: 'Other Fee'
@@ -399,9 +399,9 @@ class OtherFeeType extends Component {
                         className='student-section-inputField'
                       >
                         <label>Academic Year*</label>
-                        <OmsSelect
+                        {/* <OmsSelect
                           options={this.props.session ? this.props.session.session_year.map((session) => ({ value: session, label: session })) : null}
-                          change={this.handleAcademicyear} />
+                          change={this.handleAcademicyear} /> */}
                       </Grid.Column>
                       <Grid.Column
                         computer={5}
@@ -447,11 +447,11 @@ class OtherFeeType extends Component {
                         tablet={15}
                         className='staff-table1'
                       >
-                        <OmsFilterTable
+                        {/* <OmsFilterTable
                           filterTableData={otherFee}
                           tableData={this.state.data}
                           tableFields={this.state.field}
-                        />
+                        /> */}
                       </Grid.Column>
                     </Grid.Row> : null}
 
