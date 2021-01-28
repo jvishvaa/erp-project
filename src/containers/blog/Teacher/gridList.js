@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React from 'react';
+import moment from 'moment';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import { Grid, Card, Button, Typography, Divider } from '@material-ui/core';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -13,7 +14,6 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import List from '@material-ui/core/List';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
-// import Card from '@material-ui/core/Card';
 const LightTooltip = withStyles((theme) => ({
   tooltip: {
     backgroundColor: theme.palette.common.white,
@@ -25,14 +25,13 @@ const LightTooltip = withStyles((theme) => ({
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    marginLeft: -30,
   },
   card: {
-    // backgroundColor: 'red',
-    // padding: theme.spacing(2),
     textAlign: 'center',
     margin: theme.spacing(1),
-    backgroundColor: 'grey',
-    // color: theme.palette.text.secondary,
+    backgroundPosition: 'center',
+    backgroundSize: 'auto',
   },
 }));
 
@@ -42,56 +41,24 @@ function GridList(props) {
 
   return (
     <div className={classes.root}>
+    { data && data.length ? (
       <Grid container spacing={2}>
         <Grid item xs={6}>
-          {/* <Card style={{ backgroundColor: 'yellow' }} className={classes.card}> */}
           <Grid item>
-            <Card className={classes.card} style={{ width: '100%', height: '200px' }}>
+            <Card 
+             style={{
+              width: '100%',
+              height: '290px',
+              display: data.length >= 0 ? '' : 'none',
+              backgroundSize: '360px',
+              backgroundImage: `url(${data[0] && data[0].thumbnail})`,
+            }}
+            className={classes.card} >
               <CardHeader
-                action={
-                  <LightTooltip
-                    interactive
-                    title={
-                      <>
-                        <List component='nav' aria-label='main mailbox folders'>
-                          <ListItem button>
-                            <ListItemText
-                              secondary={
-                                <Typography
-                                  style={{ color: '#ff6b6b' }}
-                                  variant='subtitle2'
-                                  onClick={() => console.log('hi')}
-                                >
-                                  Edit
-                                </Typography>
-                              }
-                            />
-                          </ListItem>
-                          <ListItem button>
-                            <ListItemText
-                              secondary={
-                                <Typography
-                                  style={{ color: '#ff6b6b' }}
-                                  variant='subtitle2'
-                                >
-                                  Delete
-                                </Typography>
-                              }
-                            />
-                          </ListItem>
-                        </List>
-                      </>
-                    }
-                    dataow
-                  >
-                    <IconButton aria-label='settings'>
-                      <MoreHorizIcon />
-                    </IconButton>
-                  </LightTooltip>
-                }
                 subheader={
                   <Typography gutterBottom variant='body2' align='left' component='p'>
-                    {data[0].Data}
+                    {data[0] && moment(data[0].created_at).format('MMM DD YYYY')}
+
                   </Typography>
                 }
               />
@@ -108,73 +75,42 @@ function GridList(props) {
                     color='textSecondary'
                     component='p'
                   >
-                    {data[0].title}
+                  {data[0] && data[0].title}
+
                   </Typography>
                 </CardContent>
               </CardActionArea>
               <CardActions style={{ float: 'right' }}>
-                <Button
-                  size='small'
-                  color='primary'
-                  style={{ bottom: '-15px', width: 150 }}
-                  onClick={() => props.history.push('/blog/teacher/contentView')}
-                >
-                  Read more
-                </Button>
-                {/* <Route path='/hello' component={ContentView} /> */}
-              </CardActions>
+                  <Button
+                    size='small'
+                    color='primary'
+                    style={{ marginTop: 100, width: 150 }}
+                    onClick={() =>
+                      props.history.push({
+                        pathname: '/blog/teacher/contentView',
+                        state: { data: data[0] ? data[0] :'' },
+                      })}
+                  >
+                    Read more
+                  </Button>
+                </CardActions>
+             
             </Card>
           </Grid>
-          {/* </Card> */}
-          {/* <Card style={{ backgroundColor: 'yellow' }} className={classes.card}> */}
           <Grid container spacing={2}>
             <Grid item xs={6}>
-              <Card style={{ width: '100%', height: '290px' }} className={classes.card}>
+              <Card  className={classes.card}
+              style={{
+                width: '100%',
+                height: '290px',
+                display: data.length >= 1 ? '' : 'none',
+                backgroundSize: '360px',
+                backgroundImage: `url(${data[1] && data[1].thumbnail})`,
+              }}>
                 <CardHeader
-                  action={
-                    <LightTooltip
-                      interactive
-                      title={
-                        <>
-                          <List component='nav' aria-label='main mailbox folders'>
-                            <ListItem button>
-                              <ListItemText
-                                secondary={
-                                  <Typography
-                                    style={{ color: '#ff6b6b' }}
-                                    variant='subtitle2'
-                                    onClick={() => console.log('hi')}
-                                  >
-                                    Edit
-                                  </Typography>
-                                }
-                              />
-                            </ListItem>
-                            <ListItem button>
-                              <ListItemText
-                                secondary={
-                                  <Typography
-                                    style={{ color: '#ff6b6b' }}
-                                    variant='subtitle2'
-                                  >
-                                    Delete
-                                  </Typography>
-                                }
-                              />
-                            </ListItem>
-                          </List>
-                        </>
-                      }
-                      dataow
-                    >
-                      <IconButton aria-label='settings'>
-                        <MoreHorizIcon />
-                      </IconButton>
-                    </LightTooltip>
-                  }
                   subheader={
                     <Typography gutterBottom variant='body2' align='left' component='p'>
-                      {data[0].Data}
+                      {data[1] && moment(data[1].created_at).format('MMM DD YYYY')}
                     </Typography>
                   }
                 />
@@ -190,7 +126,7 @@ function GridList(props) {
                       color='textSecondary'
                       component='p'
                     >
-                      {data[0].title}
+                    {data[1] && data[1].title}
                     </Typography>
                   </CardContent>
                 </CardActionArea>
@@ -198,65 +134,33 @@ function GridList(props) {
                   <Button
                     size='small'
                     color='primary'
-                    style={{ bottom: '-100px', width: 150 }}
-                    onClick={() => this.props.history.push('/blog/teacher/contentView')}
+                    style={{ marginTop: 100, width: 150 }}
+                    onClick={() =>
+                      props.history.push({
+                        pathname: '/blog/teacher/contentView',
+                        state: { data: data[1] },
+                      })}
                   >
                     Read more
                   </Button>
-                  {/* <Route path='/hello' component={ContentView} /> */}
                 </CardActions>
               </Card>
             </Grid>
             <Grid item xs={6}>
               <Card
-                style={{ backgroundColor: 'grey', width: '100%', height: '290px' }}
                 className={classes.card}
+                style={{
+                  width: '100%',
+                  height: '290px',
+                  display: data.length >= 2 ? '' : 'none',
+                  backgroundSize: '360px',
+                  backgroundImage: `url(${data[2] && data[2].thumbnail})`,
+                }}
               >
                 <CardHeader
-                  action={
-                    <LightTooltip
-                      interactive
-                      title={
-                        <>
-                          <List component='nav' aria-label='main mailbox folders'>
-                            <ListItem button>
-                              <ListItemText
-                                secondary={
-                                  <Typography
-                                    style={{ color: '#ff6b6b' }}
-                                    variant='subtitle2'
-                                    onClick={() => console.log('hi')}
-                                  >
-                                    Edit
-                                  </Typography>
-                                }
-                              />
-                            </ListItem>
-                            <ListItem button>
-                              <ListItemText
-                                secondary={
-                                  <Typography
-                                    style={{ color: '#ff6b6b' }}
-                                    variant='subtitle2'
-                                  >
-                                    Delete
-                                  </Typography>
-                                }
-                              />
-                            </ListItem>
-                          </List>
-                        </>
-                      }
-                      dataow
-                    >
-                      <IconButton aria-label='settings'>
-                        <MoreHorizIcon />
-                      </IconButton>
-                    </LightTooltip>
-                  }
                   subheader={
                     <Typography gutterBottom variant='body2' align='left' component='p'>
-                      {data[0].Data}
+                      {data[2] && moment(data[2].created_at).format('MMM DD YYYY')}
                     </Typography>
                   }
                 />
@@ -272,7 +176,7 @@ function GridList(props) {
                       color='textSecondary'
                       component='p'
                     >
-                      {data[1].title}
+                    {data[2] && data[2].title}
                     </Typography>
                   </CardContent>
                 </CardActionArea>
@@ -280,68 +184,36 @@ function GridList(props) {
                   <Button
                     size='small'
                     color='primary'
-                    style={{ bottom: '-100px', width: 150 }}
-                    onClick={() => this.props.history.push('/blog/teacher/contentView')}
+                    style={{ marginTop: 100, width: 150 }}
+                    onClick={() =>
+                      props.history.push({
+                        pathname: '/blog/teacher/contentView',
+                        state: { data: data[2] },
+                      })}
                   >
                     Read more
                   </Button>
-                  {/* <Route path='/hello' component={ContentView} /> */}
                 </CardActions>
               </Card>
             </Grid>
           </Grid>
-          {/* </Card> */}
         </Grid>
         <Grid item xs={6}>
-          {/* <Card style={{ backgroundColor: 'yellow' }} className={classes.card}> */}
           <Grid container spacing={2}>
             <Grid item xs={6}>
-              <Card style={{ width: '100%', height: '290px' }} className={classes.card}>
+              <Card  className={classes.card}
+              style={{
+                width: '100%',
+                height: '290px',
+                display: data.length >= 3 ? '' : 'none',
+                backgroundSize: '360px',
+                backgroundImage: `url(${data[3] && data[3].thumbnail})`,
+              }}>
                 <CardHeader
-                  action={
-                    <LightTooltip
-                      interactive
-                      title={
-                        <>
-                          <List component='nav' aria-label='main mailbox folders'>
-                            <ListItem button>
-                              <ListItemText
-                                secondary={
-                                  <Typography
-                                    style={{ color: '#ff6b6b' }}
-                                    variant='subtitle2'
-                                    onClick={() => console.log('hi')}
-                                  >
-                                    Edit
-                                  </Typography>
-                                }
-                              />
-                            </ListItem>
-                            <ListItem button>
-                              <ListItemText
-                                secondary={
-                                  <Typography
-                                    style={{ color: '#ff6b6b' }}
-                                    variant='subtitle2'
-                                  >
-                                    Delete
-                                  </Typography>
-                                }
-                              />
-                            </ListItem>
-                          </List>
-                        </>
-                      }
-                      dataow
-                    >
-                      <IconButton aria-label='settings'>
-                        <MoreHorizIcon />
-                      </IconButton>
-                    </LightTooltip>
-                  }
                   subheader={
                     <Typography gutterBottom variant='body2' align='left' component='p'>
-                      {data[2].Data}
+                      {data[3] && moment(data[3].created_at).format('MMM DD YYYY')}
+
                     </Typography>
                   }
                 />
@@ -357,7 +229,8 @@ function GridList(props) {
                       color='textSecondary'
                       component='p'
                     >
-                      {data[2].title}
+                      {data[3] && data[3].title}
+
                     </Typography>
                   </CardContent>
                 </CardActionArea>
@@ -365,62 +238,31 @@ function GridList(props) {
                   <Button
                     size='small'
                     color='primary'
-                    style={{ bottom: '-100px', width: 150 }}
-                    onClick={() => this.props.history.push('/blog/teacher/contentView')}
+                    style={{ marginTop: 100, width: 150 }}
+                    onClick={() =>
+                      props.history.push({
+                        pathname: '/blog/teacher/contentView',
+                        state: { data: data[3] },
+                      })}
                   >
                     Read more
                   </Button>
-                  {/* <Route path='/hello' component={ContentView} /> */}
                 </CardActions>
               </Card>
             </Grid>
             <Grid item xs={6}>
-              <Card style={{ width: '100%', height: '290px' }} className={classes.card}>
+              <Card  className={classes.card}
+              style={{
+                width: '100%',
+                height: '290px',
+                display: data.length >= 4 ? '' : 'none',
+                backgroundSize: '360px',
+                backgroundImage: `url(${data[4] && data[4].thumbnail})`,
+              }}>
                 <CardHeader
-                  action={
-                    <LightTooltip
-                      interactive
-                      title={
-                        <>
-                          <List component='nav' aria-label='main mailbox folders'>
-                            <ListItem button>
-                              <ListItemText
-                                secondary={
-                                  <Typography
-                                    style={{ color: '#ff6b6b' }}
-                                    variant='subtitle2'
-                                    onClick={() => console.log('hi')}
-                                  >
-                                    Edit
-                                  </Typography>
-                                }
-                              />
-                            </ListItem>
-                            <ListItem button>
-                              <ListItemText
-                                secondary={
-                                  <Typography
-                                    style={{ color: '#ff6b6b' }}
-                                    variant='subtitle2'
-                                  >
-                                    Delete
-                                  </Typography>
-                                }
-                              />
-                            </ListItem>
-                          </List>
-                        </>
-                      }
-                      dataow
-                    >
-                      <IconButton aria-label='settings'>
-                        <MoreHorizIcon />
-                      </IconButton>
-                    </LightTooltip>
-                  }
                   subheader={
                     <Typography gutterBottom variant='body2' align='left' component='p'>
-                      {data[3].Data}
+                      {data[4] && moment(data[4].created_at).format('MMM DD YYYY')}
                     </Typography>
                   }
                 />
@@ -436,7 +278,9 @@ function GridList(props) {
                       color='textSecondary'
                       component='p'
                     >
-                      {data[3].title}
+                    {data[3] && data[3].title}
+
+                      
                     </Typography>
                   </CardContent>
                 </CardActionArea>
@@ -444,65 +288,33 @@ function GridList(props) {
                   <Button
                     size='small'
                     color='primary'
-                    style={{ bottom: '-100px', width: 150 }}
-                    onClick={() => props.history.push('/blog/teacher/contentView')}
+                    style={{ marginTop: 100, width: 150 }}
+                    onClick={() =>
+                      props.history.push({
+                        pathname: '/blog/teacher/contentView',
+                        state: { data: data[4] },
+                      })}
                   >
                     Read more
                   </Button>
-                  {/* <Route path='/hello' component={ContentView} /> */}
                 </CardActions>
               </Card>
             </Grid>
           </Grid>
-          {/* </Card> */}
-          {/* <Card style={{ backgroundColor: 'yellow' }} className={classes.card}> */}
           <Grid item>
-            <Card style={{ width: '100%', height: '200px' }} className={classes.card}>
+            <Card  className={classes.card}
+            style={{
+              width: '100%',
+              height: '290px',
+              display: data.length >= 5 ? '' : 'none',
+              backgroundSize: '360px',
+              backgroundImage: `url(${data[5] && data[5].thumbnail})`,
+            }}>
               <CardHeader
-                action={
-                  <LightTooltip
-                    interactive
-                    title={
-                      <>
-                        <List component='nav' aria-label='main mailbox folders'>
-                          <ListItem button>
-                            <ListItemText
-                              secondary={
-                                <Typography
-                                  style={{ color: '#ff6b6b' }}
-                                  variant='subtitle2'
-                                  onClick={() => console.log('hi')}
-                                >
-                                  Edit
-                                </Typography>
-                              }
-                            />
-                          </ListItem>
-                          <ListItem button>
-                            <ListItemText
-                              secondary={
-                                <Typography
-                                  style={{ color: '#ff6b6b' }}
-                                  variant='subtitle2'
-                                >
-                                  Delete
-                                </Typography>
-                              }
-                            />
-                          </ListItem>
-                        </List>
-                      </>
-                    }
-                    dataow
-                  >
-                    <IconButton aria-label='settings'>
-                      <MoreHorizIcon />
-                    </IconButton>
-                  </LightTooltip>
-                }
                 subheader={
                   <Typography gutterBottom variant='body2' align='left' component='p'>
-                    {data[4].Data}
+                                         {data[5] && moment(data[5].created_at).format('MMM DD YYYY')}
+
                   </Typography>
                 }
               />
@@ -518,26 +330,31 @@ function GridList(props) {
                     color='textSecondary'
                     component='p'
                   >
-                    {data[4].title}
+                  {data[5] && data[5].title}
                   </Typography>
                 </CardContent>
               </CardActionArea>
               <CardActions style={{ float: 'right' }}>
-                <Button
-                  size='small'
-                  color='primary'
-                  style={{ bottom: '-15px', width: 150 }}
-                  onClick={() => this.props.history.push('/blog/teacher/contentView')}
-                >
-                  Read more
-                </Button>
-                {/* <Route path='/hello' component={ContentView} /> */}
-              </CardActions>
+                  <Button
+                    size='small'
+                    color='primary'
+                    style={{ marginTop: 100, width: 150 }}
+                    onClick={() =>
+                      props.history.push({
+                        pathname: '/blog/teacher/contentView',
+                        state: { data: data[5] },
+                      })}
+                  >
+                    Read more
+                  </Button>
+                </CardActions>
             </Card>
           </Grid>
-          {/* </Card> */}
         </Grid>
       </Grid>
+       ) : (
+        <Typography align='center'>Oops... No blogs Posted</Typography>
+            )}
     </div>
   );
 }

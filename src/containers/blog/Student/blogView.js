@@ -2,7 +2,6 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
-// import useTheme from '@material-ui/core/styles/useTheme'
 // import { connect } from 'react-redux';
 import {
   Grid,
@@ -20,13 +19,10 @@ import {
 import Rating from '@material-ui/lab/Rating';
 import Avatar from '@material-ui/core/Avatar';
 import { withRouter } from 'react-router-dom';
-import IconButton from '@material-ui/core/IconButton';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
-import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
-
 // import { withRouter } from 'react-router-dom';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import moment from 'moment';
@@ -72,7 +68,7 @@ const styles = (theme) => ({
     textAlign: 'center',
   },
 });
-// const themeContext = useTheme();
+
 const StyledRating = withStyles({
   iconFilled: {
     color: '#ff6d75',
@@ -90,10 +86,9 @@ class BlogView extends Component {
       feedBack: false,
       commentOpen: false,
       data: this.props.location.state.data && this.props.location.state.data,
-      tabValue:this.props.location.state.tabValue && this.props.location.state.tabValue,
+      tabValue:this.props.location.state.tabValue && this.pro
+      // blogId:
     };
-
-    
   }
 
   componentDidMount() {
@@ -124,36 +119,18 @@ class BlogView extends Component {
           }
         })
         .catch((error) => {
+          // setAlert('error', error.message);
+          // setSections([]);
+          // setSearchSection([]);
+          // setSubjects([]);
+          // setSectionDisp('');
         });
     }
   };
 
-  handleDeleteBlog = (blogId) => {
-    let requestData = {
-      "blog_id": blogId ,
-      "status": "1"
-  
-    }
-  axios.put(`${endpoints.blog.Blog}`, requestData)
-
-  .then(result=>{
-  // if (result.data.status_code === 200) {
-  //   setLoading(false);
-  //   setAlert('success', result.data.message);
-  // } else {        
-  //   setLoading(false);
-  //   setAlert('error', result.data.message);
-  // }
-  }).catch((error)=>{
-    // setLoading(false);        
-    // setAlert('error', error.message);
-  })
-};
-
-
   render() {
     const { classes } = this.props;
-    const { relatedBlog, starsRating, feedBack, commentOpen, data ,tabValue} = this.state;
+    const { relatedBlog, starsRating, feedBack, commentOpen, data } = this.state;
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -198,18 +175,18 @@ class BlogView extends Component {
                           title={data.author.first_name}
                           subheader={moment(data.created_at).format('MMM DD YYYY')}
                         />
-                         {
+                         {/* {
                   tabValue === 2 ?
 <IconButton
                   title='Delete'
-                  onClick={this.handleDeleteBlog(data.id)}
+                  // onClick={handleDeleteBlog(data)}
                 >
                   <DeleteOutlinedIcon
-                    // style={{ color: themeContext.palette.primary.main }}
+                    style={{ color: themeContext.palette.primary.main }}
                   />
                 </IconButton>
       : '' 
-              }
+              } */}
                         <CardContent>
                           <Typography variant='body2' color='textSecondary' component='p'>
                             {data.content}

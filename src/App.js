@@ -46,7 +46,9 @@ import {
   WriteBlog,
   PreviewBlog,
   StudentDashboard,
+  TeacherPublishBlogView,
   BlogView,
+  CreateGenre,
 } from './containers/blog';
 import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
 import Discussionforum from './containers/discussionForum/discussionForum';
@@ -222,11 +224,17 @@ function App() {
                 <Route exact path='/discussion-forum/create'>
                   {({ match }) => <CreateDiscussionForum match={match} />}
                 </Route>
+                <Route exact path='/blog/create/genre'>
+                  {({ match }) => <CreateGenre match={match} />}
+                </Route>
                 <Route exact path='/blog/teacher'>
                   {({ match }) => <TeacherBlog match={match} />}
                 </Route>
                 <Route exact path='/blog/teacher/contentView'>
                   {({ match }) => <ContentView match={match} />}
+                </Route>
+                <Route exact path='/blog/teacher/publish/view'>
+                  {({ match }) => <TeacherPublishBlogView match={match} />}
                 </Route>
                 <Route exact path='/blog/student/dashboard'>
                   {({ match }) => <StudentDashboard match={match} />}
@@ -234,6 +242,7 @@ function App() {
                 <Route exact path='/blog/student/write-blog'>
                   {({ match }) => <WriteBlog match={match} />}
                 </Route>
+
                 <Route exact path='/blog/student/preview-blog'>
                   {({ match }) => <PreviewBlog match={match} />}
                 </Route>

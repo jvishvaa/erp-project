@@ -2,6 +2,8 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
+import moment from 'moment';
+
 // import { connect } from 'react-redux';
 import {
   Grid,
@@ -19,7 +21,7 @@ import {
 import Rating from '@material-ui/lab/Rating';
 import Avatar from '@material-ui/core/Avatar';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
-// import { withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import SideBar from './sideBar';
 import Layout from '../../Layout';
@@ -75,12 +77,19 @@ class ContentView extends Component {
       relatedBlog: true,
       starsRating: 0,
       feedBack: false,
+      data: this.props.location.state.data && this.props.location.state.data
     };
-  }
+    console.log(this.props,"22222222222@@@@@")
 
+  }
+  componentDidMount() {
+    console.log(this.state.data);
+  }
+  
   render() {
+    console.log(this.props,"22222222222@@@@@")
     const { classes } = this.props;
-    const { relatedBlog, starsRating, feedBack } = this.state;
+    const { relatedBlog, starsRating, feedBack ,data} = this.state;
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -107,15 +116,10 @@ class ContentView extends Component {
                           component='h2'
                           style={{ marginBottom: 10 }}
                         >
-                          Title
+                            {data.title}
                         </Typography>
-                        {/* <CardMedia className={classes.media} image={data.thumbnail} /> */}
+                        <CardMedia className={classes.media} image={data.thumbnail} />
 
-                        <CardMedia
-                          className={classes.media}
-                          image='https://en.as.com/en/imagenes/2020/02/09/football/1581260503_252075_noticia_normal.jpg'
-                          title='Contemplative Reptile'
-                        />
                         <CardHeader
                           className={classes.author}
                           avatar={
@@ -128,13 +132,14 @@ class ContentView extends Component {
                           //       <MoreVertIcon />
                           //     </IconButton>
                           //   }
-                          title='Shrimp and Chorizo Paella'
-                          subheader='September 14, 2016'
+                          title={data.author.first_name}
+                          subheader=
+                          {data && moment(data.created_at).format('MMM DD YYYY')}
+
                         />
                         <CardContent>
                           <Typography variant='body2' color='textSecondary' component='p'>
-                            Lizards are a widespread group of squamate reptiles, with over
-                            6,000 species, ranging across all continents except Antarctica
+                            {data.content}
                           </Typography>
                         </CardContent>
                         <CardActions>
@@ -201,11 +206,13 @@ class ContentView extends Component {
                             </Button>
                           </CardContent>
                         </Card>
-                      ) : relatedBlog ? (
-                        <>
-                          <SideBar />
-                        </>
-                      ) : (
+                      ) : relatedBlog ? ''
+                      // (
+                      //   <>
+                      //     <SideBar />
+                      //   </>
+                      // ) 
+                      : (
                         <Card className={classes.reviewCard}>
                           <CardContent>
                             <Typography
@@ -282,6 +289,94 @@ class ContentView extends Component {
                               multiline
                               variant='outlined'
                             />
+                            <Divider variant='middle' />
+                            <Typography
+                              align='center'
+                              color='textPrimary'
+                              component='p'
+                              variant='overline'
+                            >
+                              VOCABULARY
+                            </Typography>
+                            <StyledRating
+                              name='size-medium'
+                              defaultValue={starsRating}
+                              emptyIcon={
+                                <StarBorderIcon color='primary' fontSize='inherit' />
+                              }
+                            />
+                            <TextField
+                              id='outlined-textarea'
+                              placeholder='Add Review'
+                              multiline
+                              variant='outlined'
+                            />
+                            <Divider variant='middle' />
+                            <Typography
+                              align='center'
+                              color='textPrimary'
+                              component='p'
+                              variant='overline'
+                            >
+                              COHERENCE
+                            </Typography>
+                            <StyledRating
+                              name='size-medium'
+                              defaultValue={starsRating}
+                              emptyIcon={
+                                <StarBorderIcon color='primary' fontSize='inherit' />
+                              }
+                            />
+                            <TextField
+                              id='outlined-textarea'
+                              placeholder='Add Review'
+                              multiline
+                              variant='outlined'
+                            />
+                            <Divider variant='middle' />
+                            <Typography
+                              align='center'
+                              color='textPrimary'
+                              component='p'
+                              variant='overline'
+                            >
+                              ENGAGEMENT
+                            </Typography>
+                            <StyledRating
+                              name='size-medium'
+                              defaultValue={starsRating}
+                              emptyIcon={
+                                <StarBorderIcon color='primary' fontSize='inherit' />
+                              }
+                            />
+                            <TextField
+                              id='outlined-textarea'
+                              placeholder='Add Review'
+                              multiline
+                              variant='outlined'
+                            />
+                            <Divider variant='middle' />
+                            <Typography
+                              align='center'
+                              color='textPrimary'
+                              component='p'
+                              variant='overline'
+                            >
+                            OVERALL RATING
+                            </Typography>
+                            <StyledRating
+                              name='size-medium'
+                              defaultValue={starsRating}
+                              emptyIcon={
+                                <StarBorderIcon color='primary' fontSize='inherit' />
+                              }
+                            />
+                            <TextField
+                              id='outlined-textarea'
+                              placeholder='Add Review'
+                              multiline
+                              variant='outlined'
+                            />
                           </CardContent>
                         </Card>
                       )}
@@ -296,4 +391,4 @@ class ContentView extends Component {
     );
   }
 }
-export default withStyles(styles)(ContentView);
+export default withRouter(withStyles(styles)(ContentView));

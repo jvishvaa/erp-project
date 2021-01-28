@@ -1,3 +1,4 @@
+
 /* eslint-disable react/require-default-props */
 /* eslint-disable react/forbid-prop-types */
 /* eslint-disable react/no-unused-state */
@@ -13,8 +14,9 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-// import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+
+// import { connect } from 'react-redux';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
 import MobileDatepicker from './datePicker';
@@ -67,7 +69,7 @@ const styles = (theme) => ({
     flexGrow: 1,
   },
 });
-class TeacherBlog extends Component {
+class TeacherPublishBlogView extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -78,15 +80,18 @@ class TeacherBlog extends Component {
     };
   }
   componentDidMount() {
-    this.getBlog(8);
+    this.getBlog(4);
   }
   getBlog = (status) => {
-    const { pageNo, pageSize } = this.state;
+    const { pageNo, pageSize ,tabValue} = this.state;
+    console.log(tabValue,"@@@@@")
+
+    
     axios
       .get(
         `${endpoints.blog.Blog}?page_number=${
           pageNo + 1
-        }&page_size=${pageSize}&status=${status}&module_id=113`
+        }&page_size=${pageSize}&status=${status}&module_id=113&published_level=${tabValue+1}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -102,12 +107,6 @@ class TeacherBlog extends Component {
     return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
   };
   
-  PublishBlogNav = () => {
-    this.props.history.push({
-      pathname: '/blog/teacher/publish/view',
-      state: { gradeId: 'hello' },
-    });
-  };
   getDaysBefore = (date, amount) => {
     return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
   };
@@ -125,9 +124,11 @@ class TeacherBlog extends Component {
   };
 
   handleTabChange = (event, newValue) => {
-    this.setState({ tabValue: newValue ,data:[]});
-    const blogTab = newValue === 0 ? 8 : 3;
-    this.getBlog(blogTab);
+    console.log(newValue,"@@@@@")
+    this.setState({ tabValue: newValue ,data:[]},()=>{
+      this.getBlog(4);
+
+    });
   };
 
   render() {
@@ -153,7 +154,7 @@ class TeacherBlog extends Component {
                       />
                     </div>
                   </Grid>
-                  <Grid item xs={12} sm={4}>
+                  {/* <Grid item xs={12} sm={4}>
                     <div className='blog_input'>
                       <TextField
                         id='outlined-full-width'
@@ -168,11 +169,11 @@ class TeacherBlog extends Component {
                         variant='outlined'
                       />
                     </div>
-                  </Grid>
+                  </Grid> */}
                 </Grid>
                 <div style={{ margin: '20px' }}>
                   <Grid container>
-                    <Grid item>
+                    {/* <Grid item>
                       <Button
                         color='primary'
                         style={{ fontSize: 'small', margin: '20px' }}
@@ -181,7 +182,7 @@ class TeacherBlog extends Component {
                       >
                         Clear All
                       </Button>
-                    </Grid>
+                    </Grid> */}
                     <Grid item>
                       <Button
                         style={{ fontSize: 'small', margin: '20px' }}
@@ -194,7 +195,7 @@ class TeacherBlog extends Component {
                     </Grid>
                   </Grid>
                   <Grid container spacing={2}>
-                    <Grid item>
+                    {/* <Grid item>
                       <Button
                         color='primary'
                         style={{ fontSize: 'small', margin: '20px' }}
@@ -205,7 +206,7 @@ class TeacherBlog extends Component {
                       >
                         Published Blogs
                       </Button>
-                    </Grid>
+                    </Grid> */}
                     {/* <Grid item>
                       <Button
                         style={{ fontSize: 'small', margin: '20px' }}
@@ -227,14 +228,23 @@ class TeacherBlog extends Component {
                           onChange={this.handleTabChange}
                           aria-label='simple tabs example'
                         >
-                          <Tab label='Pending Review' {...a11yProps(0)} />
-                          <Tab label='Reviewed' {...a11yProps(1)} />
+                          <Tab label='Orchids' {...a11yProps(0)} />
+                          <Tab label='Branch' {...a11yProps(1)} />
+                          <Tab label='Grade' {...a11yProps(2)} />
+                          <Tab label='Section' {...a11yProps(3)} />
+
                         </Tabs>
                         <TabPanel value={tabValue} index={0}>
                           <GridList data={data} />
                         </TabPanel>
                         <TabPanel value={tabValue} index={1}>
                         <GridList data={data} />
+                        </TabPanel>
+                        <TabPanel value={tabValue} index={2}>
+                          <GridList data={data} />
+                        </TabPanel>
+                        <TabPanel value={tabValue} index={3}>
+                          <GridList data={data} />
                         </TabPanel>
                       </div>
                     </Grid>
@@ -248,4 +258,4 @@ class TeacherBlog extends Component {
     );
   }
 }
-export default withRouter(withStyles(styles)(TeacherBlog));
+export default withRouter(withStyles(styles)(TeacherPublishBlogView));

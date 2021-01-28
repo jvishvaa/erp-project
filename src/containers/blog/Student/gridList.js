@@ -166,14 +166,9 @@ console.log(props.tabValue,"@@22")
                   >
                     Read more
                   </Button>
-                  
-                
-                  {/* <Route path='/hello' component={ContentView} /> */}
                 </CardActions>
               </Card>
             </Grid>
-            {/* </Card> */}
-            {/* <Card style={{ backgroundColor: 'yellow' }} className={classes.card}> */}
             <Grid container spacing={2}>
               <Grid item xs={6}>
                 <Card
@@ -198,47 +193,6 @@ console.log(props.tabValue,"@@22")
                       // onClick={handleDeleteBlog(data[0].id)}
                     >
           </Button> : '' 
-                      // <LightTooltip
-                      //   interactive
-                      //   title={
-                      //     <>
-                      //       <List component='nav' aria-label='main mailbox folders'>
-                      //         <ListItem button>
-                      //           <ListItemText
-                      //             secondary={
-                      //               <Typography
-                      //                 style={{ color: '#ff6b6b' }}
-                      //                 variant='subtitle2'
-                      //                 onClick={() => console.log('hi')}
-                      //               >
-                      //                 Edit
-                      //               </Typography>
-                      //             }
-                      //           />
-                      //         </ListItem>
-                      //         <ListItem button>
-                      //           <ListItemText
-                      //             secondary={
-                      //               <Typography
-                      //                 style={{ color: '#ff6b6b' }}
-                      //                 variant='subtitle2'
-                      //               >
-                      //                 Delete
-                                      
-                      //               </Typography>
-                                     
-                      //             }
-                      //           />
-                      //         </ListItem>
-                      //       </List>
-                      //     </>
-                      //   }
-                      //   dataow
-                      // >
-                      //   <IconButton aria-label='settings'>
-                      //     <MoreHorizIcon />
-                      //   </IconButton>
-                      // </LightTooltip>
                     }
                     subheader={
                       <Typography
@@ -282,7 +236,6 @@ console.log(props.tabValue,"@@22")
                     >
                       Read more
                     </Button>
-                    {/* <Route path='/hello' component={ContentView} /> */}
                   </CardActions>
                 </Card>
               </Grid>
@@ -353,15 +306,12 @@ console.log(props.tabValue,"@@22")
                     >
                       Read more
                     </Button>
-                    {/* <Route path='/hello' component={ContentView} /> */}
                   </CardActions>
                 </Card>
               </Grid>
             </Grid>
-            {/* </Card> */}
           </Grid>
           <Grid item xs={6}>
-            {/* <Card style={{ backgroundColor: 'yellow' }} className={classes.card}> */}
             <Grid container spacing={2}>
               <Grid item xs={6}>
                 <Card
@@ -429,7 +379,6 @@ console.log(props.tabValue,"@@22")
                     >
                       Read more
                     </Button>
-                    {/* <Route path='/hello' component={ContentView} /> */}
                   </CardActions>
                 </Card>
               </Grid>
@@ -561,7 +510,7 @@ console.log(props.tabValue,"@@22")
                     onClick={() =>
                       props.history.push({
                         pathname: '/blog/student/view-blog',
-                        state: { data: data[5] },
+                        state: { data: data[5]},
                       })}
                   >
                     Read more
