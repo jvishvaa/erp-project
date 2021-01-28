@@ -1,11 +1,5 @@
 import React, { createContext, useState } from 'react'
 
-
-// const initialState={
-//     a:'kkm',
-//     b:'mkk',
-// }
-
 const initialState={
     editData:[],
     isEdit: false,
