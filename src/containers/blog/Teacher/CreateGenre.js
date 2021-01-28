@@ -4,11 +4,6 @@ import {  TextField, Grid, Button, useTheme,Tabs, Tab ,Typography, Card, CardCon
 import IconButton from '@material-ui/core/IconButton';
 import Cancel from '@material-ui/icons/Cancel'
 import CheckCircle from '@material-ui/icons/CheckCircle';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import Box from '@material-ui/core/Box';
-import Paper from '@material-ui/core/Paper';
-
-
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -76,9 +71,7 @@ const CreateGenre = () => {
    const decideTab =() => {
     if (currentTab === 0) {
       return activeTabContent()
-    } else if (currentTab === 1) {
-      return inActiveTabContent()
-    }
+    } 
   }
 
   const activeTabContent = () =>{
@@ -110,33 +103,7 @@ const CreateGenre = () => {
     </Grid>
     </div>
   } 
-  const inActiveTabContent= () =>{
-    return <div> 
-    <Grid container spacing={2}>
-    { genreListRes && genreListRes.length
-      ? genreListRes.map((item) => {
-        return <Grid item xs={12} sm={6} md={4}>
-          <Card className={classes.root} style={{ border: '1px solid #FEE4D4'  }}>
-          <CardHeader  style={{fontSize: '15px'}}
-      action={
-        <IconButton aria-label="settings" style={{fontSize: '15px'}}>
-         {item.is_delete ? <Cancel style={{ color: 'red' ,fontSize: '25px' }}/>: <CheckCircle  style={{ color: 'green' ,fontSize: '25px' }}/> }
-        </IconButton>
-      }
-      style={{fontSize: '15px'}}
-      title=
-      {
-          <p style={{ fontFamily: 'Open Sans', fontSize: '15px', fontWeight: 'Lighter' }}> {item.genre}  
-          </p> } />
-          </Card>                        
-          </Grid>
-          })
-      : ''
-    }
-  </Grid>
-    </div>
-  }
-  
+
   
   
   const handleTabChange = (event,value) =>{
@@ -224,12 +191,12 @@ const handleGenreNameChange = (e) => {
               textColor='primary'
               onChange={handleTabChange} aria-label='simple tabs example'>
 
-              <Tab label='Active'
+              <Tab label='All'
 
               />
               
 
-            <Tab label='In-Active'/>
+            
             </Tabs>
           </Grid>
         </Grid>{decideTab()}
