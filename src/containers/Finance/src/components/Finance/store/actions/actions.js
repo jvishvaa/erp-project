@@ -564,7 +564,7 @@ export const downloadReports = (payload) => {
         payload.alert.success('Downloading...')
       }).catch(error => {
         dispatch(dataLoaded())
-        payload.alert.error('Something Went Wrong')
+        // payload.alert.error('Something Went Wrong')
         console.log(error)
       })
   }

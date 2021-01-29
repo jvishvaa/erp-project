@@ -6,10 +6,11 @@ import Select from 'react-select'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { apiActions } from '../../../_actions'
-import { RouterButton, OmsFilterTable } from '../../../ui'
-import '../../css/staff.css'
+// import { RouterButton, OmsFilterTable } from '../../../ui'
+// import '../../css/staff.css'
 import { urls } from '../../../urls'
 import * as actionTypes from '../store/actions'
+import Layout from '../../../../../Layout';
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 
 var grade = []
@@ -87,14 +88,14 @@ class MiscFeeClass extends Component {
               feelist[feelist.length - 1][grade.grade] = (curentGrade.length > 0 ? curentGrade[0].amount : 0)
             })
             feelist[feelist.length - 1]['edit'] =
-              <RouterButton
-                icon='edit'
-                value={{
-                  basic: 'basic',
-                  href: '/finance/misc_feeClass/edit/' + data.type_id
-                }}
-                id={data.type_id}
-              />
+              // <RouterButton
+              //   icon='edit'
+              //   value={{
+              //     basic: 'basic',
+              //     href: '/finance/misc_feeClass/edit/' + data.type_id
+              //   }}
+              //   id={data.type_id}
+              // />
             feelist[feelist.length - 1]['delete'] =
               <Button
                 icon='delete'
@@ -171,6 +172,7 @@ class MiscFeeClass extends Component {
 
   render () {
     return (
+      <Layout>
       <React.Fragment>
         <Grid container spacing={3} style={{ padding: 15 }}>
           <Grid item xs='3'>
@@ -241,17 +243,18 @@ class MiscFeeClass extends Component {
           {this.state.showtable
             ? <React.Fragment>
               <Grid item xs='12'>
-                <OmsFilterTable
+                {/* <OmsFilterTable
                   filterTableData={MiscFeeTable}
                   tableData={this.state.data}
                   tableFields={this.state.field}
-                />
+                /> */}
               </Grid>
             </React.Fragment>
             : null}
           {this.props.dataLoading ? <CircularProgress open /> : null}
         </Grid>
       </React.Fragment>
+      </Layout>
     )
   }
 }

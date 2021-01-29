@@ -55,6 +55,7 @@ import ConcessionReport from './containers/Finance/src/components/Finance/Branch
 import ChequeBounceReport from './containers/Finance/src/components/Finance/Reports/ChequeBounceReports/chequeBounceReports.js'
 import StudentShuffle from './containers/Finance/src/components/Finance/BranchAccountant/StudentShuffle/studentShuffle.js'
 // import RequestShuffle from './containers/Finance/src/components/Finance/BranchAccountant/StudentShuffle/requestShuffle.js'
+import MiscFeeClass from './containers/Finance/src/components/Finance/MiscFeeToClass/miscFeeClass.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -235,6 +236,9 @@ function App() {
                 {/* <Route exact path='/finance/Requestshuffle'>
                   {({ match }) => <RequestShuffle match={match} />}
                 </Route> */}
+                  <Route exact path='/finance/MiscFeeClass'>
+                  {({ match }) => <MiscFeeClass match={match} />}
+                </Route>
               </Switch>
             </ThemeProvider>
           </OnlineclassViewProvider>

@@ -3,7 +3,7 @@ import { Button, Fab, Grid, Table, TableRow, TableCell, TableBody, TableHead
 } from '@material-ui/core/'
 import Layout from '../../../../../../Layout';
 import Select from 'react-select'
-import ReactTable from 'react-table'
+// import ReactTable from 'react-table'
 // import 'react-table/react-table.css'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -113,45 +113,45 @@ class FeeType extends Component {
     this.deleteModalCloseHandler()
   }
 
-  // renderTable = () => {
-  //   let dataToShow = []
-  //   console.log("render table: ", this.props.normalFeeList)
-  //   dataToShow = this.props.normalFeeList.map((val, i) => {
-  //     return {
-  //       Sr: i + 1,
-  //       id: val.id ? val.id : '',
-  //       fee_type_name: val.fee_type_name ? val.fee_type_name : '',
-  //       priority: Number.isInteger(val.priority) ? val.priority : '',
-  //       is_concession_applicable: val.is_concession_applicable ? 'Yes' : 'No',
-  //       is_service_based: val.is_service_based ? 'Yes' : 'No',
-  //       is_pro_rata: val.is_pro_rata ? 'Yes' : 'No',
-  //       is_allow_partial_amount: val.is_allow_partial_amount ? 'Yes' : 'No',
-  //       is_activity_based_fee: val.is_activity_based_fee ? 'Yes' : 'No',
-  //       is_refundable_fee: val.is_refundable_fee ? 'Yes' : 'No',
-  //       show_transaction_in_parent_login: val.show_transaction_in_parent_login ? 'Yes' : 'No',
-  //       Edit: (
-  //         <Fab
-  //           color='primary'
-  //           size='small'
-  //           onClick={() => this.showModalHandler(val.id)}
-  //         >
-  //           <EditIcon />
-  //         </Fab>
-  //       ),
-  //       Delete: (
-  //         <Fab
-  //           color='primary'
-  //           size='small'
-  //           onClick={() => this.deleteModalShowHandler(val.id)}
-  //           // startIcon={}
-  //         >
-  //           <DeleteIcon />
-  //         </Fab>
-  //       )
-  //     }
-  //   })
-  //   return dataToShow
-  // }
+  renderTable = () => {
+    let dataToShow = []
+    console.log("render table: ", this.props.normalFeeList)
+    dataToShow = this.props.normalFeeList.map((val, i) => {
+      return {
+        Sr: i + 1,
+        id: val.id ? val.id : '',
+        fee_type_name: val.fee_type_name ? val.fee_type_name : '',
+        priority: Number.isInteger(val.priority) ? val.priority : '',
+        is_concession_applicable: val.is_concession_applicable ? 'Yes' : 'No',
+        is_service_based: val.is_service_based ? 'Yes' : 'No',
+        is_pro_rata: val.is_pro_rata ? 'Yes' : 'No',
+        is_allow_partial_amount: val.is_allow_partial_amount ? 'Yes' : 'No',
+        is_activity_based_fee: val.is_activity_based_fee ? 'Yes' : 'No',
+        is_refundable_fee: val.is_refundable_fee ? 'Yes' : 'No',
+        show_transaction_in_parent_login: val.show_transaction_in_parent_login ? 'Yes' : 'No',
+        Edit: (
+          <Fab
+            color='primary'
+            size='small'
+            onClick={() => this.showModalHandler(val.id)}
+          >
+            <EditIcon />
+          </Fab>
+        ),
+        Delete: (
+          <Fab
+            color='primary'
+            size='small'
+            onClick={() => this.deleteModalShowHandler(val.id)}
+            // startIcon={}
+          >
+            <DeleteIcon />
+          </Fab>
+        )
+      }
+    })
+    return dataToShow
+  }
 
   componentDidMount () {
     if (feeTypeState) {

@@ -464,6 +464,10 @@ const Layout = ({ children, history }) => {
         history.push('/finance/StudentShuffleRequest')
         break;
       }
+      case 'Misc. Fee Class': {
+        history.push('/finance/MiscFeeClass')
+        break;
+      }
       default:
         break;
     }
