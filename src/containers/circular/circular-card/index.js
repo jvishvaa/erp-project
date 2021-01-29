@@ -36,7 +36,7 @@ const CircularCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, se
     setShowMenu(false);
     setShowPeriodIndex();
   };
-  console.log(period,'======')
+  // console.log(period,'======')
   
   const handleViewMore = () => {
     setLoading(true)
@@ -70,7 +70,7 @@ const CircularCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, se
   }
 
   const handleDelete=(e,index)=>{
-    console.log(e,index,'event')
+    // console.log(e,index,'event')
     axiosInstance.put(`${endpoints.circular.deleteCircular}`,
     {
      'circular_id': e.id,
@@ -89,7 +89,7 @@ const CircularCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, se
 
   }
   const handleEdit=(data)=>{
-    console.log(data,'PPP')
+    // console.log(data,'PPP')
     // setEditData(e)
     setState({isEdit:true,editData:data});
     history.push('/create-circular')
