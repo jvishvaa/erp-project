@@ -118,7 +118,6 @@ export default {
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },  
   discussionForum:{
-<<<<<<< HEAD
    categoryList: '/academic/categories/',
    branch: '/erp_user/branch/',
    grade:'/erp_user/grademapping/',
@@ -143,20 +142,7 @@ export default {
     dairyList:'/academic/general-dairy-messages/',
 
   },
-=======
-    categoryList: '/academic/categories/',
-    branch: '/erp_user/branch/',
-    grade:'/erp_user/grademapping/',
-    filterCategory: '/academic/posts/',
-    postLike: '/academic/posts-like-users/',
-    PostCategory : '/academic/create-category/',
-    CreateDissusionForum: '/academic/add-post/',
-    CreateCommentAndReplay: '/academic/create-answer-replay/',
-    AwardListAPI: '/academic/',
-    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
-    deletePost: '/academic/'
-   },
->>>>>>> 8a22f0c66ba202c45389ec7a8dc7a22cc46d3999
+    
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
 };
