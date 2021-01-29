@@ -23,9 +23,12 @@ const LessonViewFilters = ({
     setCentralSubjectName,
     centralGradeName,
     centralSubjectName,
-}) => {
+    }) => {
 
     const { setAlert } = useContext(AlertNotificationContext);
+    const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+    const [studentModuleId, setStudentModuleId] = useState();
+    const [teacherModuleId, setTeacherModuleId] = useState();
     const themeContext = useTheme();
     const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
     const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px'
@@ -90,12 +93,32 @@ const LessonViewFilters = ({
         }
     };
 
+    useEffect(() => {
+        if (NavData && NavData.length) {
+          NavData.forEach((item) => {
+            if (
+              item.parent_modules === 'Lesson Plan' &&
+              item.child_module &&
+              item.child_module.length > 0
+            ) {
+              item.child_module.forEach((item) => {
+                if(location.pathname === "/lesson-plan/student-view" && item.child_name === "Student View") {
+                    setStudentModuleId(item?.child_id);
+                } else if(location.pathname === "/lesson-plan/teacher-view" && item.child_name === "Teacher View") {
+                    setTeacherModuleId(item?.child_id);
+                } 
+              });
+            }
+          });
+        }
+      }, [location.pathname]);
+
     const handleBranch = (event, value) => {
         setFilterData({ ...filterData, branch: '', grade: '', subject: '', chapter: '' });
         setOverviewSynopsis([]);
         if (value) {
             setFilterData({ ...filterData, branch: value, grade: '', subject: '', chapter: '' });
-            axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=8`)
+            axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=${location.pathname === "/lesson-plan/student-view"?studentModuleId:teacherModuleId}`)
                 .then(result => {
                     if (result.data.status_code === 200) {
                         setGradeDropdown(result.data.data);
