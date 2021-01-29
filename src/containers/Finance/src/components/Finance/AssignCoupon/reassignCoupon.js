@@ -14,8 +14,8 @@ import {
 //   withStyles
 } from '@material-ui/core'
 // import { Edit } from '@material-ui/icons'
-import ReactTable from 'react-table'
-import 'react-table/react-table.css'
+// import ReactTable from 'react-table'
+// import 'react-table/react-table.css'
 import Grid from '@material-ui/core/Grid'
 import Select from 'react-select'
 import { connect } from 'react-redux'
@@ -363,128 +363,128 @@ const ReAssignCoupon = ({ classes, session, branches, sessionData, gradeData, er
     setErpSearchValue(e.target.value)
     setStudentErpList(filteredArr)
   }
-  let studentErpTable = null
-  let checkedAlls = null
-  if (assignErp && assignErp.length > 0) {
-    checkedAlls = (
-      <div style={{ display: 'flex' }}>
-        <div style={{ padding: '10px' }}>
-          <input
-            type='checkbox'
-            style={{ width: '20px', height: '20px', paddingBottom: '35px' }}
-            checked={checkedAll || false}
-            onChange={checkAllStudentsHandler}
-          /> &nbsp; <b>Select All Students</b>
-        </div>
-        <div>
-          <TextField
-            id='erp1'
-            label='Search ERP'
-            type='number'
-            variant='outlined'
-            value={erpSearchValue || ''}
-            style={{ zIndex: 0, marginTop: '0px', marginBottom: 20 }}
-            onChange={erpSearchHandler}
-            InputLabelProps={{ shrink: true }}
-            InputProps={{
-              style: {
-                height: 35
-              }
-            }}
-          />
-        </div>
-      </div>
-    )
-    studentErpTable = <ReactTable
-      data={renderStudentErpTable()}
-      manual
-      columns={[
-        {
-          Header: 'Select',
-          accessor: 'check',
-          // inputFilterable: true,
-          // exactFilterable: true,
-          filterable: false,
-          sortable: true
-        },
-        {
-          Header: 'ERP Code',
-          accessor: 'erpCode',
-          // inputFilterable: true,
-          // exactFilterable: true,
-          filterable: false,
-          sortable: true
-        },
-        {
-          Header: 'Coupon',
-          accessor: 'coupon',
-          // inputFilterable: true,
-          // exactFilterable: true,
-          filterable: false,
-          sortable: true
-        },
-        {
-          Header: 'Applicale To',
-          accessor: 'applicableTo',
-          // inputFilterable: true,
-          // exactFilterable: true,
-          filterable: false,
-          sortable: true
-        },
-        {
-          Header: 'Vaild',
-          accessor: 'valid',
-          // inputFilterable: true,
-          // exactFilterable: true,
-          filterable: false,
-          sortable: true
-        },
-        {
-          Header: 'Applicable',
-          accessor: 'applicable',
-          // inputFilterable: true,
-          // exactFilterable: true,
-          filterable: false,
-          sortable: true
-        },
-        {
-          Header: 'Used',
-          accessor: 'used',
-          // inputFilterable: true,
-          // exactFilterable: true,
-          filterable: false,
-          sortable: true
-        },
-        // {
-        //   Header: 'Edit',
-        //   accessor: 'Edit',
-        //   filterable: false,
-        //   sortable: true
-        // },
-        {
-          Header: 'View Details',
-          accessor: 'view',
-          filterable: false,
-          sortable: true
-        },
-        {
-          Header: 'Delete Coupon',
-          accessor: 'delete',
-          filterable: false,
-          sortable: true
-        }
-      ]}
-      filterable
-      sortable
-      defaultPageSize={0}
-      showPageSizeOptions={false}
-      className='-striped -highlight'
-      // Controlled props
-      // page={this.state.page}
-      // Callbacks
-      // onPageChange={page => this.pageChangeHandler(page)}
-    />
-  }
+  // let studentErpTable = null
+  // let checkedAlls = null
+  // if (assignErp && assignErp.length > 0) {
+  //   checkedAlls = (
+  //     <div style={{ display: 'flex' }}>
+  //       <div style={{ padding: '10px' }}>
+  //         <input
+  //           type='checkbox'
+  //           style={{ width: '20px', height: '20px', paddingBottom: '35px' }}
+  //           checked={checkedAll || false}
+  //           onChange={checkAllStudentsHandler}
+  //         /> &nbsp; <b>Select All Students</b>
+  //       </div>
+  //       <div>
+  //         <TextField
+  //           id='erp1'
+  //           label='Search ERP'
+  //           type='number'
+  //           variant='outlined'
+  //           value={erpSearchValue || ''}
+  //           style={{ zIndex: 0, marginTop: '0px', marginBottom: 20 }}
+  //           onChange={erpSearchHandler}
+  //           InputLabelProps={{ shrink: true }}
+  //           InputProps={{
+  //             style: {
+  //               height: 35
+  //             }
+  //           }}
+  //         />
+  //       </div>
+  //     </div>
+  //   )
+  //   studentErpTable = <ReactTable
+  //     data={renderStudentErpTable()}
+  //     manual
+  //     columns={[
+  //       {
+  //         Header: 'Select',
+  //         accessor: 'check',
+  //         // inputFilterable: true,
+  //         // exactFilterable: true,
+  //         filterable: false,
+  //         sortable: true
+  //       },
+  //       {
+  //         Header: 'ERP Code',
+  //         accessor: 'erpCode',
+  //         // inputFilterable: true,
+  //         // exactFilterable: true,
+  //         filterable: false,
+  //         sortable: true
+  //       },
+  //       {
+  //         Header: 'Coupon',
+  //         accessor: 'coupon',
+  //         // inputFilterable: true,
+  //         // exactFilterable: true,
+  //         filterable: false,
+  //         sortable: true
+  //       },
+  //       {
+  //         Header: 'Applicale To',
+  //         accessor: 'applicableTo',
+  //         // inputFilterable: true,
+  //         // exactFilterable: true,
+  //         filterable: false,
+  //         sortable: true
+  //       },
+  //       {
+  //         Header: 'Vaild',
+  //         accessor: 'valid',
+  //         // inputFilterable: true,
+  //         // exactFilterable: true,
+  //         filterable: false,
+  //         sortable: true
+  //       },
+  //       {
+  //         Header: 'Applicable',
+  //         accessor: 'applicable',
+  //         // inputFilterable: true,
+  //         // exactFilterable: true,
+  //         filterable: false,
+  //         sortable: true
+  //       },
+  //       {
+  //         Header: 'Used',
+  //         accessor: 'used',
+  //         // inputFilterable: true,
+  //         // exactFilterable: true,
+  //         filterable: false,
+  //         sortable: true
+  //       },
+  //       // {
+  //       //   Header: 'Edit',
+  //       //   accessor: 'Edit',
+  //       //   filterable: false,
+  //       //   sortable: true
+  //       // },
+  //       {
+  //         Header: 'View Details',
+  //         accessor: 'view',
+  //         filterable: false,
+  //         sortable: true
+  //       },
+  //       {
+  //         Header: 'Delete Coupon',
+  //         accessor: 'delete',
+  //         filterable: false,
+  //         sortable: true
+  //       }
+  //     ]}
+  //     filterable
+  //     sortable
+  //     defaultPageSize={0}
+  //     showPageSizeOptions={false}
+  //     className='-striped -highlight'
+  //     // Controlled props
+  //     // page={this.state.page}
+  //     // Callbacks
+  //     // onPageChange={page => this.pageChangeHandler(page)}
+  //   />
+  // }
 
   const checkBoxHandler = (e, id) => {
     // check if the check box is checked or unchecked
@@ -806,8 +806,8 @@ const ReAssignCoupon = ({ classes, session, branches, sessionData, gradeData, er
     <div>
       { showTabs
         ? <div>
-          {checkedAlls}
-          {studentErpTable}
+          {/* {checkedAlls} */}
+          {/* {studentErpTable} */}
           {multiChange}
           {couponDetail}
           {detailsModal}

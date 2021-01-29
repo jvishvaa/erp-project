@@ -24,14 +24,14 @@ export const createCoupon = (payload) => {
         })
         dispatch(actionTypes.dataLoaded())
         if (response.status === 201) {
-          payload.alert.success('Coupon Created Successfully!')
+          // payload.alert.success('Coupon Created Successfully!')
         }
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         if (error.response && error.response.data && error.response.data.err_msg && (error.response.status === 400 || error.response.status === 404)) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.warning('Something Went Wrong!')
+          // payload.alert.warning('Something Went Wrong!')
         }
         console.log(error)
       })
@@ -58,7 +58,7 @@ export const listCoupon = (payload) => {
         if (error.response && error.response.data && error.response.data.err_msg && (error.response.status === 400 || error.response.status === 404)) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.warning('Something Went Wrong!')
+          // payload.alert.warning('Something Went Wrong!')
         }
         console.log(error)
       })
@@ -81,14 +81,14 @@ export const couponDetailUpdate = (payload) => {
         })
         dispatch(actionTypes.dataLoaded())
         if (response.status === 200) {
-          payload.alert.success('Coupon Updated Successfully!')
+          // payload.alert.success('Coupon Updated Successfully!')
         }
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         if (error.response && error.response.data && error.response.data.err_msg && (error.response.status === 400 || error.response.status === 404)) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.warning('Something Went Wrong!')
+          // payload.alert.warning('Something Went Wrong!')
         }
         console.log(error)
       })
@@ -116,7 +116,7 @@ export const listAllCoupon = (payload) => {
         if (error.response && error.response.data && error.response.data.err_msg && (error.response.status === 400 || error.response.status === 404)) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.warning('Something Went Wrong!')
+          // payload.alert.warning('Something Went Wrong!')
         }
         console.log(error)
       })

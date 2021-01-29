@@ -468,6 +468,14 @@ const Layout = ({ children, history }) => {
         history.push('/finance/MiscFeeClass')
         break;
       }
+      case 'Assign Coupon': {
+        history.push('/finance/AssignCoupon')
+        break;
+      }
+      case 'Create Coupon': {
+        history.push('/finance/CreateCoupon')
+        break;
+      }
       default:
         break;
     }

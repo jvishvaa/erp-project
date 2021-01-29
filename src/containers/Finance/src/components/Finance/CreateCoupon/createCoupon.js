@@ -5,6 +5,7 @@ import { Edit } from '@material-ui/icons'
 import Modal from '../../../ui/Modal/modal'
 import { apiActions } from '../../../_actions'
 import * as actionTypes from '../store/actions'
+import Layout from '../../../../../Layout';
 
 const CreateCoupon = ({ alert, user, createCoupon, listAllCoupon, couponAllList, couponDetailUpdate }) => {
   const [active, setActive] = useState(true)
@@ -288,6 +289,7 @@ const CreateCoupon = ({ alert, user, createCoupon, listAllCoupon, couponAllList,
     return tabledata
   }
   return (
+    <Layout>
     <React.Fragment>
       <Grid container spacing={3} style={{ padding: 15 }}>
         <Grid item xs='3'>
@@ -379,6 +381,7 @@ const CreateCoupon = ({ alert, user, createCoupon, listAllCoupon, couponAllList,
         {changeModal}
       </Table>
     </React.Fragment>
+    </Layout>
   )
 }
 const mapStateToProps = state => ({

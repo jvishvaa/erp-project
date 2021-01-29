@@ -56,6 +56,8 @@ import ChequeBounceReport from './containers/Finance/src/components/Finance/Repo
 import StudentShuffle from './containers/Finance/src/components/Finance/BranchAccountant/StudentShuffle/studentShuffle.js'
 // import RequestShuffle from './containers/Finance/src/components/Finance/BranchAccountant/StudentShuffle/requestShuffle.js'
 import MiscFeeClass from './containers/Finance/src/components/Finance/MiscFeeToClass/miscFeeClass.js'
+import AssignCoupon from './containers/Finance/src/components/Finance/AssignCoupon/assignCoupon.js'
+import CreateCoupon from './containers/Finance/src/components/Finance/CreateCoupon/createCoupon.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -238,6 +240,12 @@ function App() {
                 </Route> */}
                   <Route exact path='/finance/MiscFeeClass'>
                   {({ match }) => <MiscFeeClass match={match} />}
+                </Route>
+                <Route exact path='/finance/AssignCoupon'>
+                  {({ match }) => <AssignCoupon match={match} />}
+                </Route>
+                <Route exact path='/finance/CreateCoupon'>
+                  {({ match }) => <CreateCoupon match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

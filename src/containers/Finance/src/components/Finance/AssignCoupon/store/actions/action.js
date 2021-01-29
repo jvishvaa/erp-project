@@ -29,7 +29,7 @@ export const fetchErpList = (payload) => {
         if (error.response && error.response.status === 400) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.warning('Something Went Wrong!')
+          // payload.alert.warning('Something Went Wrong!')
         }
         console.log(error)
       })
@@ -52,14 +52,14 @@ export const couponAssignedToStudent = (payload) => {
         })
         dispatch(actionTypes.dataLoaded())
         if (response.status === 201) {
-          payload.alert.success('Coupon Assigned Successfully!')
+          // payload.alert.success('Coupon Assigned Successfully!')
         }
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         if (error.response && error.response.data && error.response.data.err_msg && (error.response.status === 400 || error.response.status === 404)) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.warning('Something Went Wrong!')
+          // payload.alert.warning('Something Went Wrong!')
         }
         console.log(error)
       })
@@ -82,14 +82,14 @@ export const couponReAssignedToStudent = (payload) => {
         })
         dispatch(actionTypes.dataLoaded())
         if (response.status === 200) {
-          payload.alert.success('Coupon ReAssigned Successfully!')
+          // payload.alert.success('Coupon ReAssigned Successfully!')
         }
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         if (error.response && error.response.data && error.response.data.err_msg && (error.response.status === 400 || error.response.status === 404)) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.warning('Something Went Wrong!')
+          // payload.alert.warning('Something Went Wrong!')
         }
         console.log(error)
       })
@@ -119,7 +119,7 @@ export const couponDelete = (payload) => {
         if (error.response && error.response.status === 400) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.warning('Something Went Wrong!')
+          // payload.alert.warning('Something Went Wrong!')
         }
         console.log(error)
       })
@@ -146,7 +146,7 @@ export const erpCouponHistory = (payload) => {
         if (error.response && error.response.status === 400) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.warning('Something Went Wrong!')
+          // payload.alert.warning('Something Went Wrong!')
         }
         console.log(error)
       })

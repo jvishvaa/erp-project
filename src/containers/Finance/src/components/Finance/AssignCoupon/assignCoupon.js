@@ -14,8 +14,8 @@ import {
 //   withStyles
 } from '@material-ui/core'
 // import { Edit } from '@material-ui/icons'
-import ReactTable from 'react-table'
-import 'react-table/react-table.css'
+// import ReactTable from 'react-table'
+// import 'react-table/react-table.css'
 import Grid from '@material-ui/core/Grid'
 import Select from 'react-select'
 import { connect } from 'react-redux'
@@ -67,17 +67,6 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
 
   useEffect(() => {
     setStudentErpList(erpList)
-    // if (assignErp) {
-    //   let a = assignErp
-    //   let b = []
-    //   for (let i = 0; i < a.length; i++) {
-    //     if ((a[i].student && a[i].student.erp) === (a[i + 1].student && a[i + 1].student.erp) && (+a[i].createdAt > +a[i + 1].createdAt)) {
-    //       b.push(a[i])
-    //     }
-    //   }
-    //   console.log('b++', b)
-    //   console.log('a', a)
-    // }
   }, [erpList])
   useEffect(() => {
     if (value === 'one' && sessionData && branchData && gradeData && sectionData) {
@@ -150,84 +139,7 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
   const applicableHandler = (e) => {
     setApplicableTo(e)
   }
-  // const singleCouponListHandler = (e) => {
-  //   setSingleCoupon(e)
-  // }
-  // const showEditModalHandler = (studentId, erp, coupId, cou) => {
-  //   let a = []
-  //   a.push(erp)
-  //   setErpCode(a)
-  //   setSingleCoupon({
-  //     value: coupId,
-  //     label: cou
-  //   })
-  //   setStudentId(studentId)
-  //   setEditModal(true)
-  // }
-  // const assignSingleErpCouponHandler = () => {
-  //   console.log('stid', studentId)
-  //   if (singlecoupon && erpCode) {
-  //     setEditModal(false)
-  //     const data = {
-  //       coupon: singlecoupon.value,
-  //       erp: erpCode,
-  //       academic_year: sessionData.value,
-  //       branch_id: branchData.value,
-  //       grade_id: gradeData.value
-  //     }
-  //     console.log('singlecoupon', data)
-  //     couponAssignedToStudent(data, alert, user)
-  //     alert.success('Coupon Assigned Successfully!')
-  //   } else {
-  //     alert.warning('Select Student Erp and Coupon!')
-  //   }
-  // }
-  // const hideEditModalHandler = () => {
-  //   setEditModal(false)
-  // }
-
-  // let changeModal = null
-  // if (editModal) {
-  //   changeModal = (
-  //     <Modal open={editModal} click={hideEditModalHandler}>
-  //       <h3 style={{ textAlign: 'center' }}>Assign Coupon</h3>
-  //       <hr />
-  //       {studentId
-  //         ? <div style={{ marginLeft: '20px' }}>
-  //           <Grid container spacing={3} style={{ padding: 15 }}>
-  //             <Grid item xs='4'>
-  //               <label>Coupon*</label>
-  //               <Select
-  //                 placeholder='Coupon'
-  //                 style={{ width: '100px' }}
-  //                 value={singlecoupon}
-  //                 options={
-  //                   couponList
-  //                     ? couponList.filter((cou) => cou.active).map(fp => ({
-  //                       value: fp.id,
-  //                       label: fp.coupon
-  //                     }))
-  //                     : []
-  //                 }
-  //                 onChange={singleCouponListHandler}
-  //               />
-  //             </Grid>
-  //             <Grid item xs='3'>
-  //               <Button
-  //                 style={{ marginTop: '20px' }}
-  //                 variant='contained'
-  //                 color='primary'
-  //                 onClick={assignSingleErpCouponHandler}>
-  //                   Assign
-  //               </Button>
-  //             </Grid>
-  //           </Grid>
-  //         </div>
-  //         : null
-  //       }
-  //     </Modal>
-  //   )
-  // }
+  
   const studentAllcoupondetail = (erp) => {
     let arr = []
     erpList && erpList.map((val) => {
@@ -279,53 +191,53 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
     )
   }
 
-  const renderStudentErpTable = () => {
-    let dataToShow = []
-    dataToShow = studentErpList && studentErpList.map((val, i) => {
-      return {
-        id: val.id,
-        check: val.erp && <input
-          type='checkbox'
-          name='checking'
-          value={i + 1}
-          disabled={val.coupon && val.coupon.coupon}
-          checked={isChecked[val.id]}
-          onChange={
-            (e) => { checkBoxHandler(e, val.id) }
-          } />,
-        erpCode: val.erp ? val.erp : '',
-        coupon: val.erp && val.coupon && val.coupon.coupon ? val.coupon.coupon : '',
-        valid: val.erp && val.coupon && val.is_coupon_valid ? 'Yes' : val.coupon && val.erp && 'No',
-        applicable: val.erp && val.coupon && val.is_coupon_applicable ? 'Yes' : val.coupon && val.erp && 'No',
-        used: val.erp && val.coupon && val.is_coupon_used ? 'Yes' : val.coupon && val.erp && 'No',
-        // Edit: <Fab size='small' color='primary' style={{ marginBottom: '30px' }} onClick={() => showEditModalHandler(val.id, val.erp ? val.erp : (val.student && val.student.erp), val.coupon && val.coupon.id, val.coupon && val.coupon.coupon)}>
-        //   <Edit style={{ cursor: 'pointer' }} />
-        // </Fab>,
-        view: val.erp && <Button
-          // style={{ marginTop: '25px' }}
-          variant='contained'
-          color='primary'
-          // disabled={!this.state.changedFeePlanId}
-          onClick={() => studentAllcoupondetail(val.erp)}
-        >
-        View Details
-        </Button>
-      }
-    })
-    return dataToShow
-  }
-  const checkAllStudentsHandler = (e) => {
-    const checked = {}
-    if (erpList && erpList.length > 0) {
-      erpList.forEach(ele => {
-        if (ele.erp) {
-          checked[ele.id] = e.target.checked
-        }
-      })
-      setisChecked(checked)
-      setCheckedAll(!checkedAll)
-    }
-  }
+  // const renderStudentErpTable = () => {
+  //   let dataToShow = []
+  //   dataToShow = studentErpList && studentErpList.map((val, i) => {
+  //     return {
+  //       id: val.id,
+  //       check: val.erp && <input
+  //         type='checkbox'
+  //         name='checking'
+  //         value={i + 1}
+  //         disabled={val.coupon && val.coupon.coupon}
+  //         checked={isChecked[val.id]}
+  //         onChange={
+  //           (e) => { checkBoxHandler(e, val.id) }
+  //         } />,
+  //       erpCode: val.erp ? val.erp : '',
+  //       coupon: val.erp && val.coupon && val.coupon.coupon ? val.coupon.coupon : '',
+  //       valid: val.erp && val.coupon && val.is_coupon_valid ? 'Yes' : val.coupon && val.erp && 'No',
+  //       applicable: val.erp && val.coupon && val.is_coupon_applicable ? 'Yes' : val.coupon && val.erp && 'No',
+  //       used: val.erp && val.coupon && val.is_coupon_used ? 'Yes' : val.coupon && val.erp && 'No',
+  //       // Edit: <Fab size='small' color='primary' style={{ marginBottom: '30px' }} onClick={() => showEditModalHandler(val.id, val.erp ? val.erp : (val.student && val.student.erp), val.coupon && val.coupon.id, val.coupon && val.coupon.coupon)}>
+  //       //   <Edit style={{ cursor: 'pointer' }} />
+  //       // </Fab>,
+  //       view: val.erp && <Button
+  //         // style={{ marginTop: '25px' }}
+  //         variant='contained'
+  //         color='primary'
+  //         // disabled={!this.state.changedFeePlanId}
+  //         onClick={() => studentAllcoupondetail(val.erp)}
+  //       >
+  //       View Details
+  //       </Button>
+  //     }
+  //   })
+  //   return dataToShow
+  // }
+  // const checkAllStudentsHandler = (e) => {
+  //   const checked = {}
+  //   if (erpList && erpList.length > 0) {
+  //     erpList.forEach(ele => {
+  //       if (ele.erp) {
+  //         checked[ele.id] = e.target.checked
+  //       }
+  //     })
+  //     setisChecked(checked)
+  //     setCheckedAll(!checkedAll)
+  //   }
+  // }
 
   const erpSearchHandler = (e) => {
     console.log('studenrList', erpList)
@@ -333,114 +245,114 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
     setErpSearchValue(e.target.value)
     setStudentErpList(filteredArr)
   }
-  let studentErpTable = null
-  let checkedAlls = null
-  if (erpList && erpList.length > 0) {
-    checkedAlls = (
-      <div style={{ display: 'flex' }}>
-        <div style={{ padding: '10px' }}>
-          <input
-            type='checkbox'
-            style={{ width: '20px', height: '20px', paddingBottom: '35px' }}
-            checked={checkedAll || false}
-            onChange={checkAllStudentsHandler}
-          /> &nbsp; <b>Select All Students</b>
-        </div>
-        <div>
-          <TextField
-            id='erp1'
-            label='Search ERP'
-            type='number'
-            variant='outlined'
-            value={erpSearchValue || ''}
-            style={{ zIndex: 0, marginTop: '0px', marginBottom: 20 }}
-            onChange={erpSearchHandler}
-            InputLabelProps={{ shrink: true }}
-            InputProps={{
-              style: {
-                height: 35
-              }
-            }}
-          />
-        </div>
-      </div>
-    )
-    studentErpTable = <ReactTable
-      data={renderStudentErpTable()}
-      manual
-      columns={[
-        {
-          Header: 'Select',
-          accessor: 'check',
-          // inputFilterable: true,
-          // exactFilterable: true,
-          filterable: false,
-          sortable: true
-        },
-        {
-          Header: 'ERP Code',
-          accessor: 'erpCode',
-          // inputFilterable: true,
-          // exactFilterable: true,
-          filterable: false,
-          sortable: true
-        },
-        {
-          Header: 'Coupon',
-          accessor: 'coupon',
-          // inputFilterable: true,
-          // exactFilterable: true,
-          filterable: false,
-          sortable: true
-        },
-        {
-          Header: 'Vaild',
-          accessor: 'valid',
-          // inputFilterable: true,
-          // exactFilterable: true,
-          filterable: false,
-          sortable: true
-        },
-        {
-          Header: 'Applicable',
-          accessor: 'applicable',
-          // inputFilterable: true,
-          // exactFilterable: true,
-          filterable: false,
-          sortable: true
-        },
-        {
-          Header: 'Used',
-          accessor: 'used',
-          // inputFilterable: true,
-          // exactFilterable: true,
-          filterable: false,
-          sortable: true
-        },
-        // {
-        //   Header: 'Edit',
-        //   accessor: 'Edit',
-        //   filterable: false,
-        //   sortable: true
-        // },
-        {
-          Header: 'View Details',
-          accessor: 'view',
-          filterable: false,
-          sortable: true
-        }
-      ]}
-      filterable
-      sortable
-      defaultPageSize={0}
-      showPageSizeOptions={false}
-      className='-striped -highlight'
-      // Controlled props
-      // page={this.state.page}
-      // Callbacks
-      // onPageChange={page => this.pageChangeHandler(page)}
-    />
-  }
+  // let studentErpTable = null
+  // let checkedAlls = null
+  // if (erpList && erpList.length > 0) {
+  //   checkedAlls = (
+  //     <div style={{ display: 'flex' }}>
+  //       <div style={{ padding: '10px' }}>
+  //         <input
+  //           type='checkbox'
+  //           style={{ width: '20px', height: '20px', paddingBottom: '35px' }}
+  //           checked={checkedAll || false}
+  //           onChange={checkAllStudentsHandler}
+  //         /> &nbsp; <b>Select All Students</b>
+  //       </div>
+  //       <div>
+  //         <TextField
+  //           id='erp1'
+  //           label='Search ERP'
+  //           type='number'
+  //           variant='outlined'
+  //           value={erpSearchValue || ''}
+  //           style={{ zIndex: 0, marginTop: '0px', marginBottom: 20 }}
+  //           onChange={erpSearchHandler}
+  //           InputLabelProps={{ shrink: true }}
+  //           InputProps={{
+  //             style: {
+  //               height: 35
+  //             }
+  //           }}
+  //         />
+  //       </div>
+  //     </div>
+  //   )
+  //   studentErpTable = <ReactTable
+  //     data={renderStudentErpTable()}
+  //     manual
+  //     columns={[
+  //       {
+  //         Header: 'Select',
+  //         accessor: 'check',
+  //         // inputFilterable: true,
+  //         // exactFilterable: true,
+  //         filterable: false,
+  //         sortable: true
+  //       },
+  //       {
+  //         Header: 'ERP Code',
+  //         accessor: 'erpCode',
+  //         // inputFilterable: true,
+  //         // exactFilterable: true,
+  //         filterable: false,
+  //         sortable: true
+  //       },
+  //       {
+  //         Header: 'Coupon',
+  //         accessor: 'coupon',
+  //         // inputFilterable: true,
+  //         // exactFilterable: true,
+  //         filterable: false,
+  //         sortable: true
+  //       },
+  //       {
+  //         Header: 'Vaild',
+  //         accessor: 'valid',
+  //         // inputFilterable: true,
+  //         // exactFilterable: true,
+  //         filterable: false,
+  //         sortable: true
+  //       },
+  //       {
+  //         Header: 'Applicable',
+  //         accessor: 'applicable',
+  //         // inputFilterable: true,
+  //         // exactFilterable: true,
+  //         filterable: false,
+  //         sortable: true
+  //       },
+  //       {
+  //         Header: 'Used',
+  //         accessor: 'used',
+  //         // inputFilterable: true,
+  //         // exactFilterable: true,
+  //         filterable: false,
+  //         sortable: true
+  //       },
+  //       // {
+  //       //   Header: 'Edit',
+  //       //   accessor: 'Edit',
+  //       //   filterable: false,
+  //       //   sortable: true
+  //       // },
+  //       {
+  //         Header: 'View Details',
+  //         accessor: 'view',
+  //         filterable: false,
+  //         sortable: true
+  //       }
+  //     ]}
+  //     filterable
+  //     sortable
+  //     defaultPageSize={0}
+  //     showPageSizeOptions={false}
+  //     className='-striped -highlight'
+  //     // Controlled props
+  //     // page={this.state.page}
+  //     // Callbacks
+  //     // onPageChange={page => this.pageChangeHandler(page)}
+  //   />
+  // }
 
   const checkBoxHandler = (e, id) => {
     // check if the check box is checked or unchecked
@@ -738,10 +650,9 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
       </Grid>
       {tabBar}
       {showTabs && value === 'one' && <TabContainer>
-        {checkedAlls}
-        {studentErpTable}
+        {/* {checkedAlls} */}
+        {/* {studentErpTable} */}
         {multiChange}
-        {/* {changeModal} */}
         {couponDetail}
         {detailsModal}
       </TabContainer>}
