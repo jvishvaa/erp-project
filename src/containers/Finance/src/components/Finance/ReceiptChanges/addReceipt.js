@@ -10,7 +10,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel/FormControlLabe
 
 import { apiActions } from '../../../_actions'
 import * as actionTypes from '../store/actions'
-import '../../css/staff.css'
+// import '../../css/staff.css'
 
 class AddReceipt extends Component {
   constructor (props) {

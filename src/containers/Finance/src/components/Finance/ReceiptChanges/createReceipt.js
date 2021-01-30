@@ -9,8 +9,8 @@ import {
 import Select from 'react-select'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import ReactTable from 'react-table'
-import 'react-table/react-table.css'
+// import ReactTable from 'react-table'
+// import 'react-table/react-table.css'
 
 // import { OmsFilterTable } from '../../../ui'
 import classes from './deleteModal.module.css'
@@ -18,7 +18,7 @@ import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 import * as actionTypes from '../store/actions'
 import { apiActions } from '../../../_actions'
 import Modal from '../../../ui/Modal/modal'
-import '../../css/staff.css'
+// import '../../css/staff.css'
 import EditReceipt from './editReceipt'
 import AddReceipt from './addReceipt'
 
@@ -168,89 +168,89 @@ class MiscFeeClass extends Component {
 
   render () {
     console.log('---list---------', this.props.receiptLists)
-    let receiptList = null
-    if (this.props.receiptLists.length > 0) {
-      receiptList = (<ReactTable
-        // pages={Math.ceil(this.props.viewBanksList.count / 20)}
-        data={this.renderTable()}
-        manual
-        columns={[
-          {
-            Header: 'Sr',
-            accessor: 'Sr',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Fee Account',
-            accessor: 'fee_account_name',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Range From',
-            accessor: 'range_from',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Range To',
-            accessor: 'range_to',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Sequence No',
-            accessor: 'sequence_no',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Status',
-            accessor: 'is_active',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Edit',
-            accessor: 'Edit',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true,
-            style: {
-              display: 'flex',
-              margin: 'auto'
-            }
-          },
-          {
-            Header: 'Delete',
-            accessor: 'Delete',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true,
-            style: {
-              display: 'flex',
-              margin: 'auto'
-            }
-          }
-        ]}
-        filterable
-        sortable
-        defaultPageSize={this.renderTable().length}
-        showPageSizeOptions={false}
-        className='-striped -highlight'
-        // Controlled props
-        // page={this.state.page}
-        // Callbacks
-        // onPageChange={page => this.pageChangeHandler(page)}
-      />)
-    }
+    // let receiptList = null
+    // if (this.props.receiptLists.length > 0) {
+    //   receiptList = (<ReactTable
+    //     // pages={Math.ceil(this.props.viewBanksList.count / 20)}
+    //     data={this.renderTable()}
+    //     manual
+    //     columns={[
+    //       {
+    //         Header: 'Sr',
+    //         accessor: 'Sr',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Fee Account',
+    //         accessor: 'fee_account_name',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Range From',
+    //         accessor: 'range_from',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Range To',
+    //         accessor: 'range_to',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Sequence No',
+    //         accessor: 'sequence_no',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Status',
+    //         accessor: 'is_active',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Edit',
+    //         accessor: 'Edit',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true,
+    //         style: {
+    //           display: 'flex',
+    //           margin: 'auto'
+    //         }
+    //       },
+    //       {
+    //         Header: 'Delete',
+    //         accessor: 'Delete',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true,
+    //         style: {
+    //           display: 'flex',
+    //           margin: 'auto'
+    //         }
+    //       }
+    //     ]}
+    //     filterable
+    //     sortable
+    //     defaultPageSize={this.renderTable().length}
+    //     showPageSizeOptions={false}
+    //     className='-striped -highlight'
+    //     // Controlled props
+    //     // page={this.state.page}
+    //     // Callbacks
+    //     // onPageChange={page => this.pageChangeHandler(page)}
+    //   />)
+    // }
     let editModal = null
     if (this.state.showEditModal) {
       editModal = (
@@ -386,7 +386,7 @@ class MiscFeeClass extends Component {
           {this.state.showTable
             ? <React.Fragment>
               <Grid item xs='12'>
-                {receiptList}
+                {/* {receiptList} */}
               </Grid>
             </React.Fragment>
             : null}

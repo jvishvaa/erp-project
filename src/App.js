@@ -60,6 +60,13 @@ import AssignCoupon from './containers/Finance/src/components/Finance/AssignCoup
 import CreateCoupon from './containers/Finance/src/components/Finance/CreateCoupon/createCoupon.js'
 import DepositeTab from './containers/Finance/src/components/Finance/ExpenseManagement/Deposits/deposits.js'
 import TotalFormCount from './containers/Finance/src/components/Finance/BranchAccountant/TotalFormCount/totalFormCount.js'
+import RequestShuffle from './containers/Finance/src/components/Finance/BranchAccountant/StudentShuffle/requestShuffle.js'
+import UnassignFeeRequests from './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/unassignFeeRequestsTab.js'
+import ApprovalRequest from './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/Components/approvalRequest.js'
+import PendingRequest from  './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/Components/pendingRequest.js'
+import RejectedRequest from './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/Components/rejectedRequest';
+import createReceipt from './containers/Finance/src/components/Finance/ReceiptChanges/createReceipt.js'
+// import StoreReport from './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/Components/Inventory/StoreAdmin/StoreReports/storeReports.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -200,7 +207,7 @@ function App() {
                 </Route>
                 <Route exact path='/feeType/OtherFeeType'>
                   {({ match }) => <OtherFeeType match={match} />}
-                </Route>
+              </Route>
                 <Route exact path='/feeType/RegistrationFee'>
                   {({ match }) => <RegistrationFee match={match} />}
                 </Route>
@@ -255,6 +262,27 @@ function App() {
                 <Route exact path='/finance/TotalFormReport'>
                   {({ match }) => <TotalFormCount match={match} />}
                 </Route>
+                <Route exact path='/finance/Requestshuffle'>
+                  {({ match }) => <RequestShuffle match={match} />}
+                </Route>
+                <Route exact path='/finance/UnassignFeeRequests'>
+                  {({ match }) => <UnassignFeeRequests match={match} />}
+                </Route>
+                <Route exact path='/finance/approval_request'>
+                  {({ match }) => <ApprovalRequest match={match} />}
+                </Route>
+                <Route exact path='/finance/pending_request'>
+                  {({ match }) => <PendingRequest match={match} />}
+                </Route>
+                <Route exact path='/finance/rejected_request'>
+                  {({ match }) => <rejectedRequest match={match} />}
+                </Route>
+                <Route exact path='/finance/ReceiptRange'>
+                  {({ match }) => <createReceipt match={match} />}
+                </Route>
+                {/* <Route exact path='/finance/StoreReport'>
+                  {({ match }) => <StoreReport match={match} />}
+                </Route> */}
               </Switch>
             </ThemeProvider>
           </OnlineclassViewProvider>

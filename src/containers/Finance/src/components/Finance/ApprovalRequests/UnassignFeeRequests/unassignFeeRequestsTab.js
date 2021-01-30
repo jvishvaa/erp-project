@@ -18,6 +18,7 @@ import styles from './unassignFeeRequest.style'
 import { apiActions } from '../../../../_actions'
 import * as actionTypes from '../../store/actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
 
 const UnassignFeeRequests = ({
   classes,
@@ -188,6 +189,7 @@ const UnassignFeeRequests = ({
   // }, [unassignedList])
 
   return (
+    <Layout>
     <React.Fragment>
       <Grid container spacing={2} className={classes.root}>
         <Grid item sm={4} md={4} xs={12}>
@@ -241,6 +243,7 @@ const UnassignFeeRequests = ({
       </div>
       {dataLoading ? <CircularProgress open /> : null}
     </React.Fragment>
+    </Layout>
   )
 }
 

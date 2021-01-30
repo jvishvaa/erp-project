@@ -32,7 +32,7 @@ export const fetchUnassignedRequestList = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         console.log(error)
-        payload.alert.warning('Unable To Load')
+        // payload.alert.warning('Unable To Load')
         dispatch(actionTypes.dataLoaded())
       })
   }

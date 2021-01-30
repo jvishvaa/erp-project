@@ -16,6 +16,7 @@ import finance from '../../../src/containers/Finance/src/components/Finance/stor
 import { alert } from '../../../src/containers/Finance/src/_reducers/alert.reducer'
 import { branches } from '../../../src/containers/Finance/src/_reducers/branches.reducer.js'
 import expenseMngmtReducer from '../../../src/containers/Finance/src/components/Finance/ExpenseManagement/store/reducer/expenseMngmt.reducer.js'
+// import inventory from '../../../src/containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/Components/Inventory/store/reducer/inventory.reducer.js'
 
 export default combineReducers({
   auth,
@@ -30,5 +31,6 @@ export default combineReducers({
   finance,
   alert, 
   branches,
-  expenseMngmt: expenseMngmtReducer,
+  expenseMngmt: expenseMngmtReducer
+  // inventory
 });

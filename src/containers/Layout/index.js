@@ -484,6 +484,18 @@ const Layout = ({ children, history }) => {
         history.push('/finance/TotalFormReport')
         break;
       }
+      case 'Unassign Fee Requests': {
+        history.push('/finance/UnassignFeeRequests')
+        break;
+      }
+      case 'Create Receipt Ranges': {
+      history.push('/finance/ReceiptRange')
+        break;
+      }
+      case 'Store Report': {
+        history.push('/finance/StoreReport')
+          break;
+        }
       default:
         break;
     }
