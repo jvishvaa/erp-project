@@ -15,6 +15,7 @@ import normalFeeListReducer from '../../../src/containers/Finance/src/components
 import finance from '../../../src/containers/Finance/src/components/Finance/store/reducer'
 import { alert } from '../../../src/containers/Finance/src/_reducers/alert.reducer'
 import { branches } from '../../../src/containers/Finance/src/_reducers/branches.reducer.js'
+import expenseMngmtReducer from '../../../src/containers/Finance/src/components/Finance/ExpenseManagement/store/reducer/expenseMngmt.reducer.js'
 
 export default combineReducers({
   auth,
@@ -28,5 +29,6 @@ export default combineReducers({
   normalFee: normalFeeListReducer,
   finance,
   alert, 
-  branches
+  branches,
+  expenseMngmt: expenseMngmtReducer,
 });

@@ -476,6 +476,14 @@ const Layout = ({ children, history }) => {
         history.push('/finance/CreateCoupon')
         break;
       }
+      case 'Deposit Tab': {
+        history.push('/finance/DepositTab')
+        break;
+      }
+      case 'total Forms & Report': {
+        history.push('/finance/TotalFormReport')
+        break;
+      }
       default:
         break;
     }

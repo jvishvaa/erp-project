@@ -72,7 +72,7 @@ class ReceiptBookAdm extends Component {
       })
     }
     changehandlerbranch = (e) => {
-      const allLabel = e.filter(event => {
+      const allLabel = e && e.filter(event => {
         return event.label === 'All Branches'
       })
       let ids = []

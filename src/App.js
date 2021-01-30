@@ -58,6 +58,8 @@ import StudentShuffle from './containers/Finance/src/components/Finance/BranchAc
 import MiscFeeClass from './containers/Finance/src/components/Finance/MiscFeeToClass/miscFeeClass.js'
 import AssignCoupon from './containers/Finance/src/components/Finance/AssignCoupon/assignCoupon.js'
 import CreateCoupon from './containers/Finance/src/components/Finance/CreateCoupon/createCoupon.js'
+import DepositeTab from './containers/Finance/src/components/Finance/ExpenseManagement/Deposits/deposits.js'
+import TotalFormCount from './containers/Finance/src/components/Finance/BranchAccountant/TotalFormCount/totalFormCount.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -246,6 +248,12 @@ function App() {
                 </Route>
                 <Route exact path='/finance/CreateCoupon'>
                   {({ match }) => <CreateCoupon match={match} />}
+                </Route>
+                <Route exact path='/finance/DepositTab'>
+                  {({ match }) => <DepositeTab match={match} />}
+                </Route>
+                <Route exact path='/finance/TotalFormReport'>
+                  {({ match }) => <TotalFormCount match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

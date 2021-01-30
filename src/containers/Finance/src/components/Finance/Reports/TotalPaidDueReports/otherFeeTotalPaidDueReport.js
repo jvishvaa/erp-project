@@ -116,7 +116,7 @@ class OtherFeeTotalPaidReports extends Component {
   }
   handleClickGrade = event => {
     const allLabel = event.filter(event => {
-      return event.label === 'All Grades'
+      return event && event.label === 'All Grades'
     })
     let aMapIds = []
     if (allLabel.length === 1) {

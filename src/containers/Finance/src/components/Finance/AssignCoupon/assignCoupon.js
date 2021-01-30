@@ -24,6 +24,7 @@ import Modal from '../../../ui/Modal/modal'
 import { apiActions } from '../../../_actions'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 import { ReAssignCoupon } from '.'
+import Layout from '../../../../../Layout'
 // import { FilterInnerComponent, filterMethod } from '../FilterInnerComponent/filterInnerComponent'
 // import { student } from '../../../masters'
 
@@ -574,6 +575,7 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
     )
   }
   return (
+    <Layout>
     <div>
       <Grid container spacing={3} wrap='wrap'style={{ padding: '15px' }}>
         <Grid item xs={3}>
@@ -661,6 +663,7 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
       </TabContainer>}
       { dataLoading ? <CircularProgress open /> : null }
     </div>
+    </Layout>
   )
 }
 const mapStateToProps = state => ({

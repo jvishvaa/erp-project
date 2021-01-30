@@ -34,7 +34,7 @@ export const fetchFormCount = (payload) => {
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
-        payload.alert.warning('Unable to load count')
+        // payload.alert.warning('Unable to load count')
       })
   }
 }

@@ -16,6 +16,7 @@ import { apiActions } from '../../../../_actions'
 import { urls } from '../../../../urls'
 import * as actionTypes from '../../store/actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout';
 
 const styles = theme => ({
   tableWrapper: {
@@ -311,6 +312,7 @@ const TotalFormCount = ({ classes,
   )
 
   return (
+    <Layout>
     <React.Fragment>
       <Grid container direction='row' justify='flex-end' spacing={8}>
         <Grid item style={{ marginTop: 15 }} xs={3}>
@@ -446,6 +448,7 @@ const TotalFormCount = ({ classes,
       {formCount && showTable ? formCountTableHandler : ''}
       {dataLoading ? <CircularProgress open /> : null}
     </React.Fragment>
+    </Layout>
   )
 }
 

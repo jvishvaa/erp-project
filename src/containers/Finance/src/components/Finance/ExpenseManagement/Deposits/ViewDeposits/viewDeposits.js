@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import ReactTable from 'react-table'
+// import ReactTable from 'react-table'
 import Select from 'react-select'
-import 'react-table/react-table.css'
+// import 'react-table/react-table.css'
 import {
   Edit as EditIcon,
   ArrowDownward as ArrowIcon
@@ -208,133 +208,133 @@ class ViewDiposits extends Component {
     generateExcel(data)
   }
 
-  createData = () => {
-    let dataToShow = []
-    console.log('Petty Cash Deposit', this.props.pettyCashDeposit)
-    dataToShow = this.props.pettyCashDeposit.map((txn, index) => {
-      return {
-        sNo: index + 1,
-        transaction_id: txn.transaction_id ? txn.transaction_id : '',
-        date: txn.date ? txn.date : '',
-        amount: txn.amount ? txn.amount : '',
-        depositMode: txn.deposit_mode ? txn.deposit_mode : '',
-        id: txn.id ? txn.id : '',
-        from_account: txn.from_account ? txn.from_account.bank_name : '',
-        to_account: txn.to_account ? txn.to_account.bank_name : '',
-        // type: transaction.deposit_type ? transaction.deposit_type.deposit_type : '',
-        cheque_no: txn.cheque_no ? txn.cheque_no : '',
-        remarks: txn.remarks ? txn.remarks : '',
-        cancel: txn.is_cancelled ? 'Yes' : 'No',
-        icon: <div style={{ 'padding-left': '10px' }} onClick={() => this.showEditModalHandler(txn.id, txn.transaction_id, txn.deposit_mode, txn.date, txn.amount, txn.remarks, txn.is_cancelled)}><EditIcon className={classes.icon} /></div>
-      }
-    })
+  // createData = () => {
+  //   let dataToShow = []
+  //   console.log('Petty Cash Deposit', this.props.pettyCashDeposit)
+  //   dataToShow = this.props.pettyCashDeposit.map((txn, index) => {
+  //     return {
+  //       sNo: index + 1,
+  //       transaction_id: txn.transaction_id ? txn.transaction_id : '',
+  //       date: txn.date ? txn.date : '',
+  //       amount: txn.amount ? txn.amount : '',
+  //       depositMode: txn.deposit_mode ? txn.deposit_mode : '',
+  //       id: txn.id ? txn.id : '',
+  //       from_account: txn.from_account ? txn.from_account.bank_name : '',
+  //       to_account: txn.to_account ? txn.to_account.bank_name : '',
+  //       // type: transaction.deposit_type ? transaction.deposit_type.deposit_type : '',
+  //       cheque_no: txn.cheque_no ? txn.cheque_no : '',
+  //       remarks: txn.remarks ? txn.remarks : '',
+  //       cancel: txn.is_cancelled ? 'Yes' : 'No',
+  //       icon: <div style={{ 'padding-left': '10px' }} onClick={() => this.showEditModalHandler(txn.id, txn.transaction_id, txn.deposit_mode, txn.date, txn.amount, txn.remarks, txn.is_cancelled)}><EditIcon className={classes.icon} /></div>
+  //     }
+  //   })
 
-    return dataToShow
-  }
+  //   return dataToShow
+  // }
 
   render () {
-    let transactionTable = null
-    if (this.props.pettyCashDeposit.lenght !== 0) {
-      transactionTable = (<ReactTable
-        data={this.createData()}
-        columns={[
-          {
-            Header: 'S.No',
-            accessor: 'sNo',
-            width: 50,
-            sortable: true
-          },
-          {
-            Header: 'Date',
-            accessor: 'date',
-            sortable: true,
-            style: {
-              paddingLeft: '20px'
-            }
-          },
-          {
-            Header: 'Amount',
-            accessor: 'amount',
-            sortable: true
-          },
-          {
-            Header: 'Transaction Id',
-            accessor: 'transaction_id',
-            Filter: props => <FilterInnerComponent {...props} />,
-            filterMethod: filterMethod,
-            sortable: true
-          },
-          {
-            Header: 'From Account',
-            accessor: 'from_account',
-            Filter: props => <FilterInnerComponent {...props} />,
-            filterMethod: filterMethod,
-            sortable: true
-          },
-          {
-            Header: 'To Account',
-            accessor: 'to_account',
-            Filter: props => <FilterInnerComponent {...props} />,
-            filterMethod: filterMethod,
-            sortable: true
-          },
-          {
-            Header: 'Cheque No.',
-            accessor: 'cheque_no',
-            // Filter: props => <FilterInnerComponent {...props} />,
-            // filterMethod: filterMethod,
-            sortable: true
-          },
-          {
-            Header: 'Remarks',
-            accessor: 'remarks',
-            Filter: props => <FilterInnerComponent {...props} />,
-            filterMethod: filterMethod,
-            sortable: true
-          },
-          // {
-          //   Header: "Type",
-          //   accessor: "type",
-          //   Filter: props => <FilterInnerComponent {...props} />,
-          //   filterMethod: filterMethod,
-          //   sortable: false,
-          // },
-          {
-            Header: 'Mode Of Diposit',
-            accessor: 'depositMode',
-            Filter: props => <FilterInnerComponent {...props} />,
-            filterMethod: filterMethod,
-            sortable: true
-          },
-          {
-            Header: 'Is Cancelled',
-            accessor: 'cancel',
-            Filter: props => <FilterInnerComponent {...props} />,
-            filterMethod: filterMethod,
-            sortable: true
-          },
-          {
-            Header: 'Edit',
-            accessor: 'icon',
-            filterable: false,
-            width: 70,
-            style: {
-              paddingLeft: '10px'
-            },
-            sortable: false
-          }
-        ]}
-        filterable
-        sortable
-        defaultPageSize={20}
-        showPageSizeOptions={false}
-        className='-striped -highlight'
-      // Controlled props
-      // page={this.state.page}
-      // Callbacks
-      // onPageChange={page => this.pageChangeHandler(page)}
-      />)
-    }
+    // let transactionTable = null
+    // if (this.props.pettyCashDeposit.lenght !== 0) {
+    //   transactionTable = (<ReactTable
+    //     data={this.createData()}
+    //     columns={[
+    //       {
+    //         Header: 'S.No',
+    //         accessor: 'sNo',
+    //         width: 50,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Date',
+    //         accessor: 'date',
+    //         sortable: true,
+    //         style: {
+    //           paddingLeft: '20px'
+    //         }
+    //       },
+    //       {
+    //         Header: 'Amount',
+    //         accessor: 'amount',
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Transaction Id',
+    //         accessor: 'transaction_id',
+    //         Filter: props => <FilterInnerComponent {...props} />,
+    //         filterMethod: filterMethod,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'From Account',
+    //         accessor: 'from_account',
+    //         Filter: props => <FilterInnerComponent {...props} />,
+    //         filterMethod: filterMethod,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'To Account',
+    //         accessor: 'to_account',
+    //         Filter: props => <FilterInnerComponent {...props} />,
+    //         filterMethod: filterMethod,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Cheque No.',
+    //         accessor: 'cheque_no',
+    //         // Filter: props => <FilterInnerComponent {...props} />,
+    //         // filterMethod: filterMethod,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Remarks',
+    //         accessor: 'remarks',
+    //         Filter: props => <FilterInnerComponent {...props} />,
+    //         filterMethod: filterMethod,
+    //         sortable: true
+    //       },
+    //       // {
+    //       //   Header: "Type",
+    //       //   accessor: "type",
+    //       //   Filter: props => <FilterInnerComponent {...props} />,
+    //       //   filterMethod: filterMethod,
+    //       //   sortable: false,
+    //       // },
+    //       {
+    //         Header: 'Mode Of Diposit',
+    //         accessor: 'depositMode',
+    //         Filter: props => <FilterInnerComponent {...props} />,
+    //         filterMethod: filterMethod,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Is Cancelled',
+    //         accessor: 'cancel',
+    //         Filter: props => <FilterInnerComponent {...props} />,
+    //         filterMethod: filterMethod,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Edit',
+    //         accessor: 'icon',
+    //         filterable: false,
+    //         width: 70,
+    //         style: {
+    //           paddingLeft: '10px'
+    //         },
+    //         sortable: false
+    //       }
+    //     ]}
+    //     filterable
+    //     sortable
+    //     defaultPageSize={20}
+    //     showPageSizeOptions={false}
+    //     className='-striped -highlight'
+    //   // Controlled props
+    //   // page={this.state.page}
+    //   // Callbacks
+    //   // onPageChange={page => this.pageChangeHandler(page)}
+    //   />)
+    // }
 
     let editModal = null
 

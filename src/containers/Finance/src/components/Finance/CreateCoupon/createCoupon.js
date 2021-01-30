@@ -79,7 +79,7 @@ const CreateCoupon = ({ alert, user, createCoupon, listAllCoupon, couponAllList,
     if (e.target.value <= 100 && e.target.value > 0) {
       setDiscount(e.target.value)
     } else {
-      alert.warning('Discount should be greater than 0 less than 100')
+      // alert.warning('Discount should be greater than 0 less than 100')
     }
   }
   const setValidFromHandler = (e) => {
@@ -87,7 +87,7 @@ const CreateCoupon = ({ alert, user, createCoupon, listAllCoupon, couponAllList,
       if (e.target.value < validTo) {
         setValidFrom(e.target.value)
       } else {
-        alert.warning('Valid From Date should be less than Valid To Date')
+        // alert.warning('Valid From Date should be less than Valid To Date')
       }
     } else {
       setValidFrom(e.target.value)
@@ -122,7 +122,7 @@ const CreateCoupon = ({ alert, user, createCoupon, listAllCoupon, couponAllList,
       setValidToHelerTxt('')
       // setShowCoupon(true)
     } else {
-      alert.warning('Fill all the Required field and Date with Time also!')
+      // alert.warning('Fill all the Required field and Date with Time also!')
     }
   }
   const hideEditModalHandler = () => {
