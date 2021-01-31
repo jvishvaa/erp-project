@@ -1,0 +1,66 @@
+.pettyExp__table *{
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+.pettyExp__table{
+  width: 95%;
+  margin: auto;
+  /* border: 0.2px solid black; */
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+.pettyExp__tableHeader, 
+.pettyExp__tableBody,
+.pettyExp__tableBodyHeading{
+  display: flex;
+  width: 100%;
+}
+.pettyExp__tableHeaderBig,
+.pettyExp__tableBodyBig{
+  width: 75%;
+  border: 0.2px solid rgba(194, 193, 193, 0.774);
+  height: 32px;
+  line-height: 32px;
+}
+.pettyExp__tableHeaderBig,
+.pettyExp__tableHeaderSmall{
+  text-align: center;
+}
+.pettyExp__tableHeaderSmall,
+.pettyExp__tableBodySmall{
+  width: 25%;
+  border: 0.2px solid rgba(194, 193, 193, 0.774);
+  height: 32px;
+  line-height: 32px;
+}
+.pettyExp__tableBodyHeading{
+  background-color: rgba(196, 194, 194, 0.733)
+}
+.pettyExp__tableBody:hover{
+  cursor: pointer;
+  background-color: rgba(223, 223, 223, 0.774)  
+}
+.pettyExp__tableBody:nth-child(even){
+  background-color: rgba(223, 223, 223, 0.774)
+}
+.pettyExp__tableBodyBig{
+  padding-left: 20px;
+}
+.pettyExp__tableBodySmall{
+  padding-left: 10px;
+}
+.addIcon {
+  margin-top: 5px;
+  margin-left: 10px;
+}
+.addIcon:hover {
+  cursor: pointer;
+}
+.modalHeader{
+  text-align: center;
+}
+.divider {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}

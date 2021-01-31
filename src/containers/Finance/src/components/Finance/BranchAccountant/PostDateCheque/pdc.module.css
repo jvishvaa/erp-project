@@ -1,0 +1,23 @@
+.modal__heading{
+    text-align: center;
+    padding-top: 15px;
+    margin-bottom: 15px;
+}
+.modal__button,
+.modal__remainbutton,
+.modal__deletebutton{
+    display: inline-block;
+    position: absolute;
+}
+.modal__button{
+    bottom: 5px;
+    right: 2px;
+}
+.modal__deletebutton{
+    bottom: 5px;
+    right: 10px;
+}
+.modal__remainbutton{
+    bottom: 5px;
+    left: 10px;
+}

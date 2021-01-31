@@ -58,6 +58,8 @@ const menuIcon = (name) => {
     }
     case 'Lesson Plan': {
       icon = <ImportContactsIcon />;
+    case 'Normal Fee Type': {
+      icon= AddCircleIcon;
       break;
     }
     default:
