@@ -51,7 +51,10 @@ import Subjectgrade from './containers/subjectGradeMapping';
 import ListandFilter from './containers/subjectGradeMapping/listAndFilter';
 import GeneralDairyList from './containers/general-dairy';
 import CreateGeneralDairy from './containers/general-dairy/create-dairy';
-
+import CreateCourse from './containers/master-management/course/create-course';
+import CourseView from './containers/master-management/course/view-course'
+import ViewCourseCard from './containers/master-management/course/view-course/view-more-card/ViewCourseCard';
+import ViewStore from './containers/master-management/course/view-course/context/ViewStore'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -99,6 +102,7 @@ function App() {
           <OnlineclassViewProvider>
             <ThemeProvider theme={theme}>
             <CircularStore>
+            <ViewStore>
               <Switch>
                 <Route path='/profile'>{({ match }) => <Profile match={match} />}</Route>
                 <Route path='/role-management'>
@@ -225,7 +229,17 @@ function App() {
                 <Route exact path='/create/general-dairy'>
                   {({ match }) => <CreateGeneralDairy match={match} />}
                 </Route>
+                <Route exact path='/create/course'>
+                  {({ match }) => <CreateCourse match={match} />}
+                </Route>
+                <Route exact path='/course-list'>
+                  {({ match }) => <CourseView match={match} />}
+                </Route>
+                <Route exact path='/view-period'>
+                  {({ match }) => <ViewCourseCard match={match} />}
+                </Route>
               </Switch>
+              </ViewStore>
               </CircularStore>
             </ThemeProvider>
           </OnlineclassViewProvider>
