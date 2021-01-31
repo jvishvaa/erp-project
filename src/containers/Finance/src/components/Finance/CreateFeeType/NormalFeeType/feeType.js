@@ -344,7 +344,7 @@ class FeeType extends Component {
             />
           </Grid>
           <Grid item xs={3}>
-            <label>Branch*</label>
+            <label>Branches*</label>
             <Select
               placeholder='Select Branch'
               value={this.state.branchData ? this.state.branchData : null}
