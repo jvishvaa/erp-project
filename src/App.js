@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-import { useDispatch } from 'react-redux';
 import CreateGroup from './containers/communication/create-group/create-group';
 import ViewGroup from './containers/communication/view-group/view-group';
 import MessageCredit from './containers/communication/message-credit/message-credit';
@@ -84,7 +83,7 @@ function App() {
   // const dispatch = useDispatch();
   // useEffect(() => {
   //   dispatch(listSubjects());
-  //   // dispatch(fetchLoggedInUserDetails());
+  //   dispatch(fetchLoggedInUserDetails());
   // }, []);
 
   return (
@@ -102,15 +101,17 @@ function App() {
                   {({ match }) => <UserManagement match={match} />}
                 </Route>
                 {/* <Route exact path='/view-users'>
-                  {({ match }) => <ViewUsers match={match} />}
+                  {({ match }) => <ViewUsers Routematch={match} />}
                 </Route> */}
                 <Route path='/communication/messagelog'>
                   {({ match }) => <MessageLog match={match} />}
                 </Route>
                 <Route path='/dashboard'>
-                  {({ match }) => <Dashboard match={match} />}
+                  {({ match }) => <Dashboard 
+                    match={match}
+                   />}
                 </Route>
-                <Route exact path='/'>
+                <Route exact path='/:key?'>
                   {({ match, history }) => <Login match={match} history={history} />}
                 </Route>
                 {/* <Route exact path='/assignrole'>
