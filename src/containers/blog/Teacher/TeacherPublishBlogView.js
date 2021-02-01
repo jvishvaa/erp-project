@@ -17,7 +17,7 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import Layout from '../../Layout';
 import MobileDatepicker from './datePicker';
 // import PendingReview from './PendingReview';
-import GridList from './gridList';
+import GridListPublish from './gridListPublish';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 
@@ -231,16 +231,16 @@ class TeacherPublishBlogView extends Component {
 
                         </Tabs>
                         <TabPanel value={tabValue} index={0}>
-                          <GridList data={data} />
+                          <GridListPublish data={data} tabValue={tabValue} />
                         </TabPanel>
                         <TabPanel value={tabValue} index={1}>
-                        <GridList data={data} />
+                        <GridListPublish data={data} tabValue={tabValue} />
                         </TabPanel>
                         <TabPanel value={tabValue} index={2}>
-                          <GridList data={data} />
+                          <GridListPublish data={data} tabValue={tabValue}/>
                         </TabPanel>
                         <TabPanel value={tabValue} index={3}>
-                          <GridList data={data} />
+                          <GridListPublish data={data} tabValue={tabValue}/>
                         </TabPanel>
                       </div>
                     </Grid>

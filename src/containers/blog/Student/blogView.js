@@ -86,9 +86,10 @@ class BlogView extends Component {
       feedBack: false,
       commentOpen: false,
       data: this.props.location.state.data && this.props.location.state.data,
-      // tabValue:this.props.location.state.tabValue && this.pro
+      tabValue:this.props.location.state.tabValue && this.props.location.state.tabValue
       // blogId:
     };
+    console.log(this.state.tabValue,"@@@@@@@@@@@@@@",typeof(this.state.tabValue))
   }
 
   componentDidMount() {
@@ -144,7 +145,7 @@ class BlogView extends Component {
 
   render() {
     const { classes } = this.props;
-    const { relatedBlog, starsRating, feedBack, commentOpen, data } = this.state;
+    const { relatedBlog, starsRating, feedBack, commentOpen, data,tabValue } = this.state;
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -158,13 +159,13 @@ class BlogView extends Component {
                 <div className={classes.root}>
                   <Grid container spacing={3}>
                     <Grid item xs={9}>
-                      <Typography
+                      <Button
                         style={{ cursor: 'Pointer' }}
                         onClick={() => window.history.back()}
                         align='right'
                       >
                         <u>Back</u>
-                      </Typography>
+                      </Button>
                       <Card className={classes.cardRoot}>
                         <Typography
                           variant='h5'
@@ -189,24 +190,14 @@ class BlogView extends Component {
                           title={data.author.first_name}
                           subheader={moment(data.created_at).format('MMM DD YYYY')}
                         />
-                         {/* {
-                  tabValue === 2 ?
-<IconButton
-                  title='Delete'
-                  // onClick={handleDeleteBlog(data)}
-                >
-                  <DeleteOutlinedIcon
-                    style={{ color: themeContext.palette.primary.main }}
-                  />
-                </IconButton>
-      : '' 
-              } */}
+                       
                         <CardContent>
                           <Typography variant='body2' color='textSecondary' component='p'>
                             {data.content}
                           </Typography>
                         </CardContent>
                         <CardActions>
+                          {tabValue !== 1 ?
                           <Button
                             style={{ width: 150 }}
                             size='small'
@@ -215,7 +206,7 @@ class BlogView extends Component {
                           >
                             Edit
                           </Button>
-                          
+                          :''}
                         </CardActions>
                         {/* <CardActions>
                           <ExpansionPanel

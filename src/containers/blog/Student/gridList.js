@@ -70,6 +70,7 @@ function GridList(props) {
     setShowPeriodIndex();
   };
   const handleDeleteBlog = (blogId) => {
+
     let requestData = {
       "blog_id": blogId ,
       "status": "1"
@@ -90,7 +91,6 @@ function GridList(props) {
     setAlert('error', error.message);
   })
 };
-console.log(props.tabValue,"@@22")
 
 
   return (
@@ -104,25 +104,27 @@ console.log(props.tabValue,"@@22")
                 className={classes.card}
                 style={{
                   width: '100%',
-                  height: '200px',
+                  height: '230px',
                   backgroundSize: '360px',
                   backgroundImage: `url(${data[0] && data[0].thumbnail})`,
-                  display: data.length >= 1 ? '' : 'none',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
                 }}
               >
                 <CardHeader
-//                 action=       {
-//                   props.tabValue === 2 ?
-// <IconButton
-//                   title='Delete'
-//                   // onClick={handleDeleteBlog(data)}
-//                 >
-//                   <DeleteOutlinedIcon
-//                     style={{ color: themeContext.palette.primary.main }}
-//                   />
-//                 </IconButton>
-//       : '' 
-//               }
+                action=       {
+                  props.tabValue === 2 ?
+<IconButton
+                  title='Delete'
+                  onClick={()=>handleDeleteBlog(data[0].id)}
+                >
+                  <DeleteOutlinedIcon
+                    style={{ color: themeContext.palette.primary.main }}
+                  />
+                </IconButton>
+      : '' 
+              }
                   subheader={
                     <Typography
                       gutterBottom
@@ -157,11 +159,11 @@ console.log(props.tabValue,"@@22")
                   <Button
                     size='small'
                     color='primary'
-                    style={{ bottom: '-15px', width: 150 }}
+                    style={{ width: 150 }}
                     onClick={() =>
                       props.history.push({
                         pathname: '/blog/student/view-blog',
-                        state: { data: data[0] },
+                        state: { data: data[0] ,tabValue :props.tabValue},
                       })}
                   >
                     Read more
@@ -173,27 +175,30 @@ console.log(props.tabValue,"@@22")
               <Grid item xs={6}>
                 <Card
                   style={{
+                    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
                     width: '100%',
                     height: '290px',
-                    display: data.length >= 2 ? '' : 'none',
+                    // display: data.length >= 2 ? '' : 'none',
                     backgroundSize: '360px',
                     backgroundImage: `url(${data[1] && data[1].thumbnail})`,
                   }}
                   className={classes.card}
                 >
                   <CardHeader
-          //           action={
-                      
-          //             props.tabValue === 2 ?
-                    
-          //           <Button
-          //             size='small'
-          //             type='button'
-          //             startIcon={<DeleteIcon />}
-          //             // onClick={handleDeleteBlog(data[0].id)}
-          //           >
-          // </Button> : '' 
-          //           }
+                     action=       {
+                      props.tabValue === 2 ?
+    <IconButton
+                      title='Delete'
+                      onClick={()=>handleDeleteBlog(data[1].id)}
+                    >
+                      <DeleteOutlinedIcon
+                        style={{ color: themeContext.palette.primary.main }}
+                      />
+                    </IconButton>
+          : '' 
+                  }
                     subheader={
                       <Typography
                         gutterBottom
@@ -231,7 +236,7 @@ console.log(props.tabValue,"@@22")
                       onClick={() =>
                         props.history.push({
                           pathname: '/blog/student/view-blog',
-                          state: { data: data[1] },
+                          state: { data: data[1],tabValue :props.tabValue },
                         })}
                     >
                       Read more
@@ -242,28 +247,31 @@ console.log(props.tabValue,"@@22")
               <Grid item xs={6}>
                 <Card
                   style={{
-                    backgroundColor: 'grey',
+                    // backgroundColor: 'grey',
                     width: '100%',
                     height: '290px',
-                    display: data.length >= 3 ? '' : 'none',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    // display: data.length >= 3 ? '' : 'none',
                     backgroundSize: '360px',
                     backgroundImage: `url(${data[3] && data[3].thumbnail})`,
                   }}
                   className={classes.card}
                 >
                   <CardHeader
-          //           action={
-                      
-          //             props.tabValue === 2 ?
-                    
-          //           <Button
-          //             size='small'
-          //             type='button'
-          //             startIcon={<DeleteIcon />}
-          //             // onClick={handleDeleteBlog(data[0].id)}
-          //           >
-          // </Button> : '' 
-          //           }
+                     action=       {
+                      props.tabValue === 2 ?
+    <IconButton
+                      title='Delete'
+                      onClick={()=>handleDeleteBlog(data[2].id)}
+                    >
+                      <DeleteOutlinedIcon
+                        style={{ color: themeContext.palette.primary.main }}
+                      />
+                    </IconButton>
+          : '' 
+                  }
                     subheader={
                       <Typography
                         gutterBottom
@@ -301,7 +309,7 @@ console.log(props.tabValue,"@@22")
                       onClick={() =>
                         props.history.push({
                           pathname: '/blog/student/view-blog',
-                          state: { data: data[2] },
+                          state: { data: data[2] ,tabValue :props.tabValue},
                         })}
                     >
                       Read more
@@ -318,25 +326,28 @@ console.log(props.tabValue,"@@22")
                   style={{
                     width: '100%',
                     height: '290px',
-                    display: data.length >= 4 ? '' : 'none',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    // display: data.length >= 4 ? '' : 'none',
                     backgroundSize: '360px',
-                    backgroundImage: `url(${data[4] && data[4].thumbnail})`,
+                    backgroundImage: `url(${data[3] && data[3].thumbnail})`,
                   }}
                   className={classes.card}
                 >
                   <CardHeader
-          //           action={
-                     
-          //             props.tabValue === 2 ?
-                    
-          //           <Button
-          //             size='small'
-          //             type='button'
-          //             startIcon={<DeleteIcon />}
-          //             // onClick={handleDeleteBlog(data[0].id)}
-          //           >
-          // </Button> : '' 
-          //           }
+                    action=       {
+                      props.tabValue === 2 ?
+    <IconButton
+                      title='Delete'
+                      onClick={()=>handleDeleteBlog(data[3].id)}
+                    >
+                      <DeleteOutlinedIcon
+                        style={{ color: themeContext.palette.primary.main }}
+                      />
+                    </IconButton>
+          : '' 
+                  }
                     subheader={
                       <Typography
                         gutterBottom
@@ -374,7 +385,7 @@ console.log(props.tabValue,"@@22")
                       onClick={() =>
                         props.history.push({
                           pathname: '/blog/student/view-blog',
-                          state: { data: data[3] },
+                          state: { data: data[3],tabValue :props.tabValue },
                         })}
                     >
                       Read more
@@ -388,24 +399,27 @@ console.log(props.tabValue,"@@22")
                     width: '100%',
                     height: '290px',
                     backgroundSize: '360px',
-                    display: data.length >= 5 ? '' : 'none',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    // display: data.length >= 5 ? '' : 'none',
                     backgroundImage: `url(${data[3] && data[3].thumbnail})`,
                   }}
                   className={classes.card}
                 >
                   <CardHeader
-          //           action={
-                      
-          //             props.tabValue === 2 ?
-                    
-          //           <Button
-          //             size='small'
-          //             type='button'
-          //             startIcon={<DeleteIcon />}
-          //             // onClick={handleDeleteBlog(data[0].id)}
-          //           >
-          // </Button> : '' 
-          //           }
+                    action=       {
+                      props.tabValue === 2 ?
+    <IconButton
+                      title='Delete'
+                      onClick={()=>handleDeleteBlog(data[4].id)}
+                    >
+                      <DeleteOutlinedIcon
+                        style={{ color: themeContext.palette.primary.main }}
+                      />
+                    </IconButton>
+          : '' 
+                  }
                     subheader={
                       <Typography
                         gutterBottom
@@ -443,7 +457,7 @@ console.log(props.tabValue,"@@22")
                       onClick={() =>
                         props.history.push({
                           pathname: '/blog/student/view-blog',
-                          state: { data: data[4] },
+                          state: { data: data[4] ,tabValue :props.tabValue},
                         })}
                     >
                       Read more
@@ -453,32 +467,33 @@ console.log(props.tabValue,"@@22")
                 </Card>
               </Grid>
             </Grid>
-            {/* </Card> */}
-            {/* <Card style={{ backgroundColor: 'yellow' }} className={classes.card}> */}
             <Grid item>
               <Card
                 style={{
                   width: '100%',
-                  height: '200px',
-                  display: data.length === 6 ? '' : 'none',
+                  height: '230px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  // display: data.length === 6 ? '' : 'none',
                   backgroundSize: '360px',
                   backgroundImage: `url(${data[5] && data[5].thumbnail})`,
                 }}
                 className={classes.card}
               >
                 <CardHeader
-          //         action={
-                  
-          //           props.tabValue === 2 ?
-                    
-          //           <Button
-          //             size='small'
-          //             type='button'
-          //             startIcon={<DeleteIcon />}
-          //             // onClick={handleDeleteBlog(data[0].id)}
-          //           >
-          // </Button> : '' 
-          //         }
+                   action=       {
+                    props.tabValue === 2 ?
+  <IconButton
+                    title='Delete'
+                    onClick={()=>handleDeleteBlog(data[5].id)}
+                  >
+                    <DeleteOutlinedIcon
+                      style={{ color: themeContext.palette.primary.main }}
+                    />
+                  </IconButton>
+        : '' 
+                }
                   subheader={
                     <Typography gutterBottom variant='body2' align='left' component='p'>
                       {data[5] && moment(data[5].created_at).format('MMM DD YYYY')}
@@ -506,11 +521,11 @@ console.log(props.tabValue,"@@22")
                   <Button
                     size='small'
                     color='primary'
-                    style={{ bottom: '-15px', width: 150 }}
+                    style={{  width: 150 }}
                     onClick={() =>
                       props.history.push({
                         pathname: '/blog/student/view-blog',
-                        state: { data: data[5]},
+                        state: { data: data[5],tabValue :props.tabValue},
                       })}
                   >
                     Read more

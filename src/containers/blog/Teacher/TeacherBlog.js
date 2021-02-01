@@ -231,9 +231,9 @@ class TeacherBlog extends Component {
                           <Tab label='Reviewed' {...a11yProps(1)} />
                         </Tabs>
                         <TabPanel value={tabValue} index={0}>
-                          <GridList data={data} />
+                          <GridList data={data} tabValue={tabValue}/>
                         </TabPanel>
-                        <TabPanel value={tabValue} index={1}>
+                        <TabPanel value={tabValue}  tabValue={tabValue} index={1}>
                         <GridList data={data} />
                         </TabPanel>
                       </div>

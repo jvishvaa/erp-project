@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function GridList(props) {
+function GridListPublish(props) {
   const classes = useStyles();
   const { data, tabValue } = props;
 
@@ -90,9 +90,9 @@ function GridList(props) {
                     style={{ marginTop: 120, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentView',
+                        pathname: '/blog/teacher/contentViewPublish',
                         state: { data: data[0] ? data[0] :'' ,
-                      tabValue :tabValue},
+                      tabValue :props.tabValue},
                       })}
                   >
                     Read more
@@ -147,8 +147,8 @@ function GridList(props) {
                     style={{ marginTop: 38, width: 150}}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentView',
-                        state: { data: data[1], tabValue :tabValue },
+                        pathname: '/blog/teacher/contentViewPublish',
+                        state: { data: data[1], tabValue :props.tabValue },
                       })}
                   >
                     Read more
@@ -206,8 +206,8 @@ function GridList(props) {
                     style={{ marginTop: 38, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentView',
-                        state: { data: data[2], tabValue :tabValue },
+                        pathname: '/blog/teacher/contentViewPublish',
+                        state: { data: data[2], tabValue :props.tabValue },
                       })}
                   >
                     Read more
@@ -264,8 +264,8 @@ function GridList(props) {
                     style={{ marginTop: 38, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentView',
-                        state: { data: data[3] , tabValue :tabValue},
+                        pathname: '/blog/teacher/contentViewPublish',
+                        state: { data: data[3] , tabValue :props.tabValue},
                       })}
                   >
                     Read more
@@ -319,8 +319,8 @@ function GridList(props) {
                     style={{ marginTop: 38, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentView',
-                        state: { data: data[4] , tabValue :tabValue},
+                        pathname: '/blog/teacher/contentViewPublish',
+                        state: { data: data[4] , tabValue :props.tabValue},
                       })}
                   >
                     Read more
@@ -373,8 +373,8 @@ function GridList(props) {
                     style={{ marginTop: 120, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentView',
-                        state: { data: data[5] , tabValue :tabValue},
+                        pathname: '/blog/teacher/contentViewPublish',
+                        state: { data: data[5] , tabValue :props.tabValue},
                       })}
                   >
                     Read more
@@ -391,4 +391,4 @@ function GridList(props) {
   );
 }
 
-export default withRouter(GridList);
+export default withRouter(GridListPublish);
