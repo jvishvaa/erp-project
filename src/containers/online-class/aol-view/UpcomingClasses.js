@@ -109,7 +109,6 @@ const useStyles = makeStyles((theme) => ({
 const StyledButton = withStyles({
     root: {
         marginTop: '16px',
-        width: '120px',
         height: '31px',
         fontSize: '18px',
         fontFamily: 'Poppins',
@@ -326,8 +325,16 @@ const UpcomingClasses = () => {
                     </MuiPickersUtilsProvider>
                 </Grid>
                 <Grid item>
-                    <StyledButton onClick={clearAll}>Clear All</StyledButton>
                     <StyledButton
+                        variant="contained"
+                        color="primary"
+                        onClick={clearAll}
+                    >
+                        Clear All
+                    </StyledButton>
+                    <StyledButton
+                        variant="contained"
+                        color="primary"
                         onClick={handleFilter}
                     >
                         Get Classes
