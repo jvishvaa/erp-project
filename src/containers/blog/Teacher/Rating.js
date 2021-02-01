@@ -1,7 +1,6 @@
 import React from 'react'
 import { makeStyles, Typography, Box } from '@material-ui/core/'
 import TextareaAutosize from '@material-ui/core/TextareaAutosize'
-// import Rating from '@material-ui/lab/Rating'
 import RatingScale from './RatingScale'
 
 const useStyles = makeStyles({
@@ -15,7 +14,6 @@ const useStyles = makeStyles({
 
 export default function HoverRating (props) {
   const classes = useStyles()
-  const role = JSON.parse(localStorage.getItem('user_profile')).personal_info.role
 
   const editRating = (rating, type) => {
     props.handleRatingEdit(type, rating)

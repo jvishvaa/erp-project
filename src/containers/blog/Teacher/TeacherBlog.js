@@ -153,7 +153,7 @@ class TeacherBlog extends Component {
                       />
                     </div>
                   </Grid>
-                  <Grid item xs={12} sm={4}>
+                  {/* <Grid item xs={12} sm={4}>
                     <div className='blog_input'>
                       <TextField
                         id='outlined-full-width'
@@ -168,7 +168,7 @@ class TeacherBlog extends Component {
                         variant='outlined'
                       />
                     </div>
-                  </Grid>
+                  </Grid> */}
                 </Grid>
                 <div style={{ margin: '20px' }}>
                   <Grid container>
