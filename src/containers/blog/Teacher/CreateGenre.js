@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react'
+
+import React, { useState, useContext } from 'react'
+import { withRouter } from 'react-router-dom';
 import Layout from '../../Layout'
-import {  TextField, Grid, Button, useTheme,Tabs, Tab ,Typography, Card, CardContent,CardHeader} from '@material-ui/core'
-import IconButton from '@material-ui/core/IconButton';
-import Cancel from '@material-ui/icons/Cancel'
-import CheckCircle from '@material-ui/icons/CheckCircle';
+import {  TextField, Grid, Button, useTheme} from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -43,12 +42,9 @@ const useStyles = makeStyles((theme) => ({
 
 
 const CreateGenre = () => {
-  const classes = useStyles()
 
   
-  const [currentTab,setCurrentTab] =useState(0)
   const [genreName,setGenreName] =useState('');
-  const [genreListRes,setGenreListResponse] = useState('');
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false)
   const themeContext = useTheme();
@@ -57,59 +53,8 @@ const CreateGenre = () => {
   const widerWidth = isMobile ? '90%' : '85%'
 
   
-  useEffect(() => {
-    const getGenreList = () => {
-        axiosInstance.get(endpoints.blog.genreList).then((res) => {
-            setGenreListResponse(res.data.result)
-        }).catch(err => {
-            console.log(err)
-        })
-    }
-    getGenreList();
-}, []);
-      
-   const decideTab =() => {
-    if (currentTab === 0) {
-      return activeTabContent()
-    } 
-  }
-
-  const activeTabContent = () =>{
-    return <div>
-    <Grid container spacing={2}>
-    { genreListRes && genreListRes.length
-      ? genreListRes.map((item) => {
-        return <Grid item xs={12} sm={6} md={4}>
-          <Card className={classes.root} style={{ border: '1px solid #FEE4D4'  }}>
-          <CardHeader  style={{fontSize: '15px'}}
-      action={
-        <IconButton aria-label="settings" style={{fontSize: '15px'}}>
-         {item.is_delete ? <Cancel style={{ color: 'red' ,fontSize: '25px' }}/>: <CheckCircle  style={{ color: 'green' ,fontSize: '25px' }}/> }
-        </IconButton>
-      }
-      style={{fontSize: '15px'}}
-      title=
-      {
-          <p style={{ fontFamily: 'Open Sans', fontSize: '15px', fontWeight: 'Lighter' }}> {item.genre} 
-          </p> }
-          />
-          </Card>
-          </Grid>
-           
-                                                  
-            })
-        : ''
-      }
-    </Grid>
-    </div>
-  } 
-
   
   
-  const handleTabChange = (event,value) =>{
-    setCurrentTab(value)
-  }
-
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -183,27 +128,11 @@ const handleGenreNameChange = (e) => {
           </Grid>
         </Grid>
 
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-
-            <Tabs value={currentTab} indicatorColor='primary'
-
-              textColor='primary'
-              onChange={handleTabChange} aria-label='simple tabs example'>
-
-              <Tab label='All'
-
-              />
-              
-
-            
-            </Tabs>
-          </Grid>
-        </Grid>{decideTab()}
+       
 
       </Layout>
     </>
   )
 }
 
-export default CreateGenre
+export default withRouter(CreateGenre)

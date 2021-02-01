@@ -49,6 +49,7 @@ import {
   TeacherPublishBlogView,
   BlogView,
   CreateGenre,
+  ViewGenre
 } from './containers/blog';
 import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
 import Discussionforum from './containers/discussionForum/discussionForum';
@@ -226,6 +227,9 @@ function App() {
                 </Route>
                 <Route exact path='/blog/create/genre'>
                   {({ match }) => <CreateGenre match={match} />}
+                </Route>
+                <Route exact path='/blog/view/genre'>
+                  {({ match }) => <ViewGenre match={match} />}
                 </Route>
                 <Route exact path='/blog/teacher'>
                   {({ match }) => <TeacherBlog match={match} />}

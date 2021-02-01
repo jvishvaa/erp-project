@@ -111,18 +111,18 @@ console.log(props.tabValue,"@@22")
                 }}
               >
                 <CardHeader
-                action=       {
-                  props.tabValue === 2 ?
-<IconButton
-                  title='Delete'
-                  // onClick={handleDeleteBlog(data)}
-                >
-                  <DeleteOutlinedIcon
-                    style={{ color: themeContext.palette.primary.main }}
-                  />
-                </IconButton>
-      : '' 
-              }
+//                 action=       {
+//                   props.tabValue === 2 ?
+// <IconButton
+//                   title='Delete'
+//                   // onClick={handleDeleteBlog(data)}
+//                 >
+//                   <DeleteOutlinedIcon
+//                     style={{ color: themeContext.palette.primary.main }}
+//                   />
+//                 </IconButton>
+//       : '' 
+//               }
                   subheader={
                     <Typography
                       gutterBottom
@@ -139,11 +139,11 @@ console.log(props.tabValue,"@@22")
                 <CardActionArea>
                   <CardContent>
                     <Typography
-                      variant='body2'
+                      // variant='body2'
                       style={{
-                        marginTop: '-5px',
-                        fontSize: 'x-large',
-                        fontWeight: 'bolder',
+                        marginTop: '-35px',
+                        // fontSize: 'x-large',
+                        fontWeight: 'bold',
                         color: 'black',
                       }}
                       color='textSecondary'
@@ -182,18 +182,18 @@ console.log(props.tabValue,"@@22")
                   className={classes.card}
                 >
                   <CardHeader
-                    action={
+          //           action={
                       
-                      props.tabValue === 2 ?
+          //             props.tabValue === 2 ?
                     
-                    <Button
-                      size='small'
-                      type='button'
-                      startIcon={<DeleteIcon />}
-                      // onClick={handleDeleteBlog(data[0].id)}
-                    >
-          </Button> : '' 
-                    }
+          //           <Button
+          //             size='small'
+          //             type='button'
+          //             startIcon={<DeleteIcon />}
+          //             // onClick={handleDeleteBlog(data[0].id)}
+          //           >
+          // </Button> : '' 
+          //           }
                     subheader={
                       <Typography
                         gutterBottom
@@ -209,11 +209,11 @@ console.log(props.tabValue,"@@22")
                   <CardActionArea>
                     <CardContent>
                       <Typography
-                        variant='body2'
+                        // variant='body2'
                         style={{
-                          marginTop: '0px',
-                          fontSize: 'x-large',
-                          fontWeight: 'bolder',
+                          marginTop: '-10px',
+                          // fontSize: 'x-large',
+                          fontWeight: 'bold',
                           color: 'black',
                         }}
                         color='textSecondary'
@@ -227,7 +227,7 @@ console.log(props.tabValue,"@@22")
                     <Button
                       size='small'
                       color='primary'
-                      style={{ marginTop: 50, width: 150 }}
+                      style={{ marginTop: 30, width: 150 }}
                       onClick={() =>
                         props.history.push({
                           pathname: '/blog/student/view-blog',
@@ -252,18 +252,18 @@ console.log(props.tabValue,"@@22")
                   className={classes.card}
                 >
                   <CardHeader
-                    action={
+          //           action={
                       
-                      props.tabValue === 2 ?
+          //             props.tabValue === 2 ?
                     
-                    <Button
-                      size='small'
-                      type='button'
-                      startIcon={<DeleteIcon />}
-                      // onClick={handleDeleteBlog(data[0].id)}
-                    >
-          </Button> : '' 
-                    }
+          //           <Button
+          //             size='small'
+          //             type='button'
+          //             startIcon={<DeleteIcon />}
+          //             // onClick={handleDeleteBlog(data[0].id)}
+          //           >
+          // </Button> : '' 
+          //           }
                     subheader={
                       <Typography
                         gutterBottom
@@ -279,11 +279,11 @@ console.log(props.tabValue,"@@22")
                   <CardActionArea>
                     <CardContent>
                       <Typography
-                        variant='body2'
+                        // variant='body2'
                         style={{
-                          marginTop: '0px',
-                          fontSize: 'x-large',
-                          fontWeight: 'bolder',
+                          marginTop: '-15px',
+                          // fontSize: 'x-large',
+                          fontWeight: 'bold',
                           color: 'black',
                         }}
                         color='textSecondary'
@@ -297,7 +297,7 @@ console.log(props.tabValue,"@@22")
                     <Button
                       size='small'
                       color='primary'
-                      style={{ marginTop: 50, width: 150 }}
+                      style={{ marginTop: 30, width: 150 }}
                       onClick={() =>
                         props.history.push({
                           pathname: '/blog/student/view-blog',
@@ -325,18 +325,18 @@ console.log(props.tabValue,"@@22")
                   className={classes.card}
                 >
                   <CardHeader
-                    action={
+          //           action={
                      
-                      props.tabValue === 2 ?
+          //             props.tabValue === 2 ?
                     
-                    <Button
-                      size='small'
-                      type='button'
-                      startIcon={<DeleteIcon />}
-                      // onClick={handleDeleteBlog(data[0].id)}
-                    >
-          </Button> : '' 
-                    }
+          //           <Button
+          //             size='small'
+          //             type='button'
+          //             startIcon={<DeleteIcon />}
+          //             // onClick={handleDeleteBlog(data[0].id)}
+          //           >
+          // </Button> : '' 
+          //           }
                     subheader={
                       <Typography
                         gutterBottom
@@ -352,11 +352,11 @@ console.log(props.tabValue,"@@22")
                   <CardActionArea>
                     <CardContent>
                       <Typography
-                        variant='body2'
+                        // variant='body2'
                         style={{
-                          marginTop: '0px',
-                          fontSize: 'x-large',
-                          fontWeight: 'bolder',
+                          marginTop: '-15px',
+                          // fontSize: 'x-large',
+                          fontWeight: 'bold',
                           color: 'black',
                         }}
                         color='textSecondary'
@@ -394,18 +394,18 @@ console.log(props.tabValue,"@@22")
                   className={classes.card}
                 >
                   <CardHeader
-                    action={
+          //           action={
                       
-                      props.tabValue === 2 ?
+          //             props.tabValue === 2 ?
                     
-                    <Button
-                      size='small'
-                      type='button'
-                      startIcon={<DeleteIcon />}
-                      // onClick={handleDeleteBlog(data[0].id)}
-                    >
-          </Button> : '' 
-                    }
+          //           <Button
+          //             size='small'
+          //             type='button'
+          //             startIcon={<DeleteIcon />}
+          //             // onClick={handleDeleteBlog(data[0].id)}
+          //           >
+          // </Button> : '' 
+          //           }
                     subheader={
                       <Typography
                         gutterBottom
@@ -421,11 +421,11 @@ console.log(props.tabValue,"@@22")
                   <CardActionArea>
                     <CardContent>
                       <Typography
-                        variant='body2'
+                        // variant='body2'
                         style={{
-                          marginTop: '0px',
-                          fontSize: 'x-large',
-                          fontWeight: 'bolder',
+                          marginTop: '-15px',
+                          // fontSize: 'x-large',
+                          fontWeight: 'bold',
                           color: 'black',
                         }}
                         color='textSecondary'
@@ -467,18 +467,18 @@ console.log(props.tabValue,"@@22")
                 className={classes.card}
               >
                 <CardHeader
-                  action={
+          //         action={
                   
-                    props.tabValue === 2 ?
+          //           props.tabValue === 2 ?
                     
-                    <Button
-                      size='small'
-                      type='button'
-                      startIcon={<DeleteIcon />}
-                      // onClick={handleDeleteBlog(data[0].id)}
-                    >
-          </Button> : '' 
-                  }
+          //           <Button
+          //             size='small'
+          //             type='button'
+          //             startIcon={<DeleteIcon />}
+          //             // onClick={handleDeleteBlog(data[0].id)}
+          //           >
+          // </Button> : '' 
+          //         }
                   subheader={
                     <Typography gutterBottom variant='body2' align='left' component='p'>
                       {data[5] && moment(data[5].created_at).format('MMM DD YYYY')}
@@ -488,11 +488,11 @@ console.log(props.tabValue,"@@22")
                 <CardActionArea>
                   <CardContent>
                     <Typography
-                      variant='body2'
+                      // variant='body2'
                       style={{
-                        marginTop: '-5px',
-                        fontSize: 'x-large',
-                        fontWeight: 'bolder',
+                        marginTop: '-35px',
+                        // fontSize: 'x-large',
+                        fontWeight: 'bold',
                         color: 'black',
                       }}
                       color='textSecondary'

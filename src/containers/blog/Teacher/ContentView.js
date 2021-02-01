@@ -241,7 +241,7 @@ class ContentView extends Component {
                             />
                             <TextField
                               id='outlined-textarea'
-                              placeholder='Add Review'
+                              placeholder='Add Review...optional'
                               multiline
                               variant='outlined'
                             />
@@ -263,7 +263,7 @@ class ContentView extends Component {
                             />
                             <TextField
                               id='outlined-textarea'
-                              placeholder='Add Review'
+                              placeholder='Add Review...optional'
                               multiline
                               variant='outlined'
                             />
@@ -285,7 +285,7 @@ class ContentView extends Component {
                             />
                             <TextField
                               id='outlined-textarea'
-                              placeholder='Add Review'
+                              placeholder='Add Review...optional'
                               multiline
                               variant='outlined'
                             />
@@ -307,7 +307,7 @@ class ContentView extends Component {
                             />
                             <TextField
                               id='outlined-textarea'
-                              placeholder='Add Review'
+                              placeholder='Add Review...optional'
                               multiline
                               variant='outlined'
                             />
@@ -329,7 +329,7 @@ class ContentView extends Component {
                             />
                             <TextField
                               id='outlined-textarea'
-                              placeholder='Add Review'
+                              placeholder='Add Review...optional'
                               multiline
                               variant='outlined'
                             />
@@ -351,7 +351,7 @@ class ContentView extends Component {
                             />
                             <TextField
                               id='outlined-textarea'
-                              placeholder='Add Review'
+                              placeholder='Add Review...optional'
                               multiline
                               variant='outlined'
                             />
@@ -373,7 +373,7 @@ class ContentView extends Component {
                             />
                             <TextField
                               id='outlined-textarea'
-                              placeholder='Add Review'
+                              placeholder='Add Review....mandatory'
                               multiline
                               variant='outlined'
                             />

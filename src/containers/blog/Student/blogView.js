@@ -86,7 +86,7 @@ class BlogView extends Component {
       feedBack: false,
       commentOpen: false,
       data: this.props.location.state.data && this.props.location.state.data,
-      tabValue:this.props.location.state.tabValue && this.pro
+      // tabValue:this.props.location.state.tabValue && this.pro
       // blogId:
     };
   }
@@ -127,6 +127,20 @@ class BlogView extends Component {
         });
     }
   };
+  WriteBlogNav = () => {
+    const { data } = this.state;
+    console.log(data,"ddd")
+    let content=data && data.content
+    let title=data && data.title
+    let thumbnail = data && data.thumbnail
+    let genreId =data && data.genre && data.genre.id
+    let genreName =data && data.genre && data.genre.genre
+    this.props.history.push({
+      pathname: '/blog/student/write-blog',
+      state: { content, title, thumbnail,genreId,genreName },
+    });
+  };
+
 
   render() {
     const { classes } = this.props;
@@ -149,7 +163,7 @@ class BlogView extends Component {
                         onClick={() => window.history.back()}
                         align='right'
                       >
-                        <u>Back to main Page</u>
+                        <u>Back</u>
                       </Typography>
                       <Card className={classes.cardRoot}>
                         <Typography
@@ -192,6 +206,17 @@ class BlogView extends Component {
                             {data.content}
                           </Typography>
                         </CardContent>
+                        <CardActions>
+                          <Button
+                            style={{ width: 150 }}
+                            size='small'
+                            color='primary'
+                            onClick={this.WriteBlogNav}
+                          >
+                            Edit
+                          </Button>
+                          
+                        </CardActions>
                         {/* <CardActions>
                           <ExpansionPanel
                             onClick={() => this.setState({ commentOpen: !commentOpen })}

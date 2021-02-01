@@ -108,7 +108,7 @@ class StudentDashboard extends Component {
 
   handleTabChange = (event, newValue) => {
     this.setState({ tabValue: newValue });
-    const blogTab = newValue === 0 ? 8 : newValue === 2 ? 2 : newValue === 3 ? 1 : 3;
+    const blogTab = newValue === 0 ? 8 : newValue === 2 ? 2 : newValue === 3 ? 1 : 1;
     this.getBlog(blogTab);
   };
 

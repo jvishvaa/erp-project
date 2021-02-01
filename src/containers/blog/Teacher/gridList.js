@@ -66,11 +66,14 @@ function GridList(props) {
               <CardActionArea>
                 <CardContent>
                   <Typography
-                    variant='body2'
+                    // variant='body2'
                     style={{
-                      marginTop: '-5px',
-                      fontSize: 'x-large',
-                      fontWeight: 'bolder',
+                      marginTop: '-35px',
+                      // fontSize: 'x-large',
+                      fontWeight: 'bold',
+                      color: 'black',
+
+
                     }}
                     color='textSecondary'
                     component='p'
@@ -117,11 +120,15 @@ function GridList(props) {
                 <CardActionArea>
                   <CardContent>
                     <Typography
-                      variant='body2'
+                      // variant='body2'
                       style={{
-                        marginTop: '0px',
-                        fontSize: 'x-large',
-                        fontWeight: 'bolder',
+                        // marginTop: '0px',
+                        marginTop: '-28px',
+
+                        // fontSize: 'x-large',
+                        fontWeight: 'bold',
+                        color: 'black',
+
                       }}
                       color='textSecondary'
                       component='p'
@@ -167,11 +174,15 @@ function GridList(props) {
                 <CardActionArea>
                   <CardContent>
                     <Typography
-                      variant='body2'
+                      // variant='body2'
                       style={{
-                        marginTop: '0px',
-                        fontSize: 'x-large',
-                        fontWeight: 'bolder',
+                        // marginTop: '0px',
+                        marginTop: '-28px',
+
+                        // fontSize: 'x-large',
+                        fontWeight: 'bold',
+                        color: 'black',
+
                       }}
                       color='textSecondary'
                       component='p'
@@ -220,11 +231,14 @@ function GridList(props) {
                 <CardActionArea>
                   <CardContent>
                     <Typography
-                      variant='body2'
+                      // variant='body2'
                       style={{
-                        marginTop: '0px',
-                        fontSize: 'x-large',
-                        fontWeight: 'bolder',
+                        marginTop: '-28px',
+
+                        // fontSize: 'x-large',
+                        fontWeight: 'bold',
+                        color: 'black',
+
                       }}
                       color='textSecondary'
                       component='p'
@@ -269,11 +283,13 @@ function GridList(props) {
                 <CardActionArea>
                   <CardContent>
                     <Typography
-                      variant='body2'
+                      // variant='body2'
                       style={{
-                        marginTop: '0px',
-                        fontSize: 'x-large',
-                        fontWeight: 'bolder',
+                        marginTop: '-28px',
+                        // fontSize: 'x-large',
+                        fontWeight: 'bold',
+                        color: 'black',
+
                       }}
                       color='textSecondary'
                       component='p'
@@ -321,11 +337,13 @@ function GridList(props) {
               <CardActionArea>
                 <CardContent>
                   <Typography
-                    variant='body2'
+                    // variant='body2'
                     style={{
-                      marginTop: '-5px',
-                      fontSize: 'x-large',
-                      fontWeight: 'bolder',
+                      marginTop: '-35px',
+                      // fontSize: 'x-large',
+                      fontWeight: 'bold',
+                      color: 'black',
+
                     }}
                     color='textSecondary'
                     component='p'

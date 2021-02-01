@@ -18,6 +18,9 @@ import {
   TextField,
 } from '@material-ui/core';
 import { Rating, Autocomplete } from '@material-ui/lab';
+import { HighlightOff} from '@material-ui/icons'
+
+
 import Avatar from '@material-ui/core/Avatar';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import Dropzone from 'react-dropzone';
@@ -87,6 +90,7 @@ class WriteBlog extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      image :'',
       // files:[],
       relatedBlog: true,
       starsRating: 0,
@@ -100,6 +104,13 @@ class WriteBlog extends Component {
           this.props.location.state.genreId && this.props.location.state.genreId.length !== 0
             ? this.props.location.state.genreId
             : '',
+      genreName :this.props.location.state.genreName && this.props.location.state.genreName.length !== 0
+      ? this.props.location.state.genreName
+      :'',
+      image: 
+      this.props.location.state.thumbnail && this.props.location.state.thumbnail.length !== 0
+          ? this.props.location.state.thumbnail
+          : '',
       TITLE_CHARACTER_LIMIT: 100,
       Preview: false,
       detail: this.props.location.state.detail,
@@ -116,11 +127,10 @@ class WriteBlog extends Component {
           ? this.props.location.state.files
           : [],
     };
-    console.log(props,"222@@@@")
+    console.log(this.props,"pppppppp")
   }
-
   componentDidMount() {
-    this.listSubjects();
+    // this.listSubjects();
     this.listGenre();
     const { creationDate } = this.state;
     let studentName = JSON.parse(localStorage.getItem('userDetails'));
@@ -142,18 +152,18 @@ class WriteBlog extends Component {
       .catch((error) => {});
   };
 
-  listSubjects = async () => {
-    const { role_details } = this.state;
-    // const branchId = role_details.role_details.branch;
-    // const gradeId = [24];
-    // const sectionIds = [25];
-    axios
-      .get(`${endpoints.academics.subjects}`)
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((error) => {});
-  };
+  // listSubjects = async () => {
+  //   const { role_details } = this.state;
+  //   // const branchId = role_details.role_details.branch;
+  //   // const gradeId = [24];
+  //   // const sectionIds = [25];
+  //   axios
+  //     .get(`${endpoints.academics.subjects}`)
+  //     .then((res) => {
+  //       console.log(res.data);
+  //     })
+  //     .catch((error) => {});
+  // };
 
   handlePostBlog = () => {
     const { title, textEditorContent, files, genreId } = this.state;
@@ -193,7 +203,7 @@ class WriteBlog extends Component {
   };
 
   handleTextEditor = (content) => {
-    const { blogId, isEdit } = this.state;
+    const { blogId } = this.state;
     console.log(content.replace(/&nbsp;/g, ''));
 
     // remove  begining and end white space
@@ -207,10 +217,24 @@ class WriteBlog extends Component {
     console.log(event.target.value);
     this.setState({ title: event.target.value });
   };
-
+  isImage = (files) => {
+    if (files[0].name.match(/.(jpg|jpeg|png)$/i)) {
+      return true
+    }
+    return false
+  }
+  
   onDrop = (files=[]) => {
+    if (!this.isImage(files)) {
+      this.props.alert.warning('Please select only image file format')
+      return
+    } else if (files.length > 1) {
+      this.props.alert.warning('You can select only a single image at once')
+      return
+    }
+  
     console.log(files,"@@@")
-    this.setState({ files });
+    this.setState({ files,image: URL.createObjectURL(files[0]) });
     console.log(files);
   };
 
@@ -260,6 +284,8 @@ class WriteBlog extends Component {
       relatedBlog,
       starsRating,
       feedBack,
+      image,
+      genreName,
       textEditorContent,
       key,
       title,
@@ -270,6 +296,7 @@ class WriteBlog extends Component {
       studentName,
       creationDate,
     } = this.state;
+    console.log(genreName)
     return Preview ? (
       <PreviewBlog
         content={textEditorContent}
@@ -306,6 +333,7 @@ class WriteBlog extends Component {
                       size='small'
                       id='combo-box-demo'
                       options={genreList}
+                      // value={genreName}
                       getOptionLabel={(option) => option.genre}
                       style={{ width: 300 }}
                       onChange={(e, data) => this.handleGenre(data)}
@@ -396,6 +424,20 @@ class WriteBlog extends Component {
                           </Card>
                         )}
                       </Dropzone>
+                      
+                      {/* {
+                image
+                  ? <Grid item xs={12} sm={6} md={6} style={{ position: 'relative' }}>
+                    <HighlightOff
+                      className='thumbnail__close--icon'
+                      onClick={this.handleClearThumbnail}
+                    />
+                    <label className='blog--form-label' />
+                    <img className='thumbnail__image' src={image} />
+                  </Grid>
+                  : ''
+              } */}
+
                       <Divider variant='middle' style={{ margin: 10 }} />
 
                       <CardActions>

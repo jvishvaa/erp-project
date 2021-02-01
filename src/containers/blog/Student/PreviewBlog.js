@@ -83,17 +83,19 @@ class ContentView extends Component {
       studentName: this.props.location.state.studentName,
       date: this.props.location.state.creationDate,
       files: this.props.location.state.files,
+      
     };
   }
 
   componentDidMount() {
     const { files } = this.state;
-    const imageUrl = URL.createObjectURL(files[0]);
-    this.setState({ imageUrl });
+    // const imageUrl = URL.createObjectURL(files[0]);
+    // this.setState({ imageUrl });
   }
 
   WriteBlogNav = () => {
     const { content, title, files ,genreId} = this.state;
+    console.log(files,"@@@@")
     this.props.history.push({
       pathname: '/blog/student/write-blog',
       state: { content, title, files,genreId },
