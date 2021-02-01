@@ -314,6 +314,10 @@ const Layout = ({ children, history }) => {
         history.push('/create-class');
         break;
       }
+      case 'Online Class': {
+        history.push('/aol-view');
+        break;
+      }
       case 'Configuration': {
         history.push('/homework/admin');
         break;

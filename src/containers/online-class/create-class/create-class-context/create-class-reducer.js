@@ -28,6 +28,8 @@ import {
   LIST_SUBJECT_SUCCESS,
   LIST_SUBJECT_FAILURE,
   UPDATE_CLASS_TYPE,
+  SET_EDIT_DATA,
+  SET_EDIT_DATA_FALSE,
 } from './create-class-constants';
 
 const createClassReducer = (state, action) => {
@@ -167,6 +169,12 @@ const createClassReducer = (state, action) => {
     //UPDATE_CLASS_TYPE
     case UPDATE_CLASS_TYPE:
       return { ...state, classTypeId: action.payload };
+
+    //EDIT DATA
+    case SET_EDIT_DATA: 
+      return { ...state, editData: action.payload, isEdit: true};
+    case SET_EDIT_DATA_FALSE:
+      return { ...state, editData: [], isEdit: false};
 
     default:
       return { ...state };

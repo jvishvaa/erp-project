@@ -30,6 +30,8 @@ import {
   LIST_SUBJECT_SUCCESS,
   LIST_SUBJECT_FAILURE,
   UPDATE_CLASS_TYPE,
+  SET_EDIT_DATA,
+  SET_EDIT_DATA_FALSE,
 } from './create-class-constants';
 import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
@@ -42,6 +44,8 @@ const CreateclassProvider = (props) => {
   const { children } = props;
   const { setAlert } = useContext(AlertNotificationContext);
   const initalState = {
+    isEdit: false,
+    editData: [],
     grades: [],
     sections: [],
     subjects: [],
@@ -287,6 +291,14 @@ const CreateclassProvider = (props) => {
 
   const resetContext = () => {
     return { type: RESET_CREATE_CLASS_CONTEXT, payload: initalState };
+  };
+
+  const setEditData = (editData) => {
+    return {type: SET_EDIT_DATA, payload:editData};
+  };
+
+  const setEditDataFalse = (editData) => {
+    return {type: SET_EDIT_DATA, payload:[]};
   };
 
   return (

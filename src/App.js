@@ -50,6 +50,7 @@ import Subjectgrade from './containers/subjectGradeMapping';
 import ListandFilter from './containers/subjectGradeMapping/listAndFilter';
 import GeneralDairyList from './containers/general-dairy';
 import CreateGeneralDairy from './containers/general-dairy/create-dairy';
+import AOLClassView from './containers/online-class/aol-view/index';
 
 const theme = createMuiTheme({
   palette: {
@@ -144,6 +145,10 @@ function App() {
                 <Route exact path='/online-class/resource'>
                   {({ match }) => <OnlineClassResource match={match} />}
                 </Route>
+                <Route exact path='/online-class/aol-view'>
+                  {({ match }) => <AOLClassView match={match} />}
+                </Route>
+                
                 <Route exact path='/online-class/attendee-list/:id'>
                   {({ match }) => <AttendeeList match={match} />}
                 </Route>

@@ -50,6 +50,7 @@ export default {
     resourceLink: '/erp_user/resource_link/',
     resourceFile: '/erp_user/resource_files/',
     feedback: '/erp_user/onlineclass_attendancecheck/',
+    updateTutor: '/erp_user/update_tutor_email',
   },
   masterManagement: {
     subjects: '/erp_user/subjects-list/',
