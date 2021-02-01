@@ -9,6 +9,7 @@ import './view-more.css';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 // import Highcharts from 'highcharts';
 
+
 const ViewMoreCard = ({
   viewMoreData,
   setViewMore,
@@ -25,37 +26,39 @@ const ViewMoreCard = ({
     },
     title: {
       text: 'Chapter Wise Details',
-      style: {
+      style:{
         fontSize: '1.1rem',
         color: '#ff6b6b',
         display: 'flex',
         justifyContent: 'space-between',
-        margin: '15px 15px 10px 15px',
-      },
+        margin: '15px 15px 10px 15px'
+
+      }
     },
     xAxis: {
       categories: viewMoreData.map((p) => p.chapter_name),
-      labels: {
-        style: {
-          fontSize: '1rem',
-          fontWeight: '600',
-          color: '#014b7e',
-          margin: '10px 0px 0px 20px',
-          display: 'flex',
-          justifyContent: 'space-between',
-        },
-      },
+       labels:{
+        style:{
+            fontSize: '1rem',
+            fontWeight: '600',
+            color: '#014b7e',
+            margin:'10px 0px 0px 20px',
+            display: 'flex',
+            justifyContent:'space-between'
+        }
+       }     
     },
     yAxis: {
       min: 0,
-      title: {},
+      title: {
+      },
     },
     legend: {
       reversed: true,
     },
     credits: {
-      enabled: false,
-    },
+        enabled: false,
+      },
     plotOptions: {
       bar: {
         showInLegend: true,
@@ -99,23 +102,27 @@ const ViewMoreCard = ({
           </div>
         </div>
       </div>
-      <div className='resourceBulkDownload'>
-        <div>Chapter Wise Details</div>
-      </div>
-      {viewMoreData?.map((p) => (
-        <div className='viewMoreBody'>
-          <div className='bodyTitle'>
-            <div>{p?.chapter_name}</div>
-            <div className='totalPeriod'>Total Period - {p?.no_of_periods}</div>
-          </div>
-          <div className='scrollableContent'>
-            <div className='bodyContent'>
-              <div>Period Completed</div>
-              <div>{p.completed_periods}</div>
+       <div className="resourceBulkDownload">
+                <div>Chapter Wise Details</div>
+
             </div>
-          </div>
-        </div>
-      ))}
+            {viewMoreData?.map(p => (
+                <div className="viewMoreBody">
+                    <div className="bodyTitle">
+                      <div>{p?.chapter_name}</div>  
+                        <div className='totalPeriod'>Total Period - {p?.no_of_periods}</div>
+                    </div>
+                  <div className="scrollableContent">
+                            <div className="bodyContent">    
+                               <div>Period Completed</div>
+                                <div>
+                                    {p.completed_periods}
+                                </div> 
+                            </div>
+                    </div> 
+                </div>
+            ))}
+
 
       {/* <HighchartsReact highcharts={Highcharts} options={configObj} /> */}
     </Paper>

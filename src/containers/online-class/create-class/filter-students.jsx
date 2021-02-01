@@ -205,7 +205,6 @@ export default function FilterStudents() {
     filteredStudents = [],
     listFilteredStudents,
     dispatch,
-    classTypeId,
   } = useContext(CreateclassContext);
 
   const handleRequestSort = (event, property) => {
@@ -241,7 +240,6 @@ export default function FilterStudents() {
         selected.slice(selectedIndex + 1)
       );
     }
-    console.log({newSelected})
     dispatch(listFilteredStudents(newSelected));
     setSelected(newSelected);
   };
@@ -265,14 +263,12 @@ export default function FilterStudents() {
     return students.map((student, index) => ({ ...student, sl: index + 1 }));
   };
 
-  console.log({classTypeId})
-
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <EnhancedTableToolbar numSelected={selected.length} />
         <div style={{color:'#014b7e',fontWeight:'600',fontSize:'16px',margin:'10px'}}><span
-        style={{color:'#fe6b6b',fontSize:'18px'}} >**</span>Note:&nbsp;<span style={{fontWeight:'500'}}>Select from the following list of students to <span>{classTypeId===0?'not permit':'permit'}</span> them to attend the class.</span></div>
+        style={{color:'#fe6b6b',fontSize:'18px'}} >**</span>Note:&nbsp;<span style={{fontWeight:'500'}}>Select from the following list of students to not permit them to attend the class.</span></div>
         <TableContainer>
           <Table
             className={`${classes.table} styled__table`}

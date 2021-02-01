@@ -5,7 +5,6 @@
 /* eslint-disable react/prop-types */
 import React, { useContext, useState, useEffect, useRef, createContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {useParams} from "react-router-dom";
 import { throttle, debounce } from 'throttle-debounce';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -95,8 +94,6 @@ const Layout = ({ children, history }) => {
   const [userId, setUserId] = useState();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-
-  // let { key } = useParams();
   const getGlobalUserRecords = async (text) => {
     try {
       const result = await axiosInstance.get(
@@ -146,9 +143,6 @@ const Layout = ({ children, history }) => {
     }
     let userDetails = localStorage.getItem('userDetails');
     if (!userDetails) {
-      // if(key==="2000000002")
-      // history.push('/dashboard/2000');
-      // else
       history.push('/');
     }
     if (userDetails) {
@@ -430,102 +424,6 @@ const Layout = ({ children, history }) => {
         history.push('/discussion-forum');
         break;
       }
-      case 'Normal Fee Type': {
-        history.push('/feeType/normalFeeType');
-        break;
-      }
-      case 'Misc. Fee Type': {
-        history.push('/feeType/miscFeeType');
-        break;
-      }
-      case 'Curricular Fee Type': {
-        history.push('/feeType/CurricularFeeType');
-        break;
-      }
-      case 'Add Transport Fees': {
-        history.push('/feeType/OtherFeeType');
-        break;
-      }
-      case 'App/Reg Fee Type': {
-        history.push('/feeType/RegistrationFee');
-        break;
-      }
-      case 'View Fee Plan': {
-        history.push('/feePlan/ViewFeePlan');
-        break;
-      }
-      case 'Concession Settings': {
-        history.push('/finance/ConcessionSetting');
-        break;
-      }
-      case 'Ledger': {
-        history.push('/finance/Ledger');
-        break;
-      }
-      case 'Total Paid and Due Report' : {
-        history.push('/finance/TotalPaidReport');
-        break;
-      }
-      case 'Other Fee Total Paid and Due Report': {
-        history.push('/finance/OtherFeeTotalPaidReport')
-        break;
-      }
-      case 'Tally Report': {
-        history.push('/finance/TallyReport')
-        break;
-      }
-      case 'Receipt Book': {
-        history.push('/finance/ReceiptBook')
-        break;
-      }
-      case 'Wallet Report': {
-        history.push('/finance/WalletReport')
-        break;
-      }
-      case 'Concession Report': {
-        history.push('/finance/ConcessionReport')
-        break;
-      }
-      case 'Bounce Report': {
-        history.push('/finance/ChequeBounceReport')
-        break;
-      }
-      case 'Student Shuffle Requests': {
-        history.push('/finance/StudentShuffleRequest')
-        break;
-      }
-      case 'Misc. Fee Class': {
-        history.push('/finance/MiscFeeClass')
-        break;
-      }
-      case 'Assign Coupon': {
-        history.push('/finance/AssignCoupon')
-        break;
-      }
-      case 'Create Coupon': {
-        history.push('/finance/CreateCoupon')
-        break;
-      }
-      case 'Deposit Tab': {
-        history.push('/finance/DepositTab')
-        break;
-      }
-      case 'total Forms & Report': {
-        history.push('/finance/TotalFormReport')
-        break;
-      }
-      case 'Unassign Fee Requests': {
-        history.push('/finance/UnassignFeeRequests')
-        break;
-      }
-      case 'Create Receipt Ranges': {
-      history.push('/finance/ReceiptRange')
-        break;
-      }
-      case 'Store Report': {
-        history.push('/finance/StoreReport')
-          break;
-        }
       default:
         break;
     }

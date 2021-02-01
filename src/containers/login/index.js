@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useRef } from 'react';
+import React, { useState, useContext } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -14,7 +14,7 @@ import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import { login } from '../../redux/actions';
-import { useParams } from 'react-router-dom';
+
 
 function Copyright() {
 
@@ -52,23 +52,15 @@ const useStyles = makeStyles((theme) => ({
 
 function SignIn({ onLogin, history }) {
 
-  if (localStorage.getItem('userDetails') && localStorage.getItem('navigationData'))
-    history.push('/profile')
-
-  let { key } = useParams();
-  const loginButton = useRef(null);
-  const [uname, pass, checked] = JSON.parse(localStorage.getItem('rememberDetails')) || []
-  const [username, setUsername] = useState('' || uname);
-  const [password, setPassword] = useState('' || pass);
-  const [check, setCheck] = useState(false || checked)
+  if(localStorage.getItem('userDetails')&&localStorage.getItem('navigationData'))
+  history.push('/profile')
+  
+  const [uname,pass,checked] =JSON.parse(localStorage.getItem('rememberDetails')) || []
+  const [username, setUsername] = useState(''||uname);
+  const [password, setPassword] = useState(''||pass);
+  const [check,setCheck]=useState(false||checked)
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
-
-  useEffect(() => {
-    if (key === "2000000002") {
-      handleLogin();
-    }
-  }, [key])
 
   const handleLogin = () => {
     const params = {
@@ -84,26 +76,14 @@ function SignIn({ onLogin, history }) {
         }
       });
     }
-    else if (key === "2000000002") {
-      onLogin({
-        username: "2000000002",
-        password: "erp_1992",
-      }).then((response) => {
-        if (response.isLogin) {
-          history.push('/profile');
-        } else {
-          setAlert('error', response.message);
-        }
-      });
+    if(check) {
+      localStorage.setItem('rememberDetails',JSON.stringify([username,password,check]))
     }
-    if (check) {
-      localStorage.setItem('rememberDetails', JSON.stringify([username, password, check]))
-    }
-    else {
+    else{
       localStorage.removeItem('rememberDetails')
     }
   };
-
+  
   return (
     <Container component='main' maxWidth='xs'>
       <CssBaseline />
@@ -131,7 +111,7 @@ function SignIn({ onLogin, history }) {
             autoComplete='email'
             autoFocus
             value={username}
-            inputProps={{ maxLength: 40 }}
+            inputProps={{maxLength:40}}
             onChange={(e) => {
               setUsername(e.target.value);
             }}
@@ -147,13 +127,13 @@ function SignIn({ onLogin, history }) {
             id='password'
             autoComplete='current-password'
             value={password}
-            inputProps={{ maxLength: 20 }}
+            inputProps={{maxLength:20}}
             onChange={(e) => {
               setPassword(e.target.value);
             }}
           />
           <FormControlLabel
-            control={<Checkbox value='remember' color='primary' checked={check} onClick={e => setCheck(!check)} />}
+            control={<Checkbox value='remember' color='primary' checked={check} onClick={e=>setCheck(!check)}/>}
             label='Remember Me'
           />
           <Button
@@ -161,7 +141,6 @@ function SignIn({ onLogin, history }) {
             type='submit'
             variant='contained'
             color='primary'
-            ref={loginButton}
             className={classes.submit}
             onClick={() => {
               handleLogin();

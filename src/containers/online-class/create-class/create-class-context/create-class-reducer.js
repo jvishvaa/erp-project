@@ -2,9 +2,6 @@ import {
   LIST_GRADE_FAILURE,
   LIST_GRADE_REQUEST,
   LIST_GRADE_SUCCESS,
-  LIST_COURSE_FAILURE,
-  LIST_COURSE_REQUEST,
-  LIST_COURSE_SUCCESS,
   LIST_SECTION_FAILURE,
   LIST_SECTION_REQUEST,
   LIST_SECTION_SUCCESS,
@@ -27,7 +24,6 @@ import {
   LIST_SUBJECT_REQUEST,
   LIST_SUBJECT_SUCCESS,
   LIST_SUBJECT_FAILURE,
-  UPDATE_CLASS_TYPE,
 } from './create-class-constants';
 
 const createClassReducer = (state, action) => {
@@ -49,15 +45,6 @@ const createClassReducer = (state, action) => {
         loading: false,
         message: action.payload,
       };
-    case LIST_COURSE_REQUEST:
-      return { ...state, loading: true };
-
-    case LIST_COURSE_SUCCESS:
-      return { ...state, courses: action.payload, loading: false };
-
-    case LIST_COURSE_FAILURE:
-      return { ...state, courses: [], loading: false };
-
 
     // to get sections on select of grade
     case LIST_SECTION_REQUEST:
@@ -163,10 +150,6 @@ const createClassReducer = (state, action) => {
 
     case LIST_TUTOR_EMAILS_FAILURE:
       return { ...state, tutorEmailsLoading: false };
-    
-    //UPDATE_CLASS_TYPE
-    case UPDATE_CLASS_TYPE:
-      return { ...state, classTypeId: action.payload };
 
     default:
       return { ...state };

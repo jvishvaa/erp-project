@@ -8,7 +8,6 @@ export default {
     branches: '/erp_user/branch/',
     grades: '/erp_user/grademapping/',
     sections: '/erp_user/sectionmapping/',
-    courses: '/aol/courses/',
   },
   profile: {
     userDetails: '/erp_user/user-data/',
@@ -38,9 +37,7 @@ export default {
   onlineClass: {
     filterStudent: '/erp_user/student_filter/',
     teacherAvailability: '/erp_user/tutor_availability_check/',
-    // createClass: '/erp_user/online_class/',
-    createClass: '/erp_user/online-recurring/',
-    createSpecialClass: '/erp_user/online-erp-class/',
+    createClass: '/erp_user/online_class/',
     studentOnlineclasses: '/erp_user/student_online_class/',
     acceptOrJoinClass: '/erp_user/onlineclass_accept_join/',
     managementOnlineClass: '/erp_user/teacher_online_class/',
@@ -145,28 +142,7 @@ export default {
     dairyList:'/academic/general-dairy-messages/',
 
   },
-  onlineCourses:{
-    createCourse:'/aol/courses/',
-    fileUpload:'/aol/file-upload/',
-    courseList:'/aol/courses/',
-    deleteCourse:'/aol/',
-    courseDetails:'/aol/courses/',
-  },
     
-// =======
-  //   categoryList: '/academic/categories/',
-  //   branch: '/erp_user/branch/',
-  //   grade:'/erp_user/grademapping/',
-  //   filterCategory: '/academic/posts/',
-  //   postLike: '/academic/posts-like-users/',
-  //   PostCategory : '/academic/create-category/',
-  //   CreateDissusionForum: '/academic/add-post/',
-  //   CreateCommentAndReplay: '/academic/create-answer-replay/',
-  //   AwardListAPI: '/academic/',
-  //   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
-  //   deletePost: '/academic/'
-  //  },
-// >>>>>>> 56e027961838166259d0ffff2027683c147bc3c
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
 };
