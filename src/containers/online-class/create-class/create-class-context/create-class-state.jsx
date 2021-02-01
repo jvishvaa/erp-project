@@ -293,12 +293,12 @@ const CreateclassProvider = (props) => {
     return { type: RESET_CREATE_CLASS_CONTEXT, payload: initalState };
   };
 
-  const setEditData = (editData) => {
-    return {type: SET_EDIT_DATA, payload:editData};
+  const setEditData = (data) => {
+    return {type: SET_EDIT_DATA, payload:data};
   };
 
-  const setEditDataFalse = (editData) => {
-    return {type: SET_EDIT_DATA, payload:[]};
+  const setEditDataFalse = (data) => {
+    return {type: SET_EDIT_DATA_FALSE, payload:[]};
   };
 
   return (
@@ -322,6 +322,8 @@ const CreateclassProvider = (props) => {
         listSectionAndSubjects,
         clearTutorEmailsList,
         clearStudentsList,
+        setEditData,
+        setEditDataFalse,
       }}
     >
       {children}

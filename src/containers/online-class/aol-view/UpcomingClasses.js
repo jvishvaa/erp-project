@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import ClassCard from './ClassCard';
 import { Divider, Grid, makeStyles, useTheme, withStyles, Button, TextField } from '@material-ui/core';
 import axiosInstance from '../../../config/axios';
@@ -136,13 +136,13 @@ const UpcomingClasses = () => {
         { id: 3, type: 'Parent Class' },
       ]
     );
-    //const [ startDateList, setStartDateList ] = React.useState([]);
-    //const [ endDateList, setEndDateList ] = React.useState([]);
 
     const [ classType, setClassType ] = React.useState('');
-    const [ startDate, setStartDate ] = React.useState(new Date());
-    const [ endDate, setEndDate ] = React.useState(new Date());
+    const [ startDate, setStartDate ] = React.useState(null);
+    const [ endDate, setEndDate ] = React.useState(null);
     const [ isFilter, setIsFilter ] = React.useState(false);
+    //const [startDate, setStartDate] = React.useState(moment(date).format('YYYY-MM-DD'));
+    //const [endDate, setEndDate] = React.useState(moment(date).format('YYYY-MM-DD'));
 
     const themeContext = useTheme();
     const isTabDivice = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -174,41 +174,28 @@ const UpcomingClasses = () => {
         setSize(9);
         setClassData(data);
         setSelected(data.id);
+        
         console.log('TAb : '+ isTabDivice);
         if(isTabDivice){
             console.log('**** TAb *****');
         }
     }
-    // Filter
-    React.useEffect(() => {
-        const getClassTypeList = () => {
-            axiosInstance.get('erp_user/629/online-class-details').then((res) => {
-                setClassTypeList(res.data.result)
-            }).catch(err => {
-                console.log(err)
-            })
-        }
+    
+    // pagination
+    const [ showPerPage, setShowPerPage ] = React.useState(12);
+    const [ pagination, setPagination ] = React.useState({
+        start: 0,
+        end: showPerPage,
+    });
 
-        //getClassTypeList();
-        //getStartDateList();
-        //getEndDateList();
-    }, []);
-
-    const getStartDateList = () => {
-        axiosInstance.get('erp_user/629/online-class-details').then((res) => {
-            //setStartDateList(res.data.result)
-        }).catch(err => {
-            console.log(err)
-        })
+    const onPaginationChange = (start, end) => {
+        setPagination({
+            start: start,
+            end: end
+        });
     }
 
-    const getEndDateList = () => {
-        axiosInstance.get('erp_user/629/online-class-details').then((res) => {
-            //setEndDateList(res.data.result)
-        }).catch(err => {
-            console.log(err)
-        })
-    }
+    // Filter start
 
     const handleTypeOfClass = (event, value) => {
         //setClassType('');
@@ -216,6 +203,7 @@ const UpcomingClasses = () => {
             setClassType(value);
         }
     }
+    
     const handleStartDate = (event, value) => {
         //setStartDate('');
         const isFutureTime = startDate> new Date();
@@ -223,6 +211,7 @@ const UpcomingClasses = () => {
             setStartDate(value);
         }
     }
+
     const handleEndDate = (event, value) => {
         //setEndDate('');
         const isFutureTime = startDate> new Date();
@@ -242,19 +231,25 @@ const UpcomingClasses = () => {
         getClasses();
     }
 
-    // pagination
-    const [ showPerPage, setShowPerPage ] = React.useState(12);
-    const [ pagination, setPagination ] = React.useState({
-        start: 0,
-        end: showPerPage,
-    });
 
-    const onPaginationChange = (start, end) => {
-        setPagination({
-            start: start,
-            end: end
-        });
-    }
+    const classCardData = classesData && classesData.slice(pagination.start, pagination.end).filter((data) => {
+        const classData =  data.zoom_meeting ?  data.zoom_meeting :  data;
+        if(startDate === null && endDate === null){
+            return data;
+        }
+        else if (startDate === moment(classData.online_class && classData.online_class.start_time).format('YYYY-MM-DD') && endDate === moment(classData.online_class && classData.online_class.end_time).format('YYYY-MM-DD')) {
+            return data;
+        }
+    }).map((data, id) => {
+        return (
+            <Grid item sm={itemSize} xs={12} key={id}>
+                <ClassCard
+                    classData={data}
+                    selectedId={selected}
+                    handleSelctedClass={handleSelctedClass}
+                />
+            </Grid>
+        )});
 
     return (
         <>
@@ -297,7 +292,6 @@ const UpcomingClasses = () => {
                             label='Start date'
                             value={startDate}
                             //defaultValue={new Date()}
-                            minDate={new Date()}
                             onChange={handleStartDate}
                             KeyboardButtonProps={{
                                 'aria-label': 'change date',
@@ -316,7 +310,6 @@ const UpcomingClasses = () => {
                             id='date-picker'
                             label='Start date'
                             value={endDate}
-                            minDate={new Date()}
                             onChange={handleEndDate}
                             KeyboardButtonProps={{
                                 'aria-label': 'change date',
@@ -345,15 +338,7 @@ const UpcomingClasses = () => {
             <Grid container spacing={3} className={classes.root}>
                 <Grid item sm={size} xs={12}>
                     <Grid container spacing={3}>
-                        {classesData.slice(pagination.start, pagination.end).map((data, id) => (
-                            <Grid item sm={itemSize} xs={12} key={id}>
-                                <ClassCard
-                                    classData={data}
-                                    selectedId={selected}
-                                    handleSelctedClass={handleSelctedClass}
-                                />
-                            </Grid>
-                        ))}
+                        {classCardData}
                     </Grid>
                 </Grid>
 

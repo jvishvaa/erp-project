@@ -43,6 +43,7 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import { fetchBranchesForCreateUser } from '../../../redux/actions';
 
 const CreateClassForm = (props) => {
+  
   const tutorEmailRef = useRef(null);
   const [onlineClass, setOnlineClass] = useState(initialFormStructure);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -68,6 +69,8 @@ const CreateClassForm = (props) => {
     clearTutorEmailValidation,
     isTutorEmailValid,
     isValidatingTutorEmail,
+    isEdit,
+    editData,
     grades = [],
     sections = [],
     subjects = [],
@@ -93,7 +96,9 @@ const CreateClassForm = (props) => {
   const [priceToggle, setPriceToggle] = useState(false);
 
   const { setAlert } = useContext(AlertNotificationContext);
-
+  console.log("isEdit : "+isEdit)
+  isEdit && (console.log(editData));
+  console.log(editData);
   const {
     role_details: { branch = [], erp_user_id: erpUser },
     user_id: userId,
