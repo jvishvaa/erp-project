@@ -1,0 +1,123 @@
+.mainContainer {
+  width: 90%;
+  margin: auto;
+  margin-top: 70px;
+  margin-bottom: 50px;
+  position: relative;
+  color: rgb(66, 66, 66);
+}
+
+.noContainer {
+  display: none;
+}
+
+.photoContainer {
+  height: 100px;
+  width: 100px;
+  position: absolute;
+  top: -50px;
+  left: 20px;
+  background-color: aqua;
+}
+
+.studentDetails {
+  display: flex;
+  margin-left: 130px;
+  margin-bottom: 20px;
+  margin-top: 10px;
+  justify-content: space-around;
+  font-weight: lighter;
+  text-transform: capitalize;
+}
+
+.seperator {
+  width: 60%;
+  margin: auto;
+  height: 3px;
+  background-color: rgb(151, 151, 151);
+  border-radius: 3px;
+  margin-bottom: 12px;
+}
+
+.otherDetails {
+  display: flex;
+  width: 95%;
+  margin: auto;
+  justify-content: space-around;
+  font-weight: lighter;
+}
+
+.otherDetails * {
+  text-transform: capitalize;
+}
+
+.parentalContainer, 
+.admissionContainer {
+  width: 50%;
+}
+
+.parentalContainer,
+.admissionInfoCol1 {
+  border-right: 0.2px solid rgba(155, 155, 155, 0.856);
+}
+
+.admissionContainer {
+  border-left: 0.2px solid rgba(155, 155, 155, 0.856);
+}
+
+.parentalContainerInfo div {
+  padding-left: 10px
+}
+
+.otherDetails h3 {
+  border-bottom: 0.2px solid rgba(155, 155, 155, 0.856);
+  padding-bottom: 5px;
+}
+
+.otherDetails hr {
+  margin: 8px 0px;
+}
+
+.admissionInfo {
+  display: flex;
+  justify-content: space-between
+}
+
+.admissionInfoCol1, 
+.admissionInfoCol2 {
+  width: 50%
+}
+
+.admissionInfoCol1 div, 
+.admissionInfoCol2 div {
+  padding-left: 10px
+}
+
+.modal__heading{
+  text-align: center;
+  padding-top: 15px;
+  margin-bottom: 15px;
+}
+.modal__button,
+.modal__remainbutton,
+.modal__deletebutton{
+  display: inline-block;
+  position: absolute;
+}
+.modal__button{
+  bottom: 5px;
+  right: 2px;
+}
+.modal__deletebutton{
+  bottom: 5px;
+  right: 10px;
+  background-color: #009900;
+}
+.modal__remainbutton{
+  bottom: 5px;
+  left: 10px;
+  background-color: #cc0000;
+}
+.modal__content{
+  padding: 15px;
+}

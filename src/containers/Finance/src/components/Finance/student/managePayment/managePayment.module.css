@@ -1,0 +1,191 @@
+.table *{
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+    color: rgb(43, 42, 42);
+    font-weight: lighter;
+  }
+  
+  .table {
+    width: 97%;
+    margin: auto;
+    font-size: 16px; 
+    font-size: 1vw;
+    overflow-x: auto;
+  
+  }
+  
+  .table__head {
+    width: 100%;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    border: 0.02px solid rgba(100, 100, 100, 0.329);
+    overflow: hidden;
+    font-weight: bolder;
+  } 
+  
+  .table__body{
+    width: 100%;
+    overflow: hidden;
+  }
+  
+  .table__heading,
+  .table__bodyRecords {
+    width: 100%;
+    display: flex;
+    /* align-items: center; */
+    justify-content: space-between;
+    overflow: hidden;
+  } 
+  
+  .table__heading *{
+    font-weight: bolder;
+    text-align: center;
+  }
+  
+  .table__bodyRecords * {
+    text-align: center;
+  }
+  
+  .table__headingSno,
+  .table__bodySno {
+    width: 5%;
+  }
+  
+  .table__headingTranId,
+  .table__bodyTranId {
+    width: 15%;
+  }
+  
+  .table__headingRcptNo,
+  .table__bodyRcptNo {
+    width: 12%;
+  }
+  
+  .table__headingDate,
+  .table__bodyDate {
+   width: 9%;
+  }
+  
+  .table__headingPymntMd,
+  .table__bodyPymntMd {
+   width: 9%;
+  }
+  
+  .table__headingFee,
+  .table__bodyFee {
+    width: 29%;
+   }
+  
+  .table__headingFeeTyp,
+  .table__bodyFeeTyp {
+    width: 100%;
+    display: flex
+  }
+  
+  .table__bodyFeeTypItem,
+  .table__headingFeeTypItem {
+    width: 60%;
+  }
+  
+  .table__headingAmnt,
+  .table__bodyAmnt {
+    width: 40%;
+  }
+  
+  .table__headingTotal,
+  .table__bodyTotal {
+    width: 10%;
+  }
+  
+  .table__headingActn,
+  .table__bodyActn {
+    width: 10%;
+  }
+  
+  .table__head,
+  .table__body,
+  .table__bodyRecords,
+  .table__heading {
+    min-width: 1024px;
+  }
+  
+  .table__bodyRecords,
+  .table__heading {
+    border: 0.02px solid rgba(100, 100, 100, 0.329);
+  }
+  
+  .table__headingSno,
+  .table__bodySno,
+  .table__headingTranId,
+  .table__bodyTranId,
+  .table__headingRcptNo,
+  .table__bodyRcptNo,
+  .table__headingDate,
+  .table__bodyDate,
+  .table__headingPymntMd,
+  .table__bodyPymntMd,
+  .table__headingFee,
+  .table__bodyFee,
+  .table__headingTotal,
+  .table__bodyTotal,
+  .table__headingActn,
+  .table__bodyActn {
+    border-right: 0.15px solid rgba(100, 100, 100, 0.904);
+    padding: 10px 5px;
+  }
+  
+  .table__headFeeTypItem{
+    border-right: 0.15px solid rgba(100, 100, 100, 0.904);
+  }
+  
+  .table__bodyFeeTypItem{
+    border-right: 0.15px solid rgba(100, 100, 100, 0.904);
+    padding: 0 5px;
+  }
+  
+  .table__bodyFee{
+    padding: 0;
+  }
+  
+  .table__bodyFeeTyp{
+    padding: 0;
+    border-bottom: 0.15px solid rgba(100, 100, 100, 0.904);
+    min-height: 40px;
+    line-height: 40px;
+  }
+  
+  .table__bodyFeeTyp:last-child{
+    border-bottom: 0px solid rgba(100, 100, 100, 0.904);
+  }
+  
+  .totalAmount {
+    width: 100%
+  }
+  
+  .totalAmount p {
+    width: 100%;
+    text-align: right;
+    font-weight: bold;
+    font-size: 1.3rem;
+  }
+  
+  @media only screen and (max-width: 768px) {
+    .table * {
+      font-size: 12px;
+    }
+    .table {
+      max-width: 600px;
+    }
+  
+  } 
+  
+  @media only screen and (max-width: 1024px){
+    .table * {
+      font-size: 12px;
+    }
+    .table {
+      max-width: 900px;
+    }
+  }
