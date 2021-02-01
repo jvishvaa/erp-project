@@ -95,7 +95,6 @@ class ContentView extends Component {
 
   WriteBlogNav = () => {
     const { content, title, files ,genreId} = this.state;
-    console.log(files,"@@@@")
     this.props.history.push({
       pathname: '/blog/student/write-blog',
       state: { content, title, files,genreId },
@@ -103,7 +102,6 @@ class ContentView extends Component {
   };
 
   submitBlog = (type) => {
-    console.log(type,"@@@type")
     const { title, content, files, genreId } = this.state;
     const formData = new FormData();
     for (var i = 0; i < files.length; i++) {

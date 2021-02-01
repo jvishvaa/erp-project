@@ -127,7 +127,6 @@ class WriteBlog extends Component {
           ? this.props.location.state.files
           : [],
     };
-    console.log(this.props,"pppppppp")
   }
   componentDidMount() {
     // this.listSubjects();
@@ -165,43 +164,7 @@ class WriteBlog extends Component {
   //     .catch((error) => {});
   // };
 
-  handlePostBlog = () => {
-    const { title, textEditorContent, files, genreId } = this.state;
-    const formData = new FormData();
-    for (var i = 0; i < files.length; i++) {
-      formData.append('thumbnail',files[i]);
-    }
-
-    formData.append('title', title);
-    formData.append('content', textEditorContent);
-    formData.append('genre_id', genreId);
-    // formData.append('status', status_id);
-    // if (branch && year && file) {
-    // setUploadFlag(true);
-    console.log(formData);
-    // axios
-    //   .post('/erp_user/upload_bulk_user/', formData)
-    //   .then((result) => {
-    //     if (result.data.status_code === 200) {
-    // setBranch(null);
-    // setYear(null);
-    // setFile(null);
-    // onUploadSuccess();
-    // setAlert('success', result.data.message);
-    // setUploadFlag(false);
-    // history.push('/user-management/bulk-upload');
-    // } else {
-    // setAlert('error', result.data.description);
-    // setUploadFlag(false);
-    // }
-    // })
-    // .catch((error) => {
-    // setAlert('error', error.response.data.description);
-    // setUploadFlag(false);
-    // });
-    // }
-  };
-
+ 
   handleTextEditor = (content) => {
     const { blogId } = this.state;
     console.log(content.replace(/&nbsp;/g, ''));
@@ -214,7 +177,6 @@ class WriteBlog extends Component {
   };
 
   handleTitle = (event) => {
-    console.log(event.target.value);
     this.setState({ title: event.target.value });
   };
   isImage = (files) => {
@@ -233,19 +195,9 @@ class WriteBlog extends Component {
       return
     }
   
-    console.log(files,"@@@")
     this.setState({ files,image: URL.createObjectURL(files[0]) });
-    console.log(files);
   };
 
-  // files = () => {
-  //   const { file } = this.state;
-  //   file.map((file) => (
-  //     <li key={file.name}>
-  //       {file.name} -{file.size} bytes
-  //     </li>
-  //   ));
-  // };
   getFileNameAndSize = (files) => {
     if (files.length) {
       const fileName = this.state.files && this.state.files.map(file => (
@@ -296,7 +248,6 @@ class WriteBlog extends Component {
       studentName,
       creationDate,
     } = this.state;
-    console.log(genreName)
     return Preview ? (
       <PreviewBlog
         content={textEditorContent}

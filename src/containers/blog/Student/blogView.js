@@ -87,15 +87,10 @@ class BlogView extends Component {
       commentOpen: false,
       data: this.props.location.state.data && this.props.location.state.data,
       tabValue:this.props.location.state.tabValue && this.props.location.state.tabValue
-      // blogId:
     };
-    console.log(this.state.tabValue,"@@@@@@@@@@@@@@",typeof(this.state.tabValue))
   }
 
-  componentDidMount() {
-    console.log(this.state.data);
-  }
-
+  
   handleCommentChange = (event) => {
     this.setState({ comment: event.target.value });
   };
@@ -120,17 +115,11 @@ class BlogView extends Component {
           }
         })
         .catch((error) => {
-          // setAlert('error', error.message);
-          // setSections([]);
-          // setSearchSection([]);
-          // setSubjects([]);
-          // setSectionDisp('');
         });
     }
   };
   WriteBlogNav = () => {
     const { data } = this.state;
-    console.log(data,"ddd")
     let content=data && data.content
     let title=data && data.title
     let thumbnail = data && data.thumbnail

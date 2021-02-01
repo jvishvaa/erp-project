@@ -107,20 +107,14 @@ class ContentViewPublish extends Component {
 
 
     };
-    console.log(this.props,"22222222222@@@@@")
 
   }
-  componentDidMount() {
-    console.log(this.state.data);
-  }
-
-
+  
 
 
 
 
   submitRevisionFeedback = () => {
-    console.log("hiii")
 
     const {  data, feedbackrevisionReq } = this.state;
     const formData = new FormData();
@@ -146,7 +140,6 @@ class ContentViewPublish extends Component {
     this.setState({feedbackrevisionReq:e.target.value})
   };
   submitPublish = () => {
-    console.log("hiii")
 
   const {  data, publishedLevel ,roleDetails} = this.state;
   const formData = new FormData();
@@ -174,7 +167,6 @@ class ContentViewPublish extends Component {
   };
   
   handlePublishLevelType = (event, value) => {
-    console.log(value,"@@@@@222")
     if (value && value.value){
       this.setState({publishedLevel:value.value})
     }
@@ -185,7 +177,6 @@ class ContentViewPublish extends Component {
   }
   
   render() {
-    console.log(this.props,"22222222222@@@@@")
     const { classes } = this.props;
     const { tabValue,relatedBlog, starsRating, feedBack ,data,feedbackrevisionReq,isPublish,publishedLevel} = this.state;
    

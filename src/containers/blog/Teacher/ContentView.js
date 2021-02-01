@@ -27,7 +27,9 @@ import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import SideBar from './sideBar';
+import Review from './Review'
 import Layout from '../../Layout';
+import { ThreeSixty } from '@material-ui/icons';
 
 const styles = (theme) => ({
   root: {
@@ -92,14 +94,13 @@ class ContentView extends Component {
       tabValue :this.props.location.state.tabValue && this.props.location.state.tabValue,
       feedbackrevisionReq:'',
       roleDetails: JSON.parse(localStorage.getItem('userDetails')),
-
+      blogRatings :this.props.location.state.data && this.props.location.state.data.remark_rating,
+      overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark
 
     };
-    console.log(this.props,"22222222222@@@@@")
 
   }
   componentDidMount() {
-    console.log(this.state.data);
   }
 
 
@@ -108,8 +109,6 @@ class ContentView extends Component {
 
 
   submitRevisionFeedback = () => {
-    console.log("hiii")
-
     const {  data, feedbackrevisionReq } = this.state;
     const formData = new FormData();
     formData.set('blog_id', data.id);
@@ -134,8 +133,6 @@ class ContentView extends Component {
     this.setState({feedbackrevisionReq:e.target.value})
   };
   submitPublish = () => {
-    console.log("hiii")
-
   const {  data, publishedLevel ,roleDetails} = this.state;
   const formData = new FormData();
   formData.set('blog_id', data.id);
@@ -155,6 +152,7 @@ class ContentView extends Component {
           });
         } else {
           console.log(result.data.message);
+
         }
       })
       .catch((error) => {
@@ -162,7 +160,6 @@ class ContentView extends Component {
   };
   
   handlePublishLevelType = (event, value) => {
-    console.log(value,"@@@@@222")
     if (value && value.value){
       this.setState({publishedLevel:value.value})
     }
@@ -171,9 +168,25 @@ class ContentView extends Component {
 
     }
   }
+//   getRatings = () => {
+//     let {blogRatings} =this.state
+//     if (blogRatings) {
+//       return []
+//     }
+//     const ratings = blogRatings
+//     const type = typeof ratings.remark_rating
+//     const parsedRatings = type === 'object' ? ratings.remark_rating : JSON.parse(ratings.remark_rating)
+//     const allRatingParamters = [...parsedRatings]
+//     return allRatingParamters
+//   }
+
+//  getOverAllRemark = () => {
+//    let {overallRemark} = this.state
+//    return overallRemark
+//   }
+
   
   render() {
-    console.log(this.props,"22222222222@@@@@")
     const { classes } = this.props;
     const { tabValue,relatedBlog, starsRating, feedBack ,data,feedbackrevisionReq,isPublish,publishedLevel} = this.state;
     return (
@@ -331,173 +344,12 @@ class ContentView extends Component {
                       //   </>
                       // ) 
                       : (
-                        <Card className={classes.reviewCard}>
-                          <CardContent>
-                            <Typography
-                              align='center'
-                              component='h2'
-                              style={{ fontWeight: 500 }}
-                              variant='body1'
-                            >
-                              Review
-                            </Typography>
-                            <Divider variant='middle' />
-                            <Typography
-                              align='center'
-                              color='textPrimary'
-                              component='h2'
-                              variant='overline'
-                            >
-                              CLARITY
-                            </Typography>
-                            <StyledRating
-                              name='size-medium'
-                              defaultValue={starsRating}
-                              emptyIcon={
-                                <StarBorderIcon color='primary' fontSize='inherit' />
-                              }
-                            />
-                            <TextField
-                              id='outlined-textarea'
-                              placeholder='Add Review...optional'
-                              multiline
-                              variant='outlined'
-                            />
-                            <Divider variant='middle' />
-                            <Typography
-                              align='center'
-                              color='textPrimary'
-                              component='p'
-                              variant='overline'
-                            >
-                              GRAMMER
-                            </Typography>
-                            <StyledRating
-                              name='size-medium'
-                              defaultValue={starsRating}
-                              emptyIcon={
-                                <StarBorderIcon color='primary' fontSize='inherit' />
-                              }
-                            />
-                            <TextField
-                              id='outlined-textarea'
-                              placeholder='Add Review...optional'
-                              multiline
-                              variant='outlined'
-                            />
-                            <Divider variant='middle' />
-                            <Typography
-                              align='center'
-                              color='textPrimary'
-                              component='p'
-                              variant='overline'
-                            >
-                              STRUCTURE
-                            </Typography>
-                            <StyledRating
-                              name='size-medium'
-                              defaultValue={starsRating}
-                              emptyIcon={
-                                <StarBorderIcon color='primary' fontSize='inherit' />
-                              }
-                            />
-                            <TextField
-                              id='outlined-textarea'
-                              placeholder='Add Review...optional'
-                              multiline
-                              variant='outlined'
-                            />
-                            <Divider variant='middle' />
-                            <Typography
-                              align='center'
-                              color='textPrimary'
-                              component='p'
-                              variant='overline'
-                            >
-                              VOCABULARY
-                            </Typography>
-                            <StyledRating
-                              name='size-medium'
-                              defaultValue={starsRating}
-                              emptyIcon={
-                                <StarBorderIcon color='primary' fontSize='inherit' />
-                              }
-                            />
-                            <TextField
-                              id='outlined-textarea'
-                              placeholder='Add Review...optional'
-                              multiline
-                              variant='outlined'
-                            />
-                            <Divider variant='middle' />
-                            <Typography
-                              align='center'
-                              color='textPrimary'
-                              component='p'
-                              variant='overline'
-                            >
-                              COHERENCE
-                            </Typography>
-                            <StyledRating
-                              name='size-medium'
-                              defaultValue={starsRating}
-                              emptyIcon={
-                                <StarBorderIcon color='primary' fontSize='inherit' />
-                              }
-                            />
-                            <TextField
-                              id='outlined-textarea'
-                              placeholder='Add Review...optional'
-                              multiline
-                              variant='outlined'
-                            />
-                            <Divider variant='middle' />
-                            <Typography
-                              align='center'
-                              color='textPrimary'
-                              component='p'
-                              variant='overline'
-                            >
-                              ENGAGEMENT
-                            </Typography>
-                            <StyledRating
-                              name='size-medium'
-                              defaultValue={starsRating}
-                              emptyIcon={
-                                <StarBorderIcon color='primary' fontSize='inherit' />
-                              }
-                            />
-                            <TextField
-                              id='outlined-textarea'
-                              placeholder='Add Review...optional'
-                              multiline
-                              variant='outlined'
-                            />
-                            <Divider variant='middle' />
-                            <Typography
-                              align='center'
-                              color='textPrimary'
-                              component='p'
-                              variant='overline'
-                            >
-                            OVERALL RATING
-                            </Typography>
-                            <StyledRating
-                              name='size-medium'
-                              defaultValue={starsRating}
-                              emptyIcon={
-                                <StarBorderIcon color='primary' fontSize='inherit' />
-                              }
-                            />
-                            <TextField
-                              id='outlined-textarea'
-                              placeholder='Add Review....mandatory'
-                              multiline
-                              variant='outlined'
-                            />
-                          </CardContent>
-                        </Card>
-                      )}
+                        <Review  blogId={data.id}
+                        />
+
+
+                      )
+                      }
                     </Grid>
                   </Grid>
                 </div>

@@ -171,11 +171,6 @@ class StudentDashboard extends Component {
         }
       })
       .catch((error) => {
-        // setAlert('error', error.message);
-        // setSections([]);
-        // setSearchSection([]);
-        // setSubjects([]);
-        // setSectionDisp('');
       });
 
   }

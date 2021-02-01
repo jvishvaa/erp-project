@@ -80,9 +80,6 @@ class TeacherPublishBlogView extends Component {
   }
   getBlog = (status) => {
     const { pageNo, pageSize ,tabValue} = this.state;
-    console.log(tabValue,"@@@@@")
-
-    
     axios
       .get(
         `${endpoints.blog.Blog}?page_number=${
@@ -120,7 +117,6 @@ class TeacherPublishBlogView extends Component {
   };
 
   handleTabChange = (event, newValue) => {
-    console.log(newValue,"@@@@@")
     this.setState({ tabValue: newValue ,data:[]},()=>{
       this.getBlog(4);
 

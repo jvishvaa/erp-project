@@ -3,9 +3,6 @@ import { withRouter } from 'react-router-dom';
 
 import Layout from '../../Layout'
 import {  TextField, Grid, Button, useTheme,Tabs, Tab ,Typography, Card, CardContent,CardHeader} from '@material-ui/core'
-import IconButton from '@material-ui/core/IconButton';
-import Cancel from '@material-ui/icons/Cancel'
-import CheckCircle from '@material-ui/icons/CheckCircle';
 import EditIcon from '@material-ui/icons/EditOutlined';
 
 import { makeStyles } from '@material-ui/core/styles';
