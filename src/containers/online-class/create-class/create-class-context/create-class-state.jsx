@@ -5,6 +5,9 @@ import {
   LIST_GRADE_FAILURE,
   LIST_GRADE_REQUEST,
   LIST_GRADE_SUCCESS,
+  LIST_COURSE_FAILURE,
+  LIST_COURSE_REQUEST,
+  LIST_COURSE_SUCCESS,
   LIST_SECTION_FAILURE,
   LIST_SECTION_REQUEST,
   LIST_SECTION_SUCCESS,
@@ -26,6 +29,7 @@ import {
   LIST_TUTOR_EMAILS_FAILURE,
   LIST_SUBJECT_SUCCESS,
   LIST_SUBJECT_FAILURE,
+  UPDATE_CLASS_TYPE,
 } from './create-class-constants';
 import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
@@ -41,6 +45,7 @@ const CreateclassProvider = (props) => {
     grades: [],
     sections: [],
     subjects: [],
+    courses: [],
     studentList: [],
     filteredStudents: [],
     errorLoadingStudents: '',
@@ -51,6 +56,7 @@ const CreateclassProvider = (props) => {
     isCreated: false,
     tutorEmails: [],
     tutorEmailsLoading: false,
+    classTypeId: null,
   };
 
   const [state, dispatch] = useReducer(createClassReducer, initalState);
@@ -126,6 +132,20 @@ const CreateclassProvider = (props) => {
     }
   };
 
+  const listCoursesCreateClass = async (gradeIds) => {
+    dispatch(request(LIST_COURSE_REQUEST));
+    try {
+      const { data } = await axiosInstance.get(
+        `${endpoints.academics.courses}?grade=${gradeIds.join(',')}`
+      );
+      if (data.status_code === 200)
+        dispatch(success(data.result, LIST_COURSE_SUCCESS));
+      else throw new Error(data.message);
+    } catch (error) {
+      dispatch(failure(error, LIST_COURSE_FAILURE));
+    }
+  };
+
   const listSectionsCreateClass = async (gradeId, moduleId) => {
     dispatch(request(LIST_SECTION_REQUEST));
     try {
@@ -145,7 +165,7 @@ const CreateclassProvider = (props) => {
     }
   };
 
-  const listSectionAndSubjects = async (roleId, moduleId, erpId, isSuperUser,gradeIds) => {
+  const listSectionAndSubjects = async (roleId, moduleId, erpId, isSuperUser, gradeIds) => {
     try {
       const { data } = await axiosInstance.get(
         `/erp_user/sub-sec-list/?role=${roleId}&module_id=${moduleId}&erp_id=${erpId}&is_super=${isSuperUser}&grade_id=${gradeIds.join(',')}`
@@ -212,7 +232,7 @@ const CreateclassProvider = (props) => {
       dispatch(failure(error, VERIFY_TUTOREMAIL_FAILURE));
     }
   };
-  
+
   const createNewOnlineClass = async (formdata) => {
     dispatch(request(CREATE_NEW_CLASS_REQUEST));
     try {
@@ -222,6 +242,8 @@ const CreateclassProvider = (props) => {
       );
       if (data.status === 'success')
         dispatch(success(initalState, CREATE_NEW_CLASS_SUCCESS));
+      else if (data.status === 'fail')
+        dispatch(success(initalState, CREATE_NEW_CLASS_FAILURE));
     } catch (error) {
       const { response } = error || {};
       if (response?.data && response.data.message)
@@ -229,6 +251,30 @@ const CreateclassProvider = (props) => {
       else setAlert('error', error.message);
       dispatch(failure(error, CREATE_NEW_CLASS_FAILURE));
     }
+  };
+
+  const createSpecialOnlineClass = async (formdata) => {
+    dispatch(request(CREATE_NEW_CLASS_REQUEST));
+    try {
+      const { data } = await axiosInstance.post(
+        `${endpoints.onlineClass.createSpecialClass}`,
+        formdata
+      );
+      if (data.status_code === 200)
+        dispatch(success(initalState, CREATE_NEW_CLASS_SUCCESS));
+      else if (data.status_code===404)
+        dispatch(success(initalState, CREATE_NEW_CLASS_FAILURE));
+    } catch (error) {
+      const { response } = error || {};
+      if (response?.data && response.data.message)
+        setAlert('error', response.data.message);
+      else setAlert('error', error.message);
+      dispatch(failure(error, CREATE_NEW_CLASS_FAILURE));
+    }
+  };
+
+  const setClassTypeId = (classtype) => {
+    return { type: UPDATE_CLASS_TYPE, payload: classtype };
   };
 
   const clearFilteredStudents = () => {
@@ -250,12 +296,15 @@ const CreateclassProvider = (props) => {
         dispatch,
         listStudents,
         listGradesCreateClass,
+        listCoursesCreateClass,
         listSectionsCreateClass,
         verifyTutorEmail,
         clearTutorEmailValidation,
         clearFilteredStudents,
         listFilteredStudents,
+        setClassTypeId,
         createNewOnlineClass,
+        createSpecialOnlineClass,
         resetContext,
         listTutorEmails,
         listSectionAndSubjects,

@@ -5,6 +5,7 @@
 /* eslint-disable react/prop-types */
 import React, { useContext, useState, useEffect, useRef, createContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import {useParams} from "react-router-dom";
 import { throttle, debounce } from 'throttle-debounce';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -94,6 +95,8 @@ const Layout = ({ children, history }) => {
   const [userId, setUserId] = useState();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+
+  // let { key } = useParams();
   const getGlobalUserRecords = async (text) => {
     try {
       const result = await axiosInstance.get(
@@ -143,6 +146,9 @@ const Layout = ({ children, history }) => {
     }
     let userDetails = localStorage.getItem('userDetails');
     if (!userDetails) {
+      // if(key==="2000000002")
+      // history.push('/dashboard/2000');
+      // else
       history.push('/');
     }
     if (userDetails) {
