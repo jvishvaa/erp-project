@@ -142,6 +142,14 @@ export default {
     dairyList:'/academic/general-dairy-messages/',
 
   },
+  onlineCourses:{
+    createCourse:'/aol/courses/',
+    fileUpload:'/aol/file-upload/',
+    courseList:'/aol/courses/',
+    deleteCourse:'/aol/',
+    courseDetails:'/aol/courses/',
+  },
+
     
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
