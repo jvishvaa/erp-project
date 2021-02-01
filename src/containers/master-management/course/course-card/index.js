@@ -20,11 +20,11 @@ const  CourseCard=({index,cData,setData})=> {
   const classes = useStyles();
   const [filePath, setFilePath] = useState([]);
 
-  const [cardTitle,setCardTitle]=useState('')
-  const [cardDesc,setCardDesc] = useState('')
+//   const [cardTitle,setCardTitle]=useState(cData.title)
+//   const [cardDesc,setCardDesc] = useState(cData.description)
 
 
-// console.log(data,index,'==========')
+console.log(cData[0],'cData')
 
 
 
@@ -112,9 +112,9 @@ const  CourseCard=({index,cData,setData})=> {
               style={{ width: '100%' }}
               name='title'
               // defaultValue="Default Value"
-              // value={description}
+            //   value={cData[0].map(obj=>obj.title) || ''}
               variant='outlined'
-              onChange={ handleCardSubmit}
+              onChange={handleCardSubmit}
             />
           </Box>
         </Grid>
@@ -130,7 +130,7 @@ const  CourseCard=({index,cData,setData})=> {
               style={{ width: '100%' }}
               name='description'
               // defaultValue="Default Value"
-              // value={description}
+            //   value={}
               variant='outlined'
               onChange={handleCardSubmit}
             />
