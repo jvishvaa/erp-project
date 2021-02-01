@@ -84,12 +84,15 @@ export default {
     fileUpload: '/academic/upload-question-file/',
     submitHomework: '/academic/homework-submission/',
   },
-  lessonReport:{
-    volumes:'/lesson_plan/list-volume/',
-    subjects:'/academic/lesson-plan-subjects/',
-    lessonList:'/academic/lesson-completed-report/',
-    lessonViewMoreData:'/academic/user-chapters-details/',
+  lessonReport: {
+    volumes: '/lesson_plan/list-volume/',
+    subjects: '/academic/lesson-plan-subjects/',
+    lessonList: '/academic/lesson-completed-report/',
+    lessonViewMoreData: '/academic/user-chapters-details/',
+    teacherList:'/academic/lesson_plan_user_list/',
   },
+
+
   coordinatorTeacherHomeworkApi:{
     getAllTeacherList:'/academic/teachers-list/',
     getTecherPerformance:'/academic/hw-teacher-performance/'
@@ -118,18 +121,31 @@ export default {
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },  
   discussionForum:{
-    categoryList: '/academic/categories/',
-    branch: '/erp_user/branch/',
-    grade:'/erp_user/grademapping/',
-    filterCategory: '/academic/posts/',
-    postLike: '/academic/posts-like-users/',
-    PostCategory : '/academic/create-category/',
-    CreateDissusionForum: '/academic/add-post/',
-    CreateCommentAndReplay: '/academic/create-answer-replay/',
-    AwardListAPI: '/academic/',
-    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
-    deletePost: '/academic/'
-   },
+   categoryList: '/academic/categories/',
+   branch: '/erp_user/branch/',
+   grade:'/erp_user/grademapping/',
+   filterCategory: '/academic/posts/',
+   postLike: '/academic/posts-like-users/',
+   PostCategory : '/academic/create-category/',
+   CreateDissusionForum: '/academic/add-post/',
+   CreateCommentAndReplay: '/academic/create-answer-replay/',
+   AwardListAPI: '/academic/',
+   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+   deletePost: '/academic/'
+  },
+  circular:{
+    circularList:'/circular/upload-circular/',
+    viewMoreCircularData:'/circular/circular-details/',
+    fileUpload:'/circular/upload-circular-file/',
+    createCircular:'/circular/upload-circular/',
+    deleteCircular:'/circular/delete-circular/',
+    updateCircular:'/circular/update-circular/'
+  },
+  generalDairy:{
+    dairyList:'/academic/general-dairy-messages/',
+
+  },
+    
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
 };

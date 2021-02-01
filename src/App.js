@@ -43,8 +43,13 @@ import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-re
 import Discussionforum from './containers/discussionForum/discussionForum';
 import  CreateCategory from './containers/discussionForum/createCategory';
 import CreateDiscussionForum from './containers/discussionForum/createDiscussionForum';
+import CircularList from './containers/circular'
+import CreateCircular from './containers/circular/create-circular'
+import CircularStore from './containers/circular/context/CircularStore'
 import Subjectgrade from './containers/subjectGradeMapping';
 import ListandFilter from './containers/subjectGradeMapping/listAndFilter';
+import GeneralDairyList from './containers/general-dairy';
+import CreateGeneralDairy from './containers/general-dairy/create-dairy';
 
 const theme = createMuiTheme({
   palette: {
@@ -92,6 +97,7 @@ function App() {
         <AlertNotificationProvider>
           <OnlineclassViewProvider>
             <ThemeProvider theme={theme}>
+            <CircularStore>
               <Switch>
                 <Route path='/profile'>{({ match }) => <Profile match={match} />}</Route>
                 <Route path='/role-management'>
@@ -208,7 +214,20 @@ function App() {
                 <Route exact path='/discussion-forum/create'>
                   {({ match }) => <CreateDiscussionForum match={match} />}
                 </Route>
+                <Route exact path='/circular'>
+                  {({ match }) => <CircularList match={match} />}
+                </Route>
+                <Route exact path='/create-circular'>
+                  {({ match }) => <CreateCircular match={match} />}
+                </Route>
+                <Route exact path='/general-dairy'>
+                  {({ match }) => <GeneralDairyList match={match} />}
+                </Route>
+                <Route exact path='/create/general-dairy'>
+                  {({ match }) => <CreateGeneralDairy match={match} />}
+                </Route>
               </Switch>
+              </CircularStore>
             </ThemeProvider>
           </OnlineclassViewProvider>
         </AlertNotificationProvider>
