@@ -36,6 +36,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Student View', Path: '/lesson-plan/student-view' },
     { name: 'Management Report', Path: '/lesson-plan/report' },
     { name: 'Graphical Report', Path: '/lesson-plan/graph-report' },
+    {name: 'Normal Fee Type', Path: '/feeType/normalFeeType' }
   ];
   // const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {

@@ -31,7 +31,7 @@ import MessageTypeTable from './containers/master-management/message-type/messag
 import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
 import HomeworkCard from './containers/homework/homework-card';
 import Profile from './containers/profile/profile';
-import { fetchLoggedInUserDetails } from './redux/actions';
+import { createFeePlan, fetchLoggedInUserDetails } from './redux/actions';
 import TeacherHomework from './containers/homework/teacher-homework';
 import HomeworkAdmin from './containers/homework/homework-admin';
 import AddHomework from './containers/homework/teacher-homework/add-homework';
@@ -55,6 +55,38 @@ import CreateCourse from './containers/master-management/course/create-course';
 import CourseView from './containers/master-management/course/view-course'
 import ViewCourseCard from './containers/master-management/course/view-course/view-more-card/ViewCourseCard';
 import ViewStore from './containers/master-management/course/view-course/context/ViewStore'
+
+import FeeType from './containers/Finance/src/components/Finance/CreateFeeType/NormalFeeType/feeType.js'
+import MiscFeeType from './containers/Finance/src/components/Finance/CreateFeeType/MiscFeeType/miscFeeType';
+// import MiscFeeType from './containers/Finance/src/components/Finance/CreateFeeType/MiscFeeType/miscFeeType.js'
+import CurrFeeType from './containers/Finance/src/components/Finance/CreateFeeType/CurrFeeType/currFeeType.js'
+import OtherFeeType from './containers/Finance/src/components/Finance/CreateFeeType/OtherFeeType/otherFeeType.js'
+import RegistrationFee from './containers/Finance/src/components/Finance/CreateFeeType/RegistrationFeeType/registrationFee.js'
+// import ManageFeeType from './containers/Finance/src/components/Finance/CreateFeePlan/manageFeeType.js'
+import CreateFeePlan from './containers/Finance/src/components/Finance/CreateFeePlan/createFeePlan.js'
+import ConcessionSettings from  './containers/Finance/src/components/Finance/ConcessionSettings/concessionSettings.js'
+import Ledger from './containers/Finance/src/components/Finance/ExpenseManagement/Ledger/ledger.js'
+import TotalPaidReports from './containers/Finance/src/components/Finance/Reports/TotalPaidDueReports/totalPaidReports.js'
+import OtherFeeTotalPaidReports from './containers/Finance/src/components/Finance/Reports/TotalPaidDueReports/otherFeeTotalPaidDueReport.js'
+import TallyReports from './containers/Finance/src/components/Finance/Reports/TallyReports/tallyReports.js'
+import ReceiptBookAdm from './containers/Finance/src/components/Finance/AdmissionReports/ReceiptBook/receiptBook.js'
+import WalletReport from './containers/Finance/src/components/Finance/Reports/WalletReport/walletReport.js'
+import ConcessionReport from './containers/Finance/src/components/Finance/BranchAccountant/ConcessionReport/ConcessionReport.js'
+import ChequeBounceReport from './containers/Finance/src/components/Finance/Reports/ChequeBounceReports/chequeBounceReports.js'
+import StudentShuffle from './containers/Finance/src/components/Finance/BranchAccountant/StudentShuffle/studentShuffle.js'
+// import RequestShuffle from './containers/Finance/src/components/Finance/BranchAccountant/StudentShuffle/requestShuffle.js'
+import MiscFeeClass from './containers/Finance/src/components/Finance/MiscFeeToClass/miscFeeClass.js'
+import AssignCoupon from './containers/Finance/src/components/Finance/AssignCoupon/assignCoupon.js'
+import CreateCoupon from './containers/Finance/src/components/Finance/CreateCoupon/createCoupon.js'
+import DepositeTab from './containers/Finance/src/components/Finance/ExpenseManagement/Deposits/deposits.js'
+import TotalFormCount from './containers/Finance/src/components/Finance/BranchAccountant/TotalFormCount/totalFormCount.js'
+import RequestShuffle from './containers/Finance/src/components/Finance/BranchAccountant/StudentShuffle/requestShuffle.js'
+import UnassignFeeRequests from './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/unassignFeeRequestsTab.js'
+import ApprovalRequest from './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/Components/approvalRequest.js'
+import PendingRequest from  './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/Components/pendingRequest.js'
+import RejectedRequest from './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/Components/rejectedRequest';
+import createReceipt from './containers/Finance/src/components/Finance/ReceiptChanges/createReceipt.js'
+// import StoreReport from './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/Components/Inventory/StoreAdmin/StoreReports/storeReports.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -238,6 +270,93 @@ function App() {
                 <Route exact path='/view-period'>
                   {({ match }) => <ViewCourseCard match={match} />}
                 </Route>
+                <Route exact path='/feeType/miscFeeType'>
+                  {({ match }) => <MiscFeeType match={match} />}
+                </Route>
+                <Route exact path='/feeType/normalFeeType'>
+                  {({ match }) => <FeeType match={match} />}
+                </Route>
+                <Route exact path='/feeType/CurricularFeeType'>
+                  {({ match }) => <CurrFeeType match={match} />}
+                </Route>
+                <Route exact path='/feeType/OtherFeeType'>
+                  {({ match }) => <OtherFeeType match={match} />}
+              </Route>
+                <Route exact path='/feeType/RegistrationFee'>
+                  {({ match }) => <RegistrationFee match={match} />}
+                </Route>
+                <Route exact path='/feePlan/ViewFeePlan'>
+                  {({ match }) => <CreateFeePlan match={match} />}
+                </Route>
+                <Route exact path='/finance/ConcessionSetting'>
+                  {({ match }) => <ConcessionSettings match={match} />}
+                </Route>
+                <Route exact path='/finance/Ledger'>
+                  {({ match }) => <Ledger match={match} />}
+                </Route>
+                <Route exact path='/finance/TotalPaidReport'>
+                  {({ match }) => <TotalPaidReports match={match} />}
+                </Route>
+                <Route exact path='/finance/OtherFeeTotalPaidReport'>
+                  {({ match }) => <OtherFeeTotalPaidReports match={match} />}
+                </Route>
+                <Route exact path='/finance/TallyReport'>
+                  {({ match }) => <TallyReports match={match} />}
+                </Route>
+                <Route exact path='/finance/ReceiptBook'>
+                  {({ match }) => <ReceiptBookAdm match={match} />}
+                </Route>
+                <Route exact path='/finance/WalletReport'>
+                  {({ match }) => <WalletReport match={match} />}
+                </Route>
+                <Route exact path='/finance/ConcessionReport'>
+                  {({ match }) => <ConcessionReport match={match} />}
+                </Route>
+                <Route exact path='/finance/ChequeBounceReport'>
+                  {({ match }) => <ChequeBounceReport match={match} />}
+                </Route>
+                <Route exact path='/finance/StudentShuffleRequest'>
+                  {({ match }) => <StudentShuffle match={match} />}
+                </Route>
+                {/* <Route exact path='/finance/Requestshuffle'>
+                  {({ match }) => <RequestShuffle match={match} />}
+                </Route> */}
+                  <Route exact path='/finance/MiscFeeClass'>
+                  {({ match }) => <MiscFeeClass match={match} />}
+                </Route>
+                <Route exact path='/finance/AssignCoupon'>
+                  {({ match }) => <AssignCoupon match={match} />}
+                </Route>
+                <Route exact path='/finance/CreateCoupon'>
+                  {({ match }) => <CreateCoupon match={match} />}
+                </Route>
+                <Route exact path='/finance/DepositTab'>
+                  {({ match }) => <DepositeTab match={match} />}
+                </Route>
+                <Route exact path='/finance/TotalFormReport'>
+                  {({ match }) => <TotalFormCount match={match} />}
+                </Route>
+                <Route exact path='/finance/Requestshuffle'>
+                  {({ match }) => <RequestShuffle match={match} />}
+                </Route>
+                <Route exact path='/finance/UnassignFeeRequests'>
+                  {({ match }) => <UnassignFeeRequests match={match} />}
+                </Route>
+                <Route exact path='/finance/approval_request'>
+                  {({ match }) => <ApprovalRequest match={match} />}
+                </Route>
+                <Route exact path='/finance/pending_request'>
+                  {({ match }) => <PendingRequest match={match} />}
+                </Route>
+                <Route exact path='/finance/rejected_request'>
+                  {({ match }) => <rejectedRequest match={match} />}
+                </Route>
+                <Route exact path='/finance/ReceiptRange'>
+                  {({ match }) => <createReceipt match={match} />}
+                </Route>
+                {/* <Route exact path='/finance/StoreReport'>
+                  {({ match }) => <StoreReport match={match} />}
+                </Route> */}
               </Switch>
               </ViewStore>
               </CircularStore>

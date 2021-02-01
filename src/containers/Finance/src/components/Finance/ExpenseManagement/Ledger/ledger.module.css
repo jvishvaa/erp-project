@@ -1,0 +1,233 @@
+.ledgerContainer {
+  width: 100%;
+  margin: auto;
+  overflow-x: auto;
+}
+.ledger * {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+.ledger{
+  margin: 10px;
+  min-width: 900px;
+  
+}
+.ledger__header,
+.ledger__body{
+  display: flex;
+  justify-content: space-around;
+}
+.ledger__headerSerial,
+.ledger__bodySerial{
+  width: 5%;
+  text-align: center;
+  border: 0.02px solid rgba(100, 100, 100, 0.329);
+  /* padding-left: 2px; */
+  padding-top: 12px;
+}
+.ledger__headerAccountHead,
+.ledger__bodyAccountHead{
+  width: 25%;
+  border: 0.02px solid rgba(100, 100, 100, 0.329);
+  padding-left: 5px;
+  padding-top: 12px;
+}
+.ledger__bodyAccountHeadType{
+  font-size: 10px;
+  height: 16px;
+  line-height: 16px;
+  margin-bottom: 2px;
+}
+.ledger__bodyAccountHeadType p {
+  border: 1px solid rgb(48, 110, 105);
+  border-radius: 2px;
+  background-color: rgb(30, 156, 146);
+  color: white;
+}
+.ledger__bodyLedgerList,
+.ledger__headerLedgerList {
+  width: 70%;
+
+}
+.ledger__headerLedgerList,
+.ledger__bodyLedgerListItem{
+  display: flex;
+}
+.ledger__headerLedgerAcc,
+.ledger__bodyLedgerAcc{
+  width: 38%;
+  border: 0.02px solid rgba(100, 100, 100, 0.329);
+  padding-left: 5px;
+  padding-top: 12px;
+
+}
+.ledger__headerRemarks,
+.ledger__bodyLedgerRemarks{
+  width: 38%;
+  border: 0.02px solid rgba(100, 100, 100, 0.329);
+  padding-left: 5px;
+  padding-top: 12px;
+}
+.ledger__headerLedgerStatus,
+.ledger__bodyLedgerStatus{
+  width: 15%;
+  border: 0.02px solid rgba(100, 100, 100, 0.329);
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 12px;
+  text-align: center;
+}
+.ledger__headerAction,
+.ledger__bodyAction{
+  width: 9%;
+  border: 0.02px solid rgba(100, 100, 100, 0.329);
+  padding-left: 5px;
+  padding-top: 12px;
+}
+.ledger__bodyAction{
+  padding-top: 7px
+}
+.ledger__header{
+  height: 45px;
+  background-color: #eeeeee65;
+}
+.ledger__bodyAccountHead,
+.ledger__bodyLedgerRemarks{
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+.ledger__bodyLedgerRemarks{
+  flex-direction: column;
+}
+
+.ledger__bodyLedgerListItemEmpty{
+  height: 95.03px
+}
+.ledger__bodyLedgerListItem:nth-child(even){
+  background-color: #eeeeee65;
+}
+.ledger__activeToggleBtn{
+  display: inline-block;
+  width: 90%;
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
+  margin: auto;
+  border-radius: 5px;
+  font-size: 0.6rem;  
+}
+.btnColorBlue{
+  background-color: rgb(106, 190, 117)
+}
+.btnColorBlue:hover{
+  background-color: rgb(64, 160, 77)
+}
+.btnColorRed{
+  background-color: rgb(218, 122, 110)
+}
+.btnColorRed:hover{
+  background-color: rgb(255, 118, 100)
+}
+.ledger__activeToggleBtn:hover{
+  cursor: pointer;
+}
+
+.modal__heading{
+  text-align: center;
+  padding-top: 15px;
+  margin-bottom: 15px;
+}
+.modal__button,
+.modal__remainbutton,
+.modal__deletebutton{
+  display: inline-block;
+  position: absolute;
+}
+.modal__button{
+  bottom: 5px;
+  right: 2px;
+}
+.modal__deletebutton{
+  bottom: 5px;
+  right: 10px;
+}
+.modal__remainbutton{
+  bottom: 5px;
+  left: 10px;
+}
+
+.ledger__headerSerial,
+.ledger__headerLedgerAcc,
+.ledger__headerRemarks,
+.ledger__headerLedgerStatus,
+.ledger__headerAction{
+  text-align: center;
+}
+
+.ledger__bodySerial,
+.ledger__bodyLedgerAcc,
+.ledger__bodyLedgerRemarks,
+.ledger__bodyLedgerStatus,
+.ledger__bodyAction{
+  padding-bottom: 12px;
+}
+
+.modal__ledgerAddInput,
+.modal_accHeaderInput {
+  align-items: center;
+  background-color: hsl(0,0%,100%);
+  border-color: hsl(0,0%,80%);
+  border-radius: 4px;
+  border-style: solid;
+  border-width: 1px;
+  cursor: default;
+  display: block;
+  margin: auto;
+  padding-left: 10px;
+}
+
+.modal__ledgerAddInput {
+  width: 80%;
+  height: 40px;
+}
+
+.modal_accHeaderInput {
+  width: 100%;
+  height: 38px;
+  margin-left: 0px;
+}
+
+@media(min-width: 950px){
+  .ledger__bodyLedgerListItemEmpty{
+    height: 68.03px
+  }
+  .ledger__bodyAccountHeadName{
+      width: 70%;
+  }      
+  .ledger__bodyLedgerRemarksNo{
+    width: 100%
+  }
+  .ledger__bodyAccountHeadIcon{
+    width: 10%;
+    padding-right: 2px;
+  }
+  .ledger__bodyAccountHeadDltIcon{
+    width: 10%;
+    padding-right: 2px;
+  }
+  ledger__bodyAccountHeadEdtIcon{
+    width: 10%;
+  }
+  .ledger__headerSerial,
+  .ledger__bodySerial{
+      padding-left: 5px;
+  }
+  .ledger__bodyLedgerRemarks{
+      flex-direction: row;
+  }
+  .ledger__activeToggleBtn{
+      font-size: 0.8rem;
+  }
+}
