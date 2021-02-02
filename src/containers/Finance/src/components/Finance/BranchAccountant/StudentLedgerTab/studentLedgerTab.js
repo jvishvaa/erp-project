@@ -29,7 +29,7 @@ import ConcessionDetails from '../ConcessionDetails/concessionDetails'
 // import FeeMangement from '../FeeManagement/feeManagement'
 import CurrFeeTypeAcc from '../CurrFeeTypeAcc/currFeeTypeAcc'
 import StoreAtAcc from '../../../Inventory/BranchAccountant/StoreAtAcc/storeAtAcc'
-// import ShippingAmount from '../../../Inventory/BranchAccountant/shippingAmount/ShippingAmount'
+import ShippingAmount from '../../../Inventory/BranchAccountant/shippingAmount/ShippingAmount'
 import StoreItemStatus from '../StoreItemStatus/storeItemStatus'
 import Layout from '../../../../../../Layout'
 // import { debounce } from '../../../../utils'
@@ -389,13 +389,13 @@ class StudentLedgerTab extends Component {
             />
           </TabContainer>}
           {value === 'ele' && <TabContainer>
-            {/* <ShippingAmount
+            <ShippingAmount
               session={this.state.session.value}
               getData={this.state.getData}
               erpValue={erpValue}
               user={this.props.user}
               alert={this.props.alert}
-            /> */}
+            />
           </TabContainer>}
           {value === 'ten' && <TabContainer>
             <StoreItemStatus

@@ -9,7 +9,7 @@ import { urls } from '../../../../urls'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import * as actionTypes from '../../store/actions'
 import Modal from '../../../../ui/Modal/modal'
-import ConfigItems from '../StoreAtAcc/configItems'
+// import ConfigItems from '../StoreAtAcc/configItems'
 
 const styles = theme => ({
   button: {
@@ -255,7 +255,7 @@ const ShippingAmount = ({ fetchShipping, shippingDetails, deliveryList, trnsId, 
       {/* <h1>hello, {erp}</h1> */}
       {showConfigItem
         ? <React.Fragment>
-          <ConfigItems
+          {/* <ConfigItems
             selectedTotal={0}
             erpCode={erpValue}
             session={session}
@@ -273,7 +273,7 @@ const ShippingAmount = ({ fetchShipping, shippingDetails, deliveryList, trnsId, 
             kitIdToBePaid={kitId}
             transactionId={tranId}
             selctedKits={[]}
-          />
+          /> */}
         </React.Fragment>
         : shippingDetails && shippingDetails.paid_data && shippingDetails.paid_data.length
           ? <Table>
