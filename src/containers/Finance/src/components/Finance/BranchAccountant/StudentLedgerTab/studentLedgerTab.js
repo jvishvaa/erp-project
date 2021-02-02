@@ -28,7 +28,7 @@ import Certificate from '../ITCertificate/certificate'
 import ConcessionDetails from '../ConcessionDetails/concessionDetails'
 // import FeeMangement from '../FeeManagement/feeManagement'
 import CurrFeeTypeAcc from '../CurrFeeTypeAcc/currFeeTypeAcc'
-// import StoreAtAcc from '../../../Inventory/BranchAccountant/StoreAtAcc/storeAtAcc'
+import StoreAtAcc from '../../../Inventory/BranchAccountant/StoreAtAcc/storeAtAcc'
 // import ShippingAmount from '../../../Inventory/BranchAccountant/shippingAmount/ShippingAmount'
 import StoreItemStatus from '../StoreItemStatus/storeItemStatus'
 import Layout from '../../../../../../Layout'
@@ -380,13 +380,13 @@ class StudentLedgerTab extends Component {
             />
           </TabContainer>}
           {value === 'nine' && <TabContainer>
-            {/* <StoreAtAcc
+            <StoreAtAcc
               session={this.state.session.value}
               getData={this.state.getData}
               erp={erpValue}
               user={this.props.user}
               alert={this.props.alert}
-            /> */}
+            />
           </TabContainer>}
           {value === 'ele' && <TabContainer>
             {/* <ShippingAmount
