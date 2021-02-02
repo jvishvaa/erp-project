@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom'
 import { apiActions } from '../../../_actions'
 import * as actionTypes from '../store/actions'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
-import '../../css/staff.css'
+// import '../../css/staff.css'
 
 const styles = theme => ({
   tableWrapper: {

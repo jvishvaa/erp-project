@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import Select from 'react-select'
 import EditFeePlanName from './editFeePlanName'
 // import { RouterButton } from '../../../ui'
+import { Link } from 'react-router-dom'
 // import { urls } from '../../../urls'
 import { apiActions } from '../../../_actions'
 import EModal from '../../../ui/Modal/modal'
@@ -278,6 +279,7 @@ class CreateFeePlan extends Component {
           <Grid item xs={8} />
           <Grid item xs={4} >
             {/* <RouterButton value={CreatePlan} /> */}
+            <Button component={Link} to={'/finance/create_feePlan'}>Create Fee Plan</Button>
           </Grid>
         </Grid>
         <Grid container spacing={3} style={{ flexGrow: 1, padding: 15 }}>

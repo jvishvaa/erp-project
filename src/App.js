@@ -36,6 +36,26 @@ import TeacherHomework from './containers/homework/teacher-homework';
 import HomeworkAdmin from './containers/homework/homework-admin';
 import AddHomework from './containers/homework/teacher-homework/add-homework';
 import BulkUpload from './containers/user-management/bulk-upload/bulk-upload';
+import CoordinatorHomework from './containers/homework/coordinator-homework';
+import AddHomeworkCoord from './containers/homework/coordinator-homework/add-homework';
+import LessonReport from './containers/lesson-plan/lesson-plan-report';
+import LessonPlan from './containers/lesson-plan/lesson-plan-view';
+import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
+import Discussionforum from './containers/discussionForum/discussionForum';
+import  CreateCategory from './containers/discussionForum/createCategory';
+import CreateDiscussionForum from './containers/discussionForum/createDiscussionForum';
+// import CircularList from './containers/circular'
+// import CreateCircular from './containers/circular/create-circular'
+// import CircularStore from './containers/circular/context/CircularStore'
+import Subjectgrade from './containers/subjectGradeMapping';
+import ListandFilter from './containers/subjectGradeMapping/listAndFilter';
+import GeneralDairyList from './containers/general-dairy';
+import CreateGeneralDairy from './containers/general-dairy/create-dairy';
+import CreateCourse from './containers/master-management/course/create-course';
+import CourseView from './containers/master-management/course/view-course'
+import ViewCourseCard from './containers/master-management/course/view-course/view-more-card/ViewCourseCard';
+import ViewStore from './containers/master-management/course/view-course/context/ViewStore'
+
 import FeeType from './containers/Finance/src/components/Finance/CreateFeeType/NormalFeeType/feeType.js'
 import MiscFeeType from './containers/Finance/src/components/Finance/CreateFeeType/MiscFeeType/miscFeeType';
 // import MiscFeeType from './containers/Finance/src/components/Finance/CreateFeeType/MiscFeeType/miscFeeType.js'
@@ -66,6 +86,7 @@ import ApprovalRequest from './containers/Finance/src/components/Finance/Approva
 import PendingRequest from  './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/Components/pendingRequest.js'
 import RejectedRequest from './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/Components/rejectedRequest';
 import createReceipt from './containers/Finance/src/components/Finance/ReceiptChanges/createReceipt.js'
+import AddFeePlan from './containers/Finance/src/components/Finance/CreateFeePlan/addFeePlan';
 // import StoreReport from './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/Components/Inventory/StoreAdmin/StoreReports/storeReports.js'
 const theme = createMuiTheme({
   palette: {
@@ -107,12 +128,15 @@ function App() {
   //   // dispatch(fetchLoggedInUserDetails());
   // }, []);
 
+
   return (
     <div className='App'>
       <Router>
         <AlertNotificationProvider>
           <OnlineclassViewProvider>
             <ThemeProvider theme={theme}>
+            {/* <CircularStore> */}
+            <ViewStore>
               <Switch>
                 <Route path='/profile'>{({ match }) => <Profile match={match} />}</Route>
                 <Route path='/role-management'>
@@ -163,7 +187,6 @@ function App() {
                 <Route exact path='/online-class/attend-class'>
                   {({ match }) => <ViewClassStudentCollection match={match} />}
                 </Route>
-
                 <Route exact path='/master-mgmt/subject-table'>
                   {({ match }) => <SubjectTable match={match} />}
                 </Route>
@@ -179,11 +202,15 @@ function App() {
                 <Route exact path='/master-mgmt/message-type-table'>
                   {({ match }) => <MessageTypeTable match={match} />}
                 </Route>
-
+                <Route exact path='/master-mgmt/subject/grade/mapping'>
+                  {({ match }) => <Subjectgrade match={match} />}
+                </Route>
+                <Route exact path='/subject/grade'>
+                  {({ match }) => <ListandFilter match={match} />}
+                </Route>
                 <Route exact path='/homework/homework-card'>
                   {({ match }) => <HomeworkCard match={match} />}
                 </Route>
-
                 <Route exact path='/homework/student'>
                   {({ match }) => <StudentHomework match={match} />}
                 </Route>
@@ -195,6 +222,55 @@ function App() {
                 </Route>
                 <Route exact path='/homework/admin'>
                   {({ match }) => <HomeworkAdmin match={match} />}
+                </Route>
+                <Route exact path='/homework/coordinator'>
+                  {/* added by Vijay to display particular teacher details */}
+                  {({ match }) => <CoordinatorHomework match={match} />}
+                </Route>
+                <Route exact path='/homework/cadd/:date/:subject/:id/:coord_selected_teacher_id'>
+                  {({ match }) => <AddHomeworkCoord match={match} />}
+                </Route>
+                 <Route exact path='/lesson-plan/teacher-view'>
+                  {({ match }) => <LessonPlan match={match} />}
+                </Route>
+                <Route exact path='/lesson-plan/student-view'>
+                  {({ match }) => <LessonPlan match={match} />}
+                </Route>
+                <Route exact path='/lesson-plan/report'>
+                {({ match }) => <LessonReport match={match} />}
+                 </Route>
+                <Route exact path='/lesson-plan/graph-report'>
+                  {({ match }) => <LessonPlanGraphReport match={match} />}
+                  </Route>
+                <Route exact path='/discussion-forum'>
+                  {({ match }) => <Discussionforum match={match} />}
+                </Route>
+                <Route exact path='/category/create'>
+                  {({ match }) => <CreateCategory match={match} />}
+                </Route>
+                <Route exact path='/discussion-forum/create'>
+                  {({ match }) => <CreateDiscussionForum match={match} />}
+                </Route>
+                {/* <Route exact path='/circular'>
+                  {({ match }) => <CircularList match={match} />}
+                </Route> */}
+                {/* <Route exact path='/create-circular'>
+                  {({ match }) => <CreateCircular match={match} />}
+                </Route> */}
+                <Route exact path='/general-dairy'>
+                  {({ match }) => <GeneralDairyList match={match} />}
+                </Route>
+                <Route exact path='/create/general-dairy'>
+                  {({ match }) => <CreateGeneralDairy match={match} />}
+                </Route>
+                <Route exact path='/create/course'>
+                  {({ match }) => <CreateCourse match={match} />}
+                </Route>
+                <Route exact path='/course-list'>
+                  {({ match }) => <CourseView match={match} />}
+                </Route>
+                <Route exact path='/view-period'>
+                  {({ match }) => <ViewCourseCard match={match} />}
                 </Route>
                 <Route exact path='/feeType/miscFeeType'>
                   {({ match }) => <MiscFeeType match={match} />}
@@ -283,7 +359,12 @@ function App() {
                 {/* <Route exact path='/finance/StoreReport'>
                   {({ match }) => <StoreReport match={match} />}
                 </Route> */}
+                <Route exact path= '/finance/add_feePlan'>
+                  {({ match }) => <addFeePlan match={match} />}
+                </Route>
               </Switch>
+              </ViewStore>
+              {/* </CircularStore> */}
             </ThemeProvider>
           </OnlineclassViewProvider>
         </AlertNotificationProvider>
