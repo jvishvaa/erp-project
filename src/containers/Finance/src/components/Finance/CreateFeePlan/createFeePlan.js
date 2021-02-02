@@ -20,12 +20,12 @@ import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 import classess from './deleteModal.module.css'
 import Layout from '../../../../../Layout'
 
-const CreatePlan = {
-  label: 'Create Fee Plan',
-  color: 'blue',
-  href: '/finance/create_feePlan',
-  disabled: false
-}
+// const CreatePlan = {
+//   label: 'Create Fee Plan',
+//   color: 'blue',
+//   href: '/finance/create_feePlan',
+//   disabled: false
+// }
 
 const styles = theme => ({
   tableWrapper: {
