@@ -14,7 +14,7 @@ import AutoSuggest from '../../../../ui/AutoSuggest/autoSuggest'
 // import { Info } from '@material-ui/icons'
 // import Modal from '../../../../ui/Modal/modal'
 // import { OmsSelect } from '../../../../ui'
-import '../../../css/staff.css'
+// import '../../../css/staff.css'
 import * as actionTypes from '../../store/actions'
 import { apiActions } from '../../../../_actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
@@ -28,10 +28,11 @@ import Certificate from '../ITCertificate/certificate'
 import ConcessionDetails from '../ConcessionDetails/concessionDetails'
 // import FeeMangement from '../FeeManagement/feeManagement'
 import CurrFeeTypeAcc from '../CurrFeeTypeAcc/currFeeTypeAcc'
-import StoreAtAcc from '../../../Inventory/BranchAccountant/StoreAtAcc/storeAtAcc'
-import ShippingAmount from '../../../Inventory/BranchAccountant/shippingAmount/ShippingAmount'
+// import StoreAtAcc from '../../../Inventory/BranchAccountant/StoreAtAcc/storeAtAcc'
+// import ShippingAmount from '../../../Inventory/BranchAccountant/shippingAmount/ShippingAmount'
 import StoreItemStatus from '../StoreItemStatus/storeItemStatus'
-import { debounce } from '../../../../utils'
+import Layout from '../../../../../../Layout'
+// import { debounce } from '../../../../utils'
 // import OtherFeesAccountant from '../OtherFees/otherFees'
 
 function TabContainer ({ children, dir }) {
@@ -200,7 +201,7 @@ class StudentLedgerTab extends Component {
     // makePayState = this.state
   }
 
-  myErpFunc = debounce(() => {
+  myErpFunc = () => {
     this.props.studentErpSearch(
       'erp',
       this.state.session.value,
@@ -211,7 +212,7 @@ class StudentLedgerTab extends Component {
       this.props.alert,
       this.props.user
     )
-  }, 500)
+  }
 
   studentErpChangeHandler = (e, selected) => {
     this.setState({ student: e.target.value, studentLabel: e.target.label, selectedErpStatus: selected, showTabs: false, getData: false }, () => {
@@ -227,7 +228,7 @@ class StudentLedgerTab extends Component {
     }
   }
 
-  myStudentFun = debounce(() => {
+  myStudentFun = () => {
     const { searchTypeId } = this.state
     this.props.studentErpSearch(
       searchTypeId === 2 ? 'student' : searchTypeId === 3 ? 'fatherName' : searchTypeId === 4 ? 'fatherNo' : searchTypeId === 5 ? 'motherName' : searchTypeId === 6 ? 'motherNo' : 'na',
@@ -239,7 +240,7 @@ class StudentLedgerTab extends Component {
       this.props.alert,
       this.props.user
     )
-  }, 500)
+  }
 
   studentNameChangeHandler = (e, selected) => {
     this.setState({ studentName: e.target.value, selectedNameStatus: selected, showTabs: false, getData: false }, () => {
@@ -379,22 +380,22 @@ class StudentLedgerTab extends Component {
             />
           </TabContainer>}
           {value === 'nine' && <TabContainer>
-            <StoreAtAcc
+            {/* <StoreAtAcc
               session={this.state.session.value}
               getData={this.state.getData}
               erp={erpValue}
               user={this.props.user}
               alert={this.props.alert}
-            />
+            /> */}
           </TabContainer>}
           {value === 'ele' && <TabContainer>
-            <ShippingAmount
+            {/* <ShippingAmount
               session={this.state.session.value}
               getData={this.state.getData}
               erpValue={erpValue}
               user={this.props.user}
               alert={this.props.alert}
-            />
+            /> */}
           </TabContainer>}
           {value === 'ten' && <TabContainer>
             <StoreItemStatus
@@ -469,6 +470,7 @@ class StudentLedgerTab extends Component {
     }
 
     return (
+      <Layout>
       <React.Fragment>
         <Grid container spacing={3} style={{ padding: 15 }}>
           <Grid item xs={3} className={classes.item} style={{ zIndex: '1103' }}>
@@ -584,6 +586,7 @@ class StudentLedgerTab extends Component {
         {tabBar}
         {this.props.dataLoading ? <CircularProgress open /> : null}
       </React.Fragment>
+      </Layout>
     )
   }
 }

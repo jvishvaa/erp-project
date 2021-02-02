@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import * as actionTypes from '../store/actions/index'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
-import '../../css/staff.css'
+// import '../../css/staff.css'
 // import { TransferWithinAStationSharp } from '@material-ui/icons'
 // import { classgrouptypes } from '../../../_reducers/classGroupType.reducer';
 // import { apiActions } from '../../../_actions'

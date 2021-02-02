@@ -12,7 +12,7 @@ import axios from 'axios'
 import * as actionTypes from '../../../store/actions'
 import CircularProgress from '../../../../../ui/CircularProgress/circularProgress'
 import feeReceipts from '../../../Receipts/feeReceipts'
-import storeReceipts from '../../../../Inventory/Receipts/storePaymentReceipt'
+// import storeReceipts from '../../../../Inventory/Receipts/storePaymentReceipt'
 import { urls } from '../../../../../urls'
 import Modal from '../../../../../ui/Modal/modal'
 import customClasses from './payments.module.css'
@@ -158,7 +158,7 @@ class Payments extends Component {
     try {
       if (isKit) {
         const response = await this.getKitPdfData(transactionId)
-        storeReceipts(response.data, isCancelled)
+        // storeReceipts(response.data, isCancelled)
       } else {
         const response = await this.getPdfData(transactionId)
         let feeType = response.data.feeType

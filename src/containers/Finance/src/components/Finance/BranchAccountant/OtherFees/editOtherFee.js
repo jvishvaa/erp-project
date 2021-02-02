@@ -5,7 +5,7 @@ import { Button, Grid } from '@material-ui/core/'
 
 import { connect } from 'react-redux'
 import Select from 'react-select'
-import '../../../css/staff.css'
+// import '../../../css/staff.css'
 import * as actionTypes from '../../store/actions'
 
 class editOtherFeeType extends Component {

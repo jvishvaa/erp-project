@@ -496,6 +496,10 @@ const Layout = ({ children, history }) => {
         history.push('/finance/StoreReport')
           break;
         }
+        case 'Ledger Tab': {
+          history.push('/student/LegerTab')
+            break;
+          }
       default:
         break;
     }
