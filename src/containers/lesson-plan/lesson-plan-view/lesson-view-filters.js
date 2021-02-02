@@ -243,7 +243,7 @@ const LessonViewFilters = ({
                     setAlert('error', result.data.message);
                 }
             }).catch(error => {
-                setBranchDropdown('error', error.message);
+                setAlert('error', error.message);
             })
 
         axios.get(`${endpoints.lessonPlan.academicYearList}`, {
