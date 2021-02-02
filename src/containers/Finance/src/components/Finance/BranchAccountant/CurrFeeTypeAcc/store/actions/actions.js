@@ -31,9 +31,9 @@ export const fetchMiscFeeList = (payload) => {
         dispatch(actionTypes.dataLoaded())
         console.log(err)
         if (err.response && (err.response.status === 400 || err.response.status === 404)) {
-          payload.alert.warning(err.response.data.err_msg)
+          // payload.alert.warning(err.response.data.err_msg)
         } else {
-          payload.alert.warning('Something went Wrong!')
+          // payload.alert.warning('Something went Wrong!')
         }
       })
   }

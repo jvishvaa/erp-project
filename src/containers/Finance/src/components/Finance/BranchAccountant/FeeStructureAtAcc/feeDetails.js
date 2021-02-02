@@ -292,7 +292,7 @@ class FeeDetailsAccountant extends Component {
       this.props.updateFineAmt(data, this.props.alert, this.props.user)
       this.hideFineAmtModalHandler()
     } else {
-      this.props.alert.warning('Enter Valid Fine')
+      // this.props.alert.warning('Enter Valid Fine')
     }
   }
 

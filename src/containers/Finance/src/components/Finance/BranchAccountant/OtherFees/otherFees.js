@@ -395,7 +395,7 @@ class OtherFeesAccountant extends Component {
     })
 
     if (this.state.amountToBePaid === 0 || this.state.amountToBePaid < 0) {
-      this.props.alert.warning('Cannot Proceed with Zero Amount')
+      // this.props.alert.warning('Cannot Proceed with Zero Amount')
       this.setState({
         agreeOther: false
       })
