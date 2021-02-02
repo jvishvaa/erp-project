@@ -1,8 +1,13 @@
 import React from 'react';
-import { Typography, Box, makeStyles, Button, withStyles } from '@material-ui/core';
+import { IconButton, Modal, Typography, Box, makeStyles, Button, withStyles, Grid } from '@material-ui/core';
+import Backdrop from '@material-ui/core/Backdrop';
+import EditIcon from '@material-ui/icons/Edit';
+import Fade from '@material-ui/core/Fade';
 import moment from 'moment';
+import ClassUpdation from '../create-class/class-updation';
 
-const useStyles = makeStyles({
+
+const useStyles = makeStyles((theme)=>({
     card: {
         padding: '8px',
         border: '1px solid #F9D474',
@@ -39,8 +44,21 @@ const useStyles = makeStyles({
         fontSize: '16px',
         fontFamily: 'Poppins',
         lineHeight: '25px',
-    }
-})
+    },
+    modal: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: 'none',
+    },
+    paper: {
+        width: "80%",
+        backgroundColor: theme.palette.background.paper,
+        border: 'none',
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing(2, 4, 3),
+    },
+}))
 
 const StyledButton = withStyles({
     root: {
@@ -56,16 +74,51 @@ const StyledButton = withStyles({
     }
 })(Button);
 
+const StyledEditButton = withStyles({
+    root: {
+        height: '30px',
+        width: '30px',
+        float: 'right',
+    }
+})(IconButton);
+
 const ClassCard = (props) => {
     const classes = useStyles({});
+    const [enableEdit, setEnabelEdit]= React.useState(false)
     const classData = props.classData.zoom_meeting ? props.classData.zoom_meeting : props.classData;
     //console.log(classData);
+    
+
+    const editClassJsx = (
+        <>
+            <StyledEditButton onClick={()=>setEnabelEdit(!enableEdit)}>
+                <EditIcon /> 
+            </StyledEditButton>
+            <Modal
+                open={enableEdit}
+                onClose={()=>{setEnabelEdit(false)}}
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                className={classes.modal}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{timeout: 500}}
+            >
+                <Fade in={enableEdit}>
+                    <div className={classes.paper}>
+                        <ClassUpdation classData={classData.id} />  
+                    </div>
+                </Fade>
+            </Modal>
+        </>
+    )
     return (
         <Box className={`${props.selectedId === classData.id ? classes.activeCard : classes.card}`}>
             <div>
                 <Typography className={classes.classTitle}>
                     {classData.online_class.title}
                 </Typography>
+                {editClassJsx}
             </div>
                 <Typography className={classes.classTitle}>
                     {classData.online_class.subject[0].subject_name}
