@@ -67,6 +67,7 @@ import PendingRequest from  './containers/Finance/src/components/Finance/Approva
 import RejectedRequest from './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/Components/rejectedRequest';
 import createReceipt from './containers/Finance/src/components/Finance/ReceiptChanges/createReceipt.js'
 // import StoreReport from './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/Components/Inventory/StoreAdmin/StoreReports/storeReports.js'
+import AddFeePlan from './containers/Finance/src/components/Finance/CreateFeePlan/addFeePlan.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -283,6 +284,9 @@ function App() {
                 {/* <Route exact path='/finance/StoreReport'>
                   {({ match }) => <StoreReport match={match} />}
                 </Route> */}
+                 <Route exact path='/finance/add_feePlan'>
+                  {({ match }) => <AddFeePlan match={match} />}
+                </Route>
               </Switch>
             </ThemeProvider>
           </OnlineclassViewProvider>

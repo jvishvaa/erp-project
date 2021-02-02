@@ -7,7 +7,8 @@ import { withRouter } from 'react-router-dom'
 import { apiActions } from '../../../_actions'
 import * as actionTypes from '../store/actions'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
-import '../../css/staff.css'
+import Layout from '../../../../../Layout'
+// import '../../css/staff.css'
 
 const styles = theme => ({
   tableWrapper: {
@@ -165,6 +166,7 @@ class AddFeePlan extends Component {
   render () {
     let { classes } = this.props
     return (
+      <Layout>
       <React.Fragment>
         <Grid container direction='column' spacing={3} style={{ padding: 15 }}>
           <Grid container spacing={3} style={{ padding: 15 }}>
@@ -457,6 +459,7 @@ class AddFeePlan extends Component {
           </Grid>
         </Grid>
       </React.Fragment>
+      </Layout>
     )
   }
 }
