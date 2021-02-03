@@ -226,19 +226,6 @@ class BlogView extends Component {
                       </CardContent>  :''}
                         <CardHeader
                           className={classes.author}
-                        //   avatar={
-                            
-                        //        <Typography
-                        //   style={{ color:'red',fontSize:'12px'}}
-                        // >Revision Feedback:
-                        //   {data.feedback_revision_required}
-                        // </Typography>
-                        //   }
-                          //   action={
-                          //     <IconButton aria-label='settings'>
-                          //       <MoreVertIcon />
-                          //     </IconButton>
-                          //   }
                           title={data.author.first_name}
                           subheader={moment(data.created_at).format('MMM DD YYYY')}
                         />
@@ -247,6 +234,11 @@ class BlogView extends Component {
                           <Typography variant='body2' color='textSecondary' component='p'>
                             {data.content}
                           </Typography>
+                          <Typography component='p'  style={{ paddingRight: '650px',fontSize:'12px'}}
+>
+                          TotalWords : {data.word_count}
+                          </Typography>
+
                         </CardContent>
                         <CardActions>
                           {tabValue !== 1 ?

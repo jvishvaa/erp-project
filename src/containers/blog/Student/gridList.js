@@ -51,7 +51,6 @@ function GridList(props) {
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false)
   const themeContext = useTheme();
-  console.log(props,"ppppp")
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
     setShowPeriodIndex(index);
