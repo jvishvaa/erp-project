@@ -92,7 +92,7 @@ const ClassUpdate = (props) => {
   };
 
   const fetchTutorEmails = () => {
-    if (classGrades) {
+    if (classGrades && Array.isArray(classGrades) && classGrades.length) {
       const data = {
         // branchIds: selectedClassType.id===0?branch.join(','):onlineClass.branchIds.join(','),
         // gradeIds: onlineClass.gradeIds.join(','),
