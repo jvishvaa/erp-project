@@ -25,10 +25,14 @@ import { withRouter } from 'react-router-dom';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-import SideBar from './sideBar';
 import Review from './Review'
 import Layout from '../../Layout';
-import { ThreeSixty } from '@material-ui/icons';
+import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
+
+
+
+import axiosInstance from '../../../config/axios';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 const styles = (theme) => ({
   root: {
@@ -94,7 +98,14 @@ class ContentView extends Component {
       feedbackrevisionReq:'',
       roleDetails: JSON.parse(localStorage.getItem('userDetails')),
       blogRatings :this.props.location.state.data && this.props.location.state.data.remark_rating,
-      overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark
+      overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark,
+      likeStatus:false,
+      currentLikes: 0,
+      // setAlert : useContext(AlertNotificationContext),
+      loading:false,
+      likes: this.props.location.state.data && this.props.location.state.data.likes,
+      loginUserName : JSON.parse(localStorage.getItem('userDetails')).first_name
+
 
     };
 
@@ -183,11 +194,52 @@ class ContentView extends Component {
 //    let {overallRemark} = this.state
 //    return overallRemark
 //   }
+getLikeStatus = (isLiked) => {
+  let { likeStatus,likes }=this.state
+  if (isLiked === true && likeStatus === false) {
+    this.setState({currentLikes :likes-1,likeStatus:true})
+  } else if (isLiked === true && likeStatus === true) {
+    this.setState({currentLikes :likes+1,likeStatus:false})
 
+  } else if (isLiked === false && likeStatus === false) {
+    this.setState({currentLikes :likes+1,likeStatus:true})
+
+  } else if (isLiked === false && likeStatus === true) {
+    this.setState({currentLikes :likes,likeStatus:false})
+
+  }
+}
+handleLike = (isLiked,blogId) => {
+  this.getLikeStatus(isLiked)
+  let requestData = {
+    "blog_id": blogId ,
+
+  }
+axiosInstance.put(`${endpoints.blog.Blog}`, requestData)
+
+.then(result=>{
+if (result.data.status_code === 200) {
+  this.setState({loading:false})
+  // setAlert('success', result.data.message);
+} else {        
+  this.setState({loading:false})
+  // setAlert('error', result.data.message);
+}
+}).catch((error)=>{
+  this.setState({loading:false})
+  // setAlert('error', error.message);
+})
+  }
   
   render() {
     const { classes } = this.props;
-    const { tabValue,relatedBlog, starsRating, feedBack ,data,feedbackrevisionReq,isPublish,publishedLevel} = this.state;
+    const {likes,currentLikes,likeStatus,loginUserName, tabValue,relatedBlog, starsRating, feedBack ,data,feedbackrevisionReq,isPublish,publishedLevel,roleDetails} = this.state;
+    const blogFkLike= data && data.blog_fk_like
+    const likedUserIds=blogFkLike.map(blog => blog.user)
+    const indexOfLoginUser=likedUserIds.indexOf(roleDetails.user_id)
+    const loginUser=likedUserIds.includes(roleDetails.user_id)
+    const isLiked = loginUser ? blogFkLike[indexOfLoginUser].is_liked : false
+    const name =data && data.author && data.author.first_name
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -223,9 +275,20 @@ class ContentView extends Component {
                         <CardHeader
                           className={classes.author}
                           avatar={
-                            <Avatar aria-label='recipe' className={classes.avatar}>
-                              R
-                            </Avatar>
+                            // <Avatar aria-label='recipe' className={classes.avatar}>
+                            //   R
+                            // </Avatar>
+                            <div>
+                            {loginUserName !== name ? <Button
+                              style={{ color:'white',fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' }}
+                              onClick={()=>this.handleLike(isLiked,data.id)}
+                            > {isLiked || likeStatus ? <Favorite style={{ color: 'red' }} />
+                                : <FavoriteBorder style={{ color: 'red' }} />} {currentLikes === 0 ? likes
+                                : currentLikes
+                              }Likes
+                            </Button> : ''}
+                            </div>
+            
                             
                           }
                           //   action={

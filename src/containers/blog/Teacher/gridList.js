@@ -97,7 +97,7 @@ function GridList(props) {
                   <Button
                     size='small'
                     color='primary'
-                    style={{ marginTop: 120, width: 150 }}
+                    style={{ marginTop: 90, width: 150 }}
                     onClick={() =>
                       props.history.push({
                         pathname: '/blog/teacher/contentView',
@@ -422,7 +422,7 @@ function GridList(props) {
                   <Button
                     size='small'
                     color='primary'
-                    style={{ marginTop: 120, width: 150 }}
+                    style={{ marginTop: 90, width: 150 }}
                     onClick={() =>
                       props.history.push({
                         pathname: '/blog/teacher/contentView',
