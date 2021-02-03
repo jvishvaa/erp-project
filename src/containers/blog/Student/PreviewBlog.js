@@ -149,14 +149,16 @@ class ContentView extends Component {
               <div className='create_group_filter_container'>
                 <div className={classes.root}>
                   <Grid container spacing={3}>
-                    <Grid item xs={9}>
-                      <Typography
+                  <Grid item xs={12}>
+                      <Button
                         style={{ cursor: 'Pointer' }}
                         onClick={() => window.history.back()}
                         align='right'
                       >
-                        <u>Back to main Page</u>
-                      </Typography>
+                        <i>Back</i>
+                      </Button>
+                      </Grid>
+                      <Grid item xs={9}>
                       <Card className={classes.cardRoot}>
                         <Typography
                           variant='h5'

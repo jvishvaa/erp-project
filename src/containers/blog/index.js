@@ -8,4 +8,6 @@ export {default as TeacherPublishBlogView} from './Teacher/TeacherPublishBlogVie
 export {default as CreateGenre} from './Teacher/CreateGenre'
 export {default as ViewGenre} from './Teacher/ViewGenre'
 export { default as ContentViewPublish } from './Teacher/ContentViewPublish';
+export { default as AdminBlog } from './Admin/AdminBlog';
+export { default as PrincipalBlog } from './Principal/PrincipalBlog';
 

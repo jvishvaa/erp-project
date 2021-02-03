@@ -27,7 +27,9 @@ import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import SideBar from './sideBar';
+import Review from './Review'
 import Layout from '../../Layout';
+import { ThreeSixty } from '@material-ui/icons';
 
 const styles = (theme) => ({
   root: {
@@ -74,25 +76,13 @@ const StyledRating = withStyles({
   },
 })(Rating);
 
-const publishLevelChoiceBranch=[ 
-//   { label: 'Branch', value: '2' },
+const publishLevelChoice=[ 
+  { label: 'Branch', value: '2' },
   { label: 'Grade', value: '3' },
   { label: 'Section', value: '4' }
 
   ] 
-  const publishLevelChoiceGrade=[ 
-      { label: 'Branch', value: '2' },
-    //   { label: 'Grade', value: '3' },
-      { label: 'Section', value: '4' }
-    
-      ] 
-      const publishLevelChoiceSection=[ 
-          { label: 'Branch', value: '2' },
-          { label: 'Grade', value: '3' },
-        //   { label: 'Section', value: '4' }
-        
-          ] 
-class ContentViewPublish extends Component {
+class ContentView extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -102,25 +92,28 @@ class ContentViewPublish extends Component {
       isPublish:false,
       data: this.props.location.state.data && this.props.location.state.data,
       tabValue :this.props.location.state.tabValue && this.props.location.state.tabValue,
-      feedbackrevisionReq:'',
+      comment:'',
       roleDetails: JSON.parse(localStorage.getItem('userDetails')),
-
+      blogRatings :this.props.location.state.data && this.props.location.state.data.remark_rating,
+      overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark
 
     };
 
   }
-  
+  componentDidMount() {
+  }
 
 
 
 
-  submitRevisionFeedback = () => {
 
-    const {  data, feedbackrevisionReq } = this.state;
+
+  submitComment = () => {
+    const {  data, comment } = this.state;
     const formData = new FormData();
     formData.set('blog_id', data.id);
-    formData.set('status', 5);
-    formData.set('feedback_revision_required', feedbackrevisionReq);
+    formData.set('status', 7);
+    formData.set('comment', comment);
 
     axios
       .put(`${endpoints.blog.Blog}`, formData)
@@ -137,10 +130,9 @@ class ContentViewPublish extends Component {
       });
   };
   handleReivisionNameChange = (e) => {
-    this.setState({feedbackrevisionReq:e.target.value})
+    this.setState({comment:e.target.value})
   };
   submitPublish = () => {
-
   const {  data, publishedLevel ,roleDetails} = this.state;
   const formData = new FormData();
   formData.set('blog_id', data.id);
@@ -156,10 +148,11 @@ class ContentViewPublish extends Component {
       .then((result) => {
         if (result.data.status_code === 200) {
           this.props.history.push({
-            pathname: '/blog/teacher/publish/view',
+            pathname: '/blog/teacher',
           });
         } else {
           console.log(result.data.message);
+
         }
       })
       .catch((error) => {
@@ -175,11 +168,27 @@ class ContentViewPublish extends Component {
 
     }
   }
+//   getRatings = () => {
+//     let {blogRatings} =this.state
+//     if (blogRatings) {
+//       return []
+//     }
+//     const ratings = blogRatings
+//     const type = typeof ratings.remark_rating
+//     const parsedRatings = type === 'object' ? ratings.remark_rating : JSON.parse(ratings.remark_rating)
+//     const allRatingParamters = [...parsedRatings]
+//     return allRatingParamters
+//   }
+
+//  getOverAllRemark = () => {
+//    let {overallRemark} = this.state
+//    return overallRemark
+//   }
+
   
   render() {
     const { classes } = this.props;
-    const { tabValue,relatedBlog, starsRating, feedBack ,data,feedbackrevisionReq,isPublish,publishedLevel} = this.state;
-   
+    const { tabValue,relatedBlog, starsRating, feedBack ,data,comment,isPublish,publishedLevel} = this.state;
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -219,7 +228,11 @@ class ContentViewPublish extends Component {
                               R
                             </Avatar>
                           }
-                       
+                          //   action={
+                          //     <IconButton aria-label='settings'>
+                          //       <MoreVertIcon />
+                          //     </IconButton>
+                          //   }
                           title={data.author.first_name}
                           subheader=
                           {data && moment(data.created_at).format('MMM DD YYYY')}
@@ -231,23 +244,55 @@ class ContentViewPublish extends Component {
                           </Typography>
                         </CardContent>
                         <CardActions>
-                        
-                          {tabValue !== 0 ?
-                        
+                          
+                          {tabValue === 1 ?
+                          <Button
+                            size='small'
+                            color='primary'
+                            onClick={() => this.setState({ feedBack: true })}
+                          >
+                            Comment
+                          </Button> :
                           <Button
                             size='small'
                             color='primary'
                             onClick={() => this.setState({ isPublish: true })}
                           >
                             Publish
-                          </Button> :''
+                          </Button> 
 
                           }
                         </CardActions>
                       </Card>
                     </Grid>
                     <Grid item xs={3}>
-                     {isPublish ? (
+                      {feedBack ? (
+                        <Card style={{ minWidth: 320 }} className={classes.reviewCard}>
+                          <CardContent>
+                            <TextField
+                              id='outlined-multiline-static'
+                              multiline
+                              rows={12}
+                              placeholder='Provide Feedback related to this blog..'
+                              variant='outlined'
+                              onChange={(event,value)=>{this.handleReivisionNameChange(event);}}
+
+                            />
+                            <br />
+                            <CardActions>
+                              <Button
+                                style={{ fontSize: 12 }}
+                                size='small'
+                                color='primary'
+                                disabled={!comment}
+                                onClick ={this.submitComment}
+                              >
+                                Submit
+                              </Button>
+                            </CardActions>
+                          </CardContent>
+                        </Card>
+                      ):isPublish ? (
                         <Card style={{ minWidth: 320 }} className={classes.reviewCard}>
                           <CardContent>
                           <Autocomplete
@@ -256,7 +301,7 @@ class ContentViewPublish extends Component {
                             onChange={this.handlePublishLevelType}
                             id='category'
                             required
-                            options={tabValue === 1 ? publishLevelChoiceBranch : tabValue === 2 ? publishLevelChoiceGrade : publishLevelChoiceSection}
+                            options={publishLevelChoice}
                             getOptionLabel={(option) => option?.label}
                             filterSelectedOptions
                             renderInput={(params) => (
@@ -283,7 +328,19 @@ class ContentViewPublish extends Component {
                           </CardContent>
                         </Card>
                       )
-                      : ''}
+                      : relatedBlog ? ''
+                      // (
+                      //   <>
+                      //     <SideBar />
+                      //   </>
+                      // ) 
+                      : (
+                        <Review  blogId={data.id}
+                        />
+
+
+                      )
+                      }
                     </Grid>
                   </Grid>
                 </div>
@@ -295,4 +352,4 @@ class ContentViewPublish extends Component {
     );
   }
 }
-export default withRouter(withStyles(styles)(ContentViewPublish));
+export default withRouter(withStyles(styles)(ContentView));
