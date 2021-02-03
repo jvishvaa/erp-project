@@ -157,7 +157,7 @@ function GridListPublish(props) {
                     <Typography
                       style={{
                         color: 'white',
-                        paddingRight:'360px'
+                        paddingRight:'100px'
                       }}
                       color='textSecondary'
                       component='p'
@@ -228,7 +228,7 @@ function GridListPublish(props) {
                     <Typography
                       style={{
                         color: 'white',
-                        paddingRight:'360px'
+                        paddingRight:'100px'
                       }}
                       color='textSecondary'
                       component='p'
@@ -298,7 +298,7 @@ function GridListPublish(props) {
                     <Typography
                       style={{
                         color: 'white',
-                        paddingRight:'360px'
+                        paddingRight:'100px'
                       }}
                       color='textSecondary'
                       component='p'
@@ -365,7 +365,7 @@ function GridListPublish(props) {
                     <Typography
                       style={{
                         color: 'white',
-                        paddingRight:'360px'
+                        paddingRight:'100px'
                       }}
                       color='textSecondary'
                       component='p'
