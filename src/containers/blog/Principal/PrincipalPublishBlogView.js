@@ -80,7 +80,7 @@ class PrincipalPublishBlogView extends Component {
     };
   }
   componentDidMount() {
-    let status = this.state
+    let {status} = this.state
     this.getBlog(status);
   }
   getBlog = (status) => {
@@ -122,7 +122,7 @@ class PrincipalPublishBlogView extends Component {
   };
 
   handleTabChange = (event, newValue) => {
-    let status =this.state
+    let {status} =this.state
     this.setState({ tabValue: newValue ,data:[]},()=>{
       this.getBlog(status);
 

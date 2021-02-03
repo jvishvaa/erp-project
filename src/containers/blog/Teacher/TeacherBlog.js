@@ -83,7 +83,7 @@ class TeacherBlog extends Component {
     };
   }
   componentDidMount() {
-    let status =this.state
+    let {status} =this.state
     this.getBlog(status);
   }
   getBlog = (status) => {
@@ -270,7 +270,8 @@ class TeacherBlog extends Component {
                         >
                           <Tab label='Pending Review' {...a11yProps(0)} />
                           <Tab label='Reviewed' {...a11yProps(1)} />
-                        </Tabs> <Divider variant='middle' />
+                        </Tabs>
+                         <Divider variant='middle' />
                         <li style={{ listStyleType: 'none' }}>
                           <Typography
                             align='right'

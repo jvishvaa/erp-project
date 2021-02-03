@@ -83,7 +83,7 @@ class PrincipalBlog extends Component {
     };
   }
   componentDidMount() {
-    let status =this.state
+    let {status} =this.state
     this.getBlog(status);
   }
   getBlog = (status) => {
