@@ -316,10 +316,10 @@ class StudentDashboard extends Component {
                         </TabPanel>
                       </div>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={12}>
                     <Pagination
                     onChange={this.handlePagination}
-                    style={{ marginTop: 25 }}
+                    style={{ paddingLeft:'390px' }}
                     count={Math.ceil(totalBlogs / pageSize)}
                     color='primary'
                     page={pageNo}
