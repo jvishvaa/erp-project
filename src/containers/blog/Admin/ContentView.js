@@ -21,13 +21,12 @@ import {
 import Rating from '@material-ui/lab/Rating';
 import Avatar from '@material-ui/core/Avatar';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { withRouter } from 'react-router-dom';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import SideBar from './sideBar';
-import Review from './Review'
+import Review from '../Teacher/Review'
 import Layout from '../../Layout';
 import { ThreeSixty } from '@material-ui/icons';
 

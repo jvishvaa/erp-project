@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { useState ,useContext} from 'react';
 import { withStyles, makeStyles,useTheme } from '@material-ui/core/styles';
-import { Grid, Card, Button, Typography, Divider } from '@material-ui/core';
+import { Grid, Card, Button, Typography, Divider ,SvgIcon} from '@material-ui/core';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -22,6 +22,8 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 
 import Box from '@material-ui/core/Box';
 import moment from 'moment';
+
+import unfiltered from '../../../assets/images/unfiltered.svg'
 
 const LightTooltip = withStyles((theme) => ({
   tooltip: {
@@ -107,7 +109,7 @@ function GridList(props) {
                   height: '230px',
                   backgroundSize: '360px',
                   backgroundImage: `url(${data[0] && data[0].thumbnail})`,
-                  display: 'flex',
+                  display:data.length >= 0 ? 'flex' : 'none',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                 }}
@@ -175,9 +177,9 @@ function GridList(props) {
               <Grid item xs={6}>
                 <Card
                   style={{
-                    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
+                    display:data.length >= 1 ? 'flex' : 'none',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
                     width: '100%',
                     height: '290px',
                     // display: data.length >= 2 ? '' : 'none',
@@ -250,10 +252,8 @@ function GridList(props) {
                     // backgroundColor: 'grey',
                     width: '100%',
                     height: '290px',
-                    display: 'flex',
-                    flexDirection: 'column',
+                    display:data.length >= 2 ? 'flex' : 'none',
                     justifyContent: 'space-between',
-                    // display: data.length >= 3 ? '' : 'none',
                     backgroundSize: '360px',
                     backgroundImage: `url(${data[3] && data[3].thumbnail})`,
                   }}
@@ -326,10 +326,9 @@ function GridList(props) {
                   style={{
                     width: '100%',
                     height: '290px',
-                    display: 'flex',
+                    display:data.length >= 3 ? 'flex' : 'none',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
-                    // display: data.length >= 4 ? '' : 'none',
                     backgroundSize: '360px',
                     backgroundImage: `url(${data[3] && data[3].thumbnail})`,
                   }}
@@ -399,10 +398,9 @@ function GridList(props) {
                     width: '100%',
                     height: '290px',
                     backgroundSize: '360px',
-                    display: 'flex',
+                    display:data.length >= 4 ? 'flex' : 'none',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
-                    // display: data.length >= 5 ? '' : 'none',
                     backgroundImage: `url(${data[3] && data[3].thumbnail})`,
                   }}
                   className={classes.card}
@@ -472,10 +470,9 @@ function GridList(props) {
                 style={{
                   width: '100%',
                   height: '230px',
-                  display: 'flex',
+                  display:data.length >= 5 ? 'flex' : 'none',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  // display: data.length === 6 ? '' : 'none',
                   backgroundSize: '360px',
                   backgroundImage: `url(${data[5] && data[5].thumbnail})`,
                 }}
@@ -530,16 +527,28 @@ function GridList(props) {
                   >
                     Read more
                   </Button>
-                  {/* <Route path='/hello' component={ContentView} /> */}
                 </CardActions>
               </Card>
             </Grid>
-            {/* </Card> */}
           </Grid>
         </Grid>
-      ) : (
-        <Typography align='center'>Oops... No blogs Posted</Typography>
-      )}
+      ) : 
+      // (
+      //   <Typography align='center'>Oops... No blogs Posted</Typography>
+      // )
+      (
+        <div className="periodDataUnavailable">
+            <SvgIcon
+                component={() => (
+                    <img
+                        src={unfiltered}
+                    />
+                )}
+            />
+           
+        </div>
+    )
+      }
     </div>
   );
 }
