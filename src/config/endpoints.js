@@ -14,7 +14,7 @@ export default {
   },
   userManagement: {
     bulkUpload: '/erp_user/uploaded-users-status/',
-    academicYear: '/erp_user/list-academic_year/'
+    academicYear: '/erp_user/list-academic_year/',
   },
   communication: {
     roles: '/erp_user/roles/',
@@ -148,6 +148,10 @@ export default {
     courseList:'/aol/courses/',
     deleteCourse:'/aol/',
     courseDetails:'/aol/courses/',
+  },
+  blog: {
+    genreList: '/academic/genre/',
+    Blog: '/academic/blog/',
   },
 
     
