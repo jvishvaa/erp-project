@@ -76,7 +76,7 @@ function GridListPublish(props) {
                       marginTop: '-35px',
                       // fontSize: 'x-large',
                       fontWeight: 'bold',
-                      color: 'black',
+                      color: 'white',
                     }}
                     color='textSecondary'
                     component='p'
@@ -133,7 +133,7 @@ function GridListPublish(props) {
 
                         // fontSize: 'x-large',
                         fontWeight: 'bold',
-                        color: 'black',
+                        color: 'white',
 
                       }}
                       color='textSecondary'
@@ -192,7 +192,7 @@ function GridListPublish(props) {
 
                         // fontSize: 'x-large',
                         fontWeight: 'bold',
-                        color: 'black',
+                        color: 'white',
 
                       }}
                       color='textSecondary'
@@ -249,7 +249,7 @@ function GridListPublish(props) {
 
                         // fontSize: 'x-large',
                         fontWeight: 'bold',
-                        color: 'black',
+                        color: 'white',
 
                       }}
                       color='textSecondary'
@@ -303,7 +303,7 @@ function GridListPublish(props) {
                         marginTop: '-18px',
                         // fontSize: 'x-large',
                         fontWeight: 'bold',
-                        color: 'black',
+                        color: 'white',
 
                       }}
                       color='textSecondary'
@@ -359,7 +359,7 @@ function GridListPublish(props) {
                       marginTop: '-35px',
                       // fontSize: 'x-large',
                       fontWeight: 'bold',
-                      color: 'black',
+                      color: 'white',
 
                     }}
                     color='textSecondary'
@@ -396,19 +396,11 @@ function GridListPublish(props) {
                   <SvgIcon
                       component={() => (
                           <img
-                              // style={isMobile ? { height: '100px', width: '200px' } : { height: '160px', width: '290px' }}
                               src={unfiltered}
                           />
                       )}
                   />
-                  {/* <SvgIcon
-                      component={() => (
-                          <img
-                              // style={isMobile ? { height: '20px', width: '250px' } : { height: '50px', width: '400px', marginLeft: '5%' }}
-                              src={selectfilter}
-                          />
-                      )}
-                  /> */}
+                  
               </div>
           )}
     </div>

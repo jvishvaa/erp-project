@@ -135,7 +135,7 @@ class PrincipalBlog extends Component {
   };
 
   handleTabChange = (event, newValue) => {
-    this.setState({ tabValue: newValue ,data:[]});
+    this.setState({ tabValue: newValue ,data:[], pageNo:0, pageSize:6});
     const blogTab = newValue === 0 ? 8 : 3;
     this.getBlog(blogTab);
   };

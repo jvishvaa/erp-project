@@ -75,7 +75,7 @@ function GridListPublish(props) {
                       marginTop: '-35px',
                       // fontSize: 'x-large',
                       fontWeight: 'bold',
-                      color: 'black',
+                      color: 'white',
                     }}
                     color='textSecondary'
                     component='p'
@@ -132,7 +132,7 @@ function GridListPublish(props) {
 
                         // fontSize: 'x-large',
                         fontWeight: 'bold',
-                        color: 'black',
+                        color: 'white',
 
                       }}
                       color='textSecondary'
@@ -191,7 +191,7 @@ function GridListPublish(props) {
 
                         // fontSize: 'x-large',
                         fontWeight: 'bold',
-                        color: 'black',
+                        color: 'white',
 
                       }}
                       color='textSecondary'
@@ -248,7 +248,7 @@ function GridListPublish(props) {
 
                         // fontSize: 'x-large',
                         fontWeight: 'bold',
-                        color: 'black',
+                        color: 'white',
 
                       }}
                       color='textSecondary'
@@ -302,7 +302,7 @@ function GridListPublish(props) {
                         marginTop: '-18px',
                         // fontSize: 'x-large',
                         fontWeight: 'bold',
-                        color: 'black',
+                        color: 'white',
 
                       }}
                       color='textSecondary'
@@ -358,7 +358,7 @@ function GridListPublish(props) {
                       marginTop: '-35px',
                       // fontSize: 'x-large',
                       fontWeight: 'bold',
-                      color: 'black',
+                      color: 'white',
 
                     }}
                     color='textSecondary'

@@ -79,13 +79,15 @@ class StudentDashboard extends Component {
       pageNo: 0,
       pageSize: 6,
       startDate :moment().format('YYYY-MM-DD'),
+      status:[8,5]
       // endDate :getDaysAfter(moment(), 6)
 
     };
   }
 
   componentDidMount() {
-    this.getBlog(8);
+    let {status} =this.state
+    this.getBlog(status);
   }
 
   getDaysAfter = (date, amount) => {
@@ -102,11 +104,30 @@ class StudentDashboard extends Component {
     this.setState({ startDate: date.format('YYYY-MM-DD') });
   };
   handlePagination = (event, page) => {
-    let {tabValue} = this.state
+    let {tabValue,status} = this.state
     console.log(page,"@@@@@@@@@@@@@",tabValue)
-    this.setState({pageNo:page},()=>{
-      this.getBlog(8)
-    })
+
+    
+    if(tabValue === 0){
+      this.setState({status:[8,5],pageNo:page},()=>{
+        this.getBlog(status)})
+    }
+    else if (tabValue === 1){
+      this.setState({status:[3],pageNo:page},()=>{
+        this.getBlog(status)})
+    }
+    else if (tabValue === 2){
+      
+      this.setState({status: [2],pageNo:page},()=>{
+        this.getBlog(status)})
+    }else if (tabValue === 3){
+      this.setState({status:[1],pageNo:page},()=>{
+        this.getBlog(status)})
+      
+    }
+
+
+   
 };
 
   handleEndDateChange = (date) => {
@@ -116,9 +137,20 @@ class StudentDashboard extends Component {
   };
 
   handleTabChange = (event, newValue) => {
-    this.setState({ tabValue: newValue });
-    const blogTab = newValue === 0 ? 8 : newValue === 2 ? 2 : newValue === 3 ? 1 : 1;
-    this.getBlog(blogTab);
+    this.setState({ tabValue: newValue, pageNo:0, pageSize:6});
+    if(newValue === 0){
+      this.setState({status:[8,5]})
+    }
+    else if (newValue === 1){
+      this.setState({status:[3]})
+    }
+    else if (newValue === 2){
+      this.setState({status: [2]})
+    }else if (newValue === 3){
+      this.setState({status:[1]})
+      
+    }
+    // this.getBlog(status);
   };
 
   WriteBlogNav = () => {
@@ -129,7 +161,8 @@ class StudentDashboard extends Component {
   };
 
   getBlog = (status) => {
-    const { pageNo, pageSize } = this.state;
+    const { pageNo, pageSize,tabValue } = this.state;
+   
     axios
       .get(
         `${endpoints.blog.Blog}?page_number=${
@@ -154,17 +187,17 @@ class StudentDashboard extends Component {
   handleFilter = () =>
   {
     const { pageNo, pageSize ,tabValue,startDate,endDate} = this.state;
-    let tabStatus= ''
+    let tabStatus= []
     if(tabValue === 0){
-      tabStatus= 8
+      tabStatus= [8,5]
     }
     else if (tabValue === 1){
-      tabStatus = 3
+      tabStatus = [3]
     }
     else if (tabValue === 2){
-      tabStatus = 2
+      tabStatus = [2]
     }else if (tabValue === 3){
-      tabStatus = 1
+      tabStatus = [1]
     }
     axios
       .get(

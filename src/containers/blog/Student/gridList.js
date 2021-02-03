@@ -112,6 +112,8 @@ function GridList(props) {
                   display:data.length >= 0 ? 'flex' : 'none',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
+                  // backgroundb: data[0] &&  data[0].feedback_revision_required ? 'red' :''
+  
                 }}
               >
                 <CardHeader
@@ -133,10 +135,12 @@ function GridList(props) {
                       variant='body2'
                       align='left'
                       component='p'
-                      style={{ color: 'black' }}
+                      style={{ color: 'white' }}
                     >
                       {data[0] && moment(data[0].created_at).format('MMM DD YYYY')}
+                      
                     </Typography>
+                    
                   }
                 />
            
@@ -148,13 +152,14 @@ function GridList(props) {
                         marginTop: '-35px',
                         // fontSize: 'x-large',
                         fontWeight: 'bold',
-                        color: 'black',
+                        color: 'white',
                       }}
                       color='textSecondary'
                       component='p'
                     >
                       {data[0] && data[0].title}
                     </Typography>
+                   
                   </CardContent>
                 </CardActionArea>
                 <CardActions style={{ float: 'right' }}>
@@ -207,7 +212,7 @@ function GridList(props) {
                         variant='body2'
                         align='left'
                         component='p'
-                        style={{ color: 'black' }}
+                        style={{ color: 'white' }}
                       >
                         {data[1] && moment(data[1].created_at).format('MMM DD YYYY')}
                       </Typography>
@@ -221,7 +226,7 @@ function GridList(props) {
                           marginTop: '-10px',
                           // fontSize: 'x-large',
                           fontWeight: 'bold',
-                          color: 'black',
+                          color: 'white',
                         }}
                         color='textSecondary'
                         component='p'
@@ -278,7 +283,7 @@ function GridList(props) {
                         variant='body2'
                         align='left'
                         component='p'
-                        style={{ color: 'black' }}
+                        style={{ color: 'white' }}
                       >
                         {data[2] && moment(data[2].created_at).format('MMM DD YYYY')}
                       </Typography>
@@ -292,7 +297,7 @@ function GridList(props) {
                           marginTop: '-15px',
                           // fontSize: 'x-large',
                           fontWeight: 'bold',
-                          color: 'black',
+                          color: 'white',
                         }}
                         color='textSecondary'
                         component='p'
@@ -353,7 +358,7 @@ function GridList(props) {
                         variant='body2'
                         align='left'
                         component='p'
-                        style={{ color: 'black' }}
+                        style={{ color: 'white' }}
                       >
                         {data[3] && moment(data[3].created_at).format('MMM DD YYYY')}
                       </Typography>
@@ -367,7 +372,7 @@ function GridList(props) {
                           marginTop: '-15px',
                           // fontSize: 'x-large',
                           fontWeight: 'bold',
-                          color: 'black',
+                          color: 'white',
                         }}
                         color='textSecondary'
                         component='p'
@@ -424,7 +429,7 @@ function GridList(props) {
                         variant='body2'
                         align='left'
                         component='p'
-                        style={{ color: 'black' }}
+                        style={{ color: 'white' }}
                       >
                         {data[4] && moment(data[4].created_at).format('MMM DD YYYY')}
                       </Typography>
@@ -438,7 +443,7 @@ function GridList(props) {
                           marginTop: '-15px',
                           // fontSize: 'x-large',
                           fontWeight: 'bold',
-                          color: 'black',
+                          color: 'white',
                         }}
                         color='textSecondary'
                         component='p'
@@ -505,7 +510,7 @@ function GridList(props) {
                         marginTop: '-35px',
                         // fontSize: 'x-large',
                         fontWeight: 'bold',
-                        color: 'black',
+                        color: 'white',
                       }}
                       color='textSecondary'
                       component='p'
