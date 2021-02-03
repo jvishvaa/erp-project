@@ -92,6 +92,7 @@ class ContentView extends Component {
       feedBack: false,
       isPublish:false,
       data: this.props.location.state.data && this.props.location.state.data,
+      blogId: this.props.location.state.data && this.props.location.state.data.id,
       tabValue :this.props.location.state.tabValue && this.props.location.state.tabValue,
       feedbackrevisionReq:'',
       roleDetails: JSON.parse(localStorage.getItem('userDetails')),
@@ -102,7 +103,21 @@ class ContentView extends Component {
 
   }
   componentDidMount() {
+    let {blogId} = this.state
+    this.handleView(blogId)
   }
+  handleView = (blogId) => {
+    let requestData = {
+      "blog_id": blogId ,
+    }
+  axiosInstance.post(`${endpoints.blog.BlogView}`, requestData)
+  .then(result=>{
+  if (result.data.status_code === 200) {
+  } else {        
+  }
+  }).catch((error)=>{
+  })
+}
 
 
 
@@ -228,7 +243,7 @@ class ContentView extends Component {
                         >Revision Feedback:{data.feedback_revision_required}
                        
                         </Typography>
-                        <Typography> Revised By:{data && data.feedback_revision_by && data.feedback_revision_by.first_name}</Typography></CardContent> 
+                        <Typography  style={{fontSize:'12px'}}> Revised By:{data && data.feedback_revision_by && data.feedback_revision_by.first_name}</Typography></CardContent> 
                         :  data.comment ? 
                         <CardContent> <Typography
                         style={{color:'red', fontSize:'12px'}}
