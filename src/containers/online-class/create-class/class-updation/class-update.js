@@ -46,7 +46,7 @@ const ClassUpdate = (props) => {
   } = useContext(CreateclassContext);
 
   const [tutorNotAvailableMsg, setTutorNotAvailableMessage] = useState(undefined);
-  const [isTutorAvailable, setIsTutorAvailable] = useState(true);
+  const [isTutorAvailable, setIsTutorAvailable] = useState();
 
   // const classData = props.classData.zoom_meeting ? props.classData.zoom_meeting : props.classData;
   const checkTutorAvailability = async (email) => {
@@ -116,7 +116,7 @@ const ClassUpdate = (props) => {
   }, []);
   // eslint-disable-next-line consistent-return
   const handleSubmit = async () => {
-    if (!isTutorAvailable) {
+    if (!isTutorAvailable || tutorNotAvailableMsg) {
       setAlert('error', 'Tutor not available for the time slot.');
       return null;
     }
@@ -145,7 +145,7 @@ const ClassUpdate = (props) => {
         endpoints.onlineClass.updateTutor,
         payload
       );
-      if (Number(data.status_code) === 200) {
+      if (Number(data.status_code) === 201) {
         setAlert('success', `${data.message}`);
         handleClose();
       } else {
@@ -193,7 +193,10 @@ const ClassUpdate = (props) => {
       </Grid>
 
       <Grid item>
-        <Button disabled={!tutorObj.email} onClick={handleSubmit}>
+        <Button
+          disabled={!isTutorAvailable || tutorNotAvailableMsg || !tutorObj.email}
+          onClick={handleSubmit}
+        >
           Submit
         </Button>
       </Grid>
