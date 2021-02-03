@@ -84,6 +84,18 @@ function GridListPublish(props) {
                   {data[0] && data[0].title}
 
                   </Typography>
+                  <Typography
+                      style={{
+                        color: 'white',
+                        paddingRight:'360px'
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                   </IconButton>
+                      {data[0] && data[0].author.first_name}
+                    </Typography>
                 </CardContent>
               </CardActionArea>
               <CardActions >
@@ -140,6 +152,18 @@ function GridListPublish(props) {
                       component='p'
                     >
                     {data[1] && data[1].title}
+                    </Typography>
+                    <Typography
+                      style={{
+                        color: 'white',
+                        paddingRight:'360px'
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                   </IconButton>
+                      {data[1] && data[1].author.first_name}
                     </Typography>
                   </CardContent>
                 </CardActionArea>
@@ -200,6 +224,18 @@ function GridListPublish(props) {
                     >
                     {data[2] && data[2].title}
                     </Typography>
+                    <Typography
+                      style={{
+                        color: 'white',
+                        paddingRight:'360px'
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                   </IconButton>
+                      {data[2] && data[2].author.first_name}
+                    </Typography>
                   </CardContent>
                 </CardActionArea>
                 <CardActions >
@@ -258,6 +294,18 @@ function GridListPublish(props) {
                       {data[3] && data[3].title}
 
                     </Typography>
+                    <Typography
+                      style={{
+                        color: 'white',
+                        paddingRight:'360px'
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                   </IconButton>
+                      {data[3] && data[3].author.first_name}
+                    </Typography>
                   </CardContent>
                 </CardActionArea>
                 <CardActions>
@@ -313,6 +361,18 @@ function GridListPublish(props) {
 
                       
                     </Typography>
+                    <Typography
+                      style={{
+                        color: 'white',
+                        paddingRight:'360px'
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                   </IconButton>
+                      {data[4] && data[4].author.first_name}
+                    </Typography>
                   </CardContent>
                 </CardActionArea>
                 <CardActions >
@@ -366,7 +426,18 @@ function GridListPublish(props) {
                     component='p'
                   >
                   {data[5] && data[5].title}
-                  </Typography>
+                  </Typography><Typography
+                      style={{
+                        color: 'white',
+                        paddingRight:'360px'
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                   </IconButton>
+                      {data[5] && data[5].author.first_name}
+                    </Typography>
                 </CardContent>
               </CardActionArea>
               <CardActions >

@@ -139,18 +139,26 @@ class StudentDashboard extends Component {
   handleTabChange = (event, newValue) => {
     this.setState({ tabValue: newValue, pageNo:0, pageSize:6});
     if(newValue === 0){
-      this.setState({status:[8,5]})
+      this.setState({status:[8,5]},()=>{
+        this.getBlog(this.state.status);
+      })
     }
     else if (newValue === 1){
-      this.setState({status:[3]})
+      this.setState({status:[3]},()=>{
+        this.getBlog(this.state.status);
+      })
     }
     else if (newValue === 2){
-      this.setState({status: [2]})
+      this.setState({status: [2]},()=>{
+        this.getBlog(this.state.status);
+      })
     }else if (newValue === 3){
-      this.setState({status:[1]})
+      this.setState({status:[1]},()=>{
+        this.getBlog(this.state.status);
+      })
       
     }
-    // this.getBlog(status);
+    
   };
 
   WriteBlogNav = () => {
