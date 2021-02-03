@@ -9,7 +9,8 @@ import endpoints from '../../../../config/endpoints';
 
 const ClassUpdate = (props) => {
   // const tutorEmailRef = useRef(null);
-  const { classData = {} } = props || {};
+  const { classData = {}, handleClose = () => {} } = props || {};
+  console.log(handleClose, 'handleClose');
   const {
     online_class: {
       grade: classGrades = [],
@@ -45,7 +46,7 @@ const ClassUpdate = (props) => {
   } = useContext(CreateclassContext);
 
   const [tutorNotAvailableMsg, setTutorNotAvailableMessage] = useState(undefined);
-  const [isTutorAvailable, setIsTutorAvailable] = useState(undefined);
+  const [isTutorAvailable, setIsTutorAvailable] = useState(true);
 
   // const classData = props.classData.zoom_meeting ? props.classData.zoom_meeting : props.classData;
   const checkTutorAvailability = async (email) => {
@@ -145,14 +146,13 @@ const ClassUpdate = (props) => {
         payload
       );
       if (Number(data.status_code) === 200) {
-        if (data.message === 'Tutor is available') {
-          setAlert('success', 'Turtor updation succeded.');
-        } else {
-          setAlert('error', data.message);
-        }
+        setAlert('success', `${data.message}`);
+        handleClose();
+      } else {
+        setAlert('error', `${data.message}`);
       }
     } catch (error) {
-      setAlert('error', error.message);
+      setAlert('error', `${error.message}`);
     }
   };
   return (

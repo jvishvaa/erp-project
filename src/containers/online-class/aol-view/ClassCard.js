@@ -88,15 +88,16 @@ const ClassCard = (props) => {
     const classData = props.classData.zoom_meeting ? props.classData.zoom_meeting : props.classData;
     //console.log(classData);
     
-
+    const handleOpen = ()=>{ setEnabelEdit(true) }
+    const handleClose = ()=>{ setEnabelEdit(false) }
     const editClassJsx = (
         <>
-            <StyledEditButton onClick={()=>setEnabelEdit(!enableEdit)}>
+            <StyledEditButton onClick={handleOpen}>
                 <EditIcon /> 
             </StyledEditButton>
             <Modal
                 open={enableEdit}
-                onClose={()=>{setEnabelEdit(false)}}
+                onClose={handleClose}
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
                 className={classes.modal}
@@ -106,11 +107,11 @@ const ClassCard = (props) => {
             >
                 <Fade in={enableEdit}>
                     <div className={classes.paper}>
-                        <ClassUpdation classData={classData} />  
+                        <ClassUpdation handleClose={handleClose} classData={classData} />  
                     </div>
                 </Fade>
             </Modal>
-        </>
+            </>
     )
     return (
         <Box className={`${props.selectedId === classData.id ? classes.activeCard : classes.card}`}>
