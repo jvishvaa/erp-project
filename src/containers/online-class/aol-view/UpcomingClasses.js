@@ -351,6 +351,7 @@ const UpcomingClasses = () => {
                                     classData={data}
                                     selectedId={selected}
                                     handleSelctedClass={handleSelctedClass}
+                                    updateClasses={()=>getClasses()}
                                 />
                             </Grid>
                         ))}

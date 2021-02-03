@@ -90,6 +90,16 @@ const ClassCard = (props) => {
     
     const handleOpen = ()=>{ setEnabelEdit(true) }
     const handleClose = ()=>{ setEnabelEdit(false) }
+    const updateClasses = ()=>{
+        if(props.updateClasses){
+            props.updateClasses()
+        }
+    }
+    const updateClassesAndHandleClose = ()=>{
+        handleClose()
+        updateClasses()
+
+    }
     const editClassJsx = (
         <>
             <StyledEditButton onClick={handleOpen}>
@@ -107,7 +117,7 @@ const ClassCard = (props) => {
             >
                 <Fade in={enableEdit}>
                     <div className={classes.paper}>
-                        <ClassUpdation handleClose={handleClose} classData={classData} />  
+                        <ClassUpdation handleClose={updateClassesAndHandleClose} classData={classData} />  
                     </div>
                 </Fade>
             </Modal>
