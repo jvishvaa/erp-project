@@ -3,8 +3,9 @@
 /* eslint-disable react/no-unused-state */
 import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
-import { Grid, Button } from '@material-ui/core';
+import { Grid, Button ,Divider } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
+
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
@@ -13,6 +14,8 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import { Pagination } from '@material-ui/lab';
+
 // import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
@@ -74,6 +77,7 @@ class TeacherBlog extends Component {
       tabValue: 0,
       pageNo: 0,
       pageSize: 6,
+      totalPages:0,
       startDate :moment().format('YYYY-MM-DD'),
     };
   }
@@ -81,7 +85,13 @@ class TeacherBlog extends Component {
     this.getBlog(8);
   }
   getBlog = (status) => {
-    const { pageNo, pageSize } = this.state;
+    const { pageNo, pageSize,tabValue } = this.state;
+    if(tabValue === 0){
+      status= 8
+    }
+    else{
+      status=3
+    }
     axios
       .get(
         `${endpoints.blog.Blog}?page_number=${
@@ -129,10 +139,18 @@ class TeacherBlog extends Component {
     const blogTab = newValue === 0 ? 8 : 3;
     this.getBlog(blogTab);
   };
+  handlePagination = (event, page) => {
+    let {tabValue} = this.state
+    console.log(page,"@@@@@@@@@@@@@",tabValue)
+    this.setState({pageNo:page},()=>{
+      this.getBlog(8)
+    })
+};
+
 
   render() {
     const { classes } = this.props;
-    const { tabValue ,data} = this.state;
+    const { tabValue ,data,pageNo,pageSize,totalBlogs} = this.state;
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -206,6 +224,22 @@ class TeacherBlog extends Component {
                         Published Blogs
                       </Button>
                     </Grid>
+
+                    <Grid item xs={6}>
+                    <Pagination
+                    onChange={this.handlePagination}
+                    style={{ marginTop: 25 }}
+                    count={Math.ceil(totalBlogs / pageSize)}
+                    color='primary'
+                    page={pageNo}
+                            />
+            </Grid>
+
+
+
+
+                       
+
                     {/* <Grid item>
                       <Button
                         style={{ fontSize: 'small', margin: '20px' }}
@@ -229,7 +263,18 @@ class TeacherBlog extends Component {
                         >
                           <Tab label='Pending Review' {...a11yProps(0)} />
                           <Tab label='Reviewed' {...a11yProps(1)} />
-                        </Tabs>
+                        </Tabs> <Divider variant='middle' />
+                        <li style={{ listStyleType: 'none' }}>
+                          <Typography
+                            align='right'
+                            className={classes.dividerInset}
+                            style={{ font: '#014b7e', fontWeight: 600 }}
+                            display='block'
+                            variant='caption'
+                          >
+                            Number of Blogs {totalBlogs}
+                          </Typography>
+                        </li>
                         <TabPanel value={tabValue} index={0}>
                           <GridList data={data} tabValue={tabValue}/>
                         </TabPanel>

@@ -10,12 +10,15 @@ import moment from 'moment';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
+import { Pagination } from '@material-ui/lab';
+
 import Box from '@material-ui/core/Box';
 import { withRouter } from 'react-router-dom';
 // import { connect } from 'react-redux';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
 import MobileDatepicker from './datePicker';
+
 // import PendingReview from './PendingReview';
 import GridListPublish from './gridListPublish';
 import axios from '../../../config/axios';
@@ -122,10 +125,18 @@ class TeacherPublishBlogView extends Component {
 
     });
   };
+  handlePagination = (event, page) => {
+    let {tabValue} = this.state
+    console.log(page,"@@@@@@@@@@@@@",tabValue)
+    this.setState({pageNo:page},()=>{
+      this.getBlog(4)
+    })
+};
+
 
   render() {
     const { classes } = this.props;
-    const { tabValue ,data} = this.state;
+    const { tabValue ,data,pageSize,pageNo,totalBlogs} = this.state;
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -185,6 +196,15 @@ class TeacherPublishBlogView extends Component {
                         Filter
                       </Button>
                     </Grid>
+                    <Grid item xs={6}>
+                    <Pagination
+                    onChange={this.handlePagination}
+                    style={{ marginTop: 25 }}
+                    count={Math.ceil(totalBlogs / pageSize)}
+                    color='primary'
+                    page={pageNo}
+                            />
+            </Grid>
                   </Grid>
                   <Grid container spacing={2}>
                     {/* <Grid item>

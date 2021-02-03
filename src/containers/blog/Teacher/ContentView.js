@@ -242,6 +242,7 @@ class ContentView extends Component {
                           </Typography>
                         </CardContent>
                         <CardActions>
+                          {tabValue === 0 ? 
                           <Button
                             size='small'
                             color='primary'
@@ -253,7 +254,7 @@ class ContentView extends Component {
                             }}
                           >
                             {relatedBlog ? 'Add Review' : 'View Related Blog'}
-                          </Button>
+                          </Button> : ''}
                           {tabValue === 0 ?
                           <Button
                             size='small'

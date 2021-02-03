@@ -17,6 +17,8 @@ import Box from '@material-ui/core/Box';
 // import { connect } from 'react-redux';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
+import { Pagination } from '@material-ui/lab';
+
 import MobileDatepicker from './datePicker';
 // import PendingReview from './PendingReview';
 import GridList from './gridList';
@@ -99,6 +101,13 @@ class StudentDashboard extends Component {
     this.setState({ endDate });
     this.setState({ startDate: date.format('YYYY-MM-DD') });
   };
+  handlePagination = (event, page) => {
+    let {tabValue} = this.state
+    console.log(page,"@@@@@@@@@@@@@",tabValue)
+    this.setState({pageNo:page},()=>{
+      this.getBlog(8)
+    })
+};
 
   handleEndDateChange = (date) => {
     const startDate = this.getDaysBefore(date.clone(), 6);
@@ -178,7 +187,7 @@ class StudentDashboard extends Component {
 
   render() {
     const { classes } = this.props;
-    const { tabValue, data ,totalBlogs} = this.state;
+    const { tabValue, data ,totalBlogs ,pageNo,pageSize} = this.state;
 
     return (
       <div className='layout-container-div'>
@@ -261,6 +270,7 @@ class StudentDashboard extends Component {
                         Create New
                       </Button>
                     </Grid>
+                   
                   </Grid>
                   <Divider variant='middle' />
                   <Grid container spacing={2}>
@@ -306,6 +316,15 @@ class StudentDashboard extends Component {
                         </TabPanel>
                       </div>
                     </Grid>
+                    <Grid item xs={6}>
+                    <Pagination
+                    onChange={this.handlePagination}
+                    style={{ marginTop: 25 }}
+                    count={Math.ceil(totalBlogs / pageSize)}
+                    color='primary'
+                    page={pageNo}
+                            />
+            </Grid>
                   </Grid>
                 </div>
               </div>
