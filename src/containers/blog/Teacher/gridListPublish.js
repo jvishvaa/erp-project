@@ -12,13 +12,8 @@ import { withRouter } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import Face from '@material-ui/icons/Face'
 
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import List from '@material-ui/core/List';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItem from '@material-ui/core/ListItem';
 
 import unfiltered from '../../../assets/images/unfiltered.svg'
-import selectfilter from '../../../assets/images/selectfilter.svg';
 const LightTooltip = withStyles((theme) => ({
   tooltip: {
     backgroundColor: theme.palette.common.white,
