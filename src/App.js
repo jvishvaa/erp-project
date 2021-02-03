@@ -65,6 +65,7 @@ import Subjectgrade from './containers/subjectGradeMapping';
 import ListandFilter from './containers/subjectGradeMapping/listAndFilter';
 import GeneralDairyList from './containers/general-dairy';
 import CreateGeneralDairy from './containers/general-dairy/create-dairy';
+import CreateDailyDairy from './containers/daily-dairy/create-daily-dairy';
 
 import CreateCourse from './containers/master-management/course/create-course';
 import CourseView from './containers/master-management/course/view-course';
@@ -288,6 +289,12 @@ function App() {
                     </Route>
                     <Route exact path='/create/general-dairy'>
                       {({ match }) => <CreateGeneralDairy match={match} />}
+                    </Route>
+                    <Route exact path='/daily-dairy'>
+                      {({ match }) => <GeneralDairyList match={match} />}
+                    </Route>
+                    <Route exact path='/create/daily-dairy'>
+                      {({ match }) => <CreateDailyDairy match={match} />}
                     </Route>
                     <Route exact path='/create/course'>
                       {({ match }) => <CreateCourse match={match} />}
