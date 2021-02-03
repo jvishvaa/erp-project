@@ -211,15 +211,7 @@ class ContentViewPublish extends Component {
                             {data.title}
                         </Typography>
                         <CardMedia className={classes.media} image={data.thumbnail} />
-                        {
-                          tabValue === 0 ?
-                        <CardContent> <Typography
-                          style={{color:'red', fontSize:'12px'}}
-                        >Revision Feedback:{data.feedback_revision_required}
-                       
-                        </Typography>
-                        <Typography> Revised By:{data && data.feedback_revision_by && data.feedback_revision_by.first_name}</Typography></CardContent> 
-                        : tabValue !==0 && data.comment ? 
+                       {tabValue  && data.comment ? 
                         <CardContent> <Typography
                         style={{color:'red', fontSize:'12px'}}
                       >Comment:{data.comment}
@@ -243,6 +235,10 @@ class ContentViewPublish extends Component {
                         <CardContent>
                           <Typography variant='body2' color='textSecondary' component='p'>
                             {data.content}
+                          </Typography>
+                          <Typography component='p'  style={{paddingRight: '650px', fontSize:'12px'}}
+>
+                          TotalWords : {data.word_count}
                           </Typography>
                         </CardContent>
                         <CardActions>

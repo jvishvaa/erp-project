@@ -226,7 +226,7 @@ class ContentView extends Component {
                         >Revision Feedback:{data.feedback_revision_required}
                        
                         </Typography>
-                        <Typography> Revised By:{data && data.feedback_revision_by && data.feedback_revision_by.first_name}</Typography></CardContent> 
+                        <Typography style={{fontSize:'12px'}}> Revised By:{data && data.feedback_revision_by && data.feedback_revision_by.first_name}</Typography></CardContent> 
                         :  data.comment ? 
                         <CardContent> <Typography
                         style={{color:'red', fontSize:'12px'}}
@@ -255,6 +255,10 @@ class ContentView extends Component {
                         <CardContent>
                           <Typography variant='body2' color='textSecondary' component='p'>
                             {data.content}
+                          </Typography>
+                          <Typography component='p'  style={{paddingRight: '650px', fontSize:'12px'}}
+>
+                          TotalWords : {data.word_count}
                           </Typography>
                         </CardContent>
                         <CardActions>

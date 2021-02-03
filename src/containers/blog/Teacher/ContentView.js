@@ -93,6 +93,7 @@ class ContentView extends Component {
       starsRating: 0,
       feedBack: false,
       isPublish:false,
+      blogId: this.props.location.state.data && this.props.location.state.data.id,
       data: this.props.location.state.data && this.props.location.state.data,
       tabValue :this.props.location.state.tabValue && this.props.location.state.tabValue,
       feedbackrevisionReq:'',
@@ -101,7 +102,6 @@ class ContentView extends Component {
       overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark,
       likeStatus:false,
       currentLikes: 0,
-      // setAlert : useContext(AlertNotificationContext),
       loading:false,
       likes: this.props.location.state.data && this.props.location.state.data.likes,
       loginUserName : JSON.parse(localStorage.getItem('userDetails')).first_name
@@ -111,10 +111,23 @@ class ContentView extends Component {
 
   }
   componentDidMount() {
+    let {blogId} = this.state
+    this.handleView(blogId)
   }
 
 
-
+  handleView = (blogId) => {
+    let requestData = {
+      "blog_id": blogId ,
+    }
+  axiosInstance.post(`${endpoints.blog.BlogView}`, requestData)
+  .then(result=>{
+  if (result.data.status_code === 200) {
+  } else {        
+  }
+  }).catch((error)=>{
+  })
+}
 
 
 
@@ -215,7 +228,7 @@ handleLike = (isLiked,blogId) => {
     "blog_id": blogId ,
 
   }
-axiosInstance.put(`${endpoints.blog.Blog}`, requestData)
+axiosInstance.post(`${endpoints.blog.BlogLike}`, requestData)
 
 .then(result=>{
 if (result.data.status_code === 200) {
@@ -270,6 +283,7 @@ if (result.data.status_code === 200) {
                         >
                             {data.title}
                         </Typography>
+                       
                         <CardMedia className={classes.media} image={data.thumbnail} />
                         {
                           data.feedback_revision_required ?
@@ -278,7 +292,7 @@ if (result.data.status_code === 200) {
                         >Revision Feedback:{data.feedback_revision_required}
                        
                         </Typography>
-                        <Typography> Revised By:{data && data.feedback_revision_by && data.feedback_revision_by.first_name}</Typography></CardContent> 
+                        <Typography style={{fontSize:'12px'}}> Revised By:{data && data.feedback_revision_by && data.feedback_revision_by.first_name}</Typography></CardContent> 
                         :  data.comment ? 
                         <CardContent> <Typography
                         style={{color:'red', fontSize:'12px'}}
@@ -293,20 +307,6 @@ if (result.data.status_code === 200) {
                         </Typography></CardContent>
                         <CardHeader
                           className={classes.author}
-                          avatar={
-                            <div>
-                            {loginUserName !== name ? <Button
-                              style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' }}
-                              onClick={()=>this.handleLike(isLiked,data.id)}
-                            > {isLiked || likeStatus ? <Favorite style={{ color: 'red' }} />
-                                : <FavoriteBorder style={{ color: 'red' }} />} {currentLikes === 0 ? likes
-                                : currentLikes
-                              }Likes
-                            </Button> : ''}
-                            </div>
-            
-                            
-                          }
                           title={data.author.first_name}
                           subheader=
                           {data && moment(data.created_at).format('MMM DD YYYY')}
@@ -316,8 +316,27 @@ if (result.data.status_code === 200) {
                           <Typography variant='body2' color='textSecondary' component='p'>
                             {data.content}
                           </Typography>
+                          <Typography component='p'  style={{ paddingRight: '650px',fontSize:'12px'}}
+>
+                          TotalWords : {data.word_count}
+                          
+                          </Typography>
+                          
                         </CardContent>
-                        <CardActions>
+                        <CardActions> 
+                           {loginUserName !== name ? <Button
+                              style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' ,color:'red' ,backgroundColor:'white'}}
+                              onClick={()=>this.handleLike(isLiked,data.id)}
+                            > {isLiked || likeStatus ? <Favorite style={{ color: 'red' }} />
+                                : <FavoriteBorder style={{ color: 'red' }} />} {currentLikes === 0 ? likes
+                                : currentLikes
+                              }Likes
+                            </Button> : ''} &nbsp;&nbsp;&nbsp;
+                            <Button
+                              style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' ,color:'red' ,backgroundColor:'white'}}
+
+                            >   <Visibility style={{ color: 'red' }} />{data.views}Views
+                            </Button>
                           {tabValue === 0 ? 
                           <Button
                             size='small'

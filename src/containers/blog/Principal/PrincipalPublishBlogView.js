@@ -80,7 +80,7 @@ class PrincipalPublishBlogView extends Component {
     };
   }
   componentDidMount() {
-    let status = this.state
+    let {status} = this.state
     this.getBlog(status);
   }
   getBlog = (status) => {
@@ -122,7 +122,7 @@ class PrincipalPublishBlogView extends Component {
   };
 
   handleTabChange = (event, newValue) => {
-    let status =this.state
+    let {status} =this.state
     this.setState({ tabValue: newValue ,data:[]},()=>{
       this.getBlog(status);
 
@@ -130,7 +130,6 @@ class PrincipalPublishBlogView extends Component {
   };
   handlePagination = (event, page) => {
     let {tabValue,status} = this.state
-    console.log(page,"@@@@@@@@@@@@@",tabValue)
     this.setState({pageNo:page},()=>{
       this.getBlog(status)
     })
@@ -249,6 +248,17 @@ class PrincipalPublishBlogView extends Component {
                           <Tab label='Section' {...a11yProps(3)} />
 
                         </Tabs>
+                        <li style={{ listStyleType: 'none' }}>
+                          <Typography
+                            align='right'
+                            className={classes.dividerInset}
+                            style={{ font: '#014b7e', fontWeight: 600 }}
+                            display='block'
+                            variant='caption'
+                          >
+                            Number of Blogs {totalBlogs}
+                          </Typography>
+                        </li>
                         <TabPanel value={tabValue} index={0}>
                           <GridListPublish data={data} tabValue={tabValue} />
                         </TabPanel>

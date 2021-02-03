@@ -105,7 +105,6 @@ class StudentDashboard extends Component {
   };
   handlePagination = (event, page) => {
     let {tabValue,status} = this.state
-    console.log(page,"@@@@@@@@@@@@@",tabValue)
 
     
     if(tabValue === 0){

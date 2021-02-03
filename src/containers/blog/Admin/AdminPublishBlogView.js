@@ -80,7 +80,7 @@ class AdminPublishBlogView extends Component {
     };
   }
   componentDidMount() {
-    let status = this.state
+    let {status} = this.state
     this.getBlog(status);
   }
   getBlog = (status) => {
@@ -122,7 +122,7 @@ class AdminPublishBlogView extends Component {
   };
 
   handleTabChange = (event, newValue) => {
-    let status =this.state
+    let {status} =this.state
     this.setState({ tabValue: newValue ,data:[]},()=>{
       this.getBlog(status);
 
@@ -130,7 +130,6 @@ class AdminPublishBlogView extends Component {
   };
   handlePagination = (event, page) => {
     let {tabValue,status} = this.state
-    console.log(page,"@@@@@@@@@@@@@",tabValue)
     this.setState({pageNo:page},()=>{
       this.getBlog(status)
     })
@@ -210,28 +209,6 @@ class AdminPublishBlogView extends Component {
             </Grid>
                   </Grid>
                   <Grid container spacing={2}>
-                    {/* <Grid item>
-                      <Button
-                        color='primary'
-                        style={{ fontSize: 'small', margin: '20px' }}
-                        size='small'
-                        variant='contained'
-                        onClick={this.PublishBlogNav}
-
-                      >
-                        Published Blogs
-                      </Button>
-                    </Grid> */}
-                    {/* <Grid item>
-                      <Button
-                        style={{ fontSize: 'small', margin: '20px' }}
-                        color='primary'
-                        size='small'
-                        variant='contained'
-                      >
-                        Blog Dashboard
-                      </Button>
-                    </Grid> */}
                   </Grid>
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
@@ -249,6 +226,17 @@ class AdminPublishBlogView extends Component {
                           <Tab label='Section' {...a11yProps(3)} />
 
                         </Tabs>
+                        <li style={{ listStyleType: 'none' }}>
+                          <Typography
+                            align='right'
+                            className={classes.dividerInset}
+                            style={{ font: '#014b7e', fontWeight: 600 }}
+                            display='block'
+                            variant='caption'
+                          >
+                            Number of Blogs {totalBlogs}
+                          </Typography>
+                        </li>
                         <TabPanel value={tabValue} index={0}>
                           <GridListPublish data={data} tabValue={tabValue} />
                         </TabPanel>

@@ -155,6 +155,11 @@ class ContentViewPublish extends Component {
                           <Typography variant='body2' color='textSecondary' component='p'>
                             {data.content}
                           </Typography>
+                          <Typography component='p'  style={{paddingRight: '650px', fontSize:'12px'}}
+>
+                          TotalWords : {data.word_count}
+                          </Typography>
+
                         </CardContent>
                         <CardActions>
                         
