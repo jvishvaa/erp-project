@@ -3,6 +3,8 @@ export default {
   auth: {
     login: '/auth/login/',
   },
+
+  
   academics: {
     subjects: '/erp_user/subject/',
     branches: '/erp_user/branch/',
@@ -148,8 +150,13 @@ export default {
     courseList:'/aol/courses/',
     deleteCourse:'/aol/',
     courseDetails:'/aol/courses/',
+    categoryList:'/aol/tagging-list/',
   },
+attendanceList:{
+  list:'/erp_user/onlineclass_attendeelist/',
+  updateAttendance:'/erp_user/mark_attendance/',
 
+},
     
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',

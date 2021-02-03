@@ -57,6 +57,8 @@ import CourseView from './containers/master-management/course/view-course';
 import ViewCourseCard from './containers/master-management/course/view-course/view-more-card/ViewCourseCard';
 import ViewStore from './containers/master-management/course/view-course/context/ViewStore';
 
+import AttendeeListRemake from './containers/attendance'
+
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -244,6 +246,9 @@ function App() {
                     </Route>
                     <Route exact path='/view-period'>
                       {({ match }) => <ViewCourseCard match={match} />}
+                    </Route>
+                    <Route exact path='/attendance-list-remake'>
+                      {({ match }) => <AttendeeListRemake match={match} />}
                     </Route>
                   </Switch>
                 </ViewStore>
