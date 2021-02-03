@@ -76,6 +76,8 @@ const StyledRating = withStyles({
 })(Rating);
 
 const publishLevelChoice=[ 
+  {label:'Orchids',value:'1'},
+
   { label: 'Branch', value: '2' },
   { label: 'Grade', value: '3' },
   { label: 'Section', value: '4' }

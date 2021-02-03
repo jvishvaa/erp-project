@@ -9,6 +9,8 @@ import CardHeader from '@material-ui/core/CardHeader';
 import Tooltip from '@material-ui/core/Tooltip';
 import { withRouter } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
+import Face from '@material-ui/icons/Face'
+
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import List from '@material-ui/core/List';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -133,10 +135,12 @@ function GridList(props) {
                       variant='body2'
                       align='left'
                       component='p'
-                      style={{ color: 'black' }}
+                      style={{ color: 'white' }}
                     >
                       {data[0] && moment(data[0].created_at).format('MMM DD YYYY')}
+                      
                     </Typography>
+                    
                   }
                 />
            
@@ -148,13 +152,26 @@ function GridList(props) {
                         marginTop: '-35px',
                         // fontSize: 'x-large',
                         fontWeight: 'bold',
-                        color: 'black',
+                        color: 'white',
                       }}
                       color='textSecondary'
                       component='p'
                     >
                       {data[0] && data[0].title}
                     </Typography>
+                    <Typography
+                      style={{
+                        color: 'white',
+                        paddingRight:'360px'
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                   </IconButton>
+                      {data[0] && data[0].author.first_name}
+                    </Typography>
+                   
                   </CardContent>
                 </CardActionArea>
                 <CardActions style={{ float: 'right' }}>
@@ -182,7 +199,6 @@ function GridList(props) {
                     justifyContent: 'space-between',
                     width: '100%',
                     height: '290px',
-                    // display: data.length >= 2 ? '' : 'none',
                     backgroundSize: '360px',
                     backgroundImage: `url(${data[1] && data[1].thumbnail})`,
                   }}
@@ -207,7 +223,7 @@ function GridList(props) {
                         variant='body2'
                         align='left'
                         component='p'
-                        style={{ color: 'black' }}
+                        style={{ color: 'white' }}
                       >
                         {data[1] && moment(data[1].created_at).format('MMM DD YYYY')}
                       </Typography>
@@ -221,20 +237,32 @@ function GridList(props) {
                           marginTop: '-10px',
                           // fontSize: 'x-large',
                           fontWeight: 'bold',
-                          color: 'black',
+                          color: 'white',
                         }}
                         color='textSecondary'
                         component='p'
                       >
                         {data[1] && data[1].title}
                       </Typography>
+                      <Typography
+                      style={{
+                        color: 'white',
+                        paddingRight:'360px'
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                   </IconButton>
+                      {data[1] && data[1].author.first_name}
+                    </Typography>
                     </CardContent>
                   </CardActionArea>
                   <CardActions style={{ float: 'right' }}>
                     <Button
                       size='small'
                       color='primary'
-                      style={{ marginTop: 30, width: 150 }}
+                      style={{ width: 150 }}
                       onClick={() =>
                         props.history.push({
                           pathname: '/blog/student/view-blog',
@@ -248,15 +276,16 @@ function GridList(props) {
               </Grid>
               <Grid item xs={6}>
                 <Card
-                  style={{
-                    // backgroundColor: 'grey',
-                    width: '100%',
-                    height: '290px',
-                    display:data.length >= 2 ? 'flex' : 'none',
-                    justifyContent: 'space-between',
-                    backgroundSize: '360px',
-                    backgroundImage: `url(${data[3] && data[3].thumbnail})`,
-                  }}
+                 style={{
+                  display:data.length >= 2 ? 'flex' : 'none',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  height: '290px',
+                  backgroundSize: '360px',
+                  backgroundImage: `url(${data[2] && data[2].thumbnail})`,
+                }}
+                 
                   className={classes.card}
                 >
                   <CardHeader
@@ -278,7 +307,7 @@ function GridList(props) {
                         variant='body2'
                         align='left'
                         component='p'
-                        style={{ color: 'black' }}
+                        style={{ color: 'white' }}
                       >
                         {data[2] && moment(data[2].created_at).format('MMM DD YYYY')}
                       </Typography>
@@ -292,20 +321,32 @@ function GridList(props) {
                           marginTop: '-15px',
                           // fontSize: 'x-large',
                           fontWeight: 'bold',
-                          color: 'black',
+                          color: 'white',
                         }}
                         color='textSecondary'
                         component='p'
                       >
                         {data[2] && data[2].title}
                       </Typography>
+                      <Typography
+                      style={{
+                        color: 'white',
+                        paddingRight:'360px'
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                   </IconButton>
+                      {data[2] && data[2].author.first_name}
+                    </Typography>
                     </CardContent>
                   </CardActionArea>
                   <CardActions style={{ float: 'right' }}>
                     <Button
                       size='small'
                       color='primary'
-                      style={{ marginTop: 30, width: 150 }}
+                      style={{  width: 150 }}
                       onClick={() =>
                         props.history.push({
                           pathname: '/blog/student/view-blog',
@@ -324,11 +365,11 @@ function GridList(props) {
               <Grid item xs={6}>
                 <Card
                   style={{
-                    width: '100%',
-                    height: '290px',
                     display:data.length >= 3 ? 'flex' : 'none',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
+                    width: '100%',
+                    height: '290px',
                     backgroundSize: '360px',
                     backgroundImage: `url(${data[3] && data[3].thumbnail})`,
                   }}
@@ -353,7 +394,7 @@ function GridList(props) {
                         variant='body2'
                         align='left'
                         component='p'
-                        style={{ color: 'black' }}
+                        style={{ color: 'white' }}
                       >
                         {data[3] && moment(data[3].created_at).format('MMM DD YYYY')}
                       </Typography>
@@ -367,20 +408,32 @@ function GridList(props) {
                           marginTop: '-15px',
                           // fontSize: 'x-large',
                           fontWeight: 'bold',
-                          color: 'black',
+                          color: 'white',
                         }}
                         color='textSecondary'
                         component='p'
                       >
                         {data[3] && data[3].title}
                       </Typography>
+                      <Typography
+                      style={{
+                        color: 'white',
+                        paddingRight:'360px'
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                   </IconButton>
+                      {data[3] && data[3].author.first_name}
+                    </Typography>
                     </CardContent>
                   </CardActionArea>
                   <CardActions style={{ float: 'right' }}>
                     <Button
                       size='small'
                       color='primary'
-                      style={{ marginTop: 50, width: 150 }}
+                      style={{ width: 150 }}
                       onClick={() =>
                         props.history.push({
                           pathname: '/blog/student/view-blog',
@@ -401,8 +454,9 @@ function GridList(props) {
                     display:data.length >= 4 ? 'flex' : 'none',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
-                    backgroundImage: `url(${data[3] && data[3].thumbnail})`,
+                    backgroundImage: `url(${data[4] && data[4].thumbnail})`,
                   }}
+                  
                   className={classes.card}
                 >
                   <CardHeader
@@ -424,7 +478,7 @@ function GridList(props) {
                         variant='body2'
                         align='left'
                         component='p'
-                        style={{ color: 'black' }}
+                        style={{ color: 'white' }}
                       >
                         {data[4] && moment(data[4].created_at).format('MMM DD YYYY')}
                       </Typography>
@@ -438,20 +492,32 @@ function GridList(props) {
                           marginTop: '-15px',
                           // fontSize: 'x-large',
                           fontWeight: 'bold',
-                          color: 'black',
+                          color: 'white',
                         }}
                         color='textSecondary'
                         component='p'
                       >
                         {data[4] && data[4].title}
                       </Typography>
+                      <Typography
+                      style={{
+                        color: 'white',
+                        paddingRight:'360px'
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                   </IconButton>
+                      {data[4] && data[4].author.first_name}
+                    </Typography>
                     </CardContent>
                   </CardActionArea>
                   <CardActions style={{ float: 'right' }}>
                     <Button
                       size='small'
                       color='primary'
-                      style={{ marginTop: 50, width: 150 }}
+                      style={{ width: 150 }}
                       onClick={() =>
                         props.history.push({
                           pathname: '/blog/student/view-blog',
@@ -460,7 +526,6 @@ function GridList(props) {
                     >
                       Read more
                     </Button>
-                    {/* <Route path='/hello' component={ContentView} /> */}
                   </CardActions>
                 </Card>
               </Grid>
@@ -505,12 +570,24 @@ function GridList(props) {
                         marginTop: '-35px',
                         // fontSize: 'x-large',
                         fontWeight: 'bold',
-                        color: 'black',
+                        color: 'white',
                       }}
                       color='textSecondary'
                       component='p'
                     >
                       {data[5] && data[5].title}
+                    </Typography>
+                    <Typography
+                      style={{
+                        color: 'white',
+                        paddingRight:'360px'
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                   </IconButton>
+                      {data[5] && data[5].author.first_name}
                     </Typography>
                   </CardContent>
                 </CardActionArea>
