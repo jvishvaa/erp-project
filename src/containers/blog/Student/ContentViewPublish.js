@@ -74,35 +74,15 @@ const StyledRating = withStyles({
   },
 })(Rating);
 
-const publishLevelChoiceBranch=[ 
-//   { label: 'Branch', value: '2' },
-  { label: 'Grade', value: '3' },
-  { label: 'Section', value: '4' }
-
-  ] 
-  const publishLevelChoiceGrade=[ 
-      { label: 'Branch', value: '2' },
-    //   { label: 'Grade', value: '3' },
-      { label: 'Section', value: '4' }
-    
-      ] 
-      const publishLevelChoiceSection=[ 
-          { label: 'Branch', value: '2' },
-          { label: 'Grade', value: '3' },
-        //   { label: 'Section', value: '4' }
-        
-          ] 
+          
 class ContentViewPublish extends Component {
   constructor(props) {
     super(props);
     this.state = {
       relatedBlog: true,
       starsRating: 0,
-      feedBack: false,
-      isPublish:false,
       data: this.props.location.state.data && this.props.location.state.data,
       tabValue :this.props.location.state.tabValue && this.props.location.state.tabValue,
-      feedbackrevisionReq:'',
       roleDetails: JSON.parse(localStorage.getItem('userDetails')),
 
 
@@ -114,71 +94,10 @@ class ContentViewPublish extends Component {
 
 
 
-  submitRevisionFeedback = () => {
-
-    const {  data, feedbackrevisionReq } = this.state;
-    const formData = new FormData();
-    formData.set('blog_id', data.id);
-    formData.set('status', 5);
-    formData.set('feedback_revision_required', feedbackrevisionReq);
-
-    axios
-      .put(`${endpoints.blog.Blog}`, formData)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          this.props.history.push({
-            pathname: '/blog/teacher',
-          });
-        } else {
-          console.log(result.data.message);
-        }
-      })
-      .catch((error) => {
-      });
-  };
-  handleReivisionNameChange = (e) => {
-    this.setState({feedbackrevisionReq:e.target.value})
-  };
-  submitPublish = () => {
-
-  const {  data, publishedLevel ,roleDetails} = this.state;
-  const formData = new FormData();
-  formData.set('blog_id', data.id);
-  formData.set('status', 4);
-  formData.set('published_level', publishedLevel);
-  if(publishedLevel === '2'){
-    let branchId = roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0]
-    formData.set('branch_id', branchId);
-    
-    }
-    axios
-      .put(`${endpoints.blog.Blog}`, formData)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          this.props.history.push({
-            pathname: '/blog/teacher/publish/view',
-          });
-        } else {
-          console.log(result.data.message);
-        }
-      })
-      .catch((error) => {
-      });
-  };
-  
-  handlePublishLevelType = (event, value) => {
-    if (value && value.value){
-      this.setState({publishedLevel:value.value})
-    }
-    else{
-      this.setState({publishedLevel:''})
-
-    }
-  }
   
   render() {
     const { classes } = this.props;
-    const { tabValue,relatedBlog, starsRating, feedBack ,data,feedbackrevisionReq,isPublish,publishedLevel} = this.state;
+    const { data,feedbackrevisionReq} = this.state;
    
     return (
       <div className='layout-container-div'>
@@ -211,7 +130,7 @@ class ContentViewPublish extends Component {
                             {data.title}
                         </Typography>
                         <CardMedia className={classes.media} image={data.thumbnail} />
-                        <CardContent>  {tabValue  && data.comment ? 
+                        <CardContent> {tabValue  && data.comment ? 
                         <CardContent> <Typography
                         style={{color:'red', fontSize:'12px'}}
                       >Comment:{data.comment}
@@ -239,58 +158,9 @@ class ContentViewPublish extends Component {
                         </CardContent>
                         <CardActions>
                         
-                          {tabValue !== 0 ?
-                        
-                          <Button
-                            size='small'
-                            color='primary'
-                            onClick={() => this.setState({ isPublish: true })}
-                          >
-                            Publish
-                          </Button> :''
-
-                          }
+                       
                         </CardActions>
                       </Card>
-                    </Grid>
-                    <Grid item xs={3}>
-                     {isPublish ? (
-                        <Card style={{ minWidth: 320 }} className={classes.reviewCard}>
-                          <CardContent>
-                          <Autocomplete
-                            style={{ width: '100%' }}
-                            size='small'
-                            onChange={this.handlePublishLevelType}
-                            id='category'
-                            required
-                            options={tabValue === 1 ? publishLevelChoiceBranch : tabValue === 2 ? publishLevelChoiceGrade : publishLevelChoiceSection}
-                            getOptionLabel={(option) => option?.label}
-                            filterSelectedOptions
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                variant='outlined'
-                                label='Publish Level'
-                                placeholder='Publish Level'
-                              />
-                            )}
-                          />
-                            <br />
-                            <CardActions>
-                              <Button
-                                style={{ fontSize: 12 }}
-                                size='small'
-                                color='primary'
-                                disabled={!publishedLevel}
-                                onClick ={this.submitPublish}
-                              >
-                                Publish
-                              </Button>
-                            </CardActions>
-                          </CardContent>
-                        </Card>
-                      )
-                      : ''}
                     </Grid>
                   </Grid>
                 </div>

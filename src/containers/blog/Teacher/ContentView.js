@@ -271,6 +271,22 @@ if (result.data.status_code === 200) {
                             {data.title}
                         </Typography>
                         <CardMedia className={classes.media} image={data.thumbnail} />
+                        {
+                          data.feedback_revision_required ?
+                        <CardContent> <Typography
+                          style={{color:'red', fontSize:'12px'}}
+                        >Revision Feedback:{data.feedback_revision_required}
+                       
+                        </Typography>
+                        <Typography> Revised By:{data && data.feedback_revision_by && data.feedback_revision_by.first_name}</Typography></CardContent> 
+                        :  data.comment ? 
+                        <CardContent> <Typography
+                        style={{color:'red', fontSize:'12px'}}
+                      >Comment:{data.comment}
+                     
+                      </Typography>
+                      <Typography> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
+                      </CardContent>  :''}
                         <CardContent> <Typography
                           style={{color:'red', fontSize:'12px'}}
                         >Revision Feedback:{data.feedback_revision_required}

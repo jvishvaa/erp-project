@@ -1,27 +1,26 @@
+
 /* eslint-disable react/require-default-props */
 /* eslint-disable react/forbid-prop-types */
 /* eslint-disable react/no-unused-state */
 import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
-import { Grid, Button ,Divider } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
-
+import { Grid, Button } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-
-import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
 import { Pagination } from '@material-ui/lab';
 
-// import { connect } from 'react-redux';
+import Box from '@material-ui/core/Box';
 import { withRouter } from 'react-router-dom';
+// import { connect } from 'react-redux';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
 import MobileDatepicker from '../Teacher/datePicker';
-import GridList from './gridList';
+
+// import PendingReview from './PendingReview';
+import GridListPublish from './gridListPublish';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 
@@ -69,30 +68,28 @@ const styles = (theme) => ({
     flexGrow: 1,
   },
 });
-class AdminBlog extends Component {
+class PrincipalPublishBlogView extends Component {
   constructor(props) {
     super(props);
     this.state = {
       tabValue: 0,
       pageNo: 0,
       pageSize: 6,
-      totalPages:0,
       startDate :moment().format('YYYY-MM-DD'),
-      status:[8]
+      status :[4,7]
     };
   }
   componentDidMount() {
-    let status=this.state
+    let status = this.state
     this.getBlog(status);
   }
   getBlog = (status) => {
-    const { pageNo, pageSize,tabValue } = this.state;
-   
+    const { pageNo, pageSize ,tabValue} = this.state;
     axios
       .get(
         `${endpoints.blog.Blog}?page_number=${
           pageNo + 1
-        }&page_size=${pageSize}&status=${status}module_id=114`
+        }&page_size=${pageSize}&status=${status}&module_id=113&published_level=${tabValue+1}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -108,12 +105,6 @@ class AdminBlog extends Component {
     return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
   };
   
-  PublishBlogNav = () => {
-    this.props.history.push({
-      pathname: '/blog/admin/publish/view',
-      state: { gradeId: 'hello' },
-    });
-  };
   getDaysBefore = (date, amount) => {
     return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
   };
@@ -131,41 +122,24 @@ class AdminBlog extends Component {
   };
 
   handleTabChange = (event, newValue) => {
-    this.setState({ tabValue: newValue ,data:[], pageNo:0, pageSize:6});
-    if(newValue === 0){
-      this.setState({tabValue: newValue ,data:[], pageNo:0, pageSize:6,status: 8 }, ()=>{
-        this.getBlog(this.state.status);
+    let status =this.state
+    this.setState({ tabValue: newValue ,data:[]},()=>{
+      this.getBlog(status);
 
-      })
-    }
-    else{
-      this.setState({tabValue: newValue ,data:[], pageNo:0, pageSize:6,status: [3,5,7] }, ()=>{
-        this.getBlog(this.state.status);
-
-      })
-    }
+    });
   };
   handlePagination = (event, page) => {
-    let {tabValue} = this.state
-    if (tabValue === 0){
-      this.setState({data:[], pageNo:page, pageSize:6,status: [8]
-       }, ()=>{
-        this.getBlog(this.state.status);
-
-      })
-    }else{
-      this.setState({data:[], pageNo:page, pageSize:6,status: [3,5,7] }, ()=>{
-        this.getBlog(this.state.status);
-
-      })
-
-    }
+    let {tabValue,status} = this.state
+    console.log(page,"@@@@@@@@@@@@@",tabValue)
+    this.setState({pageNo:page},()=>{
+      this.getBlog(status)
+    })
 };
 
 
   render() {
     const { classes } = this.props;
-    const { tabValue ,data,pageNo,pageSize,totalBlogs} = this.state;
+    const { tabValue ,data,pageSize,pageNo,totalBlogs} = this.state;
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -205,7 +179,7 @@ class AdminBlog extends Component {
                 </Grid>
                 <div style={{ margin: '20px' }}>
                   <Grid container>
-                    <Grid item>
+                    {/* <Grid item>
                       <Button
                         color='primary'
                         style={{ fontSize: 'small', margin: '20px' }}
@@ -214,7 +188,7 @@ class AdminBlog extends Component {
                       >
                         Clear All
                       </Button>
-                    </Grid>
+                    </Grid> */}
                     <Grid item>
                       <Button
                         style={{ fontSize: 'small', margin: '20px' }}
@@ -225,9 +199,18 @@ class AdminBlog extends Component {
                         Filter
                       </Button>
                     </Grid>
+                    <Grid item xs={6}>
+                    <Pagination
+                    onChange={this.handlePagination}
+                    style={{ paddingLeft:'390px' }}
+                    count={Math.ceil(totalBlogs / pageSize)}
+                    color='primary'
+                    page={pageNo}
+                            />
+            </Grid>
                   </Grid>
                   <Grid container spacing={2}>
-                    <Grid item>
+                    {/* <Grid item>
                       <Button
                         color='primary'
                         style={{ fontSize: 'small', margin: '20px' }}
@@ -238,7 +221,7 @@ class AdminBlog extends Component {
                       >
                         Published Blogs
                       </Button>
-                    </Grid>
+                    </Grid> */}
                     {/* <Grid item>
                       <Button
                         style={{ fontSize: 'small', margin: '20px' }}
@@ -260,36 +243,25 @@ class AdminBlog extends Component {
                           onChange={this.handleTabChange}
                           aria-label='simple tabs example'
                         >
-                          <Tab label='Pending Review' {...a11yProps(0)} />
-                          <Tab label='Reviewed' {...a11yProps(1)} />
-                        </Tabs> <Divider variant='middle' />
-                        <li style={{ listStyleType: 'none' }}>
-                          <Typography
-                            align='right'
-                            className={classes.dividerInset}
-                            style={{ font: '#014b7e', fontWeight: 600 }}
-                            display='block'
-                            variant='caption'
-                          >
-                            Number of Blogs {totalBlogs}
-                          </Typography>
-                        </li>
+                          <Tab label='Orchids' {...a11yProps(0)} />
+                          <Tab label='Branch' {...a11yProps(1)} />
+                          <Tab label='Grade' {...a11yProps(2)} />
+                          <Tab label='Section' {...a11yProps(3)} />
+
+                        </Tabs>
                         <TabPanel value={tabValue} index={0}>
-                          <GridList data={data} tabValue={tabValue}/>
+                          <GridListPublish data={data} tabValue={tabValue} />
                         </TabPanel>
-                        <TabPanel value={tabValue}  tabValue={tabValue} index={1}>
-                        <GridList data={data} />
+                        <TabPanel value={tabValue} index={1}>
+                        <GridListPublish data={data} tabValue={tabValue} />
+                        </TabPanel>
+                        <TabPanel value={tabValue} index={2}>
+                          <GridListPublish data={data} tabValue={tabValue}/>
+                        </TabPanel>
+                        <TabPanel value={tabValue} index={3}>
+                          <GridListPublish data={data} tabValue={tabValue}/>
                         </TabPanel>
                       </div>
-                    </Grid>
-                    <Grid item xs={12}>
-                    <Pagination
-                    onChange={this.handlePagination}
-                    style={{ paddingLeft:'390px' }}
-                    count={Math.ceil(totalBlogs / pageSize)}
-                    color='primary'
-                    page={pageNo}
-                            />
                     </Grid>
                   </Grid>
                 </div>
@@ -301,4 +273,4 @@ class AdminBlog extends Component {
     );
   }
 }
-export default withRouter(withStyles(styles)(AdminBlog));
+export default withRouter(withStyles(styles)(PrincipalPublishBlogView));

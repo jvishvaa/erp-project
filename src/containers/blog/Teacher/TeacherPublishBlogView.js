@@ -76,10 +76,12 @@ class TeacherPublishBlogView extends Component {
       pageNo: 0,
       pageSize: 6,
       startDate :moment().format('YYYY-MM-DD'),
+      status :[4,7]
     };
   }
   componentDidMount() {
-    this.getBlog(4);
+    let status=this.state
+    this.getBlog(status);
   }
   getBlog = (status) => {
     const { pageNo, pageSize ,tabValue} = this.state;
@@ -120,16 +122,17 @@ class TeacherPublishBlogView extends Component {
   };
 
   handleTabChange = (event, newValue) => {
+    let status =this.state
     this.setState({ tabValue: newValue ,data:[]},()=>{
-      this.getBlog(4);
+      this.getBlog(status);
 
     });
   };
   handlePagination = (event, page) => {
-    let {tabValue} = this.state
+    let {tabValue,status} = this.state
     console.log(page,"@@@@@@@@@@@@@",tabValue)
     this.setState({pageNo:page},()=>{
-      this.getBlog(4)
+      this.getBlog(status)
     })
 };
 

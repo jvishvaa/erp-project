@@ -224,10 +224,14 @@ class ContentViewPublish extends Component {
                             {data.title}
                         </Typography>
                         <CardMedia className={classes.media} image={data.thumbnail} />
+                        <CardContent>  {tabValue  && data.comment ? 
                         <CardContent> <Typography
-                          style={{color:'red', fontSize:'12px'}}
-                        >Revision Feedback:{data.feedback_revision_required}
-                        </Typography></CardContent>
+                        style={{color:'red', fontSize:'12px'}}
+                      >Comment:{data.comment}
+                     
+                      </Typography>
+                      <Typography> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
+                      </CardContent>  :''}</CardContent>
                         <CardHeader
                           className={classes.author}
                           avatar={
