@@ -2,7 +2,7 @@
 import React from 'react';
 import moment from 'moment';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
-import { Grid, Card, Button, Typography, Divider } from '@material-ui/core';
+import { Grid, Card, Button, Typography, Divider,SvgIcon } from '@material-ui/core';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -14,6 +14,9 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import List from '@material-ui/core/List';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
+
+import unfiltered from '../../../assets/images/unfiltered.svg'
+import selectfilter from '../../../assets/images/selectfilter.svg';
 const LightTooltip = withStyles((theme) => ({
   tooltip: {
     backgroundColor: theme.palette.common.white,
@@ -384,9 +387,30 @@ function GridListPublish(props) {
           </Grid>
         </Grid>
       </Grid>
-       ) : (
-        <Typography align='center'>Oops... No blogs Posted</Typography>
-            )}
+       ) : 
+      //  (
+      //   <Typography align='center'>Oops... No blogs Posted</Typography>
+      //       )
+            (
+              <div className="periodDataUnavailable">
+                  <SvgIcon
+                      component={() => (
+                          <img
+                              // style={isMobile ? { height: '100px', width: '200px' } : { height: '160px', width: '290px' }}
+                              src={unfiltered}
+                          />
+                      )}
+                  />
+                  {/* <SvgIcon
+                      component={() => (
+                          <img
+                              // style={isMobile ? { height: '20px', width: '250px' } : { height: '50px', width: '400px', marginLeft: '5%' }}
+                              src={selectfilter}
+                          />
+                      )}
+                  /> */}
+              </div>
+          )}
     </div>
   );
 }

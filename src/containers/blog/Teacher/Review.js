@@ -14,7 +14,6 @@ class Review extends Component {
       ratingParameters: [],
       overallRemark: '',
 
-      personalInfo: JSON.parse(localStorage.getItem('user_profile')).personal_info
     }
   }
 
@@ -92,8 +91,7 @@ class Review extends Component {
 
   handleSubmit = () => {
     const { blogId } = this.props
-    const { overallRemark, ratingParameters, personalInfo } = this.state
-    console.log(overallRemark,ratingParameters,"@@@@@@@@@@@@@")
+    const { overallRemark, ratingParameters } = this.state
     const formData = new FormData()
     formData.append('blog_id', blogId)
     formData.append('status', 3)
@@ -118,7 +116,7 @@ class Review extends Component {
   }
 
   render () {
-    const { ratingParameters, overallRemark, personalInfo } = this.state
+    const { ratingParameters, overallRemark} = this.state
     return (
       <React.Fragment>
         <Grid container spacing={2}>
