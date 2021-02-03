@@ -286,25 +286,22 @@ if (result.data.status_code === 200) {
                        
                         <CardMedia className={classes.media} image={data.thumbnail} />
                         {
-                          data.feedback_revision_required ?
+                          data && data.feedback_revision_required ?
                         <CardContent> <Typography
-                          style={{color:'red', fontSize:'12px'}}
+                          style={{color:'#ff6b6b', fontSize:'12px'}}
                         >Revision Feedback:{data.feedback_revision_required}
                        
                         </Typography>
                         <Typography style={{fontSize:'12px'}}> Revised By:{data && data.feedback_revision_by && data.feedback_revision_by.first_name}</Typography></CardContent> 
-                        :  data.comment ? 
+                        :'' } {data.comment ? 
                         <CardContent> <Typography
-                        style={{color:'red', fontSize:'12px'}}
+                        style={{color:'#ff6b6b', fontSize:'12px'}}
                       >Comment:{data.comment}
                      
                       </Typography>
                       <Typography> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
                       </CardContent>  :''}
-                        <CardContent> <Typography
-                          style={{color:'red', fontSize:'12px'}}
-                        >Revision Feedback:{data.feedback_revision_required}
-                        </Typography></CardContent>
+                       
                         <CardHeader
                           className={classes.author}
                           title={data.author.first_name}
@@ -327,15 +324,15 @@ if (result.data.status_code === 200) {
                            {loginUserName !== name ? <Button
                               style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' ,color:'red' ,backgroundColor:'white'}}
                               onClick={()=>this.handleLike(isLiked,data.id)}
-                            > {isLiked || likeStatus ? <Favorite style={{ color: 'red' }} />
-                                : <FavoriteBorder style={{ color: 'red' }} />} {currentLikes === 0 ? likes
+                            > {isLiked || likeStatus ? <Favorite style={{ color: '#ff6b6b' }} />
+                                : <FavoriteBorder style={{ color: '#ff6b6b' }} />} {currentLikes === 0 ? likes
                                 : currentLikes
                               }Likes
                             </Button> : ''} &nbsp;&nbsp;&nbsp;
                             <Button
                               style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' ,color:'red' ,backgroundColor:'white'}}
 
-                            >   <Visibility style={{ color: 'red' }} />{data.views}Views
+                            >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
                             </Button>
                           {tabValue === 0 ? 
                           <Button

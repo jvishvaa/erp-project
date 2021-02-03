@@ -33,6 +33,7 @@ import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import IconButton from '@material-ui/core/IconButton';
+import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
 
 const styles = (theme) => ({
   root: {
@@ -89,9 +90,71 @@ class BlogView extends Component {
       feedBack: false,
       commentOpen: false,
       data: this.props.location.state.data && this.props.location.state.data,
-      tabValue:this.props.location.state.tabValue && this.props.location.state.tabValue
+      tabValue:this.props.location.state.tabValue && this.props.location.state.tabValue,
+      blogId: this.props.location.state.data && this.props.location.state.data.id,
+      likeStatus:false,
+      currentLikes: 0,
+      loading:false,
+      likes: this.props.location.state.data && this.props.location.state.data.likes,
+      loginUserName : JSON.parse(localStorage.getItem('userDetails')).first_name,
+      roleDetails: JSON.parse(localStorage.getItem('userDetails')),
+
     };
   }
+  componentDidMount() {
+    let {blogId} = this.state
+    this.handleView(blogId)
+  }
+  getLikeStatus = (isLiked) => {
+    let { likeStatus,likes }=this.state
+    if (isLiked === true && likeStatus === false) {
+      this.setState({currentLikes :likes-1,likeStatus:true})
+    } else if (isLiked === true && likeStatus === true) {
+      this.setState({currentLikes :likes+1,likeStatus:false})
+  
+    } else if (isLiked === false && likeStatus === false) {
+      this.setState({currentLikes :likes+1,likeStatus:true})
+  
+    } else if (isLiked === false && likeStatus === true) {
+      this.setState({currentLikes :likes,likeStatus:false})
+  
+    }
+  }
+  handleLike = (isLiked,blogId) => {
+    this.getLikeStatus(isLiked)
+    let requestData = {
+      "blog_id": blogId ,
+  
+    }
+  axios.post(`${endpoints.blog.BlogLike}`, requestData)
+  
+  .then(result=>{
+  if (result.data.status_code === 200) {
+    this.setState({loading:false})
+    // setAlert('success', result.data.message);
+  } else {        
+    this.setState({loading:false})
+    // setAlert('error', result.data.message);
+  }
+  }).catch((error)=>{
+    this.setState({loading:false})
+    // setAlert('error', error.message);
+  })
+    }
+
+  handleView = (blogId) => {
+    let requestData = {
+      "blog_id": blogId ,
+    }
+  axios.post(`${endpoints.blog.BlogView}`, requestData)
+  .then(result=>{
+  if (result.data.status_code === 200) {
+  } else {        
+  }
+  }).catch((error)=>{
+  })
+}
+
 
   
   handleCommentChange = (event) => {
@@ -163,7 +226,13 @@ class BlogView extends Component {
   render() {
     const { classes } = this.props;
 
-    const { relatedBlog, starsRating, feedBack, commentOpen, data,tabValue } = this.state;
+    const {roleDetails,likes,currentLikes,likeStatus,loginUserName, relatedBlog, starsRating, feedBack, commentOpen, data,tabValue } = this.state;
+    const blogFkLike= data && data.blog_fk_like
+    const likedUserIds=blogFkLike.map(blog => blog.user)
+    const indexOfLoginUser=likedUserIds.indexOf(roleDetails.user_id)
+    const loginUser=likedUserIds.includes(roleDetails.user_id)
+    const isLiked = loginUser ? blogFkLike[indexOfLoginUser].is_liked : false
+    const name =data && data.author && data.author.first_name
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -241,6 +310,19 @@ class BlogView extends Component {
 
                         </CardContent>
                         <CardActions>
+                        {loginUserName !== name ? <Button
+                              style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' ,color:'red' ,backgroundColor:'white'}}
+                              onClick={()=>this.handleLike(isLiked,data.id)}
+                            > {isLiked || likeStatus ? <Favorite style={{ color: '#ff6b6b' }} />
+                                : <FavoriteBorder style={{ color: '#ff6b6b' }} />} {currentLikes === 0 ? likes
+                                : currentLikes
+                              }Likes
+                            </Button> : ''} &nbsp;&nbsp;&nbsp;
+                            <Button
+                              style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' ,color:'red' ,backgroundColor:'white'}}
+
+                            >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
+                            </Button>
                           {tabValue !== 1 ?
                           <Button
                             style={{ width: 150 }}
