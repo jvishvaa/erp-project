@@ -66,12 +66,11 @@ function GridList(props) {
               />
 
               <CardActionArea>
-                <CardContent>
+                <CardContent style ={{ padding:'5px'}}>
                   <Typography
                     // variant='body2'
                     style={{
                       marginTop: '-35px',
-                      // fontSize: 'x-large',
                       fontWeight: 'bold',
                       color: 'white',
                     }}
@@ -133,7 +132,7 @@ function GridList(props) {
                   }
                 />
                 <CardActionArea>
-                  <CardContent>
+                <CardContent style ={{ padding:'5px'}}>
                     <Typography
                       // variant='body2'
                       style={{
@@ -204,7 +203,7 @@ function GridList(props) {
                   }
                 />
                 <CardActionArea>
-                  <CardContent>
+                   <CardContent style ={{ padding:'5px'}}>
                     <Typography
                       // variant='body2'
                       style={{
@@ -274,7 +273,7 @@ function GridList(props) {
                   }
                 />
                 <CardActionArea>
-                  <CardContent>
+                   <CardContent style ={{ padding:'5px'}}>
                     <Typography
                       // variant='body2'
                       style={{
@@ -341,7 +340,7 @@ function GridList(props) {
                   }
                 />
                 <CardActionArea>
-                  <CardContent>
+                   <CardContent style ={{ padding:'5px'}}>
                     <Typography
                       // variant='body2'
                       style={{
@@ -409,7 +408,7 @@ function GridList(props) {
                 }
               />
               <CardActionArea>
-                <CardContent>
+                 <CardContent style ={{ padding:'5px'}}>
                   <Typography
                     // variant='body2'
                     style={{
