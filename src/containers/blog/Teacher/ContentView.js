@@ -271,16 +271,16 @@ if (result.data.status_code === 200) {
                             {data.title}
                         </Typography>
                         <CardMedia className={classes.media} image={data.thumbnail} />
-
+                        <CardContent> <Typography
+                          style={{color:'red', fontSize:'12px'}}
+                        >Revision Feedback:{data.feedback_revision_required}
+                        </Typography></CardContent>
                         <CardHeader
                           className={classes.author}
                           avatar={
-                            // <Avatar aria-label='recipe' className={classes.avatar}>
-                            //   R
-                            // </Avatar>
                             <div>
                             {loginUserName !== name ? <Button
-                              style={{ color:'white',fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' }}
+                              style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' }}
                               onClick={()=>this.handleLike(isLiked,data.id)}
                             > {isLiked || likeStatus ? <Favorite style={{ color: 'red' }} />
                                 : <FavoriteBorder style={{ color: 'red' }} />} {currentLikes === 0 ? likes
@@ -291,11 +291,6 @@ if (result.data.status_code === 200) {
             
                             
                           }
-                          //   action={
-                          //     <IconButton aria-label='settings'>
-                          //       <MoreVertIcon />
-                          //     </IconButton>
-                          //   }
                           title={data.author.first_name}
                           subheader=
                           {data && moment(data.created_at).format('MMM DD YYYY')}

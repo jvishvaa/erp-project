@@ -224,7 +224,10 @@ class ContentViewPublish extends Component {
                             {data.title}
                         </Typography>
                         <CardMedia className={classes.media} image={data.thumbnail} />
-
+                        <CardContent> <Typography
+                          style={{color:'red', fontSize:'12px'}}
+                        >Revision Feedback:{data.feedback_revision_required}
+                        </Typography></CardContent>
                         <CardHeader
                           className={classes.author}
                           avatar={
