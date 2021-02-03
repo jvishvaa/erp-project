@@ -79,7 +79,6 @@ function GridList(props) {
   if (result.data.status_code === 200) {
     setLoading(false);
     setAlert('success', result.data.message);
-    props.getBlogs([8,5])
   } else {        
     setLoading(false);
     setAlert('error', result.data.message);

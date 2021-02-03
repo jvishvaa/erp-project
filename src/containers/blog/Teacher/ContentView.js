@@ -226,6 +226,7 @@ class ContentView extends Component {
                             <Avatar aria-label='recipe' className={classes.avatar}>
                               R
                             </Avatar>
+                            
                           }
                           //   action={
                           //     <IconButton aria-label='settings'>

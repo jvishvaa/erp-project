@@ -345,7 +345,7 @@ class StudentDashboard extends Component {
                         {data && <GridList data={data} tabValue={tabValue}  />}
                         </TabPanel>
                         <TabPanel value={tabValue} index={2}>
-                          {data && <GridList data={data} tabValue={tabValue} getBlog={this.getBlog([8,5])} />}
+                          {data && <GridList data={data} tabValue={tabValue}  />}
                         </TabPanel>
                         <TabPanel value={tabValue} index={3}>
                           {data && <GridList data={data} tabValue={tabValue} />}
