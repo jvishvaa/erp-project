@@ -15,7 +15,7 @@ export default {
   },
   userManagement: {
     bulkUpload: '/erp_user/uploaded-users-status/',
-    academicYear: '/erp_user/list-academic_year/'
+    academicYear: '/erp_user/list-academic_year/',
   },
   communication: {
     roles: '/erp_user/roles/',
@@ -146,6 +146,18 @@ export default {
     dairyList:'/academic/general-dairy-messages/',
 
   },
+  onlineCourses:{
+    createCourse:'/aol/courses/',
+    fileUpload:'/aol/file-upload/',
+    courseList:'/aol/courses/',
+    deleteCourse:'/aol/',
+    courseDetails:'/aol/courses/',
+  },
+  blog: {
+    genreList: '/academic/genre/',
+    Blog: '/academic/blog/',
+  },
+
     
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
