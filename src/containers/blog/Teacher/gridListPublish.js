@@ -10,6 +10,8 @@ import CardHeader from '@material-ui/core/CardHeader';
 import Tooltip from '@material-ui/core/Tooltip';
 import { withRouter } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
+import Face from '@material-ui/icons/Face'
+
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import List from '@material-ui/core/List';
 import ListItemText from '@material-ui/core/ListItemText';
