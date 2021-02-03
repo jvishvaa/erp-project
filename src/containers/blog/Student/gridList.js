@@ -112,8 +112,6 @@ function GridList(props) {
                   display:data.length >= 0 ? 'flex' : 'none',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  // backgroundb: data[0] &&  data[0].feedback_revision_required ? 'red' :''
-  
                 }}
               >
                 <CardHeader
@@ -187,7 +185,6 @@ function GridList(props) {
                     justifyContent: 'space-between',
                     width: '100%',
                     height: '290px',
-                    // display: data.length >= 2 ? '' : 'none',
                     backgroundSize: '360px',
                     backgroundImage: `url(${data[1] && data[1].thumbnail})`,
                   }}
@@ -239,7 +236,7 @@ function GridList(props) {
                     <Button
                       size='small'
                       color='primary'
-                      style={{ marginTop: 30, width: 150 }}
+                      style={{ width: 150 }}
                       onClick={() =>
                         props.history.push({
                           pathname: '/blog/student/view-blog',
@@ -253,15 +250,16 @@ function GridList(props) {
               </Grid>
               <Grid item xs={6}>
                 <Card
-                  style={{
-                    // backgroundColor: 'grey',
-                    width: '100%',
-                    height: '290px',
-                    display:data.length >= 2 ? 'flex' : 'none',
-                    justifyContent: 'space-between',
-                    backgroundSize: '360px',
-                    backgroundImage: `url(${data[3] && data[3].thumbnail})`,
-                  }}
+                 style={{
+                  display:data.length >= 2 ? 'flex' : 'none',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  height: '290px',
+                  backgroundSize: '360px',
+                  backgroundImage: `url(${data[2] && data[2].thumbnail})`,
+                }}
+                 
                   className={classes.card}
                 >
                   <CardHeader
@@ -310,7 +308,7 @@ function GridList(props) {
                     <Button
                       size='small'
                       color='primary'
-                      style={{ marginTop: 30, width: 150 }}
+                      style={{  width: 150 }}
                       onClick={() =>
                         props.history.push({
                           pathname: '/blog/student/view-blog',
@@ -329,11 +327,11 @@ function GridList(props) {
               <Grid item xs={6}>
                 <Card
                   style={{
-                    width: '100%',
-                    height: '290px',
                     display:data.length >= 3 ? 'flex' : 'none',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
+                    width: '100%',
+                    height: '290px',
                     backgroundSize: '360px',
                     backgroundImage: `url(${data[3] && data[3].thumbnail})`,
                   }}
@@ -385,7 +383,7 @@ function GridList(props) {
                     <Button
                       size='small'
                       color='primary'
-                      style={{ marginTop: 50, width: 150 }}
+                      style={{ width: 150 }}
                       onClick={() =>
                         props.history.push({
                           pathname: '/blog/student/view-blog',
@@ -406,8 +404,9 @@ function GridList(props) {
                     display:data.length >= 4 ? 'flex' : 'none',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
-                    backgroundImage: `url(${data[3] && data[3].thumbnail})`,
+                    backgroundImage: `url(${data[4] && data[4].thumbnail})`,
                   }}
+                  
                   className={classes.card}
                 >
                   <CardHeader
@@ -456,7 +455,7 @@ function GridList(props) {
                     <Button
                       size='small'
                       color='primary'
-                      style={{ marginTop: 50, width: 150 }}
+                      style={{ width: 150 }}
                       onClick={() =>
                         props.history.push({
                           pathname: '/blog/student/view-blog',
@@ -465,7 +464,6 @@ function GridList(props) {
                     >
                       Read more
                     </Button>
-                    {/* <Route path='/hello' component={ContentView} /> */}
                   </CardActions>
                 </Card>
               </Grid>
