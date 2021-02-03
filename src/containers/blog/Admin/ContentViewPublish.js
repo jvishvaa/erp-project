@@ -75,23 +75,36 @@ const StyledRating = withStyles({
 })(Rating);
 
 const publishLevelChoiceBranch=[ 
+  {label:'Orchids',value:'1'},
+
 //   { label: 'Branch', value: '2' },
   { label: 'Grade', value: '3' },
   { label: 'Section', value: '4' }
 
   ] 
   const publishLevelChoiceGrade=[ 
+    {label:'Orchids',value:'1'},
+
       { label: 'Branch', value: '2' },
     //   { label: 'Grade', value: '3' },
       { label: 'Section', value: '4' }
     
       ] 
       const publishLevelChoiceSection=[ 
+        {label:'Orchids',value:'1'},
+
           { label: 'Branch', value: '2' },
           { label: 'Grade', value: '3' },
         //   { label: 'Section', value: '4' }
         
           ] 
+          const publishLevelChoiceOrchids=[ 
+            // {label:'Orchids',value:'1'},
+            { label: 'Branch', value: '2' },
+            { label: 'Grade', value: '3' },
+          //   { label: 'Section', value: '4' }
+          
+            ] 
 class ContentViewPublish extends Component {
   constructor(props) {
     super(props);
@@ -256,7 +269,7 @@ class ContentViewPublish extends Component {
                             onChange={this.handlePublishLevelType}
                             id='category'
                             required
-                            options={tabValue === 1 ? publishLevelChoiceBranch : tabValue === 2 ? publishLevelChoiceGrade : publishLevelChoiceSection}
+                            options={tabValue === 1 ? publishLevelChoiceBranch : tabValue === 2 ? publishLevelChoiceGrade : tabValue ===3 ? publishLevelChoiceSection:publishLevelChoiceOrchids}
                             getOptionLabel={(option) => option?.label}
                             filterSelectedOptions
                             renderInput={(params) => (
