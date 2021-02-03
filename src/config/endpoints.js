@@ -8,6 +8,7 @@ export default {
     branches: '/erp_user/branch/',
     grades: '/erp_user/grademapping/',
     sections: '/erp_user/sectionmapping/',
+    courses: '/aol/courses/',
   },
   profile: {
     userDetails: '/erp_user/user-data/',
@@ -37,7 +38,9 @@ export default {
   onlineClass: {
     filterStudent: '/erp_user/student_filter/',
     teacherAvailability: '/erp_user/tutor_availability_check/',
-    createClass: '/erp_user/online_class/',
+    // createClass: '/erp_user/online_class/',
+    createClass: '/erp_user/online-recurring/',
+    createSpecialClass: '/erp_user/online-erp-class/',
     studentOnlineclasses: '/erp_user/student_online_class/',
     acceptOrJoinClass: '/erp_user/onlineclass_accept_join/',
     managementOnlineClass: '/erp_user/teacher_online_class/',
@@ -47,6 +50,7 @@ export default {
     resourceLink: '/erp_user/resource_link/',
     resourceFile: '/erp_user/resource_files/',
     feedback: '/erp_user/onlineclass_attendancecheck/',
+    updateTutor: '/erp_user/update_tutor_email',
   },
   masterManagement: {
     subjects: '/erp_user/subjects-list/',
