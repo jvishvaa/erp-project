@@ -100,7 +100,7 @@ const ClassUpdate = (props) => {
       };
       listTutorEmails(data);
     } else {
-      setAlert('error', 'No grade ids found to the class.');
+      setAlert('error', 'No grade ids found for the online class to fetch tutors.');
     }
   };
   const handleTutorEmail = (event, valueObj) => {
