@@ -426,12 +426,29 @@ const Layout = ({ children, history }) => {
         history.push('/lesson-plan/report');
         break;
       }
-      case 'Graphical Report': {
+      case 'Graphical Report ': {
         history.push('/lesson-plan/graph-report');
         break;
       }
       case 'discussion-forum': {
         history.push('/discussion-forum');
+        break;
+      }
+
+      case 'Student Blogs': {
+        history.push('/blog/student/dashboard');
+        break;
+      }
+      case 'Teacher Blogs': {
+        history.push('/blog/teacher');
+        break;
+      }
+      case 'Management Blogs': {
+        history.push('/blog/admin');
+        break;
+      }
+      case 'Principal Blogs': {
+        history.push('/blog/principal');
         break;
       }
       default:
