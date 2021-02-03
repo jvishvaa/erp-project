@@ -165,14 +165,22 @@ class BlogView extends Component {
                         >
                           {data.title}
                         </Typography>
+                       
                         <CardMedia className={classes.media} image={data.thumbnail} />
+                        <CardContent> <Typography
+                          style={{color:'red', fontSize:'12px'}}
+                        >Revision Feedback:{data.feedback_revision_required}
+                        </Typography></CardContent>
                         <CardHeader
                           className={classes.author}
-                          avatar={
-                            <Avatar aria-label='recipe' className={classes.avatar}>
-                              {data.author.first_name.charAt(0)}
-                            </Avatar>
-                          }
+                        //   avatar={
+                            
+                        //        <Typography
+                        //   style={{ color:'red',fontSize:'12px'}}
+                        // >Revision Feedback:
+                        //   {data.feedback_revision_required}
+                        // </Typography>
+                        //   }
                           //   action={
                           //     <IconButton aria-label='settings'>
                           //       <MoreVertIcon />
