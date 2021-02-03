@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { Component } from 'react';
-import withStyles from '@material-ui/core/styles/withStyles';
+import { withStyles, useTheme } from '@material-ui/core/styles';
 // import { connect } from 'react-redux';
 import {
   Grid,
@@ -31,6 +31,8 @@ import Layout from '../../Layout';
 import SideBar from './sideBar';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
+import IconButton from '@material-ui/core/IconButton';
 
 const styles = (theme) => ({
   root: {
@@ -77,6 +79,7 @@ const StyledRating = withStyles({
     color: '#ff3d47',
   },
 })(Rating);
+
 class BlogView extends Component {
   constructor(props) {
     super(props);
@@ -130,10 +133,36 @@ class BlogView extends Component {
       state: { content, title, thumbnail,genreId,genreName },
     });
   };
+  handleDeleteBlog = (blogId) => {
+
+    let requestData = {
+      "blog_id": blogId ,
+      "status": "1"
+  
+    }
+  axios.put(`${endpoints.blog.Blog}`, requestData)
+
+  .then(result=>{
+  if (result.data.status_code === 200) {
+    this.props.history.push({
+      pathname: '/blog/student/dashboard',
+    });
+    // setLoading(false);
+    // setAlert('success', result.data.message);
+  } else {        
+    // setLoading(false);
+    // setAlert('error', result.data.message);
+  }
+  }).catch((error)=>{
+    // setLoading(false);        
+    // setAlert('error', error.message);
+  })
+};
 
 
   render() {
     const { classes } = this.props;
+
     const { relatedBlog, starsRating, feedBack, commentOpen, data,tabValue } = this.state;
     return (
       <div className='layout-container-div'>
@@ -164,13 +193,37 @@ class BlogView extends Component {
                           style={{ marginBottom: 10 }}
                         >
                           {data.title}
+                          {
+                  tabValue === 2 ?
+<IconButton
+                  title='Delete'
+                  onClick={()=>this.handleDeleteBlog(data && data.id)}
+                >
+                  <DeleteOutlinedIcon
+                    style={{ color: '#ff6b6b' }}
+                  />
+                </IconButton>
+      : '' 
+              }
                         </Typography>
                        
                         <CardMedia className={classes.media} image={data.thumbnail} />
+                        {
+                          tabValue === 0 ?
                         <CardContent> <Typography
                           style={{color:'red', fontSize:'12px'}}
                         >Revision Feedback:{data.feedback_revision_required}
-                        </Typography></CardContent>
+                       
+                        </Typography>
+                        <Typography> Revised By:{data && data.feedback_revision_by && data.feedback_revision_by.first_name}</Typography></CardContent> 
+                        : tabValue !==0 && data.comment ? 
+                        <CardContent> <Typography
+                        style={{color:'red', fontSize:'12px'}}
+                      >Comment:{data.comment}
+                     
+                      </Typography>
+                      <Typography> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
+                      </CardContent>  :''}
                         <CardHeader
                           className={classes.author}
                         //   avatar={

@@ -34,15 +34,10 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: -30,
   },
   card: {
-    // backgroundColor: 'red',
-    // padding: theme.spacing(2),
     textAlign: 'center',
     margin: theme.spacing(1),
     backgroundPosition: 'center',
     backgroundSize: 'auto',
-    // backgroundColor: 'grey',
-    // backgroundImage: `url(${'https://robbreport.com/wp-content/uploads/2016/09/lamborghini_huracan_slideshow_lead.jpg?w=772'})`,
-    // color: theme.palette.text.secondary,
   },
 }));
 
@@ -66,28 +61,28 @@ function GridList(props) {
     setShowMenu(false);
     setShowPeriodIndex();
   };
-  const handleDeleteBlog = (blogId) => {
+//   const handleDeleteBlog = (blogId) => {
 
-    let requestData = {
-      "blog_id": blogId ,
-      "status": "1"
+//     let requestData = {
+//       "blog_id": blogId ,
+//       "status": "1"
   
-    }
-  axiosInstance.put(`${endpoints.blog.Blog}`, requestData)
+//     }
+//   axiosInstance.put(`${endpoints.blog.Blog}`, requestData)
 
-  .then(result=>{
-  if (result.data.status_code === 200) {
-    setLoading(false);
-    setAlert('success', result.data.message);
-  } else {        
-    setLoading(false);
-    setAlert('error', result.data.message);
-  }
-  }).catch((error)=>{
-    setLoading(false);        
-    setAlert('error', error.message);
-  })
-};
+//   .then(result=>{
+//   if (result.data.status_code === 200) {
+//     setLoading(false);
+//     setAlert('success', result.data.message);
+//   } else {        
+//     setLoading(false);
+//     setAlert('error', result.data.message);
+//   }
+//   }).catch((error)=>{
+//     setLoading(false);        
+//     setAlert('error', error.message);
+//   })
+// };
 
 
   return (
@@ -109,18 +104,18 @@ function GridList(props) {
                 }}
               >
                 <CardHeader
-                action=       {
-                  props.tabValue === 2 ?
-<IconButton
-                  title='Delete'
-                  onClick={()=>handleDeleteBlog(data[0] && data[0].id)}
-                >
-                  <DeleteOutlinedIcon
-                    style={{ color: themeContext.palette.primary.main }}
-                  />
-                </IconButton>
-      : '' 
-              }
+//                 action=       {
+//                   props.tabValue === 2 ?
+// <IconButton
+//                   title='Delete'
+//                   onClick={()=>handleDeleteBlog(data[0] && data[0].id)}
+//                 >
+//                   <DeleteOutlinedIcon
+//                     style={{ color: themeContext.palette.primary.main }}
+//                   />
+//                 </IconButton>
+//       : '' 
+//               }
                   subheader={
                     <Typography
                       gutterBottom
@@ -195,18 +190,18 @@ function GridList(props) {
                   className={classes.card}
                 >
                   <CardHeader
-                     action=       {
-                      props.tabValue === 2 ?
-                      <IconButton
-                      title='Delete'
-                      onClick={()=>handleDeleteBlog(data[1] && data[1].id)}
-                    >
-                      <DeleteOutlinedIcon
-                        style={{ color: themeContext.palette.primary.main }}
-                      />
-                    </IconButton>
-          : '' 
-                  }
+          //            action=       {
+          //             props.tabValue === 2 ?
+          //             <IconButton
+          //             title='Delete'
+          //             onClick={()=>handleDeleteBlog(data[1] && data[1].id)}
+          //           >
+          //             <DeleteOutlinedIcon
+          //               style={{ color: themeContext.palette.primary.main }}
+          //             />
+          //           </IconButton>
+          // : '' 
+          //         }
                     subheader={
                       <Typography
                         gutterBottom
@@ -279,18 +274,18 @@ function GridList(props) {
                   className={classes.card}
                 >
                   <CardHeader
-                     action=       {
-                      props.tabValue === 2 ?
-    <IconButton
-                      title='Delete'
-                      onClick={()=>handleDeleteBlog(data[2] && data[2].id)}
-                    >
-                      <DeleteOutlinedIcon
-                        style={{ color: themeContext.palette.primary.main }}
-                      />
-                    </IconButton>
-          : '' 
-                  }
+    //                  action=       {
+    //                   props.tabValue === 2 ?
+    // <IconButton
+    //                   title='Delete'
+    //                   onClick={()=>handleDeleteBlog(data[2] && data[2].id)}
+    //                 >
+    //                   <DeleteOutlinedIcon
+    //                     style={{ color: themeContext.palette.primary.main }}
+    //                   />
+    //                 </IconButton>
+    //       : '' 
+    //               }
                     subheader={
                       <Typography
                         gutterBottom
@@ -366,18 +361,18 @@ function GridList(props) {
                   className={classes.card}
                 >
                   <CardHeader
-                    action=       {
-                      props.tabValue === 2 ?
-    <IconButton
-                      title='Delete'
-                      onClick={()=>handleDeleteBlog(data[3].id)}
-                    >
-                      <DeleteOutlinedIcon
-                        style={{ color: themeContext.palette.primary.main }}
-                      />
-                    </IconButton>
-          : '' 
-                  }
+    //                 action=       {
+    //                   props.tabValue === 2 ?
+    // <IconButton
+    //                   title='Delete'
+    //                   onClick={()=>handleDeleteBlog(data[3].id)}
+    //                 >
+    //                   <DeleteOutlinedIcon
+    //                     style={{ color: themeContext.palette.primary.main }}
+    //                   />
+    //                 </IconButton>
+    //       : '' 
+    //               }
                     subheader={
                       <Typography
                         gutterBottom
@@ -450,18 +445,18 @@ function GridList(props) {
                   className={classes.card}
                 >
                   <CardHeader
-                    action=       {
-                      props.tabValue === 2 ?
-    <IconButton
-                      title='Delete'
-                      onClick={()=>handleDeleteBlog(data[4].id)}
-                    >
-                      <DeleteOutlinedIcon
-                        style={{ color: themeContext.palette.primary.main }}
-                      />
-                    </IconButton>
-          : '' 
-                  }
+    //                 action=       {
+    //                   props.tabValue === 2 ?
+    // <IconButton
+    //                   title='Delete'
+    //                   onClick={()=>handleDeleteBlog(data[4].id)}
+    //                 >
+    //                   <DeleteOutlinedIcon
+    //                     style={{ color: themeContext.palette.primary.main }}
+    //                   />
+    //                 </IconButton>
+    //       : '' 
+    //               }
                     subheader={
                       <Typography
                         gutterBottom
@@ -534,18 +529,18 @@ function GridList(props) {
                 className={classes.card}
               >
                 <CardHeader
-                   action=       {
-                    props.tabValue === 2 ?
-  <IconButton
-                    title='Delete'
-                    onClick={()=>handleDeleteBlog(data[5].id)}
-                  >
-                    <DeleteOutlinedIcon
-                      style={{ color: themeContext.palette.primary.main }}
-                    />
-                  </IconButton>
-        : '' 
-                }
+  //                  action=       {
+  //                   props.tabValue === 2 ?
+  // <IconButton
+  //                   title='Delete'
+  //                   onClick={()=>handleDeleteBlog(data[5].id)}
+  //                 >
+  //                   <DeleteOutlinedIcon
+  //                     style={{ color: themeContext.palette.primary.main }}
+  //                   />
+  //                 </IconButton>
+  //       : '' 
+  //               }
                   subheader={
                     <Typography gutterBottom variant='body2' align='left' component='p'>
                       {data[5] && moment(data[5].created_at).format('MMM DD YYYY')}
