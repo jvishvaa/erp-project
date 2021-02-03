@@ -35,14 +35,11 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Teacher View', Path: '/lesson-plan/teacher-view' },
     { name: 'Student View', Path: '/lesson-plan/student-view' },
     { name: 'Management Report', Path: '/lesson-plan/report' },
-    { name: 'Graphical Report', Path: '/lesson-plan/graph-report' },
-
+    { name: 'Graphical Report ', Path: '/lesson-plan/graph-report' },
     { name: 'Student Blogs', Path: '/blog/student/dashboard' },
     { name: 'Teacher Blogs', Path: '/blog/teacher' },
     { name: 'Management Blogs', Path: '/blog/admin' },
     { name: 'Principal Blogs', Path: '/blog/principal' },
-
-
   ];
   // const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
