@@ -106,7 +106,7 @@ const ClassCard = (props) => {
             >
                 <Fade in={enableEdit}>
                     <div className={classes.paper}>
-                        <ClassUpdation classData={classData.id} />  
+                        <ClassUpdation classData={classData} />  
                     </div>
                 </Fade>
             </Modal>

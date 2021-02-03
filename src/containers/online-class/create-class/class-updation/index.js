@@ -2,12 +2,12 @@ import React from 'react';
 import CreateclassProvider from '../create-class-context/create-class-state';
 import ClassUpdate from './class-update';
 
-const ClassUpdation = () => {
+const ClassUpdation = (props) => {
   return (
     <div>
-        <CreateclassProvider>
-          <ClassUpdate />
-        </CreateclassProvider>
+      <CreateclassProvider>
+        <ClassUpdate {...props} />
+      </CreateclassProvider>
     </div>
   );
 };
