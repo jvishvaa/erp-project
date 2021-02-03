@@ -199,7 +199,7 @@ class TeacherPublishBlogView extends Component {
                     <Grid item xs={6}>
                     <Pagination
                     onChange={this.handlePagination}
-                    style={{ marginTop: 25 }}
+                    style={{ paddingLeft:'390px' }}
                     count={Math.ceil(totalBlogs / pageSize)}
                     color='primary'
                     page={pageNo}

@@ -225,21 +225,6 @@ class PrincipalBlog extends Component {
                       </Button>
                     </Grid>
 
-                    <Grid item xs={6}>
-                    <Pagination
-                    onChange={this.handlePagination}
-                    style={{ marginTop: 25 }}
-                    count={Math.ceil(totalBlogs / pageSize)}
-                    color='primary'
-                    page={pageNo}
-                            />
-            </Grid>
-
-
-
-
-                       
-
                     {/* <Grid item>
                       <Button
                         style={{ fontSize: 'small', margin: '20px' }}
@@ -282,6 +267,15 @@ class PrincipalBlog extends Component {
                         <GridList data={data} />
                         </TabPanel>
                       </div>
+                    </Grid>
+                    <Grid item xs={12}>
+                    <Pagination
+                    onChange={this.handlePagination}
+                    style={{ paddingLeft:'390px' }}
+                    count={Math.ceil(totalBlogs / pageSize)}
+                    color='primary'
+                    page={pageNo}
+                            />
                     </Grid>
                   </Grid>
                 </div>
