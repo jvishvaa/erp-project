@@ -104,8 +104,10 @@ const ClassUpdate = (props) => {
   };
   const handleTutorEmail = (event, valueObj) => {
     setIsTutorAvailable(false);
-    setTutorObjFromProps(valueObj);
-    checkTutorAvailability(valueObj.email);
+    setTutorObjFromProps(valueObj || {});
+    if (valueObj?.email) {
+      checkTutorAvailability(valueObj.email);
+    }
   };
   useEffect(() => {
     fetchTutorEmails();
