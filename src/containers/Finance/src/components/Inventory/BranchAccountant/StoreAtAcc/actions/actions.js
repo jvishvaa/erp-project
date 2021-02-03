@@ -205,7 +205,7 @@ export const storePayment = (payload) => {
       .then(res => {
         console.log('--------RES------', res)
         if (+res.status === 201) {
-          payload.alert.success('Payment Successful')
+          // payload.alert.success('Payment Successful')
           dispatch({
             type: STORE_PAYMENT,
             payload: {
@@ -220,7 +220,7 @@ export const storePayment = (payload) => {
         dispatch(actionTypes.dataLoaded())
       })
       .catch((error) => {
-        payload.alert.error('Something Went Wrong')
+        // payload.alert.error('Something Went Wrong')
         console.log("Error: Couldn't fetch data from " + urls.FeeStructureDefault + error)
         dispatch(actionTypes.dataLoaded())
       })
@@ -381,7 +381,7 @@ export const sendDeliveryDetails = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      payload.alert.error('Unable To save delivery details!')
+      // payload.alert.error('Unable To save delivery details!')
       dispatch(actionTypes.dataLoaded())
       console.log(err)
     })

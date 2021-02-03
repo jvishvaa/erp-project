@@ -8,7 +8,7 @@ import Modal from '../../../../ui/Modal/modal'
 // import '../../../css/staff.css'
 import * as actionTypes from '../../store/actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
-// import ConfigItems from './configItems'
+import ConfigItems from './configItems'
 
 const styles = theme => ({
   tableWrapper: {
@@ -502,7 +502,7 @@ class StoreAtAcc extends Component {
     if (this.state.showConfigItems) {
       configTable = (
         <React.Fragment>
-          {/* <ConfigItems
+          <ConfigItems
             selectedTotal={this.state.selectedTotal}
             erpCode={this.props.erp}
             session={this.props.session}
@@ -517,7 +517,7 @@ class StoreAtAcc extends Component {
             isStudent={this.props.isStudent}
             isDelivery={this.state.deliveryValue}
             selectedKits={this.state.selectedKits}
-          /> */} 
+          /> 
         </React.Fragment>
       )
     }

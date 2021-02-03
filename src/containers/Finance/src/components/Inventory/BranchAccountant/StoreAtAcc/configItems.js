@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-// import { Grid } from 'semantic-ui-react'
+import { Grid } from 'semantic-ui-react'
 import { withStyles,
   Radio,
   Table,
@@ -28,7 +28,7 @@ import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 // import '../../../css/staff.css'
 import * as actionTypes from '../../store/actions'
 import { urls } from '../../../../urls'
-import storeReceipts from '../../Receipts/storePaymentReceipt'
+// import storeReceipts from '../../Receipts/storePaymentReceipt' //rajneesh
 // import { urls } from '../../../../urls'
 
 const styles = theme => ({
@@ -565,7 +565,7 @@ class ConfigItems extends Component {
   generatePdf = async () => {
     try {
       const response = await this.getPdfData(this.props.trnsId)
-      storeReceipts(response.data)
+      // storeReceipts(response.data)
     } catch (error) {
       console.error(error.response)
       if (error.response && (error.response.status === 400 || error.response.status === 404)) {
@@ -913,60 +913,60 @@ class ConfigItems extends Component {
     }
   }
 
-  // termsAndConditionRenderer = () => {
-  //   if (this.props.isStudent) {
-  //     return (
-  //       <React.Fragment>
-  //         <Grid.Row>
-  //           <Grid.Column
-  //             computer={5}
-  //             mobile={16}
-  //             tablet={5}
-  //             className='student-section-inputField'
-  //           >
-  //             <FormControlLabel
-  //               control={
-  //                 <Checkbox
-  //                   checked={this.state.agreeTerms}
-  //                   onChange={this.termCheckHandler}
-  //                   color='primary'
-  //                 />
-  //               }
-  //               label='I / We Agree Terms and Conditions'
-  //             />
-  //           </Grid.Column>
-  //         </Grid.Row>
-  //         <Grid.Row>
-  //           <Grid.Column
-  //             computer={5}
-  //             mobile={16}
-  //             tablet={5}
-  //             className='student-section-inputField'
-  //           >
-  //             <label>Terms &amp; Conditions :</label>
-  //             <div style={{ color: 'red' }}>
-  //               <p>1. Please be informed that additional transaction
-  //                   charges are applicable. For more information
-  //                   please contact your school administrator.</p>
-  //               <p>2. LetsEduvate will not store any of
-  //                   your Bank credentials / Card details.
-  //                   The system will redirect you to concerned
-  //                     Bank pages only to complete your transaction.</p>
-  //               <p>3. No refund(s)/ No Cancellations are allowed for the transactions done
-  //                 through this channel.</p>
-  //               <p>4. In case of any dispute regarding the payments, you are requested to
-  //                 contact school administrator.</p>
-  //               <p>5. Terms and conditions include Online Payment Fee charges, Refund Policy,
-  //                 Privacy Policy, Withdrawal from School, Governing Law, Jurisdiction etc.</p>
-  //             </div>
-  //           </Grid.Column>
-  //         </Grid.Row>
-  //       </React.Fragment>
-  //     )
-  //   }
+  termsAndConditionRenderer = () => {
+    if (this.props.isStudent) {
+      return (
+        <React.Fragment>
+          <Grid.Row>
+            <Grid.Column
+              computer={5}
+              mobile={16}
+              tablet={5}
+              className='student-section-inputField'
+            >
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={this.state.agreeTerms}
+                    onChange={this.termCheckHandler}
+                    color='primary'
+                  />
+                }
+                label='I / We Agree Terms and Conditions'
+              />
+            </Grid.Column>
+          </Grid.Row>
+          <Grid.Row>
+            <Grid.Column
+              computer={5}
+              mobile={16}
+              tablet={5}
+              className='student-section-inputField'
+            >
+              <label>Terms &amp; Conditions :</label>
+              <div style={{ color: 'red' }}>
+                <p>1. Please be informed that additional transaction
+                    charges are applicable. For more information
+                    please contact your school administrator.</p>
+                <p>2. LetsEduvate will not store any of
+                    your Bank credentials / Card details.
+                    The system will redirect you to concerned
+                      Bank pages only to complete your transaction.</p>
+                <p>3. No refund(s)/ No Cancellations are allowed for the transactions done
+                  through this channel.</p>
+                <p>4. In case of any dispute regarding the payments, you are requested to
+                  contact school administrator.</p>
+                <p>5. Terms and conditions include Online Payment Fee charges, Refund Policy,
+                  Privacy Policy, Withdrawal from School, Governing Law, Jurisdiction etc.</p>
+              </div>
+            </Grid.Column>
+          </Grid.Row>
+        </React.Fragment>
+      )
+    }
 
-  //   return null
-  // }
+    return null
+  }
 
   receiptFields = () => {
     let receiptData = null
