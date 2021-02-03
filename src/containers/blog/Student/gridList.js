@@ -11,18 +11,11 @@ import { withRouter } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import Face from '@material-ui/icons/Face'
 
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import List from '@material-ui/core/List';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItem from '@material-ui/core/ListItem';
-// import Card from '@material-ui/core/Card';
-import DeleteIcon from '@material-ui/icons/Delete';
 import endpoints from '../../../config/endpoints';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
-import Box from '@material-ui/core/Box';
 import moment from 'moment';
 
 import unfiltered from '../../../assets/images/unfiltered.svg'
@@ -63,7 +56,7 @@ function GridList(props) {
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false)
   const themeContext = useTheme();
-
+  console.log(props,"ppppp")
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
     setShowPeriodIndex(index);
@@ -102,7 +95,6 @@ function GridList(props) {
       {data.length ? (
         <Grid container spacing={2}>
           <Grid item xs={6}>
-            {/* <Card style={{ backgroundColor: 'yellow' }} className={classes.card}> */}
             <Grid item>
               <Card
                 className={classes.card}
@@ -111,7 +103,7 @@ function GridList(props) {
                   height: '230px',
                   backgroundSize: '360px',
                   backgroundImage: `url(${data[0] && data[0].thumbnail})`,
-                  display:data.length >= 0 ? 'flex' : 'none',
+                  display:data.length >= 1 ? 'flex' : 'none',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                 }}
@@ -121,7 +113,7 @@ function GridList(props) {
                   props.tabValue === 2 ?
 <IconButton
                   title='Delete'
-                  onClick={()=>handleDeleteBlog(data[0].id)}
+                  onClick={()=>handleDeleteBlog(data[0] && data[0].id)}
                 >
                   <DeleteOutlinedIcon
                     style={{ color: themeContext.palette.primary.main }}
@@ -145,12 +137,10 @@ function GridList(props) {
                 />
            
                 <CardActionArea>
-                  <CardContent>
+                   <CardContent style ={{ padding:'5px'}}>
                     <Typography
-                      // variant='body2'
                       style={{
                         marginTop: '-35px',
-                        // fontSize: 'x-large',
                         fontWeight: 'bold',
                         color: 'white',
                       }}
@@ -194,7 +184,7 @@ function GridList(props) {
               <Grid item xs={6}>
                 <Card
                   style={{
-                    display:data.length >= 1 ? 'flex' : 'none',
+                    display:data.length >= 2 ? 'flex' : 'none',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                     width: '100%',
@@ -207,9 +197,9 @@ function GridList(props) {
                   <CardHeader
                      action=       {
                       props.tabValue === 2 ?
-    <IconButton
+                      <IconButton
                       title='Delete'
-                      onClick={()=>handleDeleteBlog(data[1].id)}
+                      onClick={()=>handleDeleteBlog(data[1] && data[1].id)}
                     >
                       <DeleteOutlinedIcon
                         style={{ color: themeContext.palette.primary.main }}
@@ -230,7 +220,7 @@ function GridList(props) {
                     }
                   />
                   <CardActionArea>
-                    <CardContent>
+                  <CardContent style ={{ padding:'5px'}}>
                       <Typography
                         // variant='body2'
                         style={{
@@ -247,7 +237,7 @@ function GridList(props) {
                       <Typography
                       style={{
                         color: 'white',
-                        paddingRight:'360px'
+                        paddingRight:'100px'
                       }}
                       color='textSecondary'
                       component='p'
@@ -277,7 +267,7 @@ function GridList(props) {
               <Grid item xs={6}>
                 <Card
                  style={{
-                  display:data.length >= 2 ? 'flex' : 'none',
+                  display:data.length >= 3 ? 'flex' : 'none',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                   width: '100%',
@@ -293,7 +283,7 @@ function GridList(props) {
                       props.tabValue === 2 ?
     <IconButton
                       title='Delete'
-                      onClick={()=>handleDeleteBlog(data[2].id)}
+                      onClick={()=>handleDeleteBlog(data[2] && data[2].id)}
                     >
                       <DeleteOutlinedIcon
                         style={{ color: themeContext.palette.primary.main }}
@@ -314,7 +304,7 @@ function GridList(props) {
                     }
                   />
                   <CardActionArea>
-                    <CardContent>
+                     <CardContent style ={{ padding:'5px'}}>
                       <Typography
                         // variant='body2'
                         style={{
@@ -331,7 +321,7 @@ function GridList(props) {
                       <Typography
                       style={{
                         color: 'white',
-                        paddingRight:'360px'
+                        paddingRight:'100px'
                       }}
                       color='textSecondary'
                       component='p'
@@ -365,7 +355,7 @@ function GridList(props) {
               <Grid item xs={6}>
                 <Card
                   style={{
-                    display:data.length >= 3 ? 'flex' : 'none',
+                    display:data.length >= 4 ? 'flex' : 'none',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                     width: '100%',
@@ -401,7 +391,7 @@ function GridList(props) {
                     }
                   />
                   <CardActionArea>
-                    <CardContent>
+                     <CardContent style ={{ padding:'5px'}}>
                       <Typography
                         // variant='body2'
                         style={{
@@ -418,7 +408,7 @@ function GridList(props) {
                       <Typography
                       style={{
                         color: 'white',
-                        paddingRight:'360px'
+                        paddingRight:'100px'
                       }}
                       color='textSecondary'
                       component='p'
@@ -451,7 +441,7 @@ function GridList(props) {
                     width: '100%',
                     height: '290px',
                     backgroundSize: '360px',
-                    display:data.length >= 4 ? 'flex' : 'none',
+                    display:data.length >= 5 ? 'flex' : 'none',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                     backgroundImage: `url(${data[4] && data[4].thumbnail})`,
@@ -485,7 +475,7 @@ function GridList(props) {
                     }
                   />
                   <CardActionArea>
-                    <CardContent>
+                     <CardContent style ={{ padding:'5px'}}>
                       <Typography
                         // variant='body2'
                         style={{
@@ -502,7 +492,7 @@ function GridList(props) {
                       <Typography
                       style={{
                         color: 'white',
-                        paddingRight:'360px'
+                        paddingRight:'100px'
                       }}
                       color='textSecondary'
                       component='p'
@@ -535,7 +525,7 @@ function GridList(props) {
                 style={{
                   width: '100%',
                   height: '230px',
-                  display:data.length >= 5 ? 'flex' : 'none',
+                  display:data.length >= 6 ? 'flex' : 'none',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                   backgroundSize: '360px',
@@ -563,7 +553,7 @@ function GridList(props) {
                   }
                 />
                 <CardActionArea>
-                  <CardContent>
+                   <CardContent style ={{ padding:'5px'}}>
                     <Typography
                       // variant='body2'
                       style={{
