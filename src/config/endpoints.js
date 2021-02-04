@@ -157,7 +157,10 @@ export default {
     genreList: '/academic/genre/',
     Blog: '/academic/blog/',
   },
-
+  assessment: {
+    userTests: `${baseURLCentral}/assessment/user-tests/`, //?user=20&subject=1,
+    userTestComparisions: `${baseURLCentral}/assessment/student-test-comparison/`, //?test_1=7&user=20&test_2=10
+  },
     
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
