@@ -222,8 +222,9 @@ function App() {
                       {({ match }) => <AttendeeList match={match} />}
                     </Route>
                     <Route exact path='/online-class/attend-class'>
-                      {({ match }) => <ViewClassStudentCollection match={match} />}
+                      {({ match }) => <AOLClassView match={match} />}
                     </Route>
+                      {/* {({ match }) => <ViewClassStudentCollection match={match} />} */}
                     <Route exact path='/online-class/resource'>
                       {({ match }) => <ResourceView match={match} />}
                     </Route>

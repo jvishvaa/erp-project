@@ -11,6 +11,7 @@ import moment from 'moment';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Loader from '../../../components/loader/loader';
+import { useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -123,25 +124,26 @@ const StyledButton = withStyles({
 })(Button);
 
 const UpcomingClasses = () => {
+    const location = useLocation();
     const classes = useStyles({});
-    const [ classesData, setClassesdata ] = React.useState([]);
-    const [ classData, setClassData ] = React.useState();
-    const [ apiCall, setApiCall ] = React.useState(false);
-    const [ itemSize, setItemSize ] = React.useState(3);
-    const [ size, setSize ] = React.useState(12);
-    const [ selected, setSelected ] = React.useState();
-    const [ classTypeList, setClassTypeList ] = React.useState([
+    const [classesData, setClassesdata] = React.useState([]);
+    const [classData, setClassData] = React.useState();
+    const [apiCall, setApiCall] = React.useState(false);
+    const [itemSize, setItemSize] = React.useState(3);
+    const [size, setSize] = React.useState(12);
+    const [selected, setSelected] = React.useState();
+    const [classTypeList, setClassTypeList] = React.useState([
         { id: 0, type: 'Compulsory Class' },
         { id: 1, type: 'Optional Class' },
         { id: 2, type: 'Special Class' },
         { id: 3, type: 'Parent Class' },
-      ]
+    ]
     );
 
-    const [ classType, setClassType ] = React.useState('');
-    const [ startDate, setStartDate ] = React.useState(null);
-    const [ endDate, setEndDate ] = React.useState(null);
-    const [ isLoding, setIsLoding ] = React.useState(false);
+    const [classType, setClassType] = React.useState('');
+    const [startDate, setStartDate] = React.useState(null);
+    const [endDate, setEndDate] = React.useState(null);
+    const [isLoding, setIsLoding] = React.useState(false);
     //const [startDate, setStartDate] = React.useState(moment(date).format('YYYY-MM-DD'));
     //const [endDate, setEndDate] = React.useState(moment(date).format('YYYY-MM-DD'));
 
@@ -151,22 +153,30 @@ const UpcomingClasses = () => {
     //api call
     const getClasses = () => {
         // student view api
-        axiosInstance.get('erp_user/student_online_class/?user_id=78&page_number=1&page_size=15&class_type='+classType?.id)
-        .then((res) => {
-            //setClassesdata(res.data.data);
-            //setIsLoding(true);
-        })
-        .catch((error) => console.log(error))
-
+        console.log(location.pathname);
+        setClassesdata([]);
+        setIsLoding(false);
+        if (location.pathname === "/online-class/attend-class") {
+            axiosInstance.get('erp_user/student_online_class/?user_id=78&page_number=1&page_size=15&class_type=' + classType?.id)
+                .then((res) => {
+                    setClassesdata(res.data.data);
+                    setIsLoding(true);
+                })
+                .catch((error) => console.log(error))
+        }
         // teacher view api
-        axiosInstance.get('erp_user/teacher_online_class/?module_id=4&page_number=1&page_size=15&branch_ids=5&class_type='+classType?.id)
-        .then((res) => {
-            setClassesdata(res.data.data);
-            setIsLoding(true);
-        })
-        .catch((error) => console.log(error))
+        setClassesdata([]);
+        setIsLoding(false);
+        if (location.pathname === "/online-class/view-class") {
+            axiosInstance.get('erp_user/teacher_online_class/?module_id=4&page_number=1&page_size=15&branch_ids=5&class_type=' + classType?.id)
+                .then((res) => {
+                    setClassesdata(res.data.data);
+                    setIsLoding(true);
+                })
+                .catch((error) => console.log(error))
+        }
     }
-    if(!apiCall) {
+    if (!apiCall) {
         getClasses();
         setApiCall(true);
     }
@@ -178,15 +188,15 @@ const UpcomingClasses = () => {
         setClassData(data);
         setSelected(data.id);
 
-        console.log('TAb : '+ isTabDivice);
-        if(isTabDivice){
+        console.log('TAb : ' + isTabDivice);
+        if (isTabDivice) {
             console.log('**** TAb *****');
         }
     }
-    
+
     // pagination
-    const [ showPerPage, setShowPerPage ] = React.useState(12);
-    const [ pagination, setPagination ] = React.useState({
+    const [showPerPage, setShowPerPage] = React.useState(12);
+    const [pagination, setPagination] = React.useState({
         start: 0,
         end: showPerPage,
     });
@@ -202,14 +212,14 @@ const UpcomingClasses = () => {
 
     const handleTypeOfClass = (event, value) => {
         //setClassType('');
-        if(value){
+        if (value) {
             setClassType(value);
         }
     }
-    
+
     const handleStartDate = (event, value) => {
         //setStartDate('');
-        const isFutureTime = startDate> new Date();
+        const isFutureTime = startDate > new Date();
         if (!isFutureTime) {
             setStartDate(value);
         }
@@ -217,7 +227,7 @@ const UpcomingClasses = () => {
 
     const handleEndDate = (event, value) => {
         //setEndDate('');
-        const isFutureTime = startDate> new Date();
+        const isFutureTime = startDate > new Date();
         if (!isFutureTime) {
             setEndDate(value);
         }
@@ -235,8 +245,8 @@ const UpcomingClasses = () => {
 
 
     const classCardData = classesData && classesData.slice(pagination.start, pagination.end).filter((data) => {
-        const classData =  data.zoom_meeting ?  data.zoom_meeting :  data;
-        if(startDate === null && endDate === null){
+        const classData = data.zoom_meeting ? data.zoom_meeting : data;
+        if (startDate === null && endDate === null) {
             return data;
         }
         else if (startDate === moment(classData.online_class && classData.online_class.start_time).format('YYYY-MM-DD') && endDate === moment(classData.online_class && classData.online_class.end_time).format('YYYY-MM-DD')) {
@@ -251,14 +261,15 @@ const UpcomingClasses = () => {
                     handleSelctedClass={handleSelctedClass}
                 />
             </Grid>
-        )});
+        )
+    });
 
     return (
         <>
-            <div className='breadcrumb-container-create' style={{ marginLeft: '15px'}}>
+            <div className='breadcrumb-container-create' style={{ marginLeft: '15px' }}>
                 <CommonBreadcrumbs
-                componentName='Online Class'
-                childComponentName='AOL Class View'
+                    componentName='Online Class'
+                    childComponentName='AOL Class View'
                 />
             </div>
             <Grid container spacing={4} className={classes.topFilter}>
@@ -340,13 +351,13 @@ const UpcomingClasses = () => {
             <Grid container spacing={3} className={classes.root}>
                 <Grid item sm={size} xs={12}>
                     <Grid container spacing={3}>
-                        {!isLoding ? ( <Loader /> ) : (classCardData)}
+                        {!isLoding ? (<Loader />) : (classCardData)}
                     </Grid>
                 </Grid>
 
                 {classData && (
                     <Grid item sm={3} xs={12}>
-                        <ClassdetailsCard classData={classData}/>
+                        <ClassdetailsCard classData={classData} />
                     </Grid>
                 )}
             </Grid>
