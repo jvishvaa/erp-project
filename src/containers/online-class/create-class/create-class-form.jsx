@@ -477,7 +477,14 @@ const CreateClassForm = (props) => {
     request['class_type'] = selectedClassType?.id;
     request['section_mapping_ids'] = sectionIds.join(',');
 
-    if (days.length) request['week_days'] = days;
+    
+    if(selectedClassType?.id === 0) {
+      const arr=[]
+      arr.push(days);
+      request['week_days'] = arr;
+    }
+    else if (days.length) 
+    request['week_days'] = days;
 
     if (selectedClassType?.id === 0) {
       if (filteredStudents.length>0)
