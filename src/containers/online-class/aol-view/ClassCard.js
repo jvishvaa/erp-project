@@ -145,8 +145,8 @@ export default function ClassCardComponent(props) {
                     style={{float: 'right', verticalAlign: 'top', display: 'inline-block', padding: '7px'}}
                 >
                     <EditOutlinedIcon style={{color:'#fe6b6b', fontSize: '18px'}} />
-                    {editClassJsx}
                 </IconButton>
+                {editClassJsx}
             </div>
                 <Typography className={classes.classTitle}>
                     {classData.online_class.subject[0].subject_name}
