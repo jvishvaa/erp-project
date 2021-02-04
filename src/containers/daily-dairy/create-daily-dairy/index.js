@@ -47,7 +47,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   const [searchAcademicYear, setSearchAcademicYear] = useState('');
   const [academicYear, setAcademicYear] = useState([])
   const [branchDropdown, setBranchDropdown] = useState([]);
-  const [subjectIds, setSubjectIds] = useState([]);
+  const [subjectIds, setSubjectIds] = useState('');
   const [subjectDropdown, setSubjectDropdown] = useState([]);
 
 
@@ -169,6 +169,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const fetchChapters = () => {
+    debugger
         axios.get(`/academic/chapters/?academic_year=${searchAcademicYear}&subject=${subjectIds}`)
         .then((result => {
             if (result.data.status_code === 200) {
@@ -224,16 +225,27 @@ const CreateDailyDairy = (details, onSubmit) => {
   //     }
   // }
   const handleSubject = (event, value) => {
+    debugger
     setFilterData({ ...filterData });
     // if (value) {
     //     setFilterData({ ...filterData });
     // }
-    if (value.length) {
+    if (value.length > 0) {
       const ids = value.map((el) => el.id);
       setSubjectIds(ids);
-      fetchChapters()
+      axios.get(`/academic/chapters/?academic_year=${searchAcademicYear}&subject=${ids}`)
+        .then((result => {
+            if (result.data.status_code === 200) {
+                setChapterDropdown(result.data.result)
+            } else {
+                setAlert('error')
+            }
+        })).catch(error => {
+            setAlert('error')
+        })
+      // fetchChapters()
     }
-    fetchChapters()
+    // fetchChapters()
   };
 
   const handleImageChange=  (event)=>{
@@ -334,7 +346,7 @@ const CreateDailyDairy = (details, onSubmit) => {
       }
     }
     if (details.subjects && details.subjects.length > 0) {
-        axios.get(`/academic/chapters/?academic_year=${searchAcademicYear}&subjectdddd=${subjectIds}`)
+        axios.get(`/academic/chapters/?academic_year=${searchAcademicYear}&subject=${subjectIds}`)
         .then((result => {
             if (result.data.status_code === 200) {
                 setChapterDropdown(result.data.result)
