@@ -247,7 +247,7 @@ function App() {
                     <Route exact path='/view-period'>
                       {({ match }) => <ViewCourseCard match={match} />}
                     </Route>
-                    <Route exact path='/attendance-list-remake'>
+                    <Route exact path='/aol-attendance-list'>
                       {({ match }) => <AttendeeListRemake match={match} />}
                     </Route>
                   </Switch>

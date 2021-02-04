@@ -52,7 +52,8 @@ const CourseView = () => {
 
   const handleCourseList=(gradeIds)=>{
     setLoading(true)
-    axiosInstance.get(`${endpoints.onlineCourses.courseList}?grade=${gradeIds}&tag_id=${"16,20"}`)
+    const tag_val=[16,20]
+    axiosInstance.get(`${endpoints.onlineCourses.courseList}?grade=${gradeIds}`)
     .then(result => {
       if (result.data.status_code === 200) {
           // setTotalCount(result.data.count);

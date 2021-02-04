@@ -392,6 +392,10 @@ const Layout = ({ children, history }) => {
         history.push('/master-mgmt/message-type-table');
         break;
       }
+      case 'course-table':{
+        history.push('/course-list')
+        break;
+      }
       case 'school-mapping': {
         history.push('/subject/grade');
         break;

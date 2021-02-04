@@ -22,6 +22,7 @@ import deleteIcon from '../../../../assets/images/delete.svg';
 import attachmenticon from '../../../../assets/images/attachmenticon.svg';
 import { LeakAddRounded } from '@material-ui/icons';
 import { Context } from '../view-course/context/ViewStore';
+import { filter } from 'lodash';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -80,6 +81,8 @@ const CreateCourse = () => {
   const [filePath, setFilePath] = useState([]);
   const [nextToggle, setNextToggle] = useState(false);
 
+  // const [erpGradeId,setErpGradeId]=useState([])
+
   const [card, setCard] = useState(0);
 
   const firstPageData = state.editData;
@@ -92,6 +95,7 @@ const CreateCourse = () => {
   const [cardTitle, setCardTitle] = useState(null);
   const [cardDesc, setCardDesc] = useState(null);
 
+  const branchDrop=[{branch_name:'AOL'}]
   const [filterData, setFilterData] = useState({
     branch: '',
     grade: [],
@@ -99,6 +103,7 @@ const CreateCourse = () => {
     category: '',
     age: '',
     subject: '',
+    erpGrade:''
   });
 
   const courseLevel = [
@@ -182,7 +187,7 @@ const CreateCourse = () => {
         branch: value,
       });
       axiosInstance
-        .get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=8`)
+        .get(`${endpoints.communication.grades}?branch_id=${5}&module_id=8`)
         .then((result) => {
           if (result.data.status_code === 200) {
             // setGradeDropdown(result.data.data);
@@ -214,7 +219,7 @@ const CreateCourse = () => {
               if (object?.tag_type === "1") {
                 list1.push({ id: object.id, subjectName: object?.subject__subject_name });
               } else {
-                list2.push({ id: object.id, gradeName: object?.grade__grade_name });
+                list2.push({ id: object.id, gradeName: object?.grade__grade_name ,gradeId:object?.grade_id });
               }
             })
             setSubjectDropdown(list1);
@@ -247,15 +252,17 @@ const CreateCourse = () => {
 
   const handleGrade = (event, value) => {
     console.log(value, '====')
-    setFilterData({ ...filterData, grade: [] });
-    if (value?.length > 0) {
-      const ids = value.map((obj) => obj.id);
-      setGradeIds(ids);
+    setFilterData({ ...filterData, grade: [],erpGrade:'' });
+    // if (value?.length > 0) {
+      if(value){
+      // const ids = value.map((obj) => obj.id);
+      // setGradeIds(ids);
       setFilterData({
         ...filterData,
         grade: value,
+        erpGrade:value.gradeId
       });
-      axiosInstance.get(`${endpoints.onlineCourses.categoryList}?tag_type=3&parent_id=${ids}`)
+      axiosInstance.get(`${endpoints.onlineCourses.categoryList}?tag_type=3&parent_id=${value.id}`)
         .then(result => {
           if (result.data.status_code === 201) {
             setAge(result.data.result)
@@ -293,7 +300,6 @@ const CreateCourse = () => {
     }
   };
 
-  console.log(data,'++++++++++++')
   const handleSubmit = () => {
     // console.log('helloooooooooooooo');
     axiosInstance
@@ -303,7 +309,7 @@ const CreateCourse = () => {
         overview: overview,
         learn: learn,
         // grade: gradeIds,
-        grade:[24],
+        grade:[filterData.erpGrade],
         level: filterData.courseLevel.level,
         no_of_periods: parseInt(noOfPeriods),
         files: filePath,
@@ -312,7 +318,6 @@ const CreateCourse = () => {
       })
       .then((result) => {
         if (result.data.status_code === 200) {
-          setAlert('success', result.data.message);
           setFilePath([]);
           setNoPeriods(0);
           setTitle('')
@@ -327,6 +332,7 @@ const CreateCourse = () => {
             age: '',
             subject: '',
           });
+          setAlert('success', result.data.message);
           setNextToggle(!nextToggle);
         } else {
           setAlert('error', result.data.message);
@@ -350,8 +356,28 @@ const CreateCourse = () => {
         level: filterData.courseLevel.level,
         no_of_periods: parseInt(noOfPeriods),
         period_data: data,
-      // tag_id:
+      tag_id:`${filterData.age.id},${filterData.subject.id}`
   
+    }).then(result=>{
+      if(result.data.status_code === 200){
+        setState({...state,isEdit:false,viewPeriodData:[],editData:[]})
+        setFilePath([]);
+          setNoPeriods(0);
+          setTitle('')
+          setCoursePre('')
+          setOverview('')
+          setLearn('')
+          setFilterData({
+            branch: '',
+            grade: [],
+            courseLevel: '',
+            category: '',
+            age: '',
+            subject: '',
+          });
+        setAlert('success',result.data.message)
+        setNextToggle(!nextToggle)
+      }
     })
   }
 
@@ -413,7 +439,7 @@ const CreateCourse = () => {
       });
 
   }, []);
-  console.log(subjectDropdown,'=======',state);
+  // console.log(subjectDropdown,'=======',state);
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
@@ -463,7 +489,7 @@ const CreateCourse = () => {
                 id='grade'
                 className='dropdownIcon'
                 value={filterData?.branch}
-                options={branchDropdown}
+                options={branchDrop}
                 getOptionLabel={(option) => option?.branch_name}
                 filterSelectedOptions
                 renderInput={(params) => (
@@ -499,7 +525,7 @@ const CreateCourse = () => {
             </Grid>
             <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
               <Autocomplete
-                multiple
+                // multiple
                 style={{ width: '100%' }}
                 size='small'
                 onChange={handleGrade}
@@ -730,9 +756,6 @@ const CreateCourse = () => {
                 >
                   <Grid item xs={12} sm={12}>
                     <Grid container spacing={isMobile ? 3 : 5}>
-                      {/* {
-                    console.log(data, 'data..')
-                  } */}
                       {data?.map((period, i) => (
                         <Grid
                           item
