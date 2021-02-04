@@ -22,6 +22,7 @@ import deleteIcon from '../../../../assets/images/delete.svg';
 import attachmenticon from '../../../../assets/images/attachmenticon.svg';
 import { LeakAddRounded } from '@material-ui/icons';
 import { Context } from '../view-course/context/ViewStore';
+import { filter } from 'lodash';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,6 +68,10 @@ const CreateCourse = () => {
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [gradeIds, setGradeIds] = useState([]);
+  const [categoryDropdown, setCategoryDropdown] = useState([])
+  const [subjectDropdown, setSubjectDropdown] = useState([])
+  const [age, setAge] = useState([])
+
   const [classDuration, setClassDuration] = useState('');
   const [noOfPeriods, setNoPeriods] = useState(state.editData.no_of_periods || 0);
   const [title, setTitle] = useState('');
@@ -76,31 +81,29 @@ const CreateCourse = () => {
   const [filePath, setFilePath] = useState([]);
   const [nextToggle, setNextToggle] = useState(false);
 
+  // const [erpGradeId,setErpGradeId]=useState([])
+
   const [card, setCard] = useState(0);
 
   const firstPageData = state.editData;
-  const [secondPageData, setSecondPageData]  = useState(state?.viewPeriodData||[]);
+  const [secondPageData, setSecondPageData] = useState(state?.viewPeriodData || []);
   const flag = state.isEdit;
 
-  // const [cardData,setCardData]=useState([
-  //   {title:'',desc:'',files:''}
-  // ])
-  // const cardData= {title:'',desc:'',files:''}
-
-  // const [cardState,setCardState]=useState([{...cardData},])
 
   const [data, setData] = useState([]);
 
   const [cardTitle, setCardTitle] = useState(null);
   const [cardDesc, setCardDesc] = useState(null);
 
+  const branchDrop=[{branch_name:'AOL'}]
   const [filterData, setFilterData] = useState({
     branch: '',
     grade: [],
     courseLevel: '',
-    category:'',
-    age:'',
-    subject:'',
+    category: '',
+    age: '',
+    subject: '',
+    erpGrade:''
   });
 
   const courseLevel = [
@@ -112,45 +115,45 @@ const CreateCourse = () => {
 
   //hardcoded data
 
-  const category=[
-    { value: 'Pre-Primary', },
-    { value: 'Primary', },
-    { value: 'Secondary',  },
-  ];
+  // const category = [
+  //   { value: 'Pre-Primary', },
+  //   { value: 'Primary', },
+  //   { value: 'Secondary', },
+  // ];
 
-  const age=[
-    { value: '2-3',},
-    { value: '3-4',},
-    { value: '4-5',},
-    {value:'5-6'},
-    {value:'6-7'},
-    {value:'7-8'},
-    {value:'8-9'},
-    {value:'9-10'},
-    {value:'10-11'},
-    {value:'11-12'},
-    {value:'12-13'},
-    {value:'13-14'},
-    {value:'14-15'},
+  // const age = [
+  //   { value: '2-3', },
+  //   { value: '3-4', },
+  //   { value: '4-5', },
+  //   { value: '5-6' },
+  //   { value: '6-7' },
+  //   { value: '7-8' },
+  //   { value: '8-9' },
+  //   { value: '9-10' },
+  //   { value: '10-11' },
+  //   { value: '11-12' },
+  //   { value: '12-13' },
+  //   { value: '13-14' },
+  //   { value: '14-15' },
 
-  ];
+  // ];
 
-  const subject =[
-    {value:'Music'},
-    {value:'Dance'},
-    {value:'Art'},
-    {value:'Fit-Kids-Physical Education'},
-    {value:'Instrument'},
-    {value:'Numeracy'},
-    {value:'Literacy'},
-    {value:'English'},
-    {value:'French'},
-    {value:'Robotics'},
-    {value:'Hindi'},
-    {value:'Coding'},
-    {value:'Science'},
+  // const subject = [
+  //   { value: 'Music' },
+  //   { value: 'Dance' },
+  //   { value: 'Art' },
+  //   { value: 'Fit-Kids-Physical Education' },
+  //   { value: 'Instrument' },
+  //   { value: 'Numeracy' },
+  //   { value: 'Literacy' },
+  //   { value: 'English' },
+  //   { value: 'French' },
+  //   { value: 'Robotics' },
+  //   { value: 'Hindi' },
+  //   { value: 'Coding' },
+  //   { value: 'Science' },
 
-  ]
+  // ]
 
   const handleCourseLevel = (event, value) => {
     setFilterData({ ...filterData, courseLevel: '' });
@@ -159,74 +162,23 @@ const CreateCourse = () => {
     }
   };
 
-  // const handlePeriod = (e) => {
-  //   setNoPeriods(e.target.value);
-  // };
 
   const handleNext = () => {
     // <<<<<<<>>>>>>>>>>>>
-    // if (flag) {
-    //   setData([])
-    //   const list =[secondPageData];
-    //   list.map((obj)=>list.push(obj))
-    //   // for(let i=0;i<list.length;i++) {
-    //     // for(let obj of list){
-    //     // console.log(obj,'obj')
+    if (flag) {
+      setData(secondPageData || []);
+      setNextToggle(!nextToggle);
+    } else {
 
-    //     // list.push({
-    //     //   title: list[i].title,
-    //     //   description: list[i].description,
-    //     //   files: [],
-    //     // });
-    //   // }
-    //   setData(list);
-    // } else {
-
-    //   const list = [...data];
-    //   for (let i = 0; i < noOfPeriods; i++) {
-    //     list.push({ title: '', description: '', files: [] });
-    //   }
-    //   setData(list);
-    // }
-    // setNextToggle(!nextToggle);
-          // <<<<<<<>>>>>>>>>>>>
-
-
-
-    const list = [...data];
+      const list = [...data];
       for (let i = 0; i < noOfPeriods; i++) {
         list.push({ title: '', description: '', files: [] });
       }
       setData(list);
       setNextToggle(!nextToggle);
+    }
   };
 
-  // useEffect(()=>{
-  //   if(noOfPeriods>0){
-  //     const list=[...data];
-  //     for (let i = 0; i < noOfPeriods; i++) {
-  //     list.push({title:'',desc:''});
-  //   };
-  //   setData(list)
-  //   }
-
-  // },[noOfPeriods])
-  // console.log(data,'======')
-  //function to craete multiple card
-  // var objects = []
-
-  // console.log(
-  //   filterData.courseLevel,
-  //   filterData.branch.id,
-  //   gradeIds,
-  //   classDuration,
-  //   noOfPeriods,
-  //   title,
-  //   coursePre,
-  //   learn,
-  //   overview,
-  //   '======='
-  // );
   const handleBranch = (event, value) => {
     setFilterData({ ...filterData, branch: '' });
     if (value) {
@@ -235,33 +187,92 @@ const CreateCourse = () => {
         branch: value,
       });
       axiosInstance
-        .get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=8`)
+        .get(`${endpoints.communication.grades}?branch_id=${5}&module_id=8`)
         .then((result) => {
           if (result.data.status_code === 200) {
-            setGradeDropdown(result.data.data);
+            // setGradeDropdown(result.data.data);
           } else {
             setAlert('error', result.data.message);
-            setGradeDropdown([]);
+            // setGradeDropdown([]);
           }
         })
         .catch((error) => {
           setAlert('error', error.message);
-          setGradeDropdown([]);
+          // setGradeDropdown([]);
         });
     } else {
-      setGradeDropdown([]);
+      // setGradeDropdown([]);
     }
   };
 
+  const handleCategory = (event, value) => {
+    setFilterData({ ...filterData, category: '' })
+    if (value) {
+      setFilterData({ ...filterData, category: value })
+      axiosInstance.get(`${endpoints.onlineCourses.categoryList}?tag_type=2&parent_id=${value.id}`)
+        .then(result => {
+          if (result.data.status_code === 201) {
+            // console.log(result.data.result, '===========')
+            const list1 = [...subjectDropdown];
+            const list2 = [...gradeDropdown];
+            result.data.result.map(object => {
+              if (object?.tag_type === "1") {
+                list1.push({ id: object.id, subjectName: object?.subject__subject_name });
+              } else {
+                list2.push({ id: object.id, gradeName: object?.grade__grade_name ,gradeId:object?.grade_id });
+              }
+            })
+            setSubjectDropdown(list1);
+            setGradeDropdown(list2);
+          }
+        })
+    }
+  }
+
+  const handleSubject = (event, value) => {
+    setFilterData({ ...filterData, subject: value })
+    if (value) {
+      setFilterData({ ...filterData, subject: value })
+
+    }
+  }
+
+  const handleAge = (event, value) => {
+    setFilterData({ ...filterData, age: '' })
+    if (value) {
+      setFilterData({ ...filterData, age: value })
+    }
+  }
+
+
+
+
+
+
+
   const handleGrade = (event, value) => {
-    setFilterData({ ...filterData, grade: [] });
-    if (value?.length > 0) {
-      const ids = value.map((obj) => obj.grade_id);
-      setGradeIds(ids);
+    console.log(value, '====')
+    setFilterData({ ...filterData, grade: [],erpGrade:'' });
+    // if (value?.length > 0) {
+      if(value){
+      // const ids = value.map((obj) => obj.id);
+      // setGradeIds(ids);
       setFilterData({
         ...filterData,
         grade: value,
+        erpGrade:value.gradeId
       });
+      axiosInstance.get(`${endpoints.onlineCourses.categoryList}?tag_type=3&parent_id=${value.id}`)
+        .then(result => {
+          if (result.data.status_code === 201) {
+            setAge(result.data.result)
+          }
+          else {
+            setAlert('error', result.data.message)
+          }
+        }).catch(error => {
+          setAlert('error', error.description)
+        })
     }
   };
 
@@ -294,21 +305,21 @@ const CreateCourse = () => {
     axiosInstance
       .post(`${endpoints.onlineCourses.createCourse}`, {
         course_name: title,
-        // "course_description":desc,
         pre_requirement: coursePre,
         overview: overview,
         learn: learn,
-        grade: gradeIds,
+        // grade: gradeIds,
+        grade:[filterData.erpGrade],
         level: filterData.courseLevel.level,
-        // "duration":"0:30:0",
         no_of_periods: parseInt(noOfPeriods),
         files: filePath,
         period_data: data,
+        tag_id: `${filterData.age.id},${filterData.subject.id}`
       })
       .then((result) => {
         if (result.data.status_code === 200) {
-          setAlert('success', result.data.message);
           setFilePath([]);
+          setData([]);
           setNoPeriods(0);
           setTitle('')
           setCoursePre('')
@@ -318,10 +329,11 @@ const CreateCourse = () => {
             branch: '',
             grade: [],
             courseLevel: '',
-            category:'',
-            age:'',
-            subject:'',
+            category: '',
+            age: '',
+            subject: '',
           });
+          setAlert('success', result.data.message);
           setNextToggle(!nextToggle);
         } else {
           setAlert('error', result.data.message);
@@ -334,6 +346,42 @@ const CreateCourse = () => {
         setGradeDropdown([]);
       });
   };
+
+  const handleEdit=()=>{
+    axiosInstance.put(`${endpoints.onlineCourses.updateCourse}11/update-course/`,{
+      "course_name":title,
+      pre_requirement: coursePre,
+      overview: overview,
+      learn: learn,
+      grade:[24],
+        level: filterData.courseLevel.level,
+        no_of_periods: parseInt(noOfPeriods),
+        period_data: data,
+      tag_id:`${filterData.age.id},${filterData.subject.id}`
+  
+    }).then(result=>{
+      if(result.data.status_code === 200){
+        setState({...state,isEdit:false,viewPeriodData:[],editData:[]})
+        setFilePath([]);
+          setData([])
+          setNoPeriods(0);
+          setTitle('')
+          setCoursePre('')
+          setOverview('')
+          setLearn('')
+          setFilterData({
+            branch: '',
+            grade: [],
+            courseLevel: '',
+            category: '',
+            age: '',
+            subject: '',
+          });
+        setAlert('success',result.data.message)
+        setNextToggle(!nextToggle)
+      }
+    })
+  }
 
   const FileRow = (props) => {
     const { file, onClose, index } = props;
@@ -374,10 +422,26 @@ const CreateCourse = () => {
         }
       })
       .catch((error) => {
-        setBranchDropdown('error', error.message);
+        setBranchDropdown([])
+        setAlert('error', error.message);
       });
+
+    axiosInstance
+      .get(`${endpoints.onlineCourses.categoryList}?tag_type=1`)
+      .then((result) => {
+        if (result.data.status_code === 201) {
+          setCategoryDropdown(result.data.result)
+        } else {
+          setAlert('error', result.data.message);
+        }
+      })
+      .catch((error) => {
+        setCategoryDropdown([])
+        setAlert('error', error.message)
+      });
+
   }, []);
-  console.log(state, '=======',secondPageData);
+  // console.log(subjectDropdown,'=======',state);
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
@@ -427,7 +491,7 @@ const CreateCourse = () => {
                 id='grade'
                 className='dropdownIcon'
                 value={filterData?.branch}
-                options={branchDropdown}
+                options={branchDrop}
                 getOptionLabel={(option) => option?.branch_name}
                 filterSelectedOptions
                 renderInput={(params) => (
@@ -442,16 +506,15 @@ const CreateCourse = () => {
             </Grid>
             <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
               <Autocomplete
-                
                 style={{ width: '100%' }}
                 size='small'
-                // onChange={handleGrade}
+                onChange={handleCategory}
                 id='volume'
                 className='dropdownIcon'
                 value={filterData?.category}
-                options={category}
-                getOptionLabel={(option) => option?.value}
-                // filterSelectedOptions
+                options={categoryDropdown}
+                getOptionLabel={(option) => option?.tag_name}
+                filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -464,7 +527,7 @@ const CreateCourse = () => {
             </Grid>
             <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
               <Autocomplete
-                multiple
+                // multiple
                 style={{ width: '100%' }}
                 size='small'
                 onChange={handleGrade}
@@ -472,7 +535,7 @@ const CreateCourse = () => {
                 className='dropdownIcon'
                 value={filterData?.grade}
                 options={gradeDropdown}
-                getOptionLabel={(option) => option?.grade__grade_name}
+                getOptionLabel={(option) => option?.gradeName}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
@@ -486,16 +549,15 @@ const CreateCourse = () => {
             </Grid>
             <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
               <Autocomplete
-               
                 style={{ width: '100%' }}
                 size='small'
-                // onChange={handleGrade}
+                onChange={handleAge}
                 id='volume'
                 className='dropdownIcon'
                 value={filterData?.age}
                 options={age}
-                getOptionLabel={(option) => option?.value}
-                // filterSelectedOptions
+                getOptionLabel={(option) => option?.tag_name}
+                filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -508,16 +570,15 @@ const CreateCourse = () => {
             </Grid>
             <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
               <Autocomplete
-               
                 style={{ width: '100%' }}
                 size='small'
-                // onChange={handleGrade}
+                onChange={handleSubject}
                 id='volume'
                 className='dropdownIcon'
                 value={filterData?.subject}
-                options={subject}
-                getOptionLabel={(option) => option?.value}
-                // filterSelectedOptions
+                options={subjectDropdown}
+                getOptionLabel={(option) => option?.subjectName}
+                filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -555,7 +616,7 @@ const CreateCourse = () => {
                 placeholder='No. Of Periods'
                 variant='outlined'
                 size='small'
-                value={firstPageData?.no_of_periods || noOfPeriods}
+                value={noOfPeriods}
                 inputProps={{ pattern: '[0-9]*', min: 0, maxLength: 20 }}
                 name='subname'
                 onChange={(e) => setNoPeriods(e.target.value)}
@@ -628,13 +689,13 @@ const CreateCourse = () => {
                 <div style={{ display: 'flex' }} className='scrollable'>
                   {filePath?.length > 0
                     ? filePath?.map((file, i) => (
-                        <FileRow
-                          key={`homework_student_question_attachment_${i}`}
-                          file={file}
-                          index={i}
-                          onClose={() => removeFileHandler(i)}
-                        />
-                      ))
+                      <FileRow
+                        key={`homework_student_question_attachment_${i}`}
+                        file={file}
+                        index={i}
+                        onClose={() => removeFileHandler(i)}
+                      />
+                    ))
                     : null}
                 </div>
 
@@ -684,40 +745,44 @@ const CreateCourse = () => {
             </Grid>
           </Grid>
         ) : (
-          <>
-            <Paper className={classes.root}>
-              <Grid
-                container
-                style={
-                  isMobile
-                    ? { width: '95%', margin: '20px auto' }
-                    : { width: '100%', margin: '20px auto' }
-                }
-                spacing={5}
-              >
-                <Grid item xs={12} sm={12}>
-                  <Grid container spacing={isMobile ? 3 : 5}>
-                    {data?.map((period, i) => (
-                      <Grid
-                        item
-                        xs={12}
-                        style={isMobile ? { marginLeft: '-8px' } : null}
-                        sm={4}
-                      >
-                        <CourseCard index={i} cData={data} setData={setData} />
-                      </Grid>
-                    ))}
+            <>
+              <Paper className={classes.root}>
+                <Grid
+                  container
+                  style={
+                    isMobile
+                      ? { width: '95%', margin: '20px auto' }
+                      : { width: '100%', margin: '20px auto' }
+                  }
+                  spacing={5}
+                >
+                  <Grid item xs={12} sm={12}>
+                    <Grid container spacing={isMobile ? 3 : 5}>
+                      {data?.map((period, i) => (
+                        <Grid
+                          item
+                          xs={12}
+                          style={isMobile ? { marginLeft: '-8px' } : null}
+                          sm={4}
+                        >
+                          <CourseCard key={i} index={i} cData={data} setData={setData} />
+                        </Grid>
+                      ))}
+                    </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
-            </Paper>
-            <div className='submit'>
-              <Grid item xs={12} sm={12}>
-                <Button onClick={handleSubmit}>SUBMIT</Button>
-              </Grid>
-            </div>
-          </>
-        )}
+              </Paper>
+              <div className='submit'>
+                <Grid item xs={12} sm={12}>
+                    {!state?.isEdit ?  <Button onClick={handleSubmit} style={{width:'16rem',marginLeft:'1.2rem'}}>SUBMIT</Button>
+                    :
+                    <Button onClick={handleEdit} style={{width:'16rem',marginLeft:'1.2rem'}}>EDIT</Button>
+                    }
+                 
+                </Grid>
+              </div>
+            </>
+          )}
       </Layout>
     </>
   );

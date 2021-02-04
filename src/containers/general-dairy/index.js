@@ -84,7 +84,7 @@ const GeneralDairyList = () => {
             <Layout>
                 <div>
                     <div style={{ width: '95%', margin: '20px auto' }}>
-                        <CommonBreadcrumbs componentName='General Dairy' />
+                        <CommonBreadcrumbs componentName='Dairy' />
                     </div>
                 </div>
                 <GeneralDairyFilter
