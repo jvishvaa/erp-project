@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Grid, Button } from '@material-ui/core'
+import { withRouter } from 'react-router-dom';
 
 // import Close from '@material-ui/icons/Close'
 import axios from '../../../config/axios';
@@ -8,8 +9,8 @@ import endpoints from '../../../config/endpoints';
 import HoverRating from './Rating'
 
 class Review extends Component {
-  constructor () {
-    super()
+  constructor (props) {
+    super(props)
     this.state = {
       ratingParameters: [],
       overallRemark: '',
@@ -81,15 +82,10 @@ class Review extends Component {
     }
     this.props.alert[alertType](`${alertMsg}`)
   }
-//   {"blog_id":11,
-// "status":"3",
-// "overall_remark":"this remark",
-// "average_rating": 3.6666666666666665,
-// "remark_rating":[{"rating":5,"remark":null,"rating_type":"Grammar"},{"rating":2,"remark":null,"rating_type":"Clarity"},{"rating":1.5,"remark":null,"rating_type":"Structure"},{"rating":4.5,"remark":null,"rating_type":"Engagement"},{"rating":4.5,"remark":null,"rating_type":"Vocabulary"},{"rating":3.5,"remark":null,"rating_type":"Coherence"}]
-// }
 
 
   handleSubmit = () => {
+    console.log(this.props,"@@@@@@@@")
     const { blogId } = this.props
     const { overallRemark, ratingParameters } = this.state
     const formData = new FormData()
@@ -149,4 +145,4 @@ class Review extends Component {
   }
 }
 
-export default Review
+export default withRouter(Review)
