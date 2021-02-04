@@ -44,7 +44,19 @@ const CreateDailyDairy = (details, onSubmit) => {
   const [chapterDropdown, setChapterDropdown] = useState([]);
   const [filePath,setFilePath] = useState([])
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const [searchAcademicYear, setSearchAcademicYear] = useState('');
+  const [academicYear, setAcademicYear] = useState([])
+  const [branchDropdown, setBranchDropdown] = useState([]);
+  const [subjectIds, setSubjectIds] = useState([]);
+  const [subjectDropdown, setSubjectDropdown] = useState([]);
 
+
+  const [filterData, setFilterData] = useState({
+    year: '',
+    volume: '',
+    grade: '',
+    branch: '',
+  });
 
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
@@ -69,15 +81,47 @@ const CreateDailyDairy = (details, onSubmit) => {
     validateOnBlur: false,
   });
 
-  const fetchAcademicYears = () => {
-    getAcademicYears().then((data) => {
-      const transformedData = data?.map((obj) => ({
-        id: obj.id,
-        session_year: obj.session_year,
-      }));
-      setAcademicYears(transformedData);
-    });
-  };
+  // const fetchAcademicYears = () => {
+  //   getAcademicYears().then((data) => {
+  //     const transformedData = data?.map((obj) => ({
+  //       id: obj.id,
+  //       session_year: obj.session_year,
+  //     }));
+  //     setAcademicYears(transformedData);
+  //   });
+  // };
+
+  useEffect(() => {
+    axiosInstance.get(`${endpoints.communication.branches}`)
+        .then(result => {
+            if (result.data.status_code === 200) {
+                setBranchDropdown(result.data.data);
+            } else {
+                setAlert('error', result.data.message);
+            }
+        }).catch(error => {
+            setBranchDropdown('error', error.message);
+        })
+        axiosInstance
+        .get(endpoints.userManagement.academicYear)
+        .then((result) => {
+          if (result.status === 200) {
+            setAcademicYear(result.data.data)
+          } else {
+            setAlert('error', result.data.message)
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message)
+        })
+  }, []);
+  const handleAcademicYear = (event, value) => {
+    setSearchAcademicYear('')
+    if (value) {
+      // setPage(1)
+      setSearchAcademicYear(value.id)
+    }
+  }
 
   const fetchBranches = () => {
     fetchBranchesForCreateUser().then((data) => {
@@ -125,7 +169,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const fetchChapters = () => {
-        axios.get(`/academic/chapters/?academic_year=${academicYears}&subject=${formik.values.subjects}`)
+        axios.get(`/academic/chapters/?academic_year=${searchAcademicYear}&subject=${subjectIds}`)
         .then((result => {
             if (result.data.status_code === 200) {
                 setChapterDropdown(result.data.result)
@@ -151,14 +195,14 @@ const CreateDailyDairy = (details, onSubmit) => {
           id: obj.subject__id,
           subject_name: obj.subject__subject_name,
         }));
-        setSubjects(transformedData);
+        setSubjectDropdown(transformedData);
         const filteredSelectedSubjects = formik.values.subjects.filter(
           (sub) => transformedData.findIndex((data) => data.id === sub.id) > -1
         );
         formik.setFieldValue('subjects', filteredSelectedSubjects);
       });
     } else {
-      setSubjects([]);
+      setSubjectDropdown([]);
     }
 }
 
@@ -173,12 +217,24 @@ const CreateDailyDairy = (details, onSubmit) => {
     fetchSubjects([branch], grade, value);
   };
    
-  const handleSubject = (e, value) => {
-      formik.setFieldValue('subjects', value)
-      if (subjects && subjects.length > 0){
-          fetchChapters()
-      }
-  }
+  // const handleSubject = (e, value) => {
+  //     formik.setFieldValue('subjects', value)
+  //     if (subjects && subjects.length > 0){
+  //         fetchChapters()
+  //     }
+  // }
+  const handleSubject = (event, value) => {
+    setFilterData({ ...filterData });
+    // if (value) {
+    //     setFilterData({ ...filterData });
+    // }
+    if (value.length) {
+      const ids = value.map((el) => el.id);
+      setSubjectIds(ids);
+      fetchChapters()
+    }
+    fetchChapters()
+  };
 
   const handleImageChange=  (event)=>{
     if(filePath.length<10){
@@ -268,7 +324,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   useEffect(() => {
-    fetchAcademicYears();
+    // fetchAcademicYears();
     fetchBranches();
     console.log('branches ', details.branch, details.grade);
     if (details.branch) {
@@ -278,7 +334,7 @@ const CreateDailyDairy = (details, onSubmit) => {
       }
     }
     if (details.subjects && details.subjects.length > 0) {
-        axios.get(`/academic/chapters/?academic_year=${formik.value.academic_year}&subject=${subjects}`)
+        axios.get(`/academic/chapters/?academic_year=${searchAcademicYear}&subjectdddd=${subjectIds}`)
         .then((result => {
             if (result.data.status_code === 200) {
                 setChapterDropdown(result.data.result)
@@ -310,7 +366,7 @@ const CreateDailyDairy = (details, onSubmit) => {
         >
         <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <FormControl fullWidth className={classes.margin} variant='outlined'>
-          <Autocomplete
+          {/* <Autocomplete
             id='academic_year'
             name='academic_year'
             onChange={(e, value) => {
@@ -328,7 +384,24 @@ const CreateDailyDairy = (details, onSubmit) => {
               />
             )}
             size='small'
-          />
+          /> */}
+           <Autocomplete
+                size='small'
+                style={{ width: '100%' }}
+                onChange={handleAcademicYear}
+                id='year'
+                options={academicYear}
+                getOptionLabel={(option) => option?.session_year}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Academic Year'
+                    placeholder='Academic Year'
+                  />
+                )}
+              />
           <FormHelperText style={{ color: 'red' }}>
             {formik.errors.academic_year ? formik.errors.academic_year : ''}
           </FormHelperText>
@@ -432,7 +505,7 @@ const CreateDailyDairy = (details, onSubmit) => {
           className={classes.margin}
           variant='outlined'
         >
-          <Autocomplete
+          {/* <Autocomplete
             id='subjects'
             name='subjects'
             onChange={handleSubject}
@@ -454,7 +527,27 @@ const CreateDailyDairy = (details, onSubmit) => {
             )}
             getOptionSelected={(option, value) => option.id == value.id}
             size='small'
-          />
+          /> */}
+            <Autocomplete
+          multiple
+          style={{ width: '100%' }}
+          size='small'
+          onChange={handleSubject}
+          id='subj'
+          className='dropdownIcon'
+          // value={filterData?.subject}
+          options={subjectDropdown}
+          getOptionLabel={(option) => option?.subject_name}
+          filterSelectedOptions
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant='outlined'
+              label='Subject'
+              placeholder='Subject'
+            />
+          )}
+        />
           <FormHelperText style={{ color: 'red' }}>
             {formik.errors.subjects ? formik.errors.subjects : ''}
           </FormHelperText>
