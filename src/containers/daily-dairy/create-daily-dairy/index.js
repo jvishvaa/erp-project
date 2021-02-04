@@ -358,6 +358,44 @@ const CreateDailyDairy = (details, onSubmit) => {
     }
   };
 
+  const FileRow = (props) => {
+    const { file, onClose, index } = props;
+    return (
+      <div className='file_row_image' >
+        <div className='file_name_container'>
+          File {index + 1}
+        </div>
+        <Divider orientation="vertical"  className='divider_color' flexItem />
+        <div className='file_close'>
+          <span
+            onClick={onClose}
+          >
+            <SvgIcon
+              component={() => (
+                <img
+                  style={{
+                    width: '20px',
+                    height:'20px',
+                    // padding: '5px',
+                    cursor: 'pointer',
+                  }}
+                  src={deleteIcon}
+                  alt='given'
+                />
+              )}
+            />
+          </span>
+        </div>
+      </div>
+    );
+  };
+
+  const removeFileHandler = (i) => {
+    // const list = [...filePath];
+        filePath.splice(i, 1);
+        setAlert('success','File successfully deleted');
+}
+
   useEffect(() => {
     // fetchAcademicYears();
     fetchBranches();
@@ -569,7 +607,7 @@ const CreateDailyDairy = (details, onSubmit) => {
           size='small'
           onChange={handleSubject}
           id='subj'
-          className='dropdownIcon'
+          // className='dropdownIcon'
           // value={filterData?.subject}
           options={subjectDropdown}
           getOptionLabel={(option) => option?.subject_name}
@@ -693,7 +731,19 @@ const CreateDailyDairy = (details, onSubmit) => {
                     onChange={e=> setHomework(e.target.value)}
                 />
             </Grid>
+            
             <Grid item xs={12} sm={5} className={isMobile ? '' : 'filterPadding'}>
+            <div style={{display:'flex'}} className='scrollable'>
+            {filePath?.length>0  ?    
+                    filePath?.map((file, i) => (
+                            <FileRow
+                            key={`homework_student_question_attachment_${i}`}
+                            file={file}
+                            index={i}
+                            onClose={() => removeFileHandler(i)}
+                            />
+                        )) : null }
+            </div>
             <div className="attachmentButtonContainer" style={{ marginTop:'10%' }}>
 
             <Button
