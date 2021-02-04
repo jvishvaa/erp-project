@@ -24,6 +24,7 @@ import endpoints from '../../../config/endpoints';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
 import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
+import ReviewPrincipal from '../Principal/ReviewPrincipal';
 
 const styles = (theme) => ({
   root: {
@@ -105,7 +106,6 @@ class ContentViewPublish extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      relatedBlog: true,
       starsRating: 0,
       feedBack: false,
       isPublish:false,
@@ -114,7 +114,8 @@ class ContentViewPublish extends Component {
       feedbackrevisionReq:'',
       roleDetails: JSON.parse(localStorage.getItem('userDetails')),
       blogId: this.props.location.state.data && this.props.location.state.data.id,
-
+      blogRatings :this.props.location.state.data && this.props.location.state.data.remark_rating,
+      overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark,
       likeStatus:false,
       currentLikes: 0,
       loading:false,
@@ -225,6 +226,7 @@ class ContentViewPublish extends Component {
     }
   }
 
+
   handleLike = (isLiked,blogId) => {
     this.getLikeStatus(isLiked)
     let requestData = {
@@ -243,10 +245,28 @@ class ContentViewPublish extends Component {
     this.setState({loading:false})
   })
     }
+    getRatings = () => {
+      let {blogRatings} =this.state
+      if (!blogRatings) {
+        return []
+      }
+      const type = typeof blogRatings
+      const parsedRatings = type === 'object' ? blogRatings : JSON.parse(blogRatings)
+      const allRatingParamters = JSON.parse(parsedRatings)
+      console.log(allRatingParamters)
+      return allRatingParamters
+    }
+    
+    getOverAllRemark = () => {
+     let {overallRemark} = this.state
+     return overallRemark
+    }
+
+    
   
   render() {
     const { classes } = this.props;
-    const {roleDetails, likes,currentLikes,likeStatus,loginUserName,tabValue,relatedBlog, starsRating, feedBack ,data,feedbackrevisionReq,isPublish,publishedLevel} = this.state;
+    const {roleDetails, likes,currentLikes,likeStatus,loginUserName,tabValue, starsRating, feedBack ,data,feedbackrevisionReq,isPublish,publishedLevel} = this.state;
     const blogFkLike= data && data.blog_fk_like
     const likedUserIds=blogFkLike.map(blog => blog.user)
     const indexOfLoginUser=likedUserIds.indexOf(roleDetails.user_id)
@@ -331,6 +351,7 @@ class ContentViewPublish extends Component {
 
                             >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
                             </Button>
+                           
                           {tabValue !== 0 ?
                         
                           <Button
@@ -382,8 +403,15 @@ class ContentViewPublish extends Component {
                           </CardContent>
                         </Card>
                       )
-                      : ''}
+                      : <Grid item xs={3}>
+                      <ReviewPrincipal  blogId={data.id}  ratingParameters={this.getRatings}  overallRemark={this.getOverAllRemark}
+                      />
+                  </Grid>
+
+
+                      }
                     </Grid>
+                    
                   </Grid>
                 </div>
               </div>

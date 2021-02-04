@@ -256,29 +256,12 @@ getOverAllRemark = () => {
 
                             >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
                             </Button>
-                          {/* <Button
-                            size='small'
-                            color='primary'
-                            onClick={() => {
-                              this.setState({
-                                relatedBlog: !relatedBlog,
-                              });
-                            }}
-                          >
-                            {relatedBlog ? 'Review' : 'View Related Blog'}
-                          </Button>   */}
                         </CardActions>
                       </Card>
                     </Grid>
                     <Grid item xs={3}>
-                   {/* { relatedBlog ? '' */}
-                      {/* :  */}
                         <ReviewPrincipal  blogId={data.id}  ratingParameters={this.getRatings}  overallRemark={this.getOverAllRemark}
                         />
-
-
-                      
-                      {/* } */}
                     </Grid>
                   </Grid>
                 </div>

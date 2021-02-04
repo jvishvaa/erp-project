@@ -122,7 +122,21 @@ class ContentView extends Component {
   }).catch((error)=>{
   })
 }
+getRatings = () => {
+  let {blogRatings} =this.state
+  if (!blogRatings) {
+    return []
+  }
+  const type = typeof blogRatings
+  const parsedRatings = type === 'object' ? blogRatings : JSON.parse(blogRatings)
+  const allRatingParamters = JSON.parse(parsedRatings)
+  return allRatingParamters
+}
 
+getOverAllRemark = () => {
+ let {overallRemark} = this.state
+ return overallRemark
+}
 
 
 getLikeStatus = (isLiked) => {
@@ -445,9 +459,8 @@ if (result.data.status_code === 200) {
                       //   </>
                       // ) 
                       : (
-                        <ReviewPrincipal  blogId={data.id}
+                        <ReviewPrincipal  blogId={data.id}  ratingParameters={this.getRatings} overallRemark={this.getOverAllRemark}
                         />
-
 
                       )
                       }
