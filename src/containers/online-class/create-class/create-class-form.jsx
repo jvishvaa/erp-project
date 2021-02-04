@@ -136,10 +136,6 @@ const CreateClassForm = (props) => {
     dispatch(listGradesCreateClass(moduleId));
   }, [moduleId]);
 
-  useEffect(()=> {
-    setOnlineClass(prevState=>({...prevState,tutorEmail:{email: "ad676575@gmail.com", roles: 75, user_id: 253}}));
-  },[]);
-
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
