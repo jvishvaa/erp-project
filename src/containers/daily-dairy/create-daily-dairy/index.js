@@ -211,12 +211,6 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   const handleSubmit = async () => {
     const createDairyEntry = endpoints.dailyDairy.createDailyDairy;
-    // const selectionArray = [];
-    // selectedUsers.forEach((item) => {
-    //   item.selected.forEach((ids) => {
-    //     selectionArray.push(ids);
-    //   });
-    // });
     try {
       const response = await axiosInstance.post(
         createDairyEntry,
@@ -224,9 +218,9 @@ const CreateDailyDairy = (details, onSubmit) => {
           // title:title,
               // description:description,
               // module_name:filterData.role.value,
-              branch: branches,
-              grade:[grades],
-              mapping_bgs:[sections],
+              branch: branches.map((b)=>b.id),
+              grade:[grades.map((g)=> g.id)],
+              mapping_bgs:[sections.map((se)=>se.id)],
               subject:subjects,
               // teacher_report:
               document:filePath,
@@ -320,7 +314,7 @@ const CreateDailyDairy = (details, onSubmit) => {
             id='academic_year'
             name='academic_year'
             onChange={(e, value) => {
-              formik.setFieldValue('academic_year', value);
+              formik.setFieldValue('academic_years', value);
             }}
             value={formik.values.academic_year}
             options={academicYears}
