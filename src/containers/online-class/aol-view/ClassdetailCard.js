@@ -3,6 +3,7 @@ import { Divider, makeStyles, withStyles, Typography, Button } from '@material-u
 //import AttachmentIcon from '../components/icons/AttachmentIcon';
 import moment from 'moment';
 import JoinClass from './JoinClass';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles({
     classDetailsBox: {
@@ -156,6 +157,11 @@ export default function ClassdetailsCardComponent(props) {
     }
     ////Periods date end
 
+    const handleAttendance = () => {
+        console.log(" attendance");
+        //online-class/attendee-list/:id
+        //history.push(`online-class/attendee-list/:${id}`);
+    }
     return (
         <div className={classes.classDetailsBox}>
             <div className={classes.classHeader}>
@@ -193,11 +199,17 @@ export default function ClassdetailsCardComponent(props) {
                 <Divider className={classes.classDetailsDivider}/>
 
                 {isTeacher ? (
-                    <StyledButton color="primary">Attendance</StyledButton>
+                    <StyledButton
+                        onClick={handleAttendance}
+                        color="primary"
+                    >
+                        Attendance
+                    </StyledButton>
                 ) : (
                     <StyledButton color="primary">Resources</StyledButton>
                 )}
-                <StyledButton color="primary">
+                <StyledButton
+                    color="primary">
                     View lesson plan
                 </StyledButton>
             </div>

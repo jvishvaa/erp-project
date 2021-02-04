@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import ClassCard from './ClassCard';
 import { Divider, Grid, makeStyles, useTheme, withStyles, Button, TextField } from '@material-ui/core';
 import axiosInstance from '../../../config/axios';
@@ -10,6 +10,8 @@ import MomentUtils from '@date-io/moment';
 import moment from 'moment';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
+import Loader from '../../../components/loader/loader';
+import { useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -122,27 +124,28 @@ const StyledButton = withStyles({
 })(Button);
 
 const UpcomingClasses = () => {
+    const location = useLocation();
     const classes = useStyles({});
-    const [ classesData, setClassesdata ] = React.useState([]);
-    const [ classData, setClassData ] = React.useState();
-    const [ apiCall, setApiCall ] = React.useState(false);
-    const [ itemSize, setItemSize ] = React.useState(3);
-    const [ size, setSize ] = React.useState(12);
-    const [ selected, setSelected ] = React.useState();
-    const [ classTypeList, setClassTypeList ] = React.useState([
+    const [classesData, setClassesdata] = React.useState([]);
+    const [classData, setClassData] = React.useState();
+    const [apiCall, setApiCall] = React.useState(false);
+    const [itemSize, setItemSize] = React.useState(3);
+    const [size, setSize] = React.useState(12);
+    const [selected, setSelected] = React.useState();
+    const [classTypeList, setClassTypeList] = React.useState([
         { id: 0, type: 'Compulsory Class' },
         { id: 1, type: 'Optional Class' },
         { id: 2, type: 'Special Class' },
         { id: 3, type: 'Parent Class' },
-      ]
+    ]
     );
-    //const [ startDateList, setStartDateList ] = React.useState([]);
-    //const [ endDateList, setEndDateList ] = React.useState([]);
 
-    const [ classType, setClassType ] = React.useState('');
-    const [ startDate, setStartDate ] = React.useState(new Date());
-    const [ endDate, setEndDate ] = React.useState(new Date());
-    const [ isFilter, setIsFilter ] = React.useState(false);
+    const [classType, setClassType] = React.useState('');
+    const [startDate, setStartDate] = React.useState(null);
+    const [endDate, setEndDate] = React.useState(null);
+    const [isLoding, setIsLoding] = React.useState(false);
+    //const [startDate, setStartDate] = React.useState(moment(date).format('YYYY-MM-DD'));
+    //const [endDate, setEndDate] = React.useState(moment(date).format('YYYY-MM-DD'));
 
     const themeContext = useTheme();
     const isTabDivice = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -150,20 +153,30 @@ const UpcomingClasses = () => {
     //api call
     const getClasses = () => {
         // student view api
-        axiosInstance.get('erp_user/student_online_class/?user_id=78&page_number=1&page_size=15&class_type='+classType?.id)
-        .then((res) => {
-            //setClassesdata(res.data.data);
-        })
-        .catch((error) => console.log(error))
-
+        console.log(location.pathname);
+        setClassesdata([]);
+        setIsLoding(false);
+        if (location.pathname === "/online-class/attend-class") {
+            axiosInstance.get('erp_user/student_online_class/?user_id=78&page_number=1&page_size=15&class_type=' + classType?.id)
+                .then((res) => {
+                    setClassesdata(res.data.data);
+                    setIsLoding(true);
+                })
+                .catch((error) => console.log(error))
+        }
         // teacher view api
-        axiosInstance.get('erp_user/teacher_online_class/?module_id=4&page_number=1&page_size=15&branch_ids=5&class_type='+classType?.id)
-        .then((res) => {
-            setClassesdata(res.data.data);
-        })
-        .catch((error) => console.log(error))
+        setClassesdata([]);
+        setIsLoding(false);
+        if (location.pathname === "/online-class/view-class") {
+            axiosInstance.get('erp_user/teacher_online_class/?module_id=4&page_number=1&page_size=15&branch_ids=5&class_type=' + classType?.id)
+                .then((res) => {
+                    setClassesdata(res.data.data);
+                    setIsLoding(true);
+                })
+                .catch((error) => console.log(error))
+        }
     }
-    if(!apiCall) {
+    if (!apiCall) {
         getClasses();
         setApiCall(true);
     }
@@ -174,77 +187,16 @@ const UpcomingClasses = () => {
         setSize(9);
         setClassData(data);
         setSelected(data.id);
-        console.log('TAb : '+ isTabDivice);
-        if(isTabDivice){
+
+        console.log('TAb : ' + isTabDivice);
+        if (isTabDivice) {
             console.log('**** TAb *****');
         }
     }
-    // Filter
-    React.useEffect(() => {
-        const getClassTypeList = () => {
-            axiosInstance.get('erp_user/629/online-class-details').then((res) => {
-                setClassTypeList(res.data.result)
-            }).catch(err => {
-                console.log(err)
-            })
-        }
-
-        //getClassTypeList();
-        //getStartDateList();
-        //getEndDateList();
-    }, []);
-
-    const getStartDateList = () => {
-        axiosInstance.get('erp_user/629/online-class-details').then((res) => {
-            //setStartDateList(res.data.result)
-        }).catch(err => {
-            console.log(err)
-        })
-    }
-
-    const getEndDateList = () => {
-        axiosInstance.get('erp_user/629/online-class-details').then((res) => {
-            //setEndDateList(res.data.result)
-        }).catch(err => {
-            console.log(err)
-        })
-    }
-
-    const handleTypeOfClass = (event, value) => {
-        //setClassType('');
-        if(value){
-            setClassType(value);
-        }
-    }
-    const handleStartDate = (event, value) => {
-        //setStartDate('');
-        const isFutureTime = startDate> new Date();
-        if (!isFutureTime) {
-            setStartDate(value);
-        }
-    }
-    const handleEndDate = (event, value) => {
-        //setEndDate('');
-        const isFutureTime = startDate> new Date();
-        if (!isFutureTime) {
-            setEndDate(value);
-        }
-    }
-    const handleFilter = () => {
-        setIsFilter(true);
-        getClasses();
-    }
-
-    const clearAll = () => {
-        setStartDate(null);
-        setEndDate(null);
-        setClassType(null);
-        getClasses();
-    }
 
     // pagination
-    const [ showPerPage, setShowPerPage ] = React.useState(12);
-    const [ pagination, setPagination ] = React.useState({
+    const [showPerPage, setShowPerPage] = React.useState(12);
+    const [pagination, setPagination] = React.useState({
         start: 0,
         end: showPerPage,
     });
@@ -256,12 +208,68 @@ const UpcomingClasses = () => {
         });
     }
 
+    // Filter start
+
+    const handleTypeOfClass = (event, value) => {
+        //setClassType('');
+        if (value) {
+            setClassType(value);
+        }
+    }
+
+    const handleStartDate = (event, value) => {
+        //setStartDate('');
+        const isFutureTime = startDate > new Date();
+        if (!isFutureTime) {
+            setStartDate(value);
+        }
+    }
+
+    const handleEndDate = (event, value) => {
+        //setEndDate('');
+        const isFutureTime = startDate > new Date();
+        if (!isFutureTime) {
+            setEndDate(value);
+        }
+    }
+    const handleFilter = () => {
+        getClasses();
+    }
+
+    const clearAll = () => {
+        setStartDate(null);
+        setEndDate(null);
+        setClassType(null);
+        getClasses();
+    }
+
+
+    const classCardData = classesData && classesData.slice(pagination.start, pagination.end).filter((data) => {
+        const classData = data.zoom_meeting ? data.zoom_meeting : data;
+        if (startDate === null && endDate === null) {
+            return data;
+        }
+        else if (startDate === moment(classData.online_class && classData.online_class.start_time).format('YYYY-MM-DD') && endDate === moment(classData.online_class && classData.online_class.end_time).format('YYYY-MM-DD')) {
+            return data;
+        }
+    }).map((data, id) => {
+        return (
+            <Grid item sm={itemSize} xs={12} key={id}>
+                <ClassCard
+                    classData={data}
+                    selectedId={selected}
+                    handleSelctedClass={handleSelctedClass}
+                />
+            </Grid>
+        )
+    });
+
     return (
         <>
-            <div className='breadcrumb-container-create' style={{ marginLeft: '15px'}}>
+            <div className='breadcrumb-container-create' style={{ marginLeft: '15px' }}>
                 <CommonBreadcrumbs
-                componentName='Online Class'
-                childComponentName='AOL Class View'
+                    componentName='Online Class'
+                    childComponentName='AOL Class View'
                 />
             </div>
             <Grid container spacing={4} className={classes.topFilter}>
@@ -297,7 +305,6 @@ const UpcomingClasses = () => {
                             label='Start date'
                             value={startDate}
                             //defaultValue={new Date()}
-                            minDate={new Date()}
                             onChange={handleStartDate}
                             KeyboardButtonProps={{
                                 'aria-label': 'change date',
@@ -314,9 +321,8 @@ const UpcomingClasses = () => {
                             format='YYYY-MM-DD'
                             margin='none'
                             id='date-picker'
-                            label='Start date'
+                            label='End date'
                             value={endDate}
-                            minDate={new Date()}
                             onChange={handleEndDate}
                             KeyboardButtonProps={{
                                 'aria-label': 'change date',
@@ -345,22 +351,13 @@ const UpcomingClasses = () => {
             <Grid container spacing={3} className={classes.root}>
                 <Grid item sm={size} xs={12}>
                     <Grid container spacing={3}>
-                        {classesData.slice(pagination.start, pagination.end).map((data, id) => (
-                            <Grid item sm={itemSize} xs={12} key={id}>
-                                <ClassCard
-                                    classData={data}
-                                    selectedId={selected}
-                                    handleSelctedClass={handleSelctedClass}
-                                    updateClasses={()=>getClasses()}
-                                />
-                            </Grid>
-                        ))}
+                        {!isLoding ? (<Loader />) : (classCardData)}
                     </Grid>
                 </Grid>
 
                 {classData && (
                     <Grid item sm={3} xs={12}>
-                        <ClassdetailsCard classData={classData}/>
+                        <ClassdetailsCard classData={classData} />
                     </Grid>
                 )}
             </Grid>

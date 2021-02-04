@@ -1,0 +1,168 @@
+import React from 'react';
+import { Divider, makeStyles, withStyles, Typography, Button } from '@material-ui/core';
+//import AttachmentIcon from '../components/icons/AttachmentIcon';
+import moment from 'moment';
+import ResourceClass from './resourceClass';
+import { useHistory } from 'react-router-dom';
+
+const useStyles = makeStyles({
+    classDetailsBox: {
+        backgroundColor: '#FFFFFF',
+        border: '1px solid #F9D474',
+        borderRadius: '10px',
+    },
+    classHeader: {
+        minHeight: '64px',
+        padding: '8px 15px',
+        backgroundColor: '#ff6b6b',
+        borderRadius: '10px 10px 0px 0px',
+    },
+    classHeaderText: {
+        display: 'inline-block',
+        color: '#014B7E',
+        fontSize: '16px',
+        fontWeight: 300,
+        fontFamily: 'Poppins',
+        lineHeight: '25px',
+    },
+    classHeaderTime: {
+        display: 'inline-block',
+        color: '#014B7E',
+        fontSize: '16px',
+        fontFamily: 'Poppins',
+        lineHeight: '25px',
+        float: 'right',
+    },
+    classHeaderSub: {
+        display: 'inline-block',
+        color: '#014B7E',
+        fontSize: '16px',
+        fontWeight: 'bold',
+        fontFamily: 'Poppins',
+        lineHeight: '25px',
+        width: '140px',
+        overflowWrap: 'break-word',
+    },
+    subPeriods: {
+        display: 'inline-block',
+        color: '#014B7E',
+        fontSize: '16px',
+        fontWeight: 'bold',
+        fontFamily: 'Poppins',
+        lineHeight: '25px',
+        float: 'right',
+    },
+    classDetails: {
+        padding: '8px 10px',
+        backgroundColor: '#FFFFFF',
+        borderRadius: '0px 0px 10px 10px',
+    },
+    classDetailsTitle: {
+        marginTop: '10px',
+        color: '#014B7E',
+        fontSize: '16px',
+        fontWeight: 'bold',
+        fontFamily: 'Poppins',
+        lineHeight: '25px',
+    },
+    classDetailsDivider: {
+        color: '#014B7E',
+        marginBottom: '10px',
+    },
+    joinClassDiv: {
+        maxHeight: '415px',
+        overflowY: 'scroll',
+        '&::-webkit-scrollbar': {
+            display: 'none',
+        },
+    },
+    classDetailsDescription: {
+        display: 'inline-block',
+        height: '50px',
+        color: '#014B7E',
+        fontSize: '16px',
+        fontFamily: 'Poppins',
+        lineHeight: '25px',
+        overflow: 'hidden',
+    },
+})
+
+const StyledButton = withStyles({
+    root: {
+        marginTop: '16px',
+        height: '31px',
+        width: '100%',
+        fontSize: '18px',
+        fontFamily: 'Poppins',
+        fontWeight: '',
+        lineHeight: '27px',
+        textTransform: 'capitalize',
+        backgroundColor: '#ff6b6b',
+        borderRadius: '10px',
+    }
+})(Button);
+
+export default function ResourceDetailsCardComponent(props) {
+    const classes = useStyles({});
+    console.log(props.resourceData);
+
+    //Periods date start
+    const startDate = new Date(props.resourceData.online_class.start_time);
+    const endDate = new Date(props.resourceData.online_class.end_time);
+    const Difference_In_Time = endDate.getTime() - startDate.getTime();
+    const Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+
+    let periods;
+    if(moment(startDate).format('ll') === moment(endDate).format('ll')) {
+        periods = 0;
+    }
+    else {
+        periods = Math.floor(Difference_In_Days + 1);
+    }
+    //console.log(startDate.setDate(startDate.getDate() + 1));
+
+    let dateArray = [];
+    for(var i = 0; i <= periods; i++){
+        let day;
+        if(i === 0) {
+            day = startDate.setDate(startDate.getDate());
+        }
+        else {
+            day = startDate.setDate(startDate.getDate() + 1);
+        }
+        dateArray.push(day);
+        //console.log(moment(day).format('ll'));
+    }
+    ////Periods date end
+
+    return (
+        <div className={classes.classDetailsBox}>
+            <div className={classes.classHeader}>
+                <div>
+                    <Typography className={classes.classHeaderText}>
+                        {props.resourceData.online_class.title}
+                    </Typography>
+                </div>
+            </div>
+            <div className={classes.classDetails}>
+                <div className={classes.joinClassDiv}>
+                    {dateArray !== undefined && dateArray.map((date, id) => (
+                        <ResourceClass
+                            key={id}
+                            date={date}
+                            resourceId={props.resourceData.online_class.id}
+                        />
+                    ))}
+                </div>
+                <Divider className={classes.classDetailsDivider}/>
+
+                <StyledButton
+                    color="primary">
+                    Submit
+                </StyledButton>
+            </div>
+        </div>
+    )
+}
+
+export const ResourceDetailsCard = React.memo(ResourceDetailsCardComponent);
