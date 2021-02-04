@@ -140,6 +140,7 @@ export default {
   },
   generalDairy:{
     dairyList:'/academic/general-dairy-messages/',
+    studentList:'/academic/general-dairy-users/',
 
   },
   onlineCourses:{
