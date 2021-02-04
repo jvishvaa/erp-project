@@ -6,6 +6,7 @@ const {
   assessment: {
     userTests: userTestsAPIEndpoint,
     userTestComparisions: userTestComparisionsAPIEndpoint,
+    userSpecificSubjects: userSpecificSubjectsAPIEndpooint,
   } = {},
 } = endpoints || {};
 
@@ -25,7 +26,7 @@ export const TestComparisionContextProvider = ({ children, ...restProps }) => {
   };
   const [userTests, fetchUserTestsHook] = useFetcher(userTestHookProps);
   const fetchUserTests = (params = {}, callbacks = {}) => {
-    const { user = 20, subject = 1 } = params || {};
+    const { user, subject } = params || {};
     if (!user || !subject) {
       // eslint-disable-next-line no-alert
       window.alert('param not fed');
@@ -40,24 +41,24 @@ export const TestComparisionContextProvider = ({ children, ...restProps }) => {
   };
 
   const userSubjectHookProps = {
-    url: userTestsAPIEndpoint,
+    url: userSpecificSubjectsAPIEndpooint,
     dataType: 'array',
     defaultQueryParamObj: {},
     fetchOnLoad: false,
     includeAuthtoken: true,
-    isCentral: true,
+    isCentral: false,
   };
   const [userSubjects, fetchUserSubjectsHook] = useFetcher(userSubjectHookProps);
 
   const fetchUserSubjects = (params = {}, callbacks = {}) => {
-    const { user = 20 } = params || {};
-    if (!user) {
+    const { user, module_id: moduleId } = params || {};
+    if ([user, moduleId].map((i) => Boolean(i)).includes(false)) {
       // eslint-disable-next-line no-alert
       window.alert('param not fed');
       return null;
     }
     const dataProp = {
-      queryParamObj: { user },
+      queryParamObj: { user, module_id: moduleId },
       callbacks,
     };
     fetchUserSubjectsHook(dataProp);
@@ -77,7 +78,7 @@ export const TestComparisionContextProvider = ({ children, ...restProps }) => {
   );
 
   const fetchTestComparisions = (params = {}, callbacks = {}) => {
-    const { user, test_1: test1 = 20, test_2: test2 = 30 } = params || {};
+    const { user, test_1: test1, test_2: test2 } = params || {};
     if ([user, test1, test2].map((i) => Boolean(i)).includes(false)) {
       // eslint-disable-next-line no-alert
       window.alert('param not fed');
