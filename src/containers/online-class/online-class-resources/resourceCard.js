@@ -1,19 +1,19 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import { Typography, Box, makeStyles, Button, withStyles, IconButton } from '@material-ui/core';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import moment from 'moment';
 import { useHistory } from 'react-router-dom';
-import { CreateclassContext } from '../create-class/create-class-context/create-class-state';
+//import { CreateclassContext } from '../create-class/create-class-context/create-class-state';
 
 
 const useStyles = makeStyles({
     card: {
         padding: '8px',
-        border: '1px solid #F9D474',
+        border: '1px solid #ff6b6b',
         borderRadius: '10px',
         backgroundColor: '#FFFADF',
         cursor: 'pointer',
-        minHeight: '165px',
+        minHeight: '160px',
     },
     activeCard: {
         padding: '8px',
@@ -29,6 +29,7 @@ const useStyles = makeStyles({
         fontSize: '18px',
         fontFamily: 'Poppins',
         lineHeight: '27px',
+        overflow: 'hidden',
     },
     classTime: {
         display: 'inline-block',
@@ -60,48 +61,50 @@ const StyledButton = withStyles({
     }
 })(Button);
 
-export default function ClassCardComponent(props) {
+export default function ResourceCardComponent(props) {
     const history = useHistory();
     const classes = useStyles({});
-    const classData = props.classData.zoom_meeting ? props.classData.zoom_meeting : props.classData;
-    
-    const { dispatch, setEditData } = useContext(CreateclassContext);
-    const handleEditClass = () => {
-        dispatch(setEditData(classData));
-        history.push('/online-class/create-class');
+
+    //const { dispatch, setEditData } = useContext(CreateclassContext);
+    const handleEditSubject = () => {
+        //dispatch(setEditData(classData));
     }
     //console.log(classData);
+    //className={`${props.selectedId === classData.id ? classes.activeCard : classes.card}`}
     return (
-        <Box className={`${props.selectedId === classData.id ? classes.activeCard : classes.card}`}>
+        <Box className={classes.card}>
             <div>
                 <Typography className={classes.classTitle}>
-                    {classData.online_class.title}
+                    {props.resourceData.online_class.title}
                 </Typography>
+                {/*
                 <IconButton
-                    onClick={handleEditClass}
+                    onClick={handleEditSubject}
                     title='Edit Subject'
                     style={{float: 'right', verticalAlign: 'top', display: 'inline-block', padding: '7px'}}
                 >
                     <EditOutlinedIcon style={{color:'#fe6b6b', fontSize: '18px'}} />
                 </IconButton>
+                */}
             </div>
                 <Typography className={classes.classTitle}>
-                    {classData.online_class.subject[0].subject_name}
+                    {props.resourceData.online_class.subject[0].subject_name}
                 </Typography>
+                {/*
                 <Typography className={classes.classSchedule}>
-                    Start Date: {moment(classData.online_class.start_time).format('Do MMM YYYY')}
+                    Date : {moment(props.resourceData.online_class.start_time).format('Do MMM YYYY')}
                 </Typography>
-
+                */}
                 <Typography className={classes.classSchedule}>
-                    End Date: {moment(classData.online_class.end_time).format('Do MMM YYYY')}
+                    Start Time : {moment(props.resourceData.online_class.start_time).format('h:mm:ss')}
                 </Typography>
 
             <div style={{ marginTop: '15px', width: '100%'}}>
-                {props.selectedId !== props.classData.id && (
+                { props.selectedId !== props.resourceData.id && (
                     <StyledButton
                         variant="contained"
                         color="secondary"
-                        onClick={(e) => props.handleSelctedClass(classData)}
+                        onClick={(e) => props.handleSelctedClass(props.resourceData)}
                     >
                         VIEW
                     </StyledButton>
@@ -111,4 +114,4 @@ export default function ClassCardComponent(props) {
     )
 }
 
-export const ClassCard = React.memo(ClassCardComponent);
+export const ResourceCard = React.memo(ResourceCardComponent);
