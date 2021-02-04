@@ -28,7 +28,7 @@ import SectionTable from './containers/master-management/section/section-table';
 import GradeTable from './containers/master-management/grade/grade-table';
 import AcademicYearTable from './containers/master-management/academic-year/academic-year-table';
 import MessageTypeTable from './containers/master-management/message-type/message-type-table';
-import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
+//import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
 import HomeworkCard from './containers/homework/homework-card';
 import Profile from './containers/profile/profile';
 import { fetchLoggedInUserDetails } from './redux/actions';
@@ -49,7 +49,10 @@ import {
   TeacherPublishBlogView,
   BlogView,
   CreateGenre,
-  ViewGenre, ContentViewPublish,
+  ViewGenre, 
+  ContentViewPublish,
+  ContentViewPublishStudent,
+
   AdminBlog,
   PrincipalBlog,
   PrincipalPublishBlogView,
@@ -69,6 +72,7 @@ import ListandFilter from './containers/subjectGradeMapping/listAndFilter';
 import GeneralDairyList from './containers/general-dairy';
 import CreateGeneralDairy from './containers/general-dairy/create-dairy';
 import AOLClassView from './containers/online-class/aol-view/index';
+import ResourceView from './containers/online-class/online-class-resources/index';
 
 import CreateCourse from './containers/master-management/course/create-course';
 import CourseView from './containers/master-management/course/view-course';
@@ -166,9 +170,11 @@ function App() {
                     <Route exact path='/blog/teacher/contentView'>
                       {({ match }) => <ContentView match={match} />}
                     </Route>
-
                     <Route exact path='/blog/teacher/contentViewPublish'>
                       {({ match }) => <ContentViewPublish match={match} />}
+                    </Route>
+                    <Route exact path='/blog/student/contentViewPublishStudent'>
+                      {({ match }) => <ContentViewPublishStudent match={match} />}
                     </Route>
 
                     <Route exact path='/blog/teacher/publish/view'>
@@ -211,19 +217,23 @@ function App() {
                     <Route exact path='/online-class/create-class'>
                       {({ match }) => <CreateClass match={match} />}
                     </Route>
-                    <Route exact path='/online-class/view-class'>
+                    {/* <Route exact path='/online-class/view-class'>
                       {({ match }) => <ViewClassManagement match={match} />}
-                    </Route>
-                    <Route exact path='/online-class/resource'>
+                    </Route> */}
+                    {/* <Route exact path='/online-class/resource'>
                       {({ match }) => <OnlineClassResource match={match} />}
-                    </Route>
+                    </Route> */}
                     <Route exact path='/online-class/attendee-list/:id'>
                       {({ match }) => <AttendeeList match={match} />}
                     </Route>
                     <Route exact path='/online-class/attend-class'>
-                      {({ match }) => <ViewClassStudentCollection match={match} />}
+                      {({ match }) => <AOLClassView match={match} />}
                     </Route>
-                    <Route exact path='/online-class/aol-view'>
+                      {/* {({ match }) => <ViewClassStudentCollection match={match} />} */}
+                    <Route exact path='/online-class/resource'>
+                      {({ match }) => <ResourceView match={match} />}
+                    </Route>
+                    <Route exact path='/online-class/view-class'>
                       {({ match }) => <AOLClassView match={match} />}
                     </Route>
                     <Route exact path='/master-mgmt/subject-table'>

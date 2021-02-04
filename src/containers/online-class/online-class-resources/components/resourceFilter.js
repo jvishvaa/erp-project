@@ -11,13 +11,14 @@ import {
   withStyles,
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import GetAppIcon from '@material-ui/icons/GetApp';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 import moment from 'moment';
-import { OnlineclassViewContext } from '../../../online-class-context/online-class-state';
-import axiosInstance from '../../../../../config/axios';
-import endpoints from '../../../../../config/endpoints';
-import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
+import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
+import axiosInstance from '../../../../config/axios';
+import { OnlineclassViewContext } from '../../online-class-context/online-class-state';
+import endpoints from '../../../../config/endpoints';
 
 const StyledTabs = withStyles({
   indicator: {
@@ -26,7 +27,7 @@ const StyledTabs = withStyles({
     backgroundColor: 'transparent',
     '& > span': {
       maxWidth: 100,
-      width: '100%',
+      width: '80%',
       backgroundColor: '#ff6b6b',
     },
   },
@@ -45,15 +46,13 @@ const StyledTab = withStyles((theme) => ({
   },
 }))((props) => <Tab disableRipple {...props} />);
 
-const ViewClassManagementFilters = () => {
+export default function ResourceFilterComponent() {
   const [currentTab, setCurrentTab] = useState(0);
-  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [isCancelSelected, setIsCancelSelected] = useState(false);
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
   const [gradeIds, setGradeIds] = useState([]);
   const [sectionIds, setSectionIds] = useState([]);
-  const [sectionMappingIds,setSectionMappingIds]=useState([])
   const [subjectIds, setSubjectIds] = useState([]);
   const [clearKey, setClearKey] = useState(new Date());
   const [subjects, setSubjects] = useState([]);
@@ -61,31 +60,27 @@ const ViewClassManagementFilters = () => {
   const [selectedGrades, setSelectedGrades] = useState([]);
   const [selectedSections, setSelectedSections] = useState([]);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
+  const [sectionMappingIds,setSectionMappingIds]=useState([]);
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
-  console.log("startDate : "+startDate);
   const {
-    managementView: { currentPage },
-    listOnlineClassesManagementView,
+    resourceView: { currentPage },
+    listOnlineClassesResourceView,
     dispatch,
     listGrades,
     listSections,
     grades,
     sections,
-    setCurrentTabs,
+    setCurrentResourceTab,
   } = useContext(OnlineclassViewContext);
 
   const { setAlert } = useContext(AlertNotificationContext);
 
-  const { role_details: roleDetails } =
-    JSON.parse(localStorage.getItem('userDetails')) || {};
+  const { role_details: roleDetails } = JSON.parse(localStorage.getItem('userDetails'));
 
   const handleTabChange = (event, tab) => {
     setCurrentTab(tab);
-    setCurrentTabs(tab);
-  };
-
-  const handleCancel = (event, data) => {
-    setIsCancelSelected(data);
+    setCurrentResourceTab(tab);
   };
 
   const handleDateChange = (name, date) => {
@@ -116,16 +111,15 @@ const ViewClassManagementFilters = () => {
       // listSubjects(ids);
       dispatch(listSections(ids, moduleId));
     } else {
-      setGradeIds([])
-      setSubjectIds([])
-      setSectionIds([])
+      setGradeIds([]);
+      setSubjects([]);
+      setSectionIds([]);
       setSectionMappingIds([])
       setSelectedSections([])
       setSelectedGrades([])
       setSelectedSubjects([])
     }
   };
-  console.log(gradeIds,'hey')
 
   const handleSection = (event, value) => {
     setSelectedSections(value);
@@ -133,7 +127,7 @@ const ViewClassManagementFilters = () => {
       const ids = value.map((el) => el.section_id);
       setSectionIds(ids);
       const mapIds = value.map((el) => el.id);
-      setSectionMappingIds(mapIds);      
+      setSectionMappingIds(mapIds)
       listSubjects(gradeIds, ids);
     } else {
       setSectionIds([]);
@@ -145,8 +139,9 @@ const ViewClassManagementFilters = () => {
   };
 
   const handleGetClasses = () => {
-    const { role_details: roleDetails, is_superuser: isSuperUser } =
-      JSON.parse(localStorage.getItem('userDetails')) || {};
+    const { role_details: roleDetails, is_superuser: isSuperUser } = JSON.parse(
+      localStorage.getItem('userDetails')
+    );
     const isCompleted = !!currentTab;
     let url = '';
     if (isSuperUser) {
@@ -167,19 +162,17 @@ const ViewClassManagementFilters = () => {
 
     if (sectionMappingIds.length) {
       url += `&section_mapping_ids=${sectionMappingIds.join(',')}`;
-      if (gradeIds.length > 1) {
-        url += `&grade_ids=${gradeIds.join(',')}`;
-      }
     } else if (gradeIds.length) {
       url += `&grade_ids=${gradeIds.join(',')}`;
     }
-    dispatch(listOnlineClassesManagementView(url));
+    //dispatch(listOnlineClassesResourceView(url));
+    dispatch(listOnlineClassesResourceView('?module_id=4&page_number=1&page_size=15&branch_ids=5&class_type=0'));
   };
 
   const handleSubject = (event, value) => {
-    setSelectedSubjects(value);
-    const ids = value.map((el) => el.subject__id);
-    setSubjectIds(ids);
+      setSelectedSubjects(value);
+      const ids = value.map((el) => el.subject__id);
+      setSubjectIds(ids);
   };
 
   const handleClear = () => {
@@ -187,9 +180,9 @@ const ViewClassManagementFilters = () => {
     setSectionIds([]);
     setSubjectIds([]);
     setSectionMappingIds([])
-    setSelectedSubjects([]) 
-    setSelectedGrades([]);
+    setSelectedGrades([])
     setSelectedSections([])
+    setSelectedSubjects([])
     setIsCancelSelected(false);
     setStartDate(moment().format('YYYY-MM-DD'));
     setEndDate(moment().format('YYYY-MM-DD'));
@@ -213,7 +206,7 @@ const ViewClassManagementFilters = () => {
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'View Class') {
+            if (item.child_name === 'Resources') {
               setModuleId(item.child_id);
             }
           });
@@ -221,8 +214,6 @@ const ViewClassManagementFilters = () => {
       });
     }
   }, []);
-
-  useEffect(() => {}, [grades]);
 
   useEffect(() => {
     const filteredSelectedSubjects = subjects.filter(
@@ -267,7 +258,7 @@ const ViewClassManagementFilters = () => {
           />
         </Grid>
         {gradeIds.length ? (
-          <Grid item xs={12} sm={3}>
+          <Grid item xs={12} sm={2}>
             <Autocomplete
               key={clearKey}
               size='small'
@@ -295,7 +286,7 @@ const ViewClassManagementFilters = () => {
           ''
         )}
         {sectionIds.length ? (
-          <Grid item xs={12} sm={3}>
+          <Grid item xs={12} sm={4}>
             <Autocomplete
               key={clearKey}
               multiple
@@ -304,8 +295,8 @@ const ViewClassManagementFilters = () => {
               onChange={handleSubject}
               getOptionLabel={(option) => option.subject__subject_name}
               filterSelectedOptions
-              size='small'
               value={selectedSubjects}
+              size='small'
               renderInput={(params) => (
                 <TextField
                   className='create__class-textfield'
@@ -363,22 +354,13 @@ const ViewClassManagementFilters = () => {
             />
           </Grid>
         </MuiPickersUtilsProvider>
-        <Grid item xs={12} sm={3}>
-          <FormControlLabel
-            className='cancelled-class-check'
-            control={
-              <Checkbox
-                checked={isCancelSelected}
-                onChange={handleCancel}
-                name='cancel'
-                color='primary'
-              />
-            }
-            label='Cancelled class'
-          />
-        </Grid>
+        {/* <Grid item xs={12} sm={2}>
+          <Button className='viewclass__management-btn'>
+            bulk excel
+          </Button>
+        </Grid> */}
       </Grid>
-      <Grid container spacing={4} style={{ marginTop: 20 }}>
+      <Grid container spacing={5} style={{ marginTop: 20 }}>
         <Grid item xs={12} sm={2}>
           <Button
             className='viewclass__management-btn'
@@ -390,7 +372,7 @@ const ViewClassManagementFilters = () => {
             Clear all
           </Button>
         </Grid>
-        <Grid item xs={12} sm={2}>
+        <Grid item xs={12} sm={3}>
           <Button
             className='viewclass__management-btn'
             variant='contained'
@@ -401,6 +383,7 @@ const ViewClassManagementFilters = () => {
           </Button>
         </Grid>
       </Grid>
+      {/* 
       <hr style={{ margin: '40px auto 20px auto' }} />
       <Grid container spacing={0} className='viewmanagement-tabs-container'>
         <Grid item xs={12} sm={6}>
@@ -415,8 +398,9 @@ const ViewClassManagementFilters = () => {
           </StyledTabs>
         </Grid>
       </Grid>
+      */}
     </div>
   );
 };
 
-export default ViewClassManagementFilters;
+export const ResourceFilter = React.memo(ResourceFilterComponent);

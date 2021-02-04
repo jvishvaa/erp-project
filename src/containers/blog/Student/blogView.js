@@ -184,18 +184,18 @@ class BlogView extends Component {
         });
     }
   };
-  WriteBlogNav = () => {
-    const { data } = this.state;
-    let content=data && data.content
-    let title=data && data.title
-    let thumbnail = data && data.thumbnail
-    let genreId =data && data.genre && data.genre.id
-    let genreName =data && data.genre && data.genre.genre
-    this.props.history.push({
-      pathname: '/blog/student/write-blog',
-      state: { content, title, thumbnail,genreId,genreName },
-    });
-  };
+  // EditBlogNav = () => {
+  //   const { data } = this.state;
+  //   let content=data && data.content
+  //   let title=data && data.title
+  //   let thumbnail = data && data.thumbnail
+  //   let genreId =data && data.genre && data.genre.id
+  //   let genreName =data && data.genre && data.genre.genre
+  //   this.props.history.push({
+  //     pathname: '/blog/student/edit-blog',
+  //     state: { content, title, thumbnail,genreId,genreName },
+  //   });
+  // };
   handleDeleteBlog = (blogId) => {
 
     let requestData = {
@@ -300,12 +300,16 @@ class BlogView extends Component {
                         />
                        
                         <CardContent>
+                        
                           <Typography variant='body2' color='textSecondary' component='p'>
-                            {data.content}
+                            {data.content} 
+                          </Typography>
+                          <Typography  component='p' style={{ paddingRight: '650px',fontSize:'12px'}}>
+                           Genre: {data.genre && data.genre.genre}
                           </Typography>
                           <Typography component='p'  style={{ paddingRight: '650px',fontSize:'12px'}}
 >
-                          TotalWords : {data.word_count}
+                          TotalWords : {data.word_count} 
                           </Typography>
 
                         </CardContent>
@@ -323,16 +327,16 @@ class BlogView extends Component {
 
                             >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
                             </Button>
-                          {tabValue !== 1 ?
+                          {/* {tabValue !== 1 ?
                           <Button
                             style={{ width: 150 }}
                             size='small'
                             color='primary'
-                            onClick={this.WriteBlogNav}
+                            onClick={this.EditBlogNav}
                           >
                             Edit
                           </Button>
-                          :''}
+                          :''} */}
                         </CardActions>
                         {/* <CardActions>
                           <ExpansionPanel
