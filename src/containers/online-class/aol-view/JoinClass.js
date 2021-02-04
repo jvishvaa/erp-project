@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { makeStyles, withStyles, Typography, Button } from '@material-ui/core';
+import axiosInstance from '../../../config/axios';
 
 const useStyles = makeStyles({
     classDetailsDescription: {
@@ -76,15 +77,29 @@ export default function JoinClassComponent(props) {
     const [ isRejected, setIsRejected ] = React.useState(false);
     const [ isCancel, setIsCancel] = React.useState(false);
 
+    //console.log(props.data.is_cancelled + " ==="+ isCancel );
+    const params ={
+        zoom_meeting_id: props.data.zoom_id,
+        class_date: props.data.date
+    }
+    const handleCancel = () => {
+        axiosInstance.put('erp_user/cancel-online-class/',params)
+        .then((res) => {
+            console.log(res);
+            setIsCancel(true);
+        })
+        .catch((error) => console.log(error))
+    }
+
     return (
         <div>
             <Typography className={classes.classDetailsDescription}>
-                {moment(props.date).format('DD-MM-YYYY')}
+                {props.data.date}
             </Typography>
             {!isAccepted && isRejected && (
                 <Typography className={classes.rejectText}>Rejected</Typography>
             )}
-            {props.isTeacher && isCancel && (
+            {props.isTeacher &&( isCancel || props.data.is_cancelled )&& (
                 <Typography className={classes.rejectText}>Canceled</Typography>
             )}
             {(isAccepted  && !props.isTeacher)&& !isRejected && (
@@ -114,7 +129,7 @@ export default function JoinClassComponent(props) {
                     </StyledRejectButton>
                 </div>
             )}
-            {(!isAccepted && props.isTeacher) && !isCancel && (
+            {(!isAccepted && props.isTeacher) && (!isCancel || !props.data.is_cancelled )&& (
                 <div className={classes.buttonDiv}>
                     <StyledAcceptButton
                         variant="contained"
@@ -126,7 +141,7 @@ export default function JoinClassComponent(props) {
                     <StyledRejectButton
                         variant="contained"
                         color="primary"
-                        onClick={(e) => setIsCancel(true)}
+                        onClick={handleCancel}
                     >
                         Cancel
                     </StyledRejectButton>
