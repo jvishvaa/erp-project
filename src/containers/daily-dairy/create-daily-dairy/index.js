@@ -28,12 +28,12 @@ import validationSchema from '../../user-management/schemas/school-details';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import {
-    fetchBranchesForCreateUser,
-    fetchGrades,
-    fetchSections,
-    fetchAcademicYears as getAcademicYears,
-    fetchSubjects as getSubjects,
-  } from '../../../../src/redux/actions/index';
+  fetchBranchesForCreateUser,
+  fetchGrades,
+  fetchSections,
+  fetchAcademicYears as getAcademicYears,
+  fetchSubjects as getSubjects,
+} from '../../../../src/redux/actions/index';
 
 const CreateDailyDairy = (details, onSubmit) => {
   const [academicYears, setAcademicYears] = useState([]);
@@ -49,6 +49,12 @@ const CreateDailyDairy = (details, onSubmit) => {
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [subjectIds, setSubjectIds] = useState('');
   const [subjectDropdown, setSubjectDropdown] = useState([]);
+  const [recap,setRecap] = useState('')
+  const [detail,setDetails] = useState('')
+  const [summary,setSummary] = useState('')
+  const [tools,setTools] = useState('')
+  const [homework,setHomework] = useState('')
+
 
 
   const [filterData, setFilterData] = useState({
@@ -170,7 +176,7 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   const fetchChapters = () => {
     debugger
-        axios.get(`/academic/chapters/?academic_year=${searchAcademicYear}&subject=${subjectIds}`)
+        axios.get(`/qbox/academic/chapters/?academic_year=${searchAcademicYear}&subject=${subjectIds}`)
         .then((result => {
             if (result.data.status_code === 200) {
                 setChapterDropdown(result.data.result)
@@ -233,7 +239,8 @@ const CreateDailyDairy = (details, onSubmit) => {
     if (value.length > 0) {
       const ids = value.map((el) => el.id);
       setSubjectIds(ids);
-      axios.get(`/academic/chapters/?academic_year=${searchAcademicYear}&subject=${ids}`)
+    axiosInstance.get(`${endpoints.dailyDairy.branches}?academic_year=${searchAcademicYear}&subject=${ids}`)
+
         .then((result => {
             if (result.data.status_code === 200) {
                 setChapterDropdown(result.data.result)
@@ -279,6 +286,8 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   const handleSubmit = async () => {
     const createDairyEntry = endpoints.dailyDairy.createDailyDairy;
+    const teacherReport=[] 
+    debugger
     try {
       const response = await axiosInstance.post(
         createDairyEntry,
@@ -286,12 +295,26 @@ const CreateDailyDairy = (details, onSubmit) => {
           // title:title,
               // description:description,
               // module_name:filterData.role.value,
-              branch: branches.map((b)=>b.id),
-              grade:[grades.map((g)=> g.id)],
-              mapping_bgs:[sections.map((se)=>se.id)],
-              subject:subjects,
+              branch:5,
+              grade:[54],
+              mapping_bgs:[75],
+              subject:162,
               // teacher_report:
               document:filePath,
+              teacher_report:{
+                "previous_class":recap,
+                "summary":summary,
+                "class_work":detail,
+                "tools_used":tools,
+                "homework":homework
+              },
+              dairy_type:2
+
+              // teacher_report:[
+                // previous_class:recap,
+                              // 
+              // ]
+              
               // Branch:filterData.branch.map(function (b) {
               //     return b.id
               //   }),
@@ -609,7 +632,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     // defaultValue="Default Value"
                     // value={title}
                     variant="outlined"
-                    // onChange={e=> setTitle(e.target.value)}
+                    onChange={e=> setRecap(e.target.value)}
                 />
             </Grid>
                 <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
@@ -623,7 +646,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     // defaultValue="Default Value"
                     // value={title}
                     variant="outlined"
-                    // onChange={e=> setTitle(e.target.value)}
+                    onChange={e=> setDetails(e.target.value)}
                 />
             </Grid>
             <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
@@ -637,7 +660,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     // defaultValue="Default Value"
                     // value={title}
                     variant="outlined"
-                    // onChange={e=> setTitle(e.target.value)}
+                    onChange={e=> setSummary(e.target.value)}
                 />
             </Grid>
             </Grid>
@@ -653,7 +676,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     // defaultValue="Default Value"
                     // value={title}
                     variant="outlined"
-                    // onChange={e=> setTitle(e.target.value)}
+                    onChange={e=> setTools(e.target.value)}
                 />
             </Grid>
                 <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
@@ -667,7 +690,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     // defaultValue="Default Value"
                     // value={title}
                     variant="outlined"
-                    // onChange={e=> setTitle(e.target.value)}
+                    onChange={e=> setHomework(e.target.value)}
                 />
             </Grid>
             <Grid item xs={12} sm={5} className={isMobile ? '' : 'filterPadding'}>

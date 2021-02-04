@@ -13,8 +13,8 @@ import Loading from '../../../components/loader/loader';
 import unfiltered from '../../../assets/images/unfiltered.svg'
 import selectfilter from '../../../assets/images/selectfilter.svg';
 import DailyDairyFilter from '../view-daily-dairy';
-import PeriodCard from '../../general-dairy/dairy-card'
-import ViewMoreCard from '../../general-dairy/view-more-card'
+import PeriodCard from '../dairy-card'
+import ViewMoreCard from '../view-more-card'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -58,7 +58,7 @@ const DailyDairyList = () => {
                 `${endpoints.generalDairy.dairyList
                 }?branch=${branchId}&grades=${gradeId}&sections=${sectionIds}&page=${page}&start_date=${startDate.format(
                     'YYYY-MM-DD'
-                )}&end_date=${endDate.format('YYYY-MM-DD')}`
+                )}&end_date=${endDate.format('YYYY-MM-DD')}&dairy_type=${2}`
             )
             // axiosInstance.get(`${endpoints.generalDairy.dairyList}?start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}`)
             // axiosInstance.get(`${endpoints.generalDairy.dairyList}?grades=${gradeId}&sections=${sectionIds}`)

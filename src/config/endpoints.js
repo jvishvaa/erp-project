@@ -148,7 +148,8 @@ export default {
 
   },
   dailyDairy:{
-    createDailyDairy:'/academic/create-dairy/'
+    createDailyDairy:'/academic/create-dairy/',
+    branches:'/academic/chapters/'
   },
   onlineCourses:{
     createCourse:'/aol/courses/',
