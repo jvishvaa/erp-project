@@ -212,6 +212,7 @@ class WriteBlog extends Component {
   }
 
   handleGenre = (data) => {
+    console.log(data,"data@@")
     this.setState({ genreId: data.id,genreName:data.genre });
   };
 
@@ -287,7 +288,7 @@ class WriteBlog extends Component {
                       size='small'
                       id='combo-box-demo'
                       options={genreList}
-                      // value={genreName}
+                      value={genreName}
                       getOptionLabel={(option) => option.genre}
                       style={{ width: 300 }}
                       onChange={(e, data) => this.handleGenre(data)}

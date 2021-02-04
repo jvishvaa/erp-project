@@ -43,6 +43,8 @@ import LessonPlan from './containers/lesson-plan/lesson-plan-view';
 import {
   TeacherBlog,
   ContentView,
+  ContentViewAdmin,
+  ContentViewPrincipal,
   WriteBlog,
   PreviewBlog,
   StudentDashboard,
@@ -57,7 +59,9 @@ import {
   PrincipalBlog,
   PrincipalPublishBlogView,
   StudentPublishBlogView,
-  AdminPublishBlogView
+  AdminPublishBlogView,
+  ContentViewPublishAdmin,
+  ContentViewPublishPrincipal
 
 } from './containers/blog';
 import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
@@ -172,11 +176,23 @@ function App() {
                     <Route exact path='/blog/teacher/contentView'>
                       {({ match }) => <ContentView match={match} />}
                     </Route>
+                    <Route exact path='/blog/principal/contentView'>
+                      {({ match }) => <ContentViewPrincipal match={match} />}
+                    </Route>
+                    <Route exact path='/blog/admin/contentView'>
+                      {({ match }) => <ContentViewAdmin match={match} />}
+                    </Route>
                     <Route exact path='/blog/teacher/contentViewPublish'>
                       {({ match }) => <ContentViewPublish match={match} />}
                     </Route>
                     <Route exact path='/blog/student/contentViewPublishStudent'>
                       {({ match }) => <ContentViewPublishStudent match={match} />}
+                    </Route>
+                    <Route exact path='/blog/principal/contentViewPublishPrincipal'>
+                      {({ match }) => <ContentViewPublishPrincipal match={match} />}
+                    </Route>
+                     <Route exact path='/blog/admin/contentViewPublishAdmin'>
+                      {({ match }) => <ContentViewPublishAdmin match={match} />}
                     </Route>
 
                     <Route exact path='/blog/teacher/publish/view'>
