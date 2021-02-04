@@ -23,6 +23,7 @@ function useFetcher(props) {
     setValueAndLabel: setValueAndLabelFromProps,
     method: methodFromProps = 'get',
     isCentral = false,
+    APIDataKeyName = 'data',
   } = props;
 
   const [data, setData] = useState(dataSkeleton);
@@ -57,9 +58,11 @@ function useFetcher(props) {
     const axiosModule = isCentral ? axios : axiosInstance;
     axiosModule[method](apiUrl, methodIncludePayload ? payLoad : headersObj, headersObj)
       .then((responce) => {
-        const { success, data: apiData, message } = responce.data || {};
+        const { [APIDataKeyName]: apiData, message, status_code: statusCodeResponse } =
+          responce.data || {};
         let dataObj = {};
-        if (success) {
+        const statusCode = Number(statusCodeResponse);
+        if (statusCode > 199 && statusCode < 300) {
           let apiDataWithValueAndLabels = apiData;
           if (Array.isArray(apiData)) {
             if (setValueAndLabelFromProps) {
