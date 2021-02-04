@@ -51,7 +51,10 @@ import {
   CreateGenre,
   ViewGenre, ContentViewPublish,
   AdminBlog,
-  PrincipalBlog
+  PrincipalBlog,
+  PrincipalPublishBlogView,
+  StudentPublishBlogView,
+  AdminPublishBlogView
 
 } from './containers/blog';
 import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
@@ -170,6 +173,15 @@ function App() {
 
                     <Route exact path='/blog/teacher/publish/view'>
                       {({ match }) => <TeacherPublishBlogView match={match} />}
+                    </Route>
+                    <Route exact path='/blog/admin/publish/view'>
+                      {({ match }) => <AdminPublishBlogView match={match} />}
+                    </Route>
+                    <Route exact path='/blog/student/publish/view'>
+                      {({ match }) => <StudentPublishBlogView match={match} />}
+                    </Route>
+                    <Route exact path='/blog/principal/publish/view'>
+                      {({ match }) => <PrincipalPublishBlogView match={match} />}
                     </Route>
                     <Route exact path='/blog/student/dashboard'>
                       {({ match }) => <StudentDashboard match={match} />}

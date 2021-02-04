@@ -75,56 +75,23 @@ const StyledRating = withStyles({
   },
 })(Rating);
 
-const publishLevelChoiceBranch=[ 
-  {label:'Orchids',value:'1'},
-
-//   { label: 'Branch', value: '2' },
-  { label: 'Grade', value: '3' },
-  { label: 'Section', value: '4' }
-
-  ] 
-  const publishLevelChoiceGrade=[ 
-    {label:'Orchids',value:'1'},
-
-      { label: 'Branch', value: '2' },
-    //   { label: 'Grade', value: '3' },
-      { label: 'Section', value: '4' }
-    
-      ] 
-      const publishLevelChoiceSection=[ 
-        {label:'Orchids',value:'1'},
-
-          { label: 'Branch', value: '2' },
-          { label: 'Grade', value: '3' },
-        //   { label: 'Section', value: '4' }
-        
-          ] 
-          const publishLevelChoiceOrchids=[ 
-            // {label:'Orchids',value:'1'},
-            { label: 'Branch', value: '2' },
-            { label: 'Grade', value: '3' },
-          //   { label: 'Section', value: '4' }
           
-            ] 
 class ContentViewPublish extends Component {
   constructor(props) {
     super(props);
     this.state = {
       relatedBlog: true,
       starsRating: 0,
-      feedBack: false,
-      isPublish:false,
       data: this.props.location.state.data && this.props.location.state.data,
       tabValue :this.props.location.state.tabValue && this.props.location.state.tabValue,
-      feedbackrevisionReq:'',
       roleDetails: JSON.parse(localStorage.getItem('userDetails')),
       blogId: this.props.location.state.data && this.props.location.state.data.id,
-
       likeStatus:false,
       currentLikes: 0,
       loading:false,
       likes: this.props.location.state.data && this.props.location.state.data.likes,
       loginUserName : JSON.parse(localStorage.getItem('userDetails')).first_name
+
 
     };
 
@@ -132,87 +99,6 @@ class ContentViewPublish extends Component {
   componentDidMount() {
     let {blogId} = this.state
     this.handleView(blogId)
-  }
-
-
-  handleView = (blogId) => {
-    let requestData = {
-      "blog_id": blogId ,
-    }
-  axiosInstance.post(`${endpoints.blog.BlogView}`, requestData)
-  .then(result=>{
-  if (result.data.status_code === 200) {
-  } else {        
-  }
-  }).catch((error)=>{
-  })
-}
-
-  
-
-
-
-
-  submitRevisionFeedback = () => {
-
-    const {  data, feedbackrevisionReq } = this.state;
-    const formData = new FormData();
-    formData.set('blog_id', data.id);
-    formData.set('status', 5);
-    formData.set('feedback_revision_required', feedbackrevisionReq);
-
-    axios
-      .put(`${endpoints.blog.Blog}`, formData)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          this.props.history.push({
-            pathname: '/blog/teacher',
-          });
-        } else {
-          console.log(result.data.message);
-        }
-      })
-      .catch((error) => {
-      });
-  };
-  handleReivisionNameChange = (e) => {
-    this.setState({feedbackrevisionReq:e.target.value})
-  };
-  submitPublish = () => {
-
-  const {  data, publishedLevel ,roleDetails} = this.state;
-  const formData = new FormData();
-  formData.set('blog_id', data.id);
-  formData.set('status', 4);
-  formData.set('published_level', publishedLevel);
-  if(publishedLevel === '2'){
-    let branchId = roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0]
-    formData.set('branch_id', branchId);
-    
-    }
-    axios
-      .put(`${endpoints.blog.Blog}`, formData)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          this.props.history.push({
-            pathname: '/blog/teacher/publish/view',
-          });
-        } else {
-          console.log(result.data.message);
-        }
-      })
-      .catch((error) => {
-      });
-  };
-  
-  handlePublishLevelType = (event, value) => {
-    if (value && value.value){
-      this.setState({publishedLevel:value.value})
-    }
-    else{
-      this.setState({publishedLevel:''})
-
-    }
   }
   getLikeStatus = (isLiked) => {
     let { likeStatus,likes }=this.state
@@ -229,7 +115,6 @@ class ContentViewPublish extends Component {
   
     }
   }
-
   handleLike = (isLiked,blogId) => {
     this.getLikeStatus(isLiked)
     let requestData = {
@@ -251,10 +136,28 @@ class ContentViewPublish extends Component {
     // setAlert('error', error.message);
   })
     }
+
+  handleView = (blogId) => {
+    let requestData = {
+      "blog_id": blogId ,
+    }
+  axiosInstance.post(`${endpoints.blog.BlogView}`, requestData)
+  .then(result=>{
+  if (result.data.status_code === 200) {
+  } else {        
+  }
+  }).catch((error)=>{
+  })
+}
+  
+
+
+
+
   
   render() {
     const { classes } = this.props;
-    const { likes,currentLikes,likeStatus,loginUserName,tabValue,relatedBlog, starsRating, feedBack ,data,feedbackrevisionReq,isPublish,publishedLevel} = this.state;
+    const { likes,currentLikes,likeStatus,loginUserName,data,feedbackrevisionReq} = this.state;
     const blogFkLike= data && data.blog_fk_like
     const likedUserIds=blogFkLike.map(blog => blog.user)
     const indexOfLoginUser=likedUserIds.indexOf(roleDetails.user_id)
@@ -292,7 +195,7 @@ class ContentViewPublish extends Component {
                             {data.title}
                         </Typography>
                         <CardMedia className={classes.media} image={data.thumbnail} />
-                        <CardContent>  {tabValue  && data.comment ? 
+                        <CardContent> {tabValue  && data.comment ? 
                         <CardContent> <Typography
                         style={{color:'red', fontSize:'12px'}}
                       >Comment:{data.comment}
@@ -317,10 +220,11 @@ class ContentViewPublish extends Component {
                           <Typography variant='body2' color='textSecondary' component='p'>
                             {data.content}
                           </Typography>
-                          <Typography component='p'  style={{  paddingRight: '650px',fontSize:'12px'}}
+                          <Typography component='p'  style={{paddingRight: '650px', fontSize:'12px'}}
 >
                           TotalWords : {data.word_count}
                           </Typography>
+
                         </CardContent>
                         <CardActions>
                         {loginUserName !== name ? <Button
@@ -336,58 +240,9 @@ class ContentViewPublish extends Component {
 
                             >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
                             </Button>
-                          {tabValue !== 0 ?
-                        
-                          <Button
-                            size='small'
-                            color='primary'
-                            onClick={() => this.setState({ isPublish: true })}
-                          >
-                            Publish
-                          </Button> :''
-
-                          }
+                       
                         </CardActions>
                       </Card>
-                    </Grid>
-                    <Grid item xs={3}>
-                     {isPublish ? (
-                        <Card style={{ minWidth: 320 }} className={classes.reviewCard}>
-                          <CardContent>
-                          <Autocomplete
-                            style={{ width: '100%' }}
-                            size='small'
-                            onChange={this.handlePublishLevelType}
-                            id='category'
-                            required
-                            options={tabValue === 1 ? publishLevelChoiceBranch : tabValue === 2 ? publishLevelChoiceGrade : tabValue ===3 ? publishLevelChoiceSection:publishLevelChoiceOrchids}
-                            getOptionLabel={(option) => option?.label}
-                            filterSelectedOptions
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                variant='outlined'
-                                label='Publish Level'
-                                placeholder='Publish Level'
-                              />
-                            )}
-                          />
-                            <br />
-                            <CardActions>
-                              <Button
-                                style={{ fontSize: 12 }}
-                                size='small'
-                                color='primary'
-                                disabled={!publishedLevel}
-                                onClick ={this.submitPublish}
-                              >
-                                Publish
-                              </Button>
-                            </CardActions>
-                          </CardContent>
-                        </Card>
-                      )
-                      : ''}
                     </Grid>
                   </Grid>
                 </div>

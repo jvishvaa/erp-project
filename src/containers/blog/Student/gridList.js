@@ -9,18 +9,13 @@ import CardHeader from '@material-ui/core/CardHeader';
 import Tooltip from '@material-ui/core/Tooltip';
 import { withRouter } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import List from '@material-ui/core/List';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItem from '@material-ui/core/ListItem';
-// import Card from '@material-ui/core/Card';
-import DeleteIcon from '@material-ui/icons/Delete';
+import Face from '@material-ui/icons/Face'
+
 import endpoints from '../../../config/endpoints';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
-import Box from '@material-ui/core/Box';
 import moment from 'moment';
 
 import unfiltered from '../../../assets/images/unfiltered.svg'
@@ -39,15 +34,10 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: -30,
   },
   card: {
-    // backgroundColor: 'red',
-    // padding: theme.spacing(2),
     textAlign: 'center',
     margin: theme.spacing(1),
     backgroundPosition: 'center',
     backgroundSize: 'auto',
-    // backgroundColor: 'grey',
-    // backgroundImage: `url(${'https://robbreport.com/wp-content/uploads/2016/09/lamborghini_huracan_slideshow_lead.jpg?w=772'})`,
-    // color: theme.palette.text.secondary,
   },
 }));
 
@@ -61,7 +51,6 @@ function GridList(props) {
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false)
   const themeContext = useTheme();
-
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
     setShowPeriodIndex(index);
@@ -71,28 +60,28 @@ function GridList(props) {
     setShowMenu(false);
     setShowPeriodIndex();
   };
-  const handleDeleteBlog = (blogId) => {
+//   const handleDeleteBlog = (blogId) => {
 
-    let requestData = {
-      "blog_id": blogId ,
-      "status": "1"
+//     let requestData = {
+//       "blog_id": blogId ,
+//       "status": "1"
   
-    }
-  axiosInstance.put(`${endpoints.blog.Blog}`, requestData)
+//     }
+//   axiosInstance.put(`${endpoints.blog.Blog}`, requestData)
 
-  .then(result=>{
-  if (result.data.status_code === 200) {
-    setLoading(false);
-    setAlert('success', result.data.message);
-  } else {        
-    setLoading(false);
-    setAlert('error', result.data.message);
-  }
-  }).catch((error)=>{
-    setLoading(false);        
-    setAlert('error', error.message);
-  })
-};
+//   .then(result=>{
+//   if (result.data.status_code === 200) {
+//     setLoading(false);
+//     setAlert('success', result.data.message);
+//   } else {        
+//     setLoading(false);
+//     setAlert('error', result.data.message);
+//   }
+//   }).catch((error)=>{
+//     setLoading(false);        
+//     setAlert('error', error.message);
+//   })
+// };
 
 
   return (
@@ -100,7 +89,6 @@ function GridList(props) {
       {data.length ? (
         <Grid container spacing={2}>
           <Grid item xs={6}>
-            {/* <Card style={{ backgroundColor: 'yellow' }} className={classes.card}> */}
             <Grid item>
               <Card
                 className={classes.card}
@@ -109,52 +97,65 @@ function GridList(props) {
                   height: '230px',
                   backgroundSize: '360px',
                   backgroundImage: `url(${data[0] && data[0].thumbnail})`,
-                  display:data.length >= 0 ? 'flex' : 'none',
+                  display:data.length >= 1 ? 'flex' : 'none',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                 }}
               >
                 <CardHeader
-                action=       {
-                  props.tabValue === 2 ?
-<IconButton
-                  title='Delete'
-                  onClick={()=>handleDeleteBlog(data[0].id)}
-                >
-                  <DeleteOutlinedIcon
-                    style={{ color: themeContext.palette.primary.main }}
-                  />
-                </IconButton>
-      : '' 
-              }
+//                 action=       {
+//                   props.tabValue === 2 ?
+// <IconButton
+//                   title='Delete'
+//                   onClick={()=>handleDeleteBlog(data[0] && data[0].id)}
+//                 >
+//                   <DeleteOutlinedIcon
+//                     style={{ color: themeContext.palette.primary.main }}
+//                   />
+//                 </IconButton>
+//       : '' 
+//               }
                   subheader={
                     <Typography
                       gutterBottom
                       variant='body2'
                       align='left'
                       component='p'
-                      style={{ color: 'black' }}
+                      style={{ color: 'white' }}
                     >
                       {data[0] && moment(data[0].created_at).format('MMM DD YYYY')}
+                      
                     </Typography>
+                    
                   }
                 />
            
                 <CardActionArea>
-                  <CardContent>
+                   <CardContent style ={{ padding:'5px'}}>
                     <Typography
-                      // variant='body2'
                       style={{
                         marginTop: '-35px',
-                        // fontSize: 'x-large',
                         fontWeight: 'bold',
-                        color: 'black',
+                        color: 'white',
                       }}
                       color='textSecondary'
                       component='p'
                     >
                       {data[0] && data[0].title}
                     </Typography>
+                    <Typography
+                      style={{
+                        color: 'white',
+                        paddingRight:'360px'
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                   </IconButton>
+                      {data[0] && data[0].author.first_name}
+                    </Typography>
+                   
                   </CardContent>
                 </CardActionArea>
                 <CardActions style={{ float: 'right' }}>
@@ -177,64 +178,75 @@ function GridList(props) {
               <Grid item xs={6}>
                 <Card
                   style={{
-                    display:data.length >= 1 ? 'flex' : 'none',
+                    display:data.length >= 2 ? 'flex' : 'none',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                     width: '100%',
                     height: '290px',
-                    // display: data.length >= 2 ? '' : 'none',
                     backgroundSize: '360px',
                     backgroundImage: `url(${data[1] && data[1].thumbnail})`,
                   }}
                   className={classes.card}
                 >
                   <CardHeader
-                     action=       {
-                      props.tabValue === 2 ?
-    <IconButton
-                      title='Delete'
-                      onClick={()=>handleDeleteBlog(data[1].id)}
-                    >
-                      <DeleteOutlinedIcon
-                        style={{ color: themeContext.palette.primary.main }}
-                      />
-                    </IconButton>
-          : '' 
-                  }
+          //            action=       {
+          //             props.tabValue === 2 ?
+          //             <IconButton
+          //             title='Delete'
+          //             onClick={()=>handleDeleteBlog(data[1] && data[1].id)}
+          //           >
+          //             <DeleteOutlinedIcon
+          //               style={{ color: themeContext.palette.primary.main }}
+          //             />
+          //           </IconButton>
+          // : '' 
+          //         }
                     subheader={
                       <Typography
                         gutterBottom
                         variant='body2'
                         align='left'
                         component='p'
-                        style={{ color: 'black' }}
+                        style={{ color: 'white' }}
                       >
                         {data[1] && moment(data[1].created_at).format('MMM DD YYYY')}
                       </Typography>
                     }
                   />
                   <CardActionArea>
-                    <CardContent>
+                  <CardContent style ={{ padding:'5px'}}>
                       <Typography
                         // variant='body2'
                         style={{
                           marginTop: '-10px',
                           // fontSize: 'x-large',
                           fontWeight: 'bold',
-                          color: 'black',
+                          color: 'white',
                         }}
                         color='textSecondary'
                         component='p'
                       >
                         {data[1] && data[1].title}
                       </Typography>
+                      <Typography
+                      style={{
+                        color: 'white',
+                        paddingRight:'100px'
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                   </IconButton>
+                      {data[1] && data[1].author.first_name}
+                    </Typography>
                     </CardContent>
                   </CardActionArea>
                   <CardActions style={{ float: 'right' }}>
                     <Button
                       size='small'
                       color='primary'
-                      style={{ marginTop: 30, width: 150 }}
+                      style={{ width: 150 }}
                       onClick={() =>
                         props.history.push({
                           pathname: '/blog/student/view-blog',
@@ -248,64 +260,77 @@ function GridList(props) {
               </Grid>
               <Grid item xs={6}>
                 <Card
-                  style={{
-                    // backgroundColor: 'grey',
-                    width: '100%',
-                    height: '290px',
-                    display:data.length >= 2 ? 'flex' : 'none',
-                    justifyContent: 'space-between',
-                    backgroundSize: '360px',
-                    backgroundImage: `url(${data[3] && data[3].thumbnail})`,
-                  }}
+                 style={{
+                  display:data.length >= 3 ? 'flex' : 'none',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  height: '290px',
+                  backgroundSize: '360px',
+                  backgroundImage: `url(${data[2] && data[2].thumbnail})`,
+                }}
+                 
                   className={classes.card}
                 >
                   <CardHeader
-                     action=       {
-                      props.tabValue === 2 ?
-    <IconButton
-                      title='Delete'
-                      onClick={()=>handleDeleteBlog(data[2].id)}
-                    >
-                      <DeleteOutlinedIcon
-                        style={{ color: themeContext.palette.primary.main }}
-                      />
-                    </IconButton>
-          : '' 
-                  }
+    //                  action=       {
+    //                   props.tabValue === 2 ?
+    // <IconButton
+    //                   title='Delete'
+    //                   onClick={()=>handleDeleteBlog(data[2] && data[2].id)}
+    //                 >
+    //                   <DeleteOutlinedIcon
+    //                     style={{ color: themeContext.palette.primary.main }}
+    //                   />
+    //                 </IconButton>
+    //       : '' 
+    //               }
                     subheader={
                       <Typography
                         gutterBottom
                         variant='body2'
                         align='left'
                         component='p'
-                        style={{ color: 'black' }}
+                        style={{ color: 'white' }}
                       >
                         {data[2] && moment(data[2].created_at).format('MMM DD YYYY')}
                       </Typography>
                     }
                   />
                   <CardActionArea>
-                    <CardContent>
+                     <CardContent style ={{ padding:'5px'}}>
                       <Typography
                         // variant='body2'
                         style={{
                           marginTop: '-15px',
                           // fontSize: 'x-large',
                           fontWeight: 'bold',
-                          color: 'black',
+                          color: 'white',
                         }}
                         color='textSecondary'
                         component='p'
                       >
                         {data[2] && data[2].title}
                       </Typography>
+                      <Typography
+                      style={{
+                        color: 'white',
+                        paddingRight:'100px'
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                   </IconButton>
+                      {data[2] && data[2].author.first_name}
+                    </Typography>
                     </CardContent>
                   </CardActionArea>
                   <CardActions style={{ float: 'right' }}>
                     <Button
                       size='small'
                       color='primary'
-                      style={{ marginTop: 30, width: 150 }}
+                      style={{  width: 150 }}
                       onClick={() =>
                         props.history.push({
                           pathname: '/blog/student/view-blog',
@@ -324,63 +349,75 @@ function GridList(props) {
               <Grid item xs={6}>
                 <Card
                   style={{
-                    width: '100%',
-                    height: '290px',
-                    display:data.length >= 3 ? 'flex' : 'none',
+                    display:data.length >= 4 ? 'flex' : 'none',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
+                    width: '100%',
+                    height: '290px',
                     backgroundSize: '360px',
                     backgroundImage: `url(${data[3] && data[3].thumbnail})`,
                   }}
                   className={classes.card}
                 >
                   <CardHeader
-                    action=       {
-                      props.tabValue === 2 ?
-    <IconButton
-                      title='Delete'
-                      onClick={()=>handleDeleteBlog(data[3].id)}
-                    >
-                      <DeleteOutlinedIcon
-                        style={{ color: themeContext.palette.primary.main }}
-                      />
-                    </IconButton>
-          : '' 
-                  }
+    //                 action=       {
+    //                   props.tabValue === 2 ?
+    // <IconButton
+    //                   title='Delete'
+    //                   onClick={()=>handleDeleteBlog(data[3].id)}
+    //                 >
+    //                   <DeleteOutlinedIcon
+    //                     style={{ color: themeContext.palette.primary.main }}
+    //                   />
+    //                 </IconButton>
+    //       : '' 
+    //               }
                     subheader={
                       <Typography
                         gutterBottom
                         variant='body2'
                         align='left'
                         component='p'
-                        style={{ color: 'black' }}
+                        style={{ color: 'white' }}
                       >
                         {data[3] && moment(data[3].created_at).format('MMM DD YYYY')}
                       </Typography>
                     }
                   />
                   <CardActionArea>
-                    <CardContent>
+                     <CardContent style ={{ padding:'5px'}}>
                       <Typography
                         // variant='body2'
                         style={{
                           marginTop: '-15px',
                           // fontSize: 'x-large',
                           fontWeight: 'bold',
-                          color: 'black',
+                          color: 'white',
                         }}
                         color='textSecondary'
                         component='p'
                       >
                         {data[3] && data[3].title}
                       </Typography>
+                      <Typography
+                      style={{
+                        color: 'white',
+                        paddingRight:'100px'
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                   </IconButton>
+                      {data[3] && data[3].author.first_name}
+                    </Typography>
                     </CardContent>
                   </CardActionArea>
                   <CardActions style={{ float: 'right' }}>
                     <Button
                       size='small'
                       color='primary'
-                      style={{ marginTop: 50, width: 150 }}
+                      style={{ width: 150 }}
                       onClick={() =>
                         props.history.push({
                           pathname: '/blog/student/view-blog',
@@ -398,60 +435,73 @@ function GridList(props) {
                     width: '100%',
                     height: '290px',
                     backgroundSize: '360px',
-                    display:data.length >= 4 ? 'flex' : 'none',
+                    display:data.length >= 5 ? 'flex' : 'none',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
-                    backgroundImage: `url(${data[3] && data[3].thumbnail})`,
+                    backgroundImage: `url(${data[4] && data[4].thumbnail})`,
                   }}
+                  
                   className={classes.card}
                 >
                   <CardHeader
-                    action=       {
-                      props.tabValue === 2 ?
-    <IconButton
-                      title='Delete'
-                      onClick={()=>handleDeleteBlog(data[4].id)}
-                    >
-                      <DeleteOutlinedIcon
-                        style={{ color: themeContext.palette.primary.main }}
-                      />
-                    </IconButton>
-          : '' 
-                  }
+    //                 action=       {
+    //                   props.tabValue === 2 ?
+    // <IconButton
+    //                   title='Delete'
+    //                   onClick={()=>handleDeleteBlog(data[4].id)}
+    //                 >
+    //                   <DeleteOutlinedIcon
+    //                     style={{ color: themeContext.palette.primary.main }}
+    //                   />
+    //                 </IconButton>
+    //       : '' 
+    //               }
                     subheader={
                       <Typography
                         gutterBottom
                         variant='body2'
                         align='left'
                         component='p'
-                        style={{ color: 'black' }}
+                        style={{ color: 'white' }}
                       >
                         {data[4] && moment(data[4].created_at).format('MMM DD YYYY')}
                       </Typography>
                     }
                   />
                   <CardActionArea>
-                    <CardContent>
+                     <CardContent style ={{ padding:'5px'}}>
                       <Typography
                         // variant='body2'
                         style={{
                           marginTop: '-15px',
                           // fontSize: 'x-large',
                           fontWeight: 'bold',
-                          color: 'black',
+                          color: 'white',
                         }}
                         color='textSecondary'
                         component='p'
                       >
                         {data[4] && data[4].title}
                       </Typography>
+                      <Typography
+                      style={{
+                        color: 'white',
+                        paddingRight:'100px'
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                   </IconButton>
+                      {data[4] && data[4].author.first_name}
+                    </Typography>
                     </CardContent>
                   </CardActionArea>
                   <CardActions style={{ float: 'right' }}>
                     <Button
                       size='small'
                       color='primary'
-                      style={{ marginTop: 50, width: 150 }}
+                      style={{ width: 150 }}
                       onClick={() =>
                         props.history.push({
                           pathname: '/blog/student/view-blog',
@@ -460,7 +510,6 @@ function GridList(props) {
                     >
                       Read more
                     </Button>
-                    {/* <Route path='/hello' component={ContentView} /> */}
                   </CardActions>
                 </Card>
               </Grid>
@@ -470,7 +519,7 @@ function GridList(props) {
                 style={{
                   width: '100%',
                   height: '230px',
-                  display:data.length >= 5 ? 'flex' : 'none',
+                  display:data.length >= 6 ? 'flex' : 'none',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                   backgroundSize: '360px',
@@ -479,18 +528,18 @@ function GridList(props) {
                 className={classes.card}
               >
                 <CardHeader
-                   action=       {
-                    props.tabValue === 2 ?
-  <IconButton
-                    title='Delete'
-                    onClick={()=>handleDeleteBlog(data[5].id)}
-                  >
-                    <DeleteOutlinedIcon
-                      style={{ color: themeContext.palette.primary.main }}
-                    />
-                  </IconButton>
-        : '' 
-                }
+  //                  action=       {
+  //                   props.tabValue === 2 ?
+  // <IconButton
+  //                   title='Delete'
+  //                   onClick={()=>handleDeleteBlog(data[5].id)}
+  //                 >
+  //                   <DeleteOutlinedIcon
+  //                     style={{ color: themeContext.palette.primary.main }}
+  //                   />
+  //                 </IconButton>
+  //       : '' 
+  //               }
                   subheader={
                     <Typography gutterBottom variant='body2' align='left' component='p'>
                       {data[5] && moment(data[5].created_at).format('MMM DD YYYY')}
@@ -498,19 +547,31 @@ function GridList(props) {
                   }
                 />
                 <CardActionArea>
-                  <CardContent>
+                   <CardContent style ={{ padding:'5px'}}>
                     <Typography
                       // variant='body2'
                       style={{
                         marginTop: '-35px',
                         // fontSize: 'x-large',
                         fontWeight: 'bold',
-                        color: 'black',
+                        color: 'white',
                       }}
                       color='textSecondary'
                       component='p'
                     >
                       {data[5] && data[5].title}
+                    </Typography>
+                    <Typography
+                      style={{
+                        color: 'white',
+                        paddingRight:'360px'
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                   </IconButton>
+                      {data[5] && data[5].author.first_name}
                     </Typography>
                   </CardContent>
                 </CardActionArea>

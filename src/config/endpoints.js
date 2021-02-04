@@ -156,6 +156,10 @@ export default {
   blog: {
     genreList: '/academic/genre/',
     Blog: '/academic/blog/',
+    BlogLike:'/academic/like_blog/',
+    BlogView:'/academic/view_blog/'
+
+    
   },
 
     
