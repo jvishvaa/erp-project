@@ -20,13 +20,10 @@ import {
 } from '@material-ui/core';
 import Rating from '@material-ui/lab/Rating';
 import Avatar from '@material-ui/core/Avatar';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { withRouter } from 'react-router-dom';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-import SideBar from './sideBar';
 import Layout from '../../Layout';
 import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
 
@@ -76,7 +73,7 @@ const StyledRating = withStyles({
 })(Rating);
 
           
-class ContentViewPublish extends Component {
+class ContentViewPublishStudent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -121,7 +118,7 @@ class ContentViewPublish extends Component {
       "blog_id": blogId ,
   
     }
-  axiosInstance.post(`${endpoints.blog.BlogLike}`, requestData)
+  axios.post(`${endpoints.blog.BlogLike}`, requestData)
   
   .then(result=>{
   if (result.data.status_code === 200) {
@@ -141,7 +138,7 @@ class ContentViewPublish extends Component {
     let requestData = {
       "blog_id": blogId ,
     }
-  axiosInstance.post(`${endpoints.blog.BlogView}`, requestData)
+  axios.post(`${endpoints.blog.BlogView}`, requestData)
   .then(result=>{
   if (result.data.status_code === 200) {
   } else {        
@@ -157,7 +154,7 @@ class ContentViewPublish extends Component {
   
   render() {
     const { classes } = this.props;
-    const { likes,currentLikes,likeStatus,loginUserName,data,feedbackrevisionReq} = this.state;
+    const { tabValue, roleDetails,likes,currentLikes,likeStatus,loginUserName,data,feedbackrevisionReq} = this.state;
     const blogFkLike= data && data.blog_fk_like
     const likedUserIds=blogFkLike.map(blog => blog.user)
     const indexOfLoginUser=likedUserIds.indexOf(roleDetails.user_id)
@@ -224,6 +221,9 @@ class ContentViewPublish extends Component {
 >
                           TotalWords : {data.word_count}
                           </Typography>
+                          <Typography  component='p' style={{ paddingRight: '650px',fontSize:'12px'}}>
+                           Genre: {data.genre && data.genre.genre}
+                          </Typography>
 
                         </CardContent>
                         <CardActions>
@@ -254,4 +254,4 @@ class ContentViewPublish extends Component {
     );
   }
 }
-export default withRouter(withStyles(styles)(ContentViewPublish));
+export default withRouter(withStyles(styles)(ContentViewPublishStudent));

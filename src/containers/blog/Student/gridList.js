@@ -594,9 +594,6 @@ function GridList(props) {
           </Grid>
         </Grid>
       ) : 
-      // (
-      //   <Typography align='center'>Oops... No blogs Posted</Typography>
-      // )
       (
         <div className="periodDataUnavailable">
             <SvgIcon
