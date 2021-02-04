@@ -328,7 +328,7 @@ class StudentDashboard extends Component {
                           onChange={this.handleTabChange}
                           aria-label='simple tabs example'
                         >
-                          <Tab label='Published' {...a11yProps(0)} />
+                          <Tab label='Pending Review' {...a11yProps(0)} />
                           <Tab label='Reviewed' {...a11yProps(1)} />
                           <Tab label='Drafted' {...a11yProps(2)} />
                           <Tab label='Deleted' {...a11yProps(3)} />
