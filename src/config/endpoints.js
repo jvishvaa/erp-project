@@ -10,13 +10,14 @@ export default {
     branches: '/erp_user/branch/',
     grades: '/erp_user/grademapping/',
     sections: '/erp_user/sectionmapping/',
+    courses: '/aol/courses/',
   },
   profile: {
     userDetails: '/erp_user/user-data/',
   },
   userManagement: {
     bulkUpload: '/erp_user/uploaded-users-status/',
-    academicYear: '/erp_user/list-academic_year/'
+    academicYear: '/erp_user/list-academic_year/',
   },
   communication: {
     roles: '/erp_user/roles/',
@@ -39,7 +40,9 @@ export default {
   onlineClass: {
     filterStudent: '/erp_user/student_filter/',
     teacherAvailability: '/erp_user/tutor_availability_check/',
-    createClass: '/erp_user/online_class/',
+    // createClass: '/erp_user/online_class/',
+    createClass: '/erp_user/online-recurring/',
+    createSpecialClass: '/erp_user/online-erp-class/',
     studentOnlineclasses: '/erp_user/student_online_class/',
     acceptOrJoinClass: '/erp_user/onlineclass_accept_join/',
     managementOnlineClass: '/erp_user/teacher_online_class/',
@@ -49,6 +52,7 @@ export default {
     resourceLink: '/erp_user/resource_link/',
     resourceFile: '/erp_user/resource_files/',
     feedback: '/erp_user/onlineclass_attendancecheck/',
+    updateTutor: '/erp_user/update_tutor_email/',
   },
   masterManagement: {
     subjects: '/erp_user/subjects-list/',
@@ -156,7 +160,12 @@ export default {
 attendanceList:{
   list:'/erp_user/onlineclass_attendeelist/',
   updateAttendance:'/erp_user/mark_attendance/',
-
+},
+  blog: {
+    genreList: '/academic/genre/',
+    Blog: '/academic/blog/',
+    BlogLike:'/academic/like_blog/',
+    BlogView:'/academic/view_blog/'
 },
     
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',

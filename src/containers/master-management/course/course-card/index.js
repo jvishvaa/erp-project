@@ -40,12 +40,12 @@ console.log(cData,'cData')
       const data = event.target.files[0];
       const fd = new FormData();
       fd.append('file', event.target.files[0]);
-           const list = [...cData]
+           const list = [cData]
       axiosInstance.post(`${endpoints.onlineCourses.fileUpload}`, fd).then((result) => {
         if (result.data.status_code === 200) {
        
           setFilePath([...filePath, result.data.result]);
-          list[index]['files']=[...cData,result.data.result.get_file_path]
+          list[index]['files']=[result.data.result.get_file_path]
           setAlert('success', result.data.message);
         } else {
           setAlert('error', result.data.message);

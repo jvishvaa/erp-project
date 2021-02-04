@@ -7,6 +7,7 @@ import MessageIcon from '@material-ui/icons/Message';
 import SmsIcon from '@material-ui/icons/Sms';
 import EmailIcon from '@material-ui/icons/Email';
 import HomeWorkIcon from '@material-ui/icons/HomeWork';
+import WebAsset from '@material-ui/icons/WebAsset'
 import ImportContactsIcon from '@material-ui/icons/ImportContacts';
 
 const menuIcon = (name) => {
@@ -58,6 +59,10 @@ const menuIcon = (name) => {
     }
     case 'Lesson Plan': {
       icon = <ImportContactsIcon />;
+      break;
+    }
+    case 'Blogs':{
+      icon = <WebAsset/>;
       break;
     }
     default:
