@@ -42,6 +42,8 @@ const CreateDailyDairy = (details, onSubmit) => {
   const [sections, setSections] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [chapterDropdown, setChapterDropdown] = useState([]);
+  const [filePath,setFilePath] = useState([])
+  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
 
   const { setAlert } = useContext(AlertNotificationContext);
@@ -178,6 +180,99 @@ const CreateDailyDairy = (details, onSubmit) => {
       }
   }
 
+  const handleImageChange=  (event)=>{
+    if(filePath.length<10){
+        const data =event.target.files[0]
+    const fd = new FormData();
+    fd.append('file',event.target.files[0])
+    // fd.append('branch',filterData.branch[0].branch_name)
+    // fd.append('grade',filterData.grade[0].id)
+    // fd.append('section',filterData.section.id)
+    
+    axiosInstance.post(`${endpoints.circular.fileUpload}`, fd)
+        .then((result)=>{
+        
+            if(result.data.status_code === 200){
+                console.log(result.data,'resp')
+                setAlert('success',result.data.message)
+                setFilePath([ ...filePath,result.data.result])
+            }
+            else{
+                setAlert('error',result.data.message)
+            }
+  
+        })
+    }else{
+        setAlert('warning','Exceed Maximum Number Attachment')
+    }
+    
+  
+  }
+
+  const handleSubmit = async () => {
+    const createDairyEntry = endpoints.dailyDairy.createDailyDairy;
+    // const selectionArray = [];
+    // selectedUsers.forEach((item) => {
+    //   item.selected.forEach((ids) => {
+    //     selectionArray.push(ids);
+    //   });
+    // });
+    try {
+      const response = await axiosInstance.post(
+        createDairyEntry,
+        {
+          // title:title,
+              // description:description,
+              // module_name:filterData.role.value,
+              branch: branches,
+              grade:[grades],
+              mapping_bgs:[sections],
+              subject:subjects,
+              // teacher_report:
+              document:filePath,
+              // Branch:filterData.branch.map(function (b) {
+              //     return b.id
+              //   }),
+              // grades:[54],
+          //     grade:filterData.grade.map((g)=>g.grade_id),
+          //     mapping_bgs:filterData.section.map((s)=>s.id),
+          // user_id: selectionArray,
+        },
+        {
+          headers: {
+            // 'application/json' is the modern content-type for JSON, but some
+            // older servers may use 'text/json'.
+            // See: http://bit.ly/text-json
+            'content-type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const { message, status_code: statusCode } = response.data;
+      if (statusCode === 200) {
+        // props.history.push('/user-management/assign-role')
+        // displayUsersList()
+        setAlert('success', message);
+        // setSelectedUsers([]);
+        // setRoleError('');
+        // setSelectedRole('');
+        // setSelectAllObj([]);
+        // setSelectedBranch();
+        // setSelectedGrades([]);
+        // setSelectedMultipleRoles([]);
+        // setSelectedSections([]);
+        // setSelectAllObj([]);
+        // setSelectectUserError('');
+        // setAssigenedRole();
+        // clearSelectAll();
+      } else {
+        setAlert('error', response.data.message);
+      }
+    } catch (error) {
+      setAlert('error', error.message);
+    }
+  };
+
   useEffect(() => {
     fetchAcademicYears();
     fetchBranches();
@@ -209,8 +304,8 @@ const CreateDailyDairy = (details, onSubmit) => {
         <div className={isMobile ? 'breadCrumbFilterRow' : null}>
           <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
-            //   componentName='General Dairy'
-            //   childComponentName='Create New'
+              componentName='Daily Dairy'
+              childComponentName='Create New'
             />
           </div>
         </div>
@@ -504,7 +599,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                             style={{ display: 'none' }}
                             id='raised-button-file'
                             accept="image/*"
-                            // onChange={handleImageChange}
+                            onChange={handleImageChange}
                         />
                     Add Document
                 </Button>
@@ -515,7 +610,7 @@ const CreateDailyDairy = (details, onSubmit) => {
         <div>
             <Button 
             style={{ marginLeft:'80%' }}
-            //  onClick={state.isEdit? handleEdited : handleSubmit}
+             onClick={handleSubmit}
               className='submit_button'>SUBMIT</Button>
         </div>
         </div>

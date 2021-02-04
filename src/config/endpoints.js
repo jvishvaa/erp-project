@@ -143,6 +143,9 @@ export default {
     studentList:'/academic/general-dairy-users/',
 
   },
+  dailyDairy:{
+    createDailyDairy:'/academic/create-dairy/'
+  },
   onlineCourses:{
     createCourse:'/aol/courses/',
     fileUpload:'/aol/file-upload/',

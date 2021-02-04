@@ -12,7 +12,7 @@ import axiosInstance from '../../../config/axios';
 import Loading from '../../../components/loader/loader';
 import unfiltered from '../../../assets/images/unfiltered.svg'
 import selectfilter from '../../../assets/images/selectfilter.svg';
-import GeneralDairyFilter from '../../general-dairy/filterdata';
+import DailyDairyFilter from '../view-daily-dairy';
 import PeriodCard from '../../general-dairy/dairy-card'
 import ViewMoreCard from '../../general-dairy/view-more-card'
 
@@ -84,10 +84,10 @@ const DailyDairyList = () => {
             <Layout>
                 <div>
                     <div style={{ width: '95%', margin: '20px auto' }}>
-                        <CommonBreadcrumbs componentName='General Dairy' />
+                        <CommonBreadcrumbs componentName='Daily Dairy' />
                     </div>
                 </div>
-                <GeneralDairyFilter
+                <DailyDairyFilter
                  handleDairyList={handleDairyList}
                  setPeriodData={setPeriodData}
                   />
