@@ -1,0 +1,366 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable react/jsx-wrap-multilines */
+import React, { Component } from 'react';
+import withStyles from '@material-ui/core/styles/withStyles';
+import moment from 'moment';
+
+// import { connect } from 'react-redux';
+import {
+  Grid,
+  Card,
+  Button,
+  Typography,
+  CardActions,
+  CardMedia,
+  CardContent,
+  Paper,
+  CardHeader,
+  Divider,
+  TextField,
+} from '@material-ui/core';
+import Rating from '@material-ui/lab/Rating';
+import Avatar from '@material-ui/core/Avatar';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { withRouter } from 'react-router-dom';
+import axios from '../../../config/axios';
+import endpoints from '../../../config/endpoints';
+import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
+import SideBar from './sideBar';
+import Review from './Review'
+import Layout from '../../Layout';
+import { ThreeSixty } from '@material-ui/icons';
+
+const styles = (theme) => ({
+  root: {
+    flexGrow: 1,
+    width: '100%',
+    marginTop: 20,
+  },
+  cardRoot: {
+    padding: theme.spacing(2),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+    borderRadius: 10,
+    border: '1px solid #D5D5D5',
+  },
+  sideBlogs: {
+    width: 200,
+    height: 289,
+    borderRadius: 16,
+    marginBottom: 20,
+  },
+  media: {
+    height: 300,
+    borderRadius: 16,
+  },
+  author: {
+    marginTop: 20,
+    borderRadius: 16,
+    border: '1px solid #D5D5D5',
+  },
+  reviewCard: {
+    width: '100%',
+    borderRadius: 16,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+});
+
+const StyledRating = withStyles({
+  iconFilled: {
+    color: '#ff6d75',
+  },
+  iconHover: {
+    color: '#ff3d47',
+  },
+})(Rating);
+
+const publishLevelChoice=[ 
+  { label: 'Branch', value: '2' },
+  { label: 'Grade', value: '3' },
+  { label: 'Section', value: '4' }
+
+  ] 
+class ContentView extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      relatedBlog: true,
+      starsRating: 0,
+      feedBack: false,
+      isPublish:false,
+      data: this.props.location.state.data && this.props.location.state.data,
+      tabValue :this.props.location.state.tabValue && this.props.location.state.tabValue,
+      feedbackrevisionReq:'',
+      roleDetails: JSON.parse(localStorage.getItem('userDetails')),
+      blogRatings :this.props.location.state.data && this.props.location.state.data.remark_rating,
+      overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark
+
+    };
+
+  }
+  componentDidMount() {
+  }
+
+
+
+
+
+
+  submitRevisionFeedback = () => {
+    const {  data, feedbackrevisionReq } = this.state;
+    const formData = new FormData();
+    formData.set('blog_id', data.id);
+    formData.set('status', 5);
+    formData.set('feedback_revision_required', feedbackrevisionReq);
+
+    axios
+      .put(`${endpoints.blog.Blog}`, formData)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          this.props.history.push({
+            pathname: '/blog/teacher',
+          });
+        } else {
+          console.log(result.data.message);
+        }
+      })
+      .catch((error) => {
+      });
+  };
+  handleReivisionNameChange = (e) => {
+    this.setState({feedbackrevisionReq:e.target.value})
+  };
+  submitPublish = () => {
+  const {  data, publishedLevel ,roleDetails} = this.state;
+  const formData = new FormData();
+  formData.set('blog_id', data.id);
+  formData.set('status', 4);
+  formData.set('published_level', publishedLevel);
+  if(publishedLevel === '2'){
+    let branchId = roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0]
+    formData.set('branch_id', branchId);
+    
+    }
+    axios
+      .put(`${endpoints.blog.Blog}`, formData)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          this.props.history.push({
+            pathname: '/blog/teacher',
+          });
+        } else {
+          console.log(result.data.message);
+
+        }
+      })
+      .catch((error) => {
+      });
+  };
+  
+  handlePublishLevelType = (event, value) => {
+    if (value && value.value){
+      this.setState({publishedLevel:value.value})
+    }
+    else{
+      this.setState({publishedLevel:''})
+
+    }
+  }
+//   getRatings = () => {
+//     let {blogRatings} =this.state
+//     if (blogRatings) {
+//       return []
+//     }
+//     const ratings = blogRatings
+//     const type = typeof ratings.remark_rating
+//     const parsedRatings = type === 'object' ? ratings.remark_rating : JSON.parse(ratings.remark_rating)
+//     const allRatingParamters = [...parsedRatings]
+//     return allRatingParamters
+//   }
+
+//  getOverAllRemark = () => {
+//    let {overallRemark} = this.state
+//    return overallRemark
+//   }
+
+  
+  render() {
+    const { classes } = this.props;
+    const { tabValue,relatedBlog, starsRating, feedBack ,data,feedbackrevisionReq,isPublish,publishedLevel} = this.state;
+    return (
+      <div className='layout-container-div'>
+        <Layout className='layout-container'>
+          <div className='message_log_wrapper' style={{ backgroundColor: '#F9F9F9' }}>
+            <div
+              className='message_log_breadcrumb_wrapper'
+              style={{ backgroundColor: '#F9F9F9' }}
+            >
+              <CommonBreadcrumbs componentName='Blog' />
+              <div className='create_group_filter_container'>
+                <div className={classes.root}>
+                  <Grid container spacing={3}>
+                  <Grid item xs={12}>
+                      <Button
+                        style={{ cursor: 'Pointer' }}
+                        onClick={() => window.history.back()}
+                        align='right'
+                      >
+                        <i>Back</i>
+                      </Button>
+                      </Grid>
+                      <Grid item xs={9}>
+                      <Card className={classes.cardRoot}>
+                        <Typography
+                          variant='h5'
+                          component='h2'
+                          style={{ marginBottom: 10 }}
+                        >
+                            {data.title}
+                        </Typography>
+                        <CardMedia className={classes.media} image={data.thumbnail} />
+
+                        <CardHeader
+                          className={classes.author}
+                          avatar={
+                            <Avatar aria-label='recipe' className={classes.avatar}>
+                              R
+                            </Avatar>
+                          }
+                          //   action={
+                          //     <IconButton aria-label='settings'>
+                          //       <MoreVertIcon />
+                          //     </IconButton>
+                          //   }
+                          title={data.author.first_name}
+                          subheader=
+                          {data && moment(data.created_at).format('MMM DD YYYY')}
+
+                        />
+                        <CardContent>
+                          <Typography variant='body2' color='textSecondary' component='p'>
+                            {data.content}
+                          </Typography>
+                        </CardContent>
+                        <CardActions>
+                          {tabValue === 0 ? 
+                          <Button
+                            size='small'
+                            color='primary'
+                            onClick={() => {
+                              this.setState({
+                                relatedBlog: !relatedBlog,
+                                feedBack: false,
+                              });
+                            }}
+                          >
+                            {relatedBlog ? 'Add Review' : 'View Related Blog'}
+                          </Button> : ''}
+                          {tabValue === 0 ?
+                          <Button
+                            size='small'
+                            color='primary'
+                            onClick={() => this.setState({ feedBack: true })}
+                          >
+                            Add Revision Feedback
+                          </Button> :
+                          <Button
+                            size='small'
+                            color='primary'
+                            onClick={() => this.setState({ isPublish: true })}
+                          >
+                            Publish
+                          </Button> 
+
+                          }
+                        </CardActions>
+                      </Card>
+                    </Grid>
+                    <Grid item xs={3}>
+                      {feedBack ? (
+                        <Card style={{ minWidth: 320 }} className={classes.reviewCard}>
+                          <CardContent>
+                            <TextField
+                              id='outlined-multiline-static'
+                              multiline
+                              rows={12}
+                              placeholder='Provide Feedback related to this blog..'
+                              variant='outlined'
+                              onChange={(event,value)=>{this.handleReivisionNameChange(event);}}
+
+                            />
+                            <br />
+                            <CardActions>
+                              <Button
+                                style={{ fontSize: 12 }}
+                                size='small'
+                                color='primary'
+                                disabled={!feedbackrevisionReq}
+                                onClick ={this.submitRevisionFeedback}
+                              >
+                                Revision required
+                              </Button>
+                            </CardActions>
+                          </CardContent>
+                        </Card>
+                      ):isPublish ? (
+                        <Card style={{ minWidth: 320 }} className={classes.reviewCard}>
+                          <CardContent>
+                          <Autocomplete
+                            style={{ width: '100%' }}
+                            size='small'
+                            onChange={this.handlePublishLevelType}
+                            id='category'
+                            required
+                            options={publishLevelChoice}
+                            getOptionLabel={(option) => option?.label}
+                            filterSelectedOptions
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                variant='outlined'
+                                label='Publish Level'
+                                placeholder='Publish Level'
+                              />
+                            )}
+                          />
+                            <br />
+                            <CardActions>
+                              <Button
+                                style={{ fontSize: 12 }}
+                                size='small'
+                                color='primary'
+                                disabled={!publishedLevel}
+                                onClick ={this.submitPublish}
+                              >
+                                Publish
+                              </Button>
+                            </CardActions>
+                          </CardContent>
+                        </Card>
+                      )
+                      : relatedBlog ? ''
+                      // (
+                      //   <>
+                      //     <SideBar />
+                      //   </>
+                      // ) 
+                      : (
+                        <Review  blogId={data.id}
+                        />
+
+
+                      )
+                      }
+                    </Grid>
+                  </Grid>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Layout>
+      </div>
+    );
+  }
+}
+export default withRouter(withStyles(styles)(ContentView));
