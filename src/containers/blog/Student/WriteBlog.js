@@ -35,12 +35,6 @@ import PreviewBlog from './PreviewBlog';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 
-// const PreviewBlogs = {
-//   label: 'Preview Blogs',
-//   color: 'blue',
-//   href: 'preview-blog',
-//   disabled: false,
-// };
 const styles = (theme) => ({
   root: {
     flexGrow: 1,
@@ -333,7 +327,6 @@ class WriteBlog extends Component {
                       style={{ margin: 10 }}
                       variant='caption'
                     >
-                      {/* Image resolution 1521*394 */}
                     </Typography>
                     <Card className={classes.Card}>
                       <Dropzone onDrop={this.onDrop}>
@@ -392,9 +385,6 @@ class WriteBlog extends Component {
                       <Divider variant='middle' style={{ margin: 10 }} />
 
                       <CardActions>
-                        {/* <Button size='small' style={{ width: 150 }} color='primary'>
-                          Save Draft
-                        </Button> */}
                         <Button
                           size='small'
                           style={{ width: 150 }}

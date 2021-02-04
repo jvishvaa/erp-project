@@ -49,9 +49,12 @@ import {
   TeacherPublishBlogView,
   BlogView,
   CreateGenre,
-  ViewGenre,ContentViewPublish,
+  ViewGenre, ContentViewPublish,
   AdminBlog,
-  PrincipalBlog
+  PrincipalBlog,
+  PrincipalPublishBlogView,
+  StudentPublishBlogView,
+  AdminPublishBlogView
 
 } from './containers/blog';
 import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
@@ -67,6 +70,7 @@ import GeneralDairyList from './containers/general-dairy';
 import CreateGeneralDairy from './containers/general-dairy/create-dairy';
 import CreateDailyDairy from './containers/daily-dairy/create-daily-dairy';
 import DailyDairyList from './containers/daily-dairy/list-daily-dairy'
+import AOLClassView from './containers/online-class/aol-view/index';
 
 import CreateCourse from './containers/master-management/course/create-course';
 import CourseView from './containers/master-management/course/view-course';
@@ -146,45 +150,54 @@ function App() {
                     {/* <Route exact path='/assignrole'>
                   {({ match }) => <AssignRole match={match} />}
                 </Route> */}
-                  <Route exact path='/blog/create/genre'>
-                  {({ match }) => <CreateGenre match={match} />}
-                </Route>
-                <Route exact path='/blog/view/genre'>
-                  {({ match }) => <ViewGenre match={match} />}
-                </Route>
-                <Route exact path='/blog/teacher'>
-                  {({ match }) => <TeacherBlog match={match} />}
-                </Route>
-                <Route exact path='/blog/admin'>
-                  {({ match }) => <AdminBlog match={match} />}
-                </Route>
-                <Route exact path='/blog/principal'>
-                  {({ match }) => <PrincipalBlog match={match} />}
-                </Route>
-                <Route exact path='/blog/teacher/contentView'>
-                  {({ match }) => <ContentView match={match} />}
-                </Route>
-                
-                <Route exact path='/blog/teacher/contentViewPublish'>
-                  {({ match }) => <ContentViewPublish match={match} />}
-                </Route>
+                    <Route exact path='/blog/create/genre'>
+                      {({ match }) => <CreateGenre match={match} />}
+                    </Route>
+                    <Route exact path='/blog/view/genre'>
+                      {({ match }) => <ViewGenre match={match} />}
+                    </Route>
+                    <Route exact path='/blog/teacher'>
+                      {({ match }) => <TeacherBlog match={match} />}
+                    </Route>
+                    <Route exact path='/blog/admin'>
+                      {({ match }) => <AdminBlog match={match} />}
+                    </Route>
+                    <Route exact path='/blog/principal'>
+                      {({ match }) => <PrincipalBlog match={match} />}
+                    </Route>
+                    <Route exact path='/blog/teacher/contentView'>
+                      {({ match }) => <ContentView match={match} />}
+                    </Route>
 
-                <Route exact path='/blog/teacher/publish/view'>
-                  {({ match }) => <TeacherPublishBlogView match={match} />}
-                </Route>
-                <Route exact path='/blog/student/dashboard'>
-                  {({ match }) => <StudentDashboard match={match} />}
-                </Route>
-                <Route exact path='/blog/student/write-blog'>
-                  {({ match }) => <WriteBlog match={match} />}
-                </Route>
+                    <Route exact path='/blog/teacher/contentViewPublish'>
+                      {({ match }) => <ContentViewPublish match={match} />}
+                    </Route>
 
-                <Route exact path='/blog/student/preview-blog'>
-                  {({ match }) => <PreviewBlog match={match} />}
-                </Route>
-                <Route exact path='/blog/student/view-blog'>
-                  {({ match }) => <BlogView match={match} />}
-                </Route>
+                    <Route exact path='/blog/teacher/publish/view'>
+                      {({ match }) => <TeacherPublishBlogView match={match} />}
+                    </Route>
+                    <Route exact path='/blog/admin/publish/view'>
+                      {({ match }) => <AdminPublishBlogView match={match} />}
+                    </Route>
+                    <Route exact path='/blog/student/publish/view'>
+                      {({ match }) => <StudentPublishBlogView match={match} />}
+                    </Route>
+                    <Route exact path='/blog/principal/publish/view'>
+                      {({ match }) => <PrincipalPublishBlogView match={match} />}
+                    </Route>
+                    <Route exact path='/blog/student/dashboard'>
+                      {({ match }) => <StudentDashboard match={match} />}
+                    </Route>
+                    <Route exact path='/blog/student/write-blog'>
+                      {({ match }) => <WriteBlog match={match} />}
+                    </Route>
+
+                    <Route exact path='/blog/student/preview-blog'>
+                      {({ match }) => <PreviewBlog match={match} />}
+                    </Route>
+                    <Route exact path='/blog/student/view-blog'>
+                      {({ match }) => <BlogView match={match} />}
+                    </Route>
                     <Route exact path='/communication/addgroup'>
                       {({ match }) => <CreateGroup match={match} />}
                     </Route>
@@ -211,6 +224,9 @@ function App() {
                     </Route>
                     <Route exact path='/online-class/attend-class'>
                       {({ match }) => <ViewClassStudentCollection match={match} />}
+                    </Route>
+                    <Route exact path='/online-class/aol-view'>
+                      {({ match }) => <AOLClassView match={match} />}
                     </Route>
                     <Route exact path='/master-mgmt/subject-table'>
                       {({ match }) => <SubjectTable match={match} />}

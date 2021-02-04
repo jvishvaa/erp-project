@@ -21,7 +21,6 @@ import { withRouter } from 'react-router-dom';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
 import MobileDatepicker from '../Teacher/datePicker';
-// import PendingReview from './PendingReview';
 import GridList from './gridList';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
@@ -79,19 +78,16 @@ class AdminBlog extends Component {
       pageSize: 6,
       totalPages:0,
       startDate :moment().format('YYYY-MM-DD'),
+      status:[8]
     };
   }
   componentDidMount() {
-    this.getBlog(8);
+    let {status}=this.state
+    this.getBlog(status);
   }
   getBlog = (status) => {
     const { pageNo, pageSize,tabValue } = this.state;
-    if(tabValue === 0){
-      status= 8
-    }
-    else{
-      status=3
-    }
+   
     axios
       .get(
         `${endpoints.blog.Blog}?page_number=${
@@ -114,7 +110,7 @@ class AdminBlog extends Component {
   
   PublishBlogNav = () => {
     this.props.history.push({
-      pathname: '/blog/teacher/publish/view',
+      pathname: '/blog/admin/publish/view',
       state: { gradeId: 'hello' },
     });
   };
@@ -135,16 +131,35 @@ class AdminBlog extends Component {
   };
 
   handleTabChange = (event, newValue) => {
-    this.setState({ tabValue: newValue ,data:[]});
-    const blogTab = newValue === 0 ? 8 : 3;
-    this.getBlog(blogTab);
+    this.setState({ tabValue: newValue ,data:[], pageNo:0, pageSize:6});
+    if(newValue === 0){
+      this.setState({tabValue: newValue ,data:[], pageNo:0, pageSize:6,status: 8 }, ()=>{
+        this.getBlog(this.state.status);
+
+      })
+    }
+    else{
+      this.setState({tabValue: newValue ,data:[], pageNo:0, pageSize:6,status: [3,5,7] }, ()=>{
+        this.getBlog(this.state.status);
+
+      })
+    }
   };
   handlePagination = (event, page) => {
     let {tabValue} = this.state
-    console.log(page,"@@@@@@@@@@@@@",tabValue)
-    this.setState({pageNo:page},()=>{
-      this.getBlog(8)
-    })
+    if (tabValue === 0){
+      this.setState({data:[], pageNo:page, pageSize:6,status: [8]
+       }, ()=>{
+        this.getBlog(this.state.status);
+
+      })
+    }else{
+      this.setState({data:[], pageNo:page, pageSize:6,status: [3,5,7] }, ()=>{
+        this.getBlog(this.state.status);
+
+      })
+
+    }
 };
 
 

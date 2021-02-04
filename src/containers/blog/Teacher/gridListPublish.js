@@ -10,13 +10,10 @@ import CardHeader from '@material-ui/core/CardHeader';
 import Tooltip from '@material-ui/core/Tooltip';
 import { withRouter } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import List from '@material-ui/core/List';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItem from '@material-ui/core/ListItem';
+import Face from '@material-ui/icons/Face'
+
 
 import unfiltered from '../../../assets/images/unfiltered.svg'
-import selectfilter from '../../../assets/images/selectfilter.svg';
 const LightTooltip = withStyles((theme) => ({
   tooltip: {
     backgroundColor: theme.palette.common.white,
@@ -52,7 +49,7 @@ function GridListPublish(props) {
              style={{
               width: '100%',
               height: '290px',
-              display:data.length >= 0 ? 'flex' : 'none',
+              display:data.length >= 1 ? 'flex' : 'none',
               flexDirection: 'column',
               justifyContent: 'space-between',
               backgroundSize: '360px',
@@ -69,14 +66,12 @@ function GridListPublish(props) {
               />
 
               <CardActionArea>
-                <CardContent>
+                 <CardContent style ={{ padding:'5px'}}>
                   <Typography
-                    // variant='body2'
                     style={{
                       marginTop: '-35px',
-                      // fontSize: 'x-large',
                       fontWeight: 'bold',
-                      color: 'black',
+                      color: 'white',
                     }}
                     color='textSecondary'
                     component='p'
@@ -84,6 +79,18 @@ function GridListPublish(props) {
                   {data[0] && data[0].title}
 
                   </Typography>
+                  <Typography
+                      style={{
+                        color: 'white',
+                        paddingRight:'360px'
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                   </IconButton>
+                      {data[0] && data[0].author.first_name}
+                    </Typography>
                 </CardContent>
               </CardActionArea>
               <CardActions >
@@ -112,7 +119,7 @@ function GridListPublish(props) {
                 height: '290px',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                display:data.length >= 1 ? 'flex' : 'none',
+                display:data.length >= 2 ? 'flex' : 'none',
                 backgroundSize: '360px',
                 backgroundImage: `url(${data[1] && data[1].thumbnail})`,
               }}>
@@ -124,22 +131,30 @@ function GridListPublish(props) {
                   }
                 />
                 <CardActionArea>
-                  <CardContent>
+                   <CardContent style ={{ padding:'5px'}}>
                     <Typography
-                      // variant='body2'
                       style={{
-                        // marginTop: '0px',
                         marginTop: '-18px',
-
-                        // fontSize: 'x-large',
                         fontWeight: 'bold',
-                        color: 'black',
+                        color: 'white',
 
                       }}
                       color='textSecondary'
                       component='p'
                     >
                     {data[1] && data[1].title}
+                    </Typography>
+                    <Typography
+                      style={{
+                        color: 'white',
+                        paddingRight:'360px'
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                   </IconButton>
+                      {data[1] && data[1].author.first_name}
                     </Typography>
                   </CardContent>
                 </CardActionArea>
@@ -165,10 +180,7 @@ function GridListPublish(props) {
                 style={{
                   width: '100%',
                   height: '290px',
-                  display:data.length >= 2 ? 'flex' : 'none',
-
-                  // display: data.length >= 2 ? '' : 'none',
-                  // display: 'flex',
+                  display:data.length >= 3 ? 'flex' : 'none',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                   backgroundSize: '360px',
@@ -183,22 +195,30 @@ function GridListPublish(props) {
                   }
                 />
                 <CardActionArea>
-                  <CardContent>
+                   <CardContent style ={{ padding:'5px'}}>
                     <Typography
-                      // variant='body2'
                       style={{
-                        // marginTop: '0px',
                         marginTop: '-18px',
-
-                        // fontSize: 'x-large',
                         fontWeight: 'bold',
-                        color: 'black',
+                        color: 'white',
 
                       }}
                       color='textSecondary'
                       component='p'
                     >
                     {data[2] && data[2].title}
+                    </Typography>
+                    <Typography
+                      style={{
+                        color: 'white',
+                        paddingRight:'360px'
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                   </IconButton>
+                      {data[2] && data[2].author.first_name}
                     </Typography>
                   </CardContent>
                 </CardActionArea>
@@ -227,7 +247,7 @@ function GridListPublish(props) {
               style={{
                 width: '100%',
                 height: '290px',
-                display:data.length > 3 ? 'flex' : 'none',
+                display:data.length >= 4 ? 'flex' : 'none',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 backgroundSize: '360px',
@@ -241,15 +261,12 @@ function GridListPublish(props) {
                   }
                 />
                 <CardActionArea>
-                  <CardContent>
+                   <CardContent style ={{ padding:'5px'}}>
                     <Typography
-                      // variant='body2'
                       style={{
                         marginTop: '-18px',
-
-                        // fontSize: 'x-large',
                         fontWeight: 'bold',
-                        color: 'black',
+                        color: 'white',
 
                       }}
                       color='textSecondary'
@@ -257,6 +274,18 @@ function GridListPublish(props) {
                     >
                       {data[3] && data[3].title}
 
+                    </Typography>
+                    <Typography
+                      style={{
+                        color: 'white',
+                        paddingRight:'360px'
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                   </IconButton>
+                      {data[3] && data[3].author.first_name}
                     </Typography>
                   </CardContent>
                 </CardActionArea>
@@ -281,7 +310,7 @@ function GridListPublish(props) {
               style={{
                 width: '100%',
                 height: '290px',
-                display:data.length >= 4 ? 'flex' : 'none',
+                display:data.length >= 5 ? 'flex' : 'none',
 
                 flexDirection: 'column',
                 justifyContent: 'space-between',
@@ -296,14 +325,12 @@ function GridListPublish(props) {
                   }
                 />
                 <CardActionArea>
-                  <CardContent>
+                   <CardContent style ={{ padding:'5px'}}>
                     <Typography
-                      // variant='body2'
                       style={{
                         marginTop: '-18px',
-                        // fontSize: 'x-large',
                         fontWeight: 'bold',
-                        color: 'black',
+                        color: 'white',
 
                       }}
                       color='textSecondary'
@@ -312,6 +339,18 @@ function GridListPublish(props) {
                     {data[4] && data[4].title}
 
                       
+                    </Typography>
+                    <Typography
+                      style={{
+                        color: 'white',
+                        paddingRight:'360px'
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                   </IconButton>
+                      {data[4] && data[4].author.first_name}
                     </Typography>
                   </CardContent>
                 </CardActionArea>
@@ -337,7 +376,7 @@ function GridListPublish(props) {
             style={{
               width: '100%',
               height: '290px',
-              display:data.length >= 5 ? 'flex' : 'none',
+              display:data.length >= 6 ? 'flex' : 'none',
               flexDirection: 'column',
               justifyContent: 'space-between',
               backgroundSize: '360px',
@@ -352,21 +391,30 @@ function GridListPublish(props) {
                 }
               />
               <CardActionArea>
-                <CardContent>
+                 <CardContent style ={{ padding:'5px'}}>
                   <Typography
-                    // variant='body2'
                     style={{
                       marginTop: '-35px',
-                      // fontSize: 'x-large',
                       fontWeight: 'bold',
-                      color: 'black',
+                      color: 'white',
 
                     }}
                     color='textSecondary'
                     component='p'
                   >
                   {data[5] && data[5].title}
-                  </Typography>
+                  </Typography><Typography
+                      style={{
+                        color: 'white',
+                        paddingRight:'360px'
+                      }}
+                      color='textSecondary'
+                      component='p'
+                    > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                   </IconButton>
+                      {data[5] && data[5].author.first_name}
+                    </Typography>
                 </CardContent>
               </CardActionArea>
               <CardActions >
@@ -396,19 +444,11 @@ function GridListPublish(props) {
                   <SvgIcon
                       component={() => (
                           <img
-                              // style={isMobile ? { height: '100px', width: '200px' } : { height: '160px', width: '290px' }}
                               src={unfiltered}
                           />
                       )}
                   />
-                  {/* <SvgIcon
-                      component={() => (
-                          <img
-                              // style={isMobile ? { height: '20px', width: '250px' } : { height: '50px', width: '400px', marginLeft: '5%' }}
-                              src={selectfilter}
-                          />
-                      )}
-                  /> */}
+                  
               </div>
           )}
     </div>
