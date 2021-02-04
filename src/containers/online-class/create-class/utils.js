@@ -1,5 +1,4 @@
 import moment from 'moment';
-import { object } from 'yup';
 
 export const getFormatedTime = (time) => {
   const date = time;
@@ -21,16 +20,9 @@ export const initialFormStructure = {
   gradeIds: [],
   sectionIds: [],
   subjectIds: [],
-  branchIds: [],
   selectedDate: moment(new Date()).format('YYYY-MM-DD'),
-  selectedTime: new Date(),
+  selectedTime: new Date(), 
   coHosts: [],
-  weeks: '',
-  days: [],
-  isRecurring: '',
-  price: 0,
-  finalPrice: 0,
-  courseId: '',
 };
 
 export const isBetweenNonSchedulingTime = (value) => {
