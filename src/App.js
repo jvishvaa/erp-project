@@ -69,6 +69,7 @@ import createReceipt from './containers/Finance/src/components/Finance/ReceiptCh
 // import StoreReport from './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/Components/Inventory/StoreAdmin/StoreReports/storeReports.js'
 import AddFeePlan from './containers/Finance/src/components/Finance/CreateFeePlan/addFeePlan.js'
 import StudentLedgerTab from './containers/Finance/src/components/Finance/BranchAccountant/StudentLedgerTab/studentLedgerTab.js'
+import ManageFeeType from '../src/containers/Finance/src/components/Finance/CreateFeePlan/manageFeeType.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -290,6 +291,9 @@ function App() {
                 </Route>
                 <Route exact path='/student/LegerTab'>
                   {({ match }) => <StudentLedgerTab match={match} />}
+                </Route>
+                <Route exact path='/finance/manage_feeType/'>
+                  {({ match }) => <ManageFeeType match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

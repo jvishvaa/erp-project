@@ -406,7 +406,7 @@ class CreateFeePlan extends Component {
                                 </Table>
                               </TableCell>
                               <TableCell>
-                                {/* <RouterButton
+                                {/* <RouterButton// Rajneesh
                                   icon='clone'
                                   value={{
                                     basic: 'basic',
@@ -415,6 +415,7 @@ class CreateFeePlan extends Component {
                                   }}
                                   id={row.id}
                                 /> */}
+                                <Button component={Link} to={'/finance/manage_feeType/'} >Manage Fee Type</Button>
                               </TableCell>
                             </TableRow>
                           </React.Fragment>
