@@ -38,6 +38,8 @@ const CourseFilter = ({handleCourseList}) => {
       grade: [],
     });
 
+    const branchDrop=[{branch_name:'AOL'}]
+
     const handleClear = () => {
         setFilterData({
             grade: [],
@@ -57,7 +59,7 @@ const CourseFilter = ({handleCourseList}) => {
           branch: value,
         });
         axiosInstance
-          .get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=8`)
+          .get(`${endpoints.communication.grades}?branch_id=${5}&module_id=8`)
           .then((result) => {
             if (result.data.status_code === 200) {
               setGradeDropdown(result.data.data);
@@ -115,7 +117,7 @@ const CourseFilter = ({handleCourseList}) => {
             id='grade'
             className='dropdownIcon'
             value={filterData?.branch}
-            options={branchDropdown}
+            options={branchDrop}
             getOptionLabel={(option) => option?.branch_name}
             filterSelectedOptions
             renderInput={(params) => (
