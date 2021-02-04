@@ -27,7 +27,7 @@ import SectionTable from './containers/master-management/section/section-table';
 import GradeTable from './containers/master-management/grade/grade-table';
 import AcademicYearTable from './containers/master-management/academic-year/academic-year-table';
 import MessageTypeTable from './containers/master-management/message-type/message-type-table';
-import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
+//import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
 import HomeworkCard from './containers/homework/homework-card';
 import Profile from './containers/profile/profile';
 import { fetchLoggedInUserDetails } from './redux/actions';
@@ -51,6 +51,7 @@ import ListandFilter from './containers/subjectGradeMapping/listAndFilter';
 import GeneralDairyList from './containers/general-dairy';
 import CreateGeneralDairy from './containers/general-dairy/create-dairy';
 import AOLClassView from './containers/online-class/aol-view/index';
+import ResourceView from './containers/online-class/online-class-resources/index';
 
 const theme = createMuiTheme({
   palette: {
@@ -143,7 +144,7 @@ function App() {
                   {({ match }) => <ViewClassManagement match={match} />}
                 </Route>
                 <Route exact path='/online-class/resource'>
-                  {({ match }) => <OnlineClassResource match={match} />}
+                  {({ match }) => <ResourceView match={match} />}
                 </Route>
                 <Route exact path='/online-class/aol-view'>
                   {({ match }) => <AOLClassView match={match} />}

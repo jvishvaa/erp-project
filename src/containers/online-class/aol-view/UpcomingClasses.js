@@ -10,6 +10,7 @@ import MomentUtils from '@date-io/moment';
 import moment from 'moment';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
+import Loader from '../../../components/loader/loader';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -140,7 +141,7 @@ const UpcomingClasses = () => {
     const [ classType, setClassType ] = React.useState('');
     const [ startDate, setStartDate ] = React.useState(null);
     const [ endDate, setEndDate ] = React.useState(null);
-    const [ isFilter, setIsFilter ] = React.useState(false);
+    const [ isLoding, setIsLoding ] = React.useState(false);
     //const [startDate, setStartDate] = React.useState(moment(date).format('YYYY-MM-DD'));
     //const [endDate, setEndDate] = React.useState(moment(date).format('YYYY-MM-DD'));
 
@@ -153,6 +154,7 @@ const UpcomingClasses = () => {
         axiosInstance.get('erp_user/student_online_class/?user_id=78&page_number=1&page_size=15&class_type='+classType?.id)
         .then((res) => {
             //setClassesdata(res.data.data);
+            //setIsLoding(true);
         })
         .catch((error) => console.log(error))
 
@@ -160,6 +162,7 @@ const UpcomingClasses = () => {
         axiosInstance.get('erp_user/teacher_online_class/?module_id=4&page_number=1&page_size=15&branch_ids=5&class_type='+classType?.id)
         .then((res) => {
             setClassesdata(res.data.data);
+            setIsLoding(true);
         })
         .catch((error) => console.log(error))
     }
@@ -174,7 +177,7 @@ const UpcomingClasses = () => {
         setSize(9);
         setClassData(data);
         setSelected(data.id);
-        
+
         console.log('TAb : '+ isTabDivice);
         if(isTabDivice){
             console.log('**** TAb *****');
@@ -220,7 +223,6 @@ const UpcomingClasses = () => {
         }
     }
     const handleFilter = () => {
-        setIsFilter(true);
         getClasses();
     }
 
@@ -308,7 +310,7 @@ const UpcomingClasses = () => {
                             format='YYYY-MM-DD'
                             margin='none'
                             id='date-picker'
-                            label='Start date'
+                            label='End date'
                             value={endDate}
                             onChange={handleEndDate}
                             KeyboardButtonProps={{
@@ -338,7 +340,7 @@ const UpcomingClasses = () => {
             <Grid container spacing={3} className={classes.root}>
                 <Grid item sm={size} xs={12}>
                     <Grid container spacing={3}>
-                        {classCardData}
+                        {!isLoding ? ( <Loader /> ) : (classCardData)}
                     </Grid>
                 </Grid>
 
