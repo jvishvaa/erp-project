@@ -319,6 +319,7 @@ const CreateCourse = () => {
       .then((result) => {
         if (result.data.status_code === 200) {
           setFilePath([]);
+          setData([])
           setNoPeriods(0);
           setTitle('')
           setCoursePre('')
@@ -362,6 +363,7 @@ const CreateCourse = () => {
       if(result.data.status_code === 200){
         setState({...state,isEdit:false,viewPeriodData:[],editData:[]})
         setFilePath([]);
+        setData([])
           setNoPeriods(0);
           setTitle('')
           setCoursePre('')

@@ -8,6 +8,7 @@ import {
   SvgIcon,
   Typography,
 } from '@material-ui/core';
+import { makeStyles } from "@material-ui/core/styles";
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 // import { Button, useTheme ,IconButton} from '@material-ui/core';
 import Box from '@material-ui/core/Box';
@@ -20,6 +21,8 @@ import attachmenticon from '../../../../../assets/images/attachmenticon.svg';
 import Divider from '@material-ui/core/Divider';
 import Layout from '../../../../Layout';
 import { Context } from '../context/ViewStore';
+
+
 
 const ViewCourseCard = ({ index, cData, setData }) => {
   const themeContext = useTheme();
@@ -82,63 +85,58 @@ const ViewCourseCard = ({ index, cData, setData }) => {
   return (
     <>
       <Layout>
+        <Grid
+          container
+          spacing={5}
+          style={{marginLeft:'2rem'}}
+        >
        
-          {cardData?.map((data, index) => (
-            <Paper
-              className={classes.root}
-              style={
-                isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }
-              }
-            >
-              <Grid item xs={12} sm={4}>
-                <Box>
-                  <Typography>{`${index + 1}`}</Typography>
-                  <TextField
-                    id={`title${index}`}
-                    label='Period Title'
-                    placeholder='Period Title'
-                    multiline
-                    rows='1'
-                    color='secondary'
-                    style={{ width: '100%' }}
-                    name='title'
-                    // defaultValue="Default Value"
-                    value={data?.title}
-                    variant='outlined'
-                    //   onChange={ handleCardSubmit}
-                  />
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <Box>
-                  <TextField
-                    id={`desc${index}`}
-                    label='Period Description'
-                    placeholder='Period Description'
-                    multiline
-                    rows='3'
-                    color='secondary'
-                    style={{ width: '100%' }}
-                    name='description'
-                    // defaultValue="Default Value"
-                    value={data?.description}
-                    variant='outlined'
-                    //   onChange={handleCardSubmit}
-                  />
-                </Box>
-              </Grid>
-              {/* <div className='attachmentContainer'>
-                <div style={{ display: 'flex' }} className='scrollable'>
-        
-                        <FileRow
-                        />
-                      
-                
-                </div>
-              </div> */}
-            </Paper>
-          ))}
-
+        {cardData?.map((data, index) => (
+                <div className="courseCardContainer">
+                  <Grid item xs={12} style={{marginBottom:'1rem'}}>
+                    <Box>
+                      <Typography>{`${index + 1}`}</Typography>
+                      <TextField
+                        id={`title${index}`}
+                        label='Period Title'
+                        placeholder='Period Title'
+                        multiline
+                        rows='1'
+                        color='secondary'
+                        style={{ width: '100%' }}
+                        name='title'
+                        // defaultValue="Default Value"
+                        value={data?.title}
+                        variant='outlined'
+                      //   onChange={ handleCardSubmit}
+                      />
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} >
+                    <Box>
+                      <TextField
+                        id={`desc${index}`}
+                        label='Period Description'
+                        placeholder='Period Description'
+                        multiline
+                        rows='3'
+                        color='secondary'
+                        style={{ width: '100%' }}
+                        name='description'
+                        // defaultValue="Default Value"
+                        value={data?.description}
+                        variant='outlined'
+                      //   onChange={handleCardSubmit}
+                      />
+                    </Box>
+                  </Grid>
+                 
+                  </div>
+                 
+              ))}
+              
+        </Grid>
+       
       </Layout>
     </>
   );
