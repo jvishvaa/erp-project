@@ -21,7 +21,7 @@ import { withRouter } from 'react-router-dom';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-import Review from '../Teacher/Review'
+import ReviewPrincipal from './ReviewPrincipal'
 import Layout from '../../Layout';
 import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
 
@@ -216,22 +216,21 @@ if (result.data.status_code === 200) {
 
     }
   }
-//   getRatings = () => {
-//     let {blogRatings} =this.state
-//     if (blogRatings) {
-//       return []
-//     }
-//     const ratings = blogRatings
-//     const type = typeof ratings.remark_rating
-//     const parsedRatings = type === 'object' ? ratings.remark_rating : JSON.parse(ratings.remark_rating)
-//     const allRatingParamters = [...parsedRatings]
-//     return allRatingParamters
-//   }
+  getRatings = () => {
+    let {blogRatings} =this.state
+    if (!blogRatings) {
+      return []
+    }
+    const type = typeof blogRatings
+    const parsedRatings = type === 'object' ? blogRatings : JSON.parse(blogRatings)
+    const allRatingParamters = JSON.parse(parsedRatings)
+    return allRatingParamters
+  }
 
-//  getOverAllRemark = () => {
-//    let {overallRemark} = this.state
-//    return overallRemark
-//   }
+ getOverAllRemark = () => {
+   let {overallRemark} = this.state
+   return overallRemark
+  }
 
   
   render() {
@@ -334,7 +333,7 @@ if (result.data.status_code === 200) {
 
                             >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
                             </Button>
-                          {tabValue === 1 ?
+                          {tabValue === 1  && !data.feedback_revision_required?
                           <Button
                             size='small'
                             color='primary'
@@ -342,15 +341,35 @@ if (result.data.status_code === 200) {
                           >
                             Comment
                           </Button> :
+                          !data.feedback_revision_required?
                           <Button
                             size='small'
                             color='primary'
                             onClick={() => this.setState({ isPublish: true })}
                           >
                             Publish
-                          </Button> 
+                          </Button> :''
 
                           }
+
+
+{!data.feedback_revision_required ? 
+                          <Button
+                            size='small'
+                            color='primary'
+                            onClick={() => {
+                              this.setState({
+                                relatedBlog: !relatedBlog,
+                                feedBack: false,
+                              });
+                            }}
+                          >
+                            {relatedBlog ? 'Review' : 'View Related Blog'}
+                          </Button>  :''}
+                         
+
+
+
                         </CardActions>
                       </Card>
                     </Grid>
@@ -424,7 +443,7 @@ if (result.data.status_code === 200) {
                       //   </>
                       // ) 
                       : (
-                        <Review  blogId={data.id}
+                        <ReviewPrincipal  blogId={data.id} ratingParameters={this.getRatings} overallRemark={this.getOverAllRemark}
                         />
 
 

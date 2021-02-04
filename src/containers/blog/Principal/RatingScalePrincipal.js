@@ -5,7 +5,7 @@ export default function RatingScale (props) {
 
   return (
     <Rating
-      readOnly={props.type === 'Overall'}
+      readOnly
       precision={0.5}
       size='large'
       name={props.type}

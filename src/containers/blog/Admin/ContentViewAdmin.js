@@ -25,10 +25,9 @@ import { withRouter } from 'react-router-dom';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-import Review from '../Teacher/Review'
 import Layout from '../../Layout';
-import { ThreeSixty } from '@material-ui/icons';
 import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
+import ReviewPrincipal from '../Principal/ReviewPrincipal';
 
 const styles = (theme) => ({
   root: {
@@ -343,7 +342,7 @@ if (result.data.status_code === 200) {
 
                             >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
                             </Button>
-                          {tabValue === 0 ? 
+                          {!data.feedback_revision_required? 
                           <Button
                             size='small'
                             color='primary'
@@ -356,21 +355,21 @@ if (result.data.status_code === 200) {
                           >
                             {relatedBlog ? 'Add Review' : 'View Related Blog'}
                           </Button> : ''}
-                          {tabValue === 0 ?
+                          {tabValue === 0 && !data.feedback_revision_required ?
                           <Button
                             size='small'
                             color='primary'
                             onClick={() => this.setState({ feedBack: true })}
                           >
                             Add Revision Feedback
-                          </Button> :
+                          </Button> : !data.feedback_revision_required ?
                           <Button
                             size='small'
                             color='primary'
                             onClick={() => this.setState({ isPublish: true })}
                           >
                             Publish
-                          </Button> 
+                          </Button>  : ''
 
                           }
                         </CardActions>
@@ -446,7 +445,7 @@ if (result.data.status_code === 200) {
                       //   </>
                       // ) 
                       : (
-                        <Review  blogId={data.id}
+                        <ReviewPrincipal  blogId={data.id}
                         />
 
 

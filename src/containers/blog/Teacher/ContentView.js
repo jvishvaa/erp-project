@@ -194,29 +194,13 @@ class ContentView extends Component {
     }
   }
   getRatings = () => {
-    // let {blogRatings} =this.state
-    // console.log(blogRatings,"@@@@")
-    // if (blogRatings) {
-    //   return []
-    // }
-
-    // const ratings = blogRatings
-    // const type = typeof ratings.remark_rating
-    // const parsedRatings = type === 'object' ? ratings.remark_rating : JSON.parse(ratings.remark_rating)
-    // const allRatingParamters = [...parsedRatings]
-    // return allRatingParamters
-
-    console.log(this.state.blogRatings,"@@@@")
-    let newRating=this.state.blogRatings.replace(/"/g,"");
-    console.log( newRating,"@@@@")
-    let newRatingUP=newRating.replace(/\\/g,"");
-    console.log(newRatingUP,"@@@")
-    console.log(typeof(newRatingUP),"@@")
-    const type = typeof newRatingUP
-    const parsedRatings = type === 'object' ? newRatingUP : JSON.parse(newRatingUP)
-
-    const allRatingParamters = [...parsedRatings]
-    console.log(type,"@@")
+    let {blogRatings} =this.state
+    if (!blogRatings) {
+      return []
+    }
+    const type = typeof blogRatings
+    const parsedRatings = type === 'object' ? blogRatings : JSON.parse(blogRatings)
+    const allRatingParamters = JSON.parse(parsedRatings)
     return allRatingParamters
   }
 
@@ -354,6 +338,7 @@ if (result.data.status_code === 200) {
 
                             >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
                             </Button>
+                            {!data.feedback_revision_required ? 
                           <Button
                             size='small'
                             color='primary'
@@ -365,7 +350,7 @@ if (result.data.status_code === 200) {
                             }}
                           >
                             {relatedBlog ? 'Add Review' : 'View Related Blog'}
-                          </Button> 
+                          </Button>  :''}
                           {tabValue === 0 ?
                           <Button
                             size='small'
@@ -373,7 +358,7 @@ if (result.data.status_code === 200) {
                             onClick={() => this.setState({ feedBack: true })}
                           >
                             Add Revision Feedback
-                          </Button> :
+                          </Button> : !data.feedback_revision_required ?
                           <Button
                             size='small'
                             color='primary'
@@ -381,7 +366,7 @@ if (result.data.status_code === 200) {
                           >
                             Publish
                           </Button> 
-
+:''
                           }
                         </CardActions>
                       </Card>

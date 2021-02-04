@@ -1,7 +1,7 @@
 import React from 'react'
 import { makeStyles, Typography, Box } from '@material-ui/core/'
 import TextareaAutosize from '@material-ui/core/TextareaAutosize'
-import RatingScale from './RatingScale'
+import RatingScalePrincipal from './RatingScalePrincipal'
 
 const useStyles = makeStyles({
   root: {
@@ -34,7 +34,7 @@ export default function HoverRating (props) {
           >
           {props.rating_type}
         </Typography>
-        <RatingScale
+        <RatingScalePrincipal
           editRating={editRating}
           rating={props.rating}
           type={props.rating_type}
