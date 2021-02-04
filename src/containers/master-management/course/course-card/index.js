@@ -45,7 +45,7 @@ console.log(cData,'cData')
         if (result.data.status_code === 200) {
        
           setFilePath([...filePath, result.data.result]);
-          list[index]['files']=[result.data.result.get_file_path]
+          list[index]['files']=[...cData,result.data.result.get_file_path]
           setAlert('success', result.data.message);
         } else {
           setAlert('error', result.data.message);
@@ -130,7 +130,7 @@ console.log(cData,'cData')
               style={{ width: '100%' }}
               name='description'
               // defaultValue="Default Value"
-            //   value={}
+              value={cData[index].description}
               variant='outlined'
               onChange={handleCardSubmit}
             />

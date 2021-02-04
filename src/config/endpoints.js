@@ -151,6 +151,7 @@ export default {
     deleteCourse:'/aol/',
     courseDetails:'/aol/courses/',
     categoryList:'/aol/tagging-list/',
+    updateCourse:'/aol/'
   },
 attendanceList:{
   list:'/erp_user/onlineclass_attendeelist/',

@@ -214,7 +214,7 @@ const CreateCourse = () => {
               if (object?.tag_type === "1") {
                 list1.push({ id: object.id, subjectName: object?.subject__subject_name });
               } else {
-                list2.push({ id: object.id, gradeName: object?.tag_name });
+                list2.push({ id: object.id, gradeName: object?.grade__grade_name });
               }
             })
             setSubjectDropdown(list1);
@@ -293,6 +293,7 @@ const CreateCourse = () => {
     }
   };
 
+  console.log(data,'++++++++++++')
   const handleSubmit = () => {
     // console.log('helloooooooooooooo');
     axiosInstance
@@ -338,6 +339,21 @@ const CreateCourse = () => {
         setGradeDropdown([]);
       });
   };
+
+  const handleEdit=()=>{
+    axiosInstance.put(`${endpoints.onlineCourses.updateCourse}11/update-course/`,{
+      "course_name":title,
+      pre_requirement: coursePre,
+      overview: overview,
+      learn: learn,
+      grade:[24],
+        level: filterData.courseLevel.level,
+        no_of_periods: parseInt(noOfPeriods),
+        period_data: data,
+      // tag_id:
+  
+    })
+  }
 
   const FileRow = (props) => {
     const { file, onClose, index } = props;
@@ -397,7 +413,7 @@ const CreateCourse = () => {
       });
 
   }, []);
-  // console.log(state, '=======',secondPageData);
+  console.log(subjectDropdown,'=======',state);
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
@@ -733,7 +749,11 @@ const CreateCourse = () => {
               </Paper>
               <div className='submit'>
                 <Grid item xs={12} sm={12}>
-                  <Button onClick={handleSubmit}>SUBMIT</Button>
+                    {!state?.isEdit ?  <Button onClick={handleSubmit} style={{width:'16rem',marginLeft:'1.2rem'}}>SUBMIT</Button>
+                    :
+                    <Button onClick={handleEdit} style={{width:'16rem',marginLeft:'1.2rem'}}>EDIT</Button>
+                    }
+                 
                 </Grid>
               </div>
             </>
