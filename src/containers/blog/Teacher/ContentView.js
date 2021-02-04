@@ -108,6 +108,8 @@ class ContentView extends Component {
 
 
     };
+   
+
 
   }
   componentDidMount() {
@@ -191,22 +193,37 @@ class ContentView extends Component {
 
     }
   }
-//   getRatings = () => {
-//     let {blogRatings} =this.state
-//     if (blogRatings) {
-//       return []
-//     }
-//     const ratings = blogRatings
-//     const type = typeof ratings.remark_rating
-//     const parsedRatings = type === 'object' ? ratings.remark_rating : JSON.parse(ratings.remark_rating)
-//     const allRatingParamters = [...parsedRatings]
-//     return allRatingParamters
-//   }
+  getRatings = () => {
+    // let {blogRatings} =this.state
+    // console.log(blogRatings,"@@@@")
+    // if (blogRatings) {
+    //   return []
+    // }
 
-//  getOverAllRemark = () => {
-//    let {overallRemark} = this.state
-//    return overallRemark
-//   }
+    // const ratings = blogRatings
+    // const type = typeof ratings.remark_rating
+    // const parsedRatings = type === 'object' ? ratings.remark_rating : JSON.parse(ratings.remark_rating)
+    // const allRatingParamters = [...parsedRatings]
+    // return allRatingParamters
+
+    console.log(this.state.blogRatings,"@@@@")
+    let newRating=this.state.blogRatings.replace(/"/g,"");
+    console.log( newRating,"@@@@")
+    let newRatingUP=newRating.replace(/\\/g,"");
+    console.log(newRatingUP,"@@@")
+    console.log(typeof(newRatingUP),"@@")
+    const type = typeof newRatingUP
+    const parsedRatings = type === 'object' ? newRatingUP : JSON.parse(newRatingUP)
+
+    const allRatingParamters = [...parsedRatings]
+    console.log(type,"@@")
+    return allRatingParamters
+  }
+
+ getOverAllRemark = () => {
+   let {overallRemark} = this.state
+   return overallRemark
+  }
 getLikeStatus = (isLiked) => {
   let { likeStatus,likes }=this.state
   if (isLiked === true && likeStatus === false) {
@@ -337,7 +354,6 @@ if (result.data.status_code === 200) {
 
                             >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
                             </Button>
-                          {tabValue === 0 ? 
                           <Button
                             size='small'
                             color='primary'
@@ -349,7 +365,7 @@ if (result.data.status_code === 200) {
                             }}
                           >
                             {relatedBlog ? 'Add Review' : 'View Related Blog'}
-                          </Button> : ''}
+                          </Button> 
                           {tabValue === 0 ?
                           <Button
                             size='small'
@@ -434,13 +450,11 @@ if (result.data.status_code === 200) {
                         </Card>
                       )
                       : relatedBlog ? ''
-                      // (
-                      //   <>
                       //     <SideBar />
                       //   </>
                       // ) 
                       : (
-                        <Review  blogId={data.id}
+                        <Review  blogId={data.id}  ratingParameters={this.getRatings} overallRemark={this.getOverAllRemark}
                         />
 
 

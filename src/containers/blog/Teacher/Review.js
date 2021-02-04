@@ -30,11 +30,12 @@ class Review extends Component {
   }
 
   componentDidMount () {
-    // if (this.props.ratingParameters().length) {
-    //   this.setState({ ratingParameters: this.props.ratingParameters(), overallRemark: this.props.overallRemark() })
-    // } else {
+    if (this.props.ratingParameters().length) {
+      console.log(this.props.ratingParameters(),typeof(this.props.ratingParameters()),"@@@@@")
+      this.setState({ ratingParameters: this.props.ratingParameters(), overallRemark: this.props.overallRemark() })
+    } else {
       this.setState({ ratingParameters: this.getStaticParamters() })
-    // }
+    }
   }
 
   handleRatingScaleChange = (parameter, rating) => {

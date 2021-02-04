@@ -21,13 +21,13 @@ import {
 import Rating from '@material-ui/lab/Rating';
 import Avatar from '@material-ui/core/Avatar';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { withRouter } from 'react-router-dom';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-import SideBar from './sideBar';
+import Review from '../Teacher/Review'
 import Layout from '../../Layout';
+import { ThreeSixty } from '@material-ui/icons';
 import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
 
 const styles = (theme) => ({
@@ -75,25 +75,15 @@ const StyledRating = withStyles({
   },
 })(Rating);
 
-const publishLevelChoiceBranch=[ 
-//   { label: 'Branch', value: '2' },
+const publishLevelChoice=[ 
+  {label:'Orchids',value:'1'},
+
+  { label: 'Branch', value: '2' },
   { label: 'Grade', value: '3' },
   { label: 'Section', value: '4' }
 
   ] 
-  const publishLevelChoiceGrade=[ 
-      { label: 'Branch', value: '2' },
-    //   { label: 'Grade', value: '3' },
-      { label: 'Section', value: '4' }
-    
-      ] 
-      const publishLevelChoiceSection=[ 
-          { label: 'Branch', value: '2' },
-          { label: 'Grade', value: '3' },
-        //   { label: 'Section', value: '4' }
-        
-          ] 
-class ContentViewPublish extends Component {
+class ContentView extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -102,11 +92,12 @@ class ContentViewPublish extends Component {
       feedBack: false,
       isPublish:false,
       data: this.props.location.state.data && this.props.location.state.data,
+      blogId: this.props.location.state.data && this.props.location.state.data.id,
       tabValue :this.props.location.state.tabValue && this.props.location.state.tabValue,
       feedbackrevisionReq:'',
       roleDetails: JSON.parse(localStorage.getItem('userDetails')),
-      blogId: this.props.location.state.data && this.props.location.state.data.id,
-
+      blogRatings :this.props.location.state.data && this.props.location.state.data.remark_rating,
+      overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark,
       likeStatus:false,
       currentLikes: 0,
       loading:false,
@@ -120,13 +111,11 @@ class ContentViewPublish extends Component {
     let {blogId} = this.state
     this.handleView(blogId)
   }
-
-
   handleView = (blogId) => {
     let requestData = {
       "blog_id": blogId ,
     }
-  axiosInstance.post(`${endpoints.blog.BlogView}`, requestData)
+  axios.post(`${endpoints.blog.BlogView}`, requestData)
   .then(result=>{
   if (result.data.status_code === 200) {
   } else {        
@@ -137,10 +126,47 @@ class ContentViewPublish extends Component {
 
 
 
+getLikeStatus = (isLiked) => {
+  let { likeStatus,likes }=this.state
+  if (isLiked === true && likeStatus === false) {
+    this.setState({currentLikes :likes-1,likeStatus:true})
+  } else if (isLiked === true && likeStatus === true) {
+    this.setState({currentLikes :likes+1,likeStatus:false})
+
+  } else if (isLiked === false && likeStatus === false) {
+    this.setState({currentLikes :likes+1,likeStatus:true})
+
+  } else if (isLiked === false && likeStatus === true) {
+    this.setState({currentLikes :likes,likeStatus:false})
+
+  }
+}
+
+handleLike = (isLiked,blogId) => {
+  this.getLikeStatus(isLiked)
+  let requestData = {
+    "blog_id": blogId ,
+
+  }
+axios.post(`${endpoints.blog.BlogLike}`, requestData)
+
+.then(result=>{
+if (result.data.status_code === 200) {
+  this.setState({loading:false})
+  // setAlert('success', result.data.message);
+} else {        
+  this.setState({loading:false})
+  // setAlert('error', result.data.message);
+}
+}).catch((error)=>{
+  this.setState({loading:false})
+  // setAlert('error', error.message);
+})
+  }
+  
 
 
   submitRevisionFeedback = () => {
-
     const {  data, feedbackrevisionReq } = this.state;
     const formData = new FormData();
     formData.set('blog_id', data.id);
@@ -165,7 +191,6 @@ class ContentViewPublish extends Component {
     this.setState({feedbackrevisionReq:e.target.value})
   };
   submitPublish = () => {
-
   const {  data, publishedLevel ,roleDetails} = this.state;
   const formData = new FormData();
   formData.set('blog_id', data.id);
@@ -181,10 +206,11 @@ class ContentViewPublish extends Component {
       .then((result) => {
         if (result.data.status_code === 200) {
           this.props.history.push({
-            pathname: '/blog/teacher/publish/view',
+            pathname: '/blog/teacher',
           });
         } else {
           console.log(result.data.message);
+
         }
       })
       .catch((error) => {
@@ -200,46 +226,27 @@ class ContentViewPublish extends Component {
 
     }
   }
-  getLikeStatus = (isLiked) => {
-    let { likeStatus,likes }=this.state
-    if (isLiked === true && likeStatus === false) {
-      this.setState({currentLikes :likes-1,likeStatus:true})
-    } else if (isLiked === true && likeStatus === true) {
-      this.setState({currentLikes :likes+1,likeStatus:false})
-  
-    } else if (isLiked === false && likeStatus === false) {
-      this.setState({currentLikes :likes+1,likeStatus:true})
-  
-    } else if (isLiked === false && likeStatus === true) {
-      this.setState({currentLikes :likes,likeStatus:false})
-  
-    }
-  }
-  handleLike = (isLiked,blogId) => {
-    this.getLikeStatus(isLiked)
-    let requestData = {
-      "blog_id": blogId ,
-  
-    }
-  axiosInstance.post(`${endpoints.blog.BlogLike}`, requestData)
-  
-  .then(result=>{
-  if (result.data.status_code === 200) {
-    this.setState({loading:false})
-    // setAlert('success', result.data.message);
-  } else {        
-    this.setState({loading:false})
-    // setAlert('error', result.data.message);
-  }
-  }).catch((error)=>{
-    this.setState({loading:false})
-    // setAlert('error', error.message);
-  })
-    }
+//   getRatings = () => {
+//     let {blogRatings} =this.state
+//     if (blogRatings) {
+//       return []
+//     }
+//     const ratings = blogRatings
+//     const type = typeof ratings.remark_rating
+//     const parsedRatings = type === 'object' ? ratings.remark_rating : JSON.parse(ratings.remark_rating)
+//     const allRatingParamters = [...parsedRatings]
+//     return allRatingParamters
+//   }
+
+//  getOverAllRemark = () => {
+//    let {overallRemark} = this.state
+//    return overallRemark
+//   }
+
   
   render() {
     const { classes } = this.props;
-    const {likes,currentLikes,likeStatus,loginUserName,  tabValue,relatedBlog, starsRating, feedBack ,data,feedbackrevisionReq,isPublish,publishedLevel} = this.state;
+    const {roleDetails,likes,currentLikes,likeStatus,loginUserName, tabValue,relatedBlog, starsRating, feedBack ,data,feedbackrevisionReq,isPublish,publishedLevel} = this.state;
     const blogFkLike= data && data.blog_fk_like
     const likedUserIds=blogFkLike.map(blog => blog.user)
     const indexOfLoginUser=likedUserIds.indexOf(roleDetails.user_id)
@@ -277,14 +284,22 @@ class ContentViewPublish extends Component {
                             {data.title}
                         </Typography>
                         <CardMedia className={classes.media} image={data.thumbnail} />
-                        <CardContent>  {tabValue  && data.comment ? 
+                        {
+                          data.feedback_revision_required ?
+                        <CardContent> <Typography
+                          style={{color:'red', fontSize:'12px'}}
+                        >Revision Feedback:{data.feedback_revision_required}
+                       
+                        </Typography>
+                        <Typography  style={{fontSize:'12px'}}> Revised By:{data && data.feedback_revision_by && data.feedback_revision_by.first_name}</Typography></CardContent> 
+                        :  data.comment ? 
                         <CardContent> <Typography
                         style={{color:'red', fontSize:'12px'}}
                       >Comment:{data.comment}
                      
                       </Typography>
                       <Typography> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
-                      </CardContent>  :''}</CardContent>
+                      </CardContent>  :''}
                         <CardHeader
                           className={classes.author}
                           avatar={
@@ -292,7 +307,11 @@ class ContentViewPublish extends Component {
                               R
                             </Avatar>
                           }
-                       
+                          //   action={
+                          //     <IconButton aria-label='settings'>
+                          //       <MoreVertIcon />
+                          //     </IconButton>
+                          //   }
                           title={data.author.first_name}
                           subheader=
                           {data && moment(data.created_at).format('MMM DD YYYY')}
@@ -324,22 +343,67 @@ class ContentViewPublish extends Component {
 
                             >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
                             </Button>
-                          {tabValue !== 0 ?
-                        
+                          {tabValue === 0 ? 
+                          <Button
+                            size='small'
+                            color='primary'
+                            onClick={() => {
+                              this.setState({
+                                relatedBlog: !relatedBlog,
+                                feedBack: false,
+                              });
+                            }}
+                          >
+                            {relatedBlog ? 'Add Review' : 'View Related Blog'}
+                          </Button> : ''}
+                          {tabValue === 0 ?
+                          <Button
+                            size='small'
+                            color='primary'
+                            onClick={() => this.setState({ feedBack: true })}
+                          >
+                            Add Revision Feedback
+                          </Button> :
                           <Button
                             size='small'
                             color='primary'
                             onClick={() => this.setState({ isPublish: true })}
                           >
                             Publish
-                          </Button> :''
+                          </Button> 
 
                           }
                         </CardActions>
                       </Card>
                     </Grid>
                     <Grid item xs={3}>
-                     {isPublish ? (
+                      {feedBack ? (
+                        <Card style={{ minWidth: 320 }} className={classes.reviewCard}>
+                          <CardContent>
+                            <TextField
+                              id='outlined-multiline-static'
+                              multiline
+                              rows={12}
+                              placeholder='Provide Feedback related to this blog..'
+                              variant='outlined'
+                              onChange={(event,value)=>{this.handleReivisionNameChange(event);}}
+
+                            />
+                            <br />
+                            <CardActions>
+                              <Button
+                                style={{ fontSize: 12 }}
+                                size='small'
+                                color='primary'
+                                disabled={!feedbackrevisionReq}
+                                onClick ={this.submitRevisionFeedback}
+                              >
+                                Revision required
+                              </Button>
+                            </CardActions>
+                          </CardContent>
+                        </Card>
+                      ):isPublish ? (
                         <Card style={{ minWidth: 320 }} className={classes.reviewCard}>
                           <CardContent>
                           <Autocomplete
@@ -348,7 +412,7 @@ class ContentViewPublish extends Component {
                             onChange={this.handlePublishLevelType}
                             id='category'
                             required
-                            options={tabValue === 1 ? publishLevelChoiceBranch : tabValue === 2 ? publishLevelChoiceGrade : publishLevelChoiceSection}
+                            options={publishLevelChoice}
                             getOptionLabel={(option) => option?.label}
                             filterSelectedOptions
                             renderInput={(params) => (
@@ -375,7 +439,19 @@ class ContentViewPublish extends Component {
                           </CardContent>
                         </Card>
                       )
-                      : ''}
+                      : relatedBlog ? ''
+                      // (
+                      //   <>
+                      //     <SideBar />
+                      //   </>
+                      // ) 
+                      : (
+                        <Review  blogId={data.id}
+                        />
+
+
+                      )
+                      }
                     </Grid>
                   </Grid>
                 </div>
@@ -387,4 +463,4 @@ class ContentViewPublish extends Component {
     );
   }
 }
-export default withRouter(withStyles(styles)(ContentViewPublish));
+export default withRouter(withStyles(styles)(ContentView));
