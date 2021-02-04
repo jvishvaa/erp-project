@@ -2,7 +2,7 @@
 import React from 'react';
 import moment from 'moment';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
-import { Grid, Card, Button, Typography, Divider,SvgIcon } from '@material-ui/core';
+import { Grid, Card, Button, Typography, Divider ,SvgIcon} from '@material-ui/core';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -12,6 +12,10 @@ import { withRouter } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import Face from '@material-ui/icons/Face'
 
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import List from '@material-ui/core/List';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItem from '@material-ui/core/ListItem';
 
 import unfiltered from '../../../assets/images/unfiltered.svg'
 const LightTooltip = withStyles((theme) => ({
@@ -68,8 +72,10 @@ function GridListPublish(props) {
               <CardActionArea>
                  <CardContent style ={{ padding:'5px'}}>
                   <Typography
+                    // variant='body2'
                     style={{
                       marginTop: '-35px',
+                      // fontSize: 'x-large',
                       fontWeight: 'bold',
                       color: 'white',
                     }}
@@ -100,7 +106,7 @@ function GridListPublish(props) {
                     style={{ marginTop: 120, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentViewPublish',
+                        pathname: '/blog/student/contentViewPublishStudent',
                         state: { data: data[0] ? data[0] :'' ,
                       tabValue :props.tabValue},
                       })}
@@ -147,7 +153,7 @@ function GridListPublish(props) {
                     <Typography
                       style={{
                         color: 'white',
-                        paddingRight:'360px'
+                        paddingRight:'100px'
                       }}
                       color='textSecondary'
                       component='p'
@@ -165,7 +171,7 @@ function GridListPublish(props) {
                     style={{ marginTop: 38, width: 150}}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentViewPublish',
+                        pathname: '/blog/student/contentViewPublishStudent',
                         state: { data: data[1], tabValue :props.tabValue },
                       })}
                   >
@@ -197,8 +203,12 @@ function GridListPublish(props) {
                 <CardActionArea>
                    <CardContent style ={{ padding:'5px'}}>
                     <Typography
+                      // variant='body2'
                       style={{
+                        // marginTop: '0px',
                         marginTop: '-18px',
+
+                        // fontSize: 'x-large',
                         fontWeight: 'bold',
                         color: 'white',
 
@@ -211,7 +221,7 @@ function GridListPublish(props) {
                     <Typography
                       style={{
                         color: 'white',
-                        paddingRight:'360px'
+                        paddingRight:'100px'
                       }}
                       color='textSecondary'
                       component='p'
@@ -229,7 +239,7 @@ function GridListPublish(props) {
                     style={{ marginTop: 38, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentViewPublish',
+                        pathname: '/blog/student/contentViewPublishStudent',
                         state: { data: data[2], tabValue :props.tabValue },
                       })}
                   >
@@ -263,8 +273,11 @@ function GridListPublish(props) {
                 <CardActionArea>
                    <CardContent style ={{ padding:'5px'}}>
                     <Typography
+                      // variant='body2'
                       style={{
                         marginTop: '-18px',
+
+                        // fontSize: 'x-large',
                         fontWeight: 'bold',
                         color: 'white',
 
@@ -278,7 +291,7 @@ function GridListPublish(props) {
                     <Typography
                       style={{
                         color: 'white',
-                        paddingRight:'360px'
+                        paddingRight:'100px'
                       }}
                       color='textSecondary'
                       component='p'
@@ -296,7 +309,7 @@ function GridListPublish(props) {
                     style={{ marginTop: 38, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentViewPublish',
+                        pathname: '/blog/student/contentViewPublishStudent',
                         state: { data: data[3] , tabValue :props.tabValue},
                       })}
                   >
@@ -327,8 +340,10 @@ function GridListPublish(props) {
                 <CardActionArea>
                    <CardContent style ={{ padding:'5px'}}>
                     <Typography
+                      // variant='body2'
                       style={{
                         marginTop: '-18px',
+                        // fontSize: 'x-large',
                         fontWeight: 'bold',
                         color: 'white',
 
@@ -343,7 +358,7 @@ function GridListPublish(props) {
                     <Typography
                       style={{
                         color: 'white',
-                        paddingRight:'360px'
+                        paddingRight:'100px'
                       }}
                       color='textSecondary'
                       component='p'
@@ -361,7 +376,7 @@ function GridListPublish(props) {
                     style={{ marginTop: 38, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentViewPublish',
+                        pathname: '/blog/student/contentViewPublishStudent',
                         state: { data: data[4] , tabValue :props.tabValue},
                       })}
                   >
@@ -393,8 +408,10 @@ function GridListPublish(props) {
               <CardActionArea>
                  <CardContent style ={{ padding:'5px'}}>
                   <Typography
+                    // variant='body2'
                     style={{
                       marginTop: '-35px',
+                      // fontSize: 'x-large',
                       fontWeight: 'bold',
                       color: 'white',
 
@@ -403,7 +420,8 @@ function GridListPublish(props) {
                     component='p'
                   >
                   {data[5] && data[5].title}
-                  </Typography><Typography
+                  </Typography>
+                  <Typography
                       style={{
                         color: 'white',
                         paddingRight:'360px'
@@ -424,7 +442,7 @@ function GridListPublish(props) {
                     style={{ marginTop: 120, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentViewPublish',
+                        pathname: '/blog/student/contentViewPublishStudent',
                         state: { data: data[5] , tabValue :props.tabValue},
                       })}
                   >
@@ -436,9 +454,6 @@ function GridListPublish(props) {
         </Grid>
       </Grid>
        ) : 
-      //  (
-      //   <Typography align='center'>Oops... No blogs Posted</Typography>
-      //       )
             (
               <div className="periodDataUnavailable">
                   <SvgIcon
@@ -448,9 +463,10 @@ function GridListPublish(props) {
                           />
                       )}
                   />
-                  
+                 
               </div>
-          )}
+          )
+            }
     </div>
   );
 }

@@ -426,7 +426,7 @@ const Layout = ({ children, history }) => {
         history.push('/lesson-plan/report');
         break;
       }
-      case 'Graphical Report ': {
+      case 'Graphical Report': {
         history.push('/lesson-plan/graph-report');
         break;
       }

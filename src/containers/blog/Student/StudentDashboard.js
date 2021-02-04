@@ -105,7 +105,6 @@ class StudentDashboard extends Component {
   };
   handlePagination = (event, page) => {
     let {tabValue,status} = this.state
-    console.log(page,"@@@@@@@@@@@@@",tabValue)
 
     
     if(tabValue === 0){
@@ -113,7 +112,7 @@ class StudentDashboard extends Component {
         this.getBlog(status)})
     }
     else if (tabValue === 1){
-      this.setState({status:[3],pageNo:page},()=>{
+      this.setState({status:[3,7],pageNo:page},()=>{
         this.getBlog(status)})
     }
     else if (tabValue === 2){
@@ -144,7 +143,7 @@ class StudentDashboard extends Component {
       })
     }
     else if (newValue === 1){
-      this.setState({status:[3]},()=>{
+      this.setState({status:[3,7]},()=>{
         this.getBlog(this.state.status);
       })
     }
@@ -185,11 +184,6 @@ class StudentDashboard extends Component {
         }
       })
       .catch((error) => {
-        // setAlert('error', error.message);
-        // setSections([]);
-        // setSearchSection([]);
-        // setSubjects([]);
-        // setSectionDisp('');
       });
   };
   handleFilter = () =>
@@ -224,6 +218,12 @@ class StudentDashboard extends Component {
       });
 
   }
+  PublishBlogNav = () => {
+    this.props.history.push({
+      pathname: '/blog/student/publish/view',
+      state: { gradeId: 'hello' },
+    });
+  };
 
 
   render() {
@@ -291,16 +291,19 @@ class StudentDashboard extends Component {
                         Filter
                       </Button>
                     </Grid>
-                    {/* <Grid item>
+                   
+                    <Grid item>
                       <Button
-                        style={{ fontSize: 'small', margin: '20px', width: 150 }}
                         color='primary'
+                        style={{ fontSize: 'small', margin: '20px', width: 150 }}
                         size='small'
                         variant='contained'
+                        onClick={this.PublishBlogNav}
+
                       >
                         Published Blogs
                       </Button>
-                    </Grid> */}
+                    </Grid>
                     <Grid item>
                       <Button
                         style={{ fontSize: 'small', margin: '20px', width: 150 }}
@@ -347,10 +350,10 @@ class StudentDashboard extends Component {
                           {data && <GridList data={data}  tabValue={tabValue}/>}
                         </TabPanel>
                         <TabPanel value={tabValue} index={1}>
-                        {data && <GridList data={data} tabValue={tabValue} />}
+                        {data && <GridList data={data} tabValue={tabValue}  />}
                         </TabPanel>
                         <TabPanel value={tabValue} index={2}>
-                          {data && <GridList data={data} tabValue={tabValue} />}
+                          {data && <GridList data={data} tabValue={tabValue}  />}
                         </TabPanel>
                         <TabPanel value={tabValue} index={3}>
                           {data && <GridList data={data} tabValue={tabValue} />}

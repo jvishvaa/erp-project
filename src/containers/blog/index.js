@@ -11,3 +11,8 @@ export { default as ContentViewPublish } from './Teacher/ContentViewPublish';
 export { default as AdminBlog } from './Admin/AdminBlog';
 export { default as PrincipalBlog } from './Principal/PrincipalBlog';
 
+export {default as AdminPublishBlogView} from './Admin/AdminPublishBlogView';
+export {default as PrincipalPublishBlogView} from './Principal/PrincipalPublishBlogView';
+export {default as StudentPublishBlogView} from './Student/StudentPublishBlogView';
+
+export { default as ContentViewPublishStudent } from './Student/ContentViewPublishStudent';

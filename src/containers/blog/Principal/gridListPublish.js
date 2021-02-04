@@ -12,10 +12,6 @@ import { withRouter } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import Face from '@material-ui/icons/Face'
 
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import List from '@material-ui/core/List';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItem from '@material-ui/core/ListItem';
 
 import unfiltered from '../../../assets/images/unfiltered.svg'
 const LightTooltip = withStyles((theme) => ({
@@ -53,7 +49,7 @@ function GridListPublish(props) {
              style={{
               width: '100%',
               height: '290px',
-              display:data.length >= 0 ? 'flex' : 'none',
+              display:data.length >= 1 ? 'flex' : 'none',
               flexDirection: 'column',
               justifyContent: 'space-between',
               backgroundSize: '360px',
@@ -62,7 +58,7 @@ function GridListPublish(props) {
             className={classes.card} >
               <CardHeader
                 subheader={
-                  <Typography gutterBottom variant='body2' align='left' component='p'>
+                  <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
                     {data[0] && moment(data[0].created_at).format('MMM DD YYYY')}
 
                   </Typography>
@@ -70,7 +66,7 @@ function GridListPublish(props) {
               />
 
               <CardActionArea>
-                <CardContent>
+                 <CardContent style ={{ padding:'5px'}}>
                   <Typography
                     // variant='body2'
                     style={{
@@ -125,19 +121,19 @@ function GridListPublish(props) {
                 height: '290px',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                display:data.length >= 1 ? 'flex' : 'none',
+                display:data.length >= 2 ? 'flex' : 'none',
                 backgroundSize: '360px',
                 backgroundImage: `url(${data[1] && data[1].thumbnail})`,
               }}>
                 <CardHeader
                   subheader={
-                    <Typography gutterBottom variant='body2' align='left' component='p'>
+                    <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
                       {data[1] && moment(data[1].created_at).format('MMM DD YYYY')}
                     </Typography>
                   }
                 />
                 <CardActionArea>
-                  <CardContent>
+                   <CardContent style ={{ padding:'5px'}}>
                     <Typography
                       // variant='body2'
                       style={{
@@ -157,7 +153,7 @@ function GridListPublish(props) {
                     <Typography
                       style={{
                         color: 'white',
-                        paddingRight:'360px'
+                        paddingRight:'100px'
                       }}
                       color='textSecondary'
                       component='p'
@@ -190,10 +186,7 @@ function GridListPublish(props) {
                 style={{
                   width: '100%',
                   height: '290px',
-                  display:data.length >= 2 ? 'flex' : 'none',
-
-                  // display: data.length >= 2 ? '' : 'none',
-                  // display: 'flex',
+                  display:data.length >= 3 ? 'flex' : 'none',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                   backgroundSize: '360px',
@@ -202,13 +195,13 @@ function GridListPublish(props) {
               >
                 <CardHeader
                   subheader={
-                    <Typography gutterBottom variant='body2' align='left' component='p'>
+                    <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
                       {data[2] && moment(data[2].created_at).format('MMM DD YYYY')}
                     </Typography>
                   }
                 />
                 <CardActionArea>
-                  <CardContent>
+                   <CardContent style ={{ padding:'5px'}}>
                     <Typography
                       // variant='body2'
                       style={{
@@ -228,7 +221,7 @@ function GridListPublish(props) {
                     <Typography
                       style={{
                         color: 'white',
-                        paddingRight:'360px'
+                        paddingRight:'100px'
                       }}
                       color='textSecondary'
                       component='p'
@@ -264,7 +257,7 @@ function GridListPublish(props) {
               style={{
                 width: '100%',
                 height: '290px',
-                display:data.length > 3 ? 'flex' : 'none',
+                display:data.length >= 4 ? 'flex' : 'none',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 backgroundSize: '360px',
@@ -272,13 +265,13 @@ function GridListPublish(props) {
               }}>
                 <CardHeader
                   subheader={
-                    <Typography gutterBottom variant='body2' align='left' component='p'>
+                    <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
                       {data[3] && moment(data[3].created_at).format('MMM DD YYYY')}
                     </Typography>
                   }
                 />
                 <CardActionArea>
-                  <CardContent>
+                   <CardContent style ={{ padding:'5px'}}>
                     <Typography
                       // variant='body2'
                       style={{
@@ -298,7 +291,7 @@ function GridListPublish(props) {
                     <Typography
                       style={{
                         color: 'white',
-                        paddingRight:'360px'
+                        paddingRight:'100px'
                       }}
                       color='textSecondary'
                       component='p'
@@ -330,7 +323,7 @@ function GridListPublish(props) {
               style={{
                 width: '100%',
                 height: '290px',
-                display:data.length >= 4 ? 'flex' : 'none',
+                display:data.length >= 5 ? 'flex' : 'none',
 
                 flexDirection: 'column',
                 justifyContent: 'space-between',
@@ -339,21 +332,18 @@ function GridListPublish(props) {
               }}>
                 <CardHeader
                   subheader={
-                    <Typography gutterBottom variant='body2' align='left' component='p'>
+                    <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
                       {data[4] && moment(data[4].created_at).format('MMM DD YYYY')}
                     </Typography>
                   }
                 />
                 <CardActionArea>
-                  <CardContent>
+                   <CardContent style ={{ padding:'5px'}}>
                     <Typography
-                      // variant='body2'
                       style={{
                         marginTop: '-18px',
-                        // fontSize: 'x-large',
                         fontWeight: 'bold',
                         color: 'white',
-
                       }}
                       color='textSecondary'
                       component='p'
@@ -365,7 +355,7 @@ function GridListPublish(props) {
                     <Typography
                       style={{
                         color: 'white',
-                        paddingRight:'360px'
+                        paddingRight:'100px'
                       }}
                       color='textSecondary'
                       component='p'
@@ -398,7 +388,7 @@ function GridListPublish(props) {
             style={{
               width: '100%',
               height: '290px',
-              display:data.length >= 5 ? 'flex' : 'none',
+              display:data.length >= 6 ? 'flex' : 'none',
               flexDirection: 'column',
               justifyContent: 'space-between',
               backgroundSize: '360px',
@@ -406,14 +396,14 @@ function GridListPublish(props) {
             }}>
               <CardHeader
                 subheader={
-                  <Typography gutterBottom variant='body2' align='left' component='p'>
+                  <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
                                          {data[5] && moment(data[5].created_at).format('MMM DD YYYY')}
 
                   </Typography>
                 }
               />
               <CardActionArea>
-                <CardContent>
+                 <CardContent style ={{ padding:'5px'}}>
                   <Typography
                     // variant='body2'
                     style={{

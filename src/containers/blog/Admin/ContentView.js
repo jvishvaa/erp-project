@@ -29,6 +29,7 @@ import SideBar from './sideBar';
 import Review from '../Teacher/Review'
 import Layout from '../../Layout';
 import { ThreeSixty } from '@material-ui/icons';
+import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
 
 const styles = (theme) => ({
   root: {
@@ -92,21 +93,78 @@ class ContentView extends Component {
       feedBack: false,
       isPublish:false,
       data: this.props.location.state.data && this.props.location.state.data,
+      blogId: this.props.location.state.data && this.props.location.state.data.id,
       tabValue :this.props.location.state.tabValue && this.props.location.state.tabValue,
       feedbackrevisionReq:'',
       roleDetails: JSON.parse(localStorage.getItem('userDetails')),
       blogRatings :this.props.location.state.data && this.props.location.state.data.remark_rating,
-      overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark
+      overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark,
+      likeStatus:false,
+      currentLikes: 0,
+      loading:false,
+      likes: this.props.location.state.data && this.props.location.state.data.likes,
+      loginUserName : JSON.parse(localStorage.getItem('userDetails')).first_name
 
     };
 
   }
   componentDidMount() {
+    let {blogId} = this.state
+    this.handleView(blogId)
   }
+  handleView = (blogId) => {
+    let requestData = {
+      "blog_id": blogId ,
+    }
+  axiosInstance.post(`${endpoints.blog.BlogView}`, requestData)
+  .then(result=>{
+  if (result.data.status_code === 200) {
+  } else {        
+  }
+  }).catch((error)=>{
+  })
+}
 
 
 
+getLikeStatus = (isLiked) => {
+  let { likeStatus,likes }=this.state
+  if (isLiked === true && likeStatus === false) {
+    this.setState({currentLikes :likes-1,likeStatus:true})
+  } else if (isLiked === true && likeStatus === true) {
+    this.setState({currentLikes :likes+1,likeStatus:false})
 
+  } else if (isLiked === false && likeStatus === false) {
+    this.setState({currentLikes :likes+1,likeStatus:true})
+
+  } else if (isLiked === false && likeStatus === true) {
+    this.setState({currentLikes :likes,likeStatus:false})
+
+  }
+}
+
+handleLike = (isLiked,blogId) => {
+  this.getLikeStatus(isLiked)
+  let requestData = {
+    "blog_id": blogId ,
+
+  }
+axiosInstance.post(`${endpoints.blog.BlogLike}`, requestData)
+
+.then(result=>{
+if (result.data.status_code === 200) {
+  this.setState({loading:false})
+  // setAlert('success', result.data.message);
+} else {        
+  this.setState({loading:false})
+  // setAlert('error', result.data.message);
+}
+}).catch((error)=>{
+  this.setState({loading:false})
+  // setAlert('error', error.message);
+})
+  }
+  
 
 
   submitRevisionFeedback = () => {
@@ -189,7 +247,13 @@ class ContentView extends Component {
   
   render() {
     const { classes } = this.props;
-    const { tabValue,relatedBlog, starsRating, feedBack ,data,feedbackrevisionReq,isPublish,publishedLevel} = this.state;
+    const {likes,currentLikes,likeStatus,loginUserName, tabValue,relatedBlog, starsRating, feedBack ,data,feedbackrevisionReq,isPublish,publishedLevel} = this.state;
+    const blogFkLike= data && data.blog_fk_like
+    const likedUserIds=blogFkLike.map(blog => blog.user)
+    const indexOfLoginUser=likedUserIds.indexOf(roleDetails.user_id)
+    const loginUser=likedUserIds.includes(roleDetails.user_id)
+    const isLiked = loginUser ? blogFkLike[indexOfLoginUser].is_liked : false
+    const name =data && data.author && data.author.first_name
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -221,7 +285,22 @@ class ContentView extends Component {
                             {data.title}
                         </Typography>
                         <CardMedia className={classes.media} image={data.thumbnail} />
-
+                        {
+                          data.feedback_revision_required ?
+                        <CardContent> <Typography
+                          style={{color:'red', fontSize:'12px'}}
+                        >Revision Feedback:{data.feedback_revision_required}
+                       
+                        </Typography>
+                        <Typography  style={{fontSize:'12px'}}> Revised By:{data && data.feedback_revision_by && data.feedback_revision_by.first_name}</Typography></CardContent> 
+                        :  data.comment ? 
+                        <CardContent> <Typography
+                        style={{color:'red', fontSize:'12px'}}
+                      >Comment:{data.comment}
+                     
+                      </Typography>
+                      <Typography> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
+                      </CardContent>  :''}
                         <CardHeader
                           className={classes.author}
                           avatar={
@@ -243,8 +322,28 @@ class ContentView extends Component {
                           <Typography variant='body2' color='textSecondary' component='p'>
                             {data.content}
                           </Typography>
+                          <Typography  component='p' style={{ paddingRight: '650px',fontSize:'12px'}}>
+                           Genre: {data.genre && data.genre.genre}
+                          </Typography>
+                          <Typography component='p'  style={{paddingRight: '650px', fontSize:'12px'}}
+>
+                          TotalWords : {data.word_count}
+                          </Typography>
                         </CardContent>
                         <CardActions>
+                        {loginUserName !== name ? <Button
+                              style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' ,color:'red' ,backgroundColor:'white'}}
+                              onClick={()=>this.handleLike(isLiked,data.id)}
+                            > {isLiked || likeStatus ? <Favorite style={{ color: '#ff6b6b' }} />
+                                : <FavoriteBorder style={{ color: '#ff6b6b' }} />} {currentLikes === 0 ? likes
+                                : currentLikes
+                              }Likes
+                            </Button> : ''} &nbsp;&nbsp;&nbsp;
+                            <Button
+                              style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' ,color:'red' ,backgroundColor:'white'}}
+
+                            >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
+                            </Button>
                           {tabValue === 0 ? 
                           <Button
                             size='small'

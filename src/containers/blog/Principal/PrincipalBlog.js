@@ -79,19 +79,16 @@ class PrincipalBlog extends Component {
       pageSize: 6,
       totalPages:0,
       startDate :moment().format('YYYY-MM-DD'),
+      status :[8]
     };
   }
   componentDidMount() {
-    this.getBlog(8);
+    let {status} =this.state
+    this.getBlog(status);
   }
   getBlog = (status) => {
     const { pageNo, pageSize,tabValue } = this.state;
-    if(tabValue === 0){
-      status= 8
-    }
-    else{
-      status=3
-    }
+    
     axios
       .get(
         `${endpoints.blog.Blog}?page_number=${
@@ -114,7 +111,7 @@ class PrincipalBlog extends Component {
   
   PublishBlogNav = () => {
     this.props.history.push({
-      pathname: '/blog/teacher/publish/view',
+      pathname: '/blog/principal/publish/view',
       state: { gradeId: 'hello' },
     });
   };
@@ -136,15 +133,33 @@ class PrincipalBlog extends Component {
 
   handleTabChange = (event, newValue) => {
     this.setState({ tabValue: newValue ,data:[], pageNo:0, pageSize:6});
-    const blogTab = newValue === 0 ? 8 : 3;
-    this.getBlog(blogTab);
+    if(newValue === 0){
+      this.setState({tabValue: newValue ,data:[], pageNo:0, pageSize:6,status: 8 }, ()=>{
+        this.getBlog(this.state.status);
+
+      })
+    }
+    else{
+      this.setState({tabValue: newValue ,data:[], pageNo:0, pageSize:6,status: [3,5,7] }, ()=>{
+        this.getBlog(this.state.status);
+
+      })
+    }
   };
   handlePagination = (event, page) => {
     let {tabValue} = this.state
-    console.log(page,"@@@@@@@@@@@@@",tabValue)
-    this.setState({pageNo:page},()=>{
-      this.getBlog(8)
-    })
+    if (tabValue === 0){
+      this.setState({data:[], pageNo:page, pageSize:6,status: 8 }, ()=>{
+        this.getBlog(this.state.status);
+
+      })
+    }else{
+      this.setState({data:[], pageNo:page, pageSize:6,status: [3,5] }, ()=>{
+        this.getBlog(this.state.status);
+
+      })
+
+    }
 };
 
 

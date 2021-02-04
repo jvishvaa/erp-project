@@ -50,7 +50,7 @@ export default {
     resourceLink: '/erp_user/resource_link/',
     resourceFile: '/erp_user/resource_files/',
     feedback: '/erp_user/onlineclass_attendancecheck/',
-    updateTutor: '/erp_user/update_tutor_email',
+    updateTutor: '/erp_user/update_tutor_email/',
   },
   masterManagement: {
     subjects: '/erp_user/subjects-list/',
@@ -156,6 +156,10 @@ export default {
   blog: {
     genreList: '/academic/genre/',
     Blog: '/academic/blog/',
+    BlogLike:'/academic/like_blog/',
+    BlogView:'/academic/view_blog/'
+
+    
   },
   assessment: {
     userTests: `${baseURLCentral}/assessment/user-tests/`, //?user=20&subject=1,
