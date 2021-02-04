@@ -312,7 +312,7 @@ const history=useHistory()
           className='custom_button_master'
           size='medium'
           type='submit'
-          onClick={()=>history.push("/create/general-dairy")}
+          onClick={()=>history.push("/create/daily-dairy")}
         >
           CREATE DAILY DAIRY
         </Button>
