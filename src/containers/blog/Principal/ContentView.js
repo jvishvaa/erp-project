@@ -322,6 +322,9 @@ if (result.data.status_code === 200) {
 >
                           TotalWords : {data.word_count}
                           </Typography>
+                          <Typography  component='p' style={{ paddingRight: '650px',fontSize:'12px'}}>
+                           Genre: {data.genre && data.genre.genre}
+                          </Typography>
                         </CardContent>
                         <CardActions>
                         {loginUserName !== name ? <Button

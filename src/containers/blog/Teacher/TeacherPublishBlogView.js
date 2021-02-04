@@ -198,15 +198,15 @@ class TeacherPublishBlogView extends Component {
                         Filter
                       </Button>
                     </Grid>
-                    <Grid item xs={6}>
-                    <Pagination
-                    onChange={this.handlePagination}
-                    style={{ paddingLeft:'390px' }}
-                    count={Math.ceil(totalBlogs / pageSize)}
-                    color='primary'
-                    page={pageNo}
-                            />
-            </Grid>
+                    <Button
+                        style={{ fontSize: 'small', margin: '20px' }}
+                        onClick={() => window.history.back()}
+                        color='primary'
+                        size='small'
+                        variant='contained'
+                      >
+                        <i>Back</i>
+                      </Button>
                   </Grid>
                   <Grid container spacing={2}>
                     {/* <Grid item>
@@ -273,6 +273,15 @@ class TeacherPublishBlogView extends Component {
                         </TabPanel>
                       </div>
                     </Grid>
+                    <Grid item xs={6}>
+                    <Pagination
+                    onChange={this.handlePagination}
+                    style={{ paddingLeft:'390px' }}
+                    count={Math.ceil(totalBlogs / pageSize)}
+                    color='primary'
+                    page={pageNo}
+                            />
+            </Grid>
                   </Grid>
                 </div>
               </div>

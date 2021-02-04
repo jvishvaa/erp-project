@@ -541,7 +541,7 @@ function GridList(props) {
   //       : '' 
   //               }
                   subheader={
-                    <Typography gutterBottom variant='body2' align='left' component='p'>
+                    <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
                       {data[5] && moment(data[5].created_at).format('MMM DD YYYY')}
                     </Typography>
                   }
@@ -594,9 +594,6 @@ function GridList(props) {
           </Grid>
         </Grid>
       ) : 
-      // (
-      //   <Typography align='center'>Oops... No blogs Posted</Typography>
-      // )
       (
         <div className="periodDataUnavailable">
             <SvgIcon

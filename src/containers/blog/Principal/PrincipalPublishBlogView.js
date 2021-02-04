@@ -197,6 +197,15 @@ class PrincipalPublishBlogView extends Component {
                       >
                         Filter
                       </Button>
+                      <Button
+                        style={{ fontSize: 'small', margin: '20px' }}
+                        onClick={() => window.history.back()}
+                        color='primary'
+                        size='small'
+                        variant='contained'
+                      >
+                        <i>Back</i>
+                      </Button>
                     </Grid>
                     <Grid item xs={6}>
                     <Pagination

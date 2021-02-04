@@ -49,7 +49,10 @@ import {
   TeacherPublishBlogView,
   BlogView,
   CreateGenre,
-  ViewGenre, ContentViewPublish,
+  ViewGenre, 
+  ContentViewPublish,
+  ContentViewPublishStudent,
+
   AdminBlog,
   PrincipalBlog,
   PrincipalPublishBlogView,
@@ -167,9 +170,11 @@ function App() {
                     <Route exact path='/blog/teacher/contentView'>
                       {({ match }) => <ContentView match={match} />}
                     </Route>
-
                     <Route exact path='/blog/teacher/contentViewPublish'>
                       {({ match }) => <ContentViewPublish match={match} />}
+                    </Route>
+                    <Route exact path='/blog/student/contentViewPublishStudent'>
+                      {({ match }) => <ContentViewPublishStudent match={match} />}
                     </Route>
 
                     <Route exact path='/blog/teacher/publish/view'>
