@@ -116,7 +116,7 @@ function GridList(props) {
               <Card  className={classes.card}
               style={{
                 width: '100%',
-                height: '290px',
+                height: '350px',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 display:data.length >= 2 ? 'flex' : 'none',
@@ -179,7 +179,7 @@ function GridList(props) {
                 className={classes.card}
                 style={{
                   width: '100%',
-                  height: '290px',
+                  height: '350px',
                   display:data.length >= 3 ? 'flex' : 'none',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
@@ -246,7 +246,7 @@ function GridList(props) {
               <Card  className={classes.card}
               style={{
                 width: '100%',
-                height: '290px',
+                height: '350px',
                 display:data.length >= 4 ? 'flex' : 'none',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
@@ -309,7 +309,7 @@ function GridList(props) {
               <Card  className={classes.card}
               style={{
                 width: '100%',
-                height: '290px',
+                height: '350px',
                 display:data.length >= 5 ? 'flex' : 'none',
 
                 flexDirection: 'column',

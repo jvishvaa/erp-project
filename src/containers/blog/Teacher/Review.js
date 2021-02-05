@@ -126,12 +126,10 @@ class Review extends Component {
               )
             })
           }
-          <Grid item xs={12}  >
-            <hr />
+          <Grid item xs={12} >
             <HoverRating rating={this.calculateOverallRating()} overallRemark={overallRemark} rating_type='Overall' handleRemark={this.handleRemark} />
           </Grid>
-        </Grid>
-
+          <Grid item xs={12} >
        <Button
               className='reviewer_submit'
               variant='contained'
@@ -140,7 +138,8 @@ class Review extends Component {
               disabled={!this.isAllParametersEntered() || !overallRemark} >
              Submit
             </Button>
-
+            </Grid>
+            </Grid>
       </React.Fragment>
     )
   }
