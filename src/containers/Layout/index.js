@@ -402,6 +402,10 @@ const Layout = ({ children, history }) => {
         history.push('/master-mgmt/message-type-table');
         break;
       }
+      case 'course-table':{
+        history.push('/course-list')
+        break;
+      }
       case 'school-mapping': {
         history.push('/subject/grade');
         break;
@@ -426,7 +430,7 @@ const Layout = ({ children, history }) => {
         history.push('/lesson-plan/report');
         break;
       }
-      case 'Graphical Report ': {
+      case 'Graphical Report': {
         history.push('/lesson-plan/graph-report');
         break;
       }

@@ -410,6 +410,7 @@ const UploadModal = ({ id, onClose, isMobile, type }) => {
       formData.append(`files`, files[index]);
     });
     formData.set('online_class_id', id);
+    //formData.set('class_date', props.classDate);
 
     if (existingUpload.length && files.length) {
       uploadPromise = axiosInstance.put(url, formData);

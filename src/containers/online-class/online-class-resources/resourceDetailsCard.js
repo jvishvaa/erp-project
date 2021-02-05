@@ -2,7 +2,7 @@ import React from 'react';
 import { Divider, makeStyles, withStyles, Typography, Button } from '@material-ui/core';
 //import AttachmentIcon from '../components/icons/AttachmentIcon';
 import moment from 'moment';
-import JoinClass from './JoinClass';
+import ResourceClass from './resourceClass';
 import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles({
@@ -14,7 +14,7 @@ const useStyles = makeStyles({
     classHeader: {
         minHeight: '64px',
         padding: '8px 15px',
-        backgroundColor: '#F9D474',
+        backgroundColor: '#ff6b6b',
         borderRadius: '10px 10px 0px 0px',
     },
     classHeaderText: {
@@ -53,7 +53,7 @@ const useStyles = makeStyles({
         float: 'right',
     },
     classDetails: {
-        padding: '8px 15px',
+        padding: '8px 10px',
         backgroundColor: '#FFFFFF',
         borderRadius: '0px 0px 10px 10px',
     },
@@ -87,24 +87,6 @@ const useStyles = makeStyles({
     },
 })
 
-const OutlineButton = withStyles({
-    root: {
-        marginTop: '12px',
-        height: '31px',
-        width: '100%',
-        fontSize: '15px',
-        fontFamily: 'Poppins',
-        fontWeight: '',
-        lineHeight: '27px',
-        letterSpacing: 0,
-        textTransform: 'capitalize',
-        backgroundColor: 'transparent',
-        borderRadius: '10px',
-        border: '1px solid #FFAF71',
-        padding: '0px',
-    }
-})(Button);
-
 const StyledButton = withStyles({
     root: {
         marginTop: '16px',
@@ -115,25 +97,21 @@ const StyledButton = withStyles({
         fontWeight: '',
         lineHeight: '27px',
         textTransform: 'capitalize',
-        backgroundColor: '#FFAF71',
+        backgroundColor: '#ff6b6b',
         borderRadius: '10px',
-        '& :hover': {
-        },
     }
 })(Button);
 
-export default function ClassdetailsCardComponent(props) {
+export default function ResourceDetailsCardComponent(props) {
     const classes = useStyles({});
-    //console.log(props.classData);
+    console.log(props.resourceData);
 
     //Periods date start
-    const startDate = new Date(props.classData.online_class.start_time);
-    const endDate = new Date(props.classData.online_class.end_time);
+    const startDate = new Date(props.resourceData.online_class.start_time);
+    const endDate = new Date(props.resourceData.online_class.end_time);
     const Difference_In_Time = endDate.getTime() - startDate.getTime();
     const Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
-    // role_details
-    let isTeacher = props.classData.is_canceled !== undefined ? true : false;
-    console.log(isTeacher);
+
     let periods;
     if(moment(startDate).format('ll') === moment(endDate).format('ll')) {
         periods = 0;
@@ -157,64 +135,34 @@ export default function ClassdetailsCardComponent(props) {
     }
     ////Periods date end
 
-    const handleAttendance = () => {
-        console.log(" attendance");
-        //online-class/attendee-list/:id
-        //history.push(`online-class/attendee-list/:${id}`);
-    }
     return (
         <div className={classes.classDetailsBox}>
             <div className={classes.classHeader}>
                 <div>
                     <Typography className={classes.classHeaderText}>
-                        {props.classData.online_class.title}
+                        {props.resourceData.online_class.title}
                     </Typography>
-                    <Typography className={classes.classHeaderTime}>
-                        {moment(props.classData.join_time).format('h:mm:ss')}
-                    </Typography>
-                </div>
-                <div>
-                    <Typography className={classes.classHeaderSub}>
-                        {props.classData.online_class.subject[0].subject_name}
-                    </Typography>
-                    <Typography className={classes.subPeriods}>{periods + 1} periods</Typography>
                 </div>
             </div>
             <div className={classes.classDetails}>
-
-                <Typography className={classes.classDetailsTitle}>
-                    Description
-                </Typography>
-                <Divider className={classes.classDetailsDivider}/>
                 <div className={classes.joinClassDiv}>
                     {dateArray !== undefined && dateArray.map((date, id) => (
-                        <JoinClass
+                        <ResourceClass
                             key={id}
                             date={date}
-                            joinUrl={props.classData.join_url}
-                            isTeacher={isTeacher}
+                            resourceId={props.resourceData.online_class.id}
                         />
                     ))}
                 </div>
                 <Divider className={classes.classDetailsDivider}/>
 
-                {isTeacher ? (
-                    <StyledButton
-                        onClick={handleAttendance}
-                        color="primary"
-                    >
-                        Attendance
-                    </StyledButton>
-                ) : (
-                    <StyledButton color="primary">Resources</StyledButton>
-                )}
                 <StyledButton
                     color="primary">
-                    View lesson plan
+                    Submit
                 </StyledButton>
             </div>
         </div>
     )
 }
 
-export const ClassdetailsCard = React.memo(ClassdetailsCardComponent);
+export const ResourceDetailsCard = React.memo(ResourceDetailsCardComponent);

@@ -43,6 +43,7 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import { fetchBranchesForCreateUser } from '../../../redux/actions';
 
 const CreateClassForm = (props) => {
+  
   const tutorEmailRef = useRef(null);
   const [onlineClass, setOnlineClass] = useState(initialFormStructure);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -68,6 +69,8 @@ const CreateClassForm = (props) => {
     clearTutorEmailValidation,
     isTutorEmailValid,
     isValidatingTutorEmail,
+    isEdit,
+    editData,
     grades = [],
     sections = [],
     subjects = [],
@@ -93,7 +96,9 @@ const CreateClassForm = (props) => {
   const [priceToggle, setPriceToggle] = useState(false);
 
   const { setAlert } = useContext(AlertNotificationContext);
-
+  console.log("isEdit : "+isEdit)
+  isEdit && (console.log(editData));
+  console.log(editData);
   const {
     role_details: { branch = [], erp_user_id: erpUser },
     user_id: userId,
@@ -472,7 +477,14 @@ const CreateClassForm = (props) => {
     request['class_type'] = selectedClassType?.id;
     request['section_mapping_ids'] = sectionIds.join(',');
 
-    if (days.length) request['week_days'] = days;
+    
+    if(selectedClassType?.id === 0) {
+      const arr=[]
+      arr.push(days);
+      request['week_days'] = arr;
+    }
+    else if (days.length) 
+    request['week_days'] = days;
 
     if (selectedClassType?.id === 0) {
       if (filteredStudents.length>0)
