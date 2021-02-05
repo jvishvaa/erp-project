@@ -428,7 +428,7 @@ if (result.data.status_code === 200) {
                                 disabled={!publishedLevel}
                                 onClick ={this.submitPublish}
                               >
-                                Publish
+                                Submit
                               </Button>
                             </CardActions>
                           </CardContent>
