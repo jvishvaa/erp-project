@@ -70,7 +70,7 @@ const StyledRating = withStyles({
     color: '#ff3d47',
   },
 })(Rating);
-class ContentView extends Component {
+class PreviewEditBlog extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -83,39 +83,33 @@ class ContentView extends Component {
       studentName: this.props.location.state.studentName,
       date: this.props.location.state.creationDate,
       files: this.props.location.state.files,
-      
+      blogId:this.props.location.state.blogId,
+      genreName:this.props.location.state.genreName,
     };
   }
 
   componentDidMount() {
     const { files } = this.state;
-    const imageUrl = URL.createObjectURL(files[0]);
+    const imageUrl = URL.createObjectURL( files && files[0]);
     this.setState({ imageUrl });
   }
 
-  WriteBlogNav = () => {
-    const { content, title, files ,genreId} = this.state;
-    this.props.history.push({
-      pathname: '/blog/student/write-blog',
-      state: { content, title, files,genreId },
-    });
-  };
 
   submitBlog = (type) => {
-    const { title, content, files, genreId } = this.state;
+    const { title, content, files, genreId ,blogId} = this.state;
     const formData = new FormData();
     for (var i = 0; i < files.length; i++) {
       formData.append('thumbnail',files[i]);
     }
     formData.set('title', title);
+    formData.set('blog_id', blogId);
+
     formData.set('content', content);
-    // formData.set('thumbnail', files[0]);
-    // formData.append('subject_id', subject_id);
     formData.set('genre_id', genreId);
     formData.set('status', type == 'Draft' ? 2 : 8);
 
     axios
-      .post(`${endpoints.blog.Blog}`, formData)
+      .put(`${endpoints.blog.Blog}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
           this.props.history.push({
@@ -126,11 +120,6 @@ class ContentView extends Component {
         }
       })
       .catch((error) => {
-        // setAlert('error', error.message);
-        // setSections([]);
-        // setSearchSection([]);
-        // setSubjects([]);
-        // setSectionDisp('');
       });
   };
 
@@ -186,23 +175,17 @@ class ContentView extends Component {
                           <Typography variant='body2' color='textSecondary' component='p'>
                             {this.state.content}
                           </Typography>
+                          
                         </CardContent>
                         <CardActions>
-                          <Button
-                            style={{ width: 150 }}
-                            size='small'
-                            color='primary'
-                            onClick={this.WriteBlogNav}
-                          >
-                            Edit
-                          </Button>
+                        
                           <Button
                             style={{ width: 150 }}
                             size='small'
                             color='primary'
                             onClick={() => this.submitBlog('Publish')}
                           >
-                            Publish
+                            Submit
                           </Button>
                           <Button
                             style={{ width: 150 }}
@@ -225,4 +208,4 @@ class ContentView extends Component {
     );
   }
 }
-export default withRouter(withStyles(styles)(ContentView));
+export default withRouter(withStyles(styles)(PreviewEditBlog));

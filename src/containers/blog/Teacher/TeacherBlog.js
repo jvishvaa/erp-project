@@ -206,14 +206,14 @@ class TeacherBlog extends Component {
                 <div style={{ margin: '20px' }}>
                   <Grid container>
                     <Grid item>
-                      <Button
+                      {/* <Button
                         color='primary'
                         style={{ fontSize: 'small', margin: '20px' }}
                         size='small'
                         variant='contained'
                       >
                         Clear All
-                      </Button>
+                      </Button> */}
                     </Grid>
                     <Grid item>
                       <Button

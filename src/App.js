@@ -46,7 +46,9 @@ import {
   ContentViewAdmin,
   ContentViewPrincipal,
   WriteBlog,
+  EditBlog,
   PreviewBlog,
+  PreviewEditBlog,
   StudentDashboard,
   TeacherPublishBlogView,
   BlogView,
@@ -213,9 +215,15 @@ function App() {
                     <Route exact path='/blog/student/write-blog'>
                       {({ match }) => <WriteBlog match={match} />}
                     </Route>
+                    <Route exact path='/blog/student/edit-blog'>
+                      {({ match }) => <EditBlog match={match} />}
+                    </Route>
 
                     <Route exact path='/blog/student/preview-blog'>
                       {({ match }) => <PreviewBlog match={match} />}
+                    </Route>
+                    <Route exact path='/blog/student/preview-edit-blog'>
+                      {({ match }) => <PreviewEditBlog match={match} />}
                     </Route>
                     <Route exact path='/blog/student/view-blog'>
                       {({ match }) => <BlogView match={match} />}

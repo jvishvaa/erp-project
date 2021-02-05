@@ -89,7 +89,7 @@ class ContentView extends Component {
 
   componentDidMount() {
     const { files } = this.state;
-    const imageUrl = URL.createObjectURL(files[0]);
+    const imageUrl = URL.createObjectURL( files && files[0]);
     this.setState({ imageUrl });
   }
 

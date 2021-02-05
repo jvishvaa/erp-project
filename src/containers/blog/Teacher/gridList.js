@@ -54,6 +54,8 @@ function GridList(props) {
               justifyContent: 'space-between',
               backgroundSize: '360px',
               backgroundImage: `url(${data[0] && data[0].thumbnail})`,
+              borderRadius: 10,
+
             }}
             className={classes.card} >
               <CardHeader
@@ -116,12 +118,14 @@ function GridList(props) {
               <Card  className={classes.card}
               style={{
                 width: '100%',
-                height: '290px',
+                height: '350px',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 display:data.length >= 2 ? 'flex' : 'none',
                 backgroundSize: '360px',
                 backgroundImage: `url(${data[1] && data[1].thumbnail})`,
+                borderRadius: 10,
+
               }}>
                 <CardHeader
                   subheader={
@@ -179,12 +183,14 @@ function GridList(props) {
                 className={classes.card}
                 style={{
                   width: '100%',
-                  height: '290px',
+                  height: '350px',
                   display:data.length >= 3 ? 'flex' : 'none',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                   backgroundSize: '360px',
                   backgroundImage: `url(${data[2] && data[2].thumbnail})`,
+                  borderRadius: 10,
+
                 }}
               >
                 <CardHeader
@@ -246,12 +252,14 @@ function GridList(props) {
               <Card  className={classes.card}
               style={{
                 width: '100%',
-                height: '290px',
+                height: '350px',
                 display:data.length >= 4 ? 'flex' : 'none',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 backgroundSize: '360px',
                 backgroundImage: `url(${data[3] && data[3].thumbnail})`,
+                borderRadius: 10,
+
               }}>
                 <CardHeader
                   subheader={
@@ -309,13 +317,15 @@ function GridList(props) {
               <Card  className={classes.card}
               style={{
                 width: '100%',
-                height: '290px',
+                height: '350px',
                 display:data.length >= 5 ? 'flex' : 'none',
 
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 backgroundSize: '360px',
                 backgroundImage: `url(${data[4] && data[4].thumbnail})`,
+                borderRadius: 10,
+
               }}>
                 <CardHeader
                   subheader={
@@ -381,6 +391,8 @@ function GridList(props) {
               justifyContent: 'space-between',
               backgroundSize: '360px',
               backgroundImage: `url(${data[5] && data[5].thumbnail})`,
+              borderRadius: 10,
+
             }}>
               <CardHeader
                 subheader={

@@ -380,18 +380,6 @@ class WriteBlog extends Component {
                         )}
                       </Dropzone>
                       
-                      {/* {
-                image
-                  ? <Grid item xs={12} sm={6} md={6} style={{ position: 'relative' }}>
-                    <HighlightOff
-                      className='thumbnail__close--icon'
-                      onClick={this.handleClearThumbnail}
-                    />
-                    <label className='blog--form-label' />
-                    <img className='thumbnail__image' src={image} />
-                  </Grid>
-                  : ''
-              } */}
 
                       <Divider variant='middle' style={{ margin: 10 }} />
 
@@ -401,7 +389,7 @@ class WriteBlog extends Component {
                           style={{ width: 150 }}
                           onClick={this.PreviewBlogNav}
                           color='primary'
-                          disabled={!genreId || !files ||!title ||!textEditorContent}
+                          disabled={!genreId || !files.length> 0 ||!title ||!textEditorContent}
                         >
                           Preview Blog
                         </Button>
