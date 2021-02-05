@@ -7,6 +7,7 @@ import Select from 'react-select'
 import { apiActions } from '../../../../_actions'
 import * as actionTypes from '../../store/actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
 // import NewRegistration from './newRegistrationForm'
 
 const styles = theme => ({
@@ -141,7 +142,8 @@ class RegistrationForm extends Component {
       )
     }
     return (
-      <div>
+      <Layout>      
+        <div>
         <Grid container spacing={2} style={{ padding: '20px' }}>
           <Grid xs={10} />
           <Grid item xs={2} >
@@ -205,6 +207,7 @@ class RegistrationForm extends Component {
         {regListTable}
         {this.props.dataLoading ? <CircularProgress open /> : null}
       </div>
+      </Layout>
     )
   }
 }

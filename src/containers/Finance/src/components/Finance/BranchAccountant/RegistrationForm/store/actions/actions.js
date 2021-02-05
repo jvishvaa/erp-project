@@ -51,9 +51,9 @@ export const getStudentInfo = (payload) => {
               dispatch(actionTypes.dataLoaded())
               console.log(error)
               if (error.response && error.response.status === 400) {
-                payload.alert.warning(error.response.data.err_msg)
+                // payload.alert.warning(error.response.data.err_msg)
               } else {
-                payload.alert.warning('Something Went Wrong!')
+                // payload.alert.warning('Something Went Wrong!')
               }
             })
         }
@@ -61,9 +61,9 @@ export const getStudentInfo = (payload) => {
       }).catch(error => {
         console.log(error)
         if (error.response && error.response.status === 400) {
-          payload.alert.warning(error.response.data.err_msg)
+          // payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.warning('Something Went Wrong!')
+          // payload.alert.warning('Something Went Wrong!')
         }
         dispatch(actionTypes.dataLoaded())
       })
@@ -92,9 +92,9 @@ export const fetchRegistrationList = (payload) => {
       }).catch(error => {
         console.log(error)
         if (error.response && error.response.status === 400) {
-          payload.alert.warning(error.response.data.err_msg)
+          // payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.warning('Something Went Wrong!')
+          // payload.alert.warning('Something Went Wrong!')
         }
       })
   }
@@ -130,9 +130,9 @@ export const fetchRegistrationSugg = (payload) => {
         console.log(error)
         dispatch(actionTypes.dataLoaded())
         if (error.response && error.response.status === 400) {
-          payload.alert.warning(error.response.data.err_msg)
+          // payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.warning('Something Went Wrong!')
+          // payload.alert.warning('Something Went Wrong!')
         }
       })
   }
@@ -148,7 +148,7 @@ export const sendAllPaymentReg = (payload) => {
         }
       }).then(response => {
         console.log('payment res: ', response.data)
-        payload.alert.success('Success')
+        // payload.alert.success('Success')
         dispatch({
           type: SAVE_ALL_PAYMENT,
           payload: {
@@ -160,9 +160,9 @@ export const sendAllPaymentReg = (payload) => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
         if (error.response && error.response.status === 400) {
-          payload.alert.warning(error.response.data.err_msg)
+          // payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.warning('Something Went Wrong!')
+          // payload.alert.warning('Something Went Wrong!')
         }
       })
   }
@@ -192,7 +192,7 @@ export const createRegNum = (payload) => {
         if (error.response && error.response.status === 400) {
           payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.warning('Something Went Wrong!')
+          // payload.alert.warning('Something Went Wrong!')
         }
         // payload.alert.warning('Unable create app num')
       })

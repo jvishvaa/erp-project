@@ -500,6 +500,10 @@ const Layout = ({ children, history }) => {
           history.push('/student/LegerTab')
             break;
           }
+        case 'Registration Form': {
+          history.push('/admissions/registrationForm/')
+            break;
+          }
       default:
         break;
     }

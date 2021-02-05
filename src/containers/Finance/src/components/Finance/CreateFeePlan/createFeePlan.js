@@ -19,6 +19,7 @@ import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 // import '../../css/staff.css'
 import classess from './deleteModal.module.css'
 import Layout from '../../../../../Layout'
+import ManageFeeType from './manageFeeType'
 
 // const CreatePlan = {
 //   label: 'Create Fee Plan',
@@ -193,7 +194,11 @@ class CreateFeePlan extends Component {
       })
     }
   }
-
+  // manageFeeHandler = (e) => {
+  //   if (e) {
+  //     <ManageFeeType id={e}/>
+      
+  // }
   render () {
     let { classes } = this.props
 
@@ -271,6 +276,7 @@ class CreateFeePlan extends Component {
         </EModal>
       )
     }
+   
 
     return (
       <Layout>
@@ -413,9 +419,9 @@ class CreateFeePlan extends Component {
                                     href: '/finance/manage_feeType/' + row.id,
                                     label: 'Manage Fee Type'
                                   }}
-                                  id={row.id}
+                                  id={row.id} // rajneesh
                                 /> */}
-                                <Button component={Link} to={'/finance/manage_feeType/'} >Manage Fee Type</Button>
+                                <Button component={Link} to={'/finance/manage_feeType/'}>Manage Fee Type</Button>
                               </TableCell>
                             </TableRow>
                           </React.Fragment>

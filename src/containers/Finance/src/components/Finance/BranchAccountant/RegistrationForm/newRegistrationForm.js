@@ -16,7 +16,8 @@ import { apiActions } from '../../../../_actions'
 import * as actionTypes from '../../store/actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import Receipt from './receipt'
-import { debounce } from '../../../../utils'
+import Layout from '../../../../../../Layout'
+// import { debounce } from '../../../../utils' // rajneesh
 // import { TransferWithinAStationSharp } from '@material-ui/icons'
 
 // const useStyles = theme => ({
@@ -73,7 +74,16 @@ class NewRegistration extends Component {
     })
   }
 
-  myErpFunc = debounce(() => {
+  // myErpFunc = debounce(() => {
+  //   this.props.fetchRegistrationSugg(
+  //     this.state.academicYearValue.value,
+  //     this.state.searchByValue.value,
+  //     this.state.searchedValue,
+  //     this.props.user,
+  //     this.props.alert
+  //   )
+  // }, 500) // rajneesh
+  myErpFunc =() => {
     this.props.fetchRegistrationSugg(
       this.state.academicYearValue.value,
       this.state.searchByValue.value,
@@ -81,7 +91,7 @@ class NewRegistration extends Component {
       this.props.user,
       this.props.alert
     )
-  }, 500)
+  }
 
   onSearchChange = (e, selected) => {
     this.setState({
@@ -204,6 +214,7 @@ class NewRegistration extends Component {
     //   )
     // }
     return (
+      <Layout>
       <Grid container spacing={3} style={{ flexGrow: 1, padding: '20px' }}>
         <Grid item xs={3}>
           <Select
@@ -383,6 +394,7 @@ class NewRegistration extends Component {
         {regModal}
         {this.props.dataLoading ? <CircularProgress open /> : null}
       </Grid>
+      </Layout>
     )
   }
 }
