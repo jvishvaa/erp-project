@@ -202,18 +202,19 @@ getOverAllRemark = () => {
         });
     }
   };
-  // EditBlogNav = () => {
-  //   const { data } = this.state;
-  //   let content=data && data.content
-  //   let title=data && data.title
-  //   let thumbnail = data && data.thumbnail
-  //   let genreId =data && data.genre && data.genre.id
-  //   let genreName =data && data.genre && data.genre.genre
-  //   this.props.history.push({
-  //     pathname: '/blog/student/edit-blog',
-  //     state: { content, title, thumbnail,genreId,genreName },
-  //   });
-  // };
+  EditBlogNav = () => {
+    const { data } = this.state;
+    let content=data && data.content
+    let title=data && data.title
+    let thumbnail = data && data.thumbnail
+    let genreId =data && data.genre && data.genre.id
+    let genreName =data && data.genre && data.genre.genre
+    let blogId=data&&data.id
+    this.props.history.push({
+      pathname: '/blog/student/edit-blog',
+      state: { content, title, thumbnail,genreId,genreName,blogId },
+    });
+  };
   handleDeleteBlog = (blogId) => {
 
     let requestData = {
@@ -282,7 +283,8 @@ getOverAllRemark = () => {
                           {data.title}
                           {
                   tabValue === 2 ?
-<IconButton
+                    <IconButton
+                    style={{float:'right'}}
                   title='Delete'
                   onClick={()=>this.handleDeleteBlog(data && data.id)}
                 >
@@ -360,7 +362,7 @@ getOverAllRemark = () => {
                             {relatedBlog ? 'Review' : 'View Related Blog'}
                           </Button>  :''}
                          
-                          {/* {tabValue !== 1 ?
+                          {tabValue !== 1 ?
                           <Button
                             style={{ width: 150 }}
                             size='small'
@@ -369,7 +371,7 @@ getOverAllRemark = () => {
                           >
                             Edit
                           </Button>
-                          :''} */}
+                          :''}
                         </CardActions>
                       </Card>
                     </Grid>

@@ -69,6 +69,27 @@ const styles = (theme) => ({
     marginBottom: 20,
     textAlign: 'center',
   },
+  thumbnail : {
+    position: 'absolute',
+    left: '150px',
+    top:'30px',
+    color: '#e74c3c'
+  },
+  blogForm : {
+    fontSize: '16px',
+    fontWeight: 'bold',
+    letterSpacing: '0.7px',
+    display: 'block',
+    marginBottom: '5px',
+
+  },
+  thumbnailImage:{
+    width: '130px',
+  height: '100px',
+  marginTop: '22px'
+
+  }
+  
 });
 
 const StyledRating = withStyles({
@@ -94,6 +115,10 @@ class EditBlog extends Component {
         this.props.location.state.title && this.props.location.state.title.length !== 0
           ? this.props.location.state.title
           : '',
+      blogId:
+          this.props.location.state.blogId
+            ? this.props.location.state.blogId
+            : '',
       genreId:
           this.props.location.state.genreId && this.props.location.state.genreId.length !== 0
             ? this.props.location.state.genreId
@@ -138,7 +163,9 @@ class EditBlog extends Component {
 
   listGenre = () => {
     axios
-      .get(`${endpoints.blog.genreList}`)
+      .get(`${endpoints.blog.genreList}?is_delete=${
+        'False'
+      }`)
       .then((res) => {
         this.setState({ genreList: res.data.result });
       })
@@ -216,12 +243,17 @@ class EditBlog extends Component {
       studentName,
       creationDate,
       files,
+      blogId
     } = this.state;
     this.props.history.push({
-      pathname: '/blog/student/preview-blog',
-      state: { studentName, creationDate, genreId, textEditorContent, title, files },
+      pathname: '/blog/student/preview-edit-blog',
+      state: { studentName, creationDate, genreId, textEditorContent, title, files,blogId },
     });
   };
+  handleClearThumbnail = () => {
+    this.setState({ files: [], image: '' })
+  }
+  
 
   render() {
     const { classes } = this.props;
@@ -242,6 +274,7 @@ class EditBlog extends Component {
       studentName,
       creationDate,
     } = this.state;
+    console.log(image,"2222@@@@@@@@")
     return Preview ? (
       <PreviewBlog
         content={textEditorContent}
@@ -322,12 +355,18 @@ class EditBlog extends Component {
                     <Typography style={{ margin: 10 }} variant='body1'>
                       Add Thumbnail (Optional)
                     </Typography>
-                    <Typography
-                      color='textPrimary'
-                      style={{ margin: 10 }}
-                      variant='caption'
-                    >
-                    </Typography>
+                    {/* {
+                image
+                  ? <Grid item style={{ position: 'relative' }}>
+                    <HighlightOff
+                      className='thumbnail'
+                      onClick={this.handleClearThumbnail}
+                    />
+                    <label className='blogForm' />
+                    <img className='thumbnailImage' src={image} />
+                  </Grid>
+                  : ''
+              } */}
                     <Card className={classes.Card}>
                       <Dropzone onDrop={this.onDrop}>
                         {({
@@ -369,18 +408,7 @@ class EditBlog extends Component {
                         )}
                       </Dropzone>
                       
-                      {/* {
-                image
-                  ? <Grid item xs={12} sm={6} md={6} style={{ position: 'relative' }}>
-                    <HighlightOff
-                      className='thumbnail__close--icon'
-                      onClick={this.handleClearThumbnail}
-                    />
-                    <label className='blog--form-label' />
-                    <img className='thumbnail__image' src={image} />
-                  </Grid>
-                  : ''
-              } */}
+                     
 
                       <Divider variant='middle' style={{ margin: 10 }} />
 
@@ -390,7 +418,7 @@ class EditBlog extends Component {
                           style={{ width: 150 }}
                           onClick={this.PreviewBlogNav}
                           color='primary'
-                          disabled={!genreId || !files ||!title ||!textEditorContent}
+                          disabled={!genreId || !files.length> 0 ||!title ||!textEditorContent}
                         >
                           Preview Blog
                         </Button>
