@@ -362,7 +362,7 @@ getOverAllRemark = () => {
                             {relatedBlog ? 'Review' : 'View Related Blog'}
                           </Button>  :''}
                          
-                          {tabValue !== 1 ?
+                          {tabValue !== 1  || tabValue === 3?
                           <Button
                             style={{ width: 150 }}
                             size='small'
