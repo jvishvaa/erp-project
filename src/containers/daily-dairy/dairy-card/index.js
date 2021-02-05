@@ -101,7 +101,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               component='p'
               color='primary'
             >
-              {lesson.title}
+              {lesson.subject.label}
             </Typography>
           </Box>
           <Divider className='divider'/>

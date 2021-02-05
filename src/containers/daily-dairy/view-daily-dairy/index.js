@@ -77,6 +77,7 @@ const history=useHistory()
     setFilterData({
       grade: '',
       branch: '',
+      sectionIds: '',
     });
     setPeriodData([]);
     setSectionDropdown([]);

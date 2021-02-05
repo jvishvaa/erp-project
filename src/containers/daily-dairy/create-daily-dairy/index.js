@@ -300,7 +300,7 @@ const CreateDailyDairy = (details, onSubmit) => {
               mapping_bgs:[75],
               subject:162,
               // teacher_report:
-              document:filePath,
+              documents:filePath,
               teacher_report:{
                 "previous_class":recap,
                 "summary":summary,

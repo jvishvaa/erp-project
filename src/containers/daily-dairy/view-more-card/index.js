@@ -116,7 +116,7 @@ const ViewMoreCard = ({
           //  onClick={handleBulkDownload}
            style={{fontSize:'1.1rem',color:'#ff6b6b'}}
             className="bulkDownloadIconViewMore">
-              <a  target='_blank' href={`${endpoints.s3}/dev/circular_files/Orchids/error.png${pic}`}>
+              <a  target='_blank' href={`${endpoints.s3}/dev/circular_files/Orchids/${pic}`}>
                             <SvgIcon
                                 component={() => (
                                     <img
