@@ -99,6 +99,30 @@ const CreateWordCountConfig = () => {
     }) }
     };
     useEffect(() => {
+        const getInActiveList = () => {
+          axiosInstance.get(`${endpoints.blog.WordCountConfig}?is_delete=True`)
+            .then((res) => {
+                setInActiveListRes(res.data.result)
+            }).catch(err => {
+                console.log(err)
+            })
+        }
+        getInActiveList();
+      }, []);
+
+      useEffect(() => {
+        const getActiveList = () => {
+          axiosInstance.get(`${endpoints.blog.WordCountConfig}?is_delete=False`)
+            .then((res) => {
+                setActiveListRes(res.data.result)
+            }).catch(err => {
+                console.log(err)
+            })
+        }
+        getActiveList();
+      }, []);
+      
+    useEffect(() => {
         if (branchId) {
           setGrade([]);
           getGradeApi();
@@ -148,7 +172,51 @@ const CreateWordCountConfig = () => {
 const handleWordCountChange = (e) => {
   setWordCount(e.target.value);
 };
+const handleTabChange = (event,value) =>{
+    setCurrentTab(value)
+  }
+  const decideTab =() => {
+    if (currentTab === 0) {
+      return activeTabContent()
+    } else if (currentTab === 1) {
+      return inActiveTabContent()
+    }
+  }
 
+  const activeTabContent= () =>{
+    return <div> 
+    <Grid container spacing={2}>
+    { activeListRes && activeListRes.length
+      ? activeListRes.map((item) => {
+        return <Grid item xs={12} sm={6} md={4}>
+          <Card className={classes.root} style={{ border: '1px solid #FEE4D4'  }}>
+          <CardHeader  style={{fontSize: '15px'}}
+      action={
+        <IconButton aria-label="settings" style={{fontSize: '15px'}}>
+         {item.is_delete ? <Cancel style={{ color: 'red' ,fontSize: '25px' }}/>: <CheckCircle  style={{ color: 'green' ,fontSize: '25px' }}/> }
+        </IconButton>
+      }
+      style={{fontSize: '15px'}}
+      title= {
+        <p style={{ fontFamily: 'Open Sans', fontSize: '15px', fontWeight: 'Lighter' }}> {item.category}  
+</p>
+
+      }
+      subheader={
+        <p style={{ fontFamily: 'Open Sans', fontSize: '15px', fontWeight: 'Lighter' }}> 
+        {item.sub_category_name}  <br />
+      {item.sub_sub_category_name}</p>
+      }
+    />
+          </Card>                        
+          </Grid>
+                                                
+          })
+      : ''
+    }
+  </Grid>
+    </div>
+  }
 
   return (
    <>
@@ -209,6 +277,18 @@ const handleWordCountChange = (e) => {
         </Button>
           </Grid>
         </Grid>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Tabs value={currentTab} indicatorColor='primary'
+              textColor='primary'
+              onChange={handleTabChange} aria-label='simple tabs example'>
+              <Tab label='Active'
+              />
+              <Tab label='In-Active'
+              />
+            </Tabs>
+          </Grid>
+        </Grid>{decideTab()}
 
        
 
