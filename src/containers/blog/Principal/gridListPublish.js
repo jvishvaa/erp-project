@@ -58,7 +58,7 @@ function GridListPublish(props) {
             className={classes.card} >
               <CardHeader
                 subheader={
-                  <Typography gutterBottom variant='body2' align='left' component='p'>
+                  <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
                     {data[0] && moment(data[0].created_at).format('MMM DD YYYY')}
 
                   </Typography>
@@ -102,7 +102,7 @@ function GridListPublish(props) {
                     style={{ marginTop: 120, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentViewPublish',
+                        pathname: '/blog/principal/contentViewPublishPrincipal',
                         state: { data: data[0] ? data[0] :'' ,
                       tabValue :props.tabValue},
                       })}
@@ -127,7 +127,7 @@ function GridListPublish(props) {
               }}>
                 <CardHeader
                   subheader={
-                    <Typography gutterBottom variant='body2' align='left' component='p'>
+                    <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
                       {data[1] && moment(data[1].created_at).format('MMM DD YYYY')}
                     </Typography>
                   }
@@ -171,7 +171,7 @@ function GridListPublish(props) {
                     style={{ marginTop: 38, width: 150}}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentViewPublish',
+                        pathname: '/blog/principal/contentViewPublishPrincipal',
                         state: { data: data[1], tabValue :props.tabValue },
                       })}
                   >
@@ -195,7 +195,7 @@ function GridListPublish(props) {
               >
                 <CardHeader
                   subheader={
-                    <Typography gutterBottom variant='body2' align='left' component='p'>
+                    <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
                       {data[2] && moment(data[2].created_at).format('MMM DD YYYY')}
                     </Typography>
                   }
@@ -239,7 +239,7 @@ function GridListPublish(props) {
                     style={{ marginTop: 38, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentViewPublish',
+                        pathname: '/blog/principal/contentViewPublishPrincipal',
                         state: { data: data[2], tabValue :props.tabValue },
                       })}
                   >
@@ -265,7 +265,7 @@ function GridListPublish(props) {
               }}>
                 <CardHeader
                   subheader={
-                    <Typography gutterBottom variant='body2' align='left' component='p'>
+                    <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
                       {data[3] && moment(data[3].created_at).format('MMM DD YYYY')}
                     </Typography>
                   }
@@ -309,7 +309,7 @@ function GridListPublish(props) {
                     style={{ marginTop: 38, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentViewPublish',
+                        pathname: '/blog/principal/contentViewPublishPrincipal',
                         state: { data: data[3] , tabValue :props.tabValue},
                       })}
                   >
@@ -332,7 +332,7 @@ function GridListPublish(props) {
               }}>
                 <CardHeader
                   subheader={
-                    <Typography gutterBottom variant='body2' align='left' component='p'>
+                    <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
                       {data[4] && moment(data[4].created_at).format('MMM DD YYYY')}
                     </Typography>
                   }
@@ -373,7 +373,7 @@ function GridListPublish(props) {
                     style={{ marginTop: 38, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentViewPublish',
+                        pathname: '/blog/principal/contentViewPublishPrincipal',
                         state: { data: data[4] , tabValue :props.tabValue},
                       })}
                   >
@@ -396,7 +396,7 @@ function GridListPublish(props) {
             }}>
               <CardHeader
                 subheader={
-                  <Typography gutterBottom variant='body2' align='left' component='p'>
+                  <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
                                          {data[5] && moment(data[5].created_at).format('MMM DD YYYY')}
 
                   </Typography>
@@ -439,7 +439,7 @@ function GridListPublish(props) {
                     style={{ marginTop: 120, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentViewPublish',
+                        pathname: '/blog/principal/contentViewPublishPrincipal',
                         state: { data: data[5] , tabValue :props.tabValue},
                       })}
                   >

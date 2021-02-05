@@ -284,6 +284,24 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
           <ListItem
             button
             className={
+              history.location.pathname === '/course-list'
+                ? 'menu_selection'
+                : null
+            }
+            onClick={() => {
+              onClickMenuItem('course-table');
+            }}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+              {/* <MenuIcon name={child.child_name} /> */}
+              {/* {menuIcon(child.child_name)} */}
+            </ListItemIcon>
+            <ListItemText primary='Course' className='menu-item-text' />
+          </ListItem>
+
+          <ListItem
+            button
+            className={
               history.location.pathname === '/subject/grade'
                 ? 'menu_selection'
                 : null

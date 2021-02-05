@@ -21,12 +21,10 @@ import {
 import Rating from '@material-ui/lab/Rating';
 import Avatar from '@material-ui/core/Avatar';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { withRouter } from 'react-router-dom';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-import SideBar from './sideBar';
 import Layout from '../../Layout';
 import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
 
@@ -76,36 +74,23 @@ const StyledRating = withStyles({
 })(Rating);
 
 const publishLevelChoiceBranch=[ 
-  {label:'Orchids',value:'1'},
-
 //   { label: 'Branch', value: '2' },
   { label: 'Grade', value: '3' },
   { label: 'Section', value: '4' }
 
   ] 
   const publishLevelChoiceGrade=[ 
-    {label:'Orchids',value:'1'},
-
       { label: 'Branch', value: '2' },
     //   { label: 'Grade', value: '3' },
       { label: 'Section', value: '4' }
     
       ] 
       const publishLevelChoiceSection=[ 
-        {label:'Orchids',value:'1'},
-
           { label: 'Branch', value: '2' },
           { label: 'Grade', value: '3' },
         //   { label: 'Section', value: '4' }
         
           ] 
-          const publishLevelChoiceOrchids=[ 
-            // {label:'Orchids',value:'1'},
-            { label: 'Branch', value: '2' },
-            { label: 'Grade', value: '3' },
-          //   { label: 'Section', value: '4' }
-          
-            ] 
 class ContentViewPublish extends Component {
   constructor(props) {
     super(props);
@@ -139,7 +124,7 @@ class ContentViewPublish extends Component {
     let requestData = {
       "blog_id": blogId ,
     }
-  axiosInstance.post(`${endpoints.blog.BlogView}`, requestData)
+  axios.post(`${endpoints.blog.BlogView}`, requestData)
   .then(result=>{
   if (result.data.status_code === 200) {
   } else {        
@@ -148,7 +133,6 @@ class ContentViewPublish extends Component {
   })
 }
 
-  
 
 
 
@@ -229,32 +213,28 @@ class ContentViewPublish extends Component {
   
     }
   }
-
   handleLike = (isLiked,blogId) => {
     this.getLikeStatus(isLiked)
     let requestData = {
       "blog_id": blogId ,
   
     }
-  axiosInstance.post(`${endpoints.blog.BlogLike}`, requestData)
+  axios.post(`${endpoints.blog.BlogLike}`, requestData)
   
   .then(result=>{
   if (result.data.status_code === 200) {
     this.setState({loading:false})
-    // setAlert('success', result.data.message);
   } else {        
     this.setState({loading:false})
-    // setAlert('error', result.data.message);
   }
   }).catch((error)=>{
     this.setState({loading:false})
-    // setAlert('error', error.message);
   })
     }
   
   render() {
     const { classes } = this.props;
-    const { likes,currentLikes,likeStatus,loginUserName,tabValue,relatedBlog, starsRating, feedBack ,data,feedbackrevisionReq,isPublish,publishedLevel} = this.state;
+    const {roleDetails,likes,currentLikes,likeStatus,loginUserName,  tabValue,relatedBlog, starsRating, feedBack ,data,feedbackrevisionReq,isPublish,publishedLevel} = this.state;
     const blogFkLike= data && data.blog_fk_like
     const likedUserIds=blogFkLike.map(blog => blog.user)
     const indexOfLoginUser=likedUserIds.indexOf(roleDetails.user_id)
@@ -317,7 +297,10 @@ class ContentViewPublish extends Component {
                           <Typography variant='body2' color='textSecondary' component='p'>
                             {data.content}
                           </Typography>
-                          <Typography component='p'  style={{  paddingRight: '650px',fontSize:'12px'}}
+                          <Typography  component='p' style={{ paddingRight: '650px',fontSize:'12px'}}>
+                           Genre: {data.genre && data.genre.genre}
+                          </Typography>
+                          <Typography component='p'  style={{paddingRight: '650px', fontSize:'12px'}}
 >
                           TotalWords : {data.word_count}
                           </Typography>
@@ -360,7 +343,7 @@ class ContentViewPublish extends Component {
                             onChange={this.handlePublishLevelType}
                             id='category'
                             required
-                            options={tabValue === 1 ? publishLevelChoiceBranch : tabValue === 2 ? publishLevelChoiceGrade : tabValue ===3 ? publishLevelChoiceSection:publishLevelChoiceOrchids}
+                            options={tabValue === 1 ? publishLevelChoiceBranch : tabValue === 2 ? publishLevelChoiceGrade : publishLevelChoiceSection}
                             getOptionLabel={(option) => option?.label}
                             filterSelectedOptions
                             renderInput={(params) => (

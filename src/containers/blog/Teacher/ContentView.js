@@ -108,6 +108,8 @@ class ContentView extends Component {
 
 
     };
+   
+
 
   }
   componentDidMount() {
@@ -191,22 +193,21 @@ class ContentView extends Component {
 
     }
   }
-//   getRatings = () => {
-//     let {blogRatings} =this.state
-//     if (blogRatings) {
-//       return []
-//     }
-//     const ratings = blogRatings
-//     const type = typeof ratings.remark_rating
-//     const parsedRatings = type === 'object' ? ratings.remark_rating : JSON.parse(ratings.remark_rating)
-//     const allRatingParamters = [...parsedRatings]
-//     return allRatingParamters
-//   }
+  getRatings = () => {
+    let {blogRatings} =this.state
+    if (!blogRatings) {
+      return []
+    }
+    const type = typeof blogRatings
+    const parsedRatings = type === 'object' ? blogRatings : JSON.parse(blogRatings)
+    const allRatingParamters = JSON.parse(parsedRatings)
+    return allRatingParamters
+  }
 
-//  getOverAllRemark = () => {
-//    let {overallRemark} = this.state
-//    return overallRemark
-//   }
+ getOverAllRemark = () => {
+   let {overallRemark} = this.state
+   return overallRemark
+  }
 getLikeStatus = (isLiked) => {
   let { likeStatus,likes }=this.state
   if (isLiked === true && likeStatus === false) {
@@ -318,6 +319,9 @@ if (result.data.status_code === 200) {
                           TotalWords : {data.word_count}
                           
                           </Typography>
+                          <Typography  component='p' style={{ paddingRight: '650px',fontSize:'12px'}}>
+                           Genre: {data.genre && data.genre.genre}
+                          </Typography>
                           
                         </CardContent>
                         <CardActions> 
@@ -334,7 +338,7 @@ if (result.data.status_code === 200) {
 
                             >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
                             </Button>
-                          {tabValue === 0 ? 
+                            {!data.feedback_revision_required ? 
                           <Button
                             size='small'
                             color='primary'
@@ -346,7 +350,7 @@ if (result.data.status_code === 200) {
                             }}
                           >
                             {relatedBlog ? 'Add Review' : 'View Related Blog'}
-                          </Button> : ''}
+                          </Button>  :''}
                           {tabValue === 0 ?
                           <Button
                             size='small'
@@ -354,7 +358,7 @@ if (result.data.status_code === 200) {
                             onClick={() => this.setState({ feedBack: true })}
                           >
                             Add Revision Feedback
-                          </Button> :
+                          </Button> : !data.feedback_revision_required ?
                           <Button
                             size='small'
                             color='primary'
@@ -362,7 +366,7 @@ if (result.data.status_code === 200) {
                           >
                             Publish
                           </Button> 
-
+:''
                           }
                         </CardActions>
                       </Card>
@@ -431,13 +435,11 @@ if (result.data.status_code === 200) {
                         </Card>
                       )
                       : relatedBlog ? ''
-                      // (
-                      //   <>
                       //     <SideBar />
                       //   </>
                       // ) 
                       : (
-                        <Review  blogId={data.id}
+                        <Review  blogId={data.id}  ratingParameters={this.getRatings} overallRemark={this.getOverAllRemark}
                         />
 
 

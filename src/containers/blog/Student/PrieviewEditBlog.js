@@ -83,7 +83,7 @@ class ContentView extends Component {
       studentName: this.props.location.state.studentName,
       date: this.props.location.state.creationDate,
       files: this.props.location.state.files,
-      genreName:this.props.location.state.genreName,
+      
     };
   }
 
@@ -94,10 +94,10 @@ class ContentView extends Component {
   }
 
   WriteBlogNav = () => {
-    const { content, title, files ,genreId,genreName} = this.state;
+    const { content, title, files ,genreId} = this.state;
     this.props.history.push({
       pathname: '/blog/student/write-blog',
-      state: { content, title, files,genreId , genreName},
+      state: { content, title, files,genreId },
     });
   };
 
@@ -186,7 +186,6 @@ class ContentView extends Component {
                           <Typography variant='body2' color='textSecondary' component='p'>
                             {this.state.content}
                           </Typography>
-                          
                         </CardContent>
                         <CardActions>
                           <Button
@@ -203,7 +202,7 @@ class ContentView extends Component {
                             color='primary'
                             onClick={() => this.submitBlog('Publish')}
                           >
-                            Submit
+                            Publish
                           </Button>
                           <Button
                             style={{ width: 150 }}

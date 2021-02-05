@@ -3,8 +3,6 @@
 import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import moment from 'moment';
-
-// import { connect } from 'react-redux';
 import {
   Grid,
   Card,
@@ -13,9 +11,7 @@ import {
   CardActions,
   CardMedia,
   CardContent,
-  Paper,
   CardHeader,
-  Divider,
   TextField,
 } from '@material-ui/core';
 import Rating from '@material-ui/lab/Rating';
@@ -25,10 +21,8 @@ import { withRouter } from 'react-router-dom';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-import SideBar from './sideBar';
-import Review from '../Teacher/Review'
+import ReviewPrincipal from './ReviewPrincipal'
 import Layout from '../../Layout';
-import { ThreeSixty } from '@material-ui/icons';
 import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
 
 const styles = (theme) => ({
@@ -77,8 +71,6 @@ const StyledRating = withStyles({
 })(Rating);
 
 const publishLevelChoice=[ 
-  {label:'Orchids',value:'1'},
-
   { label: 'Branch', value: '2' },
   { label: 'Grade', value: '3' },
   { label: 'Section', value: '4' }
@@ -93,12 +85,12 @@ class ContentView extends Component {
       feedBack: false,
       isPublish:false,
       data: this.props.location.state.data && this.props.location.state.data,
-      blogId: this.props.location.state.data && this.props.location.state.data.id,
       tabValue :this.props.location.state.tabValue && this.props.location.state.tabValue,
-      feedbackrevisionReq:'',
+      comment:'',
       roleDetails: JSON.parse(localStorage.getItem('userDetails')),
       blogRatings :this.props.location.state.data && this.props.location.state.data.remark_rating,
       overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark,
+      blogId: this.props.location.state.data && this.props.location.state.data.id,
       likeStatus:false,
       currentLikes: 0,
       loading:false,
@@ -112,11 +104,13 @@ class ContentView extends Component {
     let {blogId} = this.state
     this.handleView(blogId)
   }
+
+
   handleView = (blogId) => {
     let requestData = {
       "blog_id": blogId ,
     }
-  axiosInstance.post(`${endpoints.blog.BlogView}`, requestData)
+  axios.post(`${endpoints.blog.BlogView}`, requestData)
   .then(result=>{
   if (result.data.status_code === 200) {
   } else {        
@@ -124,9 +118,6 @@ class ContentView extends Component {
   }).catch((error)=>{
   })
 }
-
-
-
 getLikeStatus = (isLiked) => {
   let { likeStatus,likes }=this.state
   if (isLiked === true && likeStatus === false) {
@@ -142,14 +133,13 @@ getLikeStatus = (isLiked) => {
 
   }
 }
-
 handleLike = (isLiked,blogId) => {
   this.getLikeStatus(isLiked)
   let requestData = {
     "blog_id": blogId ,
 
   }
-axiosInstance.post(`${endpoints.blog.BlogLike}`, requestData)
+axios.post(`${endpoints.blog.BlogLike}`, requestData)
 
 .then(result=>{
 if (result.data.status_code === 200) {
@@ -164,15 +154,14 @@ if (result.data.status_code === 200) {
   // setAlert('error', error.message);
 })
   }
-  
 
 
-  submitRevisionFeedback = () => {
-    const {  data, feedbackrevisionReq } = this.state;
+  submitComment = () => {
+    const {  data, comment } = this.state;
     const formData = new FormData();
     formData.set('blog_id', data.id);
-    formData.set('status', 5);
-    formData.set('feedback_revision_required', feedbackrevisionReq);
+    formData.set('status', 7);
+    formData.set('comment', comment);
 
     axios
       .put(`${endpoints.blog.Blog}`, formData)
@@ -189,7 +178,7 @@ if (result.data.status_code === 200) {
       });
   };
   handleReivisionNameChange = (e) => {
-    this.setState({feedbackrevisionReq:e.target.value})
+    this.setState({comment:e.target.value})
   };
   submitPublish = () => {
   const {  data, publishedLevel ,roleDetails} = this.state;
@@ -227,27 +216,27 @@ if (result.data.status_code === 200) {
 
     }
   }
-//   getRatings = () => {
-//     let {blogRatings} =this.state
-//     if (blogRatings) {
-//       return []
-//     }
-//     const ratings = blogRatings
-//     const type = typeof ratings.remark_rating
-//     const parsedRatings = type === 'object' ? ratings.remark_rating : JSON.parse(ratings.remark_rating)
-//     const allRatingParamters = [...parsedRatings]
-//     return allRatingParamters
-//   }
+  getRatings = () => {
+    let {blogRatings} =this.state
+    if (!blogRatings) {
+      return []
+    }
+    const type = typeof blogRatings
+    const parsedRatings = type === 'object' ? blogRatings : JSON.parse(blogRatings)
+    const allRatingParamters = JSON.parse(parsedRatings)
+    return allRatingParamters
+  }
 
-//  getOverAllRemark = () => {
-//    let {overallRemark} = this.state
-//    return overallRemark
-//   }
+ getOverAllRemark = () => {
+   let {overallRemark} = this.state
+   return overallRemark
+  }
 
   
   render() {
     const { classes } = this.props;
-    const {likes,currentLikes,likeStatus,loginUserName, tabValue,relatedBlog, starsRating, feedBack ,data,feedbackrevisionReq,isPublish,publishedLevel} = this.state;
+    const {roleDetails,likes,currentLikes,likeStatus,loginUserName,  tabValue,relatedBlog, starsRating, feedBack ,data,comment,isPublish,publishedLevel} = this.state;
+    
     const blogFkLike= data && data.blog_fk_like
     const likedUserIds=blogFkLike.map(blog => blog.user)
     const indexOfLoginUser=likedUserIds.indexOf(roleDetails.user_id)
@@ -292,7 +281,7 @@ if (result.data.status_code === 200) {
                         >Revision Feedback:{data.feedback_revision_required}
                        
                         </Typography>
-                        <Typography  style={{fontSize:'12px'}}> Revised By:{data && data.feedback_revision_by && data.feedback_revision_by.first_name}</Typography></CardContent> 
+                        <Typography style={{fontSize:'12px'}}> Revised By:{data && data.feedback_revision_by && data.feedback_revision_by.first_name}</Typography></CardContent> 
                         :  data.comment ? 
                         <CardContent> <Typography
                         style={{color:'red', fontSize:'12px'}}
@@ -326,6 +315,9 @@ if (result.data.status_code === 200) {
 >
                           TotalWords : {data.word_count}
                           </Typography>
+                          <Typography  component='p' style={{ paddingRight: '650px',fontSize:'12px'}}>
+                           Genre: {data.genre && data.genre.genre}
+                          </Typography>
                         </CardContent>
                         <CardActions>
                         {loginUserName !== name ? <Button
@@ -341,7 +333,27 @@ if (result.data.status_code === 200) {
 
                             >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
                             </Button>
-                          {tabValue === 0 ? 
+                          {tabValue === 1  && !data.feedback_revision_required?
+                          <Button
+                            size='small'
+                            color='primary'
+                            onClick={() => this.setState({ feedBack: true })}
+                          >
+                            Comment
+                          </Button> :
+                          !data.feedback_revision_required?
+                          <Button
+                            size='small'
+                            color='primary'
+                            onClick={() => this.setState({ isPublish: true })}
+                          >
+                            Publish
+                          </Button> :''
+
+                          }
+
+
+{!data.feedback_revision_required ? 
                           <Button
                             size='small'
                             color='primary'
@@ -352,25 +364,12 @@ if (result.data.status_code === 200) {
                               });
                             }}
                           >
-                            {relatedBlog ? 'Add Review' : 'View Related Blog'}
-                          </Button> : ''}
-                          {tabValue === 0 ?
-                          <Button
-                            size='small'
-                            color='primary'
-                            onClick={() => this.setState({ feedBack: true })}
-                          >
-                            Add Revision Feedback
-                          </Button> :
-                          <Button
-                            size='small'
-                            color='primary'
-                            onClick={() => this.setState({ isPublish: true })}
-                          >
-                            Publish
-                          </Button> 
+                            {relatedBlog ? 'Review' : 'View Related Blog'}
+                          </Button>  :''}
+                         
 
-                          }
+
+
                         </CardActions>
                       </Card>
                     </Grid>
@@ -393,10 +392,10 @@ if (result.data.status_code === 200) {
                                 style={{ fontSize: 12 }}
                                 size='small'
                                 color='primary'
-                                disabled={!feedbackrevisionReq}
-                                onClick ={this.submitRevisionFeedback}
+                                disabled={!comment}
+                                onClick ={this.submitComment}
                               >
-                                Revision required
+                                Submit
                               </Button>
                             </CardActions>
                           </CardContent>
@@ -444,7 +443,7 @@ if (result.data.status_code === 200) {
                       //   </>
                       // ) 
                       : (
-                        <Review  blogId={data.id}
+                        <ReviewPrincipal  blogId={data.id} ratingParameters={this.getRatings} overallRemark={this.getOverAllRemark}
                         />
 
 

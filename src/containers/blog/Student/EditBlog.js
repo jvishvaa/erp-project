@@ -80,7 +80,7 @@ const StyledRating = withStyles({
   },
 })(Rating);
 
-class WriteBlog extends Component {
+class EditBlog extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -89,7 +89,6 @@ class WriteBlog extends Component {
       relatedBlog: true,
       starsRating: 0,
       feedBack: false,
-      isDelete:false,
       key: 0,
       title:
         this.props.location.state.title && this.props.location.state.title.length !== 0
@@ -122,7 +121,6 @@ class WriteBlog extends Component {
           ? this.props.location.state.files
           : [],
     };
-    console.log(this.state.genreName,this.state.genreId,"@@@@@@")
   }
   componentDidMount() {
     // this.listSubjects();
@@ -134,18 +132,13 @@ class WriteBlog extends Component {
     this.setState({
       studentName,
       creationDate: date,
-      genreName :this.props.location.state.genreName && this.props.location.state.genreName.length !== 0
-      ? this.props.location.state.genreName
-      :'',
       // textEditorContent: localStorage.getItem('blogContent'),
     });
   }
- 
+
   listGenre = () => {
     axios
-      .get(`${endpoints.blog.genreList}?is_delete=${
-        'False'
-      }`)
+      .get(`${endpoints.blog.genreList}`)
       .then((res) => {
         this.setState({ genreList: res.data.result });
       })
@@ -212,8 +205,7 @@ class WriteBlog extends Component {
   }
 
   handleGenre = (data) => {
-    console.log(data,"data@@")
-    this.setState({ genreId: data.id,genreName:data.genre });
+    this.setState({ genreId: data.id });
   };
 
   PreviewBlogNav = () => {
@@ -224,11 +216,10 @@ class WriteBlog extends Component {
       studentName,
       creationDate,
       files,
-      genreName
     } = this.state;
     this.props.history.push({
       pathname: '/blog/student/preview-blog',
-      state: { studentName, creationDate, genreId, textEditorContent, title, files ,genreName},
+      state: { studentName, creationDate, genreId, textEditorContent, title, files },
     });
   };
 
@@ -251,7 +242,6 @@ class WriteBlog extends Component {
       studentName,
       creationDate,
     } = this.state;
-    console.log(genreList,genreName,"@250")
     return Preview ? (
       <PreviewBlog
         content={textEditorContent}
@@ -294,9 +284,8 @@ class WriteBlog extends Component {
                       onChange={(e, data) => this.handleGenre(data)}
                       renderInput={(params) => (
                         <TextField {...params} label='Genre' variant='outlined' />
-                        )}
-                      // getOptionSelected={(option, value) => value && option.id == value.id}
-                        />
+                      )}
+                    />
                   </Grid>
                 </Grid>
               </div>
@@ -417,4 +406,4 @@ class WriteBlog extends Component {
     );
   }
 }
-export default withRouter(withStyles(styles)(WriteBlog));
+export default withRouter(withStyles(styles)(EditBlog));
