@@ -33,22 +33,23 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const TestCardDropdown = ({ tests = [], value, ...restProps }) => {
+const TestCardDropdown = ({ tests = [], title, value, ...restProps }) => {
   const classes = useStyles();
   // const themeContext = useTheme();
   // const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const hasValue = value && Object.keys(value).length;
+  const { test__test_name: testName } = value || {};
   return (
     <>
       <Box className={classes.root}>
         <Box>
           <Typography className={classes.title} variant='p' component='p' color='primary'>
-            {hasValue ? 'English, Grade 3' : 'Add a test'}
+            {hasValue ? title : 'Add a test'}
           </Typography>
         </Box>
         <Box>
           <Typography className={classes.title} variant='p' component='p' color='primary'>
-            {hasValue ? 'Test 1 - ID - XXXX' : <br />}
+            {hasValue ? testName : <br />}
           </Typography>
         </Box>
         <Box>

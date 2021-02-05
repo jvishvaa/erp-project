@@ -1,8 +1,7 @@
 import React from 'react';
-import { TextField, Box, makeStyles, Grid } from '@material-ui/core';
+import { TextField, Grid } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
-// const useStyles = makeStyles(() => ({}));
 const UserSpecificSubjectDropdown = ({ value, options, onChange }) => {
   return (
     <Grid container spacing={3}>

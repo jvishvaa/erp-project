@@ -1,17 +1,16 @@
 /* eslint-disable no-nested-ternary */
 import React, { useContext } from 'react';
-// import axios from 'axios';
-// import endpoints from '../../../config/endpoints';
 import { makeStyles, Button, Grid, Box, Paper } from '@material-ui/core';
 import {
   TestCardDropdown,
   TestComparisionReportTable,
   UserSpecificSubjectDropdown,
 } from './test-comparision-ui-components';
+import Loading from '../../../components/loader/loader';
 import { TestComparisionContext } from './test-comparision-context';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     // border: '1px solid',
     // borderColor: '#E2E2E2',
@@ -32,8 +31,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const TestComparisionUI = () => {
-  const user = 20;
-  const moduleId = 12;
+  const { user_id: user } = JSON.parse(localStorage.getItem('userDetails') || {});
+  // const user = 20;
+  const moduleId = 112;
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const {
@@ -47,6 +47,23 @@ const TestComparisionUI = () => {
     fetchUserSubjects,
   } = useContext(TestComparisionContext) || {};
 
+  // const [testOneObj, setTestOneObj] = React.useState({
+  //   test_id: 7,
+  //   test__test_name: 'test-1',
+  //   section: 1,
+  //   subject: ['139'],
+  // });
+  // const [testTwoObj, setTestTwoObj] = React.useState({
+  //   test_id: 10,
+  //   test__test_name: 'test-2',
+  //   section: 1,
+  //   subject: ['139'],
+  // });
+  // const [subjectSelected, setSubjectSelected] = React.useState({
+  //   id: 155,
+  //   subject_name: 'Grade1_SecB_newtestsubJ',
+  //   subject_slag: 'newtestsubJ',
+  // });
   const [testOneObj, setTestOneObj] = React.useState();
   const [testTwoObj, setTestTwoObj] = React.useState();
   const [subjectSelected, setSubjectSelected] = React.useState();
@@ -76,43 +93,46 @@ const TestComparisionUI = () => {
       setAlert('error', 'Please select tests.');
     }
   };
+
+  React.useEffect(() => {
+    fetchUserSubjects({ module_id: moduleId });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    const { id: selectedSubjectId } = subjectSelected || {};
+    if (selectedSubjectId) {
+      fetchUserTests({ user, subject: selectedSubjectId });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subjectSelected]);
   return (
     <>
-      <p>TestComparisionUI</p>
-      <button
-        type='button'
-        onClick={() => {
-          fetchUserTests({ user, subject: 1 });
-        }}
-      >
-        fetchUserTests
-      </button>
-      {/* {JSON.stringify(userTests)} */}
-      <br />
-      <button
-        type='button'
-        onClick={() => {
-          fetchTestComparisions({ user, test_1: 5, test_2: 7 });
-        }}
-      >
-        fetchTestComparisions
-      </button>
-      {/* {JSON.stringify(testComparisions)} */}
-      {/* userSubjects */}
+      {[fetching, userTests.fetching, userSubjects.fetching].includes(true) ? (
+        <Loading message='Loading...' />
+      ) : null}
+
       <Paper elevation={0}>
         <Box m={{ xs: '1rem', sm: '2rem' }} className={classes.root}>
-          <UserSpecificSubjectDropdown />
+          <UserSpecificSubjectDropdown
+            options={userSubjects && userSubjects.data ? userSubjects.data : []}
+            value={subjectSelected || {}}
+            onChange={(e, valueObj) => {
+              setSubjectSelected(valueObj);
+            }}
+          />
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={5} md={4}>
               <TestCardDropdown
                 name='test-1-card'
                 key='test-1'
                 tests={userTests.data}
+                title={subjectSelected && subjectSelected.subject_name}
                 value={testOneObj}
                 update={setTestOne}
               />
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={5} md={4}>
               <TestCardDropdown
                 name='test-2-card'
                 key='test-2'
@@ -120,6 +140,7 @@ const TestComparisionUI = () => {
                   const { test_id: testOneId } = testOneObj || {};
                   return item.test_id !== testOneId;
                 })}
+                title={subjectSelected && subjectSelected.subject_name}
                 value={testTwoObj || {}}
                 update={setTestTwo}
               />
@@ -127,7 +148,7 @@ const TestComparisionUI = () => {
           </Grid>
           <br />
           <Button onClick={fetchComparionData} className={classes.comparenowBtn}>
-            Compare Now
+            {fetching ? 'fetching...' : 'Compare Now'}
           </Button>
           <hr className={classes.hr} />
           {fetching ? (

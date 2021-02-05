@@ -57,8 +57,7 @@ import {
   PrincipalBlog,
   PrincipalPublishBlogView,
   StudentPublishBlogView,
-  AdminPublishBlogView
-
+  AdminPublishBlogView,
 } from './containers/blog';
 import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
 import Discussionforum from './containers/discussionForum/discussionForum';
@@ -78,6 +77,7 @@ import CreateCourse from './containers/master-management/course/create-course';
 import CourseView from './containers/master-management/course/view-course';
 import ViewCourseCard from './containers/master-management/course/view-course/view-more-card/ViewCourseCard';
 import ViewStore from './containers/master-management/course/view-course/context/ViewStore';
+import TestComparisionUI from './containers/assessment/test-comparision';
 
 const theme = createMuiTheme({
   palette: {
@@ -323,6 +323,9 @@ function App() {
                     </Route>
                     <Route exact path='/view-period'>
                       {({ match }) => <ViewCourseCard match={match} />}
+                    </Route>
+                    <Route exact path='/assessment/test-comparision'>
+                      {({ match }) => <TestComparisionUI match={match} />}
                     </Route>
                   </Switch>
                 </ViewStore>

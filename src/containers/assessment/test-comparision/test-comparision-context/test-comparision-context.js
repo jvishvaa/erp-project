@@ -1,4 +1,4 @@
-import React, { createContext } from 'react';
+import React, { createContext, useEffect } from 'react';
 import endpoints from '../../../../config/endpoints';
 import useFetcher from '../../../../utility-functions/custom-hooks/use-fetcher';
 
@@ -51,14 +51,14 @@ export const TestComparisionContextProvider = ({ children, ...restProps }) => {
   const [userSubjects, fetchUserSubjectsHook] = useFetcher(userSubjectHookProps);
 
   const fetchUserSubjects = (params = {}, callbacks = {}) => {
-    const { user, module_id: moduleId } = params || {};
-    if ([user, moduleId].map((i) => Boolean(i)).includes(false)) {
+    const { module_id: moduleId } = params || {};
+    if ([moduleId].map((i) => Boolean(i)).includes(false)) {
       // eslint-disable-next-line no-alert
       window.alert('param not fed');
       return null;
     }
     const dataProp = {
-      queryParamObj: { user, module_id: moduleId },
+      queryParamObj: { module_id: moduleId },
       callbacks,
     };
     fetchUserSubjectsHook(dataProp);
