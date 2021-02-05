@@ -364,7 +364,7 @@ class ContentViewPublish extends Component {
                                 disabled={!publishedLevel}
                                 onClick ={this.submitPublish}
                               >
-                                Publish
+                                Submit
                               </Button>
                             </CardActions>
                           </CardContent>

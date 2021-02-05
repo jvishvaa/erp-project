@@ -27,13 +27,13 @@ import Dropzone from 'react-dropzone';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import moment from 'moment';
 import { withRouter } from 'react-router-dom';
-// import { withRouter } from 'react-router-dom';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
 import TinyMce from '../../../components/TinyMCE/tinyMce';
 import PreviewBlog from './PreviewBlog';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 const styles = (theme) => ({
   root: {
@@ -133,7 +133,7 @@ class EditBlog extends Component {
       TITLE_CHARACTER_LIMIT: 100,
       Preview: false,
       detail: this.props.location.state.detail,
-      role_details: JSON.parse(localStorage.getItem('userDetails')),
+      roleDetails: JSON.parse(localStorage.getItem('userDetails')),
       genreList: [],
       creationDate: new Date(),
       textEditorContent:
@@ -145,10 +145,13 @@ class EditBlog extends Component {
         this.props.location.state.files && this.props.location.state.files.length !== 0
           ? this.props.location.state.files
           : [],
+          wordCountLimit:0
     };
   }
+  static contextType = AlertNotificationContext
+
   componentDidMount() {
-    // this.listSubjects();
+    this.wordCountFetch();
     this.listGenre();
     const { creationDate } = this.state;
     let studentName = JSON.parse(localStorage.getItem('userDetails'));
@@ -172,18 +175,32 @@ class EditBlog extends Component {
       .catch((error) => {});
   };
 
-  // listSubjects = async () => {
-  //   const { role_details } = this.state;
-  //   // const branchId = role_details.role_details.branch;
-  //   // const gradeId = [24];
-  //   // const sectionIds = [25];
-  //   axios
-  //     .get(`${endpoints.academics.subjects}`)
-  //     .then((res) => {
-  //       console.log(res.data);
-  //     })
-  //     .catch((error) => {});
-  // };
+  isWordCountSubceeded = () => {
+    let { textEditorContent, wordCountLimit } = this.state
+    const parsedTextEditorContent = textEditorContent.replace(/(<([^>]+)>)/ig, '').split(' ')
+    const textWordCount = parsedTextEditorContent.length
+    this.setState({ parsedTextEditorContentLen: textWordCount })
+    if (parsedTextEditorContent && parsedTextEditorContent.length < wordCountLimit) {
+      const errorMsg = `Please write atleast ${wordCountLimit} words.Currently only ${parsedTextEditorContent.length} words have been written`
+      return errorMsg
+    }
+    return false
+  }
+  
+
+  wordCountFetch = () => {
+    let { roleDetails } = this.state;
+    const erpUserId = roleDetails.role_details.erp_user_id;
+    axios
+      .get(`${endpoints.blog.WordCountConfig}?erp_user_id=${
+        erpUserId
+      }`)
+      .then((res) => {
+        this.setState({wordCountLimit: res.data && res.data.result && res.data.result[0].word_count})
+      })
+      .catch((error) => {});
+  };
+
 
  
   handleTextEditor = (content) => {
@@ -236,6 +253,11 @@ class EditBlog extends Component {
   };
 
   PreviewBlogNav = () => {
+    const subceededWordCount = this.isWordCountSubceeded()
+    if (subceededWordCount) {
+      this.context.setAlert('error',subceededWordCount)
+      return
+    }
     const {
       textEditorContent,
       title,
@@ -272,7 +294,7 @@ class EditBlog extends Component {
       genreList,
       genreId,
       studentName,
-      creationDate,
+      creationDate,wordCountLimit
     } = this.state;
     console.log(image,"2222@@@@@@@@")
     return Preview ? (
@@ -342,7 +364,8 @@ class EditBlog extends Component {
                   </Grid>
                   <Grid item xs={12}>
                     <Typography style={{ margin: 10 }} variant='body1'>
-                      Write Blog
+                      {/* Write Blog */}
+                      Write the blog with atleast {wordCountLimit} words
                     </Typography>
                     <TinyMce
                       key={key}

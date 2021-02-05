@@ -165,8 +165,12 @@ attendanceList:{
     genreList: '/academic/genre/',
     Blog: '/academic/blog/',
     BlogLike:'/academic/like_blog/',
-    BlogView:'/academic/view_blog/'
-},
+    BlogView:'/academic/view_blog/',
+    WordCountConfig:'/academic/word_count_config/',
+
+    
+  },
+
     
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
