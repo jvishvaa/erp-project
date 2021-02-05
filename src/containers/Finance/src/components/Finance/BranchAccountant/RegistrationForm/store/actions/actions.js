@@ -90,6 +90,7 @@ export const fetchRegistrationList = (payload) => {
         }
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
+        dispatch(actionTypes.dataLoaded())
         console.log(error)
         if (error.response && error.response.status === 400) {
           // payload.alert.warning(error.response.data.err_msg)

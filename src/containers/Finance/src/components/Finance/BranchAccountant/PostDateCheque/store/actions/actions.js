@@ -26,7 +26,7 @@ export const fetchGrades = (payload) => {
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
-        payload.alert.warning('Unable to load data')
+        // payload.alert.warning('Unable to load data')
       })
   }
 }
@@ -50,7 +50,7 @@ export const fetchPdc = (payload) => {
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
-        payload.alert.warning('Unable to load data')
+        // payload.alert.warning('Unable to load data')
       })
   }
 }
