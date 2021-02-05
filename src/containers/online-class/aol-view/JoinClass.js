@@ -99,7 +99,7 @@ export default function JoinClassComponent(props) {
             {!isAccepted && isRejected && (
                 <Typography className={classes.rejectText}>Rejected</Typography>
             )}
-            {props.isTeacher &&( isCancel || props.data.is_cancelled )&& (
+            {props.isTeacher && isCancel && (
                 <Typography className={classes.rejectText}>Canceled</Typography>
             )}
             {(isAccepted  && !props.isTeacher)&& !isRejected && (
@@ -129,7 +129,7 @@ export default function JoinClassComponent(props) {
                     </StyledRejectButton>
                 </div>
             )}
-            {(!isAccepted && props.isTeacher) && (!isCancel || !props.data.is_cancelled )&& (
+            {(!isAccepted && props.isTeacher) && !isCancel && (
                 <div className={classes.buttonDiv}>
                     <StyledAcceptButton
                         variant="contained"

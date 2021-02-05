@@ -58,6 +58,7 @@ export default function ClassFilterComponent() {
   const [selectedSections, setSelectedSections] = useState([]);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
   const [sectionMappingIds,setSectionMappingIds]=useState([]);
+
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
   const {
@@ -140,7 +141,7 @@ export default function ClassFilterComponent() {
       localStorage.getItem('userDetails')
     );
     const isCompleted = !!currentTab;
-    let url = '';
+    let url = 'erp_user/teacher_online_class/?';
     if (isSuperUser) {
       url += `module_id=${moduleId}&page_number=${currentPage}&page_size=10&branch_ids=${roleDetails.branch.join(
         ','
