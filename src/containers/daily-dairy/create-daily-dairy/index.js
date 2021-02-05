@@ -55,6 +55,11 @@ const CreateDailyDairy = (details, onSubmit) => {
   const [summary,setSummary] = useState('')
   const [tools,setTools] = useState('')
   const [homework,setHomework] = useState('')
+  const [branchSel,setSelBranch] = useState([]);
+  const [gradeSel,setSelGrade] = useState([]);
+  const [sectionSel,setSelSection] = useState([]);
+  const [subjectSel,setSelSubject] = useState([]);
+
   //context
     const [state,setState] = useContext(Context)
         const {isEdit, editData} = state;
@@ -676,7 +681,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     color='secondary'
                     style={{ width: "100%",marginTop:'1.25rem'}}
                     // defaultValue="Default Value"
-                    value={state.isEdit?editData.teacher_report.previous_class : []}
+                    defaultValue={state.isEdit?editData.teacher_report.previous_class : []}
                     variant="outlined"
                     onChange={e=> setRecap(e.target.value)}
                 />
@@ -690,7 +695,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     color='secondary'
                     style={{ width: "100%",marginTop:'1.25rem'}}
                     // defaultValue="Default Value"
-                    value={state.isEdit?editData.teacher_report.class_work : []}
+                    defaultValue={state.isEdit?editData.teacher_report.class_work : []}
                     variant="outlined"
                     onChange={e=> setDetails(e.target.value)}
                 />
@@ -704,7 +709,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     color='secondary'
                     style={{ width: "100%",marginTop:'1.25rem'}}
                     // defaultValue="Default Value"
-                    value={state.isEdit?editData.teacher_report.summary : []}
+                    defaultValue={state.isEdit?editData.teacher_report.summary : []}
                     variant="outlined"
                     onChange={e=> setSummary(e.target.value)}
                 />
@@ -720,7 +725,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     color='secondary'
                     style={{ width: "100%",marginTop:'1.25rem'}}
                     // defaultValue="Default Value"
-                    value={state.isEdit?editData.teacher_report.tools_used : []}
+                    defaultValue={state.isEdit?editData.teacher_report.tools_used : []}
                     variant="outlined"
                     onChange={e=> setTools(e.target.value)}
                 />
@@ -734,7 +739,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     color='secondary'
                     style={{ width: "100%",marginTop:'1.25rem'}}
                     // defaultValue="Default Value"
-                    value={state.isEdit?editData.teacher_report.homework : []}
+                    defaultValue={state.isEdit?editData.teacher_report.homework : []}
                     variant="outlined"
                     onChange={e=> setHomework(e.target.value)}
                 />
@@ -780,6 +785,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                             id='raised-button-file'
                             accept="image/*"
                             onChange={handleImageChange}
+                            // defaultValue={state.isEdit?editData.documents : []}
                             // value={state.isEdit?editData.documents : []}
 
                         />
