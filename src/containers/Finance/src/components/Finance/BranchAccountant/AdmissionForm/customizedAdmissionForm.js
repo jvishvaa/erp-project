@@ -61,7 +61,7 @@ class CustomizedAdmissionFormAcc extends Component {
     if (this.state.appStatus || this.state.regStatus || this.state.otherStatus) {
       // this.props.getStudentdetailsbyregNumber(this.state.regNo, this.props.user, this.props.alert)
       if (this.props.studentDetailsForAdmission && this.props.studentDetailsForAdmission.admission_status === true) {
-        this.props.alert.warning('Admission Already Completed With # ' + this.props.studentDetailsForAdmission.admission_number)
+        // this.props.alert.warning('Admission Already Completed With # ' + this.props.studentDetailsForAdmission.admission_number)
       } else if (this.props.studentDetailsForAdmission && this.props.studentDetailsForAdmission.admission_status === false) {
         this.props.history.push({
           pathname: '/finance/NonRTEFormAcc',

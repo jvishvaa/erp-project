@@ -9,8 +9,8 @@ import {
   Delete as DeleteIcon
 } from '@material-ui/icons'
 // import axios from 'axios'
-import ReactTable from 'react-table'
-import 'react-table/react-table.css'
+// import ReactTable from 'react-table' //rajneesh
+// import 'react-table/react-table.css'
 import Modal from '../../../../ui/Modal/modal'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 // import { OmsFilterTable } from '../../../../ui'
@@ -19,6 +19,7 @@ import * as actionTypes from '../../store/actions'
 // import { urls } from '../../../../urls'
 import EditFeeAccount from './editFeeAccounts'
 import AddFeeAccount from './addFeeAccounts'
+import Layout from '../../../../../../Layout'
 // import classes from '../ViewBanks/viewBanks.module.css'
 
 // const ViewAccounts = {
@@ -233,108 +234,109 @@ class viewFeeAccounts extends Component {
         //     </Modal>
         //   )
         // }
-        if (this.props.viewFeeAccList.length > 0) {
-          feeAccTable = (<ReactTable
-            // pages={Math.ceil(this.props.viewBanksList.count / 20)}
-            data={this.renderTable()}
-            manual
-            columns={[
-              {
-                Header: 'Sr',
-                accessor: 'Sr',
-                inputFilterable: true,
-                exactFilterable: true,
-                sortable: true
-              },
-              {
-                Header: 'Fee Account Name',
-                accessor: 'fee_account_name',
-                inputFilterable: true,
-                exactFilterable: true,
-                sortable: true
-              },
-              {
-                Header: 'Prefix',
-                accessor: 'prefix',
-                inputFilterable: true,
-                exactFilterable: true,
-                sortable: true
-              },
-              {
-                Header: 'receipt Sub Header',
-                accessor: 'receipt_sub_header',
-                inputFilterable: true,
-                exactFilterable: true,
-                sortable: true
-              },
-              {
-                Header: 'Receipt Footer',
-                accessor: 'receipt_footer',
-                inputFilterable: true,
-                exactFilterable: true,
-                sortable: true
-              },
-              {
-                Header: 'Payslip Header',
-                accessor: 'payslip_header',
-                inputFilterable: true,
-                exactFilterable: true,
-                sortable: true
-              },
-              {
-                Header: 'Show Reports',
-                accessor: 'can_be_shown_reports',
-                inputFilterable: true,
-                exactFilterable: true,
-                sortable: true
-              },
-              {
-                Header: 'Is Trusty',
-                accessor: 'is_trust',
-                inputFilterable: true,
-                exactFilterable: true,
-                sortable: true
-              },
-              {
-                Header: 'Is Expense Account',
-                accessor: 'is_expenses_account',
-                inputFilterable: true,
-                exactFilterable: true,
-                sortable: true
-              },
-              {
-                Header: 'Edit',
-                accessor: 'Edit',
-                inputFilterable: true,
-                exactFilterable: true,
-                sortable: true,
-                style: {
-                  paddingTop: '5px'
-                }
-              }
-              // {
-              //   Header: 'Delete',
-              //   accessor: 'Delete',
-              //   inputFilterable: true,
-              //   exactFilterable: true,
-              //   sortable: true,
-              //   style: {
-              //     paddingTop: '5px'
-              //   }
-              // }
-            ]}
-            filterable
-            sortable
-            defaultPageSize={10}
-            showPageSizeOptions={false}
-            className='-striped -highlight'
-            // Controlled props
-            // page={this.state.page}
-            // Callbacks
-            // onPageChange={page => this.pageChangeHandler(page)}
-          />)
-        }
+        // if (this.props.viewFeeAccList.length > 0) {
+        //   feeAccTable = (<ReactTable
+        //     // pages={Math.ceil(this.props.viewBanksList.count / 20)}
+        //     data={this.renderTable()}
+        //     manual
+        //     columns={[
+        //       {
+        //         Header: 'Sr',
+        //         accessor: 'Sr',
+        //         inputFilterable: true,
+        //         exactFilterable: true,
+        //         sortable: true
+        //       },
+        //       {
+        //         Header: 'Fee Account Name',
+        //         accessor: 'fee_account_name',
+        //         inputFilterable: true,
+        //         exactFilterable: true,
+        //         sortable: true
+        //       },
+        //       {
+        //         Header: 'Prefix',
+        //         accessor: 'prefix',
+        //         inputFilterable: true,
+        //         exactFilterable: true,
+        //         sortable: true
+        //       },
+        //       {
+        //         Header: 'receipt Sub Header',
+        //         accessor: 'receipt_sub_header',
+        //         inputFilterable: true,
+        //         exactFilterable: true,
+        //         sortable: true
+        //       },
+        //       {
+        //         Header: 'Receipt Footer',
+        //         accessor: 'receipt_footer',
+        //         inputFilterable: true,
+        //         exactFilterable: true,
+        //         sortable: true
+        //       },
+        //       {
+        //         Header: 'Payslip Header',
+        //         accessor: 'payslip_header',
+        //         inputFilterable: true,
+        //         exactFilterable: true,
+        //         sortable: true
+        //       },
+        //       {
+        //         Header: 'Show Reports',
+        //         accessor: 'can_be_shown_reports',
+        //         inputFilterable: true,
+        //         exactFilterable: true,
+        //         sortable: true
+        //       },
+        //       {
+        //         Header: 'Is Trusty',
+        //         accessor: 'is_trust',
+        //         inputFilterable: true,
+        //         exactFilterable: true,
+        //         sortable: true
+        //       },
+        //       {
+        //         Header: 'Is Expense Account',
+        //         accessor: 'is_expenses_account',
+        //         inputFilterable: true,
+        //         exactFilterable: true,
+        //         sortable: true
+        //       },
+        //       {
+        //         Header: 'Edit',
+        //         accessor: 'Edit',
+        //         inputFilterable: true,
+        //         exactFilterable: true,
+        //         sortable: true,
+        //         style: {
+        //           paddingTop: '5px'
+        //         }
+        //       }
+        //       // {
+        //       //   Header: 'Delete',
+        //       //   accessor: 'Delete',
+        //       //   inputFilterable: true,
+        //       //   exactFilterable: true,
+        //       //   sortable: true,
+        //       //   style: {
+        //       //     paddingTop: '5px'
+        //       //   }
+        //       // }
+        //     ]}
+        //     filterable
+        //     sortable
+        //     defaultPageSize={10}
+        //     showPageSizeOptions={false}
+        //     className='-striped -highlight'
+        //     // Controlled props
+        //     // page={this.state.page}
+        //     // Callbacks
+        //     // onPageChange={page => this.pageChangeHandler(page)}
+        //   />)
+        // }
         return (
+          <Layout>
           <React.Fragment>
             <div>
               <Grid container spacing={3} style={{ padding: 15 }}>
@@ -385,7 +387,7 @@ class viewFeeAccounts extends Component {
                         tableData={this.state.data}
                         tableFields={this.state.field}
                       /> */}
-                      {feeAccTable}
+                      {/* {feeAccTable} */}
                     </Grid>
                   </React.Fragment>
                   : null
@@ -398,6 +400,7 @@ class viewFeeAccounts extends Component {
             {editModal}
             {addModal}
           </React.Fragment>
+          </Layout>
         )
       }
 }

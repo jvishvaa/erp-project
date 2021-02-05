@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { Radio, Button, Grid } from '@material-ui/core/'
 import * as actionTypes from '../../store/actions'
 // import { apiActions } from '../../../../_actions'
-import '../../../css/staff.css'
+// import '../../../css/staff.css'
 // import { urls } from '../../../../urls'
 
 class AddBanks extends Component {

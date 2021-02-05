@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import Select from 'react-select'
 import Icon from '@material-ui/core/Icon'
 
-import '../../css/staff.css'
+// import '../../css/staff.css'
 import * as actionTypes from '../store/actions/index'
 import Modal from '../../../ui/Modal/modal'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
@@ -120,7 +120,7 @@ class Bank extends Component {
     } = this.state
     if (!selectedBanks.length) {
       this.props.alert.warning('Please Select Banks')
-      return
+    return
     }
     this.props.assignBank(this.props.currentSession, selectedBranch, selectedBanks, this.props.user, this.props.alert)
     this.setState({

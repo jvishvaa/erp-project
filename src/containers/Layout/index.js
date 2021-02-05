@@ -516,6 +516,10 @@ const Layout = ({ children, history }) => {
                 history.push('/finance/accountat/pendingOnlineadmission')
                   break;
                 }
+              case 'Manage Bank & Fee Accounts': {
+                history.push('/finance/BankAndFeeAccounts')
+                  break;
+                }
       default:
         break;
     }

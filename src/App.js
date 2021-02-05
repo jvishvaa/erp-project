@@ -77,6 +77,13 @@ import CustomizedAdmissionForm from '../src/containers/Finance/src/components/Fi
 import NewAdmissionForm from './containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/newAdmissionForm';
 import ApplicationFormAcc from '../src/containers/Finance/src/components/Finance/BranchAccountant/ApplicationForm/applicationForm.js'
 // import OnlineAdmission from '../src/containers/Finance/src/components/Finance/PendingOnlineAdmission/pendingOnlineAdmission.js'
+import TabView from '../src/containers/Finance/src/components/Finance/CorporateBank/CorporateBankTabView/corporateBankTabView.js'
+import Bank from '../src/containers/Finance/src/components/Finance/CorporateBank/bank.js'
+import viewBanks from '../src/containers/Finance/src/components/Finance/CorporateBank/ViewBanks/viewBanks.js'
+import viewFeeAccounts from '../src/containers/Finance/src/components/Finance/CorporateBank/ViewFeeAccounts/viewFeeAccounts.js'
+import AccToClass from '../src/containers/Finance/src/components/Finance/CorporateBank/AccountToClass/accountToClass.js'
+import AccToBranch from '../src/containers/Finance/src/components/Finance/CorporateBank/AccountToBranch/accountToBranch.js'
+import AccToStore from '../src/containers/Finance/src/components/Finance/CorporateBank/AccountToStore/accountToStore.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -323,6 +330,27 @@ function App() {
                 {/* <Route exact path='/finance/accountat/pendingOnlineadmission'>
                   {({ match }) => <OnlineAdmission match={match} />}
                 </Route> */}
+                <Route exact path='/finance/BankAndFeeAccounts'>
+                  {({ match }) => <TabView match={match} />}
+                </Route>
+                <Route exact path='/finance/Bank'>
+                  {({ match }) => <Bank match={match} />}
+                </Route>
+                <Route exact path='/finance/ViewBank'>
+                  {({ match }) => <viewBanks match={match} />}
+                </Route>
+                <Route exact path='/finance/ViewFeeAccounts'>
+                  {({ match }) => <viewFeeAccounts match={match} />}
+                </Route>
+                <Route exact path='/finance/AccToClass'>
+                  {({ match }) => <AccToClass match={match} />}
+                </Route>
+                <Route exact path='/finance/AccToBranch'>
+                  {({ match }) => <AccToBranch match={match} />}
+                </Route>
+                <Route exact path='/finance/AccToStore'>
+                  {({ match }) => <AccToStore match={match} />}
+                </Route>
               </Switch>
             </ThemeProvider>
           </OnlineclassViewProvider>

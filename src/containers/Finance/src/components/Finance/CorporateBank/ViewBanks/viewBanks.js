@@ -4,8 +4,8 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Button, Fab, Grid } from '@material-ui/core/'
 
-import ReactTable from 'react-table'
-import 'react-table/react-table.css'
+// import ReactTable from 'react-table'
+// import 'react-table/react-table.css'
 import {
   Edit as EditIcon
 } from '@material-ui/icons'
@@ -174,110 +174,111 @@ export class viewBanks extends Component {
   render () {
     let addModal = null
     let modal = null
+    // rajneesh
     // let deleteModal = null
-    let viewBankTable = null
+    // let viewBankTable = null
 
-    if (this.props.viewBanksList.length > 0) {
-      viewBankTable = (<ReactTable
-        // pages={Math.ceil(this.props.viewBanksList.count / 20)}
-        data={this.renderTable()}
-        manual
-        columns={[
-          {
-            Header: 'Sr',
-            accessor: 'Sr',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Bank Name',
-            accessor: 'bank_name',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Bank Branch',
-            accessor: 'bank_branch_name',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Account No',
-            accessor: 'AccountNumber',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Nick Name',
-            accessor: 'bank_nick_name',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Description',
-            accessor: 'description',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Bank Type',
-            accessor: 'bankType',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Cheque Bounce Amount',
-            accessor: 'cheque_bounce_amount',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Logo URL',
-            accessor: 'logo_url',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Edit',
-            accessor: 'Edit',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true,
-            style: {
-              paddingTop: '5px'
-            }
-          }
-          // {
-          //   Header: 'Delete',
-          //   accessor: 'Delete',
-          //   inputFilterable: true,
-          //   exactFilterable: true,
-          //   sortable: true,
-          //   style: {
-          //     paddingTop: '5px'
-          //   }
-          // }
-        ]}
-        filterable
-        sortable
-        defaultPageSize={10}
-        showPageSizeOptions={false}
-        className='-striped -highlight'
-        // Controlled props
-        // page={this.state.page}
-        // Callbacks
-        // onPageChange={page => this.pageChangeHandler(page)}
-      />)
-    }
+    // if (this.props.viewBanksList.length > 0) {
+    //   viewBankTable = (<ReactTable
+    //     // pages={Math.ceil(this.props.viewBanksList.count / 20)}
+    //     data={this.renderTable()}
+    //     manual
+    //     columns={[
+    //       {
+    //         Header: 'Sr',
+    //         accessor: 'Sr',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Bank Name',
+    //         accessor: 'bank_name',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Bank Branch',
+    //         accessor: 'bank_branch_name',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Account No',
+    //         accessor: 'AccountNumber',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Nick Name',
+    //         accessor: 'bank_nick_name',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Description',
+    //         accessor: 'description',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Bank Type',
+    //         accessor: 'bankType',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Cheque Bounce Amount',
+    //         accessor: 'cheque_bounce_amount',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Logo URL',
+    //         accessor: 'logo_url',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Edit',
+    //         accessor: 'Edit',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true,
+    //         style: {
+    //           paddingTop: '5px'
+    //         }
+    //       }
+    //       // {
+    //       //   Header: 'Delete',
+    //       //   accessor: 'Delete',
+    //       //   inputFilterable: true,
+    //       //   exactFilterable: true,
+    //       //   sortable: true,
+    //       //   style: {
+    //       //     paddingTop: '5px'
+    //       //   }
+    //       // }
+    //     ]}
+    //     filterable
+    //     sortable
+    //     defaultPageSize={10}
+    //     showPageSizeOptions={false}
+    //     className='-striped -highlight'
+    //     // Controlled props
+    //     // page={this.state.page}
+    //     // Callbacks
+    //     // onPageChange={page => this.pageChangeHandler(page)}
+    //   />)
+    // }
 
     if (this.state.showAddModal) {
       addModal = (
@@ -357,7 +358,7 @@ export class viewBanks extends Component {
                     tableData={this.state.data}
                     tableFields={this.state.field}
                   /> */}
-                  {viewBankTable}
+                  {/* {viewBankTable} */}
                 </Grid>
               </React.Fragment>
               : null

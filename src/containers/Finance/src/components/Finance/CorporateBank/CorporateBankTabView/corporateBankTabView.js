@@ -7,9 +7,9 @@ import Tab from '@material-ui/core/Tab'
 import { Typography, Grid } from '@material-ui/core'
 import { connect } from 'react-redux'
 import Select from 'react-select'
-
 import { apiActions } from '../../../../_actions'
 import { Bank, AccToClass, AccToBranch, ViewBanks, ViewFeeAccounts, AccToStore } from '../index.js'
+import Layout from '../../../../../../Layout'
 
 function TabContainer ({ children, dir }) {
   return (
@@ -82,6 +82,7 @@ class TabView extends Component {
       )
     }
     return (
+      <Layout>
       <div>
         <Grid container spacing={3} style={{ padding: 15 }}>
           <Grid item xs='3'>
@@ -102,6 +103,7 @@ class TabView extends Component {
         </Grid>
         { appBar }
       </div>
+      </Layout>
     )
   }
 }
