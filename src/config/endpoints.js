@@ -157,7 +157,8 @@ export default {
     genreList: '/academic/genre/',
     Blog: '/academic/blog/',
     BlogLike:'/academic/like_blog/',
-    BlogView:'/academic/view_blog/'
+    BlogView:'/academic/view_blog/',
+    WordCountConfig:'/academic/word_count_config/',
 
     
   },

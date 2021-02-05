@@ -138,7 +138,7 @@ class PreviewEditBlog extends Component {
               <div className='create_group_filter_container'>
                 <div className={classes.root}>
                   <Grid container spacing={3}>
-                  <Grid item xs={12}>
+                  {/* <Grid item xs={12}>
                       <Button
                         style={{ cursor: 'Pointer' }}
                         onClick={() => window.history.back()}
@@ -146,7 +146,7 @@ class PreviewEditBlog extends Component {
                       >
                         <i>Back</i>
                       </Button>
-                      </Grid>
+                      </Grid> */}
                       <Grid item xs={9}>
                       <Card className={classes.cardRoot}>
                         <Typography

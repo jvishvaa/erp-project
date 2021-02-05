@@ -163,7 +163,7 @@ class StudentDashboard extends Component {
   WriteBlogNav = () => {
     this.props.history.push({
       pathname: '/blog/student/write-blog',
-      state: { gradeId: 'hello' },
+      state: { alert: this.props.alert },
     });
   };
 

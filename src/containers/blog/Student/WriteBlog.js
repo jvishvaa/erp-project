@@ -34,6 +34,7 @@ import TinyMce from '../../../components/TinyMCE/tinyMce';
 import PreviewBlog from './PreviewBlog';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 const styles = (theme) => ({
   root: {
@@ -84,6 +85,7 @@ class WriteBlog extends Component {
   constructor(props) {
     super(props);
     this.state = {
+
       image :'',
       // files:[],
       relatedBlog: true,
@@ -109,7 +111,7 @@ class WriteBlog extends Component {
       TITLE_CHARACTER_LIMIT: 100,
       Preview: false,
       detail: this.props.location.state.detail,
-      role_details: JSON.parse(localStorage.getItem('userDetails')),
+      roleDetails: JSON.parse(localStorage.getItem('userDetails')),
       genreList: [],
       creationDate: new Date(),
       textEditorContent:
@@ -121,11 +123,14 @@ class WriteBlog extends Component {
         this.props.location.state.files && this.props.location.state.files.length !== 0
           ? this.props.location.state.files
           : [],
+      wordCountLimit: 0,
+
     };
     console.log(this.state.genreName,this.state.genreId,"@@@@@@")
   }
+  static contextType = AlertNotificationContext
   componentDidMount() {
-    // this.listSubjects();
+    this.wordCountFetch();
     this.listGenre();
     const { creationDate } = this.state;
     let studentName = JSON.parse(localStorage.getItem('userDetails'));
@@ -141,6 +146,7 @@ class WriteBlog extends Component {
     });
   }
  
+
   listGenre = () => {
     axios
       .get(`${endpoints.blog.genreList}?is_delete=${
@@ -152,19 +158,31 @@ class WriteBlog extends Component {
       .catch((error) => {});
   };
 
-  // listSubjects = async () => {
-  //   const { role_details } = this.state;
-  //   // const branchId = role_details.role_details.branch;
-  //   // const gradeId = [24];
-  //   // const sectionIds = [25];
-  //   axios
-  //     .get(`${endpoints.academics.subjects}`)
-  //     .then((res) => {
-  //       console.log(res.data);
-  //     })
-  //     .catch((error) => {});
-  // };
+  wordCountFetch = () => {
+    let { roleDetails } = this.state;
+    const erpUserId = roleDetails.role_details.erp_user_id;
+    axios
+      .get(`${endpoints.blog.WordCountConfig}?erp_user_id=${
+        erpUserId
+      }`)
+      .then((res) => {
+        this.setState({wordCountLimit: res.data && res.data.result && res.data.result[0].word_count})
+      })
+      .catch((error) => {});
+  };
 
+  isWordCountSubceeded = () => {
+    let { textEditorContent, wordCountLimit } = this.state
+    const parsedTextEditorContent = textEditorContent.replace(/(<([^>]+)>)/ig, '').split(' ')
+    const textWordCount = parsedTextEditorContent.length
+    this.setState({ parsedTextEditorContentLen: textWordCount })
+    if (parsedTextEditorContent && parsedTextEditorContent.length < wordCountLimit) {
+      const errorMsg = `Please write atleast ${wordCountLimit} words.Currently only ${parsedTextEditorContent.length} words have been written`
+      return errorMsg
+    }
+    return false
+  }
+  
  
   handleTextEditor = (content) => {
     const { blogId } = this.state;
@@ -212,11 +230,16 @@ class WriteBlog extends Component {
   }
 
   handleGenre = (data) => {
-    console.log(data,"data@@")
     this.setState({ genreId: data.id,genreName:data.genre });
   };
 
   PreviewBlogNav = () => {
+    const subceededWordCount = this.isWordCountSubceeded()
+    if (subceededWordCount) {
+      this.context.setAlert('error',subceededWordCount)
+      return
+    }
+
     const {
       textEditorContent,
       title,
@@ -249,7 +272,7 @@ class WriteBlog extends Component {
       genreList,
       genreId,
       studentName,
-      creationDate,
+      creationDate,wordCountLimit
     } = this.state;
     console.log(genreList,genreName,"@250")
     return Preview ? (
@@ -320,7 +343,8 @@ class WriteBlog extends Component {
                   </Grid>
                   <Grid item xs={12}>
                     <Typography style={{ margin: 10 }} variant='body1'>
-                      Write Blog
+                      {/* Write Blog */}
+                      Write the blog with atleast {wordCountLimit} words
                     </Typography>
                     <TinyMce
                       key={key}
