@@ -155,7 +155,7 @@ export const fetchSubjects = (payload) => {
         dispatch(dataLoaded())
       }).catch(error => {
         dispatch(dataLoaded())
-        payload.alert.warning('Unable to load data')
+        // payload.alert.warning('Unable to load data')
         console.log(error)
       })
   }

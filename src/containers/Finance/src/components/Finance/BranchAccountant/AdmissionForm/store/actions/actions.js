@@ -39,9 +39,9 @@ export const postAdmission = (payload) => {
       dispatch(actionTypes.dataLoaded())
       console.log(error)
       if (error.response && error.response.status === 400) {
-        payload.alert.warning(error.response.data.err_msg)
+        // payload.alert.warning(error.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
     })
   }
@@ -68,9 +68,9 @@ export const getStudentdetailsbyregNumber = (payload) => {
       dispatch(actionTypes.dataLoaded())
       console.log(error)
       if (error.response && error.response.status === 400) {
-        payload.alert.warning(error.response.data.err_msg)
+        // payload.alert.warning(error.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
     })
   }
@@ -97,7 +97,7 @@ export const getAdmissionRecords = (payload) => {
       dispatch(actionTypes.dataLoaded())
       console.log(error)
       if (error.response && error.response.status === 400) {
-        payload.alert.warning(error.response.data.err_msg)
+        // payload.alert.warning(error.response.data.err_msg)
       } else {
         // payload.alert.warning('Something Went Wrong!')
       }
