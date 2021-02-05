@@ -10,7 +10,8 @@ import NewAdmissionFormAcc from './newAdmissionForm'
 import NonRTEFormAcc from './nonRTEAdmissionForm'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import * as actionTypes from '../store/actions'
-import { debounce } from '../../../../utils'
+// import { debounce } from '../../../../utils' // rajeesh due to import issue
+import Layout from '../../../../../../Layout'
 
 const styles = theme => ({
   container: {
@@ -78,7 +79,19 @@ class CustomizedAdmissionFormAcc extends Component {
     })
   }
 
-  myRegFunc = debounce(() => {
+  // myRegFunc = debounce(() => {
+  //   this.props.fetchErpSuggestions(
+  //     'erp',
+  //     this.state.session.value,
+  //     this.state.gradeId,
+  //     this.state.sectionId,
+  //     this.state.studentTypeData.value,
+  //     this.state.student,
+  //     this.props.alert,
+  //     this.props.user
+  //   )
+  // }, 500)
+  myRegFunc = () => {
     this.props.fetchErpSuggestions(
       'erp',
       this.state.session.value,
@@ -89,9 +102,10 @@ class CustomizedAdmissionFormAcc extends Component {
       this.props.alert,
       this.props.user
     )
-  }, 500)
+  }
 
-  myFunc = debounce(() => { this.props.searchAdmissionByOthers(this.state.searchByDropdown, this.state.session.value, this.state.otherKey, this.props.user, this.props.alert) }, 500)
+  // myFunc = debounce(() => { this.props.searchAdmissionByOthers(this.state.searchByDropdown, this.state.session.value, this.state.otherKey, this.props.user, this.props.alert) }, 500)
+  myFunc = () => { this.props.searchAdmissionByOthers(this.state.searchByDropdown, this.state.session.value, this.state.otherKey, this.props.user, this.props.alert) }
 
   searchByOthers = (event, selected, id) => {
     let regNo = null
@@ -246,6 +260,7 @@ class CustomizedAdmissionFormAcc extends Component {
     }
 
     return (
+      <Layout>
       <React.Fragment>
         <div className={classes.root}>
           <Grid container spacing={3}>
@@ -309,6 +324,7 @@ class CustomizedAdmissionFormAcc extends Component {
           {this.props.dataLoading ? <CircularProgress open /> : null}
         </div>
       </React.Fragment>
+      </Layout>
     )
   }
 }

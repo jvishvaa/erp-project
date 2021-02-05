@@ -16,6 +16,7 @@ import StudentParentDetailsFormAcc from './studentParentDetails'
 import AddressDetailsFormAcc from './addressDetails'
 import * as actionTypes from '../store/actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
 
 const styles = theme => ({
   container: {
@@ -130,7 +131,7 @@ class NewAdmissionFormAcc extends Component {
           }
         })
       } else {
-        this.props.alert.warning('Fill all mandatory fields!')
+        // this.props.alert.warning('Fill all mandatory fields!')
       }
     } else if (this.state.activeStep === 1) {
       if (this.state.studentparentdetails.fatherName && (this.state.studentparentdetails.fatherphone || this.state.studentparentdetails.motherphone) && this.state.studentparentdetails.poc) {
@@ -150,7 +151,7 @@ class NewAdmissionFormAcc extends Component {
           }
         })
       } else {
-        this.props.alert.warning('Fill all mandatory fields!')
+        // this.props.alert.warning('Fill all mandatory fields!')
       }
     } else if (this.state.activeStep === 3) {
       console.log('make API Call')
@@ -224,6 +225,7 @@ class NewAdmissionFormAcc extends Component {
     const { activeStep } = this.state
     console.log('Active step: !', activeStep)
     return (
+      <Layout>
       <React.Fragment>
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map(label => (
@@ -251,6 +253,7 @@ class NewAdmissionFormAcc extends Component {
           </Grid>
         </footer>
       </React.Fragment>
+      </Layout>
     )
   }
 }

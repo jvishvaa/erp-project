@@ -504,6 +504,10 @@ const Layout = ({ children, history }) => {
           history.push('/admissions/registrationForm/')
             break;
           }
+          case 'Admission Form': {
+            history.push('/finance/accountant/admissionForm')
+              break;
+            }
       default:
         break;
     }

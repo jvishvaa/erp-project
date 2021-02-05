@@ -203,7 +203,7 @@ export const fetchClassGroup = (payload) => {
         dispatch(dataLoaded())
       }).catch(error => {
         dispatch(dataLoaded())
-        payload.alert.warning('Unable to load data')
+        // payload.alert.warning('Unable to load data')
         console.log(error)
       })
   }
@@ -283,7 +283,7 @@ export const assignBanks = (payload) => {
     }).catch(err => {
       dispatch(dataLoaded())
       console.log(err)
-      alert.warning('Unable To Assign')
+      // alert.warning('Unable To Assign')
     })
   }
 }

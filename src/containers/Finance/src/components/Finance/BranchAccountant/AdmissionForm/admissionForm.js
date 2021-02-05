@@ -19,6 +19,7 @@ import { apiActions } from '../../../../_actions'
 import CustomizedAdmissionFormAcc from './customizedAdmissionForm'
 // import UpdateAdmissionFormAcc from './updateAdmissionForm'
 import * as actionTypes from '../store/actions'
+import Layout from '../../../../../../Layout'
 
 const styles = theme => ({
   container: {
@@ -153,6 +154,7 @@ class AdmissionFormAcc extends Component {
                     // }
     const classes = styles
     return (
+      <Layout>
       <React.Fragment>
         <div className={classes.root}>
           <Grid container spacing={3}>
@@ -236,6 +238,7 @@ class AdmissionFormAcc extends Component {
           </Grid>
         </div>
       </React.Fragment>
+      </Layout>
     )
   }
 }

@@ -72,6 +72,9 @@ import StudentLedgerTab from './containers/Finance/src/components/Finance/Branch
 import ManageFeeType from '../src/containers/Finance/src/components/Finance/CreateFeePlan/manageFeeType.js'
 import RegistrationForm from '../src/containers/Finance/src/components/Finance/BranchAccountant/RegistrationForm/registrationForm.js'
 import NewRegistration from '../src/containers/Finance/src/components/Finance/BranchAccountant/RegistrationForm/newRegistrationForm.js'
+import AdmissionFormAcc from '../src/containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/admissionForm.js'
+import CustomizedAdmissionForm from '../src/containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/customizedAdmissionForm.js'
+import NewAdmissionForm from './containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/newAdmissionForm';
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -302,6 +305,15 @@ function App() {
                 </Route>
                 <Route exact path='/finance/accountant/newregistrationForm'>
                   {({ match }) => <NewRegistration match={match} />}
+                </Route>
+                <Route exact path='/finance/accountant/admissionForm'>
+                  {({ match }) => <AdmissionFormAcc match={match} />}
+                </Route>
+                <Route exact path='/finance/customizedAdmissionForm'>
+                  {({ match }) => <CustomizedAdmissionForm match={match} />}
+                </Route>
+                <Route exact path='/finance/newAdmissionForm'>
+                  {({ match }) => <NewAdmissionForm match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>
