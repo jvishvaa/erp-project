@@ -10,8 +10,11 @@ import './dairy-card.css'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
+import {useHistory} from 'react-router-dom'
 import cardAttachment from '../../../assets/images/cardAttachment.svg'
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import {Context} from '../context/context'
+
 
 const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex}) => {
 
@@ -21,6 +24,8 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
   const classes = useStyles();
   const [showMenu, setShowMenu] = useState(false);
   const [showPeriodIndex, setShowPeriodIndex] = useState();
+  const history=useHistory()
+  // const [state,setState] = useContext(Context)
 
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
@@ -65,33 +70,32 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
     //   })
   }
   const handleDelete=(e,index)=>{
-    // console.log(e,index,'event')
-    // axiosInstance.put(`${endpoints.circular.deleteCircular}`,
-    // {
-    //  'circular_id': e.id,
-    //  'id_delete':true
+    debugger
+    console.log(e,index,'event')
+    axiosInstance.delete(`${endpoints.dailyDairy.updateDelete}${e.id}/update-delete-dairy/`)
+    .then((result)=>{
 
-    // }).then((result)=>{
+      if(result.data.status_code===200){
+        setAlert('success',result.data.message)
+      }else{
+        setAlert('errpr', 'ERROR!')
+      }
 
-    //   if(result.data.status_code===200){
-    //     setAlert('success',result.data.message)
-    //   }else{
-    //     setAlert('errpr', 'ERROR!')
-    //   }
-
-    // })
+    })
 
 
   }
   const handleEdit=(data)=>{
-    // console.log(data,'PPP')
+    debugger
+
+    console.log(data,'PPP')
     // // setEditData(e)
     // setState({isEdit:true,editData:data});
-    // history.push('/create-circular')
+    // history.push('/create/daily-dairy')
   }
 
   return (
-    <Paper className={periodColor?classes.selectedRoot:classes.root} style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }}>
+    <Paper className={periodColor?classes.selectedRoot:classes.root} style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' } }>
       <Grid container spacing={2}>
         <Grid item xs={8}>
           <Box>
@@ -101,11 +105,20 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               component='p'
               color='primary'
             >
-              {lesson.subject.label}
+              {lesson.subject.subject_name}
             </Typography>
           </Box>
-          <Divider className='divider'/>
           <Box mt={2}>
+          <Typography
+              className={classes.content}
+              variant='p'
+              component='p'
+              color='secondary'
+              noWrap
+            >
+              Homework
+            </Typography>
+            <Divider className='divider'/>
             <Typography
               className={classes.content}
               variant='p'
@@ -113,8 +126,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               color='secondary'
               noWrap
             >
-             {lesson.teacher_report.summary}
-             {lesson.teacher_report.tools_used}
+             {lesson.teacher_report.homework}
 
             </Typography>
           </Box>

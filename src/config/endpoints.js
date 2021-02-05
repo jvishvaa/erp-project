@@ -151,7 +151,8 @@ export default {
   },
   dailyDairy:{
     createDailyDairy:'/academic/create-dairy/',
-    branches:'/academic/chapters/'
+    branches:'/academic/chapters/',
+    updateDelete:'/academic/'
   },
   onlineCourses:{
     createCourse:'/aol/courses/',

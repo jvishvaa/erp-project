@@ -63,10 +63,14 @@ const ViewMoreCard = ({
       <Paper className='rootViewMore'>
         <div className='viewMoreHeader'>
           <div className='leftHeader'>
-            <div className='headerTitle'>{viewMoreData.title}</div>
-            <div className='headerTitle'>
-              Created On:{viewMoreData.created_at.substring(0, 10)}
+            <div className='headerTitle'>{viewMoreData.subject.subject_name}</div>
+            <div style={{align:'left'}}>
+              Created On:
             </div>
+            <div style={{align:'left'}}>
+            {viewMoreData.created_at.substring(0, 10)}
+            </div>
+
             {/* <div className='headerContent'>{periodDataForView?.section_name}</div> */}
           </div>
           <div className='rightHeader'>
@@ -104,17 +108,24 @@ const ViewMoreCard = ({
         <div>
           <div className='bodyTitle'>Recap of previous class</div>
           <Divider className='titleDivider' />
-          <div className='bodyContent'>{viewMoreData.teacher_report.recap}</div>
+          <div className='bodyContent'>{viewMoreData.teacher_report.previous_class}</div>
           <div className='bodyTitle'>Details of classwork</div>
           <Divider className='messageDivider' />
           <div className='bodyContent'>{viewMoreData.teacher_report.class_work}</div>
-          <div className='bodyContent'>{viewMoreData.teacher_report.recap}</div>
-          <div className='bodyTitle'>Details of classwork</div>
+          <div className='bodyTitle'>Summary</div>
+          <Divider className='messageDivider' />
+          <div className='bodyContent'>{viewMoreData.teacher_report.summary}</div>
+          <div className='bodyTitle'>Tools Used</div>
+          <Divider className='messageDivider' />
+          <div className='bodyContent'>{viewMoreData.teacher_report.tools_used}</div>
+          <div className='bodyTitle'>Homework</div>
+          <Divider className='messageDivider' />
+          <div className='bodyContent'>{viewMoreData.teacher_report.homework}</div>
           <div className='bodyTitle'>Media</div>
           {/* <div className='mediaBody'>xxxxxxxx</div> */}
           <IconButton
           //  onClick={handleBulkDownload}
-           style={{fontSize:'1.1rem',color:'#ff6b6b'}}
+           style={{fontSize:'1.1rem',color:'#ff6b6b',paddingLeft:'5%',marginTop:'3%'}}
             className="bulkDownloadIconViewMore">
               <a  target='_blank' href={`${endpoints.s3}/dev/circular_files/Orchids/${pic}`}>
                             <SvgIcon
@@ -125,7 +136,7 @@ const ViewMoreCard = ({
                                         alt='downloadAll'
                                     />
                                 )}
-                            /></a>Download All Attachments
+                            /></a>Download Attachments
                         </IconButton>
         </div>
       </Paper>
