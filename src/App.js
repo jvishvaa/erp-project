@@ -49,6 +49,7 @@ import {
   EditBlog,
   PreviewBlog,
   PreviewEditBlog,
+  CreateWordCountConfig,
   StudentDashboard,
   TeacherPublishBlogView,
   BlogView,
@@ -162,6 +163,10 @@ function App() {
                 </Route> */}
                     <Route exact path='/blog/create/genre'>
                       {({ match }) => <CreateGenre match={match} />}
+                    </Route>
+                    
+                    <Route exact path='/blog/create/wordcount-config'>
+                      {({ match }) => <CreateWordCountConfig match={match} />}
                     </Route>
                     <Route exact path='/blog/view/genre'>
                       {({ match }) => <ViewGenre match={match} />}

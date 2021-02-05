@@ -24,3 +24,5 @@ export {default as StudentPublishBlogView} from './Student/StudentPublishBlogVie
 export { default as ContentViewPublishStudent } from './Student/ContentViewPublishStudent';
 export { default as ContentViewPublishAdmin } from './Admin/ContentViewPublishAdmin';
 export { default as ContentViewPublishPrincipal } from './Principal/ContentViewPublishPrincipal';
+
+export {default as CreateWordCountConfig} from './Teacher/CreateWordCountConfig'
