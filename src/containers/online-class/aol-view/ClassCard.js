@@ -6,7 +6,7 @@ import Fade from '@material-ui/core/Fade';
 import moment from 'moment';
 import ClassUpdation from '../create-class/class-updation';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { CreateclassContext } from '../create-class/create-class-context/create-class-state';
 
 
@@ -83,6 +83,7 @@ const StyledButton = withStyles({
 export default function ClassCardComponent(props) {
     const history = useHistory();
     const classes = useStyles({});
+    const location=useLocation();
     const [enableEdit, setEnabelEdit]= React.useState(false)
     const classData = props.classData.zoom_meeting ? props.classData.zoom_meeting : props.classData;
     
@@ -139,6 +140,7 @@ export default function ClassCardComponent(props) {
                 <Typography className={classes.classTitle}>
                     {classData.online_class.title}
                 </Typography>
+                {location.pathname==='/online-class/view-class' &&
                 <IconButton
                     onClick={handleEditClass}
                     title='Edit Subject'
@@ -146,7 +148,7 @@ export default function ClassCardComponent(props) {
                 >
                     <EditOutlinedIcon style={{color:'#fe6b6b', fontSize: '18px'}} />
                     {editClassJsx}
-                </IconButton>
+                </IconButton>}
             </div>
                 <Typography className={classes.classTitle}>
                     {classData.online_class.subject[0].subject_name}
