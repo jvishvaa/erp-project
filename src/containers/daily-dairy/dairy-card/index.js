@@ -16,7 +16,7 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import {Context} from '../context/context'
 
 
-const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex}) => {
+const PeriodCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex, setEditData}) => {
 
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -24,8 +24,8 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
   const classes = useStyles();
   const [showMenu, setShowMenu] = useState(false);
   const [showPeriodIndex, setShowPeriodIndex] = useState();
-  const history=useHistory()
-  // const [state,setState] = useContext(Context)
+    const history=useHistory()
+    const [state,setState] = useContext(Context)
 
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
@@ -70,7 +70,6 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
     //   })
   }
   const handleDelete=(e,index)=>{
-    debugger
     console.log(e,index,'event')
     axiosInstance.delete(`${endpoints.dailyDairy.updateDelete}${e.id}/update-delete-dairy/`)
     .then((result)=>{
@@ -90,8 +89,8 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
 
     console.log(data,'PPP')
     // // setEditData(e)
-    // setState({isEdit:true,editData:data});
-    // history.push('/create/daily-dairy')
+    setState({editData:data,isEdit:true});
+    history.push('/create/daily-dairy')
   }
 
   return (

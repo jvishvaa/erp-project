@@ -34,6 +34,7 @@ import {
   fetchAcademicYears as getAcademicYears,
   fetchSubjects as getSubjects,
 } from '../../../../src/redux/actions/index';
+import {Context} from '../context/context'
 
 const CreateDailyDairy = (details, onSubmit) => {
   const [academicYears, setAcademicYears] = useState([]);
@@ -54,8 +55,13 @@ const CreateDailyDairy = (details, onSubmit) => {
   const [summary,setSummary] = useState('')
   const [tools,setTools] = useState('')
   const [homework,setHomework] = useState('')
-
-
+  //context
+    const [state,setState] = useContext(Context)
+        const {isEdit, editData} = state;
+        const{setIsEdit,setEditData}=setState;
+        const [title,setTitle] = useState(editData.circular_name || '')
+        const [description,setDescription] = useState(editData.description || '')
+        console.log(state,'CCCCC',editData.circular_name)
 
   const [filterData, setFilterData] = useState({
     year: '',
@@ -358,6 +364,31 @@ const CreateDailyDairy = (details, onSubmit) => {
     }
   };
 
+  const handleEdited =()=>{
+   debugger
+   console.log(editData)
+    axiosInstance.put(`${endpoints.dailyDairy.updateDelete}`,{
+        'circular_id':editData.id,
+        'circular_name':title,
+        'description':description,
+        'module_name':filterData.role.value
+    }).then(result=>{
+        if(result.data.status_code===200){
+            setState({...state,isEdit:false});
+            setTitle('')
+            setDescription('')
+            setAlert('success',result.data.message)
+        }else {
+            setAlert('error', result.data.message);
+        }
+    }).catch((error) => {
+        setAlert('error', error.data.message);
+    })
+
+    
+
+}
+
   const FileRow = (props) => {
     const { file, onClose, index } = props;
     return (
@@ -491,7 +522,7 @@ const CreateDailyDairy = (details, onSubmit) => {
               formik.setFieldValue('subjects', []);
               handleChangeBranch(value ? [value] : null);
             }}
-            value={formik.values.branch}
+            value={state.isEdit?editData.branch :formik.values.branch}
             options={branches}
             getOptionLabel={(option) => option.branch_name || ''}
             renderInput={(params) => (
@@ -578,29 +609,6 @@ const CreateDailyDairy = (details, onSubmit) => {
           className={classes.margin}
           variant='outlined'
         >
-          {/* <Autocomplete
-            id='subjects'
-            name='subjects'
-            onChange={handleSubject}
-            // {(e, value) => {
-            //   formik.setFieldValue('subjects', value);
-            // }}
-            value={formik.values.subjects}
-            limitTags={2}
-            multiple
-            options={subjects}
-            getOptionLabel={(option) => option.subject_name || ''}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Subjects'
-                placeholder='Subjects'
-              />
-            )}
-            getOptionSelected={(option, value) => option.id == value.id}
-            size='small'
-          /> */}
             <Autocomplete
           multiple
           style={{ width: '100%' }}
@@ -608,7 +616,7 @@ const CreateDailyDairy = (details, onSubmit) => {
           onChange={handleSubject}
           id='subj'
           // className='dropdownIcon'
-          // value={filterData?.subject}
+          value={state.isEdit?editData.subject : []}
           options={subjectDropdown}
           getOptionLabel={(option) => option?.subject_name}
           filterSelectedOptions
@@ -668,7 +676,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     color='secondary'
                     style={{ width: "100%",marginTop:'1.25rem'}}
                     // defaultValue="Default Value"
-                    // value={title}
+                    value={state.isEdit?editData.teacher_report.previous_class : []}
                     variant="outlined"
                     onChange={e=> setRecap(e.target.value)}
                 />
@@ -682,7 +690,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     color='secondary'
                     style={{ width: "100%",marginTop:'1.25rem'}}
                     // defaultValue="Default Value"
-                    // value={title}
+                    value={state.isEdit?editData.teacher_report.class_work : []}
                     variant="outlined"
                     onChange={e=> setDetails(e.target.value)}
                 />
@@ -696,7 +704,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     color='secondary'
                     style={{ width: "100%",marginTop:'1.25rem'}}
                     // defaultValue="Default Value"
-                    // value={title}
+                    value={state.isEdit?editData.teacher_report.summary : []}
                     variant="outlined"
                     onChange={e=> setSummary(e.target.value)}
                 />
@@ -712,7 +720,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     color='secondary'
                     style={{ width: "100%",marginTop:'1.25rem'}}
                     // defaultValue="Default Value"
-                    // value={title}
+                    value={state.isEdit?editData.teacher_report.tools_used : []}
                     variant="outlined"
                     onChange={e=> setTools(e.target.value)}
                 />
@@ -726,7 +734,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     color='secondary'
                     style={{ width: "100%",marginTop:'1.25rem'}}
                     // defaultValue="Default Value"
-                    // value={title}
+                    value={state.isEdit?editData.teacher_report.homework : []}
                     variant="outlined"
                     onChange={e=> setHomework(e.target.value)}
                 />
@@ -772,6 +780,8 @@ const CreateDailyDairy = (details, onSubmit) => {
                             id='raised-button-file'
                             accept="image/*"
                             onChange={handleImageChange}
+                            // value={state.isEdit?editData.documents : []}
+
                         />
                     Add Document
                 </Button>
@@ -782,7 +792,7 @@ const CreateDailyDairy = (details, onSubmit) => {
         <div>
             <Button 
             style={{ marginLeft:'80%' }}
-             onClick={handleSubmit}
+             onClick={state.isEdit? handleEdited : handleSubmit}
               className='submit_button'>SUBMIT</Button>
         </div>
         </div>

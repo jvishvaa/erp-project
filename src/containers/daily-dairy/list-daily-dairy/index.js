@@ -15,6 +15,7 @@ import selectfilter from '../../../assets/images/selectfilter.svg';
 import DailyDairyFilter from '../view-daily-dairy';
 import PeriodCard from '../dairy-card'
 import ViewMoreCard from '../view-more-card'
+import {Context} from '../context/context'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -44,6 +45,11 @@ const DailyDairyList = () => {
     const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
     const [periodColor, setPeriodColor] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(-1);
+    const [editData,setEditData] = useState([])
+    
+    const [state,setState] = useContext(Context)
+
+    console.log(state,'@@@@')
 
     const handlePagination = (event, page) => {
         setPage(page);
@@ -53,6 +59,7 @@ const DailyDairyList = () => {
         console.log(branchId, gradeId, sectionIds, startDate, endDate, '===');
         setLoading(true);
         setPeriodData([]);
+        debugger
         axiosInstance
             .get(
                 `${endpoints.generalDairy.dairyList
@@ -68,6 +75,8 @@ const DailyDairyList = () => {
                     setTotalCount(result.data.result.count);
                     setLoading(false);
                     setPeriodData(result.data.result.results);
+                    setViewMore(false);
+                    setViewMoreData({});
                 } else {
                     setLoading(false);
                     setAlert('error', result.data.description);
@@ -78,6 +87,8 @@ const DailyDairyList = () => {
                 setAlert('error', error.message);
             });
     };
+console.log("BBBBB",editData)
+
     return (
         <>
             {loading ? <Loading message='Loading...' /> : null}
@@ -123,6 +134,7 @@ const DailyDairyList = () => {
                                                 // setSelectedIndex={setSelectedIndex}
                                                 periodColor={selectedIndex === i ? true : false}
                                                 setPeriodColor={setPeriodColor}
+                                                // setEditData={setEditData}
                                             />
                                         </Grid>
                                     ))}

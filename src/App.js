@@ -84,7 +84,7 @@ import CreateCourse from './containers/master-management/course/create-course';
 import CourseView from './containers/master-management/course/view-course';
 import ViewCourseCard from './containers/master-management/course/view-course/view-more-card/ViewCourseCard';
 import ViewStore from './containers/master-management/course/view-course/context/ViewStore';
-
+import DailyDairyStore from'./containers/daily-dairy/context/context';
 import AttendeeListRemake from './containers/attendance'
 
 const theme = createMuiTheme({
@@ -135,6 +135,8 @@ function App() {
             <ThemeProvider theme={theme}>
               <CircularStore>
                 <ViewStore>
+                  <DailyDairyStore>
+
                   <Switch>
                     <Route path='/profile'>
                       {({ match }) => <Profile match={match} />}
@@ -299,7 +301,7 @@ function App() {
                     <Route
                       exact
                       path='/homework/cadd/:date/:subject/:id/:coord_selected_teacher_id'
-                    >
+                      >
                       {({ match }) => <AddHomeworkCoord match={match} />}
                     </Route>
                     <Route exact path='/lesson-plan/teacher-view'>
@@ -354,6 +356,7 @@ function App() {
                       {({ match }) => <AttendeeListRemake match={match} />}
                     </Route>
                   </Switch>
+                  </DailyDairyStore>
                 </ViewStore>
               </CircularStore>
             </ThemeProvider>

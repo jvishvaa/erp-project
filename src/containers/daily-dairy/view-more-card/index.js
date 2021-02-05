@@ -9,6 +9,7 @@ import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import { ExpandLessOutlined } from '@material-ui/icons';
+import {Context} from '../context/context'
 
 const ViewMoreCard = ({
   viewMoreData,

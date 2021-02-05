@@ -2,7 +2,6 @@ import React, { createContext, useState } from 'react'
 
 const initialState={
     editData:[],
-    isEdit: false,
 }
 
 export const  Context = createContext();
