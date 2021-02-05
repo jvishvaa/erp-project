@@ -10,14 +10,15 @@ import { connect } from 'react-redux'
 import Select from 'react-select'
 import ReactTable from 'react-table'
 import axios from 'axios'
-import '../../../css/staff.css'
+// import '../../../css/staff.css' // rajneesh
 import * as actionTypes from '../../store/actions'
 import { apiActions } from '../../../../_actions'
 import AutoSuggest from '../../../../ui/AutoSuggest/autoSuggest'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
-import { debounce } from '../../../../utils'
+// import { debounce } from '../../../../utils' // rajneesh due to some import issue
 import appRegReceiptsPdf from '../../Receipts/appRegReceipts'
 import { urls } from '../../../../urls'
+import Layout from '../../../../../../Layout'
 // import classes from './pdc.module.css'
 // import Student from '../../Profiles/studentProfile'
 
@@ -198,7 +199,8 @@ class ApplicationFormAcc extends Component {
   }
 
   // for searching
-  myFunc = debounce(() => { this.props.fetchApplicationDetails(this.state.searchKey, this.props.user, this.props.alert) }, 1000)
+  // myFunc = debounce(() => { this.props.fetchApplicationDetails(this.state.searchKey, this.props.user, this.props.alert) }, 1000)
+  myFunc = () => { this.props.fetchApplicationDetails(this.state.searchKey, this.props.user, this.props.alert) }
 
   searchHandler = (event) => {
     // console.log('just console', event.target.value)
@@ -1681,7 +1683,16 @@ class ApplicationFormAcc extends Component {
     })
   }
 
-  myErpFunc = debounce(() => {
+  // myErpFunc = debounce(() => {
+  //   this.props.fetchSuggestions(
+  //     this.state.session,
+  //     this.state.searchTypeData.value,
+  //     this.state.searchedValue,
+  //     this.props.user,
+  //     this.props.alert
+  //   )
+  // }, 500)
+  myErpFunc = () => {
     this.props.fetchSuggestions(
       this.state.session,
       this.state.searchTypeData.value,
@@ -1689,7 +1700,7 @@ class ApplicationFormAcc extends Component {
       this.props.user,
       this.props.alert
     )
-  }, 500)
+  }
 
   onSearchChange = (e, selected) => {
     console.log('onSearch click', e.target.value)
@@ -1791,6 +1802,7 @@ class ApplicationFormAcc extends Component {
     }
 
     return (
+      <Layout>
       <React.Fragment>
         <Grid container spacing={3} style={{ padding: 15 }}>
           <Grid item xs='3'>
@@ -1912,6 +1924,7 @@ class ApplicationFormAcc extends Component {
           : null }
         {this.props.dataLoading ? <CircularProgress open /> : null}
       </React.Fragment>
+      </Layout>
     )
   }
 }

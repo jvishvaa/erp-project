@@ -64,9 +64,9 @@ export const fetchApplicationDetails = (payload) => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
         if (error.response && error.response.data && error.response.data.err_msg && (error.response.status === 400 || error.response.status === 404)) {
-          payload.alert.warning(error.response.data.err_msg)
+          // payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.warning('Something Went Wrong!')
+          // payload.alert.warning('Something Went Wrong!')
         }
       })
   }
@@ -92,9 +92,9 @@ export const fetchGrade = (payload) => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
         if (error.response && error.response.data && error.response.data.err_msg && (error.response.status === 400 || error.response.status === 404)) {
-          payload.alert.warning(error.response.data.err_msg)
+          // payload.alert.warning(error.response.data.err_msg)
         } else {
-          payload.alert.warning('Something Went Wrong!')
+          // payload.alert.warning('Something Went Wrong!')
         }
       })
   }

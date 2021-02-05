@@ -508,6 +508,14 @@ const Layout = ({ children, history }) => {
             history.push('/finance/accountant/admissionForm')
               break;
             }
+            case 'Application Form': {
+              history.push('/finance/accountant/applicationFrom')
+                break;
+              }
+              case 'Pending Online Admission': {
+                history.push('/finance/accountat/pendingOnlineadmission')
+                  break;
+                }
       default:
         break;
     }

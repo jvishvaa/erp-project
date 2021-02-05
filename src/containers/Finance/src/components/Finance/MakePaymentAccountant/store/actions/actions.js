@@ -122,7 +122,7 @@ export const fetchReceiptRange = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      payload.alert.warning('Unable To Load Receipt No.')
+      // payload.alert.warning('Unable To Load Receipt No.')
       dispatch(actionTypes.dataLoaded())
       console.log(err)
     })

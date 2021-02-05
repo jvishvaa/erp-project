@@ -75,6 +75,8 @@ import NewRegistration from '../src/containers/Finance/src/components/Finance/Br
 import AdmissionFormAcc from '../src/containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/admissionForm.js'
 import CustomizedAdmissionForm from '../src/containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/customizedAdmissionForm.js'
 import NewAdmissionForm from './containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/newAdmissionForm';
+import ApplicationFormAcc from '../src/containers/Finance/src/components/Finance/BranchAccountant/ApplicationForm/applicationForm.js'
+// import OnlineAdmission from '../src/containers/Finance/src/components/Finance/PendingOnlineAdmission/pendingOnlineAdmission.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -315,6 +317,12 @@ function App() {
                 <Route exact path='/finance/newAdmissionForm'>
                   {({ match }) => <NewAdmissionForm match={match} />}
                 </Route>
+                <Route exact path='/finance/accountant/applicationFrom'>
+                  {({ match }) => <ApplicationFormAcc match={match} />}
+                </Route>
+                {/* <Route exact path='/finance/accountat/pendingOnlineadmission'>
+                  {({ match }) => <OnlineAdmission match={match} />}
+                </Route> */}
               </Switch>
             </ThemeProvider>
           </OnlineclassViewProvider>
