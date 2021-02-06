@@ -28,6 +28,7 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import Review from './Review'
 import Layout from '../../Layout';
 import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
+import ReactHtmlParser from 'react-html-parser'
 
 
 
@@ -312,11 +313,11 @@ if (result.data.status_code === 200) {
                         />
                         <CardContent>
                           <Typography variant='body2' color='textSecondary' component='p'>
-                            {data.content}
+                          {ReactHtmlParser(data.content)}
                           </Typography>
                           <Typography component='p'  style={{ paddingRight: '650px',fontSize:'12px'}}
 >
-                          TotalWords : {data.word_count}
+                          Total Words : {data.word_count}
                           
                           </Typography>
                           <Typography  component='p' style={{ paddingRight: '650px',fontSize:'12px'}}>

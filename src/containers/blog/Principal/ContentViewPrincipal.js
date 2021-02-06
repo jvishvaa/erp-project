@@ -14,6 +14,9 @@ import {
   CardHeader,
   TextField,
 } from '@material-ui/core';
+import ReactHtmlParser from 'react-html-parser'
+
+
 import Rating from '@material-ui/lab/Rating';
 import Avatar from '@material-ui/core/Avatar';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -309,11 +312,11 @@ if (result.data.status_code === 200) {
                         />
                         <CardContent>
                           <Typography variant='body2' color='textSecondary' component='p'>
-                            {data.content}
+                            {ReactHtmlParser(data.content)}
                           </Typography>
                           <Typography component='p'  style={{paddingRight: '650px', fontSize:'12px'}}
 >
-                          TotalWords : {data.word_count}
+                          Total Words : {data.word_count}
                           </Typography>
                           <Typography  component='p' style={{ paddingRight: '650px',fontSize:'12px'}}>
                            Genre: {data.genre && data.genre.genre}

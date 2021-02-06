@@ -20,6 +20,7 @@ import {
 } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
 import Rating from '@material-ui/lab/Rating';
+import ReactHtmlParser from 'react-html-parser'
 
 import { withRouter } from 'react-router-dom';
 import axios from '../../../config/axios';
@@ -231,11 +232,11 @@ getOverAllRemark = () => {
                         />
                         <CardContent>
                           <Typography variant='body2' color='textSecondary' component='p'>
-                            {data.content}
+                          {ReactHtmlParser(data.content)}
                           </Typography>
                           <Typography component='p'  style={{paddingRight: '650px', fontSize:'12px'}}
 >
-                          TotalWords : {data.word_count}
+                          Total Words : {data.word_count}
                           </Typography>
                           <Typography  component='p' style={{ paddingRight: '650px',fontSize:'12px'}}>
                            Genre: {data.genre && data.genre.genre}
