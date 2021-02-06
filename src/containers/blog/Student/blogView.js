@@ -30,7 +30,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import moment from 'moment';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
-import SideBar from './sideBar';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';

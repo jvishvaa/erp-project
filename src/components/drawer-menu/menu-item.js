@@ -40,6 +40,10 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Teacher Blogs', Path: '/blog/teacher' },
     { name: 'Management Blogs', Path: '/blog/admin' },
     { name: 'Principal Blogs', Path: '/blog/principal' },
+    {name: 'Genre' ,Path :'/blog/create/genre'},
+    {name: 'Word Count Cofiguration' ,Path :'/blog/create/wordcount-config'},
+
+    
   ];
   // const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
