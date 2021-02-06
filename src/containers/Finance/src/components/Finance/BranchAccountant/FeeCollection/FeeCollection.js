@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 // import FeeShowList from './FeeShowList'
 import { apiActions } from '../../../../_actions'
+import Layout from '../../../../../../Layout'
 // import * as actionTypes from '../store/action'
 
 class FeeCollection extends Component {
@@ -35,6 +36,7 @@ class FeeCollection extends Component {
 
   render () {
     return (
+      <Layout>
       <div style={{ marginLeft: '20px', marginTop: '20px' }}>
         <Grid container spacing={3}>
           <Grid item xs={3}>
@@ -67,6 +69,7 @@ class FeeCollection extends Component {
           }
         </Grid>
       </div>
+      </Layout>
     )
   }
 }

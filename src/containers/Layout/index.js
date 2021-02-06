@@ -536,6 +536,10 @@ const Layout = ({ children, history }) => {
                 history.push('/finance/StudentWallet')
                   break;
                 }
+              case 'Fee Collection': {
+                history.push('/finance/student/FeeCollection')
+                  break;
+                }
       default:
         break;
     }

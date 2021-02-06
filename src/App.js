@@ -88,6 +88,8 @@ import LastDateSettings from '../src/containers/Finance/src/components/Finance/L
 import ReceiptSettings from '../src/containers/Finance/src/components/Finance/ReceiptSettings/ReceiptSettings.js'
 import BulkFeeUpload from  '../src/containers/Finance/src/components/Finance/BulkOperations/BulkFeeUpload/bulkFeeUpload.js'
 import StudentWallet from '../src/containers/Finance/src/components/Finance/student/StudentWallet/StudentWallet.js'
+import FeeCollection from '../src/containers/Finance/src/components/Finance/BranchAccountant/FeeCollection/FeeCollection.js'
+import FeeShowList from './containers/Finance/src/components/Finance/BranchAccountant/FeeCollection/FeeShowList';
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -366,6 +368,12 @@ function App() {
                 </Route>
                 <Route exact path='/finance/StudentWallet'>
                   {({ match }) => <StudentWallet match={match} />}
+                </Route>
+                <Route exact path='/finance/student/FeeCollection'>
+                  {({ match }) => <FeeCollection match={match} />}
+                </Route>
+                <Route exact path= '/finance/feeShowList/'>
+                  {({ match }) => <FeeShowList match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>
