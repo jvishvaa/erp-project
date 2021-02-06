@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import * as actionTypes from '../../store/actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
-// import '../../../css/staff.css'
+import '../../../css/staff.css'
 
 class EditFeeType extends Component {
   constructor (props) {

@@ -25,7 +25,7 @@ import Select from 'react-select'
 import axios from 'axios'
 import { ArrowBack } from '@material-ui/icons/'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
-// import '../../../css/staff.css'
+import '../../../css/staff.css'
 import * as actionTypes from '../../store/actions'
 import { urls } from '../../../../urls'
 // import storeReceipts from '../../Receipts/storePaymentReceipt' //rajneesh

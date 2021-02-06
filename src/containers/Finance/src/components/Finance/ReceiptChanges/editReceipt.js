@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 // import classes from './receiptRanges.module.css'
 import { apiActions } from '../../../_actions'
 import * as actionTypes from '../store/actions'
-// import '../../css/staff.css'
+import '../../css/staff.css'
 
 class EditReceipt extends Component {
   constructor (props) {

@@ -154,7 +154,7 @@ const PartialPayment = ({ classes, session, branches, fetchBranches, partialPaym
       setCreateBackDate(true)
       setPartPayLastDate(null)
     } else {
-      alert.warning('Select all required Fields!')
+      // alert.warning('Select all required Fields!')
     }
   }
   const partialPaymentTable = () => {

@@ -4,7 +4,7 @@ import { Checkbox, FormControlLabel, Button, Grid, Divider } from '@material-ui/
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import * as actionTypes from '../../store/actions'
-// import '../../../css/staff.css'
+import '../../../css/staff.css'
 
 class AddFeeType extends Component {
   constructor (props) {

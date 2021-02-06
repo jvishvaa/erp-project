@@ -84,6 +84,8 @@ import viewFeeAccounts from '../src/containers/Finance/src/components/Finance/Co
 import AccToClass from '../src/containers/Finance/src/components/Finance/CorporateBank/AccountToClass/accountToClass.js'
 import AccToBranch from '../src/containers/Finance/src/components/Finance/CorporateBank/AccountToBranch/accountToBranch.js'
 import AccToStore from '../src/containers/Finance/src/components/Finance/CorporateBank/AccountToStore/accountToStore.js'
+import LastDateSettings from '../src/containers/Finance/src/components/Finance/LastDateSettings/lastDate.js'
+import ReceiptSettings from '../src/containers/Finance/src/components/Finance/ReceiptSettings/ReceiptSettings.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -350,6 +352,12 @@ function App() {
                 </Route>
                 <Route exact path='/finance/AccToStore'>
                   {({ match }) => <AccToStore match={match} />}
+                </Route>
+                <Route exact path='/finance/Setting/LastDateSetting'>
+                  {({ match }) => <LastDateSettings match={match} />}
+                </Route>
+                <Route exact path='/finance/Setting/ReceiptSettings'>
+                  {({ match }) => <ReceiptSettings match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

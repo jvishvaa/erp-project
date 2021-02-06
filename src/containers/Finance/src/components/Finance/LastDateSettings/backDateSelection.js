@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 // import Select from 'react-select'
 import { connect } from 'react-redux'
 // import PropTypes from 'prop-types'
-import ReactTable from 'react-table'
+// import ReactTable from 'react-table'
 import Edit from '@material-ui/icons/Edit'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 import * as actionTypes from '../store/actions/index'
@@ -97,65 +97,65 @@ class BackDateSelection extends Component {
   render () {
     // let { classes } = this.props
     // console.log('back Date', this.props.backDateList)
-    let backDateTable = null
-    if (this.props.backDateList) {
-      backDateTable = (
-        <ReactTable
-        // pages={Math.ceil(this.props.viewBanksList.count / 20)}
-          data={this.renderBackDateTable()}
-          manual
-          columns={[
-            {
-              Header: 'Sl no.',
-              accessor: 'sl',
-              inputFilterable: true,
-              exactFilterable: true,
-              sortable: true
-              // style: {
-              //   maxWidth: '20px'
-              // }
-            },
-            {
-              Header: 'Branch Name',
-              accessor: 'branchName',
-              inputFilterable: true,
-              exactFilterable: true,
-              sortable: true
-            },
-            {
-              Header: 'Payments Back Date',
-              accessor: 'payments_back_date',
-              inputFilterable: true,
-              exactFilterable: true,
-              sortable: true
-            },
-            {
-              Header: 'Petty Cash Back Date',
-              accessor: 'petty_cash_back_date',
-              inputFilterable: true,
-              exactFilterable: true,
-              sortable: true
-            },
-            {
-              Header: 'Actions',
-              accessor: 'action',
-              inputFilterable: true,
-              exactFilterable: true,
-              sortable: true
-            }
-          ]}
-          filterable
-          sortable
-          defaultPageSize={10}
-          showPageSizeOptions={false}
-          className='-striped -highlight'
-          // Controlled props
-          // page={this.state.page}
-          // Callbacks
-          // onPageChange={page => this.pageChangeHandler(page)}
-        />
-      )
-    }
+    // let backDateTable = null
+    // if (this.props.backDateList) {
+    //   backDateTable = (
+    //     <ReactTable
+    //     // pages={Math.ceil(this.props.viewBanksList.count / 20)}
+    //       data={this.renderBackDateTable()}
+    //       manual
+    //       columns={[
+    //         {
+    //           Header: 'Sl no.',
+    //           accessor: 'sl',
+    //           inputFilterable: true,
+    //           exactFilterable: true,
+    //           sortable: true
+    //           // style: {
+    //           //   maxWidth: '20px'
+    //           // }
+    //         },
+    //         {
+    //           Header: 'Branch Name',
+    //           accessor: 'branchName',
+    //           inputFilterable: true,
+    //           exactFilterable: true,
+    //           sortable: true
+    //         },
+    //         {
+    //           Header: 'Payments Back Date',
+    //           accessor: 'payments_back_date',
+    //           inputFilterable: true,
+    //           exactFilterable: true,
+    //           sortable: true
+    //         },
+    //         {
+    //           Header: 'Petty Cash Back Date',
+    //           accessor: 'petty_cash_back_date',
+    //           inputFilterable: true,
+    //           exactFilterable: true,
+    //           sortable: true
+    //         },
+    //         {
+    //           Header: 'Actions',
+    //           accessor: 'action',
+    //           inputFilterable: true,
+    //           exactFilterable: true,
+    //           sortable: true
+    //         }
+    //       ]}
+    //       filterable
+    //       sortable
+    //       defaultPageSize={10}
+    //       showPageSizeOptions={false}
+    //       className='-striped -highlight'
+    //       // Controlled props
+    //       // page={this.state.page}
+    //       // Callbacks
+    //       // onPageChange={page => this.pageChangeHandler(page)}
+    //     />
+    //   )
+    // }
 
     let actionModal = null
     if (this.state.showActionModal) {
@@ -208,7 +208,7 @@ class BackDateSelection extends Component {
     return (
       <React.Fragment>
         {actionModal}
-        {backDateTable}
+        {/* {backDateTable} */}
         {this.props.dataLoading ? <CircularProgress open /> : null}
       </React.Fragment>
     )

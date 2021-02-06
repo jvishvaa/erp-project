@@ -520,6 +520,14 @@ const Layout = ({ children, history }) => {
                 history.push('/finance/BankAndFeeAccounts')
                   break;
                 }
+              case 'Last Date Settings': {
+                history.push('/finance/Setting/LastDateSetting')
+                  break;
+                }
+              case 'Receipt Settings': {
+                history.push('/finance/Setting/ReceiptSettings')
+                   break;
+                }
       default:
         break;
     }

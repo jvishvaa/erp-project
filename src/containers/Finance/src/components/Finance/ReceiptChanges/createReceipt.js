@@ -18,7 +18,7 @@ import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 import * as actionTypes from '../store/actions'
 import { apiActions } from '../../../_actions'
 import Modal from '../../../ui/Modal/modal'
-// import '../../css/staff.css'
+import '../../css/staff.css'
 import EditReceipt from './editReceipt'
 import AddReceipt from './addReceipt'
 

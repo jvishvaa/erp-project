@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 // import Select from 'react-select'
 
-// import '../../../css/staff.css'
+import '../../../css/staff.css'
 import * as actionTypes from '../../store/actions'
 // import classes from './feeStructure.module.css'
 // import Modal from '../../../../ui/Modal/modal'
