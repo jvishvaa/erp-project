@@ -436,9 +436,6 @@ if (result.data.status_code === 200) {
                         </Card>
                       )
                       : relatedBlog ? ''
-                      //     <SideBar />
-                      //   </>
-                      // ) 
                       : (
                         <Review  blogId={data.id}  ratingParameters={this.getRatings} overallRemark={this.getOverAllRemark}
                         />

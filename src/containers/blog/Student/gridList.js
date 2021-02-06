@@ -152,7 +152,7 @@ function GridList(props) {
                   >
                     Read more
                   </Button>
-                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[0]&&data[0].feedback_revision_required? 'Revision required' :''}</p>
+                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[0]&&data[0].status === '8' ? 'Revision' :''}</p>
                 </CardActions>
               </Card>
             </Grid>
@@ -240,7 +240,7 @@ function GridList(props) {
                     >
                       Read more
                     </Button>
-                    <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[1]&&data[1].feedback_revision_required? 'Revision' :''}</p>
+                    <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[1]&&data[1].status === '8' ? 'Revision' :''}</p>
 
                   </CardActions>
                 </Card>
@@ -328,6 +328,8 @@ function GridList(props) {
                     >
                       Read more
                     </Button>
+                    <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[2]&&data[2].status === '8' ? 'Revision' :''}</p>
+
                   </CardActions>
                 </Card>
               </Grid>
@@ -403,6 +405,8 @@ function GridList(props) {
                     >
                       Read more
                     </Button>
+                    <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[3]&&data[3].status === '8' ? 'Revision' :''}</p>
+
                   </CardActions>
                 </Card>
               </Grid>
@@ -475,6 +479,8 @@ function GridList(props) {
                     >
                       Read more
                     </Button>
+                    <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[4]&&data[4].status === '8' ? 'Revision' :''}</p>
+
                   </CardActions>
                 </Card>
               </Grid>
@@ -541,6 +547,8 @@ function GridList(props) {
                   >
                     Read more
                   </Button>
+                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[5]&&data[5].status === '8' ? 'Revision' :''}</p>
+
                 </CardActions>
               </Card>
             </Grid>

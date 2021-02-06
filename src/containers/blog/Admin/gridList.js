@@ -12,10 +12,6 @@ import { withRouter } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import Face from '@material-ui/icons/Face'
 
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import List from '@material-ui/core/List';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItem from '@material-ui/core/ListItem';
 
 import unfiltered from '../../../assets/images/unfiltered.svg'
 const LightTooltip = withStyles((theme) => ({
@@ -74,10 +70,8 @@ function GridList(props) {
               <CardActionArea>
                  <CardContent style ={{ padding:'5px'}}>
                   <Typography
-                    // variant='body2'
                     style={{
                       marginTop: '-35px',
-                      // fontSize: 'x-large',
                       fontWeight: 'bold',
                       color: 'white',
                     }}
@@ -117,7 +111,7 @@ function GridList(props) {
                   >
                     Read more
                   </Button>
-                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[1]&&data[1].feedback_revision_required? 'Revision' :''}</p>
+                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[0]&&data[0].status === 8 ? 'Revision' :''}</p>
 
                 </CardActions>
              
@@ -147,15 +141,10 @@ function GridList(props) {
                 <CardActionArea>
                    <CardContent style ={{ padding:'5px'}}>
                     <Typography
-                      // variant='body2'
                       style={{
-                        // marginTop: '0px',
                         marginTop: '-18px',
-
-                        // fontSize: 'x-large',
                         fontWeight: 'bold',
                         color: 'white',
-
                       }}
                       color='textSecondary'
                       component='p'
@@ -189,7 +178,7 @@ function GridList(props) {
                   >
                     Read more
                   </Button>
-                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[1]&&data[1].feedback_revision_required? 'Revision' :''}</p>
+                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[1]&&data[1].status === 8 ? 'Revision' :''}</p>
 
                 </CardActions>
               </Card>
@@ -257,7 +246,7 @@ function GridList(props) {
                   >
                     Read more
                   </Button>
-                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[1]&&data[1].feedback_revision_required? 'Revision' :''}</p>
+                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[2]&&data[2].status === 8 ? 'Revision' :''}</p>
 
                 </CardActions>
               </Card>
@@ -328,7 +317,7 @@ function GridList(props) {
                   >
                     Read more
                   </Button>
-                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[1]&&data[1].feedback_revision_required? 'Revision' :''}</p>
+                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[3]&&data[3].status === 8 ? 'Revision' :''}</p>
 
                 </CardActions>
               </Card>
@@ -399,7 +388,7 @@ function GridList(props) {
                   >
                     Read more
                   </Button>
-                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[1]&&data[1].feedback_revision_required? 'Revision' :''}</p>
+                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[4]&&data[4].status === 8 ? 'Revision' :''}</p>
 
                 </CardActions>
               </Card>
@@ -467,7 +456,7 @@ function GridList(props) {
                   >
                     Read more
                   </Button>
-                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[1]&&data[1].feedback_revision_required? 'Revision' :''}</p>
+                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[4]&&data[4].status === 8 ? 'Revision' :''}</p>
 
                 </CardActions>
             </Card>

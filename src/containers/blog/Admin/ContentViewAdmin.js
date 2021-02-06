@@ -168,14 +168,11 @@ axios.post(`${endpoints.blog.BlogLike}`, requestData)
 .then(result=>{
 if (result.data.status_code === 200) {
   this.setState({loading:false})
-  // setAlert('success', result.data.message);
 } else {        
   this.setState({loading:false})
-  // setAlert('error', result.data.message);
 }
 }).catch((error)=>{
   this.setState({loading:false})
-  // setAlert('error', error.message);
 })
   }
   
@@ -241,22 +238,6 @@ if (result.data.status_code === 200) {
 
     }
   }
-//   getRatings = () => {
-//     let {blogRatings} =this.state
-//     if (blogRatings) {
-//       return []
-//     }
-//     const ratings = blogRatings
-//     const type = typeof ratings.remark_rating
-//     const parsedRatings = type === 'object' ? ratings.remark_rating : JSON.parse(ratings.remark_rating)
-//     const allRatingParamters = [...parsedRatings]
-//     return allRatingParamters
-//   }
-
-//  getOverAllRemark = () => {
-//    let {overallRemark} = this.state
-//    return overallRemark
-//   }
 
   
   render() {
@@ -322,11 +303,6 @@ if (result.data.status_code === 200) {
                               R
                             </Avatar>
                           }
-                          //   action={
-                          //     <IconButton aria-label='settings'>
-                          //       <MoreVertIcon />
-                          //     </IconButton>
-                          //   }
                           title={data.author.first_name}
                           subheader=
                           {data && moment(data.created_at).format('MMM DD YYYY')}
@@ -455,11 +431,6 @@ if (result.data.status_code === 200) {
                         </Card>
                       )
                       : relatedBlog ? ''
-                      // (
-                      //   <>
-                      //     <SideBar />
-                      //   </>
-                      // ) 
                       : (
                         <ReviewPrincipal  blogId={data.id}  ratingParameters={this.getRatings} overallRemark={this.getOverAllRemark}
                         />

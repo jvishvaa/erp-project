@@ -455,6 +455,14 @@ const Layout = ({ children, history }) => {
         history.push('/blog/principal');
         break;
       }
+      case 'Genre': {
+        history.push('/blog/create/genre');
+        break;
+      }
+      case 'Word Count Cofiguration': {
+        history.push('/blog/create/wordcount-config');
+        break;
+      }
       default:
         break;
     }

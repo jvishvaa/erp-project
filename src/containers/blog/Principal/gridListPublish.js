@@ -111,6 +111,7 @@ function GridListPublish(props) {
                   >
                     Read more
                   </Button>
+
                 </CardActions>
              
             </Card>
@@ -181,6 +182,7 @@ function GridListPublish(props) {
                   >
                     Read more
                   </Button>
+
                 </CardActions>
               </Card>
             </Grid>
@@ -251,6 +253,7 @@ function GridListPublish(props) {
                   >
                     Read more
                   </Button>
+
                 </CardActions>
               </Card>
             </Grid>
@@ -323,6 +326,7 @@ function GridListPublish(props) {
                   >
                     Read more
                   </Button>
+
                 </CardActions>
               </Card>
             </Grid>
@@ -389,6 +393,7 @@ function GridListPublish(props) {
                   >
                     Read more
                   </Button>
+
                 </CardActions>
               </Card>
             </Grid>
@@ -457,15 +462,13 @@ function GridListPublish(props) {
                   >
                     Read more
                   </Button>
+
                 </CardActions>
             </Card>
           </Grid>
         </Grid>
       </Grid>
        ) : 
-      //  (
-      //   <Typography align='center'>Oops... No blogs Posted</Typography>
-      //       )
             (
               <div className="periodDataUnavailable">
                   <SvgIcon

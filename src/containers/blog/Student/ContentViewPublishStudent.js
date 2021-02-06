@@ -92,6 +92,7 @@ class ContentViewPublishStudent extends Component {
       overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark,
 
     };
+    console.log(this.props,"@@@@@")
 
   }
   componentDidMount() {
