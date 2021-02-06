@@ -117,6 +117,8 @@ function GridList(props) {
                   >
                     Read more
                   </Button>
+                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[1]&&data[1].feedback_revision_required? 'Revision' :''}</p>
+
                 </CardActions>
              
             </Card>
@@ -187,6 +189,8 @@ function GridList(props) {
                   >
                     Read more
                   </Button>
+                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[1]&&data[1].feedback_revision_required? 'Revision' :''}</p>
+
                 </CardActions>
               </Card>
             </Grid>
@@ -253,6 +257,8 @@ function GridList(props) {
                   >
                     Read more
                   </Button>
+                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[1]&&data[1].feedback_revision_required? 'Revision' :''}</p>
+
                 </CardActions>
               </Card>
             </Grid>
@@ -322,6 +328,8 @@ function GridList(props) {
                   >
                     Read more
                   </Button>
+                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[1]&&data[1].feedback_revision_required? 'Revision' :''}</p>
+
                 </CardActions>
               </Card>
             </Grid>
@@ -391,6 +399,8 @@ function GridList(props) {
                   >
                     Read more
                   </Button>
+                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[1]&&data[1].feedback_revision_required? 'Revision' :''}</p>
+
                 </CardActions>
               </Card>
             </Grid>
@@ -457,6 +467,8 @@ function GridList(props) {
                   >
                     Read more
                   </Button>
+                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[1]&&data[1].feedback_revision_required? 'Revision' :''}</p>
+
                 </CardActions>
             </Card>
           </Grid>
