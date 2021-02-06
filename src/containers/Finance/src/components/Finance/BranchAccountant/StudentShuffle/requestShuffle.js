@@ -1,108 +1,109 @@
-// import React, {
-//   useEffect,
-//   useState,
-//   // useCallback,
-//   useMemo
-// } from 'react'
-// import { TextField, Button, withStyles, Grid } from '@material-ui/core/'
-// import Select from 'react-select'
-// import { withRouter } from 'react-router-dom'
-// import { connect } from 'react-redux'
-// import PropTypes from 'prop-types'
-// import { apiActions } from '../../../../_actions'
-// import * as actionTypes from '../../store/actions'
-// import Student from '../../Profiles/studentProfile'
-// // import { student } from '../../../../_reducers/student.reducer'
-// import AutoSuggest from '../../../../ui/AutoSuggest/autoSuggest'
+import React, {
+  useEffect,
+  useState,
+  // useCallback,
+  useMemo
+} from 'react'
+import { TextField, Button, withStyles, Grid } from '@material-ui/core/'
+import Select from 'react-select'
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import { apiActions } from '../../../../_actions'
+import * as actionTypes from '../../store/actions'
+import Student from '../../Profiles/studentProfile'
+// import { student } from '../../../../_reducers/student.reducer'
+import AutoSuggest from '../../../../ui/AutoSuggest/autoSuggest'
 // import { debounce } from '../../../../utils'
-// import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
 
-// const styles = theme => ({
-//   tableWrapper: {
-//     overflowX: 'auto',
-//     marginBottom: 12,
-//     'border': '1px solid black',
-//     borderRadius: 4
-//   },
-//   item: {
-//     margin: '15px'
-//   },
-//   btn: {
-//     backgroundColor: '#800080',
-//     color: '#fff',
-//     '&:hover': {
-//       backgroundColor: '#8B008B'
-//     }
-//   },
-//   root: {
-//     width: '100%',
-//     marginTop: theme.spacing * 3,
-//     overflowX: 'auto'
-//   }
-// })
+const styles = theme => ({
+  tableWrapper: {
+    overflowX: 'auto',
+    marginBottom: 12,
+    'border': '1px solid black',
+    borderRadius: 4
+  },
+  item: {
+    margin: '15px'
+  },
+  btn: {
+    backgroundColor: '#800080',
+    color: '#fff',
+    '&:hover': {
+      backgroundColor: '#8B008B'
+    }
+  },
+  root: {
+    width: '100%',
+    marginTop: theme.spacing * 3,
+    overflowX: 'auto'
+  }
+})
 
-// const RequestShuffle = ({ classes, session, history, redirectPageStatus, initiateShuffleRequest, fetchGradesPerBranch, fetchErpSuggestions, ErpSuggestions, sectionList, fetchSections, gradeList, fetchBranchAtAcc, branchList, dataLoading, user, alert }) => {
-//   const [displayErp, setDisplayErp] = useState(null)
-//   const [erp, setErp] = useState(null)
-//   const [studentName, setStudentName] = useState(null)
-//   const [sessionYear, setSessionYear] = useState(null)
-//   const [branch, setBranch] = useState('')
-//   const [grade, setGrade] = useState('')
-//   const [section, setSection] = useState('')
-//   const [reason, setReason] = useState('')
-//   // const [searchBy, setSearchBy] = useState('')
+const RequestShuffle = ({ classes, session, history, redirectPageStatus, initiateShuffleRequest, fetchGradesPerBranch, fetchErpSuggestions, ErpSuggestions, sectionList, fetchSections, gradeList, fetchBranchAtAcc, branchList, dataLoading, user, alert }) => {
+  const [displayErp, setDisplayErp] = useState(null)
+  const [erp, setErp] = useState(null)
+  const [studentName, setStudentName] = useState(null)
+  const [sessionYear, setSessionYear] = useState(null)
+  const [branch, setBranch] = useState('')
+  const [grade, setGrade] = useState('')
+  const [section, setSection] = useState('')
+  const [reason, setReason] = useState('')
+  // const [searchBy, setSearchBy] = useState('')
 
-//   useEffect(() => {
-//     console.log('displayErp', displayErp)
-//   }, [displayErp])
+  useEffect(() => {
+    console.log('displayErp', displayErp)
+  }, [displayErp])
 
-//   useEffect(() => {
-//     if (sessionYear) {
-//       fetchBranchAtAcc(sessionYear.value, user, alert)
-//       setBranch('')
-//       setGrade('')
-//       setSection('')
-//     }
-//   }, [alert, fetchBranchAtAcc, sessionYear, user])
+  useEffect(() => {
+    if (sessionYear) {
+      fetchBranchAtAcc(sessionYear.value, user, alert)
+      setBranch('')
+      setGrade('')
+      setSection('')
+    }
+  }, [alert, fetchBranchAtAcc, sessionYear, user])
 
-//   useEffect(() => {
-//     // Update the document title using the browser API
-//     if (branch && sessionYear) {
-//       fetchGradesPerBranch(sessionYear.value, branch.value, alert, user)
-//       setGrade('')
-//       setSection('')
-//     }
-//   }, [alert, branch, fetchGradesPerBranch, sessionYear, user])
+  useEffect(() => {
+    // Update the document title using the browser API
+    if (branch && sessionYear) {
+      fetchGradesPerBranch(sessionYear.value, branch.value, alert, user)
+      setGrade('')
+      setSection('')
+    }
+  }, [alert, branch, fetchGradesPerBranch, sessionYear, user])
 
-//   useEffect(() => {
-//     if (branch && sessionYear && grade) {
-//       fetchSections(grade.value, sessionYear.value, branch.value, alert, user)
-//       setSection('')
-//     }
-//   }, [sessionYear, branch, grade, fetchSections, alert, user])
+  useEffect(() => {
+    if (branch && sessionYear && grade) {
+      fetchSections(grade.value, sessionYear.value, branch.value, alert, user)
+      setSection('')
+    }
+  }, [sessionYear, branch, grade, fetchSections, alert, user])
 
-//   useEffect(() => {
-//     if (redirectPageStatus) {
-//       history.push({
-//         pathname: '/finance/studentShuffle'
-//       })
-//     }
-//   }, [history, redirectPageStatus])
+  useEffect(() => {
+    if (redirectPageStatus) {
+      history.push({
+        pathname: '/finance/studentShuffle'
+      })
+    }
+  }, [history, redirectPageStatus])
 
-//   useEffect(() => {
-//     if (studentName) {
-//       // console.log('stude')
-//       const selectedStudent = ErpSuggestions && ErpSuggestions.length > 0 ? ErpSuggestions.filter(item => item.name === studentName)[0] : null
-//       console.log('use effect NAme:', selectedStudent)
-//       setDisplayErp(selectedStudent && selectedStudent.erp ? selectedStudent.erp : displayErp)
-//     }
-//     if (erp) {
-//       const selectedStudent = ErpSuggestions && ErpSuggestions.length > 0 ? ErpSuggestions.filter(item => item.erp === erp)[0] : null
-//       console.log('use effect ERp:', selectedStudent)
-//       setDisplayErp(selectedStudent && selectedStudent.erp ? selectedStudent.erp : displayErp)
-//     }
-//     // console.log('displayErp: ', displayErp)
-//   }, [ErpSuggestions, displayErp, erp, studentName])
+  useEffect(() => {
+    if (studentName) {
+      // console.log('stude')
+      const selectedStudent = ErpSuggestions && ErpSuggestions.length > 0 ? ErpSuggestions.filter(item => item.name === studentName)[0] : null
+      console.log('use effect NAme:', selectedStudent)
+      setDisplayErp(selectedStudent && selectedStudent.erp ? selectedStudent.erp : displayErp)
+    }
+    if (erp) {
+      const selectedStudent = ErpSuggestions && ErpSuggestions.length > 0 ? ErpSuggestions.filter(item => item.erp === erp)[0] : null
+      console.log('use effect ERp:', selectedStudent)
+      setDisplayErp(selectedStudent && selectedStudent.erp ? selectedStudent.erp : displayErp)
+    }
+    // console.log('displayErp: ', displayErp)
+  }, [ErpSuggestions, displayErp, erp, studentName])
 
 //   const nameDebounceFunc = debounce(() => {
 //     fetchErpSuggestions(
@@ -116,6 +117,18 @@
 //       user
 //     )
 //   }, 500)
+  const nameDebounceFunc = () => {
+    fetchErpSuggestions(
+      'student',
+      sessionYear.value,
+      'all',
+      'all',
+      3,
+      studentName,
+      alert,
+      user
+    )
+  }
 
 //   const erpDebounceFunc = debounce(() => {
 //     fetchErpSuggestions(
@@ -130,215 +143,229 @@
 //     )
 //   }, 500)
 
-//   const erpHandler = (e) => {
-//     // let searchBox = null
-//     if (!sessionYear) {
-//       alert.warning('Select Academic Year!')
-//     } else {
-//       if (isNaN(Number(e.target.value))) {
-//         console.log('its string')
-//         setErp(null)
-//         setStudentName(e.target.value)
-//         if (e.target.value.length >= 3) {
-//           nameDebounceFunc()
-//         }
-//       } else if (isFinite(Number(e.target.value))) {
-//         console.log('its number')
-//         setStudentName(null)
-//         setErp(e.target.value)
-//         if (e.target.value.length >= 3) {
-//           erpDebounceFunc()
-//         }
-//       }
-//     }
-//   }
+const erpDebounceFunc = () => {
+    fetchErpSuggestions(
+      'erp',
+      sessionYear.value,
+      'all',
+      'all',
+      3,
+      erp,
+      alert,
+      user
+    )
+  }
+  const erpHandler = (e) => {
+    // let searchBox = null
+    if (!sessionYear) {
+      alert.warning('Select Academic Year!')
+    } else {
+      if (isNaN(Number(e.target.value))) {
+        console.log('its string')
+        setErp(null)
+        setStudentName(e.target.value)
+        if (e.target.value.length >= 3) {
+          nameDebounceFunc()
+        }
+      } else if (isFinite(Number(e.target.value))) {
+        console.log('its number')
+        setStudentName(null)
+        setErp(e.target.value)
+        if (e.target.value.length >= 3) {
+          erpDebounceFunc()
+        }
+      }
+    }
+  }
 
-//   const academicYearChangeHandler = (e) => {
-//     setSessionYear(e)
-//   }
+  const academicYearChangeHandler = (e) => {
+    setSessionYear(e)
+  }
 
-//   const branchChangeHandler = (e) => {
-//     setBranch(e)
-//   }
+  const branchChangeHandler = (e) => {
+    setBranch(e)
+  }
 
-//   const gradeChangeHandler = (e) => {
-//     setGrade(e)
-//   }
+  const gradeChangeHandler = (e) => {
+    setGrade(e)
+  }
 
-//   const sectionChangeHandler = (e) => {
-//     setSection(e)
-//   }
+  const sectionChangeHandler = (e) => {
+    setSection(e)
+  }
 
-//   const reasonChangeHandler = (e) => {
-//     setReason(e.target.value)
-//   }
+  const reasonChangeHandler = (e) => {
+    setReason(e.target.value)
+  }
 
-//   const handleSug = (e) => {
-//     if (ErpSuggestions && studentName) {
-//       return ErpSuggestions.map(item => ({ value: item.name ? item.name : null, label: item.name ? item.name : null }))
-//     } else if (ErpSuggestions && erp) {
-//       return ErpSuggestions.map(item => ({ value: item.erp ? item.erp : null, label: item.erp ? item.erp : null }))
-//     }
-//   }
+  const handleSug = (e) => {
+    if (ErpSuggestions && studentName) {
+      return ErpSuggestions.map(item => ({ value: item.name ? item.name : null, label: item.name ? item.name : null }))
+    } else if (ErpSuggestions && erp) {
+      return ErpSuggestions.map(item => ({ value: item.erp ? item.erp : null, label: item.erp ? item.erp : null }))
+    }
+  }
 
-//   const postDetailsHandler = (e) => {
-//     let data = {
-//       erp: displayErp,
-//       academic_year: sessionYear.value,
-//       reason: reason,
-//       branch_to: branch.value,
-//       grade_to: grade.value,
-//       section_to: section.value
-//     }
-//     initiateShuffleRequest(data, alert, user)
-//   }
+  const postDetailsHandler = (e) => {
+    let data = {
+      erp: displayErp,
+      academic_year: sessionYear.value,
+      reason: reason,
+      branch_to: branch.value,
+      grade_to: grade.value,
+      section_to: section.value
+    }
+    initiateShuffleRequest(data, alert, user)
+  }
 
-//   const studentInfoHandler = useMemo(() => {
-//     console.log('useMemo: ', studentName, erp, displayErp)
-//     if (studentName || erp) {
-//       return <Student erp={displayErp} user={user} alert={alert} />
-//     }
-//   }, [studentName, displayErp, erp, alert, user])
+  const studentInfoHandler = useMemo(() => {
+    console.log('useMemo: ', studentName, erp, displayErp)
+    if (studentName || erp) {
+      return <Student erp={displayErp} user={user} alert={alert} />
+    }
+  }, [studentName, displayErp, erp, alert, user])
 
-//   return (
-//     <React.Fragment>
-//       <Grid container className={classes.item} spacing={3}>
-//         <Grid item className={classes.item} xs={3}>
-//           <label>Academic Year*</label>
-//           <Select
-//             className={classes.select}
-//             placeholder='Select Year'
-//             value={sessionYear || ''}
-//             options={
-//               session
-//                 ? session.session_year.map(session => ({
-//                   value: session,
-//                   label: session
-//                 }))
-//                 : []
-//             }
-//             onChange={academicYearChangeHandler}
-//           />
-//         </Grid>
-//         <Grid item className={classes.item} xs={3}>
-//           <AutoSuggest
-//             style={{ width: '100%' }}
-//             // style={{ display: 'absolute', top: '10px', width: '240px' }}
-//             id='outlined-name'
-//             label='ERP / Student Name'
-//             margin='dense'
-//             type='text'
-//             // variant='outlined'
-//             value={erp || studentName || ''}
-//             onChange={(e) => { erpHandler(e) }}
-//             data={ErpSuggestions && ErpSuggestions.length > 0 ? handleSug() : []}
-//           />
-//         </Grid>
-//         <Grid item className={classes.item} xs={12}>
-//           {studentInfoHandler}
-//           {/* {displayErp ? <Student erp={displayErp} user={user} alert={alert} /> : null} */}
-//           {/* {studentName ? <Student erp={studentName} user={user} alert={alert} /> : erp ? <Student erp={studentName} user={user} alert={alert} /> : null} */}
-//         </Grid>
-//         <Grid item className={classes.item} xs={3}>
-//           <label>To Branch* </label>
-//           <Select
-//             placeholder='Select Branch'
-//             value={branch || ''}
-//             options={
-//               branchList
-//                 ? branchList.map(g => ({
-//                   value: g.branch && g.branch.id ? g.branch.id : '',
-//                   label: g.branch && g.branch.branch_name ? g.branch.branch_name : ''
-//                 }))
-//                 : []
-//             }
-//             onChange={branchChangeHandler}
-//           />
-//         </Grid>
-//         <Grid item className={classes.item} xs={3}>
-//           <label>To Grade* </label>
-//           <Select
-//             placeholder='Select Grade'
-//             value={grade || ''}
-//             options={
-//               gradeList && gradeList
-//                 ? gradeList.map(g => ({
-//                   value: g.grade.id,
-//                   label: g.grade.grade
-//                 }))
-//                 : []
-//             }
-//             onChange={gradeChangeHandler}
-//           />
-//         </Grid>
-//         <Grid item className={classes.item} xs={3}>
-//           <label>To Section* </label>
-//           <Select
-//             placeholder='Select Section'
-//             value={section || ''}
-//             options={
-//               sectionList && sectionList
-//                 ? sectionList.map(g => ({
-//                   value: g.section && g.section.id,
-//                   label: g.section && g.section.section_name
-//                 }))
-//                 : []
-//             }
-//             onChange={sectionChangeHandler}
-//           />
-//         </Grid>
-//         <Grid item className={classes.item} xs={10}>
-//           <label>Reason</label>
-//           <TextField
-//             id='utlined-helperText'
-//             multiline
-//             rowsMax='4'
-//             style={{ width: '100%' }}
-//             // style={{ marginRight: '15px', fontSize: '16px'}}
-//             value={reason || ''}
-//             // label='Reason'
-//             // fullWidth
-//             margin='normal'
-//             variant='outlined'
-//             onChange={reasonChangeHandler}
-//           />
-//         </Grid>
-//         <Grid item className={classes.item} xs={3}>
-//           <Button
-//             variant='contained'
-//             onClick={postDetailsHandler}
-//             disabled={!displayErp || !sessionYear || !reason || !branch || !grade || !section}
-//             className={classes.btn}>Initiate Shuffle</Button>
-//         </Grid>
-//       </Grid>
-//       {dataLoading ? <CircularProgress open /> : null}
-//     </React.Fragment>
-//   )
-// }
+  return (
+      <Layout>
+    <React.Fragment>
+      <Grid container className={classes.item} spacing={3}>
+        <Grid item className={classes.item} xs={3}>
+          <label>Academic Year*</label>
+          <Select
+            className={classes.select}
+            placeholder='Select Year'
+            value={sessionYear || ''}
+            options={
+              session
+                ? session.session_year.map(session => ({
+                  value: session,
+                  label: session
+                }))
+                : []
+            }
+            onChange={academicYearChangeHandler}
+          />
+        </Grid>
+        <Grid item className={classes.item} xs={3}>
+          <AutoSuggest
+            style={{ width: '100%' }}
+            // style={{ display: 'absolute', top: '10px', width: '240px' }}
+            id='outlined-name'
+            label='ERP / Student Name'
+            margin='dense'
+            type='text'
+            // variant='outlined'
+            value={erp || studentName || ''}
+            onChange={(e) => { erpHandler(e) }}
+            data={ErpSuggestions && ErpSuggestions.length > 0 ? handleSug() : []}
+          />
+        </Grid>
+        <Grid item className={classes.item} xs={12}>
+          {studentInfoHandler}
+          {/* {displayErp ? <Student erp={displayErp} user={user} alert={alert} /> : null} */}
+          {/* {studentName ? <Student erp={studentName} user={user} alert={alert} /> : erp ? <Student erp={studentName} user={user} alert={alert} /> : null} */}
+        </Grid>
+        <Grid item className={classes.item} xs={3}>
+          <label>To Branch* </label>
+          <Select
+            placeholder='Select Branch'
+            value={branch || ''}
+            options={
+              branchList
+                ? branchList.map(g => ({
+                  value: g.branch && g.branch.id ? g.branch.id : '',
+                  label: g.branch && g.branch.branch_name ? g.branch.branch_name : ''
+                }))
+                : []
+            }
+            onChange={branchChangeHandler}
+          />
+        </Grid>
+        <Grid item className={classes.item} xs={3}>
+          <label>To Grade* </label>
+          <Select
+            placeholder='Select Grade'
+            value={grade || ''}
+            options={
+              gradeList && gradeList
+                ? gradeList.map(g => ({
+                  value: g.grade.id,
+                  label: g.grade.grade
+                }))
+                : []
+            }
+            onChange={gradeChangeHandler}
+          />
+        </Grid>
+        <Grid item className={classes.item} xs={3}>
+          <label>To Section* </label>
+          <Select
+            placeholder='Select Section'
+            value={section || ''}
+            options={
+              sectionList && sectionList
+                ? sectionList.map(g => ({
+                  value: g.section && g.section.id,
+                  label: g.section && g.section.section_name
+                }))
+                : []
+            }
+            onChange={sectionChangeHandler}
+          />
+        </Grid>
+        <Grid item className={classes.item} xs={10}>
+          <label>Reason</label>
+          <TextField
+            id='utlined-helperText'
+            multiline
+            rowsMax='4'
+            style={{ width: '100%' }}
+            // style={{ marginRight: '15px', fontSize: '16px'}}
+            value={reason || ''}
+            // label='Reason'
+            // fullWidth
+            margin='normal'
+            variant='outlined'
+            onChange={reasonChangeHandler}
+          />
+        </Grid>
+        <Grid item className={classes.item} xs={3}>
+          <Button
+            variant='contained'
+            onClick={postDetailsHandler}
+            disabled={!displayErp || !sessionYear || !reason || !branch || !grade || !section}
+            className={classes.btn}>Initiate Shuffle</Button>
+        </Grid>
+      </Grid>
+      {dataLoading ? <CircularProgress open /> : null}
+    </React.Fragment>
+    </Layout>
+  )
+}
 
-// RequestShuffle.propTypes = {
-//   classes: PropTypes.objectOf(PropTypes.string).isRequired,
-//   session: PropTypes.array.isRequired
-// }
+RequestShuffle.propTypes = {
+  classes: PropTypes.objectOf(PropTypes.string).isRequired,
+  session: PropTypes.array.isRequired
+}
 
-// const mapStateToProps = state => ({
-//   user: state.authentication.user,
-//   session: state.academicSession.items,
-//   dataLoading: state.finance.common.dataLoader,
-//   gradeList: state.finance.common.gradesPerBranch,
-//   branchList: state.finance.common.branchPerSession,
-//   sectionList: state.finance.common.sectionsPerGradeAdmin,
-//   ErpSuggestions: state.finance.makePayAcc.erpSuggestions,
-//   redirectPageStatus: state.finance.accountantReducer.studentShuffle.redirect
-// })
+const mapStateToProps = state => ({
+  user: state.authentication.user,
+  session: state.academicSession.items,
+  dataLoading: state.finance.common.dataLoader,
+  gradeList: state.finance.common.gradesPerBranch,
+  branchList: state.finance.common.branchPerSession,
+  sectionList: state.finance.common.sectionsPerGradeAdmin,
+  ErpSuggestions: state.finance.makePayAcc.erpSuggestions,
+  redirectPageStatus: state.finance.accountantReducer.studentShuffle.redirect
+})
 
-// const mapDispatchToProps = dispatch => ({
-//   loadSession: dispatch(apiActions.listAcademicSessions()),
-//   fetchGradesPerBranch: (session, branch, alert, user) => dispatch(actionTypes.fetchGradesPerBranch({ session, branch, alert, user })),
-//   fetchBranchAtAcc: (session, user, alert) => dispatch(actionTypes.fetchBranchPerSession({ session, user, alert })),
-//   fetchSections: (gradeId, session, branchId, alert, user) => dispatch(actionTypes.fetchAllSectionsPerGradeAsAdmin({ gradeId, session, branchId, alert, user })),
-//   initiateShuffleRequest: (data, alert, user) => dispatch(actionTypes.initiateShuffleRequest({ data, alert, user })),
-//   fetchErpSuggestions: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.fetchErpSuggestions({ type, session, grade, section, status, erp, alert, user }))
-// })
+const mapDispatchToProps = dispatch => ({
+  loadSession: dispatch(apiActions.listAcademicSessions()),
+  fetchGradesPerBranch: (session, branch, alert, user) => dispatch(actionTypes.fetchGradesPerBranch({ session, branch, alert, user })),
+  fetchBranchAtAcc: (session, user, alert) => dispatch(actionTypes.fetchBranchPerSession({ session, user, alert })),
+  fetchSections: (gradeId, session, branchId, alert, user) => dispatch(actionTypes.fetchAllSectionsPerGradeAsAdmin({ gradeId, session, branchId, alert, user })),
+  initiateShuffleRequest: (data, alert, user) => dispatch(actionTypes.initiateShuffleRequest({ data, alert, user })),
+  fetchErpSuggestions: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.fetchErpSuggestions({ type, session, grade, section, status, erp, alert, user }))
+})
 
-// export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withRouter(RequestShuffle)))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withRouter(RequestShuffle)))

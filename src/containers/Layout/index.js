@@ -460,7 +460,7 @@ const Layout = ({ children, history }) => {
         history.push('/finance/ChequeBounceReport')
         break;
       }
-      case 'Student Shuffle Requests': {
+      case 'Student Shuffle': {
         history.push('/finance/StudentShuffleRequest')
         break;
       }
