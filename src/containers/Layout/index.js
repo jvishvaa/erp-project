@@ -540,6 +540,10 @@ const Layout = ({ children, history }) => {
                 history.push('/finance/student/FeeCollection')
                   break;
                 }
+              case 'Assign Delivery charge kit books & uniform': {
+                history.push('/finance/student/AssignDeliveryCharge')
+                  break;
+                }      
       default:
         break;
     }
