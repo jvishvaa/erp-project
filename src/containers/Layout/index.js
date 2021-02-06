@@ -528,6 +528,10 @@ const Layout = ({ children, history }) => {
                 history.push('/finance/Setting/ReceiptSettings')
                    break;
                 }
+              case 'Fee Structure Upload': {
+                history.push('/finance/BulkOperation/Feestructure')
+                  break;
+                }
       default:
         break;
     }
