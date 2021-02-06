@@ -38,6 +38,8 @@ export default {
     getMessages: '/communication/email-sms-logs/',
   },
   onlineClass: {
+    // batchList: '/erp_user/batch-student-list/',
+    batchList: '/aol/batch_shuffle/',
     filterStudent: '/erp_user/student_filter/',
     teacherAvailability: '/erp_user/tutor_availability_check/',
     // createClass: '/erp_user/online_class/',
