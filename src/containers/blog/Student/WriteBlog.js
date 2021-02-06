@@ -123,7 +123,7 @@ class WriteBlog extends Component {
         this.props.location.state.files && this.props.location.state.files.length !== 0
           ? this.props.location.state.files
           : [],
-      wordCountLimit: 0,
+      wordCountLimit: 50,
 
     };
     console.log(this.state.genreName,this.state.genreId,"@@@@@@")
@@ -173,7 +173,8 @@ class WriteBlog extends Component {
 
   isWordCountSubceeded = () => {
     let { textEditorContent, wordCountLimit } = this.state
-    const parsedTextEditorContent = textEditorContent.replace(/(<([^>]+)>)/ig, '').split(' ')
+    const parsedTextEditorContent=textEditorContent.split(' ')
+    // const parsedTextEditorContent = textEditorContent.replace(/(<([^>]+)>)/ig, '').split(' ')
     const textWordCount = parsedTextEditorContent.length
     this.setState({ parsedTextEditorContentLen: textWordCount })
     if (parsedTextEditorContent && parsedTextEditorContent.length < wordCountLimit) {
