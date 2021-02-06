@@ -3,6 +3,8 @@
 import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import moment from 'moment';
+import ReactHtmlParser from 'react-html-parser'
+
 
 // import { connect } from 'react-redux';
 import {
@@ -26,7 +28,6 @@ import { withRouter } from 'react-router-dom';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-import SideBar from './sideBar';
 import Layout from '../../Layout';
 import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
 
@@ -305,12 +306,12 @@ class ContentViewPublish extends Component {
                         />
                         <CardContent>
                           <Typography variant='body2' color='textSecondary' component='p'>
-                            {data.content}
+                          {ReactHtmlParser(data.content)}
                           </Typography>
 
                           <Typography component='p'  style={{paddingRight: '650px', fontSize:'12px'}}
 >
-                          TotalWords : {data.word_count}
+                          Total Words : {data.word_count}
                           </Typography>
                           <Typography  component='p' style={{ paddingRight: '650px',fontSize:'12px'}}>
                            Genre: {data.genre && data.genre.genre}
@@ -376,7 +377,7 @@ class ContentViewPublish extends Component {
                                 disabled={!publishedLevel}
                                 onClick ={this.submitPublish}
                               >
-                                Publish
+                                Submit
                               </Button>
                             </CardActions>
                           </CardContent>

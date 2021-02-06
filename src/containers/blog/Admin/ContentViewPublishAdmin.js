@@ -3,6 +3,9 @@
 import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import moment from 'moment';
+import ReactHtmlParser from 'react-html-parser'
+
+
 import {
   Grid,
   Card,
@@ -17,7 +20,6 @@ import {
 import Rating from '@material-ui/lab/Rating';
 import Avatar from '@material-ui/core/Avatar';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { withRouter } from 'react-router-dom';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
@@ -327,14 +329,14 @@ class ContentViewPublish extends Component {
                         />
                         <CardContent>
                           <Typography variant='body2' color='textSecondary' component='p'>
-                            {data.content}
+                            {ReactHtmlParser(data.content)}
                           </Typography>
                           <Typography  component='p' style={{ paddingRight: '650px',fontSize:'12px'}}>
                            Genre: {data.genre && data.genre.genre}
                           </Typography>
                           <Typography component='p'  style={{  paddingRight: '650px',fontSize:'12px'}}
 >
-                          TotalWords : {data.word_count}
+                          Total Words : {data.word_count}
                           </Typography>
                         </CardContent>
                         <CardActions>
@@ -397,7 +399,7 @@ class ContentViewPublish extends Component {
                                 disabled={!publishedLevel}
                                 onClick ={this.submitPublish}
                               >
-                                Publish
+                                Submit
                               </Button>
                             </CardActions>
                           </CardContent>

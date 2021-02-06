@@ -26,7 +26,7 @@ export default function HoverRating (props) {
 
   return (
     <div className={classes.root}>
-      <Box component='fieldset' mb={3} borderColor='transparent'>
+      <Box component='fieldset' mb={3} borderColor='transparent' style={{height:'70px'}}>
         <Typography
           variant={props.rating_type === 'Overall' ? 'h4' : 'h5'}
           className='rating__title'

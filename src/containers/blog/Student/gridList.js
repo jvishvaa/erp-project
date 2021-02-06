@@ -60,28 +60,6 @@ function GridList(props) {
     setShowMenu(false);
     setShowPeriodIndex();
   };
-//   const handleDeleteBlog = (blogId) => {
-
-//     let requestData = {
-//       "blog_id": blogId ,
-//       "status": "1"
-  
-//     }
-//   axiosInstance.put(`${endpoints.blog.Blog}`, requestData)
-
-//   .then(result=>{
-//   if (result.data.status_code === 200) {
-//     setLoading(false);
-//     setAlert('success', result.data.message);
-//   } else {        
-//     setLoading(false);
-//     setAlert('error', result.data.message);
-//   }
-//   }).catch((error)=>{
-//     setLoading(false);        
-//     setAlert('error', error.message);
-//   })
-// };
 
 
   return (
@@ -100,6 +78,8 @@ function GridList(props) {
                   display:data.length >= 1 ? 'flex' : 'none',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
+                  borderRadius: 10,
+
                 }}
               >
                 <CardHeader
@@ -146,12 +126,13 @@ function GridList(props) {
                     <Typography
                       style={{
                         color: 'white',
-                        paddingRight:'360px'
+                        paddingRight:'360px',
+                       
                       }}
                       color='textSecondary'
                       component='p'
                     > <IconButton aria-label="settings" style={{fontSize: '15px'}}>
-                     <Face style={{ color: 'white' ,fontSize: '25px' }}/>
+                     <Face style={{ color: 'white' ,fontSize: '25px'}}/>
                    </IconButton>
                       {data[0] && data[0].author.first_name}
                     </Typography>
@@ -171,6 +152,7 @@ function GridList(props) {
                   >
                     Read more
                   </Button>
+                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[0]&&data[0].status === '5' ? 'Revision' :''}</p>
                 </CardActions>
               </Card>
             </Grid>
@@ -182,9 +164,11 @@ function GridList(props) {
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                     width: '100%',
-                    height: '290px',
+                    height: '350px',
                     backgroundSize: '360px',
                     backgroundImage: `url(${data[1] && data[1].thumbnail})`,
+                    borderRadius: 10,
+
                   }}
                   className={classes.card}
                 >
@@ -243,6 +227,7 @@ function GridList(props) {
                     </CardContent>
                   </CardActionArea>
                   <CardActions style={{ float: 'right' }}>
+                    
                     <Button
                       size='small'
                       color='primary'
@@ -255,6 +240,8 @@ function GridList(props) {
                     >
                       Read more
                     </Button>
+                    <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[1]&&data[1].status === '5' ? 'Revision' :''}</p>
+
                   </CardActions>
                 </Card>
               </Grid>
@@ -265,9 +252,11 @@ function GridList(props) {
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                   width: '100%',
-                  height: '290px',
+                  height: '350px',
                   backgroundSize: '360px',
                   backgroundImage: `url(${data[2] && data[2].thumbnail})`,
+                  borderRadius: 10,
+
                 }}
                  
                   className={classes.card}
@@ -339,6 +328,8 @@ function GridList(props) {
                     >
                       Read more
                     </Button>
+                    <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[2]&&data[2].status === '5' ? 'Revision' :''}</p>
+
                   </CardActions>
                 </Card>
               </Grid>
@@ -353,25 +344,15 @@ function GridList(props) {
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                     width: '100%',
-                    height: '290px',
+                    height: '350px',
                     backgroundSize: '360px',
                     backgroundImage: `url(${data[3] && data[3].thumbnail})`,
+                    borderRadius: 10,
+
                   }}
                   className={classes.card}
                 >
                   <CardHeader
-    //                 action=       {
-    //                   props.tabValue === 2 ?
-    // <IconButton
-    //                   title='Delete'
-    //                   onClick={()=>handleDeleteBlog(data[3].id)}
-    //                 >
-    //                   <DeleteOutlinedIcon
-    //                     style={{ color: themeContext.palette.primary.main }}
-    //                   />
-    //                 </IconButton>
-    //       : '' 
-    //               }
                     subheader={
                       <Typography
                         gutterBottom
@@ -387,10 +368,8 @@ function GridList(props) {
                   <CardActionArea>
                      <CardContent style ={{ padding:'5px'}}>
                       <Typography
-                        // variant='body2'
                         style={{
                           marginTop: '-15px',
-                          // fontSize: 'x-large',
                           fontWeight: 'bold',
                           color: 'white',
                         }}
@@ -426,6 +405,8 @@ function GridList(props) {
                     >
                       Read more
                     </Button>
+                    <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[3]&&data[3].status === '5' ? 'Revision' :''}</p>
+
                   </CardActions>
                 </Card>
               </Grid>
@@ -433,29 +414,19 @@ function GridList(props) {
                 <Card
                   style={{
                     width: '100%',
-                    height: '290px',
+                    height: '350px',
                     backgroundSize: '360px',
                     display:data.length >= 5 ? 'flex' : 'none',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                     backgroundImage: `url(${data[4] && data[4].thumbnail})`,
+                    borderRadius: 10,
+
                   }}
                   
                   className={classes.card}
                 >
                   <CardHeader
-    //                 action=       {
-    //                   props.tabValue === 2 ?
-    // <IconButton
-    //                   title='Delete'
-    //                   onClick={()=>handleDeleteBlog(data[4].id)}
-    //                 >
-    //                   <DeleteOutlinedIcon
-    //                     style={{ color: themeContext.palette.primary.main }}
-    //                   />
-    //                 </IconButton>
-    //       : '' 
-    //               }
                     subheader={
                       <Typography
                         gutterBottom
@@ -471,10 +442,8 @@ function GridList(props) {
                   <CardActionArea>
                      <CardContent style ={{ padding:'5px'}}>
                       <Typography
-                        // variant='body2'
                         style={{
                           marginTop: '-15px',
-                          // fontSize: 'x-large',
                           fontWeight: 'bold',
                           color: 'white',
                         }}
@@ -510,6 +479,8 @@ function GridList(props) {
                     >
                       Read more
                     </Button>
+                    <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[4]&&data[4].status === '5' ? 'Revision' :''}</p>
+
                   </CardActions>
                 </Card>
               </Grid>
@@ -524,22 +495,12 @@ function GridList(props) {
                   justifyContent: 'space-between',
                   backgroundSize: '360px',
                   backgroundImage: `url(${data[5] && data[5].thumbnail})`,
+                  borderRadius: 10,
+
                 }}
                 className={classes.card}
               >
                 <CardHeader
-  //                  action=       {
-  //                   props.tabValue === 2 ?
-  // <IconButton
-  //                   title='Delete'
-  //                   onClick={()=>handleDeleteBlog(data[5].id)}
-  //                 >
-  //                   <DeleteOutlinedIcon
-  //                     style={{ color: themeContext.palette.primary.main }}
-  //                   />
-  //                 </IconButton>
-  //       : '' 
-  //               }
                   subheader={
                     <Typography gutterBottom variant='body2' align='left' component='p' style={{color:'white'}}>
                       {data[5] && moment(data[5].created_at).format('MMM DD YYYY')}
@@ -549,10 +510,8 @@ function GridList(props) {
                 <CardActionArea>
                    <CardContent style ={{ padding:'5px'}}>
                     <Typography
-                      // variant='body2'
                       style={{
                         marginTop: '-35px',
-                        // fontSize: 'x-large',
                         fontWeight: 'bold',
                         color: 'white',
                       }}
@@ -564,7 +523,7 @@ function GridList(props) {
                     <Typography
                       style={{
                         color: 'white',
-                        paddingRight:'360px'
+                        paddingRight:'360px',
                       }}
                       color='textSecondary'
                       component='p'
@@ -588,6 +547,8 @@ function GridList(props) {
                   >
                     Read more
                   </Button>
+                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[5]&&data[5].status === '5' ? 'Revision' :''}</p>
+
                 </CardActions>
               </Card>
             </Grid>

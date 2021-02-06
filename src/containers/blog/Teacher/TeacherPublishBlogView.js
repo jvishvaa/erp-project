@@ -14,12 +14,10 @@ import { Pagination } from '@material-ui/lab';
 
 import Box from '@material-ui/core/Box';
 import { withRouter } from 'react-router-dom';
-// import { connect } from 'react-redux';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
 import MobileDatepicker from './datePicker';
 
-// import PendingReview from './PendingReview';
 import GridListPublish from './gridListPublish';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';

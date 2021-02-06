@@ -46,12 +46,14 @@ import {
   ContentViewAdmin,
   ContentViewPrincipal,
   WriteBlog,
+  EditBlog,
   PreviewBlog,
+  PreviewEditBlog,
+  CreateWordCountConfig,
   StudentDashboard,
   TeacherPublishBlogView,
   BlogView,
   CreateGenre,
-  ViewGenre, 
   ContentViewPublish,
   ContentViewPublishStudent,
 
@@ -161,9 +163,11 @@ function App() {
                     <Route exact path='/blog/create/genre'>
                       {({ match }) => <CreateGenre match={match} />}
                     </Route>
-                    <Route exact path='/blog/view/genre'>
-                      {({ match }) => <ViewGenre match={match} />}
+                    
+                    <Route exact path='/blog/create/wordcount-config'>
+                      {({ match }) => <CreateWordCountConfig match={match} />}
                     </Route>
+                
                     <Route exact path='/blog/teacher'>
                       {({ match }) => <TeacherBlog match={match} />}
                     </Route>
@@ -213,9 +217,15 @@ function App() {
                     <Route exact path='/blog/student/write-blog'>
                       {({ match }) => <WriteBlog match={match} />}
                     </Route>
+                    <Route exact path='/blog/student/edit-blog'>
+                      {({ match }) => <EditBlog match={match} />}
+                    </Route>
 
                     <Route exact path='/blog/student/preview-blog'>
                       {({ match }) => <PreviewBlog match={match} />}
+                    </Route>
+                    <Route exact path='/blog/student/preview-edit-blog'>
+                      {({ match }) => <PreviewEditBlog match={match} />}
                     </Route>
                     <Route exact path='/blog/student/view-blog'>
                       {({ match }) => <BlogView match={match} />}

@@ -3,6 +3,8 @@
 import React, { Component } from 'react';
 import { withStyles, useTheme } from '@material-ui/core/styles';
 // import { connect } from 'react-redux';
+import ReactHtmlParser from 'react-html-parser'
+
 import {
   Grid,
   Card,
@@ -28,7 +30,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import moment from 'moment';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
-import SideBar from './sideBar';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
@@ -102,6 +103,7 @@ class BlogView extends Component {
 blogRatings :this.props.location.state.data && this.props.location.state.data.remark_rating,
       overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark,
     };
+    console.log(this.state.tabValue,"@@@@@")
   }
   componentDidMount() {
     let {blogId} = this.state
@@ -202,18 +204,19 @@ getOverAllRemark = () => {
         });
     }
   };
-  // EditBlogNav = () => {
-  //   const { data } = this.state;
-  //   let content=data && data.content
-  //   let title=data && data.title
-  //   let thumbnail = data && data.thumbnail
-  //   let genreId =data && data.genre && data.genre.id
-  //   let genreName =data && data.genre && data.genre.genre
-  //   this.props.history.push({
-  //     pathname: '/blog/student/edit-blog',
-  //     state: { content, title, thumbnail,genreId,genreName },
-  //   });
-  // };
+  EditBlogNav = () => {
+    const { data } = this.state;
+    let content=data && data.content
+    let title=data && data.title
+    let thumbnail = data && data.thumbnail
+    let genreId =data && data.genre && data.genre.id
+    let genreName =data && data.genre && data.genre.genre
+    let blogId=data&&data.id
+    this.props.history.push({
+      pathname: '/blog/student/edit-blog',
+      state: { content, title, thumbnail,genreId,genreName,blogId },
+    });
+  };
   handleDeleteBlog = (blogId) => {
 
     let requestData = {
@@ -282,7 +285,8 @@ getOverAllRemark = () => {
                           {data.title}
                           {
                   tabValue === 2 ?
-<IconButton
+                    <IconButton
+                    style={{float:'right'}}
                   title='Delete'
                   onClick={()=>this.handleDeleteBlog(data && data.id)}
                 >
@@ -320,14 +324,14 @@ getOverAllRemark = () => {
                         <CardContent>
                         
                           <Typography variant='body2' color='textSecondary' component='p'>
-                            {data.content} 
+                          {ReactHtmlParser(data.content)}
                           </Typography>
                           <Typography  component='p' style={{ paddingRight: '650px',fontSize:'12px'}}>
                            Genre: {data.genre && data.genre.genre}
                           </Typography>
                           <Typography component='p'  style={{ paddingRight: '650px',fontSize:'12px'}}
 >
-                          TotalWords : {data.word_count} 
+                          Total Words : {data.word_count} 
                           </Typography>
 
                         </CardContent>
@@ -360,7 +364,7 @@ getOverAllRemark = () => {
                             {relatedBlog ? 'Review' : 'View Related Blog'}
                           </Button>  :''}
                          
-                          {/* {tabValue !== 1 ?
+                          {tabValue === 0  || tabValue === 2 ?
                           <Button
                             style={{ width: 150 }}
                             size='small'
@@ -369,7 +373,7 @@ getOverAllRemark = () => {
                           >
                             Edit
                           </Button>
-                          :''} */}
+                          :''}
                         </CardActions>
                       </Card>
                     </Grid>
