@@ -548,6 +548,10 @@ const Layout = ({ children, history }) => {
                 history.push('/finance/student/ChnageFeePlanToStudent'  )
                   break;
                 } 
+              case 'Bulk Report Upload': {
+                history.push('/finance/BulkOperation/BulkReportUpload')
+                  break;
+                }
       default:
         break;
     }
