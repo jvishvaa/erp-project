@@ -1,0 +1,26 @@
+.daysFilterWrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.daysTag {
+    color: #014b7e;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.filterContainer {
+    margin-top: 20px;
+    border-radius: 10px;
+    min-height: 44vh;
+    box-shadow: 0 4px 10px 0px rgba(1,75,126,0.2);
+}
+
+.comboDaysContainer {
+    padding: 20px 20px 60px 20px;
+}
+
+.otherDaysContainer {
+    padding: 20px;
+}

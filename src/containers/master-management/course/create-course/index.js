@@ -23,6 +23,9 @@ import attachmenticon from '../../../../assets/images/attachmenticon.svg';
 import { LeakAddRounded } from '@material-ui/icons';
 import { Context } from '../view-course/context/ViewStore';
 import { filter } from 'lodash';
+import DaysFilterContainer from './days-filter-container';
+import DurationContainer from './duration-container';
+import JoinLimitContainer from './join-limit-container';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,7 +61,7 @@ const CreateCourse = () => {
   const [loading, setLoading] = useState(false);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-
+  const [clear,setClear] = useState(false);
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
 
@@ -95,7 +98,7 @@ const CreateCourse = () => {
   const [cardTitle, setCardTitle] = useState(null);
   const [cardDesc, setCardDesc] = useState(null);
 
-  const branchDrop=[{branch_name:'AOL'}]
+  const branchDrop = [{ branch_name: 'AOL' }]
   const [filterData, setFilterData] = useState({
     branch: '',
     grade: [],
@@ -103,7 +106,7 @@ const CreateCourse = () => {
     category: '',
     age: '',
     subject: '',
-    erpGrade:''
+    erpGrade: ''
   });
 
   const courseLevel = [
@@ -219,7 +222,7 @@ const CreateCourse = () => {
               if (object?.tag_type === "1") {
                 list1.push({ id: object.id, subjectName: object?.subject__subject_name });
               } else {
-                list2.push({ id: object.id, gradeName: object?.grade__grade_name ,gradeId:object?.grade_id });
+                list2.push({ id: object.id, gradeName: object?.grade__grade_name, gradeId: object?.grade_id });
               }
             })
             setSubjectDropdown(list1);
@@ -252,15 +255,15 @@ const CreateCourse = () => {
 
   const handleGrade = (event, value) => {
     console.log(value, '====')
-    setFilterData({ ...filterData, grade: [],erpGrade:'' });
+    setFilterData({ ...filterData, grade: [], erpGrade: '' });
     // if (value?.length > 0) {
-      if(value){
+    if (value) {
       // const ids = value.map((obj) => obj.id);
       // setGradeIds(ids);
       setFilterData({
         ...filterData,
         grade: value,
-        erpGrade:value.gradeId
+        erpGrade: value.gradeId
       });
       axiosInstance.get(`${endpoints.onlineCourses.categoryList}?tag_type=3&parent_id=${value.id}`)
         .then(result => {
@@ -309,7 +312,7 @@ const CreateCourse = () => {
         overview: overview,
         learn: learn,
         // grade: gradeIds,
-        grade:[filterData.erpGrade],
+        grade: [filterData.erpGrade],
         level: filterData.courseLevel.level,
         no_of_periods: parseInt(noOfPeriods),
         files: filePath,
@@ -348,37 +351,37 @@ const CreateCourse = () => {
       });
   };
 
-  const handleEdit=()=>{
-    axiosInstance.put(`${endpoints.onlineCourses.updateCourse}11/update-course/`,{
-      "course_name":title,
+  const handleEdit = () => {
+    axiosInstance.put(`${endpoints.onlineCourses.updateCourse}11/update-course/`, {
+      "course_name": title,
       pre_requirement: coursePre,
       overview: overview,
       learn: learn,
-      grade:[24],
-        level: filterData.courseLevel.level,
-        no_of_periods: parseInt(noOfPeriods),
-        period_data: data,
-      tag_id:`${filterData.age.id},${filterData.subject.id}`
-  
-    }).then(result=>{
-      if(result.data.status_code === 200){
-        setState({...state,isEdit:false,viewPeriodData:[],editData:[]})
+      grade: [24],
+      level: filterData.courseLevel.level,
+      no_of_periods: parseInt(noOfPeriods),
+      period_data: data,
+      tag_id: `${filterData.age.id},${filterData.subject.id}`
+
+    }).then(result => {
+      if (result.data.status_code === 200) {
+        setState({ ...state, isEdit: false, viewPeriodData: [], editData: [] })
         setFilePath([]);
-          setData([])
-          setNoPeriods(0);
-          setTitle('')
-          setCoursePre('')
-          setOverview('')
-          setLearn('')
-          setFilterData({
-            branch: '',
-            grade: [],
-            courseLevel: '',
-            category: '',
-            age: '',
-            subject: '',
-          });
-        setAlert('success',result.data.message)
+        setData([])
+        setNoPeriods(0);
+        setTitle('')
+        setCoursePre('')
+        setOverview('')
+        setLearn('')
+        setFilterData({
+          branch: '',
+          grade: [],
+          courseLevel: '',
+          category: '',
+          age: '',
+          subject: '',
+        });
+        setAlert('success', result.data.message)
         setNextToggle(!nextToggle)
         history.push('/course-list');
       }
@@ -776,15 +779,37 @@ const CreateCourse = () => {
               </Paper>
               <div className='submit'>
                 <Grid item xs={12} sm={12}>
-                    {!state?.isEdit ?  <Button onClick={handleSubmit} style={{width:'16rem',marginLeft:'1.2rem'}}>SUBMIT</Button>
+                  {!state?.isEdit ? <Button onClick={handleSubmit} style={{ width: '16rem', marginLeft: '1.2rem' }}>SUBMIT</Button>
                     :
-                    <Button onClick={handleEdit} style={{width:'16rem',marginLeft:'1.2rem'}}>EDIT</Button>
-                    }
-                 
+                    <Button onClick={handleEdit} style={{ width: '16rem', marginLeft: '1.2rem' }}>EDIT</Button>
+                  }
+
                 </Grid>
               </div>
             </>
           )}
+        <Grid
+          container
+          spacing={isMobile ? 3 : 5}
+          style={{ width: widerWidth, margin: wider }}
+        >
+          <Grid item xs={12} sm={4}>
+            <JoinLimitContainer
+            clear={clear} 
+            setClear={setClear}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <DaysFilterContainer 
+            clear={clear}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <DurationContainer
+            clear={clear}
+            />
+          </Grid>
+        </Grid>
       </Layout>
     </>
   );
