@@ -235,6 +235,13 @@ class WriteBlog extends Component {
   };
 
   PreviewBlogNav = () => {
+    let{genreId ,files, title ,textEditorContent}=this.state
+
+    
+    if(!genreId || !files.length> 0 ||!title ||!textEditorContent){
+      this.context.setAlert('error',"please select all fields")
+      return
+    }
     const subceededWordCount = this.isWordCountSubceeded()
     if (subceededWordCount) {
       this.context.setAlert('error',subceededWordCount)
@@ -242,12 +249,12 @@ class WriteBlog extends Component {
     }
 
     const {
-      textEditorContent,
-      title,
-      genreId,
+      // textEditorContent,
+      // title,
+      // genreId,
       studentName,
       creationDate,
-      files,
+      // files,
       genreName
     } = this.state;
     this.props.history.push({
@@ -335,6 +342,7 @@ class WriteBlog extends Component {
                       // helperText={`Word Count: ${title.length}/${TITLE_CHARACTER_LIMIT}`}
                       onChange={this.handleTitle}
                       multiline
+                      required
                       value={this.state.title}
                       label='Blog Title'
                       size='medium'
@@ -414,7 +422,7 @@ class WriteBlog extends Component {
                           style={{ width: 150 }}
                           onClick={this.PreviewBlogNav}
                           color='primary'
-                          disabled={!genreId || !files.length> 0 ||!title ||!textEditorContent}
+                          // disabled={!genreId || !files.length> 0 ||!title ||!textEditorContent}
                         >
                           Preview Blog
                         </Button>

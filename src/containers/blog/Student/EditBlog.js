@@ -254,19 +254,27 @@ class EditBlog extends Component {
   };
 
   PreviewBlogNav = () => {
+    let{genreId ,files, title ,textEditorContent}=this.state
+
+    
+    if(!genreId || !files.length> 0 ||!title ||!textEditorContent){
+      this.context.setAlert('error',"please select all fields")
+      return
+    }
     const subceededWordCount = this.isWordCountSubceeded()
     if (subceededWordCount) {
       this.context.setAlert('error',subceededWordCount)
       return
     }
+
     const {
-      textEditorContent,
-      title,
-      genreId,
+      // textEditorContent,
+      // title,
+      // genreId,
       studentName,
       creationDate,
-      files,
-      blogId
+      // files,
+      genreName
     } = this.state;
     this.props.history.push({
       pathname: '/blog/student/preview-edit-blog',
