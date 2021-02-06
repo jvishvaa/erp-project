@@ -10,6 +10,7 @@ import './Wallet.css'
 import { apiActions } from '../../../../_actions'
 import { urls } from '../../../../urls'
 import AllStudentTrasection from './AllStudentTransaction'
+import Layout from '../../../../../../Layout'
 
 function StudentWallet (props) {
   var currBrnch = JSON.parse(localStorage.getItem('user_profile'))
@@ -53,7 +54,7 @@ function StudentWallet (props) {
   }
 
   return (
-    <div>
+    <Layout>    <div>
       {
         !loading
           ? allTransaction
@@ -89,6 +90,7 @@ function StudentWallet (props) {
           </div> : null
       }
     </div>
+    </Layout>
   )
 }
 
