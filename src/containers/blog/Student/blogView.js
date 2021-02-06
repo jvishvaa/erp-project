@@ -3,6 +3,8 @@
 import React, { Component } from 'react';
 import { withStyles, useTheme } from '@material-ui/core/styles';
 // import { connect } from 'react-redux';
+import ReactHtmlParser from 'react-html-parser'
+
 import {
   Grid,
   Card,
@@ -323,14 +325,14 @@ getOverAllRemark = () => {
                         <CardContent>
                         
                           <Typography variant='body2' color='textSecondary' component='p'>
-                            {data.content} 
+                          {ReactHtmlParser(data.content)}
                           </Typography>
                           <Typography  component='p' style={{ paddingRight: '650px',fontSize:'12px'}}>
                            Genre: {data.genre && data.genre.genre}
                           </Typography>
                           <Typography component='p'  style={{ paddingRight: '650px',fontSize:'12px'}}
 >
-                          TotalWords : {data.word_count} 
+                          Total Words : {data.word_count} 
                           </Typography>
 
                         </CardContent>
