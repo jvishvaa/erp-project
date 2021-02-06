@@ -34,6 +34,7 @@ import endpoints from '../../../config/endpoints';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import IconButton from '@material-ui/core/IconButton';
 import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
+import ReviewPrincipal from '../Principal/ReviewPrincipal';
 
 const styles = (theme) => ({
   root: {
@@ -98,7 +99,8 @@ class BlogView extends Component {
       likes: this.props.location.state.data && this.props.location.state.data.likes,
       loginUserName : JSON.parse(localStorage.getItem('userDetails')).first_name,
       roleDetails: JSON.parse(localStorage.getItem('userDetails')),
-
+blogRatings :this.props.location.state.data && this.props.location.state.data.remark_rating,
+      overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark,
     };
   }
   componentDidMount() {
@@ -153,6 +155,22 @@ class BlogView extends Component {
   }
   }).catch((error)=>{
   })
+}
+
+getRatings = () => {
+  let {blogRatings} =this.state
+  if (!blogRatings) {
+    return []
+  }
+  const type = typeof blogRatings
+  const parsedRatings = type === 'object' ? blogRatings : JSON.parse(blogRatings)
+  const allRatingParamters = JSON.parse(parsedRatings)
+  return allRatingParamters
+}
+
+getOverAllRemark = () => {
+ let {overallRemark} = this.state
+ return overallRemark
 }
 
 
@@ -327,6 +345,21 @@ class BlogView extends Component {
 
                             >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
                             </Button>
+
+                      {!data.feedback_revision_required && tabValue ===1 ? 
+                          <Button
+                            size='small'
+                            color='primary'
+                            onClick={() => {
+                              this.setState({
+                                relatedBlog: !relatedBlog,
+                                feedBack: false,
+                              });
+                            }}
+                          >
+                            {relatedBlog ? 'Review' : 'View Related Blog'}
+                          </Button>  :''}
+                         
                           {/* {tabValue !== 1 ?
                           <Button
                             style={{ width: 150 }}
@@ -338,83 +371,16 @@ class BlogView extends Component {
                           </Button>
                           :''} */}
                         </CardActions>
-                        {/* <CardActions>
-                          <ExpansionPanel
-                            onClick={() => this.setState({ commentOpen: !commentOpen })}
-                            style={{ width: '100%' }}
-                          >
-                            <ExpansionPanelSummary>
-                              <Button
-                                size='small'
-                                color='primary'
-                                onClick={() =>
-                                  this.submitComment(
-                                    commentOpen ? 'Submit' : 'Add Comment'
-                                  )}
-                              >
-                                {commentOpen ? 'Submit' : 'Add Comment'}
-                              </Button>
-                            </ExpansionPanelSummary>
-                            <ExpansionPanelDetails>
-                              <TextField
-                                fullWidth
-                                id='outlined-textarea'
-                                label='Multiline Placeholder'
-                                placeholder='Placeholder'
-                                multiline
-                                variant='outlined'
-                                onChange={(e) => this.handleCommentChange(e)}
-                              />
-                            </ExpansionPanelDetails>
-                          </ExpansionPanel>
-                        </CardActions> */}
                       </Card>
                     </Grid>
                     <Grid item xs={3}>
-                      {feedBack ? (
-                        <Card style={{ minWidth: 320 }} className={classes.reviewCard}>
-                          <CardContent>
-                            <Typography
-                              align='center'
-                              component='h2'
-                              style={{ fontWeight: 500 }}
-                              variant='body1'
-                            >
-                              Review
-                            </Typography>
-                            <TextField
-                              id='outlined-multiline-static'
-                              multiline
-                              rows={12}
-                              placeholder='Provide Feedback related to this blog..'
-                              variant='outlined'
-                            />
-                            <br />
-                            <CardActions>
-                              <Button
-                                style={{ fontSize: 12 }}
-                                size='small'
-                                color='primary'
-                              >
-                                Revisions Needed
-                              </Button>
-                              <Button
-                                style={{ fontSize: 12, marginLeft: '20%' }}
-                                size='small'
-                                color='primary'
-                              >
-                                Add Review
-                              </Button>
-                            </CardActions>
-                            <Button fullWidth size='small' color='primary'>
-                              Publish
-                            </Button>
-                          </CardContent>
-                        </Card>
-                      ) :  ''
-                      // (
-                      //   <SideBar />
-                      // )
+                   { relatedBlog ? ''
+                      : (
+                        <ReviewPrincipal  blogId={data.id}  ratingParameters={this.getRatings} overallRemark={this.getOverAllRemark}
+                        />
+
+
+                      )
                       }
                     </Grid>
                   </Grid>

@@ -25,10 +25,7 @@ import { withRouter } from 'react-router-dom';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-import SideBar from './sideBar';
-import Review from '../Teacher/Review'
 import Layout from '../../Layout';
-import { ThreeSixty } from '@material-ui/icons';
 import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
 
 const styles = (theme) => ({
@@ -76,13 +73,25 @@ const StyledRating = withStyles({
   },
 })(Rating);
 
-const publishLevelChoice=[ 
-  { label: 'Branch', value: '2' },
+const publishLevelChoiceBranch=[ 
+//   { label: 'Branch', value: '2' },
   { label: 'Grade', value: '3' },
   { label: 'Section', value: '4' }
 
   ] 
-class ContentView extends Component {
+  const publishLevelChoiceGrade=[ 
+      { label: 'Branch', value: '2' },
+    //   { label: 'Grade', value: '3' },
+      { label: 'Section', value: '4' }
+    
+      ] 
+      const publishLevelChoiceSection=[ 
+          { label: 'Branch', value: '2' },
+          { label: 'Grade', value: '3' },
+        //   { label: 'Section', value: '4' }
+        
+          ] 
+class ContentViewPublish extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -92,11 +101,10 @@ class ContentView extends Component {
       isPublish:false,
       data: this.props.location.state.data && this.props.location.state.data,
       tabValue :this.props.location.state.tabValue && this.props.location.state.tabValue,
-      comment:'',
+      feedbackrevisionReq:'',
       roleDetails: JSON.parse(localStorage.getItem('userDetails')),
-      blogRatings :this.props.location.state.data && this.props.location.state.data.remark_rating,
-      overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark,
       blogId: this.props.location.state.data && this.props.location.state.data.id,
+
       likeStatus:false,
       currentLikes: 0,
       loading:false,
@@ -116,7 +124,7 @@ class ContentView extends Component {
     let requestData = {
       "blog_id": blogId ,
     }
-  axiosInstance.post(`${endpoints.blog.BlogView}`, requestData)
+  axios.post(`${endpoints.blog.BlogView}`, requestData)
   .then(result=>{
   if (result.data.status_code === 200) {
   } else {        
@@ -124,50 +132,18 @@ class ContentView extends Component {
   }).catch((error)=>{
   })
 }
-getLikeStatus = (isLiked) => {
-  let { likeStatus,likes }=this.state
-  if (isLiked === true && likeStatus === false) {
-    this.setState({currentLikes :likes-1,likeStatus:true})
-  } else if (isLiked === true && likeStatus === true) {
-    this.setState({currentLikes :likes+1,likeStatus:false})
-
-  } else if (isLiked === false && likeStatus === false) {
-    this.setState({currentLikes :likes+1,likeStatus:true})
-
-  } else if (isLiked === false && likeStatus === true) {
-    this.setState({currentLikes :likes,likeStatus:false})
-
-  }
-}
-handleLike = (isLiked,blogId) => {
-  this.getLikeStatus(isLiked)
-  let requestData = {
-    "blog_id": blogId ,
-
-  }
-axiosInstance.post(`${endpoints.blog.BlogLike}`, requestData)
-
-.then(result=>{
-if (result.data.status_code === 200) {
-  this.setState({loading:false})
-  // setAlert('success', result.data.message);
-} else {        
-  this.setState({loading:false})
-  // setAlert('error', result.data.message);
-}
-}).catch((error)=>{
-  this.setState({loading:false})
-  // setAlert('error', error.message);
-})
-  }
 
 
-  submitComment = () => {
-    const {  data, comment } = this.state;
+
+
+
+  submitRevisionFeedback = () => {
+
+    const {  data, feedbackrevisionReq } = this.state;
     const formData = new FormData();
     formData.set('blog_id', data.id);
-    formData.set('status', 7);
-    formData.set('comment', comment);
+    formData.set('status', 5);
+    formData.set('feedback_revision_required', feedbackrevisionReq);
 
     axios
       .put(`${endpoints.blog.Blog}`, formData)
@@ -184,9 +160,10 @@ if (result.data.status_code === 200) {
       });
   };
   handleReivisionNameChange = (e) => {
-    this.setState({comment:e.target.value})
+    this.setState({feedbackrevisionReq:e.target.value})
   };
   submitPublish = () => {
+
   const {  data, publishedLevel ,roleDetails} = this.state;
   const formData = new FormData();
   formData.set('blog_id', data.id);
@@ -202,11 +179,10 @@ if (result.data.status_code === 200) {
       .then((result) => {
         if (result.data.status_code === 200) {
           this.props.history.push({
-            pathname: '/blog/teacher',
+            pathname: '/blog/teacher/publish/view',
           });
         } else {
           console.log(result.data.message);
-
         }
       })
       .catch((error) => {
@@ -222,28 +198,43 @@ if (result.data.status_code === 200) {
 
     }
   }
-//   getRatings = () => {
-//     let {blogRatings} =this.state
-//     if (blogRatings) {
-//       return []
-//     }
-//     const ratings = blogRatings
-//     const type = typeof ratings.remark_rating
-//     const parsedRatings = type === 'object' ? ratings.remark_rating : JSON.parse(ratings.remark_rating)
-//     const allRatingParamters = [...parsedRatings]
-//     return allRatingParamters
-//   }
-
-//  getOverAllRemark = () => {
-//    let {overallRemark} = this.state
-//    return overallRemark
-//   }
-
+  getLikeStatus = (isLiked) => {
+    let { likeStatus,likes }=this.state
+    if (isLiked === true && likeStatus === false) {
+      this.setState({currentLikes :likes-1,likeStatus:true})
+    } else if (isLiked === true && likeStatus === true) {
+      this.setState({currentLikes :likes+1,likeStatus:false})
+  
+    } else if (isLiked === false && likeStatus === false) {
+      this.setState({currentLikes :likes+1,likeStatus:true})
+  
+    } else if (isLiked === false && likeStatus === true) {
+      this.setState({currentLikes :likes,likeStatus:false})
+  
+    }
+  }
+  handleLike = (isLiked,blogId) => {
+    this.getLikeStatus(isLiked)
+    let requestData = {
+      "blog_id": blogId ,
+  
+    }
+  axios.post(`${endpoints.blog.BlogLike}`, requestData)
+  
+  .then(result=>{
+  if (result.data.status_code === 200) {
+    this.setState({loading:false})
+  } else {        
+    this.setState({loading:false})
+  }
+  }).catch((error)=>{
+    this.setState({loading:false})
+  })
+    }
   
   render() {
     const { classes } = this.props;
-    const {likes,currentLikes,likeStatus,loginUserName,  tabValue,relatedBlog, starsRating, feedBack ,data,comment,isPublish,publishedLevel} = this.state;
-    
+    const {roleDetails,likes,currentLikes,likeStatus,loginUserName,  tabValue,relatedBlog, starsRating, feedBack ,data,feedbackrevisionReq,isPublish,publishedLevel} = this.state;
     const blogFkLike= data && data.blog_fk_like
     const likedUserIds=blogFkLike.map(blog => blog.user)
     const indexOfLoginUser=likedUserIds.indexOf(roleDetails.user_id)
@@ -281,22 +272,14 @@ if (result.data.status_code === 200) {
                             {data.title}
                         </Typography>
                         <CardMedia className={classes.media} image={data.thumbnail} />
-                        {
-                          data.feedback_revision_required ?
-                        <CardContent> <Typography
-                          style={{color:'red', fontSize:'12px'}}
-                        >Revision Feedback:{data.feedback_revision_required}
-                       
-                        </Typography>
-                        <Typography style={{fontSize:'12px'}}> Revised By:{data && data.feedback_revision_by && data.feedback_revision_by.first_name}</Typography></CardContent> 
-                        :  data.comment ? 
+                        <CardContent>  {tabValue  && data.comment ? 
                         <CardContent> <Typography
                         style={{color:'red', fontSize:'12px'}}
                       >Comment:{data.comment}
                      
                       </Typography>
                       <Typography> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
-                      </CardContent>  :''}
+                      </CardContent>  :''}</CardContent>
                         <CardHeader
                           className={classes.author}
                           avatar={
@@ -304,11 +287,7 @@ if (result.data.status_code === 200) {
                               R
                             </Avatar>
                           }
-                          //   action={
-                          //     <IconButton aria-label='settings'>
-                          //       <MoreVertIcon />
-                          //     </IconButton>
-                          //   }
+                       
                           title={data.author.first_name}
                           subheader=
                           {data && moment(data.created_at).format('MMM DD YYYY')}
@@ -318,12 +297,12 @@ if (result.data.status_code === 200) {
                           <Typography variant='body2' color='textSecondary' component='p'>
                             {data.content}
                           </Typography>
+                          <Typography  component='p' style={{ paddingRight: '650px',fontSize:'12px'}}>
+                           Genre: {data.genre && data.genre.genre}
+                          </Typography>
                           <Typography component='p'  style={{paddingRight: '650px', fontSize:'12px'}}
 >
                           TotalWords : {data.word_count}
-                          </Typography>
-                          <Typography  component='p' style={{ paddingRight: '650px',fontSize:'12px'}}>
-                           Genre: {data.genre && data.genre.genre}
                           </Typography>
                         </CardContent>
                         <CardActions>
@@ -340,54 +319,22 @@ if (result.data.status_code === 200) {
 
                             >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
                             </Button>
-                          {tabValue === 1 ?
-                          <Button
-                            size='small'
-                            color='primary'
-                            onClick={() => this.setState({ feedBack: true })}
-                          >
-                            Comment
-                          </Button> :
+                          {tabValue !== 0 ?
+                        
                           <Button
                             size='small'
                             color='primary'
                             onClick={() => this.setState({ isPublish: true })}
                           >
                             Publish
-                          </Button> 
+                          </Button> :''
 
                           }
                         </CardActions>
                       </Card>
                     </Grid>
                     <Grid item xs={3}>
-                      {feedBack ? (
-                        <Card style={{ minWidth: 320 }} className={classes.reviewCard}>
-                          <CardContent>
-                            <TextField
-                              id='outlined-multiline-static'
-                              multiline
-                              rows={12}
-                              placeholder='Provide Feedback related to this blog..'
-                              variant='outlined'
-                              onChange={(event,value)=>{this.handleReivisionNameChange(event);}}
-
-                            />
-                            <br />
-                            <CardActions>
-                              <Button
-                                style={{ fontSize: 12 }}
-                                size='small'
-                                color='primary'
-                                disabled={!comment}
-                                onClick ={this.submitComment}
-                              >
-                                Submit
-                              </Button>
-                            </CardActions>
-                          </CardContent>
-                        </Card>
-                      ):isPublish ? (
+                     {isPublish ? (
                         <Card style={{ minWidth: 320 }} className={classes.reviewCard}>
                           <CardContent>
                           <Autocomplete
@@ -396,7 +343,7 @@ if (result.data.status_code === 200) {
                             onChange={this.handlePublishLevelType}
                             id='category'
                             required
-                            options={publishLevelChoice}
+                            options={tabValue === 1 ? publishLevelChoiceBranch : tabValue === 2 ? publishLevelChoiceGrade : publishLevelChoiceSection}
                             getOptionLabel={(option) => option?.label}
                             filterSelectedOptions
                             renderInput={(params) => (
@@ -423,19 +370,7 @@ if (result.data.status_code === 200) {
                           </CardContent>
                         </Card>
                       )
-                      : relatedBlog ? ''
-                      // (
-                      //   <>
-                      //     <SideBar />
-                      //   </>
-                      // ) 
-                      : (
-                        <Review  blogId={data.id}
-                        />
-
-
-                      )
-                      }
+                      : ''}
                     </Grid>
                   </Grid>
                 </div>
@@ -447,4 +382,4 @@ if (result.data.status_code === 200) {
     );
   }
 }
-export default withRouter(withStyles(styles)(ContentView));
+export default withRouter(withStyles(styles)(ContentViewPublish));

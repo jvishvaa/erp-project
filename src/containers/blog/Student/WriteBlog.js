@@ -212,6 +212,7 @@ class WriteBlog extends Component {
   }
 
   handleGenre = (data) => {
+    console.log(data,"data@@")
     this.setState({ genreId: data.id,genreName:data.genre });
   };
 

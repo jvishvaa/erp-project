@@ -203,7 +203,7 @@ class ContentView extends Component {
                             color='primary'
                             onClick={() => this.submitBlog('Publish')}
                           >
-                            Publish
+                            Submit
                           </Button>
                           <Button
                             style={{ width: 150 }}

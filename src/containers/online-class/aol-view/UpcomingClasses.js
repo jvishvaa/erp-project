@@ -170,7 +170,7 @@ const UpcomingClasses = () => {
         setIsLoding(false);
         if (location.pathname === "/online-class/view-class") {
             // + classType?.id
-            axiosInstance.get('erp_user/teacher_online_class/?module_id=4&page_number=1&page_size=15&branch_ids=5&class_type='+classType.id)
+            axiosInstance.get('erp_user/teacher_online_class/?module_id=4&page_number=1&page_size=15&branch_ids=5&class_type=1')
                 .then((res) => {
                     setClassesdata(res.data.data);
                     setIsLoding(true);

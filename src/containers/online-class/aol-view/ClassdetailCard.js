@@ -128,6 +128,7 @@ export default function ClassdetailsCardComponent(props) {
     //console.log(props.classData);
     const [ periodsData, setPeriodsData ] = React.useState([]);
     //Periods date start
+    const history = useHistory();
     const startDate = new Date(props.classData.online_class.start_time);
     const endDate = new Date(props.classData.online_class.end_time);
     const Difference_In_Time = endDate.getTime() - startDate.getTime();
@@ -168,7 +169,7 @@ export default function ClassdetailsCardComponent(props) {
     ////Periods date end
 
     const handleAttendance = () => {
-        console.log(" attendance");
+        history.push(`/aol-attendance-list/${props.classData.id}`);
         //online-class/attendee-list/:id
         //history.push(`online-class/attendee-list/:${id}`);
     }

@@ -102,7 +102,7 @@ function GridList(props) {
                     style={{ marginTop: 120, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentView',
+                        pathname: '/blog/principal/contentView',
                         state: { data: data[0] ? data[0] :'' ,
                       tabValue :tabValue},
                       })}
@@ -171,7 +171,7 @@ function GridList(props) {
                     style={{ marginTop: 38, width: 150}}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentView',
+                        pathname: '/blog/principal/contentView',
                         state: { data: data[1], tabValue :tabValue },
                       })}
                   >
@@ -234,7 +234,7 @@ function GridList(props) {
                     style={{ marginTop: 38, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentView',
+                        pathname: '/blog/principal/contentView',
                         state: { data: data[2], tabValue :tabValue },
                       })}
                   >
@@ -304,7 +304,7 @@ function GridList(props) {
                     style={{ marginTop: 38, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentView',
+                        pathname: '/blog/principal/contentView',
                         state: { data: data[3] , tabValue :tabValue},
                       })}
                   >
@@ -371,7 +371,7 @@ function GridList(props) {
                     style={{ marginTop: 38, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentView',
+                        pathname: '/blog/principal/contentView',
                         state: { data: data[4] , tabValue :tabValue},
                       })}
                   >
@@ -437,7 +437,7 @@ function GridList(props) {
                     style={{ marginTop: 120, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentView',
+                        pathname: '/blog/principal/contentView',
                         state: { data: data[5] , tabValue :tabValue},
                       })}
                   >

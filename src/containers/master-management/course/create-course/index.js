@@ -335,6 +335,7 @@ const CreateCourse = () => {
           });
           setAlert('success', result.data.message);
           setNextToggle(!nextToggle);
+          history.push('/course-list');
         } else {
           setAlert('error', result.data.message);
           setGradeDropdown([]);
@@ -379,6 +380,7 @@ const CreateCourse = () => {
           });
         setAlert('success',result.data.message)
         setNextToggle(!nextToggle)
+        history.push('/course-list');
       }
     })
   }
