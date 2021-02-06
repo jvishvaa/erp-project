@@ -361,7 +361,7 @@ class EditBlog extends Component {
                       id='outlined-textarea'
                       placeholder='Title not to be more than 100 characters'
                       inputProps={{ maxLength: 100 }}
-                      helperText={`Word Count: ${title.length}/${TITLE_CHARACTER_LIMIT}`}
+                      helperText={`Charaters: ${title.length}/${TITLE_CHARACTER_LIMIT}`}
                       onChange={this.handleTitle}
                       multiline
                       value={this.state.title}
