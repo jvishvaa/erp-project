@@ -3,8 +3,11 @@ import React, { useState, useContext,useEffect } from 'react'
 import { withRouter } from 'react-router-dom';
 import Layout from '../../Layout'
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import {  TextField, Grid, Button, useTheme,Tabs, Tab ,Typography, Card, CardContent,CardHeader} from '@material-ui/core'
+import moment from 'moment';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
+import IconButton from '@material-ui/core/IconButton';
 
-import {  TextField, Grid, Button, useTheme} from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -15,9 +18,12 @@ import Loading from '../../../components/loader/loader';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '100%',
+    width: '95%',
     boxShadow: '0 5px 10px rgba(0,0,0,0.30), 0 5px 10px rgba(0,0,0,0.22)',
-    paddingLeft:'10%'
+    paddingLeft:'10px',
+    borderRadius:'10px',
+    height:'110px',
+    border:'1px #ff6b6b solid'
   },
   container: {
     maxHeight: '70vh',
@@ -34,9 +40,13 @@ const useStyles = makeStyles((theme) => ({
   tableCell: {
     color: theme.palette.secondary.main,
   },
-  rootG: {
-    flexGrow: 1,
-  },
+  typoStyle:{
+    fontSize:'12px',
+    padding:'1px',
+    marginTop: '-5px',
+    marginRight: '20px'
+  }
+ 
 }));
 
 
@@ -44,6 +54,9 @@ const useStyles = makeStyles((theme) => ({
 
 
 const CreateWordCountConfig = () => {
+  const classes = useStyles()
+
+  const [currentTab,setCurrentTab] =useState(0)
 
   
   const [wordCount,setWordCount] =useState('');
@@ -53,7 +66,8 @@ const CreateWordCountConfig = () => {
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const wider = isMobile ? '-10px 0px' : '0 0 -1rem 1.5%'
   const widerWidth = isMobile ? '90%' : '85%'
-
+  const [inActiveListRes,setInActiveListRes]=useState([]);
+  const [activeListRes,setActiveListRes]=useState([]);
   const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
   const [grade, setGrade] = useState([]);
   const [selectedGrades, setSelectedGrades] = useState('');
@@ -64,7 +78,30 @@ const CreateWordCountConfig = () => {
   const branchId=roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0]
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
+  
+  const handleDelete = (data) => {
 
+        let requestData = {
+          "wrd_count_con_id":data.id
+      
+        }
+      axiosInstance.put(`${endpoints.blog.WordCountConfig}`, requestData)
+    
+      .then(result=>{
+      if (result.data.status_code === 200) {
+        setLoading(false);
+        setAlert('success', result.data.message);
+        getInActiveList()
+        getActiveList()
+      } else {        
+        setLoading(false);
+        setAlert('error', result.data.message);
+      }
+      }).catch((error)=>{
+        setLoading(false);        
+        setAlert('error', error.message);
+      })
+    };
   const handleSubmit = (e) => {
     const chkWordCount=+wordCount
     const chkNumber = Number.isInteger(chkWordCount)
@@ -99,29 +136,29 @@ const CreateWordCountConfig = () => {
     }) }
     };
     useEffect(() => {
-        const getInActiveList = () => {
-          axiosInstance.get(`${endpoints.blog.WordCountConfig}?is_delete=True`)
-            .then((res) => {
-                setInActiveListRes(res.data.result)
-            }).catch(err => {
-                console.log(err)
-            })
-        }
+        
         getInActiveList();
       }, []);
-
+      const getInActiveList = () => {
+        axiosInstance.get(`${endpoints.blog.WordCountConfig}?is_delete=True`)
+          .then((res) => {
+              setInActiveListRes(res.data.result)
+          }).catch(err => {
+              console.log(err)
+          })
+      }
       useEffect(() => {
-        const getActiveList = () => {
-          axiosInstance.get(`${endpoints.blog.WordCountConfig}?is_delete=False`)
-            .then((res) => {
-                setActiveListRes(res.data.result)
-            }).catch(err => {
-                console.log(err)
-            })
-        }
+       
         getActiveList();
       }, []);
-      
+      const getActiveList = () => {
+        axiosInstance.get(`${endpoints.blog.WordCountConfig}?is_delete=False`)
+          .then((res) => {
+              setActiveListRes(res.data.result)
+          }).catch(err => {
+              console.log(err)
+          })
+      } 
     useEffect(() => {
         if (branchId) {
           setGrade([]);
@@ -158,7 +195,7 @@ const CreateWordCountConfig = () => {
         }
       };
 
-
+console.log(inActiveListRes,"@@@@@")
       const handleGrade = (event, value) => {
         if (value) {
           
@@ -169,6 +206,53 @@ const CreateWordCountConfig = () => {
         }
         }
       
+        const inActiveTabContent= () =>{
+          return <div> 
+          <Grid container spacing={2}>
+          { inActiveListRes && inActiveListRes.length
+            ? inActiveListRes.map((item) => {
+              return <Grid item xs={12} sm={6} md={4}>
+                <Card className={classes.root} >
+                <CardHeader
+                style={{padding:'0px'}}
+                action=       {
+<IconButton
+                  title='Delete'
+                  onClick={()=>handleDelete(item)}
+                  
+                >
+                  <DeleteOutlinedIcon
+                    style={{ color: themeContext.palette.primary.main }}
+                  />
+                </IconButton>
+              }
+              subheader={
+                <Typography
+                  gutterBottom
+                  variant='body2'
+                  align='left'
+                  component='p'
+                  style={{ color: '#014b7e' ,pagging:'0px'}}
+                >
+                Created At: {item && moment(item.created_at).format('MMM DD YYYY')}
+                </Typography>
+              }
+                />
+      <CardContent>
+      <Typography  className={classes.typoStyle}>GradeName: {item.grade.grade_name} </Typography>
+        <Typography   className={classes.typoStyle}>WordCount : {item.word_count}</Typography>
+        <Typography   className={classes.typoStyle}>CreatedBy : {item.created_by.first_name}</Typography>
+      </CardContent>
+                </Card>                        
+                </Grid>
+                                                      
+                })
+            : ''
+          }
+        </Grid>
+          </div>
+        }
+         
 const handleWordCountChange = (e) => {
   setWordCount(e.target.value);
 };
@@ -189,33 +273,45 @@ const handleTabChange = (event,value) =>{
     { activeListRes && activeListRes.length
       ? activeListRes.map((item) => {
         return <Grid item xs={12} sm={6} md={4}>
-          <Card className={classes.root} style={{ border: '1px solid #FEE4D4'  }}>
-          <CardHeader  style={{fontSize: '15px'}}
-      action={
-        <IconButton aria-label="settings" style={{fontSize: '15px'}}>
-         {item.is_delete ? <Cancel style={{ color: 'red' ,fontSize: '25px' }}/>: <CheckCircle  style={{ color: 'green' ,fontSize: '25px' }}/> }
+        <Card className={classes.root} >
+        <CardHeader
+        style={{padding:'0px'}}
+        action=       {
+<IconButton
+          title='Delete'
+          onClick={()=>handleDelete(item)}
+          
+        >
+          <DeleteOutlinedIcon
+            style={{ color: themeContext.palette.primary.main }}
+          />
         </IconButton>
       }
-      style={{fontSize: '15px'}}
-      title= {
-        <p style={{ fontFamily: 'Open Sans', fontSize: '15px', fontWeight: 'Lighter' }}> {item.category}  
-</p>
-
-      }
       subheader={
-        <p style={{ fontFamily: 'Open Sans', fontSize: '15px', fontWeight: 'Lighter' }}> 
-        {item.sub_category_name}  <br />
-      {item.sub_sub_category_name}</p>
+        <Typography
+          gutterBottom
+          variant='body2'
+          align='left'
+          component='p'
+          style={{ color: '#014b7e' ,pagging:'0px'}}
+        >
+        Created At : {item && moment(item.created_at).format('MMM DD YYYY')}
+        </Typography>
       }
-    />
-          </Card>                        
-          </Grid>
-                                                
-          })
-      : ''
-    }
-  </Grid>
-    </div>
+        />
+<CardContent  style={{ pagging:'1px'}}>
+<Typography  className={classes.typoStyle}>GradeName: {item.grade.grade_name} </Typography>
+<Typography   className={classes.typoStyle}>WordCount : {item.word_count}</Typography>
+<Typography   className={classes.typoStyle}>CreatedBy : {item.created_by.first_name}</Typography>
+</CardContent>
+        </Card>                        
+        </Grid>
+                                              
+        })
+    : ''
+  }
+</Grid>
+  </div>
   }
 
   return (
