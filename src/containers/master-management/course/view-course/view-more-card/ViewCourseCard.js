@@ -9,6 +9,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { makeStyles } from "@material-ui/core/styles";
+import {useHistory} from 'react-router-dom'
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 // import { Button, useTheme ,IconButton} from '@material-ui/core';
 import Box from '@material-ui/core/Box';
@@ -26,6 +27,7 @@ import { Context } from '../context/ViewStore';
 
 const ViewCourseCard = ({ index, cData, setData }) => {
   const themeContext = useTheme();
+  const history=useHistory()
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const classes = useStyles();
@@ -82,6 +84,10 @@ const ViewCourseCard = ({ index, cData, setData }) => {
     );
   };
 
+  const handleBack=()=>{
+    history.push  ('/course-list')
+  }
+
   return (
     <>
       <Layout>
@@ -134,8 +140,12 @@ const ViewCourseCard = ({ index, cData, setData }) => {
                   </div>
                  
               ))}
+             
               
         </Grid>
+           <Button style={{margin:'40px',width:'16rem'}} onClick={handleBack}>
+                Back
+              </Button>
        
       </Layout>
     </>

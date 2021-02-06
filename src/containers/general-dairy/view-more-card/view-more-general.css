@@ -1,4 +1,4 @@
-.rootViewMore {
+.rootViewMoreGeneral {
     border: 1px solid #ff6b6b;
     border-radius: 10px !important;
     height:70vh;
@@ -79,7 +79,7 @@
 
 .headerTitle {
     font-size: 1.1rem;
-    color: #ff6b6b;
+    color: #014B7E;
     margin-bottom: 7px;
 }
 
@@ -125,8 +125,39 @@
     justify-content: space-between;
 }
 
+.messageDivider.MuiDivider-root {
+    border: none;
+    height: 1px;
+    width: 24.375;
+    margin: 0;
+    flex-shrink: 0;
+    background-color: #E87BCB;
+    opacity: 100;
+    margin-top: .4rem;
+    margin-bottom: 1rem;
+}
+
+.titleDivider.MuiDivider-root {
+    border: none;
+    height: 1px;
+    width: 24.375;
+    margin: 0;
+    flex-shrink: 0;
+    background-color: #00D97D;
+    opacity: 100;
+    margin-top: .4rem;
+    margin-bottom: 1rem;
+}
+
+.mediaBody{
+    height: 2rem;
+    border: 1px solid #ff6b6b;
+    border-radius: 10px;
+    margin:10px 0px 0px 20px;
+}
+
 @media screen and (max-width:768px) {
-    .rootViewMore {
+    .rootViewMoreGeneral {
         margin:0 auto;
       }
 }

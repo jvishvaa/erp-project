@@ -8,7 +8,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import Box from '@material-ui/core/Box';
 import useStyles from './useStyles';
 import downloadAll from '../../../../../assets/images/downloadAll.svg';
-import './view-more.css';
+import './view-more-course.css';
 import endpoints from '../../../../../config/endpoints';
 import axiosInstance from '../../../../../config/axios';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
@@ -59,7 +59,7 @@ const handleEdit=()=>{
     <>
     {/* <ViewStore> */}
     {!cardDetailsFlag ?
-      <Paper className='rootViewMore'>
+      <Paper className='rootViewMoreCourse'>
         <div className='viewMoreHeader'>
           <div className='leftHeader'>
             <div className='headerTitle'>{periodDataForView.course_name}</div>

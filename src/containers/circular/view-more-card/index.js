@@ -4,7 +4,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme, IconButton, SvgIcon } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import downloadAll from '../../../assets/images/downloadAll.svg'
-import './view-more.css';
+import './view-more-circular.css';
 import endpoints from '../../../config/endpoints'
 import axiosInstance from '../../../config/axios'
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -56,7 +56,7 @@ const pic=viewMoreData?.media?.map(a=>a)
 console.log(viewMoreData?.media,pic,'++++',branch.branch_name)
   return (
     <>
-   <Paper className='rootViewMore'>
+   <Paper className='rootViewMoreCircular'>
       <div className='viewMoreHeader'>
         <div className='leftHeader'>
           <div className='headerTitle'>{viewMoreData.circular_name}</div>
