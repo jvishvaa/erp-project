@@ -272,7 +272,7 @@ class EditBlog extends Component {
       // title,
       // genreId,
       studentName,
-      creationDate,
+      creationDate,blogId,
       // files,
       genreName
     } = this.state;
