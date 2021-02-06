@@ -3,7 +3,7 @@ import { Autocomplete } from '@material-ui/lab';
 import { TextField } from '@material-ui/core';
 import './days-filter.css';
 
-const DaysFilterContainer = ({clear}) => {
+const DaysFilterContainer = ({ clear }) => {
 
     const [comboDays, setComboDays] = useState([]);
 
@@ -41,13 +41,10 @@ const DaysFilterContainer = ({clear}) => {
         }
     };
 
-    useEffect(()=>{
-        if(clear) {
-            setOtherDays([]);
-            setComboDays([]);
-        } 
-        
-    },[clear]);
+    useEffect(() => {
+        setOtherDays([]);
+        setComboDays([]);
+    }, [clear]);
 
     return (
         <div className="daysFilterWrapper">

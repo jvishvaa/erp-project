@@ -39,11 +39,9 @@ const DurationContainer = ({ clear }) => {
     };
 
     useEffect(() => {
-        if (clear) {
-            setRecursiveContent([{ weeks: '', price: '' }]);
-            setToggle(false);
-            setNoOfWeeks(null);
-        }
+        setNoOfWeeks('');
+        setRecursiveContent([{ weeks: '', price: '' }]);
+        setToggle(false);
     }, [clear]);
 
     return (
