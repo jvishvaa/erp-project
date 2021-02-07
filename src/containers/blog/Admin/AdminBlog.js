@@ -92,7 +92,7 @@ class AdminBlog extends Component {
       .get(
         `${endpoints.blog.Blog}?page_number=${
           pageNo + 1
-        }&page_size=${pageSize}&status=${status}module_id=114`
+        }&page_size=${pageSize}&status=${status}&module_id=114`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
