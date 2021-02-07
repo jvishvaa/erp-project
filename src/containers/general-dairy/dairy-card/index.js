@@ -4,6 +4,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Button, useTheme, IconButton ,Divider,SvgIcon} from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 import useStyles from './useStyles';
 import './dairy-card.css'
@@ -12,6 +13,8 @@ import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import cardAttachment from '../../../assets/images/cardAttachment.svg'
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import {Context} from '../context/context'
+
 
 const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex}) => {
 
@@ -21,6 +24,8 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
   const classes = useStyles();
   const [showMenu, setShowMenu] = useState(false);
   const [showPeriodIndex, setShowPeriodIndex] = useState();
+  const history=useHistory()
+  const [state, setState] = useContext(Context)
 
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
@@ -65,29 +70,26 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
     //   })
   }
   const handleDelete=(e,index)=>{
-    // console.log(e,index,'event')
-    // axiosInstance.put(`${endpoints.circular.deleteCircular}`,
-    // {
-    //  'circular_id': e.id,
-    //  'id_delete':true
+    console.log(e,index,'event')
+    axiosInstance.delete(`${endpoints.generalDairy.updateDelete}${e.id}/update-delete-dairy/`)
+    .then((result)=>{
 
-    // }).then((result)=>{
+      if(result.data.status_code===200){
+        setAlert('success',result.data.message)
+      }else{
+        setAlert('errpr', 'ERROR!')
+      }
 
-    //   if(result.data.status_code===200){
-    //     setAlert('success',result.data.message)
-    //   }else{
-    //     setAlert('errpr', 'ERROR!')
-    //   }
-
-    // })
+    })
 
 
   }
   const handleEdit=(data)=>{
     // console.log(data,'PPP')
     // // setEditData(e)
-    // setState({isEdit:true,editData:data});
-    // history.push('/create-circular')
+    debugger
+    setState({isEdit:true,editData:data});
+    history.push('/create/general-dairy')
   }
 
   return (
@@ -101,9 +103,10 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               component='p'
               color='primary'
             >
-              {lesson.title}
+            Topic / {lesson.title}
             </Typography>
           </Box>
+        <Typography style={{fontSize: '15px',marginTop: '10px'}}> GeneralDairy</Typography>
           <Divider className='divider'/>
           <Box mt={2}>
             <Typography
@@ -147,6 +150,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
           <Box>
             <Typography
               className={classes.title}
+              style={{fontSize: '15px'}}
               variant='p'
               component='p'
               color='secondary'
@@ -161,7 +165,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               <SvgIcon
               component={() => (
                                     <img
-                                        style={{ height: '21px', width: '21px' }}
+                                        style={{ height: '21px', width: '21px', marginLeft: '-18px' }}
                                         src={cardAttachment}
                                         alt='attachment'
                                     />

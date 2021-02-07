@@ -141,6 +141,8 @@ export default {
   generalDairy:{
     dairyList:'/academic/general-dairy-messages/',
     studentList:'/academic/general-dairy-users/',
+    updateDelete: '/academic/',
+    SubmitDairy: '/academic/create-dairy/',
 
   },
   onlineCourses:{

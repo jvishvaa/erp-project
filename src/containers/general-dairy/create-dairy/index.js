@@ -36,6 +36,7 @@ import attachmenticon from '../../../assets/images/attachmenticon.svg';
 import deleteIcon from '../../../assets/images/delete.svg';
 import Loading from '../../../components/loader/loader';
 import CustomMultiSelect from '../../../../src/containers/communication/custom-multiselect/custom-multiselect'
+import {Context} from '../context/context'
 
 import CustomSelectionTable from '../../../../src/containers/communication/custom-selection-table/custom-selection-table';
 
@@ -97,37 +98,37 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const columns = [
-  // { 
-  //   id: 'subject_name',
-  //   label: 'SL_No',
-  //   minWidth: 100 ,
-  //   align: 'center',
-  //   labelAlign: 'center',
-  // },
-  { 
-    id: 'name',
-    label: 'Name',
-    minWidth: 100 ,
-    align: 'center',
-    labelAlign: 'center',
-  },
-  { 
-    id: 'erp_id', 
-    label: 'ERP No', 
-    minWidth: 100 , 
-    align: 'center',
-    labelAlign: 'center',
-  },
-  {
-    id: 'optional',
-    label: 'Selection',
-    minWidth: 50,
-    align: 'center',
-    labelAlign: 'center',
-  },
+// const columns = [
+//   // { 
+//   //   id: 'subject_name',
+//   //   label: 'SL_No',
+//   //   minWidth: 100 ,
+//   //   align: 'center',
+//   //   labelAlign: 'center',
+//   // },
+//   { 
+//     id: 'name',
+//     label: 'Name',
+//     minWidth: 100 ,
+//     align: 'center',
+//     labelAlign: 'center',
+//   },
+//   { 
+//     id: 'erp_id', 
+//     label: 'ERP No', 
+//     minWidth: 100 , 
+//     align: 'center',
+//     labelAlign: 'center',
+//   },
+//   {
+//     id: 'optional',
+//     label: 'Selection',
+//     minWidth: 50,
+//     align: 'center',
+//     labelAlign: 'center',
+//   },
 
-];
+// ];
 // eslint-disable-next-line no-unused-vars
 
 const CreateGeneralDairy = withRouter(({ history, ...props }) => {
@@ -158,7 +159,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const [academicYear, setAcademicYear] = useState([])
   const [totalCount, setTotalCount] = useState(0);
   const limit = 5;
-  const [page, setPage] = useState(1);
+  const [page, setPage] = React.useState(1);
   const [currentTab, setCurrentTab] = useState(0);
   const [isEmail, setIsEmail] = useState(false);
   const [bulkData,setBulkData]=useState([])
@@ -185,7 +186,12 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const [branchList, setBranchList] = useState([]);
   const [selectAllObj, setSelectAllObj] = useState([]);
   const [title,setTitle] = useState('')
+  
   const [description,setDescription] = useState('')
+     //context
+     const [state,setState] = useContext(Context)
+     const {isEdit, editData} = state;
+     const{setIsEdit,setEditData}=setState;
 
   const [overviewSynopsis, setOverviewSynopsis] = useState([]);
 
@@ -202,7 +208,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   };
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage+1)
+    setPageno(newPage+1)
   };
   const [filterData, setFilterData] = useState({
     branch: [],
@@ -418,12 +424,14 @@ const displayUsersList = async () => {
       const selectionRows = [];
       setHeaders([
         // { field: 'id', headerName: 'ID', width: 70 },
-        { field: 'name', headerName: 'Name', width: 190 },
+        { field: 'name', headerName: 'Name', width: 500,  marginLeft:'131px' },
         // { field: 'email', headerName: 'Email Id', width: 250 },
-        { field: 'erp_id', headerName: 'Erp Id', width: 150 },
+        { field: 'erp_id', headerName: 'Erp Id', width: 500, marginLeft:'131px' },
         // { field: 'gender', headerName: 'Gender', width: 100 },
         // { field: 'contact', headerName: 'Contact', width: 150 },
+      
       ]);
+    
       result.data.result && result.data.result.results.forEach((items) => {
         rows.push({
           id: items.id,
@@ -647,7 +655,7 @@ const handleSelectAll = () => {
 // }
 
 const handleSubmit = async () => {
-  const assignRoleApi = endpoints.communication.assignRole;
+  const assignRoleApi = endpoints.generalDairy.SubmitDairy;
   const selectionArray = [];
   selectedUsers.forEach((item) => {
     item.selected.forEach((ids) => {
@@ -674,16 +682,18 @@ const handleSubmit = async () => {
       assignRoleApi,
       {
         title:title,
-            // description:description,
+        message:description,
             // module_name:filterData.role.value,
-            media:filePath,
-            Branch:filterData.branch.map(function (b) {
-                return b.id
-              }),
+            documents:filePath,
+            // branch:filterData.branch.map(function (b) {
+            //     return b.id
+            //   }),
+            branch:filterData.branch[0].id,
             // grades:[54],
             grade:filterData.grade.map((g)=>g.grade_id),
             mapping_bgs:filterData.section.map((s)=>s.id),
         user_id: selectionArray,
+        dairy_type:1
       },
       {
         headers: {
@@ -750,27 +760,32 @@ const FileRow = (props) => {
     </div>
   );
 };
-// useEffect(() => {
-//   if (
-//     selectedUsers.length &&
-//     !selectedUsers[pageno - 1].length &&
-//     selectedUsers[pageno - 1].first &&
-//     completeData.length
-//   ) {
-//     let tempSelection = [];
-//     tempSelection = selectedUsers;
-//     const newEnter = [{ pageNo: pageno, first: false, selected: [] }];
-//     completeData.forEach((items) => {
-//       if (items.selected) {
-//         newEnter[0].selected.push(items.id);
-//       }
-//     });
-//     tempSelection.splice(pageno - 1, 1, newEnter[0]);
-//     setSelectedUsers(tempSelection);
-//   }
-// }, [completeData, selectedUsers]);
+const handleEdited =()=>{
+   
+  axiosInstance.put(`${endpoints.circular.updateCircular}`,{
+      'circular_id':editData.id,
+      'circular_name':title,
+      'description':description,
+      'module_name':filterData.role.value
+  }).then(result=>{
+      if(result.data.status_code===200){
+          setState({...state,isEdit:false});
+          setTitle('')
+          setDescription('')
+          setAlert('success',result.data.message)
+      }else {
+          setAlert('error', result.data.message);
+      }
+  }).catch((error) => {
+      setAlert('error', error.data.message);
+  })
+
+  
+
+}
 
   return (
+    // console.log(editData,"editData")
     <>
       <Layout>
         <div className={isMobile ? 'breadCrumbFilterRow' : null}>
@@ -805,44 +820,7 @@ const FileRow = (props) => {
                 )}
               />
           </Grid>
-          {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-        <Autocomplete
-          style={{ width: '100%' }}
-          size='small'
-          onChange={handleBranch}
-          id='academic-year'
-          className='dropdownIcon'
-          value={filterData?.branch}
-          options={branchDropdown}
-          getOptionLabel={(option) => option?.branch_name}
-          filterSelectedOptions
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant='outlined'
-              label='Branch'
-              placeholder='Branch'
-            />
-          )}
-        />
-      </Grid> */}
-      {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-        <Autocomplete
-          style={{ width: '100%' }}
-          size='small'
-          onChange={handleGrade}
-          id='volume'
-          className='dropdownIcon'
-          value={filterData?.grade}
-          options={gradeDropdown}
-          getOptionLabel={(option) => option?.grade__grade_name}
-          filterSelectedOptions
-          renderInput={(params) => (
-            <TextField {...params} variant='outlined' label='Grade' placeholder='Grade' />
-          )}
-        />
-      </Grid> */}
-             <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                  <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
                 <Autocomplete
                     style={{ width: '100%' }}
                     size='small'
@@ -896,38 +874,7 @@ const FileRow = (props) => {
                     )}
                 />
             </Grid>
-      {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-        <Autocomplete
-          multiple
-          style={{ width: '100%' }}
-          size='small'
-          onChange={handleSection}
-          id='subj'
-          className='dropdownIcon'
-          // value={filterData?.subject}
-          options={sectionDropdown}
-          getOptionLabel={(option) => option?.section__section_name}
-          filterSelectedOptions
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant='outlined'
-              label='Section'
-              placeholder='Section'
-            />
-          )}
-        />
-      </Grid> */}
-         {/* <Grid xs={12} lg={4} className='create_group_items' item>
-                      {selectedGrades.length && sectionList.length ? (
-                        <CustomMultiSelect
-                          selections={selectedSections}
-                          setSelections={setSelectedSections}
-                          nameOfDropdown='Section'
-                          optionNames={section}
-                        />
-                      ) : null}
-                    </Grid> */}
+      
                         <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
                 <Autocomplete
                     style={{ width: '100%' }}
@@ -973,20 +920,23 @@ const FileRow = (props) => {
               aria-label='styled tabs example'
             >
               <StyledTab label={<Typography variant='h8'>Active Studnets</Typography>} />
-              <StyledTab label={<Typography variant='h8'>In-Active Students</Typography>} />
-            </StyledTabs>
-          </Grid>
-        </Grid>
-
-        <div className='create_group_select_all_wrapper'>
-                  <input
+              {/* <StyledTab label={<Typography variant='h8'>In-Active Students</Typography>} /> */}
+              <input
                     type='checkbox'
                     className='create_group_select_all_checkbox'
+                    style={{marginTop:'18px', marginLeft: '39px'}}
                     checked={selectAll}
                     onChange={handleSelectAll}
                   />
-                  <span>Select All</span>
-                </div>
+                  <span style={{marginTop:'15px', marginLeft: '7px'}}>Select All</span>
+            </StyledTabs>
+          </Grid>
+        
+        </Grid>
+
+        {/* <div className='create_group_select_all_wrapper'>
+                
+                </div> */}
         <span className='create_group_error_span'>{selectectUserError}</span>
               <CustomSelectionTable
                 header={headers}
@@ -998,9 +948,12 @@ const FileRow = (props) => {
                 selectedUsers={selectedUsers}
                 changePage={setPageno}
                 setSelectedUsers={setSelectedUsers}
+                onChangePage={handleChangePage}
+                page={pageno-1}
+                count={totalPage}
                 pageSize={5}
               />
-            
+
 
         {/* <<<<<<<<<< EDITOR PART  >>>>>>>>>> */}
         <div>
@@ -1014,8 +967,8 @@ const FileRow = (props) => {
                     rows="1"
                     color='secondary'
                     style={{ width: "100%",marginTop:'1.25rem'}}
-                    // defaultValue="Default Value"
-                    value={title}
+                    defaultValue={state.isEdit?editData.title : []}
+                    // value={title}
                     variant="outlined"
                     onChange={e=> setTitle(e.target.value)}
                 />
@@ -1028,8 +981,8 @@ const FileRow = (props) => {
                     rows="6"
                     color='secondary'
                     style={{ width: "100%" }}
-                    // defaultValue="Default Value"
-                    value={description}
+                    defaultValue={state.isEdit?editData.description : []}
+                    // value={description}
                     variant="outlined"
                     onChange={e=> setDescription(e.target.value)}
                 />
@@ -1083,7 +1036,7 @@ const FileRow = (props) => {
 
         </div>
         <div >
-            <Button onClick={handleSubmit} className='submit_button'>SUBMIT</Button>
+        <Button onClick={state.isEdit? handleEdited : handleSubmit} className='submit_button'>SUBMIT</Button>
         </div>
         </div>
       </Layout>

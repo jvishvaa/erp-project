@@ -15,8 +15,7 @@ import selectfilter from '../../assets/images/selectfilter.svg';
 import GeneralDairyFilter from './filterdata';
 import PeriodCard from './dairy-card'
 import ViewMoreCard from './view-more-card'
-import {Context} from './context/context'
-
+import GeneralDairyStudentView from './generalDairyStudentView'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -31,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const GeneralDairyList = () => {
+const GeneralDairyStudentList = () => {
     const classes = useStyles();
     const { setAlert } = useContext(AlertNotificationContext);
     const [page, setPage] = useState(1);
@@ -46,8 +45,6 @@ const GeneralDairyList = () => {
     const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
     const [periodColor, setPeriodColor] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(-1);
-    const [state,setState] = useContext(Context)
-
 
     const handlePagination = (event, page) => {
         setPage(page);
@@ -60,7 +57,7 @@ const GeneralDairyList = () => {
         axiosInstance
             .get(
                 `${endpoints.generalDairy.dairyList
-                }?branch=${branchId}&grades=${gradeId}&sections=${sectionIds}&page=${page}&start_date=${startDate.format(
+                }?page=${page}&start_date=${startDate.format(
                     'YYYY-MM-DD'
                 )}&end_date=${endDate.format('YYYY-MM-DD')}&dairy_type=${1}`
             )
@@ -91,10 +88,9 @@ const GeneralDairyList = () => {
                         <CommonBreadcrumbs componentName='General Dairy' />
                     </div>
                 </div>
-                <GeneralDairyFilter
+                <GeneralDairyStudentView
                  handleDairyList={handleDairyList}
                  setPeriodData={setPeriodData}
-                 setCurrentTab={setCurrentTab}
                   />
                 <Paper className={classes.root}>
                     {periodData?.length > 0 ? (
@@ -190,4 +186,4 @@ const GeneralDairyList = () => {
     );
 };
 
-export default GeneralDairyList;
+export default GeneralDairyStudentList;
