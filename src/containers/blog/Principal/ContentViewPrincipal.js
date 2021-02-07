@@ -234,8 +234,6 @@ if (result.data.status_code === 200) {
     const loginUser=likedUserIds.includes(roleDetails.user_id)
     const isLiked = loginUser ? blogFkLike[indexOfLoginUser].is_liked : false
     const name =data && data.author && data.author.id
-    console.log(loginUserName,name,"@@@@")
-    console.log(tabValue,"@@@")
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>

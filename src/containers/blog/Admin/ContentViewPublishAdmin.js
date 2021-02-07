@@ -166,7 +166,7 @@ class ContentViewPublish extends Component {
       .put(`${endpoints.blog.Blog}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
-          this.context.setAlert('sucess',"sucessfully submitted revision feedback")
+          this.context.setAlert('success',"successfully submitted revision feedback")
 
           this.props.history.push({
             pathname: '/blog/admin',
@@ -197,7 +197,7 @@ class ContentViewPublish extends Component {
       .put(`${endpoints.blog.Blog}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
-          this.context.setAlert('sucess',"published sucessfully")
+          this.context.setAlert('success',"published successfully")
 
           this.props.history.push({
             pathname: '/blog/admin/publish/view',
@@ -245,7 +245,7 @@ class ContentViewPublish extends Component {
   .then(result=>{
   if (result.data.status_code === 200) {
     this.setState({loading:false})
-    this.context.setAlert('sucess',"unpublished sucessfully")
+    this.context.setAlert('success',"unpublished successfully")
     this.props.history.push({
       pathname: '/blog/admin',
     });
@@ -303,7 +303,6 @@ class ContentViewPublish extends Component {
     const loginUser=likedUserIds.includes(roleDetails.user_id)
     const isLiked = loginUser ? blogFkLike[indexOfLoginUser].is_liked : false
     const name =data && data.author && data.author.id
-    console.log(data,"@@@@@@@")
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>

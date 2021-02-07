@@ -31,7 +31,6 @@ class Review extends Component {
 
   componentDidMount () {
     if (this.props.ratingParameters().length) {
-      console.log(this.props.ratingParameters(),typeof(this.props.ratingParameters()),"@@@@@")
       this.setState({ ratingParameters: this.props.ratingParameters(), overallRemark: this.props.overallRemark() })
     } else {
       this.setState({ ratingParameters: this.getStaticParamters() })
@@ -86,7 +85,6 @@ class Review extends Component {
 
 
   handleSubmit = () => {
-    console.log(this.props,"@@@@@@@@")
     const { blogId } = this.props
     const { overallRemark, ratingParameters } = this.state
     const formData = new FormData()
