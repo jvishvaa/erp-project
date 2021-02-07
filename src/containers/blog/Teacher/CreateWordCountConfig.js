@@ -212,17 +212,17 @@ const CreateWordCountConfig = () => {
                 <Card className={classes.root} >
                 <CardHeader
                 style={{padding:'0px'}}
-                action=       {
-<IconButton
-                  title='Delete'
-                  onClick={()=>handleDelete(item)}
+//                 action=       {
+// <IconButton
+//                   title='Delete'
+//                   onClick={()=>handleDelete(item)}
                   
-                >
-                  <DeleteOutlinedIcon
-                    style={{ color: themeContext.palette.primary.main }}
-                  />
-                </IconButton>
-              }
+//                 >
+//                   <DeleteOutlinedIcon
+//                     style={{ color: themeContext.palette.primary.main }}
+//                   />
+//                 </IconButton>
+//               }
               subheader={
                 <Typography
                   gutterBottom

@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Grid, Button } from '@material-ui/core'
 import { withRouter } from 'react-router-dom';
 
-// import Close from '@material-ui/icons/Close'
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 

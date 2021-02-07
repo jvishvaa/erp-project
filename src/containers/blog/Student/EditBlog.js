@@ -105,7 +105,7 @@ class EditBlog extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      image :'',
+      // image :'',
       // files:[],
       relatedBlog: true,
       starsRating: 0,
@@ -227,10 +227,10 @@ class EditBlog extends Component {
   
   onDrop = (files=[]) => {
     if (!this.isImage(files)) {
-      this.props.alert.warning('Please select only image file format')
+      this.context.setAlert('error',"Please select only image file format")
       return
     } else if (files.length > 1) {
-      this.props.alert.warning('You can select only a single image at once')
+      this.context.setAlert('error',"You can select only a single image at once")
       return
     }
   
@@ -387,18 +387,20 @@ class EditBlog extends Component {
                     <Typography style={{ margin: 10 }} variant='body1'>
                       Add Thumbnail (Optional)
                     </Typography>
-                    {/* {
+                    {
                 image
                   ? <Grid item style={{ position: 'relative' }}>
                     <HighlightOff
-                      className='thumbnail'
+                      style={{ position: 'absolute',
+                      left: '100px',
+                      color: '#e74c3c'}}
                       onClick={this.handleClearThumbnail}
                     />
                     <label className='blogForm' />
-                    <img className='thumbnailImage' src={image} />
+                    <img style={{width:'100px'}} src={image} />
                   </Grid>
                   : ''
-              } */}
+              }
                     <Card className={classes.Card}>
                       <Dropzone onDrop={this.onDrop}>
                         {({

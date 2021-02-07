@@ -90,11 +90,11 @@ const CreateGenre = () => {
       setAlert('success', result.data.message);
     } else {        
       setLoading(false);
-      setAlert('error', result.data.message);
+      setAlert('error', "duplicates not allowed");
     }
     }).catch((error)=>{
       setLoading(false);        
-      setAlert('error', error.message);
+      setAlert('error', "duplicates not allowed");
     })
     };
 
@@ -156,17 +156,17 @@ const CreateGenre = () => {
           <Card className={classes.root} >
           <CardHeader
           style={{padding:'0px'}}
-          action=       {
-  <IconButton
-            title='Delete'
-            onClick={()=>handleDelete(item)}
+  //         action=       {
+  // <IconButton
+  //           title='Delete'
+  //           onClick={()=>handleDelete(item)}
             
-          >
-            <DeleteOutlinedIcon
-              style={{ color: themeContext.palette.primary.main }}
-            />
-          </IconButton>
-        }
+  //         >
+  //           <DeleteOutlinedIcon
+  //             style={{ color: themeContext.palette.primary.main }}
+  //           />
+  //         </IconButton>
+  //       }
         subheader={
           <Typography
             gutterBottom
