@@ -79,7 +79,6 @@ class BlogView extends Component {
       currentLikes: 0,
       loading:false,
       likes: this.props.location.state.data && this.props.location.state.data.likes,
-      loginUserName : JSON.parse(localStorage.getItem('userDetails')).erp_user_id,
       roleDetails: JSON.parse(localStorage.getItem('userDetails')),
 blogRatings :this.props.location.state.data && this.props.location.state.data.remark_rating,
       overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark,
@@ -89,42 +88,6 @@ blogRatings :this.props.location.state.data && this.props.location.state.data.re
     let {blogId} = this.state
     this.handleView(blogId)
   }
-  getLikeStatus = (isLiked) => {
-    let { likeStatus,likes }=this.state
-    if (isLiked === true && likeStatus === false) {
-      this.setState({currentLikes :likes-1,likeStatus:true})
-    } else if (isLiked === true && likeStatus === true) {
-      this.setState({currentLikes :likes+1,likeStatus:false})
-  
-    } else if (isLiked === false && likeStatus === false) {
-      this.setState({currentLikes :likes+1,likeStatus:true})
-  
-    } else if (isLiked === false && likeStatus === true) {
-      this.setState({currentLikes :likes,likeStatus:false})
-  
-    }
-  }
-  handleLike = (isLiked,blogId) => {
-    this.getLikeStatus(isLiked)
-    let requestData = {
-      "blog_id": blogId ,
-  
-    }
-  axios.post(`${endpoints.blog.BlogLike}`, requestData)
-  
-  .then(result=>{
-  if (result.data.status_code === 200) {
-    this.setState({loading:false})
-    // setAlert('success', result.data.message);
-  } else {        
-    this.setState({loading:false})
-    // setAlert('error', result.data.message);
-  }
-  }).catch((error)=>{
-    this.setState({loading:false})
-    // setAlert('error', error.message);
-  })
-    }
 
   handleView = (blogId) => {
     let requestData = {
@@ -295,14 +258,10 @@ getOverAllRemark = () => {
 
                         </CardContent>
                         <CardActions>
-                        {loginUserName !== name && tabValue !== 3 ? <Button
-                              style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' ,color:'red' ,backgroundColor:'white'}}
-                              onClick={()=>this.handleLike(isLiked,data.id)}
-                            > {isLiked || likeStatus ? <Favorite style={{ color: '#ff6b6b' }} />
-                                : <FavoriteBorder style={{ color: '#ff6b6b' }} />} {currentLikes === 0 ? likes
-                                : currentLikes
-                              }Likes
-                            </Button> : ''} &nbsp;&nbsp;&nbsp;
+                        <Button                               style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' ,color:'red' ,backgroundColor:'white'}}
+>
+                    <Favorite style={{ color: 'red' }} />{likes}likes</Button>
+ &nbsp;&nbsp;&nbsp;
                             <Button
                               style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' ,color:'red' ,backgroundColor:'white'}}
 
