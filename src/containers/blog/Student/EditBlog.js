@@ -431,6 +431,7 @@ class EditBlog extends Component {
                                 )}
                                 
                               </div>
+                              {this.handleClearThumbnail()}
                               {this.getFileNameAndSize(files)}
                               {/* {files} */}
                             </CardContent>

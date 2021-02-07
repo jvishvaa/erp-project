@@ -16,9 +16,9 @@ import {
   Divider,
   TextField,
 } from '@material-ui/core';
-import Rating from '@material-ui/lab/Rating';
+import ReactHtmlParser from 'react-html-parser'
+
 import Avatar from '@material-ui/core/Avatar';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { withRouter } from 'react-router-dom';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
@@ -167,7 +167,7 @@ class PreviewEditBlog extends Component {
                         />
                         <CardContent>
                           <Typography variant='body2' color='textSecondary' component='p'>
-                            {this.state.content}
+                          {ReactHtmlParser(this.state.content)}
                           </Typography>
                           
                         </CardContent>

@@ -295,7 +295,7 @@ getOverAllRemark = () => {
 
                         </CardContent>
                         <CardActions>
-                        {loginUserName !== name ? <Button
+                        {loginUserName !== name && tabValue !== 3 ? <Button
                               style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' ,color:'red' ,backgroundColor:'white'}}
                               onClick={()=>this.handleLike(isLiked,data.id)}
                             > {isLiked || likeStatus ? <Favorite style={{ color: '#ff6b6b' }} />

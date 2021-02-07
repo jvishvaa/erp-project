@@ -5,7 +5,7 @@ import Layout from '../../Layout'
 import {  TextField, Grid, Button, useTheme,Tabs, Tab ,Typography, Card, CardContent,CardHeader} from '@material-ui/core'
 import moment from 'moment';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
-
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -13,6 +13,8 @@ import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import Loading from '../../../components/loader/loader';
 import IconButton from '@material-ui/core/IconButton';
+import Popover from '@material-ui/core/Popover';
+import DialogActions from '@material-ui/core/DialogActions';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,10 +57,10 @@ const useStyles = makeStyles((theme) => ({
 
 const CreateGenre = () => {
   const classes = useStyles()
-
   const [currentTab,setCurrentTab] =useState(0)
   const [genreActiveListRes,setGenreActiveListResponse] = useState('');
   const [genreInActiveListRes,setGenreInActiveListResponse] = useState('');
+  const [genreNameEdit,setGenreNameEdit] =useState('');
 
   const [genreName,setGenreName] =useState('');
   const { setAlert } = useContext(AlertNotificationContext);
@@ -68,7 +70,7 @@ const CreateGenre = () => {
   const wider = isMobile ? '-10px 0px' : '0 0 -1rem 1.5%'
   const widerWidth = isMobile ? '90%' : '85%'
 
-  
+  const [anchorEl, setAnchorEl] = React.useState(null);
   
   
 
@@ -88,6 +90,8 @@ const CreateGenre = () => {
     if (result.data.status_code === 200) {
       setLoading(false);
       setAlert('success', result.data.message);
+      getGenreList();
+   getGenreInActiveList();
     } else {        
       setLoading(false);
       setAlert('error', "duplicates not allowed");
@@ -97,10 +101,45 @@ const CreateGenre = () => {
       setAlert('error', "duplicates not allowed");
     })
     };
+    const handleEditSubmit = (item) => {
+      setLoading(true);
+      let requestData= {}
+     
+        requestData = {
+          "genre_id":item.id,
+          "genre":genreNameEdit,
+        }
+    
+  
+      axiosInstance.put(`${endpoints.blog.genreList}`, requestData)
+  
+      .then(result=>{
+      if (result.data.status_code === 200) {
+        setLoading(false);
+        setAlert('success', result.data.message);
+      } else {        
+        setLoading(false);
+        setAlert('error', "duplicates not allowed");
+      }
+      }).catch((error)=>{
+        setLoading(false);        
+        setAlert('error', "duplicates not allowed");
+      })
+      };
 
     const handleTabChange = (event,value) =>{
       setCurrentTab(value)
     }
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
+  
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+  
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
 
     const activeTabContent = () =>{
       return <div>
@@ -112,6 +151,7 @@ const CreateGenre = () => {
         <CardHeader
         style={{padding:'0px'}}
         action=       {
+          <Typography>
 <IconButton
           title='Delete'
           onClick={()=>handleDelete(item)}
@@ -121,6 +161,60 @@ const CreateGenre = () => {
             style={{ color: themeContext.palette.primary.main }}
           />
         </IconButton>
+        {/* <IconButton
+          title='edit'
+          onClick={handleClick}          
+        >
+          <EditOutlinedIcon
+            style={{ color: themeContext.palette.primary.main }}
+          />
+        </IconButton> */}
+        {/* <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <Grid container>
+          <Grid item xs={12}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+              <TextField
+                id='outlined-helperText'
+                label='Genre Name'
+                defaultValue={item&&item.genre}
+                variant='outlined'
+                style={{ width: '100%' }}
+                inputProps={{ maxLength: 20 }}
+                onChange={(event,value)=>{handleGenreNameEditChange(event);}}
+                color='secondary'
+                size='small'
+              />
+          </Grid>
+          <Grid item xs={12} >
+            <Button
+              variant='contained'
+              style={{ color: 'white' }}
+              color="primary"
+              className="custom_button_master"
+              size='medium'
+              type='submit'
+              onClick={()=>handleEditSubmit(item)}
+              disabled={!genreNameEdit}
+            >
+              Save
+        </Button>
+          </Grid>
+        </Grid>
+      </Popover> */}
+        </Typography>
+       
       }
       subheader={
         <Typography
@@ -135,8 +229,8 @@ const CreateGenre = () => {
       }
         />
 <CardContent  style={{ pagging:'1px'}}>
-<Typography  className={classes.typoStyle}>GenreName: {item.genre} </Typography> 
-  <Typography   className={classes.typoStyle}>CreatedBy : {item.created_by.first_name}</Typography>
+<Typography  className={classes.typoStyle}>Genre Name: {item.genre} </Typography> 
+  <Typography   className={classes.typoStyle}>Created By : {item.created_by.first_name}</Typography>
 </CardContent>
         </Card>                        
         </Grid>
@@ -156,17 +250,6 @@ const CreateGenre = () => {
           <Card className={classes.root} >
           <CardHeader
           style={{padding:'0px'}}
-  //         action=       {
-  // <IconButton
-  //           title='Delete'
-  //           onClick={()=>handleDelete(item)}
-            
-  //         >
-  //           <DeleteOutlinedIcon
-  //             style={{ color: themeContext.palette.primary.main }}
-  //           />
-  //         </IconButton>
-  //       }
         subheader={
           <Typography
             gutterBottom
@@ -180,8 +263,8 @@ const CreateGenre = () => {
         }
           />
   <CardContent  style={{ pagging:'1px'}}>
-  <Typography  className={classes.typoStyle}>GenreName: {item.genre} </Typography> 
-  <Typography   className={classes.typoStyle}>CreatedBy : {item.created_by.first_name}</Typography> 
+  <Typography  className={classes.typoStyle}>Genre Name: {item.genre} </Typography> 
+  <Typography   className={classes.typoStyle}>Created By : {item.created_by.first_name}</Typography> 
   </CardContent>
           </Card>                        
           </Grid>
@@ -205,7 +288,7 @@ const CreateGenre = () => {
       setLoading(false);
       setAlert('success', result.data.message);
       getGenreList();
-   getGenreInActiveList();
+      getGenreInActiveList();
     } else {        
       setLoading(false);
       setAlert('error', result.data.message);
@@ -215,12 +298,6 @@ const CreateGenre = () => {
       setAlert('error', error.message);
     })
   };
-    // const EditGenreNav = (item) => {
-      //     this.props.history.push({
-      //       pathname: '/blog/create/genre',
-      //       state: { item },
-      //     });
-      //   };
         
   const decideTab =() => {
     if (currentTab === 0) {
@@ -231,6 +308,9 @@ const CreateGenre = () => {
   }
 const handleGenreNameChange = (e) => {
   setGenreName(e.target.value);
+};
+const handleGenreNameEditChange = (e) => {
+  setGenreNameEdit(e.target.value);
 };
 
 useEffect(() => {

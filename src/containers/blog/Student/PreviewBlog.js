@@ -78,6 +78,7 @@ class ContentView extends Component {
       date: this.props.location.state.creationDate,
       files: this.props.location.state.files,
       genreName:this.props.location.state.genreName,
+      genreObj:this.props.location.state.genreObj
     };
   }
 
@@ -88,10 +89,10 @@ class ContentView extends Component {
   }
 
   WriteBlogNav = () => {
-    const { content, title, files ,genreId,genreName} = this.state;
+    const { content, title, files ,genreId,genreName,genreObj} = this.state;
     this.props.history.push({
       pathname: '/blog/student/write-blog',
-      state: { content, title, files,genreId , genreName},
+      state: { content, title, files,genreId , genreName,genreObj},
     });
   };
 
