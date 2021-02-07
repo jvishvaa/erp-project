@@ -52,7 +52,7 @@ function GridList(props) {
               display:data.length >= 1 ? 'flex' : 'none',
               flexDirection: 'column',
               justifyContent: 'space-between',
-              backgroundSize: '360px',
+              backgroundSize: '520px 290px',
               backgroundImage: `url(${data[0] && data[0].thumbnail})`,
               borderRadius: 10,
 
@@ -403,7 +403,7 @@ function GridList(props) {
               display:data.length >= 6 ? 'flex' : 'none',
               flexDirection: 'column',
               justifyContent: 'space-between',
-              backgroundSize: '360px',
+              backgroundSize: '520px 290px',
               backgroundImage: `url(${data[5] && data[5].thumbnail})`,
               borderRadius: 10,
               backgroundRepeat: 'no-repeat',

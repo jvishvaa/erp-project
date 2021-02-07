@@ -72,8 +72,8 @@ function GridList(props) {
                 className={classes.card}
                 style={{
                   width: '100%',
-                  height: '278px',
-                  backgroundSize: '100%',
+                  height: '290px',
+                  backgroundSize: '520px 290px',
                   backgroundImage: `url(${data[0] && data[0].thumbnail})`,
                   display:data.length >= 1 ? 'flex' : 'none',
                   flexDirection: 'column',
@@ -464,8 +464,8 @@ function GridList(props) {
                   justifyContent: 'space-between',
                   backgroundImage: `url(${data[5] && data[5].thumbnail})`,
                   borderRadius: 10,
-                  height: '278px',
-                  backgroundSize: '100%',
+                  height: '290px',
+                  backgroundSize: '520px 290px',
                   backgroundRepeat: 'no-repeat',
 
                 }}
