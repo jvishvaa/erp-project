@@ -190,7 +190,7 @@ if (result.data.status_code === 200) {
       .then((result) => {
         if (result.data.status_code === 200) {
           this.props.history.push({
-            pathname: '/blog/teacher',
+            pathname: '/blog/admin',
           });
         } else {
           console.log(result.data.message);
@@ -218,7 +218,7 @@ if (result.data.status_code === 200) {
       .then((result) => {
         if (result.data.status_code === 200) {
           this.props.history.push({
-            pathname: '/blog/teacher',
+            pathname: '/blog/admin',
           });
         } else {
           console.log(result.data.message);
@@ -364,6 +364,7 @@ if (result.data.status_code === 200) {
                           </Button>  : ''
 
                           }
+
                         </CardActions>
                       </Card>
                     </Grid>

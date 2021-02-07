@@ -153,7 +153,7 @@ class ContentViewPublish extends Component {
       .then((result) => {
         if (result.data.status_code === 200) {
           this.props.history.push({
-            pathname: '/blog/teacher',
+            pathname: '/blog/principal',
           });
         } else {
           console.log(result.data.message);
@@ -182,7 +182,7 @@ class ContentViewPublish extends Component {
       .then((result) => {
         if (result.data.status_code === 200) {
           this.props.history.push({
-            pathname: '/blog/teacher/publish/view',
+            pathname: '/blog/principal/publish/view',
           });
         } else {
           console.log(result.data.message);

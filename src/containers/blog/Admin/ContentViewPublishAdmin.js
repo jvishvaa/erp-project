@@ -27,6 +27,7 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import Layout from '../../Layout';
 import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
 import ReviewPrincipal from '../Principal/ReviewPrincipal';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 const styles = (theme) => ({
   root: {
@@ -127,6 +128,8 @@ class ContentViewPublish extends Component {
     };
 
   }
+  static contextType = AlertNotificationContext
+
   componentDidMount() {
     let {blogId} = this.state
     this.handleView(blogId)
@@ -163,8 +166,10 @@ class ContentViewPublish extends Component {
       .put(`${endpoints.blog.Blog}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
+          this.context.setAlert('sucess',"sucessfully submitted revision feedback")
+
           this.props.history.push({
-            pathname: '/blog/teacher',
+            pathname: '/blog/admin',
           });
         } else {
           console.log(result.data.message);
@@ -192,8 +197,10 @@ class ContentViewPublish extends Component {
       .put(`${endpoints.blog.Blog}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
+          this.context.setAlert('sucess',"published sucessfully")
+
           this.props.history.push({
-            pathname: '/blog/teacher/publish/view',
+            pathname: '/blog/admin/publish/view',
           });
         } else {
           console.log(result.data.message);
@@ -228,7 +235,28 @@ class ContentViewPublish extends Component {
     }
   }
 
+  handelUnpublish = (blogId) => {
+    let requestData = {
+      "blog_id": blogId ,
+      "status": "6"
+    }
+  axios.put(`${endpoints.blog.Blog}`, requestData)
+  
+  .then(result=>{
+  if (result.data.status_code === 200) {
+    this.setState({loading:false})
+    this.context.setAlert('sucess',"unpublished sucessfully")
+    this.props.history.push({
+      pathname: '/blog/admin',
+    });
 
+  } else {        
+    this.setState({loading:false})
+  }
+  }).catch((error)=>{
+    this.setState({loading:false})
+  })
+    }
   handleLike = (isLiked,blogId) => {
     this.getLikeStatus(isLiked)
     let requestData = {
@@ -366,6 +394,17 @@ class ContentViewPublish extends Component {
                           </Button> :''
 
                           }
+                           {tabValue !== 0 ?
+                        
+                        <Button
+                          size='small'
+                          color='primary'
+                          onClick={() => this.handelUnpublish(data.id)}
+                        >
+                          Un Publish
+                        </Button> :''
+
+                        }
                         </CardActions>
                       </Card>
                     </Grid>

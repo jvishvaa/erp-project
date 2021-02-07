@@ -76,7 +76,7 @@ class StudentPublishBlogView extends Component {
       pageNo: 0,
       pageSize: 6,
       startDate :moment().format('YYYY-MM-DD'),
-      status :[4,7]
+      status :[4]
     };
   }
   componentDidMount() {
