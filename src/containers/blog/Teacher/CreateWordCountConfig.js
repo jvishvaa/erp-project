@@ -128,11 +128,11 @@ const CreateWordCountConfig = () => {
       setAlert('success', result.data.message);
     } else {        
       setLoading(false);
-      setAlert('error', "word config already exiting for this grade");
+      setAlert('error', "word config already existing for this grade");
     }
     }).catch((error)=>{
       setLoading(false);        
-      setAlert('error', "word config already exiting for this grade");
+      setAlert('error', "word config already existing for this grade");
     }) }
     };
     useEffect(() => {
