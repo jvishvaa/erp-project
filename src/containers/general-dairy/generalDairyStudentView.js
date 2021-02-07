@@ -1,50 +1,21 @@
 import React, { useContext, useEffect, useState, useStyles } from 'react';
 import Divider from '@material-ui/core/Divider';
 import {useHistory} from 'react-router-dom'
-import { Grid, TextField, Button, useTheme, withStyles, Tabs, Tab, Typography} from '@material-ui/core';
+import { Grid, TextField, Button, useTheme } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-import endpoints from '../../../config/endpoints';
-import axiosInstance from '../../../config/axios';
+import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import endpoints from '../../config/endpoints';
+import axiosInstance from '../../config/axios';
 import axios from 'axios';
 import moment from 'moment';
 import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 // import './lesson-report.css';
 
-const StyledTabs = withStyles({
-  indicator: {
-    display: 'flex',
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-    '& > span': {
-      maxWidth: 85,
-      width: '80%',
-      backgroundColor: '#ff6b6b',
-    },
-  },
-})((props) => <Tabs {...props} TabIndicatorProps={{ children: <span /> }} />);
-
-const StyledTab = withStyles((theme) => ({
-  root: {
-    textTransform: 'none',
-    color: '#014b7e',
-    fontWeight: theme.typography.fontWeightRegular,
-    fontSize: theme.typography.pxToRem(15),
-    marginRight: theme.spacing(0),
-    '&:focus': {
-      opacity: 1,
-    },
-  },
-}))((props) => <Tab disableRipple {...props} />);
-
-
-
-const GeneralDairyFilter = ({
+const GeneralDairyStudentView = ({
   handleDairyList,
   setPeriodData,
-  setCurrentTab,
   setViewMore,
   setViewMoreData,
 }) => {
@@ -62,10 +33,6 @@ const GeneralDairyFilter = ({
 //   const [subjectIds, setSubjectIds] = useState([]);
 const [sectionIds,setSectionIds] = useState([])
   const [branchId, setBranchId] = useState('');
-  const [currentTab, setCurrentTab] = useState(0);
-  const [isEmail, setIsEmail] = useState(false);
-  const [selectAll, setSelectAll] = useState(false);
-
 
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [selectedCol, setSelectedCol] = useState({});
@@ -115,13 +82,6 @@ const history=useHistory()
     setSectionDropdown([]);
     // setViewMoreData({});
     // setViewMore(false);
-  };
-  const handleTabChange = (event, tab) => {
-    debugger
-    setCurrentTab(tab);
-    setIsEmail(!isEmail);
-    
-  
   };
 
   const handleGrade = (event, value) => {
@@ -217,7 +177,7 @@ const history=useHistory()
       spacing={isMobile ? 3 : 5}
       style={{ width: widerWidth, margin: wider }}
     >
-      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+      {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <Autocomplete
           style={{ width: '100%' }}
           size='small'
@@ -237,8 +197,8 @@ const history=useHistory()
             />
           )}
         />
-      </Grid>
-      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+      </Grid> */}
+      {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <Autocomplete
           style={{ width: '100%' }}
           size='small'
@@ -253,8 +213,8 @@ const history=useHistory()
             <TextField {...params} variant='outlined' label='Grade' placeholder='Grade' />
           )}
         />
-      </Grid>
-      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+      </Grid> */}
+      {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <Autocomplete
           multiple
           style={{ width: '100%' }}
@@ -275,7 +235,7 @@ const history=useHistory()
             />
           )}
         />
-      </Grid>
+      </Grid> */}
       <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <LocalizationProvider dateAdapter={MomentUtils}>
           <DateRangePicker
@@ -308,7 +268,6 @@ const history=useHistory()
       <Grid item xs={12} sm={12}>
         <Divider />
       </Grid>
-      
       <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
@@ -332,7 +291,7 @@ const history=useHistory()
           FILTER
         </Button>
       </Grid>
-      <Grid item xs={6} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
+      {/* <Grid item xs={6} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
           style={{ color: 'white' }}
@@ -344,8 +303,8 @@ const history=useHistory()
         >
           CREATE GENERAL DAIRY
         </Button>
-      </Grid>
-      <Grid item xs={6} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
+      </Grid> */}
+      {/* <Grid item xs={6} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
           style={{ color: 'white' }}
@@ -353,24 +312,12 @@ const history=useHistory()
           className='custom_button_master'
           size='medium'
           type='submit'
-          onClick={()=>history.push("/create/daily-dairy")}
+          onClick={()=>history.push("/create/general-dairy")}
         >
           CREATE DAILY DAIRY
         </Button>
-      </Grid>
-      <Grid item xs={12} sm={6}>
-            <StyledTabs
-              variant='standard'
-              value={currentTab}
-              onChange={handleTabChange}
-              aria-label='styled tabs example'
-            >
-              <StyledTab label={<Typography variant='h8'>All</Typography>} />
-              <StyledTab label={<Typography variant='h8'>Daily Dairy</Typography>} />
-              <StyledTab label={<Typography variant='h8'>General Dairy</Typography>} />
-            </StyledTabs>
-          </Grid>
+      </Grid> */}
     </Grid>
   );
 };
-export default GeneralDairyFilter;
+export default GeneralDairyStudentView;

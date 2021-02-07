@@ -71,9 +71,12 @@ import CreateDiscussionForum from './containers/discussionForum/createDiscussion
 import CircularList from './containers/circular';
 import CreateCircular from './containers/circular/create-circular';
 import CircularStore from './containers/circular/context/CircularStore';
+import GeneralDairyStore from './containers/general-dairy/context/context'
 import Subjectgrade from './containers/subjectGradeMapping';
 import ListandFilter from './containers/subjectGradeMapping/listAndFilter';
 import GeneralDairyList from './containers/general-dairy';
+import GeneralDairyStudentView from './containers/general-dairy/generalDairyStudentView';
+import GeneralDairyStudentList from './containers/general-dairy/generalDairyStudnet'
 import CreateGeneralDairy from './containers/general-dairy/create-dairy';
 import CreateDailyDairy from './containers/daily-dairy/create-daily-dairy';
 import DailyDairyList from './containers/daily-dairy/list-daily-dairy'
@@ -134,6 +137,7 @@ function App() {
           <OnlineclassViewProvider>
             <ThemeProvider theme={theme}>
               <CircularStore>
+                <GeneralDairyStore>
                 <ViewStore>
                   <DailyDairyStore>
 
@@ -334,6 +338,9 @@ function App() {
                     <Route exact path='/general-dairy'>
                       {({ match }) => <GeneralDairyList match={match} />}
                     </Route>
+                    <Route exact path='/general-dairy/student-view'>
+                      {({ match }) => <GeneralDairyStudentList match={match} />}
+                    </Route>
                     <Route exact path='/create/general-dairy'>
                       {({ match }) => <CreateGeneralDairy match={match} />}
                     </Route>
@@ -358,6 +365,7 @@ function App() {
                   </Switch>
                   </DailyDairyStore>
                 </ViewStore>
+                </GeneralDairyStore>
               </CircularStore>
             </ThemeProvider>
           </OnlineclassViewProvider>
