@@ -59,7 +59,7 @@ const styles = (theme) => ({
   media: {
     height: 300,
     borderRadius: 16,
-    backgroundSize:'500px'
+    backgroundSize:380
   },
   author: {
     marginTop: 20,
@@ -98,7 +98,7 @@ class BlogView extends Component {
       currentLikes: 0,
       loading:false,
       likes: this.props.location.state.data && this.props.location.state.data.likes,
-      loginUserName : JSON.parse(localStorage.getItem('userDetails')).first_name,
+      loginUserName : JSON.parse(localStorage.getItem('userDetails')).erp_user_id,
       roleDetails: JSON.parse(localStorage.getItem('userDetails')),
 blogRatings :this.props.location.state.data && this.props.location.state.data.remark_rating,
       overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark,
@@ -181,29 +181,7 @@ getOverAllRemark = () => {
     this.setState({ comment: event.target.value });
   };
 
-  submitComment = (type) => {
-    if (type === 'Submit') {
-      const { comment, blogId } = this.state;
-      const formData = new FormData();
-      // formData.set('blog_id', blogId);
-      formData.set('content', 7);
-      formData.set('comment', comment);
-
-      axios
-        .post(`${endpoints.blog.Blog}`, formData)
-        .then((result) => {
-          if (result.data.status_code === 200) {
-            this.props.history.push({
-              pathname: '/blog/student/dashboard',
-            });
-          } else {
-            console.log(result.data.message);
-          }
-        })
-        .catch((error) => {
-        });
-    }
-  };
+ 
   EditBlogNav = () => {
     const { data } = this.state;
     let content=data && data.content
@@ -253,7 +231,7 @@ getOverAllRemark = () => {
     const indexOfLoginUser=likedUserIds.indexOf(roleDetails.user_id)
     const loginUser=likedUserIds.includes(roleDetails.user_id)
     const isLiked = loginUser ? blogFkLike[indexOfLoginUser].is_liked : false
-    const name =data && data.author && data.author.first_name
+    const name =data && data.author && data.author.id
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -313,7 +291,7 @@ getOverAllRemark = () => {
                       >Comment:{data.comment}
                      
                       </Typography>
-                      <Typography> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
+                      <Typography  style={{fontSize:'12px'}}> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
                       </CardContent>  :''}
                         <CardHeader
                           className={classes.author}

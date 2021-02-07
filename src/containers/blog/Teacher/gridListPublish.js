@@ -52,9 +52,10 @@ function GridListPublish(props) {
               display:data.length >= 1 ? 'flex' : 'none',
               flexDirection: 'column',
               justifyContent: 'space-between',
-              backgroundSize: '360px',
+              backgroundSize: '580px 300px',
               backgroundImage: `url(${data[0] && data[0].thumbnail})`,
               borderRadius: 10,
+              backgroundRepeat: 'no-repeat',
 
             }}
             className={classes.card} >
@@ -125,6 +126,7 @@ function GridListPublish(props) {
                 backgroundSize: '360px',
                 backgroundImage: `url(${data[1] && data[1].thumbnail})`,
                 borderRadius: 10,
+                backgroundRepeat: 'no-repeat',
 
               }}>
                 <CardHeader
@@ -190,6 +192,7 @@ function GridListPublish(props) {
                   backgroundSize: '360px',
                   backgroundImage: `url(${data[2] && data[2].thumbnail})`,
                   borderRadius: 10,
+                  backgroundRepeat: 'no-repeat',
 
                 }}
               >
@@ -259,6 +262,7 @@ function GridListPublish(props) {
                 backgroundSize: '360px',
                 backgroundImage: `url(${data[3] && data[3].thumbnail})`,
                 borderRadius: 10,
+                backgroundRepeat: 'no-repeat',
 
               }}>
                 <CardHeader
@@ -325,6 +329,7 @@ function GridListPublish(props) {
                 backgroundSize: '360px',
                 backgroundImage: `url(${data[4] && data[4].thumbnail})`,
                 borderRadius: 10,
+                backgroundRepeat: 'no-repeat',
 
               }}>
                 <CardHeader
@@ -389,9 +394,10 @@ function GridListPublish(props) {
               display:data.length >= 6 ? 'flex' : 'none',
               flexDirection: 'column',
               justifyContent: 'space-between',
-              backgroundSize: '360px',
+              backgroundSize: '580px 300px',
               backgroundImage: `url(${data[5] && data[5].thumbnail})`,
               borderRadius: 10,
+              backgroundRepeat: 'no-repeat',
 
             }}>
               <CardHeader

@@ -57,6 +57,8 @@ const styles = (theme) => ({
   media: {
     height: 300,
     borderRadius: 16,
+    backgroundSize:380
+
   },
   author: {
     marginTop: 20,
@@ -105,7 +107,7 @@ class ContentView extends Component {
       currentLikes: 0,
       loading:false,
       likes: this.props.location.state.data && this.props.location.state.data.likes,
-      loginUserName : JSON.parse(localStorage.getItem('userDetails')).first_name
+      loginUserName : JSON.parse(localStorage.getItem('userDetails')).erp_user_id
 
 
     };
@@ -254,7 +256,7 @@ if (result.data.status_code === 200) {
     const indexOfLoginUser=likedUserIds.indexOf(roleDetails.user_id)
     const loginUser=likedUserIds.includes(roleDetails.user_id)
     const isLiked = loginUser ? blogFkLike[indexOfLoginUser].is_liked : false
-    const name =data && data.author && data.author.first_name
+    const name =data && data.author && data.author.id
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -301,7 +303,7 @@ if (result.data.status_code === 200) {
                       >Comment:{data.comment}
                      
                       </Typography>
-                      <Typography> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
+                      <Typography style={{fontSize:'12px'}}> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
                       </CardContent>  :''}
                        
                         <CardHeader
