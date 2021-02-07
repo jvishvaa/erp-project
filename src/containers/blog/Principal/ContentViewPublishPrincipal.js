@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import moment from 'moment';
 import ReactHtmlParser from 'react-html-parser'
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 // import { connect } from 'react-redux';
 import {
@@ -117,6 +118,8 @@ class ContentViewPublish extends Component {
     };
 
   }
+  static contextType = AlertNotificationContext
+
   componentDidMount() {
     let {blogId} = this.state
     this.handleView(blogId)
@@ -137,7 +140,28 @@ class ContentViewPublish extends Component {
 }
 
 
+handelUnpublish = (blogId) => {
+  let requestData = {
+    "blog_id": blogId ,
+    "status": "6"
+  }
+axios.put(`${endpoints.blog.Blog}`, requestData)
 
+.then(result=>{
+if (result.data.status_code === 200) {
+  this.setState({loading:false})
+  this.context.setAlert('sucess',"unpublished sucessfully")
+  this.props.history.push({
+    pathname: '/blog/principal',
+  });
+
+} else {        
+  this.setState({loading:false})
+}
+}).catch((error)=>{
+  this.setState({loading:false})
+})
+  }
 
 
   submitRevisionFeedback = () => {
@@ -333,6 +357,17 @@ class ContentViewPublish extends Component {
                           </Button> :''
 
                           }
+                           {tabValue !== 0 ?
+                        
+                        <Button
+                          size='small'
+                          color='primary'
+                          onClick={() => this.handelUnpublish(data.id)}
+                        >
+                          Un Publish
+                        </Button> :''
+
+                        }
                         </CardActions>
                       </Card>
                     </Grid>

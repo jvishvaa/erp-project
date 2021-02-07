@@ -345,7 +345,7 @@ if (result.data.status_code === 200) {
                               });
                             }}
                           >
-                            {relatedBlog ? 'Add Review' : 'View Related Blog'}
+                            {relatedBlog ? 'Add Review' : 'View Review'}
                           </Button> : ''}
                           {tabValue === 0 && !data.feedback_revision_required ?
                           <Button

@@ -112,7 +112,7 @@ class StudentDashboard extends Component {
         this.getBlog(status)})
     }
     else if (tabValue === 1){
-      this.setState({status:[3,7],pageNo:page},()=>{
+      this.setState({status:[3,7,6],pageNo:page},()=>{
         this.getBlog(status)})
     }
     else if (tabValue === 2){
@@ -143,7 +143,7 @@ class StudentDashboard extends Component {
       })
     }
     else if (newValue === 1){
-      this.setState({status:[3,7]},()=>{
+      this.setState({status:[3,7,6]},()=>{
         this.getBlog(this.state.status);
       })
     }
@@ -194,7 +194,7 @@ class StudentDashboard extends Component {
       tabStatus= [8,5]
     }
     else if (tabValue === 1){
-      tabStatus = [3]
+      tabStatus = [3,6]
     }
     else if (tabValue === 2){
       tabStatus = [2]
