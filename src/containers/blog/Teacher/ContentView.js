@@ -344,7 +344,7 @@ if (result.data.status_code === 200) {
                               });
                             }}
                           >
-                            {relatedBlog ? 'Add Review' : 'View Review'}
+                            {relatedBlog ? 'Add Review' : 'AddReview'}
                           </Button>  :''}
                           {tabValue === 0 ?
                           <Button
