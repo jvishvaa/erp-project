@@ -251,6 +251,10 @@ class EditBlog extends Component {
       this.context.setAlert('error',"please fill all fields")
       return
     }
+    if (files.length> 0 && image){
+      this.context.setAlert('error',"please remove already existing  image")
+      return
+    }
     
     // if(!files.length> 0  && !image){
     //   this.context.setAlert('error',"please select all fields")
@@ -278,7 +282,7 @@ class EditBlog extends Component {
     });
   };
   handleClearThumbnail = () => {
-    this.setState({ files: [], image: '' })
+    this.setState({  image: '' })
   }
   
 
@@ -431,7 +435,6 @@ class EditBlog extends Component {
                                 )}
                                 
                               </div>
-                              {this.handleClearThumbnail()}
                               {this.getFileNameAndSize(files)}
                               {/* {files} */}
                             </CardContent>
