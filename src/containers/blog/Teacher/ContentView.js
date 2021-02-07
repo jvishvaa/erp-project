@@ -344,7 +344,7 @@ if (result.data.status_code === 200) {
                               });
                             }}
                           >
-                            Add Review
+                           {tabValue === 0 ? 'Add Review' : 'View Review' }
                           </Button>  :''}
                           {tabValue === 0 ?
                           <Button
