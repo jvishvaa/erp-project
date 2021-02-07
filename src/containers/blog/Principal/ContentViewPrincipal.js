@@ -13,10 +13,9 @@ import {
   CardHeader,
   TextField,
 } from '@material-ui/core';
+import withStyles from '@material-ui/core/styles/withStyles';
+
 import ReactHtmlParser from 'react-html-parser'
-
-
-import Rating from '@material-ui/lab/Rating';
 import Avatar from '@material-ui/core/Avatar';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { withRouter } from 'react-router-dom';
@@ -89,7 +88,7 @@ class ContentView extends Component {
       currentLikes: 0,
       loading:false,
       likes: this.props.location.state.data && this.props.location.state.data.likes,
-      loginUserName : JSON.parse(localStorage.getItem('userDetails')).first_name
+      loginUserName : JSON.parse(localStorage.getItem('userDetails')).erp_user_id
 
     };
 
@@ -233,7 +232,8 @@ if (result.data.status_code === 200) {
     const indexOfLoginUser=likedUserIds.indexOf(roleDetails.user_id)
     const loginUser=likedUserIds.includes(roleDetails.user_id)
     const isLiked = loginUser ? blogFkLike[indexOfLoginUser].is_liked : false
-    const name =data && data.author && data.author.first_name
+    const name =data && data.author && data.author.id
+    console.log(loginUserName,name,"@@@@")
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -441,4 +441,4 @@ if (result.data.status_code === 200) {
     );
   }
 }
-export default withRouter(styles)(ContentView);
+export default withRouter(withStyles(styles)(ContentView));
