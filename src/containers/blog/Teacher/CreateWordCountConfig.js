@@ -195,16 +195,13 @@ const CreateWordCountConfig = () => {
         }
       };
 
-console.log(inActiveListRes,"@@@@@")
-      const handleGrade = (event, value) => {
-        if (value) {
-          
-          setSelectedGrades(value.id);
-         
-        } else {
-            setSelectedGrades();
-        }
-        }
+  const handleGrade = (event, value) => {
+    if (value) {
+      setSelectedGrades(value.grade_id);
+    } else {
+        setSelectedGrades();
+    }
+    }
       
         const inActiveTabContent= () =>{
           return <div> 
