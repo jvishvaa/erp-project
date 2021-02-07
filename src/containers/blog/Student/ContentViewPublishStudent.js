@@ -264,6 +264,12 @@ getOverAllRemark = () => {
                       </Card>
                     </Grid>
                     <Grid item xs={3}>
+                    <Typography
+                        style={{ fontSize:'12px', width: '300px',
+                        paddingLeft: '30px',
+                        color: '#ff6b6b'}}>Reviewed By:{data.reviewed_by && data.reviewed_by.first_name}
+                     
+                      </Typography>
                         <ReviewPrincipal  blogId={data.id}  ratingParameters={this.getRatings}  overallRemark={this.getOverAllRemark}
                         />
                     </Grid>

@@ -439,9 +439,16 @@ if (result.data.status_code === 200) {
                       )
                       : relatedBlog ? ''
                       : (
+                        <Grid>
+                        <Typography
+                        style={{ fontSize:'12px', width: '300px',
+                        paddingLeft: '30px',
+                        color: '#ff6b6b'}}>Reviewed By:{data.reviewed_by && data.reviewed_by.first_name}
+                     
+                      </Typography>
                         <Review  blogId={data.id}  ratingParameters={this.getRatings} overallRemark={this.getOverAllRemark}
                         />
-
+</Grid>
 
                       )
                       }

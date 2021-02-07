@@ -275,6 +275,7 @@ class ContentViewPublish extends Component {
     const loginUser=likedUserIds.includes(roleDetails.user_id)
     const isLiked = loginUser ? blogFkLike[indexOfLoginUser].is_liked : false
     const name =data && data.author && data.author.id
+    console.log(data,"@@@@@@@")
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -406,6 +407,12 @@ class ContentViewPublish extends Component {
                         </Card>
                       )
                       : <Grid item xs={3}>
+                        <Typography
+                        style={{ fontSize:'12px', width: '300px',
+                        paddingLeft: '30px',
+                        color: '#ff6b6b'}}>Reviewed By:{data.reviewed_by && data.reviewed_by.first_name}
+                     
+                      </Typography>
                       <ReviewPrincipal  blogId={data.id}  ratingParameters={this.getRatings}  overallRemark={this.getOverAllRemark}
                       />
                   </Grid>
