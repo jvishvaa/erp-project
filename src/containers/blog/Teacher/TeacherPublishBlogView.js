@@ -71,7 +71,7 @@ class TeacherPublishBlogView extends Component {
     super(props);
     this.state = {
       tabValue: 0,
-      pageNo: 0,
+      pageNo: 1,
       pageSize: 6,
       startDate :moment().format('YYYY-MM-DD'),
       status :[4]
@@ -86,7 +86,7 @@ class TeacherPublishBlogView extends Component {
     axios
       .get(
         `${endpoints.blog.Blog}?page_number=${
-          pageNo + 1
+          pageNo 
         }&page_size=${pageSize}&status=${status}&module_id=113&published_level=${tabValue+1}`
       )
       .then((result) => {

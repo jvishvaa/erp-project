@@ -319,7 +319,7 @@ if (result.data.status_code === 200) {
 
                             >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
                             </Button>
-                          {tabValue === 1  && !data.feedback_revision_required || data.comment? 
+                          {tabValue === 1  && !data.feedback_revision_required && !data.comment && !data.published_by ? 
                           <Button
                             size='small'
                             color='primary'
