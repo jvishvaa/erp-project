@@ -128,7 +128,8 @@ class Review extends Component {
           </Grid>
           <Grid item xs={12} >
        <Button
-              className='reviewer_submit'
+              // className='reviewer_submit'
+              style={{marginTop:'90px',marginLeft:'80px'}}
               variant='contained'
               color='primary'
               onClick={this.handleSubmit}

@@ -236,9 +236,9 @@ const CreateWordCountConfig = () => {
               }
                 />
       <CardContent>
-      <Typography  className={classes.typoStyle}>GradeName: {item.grade.grade_name} </Typography>
-        <Typography   className={classes.typoStyle}>WordCount : {item.word_count}</Typography>
-        <Typography   className={classes.typoStyle}>CreatedBy : {item.created_by.first_name}</Typography>
+      <Typography  className={classes.typoStyle}>Grade Name: {item.grade.grade_name} </Typography>
+        <Typography   className={classes.typoStyle}>Word Count : {item.word_count}</Typography>
+        <Typography   className={classes.typoStyle}>Created By : {item.created_by.first_name}</Typography>
       </CardContent>
                 </Card>                        
                 </Grid>
@@ -297,9 +297,9 @@ const handleTabChange = (event,value) =>{
       }
         />
 <CardContent  style={{ pagging:'1px'}}>
-<Typography  className={classes.typoStyle}>GradeName: {item.grade.grade_name} </Typography>
-<Typography   className={classes.typoStyle}>WordCount : {item.word_count}</Typography>
-<Typography   className={classes.typoStyle}>CreatedBy : {item.created_by.first_name}</Typography>
+<Typography  className={classes.typoStyle}>Grade Name: {item.grade.grade_name} </Typography>
+<Typography   className={classes.typoStyle}>Word Count : {item.word_count}</Typography>
+<Typography   className={classes.typoStyle}>Created By : {item.created_by.first_name}</Typography>
 </CardContent>
         </Card>                        
         </Grid>
