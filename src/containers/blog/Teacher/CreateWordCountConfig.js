@@ -95,11 +95,11 @@ const CreateWordCountConfig = () => {
         getActiveList()
       } else {        
         setLoading(false);
-        setAlert('error', "word config already exiting for this grade");
+        setAlert('error', result.data.message);
       }
       }).catch((error)=>{
         setLoading(false);        
-        setAlert('error', "word config already exiting for this grade");
+        setAlert('error', error.message);
       })
     };
   const handleSubmit = (e) => {
@@ -128,11 +128,11 @@ const CreateWordCountConfig = () => {
       setAlert('success', result.data.message);
     } else {        
       setLoading(false);
-      setAlert('error', result.data.message);
+      setAlert('error', "word config already exiting for this grade");
     }
     }).catch((error)=>{
       setLoading(false);        
-      setAlert('error', error.message);
+      setAlert('error', "word config already exiting for this grade");
     }) }
     };
     useEffect(() => {

@@ -56,7 +56,7 @@ import {
   CreateGenre,
   ContentViewPublish,
   ContentViewPublishStudent,
-
+  EditGenre,
   AdminBlog,
   PrincipalBlog,
   PrincipalPublishBlogView,
@@ -160,8 +160,11 @@ function App() {
                     {/* <Route exact path='/assignrole'>
                   {({ match }) => <AssignRole match={match} />}
                 </Route> */}
-                    <Route exact path='/blog/create/genre'>
+                    <Route exact path='/blog/genre'>
                       {({ match }) => <CreateGenre match={match} />}
+                    </Route>
+                    <Route exact path='/blog/genre/edit'>
+                      {({ match }) => <EditGenre match={match} />}
                     </Route>
                     
                     <Route exact path='/blog/create/wordcount-config'>
