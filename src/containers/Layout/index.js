@@ -560,6 +560,14 @@ const Layout = ({ children, history }) => {
                 history.push('/finance/BulkOperation/UploadOnlinePayment')
                   break;
                 }
+              case 'Permanent Active / Inactive': {
+                history.push('/finance/BulkOperation/BulkActiveInactive')
+                  break;
+                }
+              case 'Temporary Active / Inactive': {
+                history.push('/finance/BulkOperation/BulkActiveInactiveParent')
+                  break;
+                }
       default:
         break;
     }

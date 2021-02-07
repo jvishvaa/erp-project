@@ -5,7 +5,8 @@ import {
   Radio,
   Grid,
   withStyles,
-  Button
+  Button,
+  CircularProgress
 } from '@material-ui/core'
 import Select from 'react-select'
 import { connect } from 'react-redux'
@@ -14,7 +15,8 @@ import zipcelx from 'zipcelx'
 
 import styles from './bulkActiveInactive.styles'
 import * as actionTypes from '../../store/actions'
-import { CircularProgress } from '../../../../ui'
+import Layout from '../../../../../../Layout'
+// import { CircularProgress } from '../../../../ui'
 
 const BulkActiveInactive = ({
   classes,
@@ -111,13 +113,14 @@ const BulkActiveInactive = ({
     if (statusFile && reason) {
       props.bulkActiveInactive(form, props.user, props.alert)
     } else {
-      props.alert.warning('Please Select File to Upload!')
+      // props.alert.warning('Please Select File to Upload!')
     }
     if (!reason) {
-      props.alert.warning('Please Select the remark!')
+      // props.alert.warning('Please Select the remark!')
     }
   }
   return (
+    <Layout>
     <div className={classes.container}>
       <Grid container spacing={6} alignItems='center'>
         <Grid item xs={6} md={4}>
@@ -209,6 +212,7 @@ const BulkActiveInactive = ({
       </Grid>
       {props.dataLoadingStatus ? <CircularProgress open /> : null}
     </div>
+    </Layout>
   )
 }
 
