@@ -302,7 +302,6 @@ class EditBlog extends Component {
       studentName,
       creationDate,wordCountLimit
     } = this.state;
-    console.log(genreObj,"@@@")
     return Preview ? (
       <PreviewBlog
         content={textEditorContent}
