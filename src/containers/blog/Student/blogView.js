@@ -13,20 +13,9 @@ import {
   CardActions,
   CardMedia,
   CardContent,
-  Paper,
   CardHeader,
-  Divider,
-  TextField,
 } from '@material-ui/core';
-import Rating from '@material-ui/lab/Rating';
-import Avatar from '@material-ui/core/Avatar';
 import { withRouter } from 'react-router-dom';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
-// import { withRouter } from 'react-router-dom';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import moment from 'moment';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
@@ -74,14 +63,6 @@ const styles = (theme) => ({
   },
 });
 
-const StyledRating = withStyles({
-  iconFilled: {
-    color: '#ff6d75',
-  },
-  iconHover: {
-    color: '#ff3d47',
-  },
-})(Rating);
 
 class BlogView extends Component {
   constructor(props) {
@@ -186,12 +167,13 @@ getOverAllRemark = () => {
     let content=data && data.content
     let title=data && data.title
     let thumbnail = data && data.thumbnail
+    let genreObj =data.genre
     let genreId =data && data.genre && data.genre.id
     let genreName =data && data.genre && data.genre.genre
     let blogId=data&&data.id
     this.props.history.push({
       pathname: '/blog/student/edit-blog',
-      state: { content, title, thumbnail,genreId,genreName,blogId },
+      state: { content, title, thumbnail,genreId,genreName,blogId,genreObj },
     });
   };
   handleDeleteBlog = (blogId) => {

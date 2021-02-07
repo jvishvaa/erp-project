@@ -20,7 +20,6 @@ import {
   Divider,
   TextField,
 } from '@material-ui/core';
-import Rating from '@material-ui/lab/Rating';
 import Avatar from '@material-ui/core/Avatar';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { withRouter } from 'react-router-dom';
@@ -67,14 +66,6 @@ const styles = (theme) => ({
   },
 });
 
-const StyledRating = withStyles({
-  iconFilled: {
-    color: '#ff6d75',
-  },
-  iconHover: {
-    color: '#ff3d47',
-  },
-})(Rating);
 
 const publishLevelChoice=[ 
   {label:'Orchids',value:'1'},

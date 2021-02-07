@@ -67,14 +67,6 @@ const styles = (theme) => ({
     textAlign: 'center',
   },
 });
-const StyledRating = withStyles({
-  iconFilled: {
-    color: '#ff6d75',
-  },
-  iconHover: {
-    color: '#ff3d47',
-  },
-})(Rating);
     
 class ContentViewPublishStudent extends Component {
   constructor(props) {

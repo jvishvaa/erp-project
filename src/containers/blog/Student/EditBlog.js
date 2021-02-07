@@ -17,12 +17,10 @@ import {
   Divider,
   TextField,
 } from '@material-ui/core';
-import { Rating, Autocomplete } from '@material-ui/lab';
+import { Autocomplete } from '@material-ui/lab';
 import { HighlightOff} from '@material-ui/icons'
 
 
-import Avatar from '@material-ui/core/Avatar';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
 import Dropzone from 'react-dropzone';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import moment from 'moment';
@@ -92,15 +90,6 @@ const styles = (theme) => ({
   
 });
 
-const StyledRating = withStyles({
-  iconFilled: {
-    color: '#ff6d75',
-  },
-  iconHover: {
-    color: '#ff3d47',
-  },
-})(Rating);
-
 class EditBlog extends Component {
   constructor(props) {
     super(props);
@@ -125,6 +114,9 @@ class EditBlog extends Component {
             : '',
       genreName :this.props.location.state.genreName && this.props.location.state.genreName.length !== 0
       ? this.props.location.state.genreName
+      :'',
+      genreObj :this.props.location.state.genreObj && this.props.location.state.genreObj.length !== 0
+      ? this.props.location.state.genreObj
       :'',
       image: 
       this.props.location.state.thumbnail && this.props.location.state.thumbnail.length !== 0
@@ -254,13 +246,16 @@ class EditBlog extends Component {
   };
 
   PreviewBlogNav = () => {
-    let{genreId ,files, title ,textEditorContent}=this.state
-
-    
-    if(!genreId || !files.length> 0 ||!title ||!textEditorContent){
-      this.context.setAlert('error',"please select all fields")
+    let{genreId ,files, title ,textEditorContent ,image}=this.state
+    if(!genreId ||!title ||!textEditorContent || !files.length> 0 && !image ){
+      this.context.setAlert('error',"please fill all fields")
       return
     }
+    
+    // if(!files.length> 0  && !image){
+    //   this.context.setAlert('error',"please select all fields")
+    //   return
+    // }
     const subceededWordCount = this.isWordCountSubceeded()
     if (subceededWordCount) {
       this.context.setAlert('error',subceededWordCount)
@@ -273,12 +268,13 @@ class EditBlog extends Component {
       // genreId,
       studentName,
       creationDate,blogId,
+      // image,
       // files,
       genreName
     } = this.state;
     this.props.history.push({
       pathname: '/blog/student/preview-edit-blog',
-      state: { studentName, creationDate, genreId, textEditorContent, title, files,blogId },
+      state: { studentName, creationDate, genreId, textEditorContent, title, files,blogId,image },
     });
   };
   handleClearThumbnail = () => {
@@ -290,6 +286,7 @@ class EditBlog extends Component {
     const { classes } = this.props;
     const {
       files,
+      genreObj,
       relatedBlog,
       starsRating,
       feedBack,
@@ -305,7 +302,7 @@ class EditBlog extends Component {
       studentName,
       creationDate,wordCountLimit
     } = this.state;
-    console.log(image,"2222@@@@@@@@")
+    console.log(genreObj,"@@@")
     return Preview ? (
       <PreviewBlog
         content={textEditorContent}
@@ -342,14 +339,14 @@ class EditBlog extends Component {
                       size='small'
                       id='combo-box-demo'
                       options={genreList}
-                      // value={genreName}
+                      value={genreObj}
                       getOptionLabel={(option) => option.genre}
                       style={{ width: 300 }}
                       onChange={(e, data) => this.handleGenre(data)}
                       renderInput={(params) => (
                         <TextField {...params} label='Genre' variant='outlined' />
                       )}
-                    />
+                    /> 
                   </Grid>
                 </Grid>
               </div>
@@ -385,11 +382,11 @@ class EditBlog extends Component {
                   </Grid>
                   <Grid item xs={12}>
                     <Typography style={{ margin: 10 }} variant='body1'>
-                      Add Thumbnail (Optional)
+                      Add Thumbnail
                     </Typography>
                     {
                 image
-                  ? <Grid item style={{ position: 'relative' }}>
+                  ? <Grid item style={{ position: 'relative' }}> 
                     <HighlightOff
                       style={{ position: 'absolute',
                       left: '100px',
@@ -452,7 +449,7 @@ class EditBlog extends Component {
                           style={{ width: 150 }}
                           onClick={this.PreviewBlogNav}
                           color='primary'
-                          disabled={!genreId || !files.length> 0 ||!title ||!textEditorContent}
+                          // disabled={!genreId || !files.length> 0 ||!title ||!textEditorContent}
                         >
                           Preview Blog
                         </Button>
