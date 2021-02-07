@@ -150,7 +150,7 @@ axios.put(`${endpoints.blog.Blog}`, requestData)
 .then(result=>{
 if (result.data.status_code === 200) {
   this.setState({loading:false})
-  this.context.setAlert('sucess',"unpublished sucessfully")
+  this.context.setAlert('success',"unpublished successfully")
   this.props.history.push({
     pathname: '/blog/principal',
   });
@@ -176,6 +176,8 @@ if (result.data.status_code === 200) {
       .put(`${endpoints.blog.Blog}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
+          this.context.setAlert('success',"success")
+
           this.props.history.push({
             pathname: '/blog/principal',
           });
@@ -205,6 +207,8 @@ if (result.data.status_code === 200) {
       .put(`${endpoints.blog.Blog}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
+          this.context.setAlert('success',"success")
+
           this.props.history.push({
             pathname: '/blog/principal/publish/view',
           });
