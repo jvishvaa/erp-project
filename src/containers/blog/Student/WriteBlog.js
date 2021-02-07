@@ -126,7 +126,6 @@ class WriteBlog extends Component {
       wordCountLimit: 50,
 
     };
-    console.log(this.state.genreName,this.state.genreId,"@@@@@@")
   }
   static contextType = AlertNotificationContext
   componentDidMount() {

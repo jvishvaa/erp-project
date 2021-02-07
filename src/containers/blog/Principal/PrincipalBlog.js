@@ -140,7 +140,7 @@ class PrincipalBlog extends Component {
       })
     }
     else{
-      this.setState({tabValue: newValue ,data:[], pageNo:0, pageSize:6,status: [3,5,7] }, ()=>{
+      this.setState({tabValue: newValue ,data:[], pageNo:0, pageSize:6,status: [3,5,7,6] }, ()=>{
         this.getBlog(this.state.status);
 
       })
@@ -154,7 +154,7 @@ class PrincipalBlog extends Component {
 
       })
     }else{
-      this.setState({data:[], pageNo:page, pageSize:6,status: [3,5] }, ()=>{
+      this.setState({data:[], pageNo:page, pageSize:6,status: [3,5,6,7] }, ()=>{
         this.getBlog(this.state.status);
 
       })

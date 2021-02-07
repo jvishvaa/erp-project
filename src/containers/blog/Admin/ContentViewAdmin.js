@@ -190,7 +190,7 @@ if (result.data.status_code === 200) {
       .then((result) => {
         if (result.data.status_code === 200) {
           this.props.history.push({
-            pathname: '/blog/teacher',
+            pathname: '/blog/admin',
           });
         } else {
           console.log(result.data.message);
@@ -218,7 +218,7 @@ if (result.data.status_code === 200) {
       .then((result) => {
         if (result.data.status_code === 200) {
           this.props.history.push({
-            pathname: '/blog/teacher',
+            pathname: '/blog/admin',
           });
         } else {
           console.log(result.data.message);
@@ -345,7 +345,7 @@ if (result.data.status_code === 200) {
                               });
                             }}
                           >
-                            {relatedBlog ? 'Add Review' : 'View Related Blog'}
+                            {relatedBlog ? 'Add Review' : 'View Review'}
                           </Button> : ''}
                           {tabValue === 0 && !data.feedback_revision_required ?
                           <Button
@@ -364,6 +364,7 @@ if (result.data.status_code === 200) {
                           </Button>  : ''
 
                           }
+
                         </CardActions>
                       </Card>
                     </Grid>
@@ -432,9 +433,16 @@ if (result.data.status_code === 200) {
                       )
                       : relatedBlog ? ''
                       : (
+                        <Grid>
+                         <Typography
+                        style={{ fontSize:'12px', width: '300px',
+                        paddingLeft: '30px',
+                        color: '#ff6b6b'}}>Reviewed By:{data.reviewed_by && data.reviewed_by.first_name}
+                     
+                      </Typography>
                         <ReviewPrincipal  blogId={data.id}  ratingParameters={this.getRatings} overallRemark={this.getOverAllRemark}
                         />
-
+</Grid>
                       )
                       }
                     </Grid>

@@ -159,7 +159,7 @@ if (result.data.status_code === 200) {
       .then((result) => {
         if (result.data.status_code === 200) {
           this.props.history.push({
-            pathname: '/blog/teacher',
+            pathname: '/blog/principal',
           });
         } else {
           console.log(result.data.message);
@@ -187,7 +187,7 @@ if (result.data.status_code === 200) {
       .then((result) => {
         if (result.data.status_code === 200) {
           this.props.history.push({
-            pathname: '/blog/teacher',
+            pathname: '/blog/principal',
           });
         } else {
           console.log(result.data.message);
@@ -234,8 +234,6 @@ if (result.data.status_code === 200) {
     const loginUser=likedUserIds.includes(roleDetails.user_id)
     const isLiked = loginUser ? blogFkLike[indexOfLoginUser].is_liked : false
     const name =data && data.author && data.author.id
-    console.log(loginUserName,name,"@@@@")
-    console.log(tabValue,"@@@")
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -427,9 +425,16 @@ if (result.data.status_code === 200) {
                       )
                       : relatedBlog ? ''
                       : (
+                        <Grid>
+                        <Typography
+                        style={{ fontSize:'12px', width: '300px',
+                        paddingLeft: '30px',
+                        color: '#ff6b6b'}}>Reviewed By:{data.reviewed_by && data.reviewed_by.first_name}
+                     
+                      </Typography>
                         <ReviewPrincipal  blogId={data.id} ratingParameters={this.getRatings} overallRemark={this.getOverAllRemark}
                         />
-
+</Grid>
 
                       )
                       }

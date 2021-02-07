@@ -30,6 +30,7 @@ import endpoints from '../../../config/endpoints';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
 import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 const styles = (theme) => ({
   root: {
@@ -118,7 +119,8 @@ class ContentViewPublish extends Component {
     };
 
   }
-  
+  static contextType = AlertNotificationContext
+
   
   componentDidMount() {
     let {blogId} = this.state
@@ -141,7 +143,28 @@ class ContentViewPublish extends Component {
 
 
 
+handelUnpublish = (blogId) => {
+  let requestData = {
+    "blog_id": blogId ,
+    "status": "6"
+  }
+axios.put(`${endpoints.blog.Blog}`, requestData)
 
+.then(result=>{
+if (result.data.status_code === 200) {
+  this.setState({loading:false})
+  this.context.setAlert('success',"unpublished successfully")
+  this.props.history.push({
+    pathname: '/blog/teacher',
+  });
+
+} else {        
+  this.setState({loading:false})
+}
+}).catch((error)=>{
+  this.setState({loading:false})
+})
+  }
 
   submitRevisionFeedback = () => {
 
@@ -155,6 +178,8 @@ class ContentViewPublish extends Component {
       .put(`${endpoints.blog.Blog}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
+          this.context.setAlert('success',"success")
+
           this.props.history.push({
             pathname: '/blog/teacher',
           });
@@ -184,6 +209,8 @@ class ContentViewPublish extends Component {
       .put(`${endpoints.blog.Blog}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
+          this.context.setAlert('success',"success")
+
           this.props.history.push({
             pathname: '/blog/teacher/publish/view',
           });
@@ -343,7 +370,17 @@ class ContentViewPublish extends Component {
                             Publish
                           </Button> :''
 
-                          }
+                          } {tabValue !== 0 ?
+                        
+                            <Button
+                              size='small'
+                              color='primary'
+                              onClick={() => this.handelUnpublish(data.id)}
+                            >
+                              Un Publish
+                            </Button> :''
+    
+                            }
                         </CardActions>
                       </Card>
                     </Grid>

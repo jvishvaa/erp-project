@@ -103,7 +103,6 @@ class BlogView extends Component {
 blogRatings :this.props.location.state.data && this.props.location.state.data.remark_rating,
       overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark,
     };
-    console.log(this.state.tabValue,"@@@@@")
   }
   componentDidMount() {
     let {blogId} = this.state
@@ -358,10 +357,17 @@ getOverAllRemark = () => {
                     <Grid item xs={3}>
                    { relatedBlog ? ''
                       : (
+                        <Grid>
+                        <Typography
+                        style={{ fontSize:'12px', width: '300px',
+                        paddingLeft: '30px',
+                        color: '#ff6b6b'}}>Reviewed By:{data.reviewed_by && data.reviewed_by.first_name}
+                     
+                      </Typography>
                         <ReviewPrincipal  blogId={data.id}  ratingParameters={this.getRatings} overallRemark={this.getOverAllRemark}
                         />
 
-
+</Grid>
                       )
                       }
                     </Grid>
