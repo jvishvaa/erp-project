@@ -78,8 +78,8 @@ function GridList(props) {
                   display:data.length >= 1 ? 'flex' : 'none',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  borderRadius: 10,
                   backgroundRepeat: 'no-repeat',
+                  borderRadius: 10,
 
 
                 }}
@@ -157,8 +157,8 @@ function GridList(props) {
                     height: '350px',
                     backgroundSize: '250px 350px',
                     backgroundImage: `url(${data[1] && data[1].thumbnail})`,
-                    borderRadius: 10,
                     backgroundRepeat: 'no-repeat',
+                    borderRadius: 10,
 
 
                   }}
@@ -232,9 +232,9 @@ function GridList(props) {
                   width: '100%',
                   height: '350px',
                   backgroundSize: '250px 350px',
-                  backgroundImage: `url(${data[2] && data[2].thumbnail})`,
-                  borderRadius: 10,
+                  backgroundImage: `url(${data[2] && data[2].thumbnail})` ,
                   backgroundRepeat: 'no-repeat',
+                  borderRadius: 10,
 
 
                 }}
@@ -313,8 +313,8 @@ function GridList(props) {
                     height: '350px',
                     backgroundSize: '250px 350px',
                     backgroundImage: `url(${data[3] && data[3].thumbnail})`,
-                    borderRadius: 10,
                     backgroundRepeat: 'no-repeat',
+                    borderRadius: 10,
 
 
                   }}
@@ -388,8 +388,8 @@ function GridList(props) {
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                     backgroundImage: `url(${data[4] && data[4].thumbnail})`,
-                    borderRadius: 10,
                     backgroundRepeat: 'no-repeat',
+                    borderRadius: 10,
 
 
                   }}
@@ -463,10 +463,10 @@ function GridList(props) {
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                   backgroundImage: `url(${data[5] && data[5].thumbnail})`,
+                  backgroundRepeat: 'no-repeat',
                   borderRadius: 10,
                   height: '290px',
                   backgroundSize: '520px 290px',
-                  backgroundRepeat: 'no-repeat',
 
                 }}
                 className={classes.card}
