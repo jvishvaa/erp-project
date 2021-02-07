@@ -621,7 +621,7 @@ const CreateDailyDairy = (details, onSubmit) => {
           onChange={handleSubject}
           id='subj'
           // className='dropdownIcon'
-          value={state.isEdit?editData.subject : []}
+          value={state.isEdit?editData.subject : formik.values.subjects}
           options={subjectDropdown}
           getOptionLabel={(option) => option?.subject_name}
           filterSelectedOptions
