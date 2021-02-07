@@ -277,8 +277,8 @@ class AdminBlog extends Component {
                         <TabPanel value={tabValue} index={0}>
                           <GridList data={data} tabValue={tabValue}/>
                         </TabPanel>
-                        <TabPanel value={tabValue}  tabValue={tabValue} index={1}>
-                        <GridList data={data} />
+                        <TabPanel value={tabValue}   index={1}>
+                        <GridList data={data} tabValue={tabValue} />
                         </TabPanel>
                       </div>
                     </Grid>

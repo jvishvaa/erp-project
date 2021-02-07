@@ -59,7 +59,7 @@ const styles = (theme) => ({
   media: {
     height: 300,
     borderRadius: 16,
-    backgroundSize:'500px'
+    backgroundSize:380
   },
   author: {
     marginTop: 20,
@@ -181,29 +181,7 @@ getOverAllRemark = () => {
     this.setState({ comment: event.target.value });
   };
 
-  submitComment = (type) => {
-    if (type === 'Submit') {
-      const { comment, blogId } = this.state;
-      const formData = new FormData();
-      // formData.set('blog_id', blogId);
-      formData.set('content', 7);
-      formData.set('comment', comment);
-
-      axios
-        .post(`${endpoints.blog.Blog}`, formData)
-        .then((result) => {
-          if (result.data.status_code === 200) {
-            this.props.history.push({
-              pathname: '/blog/student/dashboard',
-            });
-          } else {
-            console.log(result.data.message);
-          }
-        })
-        .catch((error) => {
-        });
-    }
-  };
+ 
   EditBlogNav = () => {
     const { data } = this.state;
     let content=data && data.content
@@ -313,7 +291,7 @@ getOverAllRemark = () => {
                       >Comment:{data.comment}
                      
                       </Typography>
-                      <Typography> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
+                      <Typography  style={{fontSize:'12px'}}> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
                       </CardContent>  :''}
                         <CardHeader
                           className={classes.author}

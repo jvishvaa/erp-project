@@ -57,6 +57,8 @@ const styles = (theme) => ({
   media: {
     height: 300,
     borderRadius: 16,
+    backgroundSize:380
+
   },
   author: {
     marginTop: 20,
@@ -301,7 +303,7 @@ if (result.data.status_code === 200) {
                       >Comment:{data.comment}
                      
                       </Typography>
-                      <Typography> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
+                      <Typography style={{fontSize:'12px'}}> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
                       </CardContent>  :''}
                        
                         <CardHeader

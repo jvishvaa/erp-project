@@ -312,7 +312,7 @@ class ContentViewPublish extends Component {
                       >Comment:{data.comment}
                      
                       </Typography>
-                      <Typography> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
+                      <Typography style={{ fontSize:'12px'}}> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
                       </CardContent>  :''}</CardContent>
                         <CardHeader
                           className={classes.author}
