@@ -11,7 +11,7 @@
 }
 
 .durationContainer {
-    margin-top: 20px;
+    margin: 20px 0;
     border-radius: 10px;
     min-height: 44vh;
     max-height:44vh;
@@ -37,16 +37,32 @@
 
 .addRemoveIconContainer {
     align-self: center;
+    margin-right: 5%;
 }
 
 .recursiveRow {
     display: flex;
     justify-content: space-between;
-    margin: 10px auto;
+    margin: 10px 20px;
+}
+
+.weekContainer {
+    width: 45%;
+    display: flex;
+    justify-content: flex-start;
+    margin-right:10%;
+}
+
+.weekTag {
+    width: 40%;
+    align-self: center;
+    color: #014b7e;
+    font-size: 18px;
 }
 
 .recursiveWeekContainer {
-    width: 45%;
+    width: 50%;
+    margin-right: 10%;
 }
 
 .recursiveWeekContainer > .MuiFormControl-root {
@@ -74,3 +90,18 @@
 .removeRecIcon.MuiSvgIcon-root {
     fill: #014b7e;
 }
+
+.buttonContainer {
+    width: 40%;
+    align-self: flex-end;
+}
+
+.buttonContainer>.MuiButtonBase-root {
+    width: 100%;
+    background: none;
+    border: 1px solid #ff6b6b;
+    border-radius: 10px;
+    color: #ff6b6b;
+}
+
+

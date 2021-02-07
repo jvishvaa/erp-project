@@ -3,8 +3,22 @@ import { Autocomplete } from '@material-ui/lab';
 import { TextField } from '@material-ui/core';
 import './days-filter.css';
 
-const DaysFilterContainer = ({ clear }) => {
+const DaysFilterContainer = (props) => {
 
+    const {
+        selectedLimit,
+        collectData,
+        setCollectData,
+    } = props;
+
+    useEffect(() => {
+        if (selectedLimit) {
+            const index=collectData.findIndex(datarow => datarow['limit'] === selectedLimit);
+            setComboDays(collectData[index]['comboDays']);
+            setOtherDays(collectData[index]['otherDays']);
+        }
+    }, [selectedLimit]);
+    
     const [comboDays, setComboDays] = useState([]);
 
     const [comboDaysList, setComboDaysList] = useState([
@@ -15,9 +29,14 @@ const DaysFilterContainer = ({ clear }) => {
     ]);
 
     const handleComboDays = (event, value) => {
+        const index=collectData.findIndex(datarow => datarow['limit'] === selectedLimit);
+        const list=[...collectData];
+        list[index]['comboDays']=[];
         setComboDays([]);
         if (value.length > 0) {
             setComboDays(value);
+            list[index]['comboDays']=value;
+            setCollectData(list);
         }
     };
 
@@ -34,18 +53,17 @@ const DaysFilterContainer = ({ clear }) => {
     ]);
 
     const handleOtherDays = (event, value) => {
+        const index=collectData.findIndex(datarow => datarow['limit'] === selectedLimit);
+        const list=[...collectData];
+        list[index]['otherDays']=[];
         setOtherDays([]);
         if (value.length > 0) {
-            // const sendData = value.map(obj => obj.send);
             setOtherDays(value);
+            list[index]['otherDays']=value;
+            setCollectData(list);
         }
     };
-
-    useEffect(() => {
-        setOtherDays([]);
-        setComboDays([]);
-    }, [clear]);
-
+    
     return (
         <div className="daysFilterWrapper">
             <div className="daysTag">

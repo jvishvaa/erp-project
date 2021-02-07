@@ -3,17 +3,33 @@ import {
     TextField,
     Switch,
     FormControlLabel,
-    IconButton
+    Button
 } from '@material-ui/core';
 import './duration.css';
 import { Add, Remove } from '@material-ui/icons';
 
-const DurationContainer = ({ clear }) => {
+const DurationContainer = (props) => {
+
+    const {
+        selectedLimit,
+        collectData,
+        setCollectData,
+    } = props;
+
     const [noOfWeeks, setNoOfWeeks] = useState(null);
     const [toggle, setToggle] = useState(false);
     const [recursiveContent, setRecursiveContent] = useState([
         { weeks: '', price: '' }
     ]);
+
+    useEffect(() => {
+        if (selectedLimit) {
+            const index=collectData.findIndex(datarow => datarow['limit'] === selectedLimit);
+            setNoOfWeeks(collectData[index]['weeks']);
+            setToggle(collectData[index]['toggle']);
+            setRecursiveContent(collectData[index]['data']);
+        }
+    }, [selectedLimit]);
 
     const handleChange = (e, index) => {
         const list = [...recursiveContent];
@@ -38,11 +54,19 @@ const DurationContainer = ({ clear }) => {
         setToggle(!toggle);
     };
 
-    useEffect(() => {
-        setNoOfWeeks('');
-        setRecursiveContent([{ weeks: '', price: '' }]);
-        setToggle(false);
-    }, [clear]);
+    const handleSave = () => {
+        const list = [...collectData];
+        for (let i = 0; i < list.length; i++) {
+            if (list[i]['limit'] === selectedLimit) {
+                list[i]['weeks'] = noOfWeeks;
+                list[i]['toggle'] = toggle;
+                list[i]['data'] = recursiveContent;
+                break;
+            }
+        }
+        setCollectData(list);
+        console.log(collectData);
+    };
 
     return (
         <div className="durationWrapper">
@@ -88,17 +112,21 @@ const DurationContainer = ({ clear }) => {
                                     <Remove className="removeRecIcon" onClick={() => handleRemove(index)} />
                                 }
                             </div>
+                            <div className="weekContainer">
                             <div className="recursiveWeekContainer">
                                 <TextField
                                     size='small'
                                     id={`weeks${index}`}
                                     variant='outlined'
+                                    type='number'
                                     name='weeks'
                                     placeholder='Weeks'
                                     value={!toggle ? noOfWeeks : row.weeks}
                                     onChange={e => handleChange(e, index)}
-                                    InputProps={{ inputProps: { autoComplete: 'off', readOnly: !toggle } }}
+                                    InputProps={{ inputProps: { min:0, autoComplete: 'off', readOnly: !toggle } }}
                                 />
+                            </div>
+                            <div className="weekTag">Weeks:</div>
                             </div>
                             <div className="recursivePriceContainer">
                                 <TextField
@@ -114,6 +142,11 @@ const DurationContainer = ({ clear }) => {
                             </div>
                         </div>))}
                 </div>
+            </div>
+            <div className="buttonContainer">
+                <Button onClick={handleSave}>
+                    Save
+                </Button>
             </div>
         </div>
     )

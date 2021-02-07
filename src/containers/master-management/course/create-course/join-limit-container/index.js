@@ -3,7 +3,9 @@ import './join-limit.css';
 
 const JoinLimitContainer = (props) => {
 
-    const { clear, setClear } = props;
+    const { 
+        setSelectedLimit,
+     } = props;
 
     const [joinLimits, setJoinLimits] = useState([
         { limit: '1:1', isSelected: true },
@@ -17,7 +19,7 @@ const JoinLimitContainer = (props) => {
         const list = [...joinLimits].map(value => value.isSelected ? { ...value, isSelected: false } : value)
         list[index]['isSelected'] = true;
         setJoinLimits(list);
-        setClear(!clear);
+        setSelectedLimit(list[index]['limit']);
     };
 
     return (

@@ -61,9 +61,19 @@ const CreateCourse = () => {
   const [loading, setLoading] = useState(false);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const [clear,setClear] = useState(false);
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
+
+  // 
+
+  const [selectedLimit, setSelectedLimit] = useState('1:1');
+  const [collectData, setCollectData] = useState([
+    { limit: '1:1', comboDays: [], otherDays: [], weeks: '', toggle: false, data: [{ weeks: '', price: '' }] },
+    { limit: '1:5', comboDays: [], otherDays: [], weeks: '', toggle: false, data: [{ weeks: '', price: '' }] },
+    { limit: '1:10', comboDays: [], otherDays: [], weeks: '', toggle: false, data: [{ weeks: '', price: '' }] },
+    { limit: '1:20', comboDays: [], otherDays: [], weeks: '', toggle: false, data: [{ weeks: '', price: '' }] },
+    { limit: '1:30', comboDays: [], otherDays: [], weeks: '', toggle: false, data: [{ weeks: '', price: '' }] },
+  ]);
 
   //context
   const [state, setState] = useContext(Context);
@@ -215,7 +225,6 @@ const CreateCourse = () => {
       axiosInstance.get(`${endpoints.onlineCourses.categoryList}?tag_type=2&parent_id=${value.id}`)
         .then(result => {
           if (result.data.status_code === 201) {
-            // console.log(result.data.result, '===========')
             const list1 = [...subjectDropdown];
             const list2 = [...gradeDropdown];
             result.data.result.map(object => {
@@ -304,7 +313,6 @@ const CreateCourse = () => {
   };
 
   const handleSubmit = () => {
-    // console.log('helloooooooooooooo');
     axiosInstance
       .post(`${endpoints.onlineCourses.createCourse}`, {
         course_name: title,
@@ -793,20 +801,23 @@ const CreateCourse = () => {
           spacing={isMobile ? 3 : 5}
           style={{ width: widerWidth, margin: wider }}
         >
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={2}>
             <JoinLimitContainer
-            clear={clear} 
-            setClear={setClear}
+              setSelectedLimit={setSelectedLimit}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <DaysFilterContainer 
-            clear={clear}
+            <DaysFilterContainer
+              selectedLimit={selectedLimit}
+              collectData={collectData}
+              setCollectData={setCollectData}
             />
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={6}>
             <DurationContainer
-            clear={clear}
+              selectedLimit={selectedLimit}
+              collectData={collectData}
+              setCollectData={setCollectData}
             />
           </Grid>
         </Grid>
