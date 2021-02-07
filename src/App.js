@@ -94,6 +94,7 @@ import AssignDelieveryCharge from './containers/Finance/src/components/Finance/B
 import ChangeFeePlanToStudent from './containers/Finance/src/components/Finance/BranchAccountant/ChangeFeePlanToStudent/changeFeePlanToStudent.js'
 import BulkReportUpload from './containers/Finance/src/components/Finance/BulkOperations/bulkReportUpload.js'
 import BulkReportStatus from './containers/Finance/src/components/Finance/BulkOperations/bulkReportStatus.js'
+import OnlinePayment from './containers/Finance/src/components/Finance/UploadOnlinePayments/uploadOnlinePayments.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -390,6 +391,9 @@ function App() {
                 </Route>
                 <Route exact path= '/finance/BulkOperation/BulkUploadStatus'>
                   {({ match }) => <BulkReportStatus match={match} />}
+                </Route>
+                <Route exact path= '/finance/BulkOperation/UploadOnlinePayment'>
+                  {({ match }) => <OnlinePayment match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

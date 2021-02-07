@@ -552,10 +552,14 @@ const Layout = ({ children, history }) => {
                 history.push('/finance/BulkOperation/BulkReportUpload')
                   break;
                 }
-                case 'Bulk Upload Status': {
-                  history.push('/finance/BulkOperation/BulkUploadStatus')
-                    break;
-                  }  
+             case 'Bulk Upload Status': {
+                history.push('/finance/BulkOperation/BulkUploadStatus')
+                  break;
+                }  
+              case 'Upload Online Payments': {
+                history.push('/finance/BulkOperation/UploadOnlinePayment')
+                  break;
+                }
       default:
         break;
     }
