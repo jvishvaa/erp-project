@@ -552,6 +552,10 @@ const Layout = ({ children, history }) => {
                 history.push('/finance/BulkOperation/BulkReportUpload')
                   break;
                 }
+                case 'Bulk Upload Status': {
+                  history.push('/finance/BulkOperation/BulkUploadStatus')
+                    break;
+                  }  
       default:
         break;
     }
