@@ -129,7 +129,6 @@ export default {
     bulkDownload: `${baseURLCentral}/lesson_plan/bulk_download/`,
     overviewSynopsis: `${baseURLCentral}/lesson_plan/list-lesson-overview/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
-<<<<<<< HEAD
   },
   discussionForum: {
     categoryList: '/academic/categories/',
@@ -154,6 +153,14 @@ export default {
   },
   generalDairy: {
     dairyList: '/academic/general-dairy-messages/',
+    studentList: '/academic/general-dairy-users/',
+    updateDelete: '/academic/',
+    SubmitDairy: '/academic/create-dairy/',
+  },
+  dailyDairy: {
+    createDailyDairy: '/academic/create-dairy/',
+    branches: '/academic/chapters/',
+    updateDelete: '/academic/',
   },
   onlineCourses: {
     createCourse: '/aol/courses/',
@@ -168,55 +175,6 @@ export default {
     list: '/erp_user/onlineclass_attendeelist/',
     updateAttendance: '/erp_user/mark_attendance/',
   },
-=======
-  },  
-  discussionForum:{
-   categoryList: '/academic/categories/',
-   branch: '/erp_user/branch/',
-   grade:'/erp_user/grademapping/',
-   filterCategory: '/academic/posts/',
-   postLike: '/academic/posts-like-users/',
-   PostCategory : '/academic/create-category/',
-   CreateDissusionForum: '/academic/add-post/',
-   CreateCommentAndReplay: '/academic/create-answer-replay/',
-   AwardListAPI: '/academic/',
-   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
-   deletePost: '/academic/'
-  },
-  circular:{
-    circularList:'/circular/upload-circular/',
-    viewMoreCircularData:'/circular/circular-details/',
-    fileUpload:'/circular/upload-circular-file/',
-    createCircular:'/circular/upload-circular/',
-    deleteCircular:'/circular/delete-circular/',
-    updateCircular:'/circular/update-circular/'
-  },
-  generalDairy:{
-    dairyList:'/academic/general-dairy-messages/',
-    studentList:'/academic/general-dairy-users/',
-    updateDelete: '/academic/',
-    SubmitDairy: '/academic/create-dairy/',
-
-  },
-  dailyDairy:{
-    createDailyDairy:'/academic/create-dairy/',
-    branches:'/academic/chapters/',
-    updateDelete:'/academic/'
-  },
-  onlineCourses:{
-    createCourse:'/aol/courses/',
-    fileUpload:'/aol/file-upload/',
-    courseList:'/aol/courses/',
-    deleteCourse:'/aol/',
-    courseDetails:'/aol/courses/',
-    categoryList:'/aol/tagging-list/',
-    updateCourse:'/aol/'
-  },
-attendanceList:{
-  list:'/erp_user/onlineclass_attendeelist/',
-  updateAttendance:'/erp_user/mark_attendance/',
-},
->>>>>>> 2923bd5da84888f19d5ef434654377d14ad0c65c
   blog: {
     genreList: '/academic/genre/',
     Blog: '/academic/blog/',
