@@ -15,6 +15,7 @@ import zipcelx from 'zipcelx'
 // import { urls } from '../../../../urls'
 import * as actionTypes from '../../store/actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
 
 function getModalStyle () {
   const top = 50
@@ -320,7 +321,8 @@ const AdjustFeeType = ({
   )
 
   return (
-    <React.Fragment>
+    <Layout>   
+      <React.Fragment>
       <Grid container spacing={3} style={{ padding: 15 }}>
         <Grid item className={classes.item} xs={3}>
           <label>Current Fee Plans*</label>
@@ -423,6 +425,7 @@ const AdjustFeeType = ({
       </Modal>
         : ''}
     </React.Fragment>
+    </Layout>
   )
 }
 

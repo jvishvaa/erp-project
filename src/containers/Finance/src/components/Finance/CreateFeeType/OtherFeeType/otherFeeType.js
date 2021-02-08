@@ -12,7 +12,7 @@ import AddOtherFee from './addOtherFee'
 import Modal from '../../../../ui/Modal/modal'
 import { urls } from '../../../../urls'
 import Layout from '../../../../../../Layout'
-// import '../../../css/staff.css'
+import '../../../css/staff.css'
 
 const otherFee = {
   namespace: 'Other Fee'

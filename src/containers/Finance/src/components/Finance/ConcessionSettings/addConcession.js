@@ -7,7 +7,7 @@ import { Button, Grid } from '@material-ui/core/'
 
 import * as actionTypes from '../store/actions'
 import { apiActions } from '../../../_actions'
-// import '../../css/staff.css'
+import '../../css/staff.css'
 
 class AddConcessionSettings extends Component {
   constructor (props) {

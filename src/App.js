@@ -84,6 +84,19 @@ import viewFeeAccounts from '../src/containers/Finance/src/components/Finance/Co
 import AccToClass from '../src/containers/Finance/src/components/Finance/CorporateBank/AccountToClass/accountToClass.js'
 import AccToBranch from '../src/containers/Finance/src/components/Finance/CorporateBank/AccountToBranch/accountToBranch.js'
 import AccToStore from '../src/containers/Finance/src/components/Finance/CorporateBank/AccountToStore/accountToStore.js'
+import LastDateSettings from '../src/containers/Finance/src/components/Finance/LastDateSettings/lastDate.js'
+import ReceiptSettings from '../src/containers/Finance/src/components/Finance/ReceiptSettings/ReceiptSettings.js'
+import BulkFeeUpload from  '../src/containers/Finance/src/components/Finance/BulkOperations/BulkFeeUpload/bulkFeeUpload.js'
+import StudentWallet from '../src/containers/Finance/src/components/Finance/student/StudentWallet/StudentWallet.js'
+import FeeCollection from '../src/containers/Finance/src/components/Finance/BranchAccountant/FeeCollection/FeeCollection.js'
+import FeeShowList from './containers/Finance/src/components/Finance/BranchAccountant/FeeCollection/FeeShowList';
+import AssignDelieveryCharge from './containers/Finance/src/components/Finance/BranchAccountant/AssignDelieveryCharge/assignDelieveryCharge.js'
+import ChangeFeePlanToStudent from './containers/Finance/src/components/Finance/BranchAccountant/ChangeFeePlanToStudent/changeFeePlanToStudent.js'
+import BulkReportUpload from './containers/Finance/src/components/Finance/BulkOperations/bulkReportUpload.js'
+import BulkReportStatus from './containers/Finance/src/components/Finance/BulkOperations/bulkReportStatus.js'
+import OnlinePayment from './containers/Finance/src/components/Finance/UploadOnlinePayments/uploadOnlinePayments.js'
+import BulkActiveInactive from './containers/Finance/src/components/Finance/BulkOperations/BulkActiveInactive/bulkActiveInactive.js'
+import BulkActiveInactiveParent from './containers/Finance/src/components/Finance/BulkOperations/BulkActiveInactiveParent/bulkActiveInactiveParent.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -350,6 +363,45 @@ function App() {
                 </Route>
                 <Route exact path='/finance/AccToStore'>
                   {({ match }) => <AccToStore match={match} />}
+                </Route>
+                <Route exact path='/finance/Setting/LastDateSetting'>
+                  {({ match }) => <LastDateSettings match={match} />}
+                </Route>
+                <Route exact path='/finance/Setting/ReceiptSettings'>
+                  {({ match }) => <ReceiptSettings match={match} />}
+                </Route>
+                <Route exact path='/finance/BulkOperation/Feestructure'>
+                  {({ match }) => <BulkFeeUpload match={match} />}
+                </Route>
+                <Route exact path='/finance/StudentWallet'>
+                  {({ match }) => <StudentWallet match={match} />}
+                </Route>
+                <Route exact path='/finance/student/FeeCollection'>
+                  {({ match }) => <FeeCollection match={match} />}
+                </Route>
+                <Route exact path= '/finance/feeShowList/'>
+                  {({ match }) => <FeeShowList match={match} />}
+                </Route>
+                <Route exact path= '/finance/student/AssignDeliveryCharge'>
+                  {({ match }) => <AssignDelieveryCharge match={match} />}
+                </Route>
+                <Route exact path= '/finance/student/ChnageFeePlanToStudent'>
+                  {({ match }) => <ChangeFeePlanToStudent match={match} />}
+                </Route>
+                <Route exact path= '/finance/BulkOperation/BulkReportUpload'>
+                  {({ match }) => <BulkReportUpload match={match} />}
+                </Route>
+                <Route exact path= '/finance/BulkOperation/BulkUploadStatus'>
+                  {({ match }) => <BulkReportStatus match={match} />}
+                </Route>
+                <Route exact path= '/finance/BulkOperation/UploadOnlinePayment'>
+                  {({ match }) => <OnlinePayment match={match} />}
+                </Route>
+                <Route exact path= '/finance/BulkOperation/BulkActiveInactive'>
+                  {({ match }) => <BulkActiveInactive match={match} />}
+                </Route>
+                <Route exact path= '/finance/BulkOperation/BulkActiveInactiveParent'>
+                  {({ match }) => <BulkActiveInactiveParent match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

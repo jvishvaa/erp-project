@@ -9,6 +9,7 @@ import { apiActions } from '../../../_actions'
 import * as actionTypes from '../store/actions'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 import TablePaginationActions from '../TablePaginationAction'
+import Layout from '../../../../../Layout'
 
 const styles = theme => ({
   tableWrapper: {
@@ -182,7 +183,8 @@ const BulkReportStatus = ({ classes, reports, session, branches, bulkReportList,
   }
 
   return (
-    <React.Fragment>
+    <Layout>   
+      <React.Fragment>
       <Grid container spacing={3} style={{ padding: 15 }}>
         <Grid item xs={3}>
           <label>Academic Year*</label>
@@ -237,6 +239,8 @@ const BulkReportStatus = ({ classes, reports, session, branches, bulkReportList,
       {(statusList && statusList.results && statusList.results.length) ? getStatusHandler() : null}
       {dataLoading ? <CircularProgress open /> : null}
     </React.Fragment>
+    </Layout>
+ 
   )
 }
 const mapStateToProps = state => ({

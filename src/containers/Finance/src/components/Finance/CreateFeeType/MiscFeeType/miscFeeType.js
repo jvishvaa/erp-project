@@ -13,7 +13,7 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon
 } from '@material-ui/icons'
-// import '../../../css/staff.css'
+import '../../../css/staff.css'
 import classes from './deleteModal.module.css'
 import { apiActions } from '../../../../_actions'
 import * as actionTypes from '../../store/actions'

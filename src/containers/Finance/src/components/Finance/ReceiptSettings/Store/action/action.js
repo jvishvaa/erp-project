@@ -46,7 +46,7 @@ export const editReceiptSettings = (payload) => {
             data: response.data
           }
         })
-        payload.alert.success('Edited Successfully')
+        // payload.alert.success('Edited Successfully')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(error => {
@@ -72,12 +72,12 @@ export const AddReceiptSetting = (payload) => {
           }
         })
         console.log('resssss:', response)
-        payload.alert.success('added Successfully')
+        // payload.alert.success('added Successfully')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(error => {
       dispatch(actionTypes.dataLoaded())
-      payload.alert.error('Something Went Wrong')
+      // payload.alert.error('Something Went Wrong')
       console.log(error)
     })
   }
@@ -98,7 +98,7 @@ export const deleteReceiptSettingList = (payload) => {
             id: id
           }
         })
-        payload.alert.success('deleted Successfully')
+        // payload.alert.success('deleted Successfully')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(error => {

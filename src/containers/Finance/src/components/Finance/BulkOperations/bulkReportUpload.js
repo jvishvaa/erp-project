@@ -12,6 +12,7 @@ import styles from './bulkReportUpload.styles'
 import { apiActions } from '../../../_actions'
 import * as actionTypes from '../store/actions'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../Layout'
 
 const BulkReportUpload = ({ classes, session, branches, bulkReportList, reports, alert, user, fetchBranches, bulkReportUpload, dataLoading }) => {
   const [sessionData, setSessionData] = useState([])
@@ -133,6 +134,7 @@ const BulkReportUpload = ({ classes, session, branches, bulkReportList, reports,
     setStatusFile(file)
   }
   return (
+    <Layout>
     <div>
       <Grid container spacing={3} style={{ padding: '15px' }}>
         <Grid item xs={4}>
@@ -217,6 +219,7 @@ const BulkReportUpload = ({ classes, session, branches, bulkReportList, reports,
       </Grid>
       { dataLoading ? <CircularProgress open /> : null }
     </div>
+    </Layout>
   )
 }
 const mapStateToProps = state => ({

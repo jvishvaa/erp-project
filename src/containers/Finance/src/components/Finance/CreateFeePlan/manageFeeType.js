@@ -20,7 +20,7 @@ import AddFeePlanType from './addFeePlanType'
 import * as actionTypes from '../store/actions'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 // import { urls } from '../../../urls'
-// import '../../css/staff.css'
+import '../../css/staff.css'
 // import EditInstallment from './editFinanaceInstallment'
 import FinanaceInstallment from './finanaceInstallment'
 import Layout from '../../../../../Layout';

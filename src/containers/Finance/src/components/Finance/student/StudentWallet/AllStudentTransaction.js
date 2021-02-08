@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import ReactTable from 'react-table'
+// import ReactTable from 'react-table'
 import { Button } from '@material-ui/core'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import CancelIcon from '@material-ui/icons/Cancel'
 import { withRouter } from 'react-router-dom'
 import axios from 'axios'
 import { connect } from 'react-redux'
-import 'react-table/react-table.css'
+// import 'react-table/react-table.css'
 import './Wallet.css'
 import { apiActions } from '../../../../_actions'
 import { urls } from '../../../../urls'
@@ -122,14 +122,14 @@ function AllStudentTransection (props) {
   return (
     <div>
       {
-        allTransactions
-          ? <ReactTable
-            style={{ fontSize: '20px', textAlign: 'center', fontWeight: 'bold', textShadow: '2px 2px white', fontStyle: 'italic' }}
-            data={data}
-            columns={columns}
-            defaultPageSize={4}
-            pageSizeOptions={[2, 4, 6, 10]}
-          /> : <div style={{ alignItems: 'center' }}> <CircularProgress /></div>
+        // allTransactions
+        //   ? <ReactTable
+        //     style={{ fontSize: '20px', textAlign: 'center', fontWeight: 'bold', textShadow: '2px 2px white', fontStyle: 'italic' }}
+        //     data={data}
+        //     columns={columns}
+        //     defaultPageSize={4}
+        //     pageSizeOptions={[2, 4, 6, 10]}
+        //   /> : <div style={{ alignItems: 'center' }}> <CircularProgress /></div> //rajneesh
       }
       { modal }
     </div>

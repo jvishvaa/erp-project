@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import ReactTable from 'react-table'
+// import ReactTable from 'react-table'
 import { withStyles, Radio, StepLabel, Step, Stepper, Button, Typography, Grid, Table, TableCell, TableRow, TableHead, TableBody, Paper, TextField, Checkbox } from '@material-ui/core/'
 import Select from 'react-select'
 import axios from 'axios'
@@ -12,6 +12,7 @@ import { urls } from '../../../../urls'
 import feeReceipts from '../../Receipts/feeReceipts'
 import * as actionTypes from '../../store/actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
 
 const styles = (theme) => ({
   tableWrapper: {
@@ -599,69 +600,69 @@ class FeeShowList extends Component {
   // }
 
   feeListTableHandler = () => {
-    let feeListTable = null
-    console.log('print:', this.props.feeList)
-    if (this.props.feeList && this.props.feeList.length > 0) {
-      feeListTable = (<ReactTable
-        // pages={Math.ceil(this.props.viewBanksList.count / 20)}
-        data={this.renderTable()}
-        manual
-        columns={[
-          {
-            Header: 'select',
-            accessor: 'check',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Fee Collection Type',
-            accessor: 'feeCollectionType',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Sub Type',
-            accessor: 'subType',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Amount Given',
-            accessor: 'amountGiven',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Amount',
-            accessor: 'amount',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Fee Account',
-            accessor: 'feeAccount',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          }
-        ]}
-        filterable
-        sortable
-        defaultPageSize={10}
-        showPageSizeOptions={false}
-        className='-striped -highlight'
-        // Controlled props
-        // page={this.state.page}
-        // Callbacks
-        // onPageChange={page => this.pageChangeHandler(page)}
-      />)
-    }
-    return feeListTable
+  //   let feeListTable = null
+  //   console.log('print:', this.props.feeList)
+  //   if (this.props.feeList && this.props.feeList.length > 0) {
+  //     feeListTable = (<ReactTable
+  //       // pages={Math.ceil(this.props.viewBanksList.count / 20)}
+  //       data={this.renderTable()}
+  //       manual
+  //       columns={[
+  //         {
+  //           Header: 'select',
+  //           accessor: 'check',
+  //           inputFilterable: true,
+  //           exactFilterable: true,
+  //           sortable: true
+  //         },
+  //         {
+  //           Header: 'Fee Collection Type',
+  //           accessor: 'feeCollectionType',
+  //           inputFilterable: true,
+  //           exactFilterable: true,
+  //           sortable: true
+  //         },
+  //         {
+  //           Header: 'Sub Type',
+  //           accessor: 'subType',
+  //           inputFilterable: true,
+  //           exactFilterable: true,
+  //           sortable: true
+  //         },
+  //         {
+  //           Header: 'Amount Given',
+  //           accessor: 'amountGiven',
+  //           inputFilterable: true,
+  //           exactFilterable: true,
+  //           sortable: true
+  //         },
+  //         {
+  //           Header: 'Amount',
+  //           accessor: 'amount',
+  //           inputFilterable: true,
+  //           exactFilterable: true,
+  //           sortable: true
+  //         },
+  //         {
+  //           Header: 'Fee Account',
+  //           accessor: 'feeAccount',
+  //           inputFilterable: true,
+  //           exactFilterable: true,
+  //           sortable: true
+  //         }
+  //       ]}
+  //       filterable
+  //       sortable
+  //       defaultPageSize={10}
+  //       showPageSizeOptions={false}
+  //       className='-striped -highlight'
+  //       // Controlled props
+  //       // page={this.state.page}
+  //       // Callbacks
+  //       // onPageChange={page => this.pageChangeHandler(page)}
+  //     />)
+  //   }
+  //   return feeListTable
   }
 
   receiptDetailHandler = (id) => {
@@ -1383,7 +1384,8 @@ class FeeShowList extends Component {
     const { activeStep } = this.state
     console.log('State', this.props.location.state)
     return (
-      <React.Fragment>
+      <Layout>     
+         <React.Fragment>
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map(label => (
             <Step key={label}>
@@ -1413,6 +1415,7 @@ class FeeShowList extends Component {
         {/* {feeListTable} */}
         {this.props.dataLoading ? <CircularProgress open /> : null}
       </React.Fragment>
+      </Layout>
     )
   }
 }

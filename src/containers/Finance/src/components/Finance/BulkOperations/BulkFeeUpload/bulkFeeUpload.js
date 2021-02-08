@@ -12,6 +12,7 @@ import styles from './bulkFeeUpload.styles'
 import { apiActions } from '../../../../_actions'
 import * as actionTypes from '../../store/actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
 
 const BulkFeeUpload = ({ classes, session, branches, alert, user, fetchBranches, bulkFeeUpload, dataLoading }) => {
   const [sessionData, setSessionData] = useState(null)
@@ -113,6 +114,7 @@ const BulkFeeUpload = ({ classes, session, branches, alert, user, fetchBranches,
     setStatusFile(file)
   }
   return (
+    <Layout>
     <div className={classes.container}>
       <Grid container spacing={3}>
         <Grid item xs={3}>
@@ -200,6 +202,7 @@ const BulkFeeUpload = ({ classes, session, branches, alert, user, fetchBranches,
       </Grid>
       { dataLoading ? <CircularProgress open /> : null }
     </div>
+    </Layout>
   )
 }
 const mapStateToProps = state => ({

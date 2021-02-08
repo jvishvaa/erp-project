@@ -4,7 +4,7 @@ import { Radio, Button, Grid } from '@material-ui/core/'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import * as actionTypes from '../../store/actions'
-// import '../../../css/staff.css'
+import '../../../css/staff.css'
 // import classes from './viewBanks.module.css'
 
 class EditBanks extends Component {

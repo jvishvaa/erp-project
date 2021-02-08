@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { apiActions } from '../../../../_actions'
 import { urls } from '../../../../urls'
-// import '../../../css/staff.css'
+import '../../../css/staff.css'
 
 class AddOtherFeeType extends Component {
   constructor (props) {

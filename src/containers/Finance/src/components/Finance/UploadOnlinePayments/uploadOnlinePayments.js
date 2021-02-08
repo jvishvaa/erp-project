@@ -3,22 +3,23 @@ import React, { useState } from 'react'
 import {
   Grid,
   Button,
-  TextField
+  TextField,
   // Table,
   // TableCell,
   // TableRow,
   // TableHead,
   // TableBody,
-
+  CircularProgress
 } from '@material-ui/core'
 import Select from 'react-select'
 // import ReactTable from 'react-table'
-import 'react-table/react-table.css'
+// import 'react-table/react-table.css'
 import { connect } from 'react-redux'
 import * as actionTypes from '../store/actions'
 import { apiActions } from '../../../_actions'
 // import Modal from '../../../ui/Modal/modal'
-import { CircularProgress } from '../../../ui'
+// import { CircularProgress } from '../../../ui'
+import Layout from '../../../../../Layout'
 
 const OnlinePayment = ({ dataLoadingStatus, alert, airpayPayment, todayEMandateDetails, setDomainDetails, todayDetail, fetchBranches, user, domainNames, branches, session }) => {
   // const [selectedDomain, setSelectedDomain] = useState(null)
@@ -50,6 +51,7 @@ const OnlinePayment = ({ dataLoadingStatus, alert, airpayPayment, todayEMandateD
   }
 
   return (
+    <Layout>
     <div>
       <Grid container spacing={3} style={{ padding: 15 }}>
         <React.Fragment>
@@ -103,6 +105,7 @@ const OnlinePayment = ({ dataLoadingStatus, alert, airpayPayment, todayEMandateD
       </Grid>
       {dataLoadingStatus ? <CircularProgress open /> : null}
     </div>
+    </Layout>
   )
 }
 

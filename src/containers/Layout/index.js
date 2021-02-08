@@ -460,7 +460,7 @@ const Layout = ({ children, history }) => {
         history.push('/finance/ChequeBounceReport')
         break;
       }
-      case 'Student Shuffle Requests': {
+      case 'Student Shuffle': {
         history.push('/finance/StudentShuffleRequest')
         break;
       }
@@ -518,6 +518,54 @@ const Layout = ({ children, history }) => {
                 }
               case 'Manage Bank & Fee Accounts': {
                 history.push('/finance/BankAndFeeAccounts')
+                  break;
+                }
+              case 'Last Date Settings': {
+                history.push('/finance/Setting/LastDateSetting')
+                  break;
+                }
+              case 'Receipt Settings': {
+                history.push('/finance/Setting/ReceiptSettings')
+                   break;
+                }
+              case 'Fee Structure Upload': {
+                history.push('/finance/BulkOperation/Feestructure')
+                  break;
+                }
+              case 'Student Wallet': {
+                history.push('/finance/StudentWallet')
+                  break;
+                }
+              case 'Fee Collection': {
+                history.push('/finance/student/FeeCollection')
+                  break;
+                }
+              case 'Assign Delivery charge kit books & uniform': {
+                history.push('/finance/student/AssignDeliveryCharge')
+                  break;
+                }    
+              case 'Assign / Change fee plan': {
+                history.push('/finance/student/ChnageFeePlanToStudent'  )
+                  break;
+                } 
+              case 'Bulk Report Upload': {
+                history.push('/finance/BulkOperation/BulkReportUpload')
+                  break;
+                }
+             case 'Bulk Upload Status': {
+                history.push('/finance/BulkOperation/BulkUploadStatus')
+                  break;
+                }  
+              case 'Upload Online Payments': {
+                history.push('/finance/BulkOperation/UploadOnlinePayment')
+                  break;
+                }
+              case 'Permanent Active / Inactive': {
+                history.push('/finance/BulkOperation/BulkActiveInactive')
+                  break;
+                }
+              case 'Temporary Active / Inactive': {
+                history.push('/finance/BulkOperation/BulkActiveInactiveParent')
                   break;
                 }
       default:

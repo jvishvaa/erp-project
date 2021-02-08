@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 // import Select from 'react-select'
 import { connect } from 'react-redux'
 // import PropTypes from 'prop-types'
-import ReactTable from 'react-table'
+// import ReactTable from 'react-table'
 import Edit from '@material-ui/icons/Edit'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 import * as actionTypes from '../store/actions/index'
@@ -92,58 +92,58 @@ class ConcessionLastDate extends Component {
 
   render () {
     // let { classes } = this.props
-    let concessionTable = null
-    if (this.props.concessionLastDateList) {
-      concessionTable = (
-        <ReactTable
-        // pages={Math.ceil(this.props.viewBanksList.count / 20)}
-          data={this.renderConcessionTable()}
-          manual
-          columns={[
-            {
-              Header: 'Sl no.',
-              accessor: 'sl',
-              inputFilterable: true,
-              exactFilterable: true,
-              sortable: true
-              // style: {
-              //   maxWidth: '20px'
-              // }
-            },
-            {
-              Header: 'Branch Name',
-              accessor: 'branchName',
-              inputFilterable: true,
-              exactFilterable: true,
-              sortable: true
-            },
-            {
-              Header: 'Concession Last Date',
-              accessor: 'lastDate',
-              inputFilterable: true,
-              exactFilterable: true,
-              sortable: true
-            },
-            {
-              Header: 'Actions',
-              accessor: 'action',
-              inputFilterable: true,
-              exactFilterable: true,
-              sortable: true
-            }
-          ]}
-          filterable
-          sortable
-          defaultPageSize={10}
-          showPageSizeOptions={false}
-          className='-striped -highlight'
-          // Controlled props
-          // page={this.state.page}
-          // Callbacks
-          // onPageChange={page => this.pageChangeHandler(page)}
-        />
-      )
-    }
+    // let concessionTable = null
+    // if (this.props.concessionLastDateList) {
+    //   concessionTable = (
+    //     <ReactTable
+    //     // pages={Math.ceil(this.props.viewBanksList.count / 20)}
+    //       data={this.renderConcessionTable()}
+    //       manual
+    //       columns={[
+    //         {
+    //           Header: 'Sl no.',
+    //           accessor: 'sl',
+    //           inputFilterable: true,
+    //           exactFilterable: true,
+    //           sortable: true
+    //           // style: {
+    //           //   maxWidth: '20px'
+    //           // }
+    //         },
+    //         {
+    //           Header: 'Branch Name',
+    //           accessor: 'branchName',
+    //           inputFilterable: true,
+    //           exactFilterable: true,
+    //           sortable: true
+    //         },
+    //         {
+    //           Header: 'Concession Last Date',
+    //           accessor: 'lastDate',
+    //           inputFilterable: true,
+    //           exactFilterable: true,
+    //           sortable: true
+    //         },
+    //         {
+    //           Header: 'Actions',
+    //           accessor: 'action',
+    //           inputFilterable: true,
+    //           exactFilterable: true,
+    //           sortable: true
+    //         }
+    //       ]}
+    //       filterable
+    //       sortable
+    //       defaultPageSize={10}
+    //       showPageSizeOptions={false}
+    //       className='-striped -highlight'
+    //       // Controlled props
+    //       // page={this.state.page}
+    //       // Callbacks
+    //       // onPageChange={page => this.pageChangeHandler(page)}
+    //     />
+    //   )
+    // }
 
     let actionModal = null
     if (this.state.showActionModal) {
@@ -183,7 +183,7 @@ class ConcessionLastDate extends Component {
     }
     return (
       <React.Fragment>
-        {concessionTable}
+        {/* {concessionTable} */}
         {actionModal}
         {this.props.dataLoading ? <CircularProgress open /> : null}
       </React.Fragment>

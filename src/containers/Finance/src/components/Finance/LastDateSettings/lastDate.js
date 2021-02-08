@@ -15,6 +15,7 @@ import '../../css/staff.css'
 import BackDateSelection from './backDateSelection'
 import ConcessionLastDate from './concessionLastDate'
 import PartialPayment from './partialPayment'
+import Layout from '../../../../../Layout'
 // import { urls } from '../../../urls'
 
 const styles = theme => ({
@@ -103,6 +104,7 @@ class LastDateSettings extends Component {
       )
     }
     return (
+      <Layout>
       <React.Fragment>
         <Grid container spacing={3} style={{ padding: 15 }}>
           <Grid item xs='3'>
@@ -127,6 +129,7 @@ class LastDateSettings extends Component {
         </div>
         {this.props.dataLoading ? <CircularProgress open /> : null}
       </React.Fragment>
+      </Layout>
     )
   }
 }

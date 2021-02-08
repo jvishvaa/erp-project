@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { apiActions } from '../../../_actions'
 // import { RouterButton, OmsFilterTable } from '../../../ui'
-// import '../../css/staff.css'
+import '../../css/staff.css'
 import { urls } from '../../../urls'
 import * as actionTypes from '../store/actions'
 import Layout from '../../../../../Layout';

@@ -4,7 +4,7 @@ import { Button, Grid } from '@material-ui/core/'
 
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-// import '../../../css/staff.css'
+import '../../../css/staff.css'
 import * as actionTypes from '../../store/actions'
 
 class EditMiscFeeType extends Component {

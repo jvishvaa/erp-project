@@ -5,8 +5,8 @@ import PropTypes from 'prop-types'
 import { withStyles, Button, Grid, Fab, Tab, Tabs, AppBar, Typography } from '@material-ui/core/'
 // import { Edit } from '@material-ui/icons'
 import { Edit } from '@material-ui/icons'
-import ReactTable from 'react-table'
-import 'react-table/react-table.css'
+// import ReactTable from 'react-table'
+// import 'react-table/react-table.css'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import Select from 'react-select'
@@ -16,6 +16,7 @@ import { apiActions } from '../../../../_actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 // import { FilterInnerComponent, filterMethod } from '../../FilterInnerComponent/filterInnerComponent'
 import AdjustFeeType from './adjustFeeType.js'
+import Layout from '../../../../../../Layout'
 
 const styles = theme => ({
   tableWrapper: {
@@ -347,7 +348,7 @@ class ChangeFeePlanToStudent extends Component {
         <Modal open={this.state.showInstaDetails} click={this.hideInstaDetailsHandler}>
           <h3 className={classes.modal__heading}>Installment Details</h3>
           <hr />
-          <ReactTable
+          {/* <ReactTable
             // pages={Math.ceil(this.props.viewBanksList.count / 20)}
             data={this.renderInstaTable()}
             manual
@@ -397,7 +398,7 @@ class ChangeFeePlanToStudent extends Component {
             // page={this.state.page}
             // Callbacks
             // onPageChange={page => this.pageChangeHandler(page)}
-          />
+          /> */}
         </Modal>
       )
     }
@@ -415,60 +416,60 @@ class ChangeFeePlanToStudent extends Component {
           /> &nbsp; <b>Select All Students</b>
         </div>
       )
-      feePlanTable = (<ReactTable
-        // pages={Math.ceil(this.props.viewBanksList.count / 20)}
-        data={this.renderFeePlanTable()}
-        // manual
-        columns={[
-          {
-            Header: 'Select',
-            accessor: 'check',
-            filterable: false,
-            sortable: false
-          },
-          {
-            Header: 'Student Name',
-            accessor: 'studentName',
-            filterable: false,
-            sortable: false
-          },
-          {
-            Header: 'ERP Code',
-            accessor: 'erpCode',
-            filterable: false,
-            sortable: false
-          },
-          {
-            Header: 'Current Fee Plan',
-            accessor: 'currentFeePlan',
-            filterable: false,
-            sortable: true
-          },
-          {
-            Header: 'Total',
-            accessor: 'total',
-            filterable: false,
-            sortable: false
-          },
-          {
-            Header: 'Change Fee Plan',
-            accessor: 'Edit',
-            filterable: false,
-            sortable: false
-          },
-          {
-            Header: 'Status',
-            accessor: 'status',
-            filterable: false,
-            sortable: false
-          }
-        ]}
-        filterable
-        sortable
-        defaultPageSize={20}
-        showPageSizeOptions={false}
-        className='-striped -highlight'
-      />)
+      // feePlanTable = (<ReactTable
+      //   // pages={Math.ceil(this.props.viewBanksList.count / 20)}
+      //   data={this.renderFeePlanTable()}
+      //   // manual
+      //   columns={[
+      //     {
+      //       Header: 'Select',
+      //       accessor: 'check',
+      //       filterable: false,
+      //       sortable: false
+      //     },
+      //     {
+      //       Header: 'Student Name',
+      //       accessor: 'studentName',
+      //       filterable: false,
+      //       sortable: false
+      //     },
+      //     {
+      //       Header: 'ERP Code',
+      //       accessor: 'erpCode',
+      //       filterable: false,
+      //       sortable: false
+      //     },
+      //     {
+      //       Header: 'Current Fee Plan',
+      //       accessor: 'currentFeePlan',
+      //       filterable: false,
+      //       sortable: true
+      //     },
+      //     {
+      //       Header: 'Total',
+      //       accessor: 'total',
+      //       filterable: false,
+      //       sortable: false
+      //     },
+      //     {
+      //       Header: 'Change Fee Plan',
+      //       accessor: 'Edit',
+      //       filterable: false,
+      //       sortable: false
+      //     },
+      //     {
+      //       Header: 'Status',
+      //       accessor: 'status',
+      //       filterable: false,
+      //       sortable: false
+      //     }
+      //   ]}
+      //   filterable
+      //   sortable
+      //   defaultPageSize={20}
+      //   showPageSizeOptions={false}
+      //   className='-striped -highlight'
+      // />)
 
       multiChange = (
         <Grid container spacing={3} style={{ padding: 15 }}>
@@ -521,6 +522,7 @@ class ChangeFeePlanToStudent extends Component {
       )
     }
     return (
+      <Layout>
       <React.Fragment>
         <Grid container spacing={3} style={{ padding: 15 }}>
           <Grid item xs='9' />
@@ -637,6 +639,7 @@ class ChangeFeePlanToStudent extends Component {
         </TabContainer>}
         {this.props.dataLoading ? <CircularProgress open /> : null}
       </React.Fragment>
+      </Layout>
     )
   }
 }

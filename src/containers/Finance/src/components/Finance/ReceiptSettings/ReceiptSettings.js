@@ -8,8 +8,8 @@ import {
 
 import Select from 'react-select'
 import { connect } from 'react-redux'
-import ReactTable from 'react-table'
-import 'react-table/react-table.css'
+// import ReactTable from 'react-table'
+// import 'react-table/react-table.css'
 import classes from './deleteModal.module.css'
 
 import { apiActions } from '../../../_actions'
@@ -19,6 +19,7 @@ import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 import Modal from '../../../ui/Modal/modal'
 import ReceiptSettingsEdit from './RecieptSettingEdit'
 import ReceiptSettingAdd from './ReceiptSettingAdd'
+import Layout from '../../../../../Layout'
 
 class ReceiptSettings extends Component {
   state = {
@@ -158,90 +159,90 @@ class ReceiptSettings extends Component {
     return dataToShow
   }
   render () {
-    let receiptSettingsTable = null
-    if (this.props.receiptlists && this.props.receiptlists) {
-      receiptSettingsTable = (
-        <ReactTable
-        // pages={Math.ceil(this.props.viewBanksList.count / 20)}
-          data={this.renderTable()}
-          manual
-          columns={[
-            {
-              Header: 'Sr',
-              accessor: 'Sr',
-              inputFilterable: true,
-              exactFilterable: true,
-              sortable: true
-            },
-            {
-              Header: 'Prefix',
-              accessor: 'prefix',
-              inputFilterable: true,
-              exactFilterable: true,
-              sortable: true
-            },
-            {
-              Header: ' Header',
-              accessor: 'payslipheader',
-              inputFilterable: true,
-              exactFilterable: true,
-              sortable: true
-            },
-            {
-              Header: 'Sub Header',
-              accessor: 'subHeader',
-              inputFilterable: true,
-              exactFilterable: true,
-              sortable: true
-            },
-            {
-              Header: 'Footer',
-              accessor: 'footer',
-              inputFilterable: true,
-              exactFilterable: true,
-              sortable: true
-            },
-            {
-              Header: 'Sub Footer',
-              accessor: 'subFooter',
-              inputFilterable: true,
-              exactFilterable: true,
-              sortable: true
-            },
-            {
-              Header: 'Is Active',
-              accessor: 'isActive',
-              inputFilterable: true,
-              exactFilterable: true,
-              sortable: true
-            },
-            {
-              Header: 'Edit',
-              accessor: 'Edit',
-              inputFilterable: true,
-              exactFilterable: true,
-              sortable: true
-            },
-            {
-              Header: 'Delete',
-              accessor: 'Delete',
-              inputFilterable: true,
-              exactFilterable: true,
-              sortable: true
-            }
-          ]}
-          filterable
-          sortable
-          defaultPageSize={this.renderTable().length + 1}
-          showPageSizeOptions={false}
-          className='-striped -highlight'
-          // Controlled props
-          // page={this.state.page}
-          // Callbacks
-          // onPageChange={page => this.pageChangeHandler(page)}
-        />
-      )
-    }
+    // let receiptSettingsTable = null
+    // if (this.props.receiptlists && this.props.receiptlists) {
+    //   receiptSettingsTable = (
+    //     <ReactTable
+    //     // pages={Math.ceil(this.props.viewBanksList.count / 20)}
+    //       data={this.renderTable()}
+    //       manual
+    //       columns={[
+    //         {
+    //           Header: 'Sr',
+    //           accessor: 'Sr',
+    //           inputFilterable: true,
+    //           exactFilterable: true,
+    //           sortable: true
+    //         },
+    //         {
+    //           Header: 'Prefix',
+    //           accessor: 'prefix',
+    //           inputFilterable: true,
+    //           exactFilterable: true,
+    //           sortable: true
+    //         },
+    //         {
+    //           Header: ' Header',
+    //           accessor: 'payslipheader',
+    //           inputFilterable: true,
+    //           exactFilterable: true,
+    //           sortable: true
+    //         },
+    //         {
+    //           Header: 'Sub Header',
+    //           accessor: 'subHeader',
+    //           inputFilterable: true,
+    //           exactFilterable: true,
+    //           sortable: true
+    //         },
+    //         {
+    //           Header: 'Footer',
+    //           accessor: 'footer',
+    //           inputFilterable: true,
+    //           exactFilterable: true,
+    //           sortable: true
+    //         },
+    //         {
+    //           Header: 'Sub Footer',
+    //           accessor: 'subFooter',
+    //           inputFilterable: true,
+    //           exactFilterable: true,
+    //           sortable: true
+    //         },
+    //         {
+    //           Header: 'Is Active',
+    //           accessor: 'isActive',
+    //           inputFilterable: true,
+    //           exactFilterable: true,
+    //           sortable: true
+    //         },
+    //         {
+    //           Header: 'Edit',
+    //           accessor: 'Edit',
+    //           inputFilterable: true,
+    //           exactFilterable: true,
+    //           sortable: true
+    //         },
+    //         {
+    //           Header: 'Delete',
+    //           accessor: 'Delete',
+    //           inputFilterable: true,
+    //           exactFilterable: true,
+    //           sortable: true
+    //         }
+    //       ]}
+    //       filterable
+    //       sortable
+    //       defaultPageSize={this.renderTable().length + 1}
+    //       showPageSizeOptions={false}
+    //       className='-striped -highlight'
+    //       // Controlled props
+    //       // page={this.state.page}
+    //       // Callbacks
+    //       // onPageChange={page => this.pageChangeHandler(page)}
+    //     />
+    //   )
+    // }
     let modal = null
     if (this.state.showModal) {
       const {
@@ -337,6 +338,7 @@ class ReceiptSettings extends Component {
       )
     }
     return (
+      <Layout >
       <React.Fragment>
         <Grid container spacing={3} style={{ padding: 15 }}>
           <Grid item xs='8' />
@@ -403,7 +405,7 @@ class ReceiptSettings extends Component {
           {this.props.receiptlists && this.props.receiptlists.length > 0
             ? <React.Fragment>
               <Grid item xs='12'>
-                {receiptSettingsTable}
+                {/* {receiptSettingsTable} */}
               </Grid>
             </React.Fragment> : null}
           {addModal}
@@ -412,6 +414,7 @@ class ReceiptSettings extends Component {
           {this.props.dataLoading ? <CircularProgress open /> : null}
         </Grid>
       </React.Fragment>
+      </Layout>
     )
   }
 }

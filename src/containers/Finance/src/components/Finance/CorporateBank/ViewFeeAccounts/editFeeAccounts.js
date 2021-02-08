@@ -6,7 +6,7 @@ import { Button, Grid } from '@material-ui/core/'
 
 import * as actionTypes from '../../store/actions'
 
-// import '../../css/staff.css'
+import '../../../css/staff.css'
 
 class editFeeAccounts extends Component {
   constructor (props) {

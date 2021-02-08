@@ -13,8 +13,8 @@ import {
 //   withStyles
 } from '@material-ui/core'
 // import { Edit } from '@material-ui/icons'
-import ReactTable from 'react-table'
-import 'react-table/react-table.css'
+// import ReactTable from 'react-table'
+// import 'react-table/react-table.css'
 import Grid from '@material-ui/core/Grid'
 import Select from 'react-select'
 import { connect } from 'react-redux'
@@ -22,6 +22,7 @@ import * as actionTypes from '../../store/actions'
 import Modal from '../../../../ui/Modal/modal'
 import { apiActions } from '../../../../_actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
 
 function TabContainer ({ children, dir }) {
   return (
@@ -153,41 +154,41 @@ const AssignDelieveryCharge = ({ session, fetchGradeList, gradeList, fetchAllDel
         </div>
       </div>
     )
-    studentErpTable = <ReactTable
-      data={renderStudentErpTable()}
-      // manual
-      columns={[
-        {
-          Header: 'Select',
-          accessor: 'check',
-          filterable: false,
-          sortable: true
-        },
-        {
-          Header: 'ERP Code',
-          accessor: 'erpCode',
-          filterable: false,
-          sortable: true
-        },
-        {
-          Header: 'Delivery Charge Kit Name',
-          accessor: 'delievery',
-          filterable: false,
-          sortable: true
-        },
-        {
-          Header: 'Amount',
-          accessor: 'amount',
-          filterable: false,
-          sortable: true
-        }
-      ]}
-      filterable
-      sortable
-      defaultPageSize={20}
-      showPageSizeOptions={false}
-      className='-striped -highlight'
-    />
+  //   studentErpTable = <ReactTable
+  //     data={renderStudentErpTable()}
+  //     // manual
+  //     columns={[
+  //       {
+  //         Header: 'Select',
+  //         accessor: 'check',
+  //         filterable: false,
+  //         sortable: true
+  //       },
+  //       {
+  //         Header: 'ERP Code',
+  //         accessor: 'erpCode',
+  //         filterable: false,
+  //         sortable: true
+  //       },
+  //       {
+  //         Header: 'Delivery Charge Kit Name',
+  //         accessor: 'delievery',
+  //         filterable: false,
+  //         sortable: true
+  //       },
+  //       {
+  //         Header: 'Amount',
+  //         accessor: 'amount',
+  //         filterable: false,
+  //         sortable: true
+  //       }
+  //     ]}
+  //     filterable
+  //     sortable
+  //     defaultPageSize={20}
+  //     showPageSizeOptions={false}
+  //     className='-striped -highlight'
+  //   />
   }
 
   const checkBoxHandler = (e, id) => {
@@ -362,7 +363,8 @@ const AssignDelieveryCharge = ({ session, fetchGradeList, gradeList, fetchAllDel
     )
   }
   return (
-    <div>
+    <Layout>    
+      <div>
       <Grid container spacing={3} wrap='wrap'style={{ padding: '15px' }}>
         <Grid item xs={3}>
           <label>Academic Year*</label>
@@ -410,6 +412,7 @@ const AssignDelieveryCharge = ({ session, fetchGradeList, gradeList, fetchAllDel
       {delieverychargeKitDetail}
       { dataLoading ? <CircularProgress open /> : null }
     </div>
+    </Layout>
   )
 }
 const mapStateToProps = state => ({

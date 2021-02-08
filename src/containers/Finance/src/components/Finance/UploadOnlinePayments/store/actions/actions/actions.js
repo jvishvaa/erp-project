@@ -28,16 +28,16 @@ export const airpayPayment = (payload) => {
       })
       if (response.status === 200) {
         if (response.data.length > 0) {
-          payload.alert.success('Success!')
+          // payload.alert.success('Success!')
         }
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.error(err)
       if (err.response && (err.response.status === 400 || err.response.status === 409 || err.response.status === 404)) {
-        payload.alert.warning(err.response.data.err_msg)
+        // payload.alert.warning(err.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
 
       dispatch(actionTypes.dataLoaded())

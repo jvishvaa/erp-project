@@ -5,7 +5,8 @@ import {
   Radio,
   Grid,
   withStyles,
-  Button
+  Button,
+  CircularProgress
 } from '@material-ui/core'
 import { connect } from 'react-redux'
 // import readXlsxFile from 'read-excel-file'
@@ -13,7 +14,8 @@ import zipcelx from 'zipcelx'
 
 import styles from '../BulkActiveInactive/bulkActiveInactive.styles'
 import * as actionTypes from '../../store/actions'
-import { CircularProgress } from '../../../../ui'
+import Layout from '../../../../../../Layout'
+// import { CircularProgress } from '../../../../ui'
 
 const BulkActiveInactiveParent = ({
   classes,
@@ -90,6 +92,7 @@ const BulkActiveInactiveParent = ({
     }
   }
   return (
+    <Layout>
     <div className={classes.container}>
       <Grid container spacing={6} alignItems='center'>
         <Grid item xs={12} md={4}>
@@ -151,6 +154,7 @@ const BulkActiveInactiveParent = ({
       </Grid>
       {props.dataLoadingStatus ? <CircularProgress open /> : null}
     </div>
+    </Layout>
   )
 }
 
