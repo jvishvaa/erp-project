@@ -3,13 +3,7 @@ import PropTypes from 'prop-types';
 import { Grid, Button } from '@material-ui/core';
 import './style.scss';
 
-const TotalStudentStrengthCard = ({
-  fullData,
-  selectedId,
-  handleSelectCard,
-  handleScroll,
-  reference,
-}) => {
+const TotalStudentStrengthCard = ({ fullData, selectedId, handleSelectCard }) => {
   return (
     <>
       <Grid
@@ -63,7 +57,6 @@ const TotalStudentStrengthCard = ({
                   color='primary'
                   onClick={() => {
                     handleSelectCard((fullData && fullData) || '');
-                    handleScroll(reference);
                   }}
                 >
                   View More
@@ -80,8 +73,6 @@ TotalStudentStrengthCard.prototype = {
   fullData: PropTypes.instanceOf(Object).isRequired,
   selectedId: PropTypes.number.isRequired,
   handleSelectCard: PropTypes.func.isRequired,
-  handleScroll: PropTypes.func.isRequired,
-  reference: PropTypes.instanceOf(Object).isRequired,
 };
 
 export default TotalStudentStrengthCard;

@@ -11,7 +11,7 @@ import axiosInstance from '../../config/axios';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import StudentTableList from './studentTableList';
 
-const TotalStudentWiseDetails = ({ year, branch, grade, hadleClearGrade, reference }) => {
+const TotalStudentWiseDetails = ({ year, branch, grade, hadleClearGrade }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [selectedSection, setSelectedSection] = useState('');
   const [selectedGradeData, setSelecteGradeData] = useState('');
@@ -32,7 +32,7 @@ const TotalStudentWiseDetails = ({ year, branch, grade, hadleClearGrade, referen
         }
       })
       .catch((error) => {
-        setAlert('error', error.response.data.message);
+        setAlert('error', error.message);
         setLoading(false);
       });
   }
@@ -52,7 +52,7 @@ const TotalStudentWiseDetails = ({ year, branch, grade, hadleClearGrade, referen
           }
         })
         .catch((error) => {
-          setAlert('error', error.response.data.message);
+          setAlert('error', error.message);
           setLoading(false);
         });
     } else {
@@ -66,7 +66,7 @@ const TotalStudentWiseDetails = ({ year, branch, grade, hadleClearGrade, referen
   }, [grade]);
   return (
     <>
-      <Grid container spacing={2} className='totalStudentMainCard' ref={reference}>
+      <Grid container spacing={2} className='totalStudentMainCard'>
         <Grid item md={12} xs={12} className='totalStudentSubCard'>
           <Grid container spacing={2}>
             <Grid item md={12} xs={12} className='totalStudentSubSubCard1'>
@@ -179,7 +179,6 @@ TotalStudentWiseDetails.prototype = {
   branch: PropTypes.number.isRequired,
   grade: PropTypes.number.isRequired,
   hadleClearGrade: PropTypes.func.isRequired,
-  reference: PropTypes.instanceOf(Object).isRequired,
 };
 
 export default TotalStudentWiseDetails;

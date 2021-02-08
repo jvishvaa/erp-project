@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useContext, useState, useEffect, useRef } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Grid, Typography, TextField, Divider, Button } from '@material-ui/core';
 import './style.scss';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -13,7 +13,6 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 // import Layout from '../Layout';
 
 const StudentStrength = () => {
-  const elementRef1 = useRef(null);
   const [acadminYearList, setAcadminYearList] = useState([]);
   const [selectedAcadmic, setSelectedAcadmic] = useState('');
   const [branchList, setBranchList] = useState([]);
@@ -26,13 +25,24 @@ const StudentStrength = () => {
 
   useEffect(() => {
     setHRef([
+      // {
+      //   csv: `${endpoints.studentListApis.downloadExcelAllstudents}?academic_year_id=${
+      //     selectedAcadmic && selectedAcadmic.id
+      //   }&export_type=csv`,
+      // },
+      // {
+      //   csv: `${endpoints.studentListApis.downloadBranchWiseStudent}?academic_year_id=${
+      //     selectedAcadmic && selectedAcadmic.id
+      //   }&branch_id=${selectedBranch && selectedBranch.id}
+      //     &export_type=csv`,
+      // },
       {
-        csv: `${endpoints.studentListApis.downloadExcelAllstudents}?academic_year_id=${
+        csv: `https://erpnew.letseduvate.com/qbox/academic/all_branch_strength_excel_data/?academic_year_id=${
           selectedAcadmic && selectedAcadmic.id
         }&export_type=csv`,
       },
       {
-        csv: `${endpoints.studentListApis.downloadBranchWiseStudent}?academic_year_id=${
+        csv: `https://erpnew.letseduvate.com/qbox/academic/branch_strength_excel_data/?academic_year_id=${
           selectedAcadmic && selectedAcadmic.id
         }&branch_id=${selectedBranch && selectedBranch.id}
           &export_type=csv`,
@@ -83,6 +93,7 @@ const StudentStrength = () => {
   function handleClearFilter() {
     setSelectedAcadmic('');
     setSelectedBranch('');
+    setFilteredData('');
   }
 
   function handleFilter() {
@@ -114,15 +125,6 @@ const StudentStrength = () => {
         setAlert('error', error.message);
       });
   }
-
-  const toElemnt = () => {
-    // if (!data) return;
-    // const element = data.current.getBoundingClientRect().top + window.scrollY;
-    // window.scroll({
-    //   top: element,
-    //   behavior: 'smooth',
-    // });
-  };
 
   return (
     // <Layout>
@@ -249,8 +251,6 @@ const StudentStrength = () => {
                       fullData={item || {}}
                       handleSelectCard={setSelectedCard}
                       selectedId={selectedCard || ''}
-                      handleScroll={toElemnt}
-                      reference={elementRef1}
                     />
                   </Grid>
                 ))}
@@ -262,7 +262,6 @@ const StudentStrength = () => {
                 year={(selectedAcadmic && selectedAcadmic.id) || 0}
                 branch={(selectedBranch && selectedBranch.id) || 0}
                 grade={selectedCard || 0}
-                reference={elementRef1}
                 hadleClearGrade={setSelectedCard}
               />
             </Grid>
