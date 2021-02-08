@@ -512,8 +512,8 @@ const Layout = ({ children, history }) => {
               history.push('/finance/accountant/applicationFrom')
                 break;
               }
-              case 'Pending Online Admission': {
-                history.push('/finance/accountat/pendingOnlineadmission')
+              case 'Online Admissions': {
+                history.push('/finance/admissions/OnlineAdmission')
                   break;
                 }
               case 'Manage Bank & Fee Accounts': {

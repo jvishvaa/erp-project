@@ -98,6 +98,7 @@ import OnlinePayment from './containers/Finance/src/components/Finance/UploadOnl
 import BulkActiveInactive from './containers/Finance/src/components/Finance/BulkOperations/BulkActiveInactive/bulkActiveInactive.js'
 import BulkActiveInactiveParent from './containers/Finance/src/components/Finance/BulkOperations/BulkActiveInactiveParent/bulkActiveInactiveParent.js'
 import StudentActivateInactiveAcc from './containers/Finance/src/components/Finance/BranchAccountant/StudentActivateInactivate/studentActivateInactiveacc.js'
+import OnlineAdmission from '../src/containers/Finance/src/components/Finance/PendingOnlineAdmission/pendingOnlineAdmission.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -406,6 +407,9 @@ function App() {
                 </Route>
                 <Route exact path= '/finance/Student/ActiveInactive'>
                   {({ match }) => <StudentActivateInactiveAcc match={match} />}
+                </Route>
+                <Route exact path= '/finance/admissions/OnlineAdmission'>
+                  {({ match }) => <OnlineAdmission match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

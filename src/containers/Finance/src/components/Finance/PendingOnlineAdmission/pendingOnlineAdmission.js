@@ -1,23 +1,23 @@
 import React, { useEffect } from 'react'
 
 import {
-  Grid
+  Grid,
   // Table,
   // TableCell,
   // TableRow,
   // TableHead,
   // TableBody,
-
+   CircularProgress
 } from '@material-ui/core'
 
 // import ReactTable from 'react-table'
-import 'react-table/react-table.css'
-import ReactTable from 'react-table'
+// import 'react-table/react-table.css'
+// import ReactTable from 'react-table'
 import { connect } from 'react-redux'
 import * as actionTypes from '../store/actions'
 import { apiActions } from '../../../_actions'
 // import Modal from '../../../ui/Modal/modal'
-import { CircularProgress } from '../../../ui'
+// import { CircularProgress } from '../../../ui'
 
 const OnlineAdmission = ({ dataLoadingStatus, onlinePendingAdmissionData, getPendingOnlineAdmission, alert, airpayPayment, todayEMandateDetails, setDomainDetails, todayDetail, fetchBranches, user, domainNames, branches, session }) => {
   useEffect(() => {
@@ -38,78 +38,78 @@ const OnlineAdmission = ({ dataLoadingStatus, onlinePendingAdmissionData, getPen
     })
     return dataToShow
   }
-  let studentErpTable = null
+  // let studentErpTable = null
 
-  studentErpTable = <ReactTable
-    style={{ textAlign: 'center' }}
-    data={renderStudentErpTable()}
-    // manual
-    columns={[
-      {
-        Header: 'SNO',
-        accessor: 'sno',
-        // inputFilterable: true,
-        // exactFilterable: true,
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Application Branch',
-        accessor: 'appBranch',
-        // inputFilterable: true,
-        // exactFilterable: true,
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Application Number',
-        accessor: 'app',
-        // inputFilterable: true,
-        // exactFilterable: true,
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Status',
-        accessor: 'status',
-        // inputFilterable: true,
-        // exactFilterable: true,
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Amount',
-        accessor: 'amount',
-        // inputFilterable: true,
-        // exactFilterable: true,
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Date',
-        accessor: 'date',
-        // inputFilterable: true,
-        // exactFilterable: true,
-        filterable: false,
-        sortable: true
-      }
-    ]}
-    filterable
-    sortable
-    defaultPageSize={20}
-    showPageSizeOptions={false}
-    className='-striped -highlight'
-  // Controlled props
-  // page={this.state.page}
-  // Callbacks
-  // onPageChange={page => this.pageChangeHandler(page)}
-  />
+  // studentErpTable = <ReactTable
+  //   style={{ textAlign: 'center' }}
+  //   data={renderStudentErpTable()}
+  //   // manual
+  //   columns={[
+  //     {
+  //       Header: 'SNO',
+  //       accessor: 'sno',
+  //       // inputFilterable: true,
+  //       // exactFilterable: true,
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Application Branch',
+  //       accessor: 'appBranch',
+  //       // inputFilterable: true,
+  //       // exactFilterable: true,
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Application Number',
+  //       accessor: 'app',
+  //       // inputFilterable: true,
+  //       // exactFilterable: true,
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Status',
+  //       accessor: 'status',
+  //       // inputFilterable: true,
+  //       // exactFilterable: true,
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Amount',
+  //       accessor: 'amount',
+  //       // inputFilterable: true,
+  //       // exactFilterable: true,
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Date',
+  //       accessor: 'date',
+  //       // inputFilterable: true,
+  //       // exactFilterable: true,
+  //       filterable: false,
+  //       sortable: true
+  //     }
+  //   ]}
+  //   filterable
+  //   sortable
+  //   defaultPageSize={20}
+  //   showPageSizeOptions={false}
+  //   className='-striped -highlight'
+  // // Controlled props
+  // // page={this.state.page}
+  // // Callbacks
+  // // onPageChange={page => this.pageChangeHandler(page)}
+  // />
 
   return (
     <div>
       <Grid container spacing={3} style={{ padding: 15 }}>
         <Grid item xs={12}>
-          {studentErpTable}
+          {/* {studentErpTable} */}
         </Grid>
       </Grid>
       {dataLoadingStatus ? <CircularProgress open /> : null}
