@@ -40,6 +40,8 @@ import CoordinatorHomework from './containers/homework/coordinator-homework';
 import AddHomeworkCoord from './containers/homework/coordinator-homework/add-homework';
 import LessonReport from './containers/lesson-plan/lesson-plan-report';
 import LessonPlan from './containers/lesson-plan/lesson-plan-view';
+import Assessment from './containers/assessment'
+import ViewAssessment from './containers/assessment/viewAssessment'
 import {
   TeacherBlog,
   ContentView,
@@ -354,6 +356,12 @@ function App() {
                     </Route>
                     <Route exact path='/aol-attendance-list/:id?'>
                       {({ match }) => <AttendeeListRemake match={match} />}
+                    </Route>
+                    <Route exact path='/assessment'>
+                      {({ match }) => <Assessment match={match} />}
+                    </Route>
+                    <Route exact path='/assessment/view-assessment'>
+                      {({ match }) => <ViewAssessment match={match} />}
                     </Route>
                   </Switch>
                 </ViewStore>
