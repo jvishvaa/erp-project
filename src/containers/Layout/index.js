@@ -604,6 +604,10 @@ const Layout = ({ children, history }) => {
                 history.push('/finance/Approval/Requests/PostDateCheque')
                   break;
                 }
+              case 'Billing Details': {
+                history.push('/finance/E-Mandate/BillingDetails')
+                  break;
+                }
       default:
         break;
     }

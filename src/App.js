@@ -116,6 +116,7 @@ import PendingRequestView from './containers/Finance/src/components/Finance/FeeP
 import AcceptRejectPayment from './containers/Finance/src/components/Finance/BranchAccountant/AcceptRejectPayment/acceptRejectPayment';
 import PostDateCheque from './containers/Finance/src/components/Finance/BranchAccountant/PostDateCheque/postDateCheque';
 import StudentInfoAdm from './containers/Finance/src/components/Finance/StudentInfo/studentInfo.js'
+import BillingDetails from './containers/Finance/src/components/Finance/E-mandate/billingDetails';
 
 const theme = createMuiTheme({
   palette: {
@@ -485,6 +486,9 @@ function App() {
                 </Route>
                 <Route exact path= '/finance/student/studentInfo'>
                   {({ match }) => <StudentInfoAdm match={match} />}
+                </Route>
+                <Route exact path= '/finance/E-Mandate/BillingDetails'>
+                  {({ match }) => <BillingDetails match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

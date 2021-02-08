@@ -3,22 +3,22 @@ import React, { useState, useEffect } from 'react'
 import {
   TextField,
   Grid,
-  Button
+  Button,
   // Table,
   // TableCell,
   // TableRow,
   // TableHead,
   // TableBody,
-
+CircularProgress
 } from '@material-ui/core'
 import Select from 'react-select'
-import ReactTable from 'react-table'
-import 'react-table/react-table.css'
+// import ReactTable from 'react-table' // rajneesh
+// import 'react-table/react-table.css' // rajneesh
 import { connect } from 'react-redux'
 import * as actionTypes from '../store/actions'
 import { apiActions } from '../../../_actions'
 import Modal from '../../../ui/Modal/modal'
-import { CircularProgress } from '../../../ui'
+// import { CircularProgress } from '../../../ui'
 
 const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDomainDetails, todayDetail, fetchBranches, user, domainNames, branches, session }) => {
   // const [selectedDomain, setSelectedDomain] = useState(null)
@@ -127,50 +127,50 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
 
   //   )
   // }
-  let studentErpTable = null
+  // let studentErpTable = null
 
-  studentErpTable = <ReactTable
-    style={{ marginTop: 60, textAlign: 'center' }}
-    data={renderStudentErpTable()}
-    // manual
-    columns={[
-      {
-        Header: 'Branch Name',
-        accessor: 'domain',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Amount Per Student',
-        accessor: 'amount',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Billing Start Date',
-        accessor: 'start_date',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Billing End Date',
-        accessor: 'end_date',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Edit',
-        accessor: 'edit',
-        filterable: false,
-        sortable: true
-      }
-    ]}
-    filterable
-    sortable
-    defaultPageSize={20}
-    showPageSizeOptions={false}
-    className='-striped -highlight'
-  />
+  // studentErpTable = <ReactTable
+  //   style={{ marginTop: 60, textAlign: 'center' }}
+  //   data={renderStudentErpTable()}
+  //   // manual
+  //   columns={[
+  //     {
+  //       Header: 'Branch Name',
+  //       accessor: 'domain',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Amount Per Student',
+  //       accessor: 'amount',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Billing Start Date',
+  //       accessor: 'start_date',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Billing End Date',
+  //       accessor: 'end_date',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Edit',
+  //       accessor: 'edit',
+  //       filterable: false,
+  //       sortable: true
+  //     }
+  //   ]}
+  //   filterable
+  //   sortable
+  //   defaultPageSize={20}
+  //   showPageSizeOptions={false}
+  //   className='-striped -highlight'
+  // />
 
   const getTodayHandler = () => {
     if (sessionData) {
@@ -633,7 +633,7 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
           : [] }
       </Grid>
       {/* {todayDeatilsModal} */}
-      {showTable ? studentErpTable : []}
+      {/* {showTable ? studentErpTable : []} */}
       {todayDeatilsModal}
       {editDeatilsModal}
       {dataLoadingStatus ? <CircularProgress open /> : null}
