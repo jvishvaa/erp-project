@@ -4,23 +4,18 @@ import { Grid, useTheme, SvgIcon } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import Layout from '../Layout';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
-import endpoints from '../../config/endpoints';
-import axiosInstance from '../../config/axios';
-import Loading from '../../components/loader/loader';
-import unfiltered from '../../assets/images/unfiltered.svg'
-import selectfilter from '../../assets/images/selectfilter.svg';
-import GeneralDairyFilter from './filterdata';
-import PeriodCard from './dairy-card';
-import ViewMoreCard from './view-more-card';
-import {Context} from './context/context';
-
-// component import from DailyDairy
-import DailyDairy from '../daily-dairy/dairy-card/index';
-import ViewMoreDailyDairyCard from '../daily-dairy/view-more-card/index';
-
+import Layout from '../../Layout';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
+import endpoints from '../../../config/endpoints';
+import axiosInstance from '../../../config/axios';
+import Loading from '../../../components/loader/loader';
+import unfiltered from '../../../assets/images/unfiltered.svg'
+import selectfilter from '../../../assets/images/selectfilter.svg';
+import DailyDairyFilter from '../view-daily-dairy';
+import DailyDairy from '../dairy-card'
+import ViewMoreDailyDairyCard from '../view-more-card'
+import {Context} from '../context/context'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -35,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const GeneralDairyList = () => {
+const DailyDairyList = () => {
     const classes = useStyles();
     const { setAlert } = useContext(AlertNotificationContext);
     const [page, setPage] = useState(1);
@@ -50,33 +45,38 @@ const GeneralDairyList = () => {
     const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
     const [periodColor, setPeriodColor] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(-1);
-    const [state,setState] = useContext(Context);
-    const [ activeTab, setActiveTab ] = useState(0);
-    const [ dairyType, setDairyType ] = useState(1);
+    const [editData,setEditData] = useState([])
+    
+    const [state,setState] = useContext(Context)
+
+    console.log(state,'@@@@')
 
     const handlePagination = (event, page) => {
         setPage(page);
     };
 
-    const handleDairyList = (branchId, gradeId, sectionIds, startDate, endDate, activeTab) => {
-        //console.log(branchId, gradeId, sectionIds, startDate, endDate, '===');
+    const handleDairyList = (branchId, gradeId, sectionIds, startDate, endDate) => {
+        console.log(branchId, gradeId, sectionIds, startDate, endDate, '===');
         setLoading(true);
         setPeriodData([]);
+        debugger
         axiosInstance
             .get(
                 `${endpoints.generalDairy.dairyList
                 }?branch=${branchId}&grades=${gradeId}&sections=${sectionIds}&page=${page}&start_date=${startDate.format(
                     'YYYY-MM-DD'
-                )}&end_date=${endDate.format('YYYY-MM-DD')}${activeTab !== 0? ('&dairy_type='+activeTab) : ''}`
+                )}&end_date=${endDate.format('YYYY-MM-DD')}&dairy_type=${2}`
             )
             // axiosInstance.get(`${endpoints.generalDairy.dairyList}?start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}`)
             // axiosInstance.get(`${endpoints.generalDairy.dairyList}?grades=${gradeId}&sections=${sectionIds}`)
             .then((result) => {
-                //console.log(result);
+                console.log(result);
                 if (result.data.status_code === 200) {
                     setTotalCount(result.data.result.count);
                     setLoading(false);
                     setPeriodData(result.data.result.results);
+                    setViewMore(false);
+                    setViewMoreData({});
                 } else {
                     setLoading(false);
                     setAlert('error', result.data.description);
@@ -87,10 +87,10 @@ const GeneralDairyList = () => {
                 setAlert('error', error.message);
             });
     };
-
     const handleDairyType = (type) => {
-        setDairyType(type);
+        console.log(type);
     }
+console.log("BBBBB",editData)
 
     return (
         <>
@@ -98,13 +98,12 @@ const GeneralDairyList = () => {
             <Layout>
                 <div>
                     <div style={{ width: '95%', margin: '20px auto' }}>
-                        <CommonBreadcrumbs componentName='Dairy' />
+                        <CommonBreadcrumbs componentName='Daily Dairy' />
                     </div>
                 </div>
-                <GeneralDairyFilter
+                <DailyDairyFilter
                  handleDairyList={handleDairyList}
                  setPeriodData={setPeriodData}
-                //  setCurrentTab={setCurrentTab}
                   />
                 <Paper className={classes.root}>
                     {periodData?.length > 0 ? (
@@ -126,55 +125,27 @@ const GeneralDairyList = () => {
                                             style={isMobile ? { marginLeft: '-8px' } : null}
                                             sm={viewMore && periodData?.length > 0 ? 6 : 4}
                                         >
-                                            {period.dairy_type === "1" && (
-                                                <PeriodCard
-                                                    index={i}
-                                                    lesson={period}
-                                                    viewMore={viewMore}
-                                                    setLoading={setLoading}
-                                                    setViewMore={setViewMore}
-                                                    setViewMoreData={setViewMoreData}
-                                                    setPeriodDataForView={setPeriodDataForView}
-                                                    setSelectedIndex={setSelectedIndex}
-                                                    // setSelectedIndex={setSelectedIndex}
-                                                    periodColor={selectedIndex === i ? true : false}
-                                                    setPeriodColor={setPeriodColor}
-                                                    handleDairyType={handleDairyType}
-                                                />
-                                            )}
-                                            {period.dairy_type === "2" && (
-                                                <DailyDairy
-                                                    index={i}
-                                                    lesson={period}
-                                                    viewMore={viewMore}
-                                                    setLoading={setLoading}
-                                                    setViewMore={setViewMore}
-                                                    setViewMoreData={setViewMoreData}
-                                                    setPeriodDataForView={setPeriodDataForView}
-                                                    setSelectedIndex={setSelectedIndex}
-                                                    // setSelectedIndex={setSelectedIndex}
-                                                    periodColor={selectedIndex === i ? true : false}
-                                                    setPeriodColor={setPeriodColor}
-                                                    handleDairyType={handleDairyType}
-                                                />
-                                            )}
+                                            <DailyDairy
+                                                index={i}
+                                                lesson={period}
+                                                viewMore={viewMore}
+                                                setLoading={setLoading}
+                                                setViewMore={setViewMore}
+                                                setViewMoreData={setViewMoreData}
+                                                setPeriodDataForView={setPeriodDataForView}
+                                                setSelectedIndex={setSelectedIndex}
+                                                // setSelectedIndex={setSelectedIndex}
+                                                periodColor={selectedIndex === i ? true : false}
+                                                setPeriodColor={setPeriodColor}
+                                                // setEditData={setEditData}
+                                                handleDairyType={handleDairyType}
+                                            />
                                         </Grid>
                                     ))}
                                 </Grid>
                             </Grid>
 
-                            {viewMore && periodData?.length > 0 && (dairyType === 1) &&(
-                                <Grid item xs={12} sm={5} style={{ width: '100%' }}>
-                                    <ViewMoreCard
-                                        viewMoreData={viewMoreData}
-                                        setViewMore={setViewMore}
-                                        periodDataForView={periodDataForView}
-                                        setSelectedIndex={setSelectedIndex}
-                                        setSelectedIndex={setSelectedIndex}
-                                    />
-                                </Grid>
-                            )}
-                            {viewMore && periodData?.length > 0 && (dairyType === 2) && (
+                            {viewMore && periodData?.length > 0 && (
                                 <Grid item xs={12} sm={5} style={{ width: '100%' }}>
                                     <ViewMoreDailyDairyCard
                                         viewMoreData={viewMoreData}
@@ -230,4 +201,4 @@ const GeneralDairyList = () => {
     );
 };
 
-export default GeneralDairyList;
+export default DailyDairyList;

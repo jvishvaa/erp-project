@@ -1,0 +1,45 @@
+.tooltip.MuiButton-root{
+    display: flex;
+    background-color: #F9F9F9;
+    color: #ff6b6b;
+    border: 1px solid #ff6b6b;
+    border-radius: 10px;
+    margin-bottom: 10%;
+    /* flex-direction: column; */
+}
+
+/* .tooltiptext{
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
+} */
+.period_card_menu .tooltiptext {
+    visibility: hidden; 
+    width: 150px;
+    background-color: #FFFDE8;
+    color: #ff6b6b;
+    text-align: left;
+    border-radius: 10px;
+    border: 1px solid #ff6b6b;
+    padding: 14px 10px;
+    position: absolute;
+    z-index: 1;
+    top: 135%;
+    left: 10%;
+    margin-left: -90px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    display: flex;
+    flex-direction: column;
+}
+
+.divider.MuiDivider-root {
+    border: none;
+    height: 1px;
+    width: 24.375;
+    /* color: #ff6b6b; */
+    margin: 0;
+    flex-shrink: 0;
+    background-color: #E87BCB;
+    opacity: 100;
+}
