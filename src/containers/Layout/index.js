@@ -512,30 +512,30 @@ const Layout = ({ children, history }) => {
               history.push('/finance/accountant/applicationFrom')
                 break;
               }
-              case 'Online Admissions': {
-                history.push('/finance/admissions/OnlineAdmission')
+            case 'Online Admissions': {
+              history.push('/finance/admissions/OnlineAdmission')
+                break;
+              }
+            case 'Manage Bank & Fee Accounts': {
+              history.push('/finance/BankAndFeeAccounts')
+                break;
+              }
+            case 'Last Date Settings': {
+              history.push('/finance/Setting/LastDateSetting')
+                break;
+              }
+            case 'Receipt Settings': {
+              history.push('/finance/Setting/ReceiptSettings')
                   break;
-                }
-              case 'Manage Bank & Fee Accounts': {
-                history.push('/finance/BankAndFeeAccounts')
-                  break;
-                }
-              case 'Last Date Settings': {
-                history.push('/finance/Setting/LastDateSetting')
-                  break;
-                }
-              case 'Receipt Settings': {
-                history.push('/finance/Setting/ReceiptSettings')
-                   break;
-                }
-              case 'Fee Structure Upload': {
-                history.push('/finance/BulkOperation/Feestructure')
-                  break;
-                }
-              case 'Student Wallet': {
-                history.push('/finance/StudentWallet')
-                  break;
-                }
+              }
+            case 'Fee Structure Upload': {
+              history.push('/finance/BulkOperation/Feestructure')
+                break;
+              }
+            case 'Student Wallet': {
+              history.push('/finance/StudentWallet')
+                break;
+              }
               case 'Fee Collection': {
                 history.push('/finance/student/FeeCollection')
                   break;

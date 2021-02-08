@@ -16,6 +16,7 @@ import {
 import { connect } from 'react-redux'
 import * as actionTypes from '../store/actions'
 import { apiActions } from '../../../_actions'
+import Layout from '../../../../../Layout'
 // import Modal from '../../../ui/Modal/modal'
 // import { CircularProgress } from '../../../ui'
 
@@ -106,6 +107,7 @@ const OnlineAdmission = ({ dataLoadingStatus, onlinePendingAdmissionData, getPen
   // />
 
   return (
+    <Layout>
     <div>
       <Grid container spacing={3} style={{ padding: 15 }}>
         <Grid item xs={12}>
@@ -114,6 +116,7 @@ const OnlineAdmission = ({ dataLoadingStatus, onlinePendingAdmissionData, getPen
       </Grid>
       {dataLoadingStatus ? <CircularProgress open /> : null}
     </div>
+    </Layout>
   )
 }
 
