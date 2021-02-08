@@ -17,6 +17,7 @@ import { apiActions } from '../../../../_actions'
 import * as actionTypes from '../../store/actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 // import { student } from '../../../masters'
+import Layout from '../../../../../../Layout'
 
 const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStudentPromotionList, studentList, studentPromotionList, fetchGradesPerBranch, fetchAllSection, alert, user, dataLoading, gradesPerBranch, sections }) => {
   const [sessionData, setSessionData] = useState([])
@@ -395,6 +396,7 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
   }
 
   return (
+    <Layout>
     <div>
       <Grid container spacing={3} style={{ padding: '15px' }}>
         <Grid item xs={3}>
@@ -676,6 +678,7 @@ const StudentPromotion = ({ classes, session, branches, fetchBranches, sendStude
         : [] }
       { dataLoading ? <CircularProgress open /> : null }
     </div>
+    </Layout>
   )
 }
 const mapStateToProps = state => ({
