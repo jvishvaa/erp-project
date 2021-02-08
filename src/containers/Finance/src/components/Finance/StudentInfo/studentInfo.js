@@ -13,6 +13,7 @@ import { apiActions } from '../../../_actions'
 import * as actionTypes from '../store/actions'
 import AutoSuggest from '../../../ui/AutoSuggest/autoSuggest'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../Layout'
 
 const styles = theme => ({
   container: {
@@ -176,6 +177,7 @@ class StudentInfoAdm extends Component {
     // }
     const { classes } = this.props
     return (
+      <Layout>
       <React.Fragment>
         <div className={classes.root}>
           <Grid container spacing={3} style={{ padding: 15 }}>
@@ -253,6 +255,7 @@ class StudentInfoAdm extends Component {
           {studentTable}
         </div>
       </React.Fragment>
+      </Layout>
     )
   }
 }
