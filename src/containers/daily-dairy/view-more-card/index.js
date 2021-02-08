@@ -11,7 +11,7 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import { ExpandLessOutlined } from '@material-ui/icons';
 import {Context} from '../context/context'
 
-const ViewMoreCard = ({
+const ViewMoreDailyDairyCard = ({
   viewMoreData,
   setViewMore,
   periodDataForView,
@@ -23,7 +23,10 @@ const ViewMoreCard = ({
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const { setAlert } = useContext(AlertNotificationContext);
-
+  const sectionId = viewMoreData.section[0].id ?? '';
+  const gradeId =  viewMoreData.grade.id ?? 0;
+  console.log(grade +" === "+ section);
+  console.log(viewMoreData.grade);
   const handleBulkDownload = () => {
     const formData = new FormData();
     // formData.append('branch',[5]);
@@ -124,25 +127,29 @@ const ViewMoreCard = ({
           <div className='bodyContent'>{viewMoreData.teacher_report.homework}</div>
           <div className='bodyTitle'>Media</div>
           {/* <div className='mediaBody'>xxxxxxxx</div> */}
+
           <IconButton
-          //  onClick={handleBulkDownload}
-           style={{fontSize:'1.1rem',color:'#ff6b6b',paddingLeft:'5%',marginTop:'3%'}}
-            className="bulkDownloadIconViewMore">
-              <a  target='_blank' href={`${endpoints.s3}/dev/circular_files/Orchids/${pic}`}>
-                            <SvgIcon
-                                component={() => (
-                                    <img
-                                        style={{ height: '21px', width: '21px' }}
-                                        src={downloadAll}
-                                        alt='downloadAll'
-                                    />
-                                )}
-                            /></a>Download Attachments
-                        </IconButton>
+          //  onClick={handleBulkDownload} dev/dairy/ORCHIDS/54/59/2021-02-08 18:21:57.036513_Group 7767.png  || dev/dairy/ORCHIDS/${gradeId}/${sectionId}/${pic}
+            style={{fontSize:'1.1rem',color:'#ff6b6b',paddingLeft:'5%',marginTop:'3%'}}
+            className="bulkDownloadIconViewMore"
+          >
+            <a  target='_blank' href={`${endpoints.s3}/dev/dairy/ORCHIDS/54/59/2021-02-08 18:21:57.036513_Group 7767.png`}>
+              <SvgIcon
+                component={() => (
+                  <img
+                    style={{ height: '21px', width: '21px' }}
+                    src={downloadAll}
+                    alt='downloadAll'
+                  />
+                )}
+              />
+            </a>
+            Download Attachments
+          </IconButton>
         </div>
       </Paper>
     </>
   );
 };
 
-export default ViewMoreCard;
+export default ViewMoreDailyDairyCard;

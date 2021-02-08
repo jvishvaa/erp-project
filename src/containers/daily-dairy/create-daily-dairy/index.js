@@ -242,7 +242,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   //     }
   // }
   const handleSubject = (event, value) => {
-    debugger
+    //debugger
     setFilterData({ ...filterData });
     // if (value) {
     //     setFilterData({ ...filterData });
@@ -266,18 +266,18 @@ const CreateDailyDairy = (details, onSubmit) => {
     // fetchChapters()
   };
 
-  const handleImageChange=  (event)=>{
+  const handleImageChange = (event) =>{
     if(filePath.length<10){
-        const data =event.target.files[0]
-    const fd = new FormData();
-    fd.append('file',event.target.files[0])
-    // fd.append('branch',filterData.branch[0].branch_name)
-    // fd.append('grade',filterData.grade[0].id)
-    // fd.append('section',filterData.section.id)
-    
-    axiosInstance.post(`${endpoints.circular.fileUpload}`, fd)
+      const data  = event.target.files[0];
+      console.log(formik.values.grade);
+      const fd = new FormData();
+      fd.append('file',data)
+      fd.append('branch_name',formik.values.branch.branch_name)
+      fd.append('grades',formik.values.grade[0].id)
+      fd.append('section',formik.values.section[0].id)
+      axiosInstance.post(`academic/dairy-upload/`, fd)
         .then((result)=>{
-        
+            console.log(fd);
             if(result.data.status_code === 200){
                 console.log(result.data,'resp')
                 setAlert('success',result.data.message)
@@ -529,7 +529,7 @@ const CreateDailyDairy = (details, onSubmit) => {
             }}
             value={state.isEdit?editData.branch :formik.values.branch}
             options={branches}
-            getOptionLabel={(option) => option.branch_name || ''}
+            getOptionLabel={(option) => option?.branch_name || ''}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -609,29 +609,29 @@ const CreateDailyDairy = (details, onSubmit) => {
           </Grid>
           <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <FormControl
-          color='secondary'
-          fullWidth
-          className={classes.margin}
-          variant='outlined'
-        >
+            color='secondary'
+            fullWidth
+            className={classes.margin}
+            variant='outlined'
+          >
             <Autocomplete
-          multiple
-          style={{ width: '100%' }}
-          size='small'
-          onChange={handleSubject}
-          id='subj'
-          // className='dropdownIcon'
-          value={state.isEdit?editData.subject : formik.values.subjects}
-          options={subjectDropdown}
-          getOptionLabel={(option) => option?.subject_name}
-          filterSelectedOptions
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant='outlined'
-              label='Subject'
-              placeholder='Subject'
-            />
+              multiple
+              style={{ width: '100%' }}
+              size='small'
+              onChange={handleSubject}
+              id='subj'
+              // className='dropdownIcon'
+              value={state.isEdit?editData.subject : formik.values.subjects}
+              options={subjectDropdown}
+              getOptionLabel={(option) => option?.subject_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Subject'
+                  placeholder='Subject'
+                />
           )}
         />
           <FormHelperText style={{ color: 'red' }}>
