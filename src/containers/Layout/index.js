@@ -588,6 +588,10 @@ const Layout = ({ children, history }) => {
                 history.push('/finance/Student/IncomeTaxCertificate')
                   break;
                 }
+                case 'Fee Pay Request': {
+                  history.push('/finance/Student/FeePaymentRequests')
+                    break;
+                  }
       default:
         break;
     }

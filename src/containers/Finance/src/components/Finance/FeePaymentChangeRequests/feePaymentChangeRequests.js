@@ -14,7 +14,7 @@ import PropTypes from 'prop-types'
 import Select from 'react-select'
 import { apiActions } from '../../../_actions'
 // import RequestShuffle from './requestShuffle'
-import '../../../css/staff.css'
+// import '../../../css/staff.css'
 import * as actionTypes from '../store/actions'
 // import classes from './feeStructure.module.css'
 // import Modal from '../../../../ui/Modal/modal'
@@ -23,6 +23,7 @@ import PendingRequests from './pendingRequestView'
 import ApprovedRequestView from './approvedRequestView'
 import RejectedRequestView from './rejectedRequestView'
 import CancelledRequestView from './cancelledRequestView'
+import Layout from '../../../../../Layout'
 
 const styles = theme => ({
   tableWrapper: {
@@ -175,6 +176,7 @@ const FeePaymentChangeRequests = ({ classes, session, history, dataLoading, requ
   }
 
   return (
+    <Layout>
     <React.Fragment>
       <Grid container spacing={3}>
         <Grid item xs={3} className={classes.item}>
@@ -201,6 +203,7 @@ const FeePaymentChangeRequests = ({ classes, session, history, dataLoading, requ
       </Grid>
       {dataLoading ? <CircularProgress open /> : null}
     </React.Fragment>
+    </Layout>
   )
 }
 

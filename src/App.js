@@ -103,6 +103,7 @@ import StudentPromotion from './containers/Finance/src/components/Finance/Branch
 import QRCodeGenerator from './containers/Finance/src/components/Finance/QRCode/qrCodeGenerator.js'
 import CommunicationSMS from './containers/Finance/src/components/Finance/BranchAccountant/Communication/communication.js'
 import itCertificate from './containers/Finance/src/components/Finance/Receipts/itCertificate.js'
+import FeePaymentChangeRequests from './containers/Finance/src/components/Finance/FeePaymentChangeRequests/feePaymentChangeRequests.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -426,6 +427,9 @@ function App() {
                 </Route>
                 <Route exact path= '/finance/Student/IncomeTaxCertificate'>
                   {({ match }) => <itCertificate match={match} />}
+                </Route>
+                <Route exact path= '/finance/Student/FeePaymentRequests'>
+                  {({ match }) => <FeePaymentChangeRequests match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>
