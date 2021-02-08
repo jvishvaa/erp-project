@@ -4,19 +4,19 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Button, useTheme, IconButton ,Divider,SvgIcon} from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 import useStyles from './useStyles';
 import './dairy-card.css'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
+import {useHistory} from 'react-router-dom'
 import cardAttachment from '../../../assets/images/cardAttachment.svg'
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import {Context} from '../context/context'
 
 
-const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex, handleDairyType}) => {
+const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex, setEditData, handleDairyType}) => {
 
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -24,8 +24,8 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
   const classes = useStyles();
   const [showMenu, setShowMenu] = useState(false);
   const [showPeriodIndex, setShowPeriodIndex] = useState();
-  const history=useHistory()
-  const [state, setState] = useContext(Context)
+    const history=useHistory()
+    const [state,setState] = useContext(Context)
 
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
@@ -36,6 +36,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
     setShowMenu(false);
     setShowPeriodIndex();
   };
+  console.log(lesson,'======DailyDairy')
 
   const handleViewMore = () => {
     setLoading(true)
@@ -49,7 +50,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
           setPeriodDataForView(lesson);
           setSelectedIndex(index);
           setPeriodColor(true);
-          handleDairyType(1);
+          handleDairyType(2);
         // } else {
         //   setLoading(false);
         //   setViewMore(false);
@@ -71,7 +72,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
   }
   const handleDelete=(e,index)=>{
     console.log(e,index,'event')
-    axiosInstance.delete(`${endpoints.generalDairy.updateDelete}${e.id}/update-delete-dairy/`)
+    axiosInstance.delete(`${endpoints.dailyDairy.updateDelete}${e.id}/update-delete-dairy/`)
     .then((result)=>{
 
       if(result.data.status_code===200){
@@ -85,15 +86,17 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
 
   }
   const handleEdit=(data)=>{
-    // console.log(data,'PPP')
-    // // setEditData(e)
     debugger
-    setState({isEdit:true,editData:data});
-    history.push('/create/general-dairy')
+
+    console.log(data,'PPP')
+    // // setEditData(e)
+    setState({editData:data,isEdit:true});
+    history.push('/create/daily-dairy')
   }
 
+  console.log("DailyDairy");
   return (
-    <Paper className={periodColor?classes.selectedRoot:classes.root} style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }}>
+    <Paper className={periodColor?classes.selectedRoot:classes.root} style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' } }>
       <Grid container spacing={2}>
         <Grid item xs={8}>
           <Box>
@@ -103,12 +106,20 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               component='p'
               color='primary'
             >
-              Topic / {lesson.title}
+              {lesson.subject.subject_name}
             </Typography>
           </Box>
-        <Typography style={{fontSize: '15px',marginTop: '10px'}}> GeneralDairy</Typography>
-          <Divider className='divider'/>
           <Box mt={2}>
+          <Typography
+              className={classes.content}
+              variant='p'
+              component='p'
+              color='secondary'
+              noWrap
+            >
+              Homework
+            </Typography>
+            <Divider className='divider'/>
             <Typography
               className={classes.content}
               variant='p'
@@ -116,7 +127,8 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               color='secondary'
               noWrap
             >
-             Message: {lesson.message}
+             {lesson.teacher_report.homework}
+
             </Typography>
           </Box>
         </Grid>
@@ -150,7 +162,6 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
           <Box>
             <Typography
               className={classes.title}
-              style={{fontSize: '15px'}}
               variant='p'
               component='p'
               color='secondary'
@@ -158,20 +169,22 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               Created By - {lesson.created_by.first_name}
               </Typography>
           </Box>
+          <Box>
+          </Box>
           <div>
-            <IconButton style={{fontSize:'1rem',color:'#042955',marginLeft:'.5rem'}}>
-                <SvgIcon
+          <IconButton style={{fontSize:'1rem',color:'#042955'}}>
+              <SvgIcon
                 component={() => (
-                  <img
-                    style={{ height: '21px', width: '21px', marginLeft: '-18px', marginRight: '5px' }}
-                    src={cardAttachment}
-                    alt='attachment'
-                  />
-                )}/>
+                                    <img
+                                        style={{ height: '21px', width: '21px', marginRight: '5px'}}
+                                        src={cardAttachment}
+                                        alt='attachment'
+                                    />
+                                )}/>
               {lesson.documents ? lesson.documents.length : 0} Files
-            </IconButton>
+          </IconButton>
             {/* <label></label> */}
-          </div>
+        </div>
         </Grid>
        
         <Grid item xs={6} className={classes.textRight}> 
@@ -195,4 +208,4 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
   );
 };
 
-export default PeriodCard;
+export default DailyDairy;

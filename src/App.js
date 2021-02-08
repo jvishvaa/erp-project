@@ -73,10 +73,15 @@ import CreateDiscussionForum from './containers/discussionForum/createDiscussion
 import CircularList from './containers/circular';
 import CreateCircular from './containers/circular/create-circular';
 import CircularStore from './containers/circular/context/CircularStore';
+import GeneralDairyStore from './containers/general-dairy/context/context'
 import Subjectgrade from './containers/subjectGradeMapping';
 import ListandFilter from './containers/subjectGradeMapping/listAndFilter';
 import GeneralDairyList from './containers/general-dairy';
+import GeneralDairyStudentView from './containers/general-dairy/generalDairyStudentView';
+import GeneralDairyStudentList from './containers/general-dairy/generalDairyStudnet'
 import CreateGeneralDairy from './containers/general-dairy/create-dairy';
+import CreateDailyDairy from './containers/daily-dairy/create-daily-dairy';
+import DailyDairyList from './containers/daily-dairy/list-daily-dairy'
 import AOLClassView from './containers/online-class/aol-view/index';
 import ResourceView from './containers/online-class/online-class-resources/index';
 
@@ -84,7 +89,7 @@ import CreateCourse from './containers/master-management/course/create-course';
 import CourseView from './containers/master-management/course/view-course';
 import ViewCourseCard from './containers/master-management/course/view-course/view-more-card/ViewCourseCard';
 import ViewStore from './containers/master-management/course/view-course/context/ViewStore';
-
+import DailyDairyStore from'./containers/daily-dairy/context/context';
 import AttendeeListRemake from './containers/attendance'
 
 const theme = createMuiTheme({
@@ -134,7 +139,10 @@ function App() {
           <OnlineclassViewProvider>
             <ThemeProvider theme={theme}>
               <CircularStore>
+                <GeneralDairyStore>
                 <ViewStore>
+                  <DailyDairyStore>
+
                   <Switch>
                     <Route path='/profile'>
                       {({ match }) => <Profile match={match} />}
@@ -310,7 +318,7 @@ function App() {
                     <Route
                       exact
                       path='/homework/cadd/:date/:subject/:id/:coord_selected_teacher_id'
-                    >
+                      >
                       {({ match }) => <AddHomeworkCoord match={match} />}
                     </Route>
                     <Route exact path='/lesson-plan/teacher-view'>
@@ -343,8 +351,17 @@ function App() {
                     <Route exact path='/general-dairy'>
                       {({ match }) => <GeneralDairyList match={match} />}
                     </Route>
+                    <Route exact path='/general-dairy/student-view'>
+                      {({ match }) => <GeneralDairyStudentList match={match} />}
+                    </Route>
                     <Route exact path='/create/general-dairy'>
                       {({ match }) => <CreateGeneralDairy match={match} />}
+                    </Route>
+                    <Route exact path='/daily-dairy'>
+                      {({ match }) => <DailyDairyList match={match} />}
+                    </Route>
+                    <Route exact path='/create/daily-dairy'>
+                      {({ match }) => <CreateDailyDairy match={match} />}
                     </Route>
                     <Route exact path='/create/course'>
                       {({ match }) => <CreateCourse match={match} />}
@@ -359,7 +376,9 @@ function App() {
                       {({ match }) => <AttendeeListRemake match={match} />}
                     </Route>
                   </Switch>
+                  </DailyDairyStore>
                 </ViewStore>
+                </GeneralDairyStore>
               </CircularStore>
             </ThemeProvider>
           </OnlineclassViewProvider>
