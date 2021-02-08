@@ -100,6 +100,7 @@ import BulkActiveInactiveParent from './containers/Finance/src/components/Financ
 import StudentActivateInactiveAcc from './containers/Finance/src/components/Finance/BranchAccountant/StudentActivateInactivate/studentActivateInactiveacc.js'
 import OnlineAdmission from '../src/containers/Finance/src/components/Finance/PendingOnlineAdmission/pendingOnlineAdmission.js'
 import StudentPromotion from '../src/containers/Finance/src/components/Finance/BranchAccountant/StudentPromotion/studentPromotion.js'
+import QRCodeGenerator from '../src/containers/Finance/src/components/Finance/QRCode/qrCodeGenerator.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -414,6 +415,9 @@ function App() {
                 </Route>
                 <Route exact path= '/finance/Student/StudentPromotion'>
                   {({ match }) => <StudentPromotion match={match} />}
+                </Route>
+                <Route exact path= '/finance/Student/OqCodeGenerate'>
+                  {({ match }) => <QRCodeGenerator match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

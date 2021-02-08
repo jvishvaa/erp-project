@@ -13,11 +13,12 @@ import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
 import { apiActions } from '../../../_actions'
 // import RequestShuffle from './requestShuffle'
-import '../../../css/staff.css'
+import '../../css/staff.css'
 import * as actionTypes from '../store/actions'
 // import classes from './feeStructure.module.css'
 // import Modal from '../../../../ui/Modal/modal'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../Layout'
 
 const styles = theme => ({
   tableWrapper: {
@@ -129,13 +130,14 @@ const QRCodeGenerator = ({ classes, session, history, alert, user }) => {
       setDataLoading(false)
     }).catch(err => {
       console.log(err)
-      alert.warning(err.message || 'Unable to Read Excel')
+      // alert.warning(err.message || 'Unable to Read Excel')
       setDataLoading(false)
     })
   }
 
   return (
-    <React.Fragment>
+    <Layout>    
+      <React.Fragment>
       <Grid container spacing={3}>
         <Grid item className={classes.item} xm={3}>
           <TextField
@@ -177,6 +179,7 @@ const QRCodeGenerator = ({ classes, session, history, alert, user }) => {
       {/* {shuffleStatus && shuffleStatus.value === 1 ? pendingShuffleTable() : shuffleStatus && shuffleStatus.value === 2 ? approvedShuffleTable() : rejectedShuffleTable() } */}
       {dataLoading ? <CircularProgress open /> : null}
     </React.Fragment>
+    </Layout>
   )
 }
 

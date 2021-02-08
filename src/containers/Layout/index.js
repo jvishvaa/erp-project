@@ -575,7 +575,11 @@ const Layout = ({ children, history }) => {
               case 'Student Promotion': {
                 history.push('/finance/Student/StudentPromotion')
                   break;
-                }    
+                }  
+              case 'QR code': {
+                history.push('/finance/Student/OqCodeGenerate')
+                  break;
+                }
       default:
         break;
     }
