@@ -46,15 +46,17 @@ import {
   ContentViewAdmin,
   ContentViewPrincipal,
   WriteBlog,
+  EditBlog,
   PreviewBlog,
+  PreviewEditBlog,
+  CreateWordCountConfig,
   StudentDashboard,
   TeacherPublishBlogView,
   BlogView,
   CreateGenre,
-  ViewGenre, 
   ContentViewPublish,
   ContentViewPublishStudent,
-
+  EditGenre,
   AdminBlog,
   PrincipalBlog,
   PrincipalPublishBlogView,
@@ -166,12 +168,17 @@ function App() {
                     {/* <Route exact path='/assignrole'>
                   {({ match }) => <AssignRole match={match} />}
                 </Route> */}
-                    <Route exact path='/blog/create/genre'>
+                    <Route exact path='/blog/genre'>
                       {({ match }) => <CreateGenre match={match} />}
                     </Route>
-                    <Route exact path='/blog/view/genre'>
-                      {({ match }) => <ViewGenre match={match} />}
+                    <Route exact path='/blog/genre/edit'>
+                      {({ match }) => <EditGenre match={match} />}
                     </Route>
+                    
+                    <Route exact path='/blog/create/wordcount-config'>
+                      {({ match }) => <CreateWordCountConfig match={match} />}
+                    </Route>
+                
                     <Route exact path='/blog/teacher'>
                       {({ match }) => <TeacherBlog match={match} />}
                     </Route>
@@ -221,9 +228,15 @@ function App() {
                     <Route exact path='/blog/student/write-blog'>
                       {({ match }) => <WriteBlog match={match} />}
                     </Route>
+                    <Route exact path='/blog/student/edit-blog'>
+                      {({ match }) => <EditBlog match={match} />}
+                    </Route>
 
                     <Route exact path='/blog/student/preview-blog'>
                       {({ match }) => <PreviewBlog match={match} />}
+                    </Route>
+                    <Route exact path='/blog/student/preview-edit-blog'>
+                      {({ match }) => <PreviewEditBlog match={match} />}
                     </Route>
                     <Route exact path='/blog/student/view-blog'>
                       {({ match }) => <BlogView match={match} />}
@@ -359,7 +372,7 @@ function App() {
                     <Route exact path='/view-period'>
                       {({ match }) => <ViewCourseCard match={match} />}
                     </Route>
-                    <Route exact path='/aol-attendance-list'>
+                    <Route exact path='/aol-attendance-list/:id?'>
                       {({ match }) => <AttendeeListRemake match={match} />}
                     </Route>
                   </Switch>

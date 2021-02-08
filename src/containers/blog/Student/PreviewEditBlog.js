@@ -16,9 +16,9 @@ import {
   Divider,
   TextField,
 } from '@material-ui/core';
-import Rating from '@material-ui/lab/Rating';
+import ReactHtmlParser from 'react-html-parser'
+
 import Avatar from '@material-ui/core/Avatar';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { withRouter } from 'react-router-dom';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
@@ -62,15 +62,7 @@ const styles = (theme) => ({
   },
 });
 
-const StyledRating = withStyles({
-  iconFilled: {
-    color: '#ff6d75',
-  },
-  iconHover: {
-    color: '#ff3d47',
-  },
-})(Rating);
-class ContentView extends Component {
+class PreviewEditBlog extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -83,39 +75,35 @@ class ContentView extends Component {
       studentName: this.props.location.state.studentName,
       date: this.props.location.state.creationDate,
       files: this.props.location.state.files,
-      
+      blogId:this.props.location.state.blogId,
+      genreName:this.props.location.state.genreName,
+      image:this.props.location.state.image
     };
   }
 
   componentDidMount() {
     const { files } = this.state;
-    const imageUrl = URL.createObjectURL(files[0]);
+    if (files.length){
+    const imageUrl = URL.createObjectURL( files && files[0]);
     this.setState({ imageUrl });
+    }
   }
 
-  WriteBlogNav = () => {
-    const { content, title, files ,genreId} = this.state;
-    this.props.history.push({
-      pathname: '/blog/student/write-blog',
-      state: { content, title, files,genreId },
-    });
-  };
 
   submitBlog = (type) => {
-    const { title, content, files, genreId } = this.state;
+    const { title, content, files, genreId ,blogId,image} = this.state;
     const formData = new FormData();
     for (var i = 0; i < files.length; i++) {
-      formData.append('thumbnail',files[i]);
+      formData.append('thumbnail',files[i] || image);
     }
     formData.set('title', title);
+    formData.set('blog_id', blogId);
     formData.set('content', content);
-    // formData.set('thumbnail', files[0]);
-    // formData.append('subject_id', subject_id);
     formData.set('genre_id', genreId);
     formData.set('status', type == 'Draft' ? 2 : 8);
 
     axios
-      .post(`${endpoints.blog.Blog}`, formData)
+      .put(`${endpoints.blog.Blog}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
           this.props.history.push({
@@ -126,11 +114,6 @@ class ContentView extends Component {
         }
       })
       .catch((error) => {
-        // setAlert('error', error.message);
-        // setSections([]);
-        // setSearchSection([]);
-        // setSubjects([]);
-        // setSectionDisp('');
       });
   };
 
@@ -149,7 +132,7 @@ class ContentView extends Component {
               <div className='create_group_filter_container'>
                 <div className={classes.root}>
                   <Grid container spacing={3}>
-                  <Grid item xs={12}>
+                  {/* <Grid item xs={12}>
                       <Button
                         style={{ cursor: 'Pointer' }}
                         onClick={() => window.history.back()}
@@ -157,7 +140,7 @@ class ContentView extends Component {
                       >
                         <i>Back</i>
                       </Button>
-                      </Grid>
+                      </Grid> */}
                       <Grid item xs={9}>
                       <Card className={classes.cardRoot}>
                         <Typography
@@ -169,7 +152,7 @@ class ContentView extends Component {
                         </Typography>
                         <CardMedia
                           className={classes.media}
-                          image={this.state.imageUrl}
+                          image={this.state.imageUrl || this.state.image}
                           title='Contemplative Reptile'
                         />
                         <CardHeader
@@ -184,25 +167,19 @@ class ContentView extends Component {
                         />
                         <CardContent>
                           <Typography variant='body2' color='textSecondary' component='p'>
-                            {this.state.content}
+                          {ReactHtmlParser(this.state.content)}
                           </Typography>
+                          
                         </CardContent>
                         <CardActions>
-                          <Button
-                            style={{ width: 150 }}
-                            size='small'
-                            color='primary'
-                            onClick={this.WriteBlogNav}
-                          >
-                            Edit
-                          </Button>
+                        
                           <Button
                             style={{ width: 150 }}
                             size='small'
                             color='primary'
                             onClick={() => this.submitBlog('Publish')}
                           >
-                            Publish
+                            Submit
                           </Button>
                           <Button
                             style={{ width: 150 }}
@@ -225,4 +202,4 @@ class ContentView extends Component {
     );
   }
 }
-export default withRouter(withStyles(styles)(ContentView));
+export default withRouter(withStyles(styles)(PreviewEditBlog));

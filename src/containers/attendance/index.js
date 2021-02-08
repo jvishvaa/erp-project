@@ -18,25 +18,28 @@ import {
   Switch,
 } from '@material-ui/core';
 import {
-    MuiPickersUtilsProvider,
-    KeyboardTimePicker,
-    KeyboardDatePicker,
-  } from '@material-ui/pickers';
-  import MomentUtils from '@date-io/moment';
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 // import './attendee-list.scss';
 import { Pagination } from '@material-ui/lab';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import ShuffleIcon from '@material-ui/icons/Shuffle';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import Layout from '../Layout';
+import ShuffleModal from './shuffle-modal';
 import { result } from 'lodash';
 
 const AttendeeListRemake = (props) => {
+  const { id } = useParams();
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [attendeeList, setAttendeeList] = useState([]);
@@ -46,8 +49,9 @@ const AttendeeListRemake = (props) => {
   const [loading, setLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isHidden, setIsHidden] = useState(window.innerWidth < 600);
-  const [dateValue,setDateValue] =useState('');
+  const [dateValue, setDateValue] = useState(new Date());
   const history = useHistory();
+  const [openShuffleModal, setOpenShuffleModal] = useState(false);
 
   const pageSize = 10;
 
@@ -55,21 +59,21 @@ const AttendeeListRemake = (props) => {
 
   const getAttendeeList = async (date) => {
 
-    axiosInstance.get(`${endpoints.attendanceList.list}?zoom_meeting_id=641&class_date=${date}&type=json&page_number=1&page_size=10`)
-    .then((result)=>{
-        console.log(result.data.data,'========')
-      setTotalPages(result.data.total_pages);
-      setAttendeeList(result.data.data);
-      setTotalAttended(result.data.attended_count);
-      setTotalAbsent(result.data.notattended_count);
-      setLoading(false);
-        
-    }).catch(error=>{
-        
-            setLoading(false);
-            setAlert('error', 'Failed to load attendee list');
-        
-    }) 
+    axiosInstance.get(`${endpoints.attendanceList.list}?zoom_meeting_id=694&class_date=${date}&type=json&page_number=1&page_size=10`)
+      .then((result) => {
+        console.log(result.data.data, '========')
+        setTotalPages(result.data.total_pages);
+        setAttendeeList(result.data.data);
+        setTotalAttended(result.data.attended_count);
+        setTotalAbsent(result.data.notattended_count);
+        setLoading(false);
+
+      }).catch(error => {
+
+        setLoading(false);
+        setAlert('error', 'Failed to load attendee list');
+
+      })
     //   setTotalPages(data.total_pages);
     //   setAttendeeList(data.data);
     //   setTotalAttended(data.attended_count);
@@ -81,9 +85,9 @@ const AttendeeListRemake = (props) => {
     // }
   };
 
-//   useEffect(() => {
-//     getAttendeeList();
-//   }, [currentPage]);
+  //   useEffect(() => {
+  //     getAttendeeList();
+  //   }, [currentPage]);
 
   const handlePagination = (event, page) => {
     setCurrentPage(page);
@@ -93,35 +97,36 @@ const AttendeeListRemake = (props) => {
     setIsEdit(checked);
   };
 
-  const handleCheck =  (index, checked, student) => {
-    console.log(student.id,'index')
+  const handleCheck = (index, checked, student) => {
+    console.log(student.id, 'index')
     setIsUpdating(true);
     // checked= !checked
     const { match } = props;
     try {
-    //   const formData = new FormData();
-    //   formData.append('zoom_meeting_id', 641);
-    //   formData.append('student_id', student.user.id);
-    //   formData.append('is_attended', checked);
+      //   const formData = new FormData();
+      //   formData.append('zoom_meeting_id', 641);
+      //   formData.append('student_id', student.user.id);
+      //   formData.append('is_attended', checked);
       // const data = {
       //   zoom_meeting_id: match.params.id * 1,
       //   student_id: student.user.id,
       //   is_attended: checked,
       // };
-       axiosInstance.put(`${endpoints.attendanceList.updateAttendance}`, {
-        'zoom_meeting_id':student.id,
-        'class_date':dateValue,
-        'is_attended':checked
-    //     "zoom_meeting_id": 5804,
-    // "class_date": "2021-01-29",
-    // "is_attended": true
+      axiosInstance.put(`${endpoints.attendanceList.updateAttendance}`, {
+        'zoom_meeting_id': student.id,
+        'class_date': dateValue,
+        'is_attended': checked
+        //     "zoom_meeting_id": 5804,
+        // "class_date": "2021-01-29",
+        // "is_attended": true
 
 
-      }).then(result=>{
-          console.log(result,'==============')
-          if(result.data.status_code===200){
-              setAlert('success',result.data.message)
-          }
+      }).then(result => {
+        console.log(result, '==============')
+        if (result.data.status_code === 200) {
+          getAttendeeList(dateValue);
+          setAlert('success', result.data.message)
+        }
       })
       const stateCopy = attendeeList;
       const copy = stateCopy.map((el, ind) => {
@@ -164,12 +169,16 @@ const AttendeeListRemake = (props) => {
     setIsHidden(!isHidden);
   };
 
-const  handleDateChange=(event, value)=>{
-    console.log(value,'land')
+  const handleDateChange = (event, value) => {
+    console.log(value, 'land')
     setDateValue(value)
     getAttendeeList(value);
-}
-console.log(dateValue,'//////////')
+  }
+
+  const handleShuffle = () => {
+    setOpenShuffleModal(true);
+  }
+
   return (
     <Layout>
       <div className='breadcrumb-container'>
@@ -177,27 +186,27 @@ console.log(dateValue,'//////////')
       </div>
       <div className='attendeelist-filters'>
         <Grid container spacing={2}>
-            
-            <Grid item xs={12} sm={2}>
+
+          <Grid item xs={12} sm={2}>
             <MuiPickersUtilsProvider utils={MomentUtils}>
-            <KeyboardDatePicker
-                  size='small'
-                  // disableToolbar
-                  variant='dialog'
-                  format='YYYY-MM-DD'
-                  margin='none'
-                  id='date-picker'
-                  label='Start date'
-                //   value={onlineClass.selectedDate}
-                  minDate={new Date()}
-                  onChange={handleDateChange}
-                  KeyboardButtonProps={{
-                    'aria-label': 'change date',
-                  }}
-                />
-                </MuiPickersUtilsProvider>
-            </Grid>
-          
+              <KeyboardDatePicker
+                size='small'
+                // disableToolbar
+                variant='dialog'
+                format='YYYY-MM-DD'
+                margin='none'
+                id='date-picker'
+                label='Start date'
+                value={dateValue}
+                minDate={new Date()}
+                onChange={handleDateChange}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
+              />
+            </MuiPickersUtilsProvider>
+          </Grid>
+
           <Grid item xs={12} sm={2}>
             <Button onClick={handleExcelDownload}>Download Excel</Button>
           </Grid>
@@ -237,8 +246,8 @@ console.log(dateValue,'//////////')
         {isHidden ? (
           <AddCircleOutlineIcon className='expand-management' onClick={toggleHide} />
         ) : (
-          <RemoveCircleIcon className='expand-management' onClick={toggleHide} />
-        )}
+            <RemoveCircleIcon className='expand-management' onClick={toggleHide} />
+          )}
         <TableContainer>
           <Table className='viewclass__table' aria-label='simple table'>
             <TableHead className='styled__table-head'>
@@ -250,6 +259,7 @@ console.log(dateValue,'//////////')
                 <TableCell align='center'>Erp</TableCell>
                 {/* <TableCell align='center'>Accepted status</TableCell> */}
                 <TableCell align='center'>Attended status</TableCell>
+                <TableCell align='center'>Reshuffle</TableCell>
               </TableRow>
             </TableHead>
             {!loading ? (
@@ -269,7 +279,7 @@ console.log(dateValue,'//////////')
                         {el.is_accepted ? 'Accepted' : 'Not accepted'}
                       </TableCell> */}
                       <TableCell align='center'>
-                      {/* <Switch
+                        {/* <Switch
                             disabled={isUpdating}
                             checked={el.is_attended}
                             onChange={(event, checked) => {
@@ -281,7 +291,7 @@ console.log(dateValue,'//////////')
                         {isEdit ? (
                           <Switch
                             disabled={isUpdating}
-                            checked={el.is_attended}
+                            checked={ el.attendance_details.is_attended}
                             onChange={(event, checked) => {
                               handleCheck(index, checked, el);
                             }}
@@ -291,17 +301,20 @@ console.log(dateValue,'//////////')
                         ) : el.attendance_details.is_attended ? (
                           'Attended'
                         ) : (
-                          'Not attended'
-                        )}
-                        {}
+                              'Not attended'
+                            )}
+                        { }
+                      </TableCell>
+                      <TableCell align='center'>
+                        <ShuffleIcon onClick={handleShuffle} />
                       </TableCell>
                     </TableRow>
                   );
                 })}
               </TableBody>
             ) : (
-              ''
-            )}
+                ''
+              )}
           </Table>
         </TableContainer>
         {/* {loading ? (
@@ -336,11 +349,15 @@ console.log(dateValue,'//////////')
                 page={currentPage}
               />
             ) : (
-              ''
-            )}
+                ''
+              )}
           </Grid>
         </Grid>
       </div>
+      <ShuffleModal
+        openShuffleModal={openShuffleModal}
+        setOpenShuffleModal={setOpenShuffleModal}
+      />
     </Layout>
   );
 };

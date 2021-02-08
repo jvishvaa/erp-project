@@ -3,6 +3,8 @@
 import React, { Component } from 'react';
 import { withStyles, useTheme } from '@material-ui/core/styles';
 // import { connect } from 'react-redux';
+import ReactHtmlParser from 'react-html-parser'
+
 import {
   Grid,
   Card,
@@ -11,24 +13,12 @@ import {
   CardActions,
   CardMedia,
   CardContent,
-  Paper,
   CardHeader,
-  Divider,
-  TextField,
 } from '@material-ui/core';
-import Rating from '@material-ui/lab/Rating';
-import Avatar from '@material-ui/core/Avatar';
 import { withRouter } from 'react-router-dom';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
-// import { withRouter } from 'react-router-dom';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import moment from 'moment';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
-import SideBar from './sideBar';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
@@ -58,7 +48,7 @@ const styles = (theme) => ({
   media: {
     height: 300,
     borderRadius: 16,
-    backgroundSize:'500px'
+    backgroundSize:380
   },
   author: {
     marginTop: 20,
@@ -73,14 +63,6 @@ const styles = (theme) => ({
   },
 });
 
-const StyledRating = withStyles({
-  iconFilled: {
-    color: '#ff6d75',
-  },
-  iconHover: {
-    color: '#ff3d47',
-  },
-})(Rating);
 
 class BlogView extends Component {
   constructor(props) {
@@ -97,7 +79,6 @@ class BlogView extends Component {
       currentLikes: 0,
       loading:false,
       likes: this.props.location.state.data && this.props.location.state.data.likes,
-      loginUserName : JSON.parse(localStorage.getItem('userDetails')).first_name,
       roleDetails: JSON.parse(localStorage.getItem('userDetails')),
 blogRatings :this.props.location.state.data && this.props.location.state.data.remark_rating,
       overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark,
@@ -107,42 +88,6 @@ blogRatings :this.props.location.state.data && this.props.location.state.data.re
     let {blogId} = this.state
     this.handleView(blogId)
   }
-  getLikeStatus = (isLiked) => {
-    let { likeStatus,likes }=this.state
-    if (isLiked === true && likeStatus === false) {
-      this.setState({currentLikes :likes-1,likeStatus:true})
-    } else if (isLiked === true && likeStatus === true) {
-      this.setState({currentLikes :likes+1,likeStatus:false})
-  
-    } else if (isLiked === false && likeStatus === false) {
-      this.setState({currentLikes :likes+1,likeStatus:true})
-  
-    } else if (isLiked === false && likeStatus === true) {
-      this.setState({currentLikes :likes,likeStatus:false})
-  
-    }
-  }
-  handleLike = (isLiked,blogId) => {
-    this.getLikeStatus(isLiked)
-    let requestData = {
-      "blog_id": blogId ,
-  
-    }
-  axios.post(`${endpoints.blog.BlogLike}`, requestData)
-  
-  .then(result=>{
-  if (result.data.status_code === 200) {
-    this.setState({loading:false})
-    // setAlert('success', result.data.message);
-  } else {        
-    this.setState({loading:false})
-    // setAlert('error', result.data.message);
-  }
-  }).catch((error)=>{
-    this.setState({loading:false})
-    // setAlert('error', error.message);
-  })
-    }
 
   handleView = (blogId) => {
     let requestData = {
@@ -179,41 +124,21 @@ getOverAllRemark = () => {
     this.setState({ comment: event.target.value });
   };
 
-  submitComment = (type) => {
-    if (type === 'Submit') {
-      const { comment, blogId } = this.state;
-      const formData = new FormData();
-      // formData.set('blog_id', blogId);
-      formData.set('content', 7);
-      formData.set('comment', comment);
-
-      axios
-        .post(`${endpoints.blog.Blog}`, formData)
-        .then((result) => {
-          if (result.data.status_code === 200) {
-            this.props.history.push({
-              pathname: '/blog/student/dashboard',
-            });
-          } else {
-            console.log(result.data.message);
-          }
-        })
-        .catch((error) => {
-        });
-    }
+ 
+  EditBlogNav = () => {
+    const { data } = this.state;
+    let content=data && data.content
+    let title=data && data.title
+    let thumbnail = data && data.thumbnail
+    let genreObj =data.genre
+    let genreId =data && data.genre && data.genre.id
+    let genreName =data && data.genre && data.genre.genre
+    let blogId=data&&data.id
+    this.props.history.push({
+      pathname: '/blog/student/edit-blog',
+      state: { content, title, thumbnail,genreId,genreName,blogId,genreObj },
+    });
   };
-  // EditBlogNav = () => {
-  //   const { data } = this.state;
-  //   let content=data && data.content
-  //   let title=data && data.title
-  //   let thumbnail = data && data.thumbnail
-  //   let genreId =data && data.genre && data.genre.id
-  //   let genreName =data && data.genre && data.genre.genre
-  //   this.props.history.push({
-  //     pathname: '/blog/student/edit-blog',
-  //     state: { content, title, thumbnail,genreId,genreName },
-  //   });
-  // };
   handleDeleteBlog = (blogId) => {
 
     let requestData = {
@@ -250,7 +175,7 @@ getOverAllRemark = () => {
     const indexOfLoginUser=likedUserIds.indexOf(roleDetails.user_id)
     const loginUser=likedUserIds.includes(roleDetails.user_id)
     const isLiked = loginUser ? blogFkLike[indexOfLoginUser].is_liked : false
-    const name =data && data.author && data.author.first_name
+    const name =data && data.author && data.author.id
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -282,7 +207,8 @@ getOverAllRemark = () => {
                           {data.title}
                           {
                   tabValue === 2 ?
-<IconButton
+                    <IconButton
+                    style={{float:'right'}}
                   title='Delete'
                   onClick={()=>this.handleDeleteBlog(data && data.id)}
                 >
@@ -309,7 +235,7 @@ getOverAllRemark = () => {
                       >Comment:{data.comment}
                      
                       </Typography>
-                      <Typography> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
+                      <Typography  style={{fontSize:'12px'}}> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
                       </CardContent>  :''}
                         <CardHeader
                           className={classes.author}
@@ -320,26 +246,22 @@ getOverAllRemark = () => {
                         <CardContent>
                         
                           <Typography variant='body2' color='textSecondary' component='p'>
-                            {data.content} 
+                          {ReactHtmlParser(data.content)}
                           </Typography>
                           <Typography  component='p' style={{ paddingRight: '650px',fontSize:'12px'}}>
                            Genre: {data.genre && data.genre.genre}
                           </Typography>
                           <Typography component='p'  style={{ paddingRight: '650px',fontSize:'12px'}}
 >
-                          TotalWords : {data.word_count} 
+                          Total Words : {data.word_count} 
                           </Typography>
 
                         </CardContent>
                         <CardActions>
-                        {loginUserName !== name ? <Button
-                              style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' ,color:'red' ,backgroundColor:'white'}}
-                              onClick={()=>this.handleLike(isLiked,data.id)}
-                            > {isLiked || likeStatus ? <Favorite style={{ color: '#ff6b6b' }} />
-                                : <FavoriteBorder style={{ color: '#ff6b6b' }} />} {currentLikes === 0 ? likes
-                                : currentLikes
-                              }Likes
-                            </Button> : ''} &nbsp;&nbsp;&nbsp;
+                        <Button                               style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' ,color:'red' ,backgroundColor:'white'}}
+>
+                    <Favorite style={{ color: 'red' }} />{likes}likes</Button>
+ &nbsp;&nbsp;&nbsp;
                             <Button
                               style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' ,color:'red' ,backgroundColor:'white'}}
 
@@ -360,7 +282,7 @@ getOverAllRemark = () => {
                             {relatedBlog ? 'Review' : 'View Related Blog'}
                           </Button>  :''}
                          
-                          {/* {tabValue !== 1 ?
+                          {tabValue === 0  || tabValue === 2 ?
                           <Button
                             style={{ width: 150 }}
                             size='small'
@@ -369,17 +291,24 @@ getOverAllRemark = () => {
                           >
                             Edit
                           </Button>
-                          :''} */}
+                          :''}
                         </CardActions>
                       </Card>
                     </Grid>
                     <Grid item xs={3}>
                    { relatedBlog ? ''
                       : (
+                        <Grid>
+                        <Typography
+                        style={{ fontSize:'12px', width: '300px',
+                        paddingLeft: '30px',
+                        color: '#ff6b6b'}}>Reviewed By:{data.reviewed_by && data.reviewed_by.first_name}
+                     
+                      </Typography>
                         <ReviewPrincipal  blogId={data.id}  ratingParameters={this.getRatings} overallRemark={this.getOverAllRemark}
                         />
 
-
+</Grid>
                       )
                       }
                     </Grid>

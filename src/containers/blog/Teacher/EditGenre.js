@@ -55,15 +55,14 @@ const useStyles = makeStyles((theme) => ({
   
 
 
-const CreateGenre = (props) => {
-  const { match } = props
-
+const EditGenre = (props) => {
+    const {item} =props
   const classes = useStyles()
   const [currentTab,setCurrentTab] =useState(0)
   const [genreActiveListRes,setGenreActiveListResponse] = useState('');
   const [genreInActiveListRes,setGenreInActiveListResponse] = useState('');
   const [genreNameEdit,setGenreNameEdit] =useState('');
-
+    console.log(props,"@@@")
   const [genreName,setGenreName] =useState('');
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false)
@@ -103,17 +102,42 @@ const CreateGenre = (props) => {
       setAlert('error', "duplicates not allowed");
     })
     };
-  //  const handleEditNav = (item) => {
-  //   props.history.push(`${match.url}/edit`)
-  //   // props.history.push({
-  //   //   pathname: '/blog/edit/genre',
-  //   //   state: { item},
-  //   // });
-  // };
+    const handleEditSubmit = (item) => {
+      setLoading(true);
+      let requestData= {}
+     
+        requestData = {
+          "genre_id":item.id,
+          "genre":genreNameEdit,
+        }
+    
+  
+      axiosInstance.put(`${endpoints.blog.genreList}`, requestData)
+  
+      .then(result=>{
+      if (result.data.status_code === 200) {
+        setLoading(false);
+        setAlert('success', result.data.message);
+      } else {        
+        setLoading(false);
+        setAlert('error', "duplicates not allowed");
+      }
+      }).catch((error)=>{
+        setLoading(false);        
+        setAlert('error', "duplicates not allowed");
+      })
+      };
 
     const handleTabChange = (event,value) =>{
       setCurrentTab(value)
     }
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
+  
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
   
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
@@ -140,12 +164,56 @@ const CreateGenre = (props) => {
         </IconButton>
         {/* <IconButton
           title='edit'
-          onClick={handleEditNav}          
+          onClick={handleClick}          
         >
           <EditOutlinedIcon
             style={{ color: themeContext.palette.primary.main }}
           />
         </IconButton> */}
+        {/* <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <Grid container>
+          <Grid item xs={12}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+              <TextField
+                id='outlined-helperText'
+                label='Genre Name'
+                defaultValue={item&&item.genre}
+                variant='outlined'
+                style={{ width: '100%' }}
+                inputProps={{ maxLength: 20 }}
+                onChange={(event,value)=>{handleGenreNameEditChange(event);}}
+                color='secondary'
+                size='small'
+              />
+          </Grid>
+          <Grid item xs={12} >
+            <Button
+              variant='contained'
+              style={{ color: 'white' }}
+              color="primary"
+              className="custom_button_master"
+              size='medium'
+              type='submit'
+              onClick={()=>handleEditSubmit(item)}
+              disabled={!genreNameEdit}
+            >
+              Save
+        </Button>
+          </Grid>
+        </Grid>
+      </Popover> */}
         </Typography>
        
       }
@@ -332,4 +400,4 @@ const getGenreInActiveList = () => {
   )
 }
 
-export default withRouter(CreateGenre)
+export default withRouter(EditGenre)

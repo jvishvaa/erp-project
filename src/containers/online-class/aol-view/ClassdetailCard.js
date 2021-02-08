@@ -4,6 +4,7 @@ import { Divider, makeStyles, withStyles, Typography, Button } from '@material-u
 import moment from 'moment';
 import JoinClass from './JoinClass';
 import { useHistory } from 'react-router-dom';
+import axiosInstance from '../../../config/axios';
 
 const useStyles = makeStyles({
     classDetailsBox: {
@@ -125,8 +126,9 @@ const StyledButton = withStyles({
 export default function ClassdetailsCardComponent(props) {
     const classes = useStyles({});
     //console.log(props.classData);
-
+    const [ periodsData, setPeriodsData ] = React.useState([]);
     //Periods date start
+    const history = useHistory();
     const startDate = new Date(props.classData.online_class.start_time);
     const endDate = new Date(props.classData.online_class.end_time);
     const Difference_In_Time = endDate.getTime() - startDate.getTime();
@@ -142,6 +144,15 @@ export default function ClassdetailsCardComponent(props) {
         periods = Math.floor(Difference_In_Days + 1);
     }
     //console.log(startDate.setDate(startDate.getDate() + 1));
+    // 686 - 658 777 
+    React.useEffect(() => {
+        axiosInstance.get(`erp_user/${props.classData.id}/online-class-details/`)
+        .then((res) => {
+            console.log(res);
+            setPeriodsData(res.data.data);
+        })
+        .catch((error) => console.log(error))
+    },[]);
 
     let dateArray = [];
     for(var i = 0; i <= periods; i++){
@@ -158,7 +169,7 @@ export default function ClassdetailsCardComponent(props) {
     ////Periods date end
 
     const handleAttendance = () => {
-        console.log(" attendance");
+        history.push(`/aol-attendance-list/${props.classData.id}`);
         //online-class/attendee-list/:id
         //history.push(`online-class/attendee-list/:${id}`);
     }
@@ -187,10 +198,10 @@ export default function ClassdetailsCardComponent(props) {
                 </Typography>
                 <Divider className={classes.classDetailsDivider}/>
                 <div className={classes.joinClassDiv}>
-                    {dateArray !== undefined && dateArray.map((date, id) => (
+                    {periodsData !== undefined && periodsData.map((data, id) => (
                         <JoinClass
                             key={id}
-                            date={date}
+                            data={data}
                             joinUrl={props.classData.join_url}
                             isTeacher={isTeacher}
                         />

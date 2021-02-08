@@ -12,6 +12,7 @@ const resolveMenu = (url) => {
   if (url.includes('communication')) return 'Communication';
   if (url.includes('homework')) return 'Homework';
   if (url.includes('blog')) return 'Blogs';
+  
   return null;
 };
 
