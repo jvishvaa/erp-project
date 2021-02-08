@@ -72,14 +72,6 @@ const styles = (theme) => ({
   },
 });
 
-const StyledRating = withStyles({
-  iconFilled: {
-    color: '#ff6d75',
-  },
-  iconHover: {
-    color: '#ff3d47',
-  },
-})(Rating);
 
 class WriteBlog extends Component {
   constructor(props) {
@@ -124,9 +116,11 @@ class WriteBlog extends Component {
           ? this.props.location.state.files
           : [],
       wordCountLimit: 50,
+      genreObj : this.props.location.state.genreObj && this.props.location.state.genreObj.length !== 0
+      ? this.props.location.state.genreObj
+      :'',
 
     };
-    console.log(this.state.genreName,this.state.genreId,"@@@@@@")
   }
   static contextType = AlertNotificationContext
   componentDidMount() {
@@ -231,11 +225,11 @@ class WriteBlog extends Component {
   }
 
   handleGenre = (data) => {
-    this.setState({ genreId: data.id,genreName:data.genre });
+    this.setState({ genreId: data.id,genreName:data.genre,genreObj:data });
   };
 
   PreviewBlogNav = () => {
-    let{genreId ,files, title ,textEditorContent}=this.state
+    let{genreId ,files, title ,textEditorContent,genreObj}=this.state
 
     
     if(!genreId || !files.length> 0 ||!title ||!textEditorContent){
@@ -259,7 +253,7 @@ class WriteBlog extends Component {
     } = this.state;
     this.props.history.push({
       pathname: '/blog/student/preview-blog',
-      state: { studentName, creationDate, genreId, textEditorContent, title, files ,genreName},
+      state: { studentName, creationDate, genreId, textEditorContent, title, files ,genreName,genreObj},
     });
   };
 
@@ -271,6 +265,7 @@ class WriteBlog extends Component {
       starsRating,
       feedBack,
       image,
+      genreObj,
       genreName,
       textEditorContent,
       key,
@@ -319,7 +314,7 @@ class WriteBlog extends Component {
                       size='small'
                       id='combo-box-demo'
                       options={genreList}
-                      // value={genreName}
+                      value={genreObj}
                       getOptionLabel={(option) => option.genre}
                       style={{ width: 300 }}
                       onChange={(e, data) => this.handleGenre(data)}
@@ -352,7 +347,6 @@ class WriteBlog extends Component {
                   </Grid>
                   <Grid item xs={12}>
                     <Typography style={{ margin: 10 }} variant='body1'>
-                      {/* Write Blog */}
                       Write the blog with atleast {wordCountLimit} words
                     </Typography>
                     <TinyMce

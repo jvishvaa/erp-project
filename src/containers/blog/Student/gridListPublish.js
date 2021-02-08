@@ -56,8 +56,9 @@ function GridListPublish(props) {
               display:data.length >= 1 ? 'flex' : 'none',
               flexDirection: 'column',
               justifyContent: 'space-between',
-              backgroundSize: '360px',
+              backgroundSize: '520px 290px',
               backgroundImage: `url(${data[0] && data[0].thumbnail})`,
+              backgroundRepeat: 'no-repeat',
               borderRadius: 10,
 
             }}
@@ -129,8 +130,9 @@ function GridListPublish(props) {
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 display:data.length >= 2 ? 'flex' : 'none',
-                backgroundSize: '360px',
+                backgroundSize: '250px 350px',
                 backgroundImage: `url(${data[1] && data[1].thumbnail})`,
+                backgroundRepeat: 'no-repeat',
                 borderRadius: 10,
 
               }}>
@@ -195,8 +197,9 @@ function GridListPublish(props) {
                   display:data.length >= 3 ? 'flex' : 'none',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  backgroundSize: '360px',
+                  backgroundSize: '250px 350px',
                   backgroundImage: `url(${data[2] && data[2].thumbnail})`,
+                  backgroundRepeat: 'no-repeat',
                   borderRadius: 10,
 
                 }}
@@ -269,8 +272,9 @@ function GridListPublish(props) {
                 display:data.length >= 4 ? 'flex' : 'none',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                backgroundSize: '360px',
+                backgroundSize: '250px 350px',
                 backgroundImage: `url(${data[3] && data[3].thumbnail})`,
+                backgroundRepeat: 'no-repeat',
                 borderRadius: 10,
 
               }}>
@@ -339,8 +343,9 @@ function GridListPublish(props) {
 
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                backgroundSize: '360px',
+                backgroundSize: '250px 350px',
                 backgroundImage: `url(${data[4] && data[4].thumbnail})`,
+                backgroundRepeat: 'no-repeat',
                 borderRadius: 10,
 
               }}>
@@ -409,8 +414,9 @@ function GridListPublish(props) {
               display:data.length >= 6 ? 'flex' : 'none',
               flexDirection: 'column',
               justifyContent: 'space-between',
-              backgroundSize: '360px',
+              backgroundSize: '520px 290px',
               backgroundImage: `url(${data[5] && data[5].thumbnail})`,
+              backgroundRepeat: 'no-repeat',
               borderRadius: 10,
 
             }}>

@@ -16,9 +16,9 @@ import {
   Divider,
   TextField,
 } from '@material-ui/core';
-import Rating from '@material-ui/lab/Rating';
+import ReactHtmlParser from 'react-html-parser'
+
 import Avatar from '@material-ui/core/Avatar';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { withRouter } from 'react-router-dom';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
@@ -62,14 +62,6 @@ const styles = (theme) => ({
   },
 });
 
-const StyledRating = withStyles({
-  iconFilled: {
-    color: '#ff6d75',
-  },
-  iconHover: {
-    color: '#ff3d47',
-  },
-})(Rating);
 class PreviewEditBlog extends Component {
   constructor(props) {
     super(props);
@@ -85,25 +77,27 @@ class PreviewEditBlog extends Component {
       files: this.props.location.state.files,
       blogId:this.props.location.state.blogId,
       genreName:this.props.location.state.genreName,
+      image:this.props.location.state.image
     };
   }
 
   componentDidMount() {
     const { files } = this.state;
+    if (files.length){
     const imageUrl = URL.createObjectURL( files && files[0]);
     this.setState({ imageUrl });
+    }
   }
 
 
   submitBlog = (type) => {
-    const { title, content, files, genreId ,blogId} = this.state;
+    const { title, content, files, genreId ,blogId,image} = this.state;
     const formData = new FormData();
     for (var i = 0; i < files.length; i++) {
-      formData.append('thumbnail',files[i]);
+      formData.append('thumbnail',files[i] || image);
     }
     formData.set('title', title);
     formData.set('blog_id', blogId);
-
     formData.set('content', content);
     formData.set('genre_id', genreId);
     formData.set('status', type == 'Draft' ? 2 : 8);
@@ -158,7 +152,7 @@ class PreviewEditBlog extends Component {
                         </Typography>
                         <CardMedia
                           className={classes.media}
-                          image={this.state.imageUrl}
+                          image={this.state.imageUrl || this.state.image}
                           title='Contemplative Reptile'
                         />
                         <CardHeader
@@ -173,7 +167,7 @@ class PreviewEditBlog extends Component {
                         />
                         <CardContent>
                           <Typography variant='body2' color='textSecondary' component='p'>
-                            {this.state.content}
+                          {ReactHtmlParser(this.state.content)}
                           </Typography>
                           
                         </CardContent>

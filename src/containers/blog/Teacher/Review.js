@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Grid, Button } from '@material-ui/core'
 import { withRouter } from 'react-router-dom';
 
-// import Close from '@material-ui/icons/Close'
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 
@@ -31,7 +30,6 @@ class Review extends Component {
 
   componentDidMount () {
     if (this.props.ratingParameters().length) {
-      console.log(this.props.ratingParameters(),typeof(this.props.ratingParameters()),"@@@@@")
       this.setState({ ratingParameters: this.props.ratingParameters(), overallRemark: this.props.overallRemark() })
     } else {
       this.setState({ ratingParameters: this.getStaticParamters() })
@@ -86,7 +84,6 @@ class Review extends Component {
 
 
   handleSubmit = () => {
-    console.log(this.props,"@@@@@@@@")
     const { blogId } = this.props
     const { overallRemark, ratingParameters } = this.state
     const formData = new FormData()
@@ -131,7 +128,8 @@ class Review extends Component {
           </Grid>
           <Grid item xs={12} >
        <Button
-              className='reviewer_submit'
+              // className='reviewer_submit'
+              style={{marginTop:'90px',marginLeft:'80px'}}
               variant='contained'
               color='primary'
               onClick={this.handleSubmit}

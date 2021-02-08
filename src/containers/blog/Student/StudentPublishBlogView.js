@@ -14,12 +14,10 @@ import { Pagination } from '@material-ui/lab';
 
 import Box from '@material-ui/core/Box';
 import { withRouter } from 'react-router-dom';
-// import { connect } from 'react-redux';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
 import MobileDatepicker from '../Teacher/datePicker';
 
-// import PendingReview from './PendingReview';
 import GridListPublish from './gridListPublish';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
@@ -73,10 +71,10 @@ class StudentPublishBlogView extends Component {
     super(props);
     this.state = {
       tabValue: 0,
-      pageNo: 0,
+      pageNo: 1,
       pageSize: 6,
       startDate :moment().format('YYYY-MM-DD'),
-      status :[4,7]
+      status :[4]
     };
   }
   componentDidMount() {
@@ -88,7 +86,7 @@ class StudentPublishBlogView extends Component {
     axios
       .get(
         `${endpoints.blog.Blog}?page_number=${
-          pageNo + 1
+          pageNo 
         }&page_size=${pageSize}&status=${status}&module_id=113&published_level=${tabValue+1}`
       )
       .then((result) => {
@@ -218,28 +216,6 @@ class StudentPublishBlogView extends Component {
             </Grid>
                   </Grid>
                   <Grid container spacing={2}>
-                    {/* <Grid item>
-                      <Button
-                        color='primary'
-                        style={{ fontSize: 'small', margin: '20px' }}
-                        size='small'
-                        variant='contained'
-                        onClick={this.PublishBlogNav}
-
-                      >
-                        Published Blogs
-                      </Button>
-                    </Grid> */}
-                    {/* <Grid item>
-                      <Button
-                        style={{ fontSize: 'small', margin: '20px' }}
-                        color='primary'
-                        size='small'
-                        variant='contained'
-                      >
-                        Blog Dashboard
-                      </Button>
-                    </Grid> */}
                   </Grid>
                   <Grid container spacing={2}>
                     <Grid item xs={12}>

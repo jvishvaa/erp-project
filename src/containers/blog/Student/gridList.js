@@ -72,29 +72,19 @@ function GridList(props) {
                 className={classes.card}
                 style={{
                   width: '100%',
-                  height: '230px',
-                  backgroundSize: '360px',
+                  height: '290px',
+                  backgroundSize: '520px 290px',
                   backgroundImage: `url(${data[0] && data[0].thumbnail})`,
                   display:data.length >= 1 ? 'flex' : 'none',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
+                  backgroundRepeat: 'no-repeat',
                   borderRadius: 10,
+
 
                 }}
               >
                 <CardHeader
-//                 action=       {
-//                   props.tabValue === 2 ?
-// <IconButton
-//                   title='Delete'
-//                   onClick={()=>handleDeleteBlog(data[0] && data[0].id)}
-//                 >
-//                   <DeleteOutlinedIcon
-//                     style={{ color: themeContext.palette.primary.main }}
-//                   />
-//                 </IconButton>
-//       : '' 
-//               }
                   subheader={
                     <Typography
                       gutterBottom
@@ -165,26 +155,16 @@ function GridList(props) {
                     justifyContent: 'space-between',
                     width: '100%',
                     height: '350px',
-                    backgroundSize: '360px',
+                    backgroundSize: '250px 350px',
                     backgroundImage: `url(${data[1] && data[1].thumbnail})`,
+                    backgroundRepeat: 'no-repeat',
                     borderRadius: 10,
+
 
                   }}
                   className={classes.card}
                 >
                   <CardHeader
-          //            action=       {
-          //             props.tabValue === 2 ?
-          //             <IconButton
-          //             title='Delete'
-          //             onClick={()=>handleDeleteBlog(data[1] && data[1].id)}
-          //           >
-          //             <DeleteOutlinedIcon
-          //               style={{ color: themeContext.palette.primary.main }}
-          //             />
-          //           </IconButton>
-          // : '' 
-          //         }
                     subheader={
                       <Typography
                         gutterBottom
@@ -200,10 +180,8 @@ function GridList(props) {
                   <CardActionArea>
                   <CardContent style ={{ padding:'5px'}}>
                       <Typography
-                        // variant='body2'
                         style={{
                           marginTop: '-10px',
-                          // fontSize: 'x-large',
                           fontWeight: 'bold',
                           color: 'white',
                         }}
@@ -253,27 +231,17 @@ function GridList(props) {
                   justifyContent: 'space-between',
                   width: '100%',
                   height: '350px',
-                  backgroundSize: '360px',
-                  backgroundImage: `url(${data[2] && data[2].thumbnail})`,
+                  backgroundSize: '250px 350px',
+                  backgroundImage: `url(${data[2] && data[2].thumbnail})` ,
+                  backgroundRepeat: 'no-repeat',
                   borderRadius: 10,
+
 
                 }}
                  
                   className={classes.card}
                 >
                   <CardHeader
-    //                  action=       {
-    //                   props.tabValue === 2 ?
-    // <IconButton
-    //                   title='Delete'
-    //                   onClick={()=>handleDeleteBlog(data[2] && data[2].id)}
-    //                 >
-    //                   <DeleteOutlinedIcon
-    //                     style={{ color: themeContext.palette.primary.main }}
-    //                   />
-    //                 </IconButton>
-    //       : '' 
-    //               }
                     subheader={
                       <Typography
                         gutterBottom
@@ -289,10 +257,8 @@ function GridList(props) {
                   <CardActionArea>
                      <CardContent style ={{ padding:'5px'}}>
                       <Typography
-                        // variant='body2'
                         style={{
                           marginTop: '-15px',
-                          // fontSize: 'x-large',
                           fontWeight: 'bold',
                           color: 'white',
                         }}
@@ -345,9 +311,11 @@ function GridList(props) {
                     justifyContent: 'space-between',
                     width: '100%',
                     height: '350px',
-                    backgroundSize: '360px',
+                    backgroundSize: '250px 350px',
                     backgroundImage: `url(${data[3] && data[3].thumbnail})`,
+                    backgroundRepeat: 'no-repeat',
                     borderRadius: 10,
+
 
                   }}
                   className={classes.card}
@@ -415,12 +383,14 @@ function GridList(props) {
                   style={{
                     width: '100%',
                     height: '350px',
-                    backgroundSize: '360px',
+                    backgroundSize: '250px 350px',
                     display:data.length >= 5 ? 'flex' : 'none',
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                     backgroundImage: `url(${data[4] && data[4].thumbnail})`,
+                    backgroundRepeat: 'no-repeat',
                     borderRadius: 10,
+
 
                   }}
                   
@@ -489,13 +459,14 @@ function GridList(props) {
               <Card
                 style={{
                   width: '100%',
-                  height: '230px',
                   display:data.length >= 6 ? 'flex' : 'none',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  backgroundSize: '360px',
                   backgroundImage: `url(${data[5] && data[5].thumbnail})`,
+                  backgroundRepeat: 'no-repeat',
                   borderRadius: 10,
+                  height: '290px',
+                  backgroundSize: '520px 290px',
 
                 }}
                 className={classes.card}

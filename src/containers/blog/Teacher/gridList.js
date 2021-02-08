@@ -52,7 +52,7 @@ function GridList(props) {
               display:data.length >= 1 ? 'flex' : 'none',
               flexDirection: 'column',
               justifyContent: 'space-between',
-              backgroundSize: '360px',
+              backgroundSize: '520px 290px',
               backgroundImage: `url(${data[0] && data[0].thumbnail})`,
               borderRadius: 10,
 
@@ -109,7 +109,7 @@ function GridList(props) {
                   >
                     Read more
                   </Button>
-                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[0]&&data[0].status === '5'? 'Revision' :''}</p>
+                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem','margin-top': '100px' }}>{data[0]&&data[0].status === '5'? 'Revision' :''}</p>
 
                 </CardActions>
              
@@ -124,7 +124,7 @@ function GridList(props) {
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 display:data.length >= 2 ? 'flex' : 'none',
-                backgroundSize: '360px',
+                backgroundSize: '250px 350px',
                 backgroundImage: `url(${data[1] && data[1].thumbnail})`,
                 borderRadius: 10,
 
@@ -177,7 +177,7 @@ function GridList(props) {
                   >
                     Read more
                   </Button>
-                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[1]&&data[1].status === '5'? 'Revision' :''}</p>
+                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem', 'margin-left': '1rem','margin-top': '50px' }}>{data[1]&&data[1].status === '5'? 'Revision' :''}</p>
 
                 </CardActions>
               </Card>
@@ -191,8 +191,9 @@ function GridList(props) {
                   display:data.length >= 3 ? 'flex' : 'none',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  backgroundSize: '360px',
+                  backgroundSize: '250px 350px',
                   backgroundImage: `url(${data[2] && data[2].thumbnail})`,
+                  backgroundRepeat: 'no-repeat',
                   borderRadius: 10,
 
                 }}
@@ -245,7 +246,7 @@ function GridList(props) {
                   >
                     Read more
                   </Button>
-                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[2]&&data[2].status === '5'? 'Revision' :''}</p>
+                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem', 'margin-left': '1rem','margin-top': '50px' }}>{data[2]&&data[2].status === '5'? 'Revision' :''}</p>
 
                 </CardActions>
               </Card>
@@ -262,9 +263,10 @@ function GridList(props) {
                 display:data.length >= 4 ? 'flex' : 'none',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                backgroundSize: '360px',
+                backgroundSize: '250px 350px',
                 backgroundImage: `url(${data[3] && data[3].thumbnail})`,
                 borderRadius: 10,
+                backgroundRepeat: 'no-repeat',
 
               }}>
                 <CardHeader
@@ -316,7 +318,7 @@ function GridList(props) {
                   >
                     Read more
                   </Button>
-                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[3]&&data[3].status === '5'? 'Revision' :''}</p>
+                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem', 'margin-left': '1rem','margin-top': '50px' }}>{data[3]&&data[3].status === '5'? 'Revision' :''}</p>
 
 
                 </CardActions>
@@ -331,9 +333,10 @@ function GridList(props) {
 
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                backgroundSize: '360px',
+                backgroundSize: '250px 350px',
                 backgroundImage: `url(${data[4] && data[4].thumbnail})`,
                 borderRadius: 10,
+                backgroundRepeat: 'no-repeat',
 
               }}>
                 <CardHeader
@@ -386,7 +389,8 @@ function GridList(props) {
                   >
                     Read more
                   </Button>
-                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[4]&&data[4].status === '5'? 'Revision' :''}</p>
+                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem', 'margin-left': '1rem','margin-top': '50px' }}>
+                    {data[4]&&data[4].status === '5'? 'Revision' :''}</p>
 
                 </CardActions>
               </Card>
@@ -400,9 +404,10 @@ function GridList(props) {
               display:data.length >= 6 ? 'flex' : 'none',
               flexDirection: 'column',
               justifyContent: 'space-between',
-              backgroundSize: '360px',
+              backgroundSize: '520px 290px',
               backgroundImage: `url(${data[5] && data[5].thumbnail})`,
               borderRadius: 10,
+              backgroundRepeat: 'no-repeat',
 
             }}>
               <CardHeader
@@ -454,7 +459,8 @@ function GridList(props) {
                   >
                     Read more
                   </Button>
-                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem' }}>{data[5]&&data[5].status === '5'? 'Revision' :''}</p>
+                  <p style={{ fontSize:'12px',fontFamily: 'Arial', color: 'green', 'margin-left': '1rem','margin-top': '100px' }}>
+                    {data[5]&&data[5].status === '5'? 'Revision' :''}</p>
 
                 </CardActions>
             </Card>

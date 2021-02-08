@@ -17,7 +17,6 @@ import {
   CardHeader,
   TextField,
 } from '@material-ui/core';
-import Rating from '@material-ui/lab/Rating';
 import Avatar from '@material-ui/core/Avatar';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { withRouter } from 'react-router-dom';
@@ -27,6 +26,7 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import Layout from '../../Layout';
 import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
 import ReviewPrincipal from '../Principal/ReviewPrincipal';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 const styles = (theme) => ({
   root: {
@@ -64,14 +64,6 @@ const styles = (theme) => ({
   },
 });
 
-const StyledRating = withStyles({
-  iconFilled: {
-    color: '#ff6d75',
-  },
-  iconHover: {
-    color: '#ff3d47',
-  },
-})(Rating);
 
 const publishLevelChoiceBranch=[ 
   {label:'Orchids',value:'1'},
@@ -122,11 +114,13 @@ class ContentViewPublish extends Component {
       currentLikes: 0,
       loading:false,
       likes: this.props.location.state.data && this.props.location.state.data.likes,
-      loginUserName : JSON.parse(localStorage.getItem('userDetails')).first_name
+      loginUserName : JSON.parse(localStorage.getItem('userDetails')).erp_user_id
 
     };
 
   }
+  static contextType = AlertNotificationContext
+
   componentDidMount() {
     let {blogId} = this.state
     this.handleView(blogId)
@@ -163,8 +157,10 @@ class ContentViewPublish extends Component {
       .put(`${endpoints.blog.Blog}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
+          this.context.setAlert('success',"successfully submitted revision feedback")
+
           this.props.history.push({
-            pathname: '/blog/teacher',
+            pathname: '/blog/admin',
           });
         } else {
           console.log(result.data.message);
@@ -192,8 +188,10 @@ class ContentViewPublish extends Component {
       .put(`${endpoints.blog.Blog}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
+          this.context.setAlert('success',"published successfully")
+
           this.props.history.push({
-            pathname: '/blog/teacher/publish/view',
+            pathname: '/blog/admin/publish/view',
           });
         } else {
           console.log(result.data.message);
@@ -228,7 +226,28 @@ class ContentViewPublish extends Component {
     }
   }
 
+  handelUnpublish = (blogId) => {
+    let requestData = {
+      "blog_id": blogId ,
+      "status": "6"
+    }
+  axios.put(`${endpoints.blog.Blog}`, requestData)
+  
+  .then(result=>{
+  if (result.data.status_code === 200) {
+    this.setState({loading:false})
+    this.context.setAlert('success',"unpublished successfully")
+    this.props.history.push({
+      pathname: '/blog/admin',
+    });
 
+  } else {        
+    this.setState({loading:false})
+  }
+  }).catch((error)=>{
+    this.setState({loading:false})
+  })
+    }
   handleLike = (isLiked,blogId) => {
     this.getLikeStatus(isLiked)
     let requestData = {
@@ -274,7 +293,7 @@ class ContentViewPublish extends Component {
     const indexOfLoginUser=likedUserIds.indexOf(roleDetails.user_id)
     const loginUser=likedUserIds.includes(roleDetails.user_id)
     const isLiked = loginUser ? blogFkLike[indexOfLoginUser].is_liked : false
-    const name =data && data.author && data.author.first_name
+    const name =data && data.author && data.author.id
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -312,7 +331,7 @@ class ContentViewPublish extends Component {
                       >Comment:{data.comment}
                      
                       </Typography>
-                      <Typography> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
+                      <Typography style={{ fontSize:'12px'}}> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
                       </CardContent>  :''}</CardContent>
                         <CardHeader
                           className={classes.author}
@@ -365,6 +384,17 @@ class ContentViewPublish extends Component {
                           </Button> :''
 
                           }
+                           {tabValue !== 0 ?
+                        
+                        <Button
+                          size='small'
+                          color='primary'
+                          onClick={() => this.handelUnpublish(data.id)}
+                        >
+                          Un Publish
+                        </Button> :''
+
+                        }
                         </CardActions>
                       </Card>
                     </Grid>
@@ -406,6 +436,12 @@ class ContentViewPublish extends Component {
                         </Card>
                       )
                       : <Grid item xs={3}>
+                        <Typography
+                        style={{ fontSize:'12px', width: '300px',
+                        paddingLeft: '30px',
+                        color: '#ff6b6b'}}>Reviewed By:{data.reviewed_by && data.reviewed_by.first_name}
+                     
+                      </Typography>
                       <ReviewPrincipal  blogId={data.id}  ratingParameters={this.getRatings}  overallRemark={this.getOverAllRemark}
                       />
                   </Grid>

@@ -128,11 +128,11 @@ const CreateWordCountConfig = () => {
       setAlert('success', result.data.message);
     } else {        
       setLoading(false);
-      setAlert('error', result.data.message);
+      setAlert('error', "word config already existing for this grade");
     }
     }).catch((error)=>{
       setLoading(false);        
-      setAlert('error', error.message);
+      setAlert('error', "word config already existing for this grade");
     }) }
     };
     useEffect(() => {
@@ -195,16 +195,13 @@ const CreateWordCountConfig = () => {
         }
       };
 
-console.log(inActiveListRes,"@@@@@")
-      const handleGrade = (event, value) => {
-        if (value) {
-          
-          setSelectedGrades(value.id);
-         
-        } else {
-            setSelectedGrades();
-        }
-        }
+  const handleGrade = (event, value) => {
+    if (value) {
+      setSelectedGrades(value.grade_id);
+    } else {
+        setSelectedGrades();
+    }
+    }
       
         const inActiveTabContent= () =>{
           return <div> 
@@ -215,17 +212,17 @@ console.log(inActiveListRes,"@@@@@")
                 <Card className={classes.root} >
                 <CardHeader
                 style={{padding:'0px'}}
-                action=       {
-<IconButton
-                  title='Delete'
-                  onClick={()=>handleDelete(item)}
+//                 action=       {
+// <IconButton
+//                   title='Delete'
+//                   onClick={()=>handleDelete(item)}
                   
-                >
-                  <DeleteOutlinedIcon
-                    style={{ color: themeContext.palette.primary.main }}
-                  />
-                </IconButton>
-              }
+//                 >
+//                   <DeleteOutlinedIcon
+//                     style={{ color: themeContext.palette.primary.main }}
+//                   />
+//                 </IconButton>
+//               }
               subheader={
                 <Typography
                   gutterBottom
@@ -239,9 +236,9 @@ console.log(inActiveListRes,"@@@@@")
               }
                 />
       <CardContent>
-      <Typography  className={classes.typoStyle}>GradeName: {item.grade.grade_name} </Typography>
-        <Typography   className={classes.typoStyle}>WordCount : {item.word_count}</Typography>
-        <Typography   className={classes.typoStyle}>CreatedBy : {item.created_by.first_name}</Typography>
+      <Typography  className={classes.typoStyle}>Grade Name: {item.grade.grade_name} </Typography>
+        <Typography   className={classes.typoStyle}>Word Count : {item.word_count}</Typography>
+        <Typography   className={classes.typoStyle}>Created By : {item.created_by.first_name}</Typography>
       </CardContent>
                 </Card>                        
                 </Grid>
@@ -300,9 +297,9 @@ const handleTabChange = (event,value) =>{
       }
         />
 <CardContent  style={{ pagging:'1px'}}>
-<Typography  className={classes.typoStyle}>GradeName: {item.grade.grade_name} </Typography>
-<Typography   className={classes.typoStyle}>WordCount : {item.word_count}</Typography>
-<Typography   className={classes.typoStyle}>CreatedBy : {item.created_by.first_name}</Typography>
+<Typography  className={classes.typoStyle}>Grade Name: {item.grade.grade_name} </Typography>
+<Typography   className={classes.typoStyle}>Word Count : {item.word_count}</Typography>
+<Typography   className={classes.typoStyle}>Created By : {item.created_by.first_name}</Typography>
 </CardContent>
         </Card>                        
         </Grid>
