@@ -17,6 +17,8 @@ import {
   TextField,
 } from '@material-ui/core';
 import Rating from '@material-ui/lab/Rating';
+import ReactHtmlParser from 'react-html-parser'
+
 import Avatar from '@material-ui/core/Avatar';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { withRouter } from 'react-router-dom';
@@ -89,7 +91,7 @@ class ContentView extends Component {
 
   componentDidMount() {
     const { files } = this.state;
-    const imageUrl = URL.createObjectURL(files[0]);
+    const imageUrl = URL.createObjectURL( files && files[0]);
     this.setState({ imageUrl });
   }
 
@@ -149,7 +151,7 @@ class ContentView extends Component {
               <div className='create_group_filter_container'>
                 <div className={classes.root}>
                   <Grid container spacing={3}>
-                  <Grid item xs={12}>
+                  {/* <Grid item xs={12}>
                       <Button
                         style={{ cursor: 'Pointer' }}
                         onClick={() => window.history.back()}
@@ -157,7 +159,7 @@ class ContentView extends Component {
                       >
                         <i>Back</i>
                       </Button>
-                      </Grid>
+                      </Grid> */}
                       <Grid item xs={9}>
                       <Card className={classes.cardRoot}>
                         <Typography
@@ -184,7 +186,7 @@ class ContentView extends Component {
                         />
                         <CardContent>
                           <Typography variant='body2' color='textSecondary' component='p'>
-                            {this.state.content}
+                            {ReactHtmlParser(this.state.content)}
                           </Typography>
                           
                         </CardContent>
@@ -203,7 +205,7 @@ class ContentView extends Component {
                             color='primary'
                             onClick={() => this.submitBlog('Publish')}
                           >
-                            Publish
+                            Submit
                           </Button>
                           <Button
                             style={{ width: 150 }}

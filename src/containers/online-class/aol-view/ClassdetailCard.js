@@ -1,9 +1,11 @@
-import React from 'react';
+import React,{useState} from 'react';
 import { Divider, makeStyles, withStyles, Typography, Button } from '@material-ui/core';
 //import AttachmentIcon from '../components/icons/AttachmentIcon';
 import moment from 'moment';
 import JoinClass from './JoinClass';
 import { useHistory } from 'react-router-dom';
+import axiosInstance from '../../../config/axios';
+import AssignModal from './assign-modal';
 
 const useStyles = makeStyles({
     classDetailsBox: {
@@ -108,6 +110,7 @@ const OutlineButton = withStyles({
 const StyledButton = withStyles({
     root: {
         marginTop: '16px',
+        marginLeft:'1rem',
         height: '31px',
         width: '100%',
         fontSize: '18px',
@@ -122,11 +125,32 @@ const StyledButton = withStyles({
     }
 })(Button);
 
+
+const StyledAcceptButton = withStyles({
+    root: {
+        height: '2rem',
+        width: '80px',
+        padding: '0',
+        fontSize: '18px',
+        fontFamily: 'Open Sans',
+        color: '#FFFFFF',
+        backgroundColor: '#ff6b6b',
+        borderRadius: '5px',
+        letterSpacing: 0,
+    }
+})(Button);
+
 export default function ClassdetailsCardComponent(props) {
     const classes = useStyles({});
-    //console.log(props.classData);
+// <<<<<<<<<<<>>>>>>>>>>>>MODAL >>>>><<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+const [openAssignModal, setOpenAssignModal] = useState(false);
 
+
+
+    //console.log(props.classData);
+    const [ periodsData, setPeriodsData ] = React.useState([]);
     //Periods date start
+    const history = useHistory();
     const startDate = new Date(props.classData.online_class.start_time);
     const endDate = new Date(props.classData.online_class.end_time);
     const Difference_In_Time = endDate.getTime() - startDate.getTime();
@@ -142,6 +166,15 @@ export default function ClassdetailsCardComponent(props) {
         periods = Math.floor(Difference_In_Days + 1);
     }
     //console.log(startDate.setDate(startDate.getDate() + 1));
+    // 686 - 658 777 
+    React.useEffect(() => {
+        axiosInstance.get(`erp_user/${props.classData.id}/online-class-details/`)
+        .then((res) => {
+            console.log(res);
+            setPeriodsData(res.data.data);
+        })
+        .catch((error) => console.log(error))
+    },[]);
 
     let dateArray = [];
     for(var i = 0; i <= periods; i++){
@@ -158,11 +191,22 @@ export default function ClassdetailsCardComponent(props) {
     ////Periods date end
 
     const handleAttendance = () => {
-        console.log(" attendance");
+        history.push(`/aol-attendance-list/${props.classData.id}`);
         //online-class/attendee-list/:id
         //history.push(`online-class/attendee-list/:${id}`);
     }
+
+
+    const handleAssign = () => {
+        setOpenAssignModal(true);
+      }
+
+      const handleReshuffle=()=>{
+          history.push('/aol-reshuffle')
+      }
+    
     return (
+        <>
         <div className={classes.classDetailsBox}>
             <div className={classes.classHeader}>
                 <div>
@@ -177,7 +221,8 @@ export default function ClassdetailsCardComponent(props) {
                     <Typography className={classes.classHeaderSub}>
                         {props.classData.online_class.subject[0].subject_name}
                     </Typography>
-                    <Typography className={classes.subPeriods}>{periods + 1} periods</Typography>
+                   <StyledAcceptButton onClick={handleAssign}>ASSIGN</StyledAcceptButton>
+                    {/* <Typography className={classes.subPeriods}>{periods + 1} periods</Typography> */}
                 </div>
             </div>
             <div className={classes.classDetails}>
@@ -187,10 +232,10 @@ export default function ClassdetailsCardComponent(props) {
                 </Typography>
                 <Divider className={classes.classDetailsDivider}/>
                 <div className={classes.joinClassDiv}>
-                    {dateArray !== undefined && dateArray.map((date, id) => (
+                    {periodsData !== undefined && periodsData.map((data, id) => (
                         <JoinClass
                             key={id}
-                            date={date}
+                            data={data}
                             joinUrl={props.classData.join_url}
                             isTeacher={isTeacher}
                         />
@@ -199,12 +244,20 @@ export default function ClassdetailsCardComponent(props) {
                 <Divider className={classes.classDetailsDivider}/>
 
                 {isTeacher ? (
+                    <>
                     <StyledButton
                         onClick={handleAttendance}
                         color="primary"
                     >
                         Attendance
                     </StyledButton>
+                    <StyledButton
+                        onClick={handleReshuffle}
+                        color="primary"
+                    >
+                      Reshuffle
+                    </StyledButton>
+                    </>
                 ) : (
                     <StyledButton color="primary">Resources</StyledButton>
                 )}
@@ -214,6 +267,11 @@ export default function ClassdetailsCardComponent(props) {
                 </StyledButton>
             </div>
         </div>
+        <AssignModal
+            openAssignModal={openAssignModal}
+            setOpenAssignModal={setOpenAssignModal}
+        />
+        </>
     )
 }
 

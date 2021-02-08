@@ -6,9 +6,9 @@ import { withRouter } from 'react-router-dom';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 
-import HoverRating from './Rating'
+import HoverRating from './RatingPrincipal'
 
-class Review extends Component {
+class ReviewPrincipal extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -31,9 +31,11 @@ class Review extends Component {
 
   componentDidMount () {
     if (this.props.ratingParameters().length) {
+
       console.log(this.props.ratingParameters(),typeof(this.props.ratingParameters()),"@@@@@")
       this.setState({ ratingParameters: this.props.ratingParameters(), overallRemark: this.props.overallRemark() })
     } else {
+        console.log("hiii@2")
       this.setState({ ratingParameters: this.getStaticParamters() })
     }
   }
@@ -85,32 +87,7 @@ class Review extends Component {
   }
 
 
-  handleSubmit = () => {
-    console.log(this.props,"@@@@@@@@")
-    const { blogId } = this.props
-    const { overallRemark, ratingParameters } = this.state
-    const formData = new FormData()
-    formData.append('blog_id', blogId)
-    formData.append('status', 3)
-
-
-    formData.append('overall_remark', overallRemark)
-    formData.append('average_rating', this.calculateOverallRating())
-    formData.append('remark_rating', JSON.stringify(ratingParameters))
-    axios
-      .put(`${endpoints.blog.Blog}`, formData)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          this.props.history.push({
-            pathname: '/blog/teacher',
-          });
-        } else {
-          console.log(result.data.message);
-        }
-      })
-      .catch((error) => {
-      });
-  }
+  
 
   render () {
     const { ratingParameters, overallRemark} = this.state
@@ -126,23 +103,17 @@ class Review extends Component {
               )
             })
           }
-          <Grid item xs={12} >
+          <Grid item xs={12}  >
+            <hr />
             <HoverRating rating={this.calculateOverallRating()} overallRemark={overallRemark} rating_type='Overall' handleRemark={this.handleRemark} />
           </Grid>
-          <Grid item xs={12} >
-       <Button
-              className='reviewer_submit'
-              variant='contained'
-              color='primary'
-              onClick={this.handleSubmit}
-              disabled={!this.isAllParametersEntered() || !overallRemark} >
-             Submit
-            </Button>
-            </Grid>
-            </Grid>
+        </Grid>
+
+     
+
       </React.Fragment>
     )
   }
 }
 
-export default withRouter(Review)
+export default withRouter(ReviewPrincipal)

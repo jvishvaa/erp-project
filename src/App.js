@@ -43,13 +43,17 @@ import LessonPlan from './containers/lesson-plan/lesson-plan-view';
 import {
   TeacherBlog,
   ContentView,
+  ContentViewAdmin,
+  ContentViewPrincipal,
   WriteBlog,
+  EditBlog,
   PreviewBlog,
+  PreviewEditBlog,
+  CreateWordCountConfig,
   StudentDashboard,
   TeacherPublishBlogView,
   BlogView,
   CreateGenre,
-  ViewGenre, 
   ContentViewPublish,
   ContentViewPublishStudent,
 
@@ -57,7 +61,9 @@ import {
   PrincipalBlog,
   PrincipalPublishBlogView,
   StudentPublishBlogView,
-  AdminPublishBlogView
+  AdminPublishBlogView,
+  ContentViewPublishAdmin,
+  ContentViewPublishPrincipal
 
 } from './containers/blog';
 import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
@@ -80,7 +86,7 @@ import ViewCourseCard from './containers/master-management/course/view-course/vi
 import ViewStore from './containers/master-management/course/view-course/context/ViewStore';
 
 import AttendeeListRemake from './containers/attendance'
-
+import Reshuffle from './containers/online-class/aol-view/Reshuffle'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -157,9 +163,11 @@ function App() {
                     <Route exact path='/blog/create/genre'>
                       {({ match }) => <CreateGenre match={match} />}
                     </Route>
-                    <Route exact path='/blog/view/genre'>
-                      {({ match }) => <ViewGenre match={match} />}
+                    
+                    <Route exact path='/blog/create/wordcount-config'>
+                      {({ match }) => <CreateWordCountConfig match={match} />}
                     </Route>
+                
                     <Route exact path='/blog/teacher'>
                       {({ match }) => <TeacherBlog match={match} />}
                     </Route>
@@ -172,11 +180,23 @@ function App() {
                     <Route exact path='/blog/teacher/contentView'>
                       {({ match }) => <ContentView match={match} />}
                     </Route>
+                    <Route exact path='/blog/principal/contentView'>
+                      {({ match }) => <ContentViewPrincipal match={match} />}
+                    </Route>
+                    <Route exact path='/blog/admin/contentView'>
+                      {({ match }) => <ContentViewAdmin match={match} />}
+                    </Route>
                     <Route exact path='/blog/teacher/contentViewPublish'>
                       {({ match }) => <ContentViewPublish match={match} />}
                     </Route>
                     <Route exact path='/blog/student/contentViewPublishStudent'>
                       {({ match }) => <ContentViewPublishStudent match={match} />}
+                    </Route>
+                    <Route exact path='/blog/principal/contentViewPublishPrincipal'>
+                      {({ match }) => <ContentViewPublishPrincipal match={match} />}
+                    </Route>
+                     <Route exact path='/blog/admin/contentViewPublishAdmin'>
+                      {({ match }) => <ContentViewPublishAdmin match={match} />}
                     </Route>
 
                     <Route exact path='/blog/teacher/publish/view'>
@@ -197,9 +217,15 @@ function App() {
                     <Route exact path='/blog/student/write-blog'>
                       {({ match }) => <WriteBlog match={match} />}
                     </Route>
+                    <Route exact path='/blog/student/edit-blog'>
+                      {({ match }) => <EditBlog match={match} />}
+                    </Route>
 
                     <Route exact path='/blog/student/preview-blog'>
                       {({ match }) => <PreviewBlog match={match} />}
+                    </Route>
+                    <Route exact path='/blog/student/preview-edit-blog'>
+                      {({ match }) => <PreviewEditBlog match={match} />}
                     </Route>
                     <Route exact path='/blog/student/view-blog'>
                       {({ match }) => <BlogView match={match} />}
@@ -326,8 +352,11 @@ function App() {
                     <Route exact path='/view-period'>
                       {({ match }) => <ViewCourseCard match={match} />}
                     </Route>
-                    <Route exact path='/aol-attendance-list'>
+                    <Route exact path='/aol-attendance-list/:id?'>
                       {({ match }) => <AttendeeListRemake match={match} />}
+                    </Route>
+                    <Route exact path='/aol-reshuffle'>
+                      {({ match }) => <Reshuffle match={match} />}
                     </Route>
                   </Switch>
                 </ViewStore>

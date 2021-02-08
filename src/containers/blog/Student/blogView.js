@@ -3,6 +3,8 @@
 import React, { Component } from 'react';
 import { withStyles, useTheme } from '@material-ui/core/styles';
 // import { connect } from 'react-redux';
+import ReactHtmlParser from 'react-html-parser'
+
 import {
   Grid,
   Card,
@@ -28,12 +30,12 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import moment from 'moment';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
-import SideBar from './sideBar';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import IconButton from '@material-ui/core/IconButton';
 import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
+import ReviewPrincipal from '../Principal/ReviewPrincipal';
 
 const styles = (theme) => ({
   root: {
@@ -98,8 +100,10 @@ class BlogView extends Component {
       likes: this.props.location.state.data && this.props.location.state.data.likes,
       loginUserName : JSON.parse(localStorage.getItem('userDetails')).first_name,
       roleDetails: JSON.parse(localStorage.getItem('userDetails')),
-
+blogRatings :this.props.location.state.data && this.props.location.state.data.remark_rating,
+      overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark,
     };
+    console.log(this.state.tabValue,"@@@@@")
   }
   componentDidMount() {
     let {blogId} = this.state
@@ -155,6 +159,22 @@ class BlogView extends Component {
   })
 }
 
+getRatings = () => {
+  let {blogRatings} =this.state
+  if (!blogRatings) {
+    return []
+  }
+  const type = typeof blogRatings
+  const parsedRatings = type === 'object' ? blogRatings : JSON.parse(blogRatings)
+  const allRatingParamters = JSON.parse(parsedRatings)
+  return allRatingParamters
+}
+
+getOverAllRemark = () => {
+ let {overallRemark} = this.state
+ return overallRemark
+}
+
 
   
   handleCommentChange = (event) => {
@@ -184,18 +204,19 @@ class BlogView extends Component {
         });
     }
   };
-  // EditBlogNav = () => {
-  //   const { data } = this.state;
-  //   let content=data && data.content
-  //   let title=data && data.title
-  //   let thumbnail = data && data.thumbnail
-  //   let genreId =data && data.genre && data.genre.id
-  //   let genreName =data && data.genre && data.genre.genre
-  //   this.props.history.push({
-  //     pathname: '/blog/student/edit-blog',
-  //     state: { content, title, thumbnail,genreId,genreName },
-  //   });
-  // };
+  EditBlogNav = () => {
+    const { data } = this.state;
+    let content=data && data.content
+    let title=data && data.title
+    let thumbnail = data && data.thumbnail
+    let genreId =data && data.genre && data.genre.id
+    let genreName =data && data.genre && data.genre.genre
+    let blogId=data&&data.id
+    this.props.history.push({
+      pathname: '/blog/student/edit-blog',
+      state: { content, title, thumbnail,genreId,genreName,blogId },
+    });
+  };
   handleDeleteBlog = (blogId) => {
 
     let requestData = {
@@ -264,7 +285,8 @@ class BlogView extends Component {
                           {data.title}
                           {
                   tabValue === 2 ?
-<IconButton
+                    <IconButton
+                    style={{float:'right'}}
                   title='Delete'
                   onClick={()=>this.handleDeleteBlog(data && data.id)}
                 >
@@ -302,14 +324,14 @@ class BlogView extends Component {
                         <CardContent>
                         
                           <Typography variant='body2' color='textSecondary' component='p'>
-                            {data.content} 
+                          {ReactHtmlParser(data.content)}
                           </Typography>
                           <Typography  component='p' style={{ paddingRight: '650px',fontSize:'12px'}}>
                            Genre: {data.genre && data.genre.genre}
                           </Typography>
                           <Typography component='p'  style={{ paddingRight: '650px',fontSize:'12px'}}
 >
-                          TotalWords : {data.word_count} 
+                          Total Words : {data.word_count} 
                           </Typography>
 
                         </CardContent>
@@ -327,7 +349,22 @@ class BlogView extends Component {
 
                             >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
                             </Button>
-                          {/* {tabValue !== 1 ?
+
+                      {!data.feedback_revision_required && tabValue ===1 ? 
+                          <Button
+                            size='small'
+                            color='primary'
+                            onClick={() => {
+                              this.setState({
+                                relatedBlog: !relatedBlog,
+                                feedBack: false,
+                              });
+                            }}
+                          >
+                            {relatedBlog ? 'Review' : 'View Related Blog'}
+                          </Button>  :''}
+                         
+                          {tabValue === 0  || tabValue === 2 ?
                           <Button
                             style={{ width: 150 }}
                             size='small'
@@ -336,85 +373,18 @@ class BlogView extends Component {
                           >
                             Edit
                           </Button>
-                          :''} */}
+                          :''}
                         </CardActions>
-                        {/* <CardActions>
-                          <ExpansionPanel
-                            onClick={() => this.setState({ commentOpen: !commentOpen })}
-                            style={{ width: '100%' }}
-                          >
-                            <ExpansionPanelSummary>
-                              <Button
-                                size='small'
-                                color='primary'
-                                onClick={() =>
-                                  this.submitComment(
-                                    commentOpen ? 'Submit' : 'Add Comment'
-                                  )}
-                              >
-                                {commentOpen ? 'Submit' : 'Add Comment'}
-                              </Button>
-                            </ExpansionPanelSummary>
-                            <ExpansionPanelDetails>
-                              <TextField
-                                fullWidth
-                                id='outlined-textarea'
-                                label='Multiline Placeholder'
-                                placeholder='Placeholder'
-                                multiline
-                                variant='outlined'
-                                onChange={(e) => this.handleCommentChange(e)}
-                              />
-                            </ExpansionPanelDetails>
-                          </ExpansionPanel>
-                        </CardActions> */}
                       </Card>
                     </Grid>
                     <Grid item xs={3}>
-                      {feedBack ? (
-                        <Card style={{ minWidth: 320 }} className={classes.reviewCard}>
-                          <CardContent>
-                            <Typography
-                              align='center'
-                              component='h2'
-                              style={{ fontWeight: 500 }}
-                              variant='body1'
-                            >
-                              Review
-                            </Typography>
-                            <TextField
-                              id='outlined-multiline-static'
-                              multiline
-                              rows={12}
-                              placeholder='Provide Feedback related to this blog..'
-                              variant='outlined'
-                            />
-                            <br />
-                            <CardActions>
-                              <Button
-                                style={{ fontSize: 12 }}
-                                size='small'
-                                color='primary'
-                              >
-                                Revisions Needed
-                              </Button>
-                              <Button
-                                style={{ fontSize: 12, marginLeft: '20%' }}
-                                size='small'
-                                color='primary'
-                              >
-                                Add Review
-                              </Button>
-                            </CardActions>
-                            <Button fullWidth size='small' color='primary'>
-                              Publish
-                            </Button>
-                          </CardContent>
-                        </Card>
-                      ) :  ''
-                      // (
-                      //   <SideBar />
-                      // )
+                   { relatedBlog ? ''
+                      : (
+                        <ReviewPrincipal  blogId={data.id}  ratingParameters={this.getRatings} overallRemark={this.getOverAllRemark}
+                        />
+
+
+                      )
                       }
                     </Grid>
                   </Grid>

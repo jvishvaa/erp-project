@@ -24,19 +24,22 @@ import {
 } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 // import './attendee-list.scss';
 import { Pagination } from '@material-ui/lab';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import ShuffleIcon from '@material-ui/icons/Shuffle';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import Layout from '../Layout';
+import ShuffleModal from './shuffle-modal';
 import { result } from 'lodash';
 
 const AttendeeListRemake = (props) => {
+  const { id } = useParams();
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [attendeeList, setAttendeeList] = useState([]);
@@ -47,10 +50,8 @@ const AttendeeListRemake = (props) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [isHidden, setIsHidden] = useState(window.innerWidth < 600);
   const [dateValue, setDateValue] = useState(new Date());
-
-  const [attendanceToggle, setAttendanceToggle] = useState([])
-
   const history = useHistory();
+  const [openShuffleModal, setOpenShuffleModal] = useState(false);
 
   const pageSize = 10;
 
@@ -84,7 +85,6 @@ const AttendeeListRemake = (props) => {
     // }
   };
 
-
   //   useEffect(() => {
   //     getAttendeeList();
   //   }, [currentPage]);
@@ -99,7 +99,6 @@ const AttendeeListRemake = (props) => {
 
   const handleCheck = (index, checked, student) => {
     console.log(student.id, 'index')
-    // setAttendeeList({...attendeeList,is_checked:checked})
     setIsUpdating(true);
     // checked= !checked
     const { match } = props;
@@ -117,10 +116,16 @@ const AttendeeListRemake = (props) => {
         'zoom_meeting_id': student.id,
         'class_date': dateValue,
         'is_attended': checked
+        //     "zoom_meeting_id": 5804,
+        // "class_date": "2021-01-29",
+        // "is_attended": true
+
+
       }).then(result => {
+        console.log(result, '==============')
         if (result.data.status_code === 200) {
+          getAttendeeList(dateValue);
           setAlert('success', result.data.message)
-          getAttendeeList(dateValue)
         }
       })
       const stateCopy = attendeeList;
@@ -169,11 +174,15 @@ const AttendeeListRemake = (props) => {
   };
 
   const handleDateChange = (event, value) => {
-    // console.log(value,'land')
+    console.log(value, 'land')
     setDateValue(value)
     getAttendeeList(value);
   }
-  // console.log(dateValue,'//////////')
+
+  const handleShuffle = () => {
+    setOpenShuffleModal(true);
+  }
+
   return (
     <Layout>
       <div className='breadcrumb-container'>
@@ -254,6 +263,7 @@ const AttendeeListRemake = (props) => {
                 <TableCell align='center'>Erp</TableCell>
                 {/* <TableCell align='center'>Accepted status</TableCell> */}
                 <TableCell align='center'>Attended status</TableCell>
+                {/* <TableCell align='center'>Reshuffle</TableCell> */}
               </TableRow>
             </TableHead>
             {!loading ? (
@@ -276,8 +286,7 @@ const AttendeeListRemake = (props) => {
                         {isEdit ? (
                           <Switch
                             disabled={isUpdating}
-                            checked={ el.attendance_details.is_attended }
-                            // checked={attendeeList}
+                            checked={ el.attendance_details.is_attended}
                             onChange={(event, checked) => {
                               handleCheck(index, checked, el);
                             }}
@@ -291,6 +300,9 @@ const AttendeeListRemake = (props) => {
                             )}
                         { }
                       </TableCell>
+                      {/* <TableCell align='center'>
+                        <ShuffleIcon onClick={handleShuffle} />
+                      </TableCell> */}
                       {/* 
                           attendeList = {[el.user.user.id]:{isChecked: true}}
                           checked={(()=>{
@@ -350,6 +362,10 @@ const AttendeeListRemake = (props) => {
           </Grid>
         </Grid>
       </div>
+      <ShuffleModal
+        openShuffleModal={openShuffleModal}
+        setOpenShuffleModal={setOpenShuffleModal}
+      />
     </Layout>
   );
 };

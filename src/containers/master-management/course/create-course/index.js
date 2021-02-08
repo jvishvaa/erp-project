@@ -319,7 +319,7 @@ const CreateCourse = () => {
       .then((result) => {
         if (result.data.status_code === 200) {
           setFilePath([]);
-          setData([])
+          setData([]);
           setNoPeriods(0);
           setTitle('')
           setCoursePre('')
@@ -335,6 +335,7 @@ const CreateCourse = () => {
           });
           setAlert('success', result.data.message);
           setNextToggle(!nextToggle);
+          history.push('/course-list');
         } else {
           setAlert('error', result.data.message);
           setGradeDropdown([]);
@@ -363,7 +364,7 @@ const CreateCourse = () => {
       if(result.data.status_code === 200){
         setState({...state,isEdit:false,viewPeriodData:[],editData:[]})
         setFilePath([]);
-        setData([])
+          setData([])
           setNoPeriods(0);
           setTitle('')
           setCoursePre('')
@@ -379,6 +380,7 @@ const CreateCourse = () => {
           });
         setAlert('success',result.data.message)
         setNextToggle(!nextToggle)
+        history.push('/course-list');
       }
     })
   }

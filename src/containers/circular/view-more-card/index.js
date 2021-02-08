@@ -24,7 +24,7 @@ grade,branch,section
 
   const handleBulkDownload = () => {
     const formData = new FormData();
-    // formData.append('branch',[5]);
+    formData.append('branch',[5]);
     // formData.append('grade',[54]);
     // formData.append('section',[75])
     // formData.append('academic_year', session_year);
@@ -75,7 +75,7 @@ console.log(viewMoreData?.media,pic,'++++',branch.branch_name)
           </div>
           <div className='headerContent'>
           <IconButton
-          //  onClick={handleBulkDownload}
+           onClick={handleBulkDownload}
            style={{fontSize:'1.1rem',color:'#ff6b6b'}}
             className="bulkDownloadIconViewMore">
               <a  target='_blank' href={`${endpoints.s3}/dev/circular_files/${branch.branch_name}/${pic}`}>

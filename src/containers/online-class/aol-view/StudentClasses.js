@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React from 'react';
 import ClassCard from './ClassCard';
 import { Divider, Grid, makeStyles, useTheme, withStyles, Button, TextField } from '@material-ui/core';
 import axiosInstance from '../../../config/axios';
@@ -123,7 +123,7 @@ const StyledButton = withStyles({
     }
 })(Button);
 
-const UpcomingClasses = () => {
+const StudentClasses = () => {
     const location = useLocation();
     const classes = useStyles({});
     const [classesData, setClassesdata] = React.useState([]);
@@ -134,10 +134,11 @@ const UpcomingClasses = () => {
     const [selected, setSelected] = React.useState();
     const [classTypeList, setClassTypeList] = React.useState([
         { id: 0, type: 'Compulsory Class' },
-        { id: 1, type: 'Special Class' },
-        { id: 2, type: 'Parent Class' },
-        { id: 3, type: 'Optional Class' },
-    ]);
+        { id: 1, type: 'Optional Class' },
+        { id: 2, type: 'Special Class' },
+        { id: 3, type: 'Parent Class' },
+    ]
+    );
 
     const [classType, setClassType] = React.useState('');
     const [startDate, setStartDate] = React.useState(null);
@@ -149,47 +150,26 @@ const UpcomingClasses = () => {
     const themeContext = useTheme();
     const isTabDivice = useMediaQuery(themeContext.breakpoints.down('sm'));
 
-    //batches view <<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    const branchDrop=[{branch_name:'AOL'}]
-    const gradeDrop=[{grade_name:'G1',grade_name:'G2',grade_name:'G3',grade_name:'G4'}]
-    const courseDrop=[{course_name:'C1',course_name:'C2',course_name:'C3',course_name:'C4',
-    course_name:'C5'}]
-
-
-    // Filter data for batchev view<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    const [filterData,setFilterData]=useState({
-        branch:'',
-        grade:'',
-        course:'',
-    })
-
-    const handleBranch=(event,value)=>{
-        if(value){
-            setFilterData({...filterData,branch:value})
-        }
-    }
-
-    const handleGrade=(event,value)=>{
-        if(value){
-            setFilterData({...filterData,grade:value})
-        }
-    }
-    const handleCourse=(event,value)=>{
-        if(value){
-            setFilterData({...filterData,course:value})
-        }
-    }
-
-
     //api call
     const getClasses = () => {
         // student view api
         console.log(location.pathname);
+        setClassesdata([]);
+        setIsLoding(false);
+        //if (location.pathname === "/online-class/attend-class") {
+            axiosInstance.get('erp_user/student_online_class/?user_id=78&page_number=1&page_size=15')
+                .then((res) => {
+                    setClassesdata(res.data.data);
+                    setIsLoding(true);
+                })
+                .catch((error) => console.log(error))
+        //}
+        // teacher view api
         /*
         setClassesdata([]);
         setIsLoding(false);
-        if (location.pathname === "/online-class/attend-class") {
-            axiosInstance.get('erp_user/student_online_class/?user_id=78&page_number=1&page_size=15&class_type=' + classType?.id)
+        if (location.pathname === "/online-class/view-class") {
+            axiosInstance.get('erp_user/teacher_online_class/?module_id=4&page_number=1&page_size=15&branch_ids=5&class_type=' + classType?.id)
                 .then((res) => {
                     setClassesdata(res.data.data);
                     setIsLoding(true);
@@ -197,18 +177,6 @@ const UpcomingClasses = () => {
                 .catch((error) => console.log(error))
         }
         */
-        // teacher view api
-        setClassesdata([]);
-        setIsLoding(false);
-        if (location.pathname === "/online-class/view-class") {
-            // + classType?.id
-            axiosInstance.get('erp_user/teacher_online_class/?module_id=4&page_number=1&page_size=15&branch_ids=5&class_type=1')
-                .then((res) => {
-                    setClassesdata(res.data.data);
-                    setIsLoding(true);
-                })
-                .catch((error) => console.log(error))
-        }
     }
     if (!apiCall) {
         getClasses();
@@ -307,7 +275,7 @@ const UpcomingClasses = () => {
                 />
             </div>
             <Grid container spacing={4} className={classes.topFilter}>
-                {/* <Grid item xs={12} sm={4}>
+                <Grid item xs={12} sm={4}>
                     <Autocomplete
                         style={{ width: '100%' }}
                         id="tags-outlined"
@@ -326,8 +294,8 @@ const UpcomingClasses = () => {
                         )}
                         onChange={handleTypeOfClass}
                     />
-                </Grid> */}
-                {/* <Grid item xs={12} sm={4}>
+                </Grid>
+                <Grid item xs={12} sm={4}>
                     <MuiPickersUtilsProvider utils={MomentUtils}>
                         <KeyboardDatePicker
                             size='small'
@@ -345,8 +313,8 @@ const UpcomingClasses = () => {
                             }}
                         />
                     </MuiPickersUtilsProvider>
-                </Grid> */}
-                {/* <Grid item xs={12} sm={4}>
+                </Grid>
+                <Grid item xs={12} sm={4}>
                     <MuiPickersUtilsProvider utils={MomentUtils}>
                         <KeyboardDatePicker
                             size='small'
@@ -363,95 +331,8 @@ const UpcomingClasses = () => {
                             }}
                         />
                     </MuiPickersUtilsProvider>
-                </Grid> */}
-                <Grid item xs={12} sm={4} >
-              <Autocomplete
-                style={{ width: '100%' }}
-                size='small'
-                onChange={handleBranch}
-                id='grade'
-                className='dropdownIcon'
-                value={filterData?.branch}
-                options={branchDrop}
-                getOptionLabel={(option) => option?.branch_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Branch'
-                    placeholder='Branch'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Autocomplete
-                // multiple
-                style={{ width: '100%' }}
-                size='small'
-                onChange={handleGrade}
-                id='volume'
-                className='dropdownIcon'
-                value={filterData?.grade}
-                options={gradeDrop}
-                getOptionLabel={(option) => option?.grade_name}
-                // filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Grade'
-                    placeholder='Grade'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Autocomplete
-                // multiple
-                style={{ width: '100%' }}
-                size='small'
-                // onChange={handleGrade}
-                id='volume'
-                className='dropdownIcon'
-                // value={filterData?.grade}
-                // options={gradeDrop}
-                getOptionLabel={(option) => option?.grade_name}
-                // filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Batch Limit'
-                    placeholder='Batch Limit'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Autocomplete
-                // multiple
-                style={{ width: '100%' }}
-                size='small'
-                onChange={handleCourse}
-                id='volume'
-                className='dropdownIcon'
-                value={filterData?.course}
-                options={courseDrop}
-                getOptionLabel={(option) => option?.course_name}
-                // filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Course'
-                    placeholder='Course'
-                  />
-                )}
-              />
-            </Grid>
-                <Grid item xs={12} sm={4}>
+                </Grid>
+                <Grid item>
                     <StyledButton
                         variant="contained"
                         color="primary"
@@ -495,4 +376,4 @@ const UpcomingClasses = () => {
     )
 }
 
-export default UpcomingClasses; 
+export default StudentClasses; 

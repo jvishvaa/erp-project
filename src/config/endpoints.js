@@ -38,6 +38,8 @@ export default {
     getMessages: '/communication/email-sms-logs/',
   },
   onlineClass: {
+    // batchList: '/erp_user/batch-student-list/',
+    batchList: '/aol/batch_shuffle/',
     filterStudent: '/erp_user/student_filter/',
     teacherAvailability: '/erp_user/tutor_availability_check/',
     // createClass: '/erp_user/online_class/',
@@ -165,8 +167,12 @@ attendanceList:{
     genreList: '/academic/genre/',
     Blog: '/academic/blog/',
     BlogLike:'/academic/like_blog/',
-    BlogView:'/academic/view_blog/'
-},
+    BlogView:'/academic/view_blog/',
+    WordCountConfig:'/academic/word_count_config/',
+
+    
+  },
+
     
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
