@@ -14,6 +14,7 @@ import * as actionTypes from '../../store/actions'
 // import classes from './feeStructure.module.css'
 import Modal from '../../../../ui/Modal/modal'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
 
 const styles = theme => ({
   headersSize: {
@@ -426,6 +427,7 @@ const AcceptRejectPayment = ({ classes, session, dataLoading, getPaymentDetails,
     return walletTable
   }
   return (
+    <Layout>
     <React.Fragment>
       <Grid container spacing={3} style={{ padding: 15, marginBottom: 60 }}>
         <Grid item xs={3}>
@@ -474,6 +476,7 @@ const AcceptRejectPayment = ({ classes, session, dataLoading, getPaymentDetails,
       {ImgModal}
       {dataLoading ? <CircularProgress open /> : null}
     </React.Fragment>
+    </Layout>
   )
 }
 

@@ -11,12 +11,13 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 // import RequestShuffle from './requestShuffle'
-import '../../../css/staff.css'
+// import '../../../css/staff.css'
 import * as actionTypes from '../store/actions'
 // import classes from './feeStructure.module.css'
 // import Modal from '../../../../ui/Modal/modal'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 import EditStoreTransactionDetails from './editStoreTransactionDetails'
+import Layout from '../../../../../Layout'
 
 const styles = theme => ({
   tableWrapper: {
@@ -133,6 +134,7 @@ const PendingStoreRequests = ({ classes, history, dataLoading, fetchStoreBranchT
   }
 
   return (
+    <Layout>
     <React.Fragment>
       <Grid container spacing={3}>
         <Grid item xs={12}>
@@ -141,6 +143,7 @@ const PendingStoreRequests = ({ classes, history, dataLoading, fetchStoreBranchT
       </Grid>
       {dataLoading ? <CircularProgress open /> : null}
     </React.Fragment>
+    </Layout>
   )
 }
 

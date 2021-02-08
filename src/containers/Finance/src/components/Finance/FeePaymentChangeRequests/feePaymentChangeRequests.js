@@ -81,7 +81,7 @@ const FeePaymentChangeRequests = ({ classes, session, history, dataLoading, requ
   const pendingRequestHandler = (id) => {
     console.log('calling pending ')
     history.push({
-      pathname: '/finance/pendingRequests',
+      pathname: '/finance/Approval/Requests/PendingPaymentRequests',
       session: sessionYear,
       branchId: id,
       status: 'Pending'
@@ -91,7 +91,7 @@ const FeePaymentChangeRequests = ({ classes, session, history, dataLoading, requ
   const approvedRequestHandler = (id) => {
     console.log('calling pending ')
     history.push({
-      pathname: '/finance/approvedRequestView',
+      pathname: '/finance/Approval/Requests/ApprovedPaymentRequests',
       session: sessionYear,
       branchId: id,
       status: 'Updated'
@@ -100,7 +100,7 @@ const FeePaymentChangeRequests = ({ classes, session, history, dataLoading, requ
   const rejectedRequestHandler = (id) => {
     console.log('calling pending ')
     history.push({
-      pathname: '/finance/rejectedRequestView',
+      pathname: '/finance/Approval/Requests/RejectedPaymentRequests',
       session: sessionYear,
       branchId: id,
       status: 'Rejected'
@@ -109,7 +109,7 @@ const FeePaymentChangeRequests = ({ classes, session, history, dataLoading, requ
   const cancelledRequestHandler = (id) => {
     console.log('calling pending ')
     history.push({
-      pathname: '/finance/cancelledRequestView',
+      pathname: '/finance/Approval/Requests/CancelledPaymentRequests',
       session: sessionYear,
       branchId: id,
       status: 'Cancelled'

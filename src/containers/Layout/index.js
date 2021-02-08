@@ -588,10 +588,18 @@ const Layout = ({ children, history }) => {
                 history.push('/finance/Student/IncomeTaxCertificate')
                   break;
                 }
-                case 'Fee Pay Request': {
-                  history.push('/finance/Student/FeePaymentRequests')
-                    break;
-                  }
+              case 'Fee Pay Request': {
+                history.push('/finance/Approval/Requests/FeePaymentRequests')
+                  break;
+                }
+              case 'Store Pay Request': {
+                history.push('/finance/Approval/Requests/StorePaymentRequests')
+                  break;
+                }
+              case 'Accept and Reject payments': {
+                history.push('/finance/Approval/Requests/AcceptRejectPayment')
+                  break;
+                }
       default:
         break;
     }

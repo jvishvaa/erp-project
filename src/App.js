@@ -104,6 +104,17 @@ import QRCodeGenerator from './containers/Finance/src/components/Finance/QRCode/
 import CommunicationSMS from './containers/Finance/src/components/Finance/BranchAccountant/Communication/communication.js'
 import itCertificate from './containers/Finance/src/components/Finance/Receipts/itCertificate.js'
 import FeePaymentChangeRequests from './containers/Finance/src/components/Finance/FeePaymentChangeRequests/feePaymentChangeRequests.js'
+import StorePaymentRequests from './containers/Finance/src/components/Finance/StorePaymentRequests/storePaymentRequests.js'
+import ApprovedStoreRequests from './containers/Finance/src/components/Finance/StorePaymentRequests/approvedStoreRequests.js'
+import RejectedStoreRequests from './containers/Finance/src/components/Finance/StorePaymentRequests/rejectedStoreRequests.js'
+import CancelledStoreRequests from './containers/Finance/src/components/Finance/StorePaymentRequests/cancelledStoreRequests';
+import PendingStoreRequests from './containers/Finance/src/components/Finance/StorePaymentRequests/pendingStoreRequests';
+import ApprovedRequestView from './containers/Finance/src/components/Finance/FeePaymentChangeRequests/approvedRequestView';
+import RejectedRequestView from './containers/Finance/src/components/Finance/FeePaymentChangeRequests/rejectedRequestView';
+import CancelledRequestView from './containers/Finance/src/components/Finance/FeePaymentChangeRequests/cancelledRequestView';
+import PendingRequestView from './containers/Finance/src/components/Finance/FeePaymentChangeRequests/pendingRequestView';
+import AcceptRejectPayment from './containers/Finance/src/components/Finance/BranchAccountant/AcceptRejectPayment/acceptRejectPayment';
+
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -428,8 +439,41 @@ function App() {
                 <Route exact path= '/finance/Student/IncomeTaxCertificate'>
                   {({ match }) => <itCertificate match={match} />}
                 </Route>
-                <Route exact path= '/finance/Student/FeePaymentRequests'>
+                <Route exact path= '/finance/Approval/Requests/FeePaymentRequests'>
                   {({ match }) => <FeePaymentChangeRequests match={match} />}
+                </Route>
+                <Route exact path= '/finance/Approval/Requests/StorePaymentRequests'>
+                  {({ match }) => <StorePaymentRequests match={match} />}
+                </Route>
+                <Route exact path= '/finance/Approval/Requests/ApprovedStorePaymentRequests'>
+                  {({ match }) => <ApprovedStoreRequests match={match} />}
+                </Route>
+                <Route exact path= '/finance/Approval/Requests/RejectedStorePaymentRequests'>
+                  {({ match }) => <RejectedStoreRequests match={match} />}
+                </Route>
+                <Route exact path= '/finance/Approval/Requests/CancelledStorePaymentRequests'>
+                  {({ match }) => <CancelledStoreRequests match={match} />}
+                </Route>
+                <Route exact path= '/finance/Approval/Requests/PendingStorePaymentRequests'>
+                  {({ match }) => <PendingStoreRequests match={match} />}
+                </Route>
+                
+
+                <Route exact path= '/finance/Approval/Requests/ApprovedPaymentRequests'>
+                  {({ match }) => <ApprovedRequestView match={match} />}
+                </Route>
+                <Route exact path= '/finance/Approval/Requests/RejectedPaymentRequests'>
+                  {({ match }) => <RejectedRequestView match={match} />}
+                </Route>
+                <Route exact path= '/finance/Approval/Requests/CancelledPaymentRequests'>
+                  {({ match }) => <CancelledRequestView match={match} />}
+                </Route>
+                <Route exact path= '/finance/Approval/Requests/PendingPaymentRequests'>
+                  {({ match }) => <PendingRequestView match={match} />}
+                </Route>
+
+                <Route exact path= '/finance/Approval/Requests/AcceptRejectPayment'>
+                  {({ match }) => <AcceptRejectPayment match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

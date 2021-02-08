@@ -14,7 +14,7 @@ import PropTypes from 'prop-types'
 import Select from 'react-select'
 import { apiActions } from '../../../_actions'
 // import RequestShuffle from './requestShuffle'
-import '../../../css/staff.css'
+// import '../../../css/staff.css'
 import * as actionTypes from '../store/actions'
 // import classes from './feeStructure.module.css'
 // import Modal from '../../../../ui/Modal/modal'
@@ -23,6 +23,7 @@ import PendingStoreRequests from './pendingStoreRequests'
 import ApprovedStoreRequests from './approvedStoreRequests'
 import RejectedStoreRequests from './rejectedStoreRequests'
 import CancelledStoreRequests from './cancelledStoreRequests'
+import Layout from '../../../../../Layout'
 // import { Divider } from 'material-ui'
 
 const styles = theme => ({
@@ -81,7 +82,7 @@ const StorePaymentRequests = ({ classes, session, history, dataLoading, requestL
   const pendingRequestHandler = (id, branch) => {
     console.log('calling pending ')
     history.push({
-      pathname: '/finance/pendingStoreRequests',
+      pathname: '/finance/Approval/Requests/PendingStorePaymentRequests',
       session: sessionYear,
       branchId: id,
       status: 'Pending',
@@ -92,7 +93,7 @@ const StorePaymentRequests = ({ classes, session, history, dataLoading, requestL
   const approvedRequestHandler = (id) => {
     console.log('calling pending ')
     history.push({
-      pathname: '/finance/approvedStoreRequests',
+      pathname: '/finance/Approval/Requests/ApprovedStorePaymentRequests',
       session: sessionYear,
       branchId: id,
       status: 'Updated'
@@ -101,7 +102,7 @@ const StorePaymentRequests = ({ classes, session, history, dataLoading, requestL
   const rejectedRequestHandler = (id) => {
     console.log('calling pending ')
     history.push({
-      pathname: '/finance/rejectedStoreRequests',
+      pathname: '/finance/Approval/Requests/RejectedStorePaymentRequests',
       session: sessionYear,
       branchId: id,
       status: 'Rejected'
@@ -110,7 +111,7 @@ const StorePaymentRequests = ({ classes, session, history, dataLoading, requestL
   const cancelledRequestHandler = (id) => {
     console.log('calling pending ')
     history.push({
-      pathname: '/finance/cancelledStoreRequests',
+      pathname: '/finance/Approval/Requests/CancelledStorePaymentRequests',
       session: sessionYear,
       branchId: id,
       status: 'Cancelled'
@@ -184,6 +185,7 @@ const StorePaymentRequests = ({ classes, session, history, dataLoading, requestL
   }
 
   return (
+    <Layout>
     <React.Fragment>
       <Grid container spacing={3}>
         <Grid item xs={3} className={classes.item}>
@@ -210,6 +212,7 @@ const StorePaymentRequests = ({ classes, session, history, dataLoading, requestL
       </Grid>
       {dataLoading ? <CircularProgress open /> : null}
     </React.Fragment>
+    </Layout>
   )
 }
 

@@ -16,6 +16,7 @@ import * as actionTypes from '../store/actions'
 // import classes from './feeStructure.module.css'
 // import Modal from '../../../../ui/Modal/modal'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../Layout'
 
 const styles = theme => ({
   tableWrapper: {
@@ -126,7 +127,8 @@ const CancelledRequestView = ({ classes, history, dataLoading, fetchBranchTransa
   }
 
   return (
-    <React.Fragment>
+    <Layout>    
+      <React.Fragment>
       <Grid container spacing={3}>
         <Grid item xs={12}>
           {cancelledTableHandler()}
@@ -134,6 +136,7 @@ const CancelledRequestView = ({ classes, history, dataLoading, fetchBranchTransa
       </Grid>
       {dataLoading ? <CircularProgress open /> : null}
     </React.Fragment>
+    </Layout>
   )
 }
 

@@ -18,6 +18,7 @@ import * as actionTypes from '../store/actions'
 // import Modal from '../../../../ui/Modal/modal'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 import EditTransactionDetails from './editTransactionDetails'
+import Layout from '../../../../../Layout'
 
 const styles = theme => ({
   tableWrapper: {
@@ -132,7 +133,8 @@ const PendingRequests = ({ classes, history, dataLoading, fetchBranchTransaction
   }
 
   return (
-    <React.Fragment>
+    <Layout>   
+      <React.Fragment>
       <Grid container spacing={3}>
         <Grid item xs={12}>
           {pendingTableHandler()}
@@ -140,6 +142,7 @@ const PendingRequests = ({ classes, history, dataLoading, fetchBranchTransaction
       </Grid>
       {dataLoading ? <CircularProgress open /> : null}
     </React.Fragment>
+    </Layout>
   )
 }
 

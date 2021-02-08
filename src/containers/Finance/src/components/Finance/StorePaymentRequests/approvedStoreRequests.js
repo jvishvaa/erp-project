@@ -11,11 +11,12 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 // import RequestShuffle from './requestShuffle'
-import '../../../css/staff.css'
+// import '../../../css/staff.css'
 import * as actionTypes from '../store/actions'
 // import classes from './feeStructure.module.css'
 // import Modal from '../../../../ui/Modal/modal'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../Layout'
 
 const styles = theme => ({
   tableWrapper: {
@@ -126,6 +127,7 @@ const ApprovedStoreRequests = ({ classes, history, dataLoading, fetchStoreBranch
   }
 
   return (
+    <Layout>
     <React.Fragment>
       <Grid container spacing={3}>
         <Grid item xs={12}>
@@ -134,6 +136,7 @@ const ApprovedStoreRequests = ({ classes, history, dataLoading, fetchStoreBranch
       </Grid>
       {dataLoading ? <CircularProgress open /> : null}
     </React.Fragment>
+    </Layout>
   )
 }
 
