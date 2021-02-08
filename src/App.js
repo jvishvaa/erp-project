@@ -28,7 +28,7 @@ import SectionTable from './containers/master-management/section/section-table';
 import GradeTable from './containers/master-management/grade/grade-table';
 import AcademicYearTable from './containers/master-management/academic-year/academic-year-table';
 import MessageTypeTable from './containers/master-management/message-type/message-type-table';
-//import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
+// import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
 import HomeworkCard from './containers/homework/homework-card';
 import Profile from './containers/profile/profile';
 import { fetchLoggedInUserDetails } from './redux/actions';
@@ -63,8 +63,7 @@ import {
   StudentPublishBlogView,
   AdminPublishBlogView,
   ContentViewPublishAdmin,
-  ContentViewPublishPrincipal
-
+  ContentViewPublishPrincipal,
 } from './containers/blog';
 import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
 import Discussionforum from './containers/discussionForum/discussionForum';
@@ -174,11 +173,11 @@ function App() {
                     <Route exact path='/blog/genre/edit'>
                       {({ match }) => <EditGenre match={match} />}
                     </Route>
-                    
+
                     <Route exact path='/blog/create/wordcount-config'>
                       {({ match }) => <CreateWordCountConfig match={match} />}
                     </Route>
-                
+
                     <Route exact path='/blog/teacher'>
                       {({ match }) => <TeacherBlog match={match} />}
                     </Route>
@@ -206,7 +205,7 @@ function App() {
                     <Route exact path='/blog/principal/contentViewPublishPrincipal'>
                       {({ match }) => <ContentViewPublishPrincipal match={match} />}
                     </Route>
-                     <Route exact path='/blog/admin/contentViewPublishAdmin'>
+                    <Route exact path='/blog/admin/contentViewPublishAdmin'>
                       {({ match }) => <ContentViewPublishAdmin match={match} />}
                     </Route>
 
@@ -268,7 +267,7 @@ function App() {
                     <Route exact path='/online-class/attend-class'>
                       {({ match }) => <AOLClassView match={match} />}
                     </Route>
-                      {/* {({ match }) => <ViewClassStudentCollection match={match} />} */}
+                    {/* {({ match }) => <ViewClassStudentCollection match={match} />} */}
                     <Route exact path='/online-class/resource'>
                       {({ match }) => <ResourceView match={match} />}
                     </Route>
