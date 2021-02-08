@@ -3,10 +3,13 @@ import {
     TextField,
     Switch,
     FormControlLabel,
-    Button
+    Button,
+    IconButton,
+    SvgIcon,
 } from '@material-ui/core';
 import './duration.css';
 import { Add, Remove } from '@material-ui/icons';
+import RupeeIcon from '../../../../../assets/images/rupee-indian.svg';
 
 const DurationContainer = (props) => {
 
@@ -24,7 +27,7 @@ const DurationContainer = (props) => {
 
     useEffect(() => {
         if (selectedLimit) {
-            const index=collectData.findIndex(datarow => datarow['limit'] === selectedLimit);
+            const index = collectData.findIndex(datarow => datarow['limit'] === selectedLimit);
             setNoOfWeeks(collectData[index]['weeks']);
             setToggle(collectData[index]['toggle']);
             setRecursiveContent(collectData[index]['data']);
@@ -113,20 +116,20 @@ const DurationContainer = (props) => {
                                 }
                             </div>
                             <div className="weekContainer">
-                            <div className="recursiveWeekContainer">
-                                <TextField
-                                    size='small'
-                                    id={`weeks${index}`}
-                                    variant='outlined'
-                                    type='number'
-                                    name='weeks'
-                                    placeholder='Weeks'
-                                    value={!toggle ? noOfWeeks : row.weeks}
-                                    onChange={e => handleChange(e, index)}
-                                    InputProps={{ inputProps: { min:0, autoComplete: 'off', readOnly: !toggle } }}
-                                />
-                            </div>
-                            <div className="weekTag">Weeks:</div>
+                                <div className="recursiveWeekContainer">
+                                    <TextField
+                                        size='small'
+                                        id={`weeks${index}`}
+                                        variant='outlined'
+                                        type='number'
+                                        name='weeks'
+                                        placeholder='Weeks'
+                                        value={!toggle ? noOfWeeks : row.weeks}
+                                        onChange={e => handleChange(e, index)}
+                                        InputProps={{ inputProps: { min: 0, autoComplete: 'off', readOnly: !toggle } }}
+                                    />
+                                </div>
+                                <div className="weekTag">weeks</div>
                             </div>
                             <div className="recursivePriceContainer">
                                 <TextField
@@ -137,7 +140,20 @@ const DurationContainer = (props) => {
                                     placeholder='Price'
                                     value={row.price}
                                     onChange={e => handleChange(e, index)}
-                                    InputProps={{ inputProps: { autoComplete: 'off' } }}
+                                    InputProps={{
+                                        inputProps: { autoComplete: 'off' },
+                                        startAdornment:
+                                            <div>
+                                                <SvgIcon
+                                                    component={() => (
+                                                        <img
+                                                            style={{ height: '20px', width: '20px', marginTop: '5px', marginRight: '5px' }}
+                                                            src={RupeeIcon}
+                                                        />
+                                                    )}
+                                                />
+                                            </div>
+                                    }}
                                 />
                             </div>
                         </div>))}

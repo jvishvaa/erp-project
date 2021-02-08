@@ -13,7 +13,8 @@
 .filterContainer {
     margin-top: 20px;
     border-radius: 10px;
-    min-height: 44vh;
+    min-height: 49vh;
+    max-height:49vh;
     box-shadow: 0 4px 10px 0px rgba(1,75,126,0.2);
 }
 

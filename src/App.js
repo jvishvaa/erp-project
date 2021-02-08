@@ -79,7 +79,7 @@ import GeneralDairyList from './containers/general-dairy';
 import CreateGeneralDairy from './containers/general-dairy/create-dairy';
 import AOLClassView from './containers/online-class/aol-view/index';
 import ResourceView from './containers/online-class/online-class-resources/index';
-
+import CoursePrice from './containers/master-management/course/course-price';
 import CreateCourse from './containers/master-management/course/create-course';
 import CourseView from './containers/master-management/course/view-course';
 import ViewCourseCard from './containers/master-management/course/view-course/view-more-card/ViewCourseCard';
@@ -163,11 +163,9 @@ function App() {
                     <Route exact path='/blog/create/genre'>
                       {({ match }) => <CreateGenre match={match} />}
                     </Route>
-                    
                     <Route exact path='/blog/create/wordcount-config'>
                       {({ match }) => <CreateWordCountConfig match={match} />}
                     </Route>
-                
                     <Route exact path='/blog/teacher'>
                       {({ match }) => <TeacherBlog match={match} />}
                     </Route>
@@ -345,6 +343,9 @@ function App() {
                     </Route>
                     <Route exact path='/create/course'>
                       {({ match }) => <CreateCourse match={match} />}
+                    </Route>
+                    <Route exact path='/course-price'>
+                      {({ match }) => <CoursePrice match={match} />}
                     </Route>
                     <Route exact path='/course-list'>
                       {({ match }) => <CourseView match={match} />}
