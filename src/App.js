@@ -102,6 +102,7 @@ import OnlineAdmission from './containers/Finance/src/components/Finance/Pending
 import StudentPromotion from './containers/Finance/src/components/Finance/BranchAccountant/StudentPromotion/studentPromotion.js'
 import QRCodeGenerator from './containers/Finance/src/components/Finance/QRCode/qrCodeGenerator.js'
 import CommunicationSMS from './containers/Finance/src/components/Finance/BranchAccountant/Communication/communication.js'
+import itCertificate from './containers/Finance/src/components/Finance/Receipts/itCertificate.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -422,6 +423,9 @@ function App() {
                 </Route>
                 <Route exact path= '/finance/Student/Communication'>
                   {({ match }) => <CommunicationSMS match={match} />}
+                </Route>
+                <Route exact path= '/finance/Student/IncomeTaxCertificate'>
+                  {({ match }) => <itCertificate match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

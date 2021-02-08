@@ -584,6 +584,10 @@ const Layout = ({ children, history }) => {
                 history.push('/finance/Student/Communication')
                   break;
                 }
+              case 'Income Tax Certificate': {
+                history.push('/finance/Student/IncomeTaxCertificate')
+                  break;
+                }
       default:
         break;
     }
