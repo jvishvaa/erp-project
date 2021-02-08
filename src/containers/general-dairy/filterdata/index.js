@@ -44,7 +44,7 @@ const StyledTab = withStyles((theme) => ({
 const GeneralDairyFilter = ({
   handleDairyList,
   setPeriodData,
-  setCurrentTab,
+  // setCurrentTab,
   setViewMore,
   setViewMoreData,
 }) => {

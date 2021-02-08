@@ -94,7 +94,7 @@ const GeneralDairyList = () => {
                 <GeneralDairyFilter
                  handleDairyList={handleDairyList}
                  setPeriodData={setPeriodData}
-                 setCurrentTab={setCurrentTab}
+                //  setCurrentTab={setCurrentTab}
                   />
                 <Paper className={classes.root}>
                     {periodData?.length > 0 ? (
