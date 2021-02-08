@@ -25,28 +25,28 @@ const StudentStrength = () => {
 
   useEffect(() => {
     setHRef([
-      // {
-      //   csv: `${endpoints.studentListApis.downloadExcelAllstudents}?academic_year_id=${
-      //     selectedAcadmic && selectedAcadmic.id
-      //   }&export_type=csv`,
-      // },
-      // {
-      //   csv: `${endpoints.studentListApis.downloadBranchWiseStudent}?academic_year_id=${
-      //     selectedAcadmic && selectedAcadmic.id
-      //   }&branch_id=${selectedBranch && selectedBranch.id}
-      //     &export_type=csv`,
-      // },
       {
-        csv: `https://erpnew.letseduvate.com/qbox/academic/all_branch_strength_excel_data/?academic_year_id=${
+        csv: `${endpoints.studentListApis.downloadExcelAllstudents}?academic_year_id=${
           selectedAcadmic && selectedAcadmic.id
         }&export_type=csv`,
       },
       {
-        csv: `https://erpnew.letseduvate.com/qbox/academic/branch_strength_excel_data/?academic_year_id=${
+        csv: `${endpoints.studentListApis.downloadBranchWiseStudent}?academic_year_id=${
           selectedAcadmic && selectedAcadmic.id
         }&branch_id=${selectedBranch && selectedBranch.id}
           &export_type=csv`,
       },
+      // {
+      //   csv: `https://erpnew.letseduvate.com/qbox/academic/all_branch_strength_excel_data/?academic_year_id=${
+      //     selectedAcadmic && selectedAcadmic.id
+      //   }&export_type=csv`,
+      // },
+      // {
+      //   csv: `https://erpnew.letseduvate.com/qbox/academic/branch_strength_excel_data/?academic_year_id=${
+      //     selectedAcadmic && selectedAcadmic.id
+      //   }&branch_id=${selectedBranch && selectedBranch.id}
+      //     &export_type=csv`,
+      // },
     ]);
   }, [selectedAcadmic, selectedBranch]);
 
