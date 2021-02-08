@@ -15,6 +15,7 @@ import { apiActions } from '../../../../_actions'
 import * as actionTypes from '../../store/actions'
 import Modal from '../../../../ui/Modal/modal'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
 
 const styles = theme => ({
   container: {
@@ -460,6 +461,7 @@ class StudentActivateInactiveAcc extends Component {
     // }
 
     return (
+      <Layout>
       <React.Fragment>
         <div>
           <Grid container spacing={3} style={{ padding: '15px' }}>
@@ -545,6 +547,7 @@ class StudentActivateInactiveAcc extends Component {
           {this.props.dataLoading ? <CircularProgress open /> : null}
         </div>
       </React.Fragment>
+      </Layout>
     )
   }
 }

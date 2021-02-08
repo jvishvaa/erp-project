@@ -567,6 +567,10 @@ const Layout = ({ children, history }) => {
               case 'Temporary Active / Inactive': {
                 history.push('/finance/BulkOperation/BulkActiveInactiveParent')
                   break;
+                } 
+              case 'Active/Inactive': {
+                history.push('/finance/Student/ActiveInactive')
+                  break;
                 }
       default:
         break;

@@ -97,6 +97,7 @@ import BulkReportStatus from './containers/Finance/src/components/Finance/BulkOp
 import OnlinePayment from './containers/Finance/src/components/Finance/UploadOnlinePayments/uploadOnlinePayments.js'
 import BulkActiveInactive from './containers/Finance/src/components/Finance/BulkOperations/BulkActiveInactive/bulkActiveInactive.js'
 import BulkActiveInactiveParent from './containers/Finance/src/components/Finance/BulkOperations/BulkActiveInactiveParent/bulkActiveInactiveParent.js'
+import StudentActivateInactiveAcc from './containers/Finance/src/components/Finance/BranchAccountant/StudentActivateInactivate/studentActivateInactiveacc.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -402,6 +403,9 @@ function App() {
                 </Route>
                 <Route exact path= '/finance/BulkOperation/BulkActiveInactiveParent'>
                   {({ match }) => <BulkActiveInactiveParent match={match} />}
+                </Route>
+                <Route exact path= '/finance/Student/ActiveInactive'>
+                  {({ match }) => <StudentActivateInactiveAcc match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>
