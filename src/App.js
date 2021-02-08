@@ -98,9 +98,10 @@ import OnlinePayment from './containers/Finance/src/components/Finance/UploadOnl
 import BulkActiveInactive from './containers/Finance/src/components/Finance/BulkOperations/BulkActiveInactive/bulkActiveInactive.js'
 import BulkActiveInactiveParent from './containers/Finance/src/components/Finance/BulkOperations/BulkActiveInactiveParent/bulkActiveInactiveParent.js'
 import StudentActivateInactiveAcc from './containers/Finance/src/components/Finance/BranchAccountant/StudentActivateInactivate/studentActivateInactiveacc.js'
-import OnlineAdmission from '../src/containers/Finance/src/components/Finance/PendingOnlineAdmission/pendingOnlineAdmission.js'
-import StudentPromotion from '../src/containers/Finance/src/components/Finance/BranchAccountant/StudentPromotion/studentPromotion.js'
-import QRCodeGenerator from '../src/containers/Finance/src/components/Finance/QRCode/qrCodeGenerator.js'
+import OnlineAdmission from './containers/Finance/src/components/Finance/PendingOnlineAdmission/pendingOnlineAdmission.js'
+import StudentPromotion from './containers/Finance/src/components/Finance/BranchAccountant/StudentPromotion/studentPromotion.js'
+import QRCodeGenerator from './containers/Finance/src/components/Finance/QRCode/qrCodeGenerator.js'
+import CommunicationSMS from './containers/Finance/src/components/Finance/BranchAccountant/Communication/communication.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -418,6 +419,9 @@ function App() {
                 </Route>
                 <Route exact path= '/finance/Student/OqCodeGenerate'>
                   {({ match }) => <QRCodeGenerator match={match} />}
+                </Route>
+                <Route exact path= '/finance/Student/Communication'>
+                  {({ match }) => <CommunicationSMS match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

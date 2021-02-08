@@ -580,6 +580,10 @@ const Layout = ({ children, history }) => {
                 history.push('/finance/Student/OqCodeGenerate')
                   break;
                 }
+              case 'Communications': {
+                history.push('/finance/Student/Communication')
+                  break;
+                }
       default:
         break;
     }

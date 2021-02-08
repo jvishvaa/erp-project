@@ -34,7 +34,7 @@ export const sendNormalSms = (payload) => {
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
-        payload.alert.warning('Unable to send sms')
+        // payload.alert.warning('Unable to send sms')
       })
   }
 }

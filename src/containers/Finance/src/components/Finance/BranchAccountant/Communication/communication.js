@@ -19,6 +19,7 @@ import NormalSms from './normalSms'
 import ClassWiseSms from './classWiseSms'
 import BulkSms from './bulkSmsSender'
 import DefaulterSms from './defaulterSms'
+import Layout from '../../../../../../Layout'
 
 const styles = theme => ({
   tableWrapper: {
@@ -141,6 +142,7 @@ const CommunicationSMS = ({ classes,
   // }
 
   return (
+    <Layout>
     <React.Fragment>
       <Grid container spacing={3} style={{ padding: 25 }}>
         <Grid item xs={3}>
@@ -215,6 +217,7 @@ const CommunicationSMS = ({ classes,
       </Grid>
       {dataLoading ? <CircularProgress open /> : null}
     </React.Fragment>
+    </Layout>
   )
 }
 
