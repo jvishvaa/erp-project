@@ -16,7 +16,7 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import {Context} from '../context/context'
 
 
-const PeriodCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex, setEditData}) => {
+const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex, setEditData, handleDairyType}) => {
 
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -36,7 +36,7 @@ const PeriodCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
     setShowMenu(false);
     setShowPeriodIndex();
   };
-  console.log(lesson,'=======')
+  console.log(lesson,'======DailyDairy')
 
   const handleViewMore = () => {
     setLoading(true)
@@ -50,6 +50,7 @@ const PeriodCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
           setPeriodDataForView(lesson);
           setSelectedIndex(index);
           setPeriodColor(true);
+          handleDairyType(2);
         // } else {
         //   setLoading(false);
         //   setViewMore(false);
@@ -93,6 +94,7 @@ const PeriodCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
     history.push('/create/daily-dairy')
   }
 
+  console.log("DailyDairy");
   return (
     <Paper className={periodColor?classes.selectedRoot:classes.root} style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' } }>
       <Grid container spacing={2}>
@@ -170,17 +172,16 @@ const PeriodCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
           <Box>
           </Box>
           <div>
-          <IconButton style={{fontSize:'1rem',color:'#042955',marginLeft:'.5rem'}}>
+          <IconButton style={{fontSize:'1rem',color:'#042955'}}>
               <SvgIcon
-              component={() => (
+                component={() => (
                                     <img
-                                        style={{ height: '21px', width: '21px' }}
+                                        style={{ height: '21px', width: '21px', marginRight: '5px'}}
                                         src={cardAttachment}
                                         alt='attachment'
                                     />
                                 )}/>
-                               
-
+              {lesson.documents ? lesson.documents.length : 0} Files
           </IconButton>
             {/* <label></label> */}
         </div>
@@ -207,4 +208,4 @@ const PeriodCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
   );
 };
 
-export default PeriodCard;
+export default DailyDairy;

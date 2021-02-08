@@ -8,6 +8,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '10px',
     width: '105%',
     boxShadow: 'none',
+    backgroundColor: '#FFFDE8',
   },
   selectedRoot: {
     border: '1px solid',

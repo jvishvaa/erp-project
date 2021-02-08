@@ -55,7 +55,7 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
   let apiRef = React.useRef(null);
 
   React.useEffect(() => {
-    apiRef.current && apiRef.current.setRowModels(completeData);
+    //apiRef.current && apiRef.current.setRowModels(completeData);
   }, [data]);
 
   return (

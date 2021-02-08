@@ -16,7 +16,7 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import {Context} from '../context/context'
 
 
-const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex}) => {
+const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex, handleDairyType}) => {
 
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -36,7 +36,6 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
     setShowMenu(false);
     setShowPeriodIndex();
   };
-  console.log(lesson,'=======')
 
   const handleViewMore = () => {
     setLoading(true)
@@ -50,6 +49,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
           setPeriodDataForView(lesson);
           setSelectedIndex(index);
           setPeriodColor(true);
+          handleDairyType(1);
         // } else {
         //   setLoading(false);
         //   setViewMore(false);
@@ -103,7 +103,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               component='p'
               color='primary'
             >
-            Topic / {lesson.title}
+              Topic / {lesson.title}
             </Typography>
           </Box>
         <Typography style={{fontSize: '15px',marginTop: '10px'}}> GeneralDairy</Typography>
@@ -158,24 +158,20 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               Created By - {lesson.created_by.first_name}
               </Typography>
           </Box>
-          <Box>
-          </Box>
           <div>
-          <IconButton style={{fontSize:'1rem',color:'#042955',marginLeft:'.5rem'}}>
-              <SvgIcon
-              component={() => (
-                                    <img
-                                        style={{ height: '21px', width: '21px', marginLeft: '-18px' }}
-                                        src={cardAttachment}
-                                        alt='attachment'
-                                    />
-                                )}/>
-                               
-
-           2 Files
-          </IconButton>
+            <IconButton style={{fontSize:'1rem',color:'#042955',marginLeft:'.5rem'}}>
+                <SvgIcon
+                component={() => (
+                  <img
+                    style={{ height: '21px', width: '21px', marginLeft: '-18px', marginRight: '5px' }}
+                    src={cardAttachment}
+                    alt='attachment'
+                  />
+                )}/>
+              {lesson.documents ? lesson.documents.length : 0} Files
+            </IconButton>
             {/* <label></label> */}
-        </div>
+          </div>
         </Grid>
        
         <Grid item xs={6} className={classes.textRight}> 

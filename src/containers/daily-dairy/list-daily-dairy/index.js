@@ -13,8 +13,8 @@ import Loading from '../../../components/loader/loader';
 import unfiltered from '../../../assets/images/unfiltered.svg'
 import selectfilter from '../../../assets/images/selectfilter.svg';
 import DailyDairyFilter from '../view-daily-dairy';
-import PeriodCard from '../dairy-card'
-import ViewMoreCard from '../view-more-card'
+import DailyDairy from '../dairy-card'
+import ViewMoreDailyDairyCard from '../view-more-card'
 import {Context} from '../context/context'
 
 
@@ -87,6 +87,9 @@ const DailyDairyList = () => {
                 setAlert('error', error.message);
             });
     };
+    const handleDairyType = (type) => {
+        console.log(type);
+    }
 console.log("BBBBB",editData)
 
     return (
@@ -122,7 +125,7 @@ console.log("BBBBB",editData)
                                             style={isMobile ? { marginLeft: '-8px' } : null}
                                             sm={viewMore && periodData?.length > 0 ? 6 : 4}
                                         >
-                                            <PeriodCard
+                                            <DailyDairy
                                                 index={i}
                                                 lesson={period}
                                                 viewMore={viewMore}
@@ -135,6 +138,7 @@ console.log("BBBBB",editData)
                                                 periodColor={selectedIndex === i ? true : false}
                                                 setPeriodColor={setPeriodColor}
                                                 // setEditData={setEditData}
+                                                handleDairyType={handleDairyType}
                                             />
                                         </Grid>
                                     ))}
@@ -143,7 +147,7 @@ console.log("BBBBB",editData)
 
                             {viewMore && periodData?.length > 0 && (
                                 <Grid item xs={12} sm={5} style={{ width: '100%' }}>
-                                    <ViewMoreCard
+                                    <ViewMoreDailyDairyCard
                                         viewMoreData={viewMoreData}
                                         setViewMore={setViewMore}
                                         periodDataForView={periodDataForView}

@@ -64,8 +64,12 @@ const [sectionIds,setSectionIds] = useState([])
   const [branchId, setBranchId] = useState('');
   const [currentTab, setCurrentTab] = useState(0);
   const [isEmail, setIsEmail] = useState(false);
-  const [selectAll, setSelectAll] = useState(false);
-
+  const [selectAll, setSelectAll] = useState([
+    {id: 0, value: 'All'},
+    {id: 2, value: 'Daily Dairy'},
+    {id: 1, value: 'General Dairy'}
+  ]);
+  const [ activeTab, setActiveTab ] = useState(0);
 
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [selectedCol, setSelectedCol] = useState({});
@@ -117,22 +121,30 @@ const history=useHistory()
     // setViewMore(false);
   };
   const handleTabChange = (event, tab) => {
-    debugger
+    //debugger
+    //handleFilter();
     setCurrentTab(tab);
     setIsEmail(!isEmail);
-    
   
   };
+  const handleActiveTab = (tab) => {
+    console.log("tab : " +tab);
+    setActiveTab(tab);
+  }
+  useEffect(() => {
+    handleFilter();
+  }, [activeTab])
 
   const handleGrade = (event, value) => {
     setFilterData({ ...filterData, grade: '', subject: '', chapter: '' });
     // setOverviewSynopsis([]);
     if (value && filterData.branch) {
+      // https://erpnew.letseduvate.com/qbox/academic/general-dairy-messages/?branch=5&grades=25&sections=44&page=1&start_date=2021-02-02&end_date=2021-02-08&dairy_type=2
         setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
         axiosInstance.get(`${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}`)
             .then(result => {
                 if (result.data.status_code === 200) {
-                    console.log(result.data)
+                    //console.log(result.data)
                     setSectionDropdown(result.data.data);
                 }
                 else {
@@ -190,11 +202,12 @@ const history=useHistory()
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
     // alert(filterData.grade.grade_id,sectionIds,startDateTechPer,endDateTechPer)
     handleDairyList(
-        filterData.branch.id,
+      filterData.branch.id,
       filterData.grade.grade_id,
-        sectionIds,
+      sectionIds,
       startDateTechPer,
-      endDateTechPer
+      endDateTechPer,
+      activeTab
     );
   };
 
@@ -365,9 +378,9 @@ const history=useHistory()
               onChange={handleTabChange}
               aria-label='styled tabs example'
             >
-              <StyledTab label={<Typography variant='h8'>All</Typography>} />
-              <StyledTab label={<Typography variant='h8'>Daily Dairy</Typography>} />
-              <StyledTab label={<Typography variant='h8'>General Dairy</Typography>} />
+              <StyledTab label={<Typography variant='h8'>All</Typography>} onClick={(e) => handleActiveTab(0)} />
+              <StyledTab label={<Typography variant='h8'>Daily Dairy</Typography>} onClick={(e) => handleActiveTab(2)}/>
+              <StyledTab label={<Typography variant='h8'>General Dairy</Typography>} onClick={(e) => handleActiveTab(1)}/>
             </StyledTabs>
           </Grid>
     </Grid>

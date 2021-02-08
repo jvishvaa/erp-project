@@ -50,8 +50,8 @@ const GeneralDairyStudentList = () => {
         setPage(page);
     };
 
-    const handleDairyList = (branchId, gradeId, sectionIds, startDate, endDate) => {
-        console.log(branchId, gradeId, sectionIds, startDate, endDate, '===');
+    const handleDairyList = (branchId, gradeId, sectionIds, startDate, endDate, currentTab) => {
+        //console.log(branchId, gradeId, sectionIds, startDate, endDate, '===');
         setLoading(true);
         setPeriodData([]);
         axiosInstance
@@ -59,12 +59,13 @@ const GeneralDairyStudentList = () => {
                 `${endpoints.generalDairy.dairyList
                 }?page=${page}&start_date=${startDate.format(
                     'YYYY-MM-DD'
-                )}&end_date=${endDate.format('YYYY-MM-DD')}&dairy_type=${1}`
+                )}&end_date=${endDate.format('YYYY-MM-DD')}&dairy_type=${currentTab}`
             )
             // axiosInstance.get(`${endpoints.generalDairy.dairyList}?start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}`)
             // axiosInstance.get(`${endpoints.generalDairy.dairyList}?grades=${gradeId}&sections=${sectionIds}`)
             .then((result) => {
-                console.log(result);
+                //console.log(result);
+                console.log("call gds currentTab: "+currentTab);
                 if (result.data.status_code === 200) {
                     setTotalCount(result.data.result.count);
                     setLoading(false);
