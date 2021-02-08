@@ -12,6 +12,7 @@ import { apiActions } from '../../../../_actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import classes from './pdc.module.css'
 import Student from '../../Profiles/studentProfile'
+import Layout from '../../../../../../Layout'
 
 const styles = theme => ({
   container: {
@@ -172,6 +173,7 @@ class PostDateCheque extends Component {
     }
 
     return (
+      <Layout>
       <React.Fragment>
         <Grid container spacing={3} style={{ padding: 15 }}>
           <Grid item xs='3' >
@@ -284,6 +286,7 @@ class PostDateCheque extends Component {
         {this.props.dataLoading ? <CircularProgress open /> : null}
         {pdcModal}
       </React.Fragment>
+      </Layout>
     )
   }
 }

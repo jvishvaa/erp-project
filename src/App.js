@@ -114,6 +114,7 @@ import RejectedRequestView from './containers/Finance/src/components/Finance/Fee
 import CancelledRequestView from './containers/Finance/src/components/Finance/FeePaymentChangeRequests/cancelledRequestView';
 import PendingRequestView from './containers/Finance/src/components/Finance/FeePaymentChangeRequests/pendingRequestView';
 import AcceptRejectPayment from './containers/Finance/src/components/Finance/BranchAccountant/AcceptRejectPayment/acceptRejectPayment';
+import PostDateCheque from './containers/Finance/src/components/Finance/BranchAccountant/PostDateCheque/postDateCheque';
 
 const theme = createMuiTheme({
   palette: {
@@ -474,6 +475,9 @@ function App() {
 
                 <Route exact path= '/finance/Approval/Requests/AcceptRejectPayment'>
                   {({ match }) => <AcceptRejectPayment match={match} />}
+                </Route>
+                <Route exact path= '/finance/Approval/Requests/PostDateCheque'>
+                  {({ match }) => <PostDateCheque match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>
