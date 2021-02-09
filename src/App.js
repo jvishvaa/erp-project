@@ -120,6 +120,12 @@ import BillingDetails from './containers/Finance/src/components/Finance/E-mandat
 import AddCustomerDeatils from './containers/Finance/src/components/Finance/E-mandate/addCustomerDeatils';
 import OrderDetails from './containers/Finance/src/components/Finance/E-mandate/orderDetails';
 import DailyBillingDetails from './containers/Finance/src/components/Finance/E-mandate/dailyBillingDetails'
+import PettyExpenses from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/PettyExpenses/pettyExpenses.js'
+import MakeEntry from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/PettyExpenses/MakeEntry/makeEntry.js'
+import BankReport from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/PettyExpenses/BankReport/bankReport.js'
+import CashReport from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/PettyExpenses/CashReport/cashReport.js'
+import LedgerReport from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/PettyExpenses/LedgerReport/ledgerReport.js'
+import FinancialLedgerReport from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/PettyExpenses/FinancialLedgerReport/financialLedgerReport.js'
 
 const theme = createMuiTheme({
   palette: {
@@ -502,6 +508,24 @@ function App() {
                 </Route>
                 <Route exact path= '/finance/E-Mandate/TotalBillingDetails'>
                   {({ match }) => <DailyBillingDetails match={match} />}
+                </Route>
+                <Route exact path= '/finance/Expanse Management/PettyExpense'>
+                  {({ match }) => <PettyExpenses match={match} />}
+                </Route>
+                <Route exact path= '/finance/Expanse Management/MakeEntry'>
+                  {({ match }) => <MakeEntry match={match} />}
+                </Route>
+                <Route exact path= '/finance/Expanse Management/CashReport'>
+                  {({ match }) => <CashReport match={match} />}
+                </Route>
+                <Route exact path= '/finance/Expanse Management/BankReport'>
+                  {({ match }) => <BankReport match={match} />}
+                </Route>
+                <Route exact path= '/finance/Expanse Management/LedgerReport'>
+                  {({ match }) => <LedgerReport match={match} />}
+                </Route>
+                <Route exact path= '/finance/Expanse Management/FinancialLedgerReport'>
+                  {({ match }) => <FinancialLedgerReport match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

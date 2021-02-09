@@ -15,7 +15,9 @@ import {
   Divider,
   withStyles,
   Switch,
-  Checkbox
+  Checkbox,
+  CircularProgress,
+  Modal
 } from '@material-ui/core'
 
 import {
@@ -23,11 +25,12 @@ import {
 } from '@material-ui/icons'
 
 import styles from './ledgerReport.styles'
-import { CircularProgress, Modal } from '../../../../../../ui'
+// import { CircularProgress, Modal } from '../../../../../../ui' //rajneesh
 import * as actionTypes from '../../../../store/actions'
-import { TablePaginationAction } from '../../../../../../utils'
+// import { TablePaginationAction } from '../../../../../../utils' // rajneesh
 import { urls } from '../../../../../../urls'
 import LedgerInfo from './ledgerInfo'
+import Layout from '../../../../../../../../Layout'
 
 const LedgerReport = ({ classes,
   session,
@@ -359,17 +362,27 @@ const LedgerReport = ({ classes,
       </TableBody>
     )
   }
+  const hideModal = () => {
+   
+      setTxnModal(false)
+  
+  }
 
   let modal = null
   if (txnModal) {
     modal = (
-      <Modal open={txnModal} click={() => setTxnModal(false)} large style={{ padding: '10px' }}>
-        <LedgerInfo data={txnData} download={props.downloadAttachments} />
+      <Modal open={txnModal} onClose={hideModal}  click={() => setTxnModal(false)} style={{ padding: '10px', overflow: 'hidden', width: 1300,   display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'}}>
+       <div style={{ background: 'white'}} >
+        <LedgerInfo data={txnData}  download={props.downloadAttachments} />
+        </div>
       </Modal>
     )
   }
 
   return (
+    <Layout>
     <div className={classes.mainContainer}>
       <Grid container spacing={3} style={{ padding: 15 }} alignItems='center'>
         <Grid item xs={12} md={3}>
@@ -573,7 +586,7 @@ const LedgerReport = ({ classes,
                   }}
                   onChangePage={handleChangePage}
                   // onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                  ActionsComponent={TablePaginationAction}
+                  // ActionsComponent={TablePaginationAction}
                 />
               </TableRow>
             </TableFooter>
@@ -583,6 +596,7 @@ const LedgerReport = ({ classes,
       {modal}
       {props.dataLoading ? <CircularProgress open /> : null}
     </div>
+    </Layout>
   )
 }
 

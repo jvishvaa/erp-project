@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Grid } from 'semantic-ui-react'
 
-import { withStyles, Radio, Button } from '@material-ui/core/'
+import { withStyles, Radio, Button, CircularProgress } from '@material-ui/core/'
 import Select from 'react-select'
 import {
   DeleteForeverOutlined as DeleteForeverOutlinedIcon
@@ -10,7 +10,7 @@ import {
 
 import classes from './makeEntry.module.css'
 import * as actionTypes from '../../../../store/actions'
-import { CircularProgress } from '../../../../../../ui'
+// import { CircularProgress } from '../../../../../../ui'
 
 const styles = theme => ({
   root: {

@@ -21,7 +21,8 @@ import {
 import { withRouter } from 'react-router'
 import styles from './bankReport.styles'
 import * as actionTypes from '../../../../store/actions'
-import { generateExcel } from '../../../../../../utils'
+// import { generateExcel } from '../../../../../../utils' // Rajneesh
+import Layout from '../../../../../../../../Layout'
 
 const BankReport = ({ user, alert, session, classes, ...props }) => {
   const [academicSession, setAcademicSession] = useState(null)
@@ -72,11 +73,12 @@ const BankReport = ({ user, alert, session, classes, ...props }) => {
       columns,
       excelData
     }
-    generateExcel(data)
+    // generateExcel(data)
   }
 
   return (
-    <div className={classes.container}>
+    <Layout>    
+      <div className={classes.container}>
       <Typography variant='h5' className={classes.header}>
         Bank Report
       </Typography>
@@ -150,6 +152,7 @@ const BankReport = ({ user, alert, session, classes, ...props }) => {
         </Table>
       </div>
     </div>
+    </Layout>
   )
 }
 

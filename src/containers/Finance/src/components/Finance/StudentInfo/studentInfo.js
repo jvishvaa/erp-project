@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Select from 'react-select'
-import { withStyles, Button } from '@material-ui/core'
+import { withStyles, Button, CircularProgress } from '@material-ui/core'
 import Grid from '@material-ui/core/Grid'
 import Table from '@material-ui/core/Table'
 import TableCell from '@material-ui/core/TableCell'
@@ -12,7 +12,7 @@ import { withRouter } from 'react-router-dom'
 import { apiActions } from '../../../_actions'
 import * as actionTypes from '../store/actions'
 import AutoSuggest from '../../../ui/AutoSuggest/autoSuggest'
-import CircularProgress from '../../../ui/CircularProgress/circularProgress'
+// import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 import Layout from '../../../../../Layout'
 
 const styles = theme => ({

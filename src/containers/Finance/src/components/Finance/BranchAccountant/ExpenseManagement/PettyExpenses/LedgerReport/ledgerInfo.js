@@ -24,7 +24,7 @@ const LedgerInfo = ({ data, classes, ...props }) => {
     }
   }
   return (
-    <React.Fragment>
+    <React.Fragment >
       <Typography variant='h4' className={classes.header}>Transaction Details</Typography>
       <div className={classes.downloadWrapper}>
         <Button className={classes.downloadBtn} onClick={generateVoucherPdf}><ArrowIcon /> Download</Button>

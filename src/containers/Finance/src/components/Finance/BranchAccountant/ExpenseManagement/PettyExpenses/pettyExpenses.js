@@ -8,7 +8,9 @@ import {
   Typography,
   Divider,
   TextField,
-  MenuItem
+  MenuItem,
+  CircularProgress,
+  Modal
 } from '@material-ui/core'
 
 import {
@@ -17,7 +19,8 @@ import {
 
 import classes from './pettyExpenses.module.css'
 import * as actionTypes from '../../../store/actions'
-import { CircularProgress, Modal } from '../../../../../ui'
+// import {  Modal } from '../../../../../ui'
+import Layout from '../../../../../../../Layout'
 
 class PettyExpenses extends Component {
   state = {
@@ -42,15 +45,15 @@ class PettyExpenses extends Component {
   }
 
   makeEntryClickHandler = () => {
-    this.props.history.push('/finance/accountant/makeentry/')
+    this.props.history.push('/finance/Expanse Management/MakeEntry')
   }
 
   bankAccClickHandler = (id) => {
-    this.props.history.push(`/finance/accountant/bankreport/${id}`)
+    this.props.history.push(`/finance/Expanse Management/BankReport${id}`)
   }
 
   cashClickHandler = (id) => {
-    this.props.history.push(`/finance/accountant/cashreport`)
+    this.props.history.push(`/finance/Expanse Management/CashReport`)
   }
   selectedSessionChangeHandler = (e) => {
     this.setState({
@@ -59,11 +62,11 @@ class PettyExpenses extends Component {
   }
 
   ledgerReportClickHandler = () => {
-    this.props.history.push('/finance/accountant/ledgerreport')
+    this.props.history.push('/finance/Expanse Management/LedgerReport')
   }
 
   reportClickHandler = () => {
-    this.props.history.push('/finance/accountant/financialledgerreport')
+    this.props.history.push('/finance/Expanse Management/FinancialLedgerReport')
   }
 
   addMoneyHandler = (e) => {
@@ -279,6 +282,7 @@ class PettyExpenses extends Component {
       )
     }
     return (
+      <Layout>
       <div>
         <Grid>
           <Grid.Row>
@@ -340,6 +344,7 @@ class PettyExpenses extends Component {
         {moneyModal}
         {this.props.dataLoading ? <CircularProgress open /> : null}
       </div>
+      </Layout>
     )
   }
 }

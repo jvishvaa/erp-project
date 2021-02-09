@@ -21,7 +21,8 @@ import { connect } from 'react-redux'
 
 import styles from './financialLedgerReport.styles'
 import * as actionTypes from '../../../../store/actions'
-import { generateExcel } from '../../../../../../utils'
+// import { generateExcel } from '../../../../../../utils' // rajneesh
+import Layout from '../../../../../../../../Layout'
 
 const FinancialLedgerReport = ({ classes, session, alert, user, ...props }) => {
   const [academicSession, setAcademicSession] = useState(null)
@@ -71,7 +72,7 @@ const FinancialLedgerReport = ({ classes, session, alert, user, ...props }) => {
       columns
     }
 
-    generateExcel(data)
+    // generateExcel(data)
   }
 
   let table = null
@@ -107,6 +108,7 @@ const FinancialLedgerReport = ({ classes, session, alert, user, ...props }) => {
   }
 
   return (
+    <Layout>
     <div className={classes.container}>
       <Grid container alignItems='center' spacing={3} style={{ padding: 15 }}>
         <Grid item xs={4}>
@@ -154,6 +156,7 @@ const FinancialLedgerReport = ({ classes, session, alert, user, ...props }) => {
       </Grid>
       {table}
     </div>
+    </Layout>
   )
 }
 

@@ -21,7 +21,8 @@ import {
 import { withRouter } from 'react-router'
 import styles from './cashReport.styles'
 import * as actionTypes from '../../../../store/actions'
-import { generateExcel } from '../../../../../../utils'
+// import { generateExcel } from '../../../../../../utils'
+import Layout from '../../../../../../../../Layout'
 
 const CashReport = ({ user, alert, session, classes, ...props }) => {
   const [academicSession, setAcademicSession] = useState(null)
@@ -71,10 +72,11 @@ const CashReport = ({ user, alert, session, classes, ...props }) => {
       columns,
       excelData
     }
-    generateExcel(data)
+    // generateExcel(data)
   }
 
   return (
+    <Layout>
     <div className={classes.container}>
       <Typography variant='h5' className={classes.header}>
         Cash Report
@@ -149,6 +151,7 @@ const CashReport = ({ user, alert, session, classes, ...props }) => {
         </Table>
       </div>
     </div>
+    </Layout>
   )
 }
 
