@@ -6,15 +6,21 @@ import { AssessmentAnalysisContext } from '../assessment-analysis-context';
 const LevelChart = () => {
   const { assessmentQuestionAnalysis = {} } = useContext(AssessmentAnalysisContext);
   const { data: { levels = [], questions = [] } = {} } = assessmentQuestionAnalysis || {};
-  // const categoriesLabels = categories.map((item) => item.name);
-  const levelQuestions = {};
-  // categoriesLabels.forEach((catLabel) => {
-  questions.forEach((question) => {
-    const catQuesArray = levelQuestions[question.level] || [];
-    catQuesArray.push(question);
-    levelQuestions[question.level] = catQuesArray;
+
+  const levelsObj = {};
+  levels.forEach((item) => {
+    levelsObj[String(item.id)] = item.level_name;
   });
-  // });
+
+  const levelQuestions = {};
+  questions.forEach((question) => {
+    const questionLevelId = question.question_level;
+    const levelLabel = levelsObj[String(questionLevelId)];
+    const levelQuesArray = levelQuestions[levelLabel] || [];
+    levelQuesArray.push(question);
+    levelQuestions[levelLabel] = levelQuesArray;
+  });
+
   const configObj = {
     credits: {
       enabled: false,
@@ -34,7 +40,8 @@ const LevelChart = () => {
       useHTML: true,
     },
     xAxis: {
-      categories: ['Easy', 'Medium', 'Hard'],
+      // categories: ['Easy', 'Medium', 'Hard'],
+      categories: Object.values(levelsObj),
       labels: {
         style: {
           fontSize: '0.85rem',
@@ -117,17 +124,41 @@ const LevelChart = () => {
       {
         name: 'Total Questions',
         color: '#5996FC',
-        data: [10, 20, 30],
+        // data: [10, 20, 30],
+        data: Object.values(levelsObj).map((level) => {
+          const { [level]: questionsArray = null } = levelQuestions || {};
+          if (questionsArray === null) return null;
+          // questionsArray = questionsArray.filter(
+          //   (question) => question.is_correct == true
+          // );
+          return questionsArray.length;
+        }),
       },
       {
         name: 'Correct',
         color: '#F94E40',
-        data: [4, 18, 15],
+        // data: [4, 18, 15],
+        data: Object.values(levelsObj).map((level) => {
+          let { [level]: questionsArray = null } = levelQuestions || {};
+          if (questionsArray === null) return null;
+          questionsArray = questionsArray.filter(
+            (question) => question.is_correct == true
+          );
+          return questionsArray.length;
+        }),
       },
       {
         name: 'Wrong',
         color: '#EEA908',
-        data: [6, 12, 15],
+        // data: [6, 12, 15],
+        data: Object.values(levelsObj).map((level) => {
+          let { [level]: questionsArray = null } = levelQuestions || {};
+          if (questionsArray === null) return null;
+          questionsArray = questionsArray.filter(
+            (question) => question.is_correct == false
+          );
+          return questionsArray.length;
+        }),
       },
     ],
   };

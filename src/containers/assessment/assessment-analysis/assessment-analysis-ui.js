@@ -73,7 +73,19 @@ const AssessmentAnalysisUI = (props) => {
   useEffect(() => {
     const { data } = assessmentQuestionAnalysis || {};
     if (!data) {
-      fetchAssessmentQuestionAnalysis({ user, assessment_id: assessmentId });
+      fetchAssessmentQuestionAnalysis(
+        { user, assessment_id: assessmentId },
+        {
+          onReject: (errorOrResp) => {
+            const {
+              message: errorMessage = 'Failed to connect to server',
+              response: { statusText } = {},
+              data: { message: messageFromDev } = {},
+            } = errorOrResp || {};
+            setAlert('error', `${messageFromDev || statusText || errorMessage}`);
+          },
+        }
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -123,7 +135,23 @@ const AssessmentAnalysisUI = (props) => {
                       </Grid>
                       <Button
                         onClick={() => {
-                          downloadTeacherExcelReport();
+                          downloadTeacherExcelReport(
+                            {},
+                            {
+                              onReject: (errorOrResp) => {
+                                debugger
+                                const {
+                                  message: errorMessage = 'Failed to connect to server',
+                                  response: { statusText } = {},
+                                  data: { message: messageFromDev } = {},
+                                } = errorOrResp || {};
+                                setAlert(
+                                  'error',
+                                  `${messageFromDev || statusText || errorMessage}`
+                                );
+                              },
+                            }
+                          );
                         }}
                         className={classes.btn}
                         size='small'
