@@ -32,14 +32,14 @@ const CoursePrice = () => {
     const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
     const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
     const widerWidth = isMobile ? '98%' : '95%';
-
+    const [courseId, setCourseId] = useState('');
     const [selectedLimit, setSelectedLimit] = useState('1:1');
     const [collectData, setCollectData] = useState([
-        { limit: '1:1', comboDays: [], otherDays: [], weeks: '', toggle: false, data: [{ weeks: '', price: '' }] },
-        { limit: '1:5', comboDays: [], otherDays: [], weeks: '', toggle: false, data: [{ weeks: '', price: '' }] },
-        { limit: '1:10', comboDays: [], otherDays: [], weeks: '', toggle: false, data: [{ weeks: '', price: '' }] },
-        { limit: '1:20', comboDays: [], otherDays: [], weeks: '', toggle: false, data: [{ weeks: '', price: '' }] },
-        { limit: '1:30', comboDays: [], otherDays: [], weeks: '', toggle: false, data: [{ weeks: '', price: '' }] },
+        { "limit": '1:1', "comboDays": [], "otherDays": [], "weeks": '', "toggle": false, "data": [{ "weeks": '', "price": '' }] },
+        { "limit": '1:5', "comboDays": [], "otherDays": [], "weeks": '', "toggle": false, "data": [{ "weeks": '', "price": '' }] },
+        { "limit": '1:10', "comboDays": [], "otherDays": [], "weeks": '', "toggle": false, "data": [{ "weeks": '', "price": '' }] },
+        { "limit": '1:20', "comboDays": [], "otherDays": [], "weeks": '', "toggle": false, "data": [{ "weeks": '', "price": '' }] },
+        { "limit": '1:30', "comboDays": [], "otherDays": [], "weeks": '', "toggle": false, "data": [{ "weeks": '', "price": '' }] },
     ]);
 
     return (
@@ -51,7 +51,9 @@ const CoursePrice = () => {
                     childComponentNameNext='Course Price'
                 />
             </div>
-            <CoursePriceFilters />
+            <CoursePriceFilters
+                setCourseId={setCourseId}
+            />
             <div> <Divider /> </div>
             <Paper className={classes.root}>
                 <Grid
@@ -73,6 +75,7 @@ const CoursePrice = () => {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <DurationContainer
+                            courseId={courseId}
                             selectedLimit={selectedLimit}
                             collectData={collectData}
                             setCollectData={setCollectData}

@@ -37,6 +37,9 @@ export default {
     userStatusChange: '/erp_user/',
     getMessages: '/communication/email-sms-logs/',
   },
+  aol: {
+    createCoursePrice: '/aol/course-details/',
+  },
   onlineClass: {
     // batchList: '/erp_user/batch-student-list/',
     batchList: '/aol/batch_shuffle/',

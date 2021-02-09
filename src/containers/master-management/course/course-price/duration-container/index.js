@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
     TextField,
     Switch,
@@ -10,15 +10,20 @@ import {
 import './duration.css';
 import { Add, Remove } from '@material-ui/icons';
 import RupeeIcon from '../../../../../assets/images/rupee-indian.svg';
+import axiosInstance from '../../../../../config/axios';
+import endpoints from '../../../../../config/endpoints';
+import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
 
 const DurationContainer = (props) => {
 
     const {
+        courseId,
         selectedLimit,
         collectData,
         setCollectData,
     } = props;
 
+    const { setAlert } = useContext(AlertNotificationContext);
     const [noOfWeeks, setNoOfWeeks] = useState(null);
     const [toggle, setToggle] = useState(false);
     const [recursiveContent, setRecursiveContent] = useState([
@@ -57,6 +62,15 @@ const DurationContainer = (props) => {
         setToggle(!toggle);
     };
 
+    const handleNumberOfWeeks = (value) => {
+        setNoOfWeeks(value);
+        if (!toggle) {
+            const list = [...recursiveContent];
+            list[0]['weeks'] = value;
+            setRecursiveContent(list);
+        }
+    };
+
     const handleSave = () => {
         const list = [...collectData];
         for (let i = 0; i < list.length; i++) {
@@ -68,7 +82,50 @@ const DurationContainer = (props) => {
             }
         }
         setCollectData(list);
-        console.log(collectData);
+    };
+
+    const handleSubmit = () => {
+        const list = [...collectData];
+        const batchData = [];
+        for (let i = 0; i < list.length; i++) {
+            if (list[i]['weeks'] > 0 &&
+                list[i]['comboDays'].length > 0 &&
+                list[i]['data'][0]['weeks'] > 0 &&
+                list[i]['data'][0]['price'].length > 0) {
+                const coursePriceArray = [];
+                for (let k = 0; k < list[i]['data'].length; k++) {
+                    coursePriceArray.push({
+                        "no_of_week": Number(list[i]['data'][k]['weeks']),
+                        "price": parseFloat(list[i]['data'][k]['price'])
+                    })
+                }
+                const daysArray = [...list[i]['comboDays'].map(value => value.combo !== 'Others' ? value.send : null).filter(value => value !== null),
+                ...list[i]['otherDays'].map(value => value.send)];
+                batchData.push({
+                    "days": daysArray,
+                    "batch_size": list[i]['limit'].substring(2),
+                    "is_recurring": list[i]['toggle'] ? "True" : "False",
+                    "course_price": coursePriceArray
+                })
+            }
+        }
+
+        const request = {
+            "course": courseId,
+            "batch": batchData
+        }
+
+        axiosInstance.post(`${endpoints.aol.createCoursePrice}`, request)
+            .then(result => {
+                if (result.data.status_code === 200) {
+                    setAlert('success', result.data.message);
+                } else {
+                    setAlert('error', result.data.message);
+                }
+            })
+            .catch(error => {
+                setAlert('error', error.message);
+            })
     };
 
     return (
@@ -87,7 +144,7 @@ const DurationContainer = (props) => {
                         type='number'
                         name='weeks'
                         value={noOfWeeks}
-                        onChange={(e) => setNoOfWeeks(e.target.value)}
+                        onChange={(e) => handleNumberOfWeeks(e.target.value)}
                         InputProps={{ inputProps: { min: 0, autoComplete: 'off' } }}
                     />
                 </div>
@@ -160,8 +217,11 @@ const DurationContainer = (props) => {
                 </div>
             </div>
             <div className="buttonContainer">
-                <Button onClick={handleSave}>
+                <Button onClick={handleSave} className="saveCoursePriceButton">
                     Save
+                </Button>
+                <Button onClick={handleSubmit} className="submitCoursePriceButton">
+                    Submit
                 </Button>
             </div>
         </div>

@@ -11,7 +11,7 @@
 }
 
 .durationContainer {
-    margin: 20px 0;
+    margin: 20px 0 30px 0;
     border-radius: 10px;
     min-height: 49vh;
     max-height:49vh;
@@ -94,12 +94,25 @@
 }
 
 .buttonContainer {
-    width: 40%;
+    width: 60%;
+    display: flex;
+    justify-content: space-between;
     align-self: flex-end;
 }
 
-.buttonContainer>.MuiButtonBase-root {
-    width: 100%;
+.submitCoursePriceButton.MuiButtonBase-root  {
+    width: 45%;
+    border-radius: 10px;
+}
+
+.submitCoursePriceButton.MuiButtonBase-root:hover  {
+    width: 45%;
+    border-radius: 10px;
+    background: #ff6b6b;
+}
+
+.saveCoursePriceButton.MuiButtonBase-root {
+    width: 45%;
     background: none;
     border: 1px solid #ff6b6b;
     border-radius: 10px;

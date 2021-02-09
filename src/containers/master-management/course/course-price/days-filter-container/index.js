@@ -22,9 +22,9 @@ const DaysFilterContainer = (props) => {
     const [comboDays, setComboDays] = useState([]);
 
     const [comboDaysList, setComboDaysList] = useState([
-        { id: 1, combo: 'Mon / Wed / Fri' },
-        { id: 2, combo: 'Tue / Thur / Sat' },
-        { id: 3, combo: 'Fri / Sat / Sun' },
+        { id: 1, combo: 'Mon / Wed / Fri' , send: 'M/W/F'},
+        { id: 2, combo: 'Tue / Thur / Sat' , send: 'T/T/S'},
+        { id: 3, combo: 'Fri / Sat / Sun' , send: 'F/S/S'},
         { id: 4, combo: 'Others' },
     ]);
 
@@ -77,7 +77,7 @@ const DaysFilterContainer = (props) => {
                         id='daysCombination'
                         className='dropdownIcon'
                         options={comboDaysList}
-                        getOptionLabel={(option) => option.combo}
+                        getOptionLabel={(option) => option?.combo}
                         filterSelectedOptions
                         value={comboDays}
                         onChange={handleComboDays}
@@ -100,7 +100,7 @@ const DaysFilterContainer = (props) => {
                             id='otherDays'
                             className='dropdownIcon'
                             options={otherDaysList}
-                            getOptionLabel={(option) => option.day}
+                            getOptionLabel={(option) => option?.day}
                             filterSelectedOptions
                             value={otherDays}
                             onChange={handleOtherDays}

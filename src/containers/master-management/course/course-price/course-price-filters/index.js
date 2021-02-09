@@ -6,16 +6,16 @@ import axiosInstance from '../../../../../config/axios';
 import endpoints from '../../../../../config/endpoints';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
 
-const CoursePriceFilters = () => {
+const CoursePriceFilters = (props) => {
 
+    const {setCourseId} = props;
     const { setAlert } = useContext(AlertNotificationContext);
-    const [selectedGrades, setSelectedGrades] = useState([]);
+    const [selectedGrade, setSelectedGrade] = useState('');
     const [selectedCourse, setSelectedCourse] = useState('');
     const themeContext = useTheme();
     const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
     const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
     const widerWidth = isMobile ? '98%' : '95%';
-
     const [gradeList, setGradeList] = useState([]);
     const [courseList, setCourseList] = useState([]);
 
@@ -35,11 +35,10 @@ const CoursePriceFilters = () => {
 
 
     const handleGrade = (event, value) => {
-        setSelectedGrades([]);
-        if (value.length > 0) {
-            setSelectedGrades(value);
-            const ids = value.map((el) => el.grade_id);
-            getCourseList(ids);
+        setSelectedGrade('');
+        if (value) {
+            setSelectedGrade(value);
+            getCourseList(value?.grade_id);
         }
     }
 
@@ -47,11 +46,12 @@ const CoursePriceFilters = () => {
         setSelectedCourse('');
         if (value) {
             setSelectedCourse(value);
+            setCourseId(value.id);
         }
     };
 
-    const getCourseList = (gradeIds) => {
-        axiosInstance.get(`${endpoints.academics.courses}?grade=${gradeIds?.join(',')}`)
+    const getCourseList = (gradeId) => {
+        axiosInstance.get(`${endpoints.academics.courses}?grade=${gradeId}`)
             .then(result => {
                 if (result.data.status_code === 200) {
                     setCourseList(result.data.result);
@@ -90,14 +90,13 @@ const CoursePriceFilters = () => {
         >
             <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
                 <Autocomplete
-                    multiple
                     size='small'
                     id='grades'
                     className='dropdownIcon'
                     options={gradeList}
                     getOptionLabel={(option) => option?.grade__grade_name}
                     filterSelectedOptions
-                    value={selectedGrades}
+                    value={selectedGrade}
                     onChange={handleGrade}
                     renderInput={(params) => (
                         <TextField
@@ -131,6 +130,9 @@ const CoursePriceFilters = () => {
                     )}
                 />
             </Grid>
+            {!isMobile &&
+                <Grid item xs={0} sm={6} />
+            }
             <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
                 <Autocomplete
                     multiple
@@ -138,7 +140,7 @@ const CoursePriceFilters = () => {
                     id='timeSlots'
                     className='dropdownIcon'
                     options={timeSlotList}
-                    getOptionLabel={(option) => option.slot}
+                    getOptionLabel={(option) => option?.slot}
                     filterSelectedOptions
                     value={timeSlot}
                     onChange={handleTimeSlot}
