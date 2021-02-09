@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, useStyles } from 'react';
 import Divider from '@material-ui/core/Divider';
 import {useHistory} from 'react-router-dom'
-import { Grid, TextField, Button, useTheme } from '@material-ui/core';
+import { Grid, TextField, Button, useTheme, withStyles, Tabs, Tab, Typography} from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -13,9 +13,38 @@ import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2'
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 // import './lesson-report.css';
 
+const StyledTabs = withStyles({
+  indicator: {
+    display: 'flex',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+    '& > span': {
+      maxWidth: 85,
+      width: '80%',
+      backgroundColor: '#ff6b6b',
+    },
+  },
+})((props) => <Tabs {...props} TabIndicatorProps={{ children: <span /> }} />);
+
+const StyledTab = withStyles((theme) => ({
+  root: {
+    textTransform: 'none',
+    color: '#014b7e',
+    fontWeight: theme.typography.fontWeightRegular,
+    fontSize: theme.typography.pxToRem(15),
+    marginRight: theme.spacing(0),
+    '&:focus': {
+      opacity: 1,
+    },
+  },
+}))((props) => <Tab disableRipple {...props} />);
+
+
+
 const GeneralDairyFilter = ({
   handleDairyList,
   setPeriodData,
+  // setCurrentTab,
   setViewMore,
   setViewMoreData,
 }) => {
@@ -33,6 +62,14 @@ const GeneralDairyFilter = ({
 //   const [subjectIds, setSubjectIds] = useState([]);
 const [sectionIds,setSectionIds] = useState([])
   const [branchId, setBranchId] = useState('');
+  const [currentTab, setCurrentTab] = useState(0);
+  const [isEmail, setIsEmail] = useState(false);
+  const [selectAll, setSelectAll] = useState([
+    {id: 0, value: 'All'},
+    {id: 2, value: 'Daily Dairy'},
+    {id: 1, value: 'General Dairy'}
+  ]);
+  const [ activeTab, setActiveTab ] = useState(0);
 
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [selectedCol, setSelectedCol] = useState({});
@@ -83,16 +120,31 @@ const history=useHistory()
     // setViewMoreData({});
     // setViewMore(false);
   };
+  const handleTabChange = (event, tab) => {
+    //debugger
+    //handleFilter();
+    setCurrentTab(tab);
+    setIsEmail(!isEmail);
+  
+  };
+  const handleActiveTab = (tab) => {
+    console.log("tab : " +tab);
+    setActiveTab(tab);
+  }
+  useEffect(() => {
+    handleFilter();
+  }, [activeTab])
 
   const handleGrade = (event, value) => {
     setFilterData({ ...filterData, grade: '', subject: '', chapter: '' });
     // setOverviewSynopsis([]);
     if (value && filterData.branch) {
+      // https://erpnew.letseduvate.com/qbox/academic/general-dairy-messages/?branch=5&grades=25&sections=44&page=1&start_date=2021-02-02&end_date=2021-02-08&dairy_type=2
         setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
         axiosInstance.get(`${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}`)
             .then(result => {
                 if (result.data.status_code === 200) {
-                    console.log(result.data)
+                    //console.log(result.data)
                     setSectionDropdown(result.data.data);
                 }
                 else {
@@ -150,11 +202,12 @@ const history=useHistory()
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
     // alert(filterData.grade.grade_id,sectionIds,startDateTechPer,endDateTechPer)
     handleDairyList(
-        filterData.branch.id,
+      filterData.branch.id,
       filterData.grade.grade_id,
-        sectionIds,
+      sectionIds,
       startDateTechPer,
-      endDateTechPer
+      endDateTechPer,
+      activeTab
     );
   };
 
@@ -268,6 +321,7 @@ const history=useHistory()
       <Grid item xs={12} sm={12}>
         <Divider />
       </Grid>
+      
       <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
@@ -312,11 +366,23 @@ const history=useHistory()
           className='custom_button_master'
           size='medium'
           type='submit'
-          onClick={()=>history.push("/create/general-dairy")}
+          onClick={()=>history.push("/create/daily-dairy")}
         >
           CREATE DAILY DAIRY
         </Button>
       </Grid>
+      <Grid item xs={12} sm={6}>
+            <StyledTabs
+              variant='standard'
+              value={currentTab}
+              onChange={handleTabChange}
+              aria-label='styled tabs example'
+            >
+              <StyledTab label={<Typography variant='h8'>All</Typography>} onClick={(e) => handleActiveTab(0)} />
+              <StyledTab label={<Typography variant='h8'>Daily Dairy</Typography>} onClick={(e) => handleActiveTab(2)}/>
+              <StyledTab label={<Typography variant='h8'>General Dairy</Typography>} onClick={(e) => handleActiveTab(1)}/>
+            </StyledTabs>
+          </Grid>
     </Grid>
   );
 };

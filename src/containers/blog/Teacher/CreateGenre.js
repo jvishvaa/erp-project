@@ -1,21 +1,29 @@
 
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext ,useEffect} from 'react'
 import { withRouter } from 'react-router-dom';
 import Layout from '../../Layout'
-import {  TextField, Grid, Button, useTheme} from '@material-ui/core'
+import {  TextField, Grid, Button, useTheme,Tabs, Tab ,Typography, Card, CardContent,CardHeader} from '@material-ui/core'
+import moment from 'moment';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import Loading from '../../../components/loader/loader';
-
+import IconButton from '@material-ui/core/IconButton';
+import Popover from '@material-ui/core/Popover';
+import DialogActions from '@material-ui/core/DialogActions';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '100%',
+    width: '95%',
     boxShadow: '0 5px 10px rgba(0,0,0,0.30), 0 5px 10px rgba(0,0,0,0.22)',
-    paddingLeft:'10%'
+    paddingLeft:'10px',
+    borderRadius:'10px',
+    height:'110px',
+    border:'1px #ff6b6b solid'
   },
   container: {
     maxHeight: '70vh',
@@ -35,15 +43,27 @@ const useStyles = makeStyles((theme) => ({
   rootG: {
     flexGrow: 1,
   },
+  typoStyle:{
+    fontSize:'12px',
+    padding:'1px',
+    marginTop: '-5px',
+    marginRight: '20px'
+  }
 }));
 
 
   
 
 
-const CreateGenre = () => {
+const CreateGenre = (props) => {
+  const { match } = props
 
-  
+  const classes = useStyles()
+  const [currentTab,setCurrentTab] =useState(0)
+  const [genreActiveListRes,setGenreActiveListResponse] = useState('');
+  const [genreInActiveListRes,setGenreInActiveListResponse] = useState('');
+  const [genreNameEdit,setGenreNameEdit] =useState('');
+
   const [genreName,setGenreName] =useState('');
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false)
@@ -52,7 +72,7 @@ const CreateGenre = () => {
   const wider = isMobile ? '-10px 0px' : '0 0 -1rem 1.5%'
   const widerWidth = isMobile ? '90%' : '85%'
 
-  
+  const [anchorEl, setAnchorEl] = React.useState(null);
   
   
 
@@ -72,6 +92,136 @@ const CreateGenre = () => {
     if (result.data.status_code === 200) {
       setLoading(false);
       setAlert('success', result.data.message);
+      getGenreList();
+   getGenreInActiveList();
+    } else {        
+      setLoading(false);
+      setAlert('error', "duplicates not allowed");
+    }
+    }).catch((error)=>{
+      setLoading(false);        
+      setAlert('error', "duplicates not allowed");
+    })
+    };
+  //  const handleEditNav = (item) => {
+  //   props.history.push(`${match.url}/edit`)
+  //   // props.history.push({
+  //   //   pathname: '/blog/edit/genre',
+  //   //   state: { item},
+  //   // });
+  // };
+
+    const handleTabChange = (event,value) =>{
+      setCurrentTab(value)
+    }
+  
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
+
+    const activeTabContent = () =>{
+      return <div>
+      <Grid container spacing={2}>
+      { genreActiveListRes && genreActiveListRes.length
+        ? genreActiveListRes.map((item) => {
+          return <Grid item xs={12} sm={6} md={4}>
+        <Card className={classes.root} >
+        <CardHeader
+        style={{padding:'0px'}}
+        action=       {
+          <Typography>
+<IconButton
+          title='Delete'
+          onClick={()=>handleDelete(item)}
+          
+        >
+          <DeleteOutlinedIcon
+            style={{ color: themeContext.palette.primary.main }}
+          />
+        </IconButton>
+        {/* <IconButton
+          title='edit'
+          onClick={handleEditNav}          
+        >
+          <EditOutlinedIcon
+            style={{ color: themeContext.palette.primary.main }}
+          />
+        </IconButton> */}
+        </Typography>
+       
+      }
+      subheader={
+        <Typography
+          gutterBottom
+          variant='body2'
+          align='left'
+          component='p'
+          style={{ color: '#014b7e' ,pagging:'0px'}}
+        >
+        Created At : {item && moment(item.created_at).format('MMM DD YYYY')}
+        </Typography>
+      }
+        />
+<CardContent  style={{ pagging:'1px'}}>
+<Typography  className={classes.typoStyle}>Genre Name: {item.genre} </Typography> 
+  <Typography   className={classes.typoStyle}>Created By : {item.created_by.first_name}</Typography>
+</CardContent>
+        </Card>                        
+        </Grid>
+                                              
+        })
+    : ''
+  }
+</Grid>
+  </div>
+    } 
+    const inActiveTabContent = () =>{
+      return <div>
+      <Grid container spacing={2}>
+      { genreInActiveListRes && genreInActiveListRes.length
+        ? genreInActiveListRes.map((item) => {
+          return <Grid item xs={12} sm={6} md={4}>
+          <Card className={classes.root} >
+          <CardHeader
+          style={{padding:'0px'}}
+        subheader={
+          <Typography
+            gutterBottom
+            variant='body2'
+            align='left'
+            component='p'
+            style={{ color: '#014b7e' ,pagging:'0px'}}
+          >
+          Created At : {item && moment(item.created_at).format('MMM DD YYYY')}
+          </Typography>
+        }
+          />
+  <CardContent  style={{ pagging:'1px'}}>
+  <Typography  className={classes.typoStyle}>Genre Name: {item.genre} </Typography> 
+  <Typography   className={classes.typoStyle}>Created By : {item.created_by.first_name}</Typography> 
+  </CardContent>
+          </Card>                        
+          </Grid>
+                                                
+          })
+      : ''
+    }
+  </Grid>
+    </div>
+    } 
+    const handleDelete = (data) => {
+
+      let requestData = {
+        "genre_id":data.id,
+    
+      }
+    axiosInstance.put(`${endpoints.blog.genreList}`, requestData)
+  
+    .then(result=>{
+    if (result.data.status_code === 200) {
+      setLoading(false);
+      setAlert('success', result.data.message);
+      getGenreList();
+      getGenreInActiveList();
     } else {        
       setLoading(false);
       setAlert('error', result.data.message);
@@ -80,16 +230,44 @@ const CreateGenre = () => {
       setLoading(false);        
       setAlert('error', error.message);
     })
-    };
-
-
-
-
-
+  };
+        
+  const decideTab =() => {
+    if (currentTab === 0) {
+      return activeTabContent()
+    } else if (currentTab === 1) {
+      return inActiveTabContent()
+    }
+  }
 const handleGenreNameChange = (e) => {
   setGenreName(e.target.value);
 };
+const handleGenreNameEditChange = (e) => {
+  setGenreNameEdit(e.target.value);
+};
 
+useEffect(() => {
+   getGenreList();
+   getGenreInActiveList();
+}, []);
+const getGenreList = () => {
+  axiosInstance.get(`${endpoints.blog.genreList}?is_delete=${
+    'False'
+  }`).then((res) => {
+      setGenreActiveListResponse(res.data.result)
+  }).catch(err => {
+      console.log(err)
+  })
+}
+const getGenreInActiveList = () => {
+  axiosInstance.get(`${endpoints.blog.genreList}?is_delete=${
+    'True'
+  }`).then((res) => {
+      setGenreInActiveListResponse(res.data.result)
+  }).catch(err => {
+      console.log(err)
+  })
+}
 
   return (
    <>
@@ -127,7 +305,26 @@ const handleGenreNameChange = (e) => {
         </Button>
           </Grid>
         </Grid>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
 
+            <Tabs value={currentTab} indicatorColor='primary'
+
+              textColor='primary'
+              onChange={handleTabChange} aria-label='simple tabs example'>
+
+              <Tab label='Active'
+
+              />
+              <Tab label='In-Active'
+
+/>
+              
+
+            
+            </Tabs>
+          </Grid>
+        </Grid>{decideTab()}
        
 
       </Layout>

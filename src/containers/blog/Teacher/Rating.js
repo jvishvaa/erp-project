@@ -26,12 +26,12 @@ export default function HoverRating (props) {
 
   return (
     <div className={classes.root}>
-      <Box component='fieldset' mb={3} borderColor='transparent'>
+      <Box component='fieldset' mb={3} borderColor='transparent' style={{height:'90px'}}>
         <Typography
           variant={props.rating_type === 'Overall' ? 'h4' : 'h5'}
           className='rating__title'
           align='center'
-          color='textSecondary'>
+          >
           {props.rating_type}
         </Typography>
         <RatingScale
@@ -48,8 +48,8 @@ export default function HoverRating (props) {
               name={props.rating_type}
               value={props.rating_type === 'Overall' ? props.overallRemark : props.remark}
               onChange={handleChange}
-            />
-            : <Typography
+            /> 
+           <Typography
               className='rating__review'
               align='center'>
               {props.rating_type === 'Overall' ? props.overallRemark : props.remark}

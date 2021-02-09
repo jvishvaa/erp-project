@@ -402,6 +402,10 @@ const Layout = ({ children, history }) => {
         history.push('/master-mgmt/message-type-table');
         break;
       }
+      case 'course-table':{
+        history.push('/course-list')
+        break;
+      }
       case 'school-mapping': {
         history.push('/subject/grade');
         break;
@@ -449,6 +453,14 @@ const Layout = ({ children, history }) => {
       }
       case 'Principal Blogs': {
         history.push('/blog/principal');
+        break;
+      }
+      case 'Genre': {
+        history.push('/blog/genre');
+        break;
+      }
+      case 'Word Count Cofiguration': {
+        history.push('/blog/create/wordcount-config');
         break;
       }
       default:

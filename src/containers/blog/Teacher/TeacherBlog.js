@@ -75,7 +75,7 @@ class TeacherBlog extends Component {
     super(props);
     this.state = {
       tabValue: 0,
-      pageNo: 0,
+      pageNo: 1,
       pageSize: 6,
       totalPages:0,
       startDate :moment().format('YYYY-MM-DD'),
@@ -92,7 +92,7 @@ class TeacherBlog extends Component {
     axios
       .get(
         `${endpoints.blog.Blog}?page_number=${
-          pageNo + 1
+          pageNo 
         }&page_size=${pageSize}&status=${status}&module_id=113`
       )
       .then((result) => {
@@ -133,13 +133,13 @@ class TeacherBlog extends Component {
 
   handleTabChange = (event, newValue) => {
     if(newValue === 0){
-      this.setState({tabValue: newValue ,data:[], pageNo:0, pageSize:6,status: 8 }, ()=>{
+      this.setState({tabValue: newValue ,data:[], pageNo:1, pageSize:6,status: 8 }, ()=>{
         this.getBlog(this.state.status);
 
       })
     }
     else{
-      this.setState({tabValue: newValue ,data:[], pageNo:0, pageSize:6,status: [3,5,7] }, ()=>{
+      this.setState({tabValue: newValue ,data:[], pageNo:1, pageSize:6,status: [3,5,7,6] }, ()=>{
         this.getBlog(this.state.status);
 
       })
@@ -153,7 +153,7 @@ class TeacherBlog extends Component {
 
       })
     }else{
-      this.setState({data:[], pageNo:page, pageSize:6,status: [3,5,7] }, ()=>{
+      this.setState({data:[], pageNo:page, pageSize:6,status: [3,5,7,6] }, ()=>{
         this.getBlog(this.state.status);
 
       })
@@ -206,14 +206,14 @@ class TeacherBlog extends Component {
                 <div style={{ margin: '20px' }}>
                   <Grid container>
                     <Grid item>
-                      <Button
+                      {/* <Button
                         color='primary'
                         style={{ fontSize: 'small', margin: '20px' }}
                         size='small'
                         variant='contained'
                       >
                         Clear All
-                      </Button>
+                      </Button> */}
                     </Grid>
                     <Grid item>
                       <Button

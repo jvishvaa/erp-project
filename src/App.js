@@ -43,8 +43,13 @@ import LessonPlan from './containers/lesson-plan/lesson-plan-view';
 import {
   TeacherBlog,
   ContentView,
+  ContentViewAdmin,
+  ContentViewPrincipal,
   WriteBlog,
+  EditBlog,
   PreviewBlog,
+  PreviewEditBlog,
+  CreateWordCountConfig,
   StudentDashboard,
   TeacherPublishBlogView,
   BlogView,
@@ -52,11 +57,14 @@ import {
   ViewGenre,
   ContentViewPublish,
   ContentViewPublishStudent,
+  EditGenre,
   AdminBlog,
   PrincipalBlog,
   PrincipalPublishBlogView,
   StudentPublishBlogView,
   AdminPublishBlogView,
+  ContentViewPublishAdmin,
+  ContentViewPublishPrincipal,
 } from './containers/blog';
 import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
 import Discussionforum from './containers/discussionForum/discussionForum';
@@ -65,10 +73,15 @@ import CreateDiscussionForum from './containers/discussionForum/createDiscussion
 import CircularList from './containers/circular';
 import CreateCircular from './containers/circular/create-circular';
 import CircularStore from './containers/circular/context/CircularStore';
+import GeneralDairyStore from './containers/general-dairy/context/context'
 import Subjectgrade from './containers/subjectGradeMapping';
 import ListandFilter from './containers/subjectGradeMapping/listAndFilter';
 import GeneralDairyList from './containers/general-dairy';
+import GeneralDairyStudentView from './containers/general-dairy/generalDairyStudentView';
+import GeneralDairyStudentList from './containers/general-dairy/generalDairyStudnet'
 import CreateGeneralDairy from './containers/general-dairy/create-dairy';
+import CreateDailyDairy from './containers/daily-dairy/create-daily-dairy';
+import DailyDairyList from './containers/daily-dairy/list-daily-dairy'
 import AOLClassView from './containers/online-class/aol-view/index';
 import ResourceView from './containers/online-class/online-class-resources/index';
 
@@ -76,6 +89,8 @@ import CreateCourse from './containers/master-management/course/create-course';
 import CourseView from './containers/master-management/course/view-course';
 import ViewCourseCard from './containers/master-management/course/view-course/view-more-card/ViewCourseCard';
 import ViewStore from './containers/master-management/course/view-course/context/ViewStore';
+import DailyDairyStore from'./containers/daily-dairy/context/context';
+import AttendeeListRemake from './containers/attendance'
 import TestComparisionUI from './containers/assessment/test-comparision';
 import AssessmentAnalysis from './containers/assessment/assessment-analysis';
 
@@ -126,7 +141,10 @@ function App() {
           <OnlineclassViewProvider>
             <ThemeProvider theme={theme}>
               <CircularStore>
+                <GeneralDairyStore>
                 <ViewStore>
+                  <DailyDairyStore>
+
                   <Switch>
                     <Route path='/profile'>
                       {({ match }) => <Profile match={match} />}
@@ -152,12 +170,17 @@ function App() {
                     {/* <Route exact path='/assignrole'>
                   {({ match }) => <AssignRole match={match} />}
                 </Route> */}
-                    <Route exact path='/blog/create/genre'>
+                    <Route exact path='/blog/genre'>
                       {({ match }) => <CreateGenre match={match} />}
                     </Route>
-                    <Route exact path='/blog/view/genre'>
-                      {({ match }) => <ViewGenre match={match} />}
+                    <Route exact path='/blog/genre/edit'>
+                      {({ match }) => <EditGenre match={match} />}
                     </Route>
+
+                    <Route exact path='/blog/create/wordcount-config'>
+                      {({ match }) => <CreateWordCountConfig match={match} />}
+                    </Route>
+
                     <Route exact path='/blog/teacher'>
                       {({ match }) => <TeacherBlog match={match} />}
                     </Route>
@@ -170,11 +193,23 @@ function App() {
                     <Route exact path='/blog/teacher/contentView'>
                       {({ match }) => <ContentView match={match} />}
                     </Route>
+                    <Route exact path='/blog/principal/contentView'>
+                      {({ match }) => <ContentViewPrincipal match={match} />}
+                    </Route>
+                    <Route exact path='/blog/admin/contentView'>
+                      {({ match }) => <ContentViewAdmin match={match} />}
+                    </Route>
                     <Route exact path='/blog/teacher/contentViewPublish'>
                       {({ match }) => <ContentViewPublish match={match} />}
                     </Route>
                     <Route exact path='/blog/student/contentViewPublishStudent'>
                       {({ match }) => <ContentViewPublishStudent match={match} />}
+                    </Route>
+                    <Route exact path='/blog/principal/contentViewPublishPrincipal'>
+                      {({ match }) => <ContentViewPublishPrincipal match={match} />}
+                    </Route>
+                    <Route exact path='/blog/admin/contentViewPublishAdmin'>
+                      {({ match }) => <ContentViewPublishAdmin match={match} />}
                     </Route>
 
                     <Route exact path='/blog/teacher/publish/view'>
@@ -195,9 +230,15 @@ function App() {
                     <Route exact path='/blog/student/write-blog'>
                       {({ match }) => <WriteBlog match={match} />}
                     </Route>
+                    <Route exact path='/blog/student/edit-blog'>
+                      {({ match }) => <EditBlog match={match} />}
+                    </Route>
 
                     <Route exact path='/blog/student/preview-blog'>
                       {({ match }) => <PreviewBlog match={match} />}
+                    </Route>
+                    <Route exact path='/blog/student/preview-edit-blog'>
+                      {({ match }) => <PreviewEditBlog match={match} />}
                     </Route>
                     <Route exact path='/blog/student/view-blog'>
                       {({ match }) => <BlogView match={match} />}
@@ -279,7 +320,7 @@ function App() {
                     <Route
                       exact
                       path='/homework/cadd/:date/:subject/:id/:coord_selected_teacher_id'
-                    >
+                      >
                       {({ match }) => <AddHomeworkCoord match={match} />}
                     </Route>
                     <Route exact path='/lesson-plan/teacher-view'>
@@ -312,8 +353,17 @@ function App() {
                     <Route exact path='/general-dairy'>
                       {({ match }) => <GeneralDairyList match={match} />}
                     </Route>
+                    <Route exact path='/general-dairy/student-view'>
+                      {({ match }) => <GeneralDairyStudentList match={match} />}
+                    </Route>
                     <Route exact path='/create/general-dairy'>
                       {({ match }) => <CreateGeneralDairy match={match} />}
+                    </Route>
+                    <Route exact path='/daily-dairy'>
+                      {({ match }) => <DailyDairyList match={match} />}
+                    </Route>
+                    <Route exact path='/create/daily-dairy'>
+                      {({ match }) => <CreateDailyDairy match={match} />}
                     </Route>
                     <Route exact path='/create/course'>
                       {({ match }) => <CreateCourse match={match} />}
@@ -330,8 +380,13 @@ function App() {
                     <Route exact path='/assessment/:assessmentId/analysis'>
                       {({ match }) => <AssessmentAnalysis match={match} />}
                     </Route>
+                    <Route exact path='/aol-attendance-list/:id?'>
+                      {({ match }) => <AttendeeListRemake match={match} />}
+                    </Route>
                   </Switch>
+                  </DailyDairyStore>
                 </ViewStore>
+                </GeneralDairyStore>
               </CircularStore>
             </ThemeProvider>
           </OnlineclassViewProvider>

@@ -24,7 +24,7 @@ const  CourseCard=({index,cData,setData})=> {
 //   const [cardDesc,setCardDesc] = useState(cData.description)
 
 
-console.log(cData[0],'cData')
+console.log(cData,'cData')
 
 
 
@@ -40,7 +40,7 @@ console.log(cData[0],'cData')
       const data = event.target.files[0];
       const fd = new FormData();
       fd.append('file', event.target.files[0]);
-           const list = [...cData]
+           const list = [cData]
       axiosInstance.post(`${endpoints.onlineCourses.fileUpload}`, fd).then((result) => {
         if (result.data.status_code === 200) {
        
@@ -112,7 +112,7 @@ console.log(cData[0],'cData')
               style={{ width: '100%' }}
               name='title'
               // defaultValue="Default Value"
-            //   value={cData[0].map(obj=>obj.title) || ''}
+              value={cData[index].title}
               variant='outlined'
               onChange={handleCardSubmit}
             />
@@ -130,7 +130,7 @@ console.log(cData[0],'cData')
               style={{ width: '100%' }}
               name='description'
               // defaultValue="Default Value"
-            //   value={}
+              value={cData[index].description}
               variant='outlined'
               onChange={handleCardSubmit}
             />

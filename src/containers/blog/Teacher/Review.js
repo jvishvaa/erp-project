@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Grid, Button } from '@material-ui/core'
 import { withRouter } from 'react-router-dom';
 
-// import Close from '@material-ui/icons/Close'
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 
@@ -30,11 +29,11 @@ class Review extends Component {
   }
 
   componentDidMount () {
-    // if (this.props.ratingParameters().length) {
-    //   this.setState({ ratingParameters: this.props.ratingParameters(), overallRemark: this.props.overallRemark() })
-    // } else {
+    if (this.props.ratingParameters().length) {
+      this.setState({ ratingParameters: this.props.ratingParameters(), overallRemark: this.props.overallRemark() })
+    } else {
       this.setState({ ratingParameters: this.getStaticParamters() })
-    // }
+    }
   }
 
   handleRatingScaleChange = (parameter, rating) => {
@@ -85,7 +84,6 @@ class Review extends Component {
 
 
   handleSubmit = () => {
-    console.log(this.props,"@@@@@@@@")
     const { blogId } = this.props
     const { overallRemark, ratingParameters } = this.state
     const formData = new FormData()
@@ -125,21 +123,21 @@ class Review extends Component {
               )
             })
           }
-          <Grid item xs={12}  >
-            <hr />
+          <Grid item xs={12} >
             <HoverRating rating={this.calculateOverallRating()} overallRemark={overallRemark} rating_type='Overall' handleRemark={this.handleRemark} />
           </Grid>
-        </Grid>
-
+          <Grid item xs={12} >
        <Button
-              className='reviewer_submit'
+              // className='reviewer_submit'
+              style={{marginTop:'90px',marginLeft:'80px'}}
               variant='contained'
               color='primary'
               onClick={this.handleSubmit}
               disabled={!this.isAllParametersEntered() || !overallRemark} >
              Submit
             </Button>
-
+            </Grid>
+            </Grid>
       </React.Fragment>
     )
   }

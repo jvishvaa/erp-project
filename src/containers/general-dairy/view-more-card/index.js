@@ -18,6 +18,7 @@ const ViewMoreCard = ({
   grade,
   branch,
   section,
+  mapping_bgs
 }) => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -54,8 +55,8 @@ const ViewMoreCard = ({
         setAlert('error', error.message);
       });
   };
-  // const pic=viewMoreData?.media?.map(a=>a)
-  console.log(viewMoreData, '=====');
+  const pic=viewMoreData?.documents?.map(a=>a)
+  console.log(viewMoreData, '=====', branch);
   return (
     <>
       <Paper className='rootViewMore'>
@@ -107,7 +108,36 @@ const ViewMoreCard = ({
           <Divider className='messageDivider' />
           <div className='bodyContent'>{viewMoreData.message}</div>
           <div className='bodyTitle'>Media</div>
-          <div className='mediaBody'>xxxxxxxx</div>
+          {/* <div className='mediaBody'>xxxxxxxx</div> */}
+          <div className='rightHeader'>
+          <div className='headerTitle closeIcon'>
+            <IconButton
+              onClick={() => {
+                setViewMore(false);
+                setSelectedIndex(-1);
+              }}
+            >
+              <CloseIcon color='primary' />
+            </IconButton>
+          </div>
+          <div className='headerContent'>
+          <IconButton
+          //  onClick={handleBulkDownload}
+           style={{fontSize:'1.1rem',color:'#ff6b6b'}}
+            className="bulkDownloadIconViewMore">
+              <a  target='_blank' href={`${endpoints.s3}/dev/circular_files/${pic}`}>
+                            <SvgIcon
+                                component={() => (
+                                    <img
+                                        style={{ height: '21px', width: '21px' }}
+                                        src={downloadAll}
+                                        alt='downloadAll'
+                                    />
+                                )}
+                            /></a>Download
+                        </IconButton>
+          </div>
+        </div>
         </div>
       </Paper>
     </>

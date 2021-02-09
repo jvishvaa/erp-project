@@ -17,6 +17,8 @@ import {
   TextField,
 } from '@material-ui/core';
 import Rating from '@material-ui/lab/Rating';
+import ReactHtmlParser from 'react-html-parser'
+
 import Avatar from '@material-ui/core/Avatar';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { withRouter } from 'react-router-dom';
@@ -62,14 +64,6 @@ const styles = (theme) => ({
   },
 });
 
-const StyledRating = withStyles({
-  iconFilled: {
-    color: '#ff6d75',
-  },
-  iconHover: {
-    color: '#ff3d47',
-  },
-})(Rating);
 class ContentView extends Component {
   constructor(props) {
     super(props);
@@ -84,20 +78,21 @@ class ContentView extends Component {
       date: this.props.location.state.creationDate,
       files: this.props.location.state.files,
       genreName:this.props.location.state.genreName,
+      genreObj:this.props.location.state.genreObj
     };
   }
 
   componentDidMount() {
     const { files } = this.state;
-    const imageUrl = URL.createObjectURL(files[0]);
+    const imageUrl = URL.createObjectURL( files && files[0]);
     this.setState({ imageUrl });
   }
 
   WriteBlogNav = () => {
-    const { content, title, files ,genreId,genreName} = this.state;
+    const { content, title, files ,genreId,genreName,genreObj} = this.state;
     this.props.history.push({
       pathname: '/blog/student/write-blog',
-      state: { content, title, files,genreId , genreName},
+      state: { content, title, files,genreId , genreName,genreObj},
     });
   };
 
@@ -149,7 +144,7 @@ class ContentView extends Component {
               <div className='create_group_filter_container'>
                 <div className={classes.root}>
                   <Grid container spacing={3}>
-                  <Grid item xs={12}>
+                  {/* <Grid item xs={12}>
                       <Button
                         style={{ cursor: 'Pointer' }}
                         onClick={() => window.history.back()}
@@ -157,7 +152,7 @@ class ContentView extends Component {
                       >
                         <i>Back</i>
                       </Button>
-                      </Grid>
+                      </Grid> */}
                       <Grid item xs={9}>
                       <Card className={classes.cardRoot}>
                         <Typography
@@ -184,7 +179,7 @@ class ContentView extends Component {
                         />
                         <CardContent>
                           <Typography variant='body2' color='textSecondary' component='p'>
-                            {this.state.content}
+                            {ReactHtmlParser(this.state.content)}
                           </Typography>
                           
                         </CardContent>
@@ -203,7 +198,7 @@ class ContentView extends Component {
                             color='primary'
                             onClick={() => this.submitBlog('Publish')}
                           >
-                            Publish
+                            Submit
                           </Button>
                           <Button
                             style={{ width: 150 }}

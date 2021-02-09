@@ -12,10 +12,6 @@ import { withRouter } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import Face from '@material-ui/icons/Face'
 
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import List from '@material-ui/core/List';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItem from '@material-ui/core/ListItem';
 
 import unfiltered from '../../../assets/images/unfiltered.svg'
 const LightTooltip = withStyles((theme) => ({
@@ -56,8 +52,11 @@ function GridListPublish(props) {
               display:data.length >= 1 ? 'flex' : 'none',
               flexDirection: 'column',
               justifyContent: 'space-between',
-              backgroundSize: '360px',
+              backgroundSize: '520px 290px',
               backgroundImage: `url(${data[0] && data[0].thumbnail})`,
+              borderRadius: 10,
+              backgroundRepeat: 'no-repeat',
+
             }}
             className={classes.card} >
               <CardHeader
@@ -72,10 +71,8 @@ function GridListPublish(props) {
               <CardActionArea>
                  <CardContent style ={{ padding:'5px'}}>
                   <Typography
-                    // variant='body2'
                     style={{
                       marginTop: '-35px',
-                      // fontSize: 'x-large',
                       fontWeight: 'bold',
                       color: 'white',
                     }}
@@ -106,13 +103,14 @@ function GridListPublish(props) {
                     style={{ marginTop: 120, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentViewPublish',
+                        pathname: '/blog/admin/contentViewPublishAdmin',
                         state: { data: data[0] ? data[0] :'' ,
                       tabValue :props.tabValue},
                       })}
                   >
                     Read more
                   </Button>
+
                 </CardActions>
              
             </Card>
@@ -122,12 +120,15 @@ function GridListPublish(props) {
               <Card  className={classes.card}
               style={{
                 width: '100%',
-                height: '290px',
+                height: '350px',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 display:data.length >= 2 ? 'flex' : 'none',
-                backgroundSize: '360px',
+                backgroundSize: '250px 350px',
                 backgroundImage: `url(${data[1] && data[1].thumbnail})`,
+                borderRadius: 10,
+                backgroundRepeat: 'no-repeat',
+
               }}>
                 <CardHeader
                   subheader={
@@ -171,12 +172,13 @@ function GridListPublish(props) {
                     style={{ marginTop: 38, width: 150}}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentViewPublish',
+                        pathname: '/blog/admin/contentViewPublishAdmin',
                         state: { data: data[1], tabValue :props.tabValue },
                       })}
                   >
                     Read more
                   </Button>
+
                 </CardActions>
               </Card>
             </Grid>
@@ -185,12 +187,15 @@ function GridListPublish(props) {
                 className={classes.card}
                 style={{
                   width: '100%',
-                  height: '290px',
+                  height: '350px',
                   display:data.length >= 3 ? 'flex' : 'none',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  backgroundSize: '360px',
+                  backgroundSize: '250px 350px',
                   backgroundImage: `url(${data[2] && data[2].thumbnail})`,
+                  borderRadius: 10,
+                  backgroundRepeat: 'no-repeat',
+
                 }}
               >
                 <CardHeader
@@ -203,12 +208,8 @@ function GridListPublish(props) {
                 <CardActionArea>
                    <CardContent style ={{ padding:'5px'}}>
                     <Typography
-                      // variant='body2'
                       style={{
-                        // marginTop: '0px',
                         marginTop: '-18px',
-
-                        // fontSize: 'x-large',
                         fontWeight: 'bold',
                         color: 'white',
 
@@ -239,12 +240,13 @@ function GridListPublish(props) {
                     style={{ marginTop: 38, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentViewPublish',
+                        pathname: '/blog/admin/contentViewPublishAdmin',
                         state: { data: data[2], tabValue :props.tabValue },
                       })}
                   >
                     Read more
                   </Button>
+
                 </CardActions>
               </Card>
             </Grid>
@@ -256,12 +258,15 @@ function GridListPublish(props) {
               <Card  className={classes.card}
               style={{
                 width: '100%',
-                height: '290px',
+                height: '350px',
                 display:data.length >= 4 ? 'flex' : 'none',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                backgroundSize: '360px',
+                backgroundSize: '250px 350px',
                 backgroundImage: `url(${data[3] && data[3].thumbnail})`,
+                borderRadius: 10,
+                backgroundRepeat: 'no-repeat',
+
               }}>
                 <CardHeader
                   subheader={
@@ -273,11 +278,8 @@ function GridListPublish(props) {
                 <CardActionArea>
                    <CardContent style ={{ padding:'5px'}}>
                     <Typography
-                      // variant='body2'
                       style={{
                         marginTop: '-18px',
-
-                        // fontSize: 'x-large',
                         fontWeight: 'bold',
                         color: 'white',
 
@@ -309,12 +311,13 @@ function GridListPublish(props) {
                     style={{ marginTop: 38, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentViewPublish',
+                        pathname: '/blog/admin/contentViewPublishAdmin',
                         state: { data: data[3] , tabValue :props.tabValue},
                       })}
                   >
                     Read more
                   </Button>
+
                 </CardActions>
               </Card>
             </Grid>
@@ -322,13 +325,16 @@ function GridListPublish(props) {
               <Card  className={classes.card}
               style={{
                 width: '100%',
-                height: '290px',
+                height: '350px',
                 display:data.length >= 5 ? 'flex' : 'none',
 
                 flexDirection: 'column',
                 justifyContent: 'space-between',
-                backgroundSize: '360px',
+                backgroundSize: '250px 350px',
                 backgroundImage: `url(${data[4] && data[4].thumbnail})`,
+                borderRadius: 10,
+                backgroundRepeat: 'no-repeat',
+
               }}>
                 <CardHeader
                   subheader={
@@ -340,10 +346,8 @@ function GridListPublish(props) {
                 <CardActionArea>
                    <CardContent style ={{ padding:'5px'}}>
                     <Typography
-                      // variant='body2'
                       style={{
                         marginTop: '-18px',
-                        // fontSize: 'x-large',
                         fontWeight: 'bold',
                         color: 'white',
 
@@ -376,12 +380,13 @@ function GridListPublish(props) {
                     style={{ marginTop: 38, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentViewPublish',
+                        pathname: '/blog/admin/contentViewPublishAdmin',
                         state: { data: data[4] , tabValue :props.tabValue},
                       })}
                   >
                     Read more
                   </Button>
+
                 </CardActions>
               </Card>
             </Grid>
@@ -394,8 +399,11 @@ function GridListPublish(props) {
               display:data.length >= 6 ? 'flex' : 'none',
               flexDirection: 'column',
               justifyContent: 'space-between',
-              backgroundSize: '360px',
+              backgroundSize: '520px 290px',
               backgroundImage: `url(${data[5] && data[5].thumbnail})`,
+              backgroundRepeat: 'no-repeat',
+              borderRadius: 10,
+
             }}>
               <CardHeader
                 subheader={
@@ -411,7 +419,6 @@ function GridListPublish(props) {
                     // variant='body2'
                     style={{
                       marginTop: '-35px',
-                      // fontSize: 'x-large',
                       fontWeight: 'bold',
                       color: 'white',
 
@@ -442,21 +449,19 @@ function GridListPublish(props) {
                     style={{ marginTop: 120, width: 150 }}
                     onClick={() =>
                       props.history.push({
-                        pathname: '/blog/teacher/contentViewPublish',
+                        pathname: '/blog/admin/contentViewPublishAdmin',
                         state: { data: data[5] , tabValue :props.tabValue},
                       })}
                   >
                     Read more
                   </Button>
+
                 </CardActions>
             </Card>
           </Grid>
         </Grid>
       </Grid>
        ) : 
-      //  (
-      //   <Typography align='center'>Oops... No blogs Posted</Typography>
-      //       )
             (
               <div className="periodDataUnavailable">
                   <SvgIcon
