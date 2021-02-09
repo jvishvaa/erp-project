@@ -54,6 +54,7 @@ import {
   TeacherPublishBlogView,
   BlogView,
   CreateGenre,
+  ViewGenre,
   ContentViewPublish,
   ContentViewPublishStudent,
   EditGenre,
@@ -90,6 +91,8 @@ import ViewCourseCard from './containers/master-management/course/view-course/vi
 import ViewStore from './containers/master-management/course/view-course/context/ViewStore';
 import DailyDairyStore from'./containers/daily-dairy/context/context';
 import AttendeeListRemake from './containers/attendance'
+import TestComparisionUI from './containers/assessment-report/test-comparision';
+import AssessmentAnalysis from './containers/assessment-report/assessment-analysis';
 
 const theme = createMuiTheme({
   palette: {
@@ -370,6 +373,12 @@ function App() {
                     </Route>
                     <Route exact path='/view-period'>
                       {({ match }) => <ViewCourseCard match={match} />}
+                    </Route>
+                    <Route exact path='/assessment/test-comparision'>
+                      {({ match }) => <TestComparisionUI match={match} />}
+                    </Route>
+                    <Route exact path='/assessment/:assessmentId/analysis'>
+                      {({ match }) => <AssessmentAnalysis match={match} />}
                     </Route>
                     <Route exact path='/aol-attendance-list/:id?'>
                       {({ match }) => <AttendeeListRemake match={match} />}
