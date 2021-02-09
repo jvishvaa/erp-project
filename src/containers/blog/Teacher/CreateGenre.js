@@ -4,8 +4,10 @@ import { withRouter } from 'react-router-dom';
 import Layout from '../../Layout'
 import {  TextField, Grid, Button, useTheme,Tabs, Tab ,Typography, Card, CardContent,CardHeader} from '@material-ui/core'
 import moment from 'moment';
-import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -13,6 +15,8 @@ import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import Loading from '../../../components/loader/loader';
 import IconButton from '@material-ui/core/IconButton';
+import Popover from '@material-ui/core/Popover';
+import DialogActions from '@material-ui/core/DialogActions';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,12 +57,14 @@ const useStyles = makeStyles((theme) => ({
   
 
 
-const CreateGenre = () => {
-  const classes = useStyles()
+const CreateGenre = (props) => {
+  const { match } = props
 
+  const classes = useStyles()
   const [currentTab,setCurrentTab] =useState(0)
   const [genreActiveListRes,setGenreActiveListResponse] = useState('');
   const [genreInActiveListRes,setGenreInActiveListResponse] = useState('');
+  const [genreNameEdit,setGenreNameEdit] =useState('');
 
   const [genreName,setGenreName] =useState('');
   const { setAlert } = useContext(AlertNotificationContext);
@@ -67,8 +73,17 @@ const CreateGenre = () => {
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const wider = isMobile ? '-10px 0px' : '0 0 -1rem 1.5%'
   const widerWidth = isMobile ? '90%' : '85%'
+  const [grade, setGrade] = useState([]);
+  const [selectedGrades, setSelectedGrades] = useState('');
+  const [moduleId, setModuleId] = useState(68);
+  const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
 
-  
+  const [gradeList, setGradeList] = useState([]);
+
+  const branchId=roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0]
+  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
   
   
 
@@ -88,6 +103,8 @@ const CreateGenre = () => {
     if (result.data.status_code === 200) {
       setLoading(false);
       setAlert('success', result.data.message);
+      getGenreList();
+   getGenreInActiveList();
     } else {        
       setLoading(false);
       setAlert('error', "duplicates not allowed");
@@ -97,10 +114,20 @@ const CreateGenre = () => {
       setAlert('error', "duplicates not allowed");
     })
     };
+  //  const handleEditNav = (item) => {
+  //   props.history.push(`${match.url}/edit`)
+  //   // props.history.push({
+  //   //   pathname: '/blog/edit/genre',
+  //   //   state: { item},
+  //   // });
+  // };
 
     const handleTabChange = (event,value) =>{
       setCurrentTab(value)
     }
+  
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
 
     const activeTabContent = () =>{
       return <div>
@@ -112,6 +139,7 @@ const CreateGenre = () => {
         <CardHeader
         style={{padding:'0px'}}
         action=       {
+          <Typography>
 <IconButton
           title='Delete'
           onClick={()=>handleDelete(item)}
@@ -121,6 +149,16 @@ const CreateGenre = () => {
             style={{ color: themeContext.palette.primary.main }}
           />
         </IconButton>
+        {/* <IconButton
+          title='edit'
+          onClick={handleEditNav}          
+        >
+          <EditOutlinedIcon
+            style={{ color: themeContext.palette.primary.main }}
+          />
+        </IconButton> */}
+        </Typography>
+       
       }
       subheader={
         <Typography
@@ -135,8 +173,8 @@ const CreateGenre = () => {
       }
         />
 <CardContent  style={{ pagging:'1px'}}>
-<Typography  className={classes.typoStyle}>GenreName: {item.genre} </Typography> 
-  <Typography   className={classes.typoStyle}>CreatedBy : {item.created_by.first_name}</Typography>
+<Typography  className={classes.typoStyle}>Genre Name: {item.genre} </Typography> 
+  <Typography   className={classes.typoStyle}>Created By : {item.created_by.first_name}</Typography>
 </CardContent>
         </Card>                        
         </Grid>
@@ -156,17 +194,6 @@ const CreateGenre = () => {
           <Card className={classes.root} >
           <CardHeader
           style={{padding:'0px'}}
-  //         action=       {
-  // <IconButton
-  //           title='Delete'
-  //           onClick={()=>handleDelete(item)}
-            
-  //         >
-  //           <DeleteOutlinedIcon
-  //             style={{ color: themeContext.palette.primary.main }}
-  //           />
-  //         </IconButton>
-  //       }
         subheader={
           <Typography
             gutterBottom
@@ -180,8 +207,8 @@ const CreateGenre = () => {
         }
           />
   <CardContent  style={{ pagging:'1px'}}>
-  <Typography  className={classes.typoStyle}>GenreName: {item.genre} </Typography> 
-  <Typography   className={classes.typoStyle}>CreatedBy : {item.created_by.first_name}</Typography> 
+  <Typography  className={classes.typoStyle}>Genre Name: {item.genre} </Typography> 
+  <Typography   className={classes.typoStyle}>Created By : {item.created_by.first_name}</Typography> 
   </CardContent>
           </Card>                        
           </Grid>
@@ -205,7 +232,7 @@ const CreateGenre = () => {
       setLoading(false);
       setAlert('success', result.data.message);
       getGenreList();
-   getGenreInActiveList();
+      getGenreInActiveList();
     } else {        
       setLoading(false);
       setAlert('error', result.data.message);
@@ -215,12 +242,6 @@ const CreateGenre = () => {
       setAlert('error', error.message);
     })
   };
-    // const EditGenreNav = (item) => {
-      //     this.props.history.push({
-      //       pathname: '/blog/create/genre',
-      //       state: { item },
-      //     });
-      //   };
         
   const decideTab =() => {
     if (currentTab === 0) {
@@ -232,11 +253,58 @@ const CreateGenre = () => {
 const handleGenreNameChange = (e) => {
   setGenreName(e.target.value);
 };
-
-useEffect(() => {
-   getGenreList();
+const handleGenreNameEditChange = (e) => {
+  setGenreNameEdit(e.target.value);
+};
+const handleGrade = (event, value) => {
+  if (value) {
+    setSelectedGrades(value.grade_id);
+  } else {
+      setSelectedGrades();
+  }
+  }
+  useEffect(() => {
+    if (branchId) {
+      setGrade([]);
+      getGradeApi();
+    }
+    getGenreList();
    getGenreInActiveList();
-}, []);
+  }, [branchId]);
+
+  const getGradeApi = async () => {
+    try {
+      setLoading(true);
+      const result = await axiosInstance.get(
+        `${endpoints.communication.grades}?branch_id=${branchId}&module_id=${moduleId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const resultOptions = [];
+      if (result.status === 200) {
+        result.data.data.map((items) => resultOptions.push(items.grade__grade_name));
+        if (branchId) {
+          setGrade(resultOptions);
+        }
+        setGradeList(result.data.data);
+        setLoading(false);
+      } else {
+        setAlert('error', result.data.message);
+        setLoading(false);
+      }
+    } catch (error) {
+      setAlert('error', error.message);
+      setLoading(false);
+    }
+  };
+
+// useEffect(() => {
+//    getGenreList();
+//    getGenreInActiveList();
+// }, []);
 const getGenreList = () => {
   axiosInstance.get(`${endpoints.blog.genreList}?is_delete=${
     'False'
@@ -262,6 +330,29 @@ const getGenreInActiveList = () => {
       <Layout>
 
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
+        <Grid item xs={12} sm={3}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+                    { gradeList.length ? ( 
+                      <Autocomplete
+              style={{ width: '100%' }}
+              size='small'
+              onChange={handleGrade}
+              id='grade'
+              className='dropdownIcon'
+              options={gradeList}
+              filterSelectedOptions
+              getOptionLabel={(option) => option?.grade__grade_name}
+
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Grade'
+                  placeholder='Grade'
+                />
+              )}
+            />
+               ) : null }
+                    </Grid>
           <Grid item xs={12} sm={3}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
               <TextField
                 id='outlined-helperText'

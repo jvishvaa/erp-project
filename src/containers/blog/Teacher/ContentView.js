@@ -344,13 +344,13 @@ if (result.data.status_code === 200) {
                               });
                             }}
                           >
-                            {relatedBlog ? 'Add Review' : 'View Review'}
+                           {tabValue === 0 ? 'Add Review' : 'View Review' }
                           </Button>  :''}
                           {tabValue === 0 ?
                           <Button
                             size='small'
                             color='primary'
-                            onClick={() => this.setState({ feedBack: true })}
+                            onClick={() => this.setState({ feedBack: true,relatedBlog:true })}
                           >
                             Add Revision Feedback
                           </Button> : !data.feedback_revision_required ?

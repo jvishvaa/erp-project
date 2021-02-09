@@ -76,11 +76,10 @@ class StudentDashboard extends Component {
     super(props);
     this.state = {
       tabValue: 0,
-      pageNo: 0,
+      pageNo: 1,
       pageSize: 6,
       startDate :moment().format('YYYY-MM-DD'),
       status:[8,5]
-      // endDate :getDaysAfter(moment(), 6)
 
     };
   }
@@ -112,7 +111,7 @@ class StudentDashboard extends Component {
         this.getBlog(status)})
     }
     else if (tabValue === 1){
-      this.setState({status:[3,7,6],pageNo:page},()=>{
+      this.setState({status:[3,7,6,4],pageNo:page},()=>{
         this.getBlog(status)})
     }
     else if (tabValue === 2){
@@ -136,14 +135,14 @@ class StudentDashboard extends Component {
   };
 
   handleTabChange = (event, newValue) => {
-    this.setState({ tabValue: newValue, pageNo:0, pageSize:6});
+    this.setState({ tabValue: newValue, pageNo:1, pageSize:6});
     if(newValue === 0){
       this.setState({status:[8,5]},()=>{
         this.getBlog(this.state.status);
       })
     }
     else if (newValue === 1){
-      this.setState({status:[3,7,6]},()=>{
+      this.setState({status:[3,7,6,4]},()=>{
         this.getBlog(this.state.status);
       })
     }
@@ -173,7 +172,7 @@ class StudentDashboard extends Component {
     axios
       .get(
         `${endpoints.blog.Blog}?page_number=${
-          pageNo + 1
+          pageNo 
         }&page_size=${pageSize}&status=${status}&module_id=112`
       )
       .then((result) => {
@@ -186,15 +185,15 @@ class StudentDashboard extends Component {
       .catch((error) => {
       });
   };
-  handleFilter = () =>
-  {
+  handleFilter = () => {
     const { pageNo, pageSize ,tabValue,startDate,endDate} = this.state;
+    console.log(startDate,endDate,"@@@@")
     let tabStatus= []
     if(tabValue === 0){
       tabStatus= [8,5]
     }
     else if (tabValue === 1){
-      tabStatus = [3,6]
+      tabStatus = [3,6,4]
     }
     else if (tabValue === 2){
       tabStatus = [2]
@@ -204,7 +203,7 @@ class StudentDashboard extends Component {
     axios
       .get(
         `${endpoints.blog.Blog}?page_number=${
-          pageNo + 1
+          pageNo 
         }&page_size=${pageSize}&status=${tabStatus}&module_id=112&start_date=${startDate}&end_date=${endDate}`
       )
       .then((result) => {

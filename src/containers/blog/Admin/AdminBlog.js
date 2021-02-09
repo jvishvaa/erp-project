@@ -74,7 +74,7 @@ class AdminBlog extends Component {
     super(props);
     this.state = {
       tabValue: 0,
-      pageNo: 0,
+      pageNo: 1,
       pageSize: 6,
       totalPages:0,
       startDate :moment().format('YYYY-MM-DD'),
@@ -91,8 +91,8 @@ class AdminBlog extends Component {
     axios
       .get(
         `${endpoints.blog.Blog}?page_number=${
-          pageNo + 1
-        }&page_size=${pageSize}&status=${status}module_id=114`
+          pageNo 
+        }&page_size=${pageSize}&status=${status}&module_id=114`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -131,15 +131,15 @@ class AdminBlog extends Component {
   };
 
   handleTabChange = (event, newValue) => {
-    this.setState({ tabValue: newValue ,data:[], pageNo:0, pageSize:6});
+    this.setState({ tabValue: newValue ,data:[], pageNo:1, pageSize:6});
     if(newValue === 0){
-      this.setState({tabValue: newValue ,data:[], pageNo:0, pageSize:6,status: 8 }, ()=>{
+      this.setState({tabValue: newValue ,data:[], pageNo:1, pageSize:6,status: 8 }, ()=>{
         this.getBlog(this.state.status);
 
       })
     }
     else{
-      this.setState({tabValue: newValue ,data:[], pageNo:0, pageSize:6,status: [3,5,7,6] }, ()=>{
+      this.setState({tabValue: newValue ,data:[], pageNo:1, pageSize:6,status: [3,5,7,6] }, ()=>{
         this.getBlog(this.state.status);
 
       })

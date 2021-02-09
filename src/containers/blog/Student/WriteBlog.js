@@ -116,6 +116,9 @@ class WriteBlog extends Component {
           ? this.props.location.state.files
           : [],
       wordCountLimit: 50,
+      genreObj : this.props.location.state.genreObj && this.props.location.state.genreObj.length !== 0
+      ? this.props.location.state.genreObj
+      :'',
 
     };
   }
@@ -139,9 +142,13 @@ class WriteBlog extends Component {
  
 
   listGenre = () => {
+    let { roleDetails } = this.state;
+    const erpUserId = roleDetails.role_details.erp_user_id;
     axios
       .get(`${endpoints.blog.genreList}?is_delete=${
         'False'
+      }&erp_user_id=${
+        erpUserId
       }`)
       .then((res) => {
         this.setState({ genreList: res.data.result });
@@ -168,6 +175,7 @@ class WriteBlog extends Component {
     // const parsedTextEditorContent = textEditorContent.replace(/(<([^>]+)>)/ig, '').split(' ')
     const textWordCount = parsedTextEditorContent.length
     this.setState({ parsedTextEditorContentLen: textWordCount })
+    console.log(parsedTextEditorContent.length,"@@@@")
     if (parsedTextEditorContent && parsedTextEditorContent.length < wordCountLimit) {
       const errorMsg = `Please write atleast ${wordCountLimit} words.Currently only ${parsedTextEditorContent.length} words have been written`
       return errorMsg
@@ -199,10 +207,14 @@ class WriteBlog extends Component {
   
   onDrop = (files=[]) => {
     if (!this.isImage(files)) {
-      this.props.alert.warning('Please select only image file format')
+      this.context.setAlert('error',"Please select only image file format")
+
+      // this.props.alert.warning('Please select only image file format')
       return
     } else if (files.length > 1) {
-      this.props.alert.warning('You can select only a single image at once')
+      this.context.setAlert('error',"You can select only a single image at once")
+
+      // this.props.alert.warning('You can select only a single image at once')
       return
     }
   
@@ -222,15 +234,27 @@ class WriteBlog extends Component {
   }
 
   handleGenre = (data) => {
-    this.setState({ genreId: data.id,genreName:data.genre });
+    this.setState({ genreId: data.id,genreName:data.genre,genreObj:data });
   };
 
   PreviewBlogNav = () => {
-    let{genreId ,files, title ,textEditorContent}=this.state
+    let{genreId ,files, title ,textEditorContent,genreObj}=this.state
 
     
-    if(!genreId || !files.length> 0 ||!title ||!textEditorContent){
-      this.context.setAlert('error',"please select all fields")
+    if(!genreId ){
+      this.context.setAlert('error',"please select genre")
+      return
+    }
+    if(!files.length> 0 ){
+      this.context.setAlert('error',"please upload image")
+      return
+    }
+    if(!title){
+      this.context.setAlert('error',"please enter title to the blog ")
+      return
+    }
+    if(!textEditorContent){
+      this.context.setAlert('error',"please enter description to the blog")
       return
     }
     const subceededWordCount = this.isWordCountSubceeded()
@@ -246,11 +270,12 @@ class WriteBlog extends Component {
       studentName,
       creationDate,
       // files,
-      genreName
+      genreName,
+      parsedTextEditorContentLen
     } = this.state;
     this.props.history.push({
       pathname: '/blog/student/preview-blog',
-      state: { studentName, creationDate, genreId, textEditorContent, title, files ,genreName},
+      state: { studentName, creationDate, genreId, textEditorContent, title, files ,genreName,genreObj,parsedTextEditorContentLen},
     });
   };
 
@@ -262,6 +287,7 @@ class WriteBlog extends Component {
       starsRating,
       feedBack,
       image,
+      genreObj,
       genreName,
       textEditorContent,
       key,
@@ -310,7 +336,7 @@ class WriteBlog extends Component {
                       size='small'
                       id='combo-box-demo'
                       options={genreList}
-                      // value={genreName}
+                      value={genreObj}
                       getOptionLabel={(option) => option.genre}
                       style={{ width: 300 }}
                       onChange={(e, data) => this.handleGenre(data)}
@@ -343,7 +369,6 @@ class WriteBlog extends Component {
                   </Grid>
                   <Grid item xs={12}>
                     <Typography style={{ margin: 10 }} variant='body1'>
-                      {/* Write Blog */}
                       Write the blog with atleast {wordCountLimit} words
                     </Typography>
                     <TinyMce
@@ -355,7 +380,7 @@ class WriteBlog extends Component {
                   </Grid>
                   <Grid item xs={12}>
                     <Typography style={{ margin: 10 }} variant='body1'>
-                      Add Thumbnail (Optional)
+                      Add Thumbnail 
                     </Typography>
                     <Typography
                       color='textPrimary'

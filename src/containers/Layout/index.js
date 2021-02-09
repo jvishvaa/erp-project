@@ -456,7 +456,7 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Genre': {
-        history.push('/blog/create/genre');
+        history.push('/blog/genre');
         break;
       }
       case 'Word Count Cofiguration': {

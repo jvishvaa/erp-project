@@ -22,9 +22,11 @@ import Layout from '../../Layout';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
+import Restore from '@material-ui/icons/Restore'
 import IconButton from '@material-ui/core/IconButton';
 import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
 import ReviewPrincipal from '../Principal/ReviewPrincipal';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 const styles = (theme) => ({
   root: {
@@ -79,52 +81,17 @@ class BlogView extends Component {
       currentLikes: 0,
       loading:false,
       likes: this.props.location.state.data && this.props.location.state.data.likes,
-      loginUserName : JSON.parse(localStorage.getItem('userDetails')).erp_user_id,
       roleDetails: JSON.parse(localStorage.getItem('userDetails')),
 blogRatings :this.props.location.state.data && this.props.location.state.data.remark_rating,
       overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark,
     };
   }
+  static contextType = AlertNotificationContext
+
   componentDidMount() {
     let {blogId} = this.state
     this.handleView(blogId)
   }
-  getLikeStatus = (isLiked) => {
-    let { likeStatus,likes }=this.state
-    if (isLiked === true && likeStatus === false) {
-      this.setState({currentLikes :likes-1,likeStatus:true})
-    } else if (isLiked === true && likeStatus === true) {
-      this.setState({currentLikes :likes+1,likeStatus:false})
-  
-    } else if (isLiked === false && likeStatus === false) {
-      this.setState({currentLikes :likes+1,likeStatus:true})
-  
-    } else if (isLiked === false && likeStatus === true) {
-      this.setState({currentLikes :likes,likeStatus:false})
-  
-    }
-  }
-  handleLike = (isLiked,blogId) => {
-    this.getLikeStatus(isLiked)
-    let requestData = {
-      "blog_id": blogId ,
-  
-    }
-  axios.post(`${endpoints.blog.BlogLike}`, requestData)
-  
-  .then(result=>{
-  if (result.data.status_code === 200) {
-    this.setState({loading:false})
-    // setAlert('success', result.data.message);
-  } else {        
-    this.setState({loading:false})
-    // setAlert('error', result.data.message);
-  }
-  }).catch((error)=>{
-    this.setState({loading:false})
-    // setAlert('error', error.message);
-  })
-    }
 
   handleView = (blogId) => {
     let requestData = {
@@ -187,6 +154,8 @@ getOverAllRemark = () => {
 
   .then(result=>{
   if (result.data.status_code === 200) {
+    this.context.setAlert('success',"Blog delete sucessfully")
+
     this.props.history.push({
       pathname: '/blog/student/dashboard',
     });
@@ -200,6 +169,33 @@ getOverAllRemark = () => {
     // setLoading(false);        
     // setAlert('error', error.message);
   })
+};
+handleRestoreBlog = (blogId) => {
+
+  let requestData = {
+    "blog_id": blogId ,
+    "status": "9"
+
+  }
+axios.put(`${endpoints.blog.Blog}`, requestData)
+
+.then(result=>{
+if (result.data.status_code === 200) {
+  this.context.setAlert('success',"Blog restored to drafted tab")
+
+  this.props.history.push({
+    pathname: '/blog/student/dashboard',
+  });
+  // setLoading(false);
+  // setAlert('success', result.data.message);
+} else {        
+  // setLoading(false);
+  // setAlert('error', result.data.message);
+}
+}).catch((error)=>{
+  // setLoading(false);        
+  // setAlert('error', error.message);
+})
 };
 
 
@@ -242,7 +238,7 @@ getOverAllRemark = () => {
                           style={{ marginBottom: 10 }}
                         >
                           {data.title}
-                          {
+                          { tabValue === 0 ||
                   tabValue === 2 ?
                     <IconButton
                     style={{float:'right'}}
@@ -250,6 +246,19 @@ getOverAllRemark = () => {
                   onClick={()=>this.handleDeleteBlog(data && data.id)}
                 >
                   <DeleteOutlinedIcon
+                    style={{ color: '#ff6b6b' }}
+                  />
+                </IconButton>
+      : '' 
+              }
+               {
+                  tabValue === 3 ?
+                    <IconButton
+                    style={{float:'right'}}
+                  title='Delete'
+                  onClick={()=>this.handleRestoreBlog(data && data.id)}
+                >
+                  <Restore
                     style={{ color: '#ff6b6b' }}
                   />
                 </IconButton>
@@ -295,14 +304,10 @@ getOverAllRemark = () => {
 
                         </CardContent>
                         <CardActions>
-                        {loginUserName !== name ? <Button
-                              style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' ,color:'red' ,backgroundColor:'white'}}
-                              onClick={()=>this.handleLike(isLiked,data.id)}
-                            > {isLiked || likeStatus ? <Favorite style={{ color: '#ff6b6b' }} />
-                                : <FavoriteBorder style={{ color: '#ff6b6b' }} />} {currentLikes === 0 ? likes
-                                : currentLikes
-                              }Likes
-                            </Button> : ''} &nbsp;&nbsp;&nbsp;
+                        <Button                               style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' ,color:'red' ,backgroundColor:'white'}}
+>
+                    <Favorite style={{ color: 'red' }} />{likes}likes</Button>
+ &nbsp;&nbsp;&nbsp;
                             <Button
                               style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' ,color:'red' ,backgroundColor:'white'}}
 

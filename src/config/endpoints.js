@@ -95,6 +95,13 @@ export default {
     lessonViewMoreData: '/academic/user-chapters-details/',
     teacherList: '/academic/lesson_plan_user_list/',
   },
+  studentListApis: {
+    branchWiseStudentCount: '/academic/school_strength/',
+    gradeWiseStudentCount: '/academic/grade_wise_students/',
+    sectionWiseStudentCount: '/academic/grade_wise_students/',
+    downloadBranchWiseStudent: '/academic/branch_strength_excel_data/',
+    downloadExcelAllstudents: '/academic/all_branch_strength_excel_data/',
+  },
 
   coordinatorTeacherHomeworkApi: {
     getAllTeacherList: '/academic/teachers-list/',
@@ -146,6 +153,14 @@ export default {
   },
   generalDairy: {
     dairyList: '/academic/general-dairy-messages/',
+    studentList: '/academic/general-dairy-users/',
+    updateDelete: '/academic/',
+    SubmitDairy: '/academic/create-dairy/',
+  },
+  dailyDairy: {
+    createDailyDairy: '/academic/create-dairy/',
+    branches: '/academic/chapters/',
+    updateDelete: '/academic/',
   },
   onlineCourses: {
     createCourse: '/aol/courses/',
@@ -170,8 +185,12 @@ export default {
   assessment: {
     questionPaperList: `/academic/assessment-list/`,
     viewQuestionList: `${baseURLCentral}/assessment/3/qp-questions-list/`,
+    userTests: `${baseURLCentral}/assessment/user-tests/`, // ?user=20&subject=1,
+    userTestComparisions: `${baseURLCentral}/assessment/student-test-comparison/`, // ?test_1=7&user=20&test_2=10
+    userSpecificSubjects: `/academic/users-subjects/`, // ?module_id=112
+    userAssessmentQuestionAnalysis: `${baseURLCentral}/assessment/category_analysis_report/`, // ?user=3446&assessment_id=3
+    assessmentAnalysisTeacherExcel: `${baseURLCentral}/assessment/teacher-report/`, // ?type=1
   },
-
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
 };
