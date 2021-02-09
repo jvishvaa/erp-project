@@ -28,7 +28,7 @@ import SectionTable from './containers/master-management/section/section-table';
 import GradeTable from './containers/master-management/grade/grade-table';
 import AcademicYearTable from './containers/master-management/academic-year/academic-year-table';
 import MessageTypeTable from './containers/master-management/message-type/message-type-table';
-//import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
+// import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
 import HomeworkCard from './containers/homework/homework-card';
 import Profile from './containers/profile/profile';
 import { fetchLoggedInUserDetails } from './redux/actions';
@@ -49,10 +49,9 @@ import {
   TeacherPublishBlogView,
   BlogView,
   CreateGenre,
-  ViewGenre, 
+  ViewGenre,
   ContentViewPublish,
   ContentViewPublishStudent,
-
   AdminBlog,
   PrincipalBlog,
   PrincipalPublishBlogView,
@@ -78,6 +77,7 @@ import CourseView from './containers/master-management/course/view-course';
 import ViewCourseCard from './containers/master-management/course/view-course/view-more-card/ViewCourseCard';
 import ViewStore from './containers/master-management/course/view-course/context/ViewStore';
 import TestComparisionUI from './containers/assessment/test-comparision';
+import AssessmentAnalysis from './containers/assessment/assessment-analysis';
 
 const theme = createMuiTheme({
   palette: {
@@ -229,7 +229,7 @@ function App() {
                     <Route exact path='/online-class/attend-class'>
                       {({ match }) => <AOLClassView match={match} />}
                     </Route>
-                      {/* {({ match }) => <ViewClassStudentCollection match={match} />} */}
+                    {/* {({ match }) => <ViewClassStudentCollection match={match} />} */}
                     <Route exact path='/online-class/resource'>
                       {({ match }) => <ResourceView match={match} />}
                     </Route>
@@ -326,6 +326,9 @@ function App() {
                     </Route>
                     <Route exact path='/assessment/test-comparision'>
                       {({ match }) => <TestComparisionUI match={match} />}
+                    </Route>
+                    <Route exact path='/assessment/:assessmentId/analysis'>
+                      {({ match }) => <AssessmentAnalysis match={match} />}
                     </Route>
                   </Switch>
                 </ViewStore>
