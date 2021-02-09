@@ -476,7 +476,7 @@ const Layout = ({ children, history }) => {
         history.push('/finance/CreateCoupon')
         break;
       }
-      case 'Deposit Tab': {
+      case 'Deposit': {
         history.push('/finance/DepositTab')
         break;
       }

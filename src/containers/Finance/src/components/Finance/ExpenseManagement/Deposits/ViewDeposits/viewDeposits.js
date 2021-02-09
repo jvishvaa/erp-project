@@ -13,14 +13,16 @@ import {
   Checkbox,
   Button,
   Button as MatButton,
-  Grid
+  Grid,
+  CircularProgress,
+  Modal
 } from '@material-ui/core'
 import { FilterInnerComponent, filterMethod } from '../../../FilterInnerComponent/filterInnerComponent'
 
 import * as actionTypes from '../../../store/actions'
-import { CircularProgress, Modal } from '../../../../../ui'
+// import { CircularProgress, Modal } from '../../../../../ui' // rajneesh
 import classes from './viewDeposits.module.css'
-import { generateExcel } from '../../../../../utils'
+// import { generateExcel } from '../../../../../utils'
 
 const DEPOSIT = [
   { value: 'petty', label: 'Petty Deposit' },
@@ -205,7 +207,7 @@ class ViewDiposits extends Component {
       columns,
       excelData
     }
-    generateExcel(data)
+    // generateExcel(data)
   }
 
   // createData = () => {
@@ -232,7 +234,7 @@ class ViewDiposits extends Component {
   //   return dataToShow
   // }
 
-  render () {
+  render () { // rajneesh
     // let transactionTable = null
     // if (this.props.pettyCashDeposit.lenght !== 0) {
     //   transactionTable = (<ReactTable
@@ -462,7 +464,7 @@ class ViewDiposits extends Component {
           </MatButton>
         </div>
         <div className={classes.tableContainer}>
-          {transactionTable}
+          {/* {transactionTable} */} 
         </div>
         {editModal}
         {this.props.dataLoading ? <CircularProgress open /> : null}

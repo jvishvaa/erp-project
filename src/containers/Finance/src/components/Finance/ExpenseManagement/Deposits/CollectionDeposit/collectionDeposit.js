@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Button, Grid } from '@material-ui/core/'
+import { Button, Grid, CircularProgress } from '@material-ui/core/'
 import Select from 'react-select'
 import * as actionTypes from '../../../store/actions'
-import CircularProgress from '../../../../../ui/CircularProgress/circularProgress'
+// import CircularProgress from '../../../../../ui/CircularProgress/circularProgress'
 
 import classes from '../PettyDeposit/bankDeposit.module.css'
 
