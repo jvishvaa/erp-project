@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react'
 
-import { Grid, Button } from '@material-ui/core'
+import { Grid, Button, CircularProgress } from '@material-ui/core'
 // import Select from 'react-select'
-import ReactTable from 'react-table'
+// import ReactTable from 'react-table'
 import Select from 'react-select'
-import 'react-table/react-table.css'
+// import 'react-table/react-table.css'
 // import zipcelx from 'zipcelx'
 import { connect } from 'react-redux'
 import * as actionTypes from '../store/actions'
 import { apiActions } from '../../../_actions'
 // import Modal from '../../../ui/Modal/modal'
-import { CircularProgress } from '../../../ui'
+// import { CircularProgress } from '../../../ui'
 import BillingReceipts from '../Receipts/billingDetailsReceipts'
 
 const DailyBillingDetailsPage = ({ dataLoadingStatus, totalBillingDetails, domain, sessionData, qwerty, alert, todayEMandateDetails, totalBillingDetai, totalBillingDetail, listDomainName, user, domainNames, session }) => {
@@ -60,44 +60,44 @@ const DailyBillingDetailsPage = ({ dataLoadingStatus, totalBillingDetails, domai
     return dataToShow
   }
 
-  let studentErpTable = null
+  // let studentErpTable = null
 
-  studentErpTable = <ReactTable
-    style={{ marginTop: 30, textAlign: 'center' }}
-    data={renderStudentErpTable()}
-    // manual
-    columns={[
-      {
-        Header: 'Billing Date',
-        accessor: 'domain',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Total Active User Per Day',
-        accessor: 'amount',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Per Month User Amount',
-        accessor: 'paid_amount',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Total Amount',
-        accessor: 'total_amount',
-        filterable: false,
-        sortable: true
-      }
-    ]}
-    filterable
-    sortable
-    defaultPageSize={5}
-    showPageSizeOptions={false}
-    className='-striped -highlight'
-  />
+  // studentErpTable = <ReactTable
+  //   style={{ marginTop: 30, textAlign: 'center' }}
+  //   data={renderStudentErpTable()}
+  //   // manual
+  //   columns={[
+  //     {
+  //       Header: 'Billing Date',
+  //       accessor: 'domain',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Total Active User Per Day',
+  //       accessor: 'amount',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Per Month User Amount',
+  //       accessor: 'paid_amount',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Total Amount',
+  //       accessor: 'total_amount',
+  //       filterable: false,
+  //       sortable: true
+  //     }
+  //   ]}
+  //   filterable
+  //   sortable
+  //   defaultPageSize={5}
+  //   showPageSizeOptions={false}
+  //   className='-striped -highlight'
+  // /> // rajneesh
   const goBackHandler = () => {
     window.location.replace('/finance/dailybillingdeatils')
   }
@@ -271,7 +271,7 @@ const DailyBillingDetailsPage = ({ dataLoadingStatus, totalBillingDetails, domai
           <p style={{ fontSize: 18 }}>PREVIOUS DUE : {((totalBillingDetai && totalBillingDetai[totalBillingDetai.length - 1] && totalBillingDetai[totalBillingDetai.length - 1].total_amount) - (totalBillingDetai && totalBillingDetai[totalBillingDetai.length - 1] && totalBillingDetai[totalBillingDetai.length - 1] && +totalBillingDetai[totalBillingDetai.length - 1].total_paid_amount === null ? 0 : totalBillingDetai && totalBillingDetai[totalBillingDetai.length - 1] && totalBillingDetai[totalBillingDetai.length - 1].total_paid_amount)).toFixed(2)}</p>
         </Grid>
         <Grid item xs={12} style={{ margin: 'auto' }}>
-          {studentErpTable}
+          {/* {studentErpTable} */}
         </Grid>
         {/* <Grid item xs={12} style={{ display: 'flex', justifyContent: 'center' }}>
           <p style={{ fontSize: 18 }}>TOTAL BILLS :</p>

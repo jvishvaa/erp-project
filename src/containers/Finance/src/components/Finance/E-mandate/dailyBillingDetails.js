@@ -8,18 +8,18 @@ import {
   TableCell,
   TableRow,
   TableHead,
-  TableBody
-
+  TableBody,
+CircularProgress
 } from '@material-ui/core'
 import Select from 'react-select'
-import ReactTable from 'react-table'
-import 'react-table/react-table.css'
+// import ReactTable from 'react-table'
+// import 'react-table/react-table.css'
 import { connect } from 'react-redux'
 import Modal from '../../../ui/Modal/modal'
 import * as actionTypes from '../store/actions'
 import { apiActions } from '../../../_actions'
 // import Modal from '../../../ui/Modal/modal'
-import { CircularProgress } from '../../../ui'
+// import { CircularProgress } from '../../../ui'
 import DailyBillingDetailsPage from './dailyDetails'
 
 const DailyBillingDetails = ({ dataLoadingStatus, alert, fetchBranches, todayEMandateDetails, branches, domainDailyBillStatus, domainDailyBillGenerateStatus, totalBillingDetail, totalBillingDetails, listDomainName, user, domainNames, session }) => {
@@ -169,44 +169,44 @@ const DailyBillingDetails = ({ dataLoadingStatus, alert, fetchBranches, todayEMa
   //     </React.Fragment>
   //   )
   // }
-  let studentErpTable = null
+  // let studentErpTable = null
 
-  studentErpTable = <ReactTable
-    style={{ marginTop: 60, textAlign: 'center' }}
-    data={renderStudentErpTable()}
-    // manual
-    columns={[
-      {
-        Header: 'Branch Name',
-        accessor: 'domain',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Total Amount',
-        accessor: 'amount',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Paid Amount',
-        accessor: 'paid_amount',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Daily Details',
-        accessor: 'daily_details',
-        filterable: false,
-        sortable: true
-      }
-    ]}
-    filterable
-    sortable
-    defaultPageSize={20}
-    showPageSizeOptions={false}
-    className='-striped -highlight'
-  />
+  // studentErpTable = <ReactTable
+  //   style={{ marginTop: 60, textAlign: 'center' }}
+  //   data={renderStudentErpTable()}
+  //   // manual
+  //   columns={[
+  //     {
+  //       Header: 'Branch Name',
+  //       accessor: 'domain',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Total Amount',
+  //       accessor: 'amount',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Paid Amount',
+  //       accessor: 'paid_amount',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Daily Details',
+  //       accessor: 'daily_details',
+  //       filterable: false,
+  //       sortable: true
+  //     }
+  //   ]}
+  //   filterable
+  //   sortable
+  //   defaultPageSize={20}
+  //   showPageSizeOptions={false}
+  //   className='-striped -highlight'
+  // />
 
   //   const getTodayHandler = () => {
   //     if (sessionData) {
@@ -530,7 +530,7 @@ const DailyBillingDetails = ({ dataLoadingStatus, alert, fetchBranches, todayEMa
         alert={alert}
       /> : [] }
       {/* {ShowDailyDetPage ? <DailyBillingDetailsPage /> : []} */}
-      {totalBillingDetail && totalBillingDetail.length > 0 && showTable ? studentErpTable : []}
+      {/* {totalBillingDetail && totalBillingDetail.length > 0 && showTable ? studentErpTable : []} */} // rajneesh
       { billingDeatilsModal }
       {/* {todayDeatilsModal} */}
       {dataLoadingStatus ? <CircularProgress open /> : null}

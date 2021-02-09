@@ -38,18 +38,18 @@ export const listDomainName = (payload) => {
       })
       if (response.status === 200) {
         if (response.data.length > 0) {
-          payload.alert.success('Successfully Got Branch Names!')
+          // payload.alert.success('Successfully Got Branch Names!')
         } else {
-          payload.alert.warning('Create branch name first to get!')
+          // payload.alert.warning('Create branch name first to get!')
         }
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.error(err)
       if (err.response && (err.response.status === 400 || err.response.status === 401)) {
-        payload.alert.warning(err.response.data.err_msg)
+        // payload.alert.warning(err.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
 
       dispatch(actionTypes.dataLoaded())
@@ -72,15 +72,15 @@ export const createDomainName = (payload) => {
         }
       })
       if (response.status === 201) {
-        payload.alert.success('Successfully Added!')
+        // payload.alert.success('Successfully Added!')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.error(err)
       if (err.response && (err.response.status === 400 || err.response.status === 401)) {
-        payload.alert.warning(err.response.data.err_msg)
+        // payload.alert.warning(err.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
     })
@@ -102,15 +102,15 @@ export const setDomainDetails = (payload) => {
         }
       })
       if (response.status === 201) {
-        payload.alert.success('Successfully Added!')
+        // payload.alert.success('Successfully Added!')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.error(err)
       if (err.response && (err.response.status === 400 || err.response.status === 401)) {
-        payload.alert.warning(err.response.data.err_msg)
+        // payload.alert.warning(err.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
     })
@@ -138,17 +138,17 @@ export const todayEMandateDetails = (payload) => {
         }
       })
       if (response.status === 200 && response.data && response.data.length > 0) {
-        payload.alert.success('Successfully got Billing Details!')
+        // payload.alert.success('Successfully got Billing Details!')
       } else {
-        payload.alert.success('No Record Found!')
+        // payload.alert.success('No Record Found!')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.error(err)
       if (err.response && (err.response.status === 400 || err.response.status === 401)) {
-        // payload.alert.warning(err.response.data.err_msg)
+        payload.alert.warning(err.response.data.err_msg)
       } else {
-        // payload.alert.warning('Something Went Wrong!')
+        payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
     })
@@ -175,9 +175,9 @@ export const dailyEMandateDetails = (payload) => {
     }).catch(err => {
       console.error(err)
       if (err.response && (err.response.status === 400 || err.response.status === 401)) {
-        payload.alert.warning(err.response.data.err_msg)
+        // payload.alert.warning(err.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
     })
@@ -199,17 +199,17 @@ export const setCustomerDetails = (payload) => {
             data: response.data
           }
         })
-        payload.alert.success('Successfully Added Customer Details!')
+        // payload.alert.success('Successfully Added Customer Details!')
       }
       if (response.status === 200) {
-        payload.alert.success('Branch Name Allready Used !!')
+        // payload.alert.success('Branch Name Allready Used !!')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       if (err.response && (err.response.status === 400 || err.response.status === 401)) {
-        payload.alert.warning(err.response.data.err_msg)
+        // payload.alert.warning(err.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
     })
@@ -236,9 +236,9 @@ export const listCustomerDetails = (payload) => {
     }).catch(err => {
       console.error(err)
       if (err.response && (err.response.status === 400 || err.response.status === 401)) {
-        payload.alert.warning(err.response.data.err_msg)
+        // payload.alert.warning(err.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
     })
@@ -264,18 +264,18 @@ export const createOrderDetails = (payload) => {
         })
       }
       if (response.status === 201) {
-        payload.alert.success('Successfully Added Order Details!')
+        // payload.alert.success('Successfully Added Order Details!')
       }
       if (response.status === 200) {
-        payload.alert.success('First Order Is AllReady Created')
+        // payload.alert.success('First Order Is AllReady Created')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.error(err)
       if (err.response && (err.response.status === 400 || err.response.status === 401)) {
-        payload.alert.warning(err.response.data.err_msg)
+        // payload.alert.warning(err.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
     })
@@ -303,17 +303,17 @@ export const getCustomerDetails = (payload) => {
         }
       })
       if (response.status === 200 && response.data && response.data.length > 0) {
-        payload.alert.success('Successfully got Customer Details!')
+        // payload.alert.success('Successfully got Customer Details!')
       } else {
-        payload.alert.success('No Record Found!')
+        // payload.alert.success('No Record Found!')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.error(err)
       if (err.response && (err.response.status === 400 || err.response.status === 401)) {
-        payload.alert.warning(err.response.data.err_msg)
+        // payload.alert.warning(err.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
     })
@@ -341,17 +341,17 @@ export const getOrderDetails = (payload) => {
         }
       })
       if (response.status === 200 && response.data && response.data.length > 0) {
-        payload.alert.success('Successfully Get Order Details!')
+        // payload.alert.success('Successfully Get Order Details!')
       } else {
-        payload.alert.success('No Record Found!')
+        // payload.alert.success('No Record Found!')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.error(err)
       if (err.response && (err.response.status === 400 || err.response.status === 401)) {
-        payload.alert.warning(err.response.data.err_msg)
+        // payload.alert.warning(err.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
     })
@@ -379,7 +379,7 @@ export const getOrderDetails = (payload) => {
 //       dispatch(actionTypes.dataLoaded())
 //     }).catch(err => {
 //       console.error(err)
-//       payload.alert.warning('Something Went Wrong')
+      // payload.alert.warning('Something Went Wrong')
 //       dispatch(actionTypes.dataLoaded())
 //     })
 //   }
@@ -408,9 +408,9 @@ export const getGenerateSubsequents = (payload) => {
     }).catch(err => {
       console.error(err)
       if (err.response && (err.response.status === 400 || err.response.status === 401)) {
-        payload.alert.warning(err.response.data.err_msg)
+        // payload.alert.warning(err.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
     })
@@ -438,9 +438,9 @@ export const updateCustDetails = (payload) => {
     }).catch(err => {
       console.error(err)
       if (err.response && (err.response.status === 400 || err.response.status === 401)) {
-        payload.alert.warning(err.response.data.err_msg)
+        // payload.alert.warning(err.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
     })
@@ -477,9 +477,9 @@ export const totalBillingDetails = (payload) => {
     }).catch(err => {
       console.error(err)
       if (err.response && (err.response.status === 400 || err.response.status === 401)) {
-        payload.alert.warning(err.response.data.err_msg)
+        // payload.alert.warning(err.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
     })
@@ -508,7 +508,7 @@ export const getDomainNameWithCusId = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.error(err)
-      payload.alert.warning('Something Went Wrong')
+      // payload.alert.warning('Something Went Wrong')
       dispatch(actionTypes.dataLoaded())
     })
   }
@@ -535,9 +535,9 @@ export const updateDomainName = (payload) => {
     }).catch(err => {
       console.error(err)
       if (err.response && (err.response.status === 400 || err.response.status === 401)) {
-        payload.alert.warning(err.response.data.err_msg)
+        // payload.alert.warning(err.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
     })
@@ -565,9 +565,9 @@ export const generateSubsequentPayment = (payload) => {
     }).catch(err => {
       console.error(err)
       if (err.response && (err.response.status === 400 || err.response.status === 401)) {
-        payload.alert.warning(err.response.data.err_msg)
+        // payload.alert.warning(err.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
     })
@@ -628,7 +628,7 @@ export const domainDailyBillGenerateStatus = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.error(err)
-      payload.alert.warning('Something Went Wrong')
+      // payload.alert.warning('Something Went Wrong')
       dispatch(actionTypes.dataLoaded())
     })
   }

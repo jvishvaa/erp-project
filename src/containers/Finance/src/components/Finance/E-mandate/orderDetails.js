@@ -5,7 +5,7 @@ import {
   TextField
 } from '@material-ui/core'
 import Select from 'react-select'
-import ReactTable from 'react-table'
+// import ReactTable from 'react-table'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import * as actionTypes from '../store/actions'
@@ -319,144 +319,144 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
     return dataToShow
   }
 
-  let studentOrderDeatilsTable = null
-  studentOrderDeatilsTable = (role !== 'FinanceAdmin' && role !== 'FinanceAccountant') ? <ReactTable
-    style={{ marginTop: 60, textAlign: 'center', fontWeight: 'bold' }}
-    data={renderOrderDetails()}
-    // manual
-    columns={[
-      {
-        Header: 'Branch Name',
-        accessor: 'domain',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Beneficiary Name',
-        accessor: 'BeneficieryName',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Account Number',
-        accessor: 'AccountNumber',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Account Type',
-        accessor: 'AccountType',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'IFSC Code',
-        accessor: 'ifscCode',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Customer Id',
-        accessor: 'customer_id',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Order Id',
-        accessor: 'order_id',
-        filterable: false,
-        sortable: true
-      },
-      // {
-      //   Header: role !== 'FinanceAdmin' ? 'Create Order Link' : 'Authentication payment',
-      //   accessor: 'CreateLink',
-      //   filterable: false,
-      //   sortable: true
-      // },
-      {
-        Header: 'Authentication Payment Status',
-        accessor: 'status',
-        filterable: false,
-        sortable: true
-      }
-      // {
-      //   Header: 'Update',
-      //   accessor: 'Update',
-      //   filterable: false,
-      //   sortable: true
-      // }
-    ]}
-    filterable
-    sortable
-    defaultPageSize={20}
-    showPageSizeOptions={false}
-    className='-striped -highlight'
-  /> : <ReactTable
-    style={{ marginTop: 60, textAlign: 'center', fontWeight: 'bold' }}
-    data={renderOrderDetails()}
-    // manual
-    columns={[
-      {
-        Header: 'Branch Name',
-        accessor: 'domain',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Beneficiey Name',
-        accessor: 'BeneficieryName',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Account Number',
-        accessor: 'AccountNumber',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Account Type',
-        accessor: 'AccountType',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'IFSC Code',
-        accessor: 'ifscCode',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Customer Id',
-        accessor: 'customer_id',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Order Id',
-        accessor: 'order_id',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: (role !== 'FinanceAdmin' && role !== 'FinanceAccountant') ? 'Create Order Link' : 'Authentication payment',
-        accessor: 'CreateLink',
-        filterable: false,
-        sortable: true
-      }
-      // {
-      //   Header: 'Update',
-      //   accessor: 'Update',
-      //   filterable: false,
-      //   sortable: true
-      // }
-    ]}
-    filterable
-    sortable
-    defaultPageSize={20}
-    showPageSizeOptions={false}
-    className='-striped -highlight'
-  />
+  // let studentOrderDeatilsTable = null
+  // studentOrderDeatilsTable = (role !== 'FinanceAdmin' && role !== 'FinanceAccountant') ? <ReactTable
+  //   style={{ marginTop: 60, textAlign: 'center', fontWeight: 'bold' }}
+  //   data={renderOrderDetails()}
+  //   // manual
+  //   columns={[
+  //     {
+  //       Header: 'Branch Name',
+  //       accessor: 'domain',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Beneficiary Name',
+  //       accessor: 'BeneficieryName',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Account Number',
+  //       accessor: 'AccountNumber',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Account Type',
+  //       accessor: 'AccountType',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'IFSC Code',
+  //       accessor: 'ifscCode',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Customer Id',
+  //       accessor: 'customer_id',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Order Id',
+  //       accessor: 'order_id',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     // {
+  //     //   Header: role !== 'FinanceAdmin' ? 'Create Order Link' : 'Authentication payment',
+  //     //   accessor: 'CreateLink',
+  //     //   filterable: false,
+  //     //   sortable: true
+  //     // },
+  //     {
+  //       Header: 'Authentication Payment Status',
+  //       accessor: 'status',
+  //       filterable: false,
+  //       sortable: true
+  //     }
+  //     // {
+  //     //   Header: 'Update',
+  //     //   accessor: 'Update',
+  //     //   filterable: false,
+  //     //   sortable: true
+  //     // }
+  //   ]}
+  //   filterable
+  //   sortable
+  //   defaultPageSize={20}
+  //   showPageSizeOptions={false}
+  //   className='-striped -highlight'
+  // /> : <ReactTable
+  //   style={{ marginTop: 60, textAlign: 'center', fontWeight: 'bold' }}
+  //   data={renderOrderDetails()}
+  //   // manual
+  //   columns={[
+  //     {
+  //       Header: 'Branch Name',
+  //       accessor: 'domain',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Beneficiey Name',
+  //       accessor: 'BeneficieryName',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Account Number',
+  //       accessor: 'AccountNumber',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Account Type',
+  //       accessor: 'AccountType',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'IFSC Code',
+  //       accessor: 'ifscCode',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Customer Id',
+  //       accessor: 'customer_id',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Order Id',
+  //       accessor: 'order_id',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: (role !== 'FinanceAdmin' && role !== 'FinanceAccountant') ? 'Create Order Link' : 'Authentication payment',
+  //       accessor: 'CreateLink',
+  //       filterable: false,
+  //       sortable: true
+  //     }
+  //     // {
+  //     //   Header: 'Update',
+  //     //   accessor: 'Update',
+  //     //   filterable: false,
+  //     //   sortable: true
+  //     // }
+  //   ]}
+  //   filterable
+  //   sortable
+  //   defaultPageSize={20}
+  //   showPageSizeOptions={false}
+  //   className='-striped -highlight'
+  // /> 
   return (
     <div>
       <Grid container spacing={1} style={{ padding: 10 }} >
@@ -504,7 +504,7 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
           : []}
       </Grid>
       {/* {paymentNetbankingMethodModal} */}
-      {showTable ? studentOrderDeatilsTable : []}
+      {/* {showTable ? studentOrderDeatilsTable : []} */} // rajneesh
       {order && customer ? <Razorpay
         order={order}
         customer={customer}

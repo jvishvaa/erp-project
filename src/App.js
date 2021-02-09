@@ -31,7 +31,7 @@ import MessageTypeTable from './containers/master-management/message-type/messag
 import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
 import HomeworkCard from './containers/homework/homework-card';
 import Profile from './containers/profile/profile';
-import { createFeePlan, fetchLoggedInUserDetails } from './redux/actions';
+import { createFeePlan, fetchLoggedInUserDetails, getOrderDetails, totalBillingDetails } from './redux/actions';
 import TeacherHomework from './containers/homework/teacher-homework';
 import HomeworkAdmin from './containers/homework/homework-admin';
 import AddHomework from './containers/homework/teacher-homework/add-homework';
@@ -117,6 +117,9 @@ import AcceptRejectPayment from './containers/Finance/src/components/Finance/Bra
 import PostDateCheque from './containers/Finance/src/components/Finance/BranchAccountant/PostDateCheque/postDateCheque';
 import StudentInfoAdm from './containers/Finance/src/components/Finance/StudentInfo/studentInfo.js'
 import BillingDetails from './containers/Finance/src/components/Finance/E-mandate/billingDetails';
+import AddCustomerDeatils from './containers/Finance/src/components/Finance/E-mandate/addCustomerDeatils';
+import OrderDetails from './containers/Finance/src/components/Finance/E-mandate/orderDetails';
+import DailyBillingDetails from './containers/Finance/src/components/Finance/E-mandate/dailyBillingDetails'
 
 const theme = createMuiTheme({
   palette: {
@@ -489,6 +492,16 @@ function App() {
                 </Route>
                 <Route exact path= '/finance/E-Mandate/BillingDetails'>
                   {({ match }) => <BillingDetails match={match} />}
+                </Route>
+
+                <Route exact path= '/finance/E-Mandate/CustomerDetails'>
+                  {({ match }) => <AddCustomerDeatils match={match} />}
+                </Route>
+                <Route exact path= '/finance/E-Mandate/OrderDetails'>
+                  {({ match }) => <OrderDetails match={match} />}
+                </Route>
+                <Route exact path= '/finance/E-Mandate/TotalBillingDetails'>
+                  {({ match }) => <DailyBillingDetails match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

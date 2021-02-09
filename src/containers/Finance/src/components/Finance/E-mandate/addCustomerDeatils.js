@@ -5,8 +5,8 @@ import {
   Button
 } from '@material-ui/core'
 import Select from 'react-select'
-import ReactTable from 'react-table'
-import 'react-table/react-table.css'
+// import ReactTable from 'react-table'
+// import 'react-table/react-table.css'
 import { connect } from 'react-redux'
 import Modal from '../../../ui/Modal/modal'
 import * as actionTypes from '../store/actions'
@@ -360,50 +360,50 @@ const CustomerDeatils = ({ setCustomerDetails, user, alert, fetchBranches, domai
     return dataToShow
   }
 
-  let studentErpTable = null
+  // let studentErpTable = null
 
-  studentErpTable = <ReactTable
-    style={{ marginTop: 60, textAlign: 'center' }}
-    data={renderStudentErpTable()}
-    // manual
-    columns={[
-      {
-        Header: 'Branch Name',
-        accessor: 'domain',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Customer Name',
-        accessor: 'name',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'E-Mail',
-        accessor: 'email',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Number',
-        accessor: 'contact',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Edit',
-        accessor: 'edit',
-        filterable: false,
-        sortable: true
-      }
-    ]}
-    filterable
-    sortable
-    defaultPageSize={20}
-    showPageSizeOptions={false}
-    className='-striped -highlight'
-  />
+  // studentErpTable = <ReactTable
+  //   style={{ marginTop: 60, textAlign: 'center' }}
+  //   data={renderStudentErpTable()}
+  //   // manual
+  //   columns={[
+  //     {
+  //       Header: 'Branch Name',
+  //       accessor: 'domain',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Customer Name',
+  //       accessor: 'name',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'E-Mail',
+  //       accessor: 'email',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Number',
+  //       accessor: 'contact',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Edit',
+  //       accessor: 'edit',
+  //       filterable: false,
+  //       sortable: true
+  //     }
+  //   ]}
+  //   filterable
+  //   sortable
+  //   defaultPageSize={20}
+  //   showPageSizeOptions={false}
+  //   className='-striped -highlight'
+  // />
 
   return (
     <div>
@@ -451,7 +451,7 @@ const CustomerDeatils = ({ setCustomerDetails, user, alert, fetchBranches, domai
       </Grid>
       {customerDetModal}
       {editcustomerDetModal}
-      {showTable ? studentErpTable : []}
+      {/* {showTable ? studentErpTable : []} */}
     </div>
   )
 }
