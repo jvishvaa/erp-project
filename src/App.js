@@ -127,6 +127,7 @@ import CashReport from './containers/Finance/src/components/Finance/BranchAccoun
 import LedgerReport from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/PettyExpenses/LedgerReport/ledgerReport.js'
 import FinancialLedgerReport from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/PettyExpenses/FinancialLedgerReport/financialLedgerReport.js'
 import Party from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/Party/Party.js'
+import StudentShuffleReq from './containers/Finance/src/components/Finance/ApprovalRequests/StudentShuffle/studentShuffleReq.js'
 
 const theme = createMuiTheme({
   palette: {
@@ -530,6 +531,9 @@ function App() {
                 </Route>
                 <Route exact path= '/finance/Expanse Management/PartyList'>
                   {({ match }) => <Party match={match} />}
+                </Route>
+                <Route exact path= '/finance/Approval/Requests/StudentShuffleRequest'>
+                  {({ match }) => <StudentShuffleReq match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

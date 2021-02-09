@@ -32,7 +32,7 @@ export const fetchShufflePendingReq = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         console.log(error)
-        payload.alert.warning('Unable To Load')
+        // payload.alert.warning('Unable To Load')
         dispatch(actionTypes.dataLoaded())
       })
   }
@@ -66,7 +66,7 @@ export const fetchStudentFeeDetails = (payload) => {
         dispatch(actionTypes.dataLoaded())
       })).catch(error => {
         console.log(error)
-        payload.alert.warning('Unable To Load')
+        // payload.alert.warning('Unable To Load')
         dispatch(actionTypes.dataLoaded())
       })
   }
@@ -90,7 +90,7 @@ export const fetchInstListPerFeePlan = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         console.log(error)
-        payload.alert.warning('Unable To Load')
+        // payload.alert.warning('Unable To Load')
         dispatch(actionTypes.dataLoaded())
       })
   }
@@ -114,7 +114,7 @@ export const fetchFeePlanPerStdShuffle = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         console.log(error)
-        payload.alert.warning('Unable To Load')
+        // payload.alert.warning('Unable To Load')
         dispatch(actionTypes.dataLoaded())
       })
   }
@@ -140,9 +140,9 @@ export const reassignStudentShuffle = (payload) => {
       }).catch(error => {
         console.log(error.response)
         if (error.response && error.response.data && error.response.data.err_msg) {
-          payload.alert.error(error.response.data.err_msg)
+          // payload.alert.error(error.response.data.err_msg)
         } else {
-          payload.alert.error('Something went wrong!')
+          // payload.alert.error('Something went wrong!')
         }
         dispatch(actionTypes.dataLoaded())
       })
@@ -167,7 +167,7 @@ export const fetchShuffleApprLists = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         console.log(error)
-        payload.alert.warning('Unable To Load')
+        // payload.alert.warning('Unable To Load')
         dispatch(actionTypes.dataLoaded())
       })
   }
@@ -192,7 +192,7 @@ export const fetchShuffleRejectLists = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         console.log(error)
-        payload.alert.error('Something Went Wrong')
+        // payload.alert.error('Something Went Wrong')
         dispatch(actionTypes.dataLoaded())
       })
   }
@@ -216,7 +216,7 @@ export const rejectShuffleRequest = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         console.log(error)
-        payload.alert.warning('Unable To Load')
+        // payload.alert.warning('Unable To Load')
         dispatch(actionTypes.dataLoaded())
       })
   }

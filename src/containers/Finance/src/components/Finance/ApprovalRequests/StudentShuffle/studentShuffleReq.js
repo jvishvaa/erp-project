@@ -14,6 +14,7 @@ import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import Pending from './Components/pendingReq'
 import Approval from './Components/approvalReq'
 import Rejected from './Components/rejectedReq'
+import Layout from '../../../../../../Layout'
 
 const StudentShuffleReq = ({
   classes,
@@ -104,6 +105,7 @@ const StudentShuffleReq = ({
   }, [selectedYear, selectedBranch, selectedStatus, alert, user])
 
   return (
+    <Layout>
     <React.Fragment>
       <Grid container spacing={2} className={classes.root}>
         <Grid item sm={3} md={3} xs={12}>
@@ -175,6 +177,7 @@ const StudentShuffleReq = ({
       </div>
       {dataLoading ? <CircularProgress open /> : null}
     </React.Fragment>
+    </Layout>
   )
 }
 
