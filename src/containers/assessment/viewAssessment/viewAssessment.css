@@ -58,6 +58,11 @@
   color: #fff;
   margin-top: 20px;
 }
+
+.question-submit-btn:hover {
+  background: #164c6c;
+}
+
 /* .mcq-question-wrapper h3 {
 
 } */

@@ -11,6 +11,9 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import './viewAssessment.css';
 import SidebarCounterPanel from './sidebarCounterPanel';
 import McqQuestion from './mcqQuestion';
+import DescriptiveQuestion from './descriptiveQuestion';
+import FillUpsQuestion from './fillUpsQuestion';
+import TrueFalseQuestion from './trueFalseQuestion';
 
 const ViewAssessment = () => {
   const [loading, setLoading] = useState(false);
@@ -54,7 +57,10 @@ const ViewAssessment = () => {
           <Grid container spacing={2}>
             <Grid item md={9} xs={12}>
               <div className='main-question-panel'>
-                <McqQuestion />
+                {/* <McqQuestion /> */}
+                {/* <DescriptiveQuestion /> */}
+                {/* <FillUpsQuestion /> */}
+                <TrueFalseQuestion />
                 {/* <Button className='submit-button'></Button> */}
               </div>
             </Grid>
