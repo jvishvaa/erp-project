@@ -16,6 +16,7 @@ import GeneralDairyFilter from './filterdata';
 import PeriodCard from './dairy-card';
 import ViewMoreCard from './view-more-card';
 import {Context} from './context/context';
+import {useLocation} from 'react-router-dom';
 
 // component import from DailyDairy
 import DailyDairy from '../daily-dairy/dairy-card/index';
@@ -62,13 +63,10 @@ const GeneralDairyList = () => {
         //console.log(branchId, gradeId, sectionIds, startDate, endDate, '===');
         setLoading(true);
         setPeriodData([]);
+        const diaryUrl =  isTeacher ? `${endpoints.generalDairy.dairyList}?branch=${branchId}&grades=${gradeId}&sections=${sectionIds}&page=${page}&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}${activeTab !== 0? ('&dairy_type='+activeTab) : ''}`
+            : `${endpoints.generalDairy.dairyList}?page=${page}&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}${activeTab !== 0? ('&dairy_type='+activeTab) : ''}`;
         axiosInstance
-            .get(
-                `${endpoints.generalDairy.dairyList
-                }?branch=${branchId}&grades=${gradeId}&sections=${sectionIds}&page=${page}&start_date=${startDate.format(
-                    'YYYY-MM-DD'
-                )}&end_date=${endDate.format('YYYY-MM-DD')}${activeTab !== 0? ('&dairy_type='+activeTab) : ''}`
-            )
+            .get(diaryUrl)
             // axiosInstance.get(`${endpoints.generalDairy.dairyList}?start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}`)
             // axiosInstance.get(`${endpoints.generalDairy.dairyList}?grades=${gradeId}&sections=${sectionIds}`)
             .then((result) => {
@@ -91,21 +89,28 @@ const GeneralDairyList = () => {
     const handleDairyType = (type) => {
         setDairyType(type);
     }
-
+    const location = useLocation();
+    const isTeacher = location.pathname === '/dairy/teacher' ? true : false;
+    const path = isTeacher ? 'Teacher Diary' : 'Student Diary';
+    
     return (
         <>
             {loading ? <Loading message='Loading...' /> : null}
             <Layout>
                 <div>
                     <div style={{ width: '95%', margin: '20px auto' }}>
-                        <CommonBreadcrumbs componentName='Dairy' />
+                        <CommonBreadcrumbs
+                            componentName='Dairy'
+                            childComponentName={path}
+                        />
                     </div>
                 </div>
                 <GeneralDairyFilter
-                 handleDairyList={handleDairyList}
-                 setPeriodData={setPeriodData}
-                //  setCurrentTab={setCurrentTab}
-                  />
+                    handleDairyList={handleDairyList}
+                    setPeriodData={setPeriodData}
+                    isTeacher={isTeacher}
+                    //  setCurrentTab={setCurrentTab}
+                />
                 <Paper className={classes.root}>
                     {periodData?.length > 0 ? (
                         <Grid

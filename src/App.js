@@ -351,6 +351,12 @@ function App() {
                     <Route exact path='/general-dairy'>
                       {({ match }) => <GeneralDairyList match={match} />}
                     </Route>
+                    <Route exact path='/dairy/student'>
+                      {({ match }) => <GeneralDairyList match={match} />}
+                    </Route>
+                    <Route exact path='/dairy/teacher'>
+                      {({ match }) => <GeneralDairyList match={match} />}
+                    </Route>
                     <Route exact path='/general-dairy/student-view'>
                       {({ match }) => <GeneralDairyStudentList match={match} />}
                     </Route>

@@ -672,7 +672,7 @@ const CreateDailyDairy = (details, onSubmit) => {
         <div>
         <div className='descriptionBorder'>
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
-        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
                 <TextField
                     id="outlined-multiline-static"
                     label="Recap of previous class"
@@ -686,7 +686,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     onChange={e=> setRecap(e.target.value)}
                 />
             </Grid>
-                <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
                 <TextField
                     id="outlined-multiline-static"
                     label="Details of classwork"
@@ -700,7 +700,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     onChange={e=> setDetails(e.target.value)}
                 />
             </Grid>
-            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+            <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
                 <TextField
                     id="outlined-multiline-static"
                     label="Summary"
@@ -716,7 +716,7 @@ const CreateDailyDairy = (details, onSubmit) => {
             </Grid>
             </Grid>
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
-        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
                 <TextField
                     id="outlined-multiline-static"
                     label="Tools Used"
@@ -730,7 +730,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     onChange={e=> setTools(e.target.value)}
                 />
             </Grid>
-                <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
                 <TextField
                     id="outlined-multiline-static"
                     label="Homework"
@@ -745,7 +745,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                 />
             </Grid>
             
-            <Grid item xs={12} sm={5} className={isMobile ? '' : 'filterPadding'}>
+            <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
             <div style={{display:'flex'}} className='scrollable'>
             {filePath?.length>0  ?    
                     filePath?.map((file, i) => (
@@ -795,12 +795,12 @@ const CreateDailyDairy = (details, onSubmit) => {
             </Grid>
             </Grid>
         </div>
-        <div>
-            <Button 
-            style={{ marginLeft:'80%' }}
-             onClick={state.isEdit? handleEdited : handleSubmit}
-              className='submit_button'>SUBMIT</Button>
-        </div>
+          <div>
+              <Button 
+              style={{ marginLeft:'80%' }}
+              onClick={state.isEdit? handleEdited : handleSubmit}
+                className='submit_button'>SUBMIT</Button>
+          </div>
         </div>
       </Layout>
     </>
