@@ -177,7 +177,7 @@ class WriteBlog extends Component {
     this.setState({ parsedTextEditorContentLen: textWordCount })
     console.log(parsedTextEditorContent.length,"@@@@")
     if (parsedTextEditorContent && parsedTextEditorContent.length < wordCountLimit) {
-      const errorMsg = `Please write atleast ${wordCountLimit} words.Currently only ${parsedTextEditorContent.length} words have been written`
+      const errorMsg = `Please write atleast ${wordCountLimit} words.Currently only ${textWordCount} words have been written`
       return errorMsg
     }
     return false
