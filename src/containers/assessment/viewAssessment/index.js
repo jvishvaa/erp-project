@@ -9,6 +9,8 @@ import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './viewAssessment.css';
+import SidebarCounterPanel from './sidebarCounterPanel';
+import McqQuestion from './mcqQuestion';
 
 const ViewAssessment = () => {
   const [loading, setLoading] = useState(false);
@@ -50,15 +52,13 @@ const ViewAssessment = () => {
         <Container>
           <CommonBreadcrumbs componentName='Assessment' childComponentName='English' />
           <Grid container spacing={2}>
-            <Grid item md={8} xs={12}>
+            <Grid item md={9} xs={12}>
               <div className='main-question-panel'>
-                <h1>Main question panel</h1>
+                <McqQuestion />
               </div>
             </Grid>
-            <Grid item md={4} xs={12}>
-              <div className='side-question-panel'>
-                <h1>sidebar counter panel</h1>
-              </div>
+            <Grid item md={3} xs={12}>
+              <SidebarCounterPanel />
             </Grid>
           </Grid>
         </Container>
