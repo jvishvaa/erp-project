@@ -77,7 +77,7 @@ class WriteBlog extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      parsedTextEditorContentLen:0,
       image :'',
       // files:[],
       relatedBlog: true,
@@ -174,12 +174,16 @@ class WriteBlog extends Component {
     const parsedTextEditorContent=textEditorContent.split(' ')
     // const parsedTextEditorContent = textEditorContent.replace(/(<([^>]+)>)/ig, '').split(' ')
     const textWordCount = parsedTextEditorContent.length
+    console.log(textWordCount,"@@@")
     this.setState({ parsedTextEditorContentLen: textWordCount })
     console.log(parsedTextEditorContent.length,"@@@@")
     if (parsedTextEditorContent && parsedTextEditorContent.length < wordCountLimit) {
       const errorMsg = `Please write atleast ${wordCountLimit} words.Currently only ${textWordCount} words have been written`
       return errorMsg
     }
+    this.setState({ parsedTextEditorContentLen: textWordCount})
+    console.log(this.state.parsedTextEditorContentLen,"@@@")
+
     return false
   }
   
@@ -192,6 +196,8 @@ class WriteBlog extends Component {
     // eslint-disable-next-line no-param-reassign
     content = content.replace(/&nbsp;/g, '');
     this.setState({ textEditorContent: content, fadeIn: false });
+    const subceededWordCount = this.isWordCountSubceeded()
+
     // localStorage.setItem('blogContent', content);
   };
 
@@ -238,7 +244,8 @@ class WriteBlog extends Component {
   };
 
   PreviewBlogNav = () => {
-    let{genreId ,files, title ,textEditorContent,genreObj}=this.state
+    let{genreId ,files, title ,textEditorContent,genreObj,parsedTextEditorContentLen}=this.state
+    console.log(parsedTextEditorContentLen,"@@@")
 
     
     if(!genreId ){
@@ -271,8 +278,8 @@ class WriteBlog extends Component {
       creationDate,
       // files,
       genreName,
-      parsedTextEditorContentLen
     } = this.state;
+    console.log(parsedTextEditorContentLen,"@@@")
     this.props.history.push({
       pathname: '/blog/student/preview-blog',
       state: { studentName, creationDate, genreId, textEditorContent, title, files ,genreName,genreObj,parsedTextEditorContentLen},
