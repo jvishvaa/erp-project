@@ -23,8 +23,8 @@ const ViewMoreDailyDairyCard = ({
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const { setAlert } = useContext(AlertNotificationContext);
-  const sectionId = viewMoreData.section[0].id ?? '';
-  const gradeId =  viewMoreData.grade.id ?? 0;
+  //const sectionId = viewMoreData.section[0].id ?? '';
+  //const gradeId =  viewMoreData.grade.id ?? 0;
   console.log(grade +" === "+ section);
   console.log(viewMoreData.grade);
   const handleBulkDownload = () => {

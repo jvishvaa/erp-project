@@ -460,7 +460,7 @@ const LessonPlanGraphReport = ({
                   {...params}
                   variant='outlined'
                   label='Academic Year'
-                  placeholder='Academic Yaer'
+                  placeholder='Academic Year'
                 />
               )}
             />
