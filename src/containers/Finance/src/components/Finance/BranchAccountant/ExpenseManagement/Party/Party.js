@@ -11,7 +11,9 @@ import {
   Divider,
   TextField,
   Grid,
-  Typography
+  Typography,
+  Modal,
+  CircularProgress
 } from '@material-ui/core'
 
 import {
@@ -21,7 +23,8 @@ import {
 
 import * as actionTypes from '../../../store/actions'
 import styles from './party.styles'
-import { Modal, CircularProgress } from '../../../../../ui'
+import Layout from '../../../../../../../Layout'
+// import { Modal, CircularProgress } from '../../../../../ui'
 
 const initialState = {
   editName: null,
@@ -112,7 +115,7 @@ const Party = ({ user, alert, fetchPartyList, classes, ...props }) => {
   let circularProgress = null
   if (props.dataLoading) {
     circularProgress = (
-      <CircularProgress open />
+      <CircularProgress />
     )
   }
 
@@ -196,7 +199,7 @@ const Party = ({ user, alert, fetchPartyList, classes, ...props }) => {
   let addModal = null
   if (showAddModal) {
     addModal = (
-      <Modal open={showAddModal} click={() => setShowAddModal(false)} style={{ padding: '10px' }}>
+      <Modal open={showAddModal} onClose={() => setShowAddModal(false)} style={{ padding: '10px' }}>
         <Typography variant='h4' className={classes.modalHeader}>Add Party</Typography>
         <Divider className={classes.divider} />
         <Grid container spacing={8}>
@@ -276,7 +279,7 @@ const Party = ({ user, alert, fetchPartyList, classes, ...props }) => {
   let editModal = null
   if (showEditModal) {
     editModal = (
-      <Modal open={showEditModal} click={hideEditModalHandler} style={{ padding: '10px' }}>
+      <Modal open={showEditModal} onClose={hideEditModalHandler} style={{ padding: '10px' }}>
         <Typography variant='h4' className={classes.modalHeader}>Edit Party</Typography>
         <Divider className={classes.divider} />
         <Grid container spacing={8}>
@@ -380,7 +383,7 @@ const Party = ({ user, alert, fetchPartyList, classes, ...props }) => {
 
   let deleteModal = null
   if (showDeleteModal) {
-    deleteModal = (<Modal open={showDeleteModal} click={() => setShowDeleteModal(false)} small style={{ padding: '10px' }}>
+    deleteModal = (<Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false)}  style={{ padding: '10px' }}>
       <Typography variant='h4' className={classes.modalHeader}>Delete Party</Typography>
       <Divider className={classes.divider} />
       <div className={classes.deleteBtnContainer}>
@@ -401,6 +404,7 @@ const Party = ({ user, alert, fetchPartyList, classes, ...props }) => {
   }
 
   return (
+    <Layout>
     <React.Fragment>
       <div className={classes.buttonContainer}>
         <Button
@@ -452,6 +456,7 @@ const Party = ({ user, alert, fetchPartyList, classes, ...props }) => {
       {editModal}
       {deleteModal}
     </React.Fragment>
+    </Layout>
   )
 }
 

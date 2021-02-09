@@ -628,6 +628,10 @@ const Layout = ({ children, history }) => {
                   history.push('/finance/student/studentInfo')
                     break;
                   }
+              case 'Party List': {
+                  history.push('/finance/Expanse Management/PartyList')
+                    break;
+                  }
       default:
         break;
     }
