@@ -5,7 +5,7 @@
 /* eslint-disable react/prop-types */
 import React, { useContext, useState, useEffect, useRef, createContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {useParams} from "react-router-dom";
+import { useParams, withRouter } from 'react-router-dom';
 import { throttle, debounce } from 'throttle-debounce';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -38,13 +38,16 @@ import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import clsx from 'clsx';
-import { withRouter } from 'react-router-dom';
+
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Grow from '@material-ui/core/Grow';
+import Box from '@material-ui/core/Box';
+import Container from '@material-ui/core/Container';
 import { logout } from '../../redux/actions';
 import DrawerMenu from '../../components/drawer-menu';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
@@ -52,9 +55,6 @@ import UserDetails from './userDetails/user-details';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import useStyles from './useStyles';
-import Grow from '@material-ui/core/Grow';
-import Box from '@material-ui/core/Box';
-import Container from '@material-ui/core/Container';
 import './styles.scss';
 import logoMobile from '../../assets/images/logo_mobile.png';
 
@@ -185,7 +185,7 @@ const Layout = ({ children, history }) => {
   //   }, [currentPage]);
 
   const isMenuOpen = Boolean(anchorEl);
-  let isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -274,7 +274,7 @@ const Layout = ({ children, history }) => {
     >
       <MenuItem onClick={(e) => history.push('/profile')}>
         <IconButton aria-label='my profile' color='inherit'>
-          <PermIdentityIcon color='primary' style={{ fontSize: '2rem'}} />
+          <PermIdentityIcon color='primary' style={{ fontSize: '2rem' }} />
         </IconButton>
         <p style={{ color: '#014B7E' }}>My Profile</p>
       </MenuItem>
@@ -402,8 +402,8 @@ const Layout = ({ children, history }) => {
         history.push('/master-mgmt/message-type-table');
         break;
       }
-      case 'course-table':{
-        history.push('/course-list')
+      case 'course-table': {
+        history.push('/course-list');
         break;
       }
       case 'school-mapping': {
@@ -469,6 +469,14 @@ const Layout = ({ children, history }) => {
       }
       case 'Teacher Dairy': {
         history.push('/dairy/teacher');
+        break;
+      }
+      case 'Assessment': {
+        history.push('/assessment');
+        break;
+      }
+      case 'ViewAssessment': {
+        history.push('/assessment/view-assessment');
         break;
       }
       default:

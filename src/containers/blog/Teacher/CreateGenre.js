@@ -4,6 +4,8 @@ import { withRouter } from 'react-router-dom';
 import Layout from '../../Layout'
 import {  TextField, Grid, Button, useTheme,Tabs, Tab ,Typography, Card, CardContent,CardHeader} from '@material-ui/core'
 import moment from 'moment';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { makeStyles } from '@material-ui/core/styles';
@@ -71,6 +73,15 @@ const CreateGenre = (props) => {
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const wider = isMobile ? '-10px 0px' : '0 0 -1rem 1.5%'
   const widerWidth = isMobile ? '90%' : '85%'
+  const [grade, setGrade] = useState([]);
+  const [selectedGrades, setSelectedGrades] = useState('');
+  const [moduleId, setModuleId] = useState(68);
+  const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
+
+  const [gradeList, setGradeList] = useState([]);
+
+  const branchId=roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0]
+  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   
@@ -245,11 +256,55 @@ const handleGenreNameChange = (e) => {
 const handleGenreNameEditChange = (e) => {
   setGenreNameEdit(e.target.value);
 };
-
-useEffect(() => {
-   getGenreList();
+const handleGrade = (event, value) => {
+  if (value) {
+    setSelectedGrades(value.grade_id);
+  } else {
+      setSelectedGrades();
+  }
+  }
+  useEffect(() => {
+    if (branchId) {
+      setGrade([]);
+      getGradeApi();
+    }
+    getGenreList();
    getGenreInActiveList();
-}, []);
+  }, [branchId]);
+
+  const getGradeApi = async () => {
+    try {
+      setLoading(true);
+      const result = await axiosInstance.get(
+        `${endpoints.communication.grades}?branch_id=${branchId}&module_id=${moduleId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const resultOptions = [];
+      if (result.status === 200) {
+        result.data.data.map((items) => resultOptions.push(items.grade__grade_name));
+        if (branchId) {
+          setGrade(resultOptions);
+        }
+        setGradeList(result.data.data);
+        setLoading(false);
+      } else {
+        setAlert('error', result.data.message);
+        setLoading(false);
+      }
+    } catch (error) {
+      setAlert('error', error.message);
+      setLoading(false);
+    }
+  };
+
+// useEffect(() => {
+//    getGenreList();
+//    getGenreInActiveList();
+// }, []);
 const getGenreList = () => {
   axiosInstance.get(`${endpoints.blog.genreList}?is_delete=${
     'False'
@@ -275,6 +330,29 @@ const getGenreInActiveList = () => {
       <Layout>
 
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
+        <Grid item xs={12} sm={3}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+                    { gradeList.length ? ( 
+                      <Autocomplete
+              style={{ width: '100%' }}
+              size='small'
+              onChange={handleGrade}
+              id='grade'
+              className='dropdownIcon'
+              options={gradeList}
+              filterSelectedOptions
+              getOptionLabel={(option) => option?.grade__grade_name}
+
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Grade'
+                  placeholder='Grade'
+                />
+              )}
+            />
+               ) : null }
+                    </Grid>
           <Grid item xs={12} sm={3}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
               <TextField
                 id='outlined-helperText'

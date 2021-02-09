@@ -111,7 +111,7 @@ class StudentDashboard extends Component {
         this.getBlog(status)})
     }
     else if (tabValue === 1){
-      this.setState({status:[3,7,6],pageNo:page},()=>{
+      this.setState({status:[3,7,6,4],pageNo:page},()=>{
         this.getBlog(status)})
     }
     else if (tabValue === 2){
@@ -142,7 +142,7 @@ class StudentDashboard extends Component {
       })
     }
     else if (newValue === 1){
-      this.setState({status:[3,7,6]},()=>{
+      this.setState({status:[3,7,6,4]},()=>{
         this.getBlog(this.state.status);
       })
     }
@@ -185,15 +185,15 @@ class StudentDashboard extends Component {
       .catch((error) => {
       });
   };
-  handleFilter = () =>
-  {
+  handleFilter = () => {
     const { pageNo, pageSize ,tabValue,startDate,endDate} = this.state;
+    console.log(startDate,endDate,"@@@@")
     let tabStatus= []
     if(tabValue === 0){
       tabStatus= [8,5]
     }
     else if (tabValue === 1){
-      tabStatus = [3,6]
+      tabStatus = [3,6,4]
     }
     else if (tabValue === 2){
       tabStatus = [2]

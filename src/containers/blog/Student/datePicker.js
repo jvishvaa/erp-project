@@ -14,57 +14,35 @@ const MobileDatepicker = (props) => {
   return (
     <div className='date-ranger'>
       <LocalizationProvider dateAdapter={MomentUtils}>
-        <ClickAwayListener
-          onClickAway={() => {
+        <DateRangePicker
+          startText='Select-date-range'
+          value={dateRange}
+          onChange={(newValue) => {
+            const [startDate, endDate] = newValue;
+            const sevenDaysAfter = moment(startDate).add(6, 'days');
+            setDateRange([startDate, sevenDaysAfter]);
+            props.handleStartDateChange(startDate);
+            props.handleEndDateChange(sevenDaysAfter);
             setDatePopperOpen(false);
           }}
-        >
-          <DateRangePicker
-            disableCloseOnSelect={false}
-            startText='Date Range'
-            PopperProps={{ open: datePopperOpen }}
-            // endText='End-date'
-            value={dateRange}
-            keyboardIcon={<DateRangeIcon />}
-            // calendars='1'
-            onChange={(newValue) => {
-              const [startDate, endDate] = newValue;
-              const sevenDaysAfter = moment(startDate).add(6, 'days');
-              setDateRange([startDate, sevenDaysAfter]);
-              props.handleStartDateChange(startDate);
-              props.handleEndDateChange(sevenDaysAfter);
-              setDatePopperOpen(false);
-            }}
-            renderInput={({ inputProps, ...startProps }, endProps) => {
-              return (
-                <>
-                  <TextField
-                    {...startProps}
-                    InputProps={{
-                      ...inputProps,
-                      value: `${moment(inputProps.value).format('DD-MM-YYYY')} - ${moment(
-                        endProps.inputProps.value
-                      ).format('DD-MM-YYYY')}`,
-                      readOnly: true,
-                      endAdornment: (
-                        <InputAdornment position='start'>
-                          <DateRangeIcon style={{ width: '35px' }} color='primary' />
-                        </InputAdornment>
-                      ),
-                    }}
-                    fullWidth
-                    size='small'
-                    style={{ minWidth: '250px' }}
-                    onClick={() => {
-                      setDatePopperOpen(true);
-                    }}
-                  />
-                </>
-              );
-            }}
-          />
-        </ClickAwayListener>
-      </LocalizationProvider>
+          renderInput={({ inputProps, ...startProps }, endProps) => {
+            return (
+              <>
+                <TextField
+                  {...startProps}
+                  inputProps={{
+                    ...inputProps,
+                    value: `${inputProps.value} - ${endProps.inputProps.value}`,
+                    readOnly: true,
+                  }}
+                  size='small'
+                  style={{ minWidth: '100%' }}
+                />
+              </>
+            );
+          }}
+        />
+            </LocalizationProvider>
     </div>
   );
 };

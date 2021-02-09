@@ -121,7 +121,7 @@ class EditBlog extends Component {
       image: 
       this.props.location.state.thumbnail && this.props.location.state.thumbnail.length !== 0
           ? this.props.location.state.thumbnail
-          : '',
+          : this.props.location.state.image,
       TITLE_CHARACTER_LIMIT: 100,
       Preview: false,
       detail: this.props.location.state.detail,
@@ -139,6 +139,7 @@ class EditBlog extends Component {
           : [],
           wordCountLimit:0
     };
+    console.log(this.props,"@@@")
   }
   static contextType = AlertNotificationContext
 
@@ -157,9 +158,13 @@ class EditBlog extends Component {
   }
 
   listGenre = () => {
+    let { roleDetails } = this.state;
+    const erpUserId = roleDetails.role_details.erp_user_id;
     axios
       .get(`${endpoints.blog.genreList}?is_delete=${
         'False'
+      }&erp_user_id=${
+        erpUserId
       }`)
       .then((res) => {
         this.setState({ genreList: res.data.result });
@@ -174,7 +179,7 @@ class EditBlog extends Component {
     const textWordCount = parsedTextEditorContent.length
     this.setState({ parsedTextEditorContentLen: textWordCount })
     if (parsedTextEditorContent && parsedTextEditorContent.length < wordCountLimit) {
-      const errorMsg = `Please write atleast ${wordCountLimit} words.Currently only ${parsedTextEditorContent.length} words have been written`
+      const errorMsg = `Please write atleast ${wordCountLimit} words.Currently only ${textWordCount} words have been written`
       return errorMsg
     }
     return false
@@ -204,6 +209,8 @@ class EditBlog extends Component {
     // eslint-disable-next-line no-param-reassign
     content = content.replace(/&nbsp;/g, '');
     this.setState({ textEditorContent: content, fadeIn: false });
+    const subceededWordCount = this.isWordCountSubceeded()
+
     // localStorage.setItem('blogContent', content);
   };
 
@@ -246,9 +253,25 @@ class EditBlog extends Component {
   };
 
   PreviewBlogNav = () => {
-    let{genreId ,files, title ,textEditorContent ,image}=this.state
-    if(!genreId ||!title ||!textEditorContent || !files.length> 0 && !image ){
-      this.context.setAlert('error',"please fill all fields")
+    let{genreId ,files, title ,textEditorContent ,image,parsedTextEditorContentLen}=this.state
+    // if(!genreId ||!title ||!textEditorContent || !files.length> 0 && !image ){
+    //   this.context.setAlert('error',"please fill all fields")
+    //   return
+    // }
+    if(!genreId ){
+      this.context.setAlert('error',"please select genre")
+      return
+    }
+    if(!files.length> 0 && !image ){
+      this.context.setAlert('error',"please upload image")
+      return
+    }
+    if(!title){
+      this.context.setAlert('error',"please enter title to the blog ")
+      return
+    }
+    if(!textEditorContent){
+      this.context.setAlert('error',"please enter description to the blog")
       return
     }
     if (files.length> 0 && image){
@@ -265,20 +288,21 @@ class EditBlog extends Component {
       this.context.setAlert('error',subceededWordCount)
       return
     }
-
     const {
       // textEditorContent,
       // title,
       // genreId,
       studentName,
       creationDate,blogId,
+      genreObj,
       // image,
       // files,
       genreName
     } = this.state;
+    console.log(genreObj,"@@@@")
     this.props.history.push({
       pathname: '/blog/student/preview-edit-blog',
-      state: { studentName, creationDate, genreId, textEditorContent, title, files,blogId,image },
+      state: {genreName,genreObj, studentName, creationDate, genreId, textEditorContent, title, files,blogId,image,parsedTextEditorContentLen },
     });
   };
   handleClearThumbnail = () => {

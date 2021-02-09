@@ -177,7 +177,7 @@ class TeacherBlog extends Component {
               <CommonBreadcrumbs componentName='Blog' />
               <div className='create_group_filter_container'>
                 <Grid container>
-                  <Grid item xs={12} sm={4}>
+                  {/* <Grid item xs={12} sm={4}>
                     <div className='mobile-date-picker'>
                       <MobileDatepicker
                         onChange={(date) => this.handleEndDateChange(date)}
@@ -185,7 +185,7 @@ class TeacherBlog extends Component {
                         handleEndDateChange={this.handleEndDateChange}
                       />
                     </div>
-                  </Grid>
+                  </Grid> */}
                   {/* <Grid item xs={12} sm={4}>
                     <div className='blog_input'>
                       <TextField
