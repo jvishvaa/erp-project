@@ -55,6 +55,7 @@ const ViewAssessment = () => {
             <Grid item md={9} xs={12}>
               <div className='main-question-panel'>
                 <McqQuestion />
+                {/* <Button className='submit-button'></Button> */}
               </div>
             </Grid>
             <Grid item md={3} xs={12}>

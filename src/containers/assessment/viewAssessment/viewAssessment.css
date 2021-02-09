@@ -1,7 +1,63 @@
 .main-question-panel {
   border: 1px solid #ff6b6b;
+  padding: 10px;
+  border-radius: 5px;
+  color: #014b7e;
 }
 
-.side-question-panel {
-  border: 1px solid #ff6b6b;
+.question-header {
+  margin-bottom: 15px;
 }
+
+.question-numbers {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ececec;
+  padding: 10px;
+  font-weight: bold;
+}
+
+.mcq-question-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column;
+  gap: 10px;
+
+  margin: 0 auto;
+}
+
+.mcq-question-wrapper img {
+  margin-bottom: 20px;
+}
+
+.mcq-options {
+  border: 1px solid #ff6b6b;
+  border-radius: 5px;
+  background: #fceeee;
+  padding: 10px;
+  width: 100%;
+  text-align: center;
+  max-width: 400px;
+  cursor: pointer;
+}
+.mcq-options:hover {
+  background: #ffdddd;
+}
+
+.question-submit-btn {
+  border: 1px solid #055888;
+  border-radius: 5px;
+  background: #055888;
+  padding: 10px;
+  width: 100%;
+  text-align: center;
+  max-width: 400px;
+  cursor: pointer;
+  color: #fff;
+  margin-top: 20px;
+}
+/* .mcq-question-wrapper h3 {
+
+} */
