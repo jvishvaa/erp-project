@@ -77,7 +77,9 @@ class PreviewEditBlog extends Component {
       files: this.props.location.state.files,
       blogId:this.props.location.state.blogId,
       genreName:this.props.location.state.genreName,
-      image:this.props.location.state.image
+      image:this.props.location.state.image,
+      parsedTextEditorContentLen:this.props.location.state.parsedTextEditorContentLen,
+      genreObj:this.props.location.state.genreObj
     };
   }
 
@@ -91,7 +93,7 @@ class PreviewEditBlog extends Component {
 
 
   submitBlog = (type) => {
-    const { title, content, files, genreId ,blogId,image} = this.state;
+    const { title, content, files, genreId ,blogId,image,parsedTextEditorContentLen} = this.state;
     const formData = new FormData();
     for (var i = 0; i < files.length; i++) {
       formData.append('thumbnail',files[i] || image);
@@ -100,6 +102,7 @@ class PreviewEditBlog extends Component {
     formData.set('blog_id', blogId);
     formData.set('content', content);
     formData.set('genre_id', genreId);
+    formData.set('word_count',parsedTextEditorContentLen)
     formData.set('status', type == 'Draft' ? 2 : 8);
 
     axios
@@ -115,6 +118,13 @@ class PreviewEditBlog extends Component {
       })
       .catch((error) => {
       });
+  };
+  EditBlogNav = () => {
+    const { content, title, files ,genreId,genreName,genreObj,image} = this.state;
+    this.props.history.push({
+      pathname: '/blog/student/edit-blog',
+      state: { content, title, files,genreId , genreName,genreObj,image},
+    });
   };
 
   render() {
@@ -172,6 +182,14 @@ class PreviewEditBlog extends Component {
                           
                         </CardContent>
                         <CardActions>
+                        <Button
+                            style={{ width: 150 }}
+                            size='small'
+                            color='primary'
+                            onClick={this.EditBlogNav}
+                          >
+                            Edit
+                          </Button>
                         
                           <Button
                             style={{ width: 150 }}
