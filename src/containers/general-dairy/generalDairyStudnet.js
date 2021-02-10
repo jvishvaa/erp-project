@@ -90,9 +90,9 @@ const GeneralDairyStudentList = () => {
                     </div>
                 </div>
                 <GeneralDairyStudentView
-                 handleDairyList={handleDairyList}
-                 setPeriodData={setPeriodData}
-                  />
+                    handleDairyList={handleDairyList}
+                    setPeriodData={setPeriodData}
+                />
                 <Paper className={classes.root}>
                     {periodData?.length > 0 ? (
                         <Grid

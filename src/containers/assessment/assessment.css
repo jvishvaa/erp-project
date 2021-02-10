@@ -1,0 +1,9 @@
+.assessment_heading {
+  color: #000;
+}
+
+@media screen and (max-width: 768px) {
+  .cardsContainer {
+    flex-direction: column;
+  }
+}

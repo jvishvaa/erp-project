@@ -78,8 +78,10 @@ class ContentView extends Component {
       date: this.props.location.state.creationDate,
       files: this.props.location.state.files,
       genreName:this.props.location.state.genreName,
-      genreObj:this.props.location.state.genreObj
+      genreObj:this.props.location.state.genreObj,
+      parsedTextEditorContentLen:this.props.location.state.parsedTextEditorContentLen,
     };
+    console.log(this.props,"@@@@@@")
   }
 
   componentDidMount() {
@@ -97,7 +99,8 @@ class ContentView extends Component {
   };
 
   submitBlog = (type) => {
-    const { title, content, files, genreId } = this.state;
+    const { title, content, files, genreId ,parsedTextEditorContentLen} = this.state;
+    console.log(parsedTextEditorContentLen,"@@@")
     const formData = new FormData();
     for (var i = 0; i < files.length; i++) {
       formData.append('thumbnail',files[i]);
@@ -105,7 +108,7 @@ class ContentView extends Component {
     formData.set('title', title);
     formData.set('content', content);
     // formData.set('thumbnail', files[0]);
-    // formData.append('subject_id', subject_id);
+    formData.append('word_count', parsedTextEditorContentLen);
     formData.set('genre_id', genreId);
     formData.set('status', type == 'Draft' ? 2 : 8);
 

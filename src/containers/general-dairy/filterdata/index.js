@@ -44,6 +44,7 @@ const StyledTab = withStyles((theme) => ({
 const GeneralDairyFilter = ({
   handleDairyList,
   setPeriodData,
+  isTeacher,
   // setCurrentTab,
   setViewMore,
   setViewMoreData,
@@ -93,7 +94,7 @@ const [sectionIds,setSectionIds] = useState([])
   const [datePopperOpen, setDatePopperOpen] = useState(false);
 
   const [teacherModuleId, setTeacherModuleId] = useState(null);
-const history=useHistory()
+  const history=useHistory()
 
   const [filterData, setFilterData] = useState({
     grade: '',
@@ -128,13 +129,13 @@ const history=useHistory()
   
   };
   const handleActiveTab = (tab) => {
-    console.log("tab : " +tab);
     setActiveTab(tab);
   }
   useEffect(() => {
     handleFilter();
   }, [activeTab])
 
+  let sectionId = [];
   const handleGrade = (event, value) => {
     setFilterData({ ...filterData, grade: '', subject: '', chapter: '' });
     // setOverviewSynopsis([]);
@@ -142,33 +143,39 @@ const history=useHistory()
       // https://erpnew.letseduvate.com/qbox/academic/general-dairy-messages/?branch=5&grades=25&sections=44&page=1&start_date=2021-02-02&end_date=2021-02-08&dairy_type=2
         setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
         axiosInstance.get(`${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}`)
-            .then(result => {
-                if (result.data.status_code === 200) {
-                    //console.log(result.data)
-                    setSectionDropdown(result.data.data);
-                }
-                else {
-                    setAlert('error', result.data.message);
-                   setSectionDropdown([])
-                }
-            })
-            .catch(error => {
-                setAlert('error', error.message);
-                setSectionDropdown([])
-            })
+        .then(result => {
+          if (result.data.status_code === 200) {
+            //console.log(result.data)
+            setSectionDropdown(result.data.data);
+          }
+          else {
+            setAlert('error', result.data.message);
+            setSectionDropdown([])
+          }
+        })
+        .catch(error => {
+          setAlert('error', error.message);
+          setSectionDropdown([]);
+        })
     }
     else {
-        setSectionDropdown([])
+      setSectionDropdown([])
     }
 };
 
 
   const handleSection = (event, value) => {
+    sectionId = [];
     setFilterData({ ...filterData });
     if (value.length) {
-      const ids = value.map((el) => el.id);
+      const ids = value.map((el) => {
+        sectionId.push(el.id);
+        return el.section_id
+      });
+      console.log(sectionId);
+      //sectionId = value.map((el) => el.id);
     //   setSubjectIds(ids);
-    setSectionIds(ids)
+      setSectionIds(ids)
     }
   };
 
@@ -230,65 +237,72 @@ const history=useHistory()
       spacing={isMobile ? 3 : 5}
       style={{ width: widerWidth, margin: wider }}
     >
-      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-        <Autocomplete
-          style={{ width: '100%' }}
-          size='small'
-          onChange={handleBranch}
-          id='academic-year'
-          className='dropdownIcon'
-          value={filterData?.branch}
-          options={branchDropdown}
-          getOptionLabel={(option) => option?.branch_name}
-          filterSelectedOptions
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant='outlined'
-              label='Branch'
-              placeholder='Branch'
-            />
-          )}
-        />
-      </Grid>
-      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-        <Autocomplete
-          style={{ width: '100%' }}
-          size='small'
-          onChange={handleGrade}
-          id='volume'
-          className='dropdownIcon'
-          value={filterData?.grade}
-          options={gradeDropdown}
-          getOptionLabel={(option) => option?.grade__grade_name}
-          filterSelectedOptions
-          renderInput={(params) => (
-            <TextField {...params} variant='outlined' label='Grade' placeholder='Grade' />
-          )}
-        />
-      </Grid>
-      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-        <Autocomplete
-          multiple
-          style={{ width: '100%' }}
-          size='small'
-          onChange={handleSection}
-          id='subj'
-          className='dropdownIcon'
-          // value={filterData?.subject}
-          options={sectionDropdown}
-          getOptionLabel={(option) => option?.section__section_name}
-          filterSelectedOptions
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant='outlined'
-              label='Section'
-              placeholder='Section'
-            />
-          )}
-        />
-      </Grid>
+      {isTeacher && (
+        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+          <Autocomplete
+            style={{ width: '100%' }}
+            size='small'
+            onChange={handleBranch}
+            id='academic-year'
+            className='dropdownIcon'
+            value={filterData?.branch}
+            options={branchDropdown}
+            getOptionLabel={(option) => option?.branch_name}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Branch'
+                placeholder='Branch'
+              />
+            )}
+          />
+        </Grid>
+      )}
+      
+      {isTeacher && (
+        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+          <Autocomplete
+            style={{ width: '100%' }}
+            size='small'
+            onChange={handleGrade}
+            id='volume'
+            className='dropdownIcon'
+            value={filterData?.grade}
+            options={gradeDropdown}
+            getOptionLabel={(option) => option?.grade__grade_name}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField {...params} variant='outlined' label='Grade' placeholder='Grade' />
+            )}
+          />
+        </Grid>
+      )}
+      { isTeacher && (
+        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+          <Autocomplete
+            multiple
+            style={{ width: '100%' }}
+            size='small'
+            onChange={handleSection}
+            id='subj'
+            className='dropdownIcon'
+            // value={filterData?.subject}
+            options={sectionDropdown}
+            getOptionLabel={(option) => option?.section__section_name}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Section'
+                placeholder='Section'
+              />
+            )}
+          />
+        </Grid>
+      )}
       <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <LocalizationProvider dateAdapter={MomentUtils}>
           <DateRangePicker
@@ -345,33 +359,37 @@ const history=useHistory()
           FILTER
         </Button>
       </Grid>
-      <Grid item xs={6} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
-        <Button
-          variant='contained'
-          style={{ color: 'white' }}
-          color='primary'
-          className='custom_button_master'
-          size='medium'
-          type='submit'
-          onClick={()=>history.push("/create/general-dairy")}
-        >
-          CREATE GENERAL DAIRY
-        </Button>
-      </Grid>
-      <Grid item xs={6} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
-        <Button
-          variant='contained'
-          style={{ color: 'white' }}
-          color='primary'
-          className='custom_button_master'
-          size='medium'
-          type='submit'
-          onClick={()=>history.push("/create/daily-dairy")}
-        >
-          CREATE DAILY DAIRY
-        </Button>
-      </Grid>
-      <Grid item xs={12} sm={6}>
+      {isTeacher && (
+        <Grid item xs={6} sm={4} className={isMobile ? '' : 'addButtonPadding'}>
+          <Button
+            variant='contained'
+            style={{ color: 'white' }}
+            color='primary'
+            className='custom_button_master'
+            size='medium'
+            type='submit'
+            onClick={()=>history.push("/create/general-dairy")}
+          >
+            CREATE GENERAL DAIRY
+          </Button>
+        </Grid>
+      )}
+      {isTeacher && (
+        <Grid item xs={6} sm={4} className={isMobile ? '' : 'addButtonPadding'}>
+          <Button
+            variant='contained'
+            style={{ color: 'white' }}
+            color='primary'
+            className='custom_button_master'
+            size='medium'
+            type='submit'
+            onClick={()=>history.push("/create/daily-dairy")}
+          >
+            CREATE DAILY DAIRY
+          </Button>
+        </Grid>
+      )}
+      <Grid item xs={12} sm={12}>
             <StyledTabs
               variant='standard'
               value={currentTab}
