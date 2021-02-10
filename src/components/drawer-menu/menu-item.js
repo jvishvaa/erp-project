@@ -26,6 +26,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Configuration', Path: '/homework/admin' },
     { name: 'Student Homework', Path: '/homework/student' },
     { name: 'Teacher Homework', Path: '/homework/teacher' },
+    { name: 'Assessment', Path: '/assessment' },
     { name: 'Communication', Path: '/communication' },
     { name: 'Add Group', Path: '/communication/addgroup' },
     { name: 'View&Edit Group', Path: '/communication/viewgroup' },

@@ -134,11 +134,10 @@ const UpcomingClasses = () => {
     const [selected, setSelected] = React.useState();
     const [classTypeList, setClassTypeList] = React.useState([
         { id: 0, type: 'Compulsory Class' },
-        { id: 1, type: 'Optional Class' },
-        { id: 2, type: 'Special Class' },
-        { id: 3, type: 'Parent Class' },
-    ]
-    );
+        { id: 1, type: 'Special Class' },
+        { id: 2, type: 'Parent Class' },
+        { id: 3, type: 'Optional Class' },
+    ]);
 
     const [classType, setClassType] = React.useState('');
     const [startDate, setStartDate] = React.useState(null);
@@ -154,6 +153,7 @@ const UpcomingClasses = () => {
     const getClasses = () => {
         // student view api
         console.log(location.pathname);
+        /*
         setClassesdata([]);
         setIsLoding(false);
         if (location.pathname === "/online-class/attend-class") {
@@ -164,11 +164,13 @@ const UpcomingClasses = () => {
                 })
                 .catch((error) => console.log(error))
         }
+        */
         // teacher view api
         setClassesdata([]);
         setIsLoding(false);
         if (location.pathname === "/online-class/view-class") {
-            axiosInstance.get('erp_user/teacher_online_class/?module_id=4&page_number=1&page_size=15&branch_ids=5&class_type=' + classType?.id)
+            // + classType?.id
+            axiosInstance.get('erp_user/teacher_online_class/?module_id=4&page_number=1&page_size=15&branch_ids=5&class_type=1')
                 .then((res) => {
                     setClassesdata(res.data.data);
                     setIsLoding(true);
