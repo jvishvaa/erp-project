@@ -640,6 +640,18 @@ const Layout = ({ children, history }) => {
                   history.push('/finance/ManagePayments')
                     break;
                   }
+              case 'Fee Structure': {
+                  history.push('/finance/FeeStructure')
+                    break;
+                  }
+              case 'Books & Uniform': {
+                  history.push('/finance/BooksAndUniform')
+                    break;
+                  }
+              case 'Shipping Payment': {
+                  history.push('/finance/ShippingPayment')
+                      break;
+                    }
       default:
         break;
     }

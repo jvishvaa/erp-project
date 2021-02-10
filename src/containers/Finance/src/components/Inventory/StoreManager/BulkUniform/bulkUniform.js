@@ -26,6 +26,7 @@ import chestPic from '../../../../assets/chestNew.jpeg'
 import waistPic from '../../../../assets/waist.jpeg'
 import shirtSize from '../../../../assets/shirt_size.jpeg'
 import pantSize from '../../../../assets/pant_size.jpeg'
+import Layout from '../../../../../../Layout'
 
 const styles = theme => ({
   button: {
@@ -468,6 +469,7 @@ const BulkUniform = ({ classes, session, fetchAllSections, alert, user, fetchGra
   }
 
   return (
+    <Layout>
     <div className={classes.container}>
       <Grid container spacing={3}>
         <Grid item xs={3}>
@@ -526,6 +528,7 @@ const BulkUniform = ({ classes, session, fetchAllSections, alert, user, fetchGra
       { showPantChart ? getPantChart() : null }
       { dataLoading ? <CircularProgress open /> : null }
     </div>
+    </Layout>
   )
 }
 const mapStateToProps = state => ({

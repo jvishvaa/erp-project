@@ -143,7 +143,7 @@ const ShippingAmount = ({ fetchShipping, shippingDetails, deliveryList, trnsId, 
       return
     }
     if (zipcode.length !== 6) {
-      alert.warning('Enter 6 digits Zip code')
+      // alert.warning('Enter 6 digits Zip code')
       return
     }
     let data = {

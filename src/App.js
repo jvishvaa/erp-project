@@ -129,7 +129,9 @@ import FinancialLedgerReport from './containers/Finance/src/components/Finance/B
 import Party from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/Party/Party.js'
 import StudentShuffleReq from './containers/Finance/src/components/Finance/ApprovalRequests/StudentShuffle/studentShuffleReq.js'
 import ManagePayment from './containers/Finance/src/components/Finance/student/managePayment/managePayment.js'
-
+import FeeStructure from './containers/Finance/src/components/Finance/student/FeeStructure/feeStructure.js'
+import BulkUniform from './containers/Finance/src/components/Inventory/StoreManager/BulkUniform/bulkUniform.js'
+import ShippingAmount from './containers/Finance/src/components/Inventory/BranchAccountant/shippingAmount/ShippingAmount.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -535,6 +537,18 @@ function App() {
                 </Route>
                 <Route exact path= '/finance/Approval/Requests/StudentShuffleRequest'>
                   {({ match }) => <StudentShuffleReq match={match} />}
+                </Route>
+                <Route exact path= '/finance/ManagePayments'>
+                  {({ match }) => <ManagePayment match={match} />}
+                </Route>
+                <Route exact path= '/finance/FeeStructure'>
+                  {({ match }) => <FeeStructure match={match} />}
+                </Route>
+                <Route exact path= '/finance/BooksAndUniform'>
+                  {({ match }) => <BulkUniform match={match} />}
+                </Route>
+                <Route exact path= '/finance/ShippingPayment'>
+                  {({ match }) => <ShippingAmount match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

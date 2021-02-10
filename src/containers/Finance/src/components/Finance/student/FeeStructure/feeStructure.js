@@ -14,6 +14,7 @@ import { apiActions } from '../../../../_actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import DefaultView from './defaultView'
 import DueDateWise from './dueDateWise'
+import Layout from '../../../../../../Layout'
 
 function TabContainer ({ children, dir }) {
   return (
@@ -109,6 +110,7 @@ class FeeStructure extends Component {
       )
     }
     return (
+      <Layout>
       <React.Fragment>
         <Grid >
           <Grid.Row>
@@ -154,6 +156,7 @@ class FeeStructure extends Component {
         </Grid>
         {this.props.dataLoading ? <CircularProgress open /> : null}
       </React.Fragment>
+      </Layout>
     )
   }
 }

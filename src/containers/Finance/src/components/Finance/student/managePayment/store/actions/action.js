@@ -36,7 +36,7 @@ export const isPartialPay = (payload) => {
         if (err.response && err.response.data && err.response.data.err_msg && (err.response.status === 400 || err.response.status === 404)) {
           payload.alert.warning(err.response.data.err_msg)
         } else {
-          payload.alert.warning('Something Went Wrong!')
+          // payload.alert.warning('Something Went Wrong!')
         }
         console.log(err)
       })
@@ -92,7 +92,7 @@ export const fetchFeeDetailsList = (payload) => {
         if (err.response && err.response.data && err.response.data.err_msg && (err.response.status === 400 || err.response.status === 404)) {
           payload.alert.warning(err.response.data.err_msg)
         } else {
-          payload.alert.warning('Something Went Wrong!')
+          // payload.alert.warning('Something Went Wrong!')
         }
         console.log(err)
       })
@@ -118,9 +118,9 @@ export const fetchMakePaymentList = (payload) => {
       }).catch(err => {
         dispatch(actionTypes.dataLoaded())
         if (err.response && err.response.data && err.response.data.err_msg && (err.response.status === 400 || err.response.status === 404)) {
-          payload.alert.warning(err.response.data.err_msg)
+          // payload.alert.warning(err.response.data.err_msg)
         } else {
-          payload.alert.warning('Something Went Wrong!')
+          // payload.alert.warning('Something Went Wrong!')
         }
         console.log(err)
       })
@@ -146,9 +146,9 @@ export const makePaymentStudent = (payload) => {
       }).catch(err => {
         dispatch(actionTypes.dataLoaded())
         if (err.response && err.response.data && err.response.data.err_msg && (err.response.status === 400 || err.response.status === 404)) {
-          payload.alert.warning(err.response.data.err_msg)
+          // payload.alert.warning(err.response.data.err_msg)
         } else {
-          payload.alert.warning('Something Went Wrong!')
+          // payload.alert.warning('Something Went Wrong!')
         }
         console.log(err)
       })
@@ -174,9 +174,9 @@ export const fetchAllTransactionsList = (payload) => {
     }).catch(err => {
       console.log(err)
       if (err.response && err.response.data && err.response.data.err_msg && (err.response.status === 400 || err.response.status === 404)) {
-        payload.alert.warning(err.response.data.err_msg)
+        // payload.alert.warning(err.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
     })
@@ -201,9 +201,9 @@ export const statusMakePaymentList = (payload) => {
     }).catch(err => {
       console.log(err)
       if (err.response && err.response.data && err.response.data.err_msg && (err.response.status === 400 || err.response.status === 404)) {
-        payload.alert.warning(err.response.data.err_msg)
+        // payload.alert.warning(err.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
     })
@@ -233,9 +233,9 @@ export const cancelPaymentStudent = (payload) => {
       dispatch(actionTypes.dataLoaded())
       console.log(error)
       if (error.response && (error.response.status === 400 || error.response.status === 404)) {
-        payload.alert.warning(error.response.data.err_msg)
+        // payload.alert.warning(error.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
     })
   }

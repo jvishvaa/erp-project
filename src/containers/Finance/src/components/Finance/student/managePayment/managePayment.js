@@ -18,6 +18,7 @@ import { apiActions } from '../../../../_actions'
 // import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import Financepeer from '../../../../assets/financepeer.jpg'
 import Financegray from '../../../../assets/GQ_OIS_ERP.png'
+import Layout from '../../../../../../Layout'
 
 function TabContainer ({ children, dir }) {
   return (
@@ -148,6 +149,7 @@ class ManagePayment extends Component {
       )
     }
     return (
+      <Layout>
       <Grid conatiner spacing={3} style={{ padding: 15 }}>
         <Grid conatiner spacing={3} border={2}>
           {
@@ -197,6 +199,7 @@ class ManagePayment extends Component {
         </Grid>
         {this.props.dataLoading ? <CircularProgress open /> : null}
       </Grid>
+      </Layout>
     )
   }
 }
