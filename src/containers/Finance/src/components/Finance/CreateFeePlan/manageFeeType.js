@@ -600,14 +600,14 @@ class ManageFeeType extends Component {
           <Grid item xs='12'>
             {this.props.installmentList.length > 0
               ? <React.Fragment>
-                <label style={{ fontSize: 14 }} >Installment Details</label>
+                <label style={{ fontSize: 16 }} >Installment Details</label>
                 <div className='clearfix'>
                   <Button
                     variant='contained'
                     color='primary'
                     startIcon={<DeleteIcon />}
                     onClick={this.deleteModalShowHandler}
-                    style={{ float: 'right', cursor: 'pointer' }}
+                    style={{ float: 'right', cursor: 'pointer', marginBottom: '20px' }}
                   >
                             Delete Installment Details
                   </Button>
@@ -615,7 +615,7 @@ class ManageFeeType extends Component {
                 {/* <DeleteOutlinedIcon  />
                         <label style={{ float: 'right' }}>Delete Installment Details </label> */}
 
-                <div className={classes.tableWrapper}>
+                <div className={classes.tableWrapper} style={{ float: 'right'}}>
                   <Table>
                     <TableHead>
                       <TableRow>
