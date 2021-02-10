@@ -41,7 +41,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Management Blogs', Path: '/blog/admin' },
     { name: 'Principal Blogs', Path: '/blog/principal' },
     {name: 'Genre' ,Path :'/blog/genre'},
-    {name: 'Word Count Cofiguration' ,Path :'/blog/create/wordcount-config'},
+    {name: 'Word Count Cofiguration' ,Path :'/blog/wordcount-config/create'},
 
     
   ];
