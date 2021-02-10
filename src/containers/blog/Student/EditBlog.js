@@ -100,6 +100,8 @@ class EditBlog extends Component {
       starsRating: 0,
       feedBack: false,
       key: 0,
+      parsedTextEditorContentLen:this.props.location.state.parsedTextEditorContentLen &&  this.props.location.state.parsedTextEditorContentLen !==0 ?
+      this.props.location.state.parsedTextEditorContentLen :'',
       title:
         this.props.location.state.title && this.props.location.state.title.length !== 0
           ? this.props.location.state.title
@@ -182,6 +184,7 @@ class EditBlog extends Component {
       const errorMsg = `Please write atleast ${wordCountLimit} words.Currently only ${textWordCount} words have been written`
       return errorMsg
     }
+    console.log(this.state.parsedTextEditorContentLen,"@@@@")
     return false
   }
   
@@ -299,7 +302,7 @@ class EditBlog extends Component {
       // files,
       genreName
     } = this.state;
-    console.log(genreObj,"@@@@")
+    console.log(genreObj,"@@@@",parsedTextEditorContentLen)
     this.props.history.push({
       pathname: '/blog/student/preview-edit-blog',
       state: {genreName,genreObj, studentName, creationDate, genreId, textEditorContent, title, files,blogId,image,parsedTextEditorContentLen },
