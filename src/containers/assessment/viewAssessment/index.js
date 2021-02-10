@@ -57,10 +57,10 @@ const ViewAssessment = () => {
           <Grid container spacing={2}>
             <Grid item md={9} xs={12}>
               <div className='main-question-panel'>
-                {/* <McqQuestion /> */}
+                <McqQuestion />
                 {/* <DescriptiveQuestion /> */}
                 {/* <FillUpsQuestion /> */}
-                <TrueFalseQuestion />
+                {/* <TrueFalseQuestion /> */}
                 {/* <Button className='submit-button'></Button> */}
               </div>
             </Grid>
