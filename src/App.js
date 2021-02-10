@@ -63,7 +63,8 @@ import {
   StudentPublishBlogView,
   AdminPublishBlogView,
   ContentViewPublishAdmin,
-  ContentViewPublishPrincipal
+  ContentViewPublishPrincipal,
+  EditWordCountConfig
 
 } from './containers/blog';
 import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
@@ -167,8 +168,11 @@ function App() {
                       {({ match }) => <EditGenre match={match} />}
                     </Route>
                     
-                    <Route exact path='/blog/create/wordcount-config'>
+                    <Route exact path='/blog/wordcount-config/create'>
                       {({ match }) => <CreateWordCountConfig match={match} />}
+                    </Route>
+                    <Route exact path='/blog/wordcount-config/edit'>
+                      {({ match }) => <EditWordCountConfig match={match} />}
                     </Route>
                 
                     <Route exact path='/blog/teacher'>
