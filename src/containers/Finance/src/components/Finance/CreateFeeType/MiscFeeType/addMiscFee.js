@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form, Divider } from 'semantic-ui-react'
 import Select from 'react-select'
-import { Checkbox, FormControlLabel, Button, Grid } from '@material-ui/core/'
+import { Checkbox, FormControlLabel, Button, Grid, TextField } from '@material-ui/core/'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import '../../../css/staff.css'
@@ -25,7 +25,13 @@ class AddMiscFeeType extends Component {
       branchData: [],
       branchIds: [],
       fee_type_name: null,
-      set_due_date: null
+      set_due_date: null,
+      sessionData: null,
+      start_date: null,
+      end_date: null,
+      feeAccount: '',
+      is_store_related: false,
+      amount: null
     }
     this.handlevalue = this.handlevalue.bind(this)
   }
@@ -52,16 +58,62 @@ class AddMiscFeeType extends Component {
       branchIds.push(branch.value)
     })
     this.setState({ branchIds: branchIds, branchData: e })
+    let data = {
+      session_year: [this.state.sessionData && this.state.sessionData.value],
+      branch_id: branchIds
+    }
+    this.props.fetchFeeAccounts(data, this.props.alert, this.props.user)
   }
 
   feeTypeNameHandler = e => {
     this.setState({ fee_type_name: e.target.value })
   }
 
+  handleAcademicyear = (e) => {
+    console.log(e)
+    this.setState({ sessionData: e }, () => {
+      console.log(this.state.sessionData)
+    })
+  }
+
+  handleEditChange= (e) => {
+    switch (e.target.id) {
+      case 'start_date': {
+        this.setState({
+          startDate: e.target.value
+        })
+        break
+      }
+      case 'end_date': {
+        this.setState({
+          endDate: e.target.value
+        })
+        break
+      }
+      default: {
+      }
+    }
+  }
+
+  amountHandler = (e) => {
+    this.setState({
+      amount: e.target.value
+    })
+  }
+  feeAccountHandler = (e) => {
+    console.log('fee acc', e)
+    this.setState({
+      feeAccount: {
+        label: e.label,
+        value: e.value
+      }
+    })
+  }
+
   handlevalue = e => {
     e.preventDefault()
     var data = {
-      academic_year: this.props.acadId,
+      academic_year: this.state.sessionData && this.state.sessionData.value,
       branch: this.state.branchIds,
       fee_type_name: this.state.fee_type_name,
       set_due_date: this.state.set_due_date,
@@ -74,7 +126,12 @@ class AddMiscFeeType extends Component {
       is_last_year_due: this.state.is_last_year_due,
       is_advance_fee: this.state.is_advance_fee,
       show_transaction_in_parent_login: this.state.show_transaction_in_parent_login,
-      is_parent_enable: this.state.is_parent_enable
+      is_parent_enable: this.state.is_parent_enable,
+      start_date: this.state.startDate,
+      end_date: this.state.endDate,
+      fee_account: this.state.feeAccount && this.state.feeAccount.value,
+      is_store_related: this.state.is_store_related,
+      amount: this.state.amount
     }
     this.props.addedMiscFeeList(data, this.props.alert, this.props.user)
     this.props.close()
@@ -92,6 +149,18 @@ class AddMiscFeeType extends Component {
         </Grid>
         <Divider />
         <Grid container direction='column' spacing={3} style={{ padding: 15 }}>
+          <Grid item xs='5'>
+            <label>Academic Year*</label>
+            <Select
+              placeholder='Select Year'
+              value={this.state.sessionData ? this.state.sessionData : null}
+              options={
+                this.props.session ? this.props.session.session_year.map((session) =>
+                  ({ value: session, label: session })) : []
+              }
+              onChange={this.handleAcademicyear}
+            />
+          </Grid>
           <Grid item xs='5'>
             <label>Branch*</label>
             <Select
@@ -122,6 +191,50 @@ class AddMiscFeeType extends Component {
               value={this.state.fee_type_name}
             />
           </Grid>
+          <Grid item xs={10}>
+            <label>Start Date*</label>
+            <br />
+            <TextField
+              id='start_date'
+              // label='Start Date'
+              type='date'
+              // className={classes.textField}
+              value={this.state.startDate || ''}
+              onChange={(e) => { this.handleEditChange(e) }}
+              // margin='normal'
+              variant='outlined'
+            />
+          </Grid>
+          <Grid item xs={10}>
+            <label>End Date*</label>
+            <br />
+            <TextField
+              id='end_date'
+              // label='End Date'
+              type='date'
+              // className={classes.textField}
+              value={this.state.endDate || ''}
+              onChange={(e) => { this.handleEditChange(e) }}
+              // margin='normal'
+              variant='outlined'
+            />
+          </Grid>
+          <Grid item xs={5}>
+            <label>Fee Account*</label>
+            <Select
+              placeholder='Select Fee Account'
+              value={this.state.feeAccount ? this.state.feeAccount : null}
+              options={
+                this.props.viewFeeAccList && this.props.viewFeeAccList.length
+                  ? this.props.viewFeeAccList.map(feeAcc => ({
+                    value: feeAcc.id,
+                    label: feeAcc.fee_account_name
+                  }))
+                  : []
+              }
+              onChange={(e) => { this.feeAccountHandler(e) }}
+            />
+          </Grid>
           <Grid item xs='5'>
             <label>Set Due Date</label>
             <input
@@ -131,6 +244,20 @@ class AddMiscFeeType extends Component {
               onChange={this.dueDateHandler}
               placeholder='set_due_date'
               value={this.state.set_due_date}
+            />
+          </Grid>
+          <Grid item xs={5}>
+            <label>Amount*</label>
+            <br />
+            <TextField
+              id='start_date'
+              // label='Start Date'
+              type='number'
+              // className={classes.textField}
+              value={this.state.amount || ''}
+              onChange={(e) => { this.amountHandler(e) }}
+              // margin='normal'
+              variant='outlined'
             />
           </Grid>
         </Grid>
@@ -256,6 +383,19 @@ class AddMiscFeeType extends Component {
             />
 
           </Grid>
+          <Grid item xs='5'>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={this.state.is_store_related}
+                  onChange={this.changedHandler('is_store_related')}
+                  color='primary'
+                />
+              }
+              label='store_related'
+            />
+
+          </Grid>
         </Grid>
         <Grid container spacing={3} justify='center'>
           <Grid item xs='5'>
@@ -278,10 +418,14 @@ class AddMiscFeeType extends Component {
 
 const mapStateToProps = state => ({
   user: state.authentication.user,
-  branches: state.finance.common.branchPerSession
+  branches: state.finance.common.branchPerSession,
+  session: state.academicSession.items,
+  viewFeeAccList: state.finance.tallyReports.feeAccountPerBranch
 })
 
 const mapDispatchToProps = dispatch => ({
+  fetchFeeAccounts: (data, alert, user) => dispatch(actionTypes.fetchFeeAccPerBranchAndAcad({ data, alert, user })),
+  // fetchAllFeeAccounts: (session, branchId, alert, user) => dispatch(actionTypes.fetchAllFeeAccounts({ session, branchId, alert, user })),
   addedMiscFeeList: (data, alert, user) => dispatch(actionTypes.addMiscFeeList({ data, alert, user })),
   fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user }))
 })
