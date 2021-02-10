@@ -2,7 +2,7 @@
 import React, { useState, useContext ,useEffect} from 'react'
 import { withRouter } from 'react-router-dom';
 import Layout from '../../Layout'
-import {  TextField, Grid, Button, useTheme,Tabs, Tab ,Typography, Card, CardContent,CardHeader} from '@material-ui/core'
+import { SvgIcon, TextField, Grid, Button, useTheme,Tabs, Tab ,Typography, Card, CardContent,CardHeader} from '@material-ui/core'
 import moment from 'moment';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
@@ -15,6 +15,8 @@ import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import Loading from '../../../components/loader/loader';
 import IconButton from '@material-ui/core/IconButton';
+import unfiltered from '../../../assets/images/unfiltered.svg'
+import selectfilter from '../../../assets/images/selectfilterPro.svg';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,6 +50,14 @@ const useStyles = makeStyles((theme) => ({
     padding:'1px',
     marginTop: '-5px',
     marginRight: '20px'
+  },
+  periodDataUnavailable:{
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: '5%',
+    marginLeft:'350px'
   }
 }));
 
@@ -178,7 +188,34 @@ const CreateGenre = (props) => {
         </Grid>
                                               
         })
-    : ''
+    : (
+      <div className={classes.periodDataUnavailable}>
+        <SvgIcon
+          component={() => (
+            <img
+              style={
+                isMobile
+                  ? { height: '100px', width: '200px' }
+                  : { height: '160px', width: '290px' }
+              }
+              src={unfiltered}
+            />
+          )}
+        />
+        <SvgIcon
+          component={() => (
+            <img
+              style={
+                isMobile
+                  ? { height: '20px', width: '250px' }
+                  : { height: '50px', width: '400px', marginLeft: '5%' }
+              }
+              src={selectfilter}
+            />
+          )}
+        />
+      </div>
+    )
   }
 </Grid>
   </div>
@@ -212,7 +249,34 @@ const CreateGenre = (props) => {
           </Grid>
                                                 
           })
-      : ''
+      : (
+        <div className={classes.periodDataUnavailable}>
+          <SvgIcon
+            component={() => (
+              <img
+                style={
+                  isMobile
+                    ? { height: '100px', width: '200px' }
+                    : { height: '160px', width: '290px' }
+                }
+                src={unfiltered}
+              />
+            )}
+          />
+          <SvgIcon
+            component={() => (
+              <img
+                style={
+                  isMobile
+                    ? { height: '20px', width: '250px' }
+                    : { height: '50px', width: '400px', marginLeft: '5%' }
+                }
+                src={selectfilter}
+              />
+            )}
+          />
+        </div>
+      )
     }
   </Grid>
     </div>
@@ -265,8 +329,8 @@ const handleGrade = (event, value) => {
       setGrade([]);
       getGradeApi();
     }
-    getGenreList();
-   getGenreInActiveList();
+    // getGenreList();
+  //  getGenreInActiveList();
   }, [branchId]);
 
   const getGradeApi = async () => {
