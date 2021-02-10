@@ -37,7 +37,6 @@ const MobileDatepicker = (props) => {
 
           // calendars='1'
           onChange={(newValue) => {
-            // console.log('onChange truggered', newValue);
             const [startDate, endDate] = newValue;
             const sevenDaysAfter = moment(startDate).add(6, 'days');
             setDateRange([startDate, sevenDaysAfter]);
@@ -74,7 +73,6 @@ const MobileDatepicker = (props) => {
                   size='small'
                   style={{ minWidth: '250px' }}
                   onClick={() => {
-                    console.log('triggered');
                     setDatePopperOpen(true);
                   }}
                 />

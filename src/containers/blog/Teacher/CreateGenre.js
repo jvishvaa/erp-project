@@ -5,6 +5,7 @@ import Layout from '../../Layout'
 import { SvgIcon, TextField, Grid, Button, useTheme,Tabs, Tab ,Typography, Card, CardContent,CardHeader} from '@material-ui/core'
 import moment from 'moment';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import { Pagination } from '@material-ui/lab';
 
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
@@ -87,7 +88,7 @@ const CreateGenre = (props) => {
   const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
 
   const [gradeList, setGradeList] = useState([]);
-
+  const [totalGenre,setTotalGenre]=useState(0);
   const branchId=roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0]
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
@@ -113,6 +114,8 @@ const CreateGenre = (props) => {
     if (result.data.status_code === 200) {
       setLoading(false);
       setAlert('success', result.data.message);
+      setGenreName(null);
+      setSelectedGrades(null);
       // getGenreList();
   //  getGenreInActiveList();
     } else {        
@@ -282,6 +285,15 @@ const CreateGenre = (props) => {
   </Grid>
     </div>
     } 
+
+   const handlePagination = (event, page) => {
+   setPageNumber(page);
+   setGenreActiveListResponse([]);
+   setGenreInActiveListResponse([]);
+   getData();
+  };
+
+
     const handleDelete = (data) => {
 
       let requestData = {
@@ -347,7 +359,6 @@ const handleGrade = (event, value) => {
       );
       const resultOptions = [];
       if (result.status === 200) {
-        console.log(result.data.result.results,"@@")
         setGradeList(result.data.result.results);
         setLoading(false);
       } else {
@@ -361,25 +372,33 @@ const handleGrade = (event, value) => {
   };
 
   const handleFilter = () =>{
-    if(currentTab === 0){
-    axiosInstance.get(`${endpoints.blog.genreList}?is_delete=${
-      'False'
-    }&grade_id=${selectedGrades}&page_number=${pageNumber}&page_size=${pageSize}`).then((res) => {
-        setGenreActiveListResponse(res.data.result.data)
-    }).catch(err => {
-        console.log(err)
-    })
-  }else{
-    axiosInstance.get(`${endpoints.blog.genreList}?is_delete=${
-      'True'
-    }&grade_id=${selectedGrades}&page_number=${pageNumber}&page_size=${pageSize}`).then((res) => {
-        setGenreActiveListResponse(res.data.result.data)
-    }).catch(err => {
-        console.log(err)
-    })
-
+    setGenreActiveListResponse([])
+    setGenreInActiveListResponse([])
+    getData();
   }
+  const getData = () =>{
+    if(currentTab === 0){
+      axiosInstance.get(`${endpoints.blog.genreList}?is_delete=${
+        'False'
+      }&grade_id=${selectedGrades}&page_number=${pageNumber}&page_size=${pageSize}`).then((res) => {
+          setGenreActiveListResponse(res.data.result.data)
+          setTotalGenre(res.data.result.total_genres)
+      }).catch(err => {
+          console.log(err)
+      })
+    }else{
+      axiosInstance.get(`${endpoints.blog.genreList}?is_delete=${
+        'True'
+      }&grade_id=${selectedGrades}&page_number=${pageNumber}&page_size=${pageSize}`).then((res) => {
+          setGenreInActiveListResponse(res.data.result.data)
+          setTotalGenre(res.data.result.total_genres)
 
+      }).catch(err => {
+          console.log(err)
+      })
+  
+    }
+  
   }
 
 const getGenreList = () => {
@@ -494,7 +513,18 @@ const getGenreInActiveList = () => {
             </Tabs>
           </Grid>
         </Grid>{decideTab()}
-       
+        <Grid container >
+
+        <Grid item xs={12}>
+                    <Pagination
+                    onChange={handlePagination}
+                    style={{ paddingLeft:'390px' }}
+                    count={Math.ceil(totalGenre / pageSize)}
+                    color='primary'
+                    page={pageNumber}
+                    />
+            </Grid>
+                    </Grid>
 
       </Layout>
     </>

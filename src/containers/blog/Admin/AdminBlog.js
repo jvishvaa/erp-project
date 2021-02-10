@@ -95,13 +95,13 @@ class AdminBlog extends Component {
     this.getBranch();
   }
   getBlog = (status) => {
-    const { pageNo, pageSize,tabValue } = this.state;
+    const { pageNo, pageSize,tabValue,moduleId } = this.state;
    
     axios
       .get(
         `${endpoints.blog.Blog}?page_number=${
           pageNo 
-        }&page_size=${pageSize}&status=${status}&module_id=114`
+        }&page_size=${pageSize}&status=${status}&module_id=${moduleId}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -270,21 +270,17 @@ class AdminBlog extends Component {
     }
 };
 handleBranch = (event, value) => {
-  console.log(event,value,"@@@")
   this.setState({data:[],selectedBranch:value},()=>{
     this.getGrade()
   })
 };
 
 handleGrade = (event, value) => {
-  console.log(event,value,"@@@")
   this.setState({data:[],selectedGrade:value}, ()=>{
     this.getSection()
   })
 };
 handleSection = (event,value) =>{
-  console.log(event,value,"@@@")
-
   this.setState({data:[],selectedSection :value})
 }
 

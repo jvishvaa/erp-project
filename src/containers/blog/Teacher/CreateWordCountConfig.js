@@ -8,6 +8,8 @@ import moment from 'moment';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import IconButton from '@material-ui/core/IconButton';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import { Pagination } from '@material-ui/lab';
+
 
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -76,13 +78,13 @@ const CreateWordCountConfig = (props) => {
   const [moduleId, setModuleId] = useState(144);
   const [pageSize,setPageSize] = useState(9);
   const [pageNumber,setPageNumber]=useState(1);
+  const [totalWc,setTotalWc]=useState(0);
 
   const [gradeList, setGradeList] = useState([]);
 
   const branchId=roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0]
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
-  console.log(branchId,"@@")
   const handleDelete = (data) => {
 
         let requestData = {
@@ -105,6 +107,11 @@ const CreateWordCountConfig = (props) => {
         setAlert('error', error.message);
       })
     };
+    const handlePagination = (event, page) => {
+      setPageNumber(page);
+      setActiveListRes([]);
+      getActiveList()
+     };
   const handleSubmit = (e) => {
     const chkWordCount=+wordCount
     const chkNumber = Number.isInteger(chkWordCount)
@@ -146,6 +153,7 @@ const CreateWordCountConfig = (props) => {
         axiosInstance.get(`${endpoints.blog.WordCountConfig}?page_number=${pageNumber}&page_size=${pageSize}`)
           .then((res) => {
               setActiveListRes(res.data.result.data)
+              setTotalWc(res.data.result.total_wc)
           }).catch(err => {
               console.log(err)
           })
@@ -169,7 +177,6 @@ const CreateWordCountConfig = (props) => {
           );
           const resultOptions = [];
           if (result.status === 200) {
-            console.log(result.data.result.results,"@@")
             setGradeList(result.data.result.results);
             setLoading(false);
           } else {
@@ -332,8 +339,17 @@ const handleTabChange = (event,value) =>{
             </Tabs>
           </Grid>
         </Grid>{decideTab()}
-
-       
+<Grid container>
+        <Grid item xs={12}>
+                    <Pagination
+                    onChange={handlePagination}
+                    style={{ paddingLeft:'390px' }}
+                    count={Math.ceil(totalWc / pageSize)}
+                    color='primary'
+                    page={pageNumber}
+                    />
+            </Grid>
+             </Grid>
 
       </Layout>
     </>

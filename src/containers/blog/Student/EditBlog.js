@@ -289,7 +289,6 @@ class EditBlog extends Component {
       this.context.setAlert('error',subceededWordCount)
       return
     }
-    console.log(this.state.parsedTextEditorContentLen,"@@@@")
     const {
       // textEditorContent,
       // title,

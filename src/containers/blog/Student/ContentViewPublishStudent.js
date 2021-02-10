@@ -151,7 +151,6 @@ getRatings = () => {
   const type = typeof blogRatings
   const parsedRatings = type === 'object' ? blogRatings : JSON.parse(blogRatings)
   const allRatingParamters = JSON.parse(parsedRatings)
-  console.log(allRatingParamters)
   return allRatingParamters
 }
 
