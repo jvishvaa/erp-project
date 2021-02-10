@@ -104,7 +104,7 @@ class ContentView extends Component {
 
     };
    
-
+    console.log(this.state.tabValue,"@@@@")
 
   }
   componentDidMount() {
@@ -333,7 +333,20 @@ if (result.data.status_code === 200) {
 
                             >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
                             </Button>
-                            {!data.feedback_revision_required ? 
+                            {!data.feedback_revision_required && tabValue === 1 ? 
+                          <Button
+                            size='small'
+                            color='primary'
+                            onClick={() => {
+                              this.setState({
+                                relatedBlog: !relatedBlog,
+                                feedBack: false,
+                              });
+                            }}
+                          >
+                           {tabValue === 0 ? 'Add Review' : 'View Review' }
+                          </Button>  :''}
+                          {tabValue === 0 ? 
                           <Button
                             size='small'
                             color='primary'
