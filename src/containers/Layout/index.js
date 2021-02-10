@@ -463,6 +463,14 @@ const Layout = ({ children, history }) => {
         history.push('/blog/wordcount-config');
         break;
       }
+      case 'Student Dairy': {
+        history.push('/dairy/student');
+        break;
+      }
+      case 'Teacher Dairy': {
+        history.push('/dairy/teacher');
+        break;
+      }
       case 'Assessment': {
         history.push('/assessment');
         break;

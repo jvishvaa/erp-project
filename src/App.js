@@ -71,7 +71,7 @@ import {
 
 } from './containers/blog';
 import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
-import Discussionforum from './containers/discussionForum/discussionForum';
+import Discussionforum from './containers/discussionForum/index';
 import CreateCategory from './containers/discussionForum/createCategory';
 import CreateDiscussionForum from './containers/discussionForum/createDiscussionForum';
 import CircularList from './containers/circular';
@@ -358,6 +358,12 @@ function App() {
                       {({ match }) => <CreateCircular match={match} />}
                     </Route>
                     <Route exact path='/general-dairy'>
+                      {({ match }) => <GeneralDairyList match={match} />}
+                    </Route>
+                    <Route exact path='/dairy/student'>
+                      {({ match }) => <GeneralDairyList match={match} />}
+                    </Route>
+                    <Route exact path='/dairy/teacher'>
                       {({ match }) => <GeneralDairyList match={match} />}
                     </Route>
                     <Route exact path='/general-dairy/student-view'>
