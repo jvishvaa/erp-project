@@ -460,7 +460,7 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Word Count Cofiguration': {
-        history.push('/blog/create/wordcount-config');
+        history.push('/blog/wordcount-config/create');
         break;
       }
       default:
