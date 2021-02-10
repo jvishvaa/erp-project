@@ -25,6 +25,7 @@ import MobileDatepicker from '../Teacher/datePicker';
 import GridList from './gridList';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -74,18 +75,125 @@ class PrincipalBlog extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      selectedBranch :'',
+      selectedGrade:'',
+      selectedSection:'',
+      branchList:[],
+      gradeList:[],
+      sectionList:[],
       tabValue: 0,
       pageNo: 1,
       pageSize: 6,
       totalPages:0,
       startDate :moment().format('YYYY-MM-DD'),
-      status :[8]
+      status :[8],
+      moduleId :115,
+
     };
   }
   componentDidMount() {
     let {status} =this.state
     this.getBlog(status);
+    this.getBranch();
   }
+  handleFilter = () => {
+    const { pageNo, pageSize ,tabValue,status,selectedBranch,selectedGrade,selectedSection} = this.state
+    let urlPath = ''
+    if(selectedSection){
+      urlPath = `${endpoints.blog.Blog}?page_number=${
+              pageNo 
+            }&page_size=${pageSize}&status=${status}&module_id=115&section_id=${selectedSection.section_id}`
+    }else if(selectedGrade){
+      urlPath = `${endpoints.blog.Blog}?page_number=${
+              pageNo 
+            }&page_size=${pageSize}&status=${status}&module_id=115&grade_id=${selectedGrade.grade_id}`
+    }
+    else if(selectedBranch){
+      urlPath =`${endpoints.blog.Blog}?page_number=${
+              pageNo 
+            }&page_size=${pageSize}&status=${status}&module_id=115&barnch_id=${selectedBranch.id}`
+    }
+    axios
+      .get(
+        urlPath
+      )
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          this.setState({ data: result.data.result.data ,totalBlogs:result.data.result.total_blogs});
+        } else {
+          console.log(result.data.message);
+        }
+      })
+      .catch((error) => {
+      });
+
+  }
+  getGrade = () => {
+    const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  
+     let {selectedBranch, moduleId,gradeList}=this.state
+      axios
+        .get(
+          
+    `${endpoints.communication.grades}?branch_id=${selectedBranch.id}&module_id=${moduleId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+        )
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            this.setState({ gradeList: result.data.data });
+          } else {
+            console.log(result.data.message);
+          }
+        })
+        .catch((error) => {
+        });
+    };
+    getSection = () => {
+      const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+    
+       let {selectedBranch, moduleId,gradeList,selectedGrade}=this.state
+        axios
+          .get(
+            
+            `${endpoints.communication.sections}?branch_id=${
+              selectedBranch.id
+            }&grade_id=${selectedGrade.grade_id}&module_id=${moduleId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
+          .then((result) => {
+            if (result.data.status_code === 200) {
+              this.setState({ sectionList: result.data.data });
+            } else {
+              console.log(result.data.message);
+            }
+          })
+          .catch((error) => {
+          });
+      };
+  getBranch = () => {
+   
+    axios
+      .get(
+        `${endpoints.communication.branches}`
+      )
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          this.setState({ branchList: result.data.data });
+        } else {
+          console.log(result.data.message);
+        }
+      })
+      .catch((error) => {
+      });
+  };
   getBlog = (status) => {
     const { pageNo, pageSize,tabValue } = this.state;
     
@@ -161,11 +269,29 @@ class PrincipalBlog extends Component {
 
     }
 };
+handleBranch = (event, value) => {
+  console.log(event,value,"@@@")
+  this.setState({data:[],selectedBranch:value},()=>{
+    this.getGrade()
+  })
+};
 
+handleGrade = (event, value) => {
+  console.log(event,value,"@@@")
+  this.setState({data:[],selectedGrade:value}, ()=>{
+    this.getSection()
+  })
+};
+handleSection = (event,value) =>{
+  console.log(event,value,"@@@")
+
+  this.setState({data:[],selectedSection :value})
+}
 
   render() {
     const { classes } = this.props;
-    const { tabValue ,data,pageNo,pageSize,totalBlogs} = this.state;
+    const {branchList, tabValue ,data,pageNo,pageSize,totalBlogs,selectedBranch,selectedGrade,gradeList,sectionList,selectedSection} = this.state;
+
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -177,55 +303,101 @@ class PrincipalBlog extends Component {
               <CommonBreadcrumbs componentName='Blog' />
               <div className='create_group_filter_container'>
                 <Grid container>
-                  {/* <Grid item xs={12} sm={4}>
-                    <div className='mobile-date-picker'>
-                      <MobileDatepicker
-                        onChange={(date) => this.handleEndDateChange(date)}
-                        handleStartDateChange={this.handleStartDateChange}
-                        handleEndDateChange={this.handleEndDateChange}
-                      />
+                
+                <Grid xs={12} sm={3} item>
+              <div className='blog_input'>
+                    <Autocomplete
+                      size='small'
+                      // style={{ width: '100%' }}
+
+                      onChange={this.handleBranch}
+                      value={selectedBranch}
+                      id='message_log-branch'
+                      className='create_group_branch'
+                      options={branchList}
+                      getOptionLabel={(option) => option?.branch_name}
+                      filterSelectedOptions
+                      renderInput={(params) => (
+                        <TextField
+                          className='message_log-textfield'
+                          {...params}
+                          variant='outlined'
+                          label='Branch'
+                          placeholder='Branch'
+                        />
+                      )}
+                    />
                     </div>
-                  </Grid> */}
-                  {/* <Grid item xs={12} sm={4}>
-                    <div className='blog_input'>
-                      <TextField
-                        id='outlined-full-width'
-                        label='Blog Name'
-                        size='small'
-                        placeholder='Placeholder'
-                        helperText='Full width!'
-                        fullWidth
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        variant='outlined'
-                      />
-                    </div>
-                  </Grid> */}
-                </Grid>
-                <div style={{ margin: '20px' }}>
-                  <Grid container>
-                    <Grid item>
-                      <Button
-                        color='primary'
-                        style={{ fontSize: 'small', margin: '20px' }}
-                        size='small'
-                        variant='contained'
-                      >
-                        Clear All
-                      </Button>
                     </Grid>
-                    <Grid item>
+                    <Grid xs={12} sm={3} item>
+                    {selectedBranch && gradeList.length ? ( 
+                      <div className='blog_input'>
+                       <Autocomplete
+                       size='small'
+                      //  style={{ width: '100%' }}
+
+                       onChange={this.handleGrade}
+                       value={selectedGrade}
+                       id='message_log-branch'
+                       className='create_group_branch'
+                       options={gradeList}
+                       getOptionLabel={(option) => option?.grade__grade_name}
+                       filterSelectedOptions
+                       renderInput={(params) => (
+                         <TextField
+                           className='message_log-textfield'
+                           {...params}
+                           variant='outlined'
+                           label='Grade'
+                           placeholder='Grade'
+                         />
+                       )}
+                     />
+                     </div>
+                      ) : null }
+                    </Grid>
+                    <Grid xs={12} sm={3} item>
+                      {selectedGrade && sectionList.length ? (
+                        <div className='blog_input'>
+                        <Autocomplete
+                        size='small'
+                        // style={{ width: '100%' }}
+ 
+                        onChange={this.handleSection}
+                        value={selectedSection}
+                        id='message_log-branch'
+                        className='create_group_branch'
+                        options={sectionList}
+                        getOptionLabel={(option) => option?.section__section_name}
+                        filterSelectedOptions
+                        renderInput={(params) => (
+                          <TextField
+                            className='message_log-textfield'
+                            {...params}
+                            variant='outlined'
+                            label='Section'
+                            placeholder='Section'
+                          />
+                        )}
+                      />
+                      </div>
+                      ) : null}
+                     
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
                       <Button
                         style={{ fontSize: 'small', margin: '20px' }}
                         color='primary'
                         size='small'
                         variant='contained'
+                        onClick={this.handleFilter}
+
                       >
                         Filter
-                      </Button>
+                      </Button> 
                     </Grid>
-                  </Grid>
+                    
+                    </Grid>
                   <Grid container spacing={2}>
                     <Grid item>
                       <Button
@@ -296,7 +468,6 @@ class PrincipalBlog extends Component {
                 </div>
               </div>
             </div>
-          </div>
         </Layout>
       </div>
     );

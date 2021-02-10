@@ -85,7 +85,7 @@ class AdminBlog extends Component {
       totalPages:0,
       startDate :moment().format('YYYY-MM-DD'),
       status:[8],
-      moduleId :68,
+      moduleId :114,
       
     };
   }
