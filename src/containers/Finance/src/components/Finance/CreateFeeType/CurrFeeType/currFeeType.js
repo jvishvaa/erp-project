@@ -493,7 +493,7 @@ class CurrFeeType extends Component {
           <Grid item xs={2}>
             {session && branch
               ? <Button variant='contained' color='primary' onClick={() => { this.showAddHandler() }}>
-                ADD
+                ADD FEE
               </Button>
               : null}
           </Grid>
