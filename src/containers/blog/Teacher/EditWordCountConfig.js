@@ -98,7 +98,7 @@ const EditWordCountConfig = (props) => {
     if (result.data.status_code === 200) {
       setLoading(false);
       setAlert('success', result.data.message);
-      history.push('/blog/wordcount-config/create')
+      history.push('/blog/wordcount-config')
     } else {        
       setLoading(false);
       setAlert('error', "word config already existing for this grade");

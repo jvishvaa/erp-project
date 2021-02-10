@@ -168,7 +168,7 @@ function App() {
                       {({ match }) => <EditGenre match={match} />}
                     </Route>
                     
-                    <Route exact path='/blog/wordcount-config/create'>
+                    <Route exact path='/blog/wordcount-config'>
                       {({ match }) => <CreateWordCountConfig match={match} />}
                     </Route>
                     <Route exact path='/blog/wordcount-config/edit'>
