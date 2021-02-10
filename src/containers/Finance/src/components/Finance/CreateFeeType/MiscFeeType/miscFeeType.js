@@ -376,14 +376,16 @@ class MiscFeeType extends Component {
                     <TableRow>
                       <TableCell> Sr</TableCell>
                       <TableCell> Fee Type Name</TableCell>
-                      <TableCell> Priority</TableCell>
-                      <TableCell> Concession Applicable</TableCell>
-                      <TableCell> Service Based</TableCell>
-                      <TableCell> Pro Rata</TableCell>
-                      <TableCell> Partial Amount</TableCell>
-                      <TableCell> Activity Based Fee</TableCell>
-                      <TableCell> Refundable Fee</TableCell>
-                      <TableCell>Transaction In Parent Login </TableCell>
+                      <TableCell> Multiple Records Allow</TableCell>
+                      <TableCell> Individual Student Wise</TableCell>
+                      <TableCell> Partial Payments</TableCell>
+                      <TableCell> Can Be Group</TableCell>
+                      <TableCell> Remarks</TableCell>
+                      <TableCell> Excess Amount</TableCell>
+                      <TableCell> Last Year Due</TableCell>
+                      <TableCell>Advance Fee</TableCell>
+                      <TableCell>Parent Enable</TableCell>
+                      <TableCell>Due Date</TableCell>
                       <TableCell>Edit</TableCell>
                       <TableCell>Delete</TableCell>
                     </TableRow>
@@ -395,31 +397,26 @@ class MiscFeeType extends Component {
                      <TableCell> { i + 1 }</TableCell>
                       {/* <TableCell>{ val.id} </TableCell> */}
                       <TableCell>{val.fee_type_name ? val.fee_type_name : ''}</TableCell>
-                      <TableCell>{Number.isInteger(val.priority) ? val.priority : ''} </TableCell>
-                      <TableCell>{val.is_concession_applicable ? 'Yes' : 'No'} </TableCell>
-                      <TableCell> { val.is_service_based ? 'Yes' : 'No'} </TableCell>
-                      <TableCell> {val.is_pro_rata ? 'Yes' : 'No'} </TableCell>
-                      <TableCell>{val.is_allow_partial_amount ? 'Yes' : 'No'}</TableCell>
-                      <TableCell> {val.is_activity_based_fee ? 'Yes' : 'No'}</TableCell>
-                      <TableCell> {val.is_refundable_fee ? 'Yes' : 'No'}</TableCell>
-                      <TableCell> {val.show_transaction_in_parent_login ? 'Yes' : 'No' }</TableCell>
-                      <TableCell> <Fab
-            color='primary'
-            size='small'
-            onClick={() => this.showModalHandler(val.id)}
-          >
-            <EditIcon />
-          </Fab></TableCell>
+                      <TableCell>{ val.is_multiple_records_allow ? 'Yes' : 'No'} </TableCell>
+                      <TableCell>{val.individual_student_wise ? 'Yes' : 'No'} </TableCell>
+                      <TableCell> { val.allow_partial_payments ? 'Yes' : 'No'} </TableCell>
+                      <TableCell> {val.can_be_group ? 'Yes' : 'No'} </TableCell>
+                      <TableCell>{val.is_allow_remarks ? 'Yes' : 'No'}</TableCell>
+                      <TableCell> {val.allow_excess_amount ? 'Yes' : 'No'}</TableCell>
+                      <TableCell> {val.is_last_year_due ? 'Yes' : 'No'}</TableCell>
+                      <TableCell> {val.is_advance_fee ? 'Yes' : 'No'}</TableCell>
+                      <TableCell>{val.is_parent_enable ? 'Yes' : 'No'}</TableCell>
+                      <TableCell>{val.set_due_date ? val.set_due_date : ''}</TableCell>
                       <TableCell>
-                      <Fab
-            color='primary'
-            size='small'
-            onClick={() => this.deleteModalShowHandler(val.id)}
-            // startIcon={}
-          >
+          <Fab size='small' color='primary' variant='contained' onClick={() => this.showModalHandler(val.id)}>
+            <EditIcon />
+          </Fab>
+        </TableCell>
+                      <TableCell>
+          <Fab size='small' color='primary' variant='contained' onClick={() => this.deleteModalShowHandler(val.id)}>
             <DeleteIcon />
           </Fab>
-                      </TableCell>
+                </TableCell>
                   </TableRow>
                     )
                   })}
