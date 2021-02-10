@@ -45,7 +45,7 @@ export const bulkActiveInactiveParent = (payload) => {
       }
     }).then(res => {
       if (+res.status === 200) {
-        payload.alert.success('Successfully Done')
+        // payload.alert.success('Successfully Done')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
@@ -133,14 +133,14 @@ export const bulkReportUpload = (payload) => {
     }).then(res => {
       console.log('responseeeee', res)
       if (+res.status === 201) {
-        payload.alert.success('Successfully Done')
+        // payload.alert.success('Successfully Done')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.log('error response...', JSON.stringify(err))
       // console.log('reponse+++', err.response.data.err_msg)
       if (err.response && err.response.status === 400) {
-        payload.alert.warning(err.response.data.err_msg)
+        // payload.alert.warning(err.response.data.err_msg)
       } else {
         // payload.alert.warning('Unable To get Status')
       }
@@ -249,3 +249,4 @@ export const onlinePaymentUpload = (payload) => {
     })
   }
 }
+ // payload.alert.warning(err.response.data.err_msg)

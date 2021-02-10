@@ -821,7 +821,7 @@ class OtherFeeTotalPaidReports extends Component {
             </Grid>
           </Grid>
         </div>
-        <div style={{ margin: '0 auto', marginTop: '60px', paddingBottom: '60px' }}>
+        <div style={{ marginLeft: '200px', marginTop: '60px', paddingBottom: '60px' }}>
           <Button
             variant='contained'
             color='primary'
