@@ -21,7 +21,7 @@ function TabContainer ({ children, dir }) {
 
 TabContainer.propTypes = {
   children: PropTypes.node.isRequired,
-  dir: PropTypes.string.isRequired
+  // dir: PropTypes.string.isRequired
 }
 
 const styles = theme => ({
@@ -58,6 +58,7 @@ class TabView extends Component {
   render () {
     let appBar = null
     if (this.state.currentSession) {
+      console.log('Event', this.state.value)
       appBar = (
         <React.Fragment>
           <AppBar position='static'>
@@ -71,11 +72,11 @@ class TabView extends Component {
               {/* <Tab value='six' label='AirPay Fee Account' /> */}
             </Tabs>
           </AppBar>
-          {this.state.value === 'one' && <TabContainer><Bank alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>}
-          {/* {this.state.value === 'two' && <TabContainer><ViewBanks alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>}
+          {/* {this.state.value === 'one' && <TabContainer><Bank alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>} */}
+          {this.state.value === 'two' && <TabContainer><ViewBanks alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>}
           {this.state.value === 'three' && <TabContainer><ViewFeeAccounts alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>}
           {this.state.value === 'four' && <TabContainer><AccToClass alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>}
-          {this.state.value === 'five' && <TabContainer><AccToBranch alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>}
+          {/* {this.state.value === 'five' && <TabContainer><AccToBranch alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>}
           {this.state.value === 'six' && <TabContainer><AccToStore alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>} */}
           {/* {this.state.value === 'six' && <TabContainer><AirPayFeeAccount alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>} */}
         </React.Fragment>

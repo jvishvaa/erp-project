@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import Select from 'react-select'
 import Icon from '@material-ui/core/Icon'
 
-import '../../css/staff.css'
+// import '../../css/staff.css'
 import * as actionTypes from '../store/actions/index'
 // import Modal from '../../../ui/Modal/modal'
 // import CircularProgress from '../../../ui/CircularProgress/circularProgress'

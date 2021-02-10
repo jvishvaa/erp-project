@@ -78,9 +78,9 @@ import NewAdmissionForm from './containers/Finance/src/components/Finance/Branch
 import ApplicationFormAcc from '../src/containers/Finance/src/components/Finance/BranchAccountant/ApplicationForm/applicationForm.js'
 // import OnlineAdmission from '../src/containers/Finance/src/components/Finance/PendingOnlineAdmission/pendingOnlineAdmission.js'
 import TabView from '../src/containers/Finance/src/components/Finance/CorporateBank/CorporateBankTabView/corporateBankTabView.js'
-import Bank from '../src/containers/Finance/src/components/Finance/CorporateBank/bank.js'
-import viewBanks from '../src/containers/Finance/src/components/Finance/CorporateBank/ViewBanks/viewBanks.js'
-import viewFeeAccounts from '../src/containers/Finance/src/components/Finance/CorporateBank/ViewFeeAccounts/viewFeeAccounts.js'
+import Bank from './containers/Finance/src/components/Finance/CorporateBank/bank.js'
+import ViewBanks from '../src/containers/Finance/src/components/Finance/CorporateBank/ViewBanks/viewBanks.js'
+import ViewFeeAccounts from '../src/containers/Finance/src/components/Finance/CorporateBank/ViewFeeAccounts/viewFeeAccounts.js'
 import AccToClass from '../src/containers/Finance/src/components/Finance/CorporateBank/AccountToClass/accountToClass.js'
 import AccToBranch from '../src/containers/Finance/src/components/Finance/CorporateBank/AccountToBranch/accountToBranch.js'
 import AccToStore from '../src/containers/Finance/src/components/Finance/CorporateBank/AccountToStore/accountToStore.js'
@@ -382,10 +382,10 @@ function App() {
                   {({ match }) => <Bank match={match} />}
                 </Route>
                 <Route exact path='/finance/ViewBank'>
-                  {({ match }) => <viewBanks match={match} />}
+                  {({ match }) => <ViewBanks match={match} />}
                 </Route>
                 <Route exact path='/finance/ViewFeeAccounts'>
-                  {({ match }) => <viewFeeAccounts match={match} />}
+                  {({ match }) => <ViewFeeAccounts match={match} />}
                 </Route>
                 <Route exact path='/finance/AccToClass'>
                   {({ match }) => <AccToClass match={match} />}

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { withStyles, Grid, Fab } from '@material-ui/core/'
+import { withStyles, Grid, Fab, CircularProgress, Modal } from '@material-ui/core/'
 // import {  } from '@material-ui/icons'
 import {
   Edit as EditIcon,
@@ -16,8 +16,8 @@ import Select from 'react-select'
 
 import classes from './accountToStore.module.css'
 import * as actionTypes from '../../store/actions'
-import Modal from '../../../../ui/Modal/modal'
-import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+// import Modal from '../../../../ui/Modal/modal'
+// import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import { apiActions } from '../../../../_actions'
 
 const styles = theme => ({

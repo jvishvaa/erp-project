@@ -24,7 +24,7 @@ import classes from './viewBanks.module.css'
 // }
 let viewBanksState = null
 
-export class viewBanks extends Component {
+export class ViewBanks extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -388,4 +388,4 @@ const mapDispatchToProps = dispatch => ({
   // loadSession: dispatch(apiActions.listAcademicSessions())
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)((withRouter(viewBanks)))
+export default connect(mapStateToProps, mapDispatchToProps)((withRouter(ViewBanks)))

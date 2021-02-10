@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom'
 import Select from 'react-select'
 import { connect } from 'react-redux'
 // import { Paper } from '@material-ui/core/'
-import { Button, Fab, Grid } from '@material-ui/core/'
+import { Button, Fab, Grid, Modal, CircularProgress } from '@material-ui/core/'
 import {
   Edit as EditIcon,
   Delete as DeleteIcon
@@ -11,8 +11,8 @@ import {
 // import axios from 'axios'
 // import ReactTable from 'react-table' //rajneesh
 // import 'react-table/react-table.css'
-import Modal from '../../../../ui/Modal/modal'
-import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+// import Modal from '../../../../ui/Modal/modal'
+// import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 // import { OmsFilterTable } from '../../../../ui'
 // import { apiActions } from '../../../../_actions'
 import * as actionTypes from '../../store/actions'
@@ -28,7 +28,7 @@ import Layout from '../../../../../../Layout'
 
 let viewFeeAccState = null
 
-class viewFeeAccounts extends Component {
+class ViewFeeAccounts extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -419,4 +419,4 @@ const mapDispatchToProps = dispatch => ({
   // loadSession: dispatch(apiActions.listAcademicSessions())
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)((withRouter(viewFeeAccounts)))
+export default connect(mapStateToProps, mapDispatchToProps)((withRouter(ViewFeeAccounts)))
