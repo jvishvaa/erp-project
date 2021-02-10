@@ -5,161 +5,184 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import axiosInstance from '../../../../../config/axios';
 import endpoints from '../../../../../config/endpoints';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
+import './course-price-filters.css';
 
 const CoursePriceFilters = (props) => {
+  const {
+    timeSlotDisplay,
+    setTimeSlotDisplay,
+    timeSlot,
+    setTimeSlot,
+    setCourseId,
+    setCollectData,
+  } = props;
+  const { setAlert } = useContext(AlertNotificationContext);
+  const [selectedGrade, setSelectedGrade] = useState('');
+  const [selectedCourse, setSelectedCourse] = useState('');
+  const themeContext = useTheme();
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+  const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
+  const widerWidth = isMobile ? '98%' : '95%';
+  const [gradeList, setGradeList] = useState([]);
+  const [courseList, setCourseList] = useState([]);
 
-    const {
-        timeSlot,
-        setTimeSlot,
-        setCourseId
-    } = props;
-    
-    const { setAlert } = useContext(AlertNotificationContext);
-    const [selectedGrade, setSelectedGrade] = useState('');
-    const [selectedCourse, setSelectedCourse] = useState('');
-    const themeContext = useTheme();
-    const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-    const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
-    const widerWidth = isMobile ? '98%' : '95%';
-    const [gradeList, setGradeList] = useState([]);
-    const [courseList, setCourseList] = useState([]);
-
-    useEffect(() => {
-        axiosInstance.get(`${endpoints.academics.grades}?branch_id=5`)
-            .then(result => {
-                setGradeList([]);
-                if (result.data.status_code === 200) {
-                    setGradeList(result.data.data);
-                }
-            })
-            .catch(error => {
-                setGradeList([]);
-                setAlert('error', error.message);
-            })
-    }, []);
-
-
-    const handleGrade = (event, value) => {
-        setSelectedGrade('');
-        if (value) {
-            setSelectedGrade(value);
-            getCourseList(value?.grade_id);
+  useEffect(() => {
+    axiosInstance
+      .get(`${endpoints.academics.grades}?branch_id=5`)
+      .then((result) => {
+        setGradeList([]);
+        if (result.data.status_code === 200) {
+          setGradeList(result.data.data);
         }
+      })
+      .catch((error) => {
+        setGradeList([]);
+        setAlert('error', error.message);
+      });
+  }, []);
+
+  const handleGrade = (event, value) => {
+    setSelectedGrade('');
+    setCourseList([]);
+    setCourseId();
+    setSelectedCourse('');
+    setTimeSlotDisplay([]);
+    if (value) {
+      setSelectedGrade(value);
+      getCourseList(value?.grade_id);
     }
+  };
 
-    const handleCourse = (event, value) => {
-        setSelectedCourse('');
-        if (value) {
-            setSelectedCourse(value);
-            setCourseId(value.id);
+  const handleCourse = (event, value) => {
+    setSelectedCourse('');
+    setCourseId();
+    setTimeSlotDisplay([]);
+    if (value) {
+      setSelectedCourse(value);
+      setCourseId(value.id);
+    }
+  };
+
+  const getCourseList = (gradeId) => {
+    axiosInstance
+      .get(`${endpoints.academics.courses}?grade=${gradeId}`)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setCourseList(result.data.result);
+        } else {
+          setCourseList([]);
+          setAlert('error', result.data.message);
         }
-    };
+      })
+      .catch((error) => {
+        setCourseList([]);
+        setAlert('error', error.message);
+      });
+  };
 
-    const getCourseList = (gradeId) => {
-        axiosInstance.get(`${endpoints.academics.courses}?grade=${gradeId}`)
-            .then(result => {
-                if (result.data.status_code === 200) {
-                    setCourseList(result.data.result);
-                } else {
-                    setCourseList([]);
-                    setAlert('error', result.data.message);
-                }
-            })
-            .catch(error => {
-                setCourseList([]);
-                setAlert('error', error.message);
-            });
-    };
+  const [timeSlotList, setTimeSlotList] = useState([
+    { slot: '12-3' },
+    { slot: '3-6' },
+    { slot: '6-9' },
+    { slot: '9-12' },
+  ]);
 
-    const [timeSlotList, setTimeSlotList] = useState([
-        { slot: '12-3' },
-        { slot: '3-6' },
-        { slot: '6-9' },
-        { slot: '9-12' },
-    ]);
+  const handleTimeSlot = (event, value) => {
+    setTimeSlot([]);
+    if (value.length > 0) {
+      setTimeSlot(value);
+    }
+  };
 
-    const handleTimeSlot = (event, value) => {
-        setTimeSlot([]);
-        if (value.length > 0) {
-            setTimeSlot(value);
-        }
-    };
-
-    return (
+  return (
+    <Grid
+      container
+      spacing={isMobile ? 3 : 5}
+      style={{ width: widerWidth, margin: wider }}
+    >
+      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        <Autocomplete
+          size='small'
+          id='grades'
+          className='dropdownIcon'
+          options={gradeList}
+          getOptionLabel={(option) => option?.grade__grade_name}
+          filterSelectedOptions
+          value={selectedGrade}
+          onChange={handleGrade}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              size='small'
+              variant='outlined'
+              label='Grade'
+              placeholder='Grade'
+            />
+          )}
+        />
+      </Grid>
+      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        <Autocomplete
+          size='small'
+          id='courseName'
+          className='dropdownIcon'
+          options={courseList}
+          getOptionLabel={(option) => option?.course_name}
+          filterSelectedOptions
+          value={selectedCourse}
+          onChange={handleCourse}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              size='small'
+              variant='outlined'
+              label='Course'
+              placeholder='Course'
+            />
+          )}
+        />
+      </Grid>
+      {!isMobile && <Grid item xs={0} sm={6} />}
+      {timeSlotDisplay?.length > 0 ? (
+          selectedCourse &&
         <Grid
-            container
-            spacing={isMobile ? 3 : 5}
-            style={{ width: widerWidth, margin: wider }}
+          item
+          xs={12}
+          sm={6}
+          className={isMobile ? 'timeSlotWrapper' : 'timeSlotWrapper filterPadding'}
         >
-            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-                <Autocomplete
-                    size='small'
-                    id='grades'
-                    className='dropdownIcon'
-                    options={gradeList}
-                    getOptionLabel={(option) => option?.grade__grade_name}
-                    filterSelectedOptions
-                    value={selectedGrade}
-                    onChange={handleGrade}
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            size='small'
-                            variant='outlined'
-                            label='Grade'
-                            placeholder='Grade'
-                        />
-                    )}
-                />
-            </Grid>
-            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-                <Autocomplete
-                    size='small'
-                    id='courseName'
-                    className='dropdownIcon'
-                    options={courseList}
-                    getOptionLabel={(option) => option?.course_name}
-                    filterSelectedOptions
-                    value={selectedCourse}
-                    onChange={handleCourse}
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            size='small'
-                            variant='outlined'
-                            label='Course'
-                            placeholder='Course'
-                        />
-                    )}
-                />
-            </Grid>
-            {!isMobile &&
-                <Grid item xs={0} sm={6} />
-            }
-            <Grid item xs={12} sm={3} className={isMobile ? 'timeSlotWrapper' : 'timeSlotWrapper filterPadding'}>
-                <Autocomplete
-                    multiple
-                    size='small'
-                    id='timeSlots'
-                    className='dropdownIcon'
-                    options={timeSlotList}
-                    getOptionLabel={(option) => option?.slot}
-                    filterSelectedOptions
-                    value={timeSlot}
-                    onChange={handleTimeSlot}
-                    filterSelectedOptions
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            variant='outlined'
-                            placeholder='Time Slot'
-                            label='Time Slot'
-                        />
-                    )}
-                />
-            </Grid>
+          <div className='timeSlotTag'>Time Slots:</div>
+          {timeSlotDisplay.map((value) => (
+            <div className='timeSlotValue'>{value}</div>
+          ))}
         </Grid>
-    )
-}
+      ) : (
+        selectedCourse &&
+        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+          <Autocomplete
+            multiple
+            size='small'
+            id='timeSlots'
+            className='dropdownIcon'
+            options={timeSlotList}
+            getOptionLabel={(option) => option?.slot}
+            filterSelectedOptions
+            value={timeSlot}
+            onChange={handleTimeSlot}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                placeholder='Time Slot'
+                label='Time Slot'
+              />
+            )}
+          />
+        </Grid>
+      )}
+    </Grid>
+  );
+};
 
 export default CoursePriceFilters;

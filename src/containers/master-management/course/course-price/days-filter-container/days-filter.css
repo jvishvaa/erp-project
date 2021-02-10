@@ -1,27 +1,53 @@
 .daysFilterWrapper {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .daysTag {
-    color: #014b7e;
-    font-size: 18px;
-    font-weight: 600;
-    text-align: center;
+  color: #014b7e;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
 }
 
-.filterContainer {
-    margin-top: 20px;
-    border-radius: 10px;
-    min-height: 49vh;
-    max-height:49vh;
-    box-shadow: 0 4px 10px 0px rgba(1,75,126,0.2);
+.filterContainer,
+.daysDisplayWrapper {
+  margin-top: 20px;
+  border-radius: 10px;
+  min-height: 49vh;
+  max-height: 49vh;
+  box-shadow: 0 4px 10px 0px rgba(1, 75, 126, 0.2);
+}
+
+.daysDisplayContainer {
+  width: 100%;
+  margin: 5% 0 0 1%;
+}
+
+.dayDisplay::before {
+  content: ' ';
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-top: 5px solid #014b7e;
+  border-bottom: 5px solid #ff6b6b;
+  border-right: 5px solid #014b7e;
+  border-left: 5px solid #ff6b6b;
+  margin-right: 5%;
+}
+
+.dayDisplay {
+  margin: 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #014b7e;
+  text-align: left;
 }
 
 .comboDaysContainer {
-    padding: 20px 20px 60px 20px;
+  padding: 20px 20px 60px 20px;
 }
 
 .otherDaysContainer {
-    padding: 20px;
+  padding: 20px;
 }

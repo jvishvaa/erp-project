@@ -1,51 +1,53 @@
 .joinLimitWrapper {
-    width: 95%;
-    display: flex;
-    flex-direction: column;
+  width: 95%;
+  display: flex;
+  flex-direction: column;
 }
 
 .joinLimitTag {
-    color: #014b7e;
-    font-size: 18px;
-    font-weight: 600;
-    text-align: center;
+  color: #014b7e;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
 }
 
 .joinLimitContainer {
-    margin-top: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px 0px rgba(1,75,126,0.2);
+  margin-top: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px 0px rgba(1, 75, 126, 0.2);
 }
 
-.singleJoinLimit:first-child,.singleJoinLimitSelected:first-child {
-    border-radius: 10px 10px 0px 0px;
+.singleJoinLimit:first-child,
+.singleJoinLimitSelected:first-child {
+  border-radius: 10px 10px 0px 0px;
 }
 
-.singleJoinLimit:last-child,.singleJoinLimitSelected:last-child {
-    border-radius: 0px 0px 10px 10px;
+.singleJoinLimit:last-child,
+.singleJoinLimitSelected:last-child {
+  border-radius: 0px 0px 10px 10px;
 }
 
 .singleJoinLimit {
-    padding: 20px;
-    cursor: pointer;
-    font-size: 16px;
-    color: #014b7e;
-    text-align: center;
-    background: #ffffff;
+  padding: 20px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #014b7e;
+  text-align: center;
+  background: #ffffff;
 }
 
 .singleJoinLimitSelected {
-    padding: 20px;
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: 600;
-    color: #ff6b6b;
-    text-align: center;
-    background: #f3f3f3;
+  padding: 20px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 600;
+  color: #ff6b6b;
+  text-align: center;
+  background: #f3f3f3;
 }
 
-@media screen and (max-width:768px) {
-    .joinLimitWrapper {
-        width: 100%;
-    }
+@media screen and (max-width: 768px) {
+  .joinLimitWrapper {
+    width: 100%;
+  }
 }

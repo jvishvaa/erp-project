@@ -198,7 +198,7 @@ const AttendeeListRemake = (props) => {
                 id='date-picker'
                 label='Start date'
                 value={dateValue}
-                minDate={new Date()}
+                // minDate={new Date()}
                 onChange={handleDateChange}
                 KeyboardButtonProps={{
                   'aria-label': 'change date',
