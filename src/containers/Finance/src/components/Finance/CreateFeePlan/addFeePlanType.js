@@ -52,7 +52,7 @@ class AddFeePlanType extends Component {
     e.preventDefault()
     console.log('clicked')
     var data = {
-      fee_plan_name: this.props.match.params.id,
+      fee_plan_name: this.props.location.state,
       is_compulsory: this.state.is_compulsory,
       fee_type_name: this.state.FeeId,
       amount: this.state.amount
