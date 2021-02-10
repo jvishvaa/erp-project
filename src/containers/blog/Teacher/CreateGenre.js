@@ -93,7 +93,8 @@ const CreateGenre = (props) => {
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   
-  
+  const [pageNumber,setPageNumber]=useState(1);
+  const [pageSize,setPageSize]=useState(9);
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -112,8 +113,8 @@ const CreateGenre = (props) => {
     if (result.data.status_code === 200) {
       setLoading(false);
       setAlert('success', result.data.message);
-      getGenreList();
-   getGenreInActiveList();
+      // getGenreList();
+  //  getGenreInActiveList();
     } else {        
       setLoading(false);
       setAlert('error', "duplicates not allowed");
@@ -293,8 +294,8 @@ const CreateGenre = (props) => {
     if (result.data.status_code === 200) {
       setLoading(false);
       setAlert('success', result.data.message);
-      getGenreList();
-      getGenreInActiveList();
+      // getGenreList();
+      // getGenreInActiveList();
     } else {        
       setLoading(false);
       setAlert('error', result.data.message);
@@ -363,16 +364,16 @@ const handleGrade = (event, value) => {
     if(currentTab === 0){
     axiosInstance.get(`${endpoints.blog.genreList}?is_delete=${
       'False'
-    }&grade_id=${selectedGrades}`).then((res) => {
-        setGenreActiveListResponse(res.data.result)
+    }&grade_id=${selectedGrades}&page_number=${pageNumber}&page_size=${pageSize}`).then((res) => {
+        setGenreActiveListResponse(res.data.result.data)
     }).catch(err => {
         console.log(err)
     })
   }else{
     axiosInstance.get(`${endpoints.blog.genreList}?is_delete=${
       'True'
-    }&grade_id=${selectedGrades}`).then((res) => {
-        setGenreActiveListResponse(res.data.result)
+    }&grade_id=${selectedGrades}&page_number=${pageNumber}&page_size=${pageSize}`).then((res) => {
+        setGenreActiveListResponse(res.data.result.data)
     }).catch(err => {
         console.log(err)
     })
@@ -385,7 +386,7 @@ const getGenreList = () => {
   axiosInstance.get(`${endpoints.blog.genreList}?is_delete=${
     'False'
   }`).then((res) => {
-      setGenreActiveListResponse(res.data.result)
+      setGenreActiveListResponse(res.data.result.data)
   }).catch(err => {
       console.log(err)
   })
@@ -394,7 +395,7 @@ const getGenreInActiveList = () => {
   axiosInstance.get(`${endpoints.blog.genreList}?is_delete=${
     'True'
   }`).then((res) => {
-      setGenreInActiveListResponse(res.data.result)
+      setGenreInActiveListResponse(res.data.result.data)
   }).catch(err => {
       console.log(err)
   })
