@@ -374,7 +374,11 @@ const StudentIdCard = ({ history }) => {
           </Grid>
         </Grid>
       </Grid>
-      <Grid container spacing={2} style={{ padding: '10px 20px' }}>
+      <Grid
+        container
+        spacing={2}
+        style={{ padding: '10px 20px', backgroundColor: 'white' }}
+      >
         {filterList &&
           filterList.idCardList &&
           filterList.idCardList.results.length === 0 && (
