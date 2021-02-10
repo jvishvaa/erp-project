@@ -6,11 +6,11 @@ import { AssessmentHandlerContextProvider } from './assess-attemption-context';
 const AssessmentAttemption = () => {
   return (
     <>
-      {/* <Layout> */}
-      <AssessmentHandlerContextProvider>
-        <AssessmentHandlerUI />
-      </AssessmentHandlerContextProvider>
-      {/* </Layout> */}
+      <Layout>
+        <AssessmentHandlerContextProvider>
+          <AssessmentHandlerUI />
+        </AssessmentHandlerContextProvider>
+      </Layout>
     </>
   );
 };

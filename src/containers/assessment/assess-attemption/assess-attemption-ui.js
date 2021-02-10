@@ -1,15 +1,17 @@
 import React, { useContext } from 'react';
+import Loader from '../../../components/loader/loader';
 import { AssessmentHandlerContext } from './assess-attemption-context';
+import Loading from '../../../components/loader/loader';
 
 const AssessmentHandlerUI = () => {
   const {
-    // assessmentQp,
+    assessmentQp: { fetching },
     fetchAssessmentQp,
 
     questionsDataObj,
     questionsArray,
 
-    // questionsMetaInfo,
+    questionsMetaInfo: { is_ready_to_submit: isReadyToSubmit } = {},
 
     controls: {
       selectQues,
@@ -39,6 +41,7 @@ const AssessmentHandlerUI = () => {
   } = currentQuestionObj || {};
   return (
     <>
+      {fetching ? <Loading message='fetching question paper..' /> : null}
       {/* <div>{Object.values(questionsDataObj || {}).map((i) => `${i.id},`)}</div> */}
       {isStarted ? (
         <p>{`${startedAt}`}</p>
@@ -106,6 +109,8 @@ const AssessmentHandlerUI = () => {
           <button type='button' onClick={prevQues}>
             prev
           </button>
+
+          {isReadyToSubmit ? <button type='button'>Submit</button> : null}
         </>
       ) : null}
     </>

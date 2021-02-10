@@ -95,6 +95,7 @@ import DailyDairyStore from'./containers/daily-dairy/context/context';
 import AttendeeListRemake from './containers/attendance'
 import TestComparisionUI from './containers/assessment-report/test-comparision';
 import AssessmentAnalysis from './containers/assessment-report/assessment-analysis';
+import AssessmentHandlerUI from './containers/assessment/assess-attemption'
 
 const theme = createMuiTheme({
   palette: {
@@ -390,6 +391,9 @@ function App() {
                     </Route>
                     <Route exact path='/assessment/:assessmentId/attempt'>
                       {({ match }) => <ViewAssessment match={match} />}
+                    </Route>
+                    <Route exact path='/assessment/:assessmentId/state-management-intg-temp'>
+                      {({ match }) => <AssessmentHandlerUI match={match} />}
                     </Route>
                   </Switch>
                   </DailyDairyStore>
