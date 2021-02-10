@@ -65,7 +65,7 @@ class ManageFeeType extends Component {
   showAddFeeModalHandler = () => {
     this.setState({
       showAddFeeModal: true,
-      feePlanId: this.props.match.params.id
+      feePlanId: this.props.location.state
     })
   }
 
@@ -142,7 +142,7 @@ class ManageFeeType extends Component {
       feeTypeData: e,
       showTable: true,
       updatedFeeList: feeplanTypeListNew,
-      feePlanId: this.props.match.params.id,
+      feePlanId: this.props.location.state,
       installPercentage: [],
       installAmountValue: [],
       numberOfRows: null
