@@ -103,6 +103,10 @@ export default {
     downloadExcelAllstudents: '/academic/all_branch_strength_excel_data/',
   },
 
+  idCards: {
+    getIdCardsApi: '/erp_user/get-user-details/',
+  },
+
   coordinatorTeacherHomeworkApi: {
     getAllTeacherList: '/academic/teachers-list/',
     getTecherPerformance: '/academic/hw-teacher-performance/',

@@ -1,0 +1,217 @@
+$white: #ffffff;
+$black: #000000;
+$magenta: #e2289b;
+
+$light-grey: #f6f6f6;
+$dark-blue: #00346a;
+$light-blue: #00aedb;
+$green: #00d2a7;
+$pitch-green: #65ce37;
+$dark-green: #00bfbf;
+$light-orange: #ff7542;
+$dark-orange: #ff4600;
+$yellow: #ffb21a;
+$brownish: #fc723c;
+$purple: #8c64fb;
+$light-grey: #f2f2f2;
+$dark-grey: #5c5c5c;
+$wheatish: #fff5e2;
+$aol-theme-text-color: #fe8521;
+$dark-red: #d11616;
+$pale-orange: #f9955b;
+$pale-blue: #3386f2;
+$pale-yellow: #f2a500;
+$pale-green: #00dbb6;
+
+$mobile: 1024px;
+
+body {
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+}
+
+h1 {
+  font-size: 60px;
+}
+
+h2 {
+  font-size: 40px;
+}
+
+h3 {
+  font-size: 30px;
+}
+
+h4 {
+  font-size: 20px;
+}
+
+h5 {
+  font-size: 20px;
+}
+
+@mixin desktop {
+  @media screen and (min-width: $mobile) {
+    @content;
+  }
+}
+
+* {
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+}
+
+.min-height {
+  position: relative;
+  min-height: 100vh;
+}
+
+.w-half {
+  width: 50%;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.w-90 {
+  width: 90%;
+  margin: 0 auto;
+}
+
+.w-80 {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.w-70 {
+  width: 70%;
+  margin: 0 auto;
+}
+
+.w-60 {
+  width: 60%;
+  margin: 0 auto;
+}
+
+.w-40 {
+  width: 40%;
+  margin: 0 auto;
+}
+
+.w-30 {
+  width: 30%;
+  margin: 0 auto;
+}
+.w-20 {
+  width: 20%;
+  margin: 0 auto;
+}
+
+// background colors
+
+.darkBlue-bg {
+  background-color: $dark-blue;
+}
+
+.white-bg {
+  background-color: $white;
+}
+
+.lightGrey-bg {
+  background-color: $light-grey;
+}
+
+.lightGreen-bg {
+  background-color: $pitch-green !important;
+}
+
+.darkGrey-bg {
+  background-color: $dark-grey;
+}
+
+.darkOrange-bg {
+  background-color: $dark-orange;
+}
+
+// text colors
+
+.white-text {
+  color: $white !important;
+}
+
+.black-text {
+  color: $black;
+}
+
+.darkGreen-text {
+  color: $pitch-green;
+}
+
+.darkBlue-text {
+  color: $dark-blue;
+}
+
+.lightBlue-text {
+  color: $light-blue;
+}
+
+.magenta-text {
+  color: $magenta;
+}
+
+.lightGreen-text {
+  color: $pitch-green;
+}
+
+.darkGrey-text {
+  color: $dark-grey;
+}
+.aol-theme-text-color {
+  color: $aol-theme-text-color;
+}
+
+.dark-red {
+  color: $dark-red;
+}
+
+.pale-orange {
+  color: $pale-orange;
+}
+
+.pale-blue {
+  color: $pale-blue;
+}
+.pale-green {
+  color: $pale-green;
+}
+
+.pale-yellow {
+  color: $pale-yellow;
+}
+
+// text positioning
+
+.text-center {
+  text-align: center;
+}
+
+// flex
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.space-around {
+  justify-content: space-around;
+}
+.html {
+  scroll-behavior: smooth;
+}
