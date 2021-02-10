@@ -384,6 +384,8 @@ class WriteBlog extends Component {
                       get={this.handleTextEditor}
                       content={textEditorContent}
                     />
+                    
+
                   </Grid>
                   <Grid item xs={12}>
                     <Typography style={{ margin: 10 }} variant='body1'>

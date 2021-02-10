@@ -28,7 +28,7 @@ import endpoints from '../../../config/endpoints';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
 import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
-import ReviewPrincipal from '../Principal/ReviewPrincipal';
+import ReviewAdmin from '../Admin/ReviewAdmin';
 
 const styles = (theme) => ({
   root: {
@@ -325,7 +325,7 @@ if (result.data.status_code === 200) {
 
                             >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
                             </Button>
-                          {!data.feedback_revision_required? 
+                            {!data.feedback_revision_required && tabValue === 1 ? 
                           <Button
                             size='small'
                             color='primary'
@@ -336,8 +336,21 @@ if (result.data.status_code === 200) {
                               });
                             }}
                           >
-                            {relatedBlog ? 'Add Review' : ' Add Review'}
-                          </Button> : ''}
+                           {tabValue === 0 ? 'Add Review' : 'View Review' }
+                          </Button>  :''}
+                          {tabValue === 0 ? 
+                          <Button
+                            size='small'
+                            color='primary'
+                            onClick={() => {
+                              this.setState({
+                                relatedBlog: !relatedBlog,
+                                feedBack: false,
+                              });
+                            }}
+                          >
+                           {tabValue === 0 ? 'Add Review' : 'View Review' }
+                          </Button>  :''}
                           {tabValue === 0 && !data.feedback_revision_required ?
                           <Button
                             size='small'
@@ -431,7 +444,7 @@ if (result.data.status_code === 200) {
                         color: '#ff6b6b'}}>Reviewed By:{data.reviewed_by && data.reviewed_by.first_name}
                      
                       </Typography>
-                        <ReviewPrincipal  blogId={data.id}  ratingParameters={this.getRatings} overallRemark={this.getOverAllRemark}
+                        <ReviewAdmin  blogId={data.id}  ratingParameters={this.getRatings} overallRemark={this.getOverAllRemark}
                         />
 </Grid>
                       )
