@@ -132,7 +132,25 @@ class AdminPublishBlogView extends Component {
       this.getBlog(status)
     })
 };
+handleFilter = () => {
+  const { pageNo, pageSize ,tabValue,startDate,endDate,status,moduleId} = this.state;
+  axios
+  .get(
+    `${endpoints.blog.Blog}?page_number=${
+      pageNo 
+    }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&published_level=${tabValue+1}&start_date=${startDate}&end_date=${endDate}`
+  )
+    .then((result) => {
+      if (result.data.status_code === 200) {
+        this.setState({ data: result.data.result.data ,totalBlogs:result.data.result.total_blogs});
+      } else {
+        console.log(result.data.message);
+      }
+    })
+    .catch((error) => {
+    });
 
+}
 
   render() {
     const { classes } = this.props;
@@ -192,6 +210,8 @@ class AdminPublishBlogView extends Component {
                         color='primary'
                         size='small'
                         variant='contained'
+                        onClick={this.handleFilter}
+
                       >
                         Filter
                       </Button>

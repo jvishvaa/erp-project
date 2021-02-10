@@ -104,7 +104,6 @@ class ContentView extends Component {
 
     };
    
-    console.log(this.state.tabValue,"@@@@")
 
   }
   componentDidMount() {

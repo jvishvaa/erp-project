@@ -97,21 +97,21 @@ class PrincipalBlog extends Component {
     this.getBranch();
   }
   handleFilter = () => {
-    const { pageNo, pageSize ,tabValue,status,selectedBranch,selectedGrade,selectedSection} = this.state
+    const { pageNo, pageSize ,tabValue,status,selectedBranch,selectedGrade,selectedSection,moduleId} = this.state
     let urlPath = ''
     if(selectedSection){
       urlPath = `${endpoints.blog.Blog}?page_number=${
               pageNo 
-            }&page_size=${pageSize}&status=${status}&module_id=115&section_id=${selectedSection.section_id}`
+            }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&section_id=${selectedSection.section_id}`
     }else if(selectedGrade){
       urlPath = `${endpoints.blog.Blog}?page_number=${
               pageNo 
-            }&page_size=${pageSize}&status=${status}&module_id=115&grade_id=${selectedGrade.grade_id}`
+            }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&grade_id=${selectedGrade.grade_id}`
     }
     else if(selectedBranch){
       urlPath =`${endpoints.blog.Blog}?page_number=${
               pageNo 
-            }&page_size=${pageSize}&status=${status}&module_id=115&barnch_id=${selectedBranch.id}`
+            }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&barnch_id=${selectedBranch.id}`
     }
     axios
       .get(
@@ -195,13 +195,13 @@ class PrincipalBlog extends Component {
       });
   };
   getBlog = (status) => {
-    const { pageNo, pageSize,tabValue } = this.state;
+    const { pageNo, pageSize,tabValue,moduleId } = this.state;
     
     axios
       .get(
         `${endpoints.blog.Blog}?page_number=${
           pageNo 
-        }&page_size=${pageSize}&status=${status}&module_id=115`
+        }&page_size=${pageSize}&status=${status}&module_id=${moduleId}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -270,20 +270,17 @@ class PrincipalBlog extends Component {
     }
 };
 handleBranch = (event, value) => {
-  console.log(event,value,"@@@")
   this.setState({data:[],selectedBranch:value},()=>{
     this.getGrade()
   })
 };
 
 handleGrade = (event, value) => {
-  console.log(event,value,"@@@")
   this.setState({data:[],selectedGrade:value}, ()=>{
     this.getSection()
   })
 };
 handleSection = (event,value) =>{
-  console.log(event,value,"@@@")
 
   this.setState({data:[],selectedSection :value})
 }

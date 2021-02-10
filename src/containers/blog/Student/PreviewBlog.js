@@ -81,7 +81,6 @@ class ContentView extends Component {
       genreObj:this.props.location.state.genreObj,
       parsedTextEditorContentLen:this.props.location.state.parsedTextEditorContentLen,
     };
-    console.log(this.props,"@@@@@@")
   }
 
   componentDidMount() {
@@ -100,7 +99,6 @@ class ContentView extends Component {
 
   submitBlog = (type) => {
     const { title, content, files, genreId ,parsedTextEditorContentLen} = this.state;
-    console.log(parsedTextEditorContentLen,"@@@")
     const formData = new FormData();
     for (var i = 0; i < files.length; i++) {
       formData.append('thumbnail',files[i]);

@@ -174,15 +174,12 @@ class WriteBlog extends Component {
     const parsedTextEditorContent=textEditorContent.split(' ')
     // const parsedTextEditorContent = textEditorContent.replace(/(<([^>]+)>)/ig, '').split(' ')
     const textWordCount = parsedTextEditorContent.length
-    console.log(textWordCount,"@@@")
     this.setState({ parsedTextEditorContentLen: textWordCount })
-    console.log(parsedTextEditorContent.length,"@@@@")
     if (parsedTextEditorContent && parsedTextEditorContent.length < wordCountLimit) {
       const errorMsg = `Please write atleast ${wordCountLimit} words.Currently only ${textWordCount} words have been written`
       return errorMsg
     }
     this.setState({ parsedTextEditorContentLen: textWordCount})
-    console.log(this.state.parsedTextEditorContentLen,"@@@")
 
     return false
   }
@@ -245,7 +242,6 @@ class WriteBlog extends Component {
 
   PreviewBlogNav = () => {
     let{genreId ,files, title ,textEditorContent,genreObj,parsedTextEditorContentLen}=this.state
-    console.log(parsedTextEditorContentLen,"@@@")
 
     
     if(!genreId ){
@@ -279,7 +275,6 @@ class WriteBlog extends Component {
       // files,
       genreName,
     } = this.state;
-    console.log(parsedTextEditorContentLen,"@@@")
     this.props.history.push({
       pathname: '/blog/student/preview-blog',
       state: { studentName, creationDate, genreId, textEditorContent, title, files ,genreName,genreObj,parsedTextEditorContentLen},
@@ -306,7 +301,6 @@ class WriteBlog extends Component {
       studentName,
       creationDate,wordCountLimit
     } = this.state;
-    console.log(genreList,genreName,"@250")
     return Preview ? (
       <PreviewBlog
         content={textEditorContent}
