@@ -135,12 +135,13 @@ getOverAllRemark = () => {
     let title=data && data.title
     let thumbnail = data && data.thumbnail
     let genreObj =data.genre
+    let parsedTextEditorContentLen = data.word_count
     let genreId =data && data.genre && data.genre.id
     let genreName =data && data.genre && data.genre.genre
     let blogId=data&&data.id
     this.props.history.push({
       pathname: '/blog/student/edit-blog',
-      state: { content, title, thumbnail,genreId,genreName,blogId,genreObj },
+      state: { content, title, thumbnail,genreId,genreName,blogId,genreObj ,parsedTextEditorContentLen},
     });
   };
   handleDeleteBlog = (blogId) => {

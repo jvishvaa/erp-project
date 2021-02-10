@@ -1,15 +1,18 @@
 
-import React, { useState, useContext ,useEffect} from 'react'
+import React, { useState, useContext } from 'react'
 import { withRouter,useHistory } from 'react-router-dom';
+
 import Layout from '../../Layout'
-import {  TextField, Grid, Button, useTheme,Tabs, Tab ,Typography, Card, CardContent,CardHeader} from '@material-ui/core'
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import {  TextField, Grid, Button, useTheme} from '@material-ui/core'
+
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import Loading from '../../../components/loader/loader';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,80 +38,85 @@ const useStyles = makeStyles((theme) => ({
   tableCell: {
     color: theme.palette.secondary.main,
   },
-  rootG: {
-    flexGrow: 1,
-  },
   typoStyle:{
     fontSize:'12px',
     padding:'1px',
     marginTop: '-5px',
     marginRight: '20px'
   }
+ 
 }));
 
 
   
 
 
-const EditGenre = (props) => {
-  const data =props.location.state.data
+const EditWordCountConfig = (props) => {
   const classes = useStyles()
+  const data = props.location.state.data
+  console.log(data,"@@@",props)
   const history = useHistory()
 
-  const [genreNameEdit,setGenreNameEdit] =useState('');
-  console.log(data,"@@@")
-  const [genreName,setGenreName] =useState('');
-  const gradeObj= data.grade
+  const gradeObj=data.grade
+  
+  const [wordCount,setWordCount] =useState('');
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false)
   const themeContext = useTheme();
-  const [gradeList,setGradeList]=useState([]);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const wider = isMobile ? '-10px 0px' : '0 0 -1rem 1.5%'
   const widerWidth = isMobile ? '90%' : '85%'
+  const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
 
-  
-  
+  const [gradeList, setGradeList] = useState([]);
 
-  
-    const handleEditSubmit = (e) => {
-      setLoading(true);
-      let requestData= {}
-     
-        requestData = {
-          "genre_id":data.id,
-          "genre":genreNameEdit ||data.genre,
-          "grade_id":data.grade.id
-        }
-    
-  
-      axiosInstance.put(`${endpoints.blog.genreList}`, requestData)
-  
-      .then(result=>{
-      if (result.data.status_code === 200) {
-        setLoading(false);
-        setAlert('success', result.data.message);
-        history.push('/blog/genre')
-      } else {        
-        setLoading(false);
-        setAlert('error', result.data.error);
+  const branchId=roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0]
+  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+
+  const handleSubmit = (e) => {
+    const chkWordCount=+wordCount
+    const chkNumber = Number.isInteger(chkWordCount)
+      if (!chkNumber){
+        setAlert('error',"please enter a valid word count with integer" );
+
+      }else{
+
+    setLoading(true);
+   
+    let requestData= {}
+   
+      requestData = {
+        "word_count":wordCount || data.word_count,
+        "grade_id":data.grade.id,
+        "wrd_c_con_id":data.id
       }
-      }).catch((error)=>{
-        setLoading(false);        
-        setAlert('error', "duplicates not allowed");
-      })
-      };
-
-   
-   
-        
   
 
-const handleGenreNameEditChange = (e) => {
-  setGenreNameEdit(e.target.value);
+    axiosInstance.put(`${endpoints.blog.WordCountConfig}`, requestData)
+
+    .then(result=>{
+    if (result.data.status_code === 200) {
+      setLoading(false);
+      setAlert('success', result.data.message);
+      history.push('/blog/wordcount-config')
+    } else {        
+      setLoading(false);
+      setAlert('error', "word config already existing for this grade");
+    }
+    }).catch((error)=>{
+      setLoading(false);        
+      setAlert('error', "word config already existing for this grade");
+    }) }
+    };
+      
+       
+   
+const handleWordCountChange = (e) => {
+  setWordCount(e.target.value);
 };
 
 
+  
 
   return (
    <>
@@ -140,12 +148,12 @@ const handleGenreNameEditChange = (e) => {
           <Grid item xs={12} sm={3}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
               <TextField
                 id='outlined-helperText'
-                label='Genre Name'
-                defaultValue={data.genre}
+                label='Word Count'
+                defaultValue={data.word_count}
                 variant='outlined'
                 style={{ width: '100%' }}
-                inputProps={{ maxLength: 20 }}
-                onChange={(event,value)=>{handleGenreNameEditChange(event);}}
+                inputProps={{ maxLength: 3 }}
+                onChange={(event,value)=>{handleWordCountChange(event);}}
                 color='secondary'
                 size='small'
               />
@@ -160,14 +168,14 @@ const handleGenreNameEditChange = (e) => {
               className="custom_button_master"
               size='medium'
               type='submit'
-              onClick={handleEditSubmit}
-              disabled={!genreNameEdit || !data.genre}
+              onClick={handleSubmit}
+              disabled={!wordCount || !data.word_count}
             >
               Update
         </Button>
           </Grid>
         </Grid>
-        
+
        
 
       </Layout>
@@ -175,4 +183,4 @@ const handleGenreNameEditChange = (e) => {
   )
 }
 
-export default withRouter(EditGenre)
+export default withRouter(EditWordCountConfig)
