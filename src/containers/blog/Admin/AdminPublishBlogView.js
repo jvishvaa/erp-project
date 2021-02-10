@@ -73,7 +73,8 @@ class AdminPublishBlogView extends Component {
       pageNo: 1,
       pageSize: 6,
       startDate :moment().format('YYYY-MM-DD'),
-      status :[4]
+      status :[4],
+      moduleId:114
     };
   }
   componentDidMount() {
@@ -81,12 +82,12 @@ class AdminPublishBlogView extends Component {
     this.getBlog(status);
   }
   getBlog = (status) => {
-    const { pageNo, pageSize ,tabValue} = this.state;
+    const { pageNo, pageSize ,tabValue,moduleId} = this.state;
     axios
       .get(
         `${endpoints.blog.Blog}?page_number=${
           pageNo 
-        }&page_size=${pageSize}&status=${status}&module_id=113&published_level=${tabValue+1}`
+        }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&published_level=${tabValue+1}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {

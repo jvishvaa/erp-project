@@ -73,7 +73,9 @@ const CreateWordCountConfig = (props) => {
   const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
   const [grade, setGrade] = useState([]);
   const [selectedGrades, setSelectedGrades] = useState('');
-  const [moduleId, setModuleId] = useState(68);
+  const [moduleId, setModuleId] = useState(144);
+  const [pageSize,setPageSize] = useState(9);
+  const [pageNumber,setPageNumber]=useState(1);
 
   const [gradeList, setGradeList] = useState([]);
 
@@ -141,9 +143,9 @@ const CreateWordCountConfig = (props) => {
         getActiveList();
       }, []);
       const getActiveList = () => {
-        axiosInstance.get(`${endpoints.blog.WordCountConfig}`)
+        axiosInstance.get(`${endpoints.blog.WordCountConfig}?page_number=${pageNumber}&page_size=${pageSize}`)
           .then((res) => {
-              setActiveListRes(res.data.result)
+              setActiveListRes(res.data.result.data)
           }).catch(err => {
               console.log(err)
           })
