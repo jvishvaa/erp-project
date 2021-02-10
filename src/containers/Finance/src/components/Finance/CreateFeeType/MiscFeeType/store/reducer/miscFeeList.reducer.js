@@ -31,6 +31,11 @@ const miscFeeListReducer = (state = initialState, action) => {
       changeObj.is_advance_fee = action.payload.data.is_advance_fee ? action.payload.data.is_advance_fee : false
       changeObj.is_parent_enable = action.payload.data.is_parent_enable ? action.payload.data.is_parent_enable : false
       changeObj.set_due_date = action.payload.data.set_due_date ? action.payload.data.set_due_date : ''
+      changeObj.amount = action.payload.data.amount ? action.payload.data.amount : ''
+      changeObj.start_date = action.payload.data.start_date ? action.payload.data.start_date : ''
+      changeObj.end_date = action.payload.data.end_date ? action.payload.data.end_date : ''
+      changeObj.is_store_related = action.payload.data.is_store_related ? action.payload.data.is_store_related : ''
+      changeObj.fee_account = action.payload.data.fee_account
       feeList[index] = { ...changeObj }
       return {
         ...state,
@@ -52,7 +57,12 @@ const miscFeeListReducer = (state = initialState, action) => {
         is_last_year_due: action.payload.data.is_last_year_due ? action.payload.data.is_last_year_due : false,
         is_advance_fee: action.payload.data.is_advance_fee ? action.payload.data.is_advance_fee : false,
         is_parent_enable: action.payload.data.is_parent_enable ? action.payload.data.is_parent_enable : false,
-        set_due_date: action.payload.data.set_due_date ? action.payload.data.set_due_date : ''
+        set_due_date: action.payload.data.set_due_date ? action.payload.data.set_due_date : '',
+        start_date: action.payload.data.start_date ? action.payload.data.start_date : '',
+        end_date: action.payload.data.end_date ? action.payload.data.end_date : '',
+        is_store_related: action.payload.data.is_store_related ? action.payload.data.is_store_related : '',
+        amount: action.payload.data.amount ? action.payload.data.amount : '',
+        fee_account: action.payload.data.fee_account
       })
       return {
         ...state,

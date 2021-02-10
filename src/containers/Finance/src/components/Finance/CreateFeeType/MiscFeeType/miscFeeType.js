@@ -38,7 +38,11 @@ class MiscFeeType extends Component {
       feeDetails: [],
       sessionData: null,
       branchData: [],
-      showAddButton: false
+      showAddButton: false,
+      start_date: '',
+      end_date: '',
+      store: false,
+      feeAcc: ''
     }
     this.handleClickFeeData.bind(this)
     // this.deleteHandler = this.deleteHandler.bind(this)
@@ -48,10 +52,15 @@ class MiscFeeType extends Component {
     this.setState({ branchId: e.value, branchData: e })
   }
 
-  showModalHandler = (id) => {
+ 
+  showModalHandler = (id, sDate, eDate, s, feeAcc) => {
     this.setState({
       showModal: true,
-      id: id
+      id: id,
+      start_date: sDate,
+      end_date: eDate,
+      store: s,
+      feeAcc: feeAcc
     })
   }
 
@@ -97,7 +106,7 @@ class MiscFeeType extends Component {
       this.props.alert.warning('Select Branch')
       return
     }
-    this.renderTable()
+    // this.renderTable()
     this.props.fetchMiscFeeList(this.state.session, this.state.branchId, this.props.alert, this.props.user)
     if (this.state.session && this.state.branchId) {
       this.setState({ showTable: true, showAddButton: true }, () => { feeTypeState = this.state })
@@ -116,169 +125,170 @@ class MiscFeeType extends Component {
     }
   }
 
-  renderTable = () => {
-    let dataToShow = []
-    dataToShow = this.props.miscFeeList.map((val, i) => {
-      return {
-        Sr: i + 1,
-        id: val.id ? val.id : '',
-        fee_type_name: val.fee_type_name ? val.fee_type_name : '',
-        is_multiple_records_allow: val.is_multiple_records_allow ? 'Yes' : 'No',
-        individual_student_wise: val.individual_student_wise ? 'Yes' : 'No',
-        allow_partial_payments: val.allow_partial_payments ? 'Yes' : 'No',
-        can_be_group: val.can_be_group ? 'Yes' : 'No',
-        is_allow_remarks: val.is_allow_remarks ? 'Yes' : 'No',
-        allow_excess_amount: val.allow_excess_amount ? 'Yes' : 'No',
-        is_last_year_due: val.is_last_year_due ? 'Yes' : 'No',
-        is_advance_fee: val.is_advance_fee ? 'Yes' : 'No',
-        is_parent_enable: val.is_parent_enable ? 'Yes' : 'No',
-        set_due_date: val.set_due_date ? val.set_due_date : '',
-        Edit: (
-          <Fab size='small' color='primary' variant='contained' onClick={() => this.showModalHandler(val.id)}>
-            <EditIcon />
-          </Fab>
-        ),
-        Delete: (
-          <Fab size='small' color='primary' variant='contained' onClick={() => this.deleteModalShowHandler(val.id)}>
-            <DeleteIcon />
-          </Fab>
-        )
-      }
-    })
-    return dataToShow
-  }
+  // renderTable = () => {
+  //   let dataToShow = []
+  //   dataToShow = this.props.miscFeeList.map((val, i) => {
+  //     return {
+  //       Sr: i + 1,
+  //       id: val.id ? val.id : '',
+  //       fee_type_name: val.fee_type_name ? val.fee_type_name : '',
+  //       is_multiple_records_allow: val.is_multiple_records_allow ? 'Yes' : 'No',
+  //       individual_student_wise: val.individual_student_wise ? 'Yes' : 'No',
+  //       allow_partial_payments: val.allow_partial_payments ? 'Yes' : 'No',
+  //       can_be_group: val.can_be_group ? 'Yes' : 'No',
+  //       is_allow_remarks: val.is_allow_remarks ? 'Yes' : 'No',
+  //       allow_excess_amount: val.allow_excess_amount ? 'Yes' : 'No',
+  //       is_last_year_due: val.is_last_year_due ? 'Yes' : 'No',
+  //       is_advance_fee: val.is_advance_fee ? 'Yes' : 'No',
+  //       is_parent_enable: val.is_parent_enable ? 'Yes' : 'No',
+  //       set_due_date: val.set_due_date ? val.set_due_date : '',
+  //       Edit: (
+  //         <Fab size='small' color='primary' variant='contained' onClick={() => this.showModalHandler(val.id, val.start_date, val.end_date, val.is_store_related, val.fee_account && val.fee_account)}>
+  //           <EditIcon />
+  //         </Fab>
+  //       ),
+  //       Delete: (
+  //         <Fab size='small' color='primary' variant='contained' onClick={() => this.deleteModalShowHandler(val.id)}>
+  //           <DeleteIcon />
+  //         </Fab>
+  //       )
+  //     }
+  //   })
+  //   return dataToShow
+  // }
 
   render () {
-    let viewFeeTable = null
-    if (this.props.miscFeeList.length > 0) {
-      viewFeeTable = (<ReactTable
-        // pages={Math.ceil(this.props.viewBanksList.count / 20)}
-        data={this.renderTable()}
-        manual
-        columns={[
-          {
-            Header: 'Sr',
-            accessor: 'Sr',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Fee Type Name',
-            accessor: 'fee_type_name',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Multiple Records Allow',
-            accessor: 'is_multiple_records_allow',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Individual Student Wise',
-            accessor: 'individual_student_wise',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Partial Payments',
-            accessor: 'allow_partial_payments',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Can Be Group',
-            accessor: 'can_be_group',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Remarks',
-            accessor: 'is_allow_remarks',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Excess Amount',
-            accessor: 'allow_excess_amount',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Last Year Due',
-            accessor: 'is_last_year_due',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Advance Fee',
-            accessor: 'is_advance_fee',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Parent Enable',
-            accessor: 'is_parent_enable',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Due Date',
-            accessor: 'set_due_date',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Edit',
-            accessor: 'Edit',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true,
-            style: {
-              paddingTop: '10px'
-            }
-          },
-          {
-            Header: 'Delete',
-            accessor: 'Delete',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true,
-            style: {
-              paddingTop: '5px',
-              paddingLeft: '29px'
-            }
-          }
-        ]}
-        filterable
-        sortable
-        defaultPageSize={10}
-        showPageSizeOptions={false}
-        className='-striped -highlight'
-        // Controlled props
-        // page={this.state.page}
-        // Callbacks
-        // onPageChange={page => this.pageChangeHandler(page)}
-      />)
-    }
+    // let viewFeeTable = null
+    // if (this.props.miscFeeList.length > 0) {
+    //   viewFeeTable = (<ReactTable
+    //     // pages={Math.ceil(this.props.viewBanksList.count / 20)}
+    //     data={this.renderTable()}
+    //     manual
+    //     columns={[
+    //       {
+    //         Header: 'Sr',
+    //         accessor: 'Sr',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Fee Type Name',
+    //         accessor: 'fee_type_name',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Multiple Records Allow',
+    //         accessor: 'is_multiple_records_allow',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Individual Student Wise',
+    //         accessor: 'individual_student_wise',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Partial Payments',
+    //         accessor: 'allow_partial_payments',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Can Be Group',
+    //         accessor: 'can_be_group',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Remarks',
+    //         accessor: 'is_allow_remarks',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Excess Amount',
+    //         accessor: 'allow_excess_amount',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Last Year Due',
+    //         accessor: 'is_last_year_due',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Advance Fee',
+    //         accessor: 'is_advance_fee',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Parent Enable',
+    //         accessor: 'is_parent_enable',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Due Date',
+    //         accessor: 'set_due_date',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Edit',
+    //         accessor: 'Edit',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true,
+    //         style: {
+    //           paddingTop: '10px'
+    //         }
+    //       },
+    //       {
+    //         Header: 'Delete',
+    //         accessor: 'Delete',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true,
+    //         style: {
+    //           paddingTop: '5px',
+    //           paddingLeft: '29px'
+    //         }
+    //       }
+    //     ]}
+    //     filterable
+    //     sortable
+    //     defaultPageSize={10}
+    //     showPageSizeOptions={false}
+    //     className='-striped -highlight'
+    //     // Controlled props
+    //     // page={this.state.page}
+    //     // Callbacks
+    //     // onPageChange={page => this.pageChangeHandler(page)}
+    //   />)
+    // }
 
     let modal = null
     if (this.state.showModal) {
       modal = (
         <Modal open={this.state.showModal} click={this.hideModalHandler}>
-          <EditMiscFee id={this.state.id} alert={this.props.alert} close={this.hideModalHandler} />
+          <EditMiscFee id={this.state.id} alert={this.props.alert} sessions={this.state.sessionData}
+            branch={this.state.branchData} branchIdss={this.state.branchId} feeAccs={this.state.feeAcc} start_date={this.state.start_date} end_dates={this.state.end_date} store={this.state.store} close={this.hideModalHandler} />
         </Modal>
       )
     }
@@ -408,7 +418,7 @@ class MiscFeeType extends Component {
                       <TableCell>{val.is_parent_enable ? 'Yes' : 'No'}</TableCell>
                       <TableCell>{val.set_due_date ? val.set_due_date : ''}</TableCell>
                       <TableCell>
-          <Fab size='small' color='primary' variant='contained' onClick={() => this.showModalHandler(val.id)}>
+          <Fab size='small' color='primary' variant='contained' onClick={() => this.showModalHandler(val.id, val.start_date, val.end_date, val.is_store_related, val.fee_account && val.fee_account)}>
             <EditIcon />
           </Fab>
         </TableCell>
