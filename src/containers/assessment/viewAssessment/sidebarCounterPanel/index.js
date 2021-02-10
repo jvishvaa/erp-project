@@ -1,8 +1,24 @@
-import React from 'react';
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+import React, { useContext } from 'react';
+import { AssessmentHandlerContext } from '../../assess-attemption/assess-attemption-context';
 import './sidebarPanel.css';
 import { Button } from '@material-ui/core';
 
 const SidebarCounterPanel = () => {
+  const {
+    controls: {
+      selectQues,
+      nextQues,
+      prevQues,
+      attemptQuestion,
+      currentQuesionId,
+      isStarted,
+      start,
+      startedAt,
+    } = {},
+    questionsArray = [],
+  } = useContext(AssessmentHandlerContext);
   return (
     <div className='sidebar-panel'>
       <div className='sidebar-panel-wrapper'>
@@ -18,14 +34,25 @@ const SidebarCounterPanel = () => {
       <div className='sidebar-question-list'>
         <h6>Question List</h6>
         <div className='sidebar-box-wrapper'>
-          <div className='box'> 1</div>
+          {questionsArray.map((ques, index) => (
+            <div
+              key={ques.id}
+              onClick={() => {
+                selectQues(ques.id);
+              }}
+              className='box'
+            >
+              {` ${index + 1}`}
+            </div>
+          ))}
+          {/* <div className='box'> 1</div>
           <div className='box'> 2</div>
           <div className='box'> 3</div>
           <div className='box'> 4</div>
           <div className='box'> 5</div>
           <div className='box'> 6</div>
           <div className='box'> 7</div>
-          <div className='box'> 8</div>
+          <div className='box'> 8</div> */}
         </div>
       </div>
       <div className='sidebar-legend'>
