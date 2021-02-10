@@ -12,7 +12,7 @@ import { urls } from '../../../../urls'
 import * as actionTypes from '../../store/actions'
 // import { apiActions } from '../../../../_actions'
 import feeReceipts from '../../Receipts/feeReceipts'
-import storeReceipts from '../../../Inventory/Receipts/storePaymentReceipt'
+// import storeReceipts from '../../../Inventory/Receipts/storePaymentReceipt' // rajneesh
 import customClasses from './managePayment.module.css'
 
 const styles = theme => ({
@@ -103,7 +103,7 @@ class AllTransactions extends Component {
     try {
       if (isKit) {
         const response = await this.getKitPdfData(transactionId)
-        storeReceipts(response.data)
+        // storeReceipts(response.data) // rajneesh
       } else {
         const response = await this.getPdfData(transactionId)
         feeReceipts(response.data, isCancelled)

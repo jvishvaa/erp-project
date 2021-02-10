@@ -128,7 +128,7 @@ import LedgerReport from './containers/Finance/src/components/Finance/BranchAcco
 import FinancialLedgerReport from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/PettyExpenses/FinancialLedgerReport/financialLedgerReport.js'
 import Party from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/Party/Party.js'
 import StudentShuffleReq from './containers/Finance/src/components/Finance/ApprovalRequests/StudentShuffle/studentShuffleReq.js'
-
+import ManagePayment from './containers/Finance/src/components/Finance/student/managePayment/managePayment.js'
 
 const theme = createMuiTheme({
   palette: {

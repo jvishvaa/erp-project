@@ -636,6 +636,10 @@ const Layout = ({ children, history }) => {
                   history.push('/finance/Approval/Requests/StudentShuffleRequest')
                     break;
                   }
+              case 'Manage Payment': {
+                  history.push('/finance/ManagePayments')
+                    break;
+                  }
       default:
         break;
     }
