@@ -47,23 +47,13 @@
 }
 
 .weekContainer {
-    width: 45%;
+    width: 47.5%;
     display: flex;
     justify-content: flex-start;
 }
 
-.weekTag {
-    width: 20%;
-    align-self: center;
-    color: #014b7e;
-    font-size: 16px;
-    font-weight: 600;
-    display: none;
-}
-
 .recursiveWeekContainer {
-    width: 80%;
-    margin-right: 2%;
+    width: 100%;
 }
 
 .recursiveWeekContainer > .MuiFormControl-root {
@@ -76,8 +66,8 @@
 }
 
 .recursivePriceContainer {
-    width: 40%;
-    margin-left: 10%;
+    width: 47.5%;
+    margin-left: 5%;
 }
 
 .recursivePriceContainer > .MuiFormControl-root {
@@ -94,20 +84,18 @@
 }
 
 .buttonContainer {
-    width: 60%;
+    width: 30%;
     display: flex;
     justify-content: space-between;
     align-self: flex-end;
 }
 
 .submitCoursePriceButton.MuiButtonBase-root  {
-    width: 45%;
+    width: 100%;
     border-radius: 10px;
 }
 
 .submitCoursePriceButton.MuiButtonBase-root:hover  {
-    width: 45%;
-    border-radius: 10px;
     background: #ff6b6b;
 }
 

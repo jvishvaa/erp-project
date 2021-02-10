@@ -8,7 +8,12 @@ import { AlertNotificationContext } from '../../../../../context-api/alert-conte
 
 const CoursePriceFilters = (props) => {
 
-    const {setCourseId} = props;
+    const {
+        timeSlot,
+        setTimeSlot,
+        setCourseId
+    } = props;
+    
     const { setAlert } = useContext(AlertNotificationContext);
     const [selectedGrade, setSelectedGrade] = useState('');
     const [selectedCourse, setSelectedCourse] = useState('');
@@ -66,13 +71,11 @@ const CoursePriceFilters = (props) => {
             });
     };
 
-    const [timeSlot, setTimeSlot] = useState([]);
-
     const [timeSlotList, setTimeSlotList] = useState([
-        { id: 1, slot: '12-3' },
-        { id: 2, slot: '3-6' },
-        { id: 3, slot: '6-9' },
-        { id: 4, slot: '9-12' },
+        { slot: '12-3' },
+        { slot: '3-6' },
+        { slot: '6-9' },
+        { slot: '9-12' },
     ]);
 
     const handleTimeSlot = (event, value) => {
@@ -133,7 +136,7 @@ const CoursePriceFilters = (props) => {
             {!isMobile &&
                 <Grid item xs={0} sm={6} />
             }
-            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+            <Grid item xs={12} sm={3} className={isMobile ? 'timeSlotWrapper' : 'timeSlotWrapper filterPadding'}>
                 <Autocomplete
                     multiple
                     size='small'

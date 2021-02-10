@@ -4,7 +4,6 @@ import {
     Switch,
     FormControlLabel,
     Button,
-    IconButton,
     SvgIcon,
 } from '@material-ui/core';
 import './duration.css';
@@ -17,14 +16,16 @@ import { AlertNotificationContext } from '../../../../../context-api/alert-conte
 const DurationContainer = (props) => {
 
     const {
+        timeSlot,
         courseId,
         selectedLimit,
         collectData,
         setCollectData,
+        funBatchSize
     } = props;
 
     const { setAlert } = useContext(AlertNotificationContext);
-    const [noOfWeeks, setNoOfWeeks] = useState(null);
+    const [noOfWeeks, setNoOfWeeks] = useState(null||[...collectData][funBatchSize(Number(selectedLimit.substring(2)))]['weeks']);
     const [toggle, setToggle] = useState(false);
     const [recursiveContent, setRecursiveContent] = useState([
         { weeks: '', price: '' }
@@ -41,7 +42,17 @@ const DurationContainer = (props) => {
 
     const handleChange = (e, index) => {
         const list = [...recursiveContent];
-        list[index][e.target.name] = e.target.value;
+        let name = e.target.name;
+        let value = e.target.value;
+
+        if (name === 'price') {
+            if (value.match(/^[0-9]*.?([0-9]+)?$/))
+                list[index][name] = value;
+            else
+                setAlert('warning', 'Price can contain only numbers');
+        } else {
+            list[index][name] = value;
+        }
         setRecursiveContent(list);
     };
 
@@ -71,7 +82,7 @@ const DurationContainer = (props) => {
         }
     };
 
-    const handleSave = () => {
+    useEffect(() => {
         const list = [...collectData];
         for (let i = 0; i < list.length; i++) {
             if (list[i]['limit'] === selectedLimit) {
@@ -82,7 +93,7 @@ const DurationContainer = (props) => {
             }
         }
         setCollectData(list);
-    };
+    }, [noOfWeeks, toggle, recursiveContent.length]);
 
     const handleSubmit = () => {
         const list = [...collectData];
@@ -112,7 +123,8 @@ const DurationContainer = (props) => {
 
         const request = {
             "course": courseId,
-            "batch": batchData
+            "batch": batchData,
+            "time_slot": timeSlot.map(value => value.slot),
         }
 
         axiosInstance.post(`${endpoints.aol.createCoursePrice}`, request)
@@ -186,7 +198,6 @@ const DurationContainer = (props) => {
                                         InputProps={{ inputProps: { min: 0, autoComplete: 'off', readOnly: !toggle } }}
                                     />
                                 </div>
-                                <div className="weekTag">weeks</div>
                             </div>
                             <div className="recursivePriceContainer">
                                 <TextField
@@ -217,9 +228,6 @@ const DurationContainer = (props) => {
                 </div>
             </div>
             <div className="buttonContainer">
-                <Button onClick={handleSave} className="saveCoursePriceButton">
-                    Save
-                </Button>
                 <Button onClick={handleSubmit} className="submitCoursePriceButton">
                     Submit
                 </Button>
