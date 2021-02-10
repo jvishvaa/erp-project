@@ -325,10 +325,8 @@ const handleTabChange = (event,value) =>{
             <Tabs value={currentTab} indicatorColor='primary'
               textColor='primary'
               onChange={handleTabChange} aria-label='simple tabs example'>
-              <Tab label='Active'
+              <Tab label='View'
               />
-              {/* <Tab label='In-Active'
-              /> */}
             </Tabs>
           </Grid>
         </Grid>{decideTab()}

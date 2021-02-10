@@ -313,7 +313,8 @@ this.setState({status:[8,5]}
                     </div>
                   </Grid> */}
                   <Grid item xs={12} sm={3}  >
-                  <div className='blog_input'>{tabValue === 0 ?
+                  <div className='blog_input'>
+                    {tabValue === 0 ?
                   <Autocomplete
                   style={{ width: '100%' }}
                   size='small'
@@ -331,7 +332,7 @@ this.setState({status:[8,5]}
                       placeholder='Status'
                     />
                   )}
-                /> :<Autocomplete
+                /> : tabValue === 1 ? <Autocomplete
                 style={{ width: '100%' }}
                 size='small'
                 onChange={this.handleStatus}
@@ -348,7 +349,7 @@ this.setState({status:[8,5]}
                     placeholder='Status'
                   />
                 )}
-              /> }
+              /> :'' }
                   
             </div>
           </Grid>
