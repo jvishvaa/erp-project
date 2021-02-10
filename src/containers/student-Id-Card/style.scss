@@ -98,7 +98,7 @@
     padding: 15px 10px 10px 10px !important;
     // line-height: 15px !important;
     border-left: 3px solid #FE6B6B;
-    border-image: linear-gradient(transparent 20%, #FE6B6B 20% 50%, transparent 80%) 0 0 0 1 / 3px;
+    border-image: linear-gradient(transparent 20%, #FE6B6B 10% 80%, transparent 80%) 0 0 0 1 / 3px;
 }
 .studentIdCardFullViewCard {
     box-shadow: 0px 0px 4px #00000029;
@@ -184,6 +184,6 @@
     }
     .idCardTempleteMainLogo {
         text-align: center;
-        padding: 1px 0px !important;
+        padding: 10px 0px 0px 0px !important;
     }
 }

@@ -6,7 +6,7 @@ import StudentIdCard from '../student-Id-Card';
 const Dashboard = () => {
   return (
     <Layout>
-      <div>
+      <div style={{ width: '100%', overflow: 'hidden' }}>
         {/* <h4> Dashboard </h4> */}
         {/* <StudentStrength /> */}
         <StudentIdCard />
