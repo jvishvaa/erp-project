@@ -275,10 +275,10 @@ class EditBlog extends Component {
       this.context.setAlert('error',"please enter description to the blog")
       return
     }
-    if (files.length> 0 && image){
-      this.context.setAlert('error',"please remove already existing  image")
-      return
-    }
+    // if (files.length> 0 && image){
+    //   this.context.setAlert('error',"please remove already existing  image")
+    //   return
+    // }
     
     // if(!files.length> 0  && !image){
     //   this.context.setAlert('error',"please select all fields")
