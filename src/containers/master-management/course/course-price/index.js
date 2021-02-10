@@ -40,11 +40,11 @@ const CoursePrice = () => {
     const [timeSlot, setTimeSlot] = useState([]);
     const [selectedLimit, setSelectedLimit] = useState('1:1');
     const [collectData, setCollectData] = useState([
-        { "limit": '1:1', "comboDays": [], "otherDays": [], "weeks": '', "toggle": false, "data": [{ "weeks": '', "price": '' }] },
-        { "limit": '1:5', "comboDays": [], "otherDays": [], "weeks": '', "toggle": false, "data": [{ "weeks": '', "price": '' }] },
-        { "limit": '1:10', "comboDays": [], "otherDays": [], "weeks": '', "toggle": false, "data": [{ "weeks": '', "price": '' }] },
-        { "limit": '1:20', "comboDays": [], "otherDays": [], "weeks": '', "toggle": false, "data": [{ "weeks": '', "price": '' }] },
-        { "limit": '1:30', "comboDays": [], "otherDays": [], "weeks": '', "toggle": false, "data": [{ "weeks": '', "price": '' }] },
+        {"isEdit":false, "limit": '1:1', "comboDays": [], "otherDays": [], "weeks": '', "toggle": false, "data": [{ "weeks": '', "price": '' }] },
+        {"isEdit":false, "limit": '1:5', "comboDays": [], "otherDays": [], "weeks": '', "toggle": false, "data": [{ "weeks": '', "price": '' }] },
+        {"isEdit":false, "limit": '1:10', "comboDays": [], "otherDays": [], "weeks": '', "toggle": false, "data": [{ "weeks": '', "price": '' }] },
+        {"isEdit":false, "limit": '1:20', "comboDays": [], "otherDays": [], "weeks": '', "toggle": false, "data": [{ "weeks": '', "price": '' }] },
+        {"isEdit":false, "limit": '1:30', "comboDays": [], "otherDays": [], "weeks": '', "toggle": false, "data": [{ "weeks": '', "price": '' }] },
     ]);
 
     const funBatchSize = (batchSize) => {
