@@ -101,7 +101,7 @@ class EditBlog extends Component {
       feedBack: false,
       key: 0,
       parsedTextEditorContentLen:this.props.location.state.parsedTextEditorContentLen &&  this.props.location.state.parsedTextEditorContentLen !==0 ?
-      this.props.location.state.parsedTextEditorContentLen :'',
+      this.props.location.state.parsedTextEditorContentLen : '',
       title:
         this.props.location.state.title && this.props.location.state.title.length !== 0
           ? this.props.location.state.title
@@ -139,9 +139,8 @@ class EditBlog extends Component {
         this.props.location.state.files && this.props.location.state.files.length !== 0
           ? this.props.location.state.files
           : [],
-          wordCountLimit:0
+      wordCountLimit:0
     };
-    console.log(this.props,"@@@")
   }
   static contextType = AlertNotificationContext
 
@@ -184,7 +183,6 @@ class EditBlog extends Component {
       const errorMsg = `Please write atleast ${wordCountLimit} words.Currently only ${textWordCount} words have been written`
       return errorMsg
     }
-    console.log(this.state.parsedTextEditorContentLen,"@@@@")
     return false
   }
   
@@ -291,6 +289,7 @@ class EditBlog extends Component {
       this.context.setAlert('error',subceededWordCount)
       return
     }
+    console.log(this.state.parsedTextEditorContentLen,"@@@@")
     const {
       // textEditorContent,
       // title,
@@ -302,7 +301,6 @@ class EditBlog extends Component {
       // files,
       genreName
     } = this.state;
-    console.log(genreObj,"@@@@",parsedTextEditorContentLen)
     this.props.history.push({
       pathname: '/blog/student/preview-edit-blog',
       state: {genreName,genreObj, studentName, creationDate, genreId, textEditorContent, title, files,blogId,image,parsedTextEditorContentLen },
