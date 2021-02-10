@@ -97,7 +97,7 @@ class ManageFeeType extends Component {
     // }
     // this.props.fetchFeeTypes(this.props.match.params.id, this.props.alert, this.props.user)
     console.log('component')
-    this.props.fetchFeeTypeAndAccountList(this.props.match.params.id, this.props.alert, this.props.user)
+    this.props.fetchFeeTypeAndAccountList(this.props.location.state, this.props.alert, this.props.user)
     // this.feeAccountInfo()
   }
 
@@ -135,7 +135,7 @@ class ManageFeeType extends Component {
     // this.setState({ updatedFeeList: feeplanTypeListNew })
 
     // for populating the installment table
-    this.props.feeInstallments(this.props.match.params.id, e.value, this.props.alert, this.props.user)
+    this.props.feeInstallments(this.props.location.state, e.value, this.props.alert, this.props.user)
     this.setState({
       installmentTable: true,
       FeeId: e.value,

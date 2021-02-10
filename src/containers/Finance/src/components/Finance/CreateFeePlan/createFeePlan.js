@@ -421,7 +421,12 @@ class CreateFeePlan extends Component {
                                   }}
                                   id={row.id} // rajneesh
                                 /> */}
-                                <Button component={Link} to={'/finance/manage_feeType/'}>Manage Fee Type</Button>
+                                <Link to={{ 
+ pathname: '/finance/manage_feeType/', 
+ state: row.id
+}}>
+ Manage Fee Type
+</Link>
                               </TableCell>
                             </TableRow>
                           </React.Fragment>
