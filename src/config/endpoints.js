@@ -150,6 +150,15 @@ export default {
     dairyList:'/academic/general-dairy-messages/',
 
   },
+  aol:{
+    cardData:'/erp_user/teacher_online_class/',
+    courseList:'/aol/courses/',
+    batchLimitList:'/aol/aol-course-batch/',
+    classes:'/erp_user/teacher_online_class/',
+    teacherList:'/erp_user/teacher-list/',
+    draftBatch:'/aol/mixed-batch-details/',
+    assignTeacher:'/aol/teacher-assign/',
+  },
   onlineCourses:{
     createCourse:'/aol/courses/',
     fileUpload:'/aol/file-upload/',
@@ -157,7 +166,8 @@ export default {
     deleteCourse:'/aol/',
     courseDetails:'/aol/courses/',
     categoryList:'/aol/tagging-list/',
-    updateCourse:'/aol/'
+    updateCourse:'/aol/',
+    studentList:'/erp_user/batch-student-list/',
   },
 attendanceList:{
   list:'/erp_user/onlineclass_attendeelist/',

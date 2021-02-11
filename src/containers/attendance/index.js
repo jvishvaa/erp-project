@@ -174,7 +174,6 @@ const AttendeeListRemake = (props) => {
   };
 
   const handleDateChange = (event, value) => {
-    console.log(value, 'land')
     setDateValue(value)
     getAttendeeList(value);
   }
@@ -182,6 +181,8 @@ const AttendeeListRemake = (props) => {
   const handleShuffle = () => {
     setOpenShuffleModal(true);
   }
+
+
 
   return (
     <Layout>
@@ -202,7 +203,7 @@ const AttendeeListRemake = (props) => {
                 id='date-picker'
                 label='Start date'
                 value={dateValue}
-                minDate={new Date()}
+                // minDate={new Date()}
                 onChange={handleDateChange}
                 KeyboardButtonProps={{
                   'aria-label': 'change date',

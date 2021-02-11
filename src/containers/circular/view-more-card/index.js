@@ -16,7 +16,7 @@ const ViewMoreCard = ({
   setViewMore,
   periodDataForView,
   setSelectedIndex,
-grade,branch,section
+  grade, branch, section
 }) => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -24,7 +24,7 @@ grade,branch,section
 
   const handleBulkDownload = () => {
     const formData = new FormData();
-    formData.append('branch',[5]);
+    // formData.append('branch',[5]);
     // formData.append('grade',[54]);
     // formData.append('section',[75])
     // formData.append('academic_year', session_year);
@@ -34,73 +34,73 @@ grade,branch,section
     // formData.append('chapter', chapter_name);
     // formData.append('period', periodDataForView?.period_name);
     axiosInstance.post(`${endpoints.circular.fileUpload}`, formData)
-        .then(result => {
-            if (result.data.status_code === 200) {
-                let a = document.createElement("a");
-                if (result.data.result) {
-                    a.href = result.data.result;
-                    a.click();
-                    a.remove();
-                } else {
-                    setAlert('error', 'Nothing to download!');
-                }
-            } else {
-                setAlert('error', result.data.description);
-            }
-        })
-        .catch(error => {
-            setAlert('error', error.message);
-        })
-}
-const pic=viewMoreData?.media?.map(a=>a)
-console.log(viewMoreData?.media,pic,'++++',branch.branch_name)
+      .then(result => {
+        if (result.data.status_code === 200) {
+          let a = document.createElement("a");
+          if (result.data.result) {
+            a.href = result.data.result;
+            a.click();
+            a.remove();
+          } else {
+            setAlert('error', 'Nothing to download!');
+          }
+        } else {
+          setAlert('error', result.data.description);
+        }
+      })
+      .catch(error => {
+        setAlert('error', error.message);
+      })
+  }
+  const pic = viewMoreData?.media?.map(a => a)
+  console.log(viewMoreData?.media, pic, '++++', branch.branch_name)
   return (
     <>
-   <Paper className='rootViewMoreCircular'>
-      <div className='viewMoreHeader'>
-        <div className='leftHeader'>
-          <div className='headerTitle'>{viewMoreData.circular_name}</div>
-          {/* <div className='headerContent'>{periodDataForView?.section_name}</div> */}
-        </div>
-        <div className='rightHeader'>
-          <div className='headerTitle closeIcon'>
-            <IconButton
-              onClick={() => {
-                setViewMore(false);
-                setSelectedIndex(-1);
-              }}
-            >
-              <CloseIcon color='primary' />
-            </IconButton>
+      <Paper className='rootViewMoreCircular'>
+        <div className='viewMoreHeader'>
+          <div className='leftHeader'>
+            <div className='headerTitle'>{viewMoreData.circular_name}</div>
+            {/* <div className='headerContent'>{periodDataForView?.section_name}</div> */}
           </div>
-          <div className='headerContent'>
-          <IconButton
-           onClick={handleBulkDownload}
-           style={{fontSize:'1.1rem',color:'#ff6b6b'}}
-            className="bulkDownloadIconViewMore">
-              <a  target='_blank' href={`${endpoints.s3}/dev/circular_files/${branch.branch_name}/${pic}`}>
-                            <SvgIcon
-                                component={() => (
-                                    <img
-                                        style={{ height: '21px', width: '21px' }}
-                                        src={downloadAll}
-                                        alt='downloadAll'
-                                    />
-                                )}
-                            /></a>Download All Attachments
+          <div className='rightHeader'>
+            <div className='headerTitle closeIcon'>
+              <IconButton
+                onClick={() => {
+                  setViewMore(false);
+                  setSelectedIndex(-1);
+                }}
+              >
+                <CloseIcon color='primary' />
+              </IconButton>
+            </div>
+            <div className='headerContent'>
+              <IconButton
+                //  onClick={handleBulkDownload}
+                style={{ fontSize: '1.1rem', color: '#ff6b6b' }}
+                className="bulkDownloadIconViewMore">
+                <a target='_blank' href={`${endpoints.s3}/dev/circular_files/${branch.branch_name}/${pic}`}>
+                  <SvgIcon
+                    component={() => (
+                      <img
+                        style={{ height: '21px', width: '21px' }}
+                        src={downloadAll}
+                        alt='downloadAll'
+                      />
+                    )}
+                  /></a>Download All Attachments
                         </IconButton>
+            </div>
           </div>
         </div>
-      </div>
-       <div className="bodyContent">
-                <div>{viewMoreData.description}</div>
+        <div className="bodyContent">
+          <div>{viewMoreData.description}</div>
 
         </div>
 
 
-      {/* <HighchartsReact highcharts={Highcharts} options={configObj} /> */}
-    </Paper>
-</>
+        {/* <HighchartsReact highcharts={Highcharts} options={configObj} /> */}
+      </Paper>
+    </>
   );
 };
 

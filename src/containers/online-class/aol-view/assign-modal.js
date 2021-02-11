@@ -12,27 +12,28 @@ import {
     KeyboardTimePicker,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state'
 import MomentUtils from '@date-io/moment';
 import DateFnsUtils from '@date-io/date-fns'
-import React, { useEffect, useState } from 'react';
-// import axiosInstance from '../../config/axios';
-// import endpoints from '../../config/endpoints';
+import React, { useEffect, useState, useContext } from 'react';
+import axiosInstance from '../../../config/axios'
+import endpoints from '../../../config/endpoints';
 import { result } from 'lodash';
-
+import './style.css'
 
 const useStyles = makeStyles(theme => ({
     dialogWrapper: {
         padding: theme.spacing(2),
         position: 'absolute',
         top: theme.spacing(5),
-        width: '80%'
+        width: '25%'
     },
     dialogTitle: {
         paddingRight: '0px'
     }
 }))
 
-const AssignModal = ({ openAssignModal, setOpenAssignModal }) => {
+const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown }) => {
     const classes = useStyles();
     const [batchList, setBatchList] = useState([]);
 
@@ -40,12 +41,13 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal }) => {
 
     const [list, setList] = useState([])
     const [toggle, setToggle] = useState(false);
+    const { setAlert } = useContext(AlertNotificationContext);
 
 
-    const [teacherDrop, setTeacherDrop] = useState([{ teacher_name: 'SUNNY DEV', teacher_name: 'NITIN', teacher_name: 'MANI', teacher_name: 'TONY', }])
+    // const [teacherDrop, setTeacherDrop] = useState([{ teacher_name: 'SUNNY DEV', teacher_name: 'NITIN', teacher_name: 'MANI', teacher_name: 'TONY', }])
 
     // const [selectedDate, setSelectedDate] = React.useState(new Date());
-    const [selectedDate, setSelectedDate] = React.useState(new Date('2014-08-18T21:11:54'));
+    const [selectedDate, setSelectedDate] = React.useState(new Date());
     const [filterData, setFilterData] = useState({
         teacher: '',
     })
@@ -63,17 +65,35 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal }) => {
             setFilterData({ ...filterData, teacher: value })
         }
     }
- console.log('==========',selectedDate)
+    console.log('==========', filterData.teacher.tutor_id,selectedDate)
+
+    const handleAssign = () => {
+        const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
+        const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
+        const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(selectedDate);
+        axiosInstance.put(`${endpoints.aol.assignTeacher}`, {
+            "batch_id": 4,
+            "start_date_time":selectedDate.format(`${ye}-${mo}-${da} hh:mm:ss`),
+            // "start_date_time": "2021-02-23 01:23:21",
+            "teacher": filterData.teacher.tutor_id,
+        }).then(result => {
+            if (result.data.status_code === 200) {
+                setAlert('success', result.data.message)
+                setOpenAssignModal(false)
+            }
+        })
+
+    }
 
     return (
         <div>
 
             <Dialog open={openAssignModal} onClose={() => setOpenAssignModal(false)} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogWrapper }}>
-                <DialogTitle id="form-dialog-title">Assign Teacher</DialogTitle>
+                <DialogTitle id="form-dialog-title" className='reshuffle-header' style={{ color: '#ffffff' }}>Assign Teacher</DialogTitle>
                 <DialogContent>
-                    <DialogContentText >
+                    <DialogContentText style={{ marginTop: '1.25rem' }}>
                         <Grid container spacing={4} >
-                            <Grid item xs={12} sm={6} >
+                            <Grid item xs={12} sm={12} >
                                 <Autocomplete
                                     style={{ width: '100%' }}
                                     size='small'
@@ -81,8 +101,8 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal }) => {
                                     id='grade'
                                     className='dropdownIcon'
                                     value={filterData?.teacher}
-                                    options={teacherDrop}
-                                    getOptionLabel={(option) => option?.teacher_name}
+                                    options={teacherDropdown}
+                                    getOptionLabel={(option) => option?.email}
                                     filterSelectedOptions
                                     renderInput={(params) => (
                                         <TextField
@@ -96,10 +116,11 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal }) => {
                             </Grid>
                         </Grid>
                         <Grid container spacing={4} className='create-class-container'>
-                            <Grid item xs={12} sm={6}>
-                                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                            <Grid item xs={12} sm={12}>
+                                <MuiPickersUtilsProvider utils={MomentUtils}>
 
                                     <KeyboardDatePicker
+                                        style={{ width: '100%' }}
                                         margin="normal"
                                         id="date-picker-dialog"
                                         label="Date picker dialog"
@@ -114,10 +135,11 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal }) => {
                             </Grid>
                         </Grid>
                         <Grid container spacing={4} className='create-class-container'>
-                            <Grid item xs={12} sm={6}>
+                            <Grid item xs={12} sm={12}>
                                 <MuiPickersUtilsProvider utils={MomentUtils}>
                                     <KeyboardTimePicker
                                         margin="normal"
+                                        style={{ width: '100%' }}
                                         id="time-picker"
                                         label="Time picker"
                                         value={selectedDate}
@@ -129,18 +151,24 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal }) => {
                                 </MuiPickersUtilsProvider>
                             </Grid>
                         </Grid>
-
+                        <Grid container spacing={2} className='create-class-container'>
+                            <Grid item xs={12} sm={6}>
+                                <Button onClick={() => setOpenAssignModal(false)} color="primary" style={{ width: '7.5rem' }}>
+                                    Cancel
+                                </Button>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <Button color="primary"
+                                    //  onClick={() => setOpenAssignModal(false)} 
+                                    onClick={handleAssign}
+                                    style={{ width: '7.5rem' }}>
+                                    ASSIGN
+                                    </Button>
+                            </Grid>
+                        </Grid>
                     </DialogContentText>
-
-
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpenAssignModal(false)} color="primary">
-                        Cancel
-            </Button>
-                    <Button color="primary" onClick={() => setOpenAssignModal(false)}>
-                        ASSIGN
-            </Button>
                 </DialogActions>
             </Dialog>
         </div>

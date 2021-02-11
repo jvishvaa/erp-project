@@ -314,7 +314,8 @@ const CreateCourse = () => {
         no_of_periods: parseInt(noOfPeriods),
         files: filePath,
         period_data: data,
-        tag_id: `${filterData.age.id},${filterData.subject.id}`
+        tag_id: `${filterData.age.id},${filterData.subject.id}`,
+        // time_slot:[]
       })
       .then((result) => {
         if (result.data.status_code === 200) {

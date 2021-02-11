@@ -1,17 +1,23 @@
-import React,{useState} from 'react';
+import React, { useState } from 'react';
 import ClassCard from './ClassCard';
-import { Divider, Grid, makeStyles, useTheme, withStyles, Button, TextField } from '@material-ui/core';
-import axiosInstance from '../../../config/axios';
+import { Divider, Grid, makeStyles, useTheme, withStyles, Button, TextField, Switch, FormControlLabel } from '@material-ui/core';
+// import axiosInstance from '../../../config/axios';
 import ClassdetailsCard from './ClassdetailCard';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Pagination from './Pagination';
-import MomentUtils from '@date-io/moment';
+// import MomentUtils from '@date-io/moment';
+import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
+
+import { LocalizationProvider, DateRangePicker, KeyboardDate } from '@material-ui/pickers-4.2';
 import moment from 'moment';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Loader from '../../../components/loader/loader';
 import { useLocation } from 'react-router-dom';
+import axiosInstance from '../../../config/axios'
+import endpoints from '../../../config/endpoints'
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -143,48 +149,136 @@ const UpcomingClasses = () => {
     const [startDate, setStartDate] = React.useState(null);
     const [endDate, setEndDate] = React.useState(null);
     const [isLoding, setIsLoding] = React.useState(false);
-    //const [startDate, setStartDate] = React.useState(moment(date).format('YYYY-MM-DD'));
-    //const [endDate, setEndDate] = React.useState(moment(date).format('YYYY-MM-DD'));
+    // const [startDate, setStartDate] = React.useState(moment(date).format('YYYY-MM-DD'));
+    // const [endDate, setEndDate] = React.useState(moment(date).format('YYYY-MM-DD'));
+
+    const [gradeDropdown, setGradeDropdown] = useState([])
+    const [courseDropdown, setCourseDropdown] = useState([])
+    const [batch, setBatch] = useState([])
+    const [toggle, setToggle] = useState(false)
+    const [toggledData,setToggledData] = useState([])
+
+    const [dateRangeTechPer, setDateRangeTechPer] = useState([
+        moment().subtract(6, 'days'),
+        moment(),
+    ]);
+    const [startDateTechPer, setStartDateTechPer] = useState(moment().format('YYYY-MM-DD'));
+    const [endDateTechPer, setEndDateTechPer] = useState(getDaysAfter(moment(), 7));
+  
 
     const themeContext = useTheme();
     const isTabDivice = useMediaQuery(themeContext.breakpoints.down('sm'));
 
     //batches view <<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    const branchDrop=[{branch_name:'AOL'}]
-    const gradeDrop=[{grade_name:'G1',grade_name:'G2',grade_name:'G3',grade_name:'G4'}]
-    const courseDrop=[{course_name:'C1',course_name:'C2',course_name:'C3',course_name:'C4',
-    course_name:'C5'}]
+    const branchDrop = [{ id: 5, branch_name: 'AOL' }]
+
 
 
     // Filter data for batchev view<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    const [filterData,setFilterData]=useState({
-        branch:'',
-        grade:'',
-        course:'',
+    const [filterData, setFilterData] = useState({
+        branch: '',
+        grade: '',
+        course: '',
+        batch: '',
     })
 
-    const handleBranch=(event,value)=>{
-        if(value){
-            setFilterData({...filterData,branch:value})
+
+    function getDaysAfter(date, amount) {
+        // TODO: replace with implementation for your date library
+        return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
+      }
+      function getDaysBefore(date, amount) {
+        // TODO: replace with implementation for your date library
+        return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
+      }
+
+
+    const handleBranch = (event, value) => {
+        setFilterData({ ...filterData, branch: '' })
+        if (value) {
+            setFilterData({ ...filterData, branch: value })
+            axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=8`)
+                .then((result) => {
+                    if (result.data.status_code === 200) {
+                        setGradeDropdown(result.data.data)
+                    }
+                    else {
+                        setGradeDropdown([])
+                    }
+                })
+
         }
     }
 
-    const handleGrade=(event,value)=>{
-        if(value){
-            setFilterData({...filterData,grade:value})
+    const handleGrade = (event, value) => {
+        setFilterData({ ...filterData, garde: '' })
+        if (value) {
+            setFilterData({ ...filterData, grade: value })
+            axiosInstance.get(`${endpoints.aol.courseList}?grade=${value.grade_id}`)
+                .then((result) => {
+                    if (result.data.status_code === 200) {
+                        setCourseDropdown(result.data.result)
+                    }
+                    else {
+                        setCourseDropdown([])
+                    }
+                })
         }
     }
-    const handleCourse=(event,value)=>{
-        if(value){
-            setFilterData({...filterData,course:value})
+    const handleCourse = (event, value) => {
+        setFilterData({ ...filterData, course: '' })
+        if (value) {
+            setFilterData({ ...filterData, course: value })
+            axiosInstance.get(`${endpoints.aol.batchLimitList}?course_id=${value.id}`)
+                .then((result) => {
+                    if (result.data.status_code === 200) {
+                        // setBatchLimitDrop(result.data.result)
+                        // console.log(result.data.result,'==========')
+                        setBatch(result.data.result)
+                    }
+                    else {
+                        // setBatchLimitDrop([])
+                    }
+
+                })
+            // .catch((error) => console.log(error,'///////'))
         }
     }
 
+    const handleBatch = (event, value) => {
+
+        setFilterData({ ...filterData, batch: '' })
+        //  console.log()
+        if (value) {
+            setFilterData({ ...filterData, batch: value })
+        }
+    }
 
     //api call
     const getClasses = () => {
+        const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
+        console.log(startDateTechPer.format('YYYY-MM-DD'),endDateTechPer.format('YYYY-MM-DD'),'=========')
+        if(toggle){
+            axiosInstance.get(`${endpoints.aol.draftBatch}?course_id=25&batch_id=12&grade_id=54`)
+            .then(result=>{
+                // setClassesdata(result.data.data)
+                setToggledData(result.data.result)
+                setClassesdata([]);
+            })
+        }
+        else{
+            axiosInstance.get(`${endpoints.aol.classes}?module_id=4&page_number=1&page_size=15&branch_ids=5&class_type=1&aol_batch=${filterData.batch.id}&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}`)
+            .then(result => {
+                setClassesdata(result.data.data)
+                setToggledData([]);
+            })
+        }
+       
+      
+
+
         // student view api
-        console.log(location.pathname);
+        // console.log(location.pathname);
         /*
         setClassesdata([]);
         setIsLoding(false);
@@ -198,33 +292,30 @@ const UpcomingClasses = () => {
         }
         */
         // teacher view api
-        setClassesdata([]);
-        setIsLoding(false);
-        if (location.pathname === "/online-class/view-class") {
-            // + classType?.id
-            axiosInstance.get('erp_user/teacher_online_class/?module_id=4&page_number=1&page_size=15&branch_ids=5&class_type=1')
-                .then((res) => {
-                    setClassesdata(res.data.data);
-                    setIsLoding(true);
-                })
-                .catch((error) => console.log(error))
-        }
-    }
-    if (!apiCall) {
-        getClasses();
-        setApiCall(true);
+        // setClassesdata([]);
+        // setIsLoding(false);
+        // if (location.pathname === "/online-class/view-class") {
+        //     + classType?.id
+        //     axiosInstance.get('?module_id=4&page_number=1&page_size=15&branch_ids=5&class_type=1')
+        //     axiosInstance.get(`${endpoints.aol.cardData}?module_id=4&page_number=1&page_size=15&branch_ids=5&class_type=1`)
+        //         .then((res) => {
+        //             setClassesdata(res.data.data);
+        //             setIsLoding(true);
+        //         })
+        //         .catch((error) => console.log(error))
+        // }
     }
 
+
+
     const handleSelctedClass = (data) => {
-        console.log(data);
         setItemSize(4);
         setSize(9);
         setClassData(data);
+        // setToggledData(data);
         setSelected(data.id);
-
-        console.log('TAb : ' + isTabDivice);
         if (isTabDivice) {
-            console.log('**** TAb *****');
+            // console.log('**** TAb *****');
         }
     }
 
@@ -274,30 +365,40 @@ const UpcomingClasses = () => {
         setStartDate(null);
         setEndDate(null);
         setClassType(null);
-        getClasses();
+        setFilterData(null)
+
+        // getClasses();
     }
 
+    const handleToggle=()=>{
+        setToggle(!toggle)
+        setClassesdata([])
+        setToggledData([])
+        setClassData(null);
+    }
 
-    const classCardData = classesData && classesData.slice(pagination.start, pagination.end).filter((data) => {
-        const classData = data.zoom_meeting ? data.zoom_meeting : data;
-        if (startDate === null && endDate === null) {
-            return data;
-        }
-        else if (startDate === moment(classData.online_class && classData.online_class.start_time).format('YYYY-MM-DD') && endDate === moment(classData.online_class && classData.online_class.end_time).format('YYYY-MM-DD')) {
-            return data;
-        }
-    }).map((data, id) => {
-        return (
-            <Grid item sm={itemSize} xs={12} key={id}>
-                <ClassCard
-                    classData={data}
-                    selectedId={selected}
-                    handleSelctedClass={handleSelctedClass}
-                />
-            </Grid>
-        )
-    });
+    // const classCardData = classesData && classesData.slice(pagination.start, pagination.end).filter((data) => {
+    //     const classData = data.zoom_meeting ? data.zoom_meeting : data;
+    //     if (startDate === null && endDate === null) {
+    //         return data;
+    //     }
+    //     else if (startDate === moment(classData.online_class && classData.online_class.start_time).format('YYYY-MM-DD') && endDate === moment(classData.online_class && classData.online_class.end_time).format('YYYY-MM-DD')) {
+    //         return data;
+    //     }
+    // }).map((data, id) => {
+    //     return (
+    //         <Grid item sm={itemSize} xs={12} key={id}>
+    //             <ClassCard
+    //                 classData={data}
+    //                 selectedId={selected}
+    //                 handleSelctedClass={handleSelctedClass}
+    //                 toggle={toggle}
+    //             />
+    //         </Grid>
+    //     )
+    // });
 
+    
     return (
         <>
             <div className='breadcrumb-container-create' style={{ marginLeft: '15px' }}>
@@ -365,92 +466,134 @@ const UpcomingClasses = () => {
                     </MuiPickersUtilsProvider>
                 </Grid> */}
                 <Grid item xs={12} sm={4} >
-              <Autocomplete
-                style={{ width: '100%' }}
-                size='small'
-                onChange={handleBranch}
-                id='grade'
-                className='dropdownIcon'
-                value={filterData?.branch}
-                options={branchDrop}
-                getOptionLabel={(option) => option?.branch_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Branch'
-                    placeholder='Branch'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Autocomplete
-                // multiple
-                style={{ width: '100%' }}
-                size='small'
-                onChange={handleGrade}
-                id='volume'
-                className='dropdownIcon'
-                value={filterData?.grade}
-                options={gradeDrop}
-                getOptionLabel={(option) => option?.grade_name}
-                // filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Grade'
-                    placeholder='Grade'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Autocomplete
-                // multiple
-                style={{ width: '100%' }}
-                size='small'
-                // onChange={handleGrade}
-                id='volume'
-                className='dropdownIcon'
-                // value={filterData?.grade}
-                // options={gradeDrop}
-                getOptionLabel={(option) => option?.grade_name}
-                // filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Batch Limit'
-                    placeholder='Batch Limit'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Autocomplete
-                // multiple
-                style={{ width: '100%' }}
-                size='small'
-                onChange={handleCourse}
-                id='volume'
-                className='dropdownIcon'
-                value={filterData?.course}
-                options={courseDrop}
-                getOptionLabel={(option) => option?.course_name}
-                // filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Course'
-                    placeholder='Course'
-                  />
-                )}
-              />
-            </Grid>
+                    <Autocomplete
+                        style={{ width: '100%' }}
+                        size='small'
+                        onChange={handleBranch}
+                        id='grade'
+                        className='dropdownIcon'
+                        value={filterData?.branch}
+                        options={branchDrop}
+                        getOptionLabel={(option) => option?.branch_name}
+                        filterSelectedOptions
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                variant='outlined'
+                                label='Branch'
+                                placeholder='Branch'
+                            />
+                        )}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                    <Autocomplete
+                        style={{ width: '100%' }}
+                        size='small'
+                        onChange={handleGrade}
+                        id='volume'
+                        className='dropdownIcon'
+                        value={filterData?.grade}
+                        options={gradeDropdown}
+                        getOptionLabel={(option) => option?.grade__grade_name}
+                        filterSelectedOptions
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                variant='outlined'
+                                label='Grade'
+                                placeholder='Grade'
+                            />
+                        )}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                    <Autocomplete
+                        style={{ width: '100%' }}
+                        size='small'
+                        onChange={handleCourse}
+                        id='volume'
+                        className='dropdownIcon'
+                        value={filterData?.course}
+                        options={courseDropdown}
+                        getOptionLabel={(option) => option?.course_name}
+                        filterSelectedOptions
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                variant='outlined'
+                                label='Course'
+                                placeholder='Course'
+                            />
+                        )}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                    <Autocomplete
+                        style={{ width: '100%' }}
+                        size='small'
+                        // type='number'
+                        onChange={handleBatch}
+                        id='batch'
+                        className='dropdownIcon'
+                        value={filterData?.batch}
+                        options={batch}
+                        getOptionLabel={(option) => option ? `1 : ${JSON.stringify(option.batch_size)}` : ''}
+                        filterSelectedOptions
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                variant='outlined'
+                                // type='number'
+                                label='Batch Limit'
+                                placeholder='Batch Limit'
+                            />
+                        )}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                    <LocalizationProvider dateAdapter={MomentUtils}>
+                        <DateRangePicker
+                            startText='Select-date-range'
+                            value={dateRangeTechPer}
+                            onChange={(newValue) => {
+                                setDateRangeTechPer(newValue);
+                            }}
+                            renderInput={({ inputProps, ...startProps }, endProps) => {
+                                return (
+                                    <>
+                                        <TextField
+                                            {...startProps}
+                                            inputProps={{
+                                                ...inputProps,
+                                                value: `${inputProps.value} - ${endProps.inputProps.value}`,
+                                                readOnly: true,
+                                            }}
+                                            size='small'
+                                            style={{ minWidth: '100%' }}
+                                        />
+                                    </>
+                                );
+                            }}
+                        />
+                    </LocalizationProvider>
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                    <FormControlLabel
+                        className='switchLabel'
+                        control={
+                            <Switch
+                                checked={toggle}
+                                // onChange={() => setToggle(toggle => !toggle)}
+                                onChange={handleToggle}
+                                name="optional"
+                                color="primary"
+                            />}
+                        label={toggle ? 'Yet To Start' : 'Started'}
+                    />
+
+                </Grid>
+
                 <Grid item xs={12} sm={4}>
                     <StyledButton
                         variant="contained"
@@ -472,13 +615,52 @@ const UpcomingClasses = () => {
             <Grid container spacing={3} className={classes.root}>
                 <Grid item sm={size} xs={12}>
                     <Grid container spacing={3}>
-                        {!isLoding ? (<Loader />) : (classCardData)}
+                        {classesData.length > 0 &&  classesData.map((data, id) => {
+                            return (
+                                <Grid item sm={itemSize} xs={12} key={id}>
+                                    <ClassCard
+                                        classData={data}
+                                        selectedId={selected}
+                                        handleSelctedClass={handleSelctedClass}
+                                        toggle={toggle}
+                                    />
+                                </Grid>
+                            )
+                        })}
+                        {toggledData.length > 0 &&  toggledData.map((data, id) => {
+                            return (
+                                <Grid item sm={itemSize} xs={12} key={id}>
+                                    <ClassCard
+                                        classData={data}
+                                        selectedId={selected}
+                                        handleSelctedClass={handleSelctedClass}
+                                        toggle={toggle}
+                                    />
+                                </Grid>
+                            )
+                        })}
+
                     </Grid>
                 </Grid>
 
                 {classData && (
                     <Grid item sm={3} xs={12}>
-                        <ClassdetailsCard classData={classData} />
+                        <ClassdetailsCard
+                            classData={classData}
+                            filterData={filterData}
+                            toggle={toggle}
+                            
+                        />
+                    </Grid>
+                )}
+                {toggledData.length > 0 && (
+                    <Grid item sm={3} xs={12}>
+                        <ClassdetailsCard
+                            toggledData={toggledData}
+                            filterData={filterData}
+                            toggle={toggle}
+                            
+                        />
                     </Grid>
                 )}
             </Grid>

@@ -355,7 +355,7 @@ function App() {
                     <Route exact path='/aol-attendance-list/:id?'>
                       {({ match }) => <AttendeeListRemake match={match} />}
                     </Route>
-                    <Route exact path='/aol-reshuffle'>
+                    <Route exact path='/aol-reshuffle/:id?'>
                       {({ match }) => <Reshuffle match={match} />}
                     </Route>
                   </Switch>
