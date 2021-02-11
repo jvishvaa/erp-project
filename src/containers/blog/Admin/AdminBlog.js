@@ -271,13 +271,13 @@ class AdminBlog extends Component {
     }
 };
 handleBranch = (event, value) => {
-  this.setState({data:[],selectedBranch:value},()=>{
+  this.setState({data:[],selectedBranch:value,selectedGrade:'',selectedSection:''},()=>{
     this.getGrade()
   })
 };
 
 handleGrade = (event, value) => {
-  this.setState({data:[],selectedGrade:value}, ()=>{
+  this.setState({data:[],selectedGrade:value,selectedSection:''}, ()=>{
     this.getSection()
   })
 };
