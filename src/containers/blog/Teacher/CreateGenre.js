@@ -562,7 +562,7 @@ const getGenreInActiveList = () => {
         <Grid item xs={12}>
                     <Pagination
                     onChange={handlePagination}
-                    style={{ paddingLeft:'390px' }}
+                    style={{ paddingLeft:'500px' }}
                     count={Math.ceil(totalGenre / pageSize)}
                     color='primary'
                     page={pageNumber}
