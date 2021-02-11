@@ -77,7 +77,7 @@ class WriteBlog extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      parsedTextEditorContentLen:0,
+      parsedTextEditorContentLen:this.props.state.location.parsedTextEditorContentLen ? this.props.state.location.parsedTextEditorContentLen : 0,
       image :'',
       // files:[],
       relatedBlog: true,
