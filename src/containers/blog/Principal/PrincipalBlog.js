@@ -85,9 +85,10 @@ class PrincipalBlog extends Component {
       pageNo: 1,
       pageSize: 6,
       totalPages:0,
-      startDate :moment().format('YYYY-MM-DD'),
       status :[8],
       moduleId :115,
+      endDate :moment().format('YYYY-MM-DD'),
+      startDate: this.getDaysBefore(moment(), 6)
 
     };
   }
@@ -301,26 +302,19 @@ handleSection = (event,value) =>{
               <div className='create_group_filter_container'>
                 <Grid container>
                   
-                <Grid item xs={12} sm={4}>
-                    <div className='mobile-date-picker'>
-                      <MobileDatepicker
-                        onChange={(date) => this.handleEndDateChange(date)}
-                        handleStartDateChange={this.handleStartDateChange}
-                        handleEndDateChange={this.handleEndDateChange}
-                      />
-                    </div>
-                  </Grid>
+             
                 <Grid xs={12} sm={3} item>
               <div className='blog_input'>
                     <Autocomplete
                       size='small'
-                      // style={{ width: '100%' }}
+                      style={{ width: '100%' }}
 
                       onChange={this.handleBranch}
                       value={selectedBranch}
                       id='message_log-branch'
                       className='create_group_branch'
                       options={branchList}
+                      disableClearable
                       getOptionLabel={(option) => option?.branch_name}
                       filterSelectedOptions
                       renderInput={(params) => (
@@ -340,8 +334,8 @@ handleSection = (event,value) =>{
                       <div className='blog_input'>
                        <Autocomplete
                        size='small'
-                      //  style={{ width: '100%' }}
-
+                       style={{ width: '100%' }}
+                       disableClearable
                        onChange={this.handleGrade}
                        value={selectedGrade}
                        id='message_log-branch'
@@ -367,11 +361,12 @@ handleSection = (event,value) =>{
                         <div className='blog_input'>
                         <Autocomplete
                         size='small'
-                        // style={{ width: '100%' }}
+                        style={{ width: '100%' }}
  
                         onChange={this.handleSection}
                         value={selectedSection}
                         id='message_log-branch'
+                        disableClearable
                         className='create_group_branch'
                         options={sectionList}
                         getOptionLabel={(option) => option?.section__section_name}
@@ -390,10 +385,19 @@ handleSection = (event,value) =>{
                       {/* ) : null} */}
                      
                     </Grid>
-                    <Grid item xs={12} sm={3}>
+                    <Grid item xs={12} sm={4}>
+                    <div className='mobile-date-picker'>
+                      <MobileDatepicker
+                        onChange={(date) => this.handleEndDateChange(date)}
+                        handleStartDateChange={this.handleStartDateChange}
+                        handleEndDateChange={this.handleEndDateChange}
+                      />
+                    </div>
+                  </Grid>
+                    {/* <Grid item xs={12} sm={3}> */}
                       <Button
-                        style={{ fontSize: 'small', margin: '20px' }}
-                        color='primary'
+          style={{ fontSize: 'small', margin: '20px',width:'100px',height:'33px',marginTop:'30px' }}
+          color='primary'
                         size='small'
                         variant='contained'
                         disabled={!startDate ||!endDate}
@@ -402,14 +406,11 @@ handleSection = (event,value) =>{
                       >
                         Filter
                       </Button> 
-                    </Grid>
-                    
-                    </Grid>
-                  <Grid container spacing={2}>
-                    <Grid item>
+                    {/* </Grid> */}
+                    {/* <Grid item xs={12} sm ={3}> */}
                       <Button
                         color='primary'
-                        style={{ fontSize: 'small', margin: '20px' }}
+                        style={{ fontSize: 'small', margin: '20px',width:'200px',height:'33px',marginTop:'30px' }}
                         size='small'
                         variant='contained'
                         onClick={this.PublishBlogNav}
@@ -417,19 +418,11 @@ handleSection = (event,value) =>{
                       >
                         Published Blogs
                       </Button>
+                    {/* </Grid> */}
                     </Grid>
+                   
 
-                    {/* <Grid item>
-                      <Button
-                        style={{ fontSize: 'small', margin: '20px' }}
-                        color='primary'
-                        size='small'
-                        variant='contained'
-                      >
-                        Blog Dashboard
-                      </Button>
-                    </Grid> */}
-                  </Grid>
+                   
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
                       <div className={classes.tabRoot}>
@@ -465,7 +458,7 @@ handleSection = (event,value) =>{
                     <Grid item xs={12}>
                     <Pagination
                     onChange={this.handlePagination}
-                    style={{ paddingLeft:'390px' }}
+                    style={{ paddingLeft:'500px' }}
                     count={Math.ceil(totalBlogs / pageSize)}
                     color='primary'
                     page={pageNo}

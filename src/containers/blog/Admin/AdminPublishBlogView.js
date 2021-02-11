@@ -72,9 +72,10 @@ class AdminPublishBlogView extends Component {
       tabValue: 0,
       pageNo: 1,
       pageSize: 6,
-      startDate :moment().format('YYYY-MM-DD'),
       status :[4],
-      moduleId:114
+      moduleId:114,
+      endDate :moment().format('YYYY-MM-DD'),
+      startDate: this.getDaysBefore(moment(), 6)
     };
   }
   componentDidMount() {
@@ -175,36 +176,7 @@ handleFilter = () => {
                       />
                     </div>
                   </Grid>
-                  {/* <Grid item xs={12} sm={4}>
-                    <div className='blog_input'>
-                      <TextField
-                        id='outlined-full-width'
-                        label='Blog Name'
-                        size='small'
-                        placeholder='Placeholder'
-                        helperText='Full width!'
-                        fullWidth
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        variant='outlined'
-                      />
-                    </div>
-                  </Grid> */}
-                </Grid>
-                <div style={{ margin: '20px' }}>
-                  <Grid container>
-                    {/* <Grid item>
-                      <Button
-                        color='primary'
-                        style={{ fontSize: 'small', margin: '20px' }}
-                        size='small'
-                        variant='contained'
-                      >
-                        Clear All
-                      </Button>
-                    </Grid> */}
-                    <Grid item>
+                  <Grid item>
                       <Button
                         style={{ fontSize: 'small', margin: '20px' }}
                         color='primary'
@@ -225,19 +197,11 @@ handleFilter = () => {
                       >
                         <i>Back</i>
                       </Button>
-                    </Grid>
-                    <Grid item xs={6}>
-                    <Pagination
-                    onChange={this.handlePagination}
-                    style={{ paddingLeft:'390px' }}
-                    count={Math.ceil(totalBlogs / pageSize)}
-                    color='primary'
-                    page={pageNo}
-                            />
-            </Grid>
+                 
                   </Grid>
-                  <Grid container spacing={2}>
-                  </Grid>
+                </Grid>
+                   
+                   
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
                       <div className={classes.tabRoot}>
@@ -279,9 +243,17 @@ handleFilter = () => {
                         </TabPanel>
                       </div>
                     </Grid>
+                    <Grid item xs={6}>
+                    <Pagination
+                    onChange={this.handlePagination}
+                    style={{ paddingLeft:'500px' }}
+                    count={Math.ceil(totalBlogs / pageSize)}
+                    color='primary'
+                    page={pageNo}
+                            />
+            </Grid>
                   </Grid>
                 </div>
-              </div>
             </div>
           </div>
         </Layout>

@@ -396,6 +396,7 @@ if (result.data.status_code === 200) {
                             onChange={this.handlePublishLevelType}
                             id='category'
                             required
+                            disableClearable
                             options={publishLevelChoice}
                             getOptionLabel={(option) => option?.label}
                             filterSelectedOptions
