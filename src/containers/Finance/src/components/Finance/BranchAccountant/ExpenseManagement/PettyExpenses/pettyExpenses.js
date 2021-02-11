@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Grid } from 'semantic-ui-react'
+// import { Grid } from 'semantic-ui-react'
 import { withRouter } from 'react-router'
-import Button from '@material-ui/core/Button'
+import { Button, Grid } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 
 import {
@@ -295,40 +295,24 @@ class PettyExpenses extends Component {
     return (
       <Layout>
       <div>
-        <Grid>
-          <Grid.Row>
-            <Grid.Column></Grid.Column>
-            <Grid.Column
-              floated='left'
-              computer={4}
-              mobile={4}
-              tablet={4}
-            >
+        <Grid container spacing={3} style={{ padding: 15 }}>
+            <Grid item xs='1'>
+            </Grid>
+            <Grid item xs='3'>
               <Button variant='contained' color='primary' onClick={this.makeEntryClickHandler}>
                 Make Entry
               </Button>
-            </Grid.Column>
-            <Grid.Column
-              floated='left'
-              computer={4}
-              mobile={4}
-              tablet={4}
-            >
+            </Grid>
+            <Grid item xs='3'>
               <Button variant='contained' color='primary' onClick={this.reportClickHandler}>
                 View Report
               </Button>
-            </Grid.Column>
-            <Grid.Column
-              floated='left'
-              computer={4}
-              mobile={4}
-              tablet={4}
-            >
+            </Grid>
+            <Grid item xs='3'>
               <Button variant='contained' color='primary' onClick={this.ledgerReportClickHandler}>
                 View Ledger Report
               </Button>
-            </Grid.Column>
-          </Grid.Row>
+            </Grid>
           <div className={classes.pettyExp__table}>
             <div className={classes.pettyExp__tableHeader}>
               <div className={classes.pettyExp__tableHeaderBig}>Particulars</div>
