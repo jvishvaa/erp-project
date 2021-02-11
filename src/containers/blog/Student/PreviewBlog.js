@@ -90,10 +90,10 @@ class ContentView extends Component {
   }
 
   WriteBlogNav = () => {
-    const { content, title, files ,genreId,genreName,genreObj} = this.state;
+    const { content, title, files ,genreId,genreName,genreObj,parsedTextEditorContentLen} = this.state;
     this.props.history.push({
       pathname: '/blog/student/write-blog',
-      state: { content, title, files,genreId , genreName,genreObj},
+      state: { content, title, files,genreId , genreName,genreObj,parsedTextEditorContentLen},
     });
   };
 
