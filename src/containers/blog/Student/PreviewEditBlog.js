@@ -81,6 +81,7 @@ class PreviewEditBlog extends Component {
       parsedTextEditorContentLen:this.props.location.state.parsedTextEditorContentLen,
       genreObj:this.props.location.state.genreObj
     };
+    console.log(this.props.location.state,"@@@@")
   }
 
   componentDidMount() {
@@ -120,10 +121,10 @@ class PreviewEditBlog extends Component {
       });
   };
   EditBlogNav = () => {
-    const { content, title, files ,genreId,genreName,genreObj,image} = this.state;
+    const { content, title, files ,genreId,genreName,genreObj,image,parsedTextEditorContentLen,blogId} = this.state;
     this.props.history.push({
       pathname: '/blog/student/edit-blog',
-      state: { content, title, files,genreId , genreName,genreObj,image},
+      state: { content, title, files,genreId , genreName,genreObj,image,blogId,parsedTextEditorContentLen},
     });
   };
 
