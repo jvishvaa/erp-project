@@ -456,10 +456,10 @@ handleSection = (event,value) =>{
                           </Typography>
                         </li>
                         <TabPanel value={tabValue} index={0}>
-                          <GridList data={data} tabValue={tabValue}/>
+                          <GridList data={data} tabValue={tabValue} totalBlogs={totalBlogs}/>
                         </TabPanel>
-                        <TabPanel value={tabValue}  tabValue={tabValue} index={1}>
-                        <GridList data={data} />
+                        <TabPanel value={tabValue}  index={1}>
+                        <GridList data={data} totalBlogs={totalBlogs}  tabValue={tabValue} />
                         </TabPanel>
                       </div>
                     </Grid>

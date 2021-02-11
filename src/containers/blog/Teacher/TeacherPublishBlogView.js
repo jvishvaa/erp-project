@@ -281,16 +281,16 @@ handleFilter = () => {
                           </Typography>
                         </li>
                         <TabPanel value={tabValue} index={0}>
-                          <GridListPublish data={data} tabValue={tabValue} />
+                          <GridListPublish data={data} tabValue={tabValue}  totalBlogs={totalBlogs}/>
                         </TabPanel>
                         <TabPanel value={tabValue} index={1}>
-                        <GridListPublish data={data} tabValue={tabValue} />
+                        <GridListPublish data={data} tabValue={tabValue} totalBlogs={totalBlogs} />
                         </TabPanel>
                         <TabPanel value={tabValue} index={2}>
-                          <GridListPublish data={data} tabValue={tabValue}/>
+                          <GridListPublish data={data} tabValue={tabValue} totalBlogs={totalBlogs}/>
                         </TabPanel>
                         <TabPanel value={tabValue} index={3}>
-                          <GridListPublish data={data} tabValue={tabValue}/>
+                          <GridListPublish data={data} tabValue={tabValue} totalBlogs={totalBlogs}/>
                         </TabPanel>
                       </div>
                     </Grid>

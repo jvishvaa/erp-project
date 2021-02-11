@@ -435,16 +435,16 @@ this.setState({status:[8,5]}
                         </li>
                         {/* </AppBar> */}
                         <TabPanel value={tabValue} index={0}>
-                          {data && <GridList data={data}  tabValue={tabValue}/>}
+                          {data && <GridList data={data} totalBlogs={totalBlogs} tabValue={tabValue}/>}
                         </TabPanel>
                         <TabPanel value={tabValue} index={1}>
-                        {data && <GridList data={data} tabValue={tabValue}  />}
+                        {data && <GridList data={data} totalBlogs={totalBlogs} tabValue={tabValue}  />}
                         </TabPanel>
                         <TabPanel value={tabValue} index={2}>
-                          {data && <GridList data={data} tabValue={tabValue}  />}
+                          {data && <GridList data={data} totalBlogs={totalBlogs} tabValue={tabValue}  />}
                         </TabPanel>
                         <TabPanel value={tabValue} index={3}>
-                          {data && <GridList data={data} tabValue={tabValue} />}
+                          {data && <GridList data={data}  totalBlogs={totalBlogs} tabValue={tabValue} />}
                         </TabPanel>
                       </div>
                     </Grid>
