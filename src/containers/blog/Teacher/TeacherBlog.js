@@ -272,13 +272,13 @@ getSection = () => {
       });
   };
 handleBranch = (event, value) => {
-  this.setState({data:[],selectedBranch:value},()=>{
+  this.setState({data:[],selectedBranch:value,selectedGrade:'',selectedSection:''},()=>{
     this.getGrade()
   })
 };
 
 handleGrade = (event, value) => {
-  this.setState({data:[],selectedGrade:value}, ()=>{
+  this.setState({selectedSection:'',data:[],selectedGrade:value}, ()=>{
     this.getSection()
   })
 };

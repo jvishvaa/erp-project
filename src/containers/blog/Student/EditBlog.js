@@ -206,7 +206,7 @@ class EditBlog extends Component {
     // remove  begining and end white space
     // eslint-disable-next-line no-param-reassign
     content = content.replace(/&nbsp;/g, '');
-    content=content.replace(/<br ?\/?>/g,'');
+    // content=content.replace(/<br ?\/?>/g,'');
     this.setState({ textEditorContent: content, fadeIn: false });
     const subceededWordCount = this.isWordCountSubceeded()
 
