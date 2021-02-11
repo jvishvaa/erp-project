@@ -88,7 +88,7 @@ const BulkActiveInactiveParent = ({
     if (statusFile) {
       props.bulkActiveInactiveParent(form, props.user, props.alert)
     } else {
-      props.alert.warning('Please Select File to Upload!')
+      // props.alert.warning('Please Select File to Upload!')
     }
   }
   return (
