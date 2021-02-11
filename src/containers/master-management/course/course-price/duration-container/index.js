@@ -27,13 +27,19 @@ const DurationContainer = (props) => {
     '' || [...collectData][funBatchSize(Number(selectedLimit.substring(2)))]['weeks']
   );
   const [toggle, setToggle] = useState(false);
-  const [recursiveContent, setRecursiveContent] = useState([{ weeks: '', price: '', id: '' }]);
+  const [recursiveContent, setRecursiveContent] = useState([
+    { weeks: '', price: 0, id: '' },
+  ]);
+  const [nonRecursiveContent, setNonRecursiveContent] = useState([
+    { weeks: '', price: 0, id: '' },
+  ]);
 
   useEffect(() => {
     if (clearFlag) {
       setNoOfWeeks('');
       setToggle(false);
-      setRecursiveContent([{ weeks: '', price: '', id: '' }]);
+      setRecursiveContent([{ weeks: '', price: 0, id: '' }]);
+      setNonRecursiveContent([{ weeks: '', price: 0, id: '' }]);
     }
   }, [clearFlag]);
 
@@ -45,26 +51,37 @@ const DurationContainer = (props) => {
       setNoOfWeeks(collectData[index]['weeks']);
       setToggle(collectData[index]['toggle']);
       setRecursiveContent(collectData[index]['data']);
+      setNonRecursiveContent(collectData[index]['singleData']);
     }
   }, [selectedLimit, firstHit]);
 
   const handleChange = (e, index) => {
-    const list = [...recursiveContent];
     let name = e.target.name;
     let value = e.target.value;
-
-    if (name === 'price') {
-      if (value.match(/^[0-9]*\.?([0-9]+)?$/)) list[index][name] = value;
-      else setAlert('warning', 'Price can contain only numbers!');
+    if (toggle) {
+      const list = [...recursiveContent];
+      if (name === 'price') {
+        if (value.match(/^[0-9]*\.?([0-9]+)?$/)) list[index][name] = value;
+        else setAlert('warning', 'Price can contain only numbers!');
+      } else {
+        list[index][name] = value;
+      }
+      setRecursiveContent(list);
     } else {
-      list[index][name] = value;
+      const list = [...nonRecursiveContent];
+      if (name === 'price') {
+        if (value.match(/^[0-9]*\.?([0-9]+)?$/)) list[index][name] = value;
+        else setAlert('warning', 'Price can contain only numbers!');
+      } else {
+        list[index][name] = value;
+      }
+      setNonRecursiveContent(list);
     }
-    setRecursiveContent(list);
   };
 
   const handleAdd = () => {
     const list = [...recursiveContent];
-    list.push({ weeks: '', price: '', id: '' });
+    list.push({ weeks: '', price: 0, id: '' });
     setRecursiveContent(list);
   };
 
@@ -77,21 +94,29 @@ const DurationContainer = (props) => {
   const handleToggle = () => {
     const list = [...collectData];
     const index = collectData.findIndex((datarow) => datarow['limit'] === selectedLimit);
-    if (isEdit && list[index]['toggle']) {
+    if (isEdit) {
+      if (list[index]['toggle'])
         setAlert('warning', "Can't be changed to Non-Recurring!");
+      else {
+          setToggle(!toggle);
+          if (!toggle) {
+            setRecursiveContent([{ weeks: '', price: 0, id: '' }]);
+          }
+    }
     } else {
-      setRecursiveContent([{ weeks: '', price: '', id: '' }]);
       setToggle(!toggle);
+      if (!toggle) {
+        setRecursiveContent([{ weeks: '', price: 0, id: '' }]);
+      }
     }
   };
 
   const handleNumberOfWeeks = (value) => {
     setNoOfWeeks(value);
-    if (!toggle) {
-      const list = [...recursiveContent];
-      list[0]['weeks'] = value;
-      setRecursiveContent(list);
-    }
+    [...recursiveContent][0]['weeks'] = Number(value);
+    [...nonRecursiveContent][0]['weeks'] = Number(value);
+    setRecursiveContent([...recursiveContent]);
+    setNonRecursiveContent([...nonRecursiveContent]);
   };
 
   useEffect(() => {
@@ -101,11 +126,12 @@ const DurationContainer = (props) => {
         list[i]['weeks'] = noOfWeeks;
         list[i]['toggle'] = toggle;
         list[i]['data'] = recursiveContent;
+        list[i]['singleData'] = nonRecursiveContent;
         break;
       }
     }
     setCollectData(list);
-  }, [noOfWeeks, recursiveContent.length]);
+  }, [noOfWeeks, recursiveContent, nonRecursiveContent]);
 
   const handleSubmit = () => {
     const list = [...collectData];
@@ -113,18 +139,33 @@ const DurationContainer = (props) => {
     for (let i = 0; i < list.length; i++) {
       const coursePriceArray = [];
       if (isEdit) {
-        for (let k = 0; k < list[i]['data'].length; k++) {
+        if (list[i]['toggle']) {
+          for (let k = 0; k < list[i]['data'].length; k++) {
+            coursePriceArray.push({
+              no_of_week: Number(list[i]['data'][k]['weeks']),
+              price: parseFloat(list[i]['data'][k]['price']),
+              id: Number(list[i]['data'][k]['id']),
+            });
+          }
+        } else {
           coursePriceArray.push({
-            no_of_week: Number(list[i]['data'][k]['weeks']),
-            price: parseFloat(list[i]['data'][k]['price']),
-            id: Number(list[i]['data'][k]['id']),
+            no_of_week: Number(list[0]['singleData'][0]['weeks']),
+            price: parseFloat(list[i]['singleData'][0]['price']),
+            id: Number(list[i]['singleData'][0]['id']),
           });
         }
       } else {
-        for (let k = 0; k < list[i]['data'].length; k++) {
+        if (list[i]['toggle']) {
+          for (let k = 0; k < list[i]['data'].length; k++) {
+            coursePriceArray.push({
+              no_of_week: Number(list[i]['data'][k]['weeks']),
+              price: parseFloat(list[i]['data'][k]['price']),
+            });
+          }
+        } else {
           coursePriceArray.push({
-            no_of_week: Number(list[i]['data'][k]['weeks']),
-            price: parseFloat(list[i]['data'][k]['price']),
+            no_of_week: Number(list[0]['singleData'][0]['weeks']),
+            price: parseFloat(list[i]['singleData'][0]['price']),
           });
         }
       }
@@ -226,30 +267,92 @@ const DurationContainer = (props) => {
             label={toggle ? 'Recurring' : 'Non-Recurring'}
           />
         </div>
-        <div className='recursiveContainer'>
-          {recursiveContent.map((row, index) => (
-            <div className='recursiveRow'>
-              <div className='addRemoveIconContainer'>
-                {index === recursiveContent.length - 1 && toggle && (
-                  <Add className='addRecIcon' onClick={handleAdd} />
-                )}
-                {index !== recursiveContent.length - 1 && toggle && (
-                  <Remove className='removeRecIcon' onClick={() => handleRemove(index)} />
-                )}
+        {toggle ? (
+          <div className='recursiveContainer'>
+            {recursiveContent.map((row, index) => (
+              <div className='recursiveRow'>
+                <div className='addRemoveIconContainer'>
+                  {index === recursiveContent.length - 1 && (
+                    <Add className='addRecIcon' onClick={handleAdd} />
+                  )}
+                  {index !== recursiveContent.length - 1 && (
+                    <Remove
+                      className='removeRecIcon'
+                      onClick={() => handleRemove(index)}
+                    />
+                  )}
+                </div>
+                <div className='weekContainer'>
+                  <div className='recursiveWeekContainer'>
+                    <TextField
+                      size='small'
+                      id={`weeks${index}`}
+                      variant='outlined'
+                      type='number'
+                      name='weeks'
+                      placeholder='Weeks'
+                      value={index === 0 ? noOfWeeks : row.weeks}
+                      onChange={(e) => handleChange(e, index)}
+                      InputProps={{
+                        inputProps: {
+                          min: 0,
+                          autoComplete: 'off',
+                          readOnly: index === 0 && true,
+                        },
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className='recursivePriceContainer'>
+                  <TextField
+                    size='small'
+                    id={`price${index}`}
+                    variant='outlined'
+                    name='price'
+                    placeholder='Price'
+                    value={row.price}
+                    onChange={(e) => handleChange(e, index)}
+                    InputProps={{
+                      inputProps: { autoComplete: 'off' },
+                      startAdornment: (
+                        <div>
+                          <SvgIcon
+                            component={() => (
+                              <img
+                                style={{
+                                  height: '20px',
+                                  width: '20px',
+                                  marginTop: '5px',
+                                  marginRight: '5px',
+                                }}
+                                src={RupeeIcon}
+                              />
+                            )}
+                          />
+                        </div>
+                      ),
+                    }}
+                  />
+                </div>
               </div>
+            ))}
+          </div>
+        ) : (
+          <div className='recursiveContainer'>
+            <div className='recursiveRow'>
               <div className='weekContainer'>
                 <div className='recursiveWeekContainer'>
                   <TextField
                     size='small'
-                    id={`weeks${index}`}
+                    id='weekbox'
                     variant='outlined'
                     type='number'
                     name='weeks'
                     placeholder='Weeks'
-                    value={!toggle ? noOfWeeks : row.weeks}
-                    onChange={(e) => handleChange(e, index)}
+                    value={noOfWeeks}
+                    onChange={(e) => handleChange(e, 0)}
                     InputProps={{
-                      inputProps: { min: 0, autoComplete: 'off', readOnly: !toggle },
+                      inputProps: { min: 0, autoComplete: 'off', readOnly: true },
                     }}
                   />
                 </div>
@@ -257,12 +360,12 @@ const DurationContainer = (props) => {
               <div className='recursivePriceContainer'>
                 <TextField
                   size='small'
-                  id={`price${index}`}
+                  id='pricebox'
                   variant='outlined'
                   name='price'
                   placeholder='Price'
-                  value={row.price}
-                  onChange={(e) => handleChange(e, index)}
+                  value={[...nonRecursiveContent][0]['price']}
+                  onChange={(e) => handleChange(e, 0)}
                   InputProps={{
                     inputProps: { autoComplete: 'off' },
                     startAdornment: (
@@ -286,8 +389,8 @@ const DurationContainer = (props) => {
                 />
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        )}
       </div>
       <div className='buttonContainer'>
         <Button onClick={handleSubmit} className='submitCoursePriceButton'>

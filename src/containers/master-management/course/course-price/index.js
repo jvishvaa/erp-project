@@ -52,6 +52,7 @@ const CoursePrice = () => {
       id: '',
       toggle: false,
       data: [{ weeks: '', price: '', id: '' }],
+      singleData: [{ weeks: '', price: '', id: '' }]
     },
     {
       days: [],
@@ -62,6 +63,7 @@ const CoursePrice = () => {
       id: '',
       toggle: false,
       data: [{ weeks: '', price: '', id: '' }],
+      singleData: [{ weeks: '', price: '', id: '' }]
     },
     {
       days: [],
@@ -72,6 +74,7 @@ const CoursePrice = () => {
       id: '',
       toggle: false,
       data: [{ weeks: '', price: '', id: '' }],
+      singleData: [{ weeks: '', price: '', id: '' }]
     },
     {
       days: [],
@@ -82,6 +85,7 @@ const CoursePrice = () => {
       id: '',
       toggle: false,
       data: [{ weeks: '', price: '', id: '' }],
+      singleData: [{ weeks: '', price: '', id: '' }]    
     },
     {
       days: [],
@@ -92,6 +96,7 @@ const CoursePrice = () => {
       id: '',
       toggle: false,
       data: [{ weeks: '', price: '', id: '' }],
+      singleData: [{ weeks: '', price: '', id: '' }],
     },
   ]);
 
@@ -124,6 +129,7 @@ const CoursePrice = () => {
       resetList[i]['weeks'] = '';
       resetList[i]['toggle'] = false;
       resetList[i]['data'] = [{ weeks: '', price: '', id: '' }];
+      resetList[i]['singleData'] = [{ weeks: '', price: '', id: '' }];
     }
     setCollectData(resetList);
     setTimeSlotDisplay([]);
@@ -156,12 +162,20 @@ const CoursePrice = () => {
                   collectionList[index]['days'] = [...week_days];
                 }
                 collectionList[index]['weeks'] = course_price[0]['no_of_week'];
-                for (let k = 0; k < course_price?.length; k++) {
-                  collectionList[index]['data'].push({
-                    weeks: course_price[k]['no_of_week'],
-                    price: course_price[k]['price'],
-                    id: course_price[k]['id'],
-                  });
+                if (Boolean(is_recurring)) {
+                  for (let k = 0; k < course_price?.length; k++) {
+                    collectionList[index]['data'].push({
+                      weeks: course_price[k]['no_of_week'],
+                      price: course_price[k]['price']||0,
+                      id: course_price[k]['id'],
+                    });
+                  }
+                } else {
+                    collectionList[index]['singleData']=[{
+                        weeks: course_price[0]['no_of_week'],
+                        price: course_price[0]['price']||0,
+                        id: course_price[0]['id'],
+                      }];
                 }
               }
               setCollectData(collectionList);
@@ -177,7 +191,7 @@ const CoursePrice = () => {
         .catch((error) => {
           resetContent();
           setIsEdit(false);
-        //   setAlert('error', error.message);
+          //   setAlert('error', error.message);
         });
     } else {
       resetContent();
