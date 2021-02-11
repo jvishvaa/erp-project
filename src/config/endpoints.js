@@ -4,7 +4,6 @@ export default {
     login: '/auth/login/',
   },
 
-  
   academics: {
     subjects: '/erp_user/subject/',
     branches: '/erp_user/branch/',
@@ -98,13 +97,19 @@ export default {
     subjects: '/academic/lesson-plan-subjects/',
     lessonList: '/academic/lesson-completed-report/',
     lessonViewMoreData: '/academic/user-chapters-details/',
-    teacherList:'/academic/lesson_plan_user_list/',
+    teacherList: '/academic/lesson_plan_user_list/',
+  },
+  studentListApis: {
+    branchWiseStudentCount: '/academic/school_strength/',
+    gradeWiseStudentCount: '/academic/grade_wise_students/',
+    sectionWiseStudentCount: '/academic/grade_wise_students/',
+    downloadBranchWiseStudent: '/academic/branch_strength_excel_data/',
+    downloadExcelAllstudents: '/academic/all_branch_strength_excel_data/',
   },
 
-
-  coordinatorTeacherHomeworkApi:{
-    getAllTeacherList:'/academic/teachers-list/',
-    getTecherPerformance:'/academic/hw-teacher-performance/'
+  coordinatorTeacherHomeworkApi: {
+    getAllTeacherList: '/academic/teachers-list/',
+    getTecherPerformance: '/academic/hw-teacher-performance/',
   },
   mappingStudentGrade: {
     branch: '/erp_user/branch/',
@@ -114,7 +119,7 @@ export default {
     schoolGsMapping: '/academic/school-gs-mapping-details/',
     assign: '/academic/school-subjects-mapping/',
     updateAssign: '/academic',
-    delete: '/academic'
+    delete: '/academic',
   },
   lessonPlan: {
     periodData: `${baseURLCentral}/lesson_plan/chapter-period/`,
@@ -128,56 +133,68 @@ export default {
     bulkDownload: `${baseURLCentral}/lesson_plan/bulk_download/`,
     overviewSynopsis: `${baseURLCentral}/lesson_plan/list-lesson-overview/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
-  },  
-  discussionForum:{
-   categoryList: '/academic/categories/',
-   branch: '/erp_user/branch/',
-   grade:'/erp_user/grademapping/',
-   filterCategory: '/academic/posts/',
-   postLike: '/academic/posts-like-users/',
-   PostCategory : '/academic/create-category/',
-   CreateDissusionForum: '/academic/add-post/',
-   CreateCommentAndReplay: '/academic/create-answer-replay/',
-   AwardListAPI: '/academic/',
-   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
-   deletePost: '/academic/'
   },
-  circular:{
-    circularList:'/circular/upload-circular/',
-    viewMoreCircularData:'/circular/circular-details/',
-    fileUpload:'/circular/upload-circular-file/',
-    createCircular:'/circular/upload-circular/',
-    deleteCircular:'/circular/delete-circular/',
-    updateCircular:'/circular/update-circular/'
+  discussionForum: {
+    categoryList: '/academic/categories/',
+    branch: '/erp_user/branch/',
+    grade: '/erp_user/grademapping/',
+    filterCategory: '/academic/posts/',
+    postLike: '/academic/posts-like-users/',
+    PostCategory: '/academic/create-category/',
+    CreateDissusionForum: '/academic/add-post/',
+    CreateCommentAndReplay: '/academic/create-answer-replay/',
+    AwardListAPI: '/academic/',
+    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    deletePost: '/academic/',
   },
-  generalDairy:{
-    dairyList:'/academic/general-dairy-messages/',
-
+  circular: {
+    circularList: '/circular/upload-circular/',
+    viewMoreCircularData: '/circular/circular-details/',
+    fileUpload: '/circular/upload-circular-file/',
+    createCircular: '/circular/upload-circular/',
+    deleteCircular: '/circular/delete-circular/',
+    updateCircular: '/circular/update-circular/',
   },
-  onlineCourses:{
-    createCourse:'/aol/courses/',
-    fileUpload:'/aol/file-upload/',
-    courseList:'/aol/courses/',
-    deleteCourse:'/aol/',
-    courseDetails:'/aol/courses/',
-    categoryList:'/aol/tagging-list/',
-    updateCourse:'/aol/'
+  generalDairy: {
+    dairyList: '/academic/general-dairy-messages/',
+    studentList: '/academic/general-dairy-users/',
+    updateDelete: '/academic/',
+    SubmitDairy: '/academic/create-dairy/',
   },
-attendanceList:{
-  list:'/erp_user/onlineclass_attendeelist/',
-  updateAttendance:'/erp_user/mark_attendance/',
-},
+  dailyDairy: {
+    createDailyDairy: '/academic/create-dairy/',
+    branches: '/academic/chapters/',
+    updateDelete: '/academic/',
+  },
+  onlineCourses: {
+    createCourse: '/aol/courses/',
+    fileUpload: '/aol/file-upload/',
+    courseList: '/aol/courses/',
+    deleteCourse: '/aol/',
+    courseDetails: '/aol/courses/',
+    categoryList: '/aol/tagging-list/',
+    updateCourse: '/aol/',
+  },
+  attendanceList: {
+    list: '/erp_user/onlineclass_attendeelist/',
+    updateAttendance: '/erp_user/mark_attendance/',
+  },
   blog: {
     genreList: '/academic/genre/',
     Blog: '/academic/blog/',
-    BlogLike:'/academic/like_blog/',
-    BlogView:'/academic/view_blog/',
-    WordCountConfig:'/academic/word_count_config/',
-
-    
+    BlogLike: '/academic/like_blog/',
+    BlogView: '/academic/view_blog/',
+    WordCountConfig: '/academic/word_count_config/',
   },
-
-    
+  assessment: {
+    questionPaperList: `/academic/assessment-list/`,
+    viewQuestionList: `${baseURLCentral}/assessment/3/qp-questions-list/`,
+    userTests: `${baseURLCentral}/assessment/user-tests/`, // ?user=20&subject=1,
+    userTestComparisions: `${baseURLCentral}/assessment/student-test-comparison/`, // ?test_1=7&user=20&test_2=10
+    userSpecificSubjects: `/academic/users-subjects/`, // ?module_id=112
+    userAssessmentQuestionAnalysis: `${baseURLCentral}/assessment/category_analysis_report/`, // ?user=3446&assessment_id=3
+    assessmentAnalysisTeacherExcel: `${baseURLCentral}/assessment/teacher-report/`, // ?type=1
+  },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
 };

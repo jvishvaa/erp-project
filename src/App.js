@@ -28,7 +28,7 @@ import SectionTable from './containers/master-management/section/section-table';
 import GradeTable from './containers/master-management/grade/grade-table';
 import AcademicYearTable from './containers/master-management/academic-year/academic-year-table';
 import MessageTypeTable from './containers/master-management/message-type/message-type-table';
-//import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
+// import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
 import HomeworkCard from './containers/homework/homework-card';
 import Profile from './containers/profile/profile';
 import { fetchLoggedInUserDetails } from './redux/actions';
@@ -40,6 +40,8 @@ import CoordinatorHomework from './containers/homework/coordinator-homework';
 import AddHomeworkCoord from './containers/homework/coordinator-homework/add-homework';
 import LessonReport from './containers/lesson-plan/lesson-plan-report';
 import LessonPlan from './containers/lesson-plan/lesson-plan-view';
+import Assessment from './containers/assessment'
+import ViewAssessment from './containers/assessment/viewAssessment'
 import {
   TeacherBlog,
   ContentView,
@@ -54,6 +56,7 @@ import {
   TeacherPublishBlogView,
   BlogView,
   CreateGenre,
+  ViewGenre,
   ContentViewPublish,
   ContentViewPublishStudent,
 
@@ -63,20 +66,26 @@ import {
   StudentPublishBlogView,
   AdminPublishBlogView,
   ContentViewPublishAdmin,
-  ContentViewPublishPrincipal
+  ContentViewPublishPrincipal,
+  EditWordCountConfig
 
 } from './containers/blog';
 import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
-import Discussionforum from './containers/discussionForum/discussionForum';
+import Discussionforum from './containers/discussionForum/index';
 import CreateCategory from './containers/discussionForum/createCategory';
 import CreateDiscussionForum from './containers/discussionForum/createDiscussionForum';
 import CircularList from './containers/circular';
 import CreateCircular from './containers/circular/create-circular';
 import CircularStore from './containers/circular/context/CircularStore';
+import GeneralDairyStore from './containers/general-dairy/context/context'
 import Subjectgrade from './containers/subjectGradeMapping';
 import ListandFilter from './containers/subjectGradeMapping/listAndFilter';
 import GeneralDairyList from './containers/general-dairy';
+import GeneralDairyStudentView from './containers/general-dairy/generalDairyStudentView';
+import GeneralDairyStudentList from './containers/general-dairy/generalDairyStudnet'
 import CreateGeneralDairy from './containers/general-dairy/create-dairy';
+import CreateDailyDairy from './containers/daily-dairy/create-daily-dairy';
+import DailyDairyList from './containers/daily-dairy/list-daily-dairy'
 import AOLClassView from './containers/online-class/aol-view/index';
 import ResourceView from './containers/online-class/online-class-resources/index';
 import CoursePrice from './containers/master-management/course/course-price';
@@ -84,8 +93,10 @@ import CreateCourse from './containers/master-management/course/create-course';
 import CourseView from './containers/master-management/course/view-course';
 import ViewCourseCard from './containers/master-management/course/view-course/view-more-card/ViewCourseCard';
 import ViewStore from './containers/master-management/course/view-course/context/ViewStore';
-
+import DailyDairyStore from'./containers/daily-dairy/context/context';
 import AttendeeListRemake from './containers/attendance'
+import TestComparisionUI from './containers/assessment-report/test-comparision';
+import AssessmentAnalysis from './containers/assessment-report/assessment-analysis';
 
 const theme = createMuiTheme({
   palette: {
@@ -134,7 +145,10 @@ function App() {
           <OnlineclassViewProvider>
             <ThemeProvider theme={theme}>
               <CircularStore>
+                <GeneralDairyStore>
                 <ViewStore>
+                  <DailyDairyStore>
+
                   <Switch>
                     <Route path='/profile'>
                       {({ match }) => <Profile match={match} />}
@@ -162,10 +176,14 @@ function App() {
                 </Route> */}
                     <Route exact path='/blog/create/genre'>
                       {({ match }) => <CreateGenre match={match} />}
-                    </Route>
-                    <Route exact path='/blog/create/wordcount-config'>
+                    </Route>                    
+                    <Route exact path='/blog/wordcount-config'>
                       {({ match }) => <CreateWordCountConfig match={match} />}
                     </Route>
+                    <Route exact path='/blog/wordcount-config/edit'>
+                      {({ match }) => <EditWordCountConfig match={match} />}
+                    </Route>
+                
                     <Route exact path='/blog/teacher'>
                       {({ match }) => <TeacherBlog match={match} />}
                     </Route>
@@ -193,7 +211,7 @@ function App() {
                     <Route exact path='/blog/principal/contentViewPublishPrincipal'>
                       {({ match }) => <ContentViewPublishPrincipal match={match} />}
                     </Route>
-                     <Route exact path='/blog/admin/contentViewPublishAdmin'>
+                    <Route exact path='/blog/admin/contentViewPublishAdmin'>
                       {({ match }) => <ContentViewPublishAdmin match={match} />}
                     </Route>
 
@@ -255,7 +273,7 @@ function App() {
                     <Route exact path='/online-class/attend-class'>
                       {({ match }) => <AOLClassView match={match} />}
                     </Route>
-                      {/* {({ match }) => <ViewClassStudentCollection match={match} />} */}
+                    {/* {({ match }) => <ViewClassStudentCollection match={match} />} */}
                     <Route exact path='/online-class/resource'>
                       {({ match }) => <ResourceView match={match} />}
                     </Route>
@@ -305,7 +323,7 @@ function App() {
                     <Route
                       exact
                       path='/homework/cadd/:date/:subject/:id/:coord_selected_teacher_id'
-                    >
+                      >
                       {({ match }) => <AddHomeworkCoord match={match} />}
                     </Route>
                     <Route exact path='/lesson-plan/teacher-view'>
@@ -338,8 +356,23 @@ function App() {
                     <Route exact path='/general-dairy'>
                       {({ match }) => <GeneralDairyList match={match} />}
                     </Route>
+                    <Route exact path='/dairy/student'>
+                      {({ match }) => <GeneralDairyList match={match} />}
+                    </Route>
+                    <Route exact path='/dairy/teacher'>
+                      {({ match }) => <GeneralDairyList match={match} />}
+                    </Route>
+                    <Route exact path='/general-dairy/student-view'>
+                      {({ match }) => <GeneralDairyStudentList match={match} />}
+                    </Route>
                     <Route exact path='/create/general-dairy'>
                       {({ match }) => <CreateGeneralDairy match={match} />}
+                    </Route>
+                    <Route exact path='/daily-dairy'>
+                      {({ match }) => <DailyDairyList match={match} />}
+                    </Route>
+                    <Route exact path='/create/daily-dairy'>
+                      {({ match }) => <CreateDailyDairy match={match} />}
                     </Route>
                     <Route exact path='/create/course'>
                       {({ match }) => <CreateCourse match={match} />}
@@ -353,11 +386,25 @@ function App() {
                     <Route exact path='/view-period'>
                       {({ match }) => <ViewCourseCard match={match} />}
                     </Route>
+                    <Route exact path='/assessment/test-comparision'>
+                      {({ match }) => <TestComparisionUI match={match} />}
+                    </Route>
+                    <Route exact path='/assessment/:assessmentId/analysis'>
+                      {({ match }) => <AssessmentAnalysis match={match} />}
+                    </Route>
                     <Route exact path='/aol-attendance-list/:id?'>
                       {({ match }) => <AttendeeListRemake match={match} />}
                     </Route>
+                    <Route exact path='/assessment'>
+                      {({ match }) => <Assessment match={match} />}
+                    </Route>
+                    <Route exact path='/assessment/view-assessment'>
+                      {({ match }) => <ViewAssessment match={match} />}
+                    </Route>
                   </Switch>
+                  </DailyDairyStore>
                 </ViewStore>
+                </GeneralDairyStore>
               </CircularStore>
             </ThemeProvider>
           </OnlineclassViewProvider>

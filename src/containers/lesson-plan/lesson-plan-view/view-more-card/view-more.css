@@ -135,8 +135,13 @@ padding: 0;
   bottom: 0%;
   padding: 20px;
   width: 40%;
+  transition: 300ms;
 }
 
+.completed_button_view_more:hover {
+  transition: 300ms;
+  width: 100%;
+}
 
 @media screen and (max-width:768px) {
   .rootViewMore {

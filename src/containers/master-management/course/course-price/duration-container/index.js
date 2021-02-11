@@ -11,19 +11,31 @@ const DurationContainer = (props) => {
   const {
     isEdit,
     timeSlot,
+    timeSlotDisplay,
     courseId,
     selectedLimit,
     collectData,
     setCollectData,
     funBatchSize,
+    firstHit,
+    resetContent,
+    clearFlag,
   } = props;
 
   const { setAlert } = useContext(AlertNotificationContext);
   const [noOfWeeks, setNoOfWeeks] = useState(
-    null || [...collectData][funBatchSize(Number(selectedLimit.substring(2)))]['weeks']
+    '' || [...collectData][funBatchSize(Number(selectedLimit.substring(2)))]['weeks']
   );
   const [toggle, setToggle] = useState(false);
-  const [recursiveContent, setRecursiveContent] = useState([{ weeks: '', price: '' }]);
+  const [recursiveContent, setRecursiveContent] = useState([{ weeks: '', price: '', id: '' }]);
+
+  useEffect(() => {
+    if (clearFlag) {
+      setNoOfWeeks('');
+      setToggle(false);
+      setRecursiveContent([{ weeks: '', price: '', id: '' }]);
+    }
+  }, [clearFlag]);
 
   useEffect(() => {
     if (selectedLimit) {
@@ -34,7 +46,7 @@ const DurationContainer = (props) => {
       setToggle(collectData[index]['toggle']);
       setRecursiveContent(collectData[index]['data']);
     }
-  }, [selectedLimit]);
+  }, [selectedLimit, firstHit]);
 
   const handleChange = (e, index) => {
     const list = [...recursiveContent];
@@ -43,7 +55,7 @@ const DurationContainer = (props) => {
 
     if (name === 'price') {
       if (value.match(/^[0-9]*\.?([0-9]+)?$/)) list[index][name] = value;
-      else setAlert('warning', 'Price can contain only numbers');
+      else setAlert('warning', 'Price can contain only numbers!');
     } else {
       list[index][name] = value;
     }
@@ -52,7 +64,7 @@ const DurationContainer = (props) => {
 
   const handleAdd = () => {
     const list = [...recursiveContent];
-    list.push({ weeks: '', price: '' });
+    list.push({ weeks: '', price: '', id: '' });
     setRecursiveContent(list);
   };
 
@@ -65,15 +77,10 @@ const DurationContainer = (props) => {
   const handleToggle = () => {
     const list = [...collectData];
     const index = collectData.findIndex((datarow) => datarow['limit'] === selectedLimit);
-    if (list[index]['days'].length > 0) {
-      if (list[index]['toggle']) {
+    if (isEdit && list[index]['toggle']) {
         setAlert('warning', "Can't be changed to Non-Recurring!");
-      } else {
-        setRecursiveContent([{ weeks: '', price: '' }]);
-        setToggle(!toggle);
-      }
     } else {
-      setRecursiveContent([{ weeks: '', price: '' }]);
+      setRecursiveContent([{ weeks: '', price: '', id: '' }]);
       setToggle(!toggle);
     }
   };
@@ -98,16 +105,12 @@ const DurationContainer = (props) => {
       }
     }
     setCollectData(list);
-  }, [noOfWeeks, toggle, recursiveContent.length]);
+  }, [noOfWeeks, recursiveContent.length]);
 
   const handleSubmit = () => {
     const list = [...collectData];
     const batchData = [];
     for (let i = 0; i < list.length; i++) {
-      // if (list[i]['weeks'] > 0 &&
-      //     list[i]['comboDays'].length > 0 &&
-      //     list[i]['data'][0]['weeks'] > 0 &&
-      //     list[i]['data'][0]['price'].length > 0) {
       const coursePriceArray = [];
       if (isEdit) {
         for (let k = 0; k < list[i]['data'].length; k++) {
@@ -140,41 +143,54 @@ const DurationContainer = (props) => {
         course_price: coursePriceArray,
         id: list[i]['id'],
       });
-      // }
+    }
+    let request = {};
+    if (isEdit) {
+      request = {
+        course: courseId,
+        batch: batchData,
+        time_slot: timeSlotDisplay,
+      };
+    } else {
+      request = {
+        course: courseId,
+        batch: batchData,
+        time_slot: timeSlot.map((value) => value.slot),
+      };
     }
 
-    const request = {
-      course: courseId,
-      batch: batchData,
-      time_slot: timeSlot.map((value) => value.slot),
-    };
-
-    if (isEdit) {
-      axiosInstance
-        .put(`${endpoints.aol.updateCoursePrice}`, request)
-        .then((result) => {
-          if (result.data.status_code === 200) {
-            setAlert('success', result.data.message);
-          } else {
-            setAlert('error', result.data.message);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error.message);
-        });
+    if (courseId) {
+      if (isEdit) {
+        axiosInstance
+          .put(`${endpoints.aol.updateCoursePrice}`, request)
+          .then((result) => {
+            if (result.data.status_code === 200) {
+              setAlert('success', result.data.message);
+              resetContent();
+            } else {
+              setAlert('error', result.data.message);
+            }
+          })
+          .catch((error) => {
+            setAlert('error', error.message);
+          });
+      } else {
+        axiosInstance
+          .post(`${endpoints.aol.createCoursePrice}`, request)
+          .then((result) => {
+            if (result.data.status_code === 200) {
+              setAlert('success', result.data.message);
+              resetContent();
+            } else {
+              setAlert('error', result.data.message);
+            }
+          })
+          .catch((error) => {
+            setAlert('error', error.message);
+          });
+      }
     } else {
-      axiosInstance
-        .post(`${endpoints.aol.createCoursePrice}`, request)
-        .then((result) => {
-          if (result.data.status_code === 200) {
-            setAlert('success', result.data.message);
-          } else {
-            setAlert('error', result.data.message);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error.message);
-        });
+      setAlert('warning', 'Please select course!');
     }
   };
 

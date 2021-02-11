@@ -4,9 +4,17 @@ import { TextField } from '@material-ui/core';
 import './days-filter.css';
 
 const DaysFilterContainer = (props) => {
-  const { selectedLimit, collectData, setCollectData } = props;
+  const { selectedLimit, collectData, setCollectData, firstHit, clearFlag } = props;
 
   const [daysDisplay, setDaysDisplay] = useState([]);
+
+  useEffect(() => {
+    if (clearFlag) {
+        setComboDays([]);
+        setOtherDays([]);
+        setDaysDisplay([]);
+    }
+  }, [clearFlag]);
 
   useEffect(() => {
     if (selectedLimit) {
@@ -17,7 +25,7 @@ const DaysFilterContainer = (props) => {
       setOtherDays(collectData[index]['otherDays']);
       setDaysDisplay(collectData[index]['days']);
     }
-  }, [selectedLimit]);
+  }, [selectedLimit, firstHit]);
 
   const [comboDays, setComboDays] = useState([]);
 

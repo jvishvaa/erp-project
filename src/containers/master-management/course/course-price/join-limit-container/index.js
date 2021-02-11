@@ -14,7 +14,6 @@ const JoinLimitContainer = (props) => {
         { limit: '1:20', isSelected: false },
         { limit: '1:30', isSelected: false },
     ]);
-
     const handleClickJoinLimit = (index) => {
         const list = [...joinLimits].map(value => value.isSelected ? { ...value, isSelected: false } : value)
         list[index]['isSelected'] = true;

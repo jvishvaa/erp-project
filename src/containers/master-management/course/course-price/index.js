@@ -11,7 +11,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
-import { initialFormData, resetFormData } from './utils.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,6 +40,8 @@ const CoursePrice = () => {
   const [selectedLimit, setSelectedLimit] = useState('1:1');
   const [timeSlotDisplay, setTimeSlotDisplay] = useState();
   const [isEdit, setIsEdit] = useState(false);
+  const [firstHit, setFirstHit] = useState(false);
+  const [clearFlag, setClearFlag] = useState(false);
   const [collectData, setCollectData] = useState([
     {
       days: [],
@@ -114,12 +115,31 @@ const CoursePrice = () => {
     }
   };
 
+  const resetContent = () => {
+    const resetList = [...collectData];
+    for (let i = 0; i < resetList.length; i++) {
+      resetList[i]['days'] = [];
+      resetList[i]['comboDays'] = [];
+      resetList[i]['otherDays'] = [];
+      resetList[i]['weeks'] = '';
+      resetList[i]['toggle'] = false;
+      resetList[i]['data'] = [{ weeks: '', price: '', id: '' }];
+    }
+    setCollectData(resetList);
+    setTimeSlotDisplay([]);
+    setTimeSlot([]);
+    setClearFlag(!clearFlag);
+    setIsEdit(false);
+  };
+
   useEffect(() => {
     if (courseId) {
+      resetContent();
       axiosInstance
         .get(`${endpoints.aol.createCoursePrice}?course=${courseId}`)
         .then((res) => {
           const { message, status_code } = res.data;
+          setFirstHit(false);
           if (status_code === 200) {
             if (res.data.result.length > 0) {
               setIsEdit(true);
@@ -135,7 +155,6 @@ const CoursePrice = () => {
                 if (week_days?.length > 0) {
                   collectionList[index]['days'] = [...week_days];
                 }
-                console.log(course_price[0]['time_slot']);
                 collectionList[index]['weeks'] = course_price[0]['no_of_week'];
                 for (let k = 0; k < course_price?.length; k++) {
                   collectionList[index]['data'].push({
@@ -146,17 +165,22 @@ const CoursePrice = () => {
                 }
               }
               setCollectData(collectionList);
+              setFirstHit(true);
             }
           } else {
+            resetContent();
             setIsEdit(false);
             setTimeSlotDisplay([]);
             setAlert('error', message);
           }
         })
         .catch((error) => {
+          resetContent();
           setIsEdit(false);
-          setAlert('error', error.message);
+        //   setAlert('error', error.message);
         });
+    } else {
+      resetContent();
     }
   }, [courseId]);
 
@@ -176,6 +200,7 @@ const CoursePrice = () => {
         setTimeSlot={setTimeSlot}
         setCourseId={setCourseId}
         setCollectData={setCollectData}
+        resetContent={resetContent}
       />
       <div>
         {' '}
@@ -192,21 +217,27 @@ const CoursePrice = () => {
           </Grid>
           <Grid item xs={12} sm={4}>
             <DaysFilterContainer
+              clearFlag={clearFlag}
               selectedLimit={selectedLimit}
               collectData={collectData}
               setCollectData={setCollectData}
               funBatchSize={funBatchSize}
+              firstHit={firstHit}
             />
           </Grid>
           <Grid item xs={12} sm={5}>
             <DurationContainer
+              clearFlag={clearFlag}
               isEdit={isEdit}
               timeSlot={timeSlot}
+              timeSlotDisplay={timeSlotDisplay}
               courseId={courseId}
               selectedLimit={selectedLimit}
               collectData={collectData}
               setCollectData={setCollectData}
               funBatchSize={funBatchSize}
+              firstHit={firstHit}
+              resetContent={resetContent}
             />
           </Grid>
         </Grid>

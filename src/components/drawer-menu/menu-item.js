@@ -26,6 +26,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Configuration', Path: '/homework/admin' },
     { name: 'Student Homework', Path: '/homework/student' },
     { name: 'Teacher Homework', Path: '/homework/teacher' },
+    { name: 'Assessment', Path: '/assessment' },
     { name: 'Communication', Path: '/communication' },
     { name: 'Add Group', Path: '/communication/addgroup' },
     { name: 'View&Edit Group', Path: '/communication/viewgroup' },
@@ -41,7 +42,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Management Blogs', Path: '/blog/admin' },
     { name: 'Principal Blogs', Path: '/blog/principal' },
     {name: 'Genre' ,Path :'/blog/genre'},
-    {name: 'Word Count Cofiguration' ,Path :'/blog/create/wordcount-config'},
+    {name: 'Word Count Cofiguration' ,Path :'/blog/wordcount-config'},
 
     
   ];

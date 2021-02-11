@@ -77,7 +77,7 @@ class WriteBlog extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      parsedTextEditorContentLen:0,
       image :'',
       // files:[],
       relatedBlog: true,
@@ -142,9 +142,13 @@ class WriteBlog extends Component {
  
 
   listGenre = () => {
+    let { roleDetails } = this.state;
+    const erpUserId = roleDetails.role_details.erp_user_id;
     axios
       .get(`${endpoints.blog.genreList}?is_delete=${
         'False'
+      }&erp_user_id=${
+        erpUserId
       }`)
       .then((res) => {
         this.setState({ genreList: res.data.result });
@@ -172,9 +176,11 @@ class WriteBlog extends Component {
     const textWordCount = parsedTextEditorContent.length
     this.setState({ parsedTextEditorContentLen: textWordCount })
     if (parsedTextEditorContent && parsedTextEditorContent.length < wordCountLimit) {
-      const errorMsg = `Please write atleast ${wordCountLimit} words.Currently only ${parsedTextEditorContent.length} words have been written`
+      const errorMsg = `Please write atleast ${wordCountLimit} words.Currently only ${textWordCount} words have been written`
       return errorMsg
     }
+    this.setState({ parsedTextEditorContentLen: textWordCount})
+
     return false
   }
   
@@ -187,6 +193,8 @@ class WriteBlog extends Component {
     // eslint-disable-next-line no-param-reassign
     content = content.replace(/&nbsp;/g, '');
     this.setState({ textEditorContent: content, fadeIn: false });
+    const subceededWordCount = this.isWordCountSubceeded()
+
     // localStorage.setItem('blogContent', content);
   };
 
@@ -202,10 +210,14 @@ class WriteBlog extends Component {
   
   onDrop = (files=[]) => {
     if (!this.isImage(files)) {
-      this.props.alert.warning('Please select only image file format')
+      this.context.setAlert('error',"Please select only image file format")
+
+      // this.props.alert.warning('Please select only image file format')
       return
     } else if (files.length > 1) {
-      this.props.alert.warning('You can select only a single image at once')
+      this.context.setAlert('error',"You can select only a single image at once")
+
+      // this.props.alert.warning('You can select only a single image at once')
       return
     }
   
@@ -229,11 +241,23 @@ class WriteBlog extends Component {
   };
 
   PreviewBlogNav = () => {
-    let{genreId ,files, title ,textEditorContent,genreObj}=this.state
+    let{genreId ,files, title ,textEditorContent,genreObj,parsedTextEditorContentLen}=this.state
 
     
-    if(!genreId || !files.length> 0 ||!title ||!textEditorContent){
-      this.context.setAlert('error',"please select all fields")
+    if(!genreId ){
+      this.context.setAlert('error',"please select genre")
+      return
+    }
+    if(!files.length> 0 ){
+      this.context.setAlert('error',"please upload image")
+      return
+    }
+    if(!title){
+      this.context.setAlert('error',"please enter title to the blog ")
+      return
+    }
+    if(!textEditorContent){
+      this.context.setAlert('error',"please enter description to the blog")
       return
     }
     const subceededWordCount = this.isWordCountSubceeded()
@@ -249,11 +273,11 @@ class WriteBlog extends Component {
       studentName,
       creationDate,
       // files,
-      genreName
+      genreName,
     } = this.state;
     this.props.history.push({
       pathname: '/blog/student/preview-blog',
-      state: { studentName, creationDate, genreId, textEditorContent, title, files ,genreName,genreObj},
+      state: { studentName, creationDate, genreId, textEditorContent, title, files ,genreName,genreObj,parsedTextEditorContentLen},
     });
   };
 
@@ -277,7 +301,6 @@ class WriteBlog extends Component {
       studentName,
       creationDate,wordCountLimit
     } = this.state;
-    console.log(genreList,genreName,"@250")
     return Preview ? (
       <PreviewBlog
         content={textEditorContent}
@@ -355,10 +378,12 @@ class WriteBlog extends Component {
                       get={this.handleTextEditor}
                       content={textEditorContent}
                     />
+                    
+
                   </Grid>
                   <Grid item xs={12}>
                     <Typography style={{ margin: 10 }} variant='body1'>
-                      Add Thumbnail (Optional)
+                      Add Thumbnail 
                     </Typography>
                     <Typography
                       color='textPrimary'
