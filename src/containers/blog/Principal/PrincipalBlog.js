@@ -112,7 +112,7 @@ class PrincipalBlog extends Component {
     else if(selectedBranch){
       urlPath =`${endpoints.blog.Blog}?page_number=${
               pageNo 
-            }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&barnch_id=${selectedBranch.id}&start_date=${startDate}&end_date=${endDate}`
+            }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&branch_id=${selectedBranch.id}&start_date=${startDate}&end_date=${endDate}`
     }
     axios
       .get(
