@@ -243,7 +243,7 @@ if (result.data.status_code === 200) {
                   tabValue === 3 ?
                     <IconButton
                     style={{float:'right'}}
-                  title='Delete'
+                  title='Restore'
                   onClick={()=>this.handleRestoreBlog(data && data.id)}
                 >
                   <Restore

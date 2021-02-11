@@ -91,11 +91,13 @@ class StudentDashboard extends Component {
       tabValue: 0,
       pageNo: 1,
       pageSize: 6,
-      startDate :moment().format('YYYY-MM-DD'),
       status:[8,5],
-      moduleId:112
+      moduleId:112,
+      endDate :moment().format('YYYY-MM-DD'),
+      startDate: this.getDaysBefore(moment(), 6)
 
     };
+
   }
 
   componentDidMount() {
@@ -201,6 +203,7 @@ class StudentDashboard extends Component {
   };
   handleFilter = () => {
     const { pageNo, pageSize ,tabValue,startDate,endDate,status,moduleId} = this.state;
+    console.log(startDate,endDate,"@@@")
     let tabStatus= []
     if(tabValue === 0){
       tabStatus= [8,5]
@@ -312,15 +315,17 @@ this.setState({status:[8,5]}
                       />
                     </div>
                   </Grid> */}
-                  <Grid item xs={12} sm={3}  >
+                  <Grid item xs={12} sm={4}  >
                   <div className='blog_input'>
                     {tabValue === 0 ?
                   <Autocomplete
                   style={{ width: '100%' }}
                   size='small'
+                  disableClearable
                   onChange={this.handleStatusOne}
                   id='category'
                   required
+                  disableClearable
                   options={statusTypeChoicesOne}
                   getOptionLabel={(option) => option?.label}
                   filterSelectedOptions
@@ -338,6 +343,7 @@ this.setState({status:[8,5]}
                 onChange={this.handleStatusTwo}
                 id='category'
                 required
+                disableClearable
                 options={statusTypeChoicesTwo}
                 getOptionLabel={(option) => option?.label}
                 filterSelectedOptions
@@ -451,7 +457,7 @@ this.setState({status:[8,5]}
                     <Grid item xs={12}>
                     <Pagination
                     onChange={this.handlePagination}
-                    style={{ paddingLeft:'390px' }}
+                    style={{ paddingLeft:'500px' }}
                     count={Math.ceil(totalBlogs / pageSize)}
                     color='primary'
                     page={pageNo}

@@ -79,7 +79,6 @@ class TeacherBlog extends Component {
       pageNo: 1,
       pageSize: 6,
       totalPages:0,
-      startDate :moment().format('YYYY-MM-DD'),
       status:[8],
       selectedBranch :'',
       selectedGrade:'',
@@ -88,6 +87,8 @@ class TeacherBlog extends Component {
       gradeList:[],
       sectionList:[],
       moduleId :113,
+      endDate :moment().format('YYYY-MM-DD'),
+      startDate: this.getDaysBefore(moment(), 6)
     };
   }
   componentDidMount() {
@@ -300,23 +301,16 @@ handleSection = (event,value) =>{
               <CommonBreadcrumbs componentName='Blog' />
               <div className='create_group_filter_container'>
               <Grid container spacing={3}>
-              <Grid item xs={12} sm={4}>
-                    <div className='mobile-date-picker'>
-                      <MobileDatepicker
-                        onChange={(date) => this.handleEndDateChange(date)}
-                        handleStartDateChange={this.handleStartDateChange}
-                        handleEndDateChange={this.handleEndDateChange}
-                      />
-                    </div>
-                  </Grid>
+             
 <Grid xs={12} sm={3} item>
 <div className='blog_input'>
       <Autocomplete
         size='small'
-        // style={{ width: '100%' }}
+        style={{ width: '100%' }}
 
         onChange={this.handleBranch}
         value={selectedBranch}
+        disableClearable
         id='message_log-branch'
         className='create_group_branch'
         options={branchList}
@@ -339,13 +333,14 @@ handleSection = (event,value) =>{
         <div className='blog_input'>
          <Autocomplete
          size='small'
-        //  style={{ width: '100%' }}
+         style={{ width: '100%' }}
 
          onChange={this.handleGrade}
          value={selectedGrade}
          id='message_log-branch'
          className='create_group_branch'
          options={gradeList}
+         disableClearable
          getOptionLabel={(option) => option?.grade__grade_name}
          filterSelectedOptions
          renderInput={(params) => (
@@ -366,10 +361,11 @@ handleSection = (event,value) =>{
           <div className='blog_input'>
           <Autocomplete
           size='small'
-          // style={{ width: '100%' }}
+          style={{ width: '100%' }}
 
           onChange={this.handleSection}
           value={selectedSection}
+          disableClearable
           id='message_log-branch'
           className='create_group_branch'
           options={sectionList}
@@ -389,9 +385,18 @@ handleSection = (event,value) =>{
         {/* ) : null} */}
        
       </Grid>
-      <Grid item xs={12} sm={3}>
+      <Grid item xs={12} sm={4}>
+                    <div className='mobile-date-picker'>
+                      <MobileDatepicker
+                        onChange={(date) => this.handleEndDateChange(date)}
+                        handleStartDateChange={this.handleStartDateChange}
+                        handleEndDateChange={this.handleEndDateChange}
+                      />
+                    </div>
+                  </Grid>
+      {/* <Grid item xs={12} sm={3}> */}
         <Button
-          style={{ fontSize: 'small', margin: '20px' }}
+          style={{ fontSize: 'small', margin: '20px',width:'100px',height:'33px',marginTop:'30px' }}
           color='primary'
           size='small'
           variant='contained'
@@ -401,12 +406,8 @@ handleSection = (event,value) =>{
         >
           Filter
         </Button> 
-      </Grid>
-      
-      </Grid>
-                <div style={{ margin: '20px' }}>
-                  <Grid container spacing={2}>
-                    <Grid item>
+      {/* </Grid> */}
+      <Grid item xs={12} sm={3}>
                       <Button
                         color='primary'
                         style={{ fontSize: 'small', margin: '20px' }}
@@ -418,18 +419,8 @@ handleSection = (event,value) =>{
                         Published Blogs
                       </Button>
                     </Grid>
-
-                    {/* <Grid item>
-                      <Button
-                        style={{ fontSize: 'small', margin: '20px' }}
-                        color='primary'
-                        size='small'
-                        variant='contained'
-                      >
-                        Blog Dashboard
-                      </Button>
-                    </Grid> */}
-                  </Grid>
+      </Grid>
+                <div style={{ margin: '20px' }}>
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
                       <div className={classes.tabRoot}>
@@ -466,7 +457,7 @@ handleSection = (event,value) =>{
                     <Grid item xs={12}>
                     <Pagination
                     onChange={this.handlePagination}
-                    style={{ paddingLeft:'390px' }}
+                    style={{ paddingLeft:'500px' }}
                     count={Math.ceil(totalBlogs / pageSize)}
                     color='primary'
                     page={pageNo}

@@ -365,6 +365,7 @@ class EditBlog extends Component {
                       size='small'
                       id='combo-box-demo'
                       options={genreList}
+                      disableClearable
                       value={genreObj}
                       getOptionLabel={(option) => option.genre}
                       style={{ width: 300 }}

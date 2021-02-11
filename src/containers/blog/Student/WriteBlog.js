@@ -334,6 +334,7 @@ class WriteBlog extends Component {
                     <Autocomplete
                       size='small'
                       id='combo-box-demo'
+                      disableClearable
                       options={genreList}
                       value={genreObj}
                       getOptionLabel={(option) => option.genre}

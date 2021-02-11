@@ -404,6 +404,7 @@ class ContentViewPublish extends Component {
                           <Autocomplete
                             style={{ width: '100%' }}
                             size='small'
+                            disableClearable
                             onChange={this.handlePublishLevelType}
                             id='category'
                             required

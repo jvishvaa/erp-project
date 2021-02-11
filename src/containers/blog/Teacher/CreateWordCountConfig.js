@@ -283,6 +283,7 @@ const handleTabChange = (event,value) =>{
               size='small'
               onChange={handleGrade}
               id='grade'
+              disableClearable
               className='dropdownIcon'
               options={gradeList}
               filterSelectedOptions

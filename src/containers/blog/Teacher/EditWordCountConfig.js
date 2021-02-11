@@ -132,6 +132,7 @@ const handleWordCountChange = (e) => {
               options={gradeList}
               value={gradeObj}
               filterSelectedOptions
+              disableClearable
               getOptionLabel={(option) => option?.grade_name}
 
               renderInput={(params) => (
