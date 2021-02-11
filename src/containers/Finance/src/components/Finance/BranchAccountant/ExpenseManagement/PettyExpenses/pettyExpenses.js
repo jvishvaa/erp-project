@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Grid } from 'semantic-ui-react'
 import { withRouter } from 'react-router'
 import Button from '@material-ui/core/Button'
+import { Link } from 'react-router-dom'
 
 import {
   Typography,
@@ -49,7 +50,8 @@ class PettyExpenses extends Component {
   }
 
   bankAccClickHandler = (id) => {
-    this.props.history.push(`/finance/Expanse Management/BankReport${id}`)
+    // this.props.history.push(`/finance/Expanse Management/BankReport${id}`)
+    // this.props.history.push(`/finance/Expanse Management/BankReport`)
   }
 
   cashClickHandler = (id) => {
@@ -159,9 +161,18 @@ class PettyExpenses extends Component {
       bankList = this.props.pettyCashAccounts.map(acc => {
         total += acc.balance ? acc.balance : 0
         return (
-          <div className={classes.pettyExp__tableBody} key={acc.id} onClick={() => this.bankAccClickHandler(acc.id)}>
-            <div className={classes.pettyExp__tableBodyBig}>{acc.bank_name}</div>
-            <div className={classes.pettyExp__tableBodySmall}>{acc.balance ? acc.balance : 0}</div>
+          <div className={classes.pettyExp__tableBody} key={acc.id} >
+              <Link to={{ 
+      pathname: '/finance/Expanse Management/BankReport', 
+      state: acc.id
+      }}>
+        {/* <div className={classes.pettyExp__tableBodyBig}>{acc.bank_name}</div>
+        <div className={classes.pettyExp__tableBodySmall}>{acc.balance ? acc.balance : 0}</div> */}
+        {acc.bank_name}
+        {/* {acc.balance ? acc.balance : 0} */}
+      </Link>
+            {/* <div className={classes.pettyExp__tableBodyBig}>{acc.bank_name}</div>  */}
+            {/* <div className={classes.pettyExp__tableBodySmall}>{acc.balance ? acc.balance : 0}</div> */}
           </div>
         )
       })

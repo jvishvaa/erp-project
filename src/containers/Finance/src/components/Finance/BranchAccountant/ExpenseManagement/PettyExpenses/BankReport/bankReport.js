@@ -24,10 +24,10 @@ import * as actionTypes from '../../../../store/actions'
 // import { generateExcel } from '../../../../../../utils' // Rajneesh
 import Layout from '../../../../../../../../Layout'
 
-const BankReport = ({ user, alert, session, classes, ...props }) => {
+const BankReport = ({ user, alert, session, location, classes, ...props }) => {
   const [academicSession, setAcademicSession] = useState(null)
   const getBankStatements = () => {
-    const bankId = props.match.params.id
+    const bankId = location.state
     if (!academicSession || !bankId) {
       alert.warning('Please Provide All Data')
       return
@@ -37,7 +37,7 @@ const BankReport = ({ user, alert, session, classes, ...props }) => {
 
   const createExcel = () => {
     if (!props.bankStatements || !props.bankStatements.transactions.length) {
-      alert.warning('No Data to generate Excel')
+      // alert.warning('No Data to generate Excel')
       return
     }
     const columns = [
@@ -137,7 +137,7 @@ const BankReport = ({ user, alert, session, classes, ...props }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.bankStatements && props.bankStatements.transaction && props.bankStatements.transactions.map((item, index) => {
+            {props.bankStatements && props.bankStatements.transactions && props.bankStatements.transactions.map((item, index) => {
               return (
                 <TableRow key={item.month}>
                   <TableCell>{index + 1}</TableCell>
