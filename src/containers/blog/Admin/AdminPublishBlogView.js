@@ -116,7 +116,7 @@ class AdminPublishBlogView extends Component {
   handleEndDateChange = (date) => {
     const startDate = this.getDaysBefore(date.clone(), 6);
     this.setState({ startDate });
-    this.setState({ endData: date.format('YYYY-MM-DD') });
+    this.setState({ endDate: date.format('YYYY-MM-DD') });
   };
 
   handleTabChange = (event, newValue) => {
@@ -154,7 +154,7 @@ handleFilter = () => {
 
   render() {
     const { classes } = this.props;
-    const { tabValue ,data,pageSize,pageNo,totalBlogs} = this.state;
+    const { tabValue ,data,pageSize,pageNo,totalBlogs,startDate,endDate} = this.state;
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -210,6 +210,7 @@ handleFilter = () => {
                         color='primary'
                         size='small'
                         variant='contained'
+                        disabled={!startDate||!endDate}
                         onClick={this.handleFilter}
 
                       >

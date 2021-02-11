@@ -88,7 +88,7 @@ const CreateGenre = (props) => {
   const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
 
   const [gradeList, setGradeList] = useState([]);
-  const [totalGenre,setTotalGenre]=useState(0);
+  const [totalGenre,setTotalGenre]=useState('');
   const branchId=roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0]
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
@@ -192,7 +192,22 @@ const CreateGenre = (props) => {
         </Grid>
                                               
         })
-    : (
+    : totalGenre === 0 ?  
+      
+    <div className={classes.periodDataUnavailable}>
+    <SvgIcon
+      component={() => (
+        <img
+          style={
+            isMobile
+              ? { height: '100px', width: '200px' }
+              : { height: '160px', width: '290px' }
+          }
+          src={unfiltered}
+        />
+      )}
+    /> NO DATA FOUND FOR SELECTED GRADE
+    </div> :(
       <div className={classes.periodDataUnavailable}>
         <SvgIcon
           component={() => (
@@ -253,7 +268,23 @@ const CreateGenre = (props) => {
           </Grid>
                                                 
           })
-      : (
+      : totalGenre === 0 ?  
+      
+      <div className={classes.periodDataUnavailable}>
+      <SvgIcon
+        component={() => (
+          <img
+            style={
+              isMobile
+                ? { height: '100px', width: '200px' }
+                : { height: '160px', width: '290px' }
+            }
+            src={unfiltered}
+          />
+        )}
+      /> NO DATA FOUND FOR SELECTED GRADE
+      </div> :
+    (
         <div className={classes.periodDataUnavailable}>
           <SvgIcon
             component={() => (
@@ -281,6 +312,7 @@ const CreateGenre = (props) => {
           />
         </div>
       )
+              
     }
   </Grid>
     </div>
@@ -511,6 +543,17 @@ const getGenreInActiveList = () => {
 
             
             </Tabs>
+            <li style={{ listStyleType: 'none' }}>
+      <Typography
+        align='right'
+        className={classes.dividerInset}
+        style={{ font: '#014b7e', fontWeight: 600 ,paddingRight:'80px'}}
+        display='block'
+        variant='caption'
+      >
+        Number of Genre {totalGenre}
+      </Typography>
+    </li>     
           </Grid>
         </Grid>{decideTab()}
         <Grid container >

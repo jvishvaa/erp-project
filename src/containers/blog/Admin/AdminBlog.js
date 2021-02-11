@@ -114,21 +114,21 @@ class AdminBlog extends Component {
       });
   };
   handleFilter = () => {
-    const { pageNo, pageSize ,tabValue,status,selectedBranch,selectedGrade,selectedSection} = this.state
+    const { pageNo, pageSize ,tabValue,status,selectedBranch,selectedGrade,selectedSection,startDate,endDate} = this.state
     let urlPath = ''
     if(selectedSection){
       urlPath = `${endpoints.blog.Blog}?page_number=${
               pageNo 
-            }&page_size=${pageSize}&status=${status}&module_id=114&section_id=${selectedSection.section_id}`
+            }&page_size=${pageSize}&status=${status}&module_id=114&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}`
     }else if(selectedGrade){
       urlPath = `${endpoints.blog.Blog}?page_number=${
               pageNo 
-            }&page_size=${pageSize}&status=${status}&module_id=114&grade_id=${selectedGrade.grade_id}`
+            }&page_size=${pageSize}&status=${status}&module_id=114&grade_id=${selectedGrade.grade_id}&start_date=${startDate}&end_date=${endDate}`
     }
     else if(selectedBranch){
       urlPath =`${endpoints.blog.Blog}?page_number=${
               pageNo 
-            }&page_size=${pageSize}&status=${status}&module_id=114&barnch_id=${selectedBranch.id}`
+            }&page_size=${pageSize}&status=${status}&module_id=114&barnch_id=${selectedBranch.id}&start_date=${startDate}&end_date=${endDate}`
     }
     axios
       .get(
@@ -235,7 +235,7 @@ class AdminBlog extends Component {
   handleEndDateChange = (date) => {
     const startDate = this.getDaysBefore(date.clone(), 6);
     this.setState({ startDate });
-    this.setState({ endData: date.format('YYYY-MM-DD') });
+    this.setState({ endDate: date.format('YYYY-MM-DD') });
   };
 
   handleTabChange = (event, newValue) => {
@@ -287,7 +287,7 @@ handleSection = (event,value) =>{
 
   render() {
     const { classes } = this.props;
-    const {branchList, tabValue ,data,pageNo,pageSize,totalBlogs,selectedBranch,selectedGrade,gradeList,sectionList,selectedSection} = this.state;
+    const {startDate,endDate,branchList, tabValue ,data,pageNo,pageSize,totalBlogs,selectedBranch,selectedGrade,gradeList,sectionList,selectedSection} = this.state;
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -299,7 +299,15 @@ handleSection = (event,value) =>{
               <CommonBreadcrumbs componentName='Blog' />
               <div className='create_group_filter_container'>
               <Grid container spacing={3}>
-
+              <Grid item xs={12} sm={4}>
+                    <div className='mobile-date-picker'>
+                      <MobileDatepicker
+                        onChange={(date) => this.handleEndDateChange(date)}
+                        handleStartDateChange={this.handleStartDateChange}
+                        handleEndDateChange={this.handleEndDateChange}
+                      />
+                    </div>
+                  </Grid>
               <Grid xs={12} sm={3} item>
               <div className='blog_input'>
                     <Autocomplete
@@ -326,7 +334,7 @@ handleSection = (event,value) =>{
                     </div>
                     </Grid>
                     <Grid xs={12} sm={3} item>
-                    {selectedBranch && gradeList.length ? ( 
+                    {/* {selectedBranch && gradeList.length ? (  */}
                       <div className='blog_input'>
                        <Autocomplete
                        size='small'
@@ -350,10 +358,10 @@ handleSection = (event,value) =>{
                        )}
                      />
                      </div>
-                      ) : null }
+                      {/* ) : null } */}
                     </Grid>
                     <Grid xs={12} sm={3} item>
-                      {selectedGrade && sectionList.length ? (
+                      {/* {selectedGrade && sectionList.length ? ( */}
                         <div className='blog_input'>
                         <Autocomplete
                         size='small'
@@ -377,7 +385,7 @@ handleSection = (event,value) =>{
                         )}
                       />
                       </div>
-                      ) : null}
+                      {/* ) : null} */}
                      
                     </Grid>
                     <Grid item xs={12} sm={3}>
@@ -386,6 +394,7 @@ handleSection = (event,value) =>{
                         color='primary'
                         size='small'
                         variant='contained'
+                        disabled={!startDate||!endDate}
                         onClick={this.handleFilter}
 
                       >
