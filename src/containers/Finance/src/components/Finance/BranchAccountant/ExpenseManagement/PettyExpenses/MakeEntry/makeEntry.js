@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Grid } from 'semantic-ui-react'
+// import { Grid } from 'semantic-ui-react'
 
-import { withStyles, Radio, Button, CircularProgress } from '@material-ui/core/'
+import { withStyles, Radio, Button, CircularProgress, Grid } from '@material-ui/core/'
 import Select from 'react-select'
 import {
   DeleteForeverOutlined as DeleteForeverOutlinedIcon
@@ -529,32 +529,21 @@ class MakeEntry extends Component {
     ))
     return (
       <Layout>      
-        <div>
-        <Grid>
-          <Grid.Row>
-            <Grid.Column
-              floated='left'
-              computer={10}
-              mobile={5}
-              tablet={10}
-            >
+        <Grid container spacing={3} style={{ padding: 15 }}>
+            <Grid item xs='8'>
               <label className='student-addStudent-segment1-heading'
                 style={{ display: 'inline-block', height: '100%', paddingTop: '10px', paddingLeft: '50px' }}>
                 Voucher Type : <span style={{ color: 'red', fontWeight: 'bolder' }}>Payment</span>
               </label>
-            </Grid.Column>
-            <Grid.Column
-              floated='left'
-              computer={4}
-              mobile={5}
-              tablet={4}
-            >
+            </Grid>
+            <Grid item xs='4' >
               <Button variant='contained' color='primary' onClick={this.addLedgerRow}>
                 Add Ledger
               </Button>
-            </Grid.Column>
-          </Grid.Row>
-          <Grid.Row>
+            </Grid>
+          </Grid>
+          <Grid container spacing={3} style={{ padding: 15 }}>
+            <Grid item xs='12'>
             <div className={classes.makeentry__table}>
               <div className={classes.makeentry__tableHeader}>
                 <div className={classes.headerType}>Ledger Type</div>
@@ -566,63 +555,35 @@ class MakeEntry extends Component {
               </div>
               {ledgerRow}
             </div>
-          </Grid.Row>
-        </Grid>
+            </Grid>
+          </Grid>
         <div className={classes.contentContainer}>
-          <Grid>
-            <Grid.Row>
-              <Grid.Column
-                floated='left'
-                computer={2}
-                mobile={2}
-                tablet={2}
+          <Grid container spacing={3} style={{ padding: 15 }}>
+              <Grid item xs='3'
                 className={classes.textInMiddle}
               >
-                Total Amount
-              </Grid.Column>
-              <Grid.Column
-                floated='left'
-                computer={1}
-                mobile={1}
-                tablet={1}
+                Total Amount:
+              </Grid>
+              <Grid item xs='1'
                 className={classes.textInMiddle}
               >
                 :
-              </Grid.Column>
-              <Grid.Column
-                floated='left'
-                computer={12}
-                mobile={12}
-                tablet={12}
+              </Grid>
+              <Grid item xs='8'
                 className={classes.textInMiddle}
               >
                 {this.calculateTotal()}
-              </Grid.Column>
-            </Grid.Row>
-            <Grid.Row>
-              <Grid.Column
-                floated='left'
-                computer={2}
-                mobile={2}
-                tablet={2}
-                className={classes.selectLabel}
-              >
+              </Grid>
+              <Grid container spacing={3} style={{ padding: 15 }}>
+              <Grid item xs='3'      >
                 Financial Year
-              </Grid.Column>
-              <Grid.Column
-                floated='left'
-                computer={1}
-                mobile={1}
-                tablet={1}
+              </Grid>
+              <Grid item xs='1'
                 className={classes.selectLabel}
               >
                 :
-              </Grid.Column>
-              <Grid.Column
-                floated='left'
-                computer={12}
-                mobile={12}
-                tablet={12}
+              </Grid>
+              <Grid item xs='8'
               >
                 <Select
                   placeholder='Select Year'
@@ -635,32 +596,20 @@ class MakeEntry extends Component {
                     ) : []}
                   onChange={this.changeSessionHandler}
                 />
-              </Grid.Column>
-            </Grid.Row>
-            <Grid.Row>
-              <Grid.Column
-                floated='left'
-                computer={2}
-                mobile={2}
-                tablet={2}
+              </Grid>
+            </Grid>
+            <Grid container spacing={3} style={{ padding: 15 }}>
+              <Grid item xs='3'
                 className={classes.textInMiddle}
               >
                 Payment Mode
-              </Grid.Column>
-              <Grid.Column
-                floated='left'
-                computer={1}
-                mobile={1}
-                tablet={1}
+              </Grid>
+              <Grid item xs= '1'
                 className={classes.textInMiddle}
               >
                 :
-              </Grid.Column>
-              <Grid.Column
-                floated='left'
-                computer={4}
-                mobile={4}
-                tablet={4}
+              </Grid>
+              <Grid item xs='2'
               >
                 <Radio
                   checked={this.state.paymentOption === 'cash'}
@@ -670,12 +619,8 @@ class MakeEntry extends Component {
                   inputProps={{ 'aria-label': 'A' }}
                 />
                 <label>Cash</label>
-              </Grid.Column>
-              <Grid.Column
-                floated='left'
-                computer={4}
-                mobile={4}
-                tablet={4}
+              </Grid>
+              <Grid item xs='2'
               >
                 <Radio
                   checked={this.state.paymentOption === 'cheque'}
@@ -685,12 +630,8 @@ class MakeEntry extends Component {
                   inputProps={{ 'aria-label': 'A' }}
                 />
                 <label>Cheque</label>
-              </Grid.Column>
-              <Grid.Column
-                floated='left'
-                computer={4}
-                mobile={4}
-                tablet={4}
+              </Grid>
+              <Grid item xs='2'
               >
                 <Radio
                   checked={this.state.paymentOption === 'online'}
@@ -700,11 +641,11 @@ class MakeEntry extends Component {
                   inputProps={{ 'aria-label': 'A' }}
                 />
                 <label>Online / Internet</label>
-              </Grid.Column>
-            </Grid.Row>
+              </Grid>
+            </Grid>
             {this.pymntBasedView()}
-            <Grid.Row>
-              <Grid.Column
+            <Grid container spacing={3} style={{ padding: 15 }}>
+              <Grid item xs='3'
                 floated='left'
                 computer={2}
                 mobile={2}
@@ -712,22 +653,13 @@ class MakeEntry extends Component {
                 className={classes.selectLabel}
               >
                 Paid To
-              </Grid.Column>
-              <Grid.Column
-                floated='left'
-                computer={1}
-                mobile={1}
-                tablet={1}
+              </Grid>
+              <Grid item xs='1'
                 className={classes.selectLabel}
               >
                 :
-              </Grid.Column>
-              <Grid.Column
-                floated='left'
-                computer={12}
-                mobile={12}
-                tablet={12}
-              >
+              </Grid>
+              <Grid item xs='8' >
                 <Select
                   placeholder='Select Party'
                   value={this.state.selectedParty ? ({
@@ -739,32 +671,20 @@ class MakeEntry extends Component {
                     )}
                   onChange={this.changePartyHandler}
                 />
-              </Grid.Column>
-            </Grid.Row>
-            <Grid.Row>
-              <Grid.Column
-                floated='left'
-                computer={2}
-                mobile={2}
-                tablet={2}
+              </Grid>
+            </Grid>
+            <Grid container spacing={3} style={{ padding: 15 }}>
+              <Grid item xs='3'
                 className={classes.selectLabel}
               >
                 Approved By
-              </Grid.Column>
-              <Grid.Column
-                floated='left'
-                computer={1}
-                mobile={1}
-                tablet={1}
+              </Grid>
+              <Grid item xs='1'
                 className={classes.selectLabel}
               >
                 :
-              </Grid.Column>
-              <Grid.Column
-                floated='left'
-                computer={4}
-                mobile={4}
-                tablet={4}
+              </Grid>
+              <Grid item xs='8'
               >
                 <input
                   name='approvedBy'
@@ -772,30 +692,16 @@ class MakeEntry extends Component {
                   value={this.state.approvedBy || ''}
                   onChange={this.changeDataHandler}
                 />
-              </Grid.Column>
-              <Grid.Column
-                floated='right'
-                computer={2}
-                mobile={2}
-                tablet={2}
-                className={classes.selectLabel}
-              >
+              </Grid>
+              <Grid item xs='3'>
                 Date
-              </Grid.Column>
-              <Grid.Column
-                floated='right'
-                computer={1}
-                mobile={1}
-                tablet={1}
+              </Grid>
+              <Grid item xs='1'
                 className={classes.selectLabel}
               >
                 :
-              </Grid.Column>
-              <Grid.Column
-                floated='right'
-                computer={4}
-                mobile={4}
-                tablet={4}
+              </Grid>
+              <Grid item xs='8'
               >
                 <input
                   type='date'
@@ -804,32 +710,20 @@ class MakeEntry extends Component {
                   value={this.state.date || ''}
                   onChange={this.changeDataHandler}
                 />
-              </Grid.Column>
-            </Grid.Row>
-            <Grid.Row>
-              <Grid.Column
-                floated='left'
-                computer={2}
-                mobile={2}
-                tablet={2}
+              </Grid>
+            </Grid>
+            <Grid container spacing={3} style={{ padding: 15 }}>
+              <Grid item xs='3'
                 className={classes.selectLabel}
               >
                 Attachment
-              </Grid.Column>
-              <Grid.Column
-                floated='left'
-                computer={1}
-                mobile={1}
-                tablet={1}
+              </Grid>
+              <Grid item xs='1'
                 className={classes.selectLabel}
               >
                 :
-              </Grid.Column>
-              <Grid.Column
-                floated='left'
-                computer={12}
-                mobile={12}
-                tablet={12}
+              </Grid>
+              <Grid item xs='8'
               >
                 <input
                   type='file'
@@ -859,24 +753,20 @@ class MakeEntry extends Component {
                 }
                 {/* <div className={classes.fileData}>File 1</div>
                 <div className={classes.fileData}>File 2</div> */}
-              </Grid.Column>
-            </Grid.Row>
-            <Grid.Row>
-              <Grid.Column
+              </Grid>
+            </Grid>
+            <Grid container spacing={3} style={{ padding: 15 }}>
+              <Grid item xs='12'
                 floated='center'
-                computer={2}
-                mobile={2}
-                tablet={2}
               >
                 <Button variant='contained' color='primary' onClick={this.saveDataHandler}>
                   Record
                 </Button>
-              </Grid.Column>
-            </Grid.Row>
+              </Grid>
+            </Grid>
           </Grid>
         </div>
         {circularProgress}
-      </div>
       </Layout>
     )
   }
