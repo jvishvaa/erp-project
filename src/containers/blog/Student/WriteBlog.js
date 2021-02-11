@@ -145,9 +145,7 @@ class WriteBlog extends Component {
     let { roleDetails } = this.state;
     const erpUserId = roleDetails.role_details.erp_user_id;
     axios
-      .get(`${endpoints.blog.genreList}?is_delete=${
-        'False'
-      }&erp_user_id=${
+      .get(`${endpoints.blog.genreList}?erp_user_id=${
         erpUserId
       }`)
       .then((res) => {
