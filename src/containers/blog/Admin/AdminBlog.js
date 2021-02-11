@@ -284,6 +284,19 @@ handleGrade = (event, value) => {
 handleSection = (event,value) =>{
   this.setState({data:[],selectedSection :value})
 }
+clearSelection = () => {
+  let {status}=this.state
+  this.setState({   selectedBranch :'',
+  selectedGrade:'',
+  selectedSection:'',
+}
+  , () => {
+    this.getBlog
+    (status)
+  }
+  )
+}
+
 
 
   render() {
@@ -395,7 +408,7 @@ handleSection = (event,value) =>{
                   </Grid>
                     {/* <Grid item xs={12} sm={3}> */}
                       <Button
-          style={{ fontSize: 'small', margin: '20px',width:'100px',height:'33px',marginTop:'30px' }}
+          style={{ fontSize: 'small', margin: '20px',width:'100px',height:'30px',marginTop:'30px' }}
           color='primary'
                         size='small'
                         variant='contained'
@@ -405,6 +418,17 @@ handleSection = (event,value) =>{
                       >
                         Filter
                       </Button> 
+                      <Grid>
+                      <Button
+          style={{ fontSize: 'small', margin: '20px',width:'100px',height:'30px',marginTop:'30px' }}
+          onClick={this.clearSelection}
+          variant='contained'
+          color='primary'
+                    size='small'
+                  >
+            Clear
+                  </Button>
+</Grid>
                     {/* </Grid> */}
                     <Grid item>
                       <Button

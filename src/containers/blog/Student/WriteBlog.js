@@ -3,6 +3,8 @@
 import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 // import { connect } from 'react-redux';
+import ReactHtmlParser from 'react-html-parser'
+
 import {
   Grid,
   Card,
@@ -184,12 +186,12 @@ class WriteBlog extends Component {
   
  
   handleTextEditor = (content) => {
-    const { blogId } = this.state;
-    console.log(content.replace(/&nbsp;/g, ''));
-
+    
+  
     // remove  begining and end white space
     // eslint-disable-next-line no-param-reassign
     content = content.replace(/&nbsp;/g, '');
+    content=content.replace(/<br ?\/?>/g,'');
     this.setState({ textEditorContent: content, fadeIn: false });
     const subceededWordCount = this.isWordCountSubceeded()
 
@@ -376,6 +378,7 @@ class WriteBlog extends Component {
                       id={key}
                       get={this.handleTextEditor}
                       content={textEditorContent}
+                      
                     />
                     
 

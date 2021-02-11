@@ -22,7 +22,7 @@ import './StudentBlog.css';
 
 const MobileDatepicker = (props) => {
   const [dateRange, setDateRange] = useState([moment().subtract(6, 'days'), moment()]);
-  const [datePopperOpen, setDatePopperOpen] = useState(false);
+  // const [datePopperOpen, setDatePopperOpen] = useState(false);
 
   return (
     <div className="date-ranger">
@@ -30,7 +30,7 @@ const MobileDatepicker = (props) => {
         <DateRangePicker
           disableCloseOnSelect={false}
           startText='Date Range'
-          PopperProps={{ open: datePopperOpen }}
+          // PopperProps={{ open: datePopperOpen }}
           // endText='End-date'
           value={dateRange}
           keyboardIcon={<DateRangeIcon />}
@@ -42,7 +42,7 @@ const MobileDatepicker = (props) => {
             setDateRange([startDate, sevenDaysAfter]);
             props.handleStartDateChange(startDate)
             props.handleEndDateChange(sevenDaysAfter)
-            setDatePopperOpen(false);
+            // setDatePopperOpen(false);
           }}
           renderInput={(
             { inputProps, ...startProps },
@@ -72,9 +72,9 @@ const MobileDatepicker = (props) => {
                   }}
                   size='small'
                   style={{ minWidth: '250px' }}
-                  onClick={() => {
-                    setDatePopperOpen(true);
-                  }}
+                  // onClick={() => {
+                  //   setDatePopperOpen(true);
+                  // }}
                 />
 
               </>
