@@ -28,7 +28,7 @@ export const fetchReceiptRanges = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        payload.alert.warning('Unable to load data')
+        // payload.alert.warning('Unable to load data')
         console.log(error)
       })
   }
@@ -52,7 +52,7 @@ export const fetchFeeAccountPerBranch = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        payload.alert.warning('Unable to load data')
+        // payload.alert.warning('Unable to load data')
         console.log(error)
       })
   }
@@ -74,10 +74,10 @@ export const updateReceiptRanges = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        payload.alert.success('Updated Successfully')
+        // payload.alert.success('Updated Successfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        payload.alert.error('Something Went Wrong')
+        // payload.alert.error('Something Went Wrong')
         console.log(error)
       })
   }
@@ -99,10 +99,10 @@ export const addReceiptRanges = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        payload.alert.success('Added Successfully')
+        // payload.alert.success('Added Successfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        payload.alert.error('Something Went Wrong')
+        // payload.alert.error('Something Went Wrong')
         console.log(error)
       })
   }
@@ -127,10 +127,10 @@ export const deleteReceiptFeeList = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        payload.alert.success('Deleted Successfully')
+        // payload.alert.success('Deleted Successfully')
         // }
       }).catch(error => {
-        payload.alert.error('Something went wrong')
+        // payload.alert.error('Something went wrong')
         dispatch(actionTypes.dataLoaded())
         console.log(error)
       })

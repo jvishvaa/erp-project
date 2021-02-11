@@ -21,12 +21,13 @@ import Modal from '../../../ui/Modal/modal'
 import '../../css/staff.css'
 import EditReceipt from './editReceipt'
 import AddReceipt from './addReceipt'
+import Layout from '../../../../../Layout'
 
 // const ReceiptRange = {
 //   namespace: 'Misc Fee'
 // }
 
-class MiscFeeClass extends Component {
+class CreateReceipt extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -301,6 +302,7 @@ class MiscFeeClass extends Component {
       )
     }
     return (
+      <Layout>
       <React.Fragment>
         <Grid container spacing={3} style={{ padding: 15 }}>
           <Grid item xs='9' />
@@ -396,6 +398,7 @@ class MiscFeeClass extends Component {
           {deleteModal}
         </Grid>
       </React.Fragment>
+      </Layout>
     )
   }
 }
@@ -415,4 +418,4 @@ const mapDispatchToProps = dispatch => ({
   deleteReceipts: (id, alert, user) => dispatch(actionTypes.deleteReceiptFeeList({ id, alert, user }))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)((withRouter(MiscFeeClass)))
+export default connect(mapStateToProps, mapDispatchToProps)((withRouter(CreateReceipt)))
