@@ -102,7 +102,7 @@ import OnlineAdmission from './containers/Finance/src/components/Finance/Pending
 import StudentPromotion from './containers/Finance/src/components/Finance/BranchAccountant/StudentPromotion/studentPromotion.js'
 import QRCodeGenerator from './containers/Finance/src/components/Finance/QRCode/qrCodeGenerator.js'
 import CommunicationSMS from './containers/Finance/src/components/Finance/BranchAccountant/Communication/communication.js'
-import itCertificate from './containers/Finance/src/components/Finance/Receipts/itCertificate.js'
+import ItCertificate from './containers/Finance/src/components/Finance/ItCertificate/itCertificate.js'
 import FeePaymentChangeRequests from './containers/Finance/src/components/Finance/FeePaymentChangeRequests/feePaymentChangeRequests.js'
 import StorePaymentRequests from './containers/Finance/src/components/Finance/StorePaymentRequests/storePaymentRequests.js'
 import ApprovedStoreRequests from './containers/Finance/src/components/Finance/StorePaymentRequests/approvedStoreRequests.js'
@@ -454,7 +454,7 @@ function App() {
                   {({ match }) => <CommunicationSMS match={match} />}
                 </Route>
                 <Route exact path= '/finance/Student/IncomeTaxCertificate'>
-                  {({ match }) => <itCertificate match={match} />}
+                  {({ match }) => <ItCertificate match={match} />}
                 </Route>
                 <Route exact path= '/finance/Approval/Requests/FeePaymentRequests'>
                   {({ match }) => <FeePaymentChangeRequests match={match} />}

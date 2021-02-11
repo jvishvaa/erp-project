@@ -27,7 +27,7 @@ export const fetchAllFeeType = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      payload.alert.warning('Unable To Load')
+      // payload.alert.warning('Unable To Load')
       dispatch(actionTypes.dataLoaded())
       console.log(err)
     })
@@ -50,7 +50,7 @@ export const fetchItcList = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      payload.alert.warning('Unable To Load')
+      // payload.alert.warning('Unable To Load')
       dispatch(actionTypes.dataLoaded())
       console.log(err)
     })
@@ -73,9 +73,9 @@ export const saveFeeType = (payload) => {
         }
       })
       dispatch(actionTypes.dataLoaded())
-      payload.alert.success('Added Successfully')
+      // payload.alert.success('Added Successfully')
     }).catch(err => {
-      payload.alert.warning('Unable To Load')
+      // payload.alert.warning('Unable To Load')
       dispatch(actionTypes.dataLoaded())
       console.log(err)
     })
@@ -98,9 +98,9 @@ export const deleteITCList = (payload) => {
         }
       })
       dispatch(actionTypes.dataLoaded())
-      payload.alert.success('Deleted Successfully')
+      // payload.alert.success('Deleted Successfully')
     }).catch(err => {
-      payload.alert.error('Something Went Wrong')
+      // payload.alert.error('Something Went Wrong')
       dispatch(actionTypes.dataLoaded())
       console.log(err)
     })

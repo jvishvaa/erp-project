@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import { Grid } from 'semantic-ui-react'
-import { Button, withStyles } from '@material-ui/core/'
+import { Button, withStyles, Grid } from '@material-ui/core/'
 import { withRouter } from 'react-router-dom'
 import Select from 'react-select'
 import { connect } from 'react-redux'
-import ReactTable from 'react-table'
+// import ReactTable from 'react-table'
 import DeleteIcon from '@material-ui/icons/Delete'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 import * as actionTypes from '../store/actions/index'
@@ -12,6 +11,7 @@ import { apiActions } from '../../../_actions'
 import '../../css/staff.css'
 import Modal from '../../../ui/Modal/modal'
 import classes from './itCertificate.module.css'
+import Layout from '../../../../../Layout'
 
 // import { urls } from '../../../urls'
 
@@ -130,46 +130,46 @@ class ItCertificate extends Component {
     let deleteFeeTypeModal = null
     let addButton = null
     if (this.props.itcList) {
-      feeTypeListTable = (<ReactTable
-        // pages={Math.ceil(this.props.viewBanksList.count / 20)}
-        data={this.renderFeeTypeTable()}
-        manual
-        columns={[
-          {
-            Header: 'Sl no.',
-            accessor: 'sl',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-            // style: {
-            //   maxWidth: '20px'
-            // }
-          },
-          {
-            Header: 'Fee Type',
-            accessor: 'feeType',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Delete',
-            accessor: 'delete',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          }
-        ]}
-        filterable
-        sortable
-        defaultPageSize={10}
-        showPageSizeOptions={false}
-        className='-striped -highlight'
-        // Controlled props
-        // page={this.state.page}
-        // Callbacks
-        // onPageChange={page => this.pageChangeHandler(page)}
-      />)
+      // feeTypeListTable = (<ReactTable
+      //   // pages={Math.ceil(this.props.viewBanksList.count / 20)}
+      //   data={this.renderFeeTypeTable()}
+      //   manual
+      //   columns={[
+      //     {
+      //       Header: 'Sl no.',
+      //       accessor: 'sl',
+      //       inputFilterable: true,
+      //       exactFilterable: true,
+      //       sortable: true
+      //       // style: {
+      //       //   maxWidth: '20px'
+      //       // }
+      //     },
+      //     {
+      //       Header: 'Fee Type',
+      //       accessor: 'feeType',
+      //       inputFilterable: true,
+      //       exactFilterable: true,
+      //       sortable: true
+      //     },
+      //     {
+      //       Header: 'Delete',
+      //       accessor: 'delete',
+      //       inputFilterable: true,
+      //       exactFilterable: true,
+      //       sortable: true
+      //     }
+      //   ]}
+      //   filterable
+      //   sortable
+      //   defaultPageSize={10}
+      //   showPageSizeOptions={false}
+      //   className='-striped -highlight'
+      //   // Controlled props
+      //   // page={this.state.page}
+      //   // Callbacks
+      //   // onPageChange={page => this.pageChangeHandler(page)}
+      // />)
     }
 
     if (this.state.showAddFeeTypeModal) {
@@ -252,29 +252,19 @@ class ItCertificate extends Component {
     }
 
     return (
+      <Layout>
       <React.Fragment>
-        <Grid>
-          <Grid.Row>
-            <Grid.Column
-              computer={11}
-              mobile={16}
-              tablet={4}
+        <Grid container spacing={3} style={{ padding: 15 }}>
+            <Grid item xs='8'
               className='student-section-inputField'>
-
-            </Grid.Column>
-            <Grid.Column
-              computer={3}
-              mobile={16}
-              tablet={4}
+            </Grid>
+            <Grid item xs='4'
               className='student-section-inputField'>
               {addButton}
-            </Grid.Column>
-          </Grid.Row>
-          <Grid.Row>
-            <Grid.Column
-              computer={5}
-              mobile={16}
-              tablet={4}
+            </Grid>
+          </Grid>
+          <Grid container spacing={3} style={{ padding: 15 }}>
+            <Grid item xs='3'
               className='student-section-inputField'
             >
               <label>Academic Year*</label>
@@ -291,13 +281,8 @@ class ItCertificate extends Component {
                 }
                 onChange={this.handleAcademicyear}
               />
-            </Grid.Column>
-            <Grid.Column
-              computer={5}
-              mobile={16}
-              tablet={4}
-              className='student-section-inputField'
-            >
+            </Grid>
+            <Grid item xs='3' >
               <label>Branch*</label>
               <Select
                 placeholder='Select Branch'
@@ -312,25 +297,25 @@ class ItCertificate extends Component {
                 }
                 onChange={this.branchHandler}
               />
-            </Grid.Column>
-            <Grid.Column>
+            </Grid>
+            <Grid item xs='3'>
               <Button
                 variant='contained'
                 color='primary'
-                style={{ marginTop: '25px' }}
+                style={{ marginTop: '20px' }}
                 // disabled={!this.state.session || !this.state.branchId || !this.state.gradeId || !this.state.fromDate || !this.state.toDate}
                 onClick={this.itcHandler}
               >
                 GET
               </Button>
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
+            </Grid>
+          </Grid>
         {deleteFeeTypeModal}
-        {feeTypeListTable}
+        {/* {feeTypeListTable} */}
         {addFeeTypeModal}
         {this.props.dataLoading ? <CircularProgress open /> : null}
       </React.Fragment>
+      </Layout>
     )
   }
 }
