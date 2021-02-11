@@ -274,7 +274,7 @@ this.setState({status:[8,5]}
 
   render() {
     const { classes } = this.props;
-    const { tabValue, data ,totalBlogs ,pageNo,pageSize} = this.state;
+    const { tabValue, data ,totalBlogs ,pageNo,pageSize,startDate,endDate} = this.state;
 
     return (
       <div className='layout-container-div'>
@@ -335,7 +335,7 @@ this.setState({status:[8,5]}
                 /> : tabValue === 1 ? <Autocomplete
                 style={{ width: '100%' }}
                 size='small'
-                onChange={this.handleStatus}
+                onChange={this.handleStatusTwo}
                 id='category'
                 required
                 options={statusTypeChoicesTwo}
@@ -372,6 +372,7 @@ this.setState({status:[8,5]}
                         color='primary'
                         size='small'
                         variant='contained'
+                        disabled ={!startDate || !endDate}
                         onClick={this.handleFilter}
 
                       >

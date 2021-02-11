@@ -90,7 +90,6 @@ class ContentViewPublishStudent extends Component {
   }
   componentDidMount() {
     let {blogId} = this.state
-    this.handleView(blogId)
   }
   getLikeStatus = (isLiked) => {
     let { likeStatus,likes }=this.state
@@ -129,19 +128,7 @@ class ContentViewPublishStudent extends Component {
   })
     }
 
-  handleView = (blogId) => {
-    let requestData = {
-      "blog_id": blogId ,
-    }
-  axios.post(`${endpoints.blog.BlogView}`, requestData)
-  .then(result=>{
-  if (result.data.status_code === 200) {
-  } else {        
-  }
-  }).catch((error)=>{
-  })
-}
-  
+ 
 
 getRatings = () => {
   let {blogRatings} =this.state
