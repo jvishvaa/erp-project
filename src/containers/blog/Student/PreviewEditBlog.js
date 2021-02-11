@@ -81,7 +81,6 @@ class PreviewEditBlog extends Component {
       parsedTextEditorContentLen:this.props.location.state.parsedTextEditorContentLen,
       genreObj:this.props.location.state.genreObj
     };
-    console.log(this.props.location.state,"@@@@")
   }
 
   componentDidMount() {
