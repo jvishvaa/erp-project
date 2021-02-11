@@ -10,6 +10,7 @@ import {
 
 import classes from './makeEntry.module.css'
 import * as actionTypes from '../../../../store/actions'
+import Layout from '../../../../../../../../Layout'
 // import { CircularProgress } from '../../../../../../ui'
 
 const styles = theme => ({
@@ -527,7 +528,8 @@ class MakeEntry extends Component {
       </div>
     ))
     return (
-      <div>
+      <Layout>      
+        <div>
         <Grid>
           <Grid.Row>
             <Grid.Column
@@ -875,6 +877,7 @@ class MakeEntry extends Component {
         </div>
         {circularProgress}
       </div>
+      </Layout>
     )
   }
 }
