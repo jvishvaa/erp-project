@@ -171,9 +171,18 @@ class WriteBlog extends Component {
 
   isWordCountSubceeded = () => {
     let { textEditorContent, wordCountLimit } = this.state
-    const parsedTextEditorContent=textEditorContent.split(' ')
-    // const parsedTextEditorContent = textEditorContent.replace(/(<([^>]+)>)/ig, '').split(' ')
-    const textWordCount = parsedTextEditorContent.length
+    // const parsedTextEditorContent=textEditorContent.split(' ')
+    const parsedTextEditorContent = textEditorContent.replace(/(<([^>]+)>)/ig, ' ').split(' ')
+    let count =0
+    parsedTextEditorContent.map((item)=>{
+      if(item.length){
+        count=count+1
+      }
+      console.log(count,"@@@")
+    })
+
+    // const textWordCount = parsedTextEditorContent.length
+    const textWordCount=count
     this.setState({ parsedTextEditorContentLen: textWordCount })
     if (parsedTextEditorContent && parsedTextEditorContent.length < wordCountLimit) {
       const errorMsg = `Please write atleast ${wordCountLimit} words.Currently only ${textWordCount} words have been written`
@@ -186,7 +195,6 @@ class WriteBlog extends Component {
   
  
   handleTextEditor = (content) => {
-  
     // remove  begining and end white space
     // eslint-disable-next-line no-param-reassign
     content = content.replace(/&nbsp;/g, '');
