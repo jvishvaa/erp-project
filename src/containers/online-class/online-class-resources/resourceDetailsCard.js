@@ -4,6 +4,10 @@ import { Divider, makeStyles, withStyles, Typography, Button } from '@material-u
 import moment from 'moment';
 import ResourceClass from './resourceClass';
 import { useHistory } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { ResourceDialog } from './resourceDialog';
+import axiosInstance from '../../../config/axios';
+import endpoints from '../../../config/endpoints';
 
 const useStyles = makeStyles({
     classDetailsBox: {
@@ -104,7 +108,7 @@ const StyledButton = withStyles({
 
 export default function ResourceDetailsCardComponent(props) {
     const classes = useStyles({});
-    console.log(props.resourceData);
+    const location = useLocation();
 
     //Periods date start
     const startDate = new Date(props.resourceData.online_class.start_time);
@@ -134,6 +138,32 @@ export default function ResourceDetailsCardComponent(props) {
         //console.log(moment(day).format('ll'));
     }
     ////Periods date end
+/**
+    React.useEffect(() => {
+        const params = {
+            online_class_id: props.resourceData.id,
+            class_date: '31-01-2021'
+        };
+        axiosInstance.get(endpoints.onlineClass.resourceFile,params)
+        .then((res) => {
+            console.log(res.data);
+            //setPeriodsData(res.data.data);
+        })
+        .catch((error) => console.log(error))
+    },[]);
+ */
+    // resource module
+    const [open, setOpen] = React.useState(false);
+    const [selectedValue, setSelectedValue] = React.useState("");
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+    
+    const handleClose = (value) => {
+        setOpen(false);
+        setSelectedValue(value);
+    };
 
     return (
         <div className={classes.classDetailsBox}>
@@ -157,10 +187,21 @@ export default function ResourceDetailsCardComponent(props) {
                 <Divider className={classes.classDetailsDivider}/>
 
                 <StyledButton
-                    color="primary">
+                    color="primary"
+                    onClick={handleClickOpen}
+                >
                     Submit
                 </StyledButton>
             </div>
+            <ResourceDialog
+                selectedValue={selectedValue}
+                open={open}
+                onClose={handleClose}
+                title={props.resourceData.online_class.title}
+                resourceId={props.resourceData.online_class.id}
+                startDate={props.resourceData.online_class.start_time}
+                endDate={props.resourceData.online_class.end_time}
+            />
         </div>
     )
 }

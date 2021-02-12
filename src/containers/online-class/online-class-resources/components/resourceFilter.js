@@ -145,13 +145,13 @@ export default function ResourceFilterComponent() {
     const isCompleted = !!currentTab;
     let url = '';
     if (isSuperUser) {
-      url += `module_id=${moduleId}&page_number=${currentPage}&page_size=10&branch_ids=${roleDetails.branch.join(
+      url += `module_id=${moduleId}&page_number=${currentPage}&page_size=20&branch_ids=${roleDetails.branch.join(
         ','
       )}&is_completed=${isCompleted}&is_cancelled=${isCancelSelected}&start_date=${startDate}&end_date=${endDate}`;
     } else {
-      url += `module_id=${moduleId}&page_number=${currentPage}&page_size=10&branch_ids=${roleDetails.branch.join(
+      url += `module_id=${moduleId}&page_number=${currentPage}&page_size=20&branch_ids=${roleDetails.branch.join(
         ','
-      )}&is_completed=${isCompleted}&user_id=${
+      )}&grade_id=${gradeIds.join()}&is_completed=${isCompleted}&user_id=${
         roleDetails.erp_user_id
       }&is_cancelled=${isCancelSelected}&start_date=${startDate}&end_date=${endDate}`;
     }
@@ -165,8 +165,8 @@ export default function ResourceFilterComponent() {
     } else if (gradeIds.length) {
       url += `&grade_ids=${gradeIds.join(',')}`;
     }
-    //dispatch(listOnlineClassesResourceView(url));
-    dispatch(listOnlineClassesResourceView('?module_id=4&page_number=1&page_size=15&branch_ids=5&class_type=0'));
+    dispatch(listOnlineClassesResourceView(url));
+    //dispatch(listOnlineClassesResourceView('?module_id=4&page_number=1&page_size=15&branch_ids=5&class_type=0'));
   };
 
   const handleSubject = (event, value) => {

@@ -122,7 +122,7 @@ const StyledButton = withStyles({
     }
 })(Button);
 
-const UpcomingClasses = () => {
+const StudentClasses = () => {
     const classes = useStyles({});
     const [ classesData, setClassesdata ] = React.useState([]);
     const [ classData, setClassData ] = React.useState();
@@ -151,22 +151,24 @@ const UpcomingClasses = () => {
     //api call
     const getClasses = () => {
         // student view api
-        /*
+        setIsLoding(false);
         axiosInstance.get('erp_user/student_online_class/?user_id=78&page_number=1&page_size=15&class_type='+classType?.id)
-        .then((res) => {
-            //setClassesdata(res.data.data);
-            //setIsLoding(true);
-        })
-        .catch((error) => console.log(error))
-        */
-        // teacher view api
-        axiosInstance.get('erp_user/teacher_online_class/?module_id=4&page_number=1&page_size=15&branch_ids=5&class_type='+classType?.id)
         .then((res) => {
             setClassesdata(res.data.data);
             setIsLoding(true);
         })
         .catch((error) => console.log(error))
+        
+        // teacher view api
+     /*   axiosInstance.get('erp_user/teacher_online_class/?module_id=4&page_number=1&page_size=15&branch_ids=5&class_type='+classType?.id)
+        .then((res) => {
+            setClassesdata(res.data.data);
+            setIsLoding(true);
+        })
+        .catch((error) => console.log(error))
+        */
     }
+
     if(!apiCall) {
         getClasses();
         setApiCall(true);
@@ -364,4 +366,4 @@ const UpcomingClasses = () => {
     )
 }
 
-export default UpcomingClasses; 
+export default StudentClasses; 
