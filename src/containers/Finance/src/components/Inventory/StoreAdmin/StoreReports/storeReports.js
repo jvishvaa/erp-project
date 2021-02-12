@@ -16,6 +16,7 @@ import * as actionTypes from '../../store/actions'
 // import classes from './feeStructure.module.css'
 // import Modal from '../../../../ui/Modal/modal'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
 
 const styles = theme => ({
   tableWrapper: {
@@ -131,6 +132,7 @@ const StoreReports = ({ classes, session, history, dataLoading, fetchBranchLists
   }
 
   return (
+    <Layout>
     <React.Fragment>
       <Grid container spacing={3}>
         <Grid item className={classes.item} xs={3}>
@@ -283,6 +285,7 @@ const StoreReports = ({ classes, session, history, dataLoading, fetchBranchLists
       </Grid>
       {dataLoading ? <CircularProgress open /> : null}
     </React.Fragment>
+    </Layout>
   )
 }
 

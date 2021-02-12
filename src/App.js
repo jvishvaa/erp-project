@@ -66,7 +66,7 @@ import ApprovalRequest from './containers/Finance/src/components/Finance/Approva
 import PendingRequest from  './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/Components/pendingRequest.js'
 import RejectedRequest from './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/Components/rejectedRequest';
 import CreateReceipt from './containers/Finance/src/components/Finance/ReceiptChanges/createReceipt.js'
-// import StoreReport from './containers/Finance/src/components/Finance/ApprovalRequests/UnassignFeeRequests/Components/Inventory/StoreAdmin/StoreReports/storeReports.js'
+import StoreReport from '../src/containers/Finance/src/components/Inventory/StoreAdmin/StoreReports/storeReports.js'
 import AddFeePlan from './containers/Finance/src/components/Finance/CreateFeePlan/addFeePlan.js'
 import StudentLedgerTab from './containers/Finance/src/components/Finance/BranchAccountant/StudentLedgerTab/studentLedgerTab.js'
 import ManageFeeType from '../src/containers/Finance/src/components/Finance/CreateFeePlan/manageFeeType.js'
@@ -345,9 +345,9 @@ function App() {
                 <Route exact path='/finance/ReceiptRange'>
                   {({ match }) => <CreateReceipt match={match} />}
                 </Route>
-                {/* <Route exact path='/finance/StoreReport'>
+                <Route exact path='/finance/StoreReport'>
                   {({ match }) => <StoreReport match={match} />}
-                </Route> */}
+                </Route>
                  <Route exact path='/finance/add_feePlan'>
                   {({ match }) => <AddFeePlan match={match} />}
                 </Route>
