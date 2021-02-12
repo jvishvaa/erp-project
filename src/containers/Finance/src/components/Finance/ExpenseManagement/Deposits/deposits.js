@@ -10,10 +10,14 @@ import Select from 'react-select'
 import * as actionTypes from '../../store/actions'
 import Layout from '../../../../../../Layout'
 
-const BankDeposit = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./PettyDeposit/bankDeposit'))
-const ViewDeposits = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./ViewDeposits/viewDeposits'))
-const ExpenseDeposit = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./ExpenseDeposit/expenseDeposit'))
-const CollectionDeposit = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./CollectionDeposit/collectionDeposit'))
+// const BankDeposit = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./PettyDeposit/bankDeposit'))
+// const ViewDeposits = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./ViewDeposits/viewDeposits'))
+// const ExpenseDeposit = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./ExpenseDeposit/expenseDeposit'))
+// const CollectionDeposit = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./CollectionDeposit/collectionDeposit'))
+import BankDeposit from './PettyDeposit/bankDeposit';
+import ViewDeposits  from './ViewDeposits/viewDeposits';
+import ExpenseDeposit  from './ExpenseDeposit/expenseDeposit';
+import CollectionDeposit from './CollectionDeposit/collectionDeposit'
 
 function TabContainer ({ children, dir }) {
   return (
