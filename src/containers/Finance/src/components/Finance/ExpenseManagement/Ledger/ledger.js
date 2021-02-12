@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Icon from '@material-ui/core/Icon'
 import Select from 'react-select'
+import EditIcon from '@material-ui/icons/Edit'
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
 
 import {
   TextField,
@@ -612,13 +614,13 @@ class Ledger extends Component {
               <div className={classes.ledger__bodyAccountHeadType}><p style={{ display: 'inline-block' }}>{item.ledger_type && item.ledger_type.ledger_type_name}</p></div>
             </div>
             <div className={classes.ledger__bodyAccountHeadIcon}><Icon className={this.props.classes.icon} color='secondary'
-              onClick={() => this.showLedgerAddModal(item.id)} >add_circle</Icon>
+              onClick={() => this.showLedgerAddModal(item.id)} ></Icon>
             </div>
-            <div className={classes.ledger__bodyAccountHeadEdtIcon}><Icon className={this.props.classes.editIcon} color='secondary'
-              onClick={() => this.showEditHeadModalHandler(item.account_head_name, item.ledger_type && item.ledger_type.id, item.id)} >edit</Icon>
+            <div className={classes.ledger__bodyAccountHeadEdtIcon}><EditIcon color='secondary'
+              onClick={() => this.showEditHeadModalHandler(item.account_head_name, item.ledger_type && item.ledger_type.id, item.id)} ></EditIcon>
             </div>
-            <div className={classes.ledger__bodyAccountHeadDltIcon}><Icon className={this.props.classes.editIcon} color='secondary'
-              onClick={() => this.deleteModalShowHandler('accountHead', item.id)} >delete</Icon>
+            <div className={classes.ledger__bodyAccountHeadDltIcon}><DeleteForeverIcon color='secondary'
+              onClick={() => this.deleteModalShowHandler('accountHead', item.id)} >delete</DeleteForeverIcon>
             </div>
           </div>
           <div className={classes.ledger__bodyLedgerList}>
@@ -636,11 +638,11 @@ class Ledger extends Component {
                       {mapping.action ? 'Active' : 'InActive'}
                     </div> */}
                     <div>
-                      <Icon className={this.props.classes.editIcon} color='secondary'
+                      <EditIcon className={this.props.classes.editIcon} color='secondary'
                         onClick={() => this.showEntryUpdateModalHandler(item.id, subItem.id, subItem.ledger_account, subItem.remarks, subItem.ledger_status)}
-                      >edit</Icon>
-                      <Icon className={this.props.classes.deleteIcon} color='secondary'
-                        onClick={() => this.deleteModalShowHandler('ledger', item.id, subItem.id)} >delete</Icon>
+                      ></EditIcon>
+                      <DeleteForeverIcon color='secondary'
+                        onClick={() => this.deleteModalShowHandler('ledger', item.id, subItem.id)} ></DeleteForeverIcon>
                     </div>
                   </div>
                 </div>
