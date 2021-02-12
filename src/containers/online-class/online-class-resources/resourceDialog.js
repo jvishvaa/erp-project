@@ -62,6 +62,14 @@ const Resource = (props) => {
         .catch((error) => console.log(error))
     },[props.date]);
 
+    const handleDownload = (e) => {
+        e.preventDefault();
+        isDownload && isDownload.map((path) => {
+            path.files && path.files.map((file, i) => window.location.href=(`${endpoints.s3}/${file}`))
+            //window.location.href=(`${endpoints.s3}/${path?.files[0]}`
+        })
+    }
+
     return (
         <Grid container style={{padding: '10px 20px'}}>
             <Grid item xs={6}>
@@ -71,7 +79,8 @@ const Resource = (props) => {
                 {isDown === 200 ? (
                     <StyledButton
                         color="primary"
-                        href={`${endpoints.s3}/${isDownload ? isDownload[0]?.files[0] : ''}`}
+                        //href={`${endpoints.s3}/${isDownload ? isDownload[0]?.files[0] : ''}`}
+                        onClick={handleDownload}
                     >
                         Download
                     </StyledButton>
@@ -84,62 +93,58 @@ const Resource = (props) => {
 }
 
 export default function ResourceDialogComponent(props) {
-  const classes = useStyles();
-  const { onClose, selectedValue, open } = props;
+    const classes = useStyles();
+    const { onClose, selectedValue, open } = props;
 
-  console.log(props.startDate +" === "+ props.endDate);
+    //Periods date start
+    const startDate = new Date(props.startDate);
+    const endDate = new Date(props.endDate);
+    const Difference_In_Time = endDate.getTime() - startDate.getTime();
+    const Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
 
-  //Periods date start
-  const startDate = new Date(props.startDate);
-  const endDate = new Date(props.endDate);
-  const Difference_In_Time = endDate.getTime() - startDate.getTime();
-  const Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
-    console.log(Difference_In_Days);
-  let periods;
-  if(moment(startDate).format('ll') === moment(endDate).format('ll')) {
-      periods = 0;
-  }
-  else {
-      periods = Math.floor(Difference_In_Days + 1);
-  }
-  //console.log(startDate.setDate(startDate.getDate() + 1));
+    let periods;
+    if(moment(startDate).format('ll') === moment(endDate).format('ll')) {
+        periods = 0;
+    }
+    else {
+        periods = Math.floor(Difference_In_Days + 1);
+    }
 
-  let dateArray = [];
-  for(var i = 0; i <= periods; i++){
-      let day;
-      if(i === 0) {
-          day = startDate.setDate(startDate.getDate());
-      }
-      else {
-          day = startDate.setDate(startDate.getDate() + 1);
-      }
-      dateArray.push(day);
-      //console.log(moment(day).format('ll'));
-  }
-  ////Periods date end
+    let dateArray = [];
+    for(var i = 0; i <= periods; i++){
+        let day;
+        if(i === 0) {
+            day = startDate.setDate(startDate.getDate());
+        }
+        else {
+            day = startDate.setDate(startDate.getDate() + 1);
+        }
+        dateArray.push(day);
+    }
+    ////Periods date end
 
-  const handleClose = () => {
-    onClose(selectedValue);
-  };
+    const handleClose = () => {
+        onClose(selectedValue);
+    };
 
 
-  return (
-    <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open} className={classes.root}>
-        <div className={classes.header}>
-            <Typography className={classes.headerTitle}>{props.title}</Typography>
-            <CloseIcon onClick={handleClose} style={{float: 'right'}}/>
-        </div>
-        <div >
-            {dateArray.length > 0 && dateArray.map((date) => <Resource date={date} resourceId={props.resourceId}/>)}
-        </div>
-    </Dialog>
-  );
+    return (
+        <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open} className={classes.root}>
+            <div className={classes.header}>
+                <Typography className={classes.headerTitle}>{props.title}</Typography>
+                <CloseIcon onClick={handleClose} style={{float: 'right'}}/>
+            </div>
+            <div >
+                {dateArray.length > 0 && dateArray.map((date) => <Resource date={date} resourceId={props.resourceId}/>)}
+            </div>
+        </Dialog>
+    );
 }
 
 ResourceDialogComponent.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  open: PropTypes.bool.isRequired,
-  selectedValue: PropTypes.string.isRequired,
+    onClose: PropTypes.func.isRequired,
+    open: PropTypes.bool.isRequired,
+    selectedValue: PropTypes.string.isRequired,
 };
 
 export const ResourceDialog = React.memo(ResourceDialogComponent);

@@ -3,6 +3,7 @@ import Layout from '../../Layout';
 import UpcomingClasses from './UpcomingClasses';
 import CreateclassProvider from '../create-class/create-class-context/create-class-state';
 import {useLocation} from 'react-router-dom';
+import StudentClasses from './StudentClasses';
 
 const AOLClassView = () => {
   const location = useLocation();

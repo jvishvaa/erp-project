@@ -23,7 +23,12 @@ export default function ResourceClassComponent(props) {
     const [ isModalOpen, setIsModalOpen ] = React.useState(false);
     const [ isDownload, setIsDownload ] = React.useState([]);
     const [ isDown, setIsDown] = React.useState(0);
+    const [ isUpload, setIsUpload ] = React.useState(0);
     const location = useLocation();
+    
+    const handleIsUpload = () => {
+        setIsUpload(isUpload + 1);
+    }
 
     let uploadModal = null;
     if (isModalOpen) {
@@ -32,7 +37,8 @@ export default function ResourceClassComponent(props) {
             <UploadModal
                 id={props.resourceId}
                 classDate={moment(props.date).format('DD-MM-YYYY')}
-                onClose={() => setIsModalOpen(false)} 
+                onClose={() => setIsModalOpen(false)}
+                handleIsUpload={handleIsUpload}
                 type='resource'
             />
         </UploadModalWrapper>
@@ -61,7 +67,7 @@ export default function ResourceClassComponent(props) {
             setIsDown(res.data.status_code);
         })
         .catch((error) => console.log(error))
-    },[props.date]);
+    },[props.date, isUpload]);
 
     return (
         <>

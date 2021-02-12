@@ -165,6 +165,13 @@ const Resources = () => {
         setSelected(0);
     }
 
+    const hendleCloseDetails = () => {
+        setItemSize(3);
+        setSize(12);
+        setResourceData('');
+        setSelected(0);
+    }
+
     // pagination
     const [ showPerPage, setShowPerPage ] = React.useState(12);
     const [ pagination, setPagination ] = React.useState({
@@ -225,7 +232,7 @@ const Resources = () => {
 
                 {resourceData && resourceOnlineClasses.length !== 0 && (
                     <Grid item sm={4} xs={12}>
-                        <ResourceDetailsCard resourceData={resourceData}/>
+                        <ResourceDetailsCard resourceData={resourceData} hendleCloseDetails={hendleCloseDetails}/>
                     </Grid>
                 )}
             </Grid>

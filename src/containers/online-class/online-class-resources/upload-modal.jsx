@@ -226,7 +226,7 @@ const FileRow = ({ file, onClose, className, isExisting, resourceType, uploadTyp
 };
 
 // UploadModal Component
-const UploadModal = ({ id, onClose, isMobile, type, classDate }) => {
+const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload }) => {
   const [files, setFiles] = useState([]);
   const [existingUpload, setExistingUpload] = useState([]);
   const [description, setDescription] = useState('');
@@ -459,6 +459,7 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate }) => {
         if (res.data.status_code === 200) {
           setAlert('success', 'Work Submitted Successfully');
           setDisableButton(false);
+          handleIsUpload();
           setTimeout(() => {
             onClose();
           }, 500);

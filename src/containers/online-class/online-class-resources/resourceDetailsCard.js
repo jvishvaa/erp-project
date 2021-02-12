@@ -8,6 +8,7 @@ import { useLocation } from 'react-router-dom';
 import { ResourceDialog } from './resourceDialog';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
+import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles({
     classDetailsBox: {
@@ -172,6 +173,7 @@ export default function ResourceDetailsCardComponent(props) {
                     <Typography className={classes.classHeaderText}>
                         {props.resourceData.online_class.title}
                     </Typography>
+                    <CloseIcon  onClick={(e) => props.hendleCloseDetails() } style={{float: 'right'}}/>
                 </div>
             </div>
             <div className={classes.classDetails}>

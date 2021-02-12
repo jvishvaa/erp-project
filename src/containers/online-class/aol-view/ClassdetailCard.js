@@ -5,6 +5,7 @@ import moment from 'moment';
 import JoinClass from './JoinClass';
 import { useHistory } from 'react-router-dom';
 import ResourceDialog from '../online-class-resources/resourceDialog';
+import axiosInstance from '../../../config/axios';
 
 const useStyles = makeStyles({
     classDetailsBox: {
