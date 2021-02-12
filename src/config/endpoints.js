@@ -106,6 +106,13 @@ export default {
   idCards: {
     getIdCardsApi: '/erp_user/get-user-details/',
   },
+  signature: {
+    createSignatureApi: '/erp_user/principle-signature/',
+    updateSignatureApi: '/erp_user/update-destroy-signature/',
+    deleteSignatureApi: '/erp_user/update-destroy-signature/',
+    getSignatureList: '/erp_user/principle-signature/',
+    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+  },
 
   coordinatorTeacherHomeworkApi: {
     getAllTeacherList: '/academic/teachers-list/',

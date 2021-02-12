@@ -145,7 +145,7 @@
 }
 
 .studentIdCardTemplete {
-    height: 400px !important;
+    // height: 430px !important;
     overflow: hidden !important;
     border-radius: 8px !important;
     border-color: #C5CED4 !important;
@@ -186,4 +186,8 @@
         text-align: center;
         padding: 10px 0px 0px 0px !important;
     }
+}
+.signatureViewinIdCardTemplate {
+    height:25px;
+    width:100px; 
 }

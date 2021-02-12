@@ -16,6 +16,7 @@ const StudentIDCardFullView = ({
   selectedDetails,
   history,
   selectedRole,
+  signatureDetails,
 }) => {
   const [step, setStep] = useState(1);
   function handleEdit() {
@@ -81,16 +82,63 @@ const StudentIDCardFullView = ({
                   {handleLables()}
                 </Grid>
                 <Grid item md={12} xs={12}>
-                  {step === 0 && <TeacherIdCardTemplate fullData={selectedDetails} />}
-                  {step === 1 && <StudentIdCardTemplate fullData={selectedDetails} />}
+                  {step === 0 && (
+                    <TeacherIdCardTemplate
+                      fullData={selectedDetails}
+                      signatureDetails={
+                        (signatureDetails &&
+                          signatureDetails.length !== 0 &&
+                          signatureDetails[0]) ||
+                        {}
+                      }
+                    />
+                  )}
+                  {step === 1 && (
+                    <StudentIdCardTemplate
+                      fullData={selectedDetails}
+                      signatureDetails={
+                        (signatureDetails &&
+                          signatureDetails.length !== 0 &&
+                          signatureDetails[0]) ||
+                        {}
+                      }
+                    />
+                  )}
                   {step === 2 && (
-                    <ParentIdCardTemplate fullData={selectedDetails} type='father' />
+                    <ParentIdCardTemplate
+                      fullData={selectedDetails}
+                      type='father'
+                      signatureDetails={
+                        (signatureDetails &&
+                          signatureDetails.length !== 0 &&
+                          signatureDetails[0]) ||
+                        {}
+                      }
+                    />
                   )}
                   {step === 3 && (
-                    <ParentIdCardTemplate fullData={selectedDetails} type='mother' />
+                    <ParentIdCardTemplate
+                      fullData={selectedDetails}
+                      type='mother'
+                      signatureDetails={
+                        (signatureDetails &&
+                          signatureDetails.length !== 0 &&
+                          signatureDetails[0]) ||
+                        {}
+                      }
+                    />
                   )}
                   {step === 4 && (
-                    <ParentIdCardTemplate fullData={selectedDetails} type='guardian' />
+                    <ParentIdCardTemplate
+                      fullData={selectedDetails}
+                      type='guardian'
+                      signatureDetails={
+                        (signatureDetails &&
+                          signatureDetails.length !== 0 &&
+                          signatureDetails[0]) ||
+                        {}
+                      }
+                    />
                   )}
                 </Grid>
               </Grid>
@@ -134,6 +182,7 @@ const StudentIDCardFullView = ({
 StudentIDCardFullView.propTypes = {
   handleClose: PropTypes.func.isRequired,
   selectedRole: PropTypes.string.isRequired,
+  signatureDetails: PropTypes.instanceOf(Array).isRequired,
   selectedDetails: PropTypes.instanceOf(Object).isRequired,
 };
 

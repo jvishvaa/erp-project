@@ -1,6 +1,23 @@
 .studentStrenghtBody {
     background-color: #F9F9F9;
     margin-bottom: 10px !important;
+    .signatureNavDiv {
+        .SignatureNavigationLinks {
+            color: #014B7E;
+            font-weight: bold;
+            font-size: 20px;
+            margin: 1px 10px !important;
+            outline: none !important;
+            background-color: #F9F9F9 !important;
+            border: none !important;
+            cursor: pointer;
+        }
+        .SignatureUploadNavArrow {
+            color: #ff6b6b;
+            font-weight: bold;
+            font-size: 30px;
+        }
+    }
 }
 .studentStrenghtBody1 {
     padding: 20px 40px !important;

@@ -18,6 +18,7 @@ import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import StudentIdCardDetails from './studentIdCardDetail';
 import StudentIDCardFullView from './studentIcardFullView';
+import filterImage from '../../assets/images/unfiltered.svg';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
 const StudentIdCard = ({ history }) => {
@@ -37,6 +38,7 @@ const StudentIdCard = ({ history }) => {
     idCardList: '',
     selectedId: '',
     currentPage: 1,
+    signature: '',
   });
 
   function handleStateData(e, key) {
@@ -108,7 +110,7 @@ const StudentIdCard = ({ history }) => {
       .then((result) => {
         setLoading(false);
         if (result.data.status_code === 200) {
-          if (keys === 'roleList') {
+          if (keys === 'roleList' || keys === 'signature') {
             handleStateData(result.data.result, keys);
           } else {
             handleStateData(result.data.data, keys);
@@ -138,6 +140,15 @@ const StudentIdCard = ({ history }) => {
     getBranchAndRoleAcadList(endpoints.communication.roles, 'roleList');
     getBranchAndRoleAcadList(endpoints.userManagement.academicYear, 'acadminYearList');
   }, []);
+
+  function getSignatureDetails() {
+    getBranchAndRoleAcadList(
+      `${endpoints.signature.getSignatureList}?branch_id=${
+        filterList && filterList.selectedBranch.id
+      }&is_delete=False`,
+      'signature'
+    );
+  }
 
   function getIdCardsData(pageNo) {
     setLoading(true);
@@ -377,8 +388,26 @@ const StudentIdCard = ({ history }) => {
       <Grid
         container
         spacing={2}
-        style={{ padding: '10px 20px', backgroundColor: 'white' }}
+        style={{
+          padding: '10px 20px',
+          backgroundColor: filterList && filterList.idCardList ? 'white' : '',
+        }}
       >
+        {filterList && !filterList.idCardList && (
+          <Grid item md={12} xs={12}>
+            <Grid container spacing={2}>
+              <Grid
+                item
+                md={12}
+                xs={12}
+                style={{ textAlign: 'center', marginTop: '10px' }}
+              >
+                <img src={filterImage} alt='crash' height='250px' width='250px' />
+                <Typography>Please select the filter to dislpay ID cards</Typography>
+              </Grid>
+            </Grid>
+          </Grid>
+        )}
         {filterList &&
           filterList.idCardList &&
           filterList.idCardList.results.length === 0 && (
@@ -413,6 +442,7 @@ const StudentIdCard = ({ history }) => {
                     >
                       <StudentIdCardDetails
                         handleSelect={handleStateData}
+                        handleViewMore={getSignatureDetails}
                         fullData={item || {}}
                         selectedItem={(filterList && filterList.selectedId) || {}}
                       />
@@ -427,6 +457,7 @@ const StudentIdCard = ({ history }) => {
               <Grid item md={12} xs={12}>
                 <StudentIDCardFullView
                   handleClose={handleStateData}
+                  signatureDetails={(filterList && filterList.signature) || []}
                   selectedDetails={(filterList && filterList.selectedId) || {}}
                   selectedRole={
                     (filterList &&

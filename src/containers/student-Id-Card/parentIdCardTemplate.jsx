@@ -4,8 +4,10 @@ import './style.scss';
 import { Grid } from '@material-ui/core';
 import Logo from '../../assets/images/orchids.png';
 import image from '../../assets/images/Male.svg';
+import endpoints from '../../config/endpoints';
+import signatue from '../../assets/images/signature.png';
 
-const ParentIdCardTemplate = ({ fullData, type }) => {
+const ParentIdCardTemplate = ({ fullData, type, signatureDetails }) => {
   function getImage(url) {
     return (
       <img
@@ -40,8 +42,8 @@ const ParentIdCardTemplate = ({ fullData, type }) => {
             <Grid item md={2} xs={1} />
             <Grid item md={8} xs={10} className='idCardTempleteMainLogo'>
               <img
-                src={Logo}
-                // src={(fullData && fullData.branch_id && fullData.branch_id.logo) || Logo}
+                // src={Logo}
+                src={(fullData && fullData.branch_id && fullData.branch_id.logo) || Logo}
                 width='100%'
                 height='50px'
                 alt='crash'
@@ -57,7 +59,6 @@ const ParentIdCardTemplate = ({ fullData, type }) => {
         </Grid>
         <Grid item md={12} xs={12} className='studentIdCardAddress'>
           <span className='studentMainIdCardAddresslable'>
-            Scholl Address:&nbsp;
             {(fullData && fullData.address && fullData.address) || ''}
           </span>
         </Grid>
@@ -226,7 +227,18 @@ const ParentIdCardTemplate = ({ fullData, type }) => {
               ''}
           </span>
         </Grid>
-        <Grid item md={12} xs={12} style={{ padding: 0, textAlign: 'right' }}>
+        <Grid item md={8} xs={8} />
+        <Grid item md={4} xs={4} style={{ padding: 0, textAlign: 'center' }}>
+          <img
+            src={
+              `${endpoints.signature.s3}${
+                signatureDetails && signatureDetails.signature
+              }` || signatue
+            }
+            alt='crash'
+            className='signatureViewinIdCardTemplate'
+          />
+          <br />
           <span className='studentMainIdCardLable'>Principal</span>
         </Grid>
       </Grid>
@@ -235,5 +247,6 @@ const ParentIdCardTemplate = ({ fullData, type }) => {
 };
 ParentIdCardTemplate.propTypes = {
   fullData: PropTypes.instanceOf(Object).isRequired,
+  signatureDetails: PropTypes.instanceOf(Object).isRequired,
 };
 export default ParentIdCardTemplate;

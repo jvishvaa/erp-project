@@ -3,7 +3,12 @@ import './style.scss';
 import PropTypes from 'prop-types';
 import { Grid, Button } from '@material-ui/core';
 
-const StudentIdCardDetails = ({ fullData, handleSelect, selectedItem }) => {
+const StudentIdCardDetails = ({
+  fullData,
+  handleSelect,
+  selectedItem,
+  handleViewMore,
+}) => {
   return (
     <>
       <Grid
@@ -114,7 +119,10 @@ const StudentIdCardDetails = ({ fullData, handleSelect, selectedItem }) => {
             size='small'
             variant='contained'
             color='primary'
-            onClick={() => handleSelect(fullData, 'selectedId')}
+            onClick={() => {
+              handleSelect(fullData, 'selectedId');
+              handleViewMore();
+            }}
             className='studentIdcardViewMoreButton'
           >
             View More
@@ -128,6 +136,7 @@ StudentIdCardDetails.prototype = {
   selectedItem: PropTypes.instanceOf(Object).isRequired,
   fullData: PropTypes.instanceOf(Object).isRequired,
   handleSelect: PropTypes.func.isRequired,
+  handleViewMore: PropTypes.func.isRequired,
 };
 
 export default StudentIdCardDetails;

@@ -1,7 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useState, useEffect } from 'react';
-import { Grid, Typography, TextField, Divider, Button } from '@material-ui/core';
+import { Grid, TextField, Divider, Button, Typography } from '@material-ui/core';
 import './style.scss';
+// import withRouter from 'react-router-dom';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Loader from '../../components/loader/loader';
 import axiosInstance from '../../config/axios';
@@ -10,9 +12,10 @@ import TotalStudentBar from './totalStudentStrengthBar';
 import TotalStudentStrengthCard from './totalStrenghtCard';
 import TotalStudentWiseDetails from './totalStudentWiseDetails';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import filterImage from '../../assets/images/unfiltered.svg';
 // import Layout from '../Layout';
 
-const StudentStrength = () => {
+const StudentStrength = ({ history }) => {
   const [acadminYearList, setAcadminYearList] = useState([]);
   const [selectedAcadmic, setSelectedAcadmic] = useState('');
   const [branchList, setBranchList] = useState([]);
@@ -131,7 +134,19 @@ const StudentStrength = () => {
     <div>
       <Grid container spacing={2} className='studentStrenghtBody'>
         <Grid item md={12} xs={12}>
-          <Typography>Student Strength</Typography>
+          <Grid container spacing={2} justify='middle' className='signatureNavDiv'>
+            <Grid item md={12} xs={12} style={{ display: 'flex' }}>
+              <button
+                type='button'
+                className='SignatureNavigationLinks'
+                onClick={() => history.push('/dashboard')}
+              >
+                Dashboard
+              </button>
+              <ArrowForwardIosIcon className='SignatureUploadNavArrow' />
+              <span className='SignatureNavigationLinks'>Student Strength</span>
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item md={12} xs={12} className='studentStrengthFilterDiv'>
           <Grid container spacing={2}>
@@ -233,6 +248,14 @@ const StudentStrength = () => {
           </Grid>
         </Grid>
       </Grid>
+      {!filteredData && (
+        <Grid container spacing={2}>
+          <Grid item md={12} xs={12} style={{ textAlign: 'center', marginTop: '10px' }}>
+            <img src={filterImage} alt='crash' height='250px' width='250px' />
+            <Typography>Please select the filter to dislpay student strength</Typography>
+          </Grid>
+        </Grid>
+      )}
       {filteredData && (
         <Grid container spacing={2} className='studentStrenghtBody1'>
           <Grid item md={12} xs={12}>
