@@ -18,22 +18,22 @@ import selectFilter from '../../../assets/images/selectfilter.svg';
 const useStyles = makeStyles((theme) => ({
     root: {
         //margin: '20px 200px 50px 70px',
-        margin: '55px 100px 20px 100px',
-        width: '85%',
+        margin: '55px auto 20px auto',
+        width: '90%',
         border: '1px solid #D8D8D8',
         borderRadius: '5px',
         [theme.breakpoints.down('xs')]: {
-            margin: '55px 30px 20px 30px',
+            margin: '50px 20px 20px 20px',
         },
         [theme.breakpoints.down('sm')]: {
             margin: '55px 40px 20px 40px',
         },
     },
     topFilter: {
-        width: '85%',
-        margin: '30px 100px 0px 100px',
+        width: '90%',
+        margin: '30px auto 0px auto',
         [theme.breakpoints.down('xs')]: {
-            margin: '55px 30px 20px 30px',
+            margin: '55px 20px 20px 20px',
         },
     },
     classDetailsBox: {
@@ -162,7 +162,7 @@ const Resources = () => {
         setItemSize(4);
         setSize(8);
         setResourceData(data);
-        setSelected(0);
+        setSelected(data.id);
     }
 
     const hendleCloseDetails = () => {

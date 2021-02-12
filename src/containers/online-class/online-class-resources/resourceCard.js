@@ -9,10 +9,10 @@ import { useHistory } from 'react-router-dom';
 const useStyles = makeStyles({
     card: {
         padding: '8px',
-        border: '1px solid #ff6b6b',
+        border: '1px solid #F9D474',
         borderRadius: '10px',
         backgroundColor: '#FFFADF',
-        cursor: 'pointer',
+        //cursor: 'pointer',
         minHeight: '160px',
     },
     activeCard: {
@@ -20,14 +20,14 @@ const useStyles = makeStyles({
         border: '1px solid #F9D474',
         borderRadius: '10px',
         backgroundColor: '#F9D474',
-        height: 'auto',
-        minHeight: '165px',
+        minHeight: '160px',
     },
     classTitle: {
         display: 'inline-block',
         color: '#001495',
         fontSize: '18px',
         fontFamily: 'Poppins',
+        //fontWeight: 'bold',
         lineHeight: '27px',
         overflow: 'hidden',
     },
@@ -72,7 +72,7 @@ export default function ResourceCardComponent(props) {
     //console.log(classData);
     //className={`${props.selectedId === classData.id ? classes.activeCard : classes.card}`}
     return (
-        <Box className={classes.card}>
+        <Box className={`${props.selectedId === props.resourceData.id ? classes.activeCard : classes.card}`}>
             <div>
                 <Typography className={classes.classTitle}>
                     {props.resourceData.online_class.title}

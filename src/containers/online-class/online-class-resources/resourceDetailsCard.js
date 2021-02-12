@@ -30,6 +30,11 @@ const useStyles = makeStyles({
         fontFamily: 'Poppins',
         lineHeight: '25px',
     },
+    closeDetailCard: {
+        float: 'right',
+        fontSize: '18px',
+        color: '#fff',
+    },
     classHeaderTime: {
         display: 'inline-block',
         color: '#014B7E',
@@ -75,7 +80,7 @@ const useStyles = makeStyles({
         marginBottom: '10px',
     },
     joinClassDiv: {
-        maxHeight: '415px',
+        height: '350px',
         overflowY: 'scroll',
         '&::-webkit-scrollbar': {
             display: 'none',
@@ -173,7 +178,7 @@ export default function ResourceDetailsCardComponent(props) {
                     <Typography className={classes.classHeaderText}>
                         {props.resourceData.online_class.title}
                     </Typography>
-                    <CloseIcon  onClick={(e) => props.hendleCloseDetails() } style={{float: 'right'}}/>
+                    <CloseIcon  onClick={(e) => props.hendleCloseDetails() } className={classes.closeDetailCard}/>
                 </div>
             </div>
             <div className={classes.classDetails}>
