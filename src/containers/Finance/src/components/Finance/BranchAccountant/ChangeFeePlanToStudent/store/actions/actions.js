@@ -34,7 +34,7 @@ export const fetchAllGrades = (payload) => {
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
-        payload.alert.warning('Unable to load data')
+        // payload.alert.warning('Unable to load data')
       })
   }
 }
@@ -58,7 +58,7 @@ export const fetchAdjustFee = (payload) => {
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
-        payload.alert.warning('Unable to load data')
+        // payload.alert.warning('Unable to load data')
       })
   }
 }
@@ -88,7 +88,7 @@ export const fetchAllSections = (payload) => {
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
-        payload.alert.warning('Unable to load data')
+        // payload.alert.warning('Unable to load data')
       })
   }
 }
@@ -153,7 +153,7 @@ export const editStudentFeePlan = (payload) => {
         }
       }).then(response => {
         if (response.status === 200) {
-          payload.alert.success('Successfully Changed')
+          // payload.alert.success('Successfully Changed')
           dispatch({
             type: EDIT_STUDENT_FEE_PLAN,
             payload: {
@@ -180,7 +180,7 @@ export const saveAdjustFeeTypes = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        payload.alert.success('Successfully Changed!')
+        // payload.alert.success('Successfully Changed!')
         dispatch({
           type: ADJUST_SAVE_FEE_TYPES,
           payload: {
@@ -191,7 +191,7 @@ export const saveAdjustFeeTypes = (payload) => {
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
-        payload.alert.warning('Unable to load data')
+        // payload.alert.warning('Unable to load data')
       })
   }
 }
@@ -215,7 +215,7 @@ export const assignAutomaticStudent = (payload) => {
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
-        payload.alert.warning('Unable to load data')
+        // payload.alert.warning('Unable to load data')
       })
   }
 }
