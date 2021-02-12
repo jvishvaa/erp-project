@@ -25,7 +25,7 @@ export const fetchViewBanks = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      payload.alert.warning('Unable To Load')
+      // payload.alert.warning('Unable To Load')
       console.log(err)
       dispatch(actionTypes.dataLoaded())
     })
@@ -48,9 +48,9 @@ export const addBank = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        payload.alert.success('Added Successfully')
+        // payload.alert.success('Added Successfully')
       }).catch(error => {
-        payload.alert.error('Something Went Wrong')
+        // payload.alert.error('Something Went Wrong')
         dispatch(actionTypes.dataLoaded())
         console.log(error)
       })
@@ -74,9 +74,9 @@ export const editBank = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        payload.alert.success('Edited Successfully')
+        // payload.alert.success('Edited Successfully')
       }).catch(error => {
-        payload.alert.error('Something Went Wrong')
+        // payload.alert.error('Something Went Wrong')
         dispatch(actionTypes.dataLoaded())
         console.log(error)
       })
@@ -102,9 +102,9 @@ export const deleteBank = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        payload.alert.success('Deleted Successfully')
+        // payload.alert.success('Deleted Successfully')
       }).catch(error => {
-        payload.alert.error('Something Went Wrong')
+        // payload.alert.error('Something Went Wrong')
         dispatch(actionTypes.dataLoaded())
         console.log(error)
       })
