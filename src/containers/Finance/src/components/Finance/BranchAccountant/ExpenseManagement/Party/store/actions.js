@@ -25,7 +25,7 @@ export const partyList = (payload) => {
     }).catch(err => {
       console.log(err)
       dispatch(actionTypes.dataLoaded())
-      payload.alert.warning('Something Went Wrong')
+      // payload.alert.warning('Something Went Wrong')
     })
   }
 }
@@ -46,7 +46,7 @@ export const saveParty = (payload) => {
       }
     }).then(response => {
       if (+response.status === 201) {
-        payload.alert.success('Party Added Successfully')
+        // payload.alert.success('Party Added Successfully')
         dispatch({
           type: SAVE_PARTY,
           payload: {
@@ -54,13 +54,13 @@ export const saveParty = (payload) => {
           }
         })
       } else {
-        payload.alert.warning('Unable To save Party')
+        // payload.alert.warning('Unable To save Party')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.log(err)
       dispatch(actionTypes.dataLoaded())
-      payload.alert.warning('Something Went Wrong')
+      // payload.alert.warning('Something Went Wrong')
     })
   }
 }
@@ -83,7 +83,7 @@ export const editParty = (payload) => {
     }).then(response => {
       console.log(response)
       if (+response.status === 200) {
-        payload.alert.success('Updated Successfully')
+        // payload.alert.success('Updated Successfully')
         dispatch({
           type: EDIT_PARTY,
           payload: {
@@ -91,7 +91,7 @@ export const editParty = (payload) => {
           }
         })
       } else {
-        payload.alert.warning('Unable To Update')
+        // payload.alert.warning('Unable To Update')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
@@ -112,7 +112,7 @@ export const deleteParty = (payload) => {
     }).then(response => {
       console.log(response)
       if (+response.status === 204) {
-        payload.alert.success('Deleted Successfully')
+        // payload.alert.success('Deleted Successfully')
         dispatch({
           type: DELETE_PARTY,
           payload: {
@@ -120,13 +120,13 @@ export const deleteParty = (payload) => {
           }
         })
       } else {
-        payload.alert.warning('Unable To Delete')
+        // payload.alert.warning('Unable To Delete')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.log(err)
       dispatch(actionTypes.dataLoaded())
-      payload.alert.warning('Something Went Wrong')
+      // payload.alert.warning('Something Went Wrong')
     })
   }
 }

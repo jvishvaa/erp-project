@@ -182,7 +182,7 @@ class PettyExpenses extends Component {
       moneyModal = (
         <Modal
           open={this.state.addMoneyModal}
-          click={this.hideMoneyModalHandler}
+          onClose={this.hideMoneyModalHandler}
           style={{ padding: '5px' }}
           medium
         >

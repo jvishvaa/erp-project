@@ -77,7 +77,7 @@ class OtherFeeDetails extends Component {
     if (this.props.getData && (erp !== prevProps.erp || session !== prevProps.session || this.props.getData) && this.state.selectFeeWiseOther.value === 1) {
       this.props.fetchOtherInstallmentTypeList(session, erp, alert, user)
     } else if (this.props.getData && (erp !== prevProps.erp || session !== prevProps.session || this.props.getData) && this.state.selectFeeWiseOther.value === 2) {
-      this.props.fetchOtherFeeTypeList(session, erp, alert, user)
+      this.props.fetchList(session, erp, alert, user)
     }
   }
 

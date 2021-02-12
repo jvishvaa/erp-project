@@ -199,11 +199,17 @@ const Party = ({ user, alert, fetchPartyList, classes, ...props }) => {
   let addModal = null
   if (showAddModal) {
     addModal = (
-      <Modal open={showAddModal} onClose={() => setShowAddModal(false)} style={{ padding: '10px' }}>
+      <div >
+      <Modal open={showAddModal} onClose={() => setShowAddModal(false)}  style={{ maxWidth: '700px', minHeight: '400px', display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center', margin: 'auto'}}>
+        <React.Fragment>
+        <Grid container spacing={8} style={{ background: 'white' }}>
+          <Grid item xs={12} md={12}>
         <Typography variant='h4' className={classes.modalHeader}>Add Party</Typography>
         <Divider className={classes.divider} />
-        <Grid container spacing={8}>
-          <Grid item xs={12} md={6}>
+        </Grid>
+          <Grid item xs={6} md={6}>
             <TextField
               required
               label='Name'
@@ -215,7 +221,7 @@ const Party = ({ user, alert, fetchPartyList, classes, ...props }) => {
               variant='outlined'
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={6} md={6}>
             <TextField
               required
               label='Contact No.'
@@ -263,26 +269,34 @@ const Party = ({ user, alert, fetchPartyList, classes, ...props }) => {
               multiline
             />
           </Grid>
-        </Grid>
-        <div className={classes.modalButtonContainer}>
+          <Grid item xs={12} md={6}>
           <Button
+          style={{ marginTop: '40px'}}
             variant='contained'
             color='primary'
             className={classes.modalButton}
             onClick={addPartyHandler}
           >Save</Button>
-        </div>
+      </Grid>
+        </Grid>
+        </React.Fragment>
       </Modal>
+      </div>
     )
   }
 
   let editModal = null
   if (showEditModal) {
     editModal = (
-      <Modal open={showEditModal} onClose={hideEditModalHandler} style={{ padding: '10px' }}>
+      <Modal open={showEditModal} onClose={hideEditModalHandler} style={{ maxWidth: '700px', minHeight: '400px', display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center', margin: 'auto'}}>
+        <React.Fragment >
+        <Grid container spacing={8} style={{ background: 'white'}}>
+        <Grid item xs={12} md={12}>
         <Typography variant='h4' className={classes.modalHeader}>Edit Party</Typography>
         <Divider className={classes.divider} />
-        <Grid container spacing={8}>
+        </Grid>
           <Grid item xs={12} md={6}>
             <TextField
               required
@@ -368,54 +382,73 @@ const Party = ({ user, alert, fetchPartyList, classes, ...props }) => {
               multiline
             />
           </Grid>
-        </Grid>
-        <div className={classes.modalButtonContainer}>
+        <Grid item xs={6} md={6}>
           <Button
+          style={{ marginTop: '20px'}}
             variant='contained'
             color='primary'
-            className={classes.modalButton}
+            // className={classes.modalButton}
             onClick={editPartyHandler}
           >Update</Button>
-        </div>
+        </Grid>
+        </Grid>
+        </React.Fragment>
       </Modal>
     )
   }
 
   let deleteModal = null
   if (showDeleteModal) {
-    deleteModal = (<Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false)}  style={{ padding: '10px' }}>
-      <Typography variant='h4' className={classes.modalHeader}>Delete Party</Typography>
+    deleteModal = (<Modal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} style={{ maxWidth: '700px', minHeight: '400px', display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center', margin: 'auto'}}>
+      <React.Fragment>
+        <Grid container spacing={3} style={{ padding: '15', background: 'white' }}>   
+        <Grid item xs='12'> 
+        <Typography variant='h4' className={classes.modalHeader}>Delete Party</Typography>
       <Divider className={classes.divider} />
-      <div className={classes.deleteBtnContainer}>
+      </Grid>  
+      <Grid item xs='3'> 
+      </Grid>
+      <Grid item xs='4'> 
         <Button
-          className={classes.backBtn}
+          // className={classes.backBtn}
           variant='contained'
           color='primary'
           onClick={() => setShowDeleteModal(false)}
         >Go Back</Button>
+        </Grid>
+        <Grid item xs='4'> 
         <Button
-          className={classes.deleteBtn}
+          // className={classes.deleteBtn}
           variant='contained'
           color='secondary'
           onClick={deletePartyHandler}
         >Delete</Button>
-      </div>
+        </Grid>
+      </Grid>
+      </React.Fragment>
     </Modal>)
   }
 
   return (
     <Layout>
     <React.Fragment>
-      <div className={classes.buttonContainer}>
+  <Grid container spacing={3} style={{ padding: 15 }}>
+    <Grid item xs ='10'>
+
+    </Grid>
+    <Grid item xs ='2'>
         <Button
           variant='contained'
           color='primary'
-          className={classes.button}
+          // className={classes.button}
           onClick={() => setShowAddModal(true)}
         >
           Add Party
         </Button>
-      </div>
+        </Grid>
+  </Grid>
       <Divider />
       <Table>
         <TableHead>
