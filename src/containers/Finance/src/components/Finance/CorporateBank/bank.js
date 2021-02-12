@@ -5,10 +5,10 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import Select from 'react-select'
 import Icon from '@material-ui/core/Icon'
-
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline'
 // import '../../css/staff.css'
 import * as actionTypes from '../store/actions/index'
-// import Modal from '../../../ui/Modal/modal'
+import Modal from '../../../ui/Modal/modal'
 // import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 
 import classes from './bank.module.css'
@@ -164,8 +164,8 @@ class Bank extends Component {
           <div className={classes.corporateBank__bodySerial}>{(index + 1) + '.'}</div>
           <div className={classes.corporateBank__bodyBranch}>
             <div className={classes.corporateBank__bodyBranchName}>{branchItem.branch ? branchItem.branch.branch_name : ''}</div>
-            <div className={classes.corporateBank__bodyBranchIcon}><Icon className={this.props.classes.icon} color='secondary'
-              onClick={() => { this.assignBankModalShowHandler(branchItem.branch.id) }} >add_circle</Icon>
+            <div className={classes.corporateBank__bodyBranchIcon}><AddCircleOutlineIcon className={this.props.classes.icon} color='secondary'
+              onClick={() => { this.assignBankModalShowHandler(branchItem.branch.id) }} ></AddCircleOutlineIcon>
             </div>
           </div>
           <div className={classes.corporateBank__bodyBankList}>
@@ -175,8 +175,8 @@ class Bank extends Component {
                   <div className={classes.corporateBank__bodyBankName}>{mapping.bank_name.bank_name}</div>
                   <div className={classes.corporateBank__bodyBankAccount}>
                     <div className={classes.corporateBank__bodyBankAccountNo}>{mapping.bank_name.AccountNumber ? mapping.bank_name.AccountNumber : ''}</div>
-                    <div className={classes.corporateBank__bodyBankAccountIcon}><Icon className={this.props.classes.icon} color='secondary'
-                      onClick={() => { this.assignFeeModalShowHandler(branchItem.id, mapping.id, branchItem.branch.id) }} >add_circle</Icon>
+                    <div className={classes.corporateBank__bodyBankAccountIcon}><AddCircleOutlineIcon className={this.props.classes.icon} color='secondary'
+                      onClick={() => { this.assignFeeModalShowHandler(branchItem.id, mapping.id, branchItem.branch.id) }} ></AddCircleOutlineIcon>
                     </div>
                   </div>
                   <div className={classes.corporateBank__bodyFeeAccount}>{mapping.fee_account_name && mapping.fee_account_name.fee_account_name ? mapping.fee_account_name.fee_account_name : ''}</div>

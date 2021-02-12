@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { withStyles, CircularProgress } from '@material-ui/core/'
 import Icon from '@material-ui/core/Icon'
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline'
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined'
 // import { Button } from 'semantic-ui-react'
 import Button from '@material-ui/core/Button'
@@ -164,8 +165,8 @@ class AccToBranch extends Component {
           <div className={classes.accBrnchMapping__branch} key={result.id}>
             <div className={classes.accBrnchMapping__branchInfo}>
               <div className={classes.accBrnchMapping__branchName}>{result.branch.branch_name}</div>
-              <div className={classes.accBrnchMapping__icon}><Icon className={this.props.classes.icon} color='secondary'
-                onClick={() => { this.modalShowHandler(result.id, result.branch.id, result.branch.branch_name) }} >add_circle</Icon></div>
+              <div className={classes.accBrnchMapping__icon}><AddCircleOutlineIcon className={this.props.classes.icon} color='secondary'
+                onClick={() => { this.modalShowHandler(result.id, result.branch.id, result.branch.branch_name) }} ></AddCircleOutlineIcon></div>
             </div>
             <div className={classes.accBrnchMapping__brnchAccInfo}>
               {result.fee_account_name.map((account, index) => {
