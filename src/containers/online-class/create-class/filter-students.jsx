@@ -265,8 +265,6 @@ export default function FilterStudents() {
     return students.map((student, index) => ({ ...student, sl: index + 1 }));
   };
 
-  console.log({classTypeId})
-
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>

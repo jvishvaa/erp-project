@@ -136,10 +136,6 @@ const CreateClassForm = (props) => {
     dispatch(listGradesCreateClass(moduleId));
   }, [moduleId]);
 
-  useEffect(()=> {
-    setOnlineClass(prevState=>({...prevState,tutorEmail:{email: "ad676575@gmail.com", roles: 75, user_id: 253}}));
-  },[]);
-
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -481,7 +477,14 @@ const CreateClassForm = (props) => {
     request['class_type'] = selectedClassType?.id;
     request['section_mapping_ids'] = sectionIds.join(',');
 
-    if (days.length) request['week_days'] = days;
+    
+    if(selectedClassType?.id === 0) {
+      const arr=[]
+      arr.push(days);
+      request['week_days'] = arr;
+    }
+    else if (days.length) 
+    request['week_days'] = days;
 
     if (selectedClassType?.id === 0) {
       if (filteredStudents.length>0)

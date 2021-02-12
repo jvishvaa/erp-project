@@ -297,7 +297,7 @@ const CreateclassProvider = (props) => {
     return {type: SET_EDIT_DATA, payload:data};
   };
 
-  const setEditDataFalse = (data) => {
+  const setEditDataFalse = (editData) => {
     return {type: SET_EDIT_DATA_FALSE, payload:[]};
   };
 
@@ -323,7 +323,7 @@ const CreateclassProvider = (props) => {
         clearTutorEmailsList,
         clearStudentsList,
         setEditData,
-        setEditDataFalse,
+        setEditDataFalse
       }}
     >
       {children}

@@ -5,11 +5,16 @@ import CreateclassProvider from '../create-class/create-class-context/create-cla
 import {useLocation} from 'react-router-dom';
 
 const AOLClassView = () => {
+  const location = useLocation();
   return (
     <div>
       <Layout>
         <CreateclassProvider>
-          <UpcomingClasses />
+          {location.pathname === '/online-class/attend-class'? (
+            <StudentClasses />
+          ) : (
+            <UpcomingClasses />
+          )}
         </CreateclassProvider>
       </Layout>
     </div>

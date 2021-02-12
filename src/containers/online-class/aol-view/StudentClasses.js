@@ -254,14 +254,15 @@ const StudentClasses = () => {
                     handleSelctedClass={handleSelctedClass}
                 />
             </Grid>
-        )});
+        )
+    });
 
     return (
         <>
-            <div className='breadcrumb-container-create' style={{ marginLeft: '15px'}}>
+            <div className='breadcrumb-container-create' style={{ marginLeft: '15px' }}>
                 <CommonBreadcrumbs
-                componentName='Online Class'
-                childComponentName='AOL Class View'
+                    componentName='Online Class'
+                    childComponentName='AOL Class View'
                 />
             </div>
             <Grid container spacing={4} className={classes.topFilter}>
@@ -343,13 +344,13 @@ const StudentClasses = () => {
             <Grid container spacing={3} className={classes.root}>
                 <Grid item sm={size} xs={12}>
                     <Grid container spacing={3}>
-                        {!isLoding ? ( <Loader /> ) : (classCardData)}
+                        {!isLoding ? (<Loader />) : (classCardData)}
                     </Grid>
                 </Grid>
 
                 {classData && (
                     <Grid item sm={3} xs={12}>
-                        <ClassdetailsCard classData={classData}/>
+                        <ClassdetailsCard classData={classData} />
                     </Grid>
                 )}
             </Grid>
