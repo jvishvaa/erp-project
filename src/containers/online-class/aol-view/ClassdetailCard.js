@@ -148,25 +148,23 @@ export default function ClassdetailsCardComponent(props) {
     const [teacherDropdown, setTeacherDropdown] = useState([])
 
 
+    const assignData = props
+    console.log(props, '=====')
     const [periodsData, setPeriodsData] = React.useState([]);
     //Periods date start
     const history = useHistory();
 
-    
-    let isTeacher =  props.classData && props.classData.hasOwnProperty('is_canceled');
-    console.log(isTeacher,'==========')
+
+    let isTeacher = props.classData && props.classData.hasOwnProperty('is_canceled');
 
     useEffect(() => {
-        if(props.classData){
+        if (props.classData) {
             axiosInstance.get(`erp_user/${props.classData.id}/online-class-details/`)
-            .then((res) => {
-                // console.log(res);
-                setPeriodsData(res.data.data);
-            })
-        }       
-    }, []);
-
-
+                .then((res) => {
+                    setPeriodsData(res.data.data);
+                })
+        }
+    }, [props.classData]);
 
     const handleAttendance = () => {
         history.push(`/aol-attendance-list/${props.classData.id}`);
@@ -194,22 +192,30 @@ export default function ClassdetailsCardComponent(props) {
         <>
             <div className={classes.classDetailsBox}>
                 <div className={classes.classHeader}>
+                    {props.classData.online_class && (
+                        <div>
+                            <Typography className={classes.classHeaderText}>
+                                {props.classData && props.classData.online_class && props.classData.online_class.title}
+                            </Typography>
+                            <Typography className={classes.classHeaderTime}>
+                                {props.classData && props.classData.online_class && moment(props.classData.join_time).format('h:mm:ss')}
+                            </Typography>
+                        </div>
+                    )}
                     <div>
-                        <Typography className={classes.classHeaderText}>
-                            {props.classData && props.classData.online_class && props.classData.online_class.title}
-                        </Typography>
-                        <Typography className={classes.classHeaderTime}>
-                            {props.classData && props.classData.online_class && moment(props.classData.join_time).format('h:mm:ss')}
-                        </Typography>
-                    </div>
-                    <div>
+                        {props.classData.online_class && (
+                            <Typography className={classes.classHeaderSub}>
+                                {props.classData && props.classData.online_class.subject[0] && props.classData.online_class.subject[0].subject_name}
+                            </Typography>
+                        )}
+
                         <Typography className={classes.classHeaderSub}>
-                            {props.classData && props.classData.online_class && props.classData.online_class.subject[0].subject_name}
+                            {props.toggle ? props.classData.batch_name : ''}
+                            {props.toggle ? <StyledAcceptButton onClick={handleAssign}>ASSIGN</StyledAcceptButton> : null}
+
                         </Typography>
-                        {/* <StyledAcceptButton onClick={handleAssign}>ASSIGN</StyledAcceptButton> */}
-                        {props.toggle ? <StyledAcceptButton onClick={handleAssign}>ASSIGN</StyledAcceptButton> : null}
-                        {/* <Typography className={classes.subPeriods}>{periods + 1} periods</Typography> */}
                     </div>
+
                 </div>
                 <div className={classes.classDetails}>
 
@@ -218,7 +224,7 @@ export default function ClassdetailsCardComponent(props) {
                 </Typography>
                     <Divider className={classes.classDetailsDivider} />
                     <div className={classes.joinClassDiv}>
-                        {props.toggle? '': periodsData !== undefined && periodsData.map((data, id) => (
+                        {props.toggle ? '' : periodsData.length > 0 && periodsData.map((data, id) => (
                             <JoinClass
                                 key={id}
                                 data={data}
@@ -257,6 +263,7 @@ export default function ClassdetailsCardComponent(props) {
                 openAssignModal={openAssignModal}
                 setOpenAssignModal={setOpenAssignModal}
                 teacherDropdown={teacherDropdown}
+                assignData={assignData}
             />
         </>
     )

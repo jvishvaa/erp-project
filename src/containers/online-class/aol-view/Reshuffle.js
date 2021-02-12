@@ -34,8 +34,8 @@ const Reshuffle = () => {
 
     const { id } = useParams()
 
+    // console.log(id,'MMMMMMMMMM')
     const handleShuffle = (data) => {
-        // console.log(data, '[[[[[[[[[[[[[[[[')
         setModalData(data)
         setOpenReshuffleModal(true);
     }
@@ -47,7 +47,6 @@ const Reshuffle = () => {
                 setStudentName(result.data.data)
             })
     }, [])
-    console.log(studentName, '=========')
 
     return (
 
@@ -111,6 +110,7 @@ const Reshuffle = () => {
                 setOpenReshuffleModal={setOpenReshuffleModal}
                 // studentName={studentName}
                 modalData={modalData}
+                id={id}
             />
         </Layout>
 

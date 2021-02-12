@@ -78,8 +78,6 @@ const StyledButton = withStyles({
     }
 })(Button);
 
-
-
 export default function ClassCardComponent(props) {
     const history = useHistory();
     const classes = useStyles({});
@@ -137,20 +135,14 @@ export default function ClassCardComponent(props) {
     return (
         <>
             {(props && props.toggle) ? 
-            
-                
-
            (<div>
             <Box className={`${props.selectedId === classData.id ? classes.activeCard : classes.card}`}>
-            
                 <Typography className={classes.classSchedule}>
                      Batch Name:{classData && classData.batch_name}                  
                 </Typography>
                 <Typography className={classes.classSchedule}>
                      Batch Size: {classData && `1 : ${classData.batch_size}`}                  
                 </Typography>
-
-
                 <div style={{ marginTop: '15px', width: '100%' }}>
                     {props.selectedId !== props.classData.id && (
                         <StyledButton
@@ -173,7 +165,7 @@ export default function ClassCardComponent(props) {
                     </Typography>
                 </div>
                 <Typography className={classes.classTitle}>
-                    {classData.online_class ? classData.online_class.subject[0].subject_name : ''}
+                    { classData.online_class.subject[0] && classData.online_class ? classData.online_class.subject[0]?.subject_name : ''}
                 </Typography>
                 <Typography className={classes.classSchedule}>
                     Start Date: {classData.online_class ? moment(classData.online_class.start_time).format('Do MMM YYYY') : ''}

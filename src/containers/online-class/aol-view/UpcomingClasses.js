@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect} from 'react';
 import ClassCard from './ClassCard';
 import { Divider, Grid, makeStyles, useTheme, withStyles, Button, TextField, Switch, FormControlLabel } from '@material-ui/core';
 // import axiosInstance from '../../../config/axios';
@@ -21,7 +21,6 @@ import endpoints from '../../../config/endpoints'
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        //margin: '20px 200px 50px 70px',
         margin: '55px 100px 20px 100px',
         width: '85%',
         border: '1px solid #D8D8D8',
@@ -149,14 +148,14 @@ const UpcomingClasses = () => {
     const [startDate, setStartDate] = React.useState(null);
     const [endDate, setEndDate] = React.useState(null);
     const [isLoding, setIsLoding] = React.useState(false);
-    // const [startDate, setStartDate] = React.useState(moment(date).format('YYYY-MM-DD'));
-    // const [endDate, setEndDate] = React.useState(moment(date).format('YYYY-MM-DD'));
 
     const [gradeDropdown, setGradeDropdown] = useState([])
     const [courseDropdown, setCourseDropdown] = useState([])
     const [batch, setBatch] = useState([])
     const [toggle, setToggle] = useState(false)
     const [toggledData,setToggledData] = useState([])
+
+    const [reload,setReload] = useState(false)
 
     const [dateRangeTechPer, setDateRangeTechPer] = useState([
         moment().subtract(6, 'days'),
@@ -184,11 +183,9 @@ const UpcomingClasses = () => {
 
 
     function getDaysAfter(date, amount) {
-        // TODO: replace with implementation for your date library
         return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
       }
       function getDaysBefore(date, amount) {
-        // TODO: replace with implementation for your date library
         return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
       }
 
@@ -206,14 +203,13 @@ const UpcomingClasses = () => {
                         setGradeDropdown([])
                     }
                 })
-
         }
     }
 
     const handleGrade = (event, value) => {
         setFilterData({ ...filterData, garde: '' })
         if (value) {
-            setFilterData({ ...filterData, grade: value })
+            setFilterData({...filterData, grade: value})
             axiosInstance.get(`${endpoints.aol.courseList}?grade=${value.grade_id}`)
                 .then((result) => {
                     if (result.data.status_code === 200) {
@@ -232,42 +228,38 @@ const UpcomingClasses = () => {
             axiosInstance.get(`${endpoints.aol.batchLimitList}?course_id=${value.id}`)
                 .then((result) => {
                     if (result.data.status_code === 200) {
-                        // setBatchLimitDrop(result.data.result)
-                        // console.log(result.data.result,'==========')
                         setBatch(result.data.result)
                     }
                     else {
-                        // setBatchLimitDrop([])
+                        setBatch([])
                     }
 
                 })
-            // .catch((error) => console.log(error,'///////'))
+            .catch((error) => console.log(error,error.description))
         }
     }
 
     const handleBatch = (event, value) => {
-
         setFilterData({ ...filterData, batch: '' })
-        //  console.log()
         if (value) {
             setFilterData({ ...filterData, batch: value })
         }
     }
 
+    
     //api call
     const getClasses = () => {
         const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
-        console.log(startDateTechPer.format('YYYY-MM-DD'),endDateTechPer.format('YYYY-MM-DD'),'=========')
         if(toggle){
-            axiosInstance.get(`${endpoints.aol.draftBatch}?course_id=25&batch_id=12&grade_id=54`)
+            axiosInstance.get(`${endpoints.aol.draftBatch}?course_id=${filterData.course.id}&grade_id=${filterData.grade.grade_id}`)
             .then(result=>{
-                // setClassesdata(result.data.data)
                 setToggledData(result.data.result)
                 setClassesdata([]);
             })
         }
         else{
-            axiosInstance.get(`${endpoints.aol.classes}?module_id=4&page_number=1&page_size=15&branch_ids=5&class_type=1&aol_batch=${filterData.batch.id}&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}`)
+            axiosInstance.get(`${endpoints.aol.classes}?page_number=1&page_size=15&class_type=1&is_aol=1&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}`)
+            // axiosInstance.get(`${endpoints.aol.classes}?class_type=1&page_number=1&aol_batch=4&page_size=15&is_aol=1&start_date=2021-02-06&end_date=2021-04-1`)
             .then(result => {
                 setClassesdata(result.data.data)
                 setToggledData([]);
@@ -312,6 +304,9 @@ const UpcomingClasses = () => {
         setItemSize(4);
         setSize(9);
         setClassData(data);
+        if(!toggle) {
+            //setToggledData([]);
+        }
         // setToggledData(data);
         setSelected(data.id);
         if (isTabDivice) {
@@ -371,10 +366,14 @@ const UpcomingClasses = () => {
     }
 
     const handleToggle=()=>{
-        setToggle(!toggle)
-        setClassesdata([])
-        setToggledData([])
+        setToggle(!toggle);
+        setClassesdata([]);
+        setToggledData([]);
+        if(!toggle) {
+            setToggledData([]);
+        }
         setClassData(null);
+        setSelected();
     }
 
     // const classCardData = classesData && classesData.slice(pagination.start, pagination.end).filter((data) => {
@@ -398,6 +397,9 @@ const UpcomingClasses = () => {
     //     )
     // });
 
+// useEffect(()=>{
+//     getClasses();
+// },[reload])
     
     return (
         <>
@@ -649,11 +651,12 @@ const UpcomingClasses = () => {
                             classData={classData}
                             filterData={filterData}
                             toggle={toggle}
-                            
+                            reload={reload}
+                            setReload={setReload}
                         />
                     </Grid>
                 )}
-                {toggledData.length > 0 && (
+                {/*toggledData.length > 0 && (
                     <Grid item sm={3} xs={12}>
                         <ClassdetailsCard
                             toggledData={toggledData}
@@ -662,7 +665,7 @@ const UpcomingClasses = () => {
                             
                         />
                     </Grid>
-                )}
+                ) */}
             </Grid>
             {classesData.length > showPerPage && (
                 <div>

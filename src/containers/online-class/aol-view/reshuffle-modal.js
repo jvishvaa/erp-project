@@ -1,4 +1,3 @@
-
 import Dialog from '@material-ui/core/Dialog';
 import { Divider, Grid, makeStyles, useTheme, withStyles, Button, TextField, Switch, FormControlLabel } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -33,7 +32,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName, modalData }) => {
+const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName, modalData , id}) => {
     const classes = useStyles();
     const { setAlert } = useContext(AlertNotificationContext);
     const [batchList, setBatchList] = useState([]);
@@ -69,37 +68,31 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
     const handleDateChange = (date) => {
         setSelectedDate(date);
     };
-
     useEffect(() => {
-        axiosInstance.get(`https://erpnew.letseduvate.com/qbox/aol/batch_shuffle/?batch_id=12`)
+        // axiosInstance.get(`https://erpnew.letseduvate.com/qbox/aol/batch_shuffle/?batch_id=12`)
+        axiosInstance.get(`https://erpnew.letseduvate.com/qbox/aol/batch_shuffle/?batch_id=${id}`)
             .then((result) => {
                 setBatchList(result.data.result)
             })
-
     }, [])
 
     const handleReshuffle = () => {
-
         axiosInstance.post(`https://erpnew.letseduvate.com/qbox/aol/student-shuffle/`, {
-
             "batch": modalData?.batch?.id,
             "new_batch": filterData?.batch?.id,
             "students": [modalData?.user?.id]
-        }
-        )
+        })
             .then((result => {
                 if (result.data.status_code === 200) {
                     setAlert('success', result.data.message)
                     setOpenReshuffleModal(false)
                 }
-
             }))
-
     }
-    console.log('++++++++++', filterData.batch)
+
+    console.log(id,'+++++++++')
     return (
         <div>
-
             <Dialog open={openReshuffleModal} onClose={() => setOpenReshuffleModal(false)} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogWrapper }}>
                 <DialogTitle id="form-dialog-title" className='reshuffle-header' style={{color:'#ffffff'}}>Batch Reshuffle</DialogTitle>
                 <DialogContent>
@@ -153,7 +146,6 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
                                 />
                             </Grid>
                         </Grid>
-                    
                       {filterData?.batch?  
                       <Grid container spacing={4} >
                             <Grid item xs={12} sm={12} >

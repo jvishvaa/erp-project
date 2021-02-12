@@ -33,20 +33,13 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown }) => {
+const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, assignData }) => {
     const classes = useStyles();
     const [batchList, setBatchList] = useState([]);
-
     const [date, setDate] = useState(new Date())
-
     const [list, setList] = useState([])
     const [toggle, setToggle] = useState(false);
     const { setAlert } = useContext(AlertNotificationContext);
-
-
-    // const [teacherDrop, setTeacherDrop] = useState([{ teacher_name: 'SUNNY DEV', teacher_name: 'NITIN', teacher_name: 'MANI', teacher_name: 'TONY', }])
-
-    // const [selectedDate, setSelectedDate] = React.useState(new Date());
     const [selectedDate, setSelectedDate] = React.useState(new Date());
     const [filterData, setFilterData] = useState({
         teacher: '',
@@ -58,28 +51,27 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown }) =
 
 
 
-
     const handleTeacher = (event, value) => {
         setFilterData({ ...filterData, teacher: '' })
         if (value) {
             setFilterData({ ...filterData, teacher: value })
         }
     }
-    console.log('==========', filterData.teacher.tutor_id,selectedDate)
+    console.log(selectedDate,'HHHHHHHH',assignData)
 
     const handleAssign = () => {
         const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
         const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
         const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(selectedDate);
         axiosInstance.put(`${endpoints.aol.assignTeacher}`, {
-            "batch_id": 4,
+            "batch_id": assignData?.classData?.id,
             "start_date_time":selectedDate.format(`${ye}-${mo}-${da} hh:mm:ss`),
-            // "start_date_time": "2021-02-23 01:23:21",
             "teacher": filterData.teacher.tutor_id,
         }).then(result => {
             if (result.data.status_code === 200) {
                 setAlert('success', result.data.message)
                 setOpenAssignModal(false)
+                // assignData.setReload({...assignData,assignData.reload:false})
             }
         })
 
@@ -118,7 +110,6 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown }) =
                         <Grid container spacing={4} className='create-class-container'>
                             <Grid item xs={12} sm={12}>
                                 <MuiPickersUtilsProvider utils={MomentUtils}>
-
                                     <KeyboardDatePicker
                                         style={{ width: '100%' }}
                                         margin="normal"
@@ -143,6 +134,7 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown }) =
                                         id="time-picker"
                                         label="Time picker"
                                         value={selectedDate}
+                                        // minTime={new Date()}
                                         onChange={handleDateChange}
                                         KeyboardButtonProps={{
                                             'aria-label': 'change time',
