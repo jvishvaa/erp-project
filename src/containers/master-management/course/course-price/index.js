@@ -165,15 +165,20 @@ const CoursePrice = () => {
                 if (Boolean(is_recurring)) {
                   for (let k = 0; k < course_price?.length; k++) {
                     collectionList[index]['data'].push({
-                      weeks: course_price[k]['no_of_week'],
-                      price: course_price[k]['price']||0,
+                      weeks: course_price[k]['no_of_week']||'',
+                      price: course_price[k]['price']||'',
                       id: course_price[k]['id'],
                     });
                   }
                 } else {
+                    collectionList[index]['data'].push({
+                        weeks: course_price[0]['no_of_week']||'',
+                        price: course_price[0]['price']||'',
+                        id: course_price[0]['id'],
+                      });
                     collectionList[index]['singleData']=[{
                         weeks: course_price[0]['no_of_week'],
-                        price: course_price[0]['price']||0,
+                        price: course_price[0]['price']||'',
                         id: course_price[0]['id'],
                       }];
                 }
@@ -249,6 +254,7 @@ const CoursePrice = () => {
               selectedLimit={selectedLimit}
               collectData={collectData}
               setCollectData={setCollectData}
+              setCourseId={setCourseId}
               funBatchSize={funBatchSize}
               firstHit={firstHit}
               resetContent={resetContent}

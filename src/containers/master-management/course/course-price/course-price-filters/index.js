@@ -46,6 +46,7 @@ const CoursePriceFilters = (props) => {
         setCourseList([]);
         setSelectedCourse('');
         resetContent();
+        setCourseId('');
         if (value) {
             setSelectedGrade(value);
             getCourseList(value?.grade_id);
@@ -55,6 +56,7 @@ const CoursePriceFilters = (props) => {
     const handleCourse = (event, value) => {
         setSelectedCourse('');
         resetContent();
+        setCourseId('');
         if (value) {
             setSelectedCourse(value);
             setCourseId(value.id);

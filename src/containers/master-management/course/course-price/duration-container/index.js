@@ -20,6 +20,7 @@ const DurationContainer = (props) => {
     firstHit,
     resetContent,
     clearFlag,
+    setCourseId,
   } = props;
 
   const { setAlert } = useContext(AlertNotificationContext);
@@ -28,18 +29,18 @@ const DurationContainer = (props) => {
   );
   const [toggle, setToggle] = useState(false);
   const [recursiveContent, setRecursiveContent] = useState([
-    { weeks: '', price: 0, id: '' },
+    { weeks: '', price: '', id: '' },
   ]);
   const [nonRecursiveContent, setNonRecursiveContent] = useState([
-    { weeks: '', price: 0, id: '' },
+    { weeks: '', price: '', id: '' },
   ]);
 
   useEffect(() => {
     if (clearFlag) {
       setNoOfWeeks('');
       setToggle(false);
-      setRecursiveContent([{ weeks: '', price: 0, id: '' }]);
-      setNonRecursiveContent([{ weeks: '', price: 0, id: '' }]);
+      setRecursiveContent([{ weeks: '', price: '', id: '' }]);
+      setNonRecursiveContent([{ weeks: '', price: '', id: '' }]);
     }
   }, [clearFlag]);
 
@@ -81,7 +82,7 @@ const DurationContainer = (props) => {
 
   const handleAdd = () => {
     const list = [...recursiveContent];
-    list.push({ weeks: '', price: 0, id: '' });
+    list.push({ weeks: '', price: '', id: '' });
     setRecursiveContent(list);
   };
 
@@ -94,29 +95,22 @@ const DurationContainer = (props) => {
   const handleToggle = () => {
     const list = [...collectData];
     const index = collectData.findIndex((datarow) => datarow['limit'] === selectedLimit);
-    if (isEdit) {
-      if (list[index]['toggle'])
-        setAlert('warning', "Can't be changed to Non-Recurring!");
-      else {
-          setToggle(!toggle);
-          if (!toggle) {
-            setRecursiveContent([{ weeks: '', price: 0, id: '' }]);
-          }
-    }
+    if (isEdit && toggle) {
+      setAlert('warning', "Can't be changed to Non-Recurring!");
     } else {
-      setToggle(!toggle);
-      if (!toggle) {
-        setRecursiveContent([{ weeks: '', price: 0, id: '' }]);
-      }
+      setToggle((prev) => !prev);
     }
   };
 
   const handleNumberOfWeeks = (value) => {
     setNoOfWeeks(value);
+    // if (toggle) {
     [...recursiveContent][0]['weeks'] = Number(value);
-    [...nonRecursiveContent][0]['weeks'] = Number(value);
     setRecursiveContent([...recursiveContent]);
+    // } else {
+    [...nonRecursiveContent][0]['weeks'] = Number(value);
     setNonRecursiveContent([...nonRecursiveContent]);
+    // }
   };
 
   useEffect(() => {
@@ -149,7 +143,7 @@ const DurationContainer = (props) => {
           }
         } else {
           coursePriceArray.push({
-            no_of_week: Number(list[0]['singleData'][0]['weeks']),
+            no_of_week: Number(list[i]['singleData'][0]['weeks']),
             price: parseFloat(list[i]['singleData'][0]['price']),
             id: Number(list[i]['singleData'][0]['id']),
           });
@@ -164,7 +158,7 @@ const DurationContainer = (props) => {
           }
         } else {
           coursePriceArray.push({
-            no_of_week: Number(list[0]['singleData'][0]['weeks']),
+            no_of_week: Number(list[i]['singleData'][0]['weeks']),
             price: parseFloat(list[i]['singleData'][0]['price']),
           });
         }
@@ -208,6 +202,7 @@ const DurationContainer = (props) => {
             if (result.data.status_code === 200) {
               setAlert('success', result.data.message);
               resetContent();
+              setCourseId('');
             } else {
               setAlert('error', result.data.message);
             }
@@ -222,6 +217,7 @@ const DurationContainer = (props) => {
             if (result.data.status_code === 200) {
               setAlert('success', result.data.message);
               resetContent();
+              setCourseId('');
             } else {
               setAlert('error', result.data.message);
             }

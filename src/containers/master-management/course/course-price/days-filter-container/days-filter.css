@@ -15,7 +15,7 @@
   margin-top: 20px;
   border-radius: 10px;
   min-height: 49vh;
-  max-height: 49vh;
+  max-height: auto;
   box-shadow: 0 4px 10px 0px rgba(1, 75, 126, 0.2);
 }
 
