@@ -445,12 +445,12 @@ class Payments extends Component {
                   (feeTypes !== 'Registration Fee' && feeTypes !== 'Application Fee')
                     ? <Button disabled={transaction.is_cancelled || transaction.is_raised_for_cancellation || (this.props.transId === transaction.transaction_id ? this.props.refresh : false)} variant='extended' color='primary' className={classes.button} onClick={() => this.editTransaction(transaction.transaction_id, transaction.cheque_number, transaction.kit_payment, transaction.payment_mode)}>
                       <span style={{ color: 'white', marginRight: '5px', fontSize: '1rem', fontWeight: 'normal' }}>Edit</span>
-                      <Icon className={classes.rightIcon} style={{ color: 'white', fontSize: '1.2rem' }}>edit</Icon>
+                      <Icon className={classes.rightIcon} style={{ color: 'white', fontSize: '1.2rem' }}></Icon>
                     </Button> : null
                 }
                 <Button variant='extended' color='primary' className={classes.buttonGreen} onClick={() => this.generatePdf(transaction.transaction_id, transaction.is_cancelled, transaction.kit_payment)}>
                   <span style={{ color: 'white', marginRight: '5px', fontSize: '1rem', fontWeight: 'normal' }}>Print</span>
-                  <Icon className={classes.rightIcon} style={{ color: 'white', fontSize: '1.2rem' }}>print</Icon>
+                  <Icon className={classes.rightIcon} style={{ color: 'white', fontSize: '1.2rem' }}></Icon>
                 </Button>
               </div>
             </div>

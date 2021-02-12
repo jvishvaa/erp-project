@@ -72,7 +72,7 @@ export const saveChequeBounce = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        payload.alert.success('Updated Successfully')
+        // payload.alert.success('Updated Successfully')
         dispatch({
           type: SAVE_CHEQUE_BOUNCE,
           payload: {
@@ -83,7 +83,7 @@ export const saveChequeBounce = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.log(err)
-      payload.alert.error('Unable to load')
+      // payload.alert.error('Unable to load')
       dispatch(actionTypes.dataLoaded())
     })
   }

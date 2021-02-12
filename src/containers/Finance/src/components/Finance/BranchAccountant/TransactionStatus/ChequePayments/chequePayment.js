@@ -196,15 +196,15 @@ class ChequePayment extends Component {
               <div>
                 <Button disabled={transaction.is_bounced || transaction.is_cancelled} variant='extended' color='primary' className={classes.button}>
                   <span style={{ color: 'white', marginRight: '5px', fontSize: '1rem', fontWeight: 'normal' }}>Edit</span>
-                  <Icon className={classes.rightIcon} style={{ color: 'white', fontSize: '1.2rem' }}>edit</Icon>
+                  <Icon className={classes.rightIcon} style={{ color: 'white', fontSize: '1.2rem' }}></Icon>
                 </Button>
                 <Button variant='extended' color='primary' className={classes.buttonGreen} onClick={() => this.generatePdf(transaction.transaction_id, (transaction.is_bounced || transaction.is_cancelled))}>
                   <span style={{ color: 'white', marginRight: '5px', fontSize: '1rem', fontWeight: 'normal' }}>Print</span>
-                  <Icon className={classes.rightIcon} style={{ color: 'white', fontSize: '1.2rem' }}>print</Icon>
+                  <Icon className={classes.rightIcon} style={{ color: 'white', fontSize: '1.2rem' }}></Icon>
                 </Button>
                 <Button variant='extended' color='primary' className={classes.buttonRed} onClick={() => { this.showBounceModalHandler(transaction.transaction_id, transaction.is_bounced) }}>
                   <span style={{ color: 'white', marginRight: '5px', fontSize: '1rem', fontWeight: 'normal' }}>{ transaction.is_bounced ? 'Edit Bounce Details' : 'Bounce' }</span>
-                  <Icon className={classes.rightIcon} style={{ color: 'white', fontSize: '1.2rem' }}>highlight_off</Icon>
+                  <Icon className={classes.rightIcon} style={{ color: 'white', fontSize: '1.2rem' }}></Icon>
                 </Button>
               </div>
             </div>
