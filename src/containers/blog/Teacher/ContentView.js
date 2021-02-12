@@ -104,7 +104,6 @@ class ContentView extends Component {
 
     };
    
-    console.log(this.state.tabValue,"@@@@")
 
   }
   componentDidMount() {
@@ -412,6 +411,7 @@ if (result.data.status_code === 200) {
                           <Autocomplete
                             style={{ width: '100%' }}
                             size='small'
+                            disableClearable
                             onChange={this.handlePublishLevelType}
                             id='category'
                             required

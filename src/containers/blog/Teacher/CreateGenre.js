@@ -5,6 +5,7 @@ import Layout from '../../Layout'
 import { SvgIcon, TextField, Grid, Button, useTheme,Tabs, Tab ,Typography, Card, CardContent,CardHeader} from '@material-ui/core'
 import moment from 'moment';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import { Pagination } from '@material-ui/lab';
 
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
@@ -87,13 +88,14 @@ const CreateGenre = (props) => {
   const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
 
   const [gradeList, setGradeList] = useState([]);
-
+  const [totalGenre,setTotalGenre]=useState('');
   const branchId=roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0]
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   
-  
+  const [pageNumber,setPageNumber]=useState(1);
+  const [pageSize,setPageSize]=useState(9);
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -112,8 +114,10 @@ const CreateGenre = (props) => {
     if (result.data.status_code === 200) {
       setLoading(false);
       setAlert('success', result.data.message);
-      getGenreList();
-   getGenreInActiveList();
+      setGenreName(null);
+      setSelectedGrades(null);
+      // getGenreList();
+  //  getGenreInActiveList();
     } else {        
       setLoading(false);
       setAlert('error', "duplicates not allowed");
@@ -188,7 +192,22 @@ const CreateGenre = (props) => {
         </Grid>
                                               
         })
-    : (
+    : totalGenre === 0 ?  
+      
+    <div className={classes.periodDataUnavailable}>
+    <SvgIcon
+      component={() => (
+        <img
+          style={
+            isMobile
+              ? { height: '100px', width: '200px' }
+              : { height: '160px', width: '290px' }
+          }
+          src={unfiltered}
+        />
+      )}
+    /> NO DATA FOUND FOR SELECTED GRADE
+    </div> :(
       <div className={classes.periodDataUnavailable}>
         <SvgIcon
           component={() => (
@@ -249,7 +268,23 @@ const CreateGenre = (props) => {
           </Grid>
                                                 
           })
-      : (
+      : totalGenre === 0 ?  
+      
+      <div className={classes.periodDataUnavailable}>
+      <SvgIcon
+        component={() => (
+          <img
+            style={
+              isMobile
+                ? { height: '100px', width: '200px' }
+                : { height: '160px', width: '290px' }
+            }
+            src={unfiltered}
+          />
+        )}
+      /> NO DATA FOUND FOR SELECTED GRADE
+      </div> :
+    (
         <div className={classes.periodDataUnavailable}>
           <SvgIcon
             component={() => (
@@ -277,10 +312,20 @@ const CreateGenre = (props) => {
           />
         </div>
       )
+              
     }
   </Grid>
     </div>
     } 
+
+   const handlePagination = (event, page) => {
+   setPageNumber(page);
+   setGenreActiveListResponse([]);
+   setGenreInActiveListResponse([]);
+   getData();
+  };
+
+
     const handleDelete = (data) => {
 
       let requestData = {
@@ -293,8 +338,8 @@ const CreateGenre = (props) => {
     if (result.data.status_code === 200) {
       setLoading(false);
       setAlert('success', result.data.message);
-      getGenreList();
-      getGenreInActiveList();
+      // getGenreList();
+      // getGenreInActiveList();
     } else {        
       setLoading(false);
       setAlert('error', result.data.message);
@@ -346,7 +391,6 @@ const handleGrade = (event, value) => {
       );
       const resultOptions = [];
       if (result.status === 200) {
-        console.log(result.data.result.results,"@@")
         setGradeList(result.data.result.results);
         setLoading(false);
       } else {
@@ -360,32 +404,40 @@ const handleGrade = (event, value) => {
   };
 
   const handleFilter = () =>{
-    if(currentTab === 0){
-    axiosInstance.get(`${endpoints.blog.genreList}?is_delete=${
-      'False'
-    }&grade_id=${selectedGrades}`).then((res) => {
-        setGenreActiveListResponse(res.data.result)
-    }).catch(err => {
-        console.log(err)
-    })
-  }else{
-    axiosInstance.get(`${endpoints.blog.genreList}?is_delete=${
-      'True'
-    }&grade_id=${selectedGrades}`).then((res) => {
-        setGenreActiveListResponse(res.data.result)
-    }).catch(err => {
-        console.log(err)
-    })
-
+    setGenreActiveListResponse([])
+    setGenreInActiveListResponse([])
+    getData();
   }
+  const getData = () =>{
+    if(currentTab === 0){
+      axiosInstance.get(`${endpoints.blog.genreList}?is_delete=${
+        'False'
+      }&grade_id=${selectedGrades}&page_number=${pageNumber}&page_size=${pageSize}`).then((res) => {
+          setGenreActiveListResponse(res.data.result.data)
+          setTotalGenre(res.data.result.total_genres)
+      }).catch(err => {
+          console.log(err)
+      })
+    }else{
+      axiosInstance.get(`${endpoints.blog.genreList}?is_delete=${
+        'True'
+      }&grade_id=${selectedGrades}&page_number=${pageNumber}&page_size=${pageSize}`).then((res) => {
+          setGenreInActiveListResponse(res.data.result.data)
+          setTotalGenre(res.data.result.total_genres)
 
+      }).catch(err => {
+          console.log(err)
+      })
+  
+    }
+  
   }
 
 const getGenreList = () => {
   axiosInstance.get(`${endpoints.blog.genreList}?is_delete=${
     'False'
   }`).then((res) => {
-      setGenreActiveListResponse(res.data.result)
+      setGenreActiveListResponse(res.data.result.data)
   }).catch(err => {
       console.log(err)
   })
@@ -394,7 +446,7 @@ const getGenreInActiveList = () => {
   axiosInstance.get(`${endpoints.blog.genreList}?is_delete=${
     'True'
   }`).then((res) => {
-      setGenreInActiveListResponse(res.data.result)
+      setGenreInActiveListResponse(res.data.result.data)
   }).catch(err => {
       console.log(err)
   })
@@ -413,6 +465,7 @@ const getGenreInActiveList = () => {
               size='small'
               onChange={handleGrade}
               id='grade'
+              disableClearable
               className='dropdownIcon'
               options={gradeList}
               filterSelectedOptions
@@ -491,9 +544,31 @@ const getGenreInActiveList = () => {
 
             
             </Tabs>
+            <li style={{ listStyleType: 'none' }}>
+      <Typography
+        align='right'
+        className={classes.dividerInset}
+        style={{ font: '#014b7e', fontWeight: 600 ,paddingRight:'80px'}}
+        display='block'
+        variant='caption'
+      >
+        Number of Genre {totalGenre}
+      </Typography>
+    </li>     
           </Grid>
         </Grid>{decideTab()}
-       
+        <Grid container >
+
+        <Grid item xs={12}>
+                    <Pagination
+                    onChange={handlePagination}
+                    style={{ paddingLeft:'500px' }}
+                    count={Math.ceil(totalGenre / pageSize)}
+                    color='primary'
+                    page={pageNumber}
+                    />
+            </Grid>
+                    </Grid>
 
       </Layout>
     </>

@@ -274,7 +274,6 @@ class ContentViewPublish extends Component {
       const type = typeof blogRatings
       const parsedRatings = type === 'object' ? blogRatings : JSON.parse(blogRatings)
       const allRatingParamters = JSON.parse(parsedRatings)
-      console.log(allRatingParamters)
       return allRatingParamters
     }
     
@@ -405,6 +404,7 @@ class ContentViewPublish extends Component {
                           <Autocomplete
                             style={{ width: '100%' }}
                             size='small'
+                            disableClearable
                             onChange={this.handlePublishLevelType}
                             id='category'
                             required

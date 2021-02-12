@@ -54,7 +54,6 @@ const useStyles = makeStyles((theme) => ({
 const EditWordCountConfig = (props) => {
   const classes = useStyles()
   const data = props.location.state.data
-  console.log(data,"@@@",props)
   const history = useHistory()
 
   const gradeObj=data.grade
@@ -133,6 +132,7 @@ const handleWordCountChange = (e) => {
               options={gradeList}
               value={gradeObj}
               filterSelectedOptions
+              disableClearable
               getOptionLabel={(option) => option?.grade_name}
 
               renderInput={(params) => (
