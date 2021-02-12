@@ -1,18 +1,30 @@
 import React from 'react'
 
-const Bank = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./bank'))
-const ViewBanks = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./ViewBanks/viewBanks'))
-const ViewFeeAccounts = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./ViewFeeAccounts/viewFeeAccounts'))
-const editBanks = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./ViewBanks/editBanks'))
-const AddBanks = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./ViewBanks/addBanks'))
-const editFeeAccounts = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./ViewFeeAccounts/editFeeAccounts'))
-const AddFeeAccounts = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./ViewFeeAccounts/addFeeAccounts'))
-const AccToBranch = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./AccountToBranch/'))
-const AccToClass = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./AccountToClass/'))
-const TabView = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./CorporateBankTabView/'))
-const AirPayFeeAccount = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./AirPayFeeAccount/'))
-const AccToStore = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./AccountToStore/'))
+// const Bank = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./bank'))
+// // const ViewBanks = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./ViewBanks/viewBanks'))
+// const ViewFeeAccounts = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./ViewFeeAccounts/viewFeeAccounts'))
+// const editBanks = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./ViewBanks/editBanks'))
+// const AddBanks = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./ViewBanks/addBanks'))
+// const editFeeAccounts = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./ViewFeeAccounts/editFeeAccounts'))
+// const AddFeeAccounts = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./ViewFeeAccounts/addFeeAccounts'))
+// const AccToBranch = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./AccountToBranch/'))
+// const AccToClass = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./AccountToClass/'))
+// const TabView = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./CorporateBankTabView/'))
+// const AirPayFeeAccount = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./AirPayFeeAccount/'))
+// const AccToStore = React.lazy(() => import(/* webpackChunkName: 'ADfIN' */'./AccountToStore/'))
 
+import Bank from './bank'
+import ViewBanks from './ViewBanks/viewBanks'
+import ViewFeeAccounts from './ViewFeeAccounts/viewFeeAccounts'
+import editBanks from './ViewBanks/editBanks'
+import AddBanks from './ViewBanks/addBanks'
+import editFeeAccounts from './ViewFeeAccounts/editFeeAccounts'
+import AddFeeAccounts from './ViewFeeAccounts/addFeeAccounts'
+import AccToBranch from './AccountToBranch/'
+import AccToClass from './AccountToClass/'
+import TabView from './CorporateBankTabView/'
+import AirPayFeeAccount from './AirPayFeeAccount/'
+import AccToStore from './AccountToStore/'
 export {
   Bank,
   ViewBanks,

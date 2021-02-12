@@ -24,7 +24,7 @@ export const fetchStoreBranchMapping = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      payload.alert.warning('Unable To Load')
+      // payload.alert.warning('Unable To Load')
       console.log(err)
       dispatch(actionTypes.dataLoaded())
     })
@@ -45,12 +45,12 @@ export const updateFeeAccountStoreMap = (payload) => {
         }
       })
       dispatch(actionTypes.dataLoaded())
-      payload.alert.success('Updated Successfully')
+      // payload.alert.success('Updated Successfully')
     }).catch(error => {
       if (error.response && error.response.status === 400) {
-        payload.alert.warning(error.response.data.err_msg)
+        // payload.alert.warning(error.response.data.err_msg)
       } else {
-        payload.alert.error('Something Went Wrong')
+        // payload.alert.error('Something Went Wrong')
       }
       console.log(error)
       dispatch(actionTypes.dataLoaded())
@@ -72,7 +72,7 @@ export const addStoreFeeAccount = (payload) => {
         }
       })
       dispatch(actionTypes.dataLoaded())
-      payload.alert.success('Updated Successfully')
+      // payload.alert.success('Updated Successfully')
     }).catch(error => {
       // if (err.response.data.status_code === 404 && err.response.data.statusText === 'Fee Account is already present') {
       //   payload.alert.error(err.response.data.statusText)
@@ -80,9 +80,9 @@ export const addStoreFeeAccount = (payload) => {
       //   payload.alert.error('Something Went Wrong')
       // }
       if (error.response && error.response.status === 400) {
-        payload.alert.warning(error.response.data.err_msg)
+        // payload.alert.warning(error.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
       console.log(error.response)
       // console.log(error.response.data)
@@ -106,12 +106,12 @@ export const activeInactiveAccount = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
       console.log('data++++++', response.data)
-      payload.alert.success('Updated Successfully')
+      // payload.alert.success('Updated Successfully')
     }).catch(error => {
       if (error.response && error.response.status === 400) {
-        payload.alert.warning(error.response.data.err_msg)
+        // payload.alert.warning(error.response.data.err_msg)
       } else {
-        payload.alert.warning('Unable To get status')
+        // payload.alert.warning('Unable To get status')
       }
       dispatch(actionTypes.dataLoaded())
     })

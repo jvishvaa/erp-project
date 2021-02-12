@@ -24,7 +24,7 @@ export const fetchFeeAccountBranchMapping = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      payload.alert.warning('Unable To Load')
+      // payload.alert.warning('Unable To Load')
       console.log(err)
       dispatch(actionTypes.dataLoaded())
     })
@@ -51,7 +51,7 @@ export const deleteFeeAccountBranchMapping = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }
     }).catch(err => {
-      payload.alert.warning('Unable To Delete')
+      // payload.alert.warning('Unable To Delete')
       dispatch(actionTypes.dataLoaded())
       console.log(err)
     })
@@ -73,7 +73,7 @@ export const fetchRemainingFeeAcc = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      payload.alert.warning('Unable To Load')
+      // payload.alert.warning('Unable To Load')
       dispatch(actionTypes.dataLoaded())
       console.log(err)
     })
@@ -102,7 +102,7 @@ export const addFeeAccountsToBranch = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      payload.alert.warning('Unable To Add')
+      // payload.alert.warning('Unable To Add')
       dispatch(actionTypes.dataLoaded())
       console.log(err)
     })

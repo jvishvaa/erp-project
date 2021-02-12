@@ -53,7 +53,7 @@ export const fetchFeeTypes = (payload) => {
         }
       })
     }).catch(err => {
-      payload.alert.warning('Unable To Load')
+      // payload.alert.warning('Unable To Load')
       console.log(err)
     })
   }
@@ -76,7 +76,7 @@ export const fetchClassAccMapping = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      payload.alert.warning('Unable To Load')
+      // payload.alert.warning('Unable To Load')
       console.log(err)
       dispatch(actionTypes.dataLoaded())
     })
@@ -113,7 +113,7 @@ export const deleteClassAccMapping = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.log(err)
-      payload.alert.warning('Unable To Delete')
+      // payload.alert.warning('Unable To Delete')
       dispatch(actionTypes.dataLoaded())
     })
   }
@@ -135,7 +135,7 @@ export const fetchFeeAccountToBranch = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      payload.alert.warning('Unable To Load')
+      // payload.alert.warning('Unable To Load')
       console.log(err)
       dispatch(actionTypes.dataLoaded())
     })
@@ -193,7 +193,7 @@ export const addFeeAccToClass = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.log(err)
-      payload.alert.warning('Unable To Add')
+      // payload.alert.warning('Unable To Add')
       dispatch(actionTypes.dataLoaded())
     })
   }

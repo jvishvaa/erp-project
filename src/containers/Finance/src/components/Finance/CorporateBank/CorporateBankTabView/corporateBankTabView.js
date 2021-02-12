@@ -72,12 +72,12 @@ class TabView extends Component {
               {/* <Tab value='six' label='AirPay Fee Account' /> */}
             </Tabs>
           </AppBar>
-          {/* {this.state.value === 'one' && <TabContainer><Bank alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>} */}
+          {this.state.value === 'one' && <TabContainer><Bank alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>}
           {this.state.value === 'two' && <TabContainer><ViewBanks alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>}
           {this.state.value === 'three' && <TabContainer><ViewFeeAccounts alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>}
           {this.state.value === 'four' && <TabContainer><AccToClass alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>}
-          {/* {this.state.value === 'five' && <TabContainer><AccToBranch alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>}
-          {this.state.value === 'six' && <TabContainer><AccToStore alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>} */}
+          {this.state.value === 'five' && <TabContainer><AccToBranch alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>}
+          {this.state.value === 'six' && <TabContainer><AccToStore alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>}
           {/* {this.state.value === 'six' && <TabContainer><AirPayFeeAccount alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>} */}
         </React.Fragment>
       )

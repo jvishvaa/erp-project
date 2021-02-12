@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom'
 import Select from 'react-select'
 import { connect } from 'react-redux'
 // import { Paper } from '@material-ui/core/'
-import { Button, Fab, Grid, Modal, CircularProgress } from '@material-ui/core/'
+import { Button, Fab, Grid, CircularProgress } from '@material-ui/core/'
 import {
   Edit as EditIcon,
   Delete as DeleteIcon
@@ -11,7 +11,7 @@ import {
 // import axios from 'axios'
 // import ReactTable from 'react-table' //rajneesh
 // import 'react-table/react-table.css'
-// import Modal from '../../../../ui/Modal/modal'
+import Modal from '../../../../ui/Modal/modal'
 // import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 // import { OmsFilterTable } from '../../../../ui'
 // import { apiActions } from '../../../../_actions'
