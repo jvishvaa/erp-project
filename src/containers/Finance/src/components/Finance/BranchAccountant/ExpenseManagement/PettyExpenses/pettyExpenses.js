@@ -183,13 +183,18 @@ class PettyExpenses extends Component {
         <Modal
           open={this.state.addMoneyModal}
           onClose={this.hideMoneyModalHandler}
-          style={{ padding: '5px' }}
+          style={{ padding: '5px', justifyContent: 'center', alignItems: 'center', display: 'flex', maxWidth: '800px', minHeight: '500px', margin: 'auto'}}
           medium
         >
-          <Typography variant='h4' className={classes.modalHeader}>
+          <React.Fragment>
+            <Grid container spacing={3} style={{ padding: 15, background:'white' }}>
+              <Grid item xs='12'>         
+            <Typography variant='h4' className={classes.modalHeader}>
             Withdraw Money
           </Typography>
           <Divider className={classes.divider} />
+          </Grid>
+          <Grid item xs='3'>   
           <TextField
             label='Financial Year'
             select
@@ -208,6 +213,8 @@ class PettyExpenses extends Component {
                 </MenuItem>
               )) : []}
           </TextField>
+          </Grid>
+          <Grid item xs='3'>  
           <TextField
             select
             label='Select Bank'
@@ -224,6 +231,8 @@ class PettyExpenses extends Component {
               </MenuItem>
             ))}
           </TextField>
+          </Grid>
+          <Grid item xs='3'>  
           <TextField
             type='number'
             label='Amount'
@@ -236,6 +245,8 @@ class PettyExpenses extends Component {
             fullWidth
             required
           />
+          </Grid>
+          <Grid item xs='3'>  
           <TextField
             type='text'
             label='Narration'
@@ -248,6 +259,8 @@ class PettyExpenses extends Component {
             fullWidth
             required
           />
+          </Grid>
+          <Grid item xs='3'>  
           <TextField
             type='text'
             label='Cheque No'
@@ -259,6 +272,8 @@ class PettyExpenses extends Component {
             fullWidth
             required
           />
+          </Grid>
+          <Grid item xs='3'>  
           <TextField
             type='text'
             label='Approved By'
@@ -270,6 +285,8 @@ class PettyExpenses extends Component {
             fullWidth
             required
           />
+          </Grid>
+          <Grid item xs='3'>  
           <TextField
             type='date'
             required
@@ -281,14 +298,17 @@ class PettyExpenses extends Component {
             variant='outlined'
             fullWidth
           />
-          <div>
+          </Grid>
+          <Grid item xs='3'>  
             <Button variant='contained' color='primary'
               style={{ display: 'block', margin: 'auto' }}
               onClick={this.saveCashWithdraw}
             >
               Save
             </Button>
-          </div>
+          </Grid>
+          </Grid>
+          </React.Fragment>
         </Modal>
       )
     }

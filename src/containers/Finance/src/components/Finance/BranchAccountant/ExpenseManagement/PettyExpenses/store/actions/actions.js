@@ -273,7 +273,7 @@ export const setTxnActiveInactive = (payload) => {
       }
     }).then(response => {
       if (+response.status === 200) {
-        payload.alert.success('Saved Successfully')
+        // payload.alert.success('Saved Successfully')
         dispatch({
           type: SET_TXN_ACTIVE_INACTIVE,
           payload: {
@@ -281,13 +281,13 @@ export const setTxnActiveInactive = (payload) => {
           }
         })
       } else {
-        payload.alert.warning('Unable To Change')
+        // payload.alert.warning('Unable To Change')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.log(err)
       dispatch(actionTypes.dataLoaded())
-      payload.alert.warning('Something Went Wrong')
+      // payload.alert.warning('Something Went Wrong')
     })
   }
 }
@@ -322,7 +322,7 @@ export const cashWithdraw = (payload) => {
     }).then(response => {
       console.log(response)
       if (+response.status === 201) {
-        alert.success('Saved Successfully')
+        // alert.success('Saved Successfully')
         dispatch({
           type: CASH_WITHDRAW,
           payload: {
@@ -330,13 +330,13 @@ export const cashWithdraw = (payload) => {
           }
         })
       } else {
-        alert.warining('Unable To Save')
+        // alert.warining('Unable To Save')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.log(err)
       dispatch(actionTypes.dataLoaded())
-      alert.warning('Something Went Wrong')
+      // alert.warning('Something Went Wrong')
     })
   }
 }
@@ -358,7 +358,7 @@ export const listCashOpeningBalance = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.log(err)
-      payload.alert.warning('Something Went Wrong')
+      // payload.alert.warning('Something Went Wrong')
       dispatch(actionTypes.dataLoaded())
     })
   }
