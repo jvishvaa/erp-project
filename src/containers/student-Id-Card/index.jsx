@@ -12,7 +12,7 @@ import {
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { withRouter } from 'react-router-dom';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-// import Layout from '../Layout';
+import Layout from '../Layout';
 import Loader from '../../components/loader/loader';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
@@ -206,298 +206,302 @@ const StudentIdCard = ({ history }) => {
 
   return (
     <>
-      {/* <Layout> */}
-      <Grid container spacing={2} className='studentIdcardFilterDiv'>
-        <Grid item md={12} xs={12}>
-          <Grid container spacing={5} justify='middle'>
-            <Grid item md={12} xs={12} style={{ display: 'flex' }}>
-              <button
-                type='button'
-                className='studentIdCardNavigationLinks'
-                onClick={() => history.push('/dashboard')}
-              >
-                Dashboard
-              </button>
-              <ArrowForwardIosIcon className='studentIdCardNavArrow' />
-              <span className='studentIdCardNavigationLinks'>ID Cards</span>
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item md={12} xs={12}>
-          <Grid container spacing={2} className='studentIdCardFilterSelectionDiv'>
-            <Grid item md={3} xs={12}>
-              <Autocomplete
-                style={{ width: '100%' }}
-                size='small'
-                onChange={(event, value) => {
-                  handleStateData(value, 'selectedYear');
-                  handleStateData('', 'selectedRole');
-                  handleStateData('', 'selectedBranch');
-                  handleStateData('', 'selectedGrade');
-                  handleStateData('', 'selectedSection');
-                }}
-                id='academic-year'
-                className='dropdownIcon'
-                value={filterList.selectedYear}
-                options={filterList.acadminYearList}
-                getOptionLabel={(option) => option?.session_year}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Academic Year'
-                    placeholder='Academic Year'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item md={3} xs={12}>
-              <Autocomplete
-                style={{ width: '100%' }}
-                size='small'
-                onChange={(event, value) => {
-                  handleStateData(value, 'selectedBranch');
-                  handleStateData('', 'selectedGrade');
-                  handleStateData('', 'selectedSection');
-                  getGradeList(value && value.id);
-                }}
-                id='branch_id'
-                className='dropdownIcon'
-                value={filterList.selectedBranch}
-                options={filterList.branchList}
-                getOptionLabel={(option) => option?.branch_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Branch'
-                    placeholder='Branch'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item md={3} xs={12}>
-              <Autocomplete
-                style={{ width: '100%' }}
-                size='small'
-                onChange={(event, value) => handleStateData(value, 'selectedRole')}
-                id='role_id'
-                className='dropdownIcon'
-                value={filterList.selectedRole}
-                options={filterList.roleList}
-                getOptionLabel={(option) => option?.role_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Role'
-                    placeholder='Role'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item md={3} xs={12}>
-              <Autocomplete
-                style={{ width: '100%' }}
-                size='small'
-                onChange={(event, value) => {
-                  handleStateData(value, 'selectedGrade');
-                  handleStateData('', 'selectedSection');
-                  getSectionList(value && value.grade_id);
-                }}
-                id='grade_id'
-                className='dropdownIcon'
-                value={filterList.selectedGrade}
-                options={filterList.gradeList}
-                getOptionLabel={(option) => option?.grade__grade_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Grade'
-                    placeholder='Grade'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item md={3} xs={12}>
-              <Autocomplete
-                style={{ width: '100%' }}
-                size='small'
-                className='dropdownIcon'
-                onChange={(event, value) => handleStateData(value, 'selectedSection')}
-                id='section_id'
-                options={filterList.sectionlist}
-                value={filterList.selectedSection}
-                getOptionLabel={(option) => option?.section__section_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Sections'
-                    placeholder='Sections'
-                  />
-                )}
-              />
-            </Grid>
-          </Grid>
-          <Divider className='studdentIdCardDivider' />
-          <Grid container spacing={2} className='studentIdCardFilterSelectionDiv'>
-            <Grid item md={1} xs={12}>
-              <Button
-                variant='contained'
-                size='small'
-                fullWidth
-                className='studentIdCardFilterButton'
-                onClick={() => handleClearFilter()}
-              >
-                CLEAR ALL
-              </Button>
-            </Grid>
-            <Grid item md={1} xs={12}>
-              <Button
-                variant='contained'
-                size='small'
-                color='primary'
-                fullWidth
-                onClick={() => handleFilter()}
-                className='studentIdCardFilterButton'
-              >
-                FILTER
-              </Button>
-            </Grid>
-            <span className='studentIdCardButtonBorderDivider' />
-            <Grid item md={2} xs={12}>
-              <Button
-                variant='contained'
-                size='small'
-                color='primary'
-                className='studentIdCardFilterButton1'
-              >
-                Create New
-              </Button>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
-      <Grid
-        container
-        spacing={2}
-        style={{
-          padding: '10px 20px',
-          backgroundColor: filterList && filterList.idCardList ? 'white' : '',
-        }}
-      >
-        {filterList && !filterList.idCardList && (
-          <Grid item md={12} xs={12}>
-            <Grid container spacing={2}>
-              <Grid
-                item
-                md={12}
-                xs={12}
-                style={{ textAlign: 'center', marginTop: '10px' }}
-              >
-                <img src={filterImage} alt='crash' height='250px' width='250px' />
-                <Typography>Please select the filter to dislpay ID cards</Typography>
-              </Grid>
-            </Grid>
-          </Grid>
-        )}
-        {filterList &&
-          filterList.idCardList &&
-          filterList.idCardList.results.length === 0 && (
+      <Layout>
+        <div style={{ width: '100%', overflow: 'hidden' }}>
+          <Grid container spacing={2} className='studentIdcardFilterDiv'>
             <Grid item md={12} xs={12}>
-              <Typography
-                variant='h5'
-                style={{ textAlign: 'center', margin: '20px 0px' }}
-              >
-                ID Cards Not Found
-              </Typography>
-            </Grid>
-          )}
-        {filterList &&
-          filterList.idCardList &&
-          filterList.idCardList.results.length !== 0 && (
-            <Grid
-              item
-              md={filterList && filterList.selectedId ? 7 : 12}
-              xs={12}
-              className='studentIdCardViewCardsSection'
-            >
-              <Grid container spacing={3}>
-                {filterList &&
-                  filterList.idCardList &&
-                  filterList.idCardList.results.length !== 0 &&
-                  filterList.idCardList.results.map((item) => (
-                    <Grid
-                      item
-                      md={filterList && filterList.selectedId ? 6 : 4}
-                      xs={12}
-                      key={item.id}
-                    >
-                      <StudentIdCardDetails
-                        handleSelect={handleStateData}
-                        handleViewMore={getSignatureDetails}
-                        fullData={item || {}}
-                        selectedItem={(filterList && filterList.selectedId) || {}}
-                      />
-                    </Grid>
-                  ))}
+              <Grid container spacing={5} justify='middle'>
+                <Grid item md={12} xs={12} style={{ display: 'flex' }}>
+                  <button
+                    type='button'
+                    className='studentIdCardNavigationLinks'
+                    onClick={() => history.push('/dashboard')}
+                  >
+                    Dashboard
+                  </button>
+                  <ArrowForwardIosIcon className='studentIdCardNavArrow' />
+                  <span className='studentIdCardNavigationLinks'>ID Cards</span>
+                </Grid>
               </Grid>
             </Grid>
-          )}
-        {filterList && filterList.selectedId && (
-          <Grid item md={5} xs={12} className='studentIdCardLeftBorderView'>
-            <Grid container className='studentIdCardViewCardsFullSection'>
-              <Grid item md={12} xs={12}>
-                <StudentIDCardFullView
-                  handleClose={handleStateData}
-                  signatureDetails={(filterList && filterList.signature) || []}
-                  selectedDetails={(filterList && filterList.selectedId) || {}}
-                  selectedRole={
-                    (filterList &&
-                      filterList.selectedRole &&
-                      filterList.selectedRole.role_name) ||
-                    ''
-                  }
-                />
+            <Grid item md={12} xs={12}>
+              <Grid container spacing={2} className='studentIdCardFilterSelectionDiv'>
+                <Grid item md={3} xs={12}>
+                  <Autocomplete
+                    style={{ width: '100%' }}
+                    size='small'
+                    onChange={(event, value) => {
+                      handleStateData(value, 'selectedYear');
+                      handleStateData('', 'selectedRole');
+                      handleStateData('', 'selectedBranch');
+                      handleStateData('', 'selectedGrade');
+                      handleStateData('', 'selectedSection');
+                    }}
+                    id='academic-year'
+                    className='dropdownIcon'
+                    value={filterList.selectedYear}
+                    options={filterList.acadminYearList}
+                    getOptionLabel={(option) => option?.session_year}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='Academic Year'
+                        placeholder='Academic Year'
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item md={3} xs={12}>
+                  <Autocomplete
+                    style={{ width: '100%' }}
+                    size='small'
+                    onChange={(event, value) => {
+                      handleStateData(value, 'selectedBranch');
+                      handleStateData('', 'selectedGrade');
+                      handleStateData('', 'selectedSection');
+                      getGradeList(value && value.id);
+                    }}
+                    id='branch_id'
+                    className='dropdownIcon'
+                    value={filterList.selectedBranch}
+                    options={filterList.branchList}
+                    getOptionLabel={(option) => option?.branch_name}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='Branch'
+                        placeholder='Branch'
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item md={3} xs={12}>
+                  <Autocomplete
+                    style={{ width: '100%' }}
+                    size='small'
+                    onChange={(event, value) => handleStateData(value, 'selectedRole')}
+                    id='role_id'
+                    className='dropdownIcon'
+                    value={filterList.selectedRole}
+                    options={filterList.roleList}
+                    getOptionLabel={(option) => option?.role_name}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='Role'
+                        placeholder='Role'
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item md={3} xs={12}>
+                  <Autocomplete
+                    style={{ width: '100%' }}
+                    size='small'
+                    onChange={(event, value) => {
+                      handleStateData(value, 'selectedGrade');
+                      handleStateData('', 'selectedSection');
+                      getSectionList(value && value.grade_id);
+                    }}
+                    id='grade_id'
+                    className='dropdownIcon'
+                    value={filterList.selectedGrade}
+                    options={filterList.gradeList}
+                    getOptionLabel={(option) => option?.grade__grade_name}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='Grade'
+                        placeholder='Grade'
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item md={3} xs={12}>
+                  <Autocomplete
+                    style={{ width: '100%' }}
+                    size='small'
+                    className='dropdownIcon'
+                    onChange={(event, value) => handleStateData(value, 'selectedSection')}
+                    id='section_id'
+                    options={filterList.sectionlist}
+                    value={filterList.selectedSection}
+                    getOptionLabel={(option) => option?.section__section_name}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='Sections'
+                        placeholder='Sections'
+                      />
+                    )}
+                  />
+                </Grid>
+              </Grid>
+              <Divider className='studdentIdCardDivider' />
+              <Grid container spacing={2} className='studentIdCardFilterSelectionDiv'>
+                <Grid item md={1} xs={12}>
+                  <Button
+                    variant='contained'
+                    size='small'
+                    fullWidth
+                    className='studentIdCardFilterButton'
+                    onClick={() => handleClearFilter()}
+                  >
+                    CLEAR ALL
+                  </Button>
+                </Grid>
+                <Grid item md={1} xs={12}>
+                  <Button
+                    variant='contained'
+                    size='small'
+                    color='primary'
+                    fullWidth
+                    onClick={() => handleFilter()}
+                    className='studentIdCardFilterButton'
+                  >
+                    FILTER
+                  </Button>
+                </Grid>
+                <span className='studentIdCardButtonBorderDivider' />
+                <Grid item md={2} xs={12}>
+                  <Button
+                    variant='contained'
+                    size='small'
+                    color='primary'
+                    className='studentIdCardFilterButton1'
+                  >
+                    Create New
+                  </Button>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
-        )}
-        {filterList &&
-          filterList.idCardList &&
-          filterList.idCardList.results.length !== 0 && (
-            <Grid item md={12} xs={12} className='paginationDiv'>
-              <TablePagination
-                component='div'
-                count={
-                  filterList && filterList.idCardList && filterList.idCardList.total_pages
-                }
-                rowsPerPage='12'
-                page={
-                  Number(
-                    filterList &&
+          <Grid
+            container
+            spacing={2}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: filterList && filterList.idCardList ? 'white' : '',
+            }}
+          >
+            {filterList && !filterList.idCardList && (
+              <Grid item md={12} xs={12}>
+                <Grid container spacing={2}>
+                  <Grid
+                    item
+                    md={12}
+                    xs={12}
+                    style={{ textAlign: 'center', marginTop: '10px' }}
+                  >
+                    <img src={filterImage} alt='crash' height='250px' width='250px' />
+                    <Typography>Please select the filter to dislpay ID cards</Typography>
+                  </Grid>
+                </Grid>
+              </Grid>
+            )}
+            {filterList &&
+              filterList.idCardList &&
+              filterList.idCardList.results.length === 0 && (
+                <Grid item md={12} xs={12}>
+                  <Typography
+                    variant='h5'
+                    style={{ textAlign: 'center', margin: '20px 0px' }}
+                  >
+                    ID Cards Not Found
+                  </Typography>
+                </Grid>
+              )}
+            {filterList &&
+              filterList.idCardList &&
+              filterList.idCardList.results.length !== 0 && (
+                <Grid
+                  item
+                  md={filterList && filterList.selectedId ? 7 : 12}
+                  xs={12}
+                  className='studentIdCardViewCardsSection'
+                >
+                  <Grid container spacing={3}>
+                    {filterList &&
                       filterList.idCardList &&
-                      filterList.idCardList.current_page
-                  ) - 1
-                }
-                onChangePage={(e, page) => {
-                  handlePagination(e, page + 1);
-                }}
-                rowsPerPageOptions={false}
-                className='table-pagination-users-log-message'
-              />
-            </Grid>
-          )}
-      </Grid>
-      {/* </Layout> */}
-      {loading && <Loader />}
+                      filterList.idCardList.results.length !== 0 &&
+                      filterList.idCardList.results.map((item) => (
+                        <Grid
+                          item
+                          md={filterList && filterList.selectedId ? 6 : 4}
+                          xs={12}
+                          key={item.id}
+                        >
+                          <StudentIdCardDetails
+                            handleSelect={handleStateData}
+                            handleViewMore={getSignatureDetails}
+                            fullData={item || {}}
+                            selectedItem={(filterList && filterList.selectedId) || {}}
+                          />
+                        </Grid>
+                      ))}
+                  </Grid>
+                </Grid>
+              )}
+            {filterList && filterList.selectedId && (
+              <Grid item md={5} xs={12} className='studentIdCardLeftBorderView'>
+                <Grid container className='studentIdCardViewCardsFullSection'>
+                  <Grid item md={12} xs={12}>
+                    <StudentIDCardFullView
+                      handleClose={handleStateData}
+                      signatureDetails={(filterList && filterList.signature) || []}
+                      selectedDetails={(filterList && filterList.selectedId) || {}}
+                      selectedRole={
+                        (filterList &&
+                          filterList.selectedRole &&
+                          filterList.selectedRole.role_name) ||
+                        ''
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+            )}
+            {filterList &&
+              filterList.idCardList &&
+              filterList.idCardList.results.length !== 0 && (
+                <Grid item md={12} xs={12} className='paginationDiv'>
+                  <TablePagination
+                    component='div'
+                    count={
+                      filterList &&
+                      filterList.idCardList &&
+                      filterList.idCardList.total_pages
+                    }
+                    rowsPerPage='12'
+                    page={
+                      Number(
+                        filterList &&
+                          filterList.idCardList &&
+                          filterList.idCardList.current_page
+                      ) - 1
+                    }
+                    onChangePage={(e, page) => {
+                      handlePagination(e, page + 1);
+                    }}
+                    rowsPerPageOptions={false}
+                    className='table-pagination-users-log-message'
+                  />
+                </Grid>
+              )}
+          </Grid>
+          {loading && <Loader />}
+        </div>
+      </Layout>
     </>
   );
 };

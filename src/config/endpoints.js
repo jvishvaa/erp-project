@@ -193,6 +193,16 @@ export default {
     BlogView: '/academic/view_blog/',
     WordCountConfig: '/academic/word_count_config/',
   },
+  teacherViewBatches: {
+    courseListApi: '/aol/courses/',
+    batchSizeList: 'aol/aol-course-batch/',
+    getBatchList: '/erp_user/teacher_online_class/',
+    cancelBatchApi: '/erp_user/cancel-online-class/',
+  },
+  studentViewBatchesApi: {
+    getBatchesApi: '/erp_user/student_online_class/',
+    rejetBatchApi: '',
+  },
   assessment: {
     questionPaperList: `/academic/assessment-list/`,
     viewQuestionList: `${baseURLCentral}/assessment/3/qp-questions-list/`,

@@ -97,6 +97,11 @@ import AttendeeListRemake from './containers/attendance';
 import TestComparisionUI from './containers/assessment-report/test-comparision';
 import AssessmentAnalysis from './containers/assessment-report/assessment-analysis';
 
+import StudentStrength from './containers/student-strength';
+import StudentIdCard from './containers/student-Id-Card';
+import SignatureUpload from './containers/signature-upload';
+import TeacherBatchView from './containers/teacherBatchView';
+
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -274,9 +279,9 @@ function App() {
                         <Route exact path='/online-class/attendee-list/:id'>
                           {({ match }) => <AttendeeList match={match} />}
                         </Route>
-                        <Route exact path='/online-class/attend-class'>
+                        {/* <Route exact path='/online-class/attend-class'>
                           {({ match }) => <AOLClassView match={match} />}
-                        </Route>
+                        </Route> */}
                         {/* {({ match }) => <ViewClassStudentCollection match={match} />} */}
                         <Route exact path='/online-class/resource'>
                           {({ match }) => <ResourceView match={match} />}
@@ -401,6 +406,22 @@ function App() {
                         </Route>
                         <Route exact path='/assessment/view-assessment'>
                           {({ match }) => <ViewAssessment match={match} />}
+                        </Route>
+
+                        <Route exact path='/student-strength'>
+                          {({ match }) => <StudentStrength match={match} />}
+                        </Route>
+                        <Route exact path='/student-id-card'>
+                          {({ match }) => <StudentIdCard match={match} />}
+                        </Route>
+                        <Route exact path='/master-mgmt/signature-upload'>
+                          {({ match }) => <SignatureUpload match={match} />}
+                        </Route>
+                        <Route exact path='/online-class/attend-class'>
+                          {({ match }) => <TeacherBatchView match={match} />}
+                        </Route>
+                        <Route exact path='/online-class/teacher-view-class'>
+                          {({ match }) => <TeacherBatchView match={match} />}
                         </Route>
                       </Switch>
                     </DailyDairyStore>

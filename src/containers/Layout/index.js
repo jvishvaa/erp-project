@@ -306,6 +306,10 @@ const Layout = ({ children, history }) => {
         history.push('/online-class/attend-class');
         break;
       }
+      case 'Teacher View Class': {
+        history.push('/online-class/teacher-view-class');
+        break;
+      }
       case 'Create Class': {
         history.push('/online-class/create-class');
         break;
@@ -402,6 +406,10 @@ const Layout = ({ children, history }) => {
         history.push('/master-mgmt/message-type-table');
         break;
       }
+      case 'signature-upload': {
+        history.push('/master-mgmt/signature-upload');
+        break;
+      }
       case 'course-table': {
         history.push('/course-list');
         break;
@@ -477,6 +485,18 @@ const Layout = ({ children, history }) => {
       }
       case 'ViewAssessment': {
         history.push('/assessment/view-assessment');
+        break;
+      }
+      case 'ID Cards': {
+        history.push('/student-id-card');
+        break;
+      }
+      case 'Student Strength': {
+        history.push('/student-strength');
+        break;
+      }
+      case 'Signature Upload': {
+        history.push('/master-mgmt/signature-upload');
         break;
       }
       default:

@@ -13,6 +13,7 @@ import CreateUpdateSignatureModel from './signatureCreateUpdate';
 import ViewSignatureCards from './signatureCardView';
 import filterImage from '../../assets/images/unfiltered.svg';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import Layout from '../Layout';
 
 const SignatureUpload = ({ history }) => {
   const { setAlert } = useContext(AlertNotificationContext);
@@ -98,128 +99,134 @@ const SignatureUpload = ({ history }) => {
 
   return (
     <>
-      <Grid container spacing={2} className='signatureUploadHead'>
-        <Grid item md={12} xs={12}>
-          <Grid container spacing={2} justify='middle' className='signatureNavDiv'>
-            <Grid item md={12} xs={12} style={{ display: 'flex' }}>
-              <button
-                type='button'
-                className='SignatureNavigationLinks'
-                onClick={() => history.push('/dashboard')}
-              >
-                Dashboard
-              </button>
-              <ArrowForwardIosIcon className='SignatureUploadNavArrow' />
-              <span className='SignatureNavigationLinks'>Master Management</span>
-              <ArrowForwardIosIcon className='SignatureUploadNavArrow' />
-              <span className='SignatureNavigationLinks'>Signature Upload</span>
+      <Layout>
+        <div style={{ width: '100%', overflow: 'hidden' }}>
+          <Grid container spacing={2} className='signatureUploadHead'>
+            <Grid item md={12} xs={12}>
+              <Grid container spacing={2} justify='middle' className='signatureNavDiv'>
+                <Grid item md={12} xs={12} style={{ display: 'flex' }}>
+                  <button
+                    type='button'
+                    className='SignatureNavigationLinks'
+                    onClick={() => history.push('/dashboard')}
+                  >
+                    Dashboard
+                  </button>
+                  <ArrowForwardIosIcon className='SignatureUploadNavArrow' />
+                  <span className='SignatureNavigationLinks'>Master Management</span>
+                  <ArrowForwardIosIcon className='SignatureUploadNavArrow' />
+                  <span className='SignatureNavigationLinks'>Signature Upload</span>
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item md={12} xs={12}>
+              <Grid container spacing={5} className='SignatureUploadFilterDiv'>
+                <Grid item md={4} xs={12}>
+                  <Autocomplete
+                    style={{ width: '100%' }}
+                    size='small'
+                    onChange={(event, value) => {
+                      setSelectedBranch(value);
+                      getSignatures(value);
+                    }}
+                    id='branch_id'
+                    className='dropdownIcon'
+                    value={selectedBranch}
+                    options={branchList}
+                    getOptionLabel={(option) => option?.branch_name}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='Branch'
+                        placeholder='Branch'
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item md={1} xs={12}>
+                  <Button
+                    size='small'
+                    fullWidth
+                    variant='contained'
+                    color='primary'
+                    className='signatureUploadFilterButton'
+                    onClick={() => getSignatures(selectedBranch)}
+                  >
+                    Filter
+                  </Button>
+                </Grid>
+                <Grid item md={3} xs={12}>
+                  <Button
+                    size='small'
+                    variant='contained'
+                    color='primary'
+                    onClick={() => handleOpen()}
+                    className='signatureUploadFilterButton'
+                  >
+                    <AddIcon />
+                    &nbsp; Create Signature
+                  </Button>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
-        <Grid item md={12} xs={12}>
-          <Grid container spacing={5} className='SignatureUploadFilterDiv'>
-            <Grid item md={4} xs={12}>
-              <Autocomplete
-                style={{ width: '100%' }}
-                size='small'
-                onChange={(event, value) => {
-                  setSelectedBranch(value);
-                  getSignatures(value);
-                }}
-                id='branch_id'
-                className='dropdownIcon'
-                value={selectedBranch}
-                options={branchList}
-                getOptionLabel={(option) => option?.branch_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Branch'
-                    placeholder='Branch'
-                  />
-                )}
+          <Grid container spacing={2}>
+            <Grid item md={12} xs={12}>
+              {!signatureList && (
+                <Grid container spacing={2}>
+                  <Grid
+                    item
+                    md={12}
+                    xs={12}
+                    style={{ textAlign: 'center', marginTop: '10px' }}
+                  >
+                    <img src={filterImage} alt='crash' height='250px' width='250px' />
+                    <Typography>
+                      Please select the filter to dislpay signatures
+                    </Typography>
+                  </Grid>
+                </Grid>
+              )}
+              {signatureList && signatureList.length === 0 && (
+                <Grid container spacing={2} className='signatureCardViewMain'>
+                  <Grid item md={12} xs={12} style={{ textAlign: 'center' }}>
+                    <Typography variant='h5'>Signatures Not Found</Typography>
+                  </Grid>
+                </Grid>
+              )}
+              {signatureList && signatureList.length !== 0 && (
+                <Grid container spacing={2} className='signatureCardViewMain'>
+                  {signatureList &&
+                    signatureList.length !== 0 &&
+                    signatureList.map((item) => (
+                      <Grid item md={4} xs={12} key={item.id}>
+                        <ViewSignatureCards
+                          handleEdit={handleEdit}
+                          fullData={item}
+                          close={handleClose}
+                        />
+                      </Grid>
+                    ))}
+                </Grid>
+              )}
+            </Grid>
+          </Grid>
+          <Grid container spacing={2}>
+            <Grid item md={12} xs={12}>
+              <CreateUpdateSignatureModel
+                open={open}
+                branchList={branchList}
+                close={handleClose}
+                edit={edit}
+                fullData={updateData}
               />
             </Grid>
-            <Grid item md={1} xs={12}>
-              <Button
-                size='small'
-                fullWidth
-                variant='contained'
-                color='primary'
-                className='signatureUploadFilterButton'
-                onClick={() => getSignatures(selectedBranch)}
-              >
-                Filter
-              </Button>
-            </Grid>
-            <Grid item md={3} xs={12}>
-              <Button
-                size='small'
-                variant='contained'
-                color='primary'
-                onClick={() => handleOpen()}
-                className='signatureUploadFilterButton'
-              >
-                <AddIcon />
-                &nbsp; Create Signature
-              </Button>
-            </Grid>
           </Grid>
-        </Grid>
-      </Grid>
-      <Grid container spacing={2}>
-        <Grid item md={12} xs={12}>
-          {!signatureList && (
-            <Grid container spacing={2}>
-              <Grid
-                item
-                md={12}
-                xs={12}
-                style={{ textAlign: 'center', marginTop: '10px' }}
-              >
-                <img src={filterImage} alt='crash' height='250px' width='250px' />
-                <Typography>Please select the filter to dislpay signatures</Typography>
-              </Grid>
-            </Grid>
-          )}
-          {signatureList && signatureList.length === 0 && (
-            <Grid container spacing={2} className='signatureCardViewMain'>
-              <Grid item md={12} xs={12} style={{ textAlign: 'center' }}>
-                <Typography variant='h5'>Signatures Not Found</Typography>
-              </Grid>
-            </Grid>
-          )}
-          {signatureList && signatureList.length !== 0 && (
-            <Grid container spacing={2} className='signatureCardViewMain'>
-              {signatureList &&
-                signatureList.length !== 0 &&
-                signatureList.map((item) => (
-                  <Grid item md={4} xs={12} key={item.id}>
-                    <ViewSignatureCards
-                      handleEdit={handleEdit}
-                      fullData={item}
-                      close={handleClose}
-                    />
-                  </Grid>
-                ))}
-            </Grid>
-          )}
-        </Grid>
-      </Grid>
-      <Grid container spacing={2}>
-        <Grid item md={12} xs={12}>
-          <CreateUpdateSignatureModel
-            open={open}
-            branchList={branchList}
-            close={handleClose}
-            edit={edit}
-            fullData={updateData}
-          />
-        </Grid>
-      </Grid>
-      {loading ? <Loader /> : null}
+          {loading ? <Loader /> : null}
+        </div>
+      </Layout>
     </>
   );
 };
