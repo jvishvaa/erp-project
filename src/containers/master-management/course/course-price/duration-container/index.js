@@ -21,6 +21,7 @@ const DurationContainer = (props) => {
     resetContent,
     clearFlag,
     setCourseId,
+    setSelectedCourse
   } = props;
 
   const { setAlert } = useContext(AlertNotificationContext);
@@ -49,7 +50,7 @@ const DurationContainer = (props) => {
       const index = collectData.findIndex(
         (datarow) => datarow['limit'] === selectedLimit
       );
-      setNoOfWeeks(collectData[index]['weeks']);
+      setNoOfWeeks(collectData[index]['weeks']||'');
       setToggle(collectData[index]['toggle']);
       setRecursiveContent(collectData[index]['data']);
       setNonRecursiveContent(collectData[index]['singleData']);
@@ -105,10 +106,10 @@ const DurationContainer = (props) => {
   const handleNumberOfWeeks = (value) => {
     setNoOfWeeks(value);
     // if (toggle) {
-    [...recursiveContent][0]['weeks'] = Number(value);
+    [...recursiveContent][0]['weeks'] = parseInt(value);
     setRecursiveContent([...recursiveContent]);
     // } else {
-    [...nonRecursiveContent][0]['weeks'] = Number(value);
+    [...nonRecursiveContent][0]['weeks'] = parseInt(value);
     setNonRecursiveContent([...nonRecursiveContent]);
     // }
   };
@@ -136,14 +137,14 @@ const DurationContainer = (props) => {
         if (list[i]['toggle']) {
           for (let k = 0; k < list[i]['data'].length; k++) {
             coursePriceArray.push({
-              no_of_week: Number(list[i]['data'][k]['weeks']),
+              no_of_week: parseInt(list[i]['data'][k]['weeks']),
               price: parseFloat(list[i]['data'][k]['price']),
               id: Number(list[i]['data'][k]['id']),
             });
           }
         } else {
           coursePriceArray.push({
-            no_of_week: Number(list[i]['singleData'][0]['weeks']),
+            no_of_week: parseInt(list[i]['singleData'][0]['weeks']),
             price: parseFloat(list[i]['singleData'][0]['price']),
             id: Number(list[i]['singleData'][0]['id']),
           });
@@ -152,13 +153,13 @@ const DurationContainer = (props) => {
         if (list[i]['toggle']) {
           for (let k = 0; k < list[i]['data'].length; k++) {
             coursePriceArray.push({
-              no_of_week: Number(list[i]['data'][k]['weeks']),
+              no_of_week: parseInt(list[i]['data'][k]['weeks']),
               price: parseFloat(list[i]['data'][k]['price']),
             });
           }
         } else {
           coursePriceArray.push({
-            no_of_week: Number(list[i]['singleData'][0]['weeks']),
+            no_of_week: parseInt(list[i]['singleData'][0]['weeks']),
             price: parseFloat(list[i]['singleData'][0]['price']),
           });
         }
@@ -203,6 +204,7 @@ const DurationContainer = (props) => {
               setAlert('success', result.data.message);
               resetContent();
               setCourseId('');
+              setSelectedCourse('');
             } else {
               setAlert('error', result.data.message);
             }
@@ -218,6 +220,7 @@ const DurationContainer = (props) => {
               setAlert('success', result.data.message);
               resetContent();
               setCourseId('');
+              setSelectedCourse('');
             } else {
               setAlert('error', result.data.message);
             }
@@ -340,7 +343,7 @@ const DurationContainer = (props) => {
                 <div className='recursiveWeekContainer'>
                   <TextField
                     size='small'
-                    id='weekbox'
+                    id='week'
                     variant='outlined'
                     type='number'
                     name='weeks'

@@ -36,6 +36,7 @@ const CoursePrice = () => {
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
   const [courseId, setCourseId] = useState();
+  const [selectedCourse, setSelectedCourse] = useState('');
   const [timeSlot, setTimeSlot] = useState([]);
   const [selectedLimit, setSelectedLimit] = useState('1:1');
   const [timeSlotDisplay, setTimeSlotDisplay] = useState();
@@ -220,6 +221,8 @@ const CoursePrice = () => {
         setCourseId={setCourseId}
         setCollectData={setCollectData}
         resetContent={resetContent}
+        selectedCourse={selectedCourse} 
+        setSelectedCourse={setSelectedCourse}
       />
       <div>
         {' '}
@@ -258,6 +261,7 @@ const CoursePrice = () => {
               funBatchSize={funBatchSize}
               firstHit={firstHit}
               resetContent={resetContent}
+              setSelectedCourse={setSelectedCourse}
             />
           </Grid>
         </Grid>

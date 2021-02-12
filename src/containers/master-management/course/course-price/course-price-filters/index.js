@@ -15,10 +15,11 @@ const CoursePriceFilters = (props) => {
         setCourseId,
         setCollectData,
         resetContent,
+        selectedCourse,
+        setSelectedCourse
     } = props;
     const { setAlert } = useContext(AlertNotificationContext);
     const [selectedGrade, setSelectedGrade] = useState('');
-    const [selectedCourse, setSelectedCourse] = useState('');
     const themeContext = useTheme();
     const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
     const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
