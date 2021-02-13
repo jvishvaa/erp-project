@@ -2,7 +2,6 @@
 import Dialog from '@material-ui/core/Dialog';
 import { Divider, Grid, makeStyles, useTheme, withStyles, Button, TextField, Switch, FormControlLabel } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-// import DateFnsUtils from '@date-io/date-fns';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -32,7 +31,6 @@ const useStyles = makeStyles(theme => ({
         paddingRight: '0px'
     }
 }))
-
 const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, assignData }) => {
     const classes = useStyles();
     const [batchList, setBatchList] = useState([]);
@@ -48,9 +46,6 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
     const handleDateChange = (date) => {
         setSelectedDate(date);
     };
-
-
-
     const handleTeacher = (event, value) => {
         setFilterData({ ...filterData, teacher: '' })
         if (value) {
@@ -60,6 +55,7 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
     console.log(selectedDate,'HHHHHHHH',assignData)
 
     const handleAssign = () => {
+        
         const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
         const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
         const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(selectedDate);
