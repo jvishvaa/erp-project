@@ -149,7 +149,7 @@ export default function ClassdetailsCardComponent(props) {
 
 
     const assignData = props
-    console.log(props, '=====')
+    console.log(props, '=============')
     const [periodsData, setPeriodsData] = React.useState([]);
     //Periods date start
     const history = useHistory();
@@ -159,7 +159,7 @@ export default function ClassdetailsCardComponent(props) {
 
     useEffect(() => {
         if (props.classData) {
-            axiosInstance.get(`erp_user/${props.classData.id}/online-class-details/`)
+            axiosInstance.get(`erp_user/${props?.classData?.id}/online-class-details/`)
                 .then((res) => {
                     setPeriodsData(res.data.data);
                 })
@@ -167,7 +167,7 @@ export default function ClassdetailsCardComponent(props) {
     }, [props.classData]);
 
     const handleAttendance = () => {
-        history.push(`/aol-attendance-list/${props.classData.id}`);
+        history.push(`/aol-attendance-list/${props?.classData?.id}`);
     }
 
 
@@ -176,11 +176,15 @@ export default function ClassdetailsCardComponent(props) {
     }
 
     const handleReshuffle = () => {
-        history.push(`/aol-reshuffle/${props.classData.online_class.aol_batch.id}`)
+        // history.push(`/aol-reshuffle/${props?.classData?.online_class?.aol_batch?.id}`)
+        history.push(`/aol-reshuffle/${props?.classData?.online_class?.aol_batch_id}`)
+    }
+    const handleCoursePlan=()=>{
+        history.push(`/view-period/${props.filterData && props?.filterData?.course?.id}`)
     }
 
     useEffect(() => {
-        axiosInstance.get(`${endpoints.aol.teacherList}?branch_id=${props.filterData.branch.id}&grade_id=${props.filterData.grade.grade_id}`)
+        axiosInstance.get(`${endpoints.aol.teacherList}?branch_id=${props?.filterData?.branch?.id}&grade_id=${props?.filterData?.grade?.grade_id}`)
             .then(result => {
                 if (result.data.status_code === 200) {
                     setTeacherDropdown(result.data.data)
@@ -203,11 +207,11 @@ export default function ClassdetailsCardComponent(props) {
                         </div>
                     )}
                     <div>
-                        {props.classData.online_class && (
+                        {/* {props.classData.online_class && (
                             <Typography className={classes.classHeaderSub}>
                                 {props.classData && props.classData.online_class.subject[0] && props.classData.online_class.subject[0].subject_name}
                             </Typography>
-                        )}
+                        )} */}
 
                         <Typography className={classes.classHeaderSub}>
                             {props.toggle ? props.classData.batch_name : ''}
@@ -235,7 +239,7 @@ export default function ClassdetailsCardComponent(props) {
                     </div>
                     <Divider className={classes.classDetailsDivider} />
 
-                    {isTeacher ? (
+                    {props.toggle ===false ? (
                         <>
                             <StyledButton
                                 onClick={handleAttendance}
@@ -254,8 +258,8 @@ export default function ClassdetailsCardComponent(props) {
                             <StyledButton color="primary">Resources</StyledButton>
                         )}
                     <StyledButton
-                        color="primary">
-                        View lesson plan
+                        color="primary" onClick={handleCoursePlan}>
+                        View Course Plan
                 </StyledButton>
                 </div>
             </div>
@@ -264,6 +268,8 @@ export default function ClassdetailsCardComponent(props) {
                 setOpenAssignModal={setOpenAssignModal}
                 teacherDropdown={teacherDropdown}
                 assignData={assignData}
+                reload={props.reload}
+                setReload={props.setReload}
             />
         </>
     )

@@ -78,8 +78,10 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
 
     const handleReshuffle = () => {
         axiosInstance.post(`https://erpnew.letseduvate.com/qbox/aol/student-shuffle/`, {
-            "batch": modalData?.batch?.id,
-            "new_batch": filterData?.batch?.id,
+            // "batch": modalData?.batch?.id,
+            // "new_batch": filterData?.batch?.id,
+            "batch":filterData?.batch?.id,
+            "new_batch": modalData?.batch?.id,
             "students": [modalData?.user?.id]
         })
             .then((result => {
@@ -133,7 +135,7 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
                                     className='dropdownIcon'
                                     value={filterData?.batch}
                                     options={batchList}
-                                    getOptionLabel={(option) => option?.title}
+                                    getOptionLabel={(option) => option?.batch_name}
                                     filterSelectedOptions
                                     renderInput={(params) => (
                                         <TextField
@@ -146,7 +148,7 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
                                 />
                             </Grid>
                         </Grid>
-                      {filterData?.batch?  
+                      {filterData?.batch ?  
                       <Grid container spacing={4} >
                             <Grid item xs={12} sm={12} >
                                 <TextField
@@ -160,6 +162,18 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
                                     }}
                                 />
                             </Grid>
+                            <Grid item xs={12} sm={12}>
+                                    <TextField
+                                    style={{width:'100%'}}
+                                    id="standard-read-only-input"
+                                    label="Batch Size"
+                                    defaultValue={`1 : ${filterData?.batch.batch_size}`}
+                                    InputProps={{
+                                        readOnly: true,
+                                    }}
+                                />
+                            </Grid>
+
                         </Grid> : <div style={{marginTop:'2rem'}}></div>  } 
                         <Grid container spacing={2} >
                             <Grid item xs={12} sm={6}>

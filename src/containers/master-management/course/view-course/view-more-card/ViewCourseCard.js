@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState ,useEffect} from 'react';
 import Paper from '@material-ui/core/Paper';
 import {
   Grid,
@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { makeStyles } from "@material-ui/core/styles";
-import {useHistory} from 'react-router-dom'
+import {useHistory,useParams} from 'react-router-dom'
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 // import { Button, useTheme ,IconButton} from '@material-ui/core';
 import Box from '@material-ui/core/Box';
@@ -25,13 +25,17 @@ import { Context } from '../context/ViewStore';
 
 
 
+
 const ViewCourseCard = ({ index, cData, setData }) => {
   const themeContext = useTheme();
   const history=useHistory()
+  const {id}=useParams()
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const classes = useStyles();
   const [filePath, setFilePath] = useState([]);
+  // >>>>>><<<<<<<<AOL STATE>>>>><<<<<<<
+  const [aolCardData,setAolCardData] = useState([])
 
   const [cardTitle, setCardTitle] = useState('');
   const [cardDesc, setCardDesc] = useState('');
@@ -85,7 +89,77 @@ const ViewCourseCard = ({ index, cData, setData }) => {
   };
 
   const handleBack=()=>{
-    history.push  ('/course-list')
+    history.goBack()
+  }
+  useEffect(() => {
+    axiosInstance.get(`${endpoints.aol.courseList}?periods=all&course_id=${id}`)
+    .then(result=>{
+      if(result.data.status_code === 200){
+        setAolCardData(result.data.result)
+      }
+    })
+  }, [id])
+
+
+  if(id){
+    return(
+      <>
+      <Layout>
+        <Grid
+          container
+          spacing={5}
+          style={{marginLeft:'2rem'}}
+        >
+       
+        {aolCardData && aolCardData?.map((data, index) => (
+                <div className="courseCardContainer">
+                  <Grid item xs={12} style={{marginBottom:'1rem'}}>
+                    <Box>
+                      <Typography>{`${index + 1}`}</Typography>
+                      <TextField
+                        id={`title${index}`}
+                        label='Period Title'
+                        placeholder='Period Title'
+                        multiline
+                        rows='1'
+                        color='secondary'
+                        style={{ width: '100%' }}
+                        name='title'
+                        value={data?.title}
+                        variant='outlined'
+                      />
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} >
+                    <Box>
+                      <TextField
+                        id={`desc${index}`}
+                        label='Period Description'
+                        placeholder='Period Description'
+                        multiline
+                        rows='3'
+                        color='secondary'
+                        style={{ width: '100%' }}
+                        name='description'
+                        value={data?.description}
+                        variant='outlined'
+                      />
+                    </Box>
+                  </Grid>
+                 
+                  </div>
+                 
+              ))}
+             
+              
+        </Grid>
+           <Button style={{margin:'40px',width:'16rem'}} onClick={handleBack}>
+                Back
+              </Button>
+       
+      </Layout>
+    </>
+    )
   }
 
   return (
@@ -111,10 +185,8 @@ const ViewCourseCard = ({ index, cData, setData }) => {
                         color='secondary'
                         style={{ width: '100%' }}
                         name='title'
-                        // defaultValue="Default Value"
                         value={data?.title}
                         variant='outlined'
-                      //   onChange={ handleCardSubmit}
                       />
                     </Box>
                   </Grid>
@@ -129,10 +201,8 @@ const ViewCourseCard = ({ index, cData, setData }) => {
                         color='secondary'
                         style={{ width: '100%' }}
                         name='description'
-                        // defaultValue="Default Value"
                         value={data?.description}
                         variant='outlined'
-                      //   onChange={handleCardSubmit}
                       />
                     </Box>
                   </Grid>

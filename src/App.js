@@ -349,7 +349,7 @@ function App() {
                     <Route exact path='/course-list'>
                       {({ match }) => <CourseView match={match} />}
                     </Route>
-                    <Route exact path='/view-period'>
+                    <Route exact path='/view-period/:id?'>
                       {({ match }) => <ViewCourseCard match={match} />}
                     </Route>
                     <Route exact path='/aol-attendance-list/:id?'>

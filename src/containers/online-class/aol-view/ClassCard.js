@@ -9,8 +9,6 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { useHistory, useLocation } from 'react-router-dom';
 import { CreateclassContext } from '../create-class/create-class-context/create-class-state';
 
-
-
 const useStyles = makeStyles((theme) => ({
     card: {
         padding: '8px',
@@ -164,9 +162,9 @@ export default function ClassCardComponent(props) {
                         {classData.online_class ? classData.online_class.title : ''}
                     </Typography>
                 </div>
-                <Typography className={classes.classTitle}>
+                {/* <Typography className={classes.classTitle}>
                     { classData.online_class.subject[0] && classData.online_class ? classData.online_class.subject[0]?.subject_name : ''}
-                </Typography>
+                </Typography> */}
                 <Typography className={classes.classSchedule}>
                     Start Date: {classData.online_class ? moment(classData.online_class.start_time).format('Do MMM YYYY') : ''}
                 </Typography>

@@ -1,4 +1,3 @@
-
 import Dialog from '@material-ui/core/Dialog';
 import { Divider, Grid, makeStyles, useTheme, withStyles, Button, TextField, Switch, FormControlLabel } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -31,7 +30,7 @@ const useStyles = makeStyles(theme => ({
         paddingRight: '0px'
     }
 }))
-const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, assignData }) => {
+const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, assignData, setReload, reload }) => {
     const classes = useStyles();
     const [batchList, setBatchList] = useState([]);
     const [date, setDate] = useState(new Date())
@@ -39,6 +38,7 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
     const [toggle, setToggle] = useState(false);
     const { setAlert } = useContext(AlertNotificationContext);
     const [selectedDate, setSelectedDate] = React.useState(new Date());
+
     const [filterData, setFilterData] = useState({
         teacher: '',
     })
@@ -52,10 +52,9 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
             setFilterData({ ...filterData, teacher: value })
         }
     }
-    console.log(selectedDate,'HHHHHHHH',assignData)
-
+  
+    const batchSlot=assignData?.classData?.batch_time_slot && assignData?.classData?.batch_time_slot.split('-')
     const handleAssign = () => {
-        
         const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
         const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
         const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(selectedDate);
@@ -67,15 +66,14 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
             if (result.data.status_code === 200) {
                 setAlert('success', result.data.message)
                 setOpenAssignModal(false)
-                // assignData.setReload({...assignData,assignData.reload:false})
+                // setReload({...assignData,reload:true})
+                setReload(!reload)
             }
         })
-
     }
-
-    return (
+    console.log(reload,setReload,'SSSSSSSSS')
+     return (
         <div>
-
             <Dialog open={openAssignModal} onClose={() => setOpenAssignModal(false)} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogWrapper }}>
                 <DialogTitle id="form-dialog-title" className='reshuffle-header' style={{ color: '#ffffff' }}>Assign Teacher</DialogTitle>
                 <DialogContent>
@@ -130,7 +128,9 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                                         id="time-picker"
                                         label="Time picker"
                                         value={selectedDate}
-                                        // minTime={new Date()}
+                                        ampm={false}
+                                        minTime={new Date(0, 0, 3, 8)}
+                                        maxTime={new Date(0, 0, 0, 18, 45)}
                                         onChange={handleDateChange}
                                         KeyboardButtonProps={{
                                             'aria-label': 'change time',
@@ -147,7 +147,6 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <Button color="primary"
-                                    //  onClick={() => setOpenAssignModal(false)} 
                                     onClick={handleAssign}
                                     style={{ width: '7.5rem' }}>
                                     ASSIGN

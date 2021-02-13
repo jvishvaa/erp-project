@@ -1,4 +1,4 @@
-import React, { useState,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import ClassCard from './ClassCard';
 import { Divider, Grid, makeStyles, useTheme, withStyles, Button, TextField, Switch, FormControlLabel } from '@material-ui/core';
 // import axiosInstance from '../../../config/axios';
@@ -153,9 +153,9 @@ const UpcomingClasses = () => {
     const [courseDropdown, setCourseDropdown] = useState([])
     const [batch, setBatch] = useState([])
     const [toggle, setToggle] = useState(false)
-    const [toggledData,setToggledData] = useState([])
+    const [toggledData, setToggledData] = useState([])
 
-    const [reload,setReload] = useState(false)
+    const [reload, setReload] = useState(false)
 
     const [dateRangeTechPer, setDateRangeTechPer] = useState([
         moment().subtract(6, 'days'),
@@ -163,7 +163,7 @@ const UpcomingClasses = () => {
     ]);
     const [startDateTechPer, setStartDateTechPer] = useState(moment().format('YYYY-MM-DD'));
     const [endDateTechPer, setEndDateTechPer] = useState(getDaysAfter(moment(), 7));
-  
+
 
     const themeContext = useTheme();
     const isTabDivice = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -184,10 +184,10 @@ const UpcomingClasses = () => {
 
     function getDaysAfter(date, amount) {
         return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
-      }
-      function getDaysBefore(date, amount) {
+    }
+    function getDaysBefore(date, amount) {
         return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
-      }
+    }
 
 
     const handleBranch = (event, value) => {
@@ -209,7 +209,7 @@ const UpcomingClasses = () => {
     const handleGrade = (event, value) => {
         setFilterData({ ...filterData, garde: '' })
         if (value) {
-            setFilterData({...filterData, grade: value})
+            setFilterData({ ...filterData, grade: value })
             axiosInstance.get(`${endpoints.aol.courseList}?grade=${value.grade_id}`)
                 .then((result) => {
                     if (result.data.status_code === 200) {
@@ -235,7 +235,7 @@ const UpcomingClasses = () => {
                     }
 
                 })
-            .catch((error) => console.log(error,error.description))
+                .catch((error) => console.log(error, error.description))
         }
     }
 
@@ -246,27 +246,27 @@ const UpcomingClasses = () => {
         }
     }
 
-    
+
     //api call
     const getClasses = () => {
         const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
-        if(toggle){
+        if (toggle) {
             axiosInstance.get(`${endpoints.aol.draftBatch}?course_id=${filterData.course.id}&grade_id=${filterData.grade.grade_id}`)
-            .then(result=>{
-                setToggledData(result.data.result)
-                setClassesdata([]);
-            })
+                .then(result => {
+                    setToggledData(result.data.result)
+                    setClassesdata([]);
+                })
         }
-        else{
+        else {
             axiosInstance.get(`${endpoints.aol.classes}?page_number=1&page_size=15&class_type=1&is_aol=1&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}`)
-            // axiosInstance.get(`${endpoints.aol.classes}?class_type=1&page_number=1&aol_batch=4&page_size=15&is_aol=1&start_date=2021-02-06&end_date=2021-04-1`)
-            .then(result => {
-                setClassesdata(result.data.data)
-                setToggledData([]);
-            })
+                // axiosInstance.get(`${endpoints.aol.classes}?class_type=1&page_number=1&aol_batch=4&page_size=15&is_aol=1&start_date=2021-02-06&end_date=2021-04-1`)
+                .then(result => {
+                    setClassesdata(result.data.data)
+                    setToggledData([]);
+                })
         }
-       
-      
+
+
 
 
         // student view api
@@ -304,7 +304,7 @@ const UpcomingClasses = () => {
         setItemSize(4);
         setSize(9);
         setClassData(data);
-        if(!toggle) {
+        if (!toggle) {
             //setToggledData([]);
         }
         // setToggledData(data);
@@ -361,15 +361,15 @@ const UpcomingClasses = () => {
         setEndDate(null);
         setClassType(null);
         setFilterData(null)
-
-        // getClasses();
+        setClassesdata([])
+        setClassData([])
     }
 
-    const handleToggle=()=>{
+    const handleToggle = () => {
         setToggle(!toggle);
         setClassesdata([]);
         setToggledData([]);
-        if(!toggle) {
+        if (!toggle) {
             setToggledData([]);
         }
         setClassData(null);
@@ -397,10 +397,12 @@ const UpcomingClasses = () => {
     //     )
     // });
 
-// useEffect(()=>{
-//     getClasses();
-// },[reload])
-    
+    if (reload) {
+        getClasses();
+        setReload(!reload)
+    }
+
+    console.log(reload, 'RRRRRRRRRR')
     return (
         <>
             <div className='breadcrumb-container-create' style={{ marginLeft: '15px' }}>
@@ -586,16 +588,13 @@ const UpcomingClasses = () => {
                         control={
                             <Switch
                                 checked={toggle}
-                                // onChange={() => setToggle(toggle => !toggle)}
                                 onChange={handleToggle}
                                 name="optional"
                                 color="primary"
                             />}
                         label={toggle ? 'Yet To Start' : 'Started'}
                     />
-
                 </Grid>
-
                 <Grid item xs={12} sm={4}>
                     <StyledButton
                         variant="contained"
@@ -617,7 +616,7 @@ const UpcomingClasses = () => {
             <Grid container spacing={3} className={classes.root}>
                 <Grid item sm={size} xs={12}>
                     <Grid container spacing={3}>
-                        {classesData.length > 0 &&  classesData.map((data, id) => {
+                        {classesData.length > 0 && classesData.map((data, id) => {
                             return (
                                 <Grid item sm={itemSize} xs={12} key={id}>
                                     <ClassCard
@@ -629,7 +628,7 @@ const UpcomingClasses = () => {
                                 </Grid>
                             )
                         })}
-                        {toggledData.length > 0 &&  toggledData.map((data, id) => {
+                        {toggledData.length > 0 && toggledData.map((data, id) => {
                             return (
                                 <Grid item sm={itemSize} xs={12} key={id}>
                                     <ClassCard
