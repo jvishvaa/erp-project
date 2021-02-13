@@ -131,15 +131,15 @@ const GradeTable = () => {
         if (result.data.status_code === 200) {
             setDelFlag(!delFlag);
             setLoading(false);
-            setAlert('success', result.data.message);
+            setAlert('success', result.data.message||result.data.msg);
         } else {
           setLoading(false);
-          setAlert('error', result.data.message);
+          setAlert('error', result.data.message||result.data.msg);
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.message);
+        setAlert('error',error.response.data.message||error.response.data.msg);
       });
     setOpenDeleteModal(false);
   };
@@ -172,11 +172,11 @@ const GradeTable = () => {
             setTotalCount(result.data.result.count);
             setGrades(result.data.result.results);
         } else {
-          setAlert('error', result.data.error_message);
+          setAlert('error', result.data.msg||result.data.message);
         }
       })
       .catch((error) => {
-        setAlert('error', error.message);
+        setAlert('error', error.response.data.message||error.response.data.msg);
       });
   }, [delFlag, goBackFlag, page, searchGrade]);
 

@@ -33,10 +33,10 @@ const CreateSubjectMapping = ({ setLoading, handleGoBack }) => {
         if (result.data.status_code === 201) {
           setLoading(false);
           handleGoBack();
-          setAlert('success', result.data.message);
+          setAlert('success', result.data.message||result.data.msg);
         } else {
           setLoading(false);
-          setAlert('error', result.data.message);
+          setAlert('error', result.data.message||result.data.msg);
         }
       })
       .catch((error) => {

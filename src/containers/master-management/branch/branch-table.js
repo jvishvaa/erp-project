@@ -61,13 +61,6 @@ const useStyles = makeStyles((theme) => ({
 
 const columns = [
   {
-    id: 'session_year',
-    label: 'Session Year',
-    minWidth: 100,
-    align: 'center',
-    labelAlign: 'center',
-  },
-  {
     id: 'branch_name',
     label: 'Branch',
     minWidth: 100,
@@ -84,13 +77,6 @@ const columns = [
   {
     id: 'branch_code',
     label: 'Branch Code',
-    minWidth: 100,
-    align: 'center',
-    labelAlign: 'center',
-  },
-  {
-    id: 'branch_enr_code',
-    label: 'Enrollment Code',
     minWidth: 100,
     align: 'center',
     labelAlign: 'center',
@@ -122,15 +108,12 @@ const BranchTable = () => {
   const [addFlag, setAddFlag] = useState(false);
   const [editFlag, setEditFlag] = useState(false);
   const [tableFlag, setTableFlag] = useState(true);
-  const [desc, setDesc] = useState('');
+  const [branchData, setBranchData] = useState({});
   const [delFlag, setDelFlag] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
-  const [searchYear, setSearchYear] = useState('');
-  const [yearDisplay, setYearDisplay] = useState([]);
-  const [academicYearList, setAcademicYearList] = useState([]);
   const [searchBranch, setSearchBranch] = useState('');
   const [loading, setLoading] = useState(false);
-  const limit = 15;
+  const limit = 2;
   const [goBackFlag, setGoBackFlag] = useState(false);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -142,30 +125,18 @@ const BranchTable = () => {
     setPage(newPage + 1);
   };
 
-  const handleAcademicYear = (event, value) => {
-    setSearchYear('')
-    setYearDisplay(value)
-    if(value)
-    {
-      setPage(1);
-      setSearchYear(value.id);
-    }
-  };
-
   const handleAddBranch = () => {
     setTableFlag(false);
     setAddFlag(true);
     setEditFlag(false);
   };
 
-  const handleEditBranch = (id, name, desc) => {
+  const handleEditBranch = (branch) => {
     setTableFlag(false);
     setAddFlag(false);
-    
     setEditFlag(true);
-    setBranchId(id);
-    setBranchName(name);
-    setDesc(desc);
+    setBranchData(branch);
+    console.log({branch})
   };
 
   const handleGoBack = () => {
@@ -173,9 +144,8 @@ const BranchTable = () => {
     setTableFlag(true);
     setAddFlag(false);
     setEditFlag(false);
-    
     setBranchName('');
-    setSearchYear('');
+    setBranchData({});
     setSearchBranch('');
     setGoBackFlag(!goBackFlag);
   };
@@ -184,28 +154,28 @@ const BranchTable = () => {
     e.preventDefault();
     setLoading(true);
     axiosInstance
-      .delete(`${endpoints.masterManagement.deleteBranch}${branchId}`)
+      .delete(`${endpoints.masterManagement.updateBranch}${branchId}`)
       .then((result) => {
-        if (result.data.status_code === 204) {
+        if (result.data.status_code === 200) {
           setDelFlag(!delFlag);
           setBranchName('');
           setBranchId('');
           setLoading(false);
-          setAlert('success', result.data.msg);
+          setAlert('success', result.data.msg||result.data.message);
         } else {
           setLoading(false);
-          setAlert('error', result.data.msg);
+          setAlert('error', result.data.msg||result.data.message);
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.message);
+        setAlert('error', error.response.data.message||error.response.data.msg);
       });
     setOpenDeleteModal(false);
   };
 
   const handleOpenDeleteModal = (branch) => {
-    setBranchName(branch?.branch?.branch_name);
+    setBranchName(branch?.branch_name);
     setBranchId(branch?.id);
     setOpenDeleteModal(true);
   };
@@ -221,42 +191,24 @@ const BranchTable = () => {
     }, 450);
   }, [goBackFlag, page, delFlag]);
 
-  useEffect(()=>{
-    axiosInstance
-    .get(
-      `${endpoints.masterManagement.academicYear}`
-    )
-    .then((result) => {
-      if (result.data.status_code === 200) {
-          setAcademicYearList(result.data?.result?.results);
-      } else {
-        setAlert('error', result.data.error_message);
-      }
-    })
-    .catch((error) => {
-      setAlert('error', error.message);
-    });
-  },[])
-
   useEffect(() => {
 
-    let url=`${endpoints.masterManagement.branchTable}?page=${page}&page_size=${limit}`;
-    if(searchYear) url+=`&session_year=${searchYear}`;
+    let url=`${endpoints.masterManagement.branchList}?page=${page}&page_size=${limit}`;
     if(searchBranch) url+=`&branch_name=${searchBranch}`;
     axiosInstance
       .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
-          setTotalCount(result.data.data?.count);
-          setBranches(result.data.data?.results);
+          setTotalCount(result.data?.data?.count);
+          setBranches(result.data?.data?.results);
         } else {
-          setAlert('error', result.data.message);
+          setAlert('error', result.data.msg||result.data.message);
         }
       })
       .catch((error) => {
-        setAlert('error', error.message);
+        setAlert('error', error.response.data.message||error.response.data.msg);
       });
-  }, [goBackFlag, delFlag, searchYear, searchBranch, page]);
+  }, [goBackFlag, delFlag, searchBranch, page]);
 
   return (
     <>
@@ -278,18 +230,15 @@ const BranchTable = () => {
           </div>
         </div>
 
-        {!tableFlag && (addFlag) && !editFlag && (
+        {!tableFlag && addFlag && !editFlag && (
           <CreateBranch
-            academicYearList={academicYearList}
             setLoading={setLoading}
             handleGoBack={handleGoBack}
           />
         )}
         {!tableFlag && !addFlag && editFlag && (
           <EditBranch
-            id={branchId}
-            desc={desc}
-            name={branchName}
+            branchData={branchData}
             setLoading={setLoading}
             handleGoBack={handleGoBack}
           />
@@ -317,27 +266,7 @@ const BranchTable = () => {
                   }}
                 />
               </Grid>
-              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-                <Autocomplete
-                  size='small'
-                  onChange={handleAcademicYear}
-                  style={{ width: '100%' }}
-                  id='session-year'
-                  options={academicYearList}
-                  value={yearDisplay}
-                  getOptionLabel={(option) => option?.session_year}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Session Year'
-                      placeholder='Session Year'
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs sm={6} className={isMobile ? 'hideGridItem' : ''} />
+              <Grid item xs sm={9} className={isMobile ? 'hideGridItem' : ''} />
               <Grid item xs={12} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                 <Button
                   startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
@@ -381,22 +310,16 @@ const BranchTable = () => {
                           return (
                             <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
                               <TableCell className={classes.tableCell}>
-                                {branch?.session_year?.session_year}
+                                {branch?.branch_name}
                               </TableCell>
                               <TableCell className={classes.tableCell}>
-                                {branch?.branch?.branch_name}
+                                {branch?.created_by}
                               </TableCell>
                               <TableCell className={classes.tableCell}>
-                                {branch?.branch?.created_by}
+                                {branch?.branch_code}
                               </TableCell>
                               <TableCell className={classes.tableCell}>
-                                {branch?.branch?.branch_code}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {branch?.branch?.branch_enrollment_code}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {branch?.branch?.address}
+                                {branch?.address}
                               </TableCell>
                               <TableCell className={classes.tableCell}>
                                 <IconButton
@@ -409,7 +332,7 @@ const BranchTable = () => {
                                 </IconButton>
 
                                 <IconButton
-                                  // onClick={e=>handleEditBranch(subject.subject.id,subject.subject.subject_name,subject.subject.subject_description,subject.subject.is_optional)}
+                                  onClick={e=>handleEditBranch(branch)}
                                   title='Edit Branch'
                                 >
                                   <EditOutlinedIcon style={{ color: '#fe6b6b' }} />

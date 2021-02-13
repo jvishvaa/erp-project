@@ -6,11 +6,10 @@ import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
-const CreateBranch = ({ setLoading, handleGoBack, academicYearList }) => {
+const CreateBranch = ({ setLoading, handleGoBack }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [branchName, setBranchName] = useState('');
   const [branchCode, setBranchCode] = useState('');
-  const [branchEnrCode, setBranchEnrCode] = useState('');
   const [address, setAddress] = useState('');
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -22,26 +21,24 @@ const CreateBranch = ({ setLoading, handleGoBack, academicYearList }) => {
       .post(endpoints.masterManagement.createBranch, {
         branch_name: branchName,
         branch_code: branchCode,
-        branch_enrollment_code: branchEnrCode,
         address: address,
       })
       .then((result) => {
         if (result.data.status_code >= 200 && result.data.status_code <= 299) {
           setBranchName('');
           setBranchCode('');
-          setBranchEnrCode('');
           setAddress('');
           setLoading(false);
-          setAlert('success', result.data.msg);
+          setAlert('success', result.data.msg||result.data.message);
           handleGoBack();
         } else {
           setLoading(false);
-          setAlert('error', result.data.msg);
+          setAlert('error', result.data.msg||result.data.message);
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.message);
+        setAlert('error', error.response.data.message||error.response.data.msg);
       });
   };
 
@@ -76,22 +73,6 @@ const CreateBranch = ({ setLoading, handleGoBack, academicYearList }) => {
               inputProps={{ pattern: '^[0-9]+$', maxLength: 5 }}
               name='branchcode'
               onChange={(e) => setBranchCode(e.target.value)}
-              required
-            />
-          </Grid>
-        </Grid>
-        <Grid container spacing={5}>
-          <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
-            <TextField
-              id='branchenrollmentcode'
-              style={{ width: '100%' }}
-              label='Branch Enrollment Code'
-              variant='outlined'
-              size='small'
-              value={branchEnrCode}
-              inputProps={{ pattern: '^[0-9]+$', maxLength: 5 }}
-              name='branchcode'
-              onChange={(e) => setBranchEnrCode(e.target.value)}
               required
             />
           </Grid>

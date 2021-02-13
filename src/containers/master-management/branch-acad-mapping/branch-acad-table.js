@@ -188,15 +188,15 @@ const BranchAcadTable = () => {
           setBranchName('');
           setBranchId('');
           setLoading(false);
-          setAlert('success', result.data.msg);
+          setAlert('success', result.data.msg||result.data.message);
         } else {
           setLoading(false);
-          setAlert('error', result.data.msg);
+          setAlert('error', result.data.msg||result.data.message);
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.message);
+        setAlert('error', error.response.data.message||error.response.data.msg);
       });
     setOpenDeleteModal(false);
   };
@@ -227,17 +227,17 @@ const BranchAcadTable = () => {
         if (result.data.status_code === 200) {
           setAcademicYearList(result.data?.result?.results);
         } else {
-          setAlert('error', result.data.error_message);
+          setAlert('error', result.data.message||result.data.msg);
         }
       })
       .catch((error) => {
-        setAlert('error', error.message);
+        setAlert('error', error.response.data.message||error.response.data.msg);
       });
   }, [])
 
   useEffect(() => {
 
-    let url = `${endpoints.masterManagement.branchTable}?page=${page}&page_size=${limit}`;
+    let url = `${endpoints.masterManagement.branchMappingTable}?page=${page}&page_size=${limit}`;
     if (searchYear) url += `&session_year=${searchYear}`;
     if (searchBranch) url += `&branch_name=${searchBranch}`;
     axiosInstance
@@ -247,11 +247,11 @@ const BranchAcadTable = () => {
           setTotalCount(result.data.data?.count);
           setBranches(result.data.data?.results);
         } else {
-          setAlert('error', result.data.message);
+          setAlert('error', result.data.message||result.data.msg);
         }
       })
       .catch((error) => {
-        setAlert('error', error.message);
+        setAlert('error', error.response.data.message||error.response.data.msg);
       });
   }, [goBackFlag, delFlag, searchYear, searchBranch, page]);
 
@@ -405,12 +405,12 @@ const BranchAcadTable = () => {
                                   <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
                                 </IconButton>
 
-                                <IconButton
+                                {/* <IconButton
                                   // onClick={e=>handleEditBranchMapping(subject.subject.id,subject.subject.subject_name,subject.subject.subject_description,subject.subject.is_optional)}
                                   title='Edit Branch'
                                 >
                                   <EditOutlinedIcon style={{ color: '#fe6b6b' }} />
-                                </IconButton>
+                                </IconButton> */}
                               </TableCell>
                             </TableRow>
                           );

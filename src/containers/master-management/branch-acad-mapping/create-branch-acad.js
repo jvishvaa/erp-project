@@ -36,16 +36,16 @@ const CreateBranchAcad = ({ setLoading, handleGoBack, academicYearList }) => {
           setAcademicYear([]);
           setBranch('');
           setLoading(false);
-          setAlert('success', result.data.msg);
+          setAlert('success', result.data.msg||result.data.message);
           handleGoBack();
         } else {
           setLoading(false);
-          setAlert('error', result.data.msg);
+          setAlert('error', result.data.msg||result.data.message);
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.msg);
+        setAlert('error', error.response.data.message||error.response.data.msg);
       });
   };
 

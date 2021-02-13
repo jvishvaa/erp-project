@@ -62,8 +62,8 @@ export default {
   masterManagement: {
     subjects: '/erp_user/subjects-list/',
     grades: '/erp_user/grades-list/',
-    sectionsTable: '/erp_user/grades-section-list/',
-    branchTable: '/erp_user/branch/',
+    sectionsTable: '/erp_user/list-section/',
+    branchMappingTable: '/erp_user/branch/',
     createBranch: '/erp_user/create-branch/',
     deleteBranch: '/erp_user/delete-branch-mapping/',
     createSubject: '/erp_user/create-subject/',
@@ -75,6 +75,7 @@ export default {
     updateSubject: '/erp_user/update-subject/',
     updateSection: '/erp_user/update-section/',
     updateGrade: '/erp_user/update-grade/',
+    updateBranch: '/erp_user/update-branch/',
     gradesDrop: '/erp_user/grade/',
     sections: '/erp_user/sectionmapping/',
     academicYear: '/erp_user/academic-year-list/',

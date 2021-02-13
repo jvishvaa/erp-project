@@ -100,6 +100,7 @@ const SectionTable = () => {
   const [tableFlag, setTableFlag] = useState(true);
   const [delFlag, setDelFlag] = useState(false);
   const [searchSection, setSearchSection] = useState('');
+  const [sectionData, setSectionData] = useState({});
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const limit = 15;
@@ -123,50 +124,49 @@ const SectionTable = () => {
     setSearchSection('');
   };
 
-  const handleEditSection = (id, name) => {
+  const handleEditSection = (sec) => {
     setTableFlag(false);
     setAddFlag(false);
     setEditFlag(true);
-    setSectionId(id);
-    setSectionName(name);
+    setSectionData(sec);
+    console.log({sec});
   };
 
   const handleGoBack = () => {
-    setPage(1)
+    setPage(1);
     setTableFlag(true);
     setAddFlag(false);
     setEditFlag(false);
     setGoBackFlag(!goBackFlag);
     setSearchSection('');
+    setSectionData({});
   };
 
   const handleDeleteSection = (e) => {
     e.preventDefault();
     setLoading(true);
     axiosInstance
-      .put(endpoints.masterManagement.updateSection, {
-        section_id: sectionId,
-        is_delete: true,
-      })
+      .delete(`${endpoints.masterManagement.updateSection}${sectionId}`)
       .then((result) => {
-        if (result.data.status_code === 200) {
+        if (result.data.status_code === 204) {
             setDelFlag(!delFlag);
             setLoading(false);
-            setAlert('success', result.data.message);
+            setAlert('success', result.data?.message||result.data?.msg);
         } else {
           setLoading(false);
-          setAlert('error', result.data.message);
+          setAlert('error', result.data?.message||result.data?.msg);
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.message);
+        setAlert('error', error.response.data.msg);
       });
     setOpenDeleteModal(false);
   };
 
-  const handleOpenDeleteModal = (id) => {
-    setSectionId(id);
+  const handleOpenDeleteModal = (sec) => {
+    setSectionId(sec?.id);
+    setSectionName(sec?.section_name);
     setOpenDeleteModal(true);
   };
 
@@ -184,16 +184,16 @@ const SectionTable = () => {
   useEffect(() => {
 
     let url = `${endpoints.masterManagement.sectionsTable}?page=${page}&page_size=${limit}`;
-    if (searchSection) url += `&section=${searchSection}`;
+    if (searchSection) url += `&section_name=${searchSection}`;
 
     axiosInstance
       .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
-          setTotalCount(result.data.result.count);
-          setSections(result.data.result.results);
+          setTotalCount(result.data?.data?.count);
+          setSections(result.data?.data?.results);
         } else {
-          setAlert('error', result.data.error_message);
+          setAlert('error', result.data?.message||result.data?.msg);
         }
       })
       .catch((error) => {
@@ -222,8 +222,7 @@ const SectionTable = () => {
 
       {!tableFlag && !addFlag && editFlag && (
         <EditSection
-          id={sectionId}
-          name={sectionName}
+          sectionData={sectionData}
           handleGoBack={handleGoBack}
           setLoading={setLoading}
         />
@@ -283,28 +282,22 @@ const SectionTable = () => {
                     return (
                       <TableRow hover section='checkbox' tabIndex={-1} key={index}>
                         <TableCell className={classes.tableCell}>
-                          {section.section.section_name}
+                          {section?.section_name}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
-                          {section.section.created_by}
+                          {section?.created_by}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
                         <IconButton
-                            onClick={(e) => {
-                              setSectionName(section.section.section_name);
-                              handleOpenDeleteModal(section.section.id);
-                            }}
+                            onClick={() => handleOpenDeleteModal(section)}
                             title='Delete Section'
                           >
                             <DeleteOutlinedIcon style={{color:'#fe6b6b'}} />
                           </IconButton>
 
                           <IconButton
-                            onClick={(e) =>
-                              handleEditSection(
-                                section.section.id,
-                                section.section.section_name
-                              )
+                            onClick={() =>
+                              handleEditSection(section)
                             }
                             title='Edit Section'
                           >

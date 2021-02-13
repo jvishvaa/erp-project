@@ -41,15 +41,15 @@ const CreateSubject = ({ setLoading, handleGoBack }) => {
           setLoading(false);
           setOptional(false);
           handleGoBack();
-          setAlert('success', result.data.message);
+          setAlert('success', result.data?.message||result.data?.msg);
         } else {
           setLoading(false);
-          setAlert('error', result.data.message);
+          setAlert('error', result.data?.message||result.data?.msg);
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.message);
+        setAlert('error', error.response.data.message||error.response.data.msg);
       });
   };
 
