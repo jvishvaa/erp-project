@@ -161,10 +161,12 @@ const GradeTable = () => {
   }, [page, delFlag, goBackFlag]);
 
   useEffect(() => {
+
+    let url = `${endpoints.masterManagement.grades}?page=${page}&page_size=${limit}`;
+    if (searchGrade) url += `&grade_name=${searchGrade}`;
+
     axiosInstance
-      .get(
-        `${endpoints.masterManagement.grades}?page=${page}&page_size=${limit}&grade_name=${searchGrade}`
-      )
+      .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
             setTotalCount(result.data.result.count);

@@ -23,6 +23,9 @@ import CreateClass from './containers/online-class/create-class';
 import ViewClassManagement from './containers/online-class/view-class/view-class-management/view-class-management';
 import AttendeeList from './containers/online-class/view-class/view-class-management/attendee-list/attendee-list';
 import ViewClassStudentCollection from './containers/online-class/view-class/view-class-student/view-class-student-collection';
+import BranchTable from './containers/master-management/branch/branch-table';
+import BranchAcadTable from './containers/master-management/branch-acad-mapping/branch-acad-table';
+import SubjectMappingTable from './containers/master-management/subject-mapping/subject-mapping-table';
 import SubjectTable from './containers/master-management/subject/subject-table';
 import SectionTable from './containers/master-management/section/section-table';
 import GradeTable from './containers/master-management/grade/grade-table';
@@ -280,22 +283,31 @@ function App() {
                     <Route exact path='/online-class/view-class'>
                       {({ match }) => <AOLClassView match={match} />}
                     </Route>
-                    <Route exact path='/master-mgmt/subject-table'>
+                    <Route exact path='/master-management/branch-table'>
+                      {({ match }) => <BranchTable match={match} />}
+                    </Route>
+                    <Route exact path='/master-management/branch-acad-table'>
+                      {({ match }) => <BranchAcadTable match={match} />}
+                    </Route>
+                    <Route exact path='/master-management/subject-mapping-table'>
+                      {({ match }) => <SubjectMappingTable match={match} />}
+                    </Route>
+                    <Route exact path='/master-management/subject-table'>
                       {({ match }) => <SubjectTable match={match} />}
                     </Route>
-                    <Route exact path='/master-mgmt/section-table'>
+                    <Route exact path='/master-management/section-table'>
                       {({ match }) => <SectionTable match={match} />}
                     </Route>
-                    <Route exact path='/master-mgmt/grade-table'>
+                    <Route exact path='/master-management/grade-table'>
                       {({ match }) => <GradeTable match={match} />}
                     </Route>
-                    <Route exact path='/master-mgmt/academic-year-table'>
+                    <Route exact path='/master-management/academic-year-table'>
                       {({ match }) => <AcademicYearTable match={match} />}
                     </Route>
-                    <Route exact path='/master-mgmt/message-type-table'>
+                    <Route exact path='/master-management/message-type-table'>
                       {({ match }) => <MessageTypeTable match={match} />}
                     </Route>
-                    <Route exact path='/master-mgmt/subject/grade/mapping'>
+                    <Route exact path='/master-management/subject/grade/mapping'>
                       {({ match }) => <Subjectgrade match={match} />}
                     </Route>
                     <Route exact path='/subject/grade'>

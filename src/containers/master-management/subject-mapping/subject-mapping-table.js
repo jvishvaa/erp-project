@@ -26,11 +26,11 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
-import CreateSubject from './create-subject'
-import EditSubject from './edit-subject'
+import CreateSubjectMapping from './create-subject-mapping'
+import EditSubjectMapping from './edit-subject-mapping'
 import Loading from '../../../components/loader/loader';
 import '../master-management.css'
-import SubjectCard from './subjects-card';
+import SubjectMappingCard from './subject-mapping-card';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -98,7 +98,7 @@ const columns = [
 ];
 
 
-const SubjectTable = () => {
+const SubjectMappingTable = () => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const [page, setPage] = useState(1);
@@ -128,13 +128,13 @@ const SubjectTable = () => {
     setPage(newPage + 1)
   };
 
-  const handleAddSubject = () => {
+  const handleAddSubjectMapping = () => {
     setTableFlag(false)
     setAddFlag(true)
     setEditFlag(false)
   }
 
-  const handleEditSubject = (id, name, desc, optional) => {
+  const handleEditSubjectMapping = (id, name, desc, optional) => {
     setTableFlag(false)
     setAddFlag(false)
     setEditFlag(true)
@@ -191,9 +191,9 @@ const SubjectTable = () => {
 
   useEffect(() => {
 
-    let url = `${endpoints.masterManagement.subjects}?page=${page}&page_size=${limit}`;
-    if (searchSubject) url+=`&subject=${searchSubject}`;
-    axiosInstance.get(url)
+    let request = `${endpoints.masterManagement.subjects}?page=${page}&page_size=${limit}`;
+    if (searchSubject) request += `&subject=${searchSubject}`;
+    axiosInstance.get(request)
       .then(result => {
         if (result.data.status_code === 200) {
           setTotalCount(result.data.result.count)
@@ -220,14 +220,14 @@ const SubjectTable = () => {
           <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
               componentName='Master Management'
-              childComponentName='Subject List'
-              childComponentNameNext={(addFlag && !tableFlag) ? 'Add Subject' : (editFlag && !tableFlag) ? 'Edit Subject' : null}
+              childComponentName='Subject Mapping List'
+              childComponentNameNext={(addFlag && !tableFlag) ? 'Add Subject Mapping' : (editFlag && !tableFlag) ? 'Edit Mapping Subject' : null}
             />
           </div>
         </div>
 
-        {!tableFlag && addFlag && !editFlag && <CreateSubject setLoading={setLoading} handleGoBack={handleGoBack} />}
-        {!tableFlag && !addFlag && editFlag && <EditSubject id={subjectId} desc={desc} name={subjectName} setLoading={setLoading} handleGoBack={handleGoBack} opt={opt} />}
+        {!tableFlag && addFlag && !editFlag && <CreateSubjectMapping setLoading={setLoading} handleGoBack={handleGoBack} />}
+        {!tableFlag && !addFlag && editFlag && <EditSubjectMapping id={subjectId} desc={desc} name={subjectName} setLoading={setLoading} handleGoBack={handleGoBack} opt={opt} />}
 
 
         {tableFlag && !addFlag && !editFlag &&
@@ -253,9 +253,9 @@ const SubjectTable = () => {
                   color='primary'
                   size="small"
                   style={{ color: 'white' }}
-                  title="Add Subject"
-                  onClick={handleAddSubject}>
-                  Add Subject
+                  title="Add Subject Mapping"
+                  onClick={handleAddSubjectMapping}>
+                  Add Subject Mapping
         </Button>
               </Grid>
             </Grid>
@@ -310,7 +310,7 @@ const SubjectTable = () => {
                                 </IconButton>
 
                                 <IconButton
-                                  onClick={e => handleEditSubject(subject.subject.id, subject.subject.subject_name, subject.subject.subject_description, subject.subject.is_optional)}
+                                  onClick={e => handleEditSubjectMapping(subject.subject.id, subject.subject.subject_name, subject.subject.subject_description, subject.subject.is_optional)}
                                   title='Edit Subject'
                                 >
                                   <EditOutlinedIcon style={{ color: '#fe6b6b' }} />
@@ -343,10 +343,10 @@ const SubjectTable = () => {
                   <>
                     {
                       subjects.map(subject => (
-                        <SubjectCard
+                        <SubjectMappingCard
                           data={subject}
                           handleDelete={handleDelete}
-                          handleEditSubject={handleEditSubject} />
+                          handleEditSubjectMapping={handleEditSubjectMapping} />
                       ))
                     }
                     <div className="paginateData paginateMobileMargin">
@@ -392,4 +392,4 @@ const SubjectTable = () => {
   );
 };
 
-export default SubjectTable;
+export default SubjectMappingTable;

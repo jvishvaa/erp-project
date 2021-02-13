@@ -23,7 +23,7 @@ const ListandFilter = (props) => {
     const [error, setError] = useState(null);
 
     const navigateToCreatePage = () => {
-        props.history.push('/master-mgmt/subject/grade/mapping')
+        props.history.push('/master-management/subject/grade/mapping')
     }
     useEffect(() => {
         const getBranch = () => {

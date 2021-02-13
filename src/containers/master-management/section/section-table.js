@@ -98,9 +98,7 @@ const SectionTable = () => {
   const [addFlag, setAddFlag] = useState(false);
   const [editFlag, setEditFlag] = useState(false);
   const [tableFlag, setTableFlag] = useState(true);
-  const [grades, setGrades] = useState([]);
   const [delFlag, setDelFlag] = useState(false);
-  const [searchGrade, setSearchGrade] = useState('');
   const [searchSection, setSearchSection] = useState('');
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
@@ -118,20 +116,10 @@ const SectionTable = () => {
     setPage(newPage+1)
   }
 
-  const handleGrade = (event, value) => {
-    if (value) 
-    {
-      setPage(1)
-      setSearchGrade(value.id);
-    }
-    else setSearchGrade('');
-  };
-
   const handleAddSection = () => {
     setTableFlag(false);
     setAddFlag(true);
     setEditFlag(false);
-    setSearchGrade('');
     setSearchSection('');
   };
 
@@ -148,8 +136,7 @@ const SectionTable = () => {
     setTableFlag(true);
     setAddFlag(false);
     setEditFlag(false);
-    setGoBackFlag(!goBackFlag)
-    setSearchGrade('');
+    setGoBackFlag(!goBackFlag);
     setSearchSection('');
   };
 
@@ -192,28 +179,15 @@ const SectionTable = () => {
     setTimeout(() => {
       setLoading(false);
     }, 450);
-  }, [page, delFlag, goBackFlag, searchGrade]);
-
-  useEffect(()=>{
-    axiosInstance
-    .get(endpoints.masterManagement.gradesDrop)
-    .then((result) => {
-      if (result.status === 200) {
-        setGrades(result.data.data);
-      } else {
-        setAlert('error', result.data.message);
-      }
-    })
-    .catch((error) => {
-      setAlert('error', error.message);
-    });
-  },[])
+  }, [page, delFlag, goBackFlag]);
 
   useEffect(() => {
+
+    let url = `${endpoints.masterManagement.sectionsTable}?page=${page}&page_size=${limit}`;
+    if (searchSection) url += `&section=${searchSection}`;
+
     axiosInstance
-      .get(
-        `${endpoints.masterManagement.sectionsTable}?page=${page}&page_size=${limit}&section=${searchSection}&grade=${searchGrade}`
-      )
+      .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
           setTotalCount(result.data.result.count);
@@ -226,7 +200,7 @@ const SectionTable = () => {
         setAlert('error', error.message);
       });
 
-  }, [delFlag, goBackFlag, page, searchGrade, searchSection]);
+  }, [delFlag, goBackFlag, page, searchSection]);
 
   return (
     <>
@@ -243,7 +217,7 @@ const SectionTable = () => {
       </div>
 
       {!tableFlag && addFlag && !editFlag && (
-        <CreateSection grades={grades} setLoading={setLoading} handleGoBack={handleGoBack}/>
+        <CreateSection setLoading={setLoading} handleGoBack={handleGoBack}/>
       )}
 
       {!tableFlag && !addFlag && editFlag && (
@@ -271,28 +245,7 @@ const SectionTable = () => {
               />
             </Box>
           </Grid>
-          <Grid item xs={12} sm={3}>
-            <Box className={classes.centerInMobile}>
-              <Autocomplete
-                size='small'
-                style={{ width: '100%' }}
-                onChange={handleGrade}
-                id='grade'
-                options={grades}
-                getOptionLabel={(option) => option.grade_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Grades'
-                    placeholder='Grades'
-                  />
-                )}
-              />
-            </Box>
-          </Grid>
-          <Grid item xs sm={6} className={isMobile?'hideGridItem':''}/>
+          <Grid item xs sm={9} className={isMobile?'hideGridItem':''}/>
           <Grid item xs={12} sm={3} className={isMobile?'':'addButtonPadding'}>
              <Button 
              startIcon={<AddOutlinedIcon style={{fontSize:'30px'}}/>}
