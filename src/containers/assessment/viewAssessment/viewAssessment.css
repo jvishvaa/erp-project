@@ -66,3 +66,59 @@
 /* .mcq-question-wrapper h3 {
 
 } */
+
+.instruction-screen-wrapper {
+  /* position: relative; */
+}
+
+.instruction-screen {
+  padding: 50px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+  color: #fff;
+  background: black;
+  background: rgba(0, 0, 0, 0.8);
+
+  /* filter: blur(4px);
+  -o-filter: blur(4px);
+  -ms-filter: blur(4px);
+  -moz-filter: blur(4px);
+  -webkit-filter: blur(4px); */
+  /* background-color: rgba(70, 75, 75, 0.24); */
+}
+
+.instruction-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.instruction-screen p {
+  margin-bottom: 100px;
+}
+
+.instruction-screen .mcq-question-wrapper {
+  /* gap: 10px; */
+  color: #000;
+}
+
+.instruction-screen .mcq-question-wrapper .mcq-options {
+  width: 200px;
+}
+
+.instruction-screen .mcq-question-wrapper .question-submit-btn {
+  width: initial;
+}
+/* .instruction-mcq {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+} */

@@ -34,7 +34,7 @@ const ViewAssessmentUI = () => {
     },
   } = useContext(AssessmentHandlerContext);
   React.useEffect(() => {
-    fetchAssessmentQp({ assessment_id: 3 });
+    fetchAssessmentQp({ assessment_id: 11 });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -47,9 +47,9 @@ const ViewAssessmentUI = () => {
   } = currentQuestionObj || {};
   const decideQuestion = {
     1: () => <McqQuestion />,
-    2: () => <DescriptiveQuestion />,
-    3: () => <FillUpsQuestion />,
-    5: () => <McqQuestion />,
+    // 2: () => <DescriptiveQuestion />,
+    // 3: () => <FillUpsQuestion />,
+    // 5: () => <McqQuestion />,
     undefined: () => <p>question_type undefined</p>,
     null: () => <p>question_type null</p>,
   };
@@ -73,10 +73,27 @@ const ViewAssessmentUI = () => {
             </Grid>
           </Grid>
         ) : (
-          <div>
-            <button type='button' onClick={start}>
-              Start
-            </button>
+          <div className='instruction-screen-wrapper'>
+            <div className='instruction-screen'>
+              <h2>
+                There are 20 questions with instructions given , kindly read the
+                instructions before answering
+              </h2>
+              <div className='instruction-question'>
+                <div>Q1</div>
+                <div>Progress 1/20</div>
+              </div>
+              <p>Passage or image based questions</p>
+              <div className='mcq-question-wrapper'>
+                <div className='mcq-options'>Option 1</div>
+                <div className='mcq-options'>Option 2</div>
+                <div className='mcq-options'>Option 3</div>
+                <div className='mcq-options'>Option 4</div>
+              </div>
+              <button type='button' className='question-submit-btn' onClick={start}>
+                Start
+              </button>
+            </div>
           </div>
         )}
       </Container>
