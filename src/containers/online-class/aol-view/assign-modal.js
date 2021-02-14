@@ -38,41 +38,60 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
     const [toggle, setToggle] = useState(false);
     const { setAlert } = useContext(AlertNotificationContext);
     const [selectedDate, setSelectedDate] = React.useState(new Date());
+    let hour;
+    let mins;
 
     const [filterData, setFilterData] = useState({
         teacher: '',
     })
+    const batchSlot = assignData?.classData?.batch_time_slot && assignData?.classData?.batch_time_slot.split('-')
 
     const handleDateChange = (date) => {
         setSelectedDate(date);
     };
+
+    const handleHour = () => {
+        const hr = new Intl.DateTimeFormat('en', { hour: 'numeric' }).format(selectedDate);
+        const min = new Intl.DateTimeFormat('en', { minute: 'numeric' }).format(selectedDate);
+        hour =hr.split(' ')[0]
+        mins = min
+        // alert(hr.split(' ')[0]);
+        // alert(min)
+    }
     const handleTeacher = (event, value) => {
         setFilterData({ ...filterData, teacher: '' })
         if (value) {
             setFilterData({ ...filterData, teacher: value })
         }
     }
-  
-    const batchSlot=assignData?.classData?.batch_time_slot && assignData?.classData?.batch_time_slot.split('-')
+
+    useEffect(() => {
+        handleHour();
+    }, [selectedDate])
+
+
+    // console.log(parseInt(batchSlot[0]),parseInt(batchSlot[1]),'BBBBBB')
     const handleAssign = () => {
-        const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
-        const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
-        const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(selectedDate);
-        axiosInstance.put(`${endpoints.aol.assignTeacher}`, {
-            "batch_id": assignData?.classData?.id,
-            "start_date_time":selectedDate.format(`${ye}-${mo}-${da} hh:mm:ss`),
-            "teacher": filterData.teacher.tutor_id,
-        }).then(result => {
-            if (result.data.status_code === 200) {
-                setAlert('success', result.data.message)
-                setOpenAssignModal(false)
-                // setReload({...assignData,reload:true})
-                setReload(!reload)
-            }
-        })
+        if(parseInt(batchSlot[0])% 12 <= hour && parseInt(batchSlot[1]) % 12 >= hour ){
+            alert('success')
+        }
+        setAlert('warning',`set the time in between ${parseInt(batchSlot[0])} to ${parseInt(batchSlot[1])} ` )
+        // const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
+        // const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
+        // const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(selectedDate);
+        // axiosInstance.put(`${endpoints.aol.assignTeacher}`, {
+        //     "batch_id": assignData?.classData?.id,
+        //     "start_date_time": selectedDate.format(`${ye}-${mo}-${da} hh:mm:ss`),
+        //     "teacher": filterData.teacher.tutor_id,
+        // }).then(result => {
+        //     if (result.data.status_code === 200) {
+        //         setAlert('success', result.data.message)
+        //         setOpenAssignModal(false)
+        //         setReload(!reload)
+        //     }
+        // })
     }
-    console.log(reload,setReload,'SSSSSSSSS')
-     return (
+    return (
         <div>
             <Dialog open={openAssignModal} onClose={() => setOpenAssignModal(false)} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogWrapper }}>
                 <DialogTitle id="form-dialog-title" className='reshuffle-header' style={{ color: '#ffffff' }}>Assign Teacher</DialogTitle>
@@ -128,9 +147,6 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                                         id="time-picker"
                                         label="Time picker"
                                         value={selectedDate}
-                                        ampm={false}
-                                        minTime={new Date(0, 0, 3, 8)}
-                                        maxTime={new Date(0, 0, 0, 18, 45)}
                                         onChange={handleDateChange}
                                         KeyboardButtonProps={{
                                             'aria-label': 'change time',

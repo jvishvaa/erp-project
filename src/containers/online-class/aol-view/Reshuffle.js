@@ -30,34 +30,24 @@ import ReshuffleModal from './reshuffle-modal';
 const Reshuffle = () => {
     const [openReshuffleModal, setOpenReshuffleModal] = useState(false);
     const [studentName, setStudentName] = useState([])
-    const [modalData,setModalData] =useState({})
-
+    const [modalData, setModalData] = useState({})
     const { id } = useParams()
-
-    // console.log(id,'MMMMMMMMMM')
     const handleShuffle = (data) => {
         setModalData(data)
         setOpenReshuffleModal(true);
     }
-
-
     useEffect(() => {
         axiosInstance.get(`${endpoints.onlineCourses.studentList}?batch_id=${id}`)
             .then((result) => {
                 setStudentName(result.data.data)
             })
     }, [])
-
     return (
-
         <Layout>
             <div className='breadcrumb-container'>
                 <CommonBreadcrumbs componentName='Online Class' childComponentName='Reshuffle Batch' />
             </div>
-
             <div className='attendee__management-table'>
-
-
                 <TableContainer>
                     <Table className='viewclass__table' aria-label='simple table'>
                         <TableHead className='styled__table-head'>
@@ -71,7 +61,6 @@ const Reshuffle = () => {
                                 <TableCell align='center'>Reshuffle</TableCell>
                             </TableRow>
                         </TableHead>
-
                         <TableBody>
                             {studentName?.map((p, index) => {
                                 return (
@@ -86,7 +75,7 @@ const Reshuffle = () => {
                                             {p.user.user.username}
                                         </TableCell>
                                         <TableCell align='center'>
-                                        {p.batch.title}
+                                            {p.batch.title}
                                         </TableCell>
                                         <TableCell align='center'>
                                             <ShuffleIcon
@@ -101,10 +90,7 @@ const Reshuffle = () => {
                         </TableBody>
                     </Table>
                 </TableContainer>
-
             </div>
-
-
             <ReshuffleModal
                 openReshuffleModal={openReshuffleModal}
                 setOpenReshuffleModal={setOpenReshuffleModal}

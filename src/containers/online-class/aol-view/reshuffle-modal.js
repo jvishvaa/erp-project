@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName, modalData , id}) => {
+const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName, modalData, id }) => {
     const classes = useStyles();
     const { setAlert } = useContext(AlertNotificationContext);
     const [batchList, setBatchList] = useState([]);
@@ -80,7 +80,7 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
         axiosInstance.post(`https://erpnew.letseduvate.com/qbox/aol/student-shuffle/`, {
             // "batch": modalData?.batch?.id,
             // "new_batch": filterData?.batch?.id,
-            "batch":filterData?.batch?.id,
+            "batch": filterData?.batch?.id,
             "new_batch": modalData?.batch?.id,
             "students": [modalData?.user?.id]
         })
@@ -92,17 +92,17 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
             }))
     }
 
-    console.log(id,'+++++++++')
+    console.log(id, '+++++++++')
     return (
         <div>
             <Dialog open={openReshuffleModal} onClose={() => setOpenReshuffleModal(false)} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogWrapper }}>
-                <DialogTitle id="form-dialog-title" className='reshuffle-header' style={{color:'#ffffff'}}>Batch Reshuffle</DialogTitle>
+                <DialogTitle id="form-dialog-title" className='reshuffle-header' style={{ color: '#ffffff' }}>Batch Reshuffle</DialogTitle>
                 <DialogContent>
-                    <DialogContentText style={{marginTop:'1.25rem'}} >
+                    <DialogContentText style={{ marginTop: '1.25rem' }} >
                         <Grid container spacing={4} >
                             <Grid item xs={12} sm={12} >
                                 <TextField
-                                    style={{width:'100%'}}
+                                    style={{ width: '100%' }}
                                     id="standard-read-only-input"
                                     label="Course Name"
                                     defaultValue={modalData?.batch?.course?.course_name}
@@ -115,7 +115,7 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
                         <Grid container spacing={4} >
                             <Grid item xs={12} sm={12} >
                                 <TextField
-                                    style={{width:'100%'}} 
+                                    style={{ width: '100%' }}
                                     id="standard-read-only-input"
                                     label="Batch Name"
                                     defaultValue={modalData?.batch?.title}
@@ -148,41 +148,41 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
                                 />
                             </Grid>
                         </Grid>
-                      {filterData?.batch ?  
-                      <Grid container spacing={4} >
-                            <Grid item xs={12} sm={12} >
-                                <TextField
-                                    style={{width:'100%'}}
-                                    id="standard-read-only-input"
-                                    label="Batch Start Time"
-                                    defaultValue={moment(filterData?.batch.start_date).format('YYYY-MM-DD h:mm:ss')}
-                                    // defaultValue='12 - 3'
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={12}>
+                        {filterData?.batch ?
+                            <Grid container spacing={4} >
+                                <Grid item xs={12} sm={12} >
                                     <TextField
-                                    style={{width:'100%'}}
-                                    id="standard-read-only-input"
-                                    label="Batch Size"
-                                    defaultValue={`1 : ${filterData?.batch.batch_size}`}
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                />
-                            </Grid>
+                                        style={{ width: '100%' }}
+                                        id="standard-read-only-input"
+                                        label="Batch Start Time"
+                                        defaultValue={moment(filterData?.batch.start_date).format('YYYY-MM-DD h:mm:ss')}
+                                        // defaultValue='12 - 3'
+                                        InputProps={{
+                                            readOnly: true,
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={12}>
+                                    <TextField
+                                        style={{ width: '100%' }}
+                                        id="standard-read-only-input"
+                                        label="Batch Size"
+                                        defaultValue={`1 : ${filterData?.batch.batch_size}`}
+                                        InputProps={{
+                                            readOnly: true,
+                                        }}
+                                    />
+                                </Grid>
 
-                        </Grid> : <div style={{marginTop:'2rem'}}></div>  } 
+                            </Grid> : <div style={{ marginTop: '2rem' }}></div>}
                         <Grid container spacing={2} >
                             <Grid item xs={12} sm={6}>
 
-                                <Button onClick={() => setOpenReshuffleModal(false)} color="primary" style={{width:'7.5rem'}}>
+                                <Button onClick={() => setOpenReshuffleModal(false)} color="primary" style={{ width: '7.5rem' }}>
                                     Cancel
                                  </Button>
                             </Grid>
-                            <Grid item xs={12} sm={6} style={{width:'7.5rem'}}>
+                            <Grid item xs={12} sm={6} style={{ width: '7.5rem' }}>
                                 <Button color="primary" onClick={handleReshuffle}>
                                     Reshuffle
                             </Button>
