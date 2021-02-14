@@ -1,0 +1,66 @@
+.common-table {
+  width: 100%;
+}
+
+.common-table .table-header-row {
+  background-color: '#ffffff';
+}
+
+.common-table .table-header-row tr th {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  margin: '10px 0';
+  color: #014b7e !important;
+}
+
+.common-table .table-header-row tr th:not(:last-child):after {
+  content: '';
+  width: 2px;
+  background-color: #ff6b6b;
+  height: 60%;
+  position: absolute;
+  border-radius: 5px;
+  right: 0;
+  -webkit-transform: translateY(-10%);
+          transform: translateY(-10%);
+}
+
+.common-table .table-pagination {
+  color: #014b7e;
+}
+
+.pagination-white button.Mui-selected {
+  color: #ffffff;
+}
+
+.view-users-page .spacer {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.view-users-page .bread-crumbs-container {
+  width: 100%;
+}
+
+.view-users-page .bread-crumbs-container .page_title {
+  margin: 0;
+}
+
+.view-users-page .inner-container {
+  width: 95%;
+  margin: 0 auto;
+}
+
+.view-users-page .inner-container .form-container .MuiFormControl-root .MuiSvgIcon-root {
+  color: #ff6b6b;
+}
+
+.view-users-page .table-pagination {
+  color: #014b7e;
+}
+
+.view-users-page .table-pagination .MuiTablePagination-caption {
+  font-weight: 600;
+}
+/*# sourceMappingURL=styles.css.map */

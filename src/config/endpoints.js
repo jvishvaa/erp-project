@@ -65,6 +65,7 @@ export default {
     sectionsTable: '/erp_user/list-section/',
     branchMappingTable: '/erp_user/branch/',
     sectionMappingTable: '/erp_user/list-section-mapping/',
+    subjectMappingTable: '/erp_user/list-subjectmapping/',
     deleteSectionMapping: '/erp_user/delete-section-mapping/',
     createBranch: '/erp_user/create-branch/',
     deleteBranch: '/erp_user/delete-branch-mapping/',

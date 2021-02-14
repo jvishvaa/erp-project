@@ -1,0 +1,123 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Raleway&display=swap");
+.hwcard {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  border: 1px solid #fe6b6b;
+  border-radius: 1.25rem !important;
+  opacity: 1;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  height: 44rem;
+  padding: 50px 2rem 1.5rem;
+}
+
+@media screen and (max-width: 768px) {
+  .hwcard {
+    padding: 50px 1rem 1rem;
+  }
+}
+
+.close-icon {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.cardHeader {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  font: normal normal 600 1rem Raleway;
+  letter-spacing: 0px;
+  color: #014b7e;
+}
+
+.cardHeader div {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.cardHeader div:nth-child(1) {
+  width: 50%;
+  text-align: left;
+}
+
+.divider {
+  opacity: 1;
+  height: 1px;
+  background-color: #e2e2e2;
+  margin: 0.5rem 0;
+}
+
+.dividerRow {
+  opacity: 1;
+  height: 1px;
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  background-color: #e2e2e2;
+  margin: auto 1rem;
+}
+
+.cardHeaderSub {
+  font: normal normal 600 18px/21px Raleway;
+  letter-spacing: 0px;
+  color: #014b7e;
+  margin-top: 2rem;
+}
+
+.cardRow {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  padding: 1.25rem 0 0 0;
+  margin-right: 0.5rem;
+}
+
+.innerBox {
+  overflow-y: scroll;
+}
+
+.studentName {
+  font-size: 1.1rem;
+  letter-spacing: 0px;
+  color: #014b7e;
+  opacity: 1;
+  padding-left: 0.5rem;
+  cursor: pointer;
+}
+
+.studentMarks {
+  font: normal normal normal 14px/16px Raleway;
+  letter-spacing: 0px;
+  opacity: 1;
+}
+
+.no-students-text {
+  color: grey;
+  text-align: center;
+  font-size: 1rem;
+}
+/*# sourceMappingURL=homework-card.css.map */

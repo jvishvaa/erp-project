@@ -1,0 +1,64 @@
+.mapping-grade-subject-breadcrum .mapping-message_log_breadcrumb_wrapper {
+  margin-left: 20px;
+}
+
+.mapping-grade-subject-dropdown-container {
+  margin-left: 20px;
+  margin-top: 30px;
+}
+
+.cen-dropdown {
+  margin-left: 38px;
+}
+
+.central-subject-dropdown {
+  margin-left: 41px;
+}
+
+.btn-container {
+  margin-top: 30px;
+}
+
+.btn-container .filter-btn {
+  margin-left: 20px;
+  background: #FF6B6B;
+}
+
+.button-container-map {
+  margin-top: 20px;
+  margin-left: 20px;
+}
+
+.btn-list {
+  margin-left: 25px;
+  margin-top: 25px;
+}
+
+.card {
+  -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+  width: 40%;
+  margin-right: 20px;
+}
+
+.container {
+  padding: 2px 16px;
+}
+
+.mapping-sub-grade-container .mapping-grade-subject-container .makeStyles-root-42 {
+  width: 320px;
+}
+
+.mapping-grade-subject-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.link-grade {
+  text-decoration: none;
+  color: #014B7E;
+}
+/*# sourceMappingURL=subjectgrademapping.css.map */

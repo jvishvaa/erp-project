@@ -26,21 +26,21 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
-import CreateSubjectMapping from './create-subject-mapping'
-import EditSubjectMapping from './edit-subject-mapping'
+import CreateSubjectMapping from './create-subject-mapping';
+import EditSubjectMapping from './edit-subject-mapping';
 import Loading from '../../../components/loader/loader';
-import '../master-management.css'
+import '../master-management.css';
 import SubjectMappingCard from './subject-mapping-card';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     margin: '0 auto',
-    boxShadow: 'none'
+    boxShadow: 'none',
   },
   container: {
     maxHeight: '70vh',
-    width: '100%'
+    width: '100%',
   },
   columnHeader: {
     color: `${theme.palette.secondary.main} !important`,
@@ -56,10 +56,14 @@ const useStyles = makeStyles((theme) => ({
     margin: '0 auto',
     background: theme.palette.background.secondary,
     paddingBottom: theme.spacing(2),
-  }
+  },
 }));
 
 const columns = [
+  { id: 'session_year', label: 'Session Year', minWidth: 100 },
+  { id: 'branch_name', label: 'Branch', minWidth: 100 },
+  { id: 'grade_name', label: 'Grade', minWidth: 100 },
+  { id: 'section_name', label: 'Section', minWidth: 100 },
   {
     id: 'subject_name',
     label: 'Subject',
@@ -97,120 +101,116 @@ const columns = [
   },
 ];
 
-
 const SubjectMappingTable = () => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const [page, setPage] = useState(1);
-  const [subjects, setSubjects] = useState([])
-  const [openDeleteModal, setOpenDeleteModal] = useState(false)
-  const [subjectId, setSubjectId] = useState()
-  const [subjectName, setSubjectName] = useState('')
-  const [addFlag, setAddFlag] = useState(false)
-  const [editFlag, setEditFlag] = useState(false)
-  const [tableFlag, setTableFlag] = useState(true)
-  const [desc, setDesc] = useState('')
-  const [delFlag, setDelFlag] = useState(false)
+  const [subjects, setSubjects] = useState([]);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [subjectId, setSubjectId] = useState();
+  const [subjectName, setSubjectName] = useState('');
+  const [addFlag, setAddFlag] = useState(false);
+  const [editFlag, setEditFlag] = useState(false);
+  const [tableFlag, setTableFlag] = useState(true);
+  const [desc, setDesc] = useState('');
+  const [delFlag, setDelFlag] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
-  const [searchSubject, setSearchSubject] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [opt, setOpt] = useState(false)
+  const [searchSubject, setSearchSubject] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [opt, setOpt] = useState(false);
   const limit = 15;
-  const [goBackFlag, setGoBackFlag] = useState(false)
+  const [goBackFlag, setGoBackFlag] = useState(false);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
-  const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px'
-  const widerWidth = isMobile ? '98%' : '95%'
-
+  const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
+  const widerWidth = isMobile ? '98%' : '95%';
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage + 1)
+    setPage(newPage + 1);
   };
 
   const handleAddSubjectMapping = () => {
-    setTableFlag(false)
-    setAddFlag(true)
-    setEditFlag(false)
-  }
+    setTableFlag(false);
+    setAddFlag(true);
+    setEditFlag(false);
+  };
 
   const handleEditSubjectMapping = (id, name, desc, optional) => {
-    setTableFlag(false)
-    setAddFlag(false)
-    setEditFlag(true)
-    setSubjectId(id)
-    setSubjectName(name)
-    setDesc(desc)
-    setOpt(optional)
-  }
+    setTableFlag(false);
+    setAddFlag(false);
+    setEditFlag(true);
+    setSubjectId(id);
+    setSubjectName(name);
+    setDesc(desc);
+    setOpt(optional);
+  };
 
   const handleGoBack = () => {
-    setPage(1)
-    setTableFlag(true)
-    setAddFlag(false)
-    setEditFlag(false)
-    setSearchSubject('')
-    setGoBackFlag(!goBackFlag)
-  }
+    setPage(1);
+    setTableFlag(true);
+    setAddFlag(false);
+    setEditFlag(false);
+    setSearchSubject('');
+    setGoBackFlag(!goBackFlag);
+  };
 
   const handleDeleteSubject = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     setLoading(true);
-    axiosInstance.put(endpoints.masterManagement.updateSubject, {
-      'is_delete': true,
-      'subject_id': subjectId
-    }).then(result => {
-      if (result.data.status_code === 200) {
-        setDelFlag(!delFlag)
-        setLoading(false);
-        setAlert('success', result.data.message);
-      } else {
-        setLoading(false);
-        setAlert('error', result.data.message)
-      }
-    }).catch((error) => {
-      setLoading(false)
-      setAlert('error', error.message)
-    })
-    setOpenDeleteModal(false)
-  };
-
-  const handleOpenDeleteModal = (id) => {
-    setSubjectId(id)
-    setOpenDeleteModal(true)
-  };
-
-  const handleCloseDeleteModal = () => {
-    setOpenDeleteModal(false)
-  };
-
-  useEffect(() => {
-    setLoading(true)
-    setTimeout(() => { setLoading(false) }, 450);
-  }, [goBackFlag, page, delFlag])
-
-  useEffect(() => {
-
-    let request = `${endpoints.masterManagement.subjects}?page=${page}&page_size=${limit}`;
-    if (searchSubject) request += `&subject=${searchSubject}`;
-    axiosInstance.get(request)
-      .then(result => {
-        if (result.data.status_code === 200) {
-          setTotalCount(result.data.result.count)
-          setSubjects(result.data.result.results)
+    axiosInstance
+      .put(`${endpoints.masterManagement.updateSubject}${subjectId}`)
+      .then((result) => {
+        if (result.data.status_code === 201) {
+          setDelFlag(!delFlag);
+          setLoading(false);
+          setAlert('success', result.data.msg || result.data.message);
         } else {
-          setAlert('error', result.data.error_message)
+          setLoading(false);
+          setAlert('error', result.data.msg || result.data.message);
         }
       })
       .catch((error) => {
-        setAlert('error', error.message);
-      })
-  }, [goBackFlag, delFlag, page, searchSubject])
+        setLoading(false);
+        setAlert('error', error.response?.data?.message || error.response?.data?.msg);
+      });
+    setOpenDeleteModal(false);
+  };
 
-  const handleDelete = (subj) => {
-    setSubjectName(subj.subject.subject_name);
-    handleOpenDeleteModal(subj.subject.id)
-  }
+  const handleOpenDeleteModal = (id,name) => {
+    setSubjectId(id);
+    setSubjectName(name);
+    setOpenDeleteModal(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setOpenDeleteModal(false);
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 450);
+  }, [goBackFlag, page, delFlag]);
+
+  useEffect(() => {
+    let url = `${endpoints.masterManagement.subjectMappingTable}?page=${page}&page_size=${limit}`;
+    if (searchSubject) url += `&subject=${searchSubject}`;
+    axiosInstance
+      .get(url)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          // setTotalCount(result.data.result.count)
+          setSubjects(result.data?.data);
+        } else {
+          setAlert('error', result.data.msg || result.data.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.response?.data?.message || error.response?.data?.msg);
+      });
+  }, [goBackFlag, delFlag, page, searchSubject]);
 
   return (
     <>
@@ -221,18 +221,38 @@ const SubjectMappingTable = () => {
             <CommonBreadcrumbs
               componentName='Master Management'
               childComponentName='Subject Mapping List'
-              childComponentNameNext={(addFlag && !tableFlag) ? 'Add Subject Mapping' : (editFlag && !tableFlag) ? 'Edit Mapping Subject' : null}
+              childComponentNameNext={
+                addFlag && !tableFlag
+                  ? 'Add Subject Mapping'
+                  : editFlag && !tableFlag
+                  ? 'Edit Mapping Subject'
+                  : null
+              }
             />
           </div>
         </div>
 
-        {!tableFlag && addFlag && !editFlag && <CreateSubjectMapping setLoading={setLoading} handleGoBack={handleGoBack} />}
-        {!tableFlag && !addFlag && editFlag && <EditSubjectMapping id={subjectId} desc={desc} name={subjectName} setLoading={setLoading} handleGoBack={handleGoBack} opt={opt} />}
+        {!tableFlag && addFlag && !editFlag && (
+          <CreateSubjectMapping setLoading={setLoading} handleGoBack={handleGoBack} />
+        )}
+        {!tableFlag && !addFlag && editFlag && (
+          <EditSubjectMapping
+            id={subjectId}
+            desc={desc}
+            name={subjectName}
+            setLoading={setLoading}
+            handleGoBack={handleGoBack}
+            opt={opt}
+          />
+        )}
 
-
-        {tableFlag && !addFlag && !editFlag &&
+        {tableFlag && !addFlag && !editFlag && (
           <>
-            <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
+            <Grid
+              container
+              spacing={isMobile ? 3 : 5}
+              style={{ width: widerWidth, margin: wider }}
+            >
               <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
                 <TextField
                   style={{ width: '100%' }}
@@ -241,8 +261,11 @@ const SubjectMappingTable = () => {
                   variant='outlined'
                   size='small'
                   name='subname'
-                  autoComplete="off"
-                  onChange={e => { setPage(1); setSearchSubject(e.target.value); }}
+                  autoComplete='off'
+                  onChange={(e) => {
+                    setPage(1);
+                    setSearchSubject(e.target.value);
+                  }}
                 />
               </Grid>
               <Grid item xs sm={9} className={isMobile ? 'hideGridItem' : ''} />
@@ -251,21 +274,22 @@ const SubjectMappingTable = () => {
                   startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
                   variant='contained'
                   color='primary'
-                  size="small"
+                  size='small'
                   style={{ color: 'white' }}
-                  title="Add Subject Mapping"
-                  onClick={handleAddSubjectMapping}>
+                  title='Add Subject Mapping'
+                  onClick={handleAddSubjectMapping}
+                >
                   Add Subject Mapping
-        </Button>
+                </Button>
               </Grid>
             </Grid>
           </>
-        }
+        )}
 
         <>
-          {!isMobile ?
+          {!isMobile ? (
             <>
-              {tableFlag && !addFlag && !editFlag &&
+              {tableFlag && !addFlag && !editFlag && (
                 <Paper className={`${classes.root} common-table`}>
                   <TableContainer className={classes.container}>
                     <Table stickyHeader aria-label='sticky table'>
@@ -285,37 +309,61 @@ const SubjectMappingTable = () => {
                       </TableHead>
                       <TableBody>
                         {subjects.map((subject, index) => {
+                          const {
+                            created_by,
+                            id,
+                            subject: { subject_name, subject_description, is_optional },
+                            section_mapping: {
+                              grade: { grade_name },
+                              section: {section_name},
+                              acad_session: {
+                                branch: { branch_name },
+                                session_year: { session_year },
+                              },
+                            },
+                          } = subject;
                           return (
                             <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
                               <TableCell className={classes.tableCell}>
-                                {subject.subject.subject_name}
+                                {session_year}
                               </TableCell>
                               <TableCell className={classes.tableCell}>
-                                {subject.subject.created_by}
+                                {branch_name}
                               </TableCell>
                               <TableCell className={classes.tableCell}>
-                                {subject.subject.subject_description}
+                                {grade_name}
                               </TableCell>
                               <TableCell className={classes.tableCell}>
-                                {(subject.subject.is_optional) ? 'Yes' : 'No'}
+                                {section_name}
                               </TableCell>
-                              <TableCell
-                                className={classes.tableCell}
-                              >
+                              <TableCell className={classes.tableCell}>
+                                {subject_name}
+                              </TableCell>
+                              <TableCell className={classes.tableCell}>
+                                {created_by}
+                              </TableCell>
+                              <TableCell className={classes.tableCell}>
+                                {subject_description}
+                              </TableCell>
+                              <TableCell className={classes.tableCell}>
+                                {is_optional ? 'Yes' : 'No'}
+                              </TableCell>
+                              <TableCell className={classes.tableCell}>
                                 <IconButton
-                                  onClick={e => { handleDelete(subject) }}
-                                  title='Delete Subject'
+                                  onClick={(e) => {
+                                    handleOpenDeleteModal(id, subject_name);
+                                  }}
+                                  title='Delete Subject Mapping'
                                 >
                                   <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
                                 </IconButton>
 
-                                <IconButton
+                                {/* <IconButton
                                   onClick={e => handleEditSubjectMapping(subject.subject.id, subject.subject.subject_name, subject.subject.subject_description, subject.subject.is_optional)}
                                   title='Edit Subject'
                                 >
                                   <EditOutlinedIcon style={{ color: '#fe6b6b' }} />
-                                </IconButton>
-
+                                </IconButton> */}
                               </TableCell>
                             </TableRow>
                           );
@@ -323,7 +371,7 @@ const SubjectMappingTable = () => {
                       </TableBody>
                     </Table>
                   </TableContainer>
-                  <div className="paginateData">
+                  <div className='paginateData'>
                     <TablePagination
                       component='div'
                       count={totalCount}
@@ -335,21 +383,21 @@ const SubjectMappingTable = () => {
                     />
                   </div>
                 </Paper>
-              }
+              )}
             </>
-            : <>
+          ) : (
+            <>
               <>
-                {tableFlag && !addFlag && !editFlag &&
+                {tableFlag && !addFlag && !editFlag && (
                   <>
-                    {
-                      subjects.map(subject => (
-                        <SubjectMappingCard
-                          data={subject}
-                          handleDelete={handleDelete}
-                          handleEditSubjectMapping={handleEditSubjectMapping} />
-                      ))
-                    }
-                    <div className="paginateData paginateMobileMargin">
+                    {subjects.map((subject) => (
+                      <SubjectMappingCard
+                        data={subject}
+                        handleOpenDeleteModal={handleOpenDeleteModal}
+                        handleEditSubjectMapping={handleEditSubjectMapping}
+                      />
+                    ))}
+                    <div className='paginateData paginateMobileMargin'>
                       <TablePagination
                         component='div'
                         count={totalCount}
@@ -361,32 +409,36 @@ const SubjectMappingTable = () => {
                       />
                     </div>
                   </>
-                }
+                )}
               </>
             </>
-          }
+          )}
         </>
         <Dialog
           open={openDeleteModal}
           onClose={handleCloseDeleteModal}
           aria-labelledby='draggable-dialog-title'
         >
-          <DialogTitle style={{ cursor: 'move', color: '#014b7e' }} id='draggable-dialog-title'>
+          <DialogTitle
+            style={{ cursor: 'move', color: '#014b7e' }}
+            id='draggable-dialog-title'
+          >
             Delete Subject
-      </DialogTitle>
+          </DialogTitle>
           <DialogContent>
             <DialogContentText>
               {`Confirm Delete Subject ${subjectName}`}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseDeleteModal} className="labelColor cancelButton">
+            <Button onClick={handleCloseDeleteModal} className='labelColor cancelButton'>
               Cancel
-        </Button>
-            <Button color="primary" onClick={handleDeleteSubject}>Confirm</Button>
+            </Button>
+            <Button color='primary' onClick={handleDeleteSubject}>
+              Confirm
+            </Button>
           </DialogActions>
         </Dialog>
-
       </Layout>
     </>
   );

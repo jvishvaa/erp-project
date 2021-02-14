@@ -89,13 +89,6 @@ const columns = [
     labelAlign: 'center',
   },
   {
-    id: 'branch_enr_code',
-    label: 'Enrollment Code',
-    minWidth: 100,
-    align: 'center',
-    labelAlign: 'center',
-  },
-  {
     id: 'address',
     label: 'Address',
     minWidth: 100,
@@ -388,9 +381,6 @@ const BranchAcadTable = () => {
                               </TableCell>
                               <TableCell className={classes.tableCell}>
                                 {branch?.branch?.branch_code}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {branch?.branch?.branch_enrollment_code}
                               </TableCell>
                               <TableCell className={classes.tableCell}>
                                 {branch?.branch?.address}
