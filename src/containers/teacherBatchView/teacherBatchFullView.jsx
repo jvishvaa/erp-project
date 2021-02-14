@@ -233,7 +233,7 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
                   </Button>
                 )}
                 <Button fullWidth size='small' className='teacherFullViewFullButtons'>
-                  View Lesson Plan
+                  View Course Plan
                 </Button>
               </Grid>
             </Grid>
