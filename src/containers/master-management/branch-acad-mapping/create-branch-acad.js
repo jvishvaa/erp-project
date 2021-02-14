@@ -14,13 +14,23 @@ const CreateBranchAcad = ({ setLoading, handleGoBack, academicYearList }) => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
+
   useEffect(() => {
+
+    let url=`${endpoints.masterManagement.branchList}`;
     axiosInstance
-      .get(endpoints.masterManagement.branchList)
+      .get(url)
       .then((result) => {
-        setBranchList(result?.data);
+        if (result.data.status_code === 200) {
+          setBranchList(result.data?.data?.results);
+        } else {
+          setBranchList([]);
+          setAlert('error', result.data.msg||result.data.message);
+        }
       })
-      .catch((error) => setAlert('error', error.message));
+      .catch((error) => {
+        setAlert('error', error.response.data.message||error.response.data.msg);
+      });
   }, []);
 
   const handleSubmit = (e) => {

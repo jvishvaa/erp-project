@@ -27,6 +27,7 @@ import BranchTable from './containers/master-management/branch/branch-table';
 import BranchAcadTable from './containers/master-management/branch-acad-mapping/branch-acad-table';
 import SubjectMappingTable from './containers/master-management/subject-mapping/subject-mapping-table';
 import SubjectTable from './containers/master-management/subject/subject-table';
+import SectionMappingTable from './containers/master-management/section-mapping/section-mapping-table';
 import SectionTable from './containers/master-management/section/section-table';
 import GradeTable from './containers/master-management/grade/grade-table';
 import AcademicYearTable from './containers/master-management/academic-year/academic-year-table';
@@ -294,6 +295,9 @@ function App() {
                     </Route>
                     <Route exact path='/master-management/subject-table'>
                       {({ match }) => <SubjectTable match={match} />}
+                    </Route>
+                    <Route exact path='/master-management/section-mapping-table'>
+                      {({ match }) => <SectionMappingTable match={match} />}
                     </Route>
                     <Route exact path='/master-management/section-table'>
                       {({ match }) => <SectionTable match={match} />}

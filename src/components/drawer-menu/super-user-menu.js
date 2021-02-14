@@ -263,6 +263,24 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
           <ListItem
             button
             className={
+              history.location.pathname === '/master-management/section-mapping-table'
+                ? 'menu_selection'
+                : null
+            }
+            onClick={() => {
+              onClickMenuItem('section-mapping-table');
+            }}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+              {/* <MenuIcon name={child.child_name} /> */}
+              {/* {menuIcon(child.child_name)} */}
+            </ListItemIcon>
+            <ListItemText primary='Section Mapping' className='menu-item-text' />
+          </ListItem>
+
+          <ListItem
+            button
+            className={
               history.location.pathname === '/master-management/section-table'
                 ? 'menu_selection'
                 : null

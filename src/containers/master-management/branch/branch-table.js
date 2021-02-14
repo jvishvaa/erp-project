@@ -113,7 +113,7 @@ const BranchTable = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [searchBranch, setSearchBranch] = useState('');
   const [loading, setLoading] = useState(false);
-  const limit = 2;
+  const limit =15;
   const [goBackFlag, setGoBackFlag] = useState(false);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));

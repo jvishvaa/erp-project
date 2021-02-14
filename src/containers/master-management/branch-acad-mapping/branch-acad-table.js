@@ -233,7 +233,7 @@ const BranchAcadTable = () => {
       .catch((error) => {
         setAlert('error', error.response.data.message||error.response.data.msg);
       });
-  }, [])
+  }, []);
 
   useEffect(() => {
 

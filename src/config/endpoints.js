@@ -64,6 +64,8 @@ export default {
     grades: '/erp_user/grades-list/',
     sectionsTable: '/erp_user/list-section/',
     branchMappingTable: '/erp_user/branch/',
+    sectionMappingTable: '/erp_user/list-section-mapping/',
+    deleteSectionMapping: '/erp_user/delete-section-mapping/',
     createBranch: '/erp_user/create-branch/',
     deleteBranch: '/erp_user/delete-branch-mapping/',
     createSubject: '/erp_user/create-subject/',

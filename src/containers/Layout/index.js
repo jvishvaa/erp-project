@@ -398,6 +398,10 @@ const Layout = ({ children, history }) => {
         history.push('/master-management/subject-table');
         break;
       }
+      case 'section-mapping-table': {
+        history.push('/master-management/section-mapping-table');
+        break;
+      }
       case 'section-table': {
         history.push('/master-management/section-table');
         break;
