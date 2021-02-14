@@ -93,7 +93,7 @@ export default function JoinClassComponent(props) {
 
     return (
         <div>
-            <Typography className={classes.classDetailsDescription}>
+            {/* <Typography className={classes.classDetailsDescription}>
                 {props.data.date}
             </Typography>
             {!isAccepted && isRejected && (
@@ -128,8 +128,8 @@ export default function JoinClassComponent(props) {
                         Reject
                     </StyledRejectButton>
                 </div>
-            )}
-            {(!isAccepted && props.isTeacher) && !isCancel && (
+            )} */}
+            {/* {(!isAccepted && props.isTeacher) && !isCancel && ( */}
                 <div className={classes.buttonDiv}>
                     <StyledAcceptButton
                         variant="contained"
@@ -146,7 +146,7 @@ export default function JoinClassComponent(props) {
                         Cancel
                     </StyledRejectButton>
                 </div>
-            )}
+            {/* )} */}
         </div>
     )
 }

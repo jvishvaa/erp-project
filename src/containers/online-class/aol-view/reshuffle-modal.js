@@ -70,14 +70,15 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
     };
     useEffect(() => {
         // axiosInstance.get(`https://erpnew.letseduvate.com/qbox/aol/batch_shuffle/?batch_id=12`)
-        axiosInstance.get(`https://erpnew.letseduvate.com/qbox/aol/batch_shuffle/?batch_id=${id}`)
+        // axiosInstance.get(`http://erpnew.letseduvate.com/qbox/aol/batch_shuffle/?batch_id=${id}`)
+        axiosInstance.get(`${endpoints.aol.reshuffleBatchList}?batch_id=${id}`)
             .then((result) => {
                 setBatchList(result.data.result)
             })
     }, [])
 
     const handleReshuffle = () => {
-        axiosInstance.post(`https://erpnew.letseduvate.com/qbox/aol/student-shuffle/`, {
+        axiosInstance.post(`http://erpnew.letseduvate.com/qbox/aol/student-shuffle/`, {
             // "batch": modalData?.batch?.id,
             // "new_batch": filterData?.batch?.id,
             "batch": filterData?.batch?.id,

@@ -45,6 +45,7 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
         teacher: '',
     })
     const batchSlot = assignData?.classData?.batch_time_slot && assignData?.classData?.batch_time_slot.split('-')
+    const helperTextMsg=`Select time between ${batchSlot && parseInt(batchSlot[0])} to ${batchSlot && parseInt(batchSlot[1])}`
 
     const handleDateChange = (date) => {
         setSelectedDate(date);
@@ -53,10 +54,8 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
     const handleHour = () => {
         const hr = new Intl.DateTimeFormat('en', { hour: 'numeric' }).format(selectedDate);
         const min = new Intl.DateTimeFormat('en', { minute: 'numeric' }).format(selectedDate);
-        hour =hr.split(' ')[0]
+        hour = hr.split(' ')[0]
         mins = min
-        // alert(hr.split(' ')[0]);
-        // alert(min)
     }
     const handleTeacher = (event, value) => {
         setFilterData({ ...filterData, teacher: '' })
@@ -72,24 +71,47 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
 
     // console.log(parseInt(batchSlot[0]),parseInt(batchSlot[1]),'BBBBBB')
     const handleAssign = () => {
-        if(parseInt(batchSlot[0])% 12 <= hour && parseInt(batchSlot[1]) % 12 >= hour ){
-            alert('success')
+        if (parseInt(batchSlot && batchSlot[0]) % 12 <= hour && parseInt(batchSlot && batchSlot[1]) % 12 > hour && filterData.teacher) {
+            // <<<<API CALL >>>alert('success')
+            const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
+            const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
+            const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(selectedDate);
+            axiosInstance.put(`${endpoints.aol.assignTeacher}`, {
+                "batch_id": assignData?.classData?.id,
+                "start_date_time": selectedDate.format(`${ye}-${mo}-${da} hh:mm:ss`),
+                "teacher": filterData.teacher.tutor_id,
+            }).then(result => {
+                if (result.data.status_code === 200) {
+                    setAlert('success', result.data.message)
+                    setOpenAssignModal(false)
+                    setReload(!reload)
+                }
+            })
+
+        } else if (parseInt(batchSlot && batchSlot[0]) % 12 <= hour && parseInt(batchSlot && batchSlot[0]) % 12 == hour && filterData.teacher) {
+            if (mins == 0 && filterData.teacher) {
+                //  api call >>>>><<<<<<alert('sucess-nested')
+                const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
+                const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
+                const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(selectedDate);
+                axiosInstance.put(`${endpoints.aol.assignTeacher}`, {
+                    "batch_id": assignData?.classData?.id,
+                    "start_date_time": selectedDate.format(`${ye}-${mo}-${da} hh:mm:ss`),
+                    "teacher": filterData.teacher.tutor_id,
+                }).then(result => {
+                    if (result.data.status_code === 200) {
+                        setAlert('success', result.data.message)
+                        setOpenAssignModal(false)
+                        setReload(!reload)
+                    }
+                })
+            }
+            else {
+                setAlert('warning', `set the time between ${parseInt(batchSlot && batchSlot[0])} to ${parseInt(batchSlot && batchSlot[1])}`)
+            }
+        } else {
+            setAlert('warning', `set the time between ${parseInt(batchSlot && batchSlot[0])} to ${parseInt(batchSlot && batchSlot[1])}`)
         }
-        setAlert('warning',`set the time in between ${parseInt(batchSlot[0])} to ${parseInt(batchSlot[1])} ` )
-        // const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
-        // const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
-        // const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(selectedDate);
-        // axiosInstance.put(`${endpoints.aol.assignTeacher}`, {
-        //     "batch_id": assignData?.classData?.id,
-        //     "start_date_time": selectedDate.format(`${ye}-${mo}-${da} hh:mm:ss`),
-        //     "teacher": filterData.teacher.tutor_id,
-        // }).then(result => {
-        //     if (result.data.status_code === 200) {
-        //         setAlert('success', result.data.message)
-        //         setOpenAssignModal(false)
-        //         setReload(!reload)
-        //     }
-        // })
     }
     return (
         <div>
@@ -127,7 +149,7 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                                         style={{ width: '100%' }}
                                         margin="normal"
                                         id="date-picker-dialog"
-                                        label="Date picker dialog"
+                                        label="Start Date"
                                         format="MM/dd/yyyy"
                                         value={selectedDate}
                                         onChange={handleDateChange}
@@ -143,11 +165,13 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                                 <MuiPickersUtilsProvider utils={MomentUtils}>
                                     <KeyboardTimePicker
                                         margin="normal"
-                                        style={{ width: '100%' }}
+                                        style={{ width: '100%'}}
+                                        className='helperText'
                                         id="time-picker"
-                                        label="Time picker"
+                                        label="Start Time"
                                         value={selectedDate}
                                         onChange={handleDateChange}
+                                        helperText={helperTextMsg}
                                         KeyboardButtonProps={{
                                             'aria-label': 'change time',
                                         }}

@@ -158,6 +158,7 @@ export default {
     teacherList:'/erp_user/teacher-list/',
     draftBatch:'/aol/mixed-batch-details/',
     assignTeacher:'/aol/teacher-assign/',
+    reshuffleBatchList:'/aol/batch_shuffle/',
   },
   onlineCourses:{
     createCourse:'/aol/courses/',

@@ -4,3 +4,6 @@
     padding: 16px 24px;
     background: #ff6b6b;
 }
+.helperText.MuiFormHelperText-root {
+    color: red;
+}
