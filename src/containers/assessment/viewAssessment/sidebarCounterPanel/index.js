@@ -4,6 +4,7 @@ import React, { useContext } from 'react';
 import { AssessmentHandlerContext } from '../../assess-attemption/assess-attemption-context';
 import './sidebarPanel.css';
 import { Button } from '@material-ui/core';
+import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 
 const SidebarCounterPanel = () => {
   const {
@@ -19,6 +20,10 @@ const SidebarCounterPanel = () => {
     } = {},
     questionsArray = [],
   } = useContext(AssessmentHandlerContext);
+  const { setAlert } = useContext(AlertNotificationContext);
+  const submitTheResult = () => {
+    setAlert('Success', 'Submitted the result!');
+  };
   return (
     <div className='sidebar-panel'>
       <div className='sidebar-panel-wrapper'>
@@ -28,7 +33,7 @@ const SidebarCounterPanel = () => {
         </div>
         <div className='sidebar-time-counter'>
           <h4>Time Remaining</h4>
-          <h5 className='counter-timer'>00:34</h5>
+          <h5 className='counter-timer'>00:00</h5>
         </div>
       </div>
       <div className='sidebar-question-list'>
@@ -40,19 +45,13 @@ const SidebarCounterPanel = () => {
               onClick={() => {
                 selectQues(ques.id);
               }}
-              className='box'
+              className={`box ${
+                ques?.user_response?.attemptionStatus ? 'green' : 'purple'
+              } ${currentQuesionId == ques.id ? 'ongoing' : ''}`}
             >
               {` ${index + 1}`}
             </div>
           ))}
-          {/* <div className='box'> 1</div>
-          <div className='box'> 2</div>
-          <div className='box'> 3</div>
-          <div className='box'> 4</div>
-          <div className='box'> 5</div>
-          <div className='box'> 6</div>
-          <div className='box'> 7</div>
-          <div className='box'> 8</div> */}
         </div>
       </div>
       <div className='sidebar-legend'>
@@ -77,7 +76,12 @@ const SidebarCounterPanel = () => {
         <Button className='outlined' color='outlined' color="secondary'>">
           Instructions
         </Button>
-        <Button className='contained' variant='contained' color='primary'>
+        <Button
+          className='contained'
+          variant='contained'
+          color='primary'
+          onClick={submitTheResult}
+        >
           Submit
         </Button>
       </div>

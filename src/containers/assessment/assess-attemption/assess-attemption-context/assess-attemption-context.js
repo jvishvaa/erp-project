@@ -96,8 +96,8 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
     let noOfIncomplete = 0; //  if attemption_status in user_response is true, count it as attempted.
     let noOfUnattempted = 0; //  if attemption_status in user_response is true, count it as attempted.
     questionsArray.forEach((questionObj) => {
-      const { user_response: { attemption_status: attemptionStatus = null } = {} } =
-        questionObj || {};
+      const { user_response: { attemptionStatus = null } = {} } = questionObj || {};
+      console.log('inside meta updation: ', questionObj);
       switch (attemptionStatus) {
         case true: {
           noOfAttempted += 1;
@@ -137,7 +137,7 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
   }
 
   /*
-       process whether it is completely attempted or not.
+    process whether it is completely attempted or not.
   */
   function updateQuestionsUserResponse(qId, userResponse = {}) {
     const { [qId]: questionObj = {} } = questionsDataObj || {};

@@ -41,9 +41,14 @@
   text-align: center;
   max-width: 400px;
   cursor: pointer;
+  margin-bottom: 10px;
 }
 .mcq-options:hover {
   background: #ffdddd;
+}
+
+.MuiFormControlLabel-root {
+  min-width: 290px;
 }
 
 .question-submit-btn {
