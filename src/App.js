@@ -96,7 +96,6 @@ import DailyDairyStore from './containers/daily-dairy/context/context';
 import AttendeeListRemake from './containers/attendance';
 import TestComparisionUI from './containers/assessment-report/test-comparision';
 import AssessmentAnalysis from './containers/assessment-report/assessment-analysis';
-
 import StudentStrength from './containers/student-strength';
 import StudentIdCard from './containers/student-Id-Card';
 import SignatureUpload from './containers/signature-upload';
@@ -193,6 +192,7 @@ function App() {
                         <Route exact path='/blog/wordcount-config/edit'>
                           {({ match }) => <EditWordCountConfig match={match} />}
                         </Route>
+
 
                         <Route exact path='/blog/teacher'>
                           {({ match }) => <TeacherBlog match={match} />}
@@ -383,6 +383,9 @@ function App() {
                         </Route>
                         <Route exact path='/create/daily-dairy'>
                           {({ match }) => <CreateDailyDairy match={match} />}
+                        </Route>
+                        <Route exact path='/course-price/:courseKey?/:gradeKey?'>
+                          {({ match }) => <CoursePrice match={match} />}
                         </Route>
                         <Route exact path='/create/course'>
                           {({ match }) => <CreateCourse match={match} />}
