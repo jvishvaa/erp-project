@@ -1,0 +1,193 @@
+@import "../../components/globel-css/globle.scss";
+
+.studentIdcardFilterDiv {
+    padding: 10px !important;
+    background-color: #F9F9F9;
+}
+.studentIdCardNavigationLinks {
+    color: #014B7E;
+    font-weight: bold;
+    font-size: 20px;
+    margin: 1px 10px !important;
+    outline: none !important;
+    background-color: #F9F9F9 !important;
+    border: none !important;
+    cursor: pointer;
+}
+.studentIdCardNavArrow {
+    color: #ff6b6b;
+    font-weight: bold;
+    font-size: 20px;
+}
+.studentIdCardFilterSelectionDiv {
+    padding: 10px 20px !important;
+}
+.studdentIdCardDivider {
+    margin: 20px 0px !important;
+}
+.studentIdCardFilterButton {
+    font-size: 11px !important;
+    border-radius: 8x !important;
+}
+.studentIdCardFilterButton1 {
+    font-size: 11px !important;
+    border-radius: 8x !important;
+}
+.studentIdCardButtonBorderDivider {
+    @include desktop {
+        border-left: 2px solid #014B7E;
+        height: 25px;
+        margin-top: 10px;
+        margin-left: 20px;
+        padding: 0px 10px;
+    }
+}
+.studentIdcardGradeLable {
+    color: #014B7E;
+    font-family: Raleway;
+    font-weight: bold;
+    overflow: hidden;
+    display: -webkit-box;
+    max-width: 100%;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    margin: 0%;
+    padding: 0%;
+}
+
+.studentIdcardLable {
+    color: #014B7E;
+    font-family: Raleway;
+    font-weight: bold;
+}
+.studentIdCardListCardsActive {
+    box-shadow: 0px 0px 4px #00000029;
+    border: 1px solid #F48F8F;
+    border-color: #F48F8F;
+    background-color: #FCEEEE;
+    border-radius: 10px;
+    opacity: 1;
+    padding: 10px 20px !important;
+}
+.studentIdCardListCardsInActive {
+    box-shadow: 0px 0px 4px #00000029;
+    border: 1px solid #E2E2E2 !important;
+    border-color: #E2E2E2 !important;
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    opacity: 1;
+    padding: 10px 20px !important;
+}
+.studentIdcardViewMoreButton {
+    font-size: 11px !important;
+    border-color: #F48F8F !important;
+}
+.studentIdCardViewDiv {
+    height: 250px;
+    border-left: 3px solid #FE6B6B;
+}
+.studentIdCardViewCardsSection {
+    margin-top: 10px !important;
+    padding: 10px 15px !important;
+}
+.studentIdCardViewCardsFullSection {
+    padding: 10px 10px 10px 10px !important;
+}
+.studentIdCardLeftBorderView {
+    padding: 15px 10px 10px 10px !important;
+    // line-height: 15px !important;
+    border-left: 3px solid #FE6B6B;
+    border-image: linear-gradient(transparent 20%, #FE6B6B 10% 80%, transparent 80%) 0 0 0 1 / 3px;
+}
+.studentIdCardFullViewCard {
+    box-shadow: 0px 0px 4px #00000029;
+    border: 1px solid #FF6B6B;
+    border-radius: 10px;
+    opacity: 1;
+    .studentIdCardFullViewTopHead {
+        text-align: right;
+        border-radius: 10px 10px 0px 0px;
+        box-shadow: 0px 2px 6px #00000029;
+        opacity: 1;
+        background-color: #FCEEEE !important;
+    }
+    .studentIdCardCloseButton {
+        color: #FE6B6B;
+    }
+    .idCardBackNextButton {
+        color: #FE6B6B;
+    }
+    .idCardFullViewMainHedding {
+        color: #FE6B6B;
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+        font-family: Raleway;
+    }
+}
+
+.table-pagination-users-log-message{
+	text-align: center;
+    display: flex;
+   	justify-content: center;
+    color: #014b7e !important;
+}
+.table-pagination-message-log .MuiTablePagination-caption{
+	font-weight: 600;
+}
+.table-pagination-users-log-message .MuiTablePagination-caption{
+	font-weight: 600;
+}
+.paginationDiv{
+    margin-top: 30px !important;
+    text-align: center;
+}
+
+.studentIdCardTemplete {
+    // height: 430px !important;
+    overflow: hidden !important;
+    border-radius: 8px !important;
+    border-color: #C5CED4 !important;
+    border: 1px solid #C5CED4 !important;
+    .idCardStudentLogo {
+        padding: 5px !important;
+        border: 1px solid #C5CED4 !important;
+    }
+    .studentIdCardAddress {
+        padding: 0 !important;
+        background-color: #FCEEEE;
+        color: #014b7e;
+        font-weight: bold;
+    }
+    .studentIdCardName {
+        padding: 0 !important;
+        background-color: #FCEEEE;
+        color: #014b7e;
+        font-weight: bold;
+    }
+    .studentMainIdCardLable {
+        font-size: 10px;
+        font-weight: bold;
+        padding: 5px 20px !important;
+    }
+    .studentMainIdCardAddresslable {
+        font-size: 10px;
+        padding: 5px 20px !important;   
+    }
+    .studentIdCardCell {
+        padding: 0 !important;
+    }
+    .idCardLogoName {
+        font-size: 15px !important;
+        font-weight: bold;
+    }
+    .idCardTempleteMainLogo {
+        text-align: center;
+        padding: 10px 0px 0px 0px !important;
+    }
+}
+.signatureViewinIdCardTemplate {
+    height:25px;
+    width:100px; 
+}
