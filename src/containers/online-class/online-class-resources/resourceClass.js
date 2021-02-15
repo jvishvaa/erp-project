@@ -51,6 +51,7 @@ export default function ResourceClassComponent(props) {
     const handleClick = () => {
         setIsModalOpen(true);
     };
+
     const handleDownload = (e) => {
         e.preventDefault();
         isDownload && isDownload.map((path) => {
@@ -64,6 +65,7 @@ export default function ResourceClassComponent(props) {
             online_class_id: props.resourceId,
             class_date: moment(props.date).format('DD-MM-YYYY')
         };
+        setHideButton(false);
         axiosInstance.get(`${endpoints.onlineClass.resourceFile}?online_class_id=${props.resourceId}&class_date=${moment(props.date).format('DD-MM-YYYY')}`)
         .then((res) => {
             if(res.data.result.length > 0) {
