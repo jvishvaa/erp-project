@@ -138,6 +138,7 @@ import Kit from './containers/Finance/src/components/Inventory/StoreAdmin/Kit/ki
 import SubCategoryAllow from './containers/Finance/src/components/Inventory/StoreAdmin/SubCategoryAllow/subCategoryAllow';
 import UpdateAdmissionForm from './containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/updateAdmissionForm';
 import AccountantLogin from './containers/Finance/src/components/Finance/BulkOperations/AccountantLogin/AccountantLogin';
+import AddGst from './containers/Finance/src/components/Inventory/StoreAdmin/AddGst/addGst';
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -573,6 +574,9 @@ function App() {
                 </Route>
                 <Route exact path= '/admissions/UpdateRegistrationForm/'>
                   {({ match }) => <UpdateAdmissionForm match={match} />}
+                </Route>
+                <Route exact path= '/Store/AddGst'>
+                  {({ match }) => <AddGst match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

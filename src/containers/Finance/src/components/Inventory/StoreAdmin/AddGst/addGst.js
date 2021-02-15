@@ -18,6 +18,7 @@ import { apiActions } from '../../../../_actions'
 import * as actionTypes from '../../store/actions'
 import Modal from '../../../../ui/Modal/modal'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
 // import { FilterInnerComponent, filterMethod } from '../../../Finance/FilterInnerComponent/filterInnerComponent'
 // import classesCSS from './kit.module.css'
 
@@ -274,7 +275,7 @@ const AddGst = ({ classes, session, branches, alert, user, fetchBranches, fetchG
             </Grid>
             <Grid item xs={6}>
               <Button
-                variant='outlined'
+                variant='contained'
                 color='primary'
                 // style={{ marginTop: '20px' }}
                 disabled={!multiBranch.length || !gst}
@@ -288,6 +289,7 @@ const AddGst = ({ classes, session, branches, alert, user, fetchBranches, fetchG
   }
 
   return (
+    <Layout>
     <div className={classes.container}>
       <Grid container spacing={3}>
         <Grid item xs={10}>
@@ -298,7 +300,7 @@ const AddGst = ({ classes, session, branches, alert, user, fetchBranches, fetchG
         <Grid item xs={2}>
           {sessionData
             ? <Button
-              variant='outlined'
+              variant='contained'
               color='primary'
               // style={{ marginTop: '20px' }}
               onClick={openAddModalHandler}
@@ -349,6 +351,7 @@ const AddGst = ({ classes, session, branches, alert, user, fetchBranches, fetchG
       { showModal ? modal() : null }
       { dataLoading ? <CircularProgress open /> : null }
     </div>
+    </Layout>
   )
 }
 const mapStateToProps = state => ({

@@ -668,6 +668,10 @@ const Layout = ({ children, history }) => {
                   history.push('/finance/BulkOperation/AccountantLogin')
                     break;
                   }
+              case 'Add Gst' : {
+                  history.push('/Store/AddGst')
+                    break;
+                  }
       default:
         break;
     }
