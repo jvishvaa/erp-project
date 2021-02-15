@@ -20,12 +20,14 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Take Class', Path: '/take-class' },
     { name: 'View Class', Path: '/online-class/view-class' },
     { name: 'Attend Online Class', Path: '/online-class/attend-class' },
+    { name: 'Teacher View Class', Path: '/online-class/teacher-view-class' },
     { name: 'Create Class', Path: '/online-class/create-class' },
     { name: 'Online Class', Path: '/create-class' },
     { name: 'Management View', Path: '/homework/coordinator' },
     { name: 'Configuration', Path: '/homework/admin' },
     { name: 'Student Homework', Path: '/homework/student' },
     { name: 'Teacher Homework', Path: '/homework/teacher' },
+    { name: 'Assessment', Path: '/assessment' },
     { name: 'Communication', Path: '/communication' },
     { name: 'Add Group', Path: '/communication/addgroup' },
     { name: 'View&Edit Group', Path: '/communication/viewgroup' },
@@ -40,10 +42,10 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Teacher Blogs', Path: '/blog/teacher' },
     { name: 'Management Blogs', Path: '/blog/admin' },
     { name: 'Principal Blogs', Path: '/blog/principal' },
-    {name: 'Genre' ,Path :'/blog/create/genre'},
-    {name: 'Word Count Cofiguration' ,Path :'/blog/create/wordcount-config'},
-
-    
+    { name: 'Genre', Path: '/blog/genre' },
+    { name: 'Word Count Cofiguration', Path: '/blog/wordcount-config' },
+    { name: 'ID Cards', Path: '/student-id-card' },
+    { name: 'Student Strength', Path: '/student-strength' },
   ];
   // const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {

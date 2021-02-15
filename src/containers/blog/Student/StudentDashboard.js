@@ -7,6 +7,7 @@ import { Grid, Button, Divider } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
@@ -71,18 +72,32 @@ const styles = (theme) => ({
     // margin: '20px',
   },
 });
+const statusTypeChoicesOne=[ { label: 'Revision', value: '5' },
+  { label: 'Pending Review', value: '8' },
+
+  ] 
+const statusTypeChoicesTwo =[ 
+{ label: 'Reviewed', value: '3' },
+{ label: 'Published', value: '4' }
+
+] 
+
+
+
 class StudentDashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
       tabValue: 0,
-      pageNo: 0,
+      pageNo: 1,
       pageSize: 6,
-      startDate :moment().format('YYYY-MM-DD'),
-      status:[8,5]
-      // endDate :getDaysAfter(moment(), 6)
+      status:[8,5],
+      moduleId:112,
+      endDate :moment().format('YYYY-MM-DD'),
+      startDate: this.getDaysBefore(moment(), 6)
 
     };
+
   }
 
   componentDidMount() {
@@ -112,7 +127,7 @@ class StudentDashboard extends Component {
         this.getBlog(status)})
     }
     else if (tabValue === 1){
-      this.setState({status:[3,7],pageNo:page},()=>{
+      this.setState({status:[3,7,6,4],pageNo:page},()=>{
         this.getBlog(status)})
     }
     else if (tabValue === 2){
@@ -136,14 +151,14 @@ class StudentDashboard extends Component {
   };
 
   handleTabChange = (event, newValue) => {
-    this.setState({ tabValue: newValue, pageNo:0, pageSize:6});
+    this.setState({ tabValue: newValue, pageNo:1, pageSize:6});
     if(newValue === 0){
       this.setState({status:[8,5]},()=>{
         this.getBlog(this.state.status);
       })
     }
     else if (newValue === 1){
-      this.setState({status:[3,7]},()=>{
+      this.setState({status:[3,7,6,4]},()=>{
         this.getBlog(this.state.status);
       })
     }
@@ -168,13 +183,13 @@ class StudentDashboard extends Component {
   };
 
   getBlog = (status) => {
-    const { pageNo, pageSize,tabValue } = this.state;
+    const { pageNo, pageSize,tabValue,moduleId } = this.state;
    
     axios
       .get(
         `${endpoints.blog.Blog}?page_number=${
-          pageNo + 1
-        }&page_size=${pageSize}&status=${status}&module_id=112`
+          pageNo 
+        }&page_size=${pageSize}&status=${status}&module_id=${moduleId}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -186,15 +201,15 @@ class StudentDashboard extends Component {
       .catch((error) => {
       });
   };
-  handleFilter = () =>
-  {
-    const { pageNo, pageSize ,tabValue,startDate,endDate} = this.state;
+  handleFilter = () => {
+    const { pageNo, pageSize ,tabValue,startDate,endDate,status,moduleId} = this.state;
+    console.log(startDate,endDate,"@@@")
     let tabStatus= []
     if(tabValue === 0){
       tabStatus= [8,5]
     }
     else if (tabValue === 1){
-      tabStatus = [3]
+      tabStatus = [3,6,4]
     }
     else if (tabValue === 2){
       tabStatus = [2]
@@ -204,8 +219,8 @@ class StudentDashboard extends Component {
     axios
       .get(
         `${endpoints.blog.Blog}?page_number=${
-          pageNo + 1
-        }&page_size=${pageSize}&status=${tabStatus}&module_id=112&start_date=${startDate}&end_date=${endDate}`
+          pageNo 
+        }&page_size=${pageSize}&status=${tabStatus}&module_id=${moduleId}&start_date=${startDate}&end_date=${endDate}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -224,11 +239,45 @@ class StudentDashboard extends Component {
       state: { gradeId: 'hello' },
     });
   };
+  handleStatusOne = (event, value) => {
+    if (value && value.value){
+      this.setState({status:value.value}
+        ,()=>{
+        this.getBlog(this.state.status)
+      }
+      )
+    }
+    else{
+this.setState({status:[8,5]}
+  ,()=>{
+  this.getBlog(this.state.status)
+}
+)
+    }
+  }
+  
+    handleStatusTwo = (event, value) => {
+      if (value && value.value){
+        this.setState({status:value.value}
+          ,()=>{
+          this.getBlog(this.state.status)
+        }
+        )
+      }
+      else{
+  this.setState({status:[3,4,7]}
+    ,()=>{
+    this.getBlog(this.state.status)
+  }
+  )
+      }
+    }
+  
 
 
   render() {
     const { classes } = this.props;
-    const { tabValue, data ,totalBlogs ,pageNo,pageSize} = this.state;
+    const { tabValue, data ,totalBlogs ,pageNo,pageSize,startDate,endDate} = this.state;
 
     return (
       <div className='layout-container-div'>
@@ -266,6 +315,50 @@ class StudentDashboard extends Component {
                       />
                     </div>
                   </Grid> */}
+                  <Grid item xs={12} sm={4}  >
+                  <div className='blog_input'>
+                    {tabValue === 0 ?
+                  <Autocomplete
+                  style={{ width: '100%' }}
+                  size='small'
+                  disableClearable
+                  onChange={this.handleStatusOne}
+                  id='category'
+                  required
+                  disableClearable
+                  options={statusTypeChoicesOne}
+                  getOptionLabel={(option) => option?.label}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Status'
+                      placeholder='Status'
+                    />
+                  )}
+                /> : tabValue === 1 ? <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                onChange={this.handleStatusTwo}
+                id='category'
+                required
+                disableClearable
+                options={statusTypeChoicesTwo}
+                getOptionLabel={(option) => option?.label}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Status'
+                    placeholder='Status'
+                  />
+                )}
+              /> :'' }
+                  
+            </div>
+          </Grid>
                 </Grid>
                 <div style={{ margin: '20px' }}>
                   <Grid container>
@@ -285,6 +378,7 @@ class StudentDashboard extends Component {
                         color='primary'
                         size='small'
                         variant='contained'
+                        disabled ={!startDate || !endDate}
                         onClick={this.handleFilter}
 
                       >
@@ -347,23 +441,23 @@ class StudentDashboard extends Component {
                         </li>
                         {/* </AppBar> */}
                         <TabPanel value={tabValue} index={0}>
-                          {data && <GridList data={data}  tabValue={tabValue}/>}
+                          {data && <GridList data={data} totalBlogs={totalBlogs} tabValue={tabValue}/>}
                         </TabPanel>
                         <TabPanel value={tabValue} index={1}>
-                        {data && <GridList data={data} tabValue={tabValue}  />}
+                        {data && <GridList data={data} totalBlogs={totalBlogs} tabValue={tabValue}  />}
                         </TabPanel>
                         <TabPanel value={tabValue} index={2}>
-                          {data && <GridList data={data} tabValue={tabValue}  />}
+                          {data && <GridList data={data} totalBlogs={totalBlogs} tabValue={tabValue}  />}
                         </TabPanel>
                         <TabPanel value={tabValue} index={3}>
-                          {data && <GridList data={data} tabValue={tabValue} />}
+                          {data && <GridList data={data}  totalBlogs={totalBlogs} tabValue={tabValue} />}
                         </TabPanel>
                       </div>
                     </Grid>
                     <Grid item xs={12}>
                     <Pagination
                     onChange={this.handlePagination}
-                    style={{ paddingLeft:'390px' }}
+                    style={{ paddingLeft:'500px' }}
                     count={Math.ceil(totalBlogs / pageSize)}
                     color='primary'
                     page={pageNo}

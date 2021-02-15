@@ -176,9 +176,9 @@ export default function ClassdetailsCardComponent(props) {
     }
 
     const handleReshuffle = () => {
-        if(props.toggle){
+        if (props.toggle) {
             history.push(`/aol-reshuffle/${props?.classData?.batch_details_id}`)
-        }else{
+        } else {
             history.push(`/aol-reshuffle/${props?.classData?.online_class?.aol_batch_id}`)
 
         }
@@ -224,7 +224,7 @@ export default function ClassdetailsCardComponent(props) {
                     </div>
                 </div>
                 <div className={classes.classDetails}>
-                    {props?.toggle && props?.classData?.online_class?.is_canceled  ? '' :
+                    {props?.toggle && props?.classData?.online_class?.is_canceled ? '' :
                         <Typography className={classes.classDetailsTitle}>
                             Description
                         </Typography>

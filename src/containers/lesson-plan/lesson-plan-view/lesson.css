@@ -1,14 +1,14 @@
 .createButton button{
-    padding: 4.8px;
+  padding: 4.8px;
 }
 
 .MuiSvgIcon-root .dropdownIcon {
-    color: #ff6b6b;
+  color: #ff6b6b;
 }
 
 .MuiIconButton-root.moreHorizIcon {
-    padding: 0px;
-    color: #ff6b6b;
+  padding: 0px;
+  color: #ff6b6b;
 }
 
 .roundedBox {
@@ -20,11 +20,11 @@
 }
 
 .periodDataUnavailable {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 5%;
 }
 
 .period_card_menu{
@@ -32,48 +32,48 @@
 	position: relative;
 }
 .period_card_menu .tooltiptext {
-	visibility: hidden;
-	width: 150px;
-	background-color: #F9F9F9;
-	color: #ff6b6b;
-	text-align: left;
+    visibility: hidden;
+    width: 150px;
+    background-color: #F9F9F9;
+    color: #ff6b6b;
+    text-align: left;
     border-radius: 10px;
     border: 1px solid #ff6b6b;
-	padding: 14px 10px;
-	position: absolute;
-	z-index: 1;
-	top: 135%;
-	left: 10%;
-	margin-left: -90px;
-	opacity: 0;
-	transition: opacity 0.3s;
+    padding: 14px 10px;
+    position: absolute;
+    z-index: 1;
+    top: 135%;
+    left: 10%;
+    margin-left: -90px;
+    opacity: 0;
+    transition: opacity 0.3s;
   }
   
   .period_card_menu .tooltiptext::after {
-	content: "";
+    content: "";
     position: absolute;
-	bottom: 100%;
-	left: 50%;
-	margin-left: 20px;
-	border-width: 7px;
+    bottom: 100%;
+    left: 50%;
+    margin-left: 20px;
+    border-width: 7px;
     border-style: solid;
-	border-color:  transparent transparent #ff6b6b transparent ;
+    border-color:  transparent transparent #ff6b6b transparent ;
   }
   
   .period_card_menu:hover .tooltiptext {
-	visibility: visible;
-	opacity: 1;
+    visibility: visible;
+    opacity: 1;
   }
   
   .tooltiptext {
-      display: flex;
-      justify-content: space-between;
-      font-size: 1rem;
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
   }
 
   .tooltipContainer {
-      display: flex;
-      flex-direction: column;
+    display: flex;
+    flex-direction: column;
   }
 
   .breadCrumbFilterRow {

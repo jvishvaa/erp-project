@@ -10,6 +10,8 @@ export { default as StudentDashboard } from './Student/StudentDashboard';
 export { default as BlogView } from './Student/blogView';
 export {default as TeacherPublishBlogView} from './Teacher/TeacherPublishBlogView';
 export {default as CreateGenre} from './Teacher/CreateGenre'
+export {default as EditGenre} from './Teacher/EditGenre'
+
 export { default as ContentViewPublish } from './Teacher/ContentViewPublish';
 export { default as AdminBlog } from './Admin/AdminBlog';
 export { default as PrincipalBlog } from './Principal/PrincipalBlog';
@@ -25,3 +27,4 @@ export { default as ContentViewPublishAdmin } from './Admin/ContentViewPublishAd
 export { default as ContentViewPublishPrincipal } from './Principal/ContentViewPublishPrincipal';
 
 export {default as CreateWordCountConfig} from './Teacher/CreateWordCountConfig'
+export {default as EditWordCountConfig} from './Teacher/EditWordCountConfig'

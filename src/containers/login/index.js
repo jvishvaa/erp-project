@@ -68,7 +68,7 @@ function SignIn({ onLogin, history }) {
     if (key === "2000000002") {
       handleLogin();
     }
-  }, [key])
+  }, [key]);
 
   const handleLogin = () => {
     const params = {
@@ -90,7 +90,7 @@ function SignIn({ onLogin, history }) {
         password: "erp_1992",
       }).then((response) => {
         if (response.isLogin) {
-          history.push('/profile');
+          history.push('/dashboard');
         } else {
           setAlert('error', response.message);
         }

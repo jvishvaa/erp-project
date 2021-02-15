@@ -100,7 +100,6 @@ export default function JoinClassComponent(props) {
     useEffect(() => {
         
     }, [isCancel])
-
     return (
         <div>
         {props.data.online_class && props?.data?.online_class?.is_canceled ? '' :

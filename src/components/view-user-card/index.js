@@ -129,6 +129,7 @@ const ViewUserCard = ({ user, onEdit, onDelete, onStatusChange }) => {
               <button
                 className='group_view_activate_button group_view_button'
                 title='Activate'
+                type='submit'
                 onClick={() => onStatusChange(user.userId, '1')}
                 style={{
                   borderRadius: '50%',

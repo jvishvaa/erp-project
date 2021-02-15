@@ -58,7 +58,6 @@ const CreateCourse = () => {
   const [loading, setLoading] = useState(false);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
 
@@ -68,9 +67,9 @@ const CreateCourse = () => {
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [gradeIds, setGradeIds] = useState([]);
-  const [categoryDropdown, setCategoryDropdown] = useState([])
-  const [subjectDropdown, setSubjectDropdown] = useState([])
-  const [age, setAge] = useState([])
+  const [categoryDropdown, setCategoryDropdown] = useState([]);
+  const [subjectDropdown, setSubjectDropdown] = useState([]);
+  const [age, setAge] = useState([]);
 
   const [classDuration, setClassDuration] = useState('');
   const [noOfPeriods, setNoPeriods] = useState(state.editData.no_of_periods || 0);
@@ -80,6 +79,7 @@ const CreateCourse = () => {
   const [overview, setOverview] = useState('');
   const [filePath, setFilePath] = useState([]);
   const [nextToggle, setNextToggle] = useState(false);
+  const [thumbnailImage, setThumbnailImage] = useState('');
 
   // const [erpGradeId,setErpGradeId]=useState([])
 
@@ -87,15 +87,14 @@ const CreateCourse = () => {
 
   const firstPageData = state.editData;
   const [secondPageData, setSecondPageData] = useState(state?.viewPeriodData || []);
-  const flag = state.isEdit;
-
+  const flag = state?.isEdit;
 
   const [data, setData] = useState([]);
 
   const [cardTitle, setCardTitle] = useState(null);
   const [cardDesc, setCardDesc] = useState(null);
 
-  const branchDrop=[{branch_name:'AOL'}]
+  const branchDrop = [{ branch_name: 'AOL' }];
   const [filterData, setFilterData] = useState({
     branch: '',
     grade: [],
@@ -103,7 +102,7 @@ const CreateCourse = () => {
     category: '',
     age: '',
     subject: '',
-    erpGrade:''
+    erpGrade: '',
   });
 
   const courseLevel = [
@@ -111,7 +110,6 @@ const CreateCourse = () => {
     { value: 'Intermediate', level: 'Mid' },
     { value: 'Advance', level: 'High' },
   ];
-
 
   //hardcoded data
 
@@ -162,20 +160,26 @@ const CreateCourse = () => {
     }
   };
 
-
   const handleNext = () => {
     // <<<<<<<>>>>>>>>>>>>
     if (flag) {
       setData(secondPageData || []);
-      setNextToggle(!nextToggle);
+      if([...data]?.length>0) {
+        setNextToggle(!nextToggle);
+      } else {
+        setAlert('warning','Periods should be more than or equal to 1');
+      }
     } else {
-
       const list = [...data];
       for (let i = 0; i < noOfPeriods; i++) {
         list.push({ title: '', description: '', files: [] });
       }
       setData(list);
-      setNextToggle(!nextToggle);
+      if([...data]?.length>0) {
+        setNextToggle(!nextToggle);
+      } else {
+        setAlert('warning','Periods should be more than or equal to 1');
+      }
     }
   };
 
@@ -206,81 +210,83 @@ const CreateCourse = () => {
   };
 
   const handleCategory = (event, value) => {
-    setFilterData({ ...filterData, category: '' })
+    setFilterData({ ...filterData, category: '' });
     if (value) {
-      setFilterData({ ...filterData, category: value })
-      axiosInstance.get(`${endpoints.onlineCourses.categoryList}?tag_type=2&parent_id=${value.id}`)
-        .then(result => {
+      setFilterData({ ...filterData, category: value });
+      axiosInstance
+        .get(`${endpoints.onlineCourses.categoryList}?tag_type=2&parent_id=${value.id}`)
+        .then((result) => {
           if (result.data.status_code === 201) {
-            // console.log(result.data.result, '===========')
             const list1 = [...subjectDropdown];
             const list2 = [...gradeDropdown];
-            result.data.result.map(object => {
-              if (object?.tag_type === "1") {
+            result.data.result.map((object) => {
+              if (object?.tag_type === '1') {
                 list1.push({ id: object.id, subjectName: object?.subject__subject_name });
               } else {
-                list2.push({ id: object.id, gradeName: object?.grade__grade_name ,gradeId:object?.grade_id });
+                list2.push({
+                  id: object.id,
+                  gradeName: object?.grade__grade_name,
+                  gradeId: object?.grade_id,
+                });
               }
-            })
+            });
             setSubjectDropdown(list1);
             setGradeDropdown(list2);
           }
-        })
+        });
     }
-  }
+  };
 
   const handleSubject = (event, value) => {
-    setFilterData({ ...filterData, subject: value })
+    setFilterData({ ...filterData, subject: value });
     if (value) {
-      setFilterData({ ...filterData, subject: value })
-
+      setFilterData({ ...filterData, subject: value });
     }
-  }
+  };
 
   const handleAge = (event, value) => {
-    setFilterData({ ...filterData, age: '' })
+    setFilterData({ ...filterData, age: '' });
     if (value) {
-      setFilterData({ ...filterData, age: value })
+      setFilterData({ ...filterData, age: value });
     }
-  }
-
-
-
-
-
-
+  };
 
   const handleGrade = (event, value) => {
-    console.log(value, '====')
-    setFilterData({ ...filterData, grade: [],erpGrade:'' });
+    setFilterData({ ...filterData, grade: [], erpGrade: '' });
     // if (value?.length > 0) {
-      if(value){
+    if (value) {
       // const ids = value.map((obj) => obj.id);
       // setGradeIds(ids);
       setFilterData({
         ...filterData,
         grade: value,
-        erpGrade:value.gradeId
+        erpGrade: value.gradeId,
       });
-      axiosInstance.get(`${endpoints.onlineCourses.categoryList}?tag_type=3&parent_id=${value.id}`)
-        .then(result => {
+      axiosInstance
+        .get(`${endpoints.onlineCourses.categoryList}?tag_type=3&parent_id=${value.id}`)
+        .then((result) => {
           if (result.data.status_code === 201) {
-            setAge(result.data.result)
+            setAge(result.data.result);
+          } else {
+            setAlert('error', result.data.message);
           }
-          else {
-            setAlert('error', result.data.message)
-          }
-        }).catch(error => {
-          setAlert('error', error.description)
         })
+        .catch((error) => {
+          setAlert('error', error.description);
+        });
     }
   };
 
-  const removeFileHandler = (i) => {
+  const removeFileHandler = (i,fileType) => {
     // const list = [...filePath];
+    if(fileType==='thumbnail') {
+      setThumbnailImage('')
+    } else if(fileType==='doc') {
     filePath.splice(i, 1);
-    setAlert('success', 'File successfully deleted');
+    }
+    setAlert('success', 'File deleted successfully');
   };
+
   const handleImageChange = (event) => {
     if (filePath.length < 10) {
       const data = event.target.files[0];
@@ -289,19 +295,43 @@ const CreateCourse = () => {
 
       axiosInstance.post(`${endpoints.onlineCourses.fileUpload}`, fd).then((result) => {
         if (result.data.status_code === 200) {
-          setFilePath([...filePath, result.data.result.get_file_path]);
+          const fileList=[...filePath];
+          fileList.push(result.data?.result?.get_file_path);
+          setFilePath(fileList);
           setAlert('success', result.data.message);
         } else {
           setAlert('error', result.data.message);
         }
       });
     } else {
-      setAlert('warning', 'Exceed Maximum Number Attachment');
+      setAlert('warning', 'Limit Exceeded for file upload!');
+    }
+  };
+
+  const handleThumbnail = (event) => {
+    const fd = new FormData();
+    fd.append('file', event.target.files[0]);
+    const fileName = event.target.files[0]?.name;
+    if (
+      fileName.indexOf('.jpg') > 0 ||
+      fileName.indexOf('.jpeg') > 0 ||
+      fileName.indexOf('.png') > 0
+    ) {
+      axiosInstance.post(`${endpoints.onlineCourses.fileUpload}`, fd).then((result) => {
+        if (result.data.status_code === 200) {
+          setThumbnailImage(result.data?.result?.get_file_path);
+          setAlert('success', result.data.message);
+        } else {
+          setAlert('error', result.data.message);
+        }
+      });
+    } else {
+      setAlert('error', 'Only .jpg, .jpeg & .png files are acceptable!');
     }
   };
 
   const handleSubmit = () => {
-    // console.log('helloooooooooooooo');
+    if(filePath?.length===1) {
     axiosInstance
       .post(`${endpoints.onlineCourses.createCourse}`, {
         course_name: title,
@@ -309,23 +339,24 @@ const CreateCourse = () => {
         overview: overview,
         learn: learn,
         // grade: gradeIds,
-        grade:[filterData.erpGrade],
+        grade: [filterData.erpGrade],
         level: filterData.courseLevel.level,
         no_of_periods: parseInt(noOfPeriods),
         files: filePath,
+        thumbnail: [thumbnailImage],
         period_data: data,
         tag_id: `${filterData.age.id},${filterData.subject.id}`,
-        // time_slot:[]
       })
       .then((result) => {
         if (result.data.status_code === 200) {
           setFilePath([]);
+          setThumbnailImage('');
           setData([]);
           setNoPeriods(0);
-          setTitle('')
-          setCoursePre('')
-          setOverview('')
-          setLearn('')
+          setTitle('');
+          setCoursePre('');
+          setOverview('');
+          setLearn('');
           setFilterData({
             branch: '',
             grade: [],
@@ -342,35 +373,40 @@ const CreateCourse = () => {
           setGradeDropdown([]);
         }
       })
-
       .catch((error) => {
-        setAlert('error', error.message);
+        setAlert('error', error.response?.data?.message||error.response?.data?.msg||error.response?.data?.description);
         setGradeDropdown([]);
       });
+    }
+  else {
+    setAlert('warning','Document is compulsory!');
+  }
   };
 
-  const handleEdit=()=>{
-    axiosInstance.put(`${endpoints.onlineCourses.updateCourse}11/update-course/`,{
-      "course_name":title,
-      pre_requirement: coursePre,
-      overview: overview,
-      learn: learn,
-      grade:[24],
+  const handleEdit = () => {
+    axiosInstance
+      .put(`${endpoints.onlineCourses.updateCourse}11/update-course/`, {
+        course_name: title,
+        pre_requirement: coursePre,
+        overview: overview,
+        learn: learn,
+        grade: [24],
         level: filterData.courseLevel.level,
         no_of_periods: parseInt(noOfPeriods),
         period_data: data,
-      tag_id:`${filterData.age.id},${filterData.subject.id}`
-  
-    }).then(result=>{
-      if(result.data.status_code === 200){
-        setState({...state,isEdit:false,viewPeriodData:[],editData:[]})
-        setFilePath([]);
-          setData([])
+        tag_id: `${filterData.age.id},${filterData.subject.id}`,
+      })
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setState({ ...state, isEdit: false, viewPeriodData: [], editData: [] });
+          setFilePath([]);
+          setThumbnailImage('');
+          setData([]);
           setNoPeriods(0);
-          setTitle('')
-          setCoursePre('')
-          setOverview('')
-          setLearn('')
+          setTitle('');
+          setCoursePre('');
+          setOverview('');
+          setLearn('');
           setFilterData({
             branch: '',
             grade: [],
@@ -379,27 +415,27 @@ const CreateCourse = () => {
             age: '',
             subject: '',
           });
-        setAlert('success',result.data.message)
-        setNextToggle(!nextToggle)
-        history.push('/course-list');
-      }
-    })
-  }
+          setAlert('success', result.data.message);
+          setNextToggle(!nextToggle);
+          history.push('/course-list');
+        }
+      });
+  };
 
   const FileRow = (props) => {
-    const { file, onClose, index } = props;
+    const { name, file, onClose, index } = props;
     return (
-      <div className='file_row_image'>
-        <div className='file_name_container'>File {index + 1}</div>
+      <div className='file_row_image_course'>
+        <div className='file_name_container_course'>{name}</div>
         <Divider orientation='vertical' className='divider_color' flexItem />
-        <div className='file_close'>
+        <div className='file_close_course'>
           <span onClick={onClose}>
             <SvgIcon
               component={() => (
                 <img
                   style={{
-                    width: '20px',
-                    height: '20px',
+                    width: '15px',
+                    height: '15px',
                     // padding: '5px',
                     cursor: 'pointer',
                   }}
@@ -425,7 +461,7 @@ const CreateCourse = () => {
         }
       })
       .catch((error) => {
-        setBranchDropdown([])
+        setBranchDropdown([]);
         setAlert('error', error.message);
       });
 
@@ -433,18 +469,16 @@ const CreateCourse = () => {
       .get(`${endpoints.onlineCourses.categoryList}?tag_type=1`)
       .then((result) => {
         if (result.data.status_code === 201) {
-          setCategoryDropdown(result.data.result)
+          setCategoryDropdown(result.data.result);
         } else {
           setAlert('error', result.data.message);
         }
       })
       .catch((error) => {
-        setCategoryDropdown([])
-        setAlert('error', error.message)
+        setCategoryDropdown([]);
+        setAlert('error', error.message);
       });
-
   }, []);
-  // console.log(subjectDropdown,'=======',state);
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
@@ -530,7 +564,6 @@ const CreateCourse = () => {
             </Grid>
             <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
               <Autocomplete
-                // multiple
                 style={{ width: '100%' }}
                 size='small'
                 onChange={handleGrade}
@@ -592,23 +625,6 @@ const CreateCourse = () => {
                 )}
               />
             </Grid>
-            {/* <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
-              <TextField
-                id='subname'
-                type='number'
-                className='dropdownIcon'
-                style={{ width: '100%' }}
-                label='Class Duration In mins'
-                placeholder='Class Duration In mins'
-                variant='outlined'
-                size='small'
-                // value={noOfChapter}
-                inputProps={{ pattern: '[0-9]*', min: 0, maxLength: 20 }}
-                name='subname'
-                onChange={(e) => setClassDuration(e.target.value)}
-                required
-              />
-            </Grid> */}
             <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
               <TextField
                 id='subname'
@@ -635,7 +651,6 @@ const CreateCourse = () => {
                 rows='1'
                 color='secondary'
                 style={{ width: '100%' }}
-                // defaultValue="Default Value"
                 value={firstPageData?.course_name || title}
                 variant='outlined'
                 onChange={(e) => setTitle(e.target.value)}
@@ -650,7 +665,6 @@ const CreateCourse = () => {
                 rows='6'
                 color='secondary'
                 style={{ width: '100%' }}
-                // defaultValue="Default Value"
                 value={firstPageData?.pre_requirement || coursePre}
                 variant='outlined'
                 onChange={(e) => setCoursePre(e.target.value)}
@@ -665,7 +679,6 @@ const CreateCourse = () => {
                 rows='6'
                 color='secondary'
                 style={{ width: '100%' }}
-                // defaultValue="Default Value"
                 value={firstPageData?.learn || learn}
                 variant='outlined'
                 onChange={(e) => setLearn(e.target.value)}
@@ -680,7 +693,6 @@ const CreateCourse = () => {
                 rows='6'
                 color='secondary'
                 style={{ width: '100%' }}
-                // defaultValue="Default Value"
                 value={firstPageData?.overview || overview}
                 variant='outlined'
                 onChange={(e) => setOverview(e.target.value)}
@@ -689,52 +701,99 @@ const CreateCourse = () => {
 
             {!flag ? (
               <div className='attachmentContainer'>
-                <div style={{ display: 'flex' }} className='scrollable'>
+                <div style={{ display: 'flex' }}>
                   {filePath?.length > 0
                     ? filePath?.map((file, i) => (
-                      <FileRow
-                        key={`homework_student_question_attachment_${i}`}
-                        file={file}
-                        index={i}
-                        onClose={() => removeFileHandler(i)}
-                      />
-                    ))
+                        <FileRow
+                          name='File'
+                          key={`homework_student_question_attachment_${i}`}
+                          file={file}
+                          index={i}
+                          onClose={() => removeFileHandler(i,'doc')}
+                        />
+                      ))
                     : null}
                 </div>
 
-                <div className='attachmentButtonContainer'>
-                  <Button
-                    startIcon={
-                      <SvgIcon
-                        component={() => (
-                          <img
-                            style={{ height: '20px', width: '20px' }}
-                            src={attachmenticon}
-                          />
-                        )}
+                {filePath?.length < 1 && (
+                  <div className='attachmentButtonContainer'>
+                    <Button
+                      startIcon={
+                        <SvgIcon
+                          component={() => (
+                            <img
+                              style={{ height: '20px', width: '20px' }}
+                              src={attachmenticon}
+                            />
+                          )}
+                        />
+                      }
+                      className='attchment_button'
+                      title='Attach Supporting File'
+                      variant='contained'
+                      size='small'
+                      disableRipple
+                      disableElevation
+                      disableFocusRipple
+                      disableTouchRipple
+                      component='label'
+                      style={{ textTransform: 'none' }}
+                    >
+                      <input
+                        type='file'
+                        style={{ display: 'none' }}
+                        id='raised-button-file'
+                        accept='image/*'
+                        onChange={handleImageChange}
                       />
-                    }
-                    className='attchment_button'
-                    title='Attach Supporting File'
-                    variant='contained'
-                    size='medium'
-                    disableRipple
-                    disableElevation
-                    disableFocusRipple
-                    disableTouchRipple
-                    component='label'
-                    style={{ textTransform: 'none' }}
-                  >
-                    <input
-                      type='file'
-                      style={{ display: 'none' }}
-                      id='raised-button-file'
-                      accept='image/*'
-                      onChange={handleImageChange}
-                    />
-                    Add Document
-                  </Button>
-                </div>
+                      Add Document
+                    </Button>
+                  </div>
+                )}
+
+                {thumbnailImage!=='' &&
+                <FileRow
+                  name='Thumbnail'
+                  key='Thumbnail'
+                  file={thumbnailImage}
+                  onClose={() => removeFileHandler(0,'thumbnail')}
+                />}
+
+                {thumbnailImage === '' && (
+                  <div className='attachmentButtonContainer'>
+                    <Button
+                      startIcon={
+                        <SvgIcon
+                          component={() => (
+                            <img
+                              style={{ height: '20px', width: '20px' }}
+                              src={attachmenticon}
+                            />
+                          )}
+                        />
+                      }
+                      className='attchment_button'
+                      title='Attach Supporting File'
+                      variant='contained'
+                      size='small'
+                      disableRipple
+                      disableElevation
+                      disableFocusRipple
+                      disableTouchRipple
+                      component='label'
+                      style={{ textTransform: 'none' }}
+                    >
+                      <input
+                        type='file'
+                        style={{ display: 'none' }}
+                        id='raised-button-file'
+                        accept='image/*'
+                        onChange={handleThumbnail}
+                      />
+                      Add Thumbnail
+                    </Button>
+                  </div>
+                )}
               </div>
             ) : null}
 
@@ -748,44 +807,54 @@ const CreateCourse = () => {
             </Grid>
           </Grid>
         ) : (
-            <>
-              <Paper className={classes.root}>
-                <Grid
-                  container
-                  style={
-                    isMobile
-                      ? { width: '95%', margin: '20px auto' }
-                      : { width: '100%', margin: '20px auto' }
-                  }
-                  spacing={5}
-                >
-                  <Grid item xs={12} sm={12}>
-                    <Grid container spacing={isMobile ? 3 : 5}>
-                      {data?.map((period, i) => (
-                        <Grid
-                          item
-                          xs={12}
-                          style={isMobile ? { marginLeft: '-8px' } : null}
-                          sm={4}
-                        >
-                          <CourseCard key={i} index={i} cData={data} setData={setData} />
-                        </Grid>
-                      ))}
-                    </Grid>
+          <>
+            <Paper className={classes.root}>
+              <Grid
+                container
+                style={
+                  isMobile
+                    ? { width: '95%', margin: '20px auto' }
+                    : { width: '100%', margin: '20px auto' }
+                }
+                spacing={5}
+              >
+                <Grid item xs={12} sm={12}>
+                  <Grid container spacing={isMobile ? 3 : 5}>
+                    {data?.map((period, i) => (
+                      <Grid
+                        item
+                        xs={12}
+                        style={isMobile ? { marginLeft: '-8px' } : null}
+                        sm={4}
+                      >
+                        <CourseCard key={i} index={i} cData={data} setData={setData} />
+                      </Grid>
+                    ))}
                   </Grid>
                 </Grid>
-              </Paper>
-              <div className='submit'>
-                <Grid item xs={12} sm={12}>
-                    {!state?.isEdit ?  <Button onClick={handleSubmit} style={{width:'16rem',marginLeft:'1.2rem'}}>SUBMIT</Button>
-                    :
-                    <Button onClick={handleEdit} style={{width:'16rem',marginLeft:'1.2rem'}}>EDIT</Button>
-                    }
-                 
-                </Grid>
-              </div>
-            </>
-          )}
+              </Grid>
+            </Paper>
+            <div className='submit'>
+              <Grid item xs={12} sm={12}>
+                {!state?.isEdit ? (
+                  <Button
+                    onClick={handleSubmit}
+                    style={{ width: '16rem', marginLeft: '1.2rem' }}
+                  >
+                    SUBMIT
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={handleEdit}
+                    style={{ width: '16rem', marginLeft: '1.2rem' }}
+                  >
+                    EDIT
+                  </Button>
+                )}
+              </Grid>
+            </div>
+          </>
+        )}
       </Layout>
     </>
   );

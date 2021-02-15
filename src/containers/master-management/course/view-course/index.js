@@ -43,7 +43,7 @@ const CourseView = () => {
   const [viewMore, setViewMore] = useState(false);
   const [viewMoreData, setViewMoreData] = useState([]);
   const [periodDataForView, setPeriodDataForView] = useState({});
-
+  const [sendGrade, setSendGrade] = useState([]);
   //context Data
   // const [state,setState] = useContext(Context)
 
@@ -51,7 +51,8 @@ const CourseView = () => {
 
 
   const handleCourseList=(gradeIds)=>{
-    setLoading(true)
+    setLoading(true);
+    setSendGrade(gradeIds);    
     const tag_val=[16,20]
     axiosInstance.get(`${endpoints.onlineCourses.courseList}?grade=${gradeIds}`)
     .then(result => {
@@ -129,7 +130,7 @@ const CourseView = () => {
                                             setSelectedIndex={setSelectedIndex}
                                             // filterDataDown={filterDataDown}
                                             periodDataForView={periodDataForView}
-                                            // grade={grade}
+                                            sendGrade={sendGrade}
                                             // section={section}
                                             // branch={branch}
                                         />
