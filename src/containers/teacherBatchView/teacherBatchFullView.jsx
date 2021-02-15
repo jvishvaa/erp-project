@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useState, useEffect } from 'react';
 import { Grid, Card, Divider, Button, Popover, Typography } from '@material-ui/core';
+import {useHistory} from 'react-router-dom'
 // import CloseIcon from '@material-ui/icons/Close';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
@@ -12,6 +13,7 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
+  const history =useHistory()
   useEffect(() => {
     if (fullData) {
       axiosInstance
@@ -75,6 +77,10 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
       });
   }
 
+  const handleAttendance=()=>{
+    alert('attendance')
+    history.push(`/aol-attendance-list/${fullData.online_class.aol_batch_id}`)
+  }
   return (
     <>
       <Grid container spacing={2}>
@@ -230,7 +236,7 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
               </Grid>
               <Grid item md={12} xs={12}>
                 {window.location.pathname !== '/online-class/attend-class' && (
-                  <Button fullWidth size='small' className='teacherFullViewFullButtons'>
+                  <Button fullWidth size='small' className='teacherFullViewFullButtons' onClick={handleAttendance}>
                     Attendance
                   </Button>
                 )}

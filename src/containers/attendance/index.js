@@ -58,7 +58,6 @@ const AttendeeListRemake = (props) => {
   const { setAlert } = useContext(AlertNotificationContext);
 
   const getAttendeeList = async (date) => {
-
     axiosInstance.get(`${endpoints.attendanceList.list}?zoom_meeting_id=694&class_date=${date}&type=json&page_number=1&page_size=10`)
       .then((result) => {
         console.log(result.data.data, '========')
