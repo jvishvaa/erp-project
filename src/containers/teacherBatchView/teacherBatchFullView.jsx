@@ -81,6 +81,9 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
     alert('attendance')
     history.push(`/aol-attendance-list/${fullData.online_class.aol_batch_id}`)
   }
+  const handleCoursePlan=()=>{
+    history.push(`/view-period/${1}`)
+  }
   return (
     <>
       <Grid container spacing={2}>
@@ -240,7 +243,7 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
                     Attendance
                   </Button>
                 )}
-                <Button fullWidth size='small' className='teacherFullViewFullButtons'>
+                <Button fullWidth size='small' className='teacherFullViewFullButtons' onClick={handleCoursePlan}>
                   View Course Plan
                 </Button>
               </Grid>
