@@ -161,24 +161,19 @@ const CreateCourse = () => {
   };
 
   const handleNext = () => {
-    // <<<<<<<>>>>>>>>>>>>
     if (flag) {
       setData(secondPageData || []);
-      if([...data]?.length>0) {
-        setNextToggle(!nextToggle);
-      } else {
-        setAlert('warning','Periods should be more than or equal to 1');
-      }
+      setNextToggle(!nextToggle);
     } else {
-      const list = [...data];
-      for (let i = 0; i < noOfPeriods; i++) {
-        list.push({ title: '', description: '', files: [] });
-      }
-      setData(list);
-      if([...data]?.length>0) {
+      if (noOfPeriods > 0) {
+        const list = [...data];
+        for (let i = 0; i < noOfPeriods; i++) {
+          list.push({ title: '', description: '', files: [] });
+        }
+        setData(list);
         setNextToggle(!nextToggle);
       } else {
-        setAlert('warning','Periods should be more than or equal to 1');
+        setAlert('warning', 'Periods should be more than or equal to 1');
       }
     }
   };
@@ -277,12 +272,12 @@ const CreateCourse = () => {
     }
   };
 
-  const removeFileHandler = (i,fileType) => {
+  const removeFileHandler = (i, fileType) => {
     // const list = [...filePath];
-    if(fileType==='thumbnail') {
+    if (fileType === 'thumbnail') {
       setThumbnailImage('')
-    } else if(fileType==='doc') {
-    filePath.splice(i, 1);
+    } else if (fileType === 'doc') {
+      filePath.splice(i, 1);
     }
     setAlert('success', 'File deleted successfully');
   };
@@ -295,7 +290,7 @@ const CreateCourse = () => {
 
       axiosInstance.post(`${endpoints.onlineCourses.fileUpload}`, fd).then((result) => {
         if (result.data.status_code === 200) {
-          const fileList=[...filePath];
+          const fileList = [...filePath];
           fileList.push(result.data?.result?.get_file_path);
           setFilePath(fileList);
           setAlert('success', result.data.message);
@@ -331,56 +326,56 @@ const CreateCourse = () => {
   };
 
   const handleSubmit = () => {
-    if(filePath?.length===1) {
-    axiosInstance
-      .post(`${endpoints.onlineCourses.createCourse}`, {
-        course_name: title,
-        pre_requirement: coursePre,
-        overview: overview,
-        learn: learn,
-        // grade: gradeIds,
-        grade: [filterData.erpGrade],
-        level: filterData.courseLevel.level,
-        no_of_periods: parseInt(noOfPeriods),
-        files: filePath,
-        thumbnail: [thumbnailImage],
-        period_data: data,
-        tag_id: `${filterData.age.id},${filterData.subject.id}`,
-      })
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setFilePath([]);
-          setThumbnailImage('');
-          setData([]);
-          setNoPeriods(0);
-          setTitle('');
-          setCoursePre('');
-          setOverview('');
-          setLearn('');
-          setFilterData({
-            branch: '',
-            grade: [],
-            courseLevel: '',
-            category: '',
-            age: '',
-            subject: '',
-          });
-          setAlert('success', result.data.message);
-          setNextToggle(!nextToggle);
-          history.push('/course-list');
-        } else {
-          setAlert('error', result.data.message);
+    if (filePath?.length === 1) {
+      axiosInstance
+        .post(`${endpoints.onlineCourses.createCourse}`, {
+          course_name: title,
+          pre_requirement: coursePre,
+          overview: overview,
+          learn: learn,
+          // grade: gradeIds,
+          grade: [filterData.erpGrade],
+          level: filterData.courseLevel.level,
+          no_of_periods: parseInt(noOfPeriods),
+          files: filePath,
+          thumbnail: [thumbnailImage],
+          period_data: data,
+          tag_id: `${filterData.age.id},${filterData.subject.id}`,
+        })
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setFilePath([]);
+            setThumbnailImage('');
+            setData([]);
+            setNoPeriods(0);
+            setTitle('');
+            setCoursePre('');
+            setOverview('');
+            setLearn('');
+            setFilterData({
+              branch: '',
+              grade: [],
+              courseLevel: '',
+              category: '',
+              age: '',
+              subject: '',
+            });
+            setAlert('success', result.data.message);
+            setNextToggle(!nextToggle);
+            history.push('/course-list');
+          } else {
+            setAlert('error', result.data.message);
+            setGradeDropdown([]);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.response?.data?.message || error.response?.data?.msg || error.response?.data?.description);
           setGradeDropdown([]);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.response?.data?.message||error.response?.data?.msg||error.response?.data?.description);
-        setGradeDropdown([]);
-      });
+        });
     }
-  else {
-    setAlert('warning','Document is compulsory!');
-  }
+    else {
+      setAlert('warning', 'Document is compulsory!');
+    }
   };
 
   const handleEdit = () => {
@@ -704,14 +699,14 @@ const CreateCourse = () => {
                 <div style={{ display: 'flex' }}>
                   {filePath?.length > 0
                     ? filePath?.map((file, i) => (
-                        <FileRow
-                          name='File'
-                          key={`homework_student_question_attachment_${i}`}
-                          file={file}
-                          index={i}
-                          onClose={() => removeFileHandler(i,'doc')}
-                        />
-                      ))
+                      <FileRow
+                        name='File'
+                        key={`homework_student_question_attachment_${i}`}
+                        file={file}
+                        index={i}
+                        onClose={() => removeFileHandler(i, 'doc')}
+                      />
+                    ))
                     : null}
                 </div>
 
@@ -751,13 +746,13 @@ const CreateCourse = () => {
                   </div>
                 )}
 
-                {thumbnailImage!=='' &&
-                <FileRow
-                  name='Thumbnail'
-                  key='Thumbnail'
-                  file={thumbnailImage}
-                  onClose={() => removeFileHandler(0,'thumbnail')}
-                />}
+                {thumbnailImage !== '' &&
+                  <FileRow
+                    name='Thumbnail'
+                    key='Thumbnail'
+                    file={thumbnailImage}
+                    onClose={() => removeFileHandler(0, 'thumbnail')}
+                  />}
 
                 {thumbnailImage === '' && (
                   <div className='attachmentButtonContainer'>
@@ -807,54 +802,54 @@ const CreateCourse = () => {
             </Grid>
           </Grid>
         ) : (
-          <>
-            <Paper className={classes.root}>
-              <Grid
-                container
-                style={
-                  isMobile
-                    ? { width: '95%', margin: '20px auto' }
-                    : { width: '100%', margin: '20px auto' }
-                }
-                spacing={5}
-              >
-                <Grid item xs={12} sm={12}>
-                  <Grid container spacing={isMobile ? 3 : 5}>
-                    {data?.map((period, i) => (
-                      <Grid
-                        item
-                        xs={12}
-                        style={isMobile ? { marginLeft: '-8px' } : null}
-                        sm={4}
-                      >
-                        <CourseCard key={i} index={i} cData={data} setData={setData} />
-                      </Grid>
-                    ))}
+            <>
+              <Paper className={classes.root}>
+                <Grid
+                  container
+                  style={
+                    isMobile
+                      ? { width: '95%', margin: '20px auto' }
+                      : { width: '100%', margin: '20px auto' }
+                  }
+                  spacing={5}
+                >
+                  <Grid item xs={12} sm={12}>
+                    <Grid container spacing={isMobile ? 3 : 5}>
+                      {data?.map((period, i) => (
+                        <Grid
+                          item
+                          xs={12}
+                          style={isMobile ? { marginLeft: '-8px' } : null}
+                          sm={4}
+                        >
+                          <CourseCard key={i} index={i} cData={data} setData={setData} />
+                        </Grid>
+                      ))}
+                    </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
-            </Paper>
-            <div className='submit'>
-              <Grid item xs={12} sm={12}>
-                {!state?.isEdit ? (
-                  <Button
-                    onClick={handleSubmit}
-                    style={{ width: '16rem', marginLeft: '1.2rem' }}
-                  >
-                    SUBMIT
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={handleEdit}
-                    style={{ width: '16rem', marginLeft: '1.2rem' }}
-                  >
-                    EDIT
-                  </Button>
-                )}
-              </Grid>
-            </div>
-          </>
-        )}
+              </Paper>
+              <div className='submit'>
+                <Grid item xs={12} sm={12}>
+                  {!state?.isEdit ? (
+                    <Button
+                      onClick={handleSubmit}
+                      style={{ width: '16rem', marginLeft: '1.2rem' }}
+                    >
+                      SUBMIT
+                    </Button>
+                  ) : (
+                      <Button
+                        onClick={handleEdit}
+                        style={{ width: '16rem', marginLeft: '1.2rem' }}
+                      >
+                        EDIT
+                      </Button>
+                    )}
+                </Grid>
+              </div>
+            </>
+          )}
       </Layout>
     </>
   );
