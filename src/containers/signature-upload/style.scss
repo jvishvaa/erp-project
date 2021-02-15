@@ -1,0 +1,86 @@
+
+.signatureUploadHead {
+    padding: 10px !important;
+    background-color: #F9F9F9 !important;
+    .signatureNavDiv {
+        .SignatureNavigationLinks {
+            color: #014B7E;
+            font-weight: bold;
+            font-size: 20px;
+            margin: 1px 10px !important;
+            outline: none !important;
+            background-color: #F9F9F9 !important;
+            border: none !important;
+            cursor: pointer;
+        }
+        .SignatureUploadNavArrow {
+            color: #ff6b6b;
+            font-weight: bold;
+            font-size: 30px;
+        }
+    }
+    .SignatureUploadFilterDiv {
+        padding: 20px !important;  
+        .signatureUploadFilterButton {
+            font-size: 15px !important;
+            margin-top: 3px !important;
+            border-radius: 8x !important;
+        } 
+    }
+}
+.closeButton {
+    position: absolute;
+    right: 1px;
+    top: 1px;
+    color: #ff6b6b;
+}
+.signatureUploadTextField {
+    border-radius: 15px !important;
+}
+.uploadSignaturefileLable {
+    color: #014B7E;
+    font-size: 20px !important;
+    font-family: Raleway;
+    font-weight: bold;
+}
+.fileDeleteButton {
+    color: #ff6b6b;
+    margin-left: 10px !important;
+    font-size: 25px !important;
+    font-weight: bold;
+    cursor: pointer;   
+}
+.uploadedImageName {
+    border-radius: 10px !important;
+    border: 1px solid #ff6b6b;
+    padding: 10px !important;
+    margin-top: 10px !important;
+    color: #014B7E;
+    background-color: #FCEEEE !important;
+}
+.signatureCardViewMain {
+    padding: 10px !important;
+    background-color: white !important;
+}
+.signatureViewCardMainDiv {
+    .signatureViewMainCard {
+        border-radius: 10px !important;
+        padding: 10px !important;
+        border: 1px solid #ff6b6b;
+    }
+    .signatureCardViewHeader {
+        background-color: #FCEEEE !important;
+        color:#014B7E;
+        .signatureCardVideHeaderDivider {
+            padding: 10px 5px !important;
+            border-right: 1px solid #ff6b6b;
+            border-left: 1px solid #ff6b6b;
+        }
+    }
+    .singatureCardViewImageDiv {
+        padding: 10px;
+    }
+    .SignatureCardViewFooter {
+        background-color: #FCEEEE !important;
+    }
+}
