@@ -139,6 +139,7 @@ import SubCategoryAllow from './containers/Finance/src/components/Inventory/Stor
 import UpdateAdmissionForm from './containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/updateAdmissionForm';
 import AccountantLogin from './containers/Finance/src/components/Finance/BulkOperations/AccountantLogin/AccountantLogin';
 import AddGst from './containers/Finance/src/components/Inventory/StoreAdmin/AddGst/addGst';
+import OrderStatusUpload from './containers/Finance/src/components/Inventory/StoreAdmin/OrderStatusUpload/orderStatusUpload';
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -577,6 +578,9 @@ function App() {
                 </Route>
                 <Route exact path= '/Store/AddGst'>
                   {({ match }) => <AddGst match={match} />}
+                </Route>
+                <Route exact path= '/Store/OrderStatusUpload'>
+                  {({ match }) => <OrderStatusUpload match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

@@ -672,6 +672,10 @@ const Layout = ({ children, history }) => {
                   history.push('/Store/AddGst')
                     break;
                   }
+              case 'Order Status Upload' : {
+                  history.push('/Store/OrderStatusUpload')
+                      break;
+                  }
       default:
         break;
     }

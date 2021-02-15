@@ -14,6 +14,7 @@ import {
 import { apiActions } from '../../../../_actions'
 import * as actionTypes from '../../store/actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
 
 const styles = theme => ({
   button: {
@@ -105,6 +106,7 @@ const OrderStatusUpload = ({ classes, session, alert, user, UploadOrderStatus, d
     UploadOrderStatus(form, alert, user)
   }
   return (
+    <Layout>
     <div className={classes.container}>
       <Grid container spacing={3}>
         <Grid item xs={10}>
@@ -164,6 +166,7 @@ const OrderStatusUpload = ({ classes, session, alert, user, UploadOrderStatus, d
       </Grid>
       { dataLoading ? <CircularProgress open /> : null }
     </div>
+    </Layout>
   )
 }
 const mapStateToProps = state => ({
