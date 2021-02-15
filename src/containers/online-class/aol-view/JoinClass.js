@@ -2,6 +2,8 @@ import React from 'react';
 import moment from 'moment';
 import { makeStyles, withStyles, Typography, Button } from '@material-ui/core';
 import axiosInstance from '../../../config/axios';
+import endpoints from '../../../config/endpoints'
+
 
 const useStyles = makeStyles({
     classDetailsDescription: {
@@ -81,11 +83,12 @@ export default function JoinClassComponent(props) {
     const date=props?.data?.online_class?.start_time.split('T')
     //console.log(props.data.is_cancelled + " ==="+ isCancel );
     const params ={
-        zoom_meeting_id: props?.classData?.id,
-        class_date: props?.classData?.start_date
+        zoom_meeting_id: props?.data?.id,
+        class_date: date[0]
+
     }
     const handleCancel = () => {
-        axiosInstance.put('erp_user/cancel-online-class/',params)
+        axiosInstance.put(`${endpoints.aol.cancelClass}`,params)
         .then((res) => {
             console.log(res);
             setIsCancel(true);

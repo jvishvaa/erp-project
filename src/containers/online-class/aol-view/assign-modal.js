@@ -111,9 +111,9 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                 setAlert('warning', `set the time between ${parseInt(batchSlot && batchSlot[0])} to ${parseInt(batchSlot && batchSlot[1])}`)
             }
         }
-        //  else {
-        //     setAlert('warning', `set the time between ${parseInt(batchSlot && batchSlot[0])} to ${parseInt(batchSlot && batchSlot[1])}`)
-        // }
+         else {
+            setAlert('warning', `set the time between ${parseInt(batchSlot && batchSlot[0])} to ${parseInt(batchSlot && batchSlot[1])}`)
+        }
     }
     return (
         <div>

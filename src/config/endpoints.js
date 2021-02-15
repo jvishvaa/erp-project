@@ -160,6 +160,7 @@ export default {
     assignTeacher:'/aol/teacher-assign/',
     reshuffleBatchList:'/aol/batch_shuffle/',
     studentReshuffle:'/aol/student-shuffle/',
+    cancelClass:'erp_user/cancel-online-class/',
   },
   onlineCourses:{
     createCourse:'/aol/courses/',
