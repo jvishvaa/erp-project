@@ -118,6 +118,7 @@ const Resource = (props) => {
 export default function ResourceDialogComponent(props) {
     const classes = useStyles();
     const { onClose, selectedValue, open } = props;
+    const [ periodsData, setPeriodsData ] = React.useState([]);
 
     //Periods date start
     const startDate = new Date(props.startDate);
@@ -149,6 +150,14 @@ export default function ResourceDialogComponent(props) {
     const handleClose = () => {
         onClose(selectedValue);
     };
+    React.useEffect(() => {
+        axiosInstance.get(`erp_user/${props.resourceId}/online-class-details/`)
+        .then((res) => {
+            console.log(res);
+            setPeriodsData(res.data.data);
+        })
+        .catch((error) => console.log(error))
+    },[]);
 
 
     return (
