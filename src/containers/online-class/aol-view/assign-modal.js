@@ -44,9 +44,9 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
     const [filterData, setFilterData] = useState({
         teacher: '',
     })
-    const batchSlot = assignData?.classData?.batch_time_slot && assignData?.classData?.batch_time_slot.split('-')
+    const batchSlot = assignData?.classData?.batch_time_slot && assignData?.classData?.batch_time_slot.split('-',' ')
     const helperTextMsg=`Select time between ${batchSlot && parseInt(batchSlot[0])} to ${batchSlot && parseInt(batchSlot[1])}`
-
+    console.log(batchSlot,'BBBBBB')
     const handleDateChange = (date) => {
         setSelectedDate(date);
     };
@@ -54,6 +54,7 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
     const handleHour = () => {
         const hr = new Intl.DateTimeFormat('en', { hour: 'numeric' }).format(selectedDate);
         const min = new Intl.DateTimeFormat('en', { minute: 'numeric' }).format(selectedDate);
+        console.log(hr.split(' ')[1],'HHHH')
         hour = hr.split(' ')[0]
         mins = min
     }

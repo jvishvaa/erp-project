@@ -149,7 +149,7 @@ export default function ClassdetailsCardComponent(props) {
 
 
     const assignData = props
-    console.log(props, '=============')
+    // console.log(props, '=============')
     const [periodsData, setPeriodsData] = React.useState([]);
     //Periods date start
     const history = useHistory();
@@ -224,10 +224,10 @@ export default function ClassdetailsCardComponent(props) {
                     </div>
                 </div>
                 <div className={classes.classDetails}>
-                    {props?.toggle ? '' :
+                    {props?.toggle && props?.classData?.online_class?.is_canceled  ? '' :
                         <Typography className={classes.classDetailsTitle}>
                             Description
-                     </Typography>
+                        </Typography>
                     }
 
                     <Divider className={classes.classDetailsDivider} />
