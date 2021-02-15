@@ -26,6 +26,7 @@ import Modal from '../../../../ui/Modal/modal'
 import classess from './deleteModal.module.css'
 import { apiActions } from '../../../../_actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
 
 const styles = theme => ({
   tableWrapper: {
@@ -860,6 +861,7 @@ class AddOtherFees extends Component {
     // }
 
     return (
+      <Layout>
       <React.Fragment>
         <Grid container spacing={3} style={{ padding: '10px' }}>
           <Grid item sm={3} md={3} xs={12} style={{ padding: '10px' }}>
@@ -1086,6 +1088,7 @@ class AddOtherFees extends Component {
         {deleteModal}
         {this.props.dataLoading ? <CircularProgress open /> : null}
       </React.Fragment>
+      </Layout>
     )
   }
 }

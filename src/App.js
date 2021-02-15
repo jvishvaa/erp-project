@@ -40,7 +40,8 @@ import FeeType from './containers/Finance/src/components/Finance/CreateFeeType/N
 import MiscFeeType from './containers/Finance/src/components/Finance/CreateFeeType/MiscFeeType/miscFeeType';
 // import MiscFeeType from './containers/Finance/src/components/Finance/CreateFeeType/MiscFeeType/miscFeeType.js'
 import CurrFeeType from './containers/Finance/src/components/Finance/CreateFeeType/CurrFeeType/currFeeType.js'
-import OtherFeeType from './containers/Finance/src/components/Finance/CreateFeeType/OtherFeeType/otherFeeType.js'
+import AddOtherFees from './containers/Finance/src/components/Finance/BranchAccountant/OtherFees/addOtherFees.js'
+import AdminOtherFees from './containers/Finance/src/components/Finance/BranchAccountant/OtherFees/adminOtherFees.js'
 import RegistrationFee from './containers/Finance/src/components/Finance/CreateFeeType/RegistrationFeeType/registrationFee.js'
 // import ManageFeeType from './containers/Finance/src/components/Finance/CreateFeePlan/manageFeeType.js'
 import CreateFeePlan from './containers/Finance/src/components/Finance/CreateFeePlan/createFeePlan.js'
@@ -271,7 +272,10 @@ function App() {
                   {({ match }) => <CurrFeeType match={match} />}
                 </Route>
                 <Route exact path='/feeType/OtherFeeType'>
-                  {({ match }) => <OtherFeeType match={match} />}
+                  {({ match }) => <AdminOtherFees match={match} />}
+              </Route>
+              <Route exact path='/feeType/add_otherFee'>
+                  {({ match }) => <AddOtherFees match={match} />}
               </Route>
                 <Route exact path='/feeType/RegistrationFee'>
                   {({ match }) => <RegistrationFee match={match} />}

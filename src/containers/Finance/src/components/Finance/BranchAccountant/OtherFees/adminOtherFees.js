@@ -23,6 +23,7 @@ import classess from './deleteModal.module.css'
 import { apiActions } from '../../../../_actions'
 import Modal from '../../../../ui/Modal/modal'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
 
 const styles = theme => ({
   tableWrapper: {
@@ -79,7 +80,7 @@ class AdminOtherFees extends Component {
     } = this.state
     if (sessionData.value && branchData.value) {
       this.props.history.push({
-        pathname: '/finance/add_otherFee',
+        pathname: '/feeType/add_otherFee',
         state: {
           currentYear: sessionData,
           currentBranch: branchData
@@ -366,6 +367,7 @@ class AdminOtherFees extends Component {
     }
 
     return (
+      <Layout>      
       <React.Fragment>
         <div>
           <div style={{ display: 'flex', justifyContent: 'flex-end', paddingRight: '15px' }}>
@@ -435,6 +437,7 @@ class AdminOtherFees extends Component {
         {deleteModal}
         {this.props.dataLoading ? <CircularProgress open /> : null}
       </React.Fragment>
+      </Layout>
     )
   }
 }
