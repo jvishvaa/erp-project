@@ -406,6 +406,10 @@ const Layout = ({ children, history }) => {
         history.push('/course-list');
         break;
       }
+      case 'course-price': {
+        history.push('/course-price');
+        break;
+      }
       case 'school-mapping': {
         history.push('/subject/grade');
         break;
@@ -438,7 +442,6 @@ const Layout = ({ children, history }) => {
         history.push('/discussion-forum');
         break;
       }
-
       case 'Student Blogs': {
         history.push('/blog/student/dashboard');
         break;
