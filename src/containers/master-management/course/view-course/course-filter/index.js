@@ -78,10 +78,10 @@ const CourseFilter = ({handleCourseList}) => {
     };
   
     const handleGrade = (event, value) => {
-      setFilterData({ ...filterData, grade: [] });
-      if (value?.length > 0) {
-        const ids = value.map((obj) => obj.grade_id);
-        setGradeIds(ids);
+      setFilterData({ ...filterData, grade: '' });
+      if (value) {
+        // const ids = value.map((obj) => obj.grade_id);
+        setGradeIds(value.grade_id);
         setFilterData({
           ...filterData,
           grade: value,
@@ -132,7 +132,6 @@ const CourseFilter = ({handleCourseList}) => {
         </Grid>
         <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
-            multiple
             style={{ width: '100%' }}
             size='small'
             onChange={handleGrade}
