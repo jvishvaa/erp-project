@@ -664,6 +664,10 @@ const Layout = ({ children, history }) => {
                   history.push('/Store/SubCategoryAllow')
                     break;
                   }
+              case 'Accountant Login' : {
+                  history.push('/finance/BulkOperation/AccountantLogin')
+                    break;
+                  }
       default:
         break;
     }

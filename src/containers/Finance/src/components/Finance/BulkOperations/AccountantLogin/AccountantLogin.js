@@ -4,7 +4,8 @@ import {
   TextField,
   Grid,
   withStyles,
-  Button
+  Button,
+  CircularProgress
 } from '@material-ui/core'
 import { connect } from 'react-redux'
 import readXlsxFile from 'read-excel-file'
@@ -12,7 +13,8 @@ import zipcelx from 'zipcelx'
 
 import styles from './AccountantLogin.styles.js'
 import * as actionTypes from '../../store/actions'
-import { CircularProgress } from '../../../../ui'
+// import { CircularProgress } from '../../../../ui'
+import Layout from '../../../../../../Layout'
 
 const AccountantLogin = ({
   classes,
@@ -172,16 +174,17 @@ const AccountantLogin = ({
       props.bulkAccLogin(form, user, alert)
     }).catch(err => {
       console.log(err)
-      alert.warning(err.message || err)
+      // alert.warning(err.message || err)
       dataLoaded()
     })
   }
   return (
+    <Layout>
     <div className={classes.container}>
       <Grid container justify='flex-end'>
         <Grid item xs={3}>
           <Button
-            variant='outlined'
+            variant='contained'
             color='primary'
             onClick={downloadBranchList}
           >Download Branch List</Button>
@@ -223,6 +226,7 @@ const AccountantLogin = ({
       </Grid>
       {props.dataLoadingStatus ? <CircularProgress open /> : null}
     </div>
+    </Layout>
   )
 }
 
