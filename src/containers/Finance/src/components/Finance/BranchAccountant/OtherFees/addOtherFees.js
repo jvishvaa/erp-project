@@ -640,7 +640,7 @@ class AddOtherFees extends Component {
         numberOfRows: ''
       })
     } else {
-      alert.warning('Select Required fields')
+      // alert.warning('Select Required fields')
     }
   }
 
