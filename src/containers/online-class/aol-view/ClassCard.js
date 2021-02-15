@@ -151,7 +151,7 @@ export default function ClassCardComponent(props) {
                 </IconButton>}
             </div>
                 <Typography className={classes.classTitle}>
-                    {classData.online_class.subject[0].subject_name}
+                    {classData.online_class.subject && classData.online_class.subject.reduce((sub) => sub.subject_name.join())}
                 </Typography>
                 <Typography className={classes.classSchedule}>
                     Start Date: {moment(classData.online_class.start_time).format('Do MMM YYYY')}

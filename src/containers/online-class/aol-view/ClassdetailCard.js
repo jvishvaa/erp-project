@@ -171,8 +171,6 @@ export default function ClassdetailsCardComponent(props) {
 
     const handleAttendance = () => {
         history.push(`/aol-attendance-list/${props.classData.id}`);
-        //online-class/attendee-list/:id
-        //history.push(`online-class/attendee-list/:${id}`);
     }
 
     // resource module

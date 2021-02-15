@@ -107,6 +107,17 @@ export default {
     downloadExcelAllstudents: '/academic/all_branch_strength_excel_data/',
   },
 
+  idCards: {
+    getIdCardsApi: '/erp_user/get-user-details/',
+  },
+  signature: {
+    createSignatureApi: '/erp_user/principle-signature/',
+    updateSignatureApi: '/erp_user/update-destroy-signature/',
+    deleteSignatureApi: '/erp_user/update-destroy-signature/',
+    getSignatureList: '/erp_user/principle-signature/',
+    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+  },
+
   coordinatorTeacherHomeworkApi: {
     getAllTeacherList: '/academic/teachers-list/',
     getTecherPerformance: '/academic/hw-teacher-performance/',
@@ -185,6 +196,16 @@ export default {
     BlogLike: '/academic/like_blog/',
     BlogView: '/academic/view_blog/',
     WordCountConfig: '/academic/word_count_config/',
+  },
+  teacherViewBatches: {
+    courseListApi: '/aol/courses/',
+    batchSizeList: 'aol/aol-course-batch/',
+    getBatchList: '/erp_user/teacher_online_class/',
+    cancelBatchApi: '/erp_user/cancel-online-class/',
+  },
+  studentViewBatchesApi: {
+    getBatchesApi: '/erp_user/student_online_class/',
+    rejetBatchApi: '/erp_user/mark_attendance/',
   },
   assessment: {
     questionPaperList: `/academic/assessment-list/`,
