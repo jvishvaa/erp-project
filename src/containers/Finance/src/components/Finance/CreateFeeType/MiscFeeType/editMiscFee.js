@@ -397,7 +397,7 @@ const mapStateToProps = state => ({
   miscFeeList: state.finance.miscFee.miscFeeList,
   branches: state.finance.common.branchPerSession,
   session: state.academicSession.items,
-  viewFeeAccList: state.finance.tallyReports.feeAccountPerBranch
+  viewFeeAccList: state.finance.tallyReports.feeAccountPerBranchs
 })
 
 const mapDispatchToProps = dispatch => ({

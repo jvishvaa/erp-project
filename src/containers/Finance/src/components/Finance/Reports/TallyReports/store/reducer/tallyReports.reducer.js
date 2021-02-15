@@ -2,6 +2,7 @@ import * as actionTypes from '../../../../store/actions/index'
 
 const initialState = {
   feeAccountPerBranch: [],
+  feeAccountPerBranchs: [],
   confirmStatus: false
 }
 
@@ -17,7 +18,8 @@ const tallyReportsReducer = (state = initialState, action) => {
       }
       return {
         ...state,
-        feeAccountPerBranch: feeAccounts
+        feeAccountPerBranch: feeAccounts,
+        feeAccountPerBranchs: [...action.payload.data]
       }
     }
     default : {
