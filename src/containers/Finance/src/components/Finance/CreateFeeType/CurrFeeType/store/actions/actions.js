@@ -28,7 +28,7 @@ export const fetchCurrFeeList = (payload) => {
       }).catch(err => {
         dispatch(actionTypes.dataLoaded())
         if (err.response && (err.response.status === 400 || err.response.status === 404)) {
-          payload.alert.warning(err.response.data.err_msg)
+          // payload.alert.warning(err.response.data.err_msg)
         } else {
           // payload.alert.warning('Something went Wrong!')
         }
@@ -60,7 +60,7 @@ export const addCurrFeeList = (payload) => {
       }).catch(err => {
         dispatch(actionTypes.dataLoaded())
         if (err.response && (err.response.status === 400 || err.response.status === 404)) {
-          payload.alert.warning(err.response.data.err_msg)
+          // payload.alert.warning(err.response.data.err_msg)
         } else {
           // payload.alert.warning('Something went Wrong!')
         }
@@ -91,7 +91,7 @@ export const updateCurrFeeList = (payload) => {
       }).catch(err => {
         dispatch(actionTypes.dataLoaded())
         if (err.response && (err.response.status === 400 || err.response.status === 404)) {
-          payload.alert.warning(err.response.data.err_msg)
+          // payload.alert.warning(err.response.data.err_msg)
         } else {
           // payload.alert.warning('Something went Wrong!')
         }
@@ -122,7 +122,7 @@ export const deleteCurrFeeList = (payload) => {
       }).catch(err => {
         dispatch(actionTypes.dataLoaded())
         if (err.response && (err.response.status === 400 || err.response.status === 404)) {
-          payload.alert.warning(err.response.data.err_msg)
+          // payload.alert.warning(err.response.data.err_msg)
         } else {
           // payload.alert.warning('Something went Wrong!')
         }
