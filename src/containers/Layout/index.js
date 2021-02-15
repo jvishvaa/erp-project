@@ -651,7 +651,11 @@ const Layout = ({ children, history }) => {
               case 'Shipping Payment': {
                   history.push('/finance/ShippingPayment')
                       break;
-                    }
+                  }
+              case 'School store': {
+                  history.push('/Store/AddItems')
+                    break;
+                  }
       default:
         break;
     }

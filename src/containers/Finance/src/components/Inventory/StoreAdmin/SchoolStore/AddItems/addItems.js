@@ -6,8 +6,8 @@ import { withStyles } from '@material-ui/core/styles'
 import { AddCircle, Edit } from '@material-ui/icons'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
-import ReactTable from 'react-table'
-import 'react-table/react-table.css'
+// import ReactTable from 'react-table'
+// import 'react-table/react-table.css'
 
 import { apiActions } from '../../../../../_actions'
 import { FilterInnerComponent, filterMethod } from '../../../../Finance/FilterInnerComponent/filterInnerComponent'
@@ -16,6 +16,7 @@ import EditItems from './editAddItems'
 import CircularProgress from '../../../../../ui/CircularProgress/circularProgress'
 import * as actionTypes from '../../../store/actions'
 import custClasses from './addItem.module.css'
+import Layout from '../../../../../../../Layout'
 
 let itemState = null
 
@@ -482,81 +483,81 @@ class AddItems extends Component {
       paddingLeft: '12px'
     }
 
-    let itemTable = null
-    if (this.props.itemsList && this.props.itemsList.length) {
-      itemTable = (<ReactTable
-        // pages={Math.ceil(this.props.transactionDetails.count / 20)}
-        data={this.createData()}
-        columns={[
-          {
-            Header: 'S.No',
-            accessor: 'sNo',
-            width: 50,
-            sortable: true
-          },
-          {
-            Header: 'Item Name',
-            accessor: 'item_name',
-            sortable: true,
-            Filter: props => <FilterInnerComponent {...props} />,
-            filterMethod: filterMethod,
-            style: {
-              paddingLeft: '20px'
-            }
-          },
-          {
-            Header: 'Item Description',
-            accessor: 'item_description',
-            Filter: props => <FilterInnerComponent {...props} />,
-            filterMethod: filterMethod,
-            sortable: true
-          },
-          {
-            Header: 'Category',
-            accessor: 'category',
-            Filter: props => <FilterInnerComponent {...props} />,
-            filterMethod: filterMethod,
-            sortable: true
-          },
-          {
-            Header: 'SKU Code',
-            accessor: 'sku_code',
-            Filter: props => <FilterInnerComponent {...props} />,
-            filterMethod: filterMethod,
-            sortable: true
-          },
-          {
-            Header: 'SAC Code',
-            accessor: 'sac_code',
-            Filter: props => <FilterInnerComponent {...props} />,
-            filterMethod: filterMethod,
-            sortable: true
-          },
-          {
-            Header: 'Measurement',
-            accessor: 'measurement',
-            Filter: props => <FilterInnerComponent {...props} />,
-            filterMethod: filterMethod,
-            sortable: false
-          },
-          {
-            Header: 'Edit',
-            accessor: 'icon',
-            filterable: false,
-            width: 70,
-            style: {
-              paddingLeft: '10px'
-            },
-            sortable: false
-          }
-        ]}
-        filterable
-        sortable
-        defaultPageSize={20}
-        showPageSizeOptions={false}
-        className='-striped -highlight'
-      />)
-    }
+    // let itemTable = null
+    // if (this.props.itemsList && this.props.itemsList.length) {
+    //   itemTable = (<ReactTable
+    //     // pages={Math.ceil(this.props.transactionDetails.count / 20)}
+    //     data={this.createData()}
+    //     columns={[
+    //       {
+    //         Header: 'S.No',
+    //         accessor: 'sNo',
+    //         width: 50,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Item Name',
+    //         accessor: 'item_name',
+    //         sortable: true,
+    //         Filter: props => <FilterInnerComponent {...props} />,
+    //         filterMethod: filterMethod,
+    //         style: {
+    //           paddingLeft: '20px'
+    //         }
+    //       },
+    //       {
+    //         Header: 'Item Description',
+    //         accessor: 'item_description',
+    //         Filter: props => <FilterInnerComponent {...props} />,
+    //         filterMethod: filterMethod,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Category',
+    //         accessor: 'category',
+    //         Filter: props => <FilterInnerComponent {...props} />,
+    //         filterMethod: filterMethod,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'SKU Code',
+    //         accessor: 'sku_code',
+    //         Filter: props => <FilterInnerComponent {...props} />,
+    //         filterMethod: filterMethod,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'SAC Code',
+    //         accessor: 'sac_code',
+    //         Filter: props => <FilterInnerComponent {...props} />,
+    //         filterMethod: filterMethod,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Measurement',
+    //         accessor: 'measurement',
+    //         Filter: props => <FilterInnerComponent {...props} />,
+    //         filterMethod: filterMethod,
+    //         sortable: false
+    //       },
+    //       {
+    //         Header: 'Edit',
+    //         accessor: 'icon',
+    //         filterable: false,
+    //         width: 70,
+    //         style: {
+    //           paddingLeft: '10px'
+    //         },
+    //         sortable: false
+    //       }
+    //     ]}
+    //     filterable
+    //     sortable
+    //     defaultPageSize={20}
+    //     showPageSizeOptions={false}
+    //     className='-striped -highlight'
+    //   />)
+    // }
 
     if (this.state.entryModal) {
       entryModal = (
@@ -925,11 +926,12 @@ class AddItems extends Component {
     }
 
     return (
+      <Layout>
       <React.Fragment>
         <Grid container spacing={3} style={{ padding: 15 }}>
           <Grid item xs={8} />
           <Grid item xs={2}>
-            {this.state.showAdd ? (<Button variant='outlined' color='primary' onClick={this.showEntryModal} disabled={!this.state.currentSession || !this.state.currentBranch || !this.state.currentGrade}>
+            {this.state.showAdd ? (<Button variant='contained' color='primary' onClick={this.showEntryModal} disabled={!this.state.currentSession || !this.state.currentBranch || !this.state.currentGrade}>
                 Add Items
             </Button>) : null}
           </Grid>
@@ -1002,10 +1004,11 @@ class AddItems extends Component {
         {addSubCatModal}
         {addMeasurementModal}
         {addColorModal}
-        {itemTable}
+        {/* {itemTable} */}
         {editModal}
         {this.props.dataLoading || this.props.gradeLoader ? <CircularProgress open /> : null}
       </React.Fragment>
+      </Layout>
     )
   }
 }

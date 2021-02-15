@@ -133,6 +133,7 @@ import ManagePayment from './containers/Finance/src/components/Finance/student/m
 import FeeStructure from './containers/Finance/src/components/Finance/student/FeeStructure/feeStructure.js'
 import BulkUniform from './containers/Finance/src/components/Inventory/StoreManager/BulkUniform/bulkUniform.js'
 import ShippingAmount from './containers/Finance/src/components/Inventory/BranchAccountant/shippingAmount/ShippingAmount.js'
+import AddItems from './containers/Finance/src/components/Inventory/StoreAdmin/SchoolStore/AddItems/addItems.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -553,6 +554,9 @@ function App() {
                 </Route>
                 <Route exact path= '/finance/ShippingPayment'>
                   {({ match }) => <ShippingAmount match={match} />}
+                </Route>
+                <Route exact path= '/Store/AddItems'>
+                  {({ match }) => <AddItems match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

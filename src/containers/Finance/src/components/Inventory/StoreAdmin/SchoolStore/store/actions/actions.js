@@ -30,10 +30,10 @@ export const createMeasurement = (payload) => {
         }
       })
       dispatch(actionTypes.dataLoaded())
-      payload.alert.success('Saved Successfully')
+      // payload.alert.success('Saved Successfully')
     }).catch(err => {
       console.log(err)
-      payload.alert.warning('Something Went Wrong')
+      // payload.alert.warning('Something Went Wrong')
       dispatch(actionTypes.dataLoaded())
     })
   }
@@ -57,10 +57,10 @@ export const createColor = (payload) => {
         }
       })
       dispatch(actionTypes.dataLoaded())
-      payload.alert.success('Saved Successfully')
+      // payload.alert.success('Saved Successfully')
     }).catch(err => {
       console.log('error', err)
-      payload.alert.warning('Something Went Wrong')
+      // payload.alert.warning('Something Went Wrong')
       dispatch(actionTypes.dataLoaded())
     })
   }
@@ -84,10 +84,10 @@ export const createSubcat = (payload) => {
         }
       })
       dispatch(actionTypes.dataLoaded())
-      payload.alert.success('Saved Successfully')
+      // payload.alert.success('Saved Successfully')
     }).catch(err => {
       console.log('error', err)
-      payload.alert.warning('Something Went Wrong')
+      // payload.alert.warning('Something Went Wrong')
       dispatch(actionTypes.dataLoaded())
     })
   }
@@ -117,7 +117,7 @@ export const listUnitColorSubCat = (payload) => {
       dispatch(actionTypes.dataLoaded())
     })).catch(err => {
       console.log(err)
-      payload.alert.warning('Unable To Load')
+      // payload.alert.warning('Unable To Load')
       dispatch(actionTypes.dataLoaded())
     })
   }
@@ -164,11 +164,11 @@ export const addItem = (payload) => {
         }
       })
       dispatch(actionTypes.dataLoaded())
-      payload.alert.success('Added Successfully')
+      // payload.alert.success('Added Successfully')
     }).catch(err => {
       console.log(err)
       dispatch(actionTypes.dataLoaded())
-      payload.alert.warning('Something Went Wrong')
+      // payload.alert.warning('Something Went Wrong')
     })
   }
 }
@@ -190,7 +190,7 @@ export const listItems = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.log(err)
-      payload.alert.warning('Something Went Wrong')
+      // payload.alert.warning('Something Went Wrong')
       dispatch(actionTypes.dataLoaded())
     })
   }
@@ -211,10 +211,10 @@ export const updateAddItems = (payload) => {
         }
       })
       dispatch(actionTypes.dataLoaded())
-      payload.alert.success('Updated Successfully')
+      // payload.alert.success('Updated Successfully')
     }).catch(err => {
       console.log(err)
-      payload.alert.warning('Something Went Wrong')
+      // payload.alert.warning('Something Went Wrong')
       dispatch(actionTypes.dataLoaded())
     })
   }
