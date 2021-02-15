@@ -108,8 +108,6 @@ const ViewCourseCard = ({ index, cData, setData }) => {
       path.files && path.files.map((file, i) => window.location.href = (`${endpoints.s3}/${file}`))
     })
   }
-
-
   if (id) {
     return (
       <>

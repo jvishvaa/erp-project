@@ -176,7 +176,12 @@ export default function ClassdetailsCardComponent(props) {
     }
 
     const handleReshuffle = () => {
-        history.push(`/aol-reshuffle/${props?.classData?.online_class?.aol_batch_id}`)
+        if(props.toggle){
+            history.push(`/aol-reshuffle/${props?.classData?.batch_details_id}`)
+        }else{
+            history.push(`/aol-reshuffle/${props?.classData?.online_class?.aol_batch_id}`)
+
+        }
     }
     const handleCoursePlan = () => {
         history.push(`/view-period/${props.filterData && props?.filterData?.course?.id}`)
