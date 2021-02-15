@@ -377,7 +377,7 @@ function App() {
                     <Route exact path='/create/course'>
                       {({ match }) => <CreateCourse match={match} />}
                     </Route>
-                    <Route exact path='/course-price'>
+                    <Route exact path='/course-price/:courseKey?/:gradeKey?'>
                       {({ match }) => <CoursePrice match={match} />}
                     </Route>
                     <Route exact path='/course-list'>

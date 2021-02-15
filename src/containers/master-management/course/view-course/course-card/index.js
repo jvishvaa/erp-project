@@ -23,9 +23,9 @@ const CourseCard = ({period, setPeriodDataForView, setViewMoreData, setViewMore 
 
   const [showMenu, setShowMenu] = useState(false);
   const [showPeriodIndex, setShowPeriodIndex] = useState();
-  //context
-  const [state,setState] = useContext(Context)
-  const history =useHistory()
+
+  const [state,setState] = useContext(Context);
+  const history =useHistory();
 
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
@@ -36,10 +36,8 @@ const CourseCard = ({period, setPeriodDataForView, setViewMoreData, setViewMore 
     setShowMenu(false);
     setShowPeriodIndex();
   };
-  // console.log(period,'======')
   
   const handleViewMore = () => {
-    // setLoading(true)
     axiosInstance.get(`${endpoints.onlineCourses.courseDetails}?periods=all&course_id=${period.id}`)
       .then(result => {
         if (result.data.status_code === 200) {
@@ -71,17 +69,16 @@ const CourseCard = ({period, setPeriodDataForView, setViewMoreData, setViewMore 
   }
 
   const handleDelete=(e,index)=>{
-    // console.log(e,index,'event')
     axiosInstance.delete(`${endpoints.onlineCourses.deleteCourse}${e.id}/update-course/`).then((result)=>{
 
       if(result.data.status_code===200){
         setAlert('success',result.data.message)
         
       }else{
-        setAlert('errpr', 'ERROR!')
+        setAlert('error', 'ERROR!')
       }
 
-    })
+    }).catch(error=>setAlert('error',error.response?.data?.message||error.response?.data?.msg));
 
 
   }
@@ -103,7 +100,7 @@ const CourseCard = ({period, setPeriodDataForView, setViewMoreData, setViewMore 
               component='p'
               color='primary'
             >
-              {period.course_name}
+              {period?.course_name}
             </Typography>
           </Box>
           <Box>
@@ -114,8 +111,7 @@ const CourseCard = ({period, setPeriodDataForView, setViewMoreData, setViewMore 
               color='secondary'
               noWrap
             >
-             Level - {period.level === 'Low' ? 'Beginner' : null} {period.level === 'High' ? 'Advance' : null} {period.level === 'Mid' ? 'Intermediate' : null} 
-
+             Level - {period?.level === 'Low' ? 'Beginner' : null} {period?.level === 'High' ? 'Advance' : null} {period?.level === 'Mid' ? 'Intermediate' : null} 
             </Typography>
           </Box>
         </Grid>
@@ -153,15 +149,13 @@ const CourseCard = ({period, setPeriodDataForView, setViewMoreData, setViewMore 
               component='p'
               color='secondary'
             >
-            No Of Periods - {period.no_of_periods}
+            No Of Periods - {period?.no_of_periods}
               </Typography>
           </Box>
           <Box>
           </Box>
         </Grid>
         <Grid item xs={6} className={classes.textRight}> 
-          {/* {!viewMore && */}
-
          {!periodColor && 
           <Button
             variant='contained'
@@ -173,7 +167,6 @@ const CourseCard = ({period, setPeriodDataForView, setViewMoreData, setViewMore 
           >
             VIEW MORE
           </Button>}
-           {/* } */}
         </Grid>
       </Grid>
     </Paper>

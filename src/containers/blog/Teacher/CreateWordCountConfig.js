@@ -283,6 +283,7 @@ const handleTabChange = (event,value) =>{
               size='small'
               onChange={handleGrade}
               id='grade'
+              disableClearable
               className='dropdownIcon'
               options={gradeList}
               filterSelectedOptions
@@ -343,7 +344,7 @@ const handleTabChange = (event,value) =>{
         <Grid item xs={12}>
                     <Pagination
                     onChange={handlePagination}
-                    style={{ paddingLeft:'390px' }}
+                    style={{ paddingLeft:'500px' }}
                     count={Math.ceil(totalWc / pageSize)}
                     color='primary'
                     page={pageNumber}

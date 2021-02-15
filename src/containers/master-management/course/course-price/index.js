@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import {useParams} from 'react-router-dom';
 import { Grid, useTheme, Paper, Divider } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import CoursePriceFilters from '../course-price/course-price-filters';
@@ -30,12 +31,13 @@ const useStyles = makeStyles((theme) => ({
 
 const CoursePrice = () => {
   const { setAlert } = useContext(AlertNotificationContext);
+  const {courseKey, gradeKey} = useParams();
   const classes = useStyles();
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
-  const [courseId, setCourseId] = useState();
+  const [courseId, setCourseId] = useState(''||courseKey);
   const [selectedCourse, setSelectedCourse] = useState('');
   const [timeSlot, setTimeSlot] = useState([]);
   const [selectedLimit, setSelectedLimit] = useState('1:1');
@@ -223,6 +225,8 @@ const CoursePrice = () => {
         resetContent={resetContent}
         selectedCourse={selectedCourse} 
         setSelectedCourse={setSelectedCourse}
+        courseKey={courseKey}
+        gradeKey={gradeKey}
       />
       <div>
         {' '}

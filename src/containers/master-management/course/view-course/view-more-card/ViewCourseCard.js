@@ -33,8 +33,6 @@ const ViewCourseCard = ({ index, cData, setData }) => {
 
   const [state, setState] = useContext(Context);
 
-  console.log(state.viewPeriodData, '==========');
-
   const cardData = state.viewPeriodData;
 
   const handleCardSubmit = (e) => {

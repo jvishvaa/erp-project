@@ -16,7 +16,9 @@ const CoursePriceFilters = (props) => {
         setCollectData,
         resetContent,
         selectedCourse,
-        setSelectedCourse
+        setSelectedCourse,
+        courseKey,
+        gradeKey,
     } = props;
     const { setAlert } = useContext(AlertNotificationContext);
     const [selectedGrade, setSelectedGrade] = useState('');
@@ -33,7 +35,12 @@ const CoursePriceFilters = (props) => {
             .then((result) => {
                 setGradeList([]);
                 if (result.data.status_code === 200) {
-                    setGradeList(result.data.data);
+                    setGradeList(result.data?.data);
+                    if (courseKey && gradeKey) {
+                    const gradeObj = result.data?.data?.find(({grade_id}) => grade_id===Number(gradeKey));
+                    setSelectedGrade(gradeObj);
+                    getCourseList(gradeKey);
+                }
                 }
             })
             .catch((error) => {
@@ -49,9 +56,10 @@ const CoursePriceFilters = (props) => {
         resetContent();
         setCourseId('');
         if (value) {
+            console.log(value,"goini")
             setSelectedGrade(value);
             getCourseList(value?.grade_id);
-        } 
+        }
     };
 
     const handleCourse = (event, value) => {
@@ -61,7 +69,7 @@ const CoursePriceFilters = (props) => {
         if (value) {
             setSelectedCourse(value);
             setCourseId(value.id);
-        } 
+        }
     };
 
     const getCourseList = (gradeId) => {
@@ -69,7 +77,11 @@ const CoursePriceFilters = (props) => {
             .get(`${endpoints.academics.courses}?grade=${gradeId}`)
             .then((result) => {
                 if (result.data.status_code === 200) {
-                    setCourseList(result.data.result);
+                    setCourseList(result.data?.result);
+                    if(gradeKey&&courseKey) {
+                        const courseObj = result.data?.result?.find(({id}) => id===Number(courseKey));
+                        setSelectedCourse(courseObj);
+                    }
                 } else {
                     setCourseList([]);
                     setAlert('error', result.data.message);
@@ -111,6 +123,7 @@ const CoursePriceFilters = (props) => {
                     filterSelectedOptions
                     value={selectedGrade}
                     onChange={handleGrade}
+                    disabled={Number(courseKey)?true:false}
                     renderInput={(params) => (
                         <TextField
                             {...params}
@@ -132,6 +145,7 @@ const CoursePriceFilters = (props) => {
                     filterSelectedOptions
                     value={selectedCourse}
                     onChange={handleCourse}
+                    disabled={Number(courseKey)?true:false}
                     renderInput={(params) => (
                         <TextField
                             {...params}

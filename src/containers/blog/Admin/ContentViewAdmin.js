@@ -403,11 +403,13 @@ if (result.data.status_code === 200) {
                         <Card style={{ minWidth: 320 }} className={classes.reviewCard}>
                           <CardContent>
                           <Autocomplete
+                          
                             style={{ width: '100%' }}
                             size='small'
                             onChange={this.handlePublishLevelType}
                             id='category'
                             required
+                            disableClearable
                             options={publishLevelChoice}
                             getOptionLabel={(option) => option?.label}
                             filterSelectedOptions

@@ -29,6 +29,7 @@ const DurationContainer = (props) => {
     '' || [...collectData][funBatchSize(Number(selectedLimit.substring(2)))]['weeks']
   );
   const [toggle, setToggle] = useState(false);
+  const [editToggle, setEditToggle] = useState(false);
   const [recursiveContent, setRecursiveContent] = useState([
     { weeks: '', price: '', id: '' },
   ]);
@@ -40,6 +41,7 @@ const DurationContainer = (props) => {
     if (clearFlag) {
       setNoOfWeeks('');
       setToggle(false);
+      setEditToggle(false);
       setRecursiveContent([{ weeks: '', price: '', id: '' }]);
       setNonRecursiveContent([{ weeks: '', price: '', id: '' }]);
     }
@@ -51,7 +53,11 @@ const DurationContainer = (props) => {
         (datarow) => datarow['limit'] === selectedLimit
       );
       setNoOfWeeks(collectData[index]['weeks']||'');
-      setToggle(collectData[index]['toggle']);
+      // setToggle(collectData[index]['toggle']);
+      setEditToggle(collectData[index]['toggle']);
+      if(collectData[index]['toggle']) 
+        setToggle(true);
+      else setToggle(false);
       setRecursiveContent(collectData[index]['data']);
       setNonRecursiveContent(collectData[index]['singleData']);
     }
@@ -96,7 +102,7 @@ const DurationContainer = (props) => {
   const handleToggle = () => {
     const list = [...collectData];
     const index = collectData.findIndex((datarow) => datarow['limit'] === selectedLimit);
-    if (isEdit && toggle) {
+    if (isEdit && editToggle) {
       setAlert('warning', "Can't be changed to Non-Recurring!");
     } else {
       setToggle((prev) => !prev);
@@ -119,7 +125,7 @@ const DurationContainer = (props) => {
     for (let i = 0; i < list.length; i++) {
       if (list[i]['limit'] === selectedLimit) {
         list[i]['weeks'] = noOfWeeks;
-        list[i]['toggle'] = toggle;
+        list[i]['toggle'] = editToggle?editToggle:toggle;
         list[i]['data'] = recursiveContent;
         list[i]['singleData'] = nonRecursiveContent;
         break;
