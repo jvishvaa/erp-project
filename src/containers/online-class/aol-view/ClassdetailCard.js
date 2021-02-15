@@ -4,6 +4,7 @@ import { Divider, makeStyles, withStyles, Typography, Button } from '@material-u
 import moment from 'moment';
 import JoinClass from './JoinClass';
 import { useHistory } from 'react-router-dom';
+import ResourceDialog from '../online-class-resources/resourceDialog';
 import axiosInstance from '../../../config/axios';
 
 const useStyles = makeStyles({
@@ -173,58 +174,80 @@ export default function ClassdetailsCardComponent(props) {
         //online-class/attendee-list/:id
         //history.push(`online-class/attendee-list/:${id}`);
     }
+
+    // resource module
+    const [open, setOpen] = React.useState(false);
+    const [selectedValue, setSelectedValue] = React.useState("");
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+    
+    const handleClose = (value) => {
+        setOpen(false);
+        setSelectedValue(value);
+    };
+
     return (
-        <div className={classes.classDetailsBox}>
-            <div className={classes.classHeader}>
-                <div>
-                    <Typography className={classes.classHeaderText}>
-                        {props.classData.online_class.title}
-                    </Typography>
-                    <Typography className={classes.classHeaderTime}>
-                        {moment(props.classData.join_time).format('h:mm:ss')}
-                    </Typography>
+        <>
+            <div className={classes.classDetailsBox}>
+                <div className={classes.classHeader}>
+                    <div>
+                        <Typography className={classes.classHeaderText}>
+                            {props.classData.online_class.title}
+                        </Typography>
+                        <Typography className={classes.classHeaderTime}>
+                            {moment(props.classData.join_time).format('h:mm:ss')}
+                        </Typography>
+                    </div>
+                    <div>
+                        <Typography className={classes.classHeaderSub}>
+                            {props.classData.online_class.subject[0].subject_name}
+                        </Typography>
+                        <Typography className={classes.subPeriods}>{periods + 1} periods</Typography>
+                    </div>
                 </div>
-                <div>
-                    <Typography className={classes.classHeaderSub}>
-                        {props.classData.online_class.subject[0].subject_name}
-                    </Typography>
-                    <Typography className={classes.subPeriods}>{periods + 1} periods</Typography>
-                </div>
-            </div>
-            <div className={classes.classDetails}>
+                <div className={classes.classDetails}>
 
-                <Typography className={classes.classDetailsTitle}>
-                    Description
-                </Typography>
-                <Divider className={classes.classDetailsDivider}/>
-                <div className={classes.joinClassDiv}>
-                    {periodsData !== undefined && periodsData.map((data, id) => (
-                        <JoinClass
-                            key={id}
-                            data={data}
-                            joinUrl={props.classData.join_url}
-                            isTeacher={isTeacher}
-                        />
-                    ))}
-                </div>
-                <Divider className={classes.classDetailsDivider}/>
+                    <Typography className={classes.classDetailsTitle}>
+                        Description
+                    </Typography>
+                    <Divider className={classes.classDetailsDivider}/>
+                    <div className={classes.joinClassDiv}>
+                        {dateArray !== undefined && dateArray.map((date, id) => (
+                            <JoinClass
+                                key={id}
+                                date={date}
+                                joinUrl={props.classData.join_url}
+                                isTeacher={isTeacher}
+                            />
+                        ))}
+                    </div>
+                    <Divider className={classes.classDetailsDivider}/>
 
-                {isTeacher ? (
+                    {!isTeacher ? (
+                        <StyledButton
+                            onClick={handleAttendance}
+                            color="primary"
+                        >
+                            Attendance
+                        </StyledButton>
+                    ) : (
+                        <StyledButton
+                            color="primary"
+                            onClick={handleClickOpen}
+                        >
+                            Resources
+                        </StyledButton>
+                    )}
                     <StyledButton
-                        onClick={handleAttendance}
-                        color="primary"
-                    >
-                        Attendance
+                        color="primary">
+                        View lesson plan
                     </StyledButton>
-                ) : (
-                    <StyledButton color="primary">Resources</StyledButton>
-                )}
-                <StyledButton
-                    color="primary">
-                    View lesson plan
-                </StyledButton>
+                </div>
             </div>
-        </div>
+            <ResourceDialog selectedValue={selectedValue} open={open} onClose={handleClose} />
+        </>
     )
 }
 
