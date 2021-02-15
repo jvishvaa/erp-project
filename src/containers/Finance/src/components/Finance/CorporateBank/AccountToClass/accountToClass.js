@@ -5,7 +5,7 @@ import { withStyles, Grid, CircularProgress } from '@material-ui/core/'
 import Icon from '@material-ui/core/Icon'
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined'
 import Button from '@material-ui/core/Button'
-
+import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 import Select from 'react-select'
 
 import { apiActions } from '../../../../_actions'
@@ -167,8 +167,8 @@ class AccountToClass extends Component {
           <div className={classes.accClassMapping__class} key={accClass.id}>
             <div className={classes.accClassMapping__classInfo}>
               <div className={classes.accClassMapping__className}>{accClass.grade}</div>
-              <div className={classes.accClassMapping__icon}><Icon className={this.props.classes.icon} color='secondary'
-                onClick={() => { this.modalShowHandler(accClass.id, accClass.fee_account_name ? accClass.fee_account_name.id : null) }} >add_circle</Icon></div>
+              <div className={classes.accClassMapping__icon}><AddCircleRoundedIcon className={this.props.classes.icon} color='secondary'
+                onClick={() => { this.modalShowHandler(accClass.id, accClass.fee_account_name ? accClass.fee_account_name.id : null) }} ></AddCircleRoundedIcon></div>
             </div>
             <div className={classes.accClassMapping__classAccInfo}>
               <div className={classes.accClassMapping__accInfo}>
