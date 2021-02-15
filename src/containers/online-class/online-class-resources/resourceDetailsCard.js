@@ -14,26 +14,26 @@ const useStyles = makeStyles({
     classDetailsBox: {
         backgroundColor: '#FFFFFF',
         border: '1px solid #F9D474',
-        borderRadius: '10px',
+        borderRadius: '5px',
     },
     classHeader: {
         minHeight: '64px',
         padding: '8px 15px',
-        backgroundColor: '#ff6b6b',
-        borderRadius: '10px 10px 0px 0px',
+        backgroundColor: '#F9D474',
+        borderRadius: '5px 5px 0px 0px',
     },
     classHeaderText: {
         display: 'inline-block',
         color: '#014B7E',
-        fontSize: '16px',
-        fontWeight: 300,
+        fontSize: '18px',
+        fontWeight: 'bold',
         fontFamily: 'Poppins',
         lineHeight: '25px',
     },
     closeDetailCard: {
         float: 'right',
-        fontSize: '18px',
-        color: '#fff',
+        fontSize: '20px',
+        color: '#014B7E',
     },
     classHeaderTime: {
         display: 'inline-block',
@@ -80,7 +80,7 @@ const useStyles = makeStyles({
         marginBottom: '10px',
     },
     joinClassDiv: {
-        height: '350px',
+        height: '320px',
         overflowY: 'scroll',
         '&::-webkit-scrollbar': {
             display: 'none',
@@ -99,7 +99,7 @@ const useStyles = makeStyles({
 
 const StyledButton = withStyles({
     root: {
-        marginTop: '16px',
+        marginTop: '6px',
         height: '31px',
         width: '100%',
         fontSize: '18px',

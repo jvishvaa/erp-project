@@ -311,9 +311,7 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
         fd.append('description', 'description123');
         axiosInstance.post(`academic/dairy-upload/`, fd)
         .then((result)=>{
-              console.log(fd);
               if (result.data.status_code === 200) {
-                  console.log(result.data,'resp')
                   setAlert('success',result.data.message);
                   setFilePath([ ...filePath,result.data.result]);
               }
@@ -358,8 +356,7 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
       axiosInstance.put(endpoints.onlineClass.resourceFile,param)
       .then((res) => {
         const newResources = isDownload.splice(i,1);
-        console.log(newResources);
-        setIsDownload(newResources);
+        setIsDownload([]);
         setAlert('success', "Deleted");
       })
       .catch((err) => console.log(err))
@@ -755,7 +752,6 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
           //setFilePath([ ...filePath,file.files[0]]);
         return (
           <div>
-            
                 {file.files && file.files.map((path) => 
                   <>
                     <Grid container spacing={2} alignItems='center'>
@@ -822,7 +818,7 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
         >
           Submit
         </Button>
-        <Typography variant='caption'>
+        <Typography variant='caption' style={{ marginLeft : '10px'}}>
           **Note: Supported File Formats are Image, Audio, Video, PDF
         </Typography>
       </div>

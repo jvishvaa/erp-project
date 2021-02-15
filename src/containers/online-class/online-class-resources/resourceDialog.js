@@ -10,7 +10,9 @@ import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles({
     root: {
+        top: '50px',
         borderRadius: '10px',
+        border: '1px solid #F9D474',
     },
     header: {
         padding: '20px',
@@ -21,6 +23,16 @@ const useStyles = makeStyles({
         display: 'inline-block',
         color: '',
         fontSize: '20px',
+        fontWeight: 'bold',
+    },
+    closeDetailCard: {
+        float: 'right',
+        fontSize: '20px',
+        color: '#014B7E',
+    },
+    joinClassDiv: {
+        height: '400px',
+        overflowY: 'scroll',
     },
     date: {
         display: 'inline-block',
@@ -33,12 +45,12 @@ const useStyles = makeStyles({
         fontSize: '18px',
     },
     resourceClassDiv: {
-        maxHeight: '350px',
-        textAlign: 'center',
-        overflowY: 'scroll',
-        '&::-webkit-scrollbar': {
-            display: 'none',
-        },
+        //maxHeight: '350px',
+        //textAlign: 'center',
+        //overflowY: 'scroll',
+        //'&::-webkit-scrollbar': {
+           // display: 'none',
+        //},
     },
 });
 
@@ -52,10 +64,18 @@ const Resource = (props) => {
     const classes = useStyles({});
     const [ isDownload, setIsDownload ] = React.useState();
     const [ isDown, setIsDown] = React.useState(0);
+    const [ hideButton, setHideButton ] = React.useState(false);
 
     React.useEffect(() => {
         axiosInstance.get(`${endpoints.onlineClass.resourceFile}?online_class_id=${props.resourceId}&class_date=${moment(props.date).format('DD-MM-YYYY')}`)
         .then((res) => {
+            if(res.data.result.length > 0) {
+                res.data.result.map((path) => {
+                    if(path.files !== null) {
+                        setHideButton(true);
+                    }
+                })
+            }
             setIsDownload(res.data.result);
             setIsDown(res.data.status_code);
         })
@@ -76,7 +96,7 @@ const Resource = (props) => {
                 <Typography className={classes.date}>{moment(props.date).format('DD-MM-YYYY')}</Typography>
             </Grid>
             <Grid item xs={6} className={classes.resourceClassDiv}>
-                {isDown === 200 ? (
+                {hideButton && isDown === 200 ? (
                     <StyledButton
                         color="primary"
                         //href={`${endpoints.s3}/${isDownload ? isDownload[0]?.files[0] : ''}`}
@@ -85,7 +105,7 @@ const Resource = (props) => {
                         Download
                     </StyledButton>
                 ) : (
-                    <Typography className={classes.resourceText}>Resource NOT Available</Typography>
+                    <Typography className={classes.resourceText}>Not Available</Typography>
                 )}
             </Grid>
         </Grid>
@@ -132,9 +152,9 @@ export default function ResourceDialogComponent(props) {
         <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open} className={classes.root}>
             <div className={classes.header}>
                 <Typography className={classes.headerTitle}>{props.title}</Typography>
-                <CloseIcon onClick={handleClose} style={{float: 'right'}}/>
+                <CloseIcon onClick={handleClose} className={classes.closeDetailCard}/>
             </div>
-            <div >
+            <div className={classes.joinClassDiv}>
                 {dateArray.length > 0 && dateArray.map((date) => <Resource date={date} resourceId={props.resourceId}/>)}
             </div>
         </Dialog>

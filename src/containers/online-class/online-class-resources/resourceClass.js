@@ -10,12 +10,14 @@ import { useLocation } from 'react-router-dom';
 const StyledButton = withStyles({
     root: {
         height: '31px',
-        width: '100%',
+        minWidth: '100px',
+        maxWidth: '150px',
         fontSize: '18px',
         fontFamily: 'Poppins',
         textTransform: 'capitalize',
         backgroundColor: '#ff6b6b',
-        borderRadius: '10px',
+        borderRadius: '5px',
+        textAlign: 'center',
     }
 })(Button);
 
@@ -24,6 +26,7 @@ export default function ResourceClassComponent(props) {
     const [ isDownload, setIsDownload ] = React.useState([]);
     const [ isDown, setIsDown] = React.useState(0);
     const [ isUpload, setIsUpload ] = React.useState(0);
+    const [ hideButton, setHideButton ] = React.useState(false);
     const location = useLocation();
     
     const handleIsUpload = () => {
@@ -63,6 +66,14 @@ export default function ResourceClassComponent(props) {
         };
         axiosInstance.get(`${endpoints.onlineClass.resourceFile}?online_class_id=${props.resourceId}&class_date=${moment(props.date).format('DD-MM-YYYY')}`)
         .then((res) => {
+            if(res.data.result.length > 0) {
+                res.data.result.map((path) => {
+                    if(path.files !== null) {
+                        setHideButton(true);
+                    }
+                })
+            }
+            //res.data.result.lenght > 0 && 
             setIsDownload(res.data.result);
             setIsDown(res.data.status_code);
         })
@@ -71,13 +82,13 @@ export default function ResourceClassComponent(props) {
 
     return (
         <>
-            <Grid  container spacing={1} style={{marginTop: '5px'}}>
-                <Grid item xs={isDown === 200 ? 4 : 6} >
+            <Grid  container spacing={1} style={{marginTop: '10px'}}>
+                <Grid item xs={hideButton && isDown === 200 ? 4 : 6} >
                     <Typography>
                         {moment(props.date).format('DD-MM-YYYY')}
                     </Typography>
                 </Grid>
-                <Grid item xs={isDown === 200 ? 4 : 6}>
+                <Grid item xs={ hideButton && isDown === 200 ? 4 : 6}>
                     <StyledButton
                         onClick={handleClick}
                         color="primary"
@@ -85,8 +96,8 @@ export default function ResourceClassComponent(props) {
                         Upload
                     </StyledButton>
                 </Grid>
-                <Grid item xs={4}>
-                    {isDown === 200 && (
+                {hideButton && isDown === 200 && (
+                    <Grid item xs={4}>
                         <StyledButton
                             //href={`${endpoints.s3}/${isDownload.length > 0  ? isDownload[0]?.files[0] : ''}`}
                             //href={isDownload && isDownload.map((path) => (`${endpoints.s3}/${files && files[0]}`))}
@@ -95,8 +106,8 @@ export default function ResourceClassComponent(props) {
                         >
                             Download
                         </StyledButton>
-                    )}
-                </Grid>
+                    </Grid>
+                )}
             </Grid>
             {uploadModal}
         </>

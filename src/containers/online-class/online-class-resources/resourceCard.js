@@ -10,7 +10,7 @@ const useStyles = makeStyles({
     card: {
         padding: '8px',
         border: '1px solid #F9D474',
-        borderRadius: '10px',
+        borderRadius: '5px',
         backgroundColor: '#FFFADF',
         //cursor: 'pointer',
         minHeight: '160px',
@@ -18,7 +18,7 @@ const useStyles = makeStyles({
     activeCard: {
         padding: '8px',
         border: '1px solid #F9D474',
-        borderRadius: '10px',
+        borderRadius: '5px',
         backgroundColor: '#F9D474',
         minHeight: '160px',
     },
@@ -88,7 +88,7 @@ export default function ResourceCardComponent(props) {
                 */}
             </div>
                 <Typography className={classes.classTitle}>
-                    {props.resourceData.online_class.subject[0].subject_name}
+                    {props.resourceData.online_class.subject && props.resourceData.online_class.subject.reduce((sub) => sub.subject_name.join())}
                 </Typography>
                 {/*
                 <Typography className={classes.classSchedule}>
