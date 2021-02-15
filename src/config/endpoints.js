@@ -201,7 +201,7 @@ export default {
   },
   studentViewBatchesApi: {
     getBatchesApi: '/erp_user/student_online_class/',
-    rejetBatchApi: '',
+    rejetBatchApi: '/erp_user/mark_attendance/',
   },
   assessment: {
     questionPaperList: `/academic/assessment-list/`,

@@ -47,16 +47,18 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
     hour = `${hour}`.length === 1 ? `0${hour}` : hour;
     return `${hour}:${min} ${part}`;
   };
+  console.log(fullData,'==========')
 
   function handleCancel() {
     setLoading(true);
     const params = {
       zoom_meeting_id: fullData && fullData.online_class && fullData.online_class.id,
       class_date: fullData && fullData && fullData.join_time,
+
     };
     let url = '';
     if (window.location.pathname === '/online-class/attend-class') {
-      url = endpoints.teacherViewBatches.rejetBatchApi;
+      url = endpoints.studentViewBatchesApi.rejetBatchApi;
     } else {
       url = endpoints.teacherViewBatches.cancelBatchApi;
     }
