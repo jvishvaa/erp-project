@@ -14,8 +14,8 @@ import {
 import { AddCircle, DeleteForever } from '@material-ui/icons'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
-import ReactTable from 'react-table'
-import 'react-table/react-table.css'
+// import ReactTable from 'react-table'
+// import 'react-table/react-table.css'
 
 import { apiActions } from '../../../../_actions'
 import * as actionTypes from '../../store/actions'
@@ -23,6 +23,7 @@ import Modal from '../../../../ui/Modal/modal'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import { FilterInnerComponent, filterMethod } from '../../../Finance/FilterInnerComponent/filterInnerComponent'
 import classesCSS from './kit.module.css'
+import Layout from '../../../../../../Layout'
 
 let kitState = null
 
@@ -150,7 +151,7 @@ class Kit extends Component {
     } = this.state
 
     if (!currentBranch || !currentGrade || !currentSession) {
-      this.props.alert.warning('Please Fill All Madatory Fields')
+      // this.props.alert.warning('Please Fill All Madatory Fields')
       return
     }
     this.props.fetchItems(currentSession, currentBranch, currentGrade, this.props.alert, this.props.user)
@@ -272,7 +273,7 @@ class Kit extends Component {
   createColorHandler = () => {
     const color = this.colorRef.current.value
     if (color.length === 0) {
-      this.props.alert.warning('Please Give Some Color Value')
+      // this.props.alert.warning('Please Give Some Color Value')
       return
     }
     this.props.createColor(color, this.props.alert, this.props.user)
@@ -316,7 +317,7 @@ class Kit extends Component {
     const items = e.map(ele => +ele.value)
     const found = kitItems.some(r => items.indexOf(r) >= 0)
     if (found) {
-      this.props.alert.warning('Duplicate Item Found')
+      // this.props.alert.warning('Duplicate Item Found')
       return
     }
 
@@ -337,7 +338,7 @@ class Kit extends Component {
       kitItems = [...kitItems, ...ids]
     })
     if (error) {
-      this.props.alert.warning('Duplicate Items in Two Kits')
+      // this.props.alert.warning('Duplicate Items in Two Kits')
       return
     }
     const {
@@ -346,7 +347,7 @@ class Kit extends Component {
     const items = itemArr.map(ele => +ele.value)
     const found = kitItems.some(r => items.indexOf(r) >= 0)
     if (found) {
-      this.props.alert.warning('Duplicate Item Found')
+      // this.props.alert.warning('Duplicate Item Found')
       return
     }
     this.setState({
@@ -504,7 +505,7 @@ class Kit extends Component {
     const itemsId = itemArr.map(item => item.value)
     const commonKitIds = commonKitArr.map(item => item.value)
     if (isError) {
-      alert.warning('Every Item should have some quantity')
+      // alert.warning('Every Item should have some quantity')
       return
     }
 
@@ -532,12 +533,12 @@ class Kit extends Component {
     }
 
     if (!kitName || !kitDesc || !kitAmount || (!isNewStudent && !isOldStudent)) {
-      this.props.alert.warning('Please Fill Select all Mandatory Fields')
+      // this.props.alert.warning('Please Fill Select all Mandatory Fields')
       return
     }
 
     if (!itemsId.length && !commonKitIds.length) {
-      this.props.alert.warning('Please Select at least an item or a kit')
+      // this.props.alert.warning('Please Select at least an item or a kit')
       return
     }
 
@@ -565,7 +566,7 @@ class Kit extends Component {
             kitAmount: event.target.value
           })
         } else {
-          this.props.alert.warning('Amount cant be 0')
+          // this.props.alert.warning('Amount cant be 0')
         }
         break
       }
@@ -617,7 +618,7 @@ class Kit extends Component {
     const itemsId = itemArr.map(item => item.value)
     const commonKitIds = commonKitArr.map(item => item.value)
     if (isError) {
-      alert.warning('Every Item should have some quantity')
+      // alert.warning('Every Item should have some quantity')
       return
     }
 
@@ -646,12 +647,12 @@ class Kit extends Component {
     }
 
     if (!kitName || !kitDesp || !kitAmount || (!isNewStudent && !isOldStudent)) {
-      this.props.alert.warning('Please Fill Select all Mandatory Fields')
+      // this.props.alert.warning('Please Fill Select all Mandatory Fields')
       return
     }
 
     if (!itemsId.length && !commonKitIds.length) {
-      this.props.alert.warning('Please Select at least an item or a kit')
+      // this.props.alert.warning('Please Select at least an item or a kit')
       return
     }
 
@@ -671,7 +672,7 @@ class Kit extends Component {
         this.calculateKitPrice()
       })
     } else {
-      this.props.alert.warning('Quantity Cant be less than 1')
+      // this.props.alert.warning('Quantity Cant be less than 1')
     }
   }
   createData = () => {
@@ -712,101 +713,101 @@ class Kit extends Component {
       paddingLeft: '12px'
     }
 
-    let itemTable = null
-    if (this.props.kitList && this.props.kitList.length) {
-      itemTable = (<ReactTable
-        // pages={Math.ceil(this.props.transactionDetails.count / 20)}
-        data={this.createData()}
-        columns={[
-          {
-            Header: 'S.No',
-            accessor: 'sNo',
-            width: 50,
-            sortable: true
-          },
-          {
-            Header: 'Kit Name',
-            accessor: 'kit_name',
-            sortable: true,
-            Filter: props => <FilterInnerComponent {...props} />,
-            filterMethod: filterMethod,
-            style: {
-              paddingLeft: '20px'
-            }
-          },
-          {
-            Header: 'Kit  Description',
-            accessor: 'kit_description',
-            Filter: props => <FilterInnerComponent {...props} />,
-            filterMethod: filterMethod,
-            sortable: true
-          },
-          {
-            Header: 'Kit Price',
-            accessor: 'kit_price',
-            Filter: props => <FilterInnerComponent {...props} />,
-            filterMethod: filterMethod,
-            sortable: true
-          },
-          {
-            Header: 'Uniform Kit',
-            accessor: 'is_uniform_kit',
-            Filter: props => <FilterInnerComponent {...props} />,
-            filterMethod: filterMethod,
-            sortable: true
-          },
-          {
-            Header: 'For New Student',
-            accessor: 'is_applicable_to_new_student',
-            Filter: props => <FilterInnerComponent {...props} />,
-            filterMethod: filterMethod,
-            sortable: true
-          },
-          {
-            Header: 'For Old Student',
-            accessor: 'is_applicable_to_old_student',
-            Filter: props => <FilterInnerComponent {...props} />,
-            filterMethod: filterMethod,
-            sortable: false
-          },
-          {
-            Header: 'Items Count',
-            accessor: 'item',
-            Filter: props => <FilterInnerComponent {...props} />,
-            filterMethod: filterMethod,
-            sortable: false
-          },
-          {
-            Header: 'View Details',
-            accessor: 'viewDetails',
-            filterable: false,
-            width: 140,
-            style: {
-              paddingLeft: '10px',
-              cursor: 'pointer'
-              // width: '270px'
-            },
-            sortable: false
-          },
-          {
-            Header: 'Delete',
-            accessor: 'icon',
-            filterable: false,
-            width: 70,
-            style: {
-              paddingLeft: '10px',
-              cursor: 'pointer'
-            },
-            sortable: false
-          }
-        ]}
-        filterable
-        sortable
-        defaultPageSize={20}
-        showPageSizeOptions={false}
-        className='-striped -highlight'
-      />)
-    }
+    // let itemTable = null
+    // if (this.props.kitList && this.props.kitList.length) {
+    //   itemTable = (<ReactTable
+    //     // pages={Math.ceil(this.props.transactionDetails.count / 20)}
+    //     data={this.createData()}
+    //     columns={[
+    //       {
+    //         Header: 'S.No',
+    //         accessor: 'sNo',
+    //         width: 50,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Kit Name',
+    //         accessor: 'kit_name',
+    //         sortable: true,
+    //         Filter: props => <FilterInnerComponent {...props} />,
+    //         filterMethod: filterMethod,
+    //         style: {
+    //           paddingLeft: '20px'
+    //         }
+    //       },
+    //       {
+    //         Header: 'Kit  Description',
+    //         accessor: 'kit_description',
+    //         Filter: props => <FilterInnerComponent {...props} />,
+    //         filterMethod: filterMethod,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Kit Price',
+    //         accessor: 'kit_price',
+    //         Filter: props => <FilterInnerComponent {...props} />,
+    //         filterMethod: filterMethod,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Uniform Kit',
+    //         accessor: 'is_uniform_kit',
+    //         Filter: props => <FilterInnerComponent {...props} />,
+    //         filterMethod: filterMethod,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'For New Student',
+    //         accessor: 'is_applicable_to_new_student',
+    //         Filter: props => <FilterInnerComponent {...props} />,
+    //         filterMethod: filterMethod,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'For Old Student',
+    //         accessor: 'is_applicable_to_old_student',
+    //         Filter: props => <FilterInnerComponent {...props} />,
+    //         filterMethod: filterMethod,
+    //         sortable: false
+    //       },
+    //       {
+    //         Header: 'Items Count',
+    //         accessor: 'item',
+    //         Filter: props => <FilterInnerComponent {...props} />,
+    //         filterMethod: filterMethod,
+    //         sortable: false
+    //       },
+    //       {
+    //         Header: 'View Details',
+    //         accessor: 'viewDetails',
+    //         filterable: false,
+    //         width: 140,
+    //         style: {
+    //           paddingLeft: '10px',
+    //           cursor: 'pointer'
+    //           // width: '270px'
+    //         },
+    //         sortable: false
+    //       },
+    //       {
+    //         Header: 'Delete',
+    //         accessor: 'icon',
+    //         filterable: false,
+    //         width: 70,
+    //         style: {
+    //           paddingLeft: '10px',
+    //           cursor: 'pointer'
+    //         },
+    //         sortable: false
+    //       }
+    //     ]}
+    //     filterable
+    //     sortable
+    //     defaultPageSize={20}
+    //     showPageSizeOptions={false}
+    //     className='-striped -highlight'
+    //   />)
+    // }
 
     let subjectsChoice = null
     if (!this.state.isUniform && !this.state.isCommon && !this.state.isDelivery) {
@@ -1279,13 +1280,14 @@ class Kit extends Component {
     }
 
     return (
+      <Layout>
       <React.Fragment>
         <Grid container spacing={3} style={{ padding: 15 }}>
           <Grid item xs='8'>
             <label className='student-addStudent-segment1-heading' />
           </Grid>
           <Grid item xs='4'>
-            {this.state.showAdd ? (<Button variant='outlined' color='primary' onClick={this.showEntryModal} disabled={!this.state.currentSession || !this.state.currentBranch || !this.state.currentGrade}>
+            {this.state.showAdd ? (<Button variant='contained' color='primary' onClick={this.showEntryModal} disabled={!this.state.currentSession || !this.state.currentBranch || !this.state.currentGrade}>
                 Create New Kit
             </Button>) : null}
           </Grid>
@@ -1354,11 +1356,12 @@ class Kit extends Component {
         </Grid>
         {entryModal}
         {addColorModal}
-        {itemTable}
+        {/* {itemTable}  Rajneesh */}
         {deleteModal}
         {viewdetModal}
         {this.props.dataLoading || this.props.gradeLoader ? <CircularProgress open /> : null}
       </React.Fragment>
+      </Layout>
     )
   }
 }

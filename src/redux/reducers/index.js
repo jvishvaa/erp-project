@@ -19,6 +19,8 @@ import expenseMngmtReducer from '../../../src/containers/Finance/src/components/
 import inventory from '../../../src/containers/Finance/src/components/Inventory/store/reducer/inventory.reducer.js'
 import { gradeMap } from '../../../src/containers/Finance/src/_reducers/gradeMap.reducer.js'
 import { sectionMap } from '../../../src/containers/Finance/src/_reducers/sectionMap.reducer.js'
+import { subjects } from '../../../src/containers/Finance/src/_reducers/subject.reducer.js'
+
 
 export default combineReducers({
   auth,
@@ -36,5 +38,6 @@ export default combineReducers({
   expenseMngmt: expenseMngmtReducer,
   inventory,
   gradeMap,
-  sectionMap
+  sectionMap,
+  subjects 
 });

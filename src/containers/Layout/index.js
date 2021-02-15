@@ -656,6 +656,10 @@ const Layout = ({ children, history }) => {
                   history.push('/Store/AddItems')
                     break;
                   }
+              case 'Kit': {
+                  history.push('/Store/CreateKit')
+                    break;
+                  }
       default:
         break;
     }
