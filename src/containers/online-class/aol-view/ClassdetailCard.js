@@ -216,10 +216,8 @@ export default function ClassdetailsCardComponent(props) {
                         <Typography className={classes.classHeaderSub}>
                             {props.toggle ? props.classData.batch_name : ''}
                             {props.toggle ? <StyledAcceptButton onClick={handleAssign}>ASSIGN</StyledAcceptButton> : null}
-
                         </Typography>
                     </div>
-
                 </div>
                 <div className={classes.classDetails}>
 
