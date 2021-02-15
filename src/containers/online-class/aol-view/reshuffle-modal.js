@@ -14,6 +14,7 @@ import {
 import MomentUtils from '@date-io/moment';
 import moment from 'moment';
 import React, { useEffect, useState, useContext } from 'react';
+import {useHistory, useParams} from 'react-router-dom'
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state'
@@ -41,7 +42,7 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
 
     const [list, setList] = useState([])
     const [toggle, setToggle] = useState(false);
-
+    // const {id} = useParams()
 
     const branchDrop = [{ branch_name: 'B 2' }, { branch_name: 'B 3' },]
     const [selectedDate, setSelectedDate] = React.useState(new Date('2014-08-18T21:11:54'));
@@ -76,13 +77,10 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
                 setBatchList(result.data.result)
             })
     }, [])
-
     const handleReshuffle = () => {
-        axiosInstance.post(`http://erpnew.letseduvate.com/qbox/aol/student-shuffle/`, {
-            // "batch": modalData?.batch?.id,
-            // "new_batch": filterData?.batch?.id,
-            "batch": filterData?.batch?.id,
-            "new_batch": modalData?.batch?.id,
+        axiosInstance.post(`${endpoints.aol.studentReshuffle}`, {
+            "batch":parseInt(id),
+            "new_batch": filterData?.batch?.id,
             "students": [modalData?.user?.id]
         })
             .then((result => {
@@ -90,10 +88,12 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
                     setAlert('success', result.data.message)
                     setOpenReshuffleModal(false)
                 }
+                else{
+                    setAlert('error',result.data.message)
+                }
             }))
     }
 
-    console.log(id, '+++++++++')
     return (
         <div>
             <Dialog open={openReshuffleModal} onClose={() => setOpenReshuffleModal(false)} aria-labelledby="form-dialog-title" classes={{ paper: classes.dialogWrapper }}>

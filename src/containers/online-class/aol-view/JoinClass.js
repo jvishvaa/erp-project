@@ -77,10 +77,12 @@ export default function JoinClassComponent(props) {
     const [ isRejected, setIsRejected ] = React.useState(false);
     const [ isCancel, setIsCancel] = React.useState(false);
 
+    console.log(props,'{{{{{{{{')
+    const date=props?.data?.online_class?.start_time.split('T')
     //console.log(props.data.is_cancelled + " ==="+ isCancel );
     const params ={
-        zoom_meeting_id: props.data.zoom_id,
-        class_date: props.data.date
+        zoom_meeting_id: props?.classData?.id,
+        class_date: props?.classData?.start_date
     }
     const handleCancel = () => {
         axiosInstance.put('erp_user/cancel-online-class/',params)
@@ -93,10 +95,10 @@ export default function JoinClassComponent(props) {
 
     return (
         <div>
-            {/* <Typography className={classes.classDetailsDescription}>
-                {props.data.date}
+            <Typography className={classes.classDetailsDescription}>
+                    {date && date[0]}
             </Typography>
-            {!isAccepted && isRejected && (
+              {/*  {!isAccepted && isRejected && (
                 <Typography className={classes.rejectText}>Rejected</Typography>
             )}
             {props.isTeacher && isCancel && (
@@ -135,6 +137,7 @@ export default function JoinClassComponent(props) {
                         variant="contained"
                         color="secondary"
                         href={props.joinUrl}
+                        target="_blank"
                     >
                         Host
                     </StyledAcceptButton>

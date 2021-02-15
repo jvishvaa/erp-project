@@ -159,6 +159,7 @@ export default {
     draftBatch:'/aol/mixed-batch-details/',
     assignTeacher:'/aol/teacher-assign/',
     reshuffleBatchList:'/aol/batch_shuffle/',
+    studentReshuffle:'/aol/student-shuffle/',
   },
   onlineCourses:{
     createCourse:'/aol/courses/',

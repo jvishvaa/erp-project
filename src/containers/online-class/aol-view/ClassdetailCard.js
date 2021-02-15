@@ -176,10 +176,9 @@ export default function ClassdetailsCardComponent(props) {
     }
 
     const handleReshuffle = () => {
-        // history.push(`/aol-reshuffle/${props?.classData?.online_class?.aol_batch?.id}`)
         history.push(`/aol-reshuffle/${props?.classData?.online_class?.aol_batch_id}`)
     }
-    const handleCoursePlan=()=>{
+    const handleCoursePlan = () => {
         history.push(`/view-period/${props.filterData && props?.filterData?.course?.id}`)
     }
 
@@ -220,24 +219,29 @@ export default function ClassdetailsCardComponent(props) {
                     </div>
                 </div>
                 <div className={classes.classDetails}>
+                    {props?.toggle ? '' :
+                        <Typography className={classes.classDetailsTitle}>
+                            Description
+                     </Typography>
+                    }
 
-                    <Typography className={classes.classDetailsTitle}>
-                        Description
-                </Typography>
                     <Divider className={classes.classDetailsDivider} />
                     <div className={classes.joinClassDiv}>
-                        {props.toggle ? '' : periodsData.length > 0 && periodsData.map((data, id) => (
+                        {/* {props.toggle ? '' : periodsData.length > 0 && periodsData.map((data, id) => ( */}
+                        {props.toggle ? '' :
                             <JoinClass
-                                key={id}
-                                data={data}
+                                // key={id}
+                                data={props.classData}
                                 joinUrl={props.classData.join_url}
-                                isTeacher={isTeacher}
+                            // isTeacher={isTeacher}
                             />
-                        ))}
+                        }
+
+                        {/* ))} */}
                     </div>
                     <Divider className={classes.classDetailsDivider} />
 
-                    {props.toggle ===false ? (
+                    {props.toggle === false ? (
                         <>
                             <StyledButton
                                 onClick={handleAttendance}
@@ -253,7 +257,15 @@ export default function ClassdetailsCardComponent(props) {
                     </StyledButton>
                         </>
                     ) : (
-                            <StyledButton color="primary">Resources</StyledButton>
+                            <>
+                                <StyledButton
+                                    onClick={handleReshuffle}
+                                    color="primary"
+                                >
+                                    Reshuffle
+                    </StyledButton>
+                                {/* <StyledButton color="primary">Resources</StyledButton> */}
+                            </>
                         )}
                     <StyledButton
                         color="primary" onClick={handleCoursePlan}>

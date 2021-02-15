@@ -251,7 +251,7 @@ const UpcomingClasses = () => {
     const getClasses = () => {
         const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
         if (toggle) {
-            axiosInstance.get(`${endpoints.aol.draftBatch}?course_id=${filterData.course.id}&grade_id=${filterData.grade.grade_id}&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}`)
+            axiosInstance.get(`${endpoints.aol.draftBatch}?course_id=${filterData.course.id}&grade_id=${filterData.grade.grade_id}&is_aol=1&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}`)
                 .then(result => {
                     setToggledData(result.data.result)
                     setClassesdata([]);
