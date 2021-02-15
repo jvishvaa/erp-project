@@ -147,10 +147,10 @@ export const assignOtherFee = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        payload.alert.success('Added Successfully')
+        // payload.alert.success('Added Successfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        payload.alert.error('Something Went Wrong')
+        // payload.alert.error('Something Went Wrong')
         console.log(error)
       })
   }
@@ -462,10 +462,10 @@ export const assignInstallmentOtherFees = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        payload.alert.success('Done Successfully')
+        // payload.alert.success('Done Successfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        payload.alert.error('Something Went Wrong')
+        // payload.alert.error('Something Went Wrong')
         console.log(error)
       })
   }
@@ -487,10 +487,10 @@ export const saveInstallmentOtherFees = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        payload.alert.success('Done Successfully')
+        // payload.alert.success('Done Successfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        payload.alert.error('Something Went Wrong')
+        // payload.alert.error('Something Went Wrong')
         console.log(error)
       })
   }
@@ -513,10 +513,10 @@ export const deleteOtherFeesInstallments = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        payload.alert.success('Installments Deleted')
+        // payload.alert.success('Installments Deleted')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        payload.alert.error('Something Went Wrong')
+        // payload.alert.error('Something Went Wrong')
         console.log(error)
       })
   }
