@@ -660,6 +660,10 @@ const Layout = ({ children, history }) => {
                   history.push('/Store/CreateKit')
                     break;
                   }
+              case 'sub Category allow' : {
+                  history.push('/Store/SubCategoryAllow')
+                    break;
+                  }
       default:
         break;
     }

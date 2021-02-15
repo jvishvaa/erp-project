@@ -271,9 +271,9 @@ export const fetchAdmissionRecordByErp = (payload) => {
       // dispatch(actionTypes.dataLoaded())
       console.log(error)
       if (error.response && error.response.status === 400) {
-        payload.alert.warning(error.response.data.err_msg)
+        // payload.alert.warning(error.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
     })
   }
@@ -300,9 +300,9 @@ export const fetchStudentAdmissionCertificates = (payload) => {
       dispatch(actionTypes.dataLoaded())
       console.log(error)
       if (error.response && error.response.status === 400) {
-        payload.alert.warning(error.response.data.err_msg)
+        // payload.alert.warning(error.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
     })
   }
@@ -317,7 +317,7 @@ export const postStudentAdmissionCertificate = (payload) => {
     }).then(response => {
       if (response.status === 200) {
         dispatch(actionTypes.dataLoaded())
-        payload.alert.success('successfully Added')
+        // payload.alert.success('successfully Added')
         dispatch({
           type: POST_ADMISSION_CERTIFICATE,
           payload: {
@@ -330,9 +330,9 @@ export const postStudentAdmissionCertificate = (payload) => {
       dispatch(actionTypes.dataLoaded())
       console.log(error)
       if (error.response && error.response.status === 400) {
-        payload.alert.warning(error.response.data.err_msg)
+        // payload.alert.warning(error.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
     })
   }
@@ -360,9 +360,9 @@ export const putStudentAdmission = (payload) => {
       dispatch(actionTypes.dataLoaded())
       console.log(error)
       if (error.response && error.response.status === 400) {
-        payload.alert.warning(error.response.data.err_msg)
+        // payload.alert.warning(error.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
     })
   }
@@ -399,9 +399,9 @@ export const searchAdmissionByOthers = (payload) => {
       dispatch(actionTypes.dataLoaded())
       console.log(error)
       if (error.response && error.response.status === 400) {
-        payload.alert.warning(error.response.data.err_msg)
+        // payload.alert.warning(error.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
     })
   }

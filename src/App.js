@@ -135,6 +135,8 @@ import BulkUniform from './containers/Finance/src/components/Inventory/StoreMana
 import ShippingAmount from './containers/Finance/src/components/Inventory/BranchAccountant/shippingAmount/ShippingAmount.js'
 import AddItems from './containers/Finance/src/components/Inventory/StoreAdmin/SchoolStore/AddItems/addItems.js'
 import Kit from './containers/Finance/src/components/Inventory/StoreAdmin/Kit/kit';
+import SubCategoryAllow from './containers/Finance/src/components/Inventory/StoreAdmin/SubCategoryAllow/subCategoryAllow';
+import UpdateAdmissionForm from './containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/updateAdmissionForm';
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -561,6 +563,12 @@ function App() {
                 </Route>
                 <Route exact path= '/Store/CreateKit'>
                   {({ match }) => <Kit match={match} />}
+                </Route>
+                <Route exact path= '/Store/SubCategoryAllow'>
+                  {({ match }) => <SubCategoryAllow match={match} />}
+                </Route>
+                <Route exact path= '/admissions/UpdateRegistrationForm/'>
+                  {({ match }) => <UpdateAdmissionForm match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>

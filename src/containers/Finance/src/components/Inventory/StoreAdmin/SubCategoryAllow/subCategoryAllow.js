@@ -12,6 +12,7 @@ import * as actionTypes from '../../store/actions'
 import Modal from '../../../../ui/Modal/modal'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 // import { student } from '../../../masters'
+import Layout from '../../../../../../Layout'
 
 const SubCategoryAllow = ({ classes, session, branches, fetchBranches, mcreateSubCategory, createSubCategory, fetchUnitColorSubcat, subCatList, fetchSubCategory, subCategory, savePartialPaymentLastDate, partialPayments, fetchGradesPerBranch, fetchAllSection, alert, user, dataLoading, gradesPerBranch, sections }) => {
   const [sessionData, setSessionData] = useState([])
@@ -291,6 +292,7 @@ const SubCategoryAllow = ({ classes, session, branches, fetchBranches, mcreateSu
     return partialTable
   }
   return (
+    <Layout>
     <div>
       <Grid container spacing={3} style={{ padding: '15px' }}>
         <Grid item xs={9} />
@@ -377,6 +379,7 @@ const SubCategoryAllow = ({ classes, session, branches, fetchBranches, mcreateSu
       {actionModal}
       { dataLoading ? <CircularProgress open /> : null }
     </div>
+    </Layout>
   )
 }
 const mapStateToProps = state => ({

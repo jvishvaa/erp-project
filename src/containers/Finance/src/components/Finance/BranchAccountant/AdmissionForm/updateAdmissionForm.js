@@ -18,6 +18,7 @@ import UpdateStudentSiblingDetailsFormAcc from './updateStudentSiblingDetails'
 import UpdateStudentCertiDetailsAcc from './updateStudentCertificateDetails'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import * as actionTypes from '../store/actions'
+import Layout from '../../../../../../Layout'
 
 const styles = theme => ({
   container: {
@@ -310,6 +311,7 @@ class UpdateAdmissionFormAcc extends Component {
       const { classes } = this.props
       const { activeStep } = this.state
       return (
+        <Layout>
         <React.Fragment>
           <Stepper activeStep={activeStep} alternativeLabel>
             {steps.map(label => (
@@ -343,6 +345,7 @@ class UpdateAdmissionFormAcc extends Component {
             </Grid>
           </footer>
         </React.Fragment>
+        </Layout>
       )
     }
 }

@@ -92,12 +92,12 @@ class AdmissionFormAcc extends Component {
     console.log(data)
     if (data.student_registered) {
       this.props.history.push({
-        pathname: '/finance/UpdateAdmissionForm',
+        pathname: '/admissions/UpdateRegistrationForm/',
         studentInformationForAdmission: data
       })
     } else {
       this.props.history.push({
-        pathname: '/finance/UpdateAdmissionForm'
+        pathname: '/admissions/UpdateRegistrationForm/'
       })
     }
   }
@@ -130,7 +130,7 @@ class AdmissionFormAcc extends Component {
                   <TableCell>{row.student_registered && row.student_registered.grade ? row.student_registered.grade : '-'}</TableCell>
                   <TableCell>{row.student_registered && row.student_registered.admission_number ? row.student_registered.admission_number : '-'}</TableCell>
                   <TableCell>{row.student_registered && row.admission_date ? row.admission_date : '-'}</TableCell>
-                  <TableCell><Button onClick={(e) => { this.editButtonHandler(e, row) }}><Icon>edit_icon</Icon></Button></TableCell>
+                  <TableCell><Button onClick={(e) => { this.editButtonHandler(e, row) }}>EDIT</Button></TableCell>
                   {/* <TableCell>
                     <input
                       name='concession'
