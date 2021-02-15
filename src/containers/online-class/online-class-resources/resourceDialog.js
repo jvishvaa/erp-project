@@ -33,6 +33,9 @@ const useStyles = makeStyles({
     joinClassDiv: {
         height: '400px',
         overflowY: 'scroll',
+        //'&::-webkit-scrollbar': {
+            // display: 'none',
+         //},
     },
     date: {
         display: 'inline-block',
