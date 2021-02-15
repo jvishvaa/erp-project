@@ -56,7 +56,6 @@ const EditGenre = (props) => {
   const history = useHistory()
 
   const [genreNameEdit,setGenreNameEdit] =useState('');
-  console.log(data,"@@@")
   const [genreName,setGenreName] =useState('');
   const gradeObj= data.grade
   const { setAlert } = useContext(AlertNotificationContext);
@@ -125,6 +124,7 @@ const handleGenreNameEditChange = (e) => {
               options={gradeList}
               value={gradeObj}
               filterSelectedOptions
+              disableClearable
               getOptionLabel={(option) => option?.grade_name}
 
               renderInput={(params) => (

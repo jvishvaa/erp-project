@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 
 function GridList(props) {
   const classes = useStyles();
-  const { data } = props;
+  const { data,totalBlogs } = props;
   const {tabValue} = props.tabValue;
   const [showMenu, setShowMenu] = useState(false);
   const [showPeriodIndex, setShowPeriodIndex] = useState();
@@ -593,7 +593,19 @@ function GridList(props) {
             </Grid>
           </Grid>
         </Grid>
-      ) : 
+      ) : totalBlogs === 0 ?  
+      
+      <div className={classes.periodDataUnavailable}>
+      <SvgIcon
+        component={() => (
+          <img
+            style={{paddingLeft:'380px'}}
+            src={unfiltered}
+          />
+        )}
+      /> 
+      <p  style={{paddingLeft:'440px'}} >NO DATA FOUND </p>
+      </div> :
       (
         <div className="periodDataUnavailable">
             <SvgIcon

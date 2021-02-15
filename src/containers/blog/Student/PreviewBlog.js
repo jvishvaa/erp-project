@@ -81,7 +81,6 @@ class ContentView extends Component {
       genreObj:this.props.location.state.genreObj,
       parsedTextEditorContentLen:this.props.location.state.parsedTextEditorContentLen,
     };
-    console.log(this.props,"@@@@@@")
   }
 
   componentDidMount() {
@@ -91,16 +90,15 @@ class ContentView extends Component {
   }
 
   WriteBlogNav = () => {
-    const { content, title, files ,genreId,genreName,genreObj} = this.state;
+    const { content, title, files ,genreId,genreName,genreObj,parsedTextEditorContentLen} = this.state;
     this.props.history.push({
       pathname: '/blog/student/write-blog',
-      state: { content, title, files,genreId , genreName,genreObj},
+      state: { content, title, files,genreId , genreName,genreObj,parsedTextEditorContentLen},
     });
   };
 
   submitBlog = (type) => {
     const { title, content, files, genreId ,parsedTextEditorContentLen} = this.state;
-    console.log(parsedTextEditorContentLen,"@@@")
     const formData = new FormData();
     for (var i = 0; i < files.length; i++) {
       formData.append('thumbnail',files[i]);

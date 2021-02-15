@@ -104,7 +104,6 @@ class ContentView extends Component {
 
     };
    
-    console.log(this.state.tabValue,"@@@@")
 
   }
   componentDidMount() {
@@ -333,7 +332,20 @@ if (result.data.status_code === 200) {
 
                             >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
                             </Button>
-                            {!data.feedback_revision_required && tabValue === 1 ? 
+                            {!data.feedback_revision_required  ? 
+                          <Button
+                            size='small'
+                            color='primary'
+                            onClick={() => {
+                              this.setState({
+                                relatedBlog: !relatedBlog,
+                                feedBack: false,
+                              });
+                            }}
+                          >
+                           {tabValue === 0 ? 'Add Review' : 'View/Edit Review' }
+                          </Button>  :''}
+                          {/* {tabValue === 0 ? 
                           <Button
                             size='small'
                             color='primary'
@@ -345,20 +357,7 @@ if (result.data.status_code === 200) {
                             }}
                           >
                            {tabValue === 0 ? 'Add Review' : 'View Review' }
-                          </Button>  :''}
-                          {tabValue === 0 ? 
-                          <Button
-                            size='small'
-                            color='primary'
-                            onClick={() => {
-                              this.setState({
-                                relatedBlog: !relatedBlog,
-                                feedBack: false,
-                              });
-                            }}
-                          >
-                           {tabValue === 0 ? 'Add Review' : 'View Review' }
-                          </Button>  :''}
+                          </Button>  :''} */}
                           {tabValue === 0 ?
                           <Button
                             size='small'
@@ -412,6 +411,7 @@ if (result.data.status_code === 200) {
                           <Autocomplete
                             style={{ width: '100%' }}
                             size='small'
+                            disableClearable
                             onChange={this.handlePublishLevelType}
                             id='category'
                             required
