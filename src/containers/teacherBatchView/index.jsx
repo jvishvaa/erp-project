@@ -95,7 +95,7 @@ const TeacherBatchView = ({ history }) => {
       callApi(
         `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
           selectedBatch && selectedBatch.id
-        }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${selectedModule}&class_type=1`,
+        }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${selectedModule}&class_type=1&batch_limit=${selectedBatch.batch_size}`,
         'filter'
       );
     }
@@ -123,7 +123,7 @@ const TeacherBatchView = ({ history }) => {
     callApi(
       `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
         selectedBatch && selectedBatch.id
-      }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${selectedModule}&class_type=1`,
+      }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${selectedModule}&class_type=1&batch_limit=${selectedBatch.batch_size}`,
       'filter'
     );
   }
@@ -162,7 +162,7 @@ const TeacherBatchView = ({ history }) => {
     callApi(
       `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
         selectedBatch && selectedBatch.id
-      }&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=12&module_id=4&class_type=1`,
+      }&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=12&module_id=4&class_type=1&batch_limit=${selectedBatch && selectedBatch.batch_size}&batch_limit=${selectedBatch.batch_size}`,
       'filter'
     );
   }

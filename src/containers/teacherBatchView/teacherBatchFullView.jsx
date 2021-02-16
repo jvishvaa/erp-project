@@ -51,12 +51,12 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
     return `${hour}:${min} ${part}`;
   };
 
+  // const date= fullData?.online_class?.start_time.split('T')
   function handleCancel() {
     setLoading(true);
     const params = {
-      zoom_meeting_id: fullData && fullData.online_class && fullData.online_class.id,
-      class_date: fullData && fullData && fullData.join_time,
-
+      zoom_meeting_id: fullData  && fullData.id,
+      class_date: fullData && fullData?.online_class?.start_time.split('T')[0],
     };
     let url = '';
     if (window.location.pathname === '/online-class/attend-class') {
@@ -82,7 +82,7 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
     history.push(`/aol-attendance-list/${fullData.online_class && fullData.id}`)
   }
   const handleCoursePlan=()=>{
-    history.push(`/view-period/${fullData.online_class && fullData.online_class.aol_batch_id}`)
+    history.push(`/view-period/${fullData.online_class && fullData.online_class.cource_id}`)
   }
 
   const [openPopup, setOpenPopup] = React.useState(false);
