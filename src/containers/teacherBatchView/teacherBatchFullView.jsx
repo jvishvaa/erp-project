@@ -3,11 +3,175 @@ import React, { useContext, useState, useEffect } from 'react';
 import { Grid, Card, Divider, Button, Popover, Typography } from '@material-ui/core';
 import {useHistory} from 'react-router-dom'
 // import CloseIcon from '@material-ui/icons/Close';
+import moment from 'moment';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import Loader from '../../components/loader/loader';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import ResourceDialog from '../online-class/online-class-resources/resourceDialog';
+
+const JoinClass = (props) => {
+  const fullData = props.fullData;
+  const handleClose = props.handleClose;
+  const [loading, setLoading] = useState(false);
+  const { setAlert } = useContext(AlertNotificationContext);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const history =useHistory()
+  const handleCloseData = () => {
+    setAnchorEl(null);
+  };
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+/** 
+  const handleRejectClass = () => {
+    const params = {
+      zoom_meeting_id: fullData && fullData.online_class && fullData.online_class.id,
+      class_date: fullData && fullData && fullData.join_time,
+      is_restricted: true
+    };
+    axiosInstance.put(endpoints.studentViewBatchesApi.rejetBatchApi, params)
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((error) => console.log(error))
+  }
+*/
+  function handleCancel() {
+    setLoading(true);
+    const params1 = {
+      zoom_meeting_id: fullData && fullData.online_class && fullData.online_class.id,
+      class_date: fullData && fullData && fullData.join_time,
+    };
+
+    const params2 = {
+      zoom_meeting_id: fullData && fullData.id,
+      class_date: moment(fullData && fullData && fullData.join_time).format('YYYY-MM-DD'),
+      is_restricted: true
+    };
+
+    //const params = window.location.pathname === '/online-class/attend-class' ? params1 : params2;
+    let url = '';
+    if (window.location.pathname === '/online-class/attend-class') {
+      //url = endpoints.studentViewBatchesApi.rejetBatchApi;
+      axiosInstance
+      .put(endpoints.studentViewBatchesApi.rejetBatchApi, params2)
+      .then((res) => {
+        setLoading(false);
+        setAlert('success', res.data.message);
+        handleClose('success');
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', error.message);
+      });
+    } else {
+      //url = endpoints.teacherViewBatches.cancelBatchApi;
+      axiosInstance
+      .put(endpoints.teacherViewBatches.cancelBatchApi, params1)
+      .then((res) => {
+        setLoading(false);
+        setAlert('success', res.data.message);
+        handleClose('success');
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', error.message);
+      });
+    }
+  }
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
+  return (
+    <Grid container spacing={2} direction='row' alignItems='center'>
+      <Grid item md={6} xs={12}>
+        <span className='TeacherFullViewdescreption1'>
+          {moment(props.date).format('Do MMM YYYY')}
+        </span>
+      </Grid>
+      <Grid item md={3} xs={6}>
+        <Button
+          size='small'
+          fullWidth
+          variant='contained'
+          onClick={() =>
+            window.open(
+              window.location.pathname === '/online-class/attend-class'
+                ? fullData && fullData.join_url
+                : fullData && fullData.presenter_url,
+                '_blank'
+          )}
+          className='teacherFullViewSmallButtons'
+        >
+          {window.location.pathname === '/online-class/attend-class'
+            ? 'Accept'
+            : 'Host'}
+        </Button>
+      </Grid>
+      <Grid item md={3} xs={6}>
+        <Popover
+          id={id}
+          open={open}
+          anchorEl={anchorEl}
+          onClose={handleClose}
+          style={{ overflow: 'hidden' }}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+        >
+        <Grid
+          container
+          spacing={2}
+          style={{ textAlign: 'center', padding: '10px' }}
+        >
+          <Grid item md={12} xs={12}>
+            <Typography>Are you sure to Cancel ?</Typography>
+          </Grid>
+          <Grid item md={6} xs={12}>
+            <Button
+              variant='contained'
+              size='small'
+              style={{ fontSize: '11px' }}
+              onClick={() => handleCloseData()}
+            >
+              Cancel
+            </Button>
+          </Grid>
+          <Grid item md={6} xs={12}>
+            <Button
+              variant='contained'
+              color='primary'
+              style={{ fontSize: '11px' }}
+              size='small'
+              onClick={() => handleCancel()}
+            >
+              Confirm
+            </Button>
+          </Grid>
+        </Grid>
+      </Popover>
+        <Button
+          size='small'
+          fullWidth
+          variant='contained'
+          onClick={(e) => handleClick(e)}
+          className='teacherFullViewSmallButtons1'
+        >
+          {window.location.pathname === '/online-class/attend-class'
+            ? 'Reject'
+            : 'Cancel'}
+        </Button>
+      </Grid>
+    </Grid>
+  )
+}
 
 const TeacherBatchFullView = ({ fullData, handleClose }) => {
   const [noOfPeriods, setNoOfPeriods] = useState([]);
@@ -15,6 +179,7 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const history =useHistory()
+  /*
   useEffect(() => {
     if (fullData) {
       axiosInstance
@@ -24,6 +189,23 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
           }/online-class-details/`
         )
         .then((res) => {
+          setNoOfPeriods(res.data.data);
+        })
+        .catch((error) => setAlert('error', error.message));
+    }
+  }, [fullData]);
+  */
+  
+  useEffect(() => {
+    let detailsURL = window.location.pathname === '/online-class/attend-class'
+    ? `erp_user/${fullData && fullData.id}/student-oc-details/`
+    : `erp_user/${fullData && fullData.online_class && fullData.online_class.id}/online-class-details/`;
+
+    if (fullData) {
+      axiosInstance
+        .get(detailsURL)
+        .then((res) => {
+          console.log(res.data);
           setNoOfPeriods(res.data.data);
         })
         .catch((error) => setAlert('error', error.message));
@@ -50,6 +232,7 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
     hour = `${hour}`.length === 1 ? `0${hour}` : hour;
     return `${hour}:${min} ${part}`;
   };
+  console.log(fullData,'==========');
 
   // const date= fullData?.online_class?.start_time.split('T')
   function handleCancel() {
@@ -160,98 +343,102 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
               </Grid>
               <Grid item md={12} xs={12}>
                 <Divider className='fullViewDivider' />
-                <Grid container spacing={2} direction='row' alignItems='center'>
-                  <Grid item md={6} xs={12}>
-                    <span className='TeacherFullViewdescreption1'>
-                      {(fullData &&
-                        fullData.online_class &&
-                        fullData.online_class.start_time &&
-                        new Date(fullData.online_class.start_time)
-                          .toString()
-                          .split('G')[0]
-                          .substring(0, 16)) ||
-                        ''}
-                    </span>
-                  </Grid>
-                  <Grid item md={3} xs={6}>
-                    <Button
-                      size='small'
-                      fullWidth
-                      variant='contained'
-                      onClick={() =>
-                        window.open(
-                          window.location.pathname === '/online-class/attend-class'
-                            ? fullData && fullData.join_url
-                            : fullData && fullData.presenter_url,
-                          '_blank'
-                        )}
-                      className='teacherFullViewSmallButtons'
-                    >
-                      {window.location.pathname === '/online-class/attend-class'
-                        ? 'Accept'
-                        : 'Host'}
-                    </Button>
-                  </Grid>
-                  <Grid item md={3} xs={6}>
-                    <Popover
-                      id={id}
-                      open={open}
-                      anchorEl={anchorEl}
-                      onClose={handleClose}
-                      style={{ overflow: 'hidden' }}
-                      anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'center',
-                      }}
-                      transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'center',
-                      }}
-                    >
-                      <Grid
-                        container
-                        spacing={2}
-                        style={{ textAlign: 'center', padding: '10px' }}
-                      >
-                        <Grid item md={12} xs={12}>
-                          <Typography>Are you sure to Cancel ?</Typography>
-                        </Grid>
-                        <Grid item md={6} xs={12}>
-                          <Button
-                            variant='contained'
-                            size='small'
-                            style={{ fontSize: '11px' }}
-                            onClick={() => handleCloseData()}
-                          >
-                            Cancel
-                          </Button>
-                        </Grid>
-                        <Grid item md={6} xs={12}>
-                          <Button
-                            variant='contained'
-                            color='primary'
-                            style={{ fontSize: '11px' }}
-                            size='small'
-                            onClick={() => handleCancel()}
-                          >
-                            Confirm
-                          </Button>
-                        </Grid>
+                {window.location.pathname === '/online-class/attend-class' ?
+                  noOfPeriods && noOfPeriods.length > 0 && noOfPeriods.map((data) => <JoinClass  date={data.date} fullData={fullData} handleClose={handleClose}/>)
+                  : (
+                    <Grid container spacing={2} direction='row' alignItems='center'>
+                      <Grid item md={6} xs={12}>
+                        <span className='TeacherFullViewdescreption1'>
+                          {(fullData &&
+                            fullData.online_class &&
+                            fullData.online_class.start_time &&
+                            new Date(fullData.online_class.start_time)
+                              .toString()
+                              .split('G')[0]
+                              .substring(0, 16)) ||
+                            ''}
+                        </span>
                       </Grid>
-                    </Popover>
-                    <Button
-                      size='small'
-                      fullWidth
-                      variant='contained'
-                      onClick={(e) => handleClick(e)}
-                      className='teacherFullViewSmallButtons1'
-                    >
-                      {window.location.pathname === '/online-class/attend-class'
-                        ? 'Reject'
-                        : 'Cancel'}
-                    </Button>
-                  </Grid>
-                </Grid>
+                      <Grid item md={3} xs={6}>
+                        <Button
+                          size='small'
+                          fullWidth
+                          variant='contained'
+                          onClick={() =>
+                            window.open(
+                              window.location.pathname === '/online-class/attend-class'
+                                ? fullData && fullData.join_url
+                                : fullData && fullData.presenter_url,
+                              '_blank'
+                            )}
+                          className='teacherFullViewSmallButtons'
+                        >
+                          {window.location.pathname === '/online-class/attend-class'
+                            ? 'Accept'
+                            : 'Host'}
+                        </Button>
+                      </Grid>
+                      <Grid item md={3} xs={6}>
+                        <Popover
+                          id={id}
+                          open={open}
+                          anchorEl={anchorEl}
+                          onClose={handleClose}
+                          style={{ overflow: 'hidden' }}
+                          anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                          }}
+                          transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                          }}
+                        >
+                          <Grid
+                            container
+                            spacing={2}
+                            style={{ textAlign: 'center', padding: '10px' }}
+                          >
+                            <Grid item md={12} xs={12}>
+                              <Typography>Are you sure to Cancel ?</Typography>
+                            </Grid>
+                            <Grid item md={6} xs={12}>
+                              <Button
+                                variant='contained'
+                                size='small'
+                                style={{ fontSize: '11px' }}
+                                onClick={() => handleCloseData()}
+                              >
+                                Cancel
+                              </Button>
+                            </Grid>
+                            <Grid item md={6} xs={12}>
+                              <Button
+                                variant='contained'
+                                color='primary'
+                                style={{ fontSize: '11px' }}
+                                size='small'
+                                onClick={() => handleCancel()}
+                              >
+                                Confirm
+                              </Button>
+                            </Grid>
+                          </Grid>
+                        </Popover>
+                        <Button
+                          size='small'
+                          fullWidth
+                          variant='contained'
+                          onClick={(e) => handleClick(e)}
+                          className='teacherFullViewSmallButtons1'
+                        >
+                          {window.location.pathname === '/online-class/attend-class'
+                            ? 'Reject'
+                            : 'Cancel'}
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  )}
                 <Divider className='fullViewDivider' />
               </Grid>
               <Grid item md={12} xs={12}>
@@ -277,7 +464,8 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
         open={openPopup}
         onClose={handleClosePopup}
         title={fullData.online_class.title}
-        resourceId={fullData.online_class.id}
+        resourceId={fullData.id}
+        onlineClassId={fullData.online_class.id}
         startDate={fullData.online_class.start_time}
         endDate={fullData.online_class.end_time}
       />
