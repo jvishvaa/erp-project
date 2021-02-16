@@ -154,19 +154,20 @@ const ViewCourseCard = ({ index, cData, setData }) => {
                   <div style={{ display: 'flex', marginLeft: '5px' }}>
 
                     <Typography>No Of Files : {data.files.length} </Typography>
-                    <IconButton
-                      onClick={handleDownload}>
-                      <SvgIcon
-                        component={() => (
-                          <img
-                            target='blank'
-                            style={{ height: '21px', width: '21px' }}
-                            src={downloadAll}
-                            alt='downloadAll'
-                          />
-                        )}
-                      />
-                    </IconButton>
+                    {data.files.length > 0 ?
+                      <IconButton
+                        onClick={handleDownload}>
+                        <SvgIcon
+                          component={() => (
+                            <img
+                              target='blank'
+                              style={{ height: '21px', width: '21px' }}
+                              src={downloadAll}
+                              alt='downloadAll'
+                            />
+                          )}
+                        />
+                      </IconButton> : ''}
 
                   </div>
                 </Grid>

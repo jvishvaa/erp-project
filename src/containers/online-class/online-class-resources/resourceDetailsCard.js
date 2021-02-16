@@ -191,6 +191,7 @@ export default function ResourceDetailsCardComponent(props) {
                         />
                     ))}
                 </div>
+                {/*
                 <Divider className={classes.classDetailsDivider}/>
 
                 <StyledButton
@@ -199,6 +200,7 @@ export default function ResourceDetailsCardComponent(props) {
                 >
                     Submit
                 </StyledButton>
+                */}
             </div>
             <ResourceDialog
                 selectedValue={selectedValue}

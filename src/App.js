@@ -194,6 +194,7 @@ function App() {
                           {({ match }) => <EditWordCountConfig match={match} />}
                         </Route>
 
+
                         <Route exact path='/blog/teacher'>
                           {({ match }) => <TeacherBlog match={match} />}
                         </Route>
@@ -383,6 +384,9 @@ function App() {
                         </Route>
                         <Route exact path='/create/daily-dairy'>
                           {({ match }) => <CreateDailyDairy match={match} />}
+                        </Route>
+                        <Route exact path='/course-price/:courseKey?/:gradeKey?'>
+                          {({ match }) => <CoursePrice match={match} />}
                         </Route>
                         <Route exact path='/create/course'>
                           {({ match }) => <CreateCourse match={match} />}
