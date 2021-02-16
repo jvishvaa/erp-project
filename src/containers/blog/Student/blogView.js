@@ -85,6 +85,7 @@ class BlogView extends Component {
 blogRatings :this.props.location.state.data && this.props.location.state.data.remark_rating,
       overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark,
     };
+    console.log(this.state.tabValue,"@@@@@")
   }
   static contextType = AlertNotificationContext
 
@@ -92,6 +93,22 @@ blogRatings :this.props.location.state.data && this.props.location.state.data.re
     let {blogId} = this.state
   }
 
+
+getRatings = () => {
+  let {blogRatings} =this.state
+  if (!blogRatings) {
+    return []
+  }
+  const type = typeof blogRatings
+  const parsedRatings = type === 'object' ? blogRatings : JSON.parse(blogRatings)
+  const allRatingParamters = JSON.parse(parsedRatings)
+  return allRatingParamters
+}
+
+getOverAllRemark = () => {
+ let {overallRemark} = this.state
+ return overallRemark
+}
 
 getRatings = () => {
   let {blogRatings} =this.state

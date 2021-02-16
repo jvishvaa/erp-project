@@ -229,12 +229,12 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
       });
   }
 
+  console.log(fullData,'==========')
   const handleAttendance=()=>{
-    alert('attendance')
-    history.push(`/aol-attendance-list/${fullData.online_class.aol_batch_id}`)
+    history.push(`/aol-attendance-list/${fullData.online_class && fullData.id}`)
   }
   const handleCoursePlan=()=>{
-    history.push(`/view-period/${1}`)
+    history.push(`/view-period/${fullData.online_class && fullData.online_class.aol_batch_id}`)
   }
 
   const [openPopup, setOpenPopup] = React.useState(false);

@@ -189,7 +189,6 @@ const LessonPlanGraphReport = ({
       setSectionDropdown([]);
     }
   };
-  console.log(filterData.grade, 'HHHHH');
   const handleSection = (event, value) => {
     // console.log(value);
     setFilterData({ ...filterData, section: '' });
@@ -328,7 +327,7 @@ const LessonPlanGraphReport = ({
       .then((result) => {
         if (result.data.status_code === 200) {
           setBranchDropdown(result.data.data);
-          setBranchId(result.data.data[0].id);
+          setBranchId(result.data.data[1].id);
           // a = result.data.data[0].id
         } else {
           setAlert('error', result.data.message);

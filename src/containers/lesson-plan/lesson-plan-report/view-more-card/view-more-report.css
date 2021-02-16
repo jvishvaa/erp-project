@@ -1,4 +1,4 @@
-.rootViewMore {
+.rootViewMoreReport{
     border: 1px solid #ff6b6b;
     border-radius: 10px !important;
     height:70vh;
@@ -126,7 +126,7 @@
 }
 
 @media screen and (max-width:768px) {
-    .rootViewMore {
+    .rootViewMoreReport {
         margin:0 auto;
       }
 }

@@ -450,4 +450,4 @@ if (result.data.status_code === 200) {
     );
   }
 }
-export default withRouter(withStyles(styles)(ContentView));
+export default withRouter(styles)(ContentView);
