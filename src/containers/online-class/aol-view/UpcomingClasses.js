@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import ClassCard from './ClassCard';
 import { Divider, Grid, makeStyles, useTheme, withStyles, Button, TextField, Switch, FormControlLabel } from '@material-ui/core';
 // import axiosInstance from '../../../config/axios';
@@ -252,20 +252,20 @@ const UpcomingClasses = () => {
     //api call
     const getClasses = () => {
         const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
-        if(!filterData.grade){
-            setAlert('warning','Select Grade');
+        if (!filterData.grade) {
+            setAlert('warning', 'Select Grade');
             return;
         }
-        if(!filterData.course){
-            setAlert('warning','Select Course');
+        if (!filterData.course) {
+            setAlert('warning', 'Select Course');
             return;
         }
-        if(!filterData.batch){
-            setAlert('warning','Select Batch Limit');
+        if (!filterData.batch) {
+            setAlert('warning', 'Select Batch Limit');
             return;
         }
-        if(!dateRangeTechPer){
-            setAlert('warning','Select Start Date');
+        if (!dateRangeTechPer) {
+            setAlert('warning', 'Select Start Date');
             return;
         }
         if (toggle) {

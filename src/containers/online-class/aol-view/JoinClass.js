@@ -80,21 +80,18 @@ export default function JoinClassComponent(props) {
     const [ isCancel, setIsCancel] = React.useState(false);
     const { setAlert } = useContext(AlertNotificationContext);
 
-    console.log(props,'{{{{{{{{')
     // const date=props?.data?.online_class?.start_time.split('T')
     //console.log(props.data.is_cancelled + " ==="+ isCancel );
     const params ={
         zoom_meeting_id: props?.data?.zoom_id,
         class_date: props?.data?.date
-
     }
     const handleCancel = () => {
         axiosInstance.put(`${endpoints.aol.cancelClass}`,params)
         .then((res) => {
-            console.log(res);
             setAlert('success',res.data.message)
             setIsCancel(!isCancel);
-            props.seCancelFlag(!props.cancelFlag)
+            props.setCancelFlag(!props.cancelFlag)
         })
         .catch((error) => console.log(error))
     }
