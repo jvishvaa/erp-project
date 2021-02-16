@@ -37,7 +37,7 @@ const Reshuffle = () => {
         setOpenReshuffleModal(true);
     }
     useEffect(() => {
-        axiosInstance.get(`${endpoints.onlineCourses.studentList}?batch_id=${id}`)
+        axiosInstance.get(`${endpoints.onlineCourses.studentList}?batch_id=${id}&is_aol=1`)
             .then((result) => {
                 setStudentName(result.data.data)
             })
@@ -69,13 +69,13 @@ const Reshuffle = () => {
                                             {index + 1}
                                         </TableCell>
                                         <TableCell align='center'>
-                                            {p.user.user.first_name}
+                                            {p?.first_name}
                                         </TableCell>
                                         <TableCell align='center'>
-                                            {p.user.user.username}
+                                            {p?.username}
                                         </TableCell>
                                         <TableCell align='center'>
-                                            {p.batch.title}
+                                            {p?.title}
                                         </TableCell>
                                         <TableCell align='center'>
                                             <ShuffleIcon

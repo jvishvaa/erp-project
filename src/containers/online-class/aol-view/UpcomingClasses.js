@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import ClassCard from './ClassCard';
 import { Divider, Grid, makeStyles, useTheme, withStyles, Button, TextField, Switch, FormControlLabel } from '@material-ui/core';
 // import axiosInstance from '../../../config/axios';
@@ -17,6 +17,8 @@ import Loader from '../../../components/loader/loader';
 import { useLocation } from 'react-router-dom';
 import axiosInstance from '../../../config/axios'
 import endpoints from '../../../config/endpoints'
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -129,6 +131,7 @@ const StyledButton = withStyles({
 })(Button);
 
 const UpcomingClasses = () => {
+    const { setAlert } = useContext(AlertNotificationContext);
     const location = useLocation();
     const classes = useStyles({});
     const [classesData, setClassesdata] = React.useState([]);
@@ -246,19 +249,34 @@ const UpcomingClasses = () => {
         }
     }
 
-
     //api call
     const getClasses = () => {
         const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
+        if(!filterData.grade){
+            setAlert('warning','Select Grade');
+            return;
+        }
+        if(!filterData.course){
+            setAlert('warning','Select Course');
+            return;
+        }
+        if(!filterData.batch){
+            setAlert('warning','Select Batch Limit');
+            return;
+        }
+        if(!dateRangeTechPer){
+            setAlert('warning','Select Start Date');
+            return;
+        }
         if (toggle) {
-            axiosInstance.get(`${endpoints.aol.draftBatch}?course_id=${filterData.course.id}&grade_id=${filterData.grade.grade_id}&is_aol=1&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}`)
+            axiosInstance.get(`${endpoints.aol.draftBatch}?course_id=${filterData.course.id}&batch_limit=${filterData.batch.batch_size}&grade_id=${filterData.grade.grade_id}&is_aol=1&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}`)
                 .then(result => {
                     setToggledData(result.data.result)
                     setClassesdata([]);
                 })
         }
         else {
-            axiosInstance.get(`${endpoints.aol.classes}?page_number=1&page_size=15&class_type=1&is_aol=1&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}`)
+            axiosInstance.get(`${endpoints.aol.classes}?page_number=1&page_size=15&class_type=1&is_aol=1&batch_limit=${filterData.batch.batch_size}&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}`)
                 // axiosInstance.get(`${endpoints.aol.classes}?class_type=1&page_number=1&aol_batch=4&page_size=15&is_aol=1&start_date=2021-02-06&end_date=2021-04-1`)
                 .then(result => {
                     setClassesdata(result.data.data)
@@ -357,10 +375,10 @@ const UpcomingClasses = () => {
     }
 
     const clearAll = () => {
-        setStartDate(null);
-        setEndDate(null);
-        setClassType(null);
-        setFilterData(null)
+        setStartDate([]);
+        setEndDate([]);
+        setClassType([]);
+        setFilterData([])
         setClassesdata([])
         setClassData([])
     }

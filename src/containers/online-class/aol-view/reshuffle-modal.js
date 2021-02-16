@@ -81,7 +81,7 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
         axiosInstance.post(`${endpoints.aol.studentReshuffle}`, {
             "batch":parseInt(id),
             "new_batch": filterData?.batch?.id,
-            "students": [modalData?.user?.id]
+            "students": [modalData?.user_id]
         })
             .then((result => {
                 if (result.data.status_code === 200) {
@@ -106,7 +106,7 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
                                     style={{ width: '100%' }}
                                     id="standard-read-only-input"
                                     label="Course Name"
-                                    defaultValue={modalData?.batch?.course?.course_name}
+                                    defaultValue={modalData?.course_name}
                                     InputProps={{
                                         readOnly: true,
                                     }}
@@ -119,7 +119,7 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
                                     style={{ width: '100%' }}
                                     id="standard-read-only-input"
                                     label="Batch Name"
-                                    defaultValue={modalData?.batch?.title}
+                                    defaultValue={modalData?.title}
                                     InputProps={{
                                         readOnly: true,
                                     }}

@@ -72,7 +72,7 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
 
     // console.log(parseInt(batchSlot[0]),parseInt(batchSlot[1]),'BBBBBB')
     const handleAssign = () => {
-        if (parseInt(batchSlot && batchSlot[0]) % 12 <= hour && parseInt(batchSlot && batchSlot[1]) % 12 > hour ) {
+        // if (parseInt(batchSlot && batchSlot[0]) % 12 <= hour && parseInt(batchSlot && batchSlot[1]) % 12 > hour ) {
             const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
             const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
             const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(selectedDate);
@@ -80,6 +80,8 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                 "batch_id": assignData?.classData?.id,
                 "start_date_time": selectedDate.format(`${ye}-${mo}-${da} hh:mm:ss`),
                 "teacher": filterData.teacher.tutor_id,
+                // 
+                "durations":"30",
             }).then(result => {
                 if (result.data.status_code === 200) {
                     setAlert('success', result.data.message)
@@ -90,31 +92,31 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                 }
             })
 
-        } else if (parseInt(batchSlot && batchSlot[0]) % 12 <= hour && parseInt(batchSlot && batchSlot[0]) % 12 == hour ) {
-            if (mins == 0) {
+        // } else if (parseInt(batchSlot && batchSlot[0]) % 12 <= hour && parseInt(batchSlot && batchSlot[0]) % 12 == hour ) {
+            // if (mins == 0) {
                 //  api call >>>>><<<<<<alert('sucess-nested')
-                const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
-                const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
-                const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(selectedDate);
-                axiosInstance.put(`${endpoints.aol.assignTeacher}`, {
-                    "batch_id": assignData?.classData?.id,
-                    "start_date_time": selectedDate.format(`${ye}-${mo}-${da} hh:mm:ss`),
-                    "teacher": filterData.teacher.tutor_id,
-                }).then(result => {
-                    if (result.data.status_code === 200) {
-                        setAlert('success', result.data.message)
-                        setOpenAssignModal(false)
-                        setReload(!reload)
-                    }
-                })
-            }
-            else {
-                setAlert('warning', `set the time between ${parseInt(batchSlot && batchSlot[0])} to ${parseInt(batchSlot && batchSlot[1])}`)
-            }
-        }
-         else {
-            setAlert('warning', `set the time between ${parseInt(batchSlot && batchSlot[0])} to ${parseInt(batchSlot && batchSlot[1])}`)
-        }
+                // const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
+                // const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
+                // const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(selectedDate);
+                // axiosInstance.put(`${endpoints.aol.assignTeacher}`, {
+                //     "batch_id": assignData?.classData?.id,
+                //     "start_date_time": selectedDate.format(`${ye}-${mo}-${da} hh:mm:ss`),
+                //     "teacher": filterData.teacher.tutor_id,
+                // }).then(result => {
+                //     if (result.data.status_code === 200) {
+                //         setAlert('success', result.data.message)
+                //         setOpenAssignModal(false)
+                //         setReload(!reload)
+                //     }
+                // })
+            // }
+            // else {
+            //     setAlert('warning', `set the time between ${parseInt(batchSlot && batchSlot[0])} to ${parseInt(batchSlot && batchSlot[1])}`)
+            // }
+        // }
+        //  else {
+        //     setAlert('warning', `set the time between ${parseInt(batchSlot && batchSlot[0])} to ${parseInt(batchSlot && batchSlot[1])}`)
+        // }
     }
     return (
         <div>
