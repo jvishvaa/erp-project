@@ -5,7 +5,7 @@ import HighchartsReact from 'highcharts-react-official';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme, IconButton, SvgIcon } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import './view-more.css';
+import './view-more-report.css';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 // import Highcharts from 'highcharts';
 
@@ -79,7 +79,7 @@ const ViewMoreCard = ({
     ],
   };
   return (
-    <Paper className='rootViewMore'>
+    <Paper className='rootViewMoreReport'>
       <div className='viewMoreHeader'>
         <div className='leftHeader'>
           <div className='headerTitle'>{periodDataForView?.first_name}</div>

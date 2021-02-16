@@ -1,4 +1,4 @@
-.rootViewMore {
+.rootViewMoreCircular {
     border: 1px solid #ff6b6b;
     border-radius: 10px !important;
     height:70vh;
@@ -88,7 +88,6 @@
     color: #014b7e;
     display: flex;
     flex-direction: column;
-    cursor: pointer;
 }
 
 .resourceBulkDownload {
@@ -126,24 +125,8 @@
     justify-content: space-between;
 }
 
-.MuiButton-root.courseButton:first-child {
-  margin-right: 10%;
-}
-
-.MuiButton-root.courseButton {
-  width: 45%;
-  margin: 1% auto;
-}
-
-.MuiButton-root.courseButton:hover {
-  background: #ff6b6b;
-}
-.courseButton>.MuiButton-label {
-  text-transform: none;
-}
-
 @media screen and (max-width:768px) {
-    .rootViewMore {
+    .rootViewMoreCircular {
         margin:0 auto;
       }
 }

@@ -50,7 +50,6 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
     hour = `${hour}`.length === 1 ? `0${hour}` : hour;
     return `${hour}:${min} ${part}`;
   };
-  console.log(fullData,'==========')
 
   function handleCancel() {
     setLoading(true);
@@ -78,12 +77,12 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
       });
   }
 
+  console.log(fullData,'==========')
   const handleAttendance=()=>{
-    alert('attendance')
-    history.push(`/aol-attendance-list/${fullData.online_class.aol_batch_id}`)
+    history.push(`/aol-attendance-list/${fullData.online_class && fullData.id}`)
   }
   const handleCoursePlan=()=>{
-    history.push(`/view-period/${1}`)
+    history.push(`/view-period/${fullData.online_class && fullData.online_class.aol_batch_id}`)
   }
 
   const [openPopup, setOpenPopup] = React.useState(false);

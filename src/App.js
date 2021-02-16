@@ -96,6 +96,7 @@ import DailyDairyStore from './containers/daily-dairy/context/context';
 import AttendeeListRemake from './containers/attendance';
 import TestComparisionUI from './containers/assessment-report/test-comparision';
 import AssessmentAnalysis from './containers/assessment-report/assessment-analysis';
+import Reshuffle from './containers/online-class/aol-view/Reshuffle';
 import StudentStrength from './containers/student-strength';
 import StudentIdCard from './containers/student-Id-Card';
 import SignatureUpload from './containers/signature-upload';
@@ -181,7 +182,7 @@ function App() {
                         <Route exact path='/blog/genre'>
                           {({ match }) => <CreateGenre match={match} />}
                         </Route>
-                        
+
                         {/* <Route exact path='/blog/genre/edit'>
                           {({ match }) => <EditGenre match={match} />}
                         </Route> */}
@@ -393,7 +394,7 @@ function App() {
                         <Route exact path='/course-list'>
                           {({ match }) => <CourseView match={match} />}
                         </Route>
-                        <Route exact path='/view-period'>
+                        <Route exact path='/view-period/:id?'>
                           {({ match }) => <ViewCourseCard match={match} />}
                         </Route>
                         <Route exact path='/assessment/test-comparision'>
@@ -427,6 +428,10 @@ function App() {
                         <Route exact path='/online-class/teacher-view-class'>
                           {({ match }) => <TeacherBatchView match={match} />}
                         </Route>
+                        <Route exact path='/aol-reshuffle/:id?'>
+                          {({ match }) => <Reshuffle match={match} />}
+                        </Route>
+
                       </Switch>
                     </DailyDairyStore>
                   </ViewStore>
