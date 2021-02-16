@@ -24,14 +24,34 @@ const JoinClass = (props) => {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
-  function handleCancel() {
-    setLoading(true);
+/** 
+  const handleRejectClass = () => {
     const params = {
       zoom_meeting_id: fullData && fullData.online_class && fullData.online_class.id,
       class_date: fullData && fullData && fullData.join_time,
-
+      is_restricted: true
     };
+    axiosInstance.put(endpoints.studentViewBatchesApi.rejetBatchApi, params)
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((error) => console.log(error))
+  }
+*/
+  function handleCancel() {
+    setLoading(true);
+    const params1 = {
+      zoom_meeting_id: fullData && fullData.online_class && fullData.online_class.id,
+      class_date: fullData && fullData && fullData.join_time,
+    };
+
+    const params2 = {
+      zoom_meeting_id: fullData && fullData.online_class && fullData.online_class.id,
+      class_date: moment(fullData && fullData && fullData.join_time).format('YYYY-MM-DD'),
+      is_restricted: true
+    };
+
+    const params = window.location.pathname === '/online-class/attend-class' ? params1 : params2;
     let url = '';
     if (window.location.pathname === '/online-class/attend-class') {
       url = endpoints.studentViewBatchesApi.rejetBatchApi;
@@ -39,7 +59,7 @@ const JoinClass = (props) => {
       url = endpoints.teacherViewBatches.cancelBatchApi;
     }
     axiosInstance
-      .put(url, params)
+      .put(url, params2)
       .then((res) => {
         setLoading(false);
         setAlert('success', res.data.message);
