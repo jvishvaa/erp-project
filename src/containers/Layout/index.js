@@ -444,8 +444,8 @@ const Layout = ({ children, history }) => {
         history.push('/finance/TallyReport')
         break;
       }
-      case 'Receipt Book': {
-        history.push('/finance/ReceiptBook')
+      case 'Application/registration Receipt Book': {
+        history.push('/finance/Application/registration/ReceiptBook')
         break;
       }
       case 'Wallet Report': {
@@ -674,6 +674,10 @@ const Layout = ({ children, history }) => {
                   }
               case 'Order Status Upload' : {
                   history.push('/Store/OrderStatusUpload')
+                      break;
+                  }
+              case 'Receipt Book' : {
+                  history.push('/finance/ReceiptBook')
                       break;
                   }
       default:

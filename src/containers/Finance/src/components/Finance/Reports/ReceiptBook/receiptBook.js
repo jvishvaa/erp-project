@@ -5,6 +5,7 @@ import { apiActions } from '../../../../_actions'
 import { urls } from '../../../../urls'
 import * as actionTypes from '../../store/actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
 // import { TextField } from 'material-ui'
 
 // const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
@@ -286,6 +287,7 @@ class ReceiptBook extends Component {
         )
       }
       return (
+        <Layout>
         <React.Fragment>
           <Grid container spacing={3} style={{ padding: 15 }}>
             <Grid item xs='3'>
@@ -419,6 +421,7 @@ class ReceiptBook extends Component {
             {this.props.dataLoading ? <CircularProgress open /> : null}
           </Grid>
         </React.Fragment>
+        </Layout>
       )
     }
 }

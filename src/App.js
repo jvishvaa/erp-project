@@ -140,6 +140,7 @@ import UpdateAdmissionForm from './containers/Finance/src/components/Finance/Bra
 import AccountantLogin from './containers/Finance/src/components/Finance/BulkOperations/AccountantLogin/AccountantLogin';
 import AddGst from './containers/Finance/src/components/Inventory/StoreAdmin/AddGst/addGst';
 import OrderStatusUpload from './containers/Finance/src/components/Inventory/StoreAdmin/OrderStatusUpload/orderStatusUpload';
+import ReceiptBook from './containers/Finance/src/components/Finance/AdmissionReports/ReceiptBook/receiptBook.js';
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -305,7 +306,7 @@ function App() {
                 <Route exact path='/finance/TallyReport'>
                   {({ match }) => <TallyReports match={match} />}
                 </Route>
-                <Route exact path='/finance/ReceiptBook'>
+                <Route exact path='/finance/Application/registration/ReceiptBook'>
                   {({ match }) => <ReceiptBookAdm match={match} />}
                 </Route>
                 <Route exact path='/finance/WalletReport'>
@@ -581,6 +582,9 @@ function App() {
                 </Route>
                 <Route exact path= '/Store/OrderStatusUpload'>
                   {({ match }) => <OrderStatusUpload match={match} />}
+                </Route>
+                <Route exact path= '/finance/ReceiptBook'>
+                  {({ match }) => <ReceiptBook match={match} />}
                 </Route>
               </Switch>
             </ThemeProvider>
