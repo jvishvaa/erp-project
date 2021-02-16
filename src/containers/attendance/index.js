@@ -52,15 +52,12 @@ const AttendeeListRemake = (props) => {
   const [dateValue, setDateValue] = useState(new Date());
   const history = useHistory();
   const [openShuffleModal, setOpenShuffleModal] = useState(false);
-
   const pageSize = 10;
-
   const { setAlert } = useContext(AlertNotificationContext);
 
   const getAttendeeList = async (date) => {
     axiosInstance.get(`${endpoints.attendanceList.list}?zoom_meeting_id=${id}&class_date=${date}&type=json&page_number=1&page_size=10`)
       .then((result) => {
-        console.log(result.data.data, '========')
         setTotalPages(result.data.total_pages);
         setAttendeeList(result.data.data);
         setTotalAttended(result.data.attended_count);

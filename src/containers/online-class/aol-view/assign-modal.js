@@ -38,13 +38,13 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
     const [toggle, setToggle] = useState(false);
     const { setAlert } = useContext(AlertNotificationContext);
     const [selectedDate, setSelectedDate] = React.useState(new Date());
-    let hour;
-    let mins;
-
+    const [hour,setHour]=useState('');
+    const [mins,setMins]= useState('');
+    const [ampm,setAmpm] =useState('');
     const [filterData, setFilterData] = useState({
         teacher: '',
     })
-    const batchSlot = assignData?.classData?.batch_time_slot && assignData?.classData?.batch_time_slot.split('-',' ')
+    const batchSlot = assignData?.classData?.batch_time_slot && assignData?.classData?.batch_time_slot.split('-',3)
     const helperTextMsg=`Select time between ${batchSlot && parseInt(batchSlot[0])} to ${batchSlot && parseInt(batchSlot[1])}`
     console.log(batchSlot,'BBBBBB')
     const handleDateChange = (date) => {
@@ -54,10 +54,11 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
     const handleHour = () => {
         const hr = new Intl.DateTimeFormat('en', { hour: 'numeric' }).format(selectedDate);
         const min = new Intl.DateTimeFormat('en', { minute: 'numeric' }).format(selectedDate);
-        console.log(hr.split(' ')[1],'HHHH')
-        hour = hr.split(' ')[0]
-        mins = min
+        setHour(hr.split(' ')[0])
+        setMins(min)
+        setAmpm(hr.split(' ')[1])
     }
+
     const handleTeacher = (event, value) => {
         setFilterData({ ...filterData, teacher: '' })
         if (value) {
@@ -69,10 +70,9 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
         handleHour();
     }, [selectedDate])
 
-
-    // console.log(parseInt(batchSlot[0]),parseInt(batchSlot[1]),'BBBBBB')
+    // console.log(batchSlot,ampm,'=============')
     const handleAssign = () => {
-        // if (parseInt(batchSlot && batchSlot[0]) % 12 <= hour && parseInt(batchSlot && batchSlot[1]) % 12 > hour ) {
+        if (parseInt(batchSlot && batchSlot[0]) % 12 <= hour && parseInt(batchSlot && batchSlot[1]) % 12 > hour &&  batchSlot && batchSlot[2] === ampm ) {
             const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
             const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
             const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(selectedDate);
@@ -80,7 +80,6 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                 "batch_id": assignData?.classData?.id,
                 "start_date_time": selectedDate.format(`${ye}-${mo}-${da} hh:mm:ss`),
                 "teacher": filterData.teacher.tutor_id,
-                // 
                 "durations":"30",
             }).then(result => {
                 if (result.data.status_code === 200) {
@@ -92,31 +91,30 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                 }
             })
 
-        // } else if (parseInt(batchSlot && batchSlot[0]) % 12 <= hour && parseInt(batchSlot && batchSlot[0]) % 12 == hour ) {
-            // if (mins == 0) {
-                //  api call >>>>><<<<<<alert('sucess-nested')
-                // const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
-                // const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
-                // const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(selectedDate);
-                // axiosInstance.put(`${endpoints.aol.assignTeacher}`, {
-                //     "batch_id": assignData?.classData?.id,
-                //     "start_date_time": selectedDate.format(`${ye}-${mo}-${da} hh:mm:ss`),
-                //     "teacher": filterData.teacher.tutor_id,
-                // }).then(result => {
-                //     if (result.data.status_code === 200) {
-                //         setAlert('success', result.data.message)
-                //         setOpenAssignModal(false)
-                //         setReload(!reload)
-                //     }
-                // })
-            // }
-            // else {
-            //     setAlert('warning', `set the time between ${parseInt(batchSlot && batchSlot[0])} to ${parseInt(batchSlot && batchSlot[1])}`)
-            // }
-        // }
-        //  else {
-        //     setAlert('warning', `set the time between ${parseInt(batchSlot && batchSlot[0])} to ${parseInt(batchSlot && batchSlot[1])}`)
-        // }
+        } else if (parseInt(batchSlot && batchSlot[0]) % 12 <= hour && parseInt(batchSlot && batchSlot[0]) % 12 == hour && batchSlot && batchSlot[2] === ampm ) {
+            if (mins == 0) {
+                const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
+                const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
+                const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(selectedDate);
+                axiosInstance.put(`${endpoints.aol.assignTeacher}`, {
+                    "batch_id": assignData?.classData?.id,
+                    "start_date_time": selectedDate.format(`${ye}-${mo}-${da} hh:mm:ss`),
+                    "teacher": filterData.teacher.tutor_id,
+                }).then(result => {
+                    if (result.data.status_code === 200) {
+                        setAlert('success', result.data.message)
+                        setOpenAssignModal(false)
+                        setReload(!reload)
+                    }
+                })
+            }
+            else {
+                setAlert('warning', `set the time between ${parseInt(batchSlot && batchSlot[0])} to ${parseInt(batchSlot && batchSlot[1])} ${parseInt(batchSlot && batchSlot[2])}`)
+            }
+        }
+         else {
+            setAlert('warning', `set the time between ${parseInt(batchSlot && batchSlot[0])} to ${parseInt(batchSlot && batchSlot[1])} ${batchSlot && batchSlot[2]}`)
+        }
     }
     return (
         <div>
