@@ -80,12 +80,12 @@ export default function JoinClassComponent(props) {
     const [ isCancel, setIsCancel] = React.useState(false);
     const { setAlert } = useContext(AlertNotificationContext);
 
-    // console.log(props,'{{{{{{{{')
-    const date=props?.data?.online_class?.start_time.split('T')
+    console.log(props,'{{{{{{{{')
+    // const date=props?.data?.online_class?.start_time.split('T')
     //console.log(props.data.is_cancelled + " ==="+ isCancel );
     const params ={
-        zoom_meeting_id: props?.data?.id,
-        class_date: date[0]
+        zoom_meeting_id: props?.data?.zoom_id,
+        class_date: props?.data?.date
 
     }
     const handleCancel = () => {
@@ -93,18 +93,16 @@ export default function JoinClassComponent(props) {
         .then((res) => {
             console.log(res);
             setAlert('success',res.data.message)
-            setIsCancel(true);
+            setIsCancel(!isCancel);
+            props.seCancelFlag(!props.cancelFlag)
         })
         .catch((error) => console.log(error))
     }
-    useEffect(() => {
-        
-    }, [isCancel])
     return (
         <div>
-        {props.data.online_class && props?.data?.online_class?.is_canceled ? '' :
+        {props.data && props?.data?.online_class?.is_canceled ? '' :
             <Typography className={classes.classDetailsDescription}>
-                    {date && date[0]}
+                    {props.data && props?.data?.date}
             </Typography>
         }
            
@@ -142,11 +140,13 @@ export default function JoinClassComponent(props) {
                 </div>
             )} */}
             {/* {(!isAccepted && props.isTeacher) && !isCancel && ( */}
-             {props.data.online_class && props?.data?.online_class?.is_canceled ? 
+
+
+             {/* {props.data && props?.data?.online_class?.is_canceled ? 
                 
                 <Typography className={classes.rejectText}>Canceled</Typography>
             
-              :
+              : */}
                 <div className={classes.buttonDiv}>
                         <StyledAcceptButton
                             variant="contained"
@@ -164,7 +164,7 @@ export default function JoinClassComponent(props) {
                             Cancel
                         </StyledRejectButton>
                     </div>
-             }  
+             {/* }   */}
             {/* )} */}
         </div>
     )

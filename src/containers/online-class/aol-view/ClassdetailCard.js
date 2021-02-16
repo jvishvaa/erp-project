@@ -146,10 +146,10 @@ export default function ClassdetailsCardComponent(props) {
     // <<<<<<<<<<<>>>>>>>>>>>>MODAL >>>>><<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     const [openAssignModal, setOpenAssignModal] = useState(false);
     const [teacherDropdown, setTeacherDropdown] = useState([])
-
+    const [cancelFlag,setCancelFlag] = useState(false)
 
     const assignData = props
-    // console.log(props, '=============')
+    console.log(props, '=============')
     const [periodsData, setPeriodsData] = React.useState([]);
     //Periods date start
     const history = useHistory();
@@ -164,7 +164,7 @@ export default function ClassdetailsCardComponent(props) {
                     setPeriodsData(res.data.data);
                 })
         }
-    }, [props.classData]);
+    }, [props.classData,cancelFlag]);
 
     const handleAttendance = () => {
         history.push(`/aol-attendance-list/${props?.classData?.id}`);
@@ -234,15 +234,22 @@ export default function ClassdetailsCardComponent(props) {
                     <div className={classes.joinClassDiv}>
                         {/* {props.toggle ? '' : periodsData.length > 0 && periodsData.map((data, id) => ( */}
                         {props.toggle ? '' :
+                            periodsData.length > 0 && periodsData.map((data,id)=>(
+ 
                             <JoinClass
                                 // key={id}
-                                data={props.classData}
-                                joinUrl={props.classData.join_url}
+                                // data={props.classData}
+                                data={data}
+                                joinUrl={props.classData?.presenter_url}
+                                cancelFlag={cancelFlag}
+                                setCancelFlag={setCancelFlag}
                             // isTeacher={isTeacher}
                             />
+                            ))
                         }
+                        
 
-                        {/* ))} */}
+                        
                     </div>
                     <Divider className={classes.classDetailsDivider} />
 
