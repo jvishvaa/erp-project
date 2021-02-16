@@ -46,20 +46,17 @@ const JoinClass = (props) => {
     };
 
     const params2 = {
-      zoom_meeting_id: fullData && fullData.online_class && fullData.online_class.id,
+      zoom_meeting_id: fullData && fullData.id,
       class_date: moment(fullData && fullData && fullData.join_time).format('YYYY-MM-DD'),
       is_restricted: true
     };
 
-    const params = window.location.pathname === '/online-class/attend-class' ? params1 : params2;
+    //const params = window.location.pathname === '/online-class/attend-class' ? params1 : params2;
     let url = '';
     if (window.location.pathname === '/online-class/attend-class') {
-      url = endpoints.studentViewBatchesApi.rejetBatchApi;
-    } else {
-      url = endpoints.teacherViewBatches.cancelBatchApi;
-    }
-    axiosInstance
-      .put(url, params2)
+      //url = endpoints.studentViewBatchesApi.rejetBatchApi;
+      axiosInstance
+      .put(endpoints.studentViewBatchesApi.rejetBatchApi, params2)
       .then((res) => {
         setLoading(false);
         setAlert('success', res.data.message);
@@ -69,6 +66,20 @@ const JoinClass = (props) => {
         setLoading(false);
         setAlert('error', error.message);
       });
+    } else {
+      //url = endpoints.teacherViewBatches.cancelBatchApi;
+      axiosInstance
+      .put(endpoints.teacherViewBatches.cancelBatchApi, params1)
+      .then((res) => {
+        setLoading(false);
+        setAlert('success', res.data.message);
+        handleClose('success');
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', error.message);
+      });
+    }
   }
 
   const open = Boolean(anchorEl);
@@ -329,99 +340,101 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
               <Grid item md={12} xs={12}>
                 <Divider className='fullViewDivider' />
                 {window.location.pathname === '/online-class/attend-class' ?
-                  noOfPeriods && noOfPeriods.length > 0 && noOfPeriods.map((data) => <JoinClass  date={data.date} fullData={fullData} handleClose={handleClose}/>) :
-                (<Grid container spacing={2} direction='row' alignItems='center'>
-                  <Grid item md={6} xs={12}>
-                    <span className='TeacherFullViewdescreption1'>
-                      {(fullData &&
-                        fullData.online_class &&
-                        fullData.online_class.start_time &&
-                        new Date(fullData.online_class.start_time)
-                          .toString()
-                          .split('G')[0]
-                          .substring(0, 16)) ||
-                        ''}
-                    </span>
-                  </Grid>
-                  <Grid item md={3} xs={6}>
-                    <Button
-                      size='small'
-                      fullWidth
-                      variant='contained'
-                      onClick={() =>
-                        window.open(
-                          window.location.pathname === '/online-class/attend-class'
-                            ? fullData && fullData.join_url
-                            : fullData && fullData.presenter_url,
-                          '_blank'
-                        )}
-                      className='teacherFullViewSmallButtons'
-                    >
-                      {window.location.pathname === '/online-class/attend-class'
-                        ? 'Accept'
-                        : 'Host'}
-                    </Button>
-                  </Grid>
-                  <Grid item md={3} xs={6}>
-                    <Popover
-                      id={id}
-                      open={open}
-                      anchorEl={anchorEl}
-                      onClose={handleClose}
-                      style={{ overflow: 'hidden' }}
-                      anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'center',
-                      }}
-                      transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'center',
-                      }}
-                    >
-                      <Grid
-                        container
-                        spacing={2}
-                        style={{ textAlign: 'center', padding: '10px' }}
-                      >
-                        <Grid item md={12} xs={12}>
-                          <Typography>Are you sure to Cancel ?</Typography>
-                        </Grid>
-                        <Grid item md={6} xs={12}>
-                          <Button
-                            variant='contained'
-                            size='small'
-                            style={{ fontSize: '11px' }}
-                            onClick={() => handleCloseData()}
-                          >
-                            Cancel
-                          </Button>
-                        </Grid>
-                        <Grid item md={6} xs={12}>
-                          <Button
-                            variant='contained'
-                            color='primary'
-                            style={{ fontSize: '11px' }}
-                            size='small'
-                            onClick={() => handleCancel()}
-                          >
-                            Confirm
-                          </Button>
-                        </Grid>
+                  noOfPeriods && noOfPeriods.length > 0 && noOfPeriods.map((data) => <JoinClass  date={data.date} fullData={fullData} handleClose={handleClose}/>)
+                  : (
+                    <Grid container spacing={2} direction='row' alignItems='center'>
+                      <Grid item md={6} xs={12}>
+                        <span className='TeacherFullViewdescreption1'>
+                          {(fullData &&
+                            fullData.online_class &&
+                            fullData.online_class.start_time &&
+                            new Date(fullData.online_class.start_time)
+                              .toString()
+                              .split('G')[0]
+                              .substring(0, 16)) ||
+                            ''}
+                        </span>
                       </Grid>
-                    </Popover>
-                    <Button
-                      size='small'
-                      fullWidth
-                      variant='contained'
-                      onClick={(e) => handleClick(e)}
-                      className='teacherFullViewSmallButtons1'
-                    >
-                      {window.location.pathname === '/online-class/attend-class'
-                        ? 'Reject'
-                        : 'Cancel'}
-                    </Button>
-                  </Grid>
-                </Grid>)}
+                      <Grid item md={3} xs={6}>
+                        <Button
+                          size='small'
+                          fullWidth
+                          variant='contained'
+                          onClick={() =>
+                            window.open(
+                              window.location.pathname === '/online-class/attend-class'
+                                ? fullData && fullData.join_url
+                                : fullData && fullData.presenter_url,
+                              '_blank'
+                            )}
+                          className='teacherFullViewSmallButtons'
+                        >
+                          {window.location.pathname === '/online-class/attend-class'
+                            ? 'Accept'
+                            : 'Host'}
+                        </Button>
+                      </Grid>
+                      <Grid item md={3} xs={6}>
+                        <Popover
+                          id={id}
+                          open={open}
+                          anchorEl={anchorEl}
+                          onClose={handleClose}
+                          style={{ overflow: 'hidden' }}
+                          anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                          }}
+                          transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                          }}
+                        >
+                          <Grid
+                            container
+                            spacing={2}
+                            style={{ textAlign: 'center', padding: '10px' }}
+                          >
+                            <Grid item md={12} xs={12}>
+                              <Typography>Are you sure to Cancel ?</Typography>
+                            </Grid>
+                            <Grid item md={6} xs={12}>
+                              <Button
+                                variant='contained'
+                                size='small'
+                                style={{ fontSize: '11px' }}
+                                onClick={() => handleCloseData()}
+                              >
+                                Cancel
+                              </Button>
+                            </Grid>
+                            <Grid item md={6} xs={12}>
+                              <Button
+                                variant='contained'
+                                color='primary'
+                                style={{ fontSize: '11px' }}
+                                size='small'
+                                onClick={() => handleCancel()}
+                              >
+                                Confirm
+                              </Button>
+                            </Grid>
+                          </Grid>
+                        </Popover>
+                        <Button
+                          size='small'
+                          fullWidth
+                          variant='contained'
+                          onClick={(e) => handleClick(e)}
+                          className='teacherFullViewSmallButtons1'
+                        >
+                          {window.location.pathname === '/online-class/attend-class'
+                            ? 'Reject'
+                            : 'Cancel'}
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  )}
                 <Divider className='fullViewDivider' />
               </Grid>
               <Grid item md={12} xs={12}>
