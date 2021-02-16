@@ -82,7 +82,11 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
     history.push(`/aol-attendance-list/${fullData.online_class && fullData.id}`)
   }
   const handleCoursePlan=()=>{
-    history.push(`/view-period/${fullData.online_class && fullData.online_class.cource_id}`)
+    if(window.location.pathname === '/online-class/attend-class'){
+      history.push(`/view-period/${fullData.online_class && fullData.online_class.course_id}`)
+    }else{
+      history.push(`/view-period/${fullData.online_class && fullData.online_class.cource_id}`)
+    }
   }
 
   const [openPopup, setOpenPopup] = React.useState(false);

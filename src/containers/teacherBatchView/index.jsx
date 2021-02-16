@@ -106,8 +106,9 @@ const TeacherBatchView = ({ history }) => {
       setPage(1);
       callApi(
         `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
-          studentDetails && studentDetails.role_details.erp_user_id
-        }&page_number=1&page_size=15`,
+          // studentDetails && studentDetails.role_details.erp_user_id
+          1362
+        }&page_number=1&page_size=15&class_type=1`,
         'filter'
       );
     } else {
