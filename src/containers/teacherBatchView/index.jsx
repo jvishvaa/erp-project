@@ -95,7 +95,7 @@ const TeacherBatchView = ({ history }) => {
       callApi(
         `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
           selectedBatch && selectedBatch.id
-        }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${selectedModule}&class_type=1`,
+        }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${selectedModule}&class_type=1&batch_limit=${selectedBatch.batch_size}`,
         'filter'
       );
     }
@@ -106,7 +106,11 @@ const TeacherBatchView = ({ history }) => {
       setPage(1);
       //${studentDetails && studentDetails.role_details.erp_user_id}
       callApi(
-        `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=1362&page_number=1&page_size=15&class_type=1`,
+        //`${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=1362&page_number=1&page_size=15&class_type=1`,
+        `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
+          // studentDetails && studentDetails.role_details.erp_user_id
+          1362
+        }&page_number=1&page_size=15&class_type=1`,
         'filter'
       );
     } else {
@@ -122,7 +126,7 @@ const TeacherBatchView = ({ history }) => {
     callApi(
       `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
         selectedBatch && selectedBatch.id
-      }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${selectedModule}&class_type=1`,
+      }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${selectedModule}&class_type=1&batch_limit=${selectedBatch.batch_size}`,
       'filter'
     );
   }
@@ -161,7 +165,7 @@ const TeacherBatchView = ({ history }) => {
     callApi(
       `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
         selectedBatch && selectedBatch.id
-      }&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=12&module_id=4&class_type=1`,
+      }&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=12&module_id=4&class_type=1&batch_limit=${selectedBatch && selectedBatch.batch_size}&batch_limit=${selectedBatch.batch_size}`,
       'filter'
     );
   }

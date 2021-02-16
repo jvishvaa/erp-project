@@ -149,7 +149,6 @@ export default function ClassdetailsCardComponent(props) {
     const [cancelFlag,setCancelFlag] = useState(false)
 
     const assignData = props
-    console.log(props, '=============')
     const [periodsData, setPeriodsData] = React.useState([]);
     //Periods date start
     const history = useHistory();
