@@ -61,7 +61,7 @@ const Assessment = ({ history }) => {
     console.log('push to test start page', testId);
 
     // history.push('/assessment/view-assessment');
-    history.push('/assessment/11/attempt');
+    history.push('/assessment/20/attempt');
     // history.push('/assessment/11/qp-questions-list/');
   };
   return (

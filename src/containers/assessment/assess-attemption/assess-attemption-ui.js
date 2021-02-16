@@ -25,7 +25,7 @@ const AssessmentHandlerUI = () => {
     },
   } = useContext(AssessmentHandlerContext);
   React.useEffect(() => {
-    fetchAssessmentQp({ assessment_id: 11 });
+    fetchAssessmentQp({ assessment_id: 20 });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
