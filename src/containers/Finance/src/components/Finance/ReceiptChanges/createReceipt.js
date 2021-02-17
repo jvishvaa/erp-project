@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Fab, Grid } from '@material-ui/core/'
+import { Button, Fab, Grid, TableBody, TableCell, Table, TableRow, TableHead, TablePagination } from '@material-ui/core/'
 import {
   Add as AddIcon,
   Edit as EditIcon,
@@ -42,10 +42,26 @@ class CreateReceipt extends Component {
       sessionData: null,
       showAddButton: false,
       showDeleteModal: false,
-      deleteId: null
+      deleteId: null,
+      page: 0,
+      rowsPerPage: 10
     }
   }
 
+  handleChangePage = (event, newPage) => {
+    this.setState({
+      page: newPage
+    })
+  }
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({
+      rowsPerPage:+event.target.value
+    })
+    this.setState({
+      page: 0
+    })
+  }
   showEditModalHandler = (id) => {
     this.setState({
       showEditModal: true,
@@ -389,6 +405,62 @@ class CreateReceipt extends Component {
             ? <React.Fragment>
               <Grid item xs='12'>
                 {/* {receiptList} */}
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell> Sr</TableCell>
+                      <TableCell> Fee Account</TableCell>
+                      <TableCell> Range From</TableCell>
+                      <TableCell> Range To</TableCell>
+                      <TableCell> Sequence No</TableCell>
+                      <TableCell> Status</TableCell>
+                      <TableCell> Edit</TableCell>
+                      <TableCell> Delete</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                  {this.props.receiptLists && this.props.receiptLists.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((val, i) => { 
+                    return (
+                  <TableRow>
+                     <TableCell> { i + 1 }</TableCell>
+                      {/* <TableCell>{ val.id} </TableCell> */}
+                      <TableCell>{val.fee_account.fee_account_name ? val.fee_account.fee_account_name : ''}</TableCell>
+                      <TableCell> {val.range_from ? val.range_from : ''}</TableCell>
+                      <TableCell>{val.range_to ? val.range_to : ''} </TableCell>
+                      <TableCell> { val.sequence_no ? val.sequence_no : ''} </TableCell>
+                      <TableCell> {val.is_active ? 'Active' : 'Inactive'} </TableCell>
+                      <TableCell> <div style={{ cursor: 'pointer' }}>
+            <Fab
+              color='primary'
+              className={classes.button}
+              size='small'
+              onClick={() => this.showEditModalHandler(val.id)}
+            >
+              <EditIcon />
+            </Fab>
+          </div></TableCell>
+                      <TableCell>  <Fab
+            color='primary'
+            className={classes.button}
+            size='small'
+            onClick={() => this.deleteModalShowHandler(val.id)}
+          >
+            <DeleteIcon />
+          </Fab></TableCell>
+                  </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={this.props.receiptLists && this.props.receiptLists.length}
+                rowsPerPage={this.state.rowsPerPage}
+                page={this.state.page}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
               </Grid>
             </React.Fragment>
             : null}
