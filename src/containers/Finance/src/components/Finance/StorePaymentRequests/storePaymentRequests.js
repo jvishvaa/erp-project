@@ -3,7 +3,7 @@ import React, {
   useState
 } from 'react'
 import { withStyles,
-  Grid, Paper, Table, TableBody, TableCell, TableHead, TableRow,
+  Grid, Paper, Table, TableBody, TableCell, TableHead, TableRow, TablePagination,
   Badge, Button
   // TextField
 } from '@material-ui/core/'
@@ -60,6 +60,8 @@ const StorePaymentRequests = ({ classes, session, history, dataLoading, requestL
   const [sessionYear, setSession] = useState(null)
   // const [shuffleStatus, setShuffleStatus] = useState({ label: 'Pending', value: 1 })
   // const [accReasonToApprove, setAccReason] = useState({})
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   useEffect(() => {
     // console.log('reason Data: ', studentShuffle)
@@ -78,6 +80,15 @@ const StorePaymentRequests = ({ classes, session, history, dataLoading, requestL
     // console.log('acad years', e)
     setSession(e)
   }
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
 
   const pendingRequestHandler = (id, branch) => {
     console.log('calling pending ')
@@ -135,7 +146,7 @@ const StorePaymentRequests = ({ classes, session, history, dataLoading, requestL
               </TableRow>
             </TableHead>
             <TableBody>
-              {requestList.map((row) => (
+              {requestList && requestList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                 <TableRow>
                   <TableCell align='right'>{row.branch_city ? row.branch_city : ''}</TableCell>
                   <TableCell align='right'>{row.branch_name ? row.branch_name : ''}</TableCell>
@@ -171,6 +182,15 @@ const StorePaymentRequests = ({ classes, session, history, dataLoading, requestL
               ))}
             </TableBody>
           </Table>
+          <TablePagination
+        rowsPerPageOptions={[10, 25, 100]}
+        component="div"
+        count={requestList && requestList.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onChangePage={handleChangePage}
+        onChangeRowsPerPage={handleChangeRowsPerPage}
+      />
         </Paper>
       )
     }
