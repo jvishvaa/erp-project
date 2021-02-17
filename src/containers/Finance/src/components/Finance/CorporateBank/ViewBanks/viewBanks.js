@@ -389,7 +389,7 @@ export class ViewBanks extends Component {
                       <TableCell> Cheque Bounce Amount</TableCell>
                       <TableCell> Logo Url</TableCell>
                       <TableCell> Edit </TableCell>
-                      <TableCell> Delete</TableCell>
+                      {/* <TableCell> Delete</TableCell> */}
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -414,7 +414,6 @@ export class ViewBanks extends Component {
           >
             <EditIcon />
           </Fab>}</TableCell>
-          <TableCell></TableCell>
                   </TableRow>
                     )
                   })}
