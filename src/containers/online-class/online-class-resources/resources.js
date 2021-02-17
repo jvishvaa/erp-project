@@ -113,11 +113,13 @@ const useStyles = makeStyles((theme) => ({
     },
     unfilteredImg: {
         display: 'block',
-        height: '300px',
+        height: '50%',
         margin: 'auto',
+        marginTop: '20px',
     },
     unfilteredTextImg: {
         display: 'block',
+        marginTop: '10px',
         margin: 'auto',
     }
 }));
