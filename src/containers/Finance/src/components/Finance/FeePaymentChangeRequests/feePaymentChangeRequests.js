@@ -4,7 +4,7 @@ import React, {
 } from 'react'
 import { withStyles,
   Grid, Badge,
-  Button, Paper, Table, TableBody, TableCell, TableHead, TableRow
+  Button, Paper, Table, TableBody, TableCell, TableHead, TableRow, TablePagination
   // TextField
 } from '@material-ui/core/'
 import { Notifications, CheckCircle, Cancel, DeleteForever } from '@material-ui/icons/'
@@ -57,6 +57,8 @@ const styles = theme => ({
 
 const FeePaymentChangeRequests = ({ classes, session, history, dataLoading, requestList, sessionRed, alert, user, fetchEditRequests }) => {
   const [sessionYear, setSession] = useState(null)
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   // const [shuffleStatus, setShuffleStatus] = useState({ label: 'Pending', value: 1 })
   // const [accReasonToApprove, setAccReason] = useState({})
 
@@ -73,6 +75,14 @@ const FeePaymentChangeRequests = ({ classes, session, history, dataLoading, requ
     }
   }, [fetchEditRequests, sessionYear, alert, user])
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
   const handleAcademicyear = (e) => {
     // console.log('acad years', e)
     setSession(e)
@@ -133,7 +143,7 @@ const FeePaymentChangeRequests = ({ classes, session, history, dataLoading, requ
               </TableRow>
             </TableHead>
             <TableBody>
-              {requestList.map((row) => (
+              {requestList && requestList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                 <TableRow>
                   <TableCell align='right'>{row.branch_city ? row.branch_city : ''}</TableCell>
                   <TableCell align='right'>{row.branch_name ? row.branch_name : ''}</TableCell>
@@ -169,6 +179,15 @@ const FeePaymentChangeRequests = ({ classes, session, history, dataLoading, requ
               ))}
             </TableBody>
           </Table>
+          <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={requestList && requestList.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onChangePage={handleChangePage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+              />
         </Paper>
       )
     }
