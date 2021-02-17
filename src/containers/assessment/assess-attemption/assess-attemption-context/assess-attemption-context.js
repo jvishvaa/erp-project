@@ -115,6 +115,7 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
     });
     const lastUpdatedAt = new Date().getTime();
     const isReadyToSubmit = noOfQuestions === noOfAttempted;
+    const testDuration = questionsArray[0].duration;
     return {
       no_of_questions: noOfQuestions,
       no_of_attempted: noOfAttempted,
@@ -122,6 +123,7 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
       no_of_unattempted: noOfUnattempted,
       is_ready_to_submit: isReadyToSubmit,
       last_updated_at: lastUpdatedAt,
+      test_duration: testDuration,
     };
   }
 
@@ -227,12 +229,14 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
       window.alert(`Q id ${qId} not found in the questions`);
     }
   }
+
   function start() {
     const [firstQuestionObj] = sortQuestions(questionsDataObj || {});
-    const { id } = firstQuestionObj || {};
+    const { id, duration } = firstQuestionObj || {};
     if (id) {
       selectQues(id);
       setStartedAt(new Date());
+      // startClock(duration);
     } else {
       // eslint-disable-next-line no-alert
       window.alert(`Question not found to start the assessment.`);

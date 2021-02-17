@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import '../viewAssessment.css';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -7,8 +7,9 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import ReactHtmlParser from 'react-html-parser';
 import { AssessmentHandlerContext } from '../../assess-attemption/assess-attemption-context';
+import TinyMce from '../../../../components/TinyMCE/tinyMce';
 
-const TrueFalseQuestion = () => {
+const VideoQuestion = () => {
   const {
     assessmentQp: { fetching },
     fetchAssessmentQp,
@@ -37,13 +38,32 @@ const TrueFalseQuestion = () => {
     user_response: { attemption_status: attemptionStatus } = {},
   } = currentQuestionObj || {};
 
-  const [{ answer, options, question }] = question_answer;
-  const [optionSelected, setOptionSelected] = useState(null);
-  const handleOptionValue = (event) => {
-    // setIsChecked([{ [qId]: event.target.value }]);
-    setOptionSelected(event.target.value);
-    attemptQuestion(qId, { attemptionStatus: true, answer: event.target.value });
-    // console.log('selected value : ', attemptQuestion);
+  const [{ answer, options, question, video }] = question_answer;
+  //   const [optionSelected, setOptionSelected] = React.useState(null);
+  const [textEditorContent, setTextEditorContent] = useState('');
+  // const [isChecked, setIsChecked] = useState([]);
+  useEffect(() => {
+    console.log('is CHecked: ', currentQuestionObj);
+    // if (currentQuestionObj?.user_response?.attemptionStatus) {
+    //   console.log('selected answer: ', currentQuestionObj?.user_response);
+    //   setOptionSelected(currentQuestionObj?.user_response?.answer);
+    // }
+  }, []);
+
+  function removeTags(str) {
+    if (str === null || str === '') return false;
+    str = str.toString();
+    return str.replace(/(<([^>]+)>)/gi, '');
+  }
+
+  const handleNextQuestion = () => {
+    nextQues(qId);
+  };
+
+  const handleTextEditor = (event) => {
+    // console.log('from editor', e);
+    setTextEditorContent(event);
+    attemptQuestion(qId, { attemptionStatus: true, answer: event });
   };
   return (
     <div>
@@ -59,35 +79,22 @@ const TrueFalseQuestion = () => {
       </div>
       <div className='mcq-question-wrapper'>
         <h3>{ReactHtmlParser(question)}</h3>
-        {/* <img src='https://via.placeholder.com/150' alt='question image' />
-        <div className='mcq-options'>True</div>
-        <div className='mcq-options'>False</div> */}
-        <FormControl component='fieldset'>
-          {/* <FormLabel component='legend'>Options</FormLabel> */}
-          <RadioGroup
-            aria-label='gender'
-            name='options'
-            value={currentQuestionObj?.user_response?.answer}
-            onChange={handleOptionValue}
-          >
-            <FormControlLabel
-              className='mcq-options'
-              value='Option1'
-              control={<Radio />}
-              label={options[0].option1.isChecked ? 'True' : 'False'}
-            />
-            <FormControlLabel
-              className='mcq-options'
-              value='Option2'
-              control={<Radio />}
-              label={options[1].option2.isChecked ? 'True' : 'False'}
-            />
-          </RadioGroup>
-        </FormControl>
-        <div className='question-submit-btn'>Next</div>
+        <video width='100%' height='500' controls>
+          <source src={video} type='video/mp4' />
+        </video>
+
+        <TinyMce
+          key={1}
+          id={1}
+          get={handleTextEditor}
+          content={currentQuestionObj?.user_response?.answer}
+        />
+        <div className='question-submit-btn' onClick={handleNextQuestion}>
+          Next
+        </div>
       </div>
     </div>
   );
 };
 
-export default TrueFalseQuestion;
+export default VideoQuestion;

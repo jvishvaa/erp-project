@@ -1,15 +1,11 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import '../viewAssessment.css';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
+
 import ReactHtmlParser from 'react-html-parser';
 import { AssessmentHandlerContext } from '../../assess-attemption/assess-attemption-context';
 import TinyMce from '../../../../components/TinyMCE/tinyMce';
 
-const MatrixQuestion = () => {
+const MatchFollowingQuestion = () => {
   const {
     assessmentQp: { fetching },
     fetchAssessmentQp,
@@ -38,21 +34,18 @@ const MatrixQuestion = () => {
     user_response: { attemption_status: attemptionStatus } = {},
   } = currentQuestionObj || {};
 
-  const [{ answer, options, question, matrixOptions }] = question_answer;
+  const [{ answer, options, question, matchingOptions }] = question_answer;
   // const [isChecked, setIsChecked] = useState([]);
   useEffect(() => {
     console.log('is CHecked: ', currentQuestionObj);
+    // if (currentQuestionObj?.user_response?.attemptionStatus) {
+    //   console.log('selected answer: ', currentQuestionObj?.user_response);
+    //   setOptionSelected(currentQuestionObj?.user_response?.answer);
+    // }
   }, []);
 
   const handleNextQuestion = () => {
     nextQues(qId);
-  };
-
-  const handleOptionValue = (event) => {
-    // setIsChecked([{ [qId]: event.target.value }]);
-    // setOptionSelected(event.target.value);
-    attemptQuestion(qId, { attemptionStatus: true, answer: event.target.value });
-    // console.log('selected value : ', attemptQuestion);
   };
 
   const handleTextEditor = (event) => {
@@ -75,51 +68,21 @@ const MatrixQuestion = () => {
       <div className='mcq-question-wrapper'>
         <h3>{ReactHtmlParser(question)}</h3>
         <div className='match-question-wrapper'>
-          {/* <div className='matrix-main-option'>
+          <div className='match-options'>
             {options.map((option, index) => {
               return (
                 <div key={index + 1} className='match-image'>
-                  <p>{option.optionValue}</p>
+                  <img src={option?.images[0]} alt='match follow' />
                 </div>
               );
             })}
-          </div> */}
+          </div>
 
-          <div>
-            {options.map((option, index) => {
+          <div className='match-answers'>
+            {matchingOptions.map((option, index) => {
               return (
-                <div>
-                  <FormControl
-                    component='fieldset'
-                    style={{ flexDirection: 'row', marginTop: 25 }}
-                  >
-                    <FormLabel
-                      style={{ marginBottom: 15, color: '#014b7e' }}
-                      component='legend'
-                    >
-                      {option.optionValue}
-                    </FormLabel>
-                    <RadioGroup
-                      aria-label='gender'
-                      name='options'
-                      //   value={currentQuestionObj?.user_response?.answer}
-                      onChange={handleOptionValue}
-                      style={{ flexDirection: 'row' }}
-                    >
-                      {matrixOptions.length &&
-                        matrixOptions.map((matrix) => {
-                          return (
-                            <FormControlLabel
-                              className='matrix-options'
-                              value='Option1'
-                              control={<Radio />}
-                              label={matrix.optionValue}
-                              labelPlacement='top'
-                            />
-                          );
-                        })}
-                    </RadioGroup>
-                  </FormControl>
+                <div key={index + 1} className='match-image'>
+                  <img src={option?.images[0]} alt='matching follow' />
                 </div>
               );
             })}
@@ -133,4 +96,4 @@ const MatrixQuestion = () => {
   );
 };
 
-export default MatrixQuestion;
+export default MatchFollowingQuestion;

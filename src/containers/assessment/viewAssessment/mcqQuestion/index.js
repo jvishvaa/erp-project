@@ -5,6 +5,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+import ReactHtmlParser from 'react-html-parser';
 import { AssessmentHandlerContext } from '../../assess-attemption/assess-attemption-context';
 
 const McqQuestion = () => {
@@ -77,8 +78,8 @@ const McqQuestion = () => {
         </div>
       </div>
       <div className='mcq-question-wrapper'>
-        <h3>{removeTags(question)}</h3>
-        <img src='https://via.placeholder.com/150' alt='question image' />
+        <h3>{ReactHtmlParser(question)}</h3>
+        {/* <img src='https://via.placeholder.com/150' alt='question image' /> */}
         {/* {options.map((option, index) => {
           return (
             <div

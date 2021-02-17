@@ -13,6 +13,10 @@ import McqQuestion from './mcqQuestion';
 import DescriptiveQuestion from './descriptiveQuestion';
 import FillUpsQuestion from './fillUpsQuestion';
 import TrueFalseQuestion from './trueFalseQuestion';
+import VideoQuestion from './videoQuestion';
+import MatchFollowingQuestion from './matchFollowingQuestion';
+import MatrixQuestion from './matrixQuestion';
+import GeneralGuide from './generalGuide';
 import { AssessmentHandlerContext } from '../assess-attemption/assess-attemption-context';
 
 const ViewAssessmentUI = () => {
@@ -47,9 +51,12 @@ const ViewAssessmentUI = () => {
   } = currentQuestionObj || {};
   const decideQuestion = {
     1: () => <McqQuestion />,
-    // 2: () => <DescriptiveQuestion />,
-    // 3: () => <FillUpsQuestion />,
-    // 5: () => <McqQuestion />,
+    10: () => <DescriptiveQuestion />,
+    9: () => <FillUpsQuestion />,
+    8: () => <TrueFalseQuestion />,
+    4: () => <VideoQuestion />,
+    3: () => <MatchFollowingQuestion />,
+    6: () => <MatrixQuestion />,
     undefined: () => <p>question_type undefined</p>,
     null: () => <p>question_type null</p>,
   };
@@ -75,7 +82,7 @@ const ViewAssessmentUI = () => {
         ) : (
           <div className='instruction-screen-wrapper'>
             <div className='instruction-screen'>
-              <h2>
+              {/* <h2>
                 There are 20 questions with instructions given , kindly read the
                 instructions before answering
               </h2>
@@ -89,7 +96,8 @@ const ViewAssessmentUI = () => {
                 <div className='mcq-options'>Option 2</div>
                 <div className='mcq-options'>Option 3</div>
                 <div className='mcq-options'>Option 4</div>
-              </div>
+              </div> */}
+              <GeneralGuide />
               <button type='button' className='question-submit-btn' onClick={start}>
                 Start
               </button>

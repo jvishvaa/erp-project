@@ -127,3 +127,47 @@
   justify-content: space-between;
   align-items: center;
 } */
+
+.match-question-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.match-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+}
+
+.match-answers {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column-reverse;
+}
+
+.match-image img {
+  max-width: 100%;
+}
+
+.matrix-options {
+  border: 1px solid #ff6b6b;
+  border-radius: 5px;
+  background: #fceeee;
+  padding: 10px;
+  /* width: 100%; */
+  text-align: center;
+  /* max-width: 200px; */
+  min-width: 150px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.matrix-main-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+}
