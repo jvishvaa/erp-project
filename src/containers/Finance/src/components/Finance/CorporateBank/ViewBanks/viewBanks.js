@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Select from 'react-select'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Button, Fab, Grid } from '@material-ui/core/'
+import { Button, Fab, Grid, Table, TableCell, TableRow, TableHead, TableBody, TablePagination } from '@material-ui/core/'
 
 // import ReactTable from 'react-table'
 // import 'react-table/react-table.css'
@@ -40,7 +40,9 @@ export class ViewBanks extends Component {
       field: [],
       showAddButton: false,
       showDeleteModal: false,
-      deleteId: null
+      deleteId: null,
+      page: 0,
+      rowsPerPage: 10
     }
     this.handleClickFeeData = this.handleClickFeeData.bind(this)
     this.changehandlerbranch = this.changehandlerbranch.bind(this)
@@ -60,6 +62,21 @@ export class ViewBanks extends Component {
 
   componentDidUpdate () {
     // console.log('update func', this.props.viewBanksList)
+  }
+
+  handleChangePage = (event, newPage) => {
+    this.setState({
+      page: newPage
+    })
+  }
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({
+      rowsPerPage:+event.target.value
+    })
+    this.setState({
+      page: 0
+    })
   }
 
   fetchBranchHandler = () => {
@@ -359,6 +376,59 @@ export class ViewBanks extends Component {
                     tableFields={this.state.field}
                   /> */}
                   {/* {viewBankTable} */}
+                  <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell> Sr</TableCell>
+                      <TableCell> Bank Name</TableCell>
+                      <TableCell> Branch Name</TableCell>
+                      <TableCell> Account No</TableCell>
+                      <TableCell> Nick Name</TableCell>
+                      <TableCell> Description</TableCell>
+                      <TableCell> Bank Type</TableCell>
+                      <TableCell> Cheque Bounce Amount</TableCell>
+                      <TableCell> Logo Url</TableCell>
+                      <TableCell> Edit </TableCell>
+                      <TableCell> Delete</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                  {this.props.viewBanksList && this.props.viewBanksList.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((val, i) => { 
+                    return (
+                  <TableRow>
+                     <TableCell> { i + 1 }</TableCell>
+                      {/* <TableCell>{ val.id} </TableCell> */}
+                      <TableCell>{val.bank_name ? val.bank_name : ''}</TableCell>
+                      <TableCell> {val.bank_branch_name ? val.bank_branch_name : ''}</TableCell>
+                      <TableCell> { val.AccountNumber ? val.AccountNumber : ''} </TableCell>
+                      <TableCell>{ val.bank_nick_name ? val.bank_nick_name : ''} </TableCell>
+                      <TableCell> {val.description ? val.description : ''} </TableCell>
+                      <TableCell> {val.is_income_account === true ? 'income' : val.is_expenses_account === true ? 'expense' : 'petty'}</TableCell>
+          <TableCell>{val.cheque_bounce_amount ? val.cheque_bounce_amount : ''}</TableCell>
+          <TableCell>{val.logo_url ? val.logo_url : ''}</TableCell>
+          <TableCell>{<Fab
+            color='primary'
+            variant='contained'
+            size='small'
+            onClick={() => { this.modalShowHandler(val.id, val) }}
+          >
+            <EditIcon />
+          </Fab>}</TableCell>
+          <TableCell></TableCell>
+                  </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={this.props.viewBanksList && this.props.viewBanksList.length}
+                rowsPerPage={this.state.rowsPerPage}
+                page={this.state.page}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
                 </Grid>
               </React.Fragment>
               : null

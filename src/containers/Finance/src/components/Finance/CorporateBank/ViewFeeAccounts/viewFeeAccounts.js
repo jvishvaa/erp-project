@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom'
 import Select from 'react-select'
 import { connect } from 'react-redux'
 // import { Paper } from '@material-ui/core/'
-import { Button, Fab, Grid, CircularProgress } from '@material-ui/core/'
+import { Button, Fab, Grid, CircularProgress, Table, TableHead, TableRow, TableBody, TableCell, TablePagination } from '@material-ui/core/'
 import {
   Edit as EditIcon,
   Delete as DeleteIcon
@@ -42,7 +42,9 @@ class ViewFeeAccounts extends Component {
       deleteId: null,
       data: [],
       field: [],
-      editFeeAccid: null
+      editFeeAccid: null,
+      page: 0,
+      rowsPerPage: 10
     }
     this.handleClickFeeData = this.handleClickFeeData.bind(this)
     this.changehandlerbranch = this.changehandlerbranch.bind(this)
@@ -60,6 +62,20 @@ class ViewFeeAccounts extends Component {
     }
   }
 
+  handleChangePage = (event, newPage) => {
+    this.setState({
+      page: newPage
+    })
+  }
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({
+      rowsPerPage:+event.target.value
+    })
+    this.setState({
+      page: 0
+    })
+  }
   fetchBranchHandler = (e) => {
     this.props.fetchBranches(this.props.currentSession, this.props.alert, this.props.user)
     // this.setState({ branchId: e.value, branchData: e })
@@ -388,6 +404,69 @@ class ViewFeeAccounts extends Component {
                         tableFields={this.state.field}
                       /> */}
                       {/* {feeAccTable} */}
+
+                      <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell> Sr</TableCell>
+                      <TableCell>Fee Account Name</TableCell>
+                      <TableCell> Prefix</TableCell>
+                      <TableCell> Receipt Sub Header</TableCell>
+                      <TableCell> Receipt Footer</TableCell>
+                      <TableCell> Payslip Header</TableCell>
+                      <TableCell> Show Reports</TableCell>
+                      <TableCell> Is Trusty</TableCell>
+                      <TableCell> Is Expense Account</TableCell>
+                      <TableCell> Edit </TableCell>
+                      <TableCell> Delete</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                  {this.props.viewFeeAccList && this.props.viewFeeAccList.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((val, i) => { 
+                    return (
+                  <TableRow>
+                     <TableCell> { i + 1 }</TableCell>
+                      {/* <TableCell>{ val.id} </TableCell> */}
+                      <TableCell>{val.fee_account_name ? val.fee_account_name : ''}</TableCell>
+                      <TableCell> {val.prefix ? val.prefix : ''}</TableCell>
+                      <TableCell> {val.receipt_sub_header ? val.receipt_sub_header : ''} </TableCell>
+                      <TableCell>{ val.receipt_footer ? val.receipt_footer : ''} </TableCell>
+                      <TableCell> {val.payslip_header ? val.payslip_header : ''} </TableCell>
+                      <TableCell> {val.can_be_shown_reports ? 'Yes' : 'No'}</TableCell>
+          <TableCell>{val.is_trust ? 'Yes' : 'No'}</TableCell>
+          <TableCell>{val.is_expenses_account ? 'Yes' : 'No'}</TableCell>
+          <TableCell>{<Fab
+              color='primary'
+              variant='contained'
+              size='small'
+              onClick={() => this.showEditModalHandler(val.id)}
+            >
+              <EditIcon />
+            </Fab>}</TableCell>
+          <TableCell> 
+          <Fab
+              color='primary'
+              variant='contained'
+              size='small'
+              onClick={() => { this.showDeleteModalHandler(val.id) }}
+            >
+              <DeleteIcon />
+            </Fab>
+          </TableCell>
+                  </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={this.props.viewFeeAccList && this.props.viewFeeAccList.length}
+                rowsPerPage={this.state.rowsPerPage}
+                page={this.state.page}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
                     </Grid>
                   </React.Fragment>
                   : null
