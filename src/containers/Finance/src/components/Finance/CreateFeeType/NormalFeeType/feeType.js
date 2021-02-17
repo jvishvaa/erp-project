@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Button, Fab, Grid, Table, TableRow, TableCell, TableBody, TableHead
 } from '@material-ui/core/'
+import TablePagination from '@material-ui/core/TablePagination'
 import Layout from '../../../../../../Layout';
 import Select from 'react-select'
 // import ReactTable from 'react-table'
@@ -38,12 +39,30 @@ class FeeType extends Component {
       branch: null,
       session: null,
       sessionData: null,
-      showAddButton: false
+      showAddButton: false,
+      page: 0,
+      rowsPerPage: 10
     }
     this.handleClickFeeData.bind(this)
     this.handleAcademicyear.bind(this)
     // this.deleteHandler = this.deleteHandler.bind(this)
   }
+
+
+  handleChangePage = (event, newPage) => {
+    this.setState({
+      page: newPage
+    })
+  };
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({
+      rowsPerPage:+event.target.value
+    })
+    this.setState({
+      page: 0
+    })
+  };
 
   showModalHandler = (id) => {
     this.setState({
@@ -376,6 +395,7 @@ class FeeType extends Component {
               : null} */}
               {/* {'Aman' + this.props.normalFeeList } */}
               {this.state.showTable ? 
+              <React.Fragment>
               <Table>
                   <TableHead>
                     <TableRow>
@@ -394,7 +414,7 @@ class FeeType extends Component {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                  {this.props.normalFeeList && this.props.normalFeeList.map((val, i) => { 
+                  {this.props.normalFeeList && this.props.normalFeeList.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((val, i) => { 
                     return (
                   <TableRow>
                      <TableCell> { i + 1 }</TableCell>
@@ -430,6 +450,16 @@ class FeeType extends Component {
                   })}
                 </TableBody>
               </Table>
+                <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={this.props.normalFeeList && this.props.normalFeeList.length}
+                rowsPerPage={this.state.rowsPerPage}
+                page={this.state.page}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
+              </React.Fragment>
               : []}
           </Grid>
           {this.props.dataLoading ? <CircularProgress open /> : null}
