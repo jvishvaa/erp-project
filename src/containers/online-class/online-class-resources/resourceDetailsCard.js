@@ -178,7 +178,7 @@ export default function ResourceDetailsCardComponent(props) {
     React.useEffect(() => {
         if (props.resourceData) {
           axiosInstance
-            .get(`erp_user/${props.resourceData && props.resourceData.online_class.id}/online-class-details/`)
+            .get(`erp_user/${props.resourceData && props.resourceData.id}/online-class-details/`)
             .then((res) => {
               console.log(res.data );
               setNoOfPeriods(res.data.data);
@@ -199,20 +199,20 @@ export default function ResourceDetailsCardComponent(props) {
             </div>
             <div className={classes.classDetails}>
                 <div className={classes.joinClassDiv}>
-                    {/* noOfPeriods && noOfPeriods.length > 0 && noOfPeriods.map((data) => (
+                    { noOfPeriods && noOfPeriods.length > 0 && noOfPeriods.map((data) => (
                         <ResourceClass
                             key={data.zoom_id}
                             date={data.date}
                             resourceId={props.resourceData.online_class.id}
                         />
-                    )) */}
-                    {dateArray && dateArray.length > 0 && dateArray.map((date, id) => (
+                    ))}
+                    {/*dateArray && dateArray.length > 0 && dateArray.map((date, id) => (
                         <ResourceClass
                             key={id}
                             date={date}
                             resourceId={props.resourceData.online_class.id}
                         />
-                    ))}
+                    ))*/}
                 </div>
                 {/*
                 <Divider className={classes.classDetailsDivider}/>
