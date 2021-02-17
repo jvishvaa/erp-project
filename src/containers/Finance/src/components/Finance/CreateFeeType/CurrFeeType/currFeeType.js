@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Select from 'react-select'
-import { Grid, Button, Divider, Paper, Table, TableRow, TableHead, TableCell, TableBody, TextField,
+import { Grid, Button, Divider, Paper, Table, TableRow, TableHead, TableCell, TableBody, TextField, TablePagination,
   FormControlLabel, Checkbox, withStyles, Fab } from '@material-ui/core/'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -46,9 +46,25 @@ class CurrFeeType extends Component {
       isMisc: true,
       isEditable: true,
       isEditModal: false,
-      showDeleteModal: false
+      showDeleteModal: false,
+      page: 0,
+      rowsPerPage: 10
     }
   }
+  handleChangePage = (event, newPage) => {
+    this.setState({
+      page: newPage
+    })
+  };
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({
+      rowsPerPage:+event.target.value
+    })
+    this.setState({
+      page: 0
+    })
+  };
 
   handleAcademicyear = (e) => {
     this.setState({
@@ -439,7 +455,7 @@ class CurrFeeType extends Component {
             </TableHead>
             <TableBody>
               {currList && currList.length > 0
-                ? currList.map((row) => {
+                ? currList && currList.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((row) => {
                   return (
                     <TableRow>
                       <TableCell>{row.fee_type_name ? row.fee_type_name : ''}</TableCell>
@@ -466,6 +482,15 @@ class CurrFeeType extends Component {
                 : 'No Data'}
             </TableBody>
           </Table>
+          <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={this.props.currList && currList.length}
+                rowsPerPage={this.state.rowsPerPage}
+                page={this.state.page}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
         </Paper>
       )
     }
