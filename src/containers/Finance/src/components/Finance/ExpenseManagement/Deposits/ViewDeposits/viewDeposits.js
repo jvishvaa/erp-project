@@ -15,7 +15,13 @@ import {
   Button as MatButton,
   Grid,
   CircularProgress,
-  Modal
+  Modal,
+  TableCell,
+  TableRow,
+  Table,
+  TableBody,
+  TableHead,
+  TablePagination
 } from '@material-ui/core'
 import { FilterInnerComponent, filterMethod } from '../../../FilterInnerComponent/filterInnerComponent'
 
@@ -37,7 +43,9 @@ class ViewDiposits extends Component {
     toDate: null,
     depositType: null,
     editInfo: null,
-    showEditModal: false
+    showEditModal: false,
+      page: 0,
+      rowsPerPage: 10
   }
 
   componentDidUpdate (prevPorps) {
@@ -50,6 +58,21 @@ class ViewDiposits extends Component {
       } = this.props
       this.props.fetchDepositTransaction(session, branch.id, user, alert)
     }
+  }
+
+  handleChangePage = (event, newPage) => {
+    this.setState({
+      page: newPage
+    })
+  }
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({
+      rowsPerPage:+event.target.value
+    })
+    this.setState({
+      page: 0
+    })
   }
 
   dateChangeHandler = (e) => {
@@ -465,6 +488,55 @@ class ViewDiposits extends Component {
         </div>
         <div className={classes.tableContainer}>
           {/* {transactionTable} */} 
+          <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell> Sr</TableCell>
+                      <TableCell> Date</TableCell>
+                      <TableCell> Amount</TableCell>
+                      <TableCell> Transaction Id</TableCell>
+                      <TableCell> From Account</TableCell>
+                      <TableCell> To Account</TableCell>
+                      <TableCell> Cheque No</TableCell>
+                      <TableCell> Remark</TableCell>
+                      {/* <TableCell> Type</TableCell> */}
+                      <TableCell> Mode Of Deposite </TableCell>
+                      <TableCell> Is Cancelled</TableCell>
+                      <TableCell> Edit</TableCell>
+                      {/* <TableCell> Delete</TableCell> */}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                  {this.props.pettyCashDeposit && this.props.pettyCashDeposit.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((txn, i) => { 
+                    return (
+                  <TableRow>
+                     <TableCell> { i + 1 }</TableCell>
+                      {/* <TableCell>{ val.id} </TableCell> */}
+                      <TableCell> {txn.date ? txn.date : ''}</TableCell>
+                      <TableCell> {txn.amount ? txn.amount : ''} </TableCell>
+                      <TableCell>{txn.transaction_id ? txn.transaction_id : ''}</TableCell>
+                      <TableCell> {txn.from_account ? txn.from_account.bank_name : ''} </TableCell>
+                      <TableCell> {txn.to_account ? txn.to_account.bank_name : ''}</TableCell>
+                      <TableCell>{txn.cheque_no ? txn.cheque_no : ''}</TableCell>
+          <TableCell>{txn.remarks ? txn.remarks : ''}</TableCell>
+          {/* <TableCell>{transaction.deposit_type ? transaction.deposit_type.deposit_type : ''}</TableCell> */}
+          <TableCell>{txn.deposit_mode ? txn.deposit_mode : ''} </TableCell>
+          <TableCell>{txn.is_cancelled ? 'Yes' : 'No'}</TableCell>
+          <TableCell>{<div style={{ 'padding-left': '10px' }} onClick={() => this.showEditModalHandler(txn.id, txn.transaction_id, txn.deposit_mode, txn.date, txn.amount, txn.remarks, txn.is_cancelled)}><EditIcon className={classes.icon} /></div>}</TableCell>
+                  </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={this.props.pettyCashDeposit && this.props.pettyCashDeposit.length}
+                rowsPerPage={this.state.rowsPerPage}
+                page={this.state.page}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
         </div>
         {editModal}
         {this.props.dataLoading ? <CircularProgress open /> : null}
