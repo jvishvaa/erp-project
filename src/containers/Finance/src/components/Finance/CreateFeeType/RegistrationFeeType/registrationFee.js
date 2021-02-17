@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 // import { Divider } from 'semantic-ui-react'
-import { Button, Fab, Grid, Table, TableRow, TableCell, TableBody, TableHead } from '@material-ui/core/'
+import { Button, Fab, Grid, Table, TableRow, TableCell, TableBody, TableHead, TablePagination } from '@material-ui/core/'
 import {
   Add as AddIcon,
   Edit as EditIcon,
@@ -48,6 +48,20 @@ class RegistrationFee extends Component {
     // this.deleteHandler = this.deleteHandler.bind(this)
   }
 
+  handleChangePage = (event, newPage) => {
+    this.setState({
+      page: newPage
+    })
+  };
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({
+      rowsPerPage:+event.target.value
+    })
+    this.setState({
+      page: 0
+    })
+  };
   showModalHandler = (id) => {
     this.setState({
       showModal: true,
@@ -401,7 +415,7 @@ class RegistrationFee extends Component {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                  {this.props.feeTypes && this.props.feeTypes.map((val, i) => { 
+                  {this.props.feeTypes && this.props.feeTypes.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((val, i) => { 
                     return (
                   <TableRow>
                      <TableCell> { i + 1 }</TableCell>
@@ -431,6 +445,15 @@ class RegistrationFee extends Component {
                   })}
                 </TableBody>
               </Table>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={this.props.feeTypes && this.props.feeTypes.length}
+                rowsPerPage={this.state.rowsPerPage}
+                page={this.state.page}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
               {/* : []} */}
             </Grid> : null}
 

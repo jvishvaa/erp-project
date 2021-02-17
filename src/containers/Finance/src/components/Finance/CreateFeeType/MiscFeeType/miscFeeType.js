@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 // import { Divider } from 'semantic-ui-react'
 import { Button, Fab, Grid } from '@material-ui/core/'
-import { Table, TableRow, TableCell, TableBody, TableHead
+import { Table, TableRow, TableCell, TableBody, TableHead,
 } from '@material-ui/core/'
 import Select from 'react-select'
 import { withRouter } from 'react-router-dom'
