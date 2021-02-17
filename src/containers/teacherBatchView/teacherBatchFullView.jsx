@@ -16,7 +16,7 @@ const JoinClass = (props) => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [isAccept, setIsAccept] = useState(false);
+  const [isAccept, setIsAccept] = useState(props.data? props.data.is_accepted : false);
   const history =useHistory()
   const handleCloseData = () => {
     setAnchorEl(null);
@@ -25,6 +25,25 @@ const JoinClass = (props) => {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
+  const handleIsAccept = () => {
+    const params = {
+      zoom_meeting_id: fullData && fullData.id,
+      class_date: moment(fullData && fullData && fullData.join_time).format('YYYY-MM-DD'),
+      is_accepted: true
+    };
+    axiosInstance
+      .put(endpoints.studentViewBatchesApi.rejetBatchApi, params)
+      .then((res) => {
+        setLoading(false);
+        //setAlert('success', 'Class Rejected');
+        setIsAccept(true);
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', error.message);
+      });
+  }
 
   function handleCancel() {
     setLoading(true);
@@ -74,7 +93,7 @@ const JoinClass = (props) => {
     <Grid container spacing={2} direction='row' alignItems='center'>
       <Grid item md={6} xs={12}>
         <span className='TeacherFullViewdescreption1'>
-          {moment(props.date).format('Do MMM YYYY')}
+          {moment(props.data? props.data.date : '').format('Do MMM YYYY')}
         </span>
       </Grid>
       {isAccept ? (
@@ -99,7 +118,7 @@ const JoinClass = (props) => {
                 color='secondary'
                 fullWidth
                 variant='contained'
-                onClick={(e) => setIsAccept(true)}
+                onClick={handleIsAccept}
                 className='teacherFullViewSmallButtons'
               >
                 Accept
@@ -210,7 +229,7 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
   useEffect(() => {
     let detailsURL = window.location.pathname === '/online-class/attend-class'
     ? `erp_user/${fullData && fullData.id}/student-oc-details/`
-    : `erp_user/${fullData && fullData.online_class && fullData.online_class.id}/online-class-details/`;
+    : `erp_user/${fullData && fullData.id}/online-class-details/`;
 
     if (fullData) {
       axiosInstance
@@ -354,7 +373,8 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
               </Grid>
               <Grid item md={12} xs={12}>
                 <Divider className='fullViewDivider' />
-                {window.location.pathname === '/online-class/attend-class' ?
+                {noOfPeriods && noOfPeriods.length > 0 && noOfPeriods.map((data) => <JoinClass  data={data} fullData={fullData} handleClose={handleClose}/>)}
+                {/* window.location.pathname === '/online-class/attend-class' ?
                   noOfPeriods && noOfPeriods.length > 0 && noOfPeriods.map((data) => <JoinClass  date={data.date} fullData={fullData} handleClose={handleClose}/>)
                   : (
                     <Grid container spacing={2} direction='row' alignItems='center'>
@@ -449,7 +469,7 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
                         </Button>
                       </Grid>
                     </Grid>
-                  )}
+                        ) */}
                 <Divider className='fullViewDivider' />
               </Grid>
               <Grid item md={12} xs={12}>

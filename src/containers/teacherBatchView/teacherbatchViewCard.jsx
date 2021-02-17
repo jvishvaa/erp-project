@@ -17,6 +17,12 @@ const TeacherBatchViewCard = ({ fullData, handleViewMore, selectedViewMore }) =>
             <Grid container spacing={2}>
               <Grid item md={12} xs={12} style={{ padding: '5px' }}>
                 <span className='teacherBatchCardLable'>
+                  {(fullData && fullData.online_class && fullData.online_class.course_name) ||
+                    ''}
+                </span>
+              </Grid>
+              <Grid item md={12} xs={12} style={{ padding: '5px' }}>
+                <span className='teacherBatchCardLable'>
                   {(fullData && fullData.online_class && fullData.online_class.title) ||
                     ''}
                 </span>
