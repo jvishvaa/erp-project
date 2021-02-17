@@ -1,5 +1,10 @@
 import React, { Component } from 'react'
-import { Button, withStyles, Grid } from '@material-ui/core/'
+import { Button, withStyles, Grid ,TableCell,
+  TableRow,
+  Table,
+  TableBody,
+  TableHead,
+  TablePagination} from '@material-ui/core/'
 import { withRouter } from 'react-router-dom'
 import Select from 'react-select'
 import { connect } from 'react-redux'
@@ -35,7 +40,9 @@ class ItCertificate extends Component {
       showAddFeeTypeModal: false,
       addFeeTypeList: null,
       showDeleteFeeTypeModal: null,
-      itcID: null
+      itcID: null,
+      page: 0,
+      rowsPerPage: 10
     }
   }
 
@@ -44,6 +51,21 @@ class ItCertificate extends Component {
   }
 
   componentDidUpdate () {
+  }
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({
+      rowsPerPage:+event.target.value
+    })
+    this.setState({
+      page: 0
+    })
+  }
+
+  dateChangeHandler = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value
+    })
   }
 
   handleAcademicyear = (e) => {
@@ -312,6 +334,44 @@ class ItCertificate extends Component {
           </Grid>
         {deleteFeeTypeModal}
         {/* {feeTypeListTable} */}
+        {
+          <React.Fragment>
+            { this.props.itcList && this.props.itcList.length > 0 ?
+            <React.Fragment>
+            <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell> Sr</TableCell>
+                      <TableCell> Fee type</TableCell>
+                      <TableCell> Delete</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                  {this.props.itcList && this.props.itcList.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((val, i) => { 
+                    return (
+                  <TableRow>
+                     <TableCell> { i + 1 }</TableCell>
+                      {/* <TableCell>{ val.id} </TableCell> */}
+                      <TableCell> { val.fee_type_name ? val.fee_type_name : ''}</TableCell>
+                      <TableCell> <DeleteIcon style={{ cursor: 'pointer' }} onClick={() => this.showDeleteFeeTypeHandler(val.id)} /> </TableCell>
+                  </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={this.props.itcList && this.props.itcList.length}
+                rowsPerPage={this.state.rowsPerPage}
+                page={this.state.page}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
+              </React.Fragment>
+              :[] }
+            </React.Fragment>
+        }
         {addFeeTypeModal}
         {this.props.dataLoading ? <CircularProgress open /> : null}
       </React.Fragment>
