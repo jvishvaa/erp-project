@@ -22,6 +22,7 @@ import AddMiscFee from './addMiscFee'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import Modal from '../../../../ui/Modal/modal'
 import Layout from '../../../../../../Layout'
+import TablePagination from '@material-ui/core/TablePagination'
 
 let feeTypeState = null
 
@@ -42,12 +43,27 @@ class MiscFeeType extends Component {
       start_date: '',
       end_date: '',
       store: false,
-      feeAcc: ''
+      feeAcc: '',
+      page: 0,
+      rowsPerPage: 10
     }
     this.handleClickFeeData.bind(this)
     // this.deleteHandler = this.deleteHandler.bind(this)
   }
+  handleChangePage = (event, newPage) => {
+    this.setState({
+      page: newPage
+    })
+  };
 
+  handleChangeRowsPerPage = (event) => {
+    this.setState({
+      rowsPerPage:+event.target.value
+    })
+    this.setState({
+      page: 0
+    })
+  };
   changehandlerbranch = (e) => {
     this.setState({ branchId: e.value, branchData: e })
   }
@@ -401,7 +417,7 @@ class MiscFeeType extends Component {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                  {this.props.miscFeeList && this.props.miscFeeList.map((val, i) => { 
+                  {this.props.miscFeeList && this.props.miscFeeList.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((val, i) => { 
                     return (
                   <TableRow>
                      <TableCell> { i + 1 }</TableCell>
@@ -432,6 +448,15 @@ class MiscFeeType extends Component {
                   })}
                 </TableBody>
               </Table>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={this.props.miscFeeList && this.props.miscFeeList.length}
+                rowsPerPage={this.state.rowsPerPage}
+                page={this.state.page}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
             </Grid>
           </React.Fragment> : null}
 
