@@ -64,7 +64,8 @@ const TeacherBatchViewCard = ({ fullData, handleViewMore, selectedViewMore }) =>
               </Grid>
               <Grid item md={12} xs={12} style={{ textAlign: 'right' }}>
                 <Button
-                  variant='container'
+                  variant='contained'
+                  color='secondary'
                   className='TeacherBatchCardViewMoreButton'
                   style={{
                     display:
