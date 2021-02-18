@@ -3,7 +3,7 @@ import { Grid, Button, Fab, TableHead,
   TableBody,
   TableCell,
   TableRow, 
-  TablePagination, Table, } from '@material-ui/core/'
+  TablePagination, Table } from '@material-ui/core/'
 import {
   // Add as AddIcon,
   Edit as EditIcon,

@@ -7,6 +7,11 @@ import {
   // TableRow,
   // TableHead,
   // TableBody,
+  TableHead,
+  TableBody,
+  TableCell,
+  TableRow, 
+  TablePagination, Table,
    CircularProgress
 } from '@material-ui/core'
 
@@ -21,6 +26,17 @@ import Layout from '../../../../../Layout'
 // import { CircularProgress } from '../../../ui'
 
 const OnlineAdmission = ({ dataLoadingStatus, onlinePendingAdmissionData, getPendingOnlineAdmission, alert, airpayPayment, todayEMandateDetails, setDomainDetails, todayDetail, fetchBranches, user, domainNames, branches, session }) => {
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
   useEffect(() => {
     getPendingOnlineAdmission(alert, user)
   }, [alert, getPendingOnlineAdmission, user])
@@ -112,6 +128,43 @@ const OnlineAdmission = ({ dataLoadingStatus, onlinePendingAdmissionData, getPen
       <Grid container spacing={3} style={{ padding: 15 }}>
         <Grid item xs={12}>
           {/* {studentErpTable} */}
+          <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell> Sr</TableCell>
+                      <TableCell>Application Branch</TableCell>
+                      <TableCell> Application Number</TableCell>
+                      <TableCell> Status</TableCell>
+                      <TableCell> Amount</TableCell>
+                      <TableCell>Date</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  {onlinePendingAdmissionData && onlinePendingAdmissionData.data && onlinePendingAdmissionData.data.length > 0 ?
+                  <TableBody>
+                  {onlinePendingAdmissionData && onlinePendingAdmissionData.data && onlinePendingAdmissionData.data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((val, i) => { 
+                    return (
+                  <TableRow>
+                     <TableCell> { i + 1 }</TableCell>
+                     <TableCell>{val.application_branch ? val.application_branch : ''}</TableCell>
+                      <TableCell>{ val.application_number ? val.application_number : ''}</TableCell>
+                      <TableCell> {val.status}</TableCell>
+                      <TableCell> {val.amount ? val.amount : ''}</TableCell>
+                      <TableCell>{val.date ? val.date : ''}</TableCell>
+                  </TableRow>
+                    )
+                  })}
+                </TableBody>
+                   : '' }
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={onlinePendingAdmissionData && onlinePendingAdmissionData.data && onlinePendingAdmissionData.data.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onChangePage={handleChangePage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+              />
         </Grid>
       </Grid>
       {dataLoadingStatus ? <CircularProgress open /> : null}
