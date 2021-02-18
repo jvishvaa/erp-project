@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Select from 'react-select'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Button, Fab, Grid, Table, TableCell, TableRow, TableHead, TableBody, TablePagination } from '@material-ui/core/'
+import { Button, Fab, Grid, Table, TableCell, TableRow, TableHead, TableBody, TablePagination, } from '@material-ui/core/'
 
 // import ReactTable from 'react-table'
 // import 'react-table/react-table.css'

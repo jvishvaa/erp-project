@@ -1,7 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Select from 'react-select'
-import { Button, Grid, TextField } from '@material-ui/core/'
+import { Button, Grid,   Table,
+  TableHead,
+  TableBody,
+  TableCell,
+  TableRow, 
+  TablePagination, TextField } from '@material-ui/core/'
 import { withStyles } from '@material-ui/core/styles'
 import { AddCircle, Edit } from '@material-ui/icons'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -55,6 +60,8 @@ class AddItems extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      page: 0,
+      rowsPerPage: 10,
       currentSession: null,
       entryModal: false,
       addSubCatModal: false,
@@ -101,6 +108,21 @@ class AddItems extends Component {
     if (itemState) {
       this.setState(itemState)
     }
+  }
+
+  handleChangePage = (event, newPage) => {
+    this.setState({
+      page: newPage
+    })
+  }
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({
+      rowsPerPage:+event.target.value
+    })
+    this.setState({
+      page: 0
+    })
   }
 
   sessionChangeHandler = (e) => {
@@ -1005,6 +1027,51 @@ class AddItems extends Component {
         {addMeasurementModal}
         {addColorModal}
         {/* {itemTable} */}
+        {
+          this.props.itemsList && this.props.itemsList.length > 0 ? 
+          <React.Fragment>
+            <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell> Sl No</TableCell>
+                      <TableCell> Item Name</TableCell>
+                      <TableCell> Item  Description</TableCell>
+                      <TableCell> Category</TableCell>
+                      <TableCell>SKU Code</TableCell>
+                      <TableCell>SAC Code</TableCell>
+                      <TableCell>Measurement</TableCell>
+                      <TableCell>Edit</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                  {this.props.itemsList && this.props.itemsList.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((item, i) => { 
+                    return (
+                  <TableRow>
+                     <TableCell> { i + 1 }</TableCell>
+                      <TableCell>{ item.item_name ? item.item_name : ''}</TableCell>
+                      <TableCell> {item.item_description ? item.item_description : ''}</TableCell>
+                      <TableCell> {item.is_uniform_item ? 'Uniform' : 'Stationary'}</TableCell>
+                      <TableCell>{item.sku_code ? item.sku_code : ''}</TableCell>
+                      <TableCell>{item.sac_code ? item.sac_code : ''}</TableCell>
+                      <TableCell>{item.unit_of_measurement.unit}</TableCell>
+                      <TableCell><Edit style={{ cursor: 'pointer' }} onClick={() => this.editItemsHandler(item.id)} /></TableCell>
+                  </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={this.props.itemsList && this.props.itemsList.length}
+                rowsPerPage={this.state.rowsPerPage}
+                page={this.state.page}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
+            </React.Fragment>
+            : []
+        }
         {editModal}
         {this.props.dataLoading || this.props.gradeLoader ? <CircularProgress open /> : null}
       </React.Fragment>

@@ -87,7 +87,9 @@ class Kit extends Component {
       kitId: null,
       isCommon: false,
       commonKitArr: [],
-      isDelivery: false
+      isDelivery: false,
+      page: 0,
+      rowsPerPage: 10
     }
 
     this.kitNameRef = React.createRef()
