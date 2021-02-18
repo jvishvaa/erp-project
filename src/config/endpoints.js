@@ -36,10 +36,6 @@ export default {
     userStatusChange: '/erp_user/',
     getMessages: '/communication/email-sms-logs/',
   },
-  aol: {
-    createCoursePrice: '/aol/course-details/',
-    updateCoursePrice: '/aol/course_details_update/',
-  },
   onlineClass: {
     // batchList: '/erp_user/batch-student-list/',
     batchList: '/aol/batch_shuffle/',
@@ -156,6 +152,8 @@ export default {
     reshuffleBatchList:'/aol/batch_shuffle/',
     studentReshuffle:'/aol/student-shuffle/',
     cancelClass:'erp_user/cancel-online-class/',
+    createCoursePrice: '/aol/course-details/',
+    updateCoursePrice: '/aol/course_details_update/',
   },
   onlineCourses:{
     createCourse:'/aol/courses/',

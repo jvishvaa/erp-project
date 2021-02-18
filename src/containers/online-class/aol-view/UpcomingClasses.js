@@ -161,7 +161,7 @@ const UpcomingClasses = () => {
     const [toggledData, setToggledData] = useState([])
 
     const [reload, setReload] = useState(false)
-    const limit =12;
+    const limit =15;
 
     const [dateRangeTechPer, setDateRangeTechPer] = useState([
         moment().subtract(6, 'days'),
