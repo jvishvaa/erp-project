@@ -1,5 +1,9 @@
 import React, { Component } from 'react'
-import { Grid, Button, Fab } from '@material-ui/core/'
+import { Grid, Button, Fab, TableHead,
+  TableBody,
+  TableCell,
+  TableRow, 
+  TablePagination, Table, } from '@material-ui/core/'
 import {
   // Add as AddIcon,
   Edit as EditIcon,
@@ -35,9 +39,24 @@ class ReceiptSettings extends Component {
     showAddModal: false,
     isActive: false,
     deleteId: null,
-    showDeleteModal: false
+    showDeleteModal: false,
+    page: 0,
+    rowsPerPage: 10
+  }
+  handleChangePage = (event, newPage) => {
+    this.setState({
+      page: newPage
+    })
   }
 
+  handleChangeRowsPerPage = (event) => {
+    this.setState({
+      rowsPerPage:+event.target.value
+    })
+    this.setState({
+      page: 0
+    })
+  }
   showModalHandler = (id, header, prefix, footer, subFooter, subHeader, isActive) => {
     this.setState({
       showModal: true,
@@ -404,9 +423,69 @@ class ReceiptSettings extends Component {
           </Grid>
           {this.props.receiptlists && this.props.receiptlists.length > 0
             ? <React.Fragment>
+              {this.props.receiptlists && this.props.receiptlists.length > 0 ?
               <Grid item xs='12'>
                 {/* {receiptSettingsTable} */}
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell> Sr</TableCell>
+                      <TableCell>Prefix</TableCell>
+                      <TableCell> Header</TableCell>
+                      <TableCell> Sub Header</TableCell>
+                      <TableCell> Footer</TableCell>
+                      <TableCell>Sub Footer</TableCell>
+                      <TableCell>Is Active</TableCell>
+                      <TableCell>Edit</TableCell>
+                      <TableCell>Delete</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                  {this.props.receiptlists && this.props.receiptlists.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((val, i) => { 
+                    return (
+                  <TableRow>
+                     <TableCell> { i + 1 }</TableCell>
+                     <TableCell>{val.prefix ? val.prefix : ''}</TableCell>
+                      <TableCell>{ val.payslip_header ? val.payslip_header : ''}</TableCell>
+                      <TableCell> {val.receipt_sub_header ? val.receipt_sub_header : ''}</TableCell>
+                      <TableCell> {val.receipt_footer ? val.receipt_footer : ''}</TableCell>
+                      <TableCell>{val.receipt_sub_footer ? val.receipt_sub_footer : ''}</TableCell>
+                      <TableCell>{val.is_active ? 'Active' : 'Inactive'}</TableCell>
+                      <TableCell> <div style={{ cursor: 'pointer', textAlign: 'center', marginTop: '-9px' }}>
+            <Fab
+              color='primary'
+              size='small'
+              onClick={() => this.showModalHandler(val.id, val.payslip_header, val.prefix, val.receipt_footer, val.receipt_sub_footer, val.receipt_sub_header, val.is_active)}
+            >
+              <EditIcon />
+            </Fab>
+          </div></TableCell>
+          <TableCell>
+          <Fab
+            color='primary'
+            size='small'
+            onClick={() => this.deleteModalShowHandler(val.id)}
+            style={{ cursor: 'pointer', marginTop: '-9px' }}
+          >
+            <DeleteIcon />
+          </Fab>
+          </TableCell>
+                  </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={this.props.receiptlists && this.props.receiptlists.length}
+                rowsPerPage={this.state.rowsPerPage}
+                page={this.state.page}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
               </Grid>
+              : [] }
             </React.Fragment> : null}
           {addModal}
           {modal}
