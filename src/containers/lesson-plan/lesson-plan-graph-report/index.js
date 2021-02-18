@@ -208,12 +208,11 @@ const LessonPlanGraphReport = ({
       setSubjectList(value);
       axiosInstance
         .get(
-          `${endpoints.lessonReport.teacherList}?branch=${filterData.branch.id}&grade=${filterData.grade?.grade_id}&section=${filterData.section?.section_id}&subject=${ids}&academic_year=${filterData.year?.id}`
+          `${endpoints.lessonReport.teacherList}?branch=${filterData?.branch?.id}&grade=${filterData?.grade?.grade_id}&section=${filterData.section?.section_id}&subject=${ids}&academic_year=${filterData?.year?.id}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
             setTeacherDropdown(result.data.result);
-            // console.log(result.data.result, 'RRRRRR');
           } else {
             setAlert('error', result.data.message);
             setTeacherDropdown([]);
