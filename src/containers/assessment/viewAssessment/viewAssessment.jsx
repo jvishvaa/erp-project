@@ -9,15 +9,10 @@ import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './viewAssessment.css';
 import SidebarCounterPanel from './sidebarCounterPanel';
-import McqQuestion from './mcqQuestion';
-import DescriptiveQuestion from './descriptiveQuestion';
-import FillUpsQuestion from './fillUpsQuestion';
-import TrueFalseQuestion from './trueFalseQuestion';
-import VideoQuestion from './videoQuestion';
-import MatchFollowingQuestion from './matchFollowingQuestion';
-import MatrixQuestion from './matrixQuestion';
 import GeneralGuide from './generalGuide';
 import { AssessmentHandlerContext } from '../assess-attemption/assess-attemption-context';
+
+import QuestionHandler from './question-handler/question-handler';
 
 const ViewAssessmentUI = () => {
   const {
@@ -49,17 +44,7 @@ const ViewAssessmentUI = () => {
     meta: { index: qIndex } = {},
     user_response: { attemption_status: attemptionStatus } = {},
   } = currentQuestionObj || {};
-  const decideQuestion = {
-    1: () => <McqQuestion />,
-    10: () => <DescriptiveQuestion />,
-    9: () => <FillUpsQuestion />,
-    8: () => <TrueFalseQuestion />,
-    4: () => <VideoQuestion />,
-    3: () => <MatchFollowingQuestion />,
-    6: () => <MatrixQuestion />,
-    undefined: () => <p>question_type undefined</p>,
-    null: () => <p>question_type null</p>,
-  };
+
   return (
     <>
       {fetching ? <Loading message='Loading...' /> : null}
@@ -69,10 +54,7 @@ const ViewAssessmentUI = () => {
           <Grid container spacing={2}>
             <Grid item md={9} xs={12}>
               <div className='main-question-panel'>
-                {decideQuestion[questionType]
-                  ? decideQuestion[questionType]()
-                  : 'not found'}
-                {/* <Button className='submit-button'></Button> */}
+                <QuestionHandler />
               </div>
             </Grid>
             <Grid item md={3} xs={12}>
