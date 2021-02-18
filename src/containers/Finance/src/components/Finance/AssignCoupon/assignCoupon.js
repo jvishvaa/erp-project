@@ -10,7 +10,8 @@ import {
   TableRow,
   TableCell,
   TableHead,
-  TextField
+  TextField,
+  TablePagination
 //   withStyles
 } from '@material-ui/core'
 // import { Edit } from '@material-ui/icons'
@@ -61,6 +62,9 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
   const [singleErpAllcoupon, setSingleErpAllcoupon] = useState([])
   const [allSectionsData, setAllSectionsData] = useState([])
   const [applicableTo, setApplicableTo] = useState(null)
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
 
   useEffect(() => {
     listCoupon(alert, user)
@@ -82,6 +86,15 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
       }
     }
   }, [alert, branchData, value, fetchErpList, gradeData, sectionData, sessionData, user, allSectionsData])
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
 
   const handleClickSessionYear = (e) => {
     setSessionData(e)
@@ -227,18 +240,18 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
   //   })
   //   return dataToShow
   // }
-  // const checkAllStudentsHandler = (e) => {
-  //   const checked = {}
-  //   if (erpList && erpList.length > 0) {
-  //     erpList.forEach(ele => {
-  //       if (ele.erp) {
-  //         checked[ele.id] = e.target.checked
-  //       }
-  //     })
-  //     setisChecked(checked)
-  //     setCheckedAll(!checkedAll)
-  //   }
-  // }
+  const checkAllStudentsHandler = (e) => {
+    const checked = {}
+    if (erpList && erpList.length > 0) {
+      erpList.forEach(ele => {
+        if (ele.erp) {
+          checked[ele.id] = e.target.checked
+        }
+      })
+      setisChecked(checked)
+      setCheckedAll(!checkedAll)
+    }
+  }
 
   const erpSearchHandler = (e) => {
     console.log('studenrList', erpList)
@@ -654,6 +667,93 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
       {showTabs && value === 'one' && <TabContainer>
         {/* {checkedAlls} */}
         {/* {studentErpTable} */}
+        {
+          <React.Fragment>
+               <div style={{ display: 'flex' }}>
+      <div style={{ padding: '10px' }}>
+          <input
+            type='checkbox'
+            style={{ width: '20px', height: '20px', paddingBottom: '35px' }}
+            checked={checkedAll || false}
+            onChange={checkAllStudentsHandler}
+          /> &nbsp; <b>Select All Students</b>
+        </div>
+        <div>
+          <TextField
+            id='erp1'
+            label='Search ERP'
+            type='number'
+            variant='outlined'
+            value={erpSearchValue || ''}
+            style={{ zIndex: 0, marginTop: '0px', marginBottom: 20 }}
+            onChange={erpSearchHandler}
+            InputLabelProps={{ shrink: true }}
+            InputProps={{
+              style: {
+                height: 35
+              }
+            }}
+          />
+        </div>
+      </div>
+            <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell> Select</TableCell>
+                      <TableCell> Erp Code</TableCell>
+                      <TableCell>Coupon </TableCell>
+                      <TableCell> valid</TableCell>
+                      <TableCell> Applicable</TableCell>
+                      <TableCell>Use</TableCell>
+                      {/* <TableCell>Edit</TableCell> */}
+                      <TableCell>View Details</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  {studentErpList && studentErpList.length > 0 ?
+                  <TableBody>
+                  {studentErpList && studentErpList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((val, i) => { 
+                    return (
+                  <TableRow>
+                     <TableCell>{val.erp && <input
+          type='checkbox'
+          name='checking'
+          value={i + 1}
+          disabled={val.coupon && val.coupon.coupon}
+          checked={isChecked[val.id]}
+          onChange={
+            (e) => { checkBoxHandler(e, val.id) }
+          } />}</TableCell>
+                     <TableCell>{val.erp ? val.erp : ''}</TableCell>
+                      <TableCell>{val.erp && val.coupon && val.coupon.coupon ? val.coupon.coupon : ''}</TableCell>
+                      <TableCell> {val.erp && val.coupon && val.is_coupon_valid ? 'Yes' : val.coupon && val.erp && 'No'}</TableCell>
+                      <TableCell> {val.erp && val.coupon && val.is_coupon_applicable ? 'Yes' : val.coupon && val.erp && 'No'}</TableCell>
+                      <TableCell>{val.erp && val.coupon && val.is_coupon_used ? 'Yes' : val.coupon && val.erp && 'No'}</TableCell>
+                      <TableCell>{val.erp && <Button
+          // style={{ marginTop: '25px' }}
+          variant='contained'
+          color='primary'
+          // disabled={!this.state.changedFeePlanId}
+          onClick={() => studentAllcoupondetail(val.erp)}
+        >
+        View Details
+        </Button>}</TableCell>
+                  </TableRow>
+                    )
+                  })}
+                </TableBody>
+                   : '' }
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={studentErpList && studentErpList.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onChangePage={handleChangePage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+              />
+          </React.Fragment>
+        }
         {multiChange}
         {couponDetail}
         {detailsModal}
