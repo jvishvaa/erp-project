@@ -17,6 +17,7 @@ const JoinClass = (props) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const [isAccept, setIsAccept] = useState(props.data? props.data.is_accepted : false);
+  const [isRejected, setIsRejected] = useState(props.data? props.data.is_restricted : false);
   const history =useHistory()
   const handleCloseData = () => {
     setAnchorEl(null);
@@ -29,14 +30,13 @@ const JoinClass = (props) => {
   const handleIsAccept = () => {
     const params = {
       zoom_meeting_id: fullData && fullData.id,
-      class_date: moment(fullData && fullData && fullData.join_time).format('YYYY-MM-DD'),
+      class_date: props.data && props.data.date,
       is_accepted: true
     };
     axiosInstance
       .put(endpoints.studentViewBatchesApi.rejetBatchApi, params)
       .then((res) => {
         setLoading(false);
-        //setAlert('success', 'Class Rejected');
         setIsAccept(true);
       })
       .catch((error) => {
@@ -48,13 +48,13 @@ const JoinClass = (props) => {
   function handleCancel() {
     setLoading(true);
     const params1 = {
-      zoom_meeting_id: fullData && fullData.online_class && fullData.online_class.id,
-      class_date: fullData && fullData && fullData.join_time,
+      zoom_meeting_id: fullData && fullData.id,
+      class_date: props.data && props.data.date
     };
 
     const params2 = {
       zoom_meeting_id: fullData && fullData.id,
-      class_date: moment(fullData && fullData && fullData.join_time).format('YYYY-MM-DD'),
+      class_date: props.data && props.data.date,
       is_restricted: true
     };
 
@@ -111,92 +111,101 @@ const JoinClass = (props) => {
         </Grid>
       ) : (
         <>
-          <Grid item md={3} xs={6}>
-            {window.location.pathname === '/online-class/attend-class' ? (
-              <Button
-                size='small'
-                color='secondary'
-                fullWidth
-                variant='contained'
-                onClick={handleIsAccept}
-                className='teacherFullViewSmallButtons'
-              >
-                Accept
-              </Button>
-            ) : (
-              <Button
-                size='small'
-                color='secondary'
-                fullWidth
-                variant='contained'
-                onClick={() =>
-                  window.open(fullData && fullData.presenter_url, '_blank'
-                )}
-                className='teacherFullViewSmallButtons'
-              >
-                Host
-              </Button>
-            )}
-          </Grid>
-          <Grid item md={3} xs={6}>
-            <Popover
-              id={id}
-              open={open}
-              anchorEl={anchorEl}
-              onClose={handleClose}
-              style={{ overflow: 'hidden' }}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'center',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'center',
-              }}
-            >
-            <Grid
-              container
-              spacing={2}
-              style={{ textAlign: 'center', padding: '10px' }}
-            >
-              <Grid item md={12} xs={12}>
-                <Typography>Are you sure to Cancel ?</Typography>
-              </Grid>
-              <Grid item md={6} xs={12}>
-                <Button
-                  variant='contained'
-                  size='small'
-                  style={{ fontSize: '11px' }}
-                  onClick={() => handleCloseData()}
-                >
-                  Cancel
-                </Button>
-              </Grid>
-              <Grid item md={6} xs={12}>
-                <Button
-                  variant='contained'
-                  color='primary'
-                  style={{ fontSize: '11px' }}
-                  size='small'
-                  onClick={() => handleCancel()}
-                >
-                  Confirm
-                </Button>
-              </Grid>
+          {isRejected ? (
+            <Grid item xs={6}>
+              <Typography style={{color: '#ff6b6b'}}>Rejected</Typography>
             </Grid>
-          </Popover>
-            <Button
-              size='small'
-              fullWidth
-              variant='contained'
-              onClick={(e) => handleClick(e)}
-              className='teacherFullViewSmallButtons1'
-            >
-              {window.location.pathname === '/online-class/attend-class'
-                ? 'Reject'
-                : 'Cancel'}
-            </Button>
-          </Grid>
+          ) : (
+            <>
+              <Grid item md={3} xs={6}>
+                {window.location.pathname === '/online-class/attend-class' ? (
+                  <Button
+                    size='small'
+                    color='secondary'
+                    fullWidth
+                    variant='contained'
+                    onClick={handleIsAccept}
+                    className='teacherFullViewSmallButtons'
+                  >
+                    Accept
+                  </Button>
+                ) : (
+                  <Button
+                    size='small'
+                    color='secondary'
+                    fullWidth
+                    variant='contained'
+                    onClick={() =>
+                      window.open(fullData && fullData.presenter_url, '_blank'
+                    )}
+                    className='teacherFullViewSmallButtons'
+                  >
+                    Host
+                  </Button>
+                )}
+              </Grid>
+              <Grid item md={3} xs={6}>
+                <Popover
+                  id={id}
+                  open={open}
+                  anchorEl={anchorEl}
+                  onClose={handleClose}
+                  style={{ overflow: 'hidden' }}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                  }}
+                >
+                <Grid
+                  container
+                  spacing={2}
+                  style={{ textAlign: 'center', padding: '10px' }}
+                >
+                  <Grid item md={12} xs={12}>
+                    <Typography>Are you sure to Cancel ?</Typography>
+                  </Grid>
+                  <Grid item md={6} xs={12}>
+                    <Button
+                      variant='contained'
+                      size='small'
+                      style={{ fontSize: '11px' }}
+                      onClick={() => handleCloseData()}
+                    >
+                      Cancel
+                    </Button>
+                  </Grid>
+                  <Grid item md={6} xs={12}>
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      style={{ fontSize: '11px' }}
+                      size='small'
+                      onClick={() => handleCancel()}
+                    >
+                      Confirm
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Popover>
+                <Button
+                  size='small'
+                  fullWidth
+                  variant='contained'
+                  onClick={(e) => handleClick(e)}
+                  className='teacherFullViewSmallButtons1'
+                >
+                  {window.location.pathname === '/online-class/attend-class'
+                    ? 'Reject'
+                    : 'Cancel'}
+                </Button>
+              </Grid>
+            </>
+          )}
+          
         </>
       )}
     </Grid>

@@ -137,16 +137,17 @@ const ViewMoreCard = ({
             <Button
               className="courseButton"
               onClick={handleViewCard}
-            >View Period Details</Button>
+            >
+              View Period Details
+            </Button>
             <Button
-            className="courseButton"
+              className="courseButton"
               onClick={handleEditCoursePrice}
-            >Edit Course Price</Button>
+            >
+              Edit Course Price
+            </Button>
           </div>
-
         </Paper>
-
-
         : <ViewCourseCard />}
       {/* </ViewStore> */}
     </>
