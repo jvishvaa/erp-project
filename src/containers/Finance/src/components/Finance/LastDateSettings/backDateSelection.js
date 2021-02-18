@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { withStyles, Button, Grid } from '@material-ui/core/'
+import { withStyles, Button, Grid, Table, TableCell, TableRow, TableHead, TableBody, TablePagination } from '@material-ui/core/'
 import { withRouter } from 'react-router-dom'
 // import Select from 'react-select'
 import { connect } from 'react-redux'
@@ -33,7 +33,9 @@ class BackDateSelection extends Component {
       showActionModal: false,
       backDateEditId: null,
       paymentBackDate: null,
-      pettyBackDate: null
+      pettyBackDate: null,
+      page: 0,
+      rowsPerPage: 10
 
     }
   }
@@ -49,6 +51,21 @@ class BackDateSelection extends Component {
       // I will make a fetch request
       this.props.fetchBackDate(this.props.session, this.props.alert, this.props.user)
     }
+  }
+
+  handleChangePage = (event, newPage) => {
+    this.setState({
+      page: newPage
+    })
+  }
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({
+      rowsPerPage:+event.target.value
+    })
+    this.setState({
+      page: 0
+    })
   }
 
   showActionModalHandler = (id) => {
@@ -207,6 +224,42 @@ class BackDateSelection extends Component {
 
     return (
       <React.Fragment>
+        <React.Fragment>
+        <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell> Sl No</TableCell>
+                      <TableCell> Branch Name</TableCell>
+                      <TableCell> Payments Back Date</TableCell>
+                      <TableCell> Petty Cash Back Date</TableCell>
+                      <TableCell>Actions</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                  {this.props.backDateList && this.props.backDateList.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((val, i) => { 
+                    return (
+                  <TableRow>
+                     <TableCell> { i + 1 }</TableCell>
+                      {/* <TableCell>{ val.id} </TableCell> */}
+                      <TableCell>{ val.branch.branch_name ? val.branch.branch_name : ''}</TableCell>
+                      <TableCell> {val.payments_back_date ? val.payments_back_date : 'Not set'}</TableCell>
+                      <TableCell> {val.petty_cash_back_date ? val.petty_cash_back_date : 'Not set'}</TableCell>
+                      <TableCell><Edit style={{ cursor: 'pointer' }} onClick={() => { this.showActionModalHandler(val.id) }} /></TableCell>
+                  </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={this.props.backDateList && this.props.backDateList.length}
+                rowsPerPage={this.state.rowsPerPage}
+                page={this.state.page}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
+        </React.Fragment>
         {actionModal}
         {/* {backDateTable} */}
         {this.props.dataLoading ? <CircularProgress open /> : null}

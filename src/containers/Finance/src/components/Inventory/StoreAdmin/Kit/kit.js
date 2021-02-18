@@ -9,7 +9,8 @@ import {
   TableHead,
   TableBody,
   TableCell,
-  TableRow
+  TableRow, 
+  TablePagination
 } from '@material-ui/core/'
 import { AddCircle, DeleteForever } from '@material-ui/icons'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -115,9 +116,26 @@ class Kit extends Component {
     this.setState({
       currentSession: e.value,
       currentBranch: null,
-      currentGrade: null
+      currentGrade: null,
+      page: 0,
+      rowsPerPage: 10
     }, () => {
       this.props.fetchBranches(this.state.currentSession, this.props.alert, this.props.user)
+    })
+  }
+
+  handleChangePage = (event, newPage) => {
+    this.setState({
+      page: newPage
+    })
+  }
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({
+      rowsPerPage:+event.target.value
+    })
+    this.setState({
+      page: 0
     })
   }
 
@@ -1357,6 +1375,56 @@ class Kit extends Component {
         {entryModal}
         {addColorModal}
         {/* {itemTable}  Rajneesh */}
+        <React.Fragment>
+        <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell> Sl No</TableCell>
+                      <TableCell> Kit Name</TableCell>
+                      <TableCell> Kit  Description</TableCell>
+                      <TableCell> Kit Prize</TableCell>
+                      <TableCell>Uniform Kit</TableCell>
+                      <TableCell>For New Student</TableCell>
+                      <TableCell>For Old Student</TableCell>
+                      <TableCell>Items Count</TableCell>
+                      <TableCell>View Details</TableCell>
+                      <TableCell>Delete</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                  {this.props.kitList && this.props.kitList.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((item, i) => { 
+                    return (
+                  <TableRow>
+                     <TableCell> { i + 1 }</TableCell>
+                      {/* <TableCell>{ val.id} </TableCell> */}
+                      <TableCell>{ item.kit_name ? item.kit_name : ''}</TableCell>
+                      <TableCell> {item.kit_description ? item.kit_description : ''}</TableCell>
+                      <TableCell> {item.kit_price ? item.kit_price : '' }</TableCell>
+                      <TableCell>{item.is_uniform_kit ? 'Yes' : 'No'}</TableCell>
+                      <TableCell>{item.is_applicable_to_new_student ? 'Yes' : 'No'}</TableCell>
+                      <TableCell>{item.is_applicable_to_old_student ? 'Yes' : 'No'}</TableCell>
+                      <TableCell>{item.item && item.item.length}</TableCell>
+                      <TableCell>{ <Button
+          variant='contained'
+          color='primary'
+          onClick={() => this.viewDetailsModalHandler(item.id)}
+        >View Details</Button>}</TableCell>
+        <TableCell><DeleteForever onClick={() => { this.deleteModalShowHandler(item.id) }} /></TableCell>
+                  </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={this.props.kitList && this.props.kitList.length}
+                rowsPerPage={this.state.rowsPerPage}
+                page={this.state.page}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
+        </React.Fragment>
         {deleteModal}
         {viewdetModal}
         {this.props.dataLoading || this.props.gradeLoader ? <CircularProgress open /> : null}
