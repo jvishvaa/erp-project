@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Grid, Divider, Icon } from 'semantic-ui-react'
 import axios from 'axios'
 import Select from 'react-select'
-import { Typography, Paper, Button } from '@material-ui/core/'
+import { Typography, Paper, Button, Table, TableRow, TableCell, TableBody, TableHead, TablePagination } from '@material-ui/core/'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 // import { OmsFilterTable, OmsSelect } from '../../../../ui'
@@ -24,7 +24,9 @@ class OtherFeeType extends Component {
     this.state = {
       showTable: false,
       showModal: false,
-      showAddFeeModal: false
+      showAddFeeModal: false,
+      page: 0,
+      rowsPerPage: 10
     }
   }
 
@@ -34,6 +36,21 @@ class OtherFeeType extends Component {
       id: id
     })
   }
+
+  handleChangePage = (event, newPage) => {
+    this.setState({
+      page: newPage
+    })
+  };
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({
+      rowsPerPage:+event.target.value
+    })
+    this.setState({
+      page: 0
+    })
+  };
 
   showAddFeeModalHandler = () => {
     this.setState({
@@ -404,6 +421,76 @@ class OtherFeeType extends Component {
                         {/* <OmsSelect
                           options={this.props.session ? this.props.session.session_year.map((session) => ({ value: session, label: session })) : null}
                           change={this.handleAcademicyear} /> */}
+                         {this.state.feeDetails && this.state.feeDetails.length > 0 ?
+                          <React.Fragment>
+                          <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell> Sr</TableCell>
+                      <TableCell> Fee Type Name</TableCell>
+                      <TableCell> Multiple Records Allow</TableCell>
+                      <TableCell> Individual Student Wise</TableCell>
+                      <TableCell> Partial Payments</TableCell>
+                      <TableCell> Can Be Group</TableCell>
+                      <TableCell> Remarks</TableCell>
+                      <TableCell> Excess Amount</TableCell>
+                      <TableCell> Last Year Due</TableCell>
+                      {/* <TableCell>Advance Fee</TableCell>
+                      <TableCell>Parent Enable</TableCell> */}
+                      <TableCell>Status</TableCell>
+                      <TableCell>Edit</TableCell>
+                      <TableCell>Delete</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                  {this.state.feeDetails && this.state.feeDetails.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((val, i) => { 
+                    return (
+                  <TableRow>
+                     <TableCell> { i + 1 }</TableCell>
+                      {/* <TableCell>{ val.id} </TableCell> */}
+                      <TableCell>{val.fee_type_name ? val.fee_type_name : ''}</TableCell>
+                      <TableCell>{ val.is_multiple_records_allow ? 'Yes' : 'No'} </TableCell>
+                      <TableCell>{val.individual_student_wise ? 'Yes' : 'No'} </TableCell>
+                      <TableCell> { val.allow_partial_payments ? 'Yes' : 'No'} </TableCell>
+                      <TableCell> {val.can_be_group ? 'Yes' : 'No'} </TableCell>
+                      <TableCell>{val.is_allow_remarks ? 'Yes' : 'No'}</TableCell>
+                      <TableCell> {val.allow_excess_amount ? 'Yes' : 'No'}</TableCell>
+                      <TableCell> {val.is_last_year_due ? 'Yes' : 'No'}</TableCell>
+                      {/* <TableCell> {val.is_advance_fee ? 'Yes' : 'No'}</TableCell>
+                      <TableCell>{val.is_parent_enable ? 'Yes' : 'No'}</TableCell> */}
+                      <TableCell>{val.status ? 'Active' : 'Inactive'}</TableCell>
+                      <TableCell>
+                      <div onClick={() => this.showModalHandler(val.id)} style={{ cursor: 'pointer' }}>
+                  <Button basic>
+                    <Button.Content>
+                      <Icon name='edit' />
+                    </Button.Content>
+                  </Button>
+                </div>
+        </TableCell>
+                      <TableCell>
+                      <Button
+                  icon='delete'
+                  basic
+                  onClick={() => { this.deleteHandler(val.id) }}
+                />
+                </TableCell>
+                  </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={this.state.feeDetails && this.state.feeDetails.length}
+                rowsPerPage={this.state.rowsPerPage}
+                page={this.state.page}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
+                          </React.Fragment>
+                          : [] }
                       </Grid.Column>
                       <Grid.Column
                         computer={5}
