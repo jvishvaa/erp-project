@@ -1944,7 +1944,6 @@ class ApplicationFormAcc extends Component {
               />
             </React.Fragment>
             : [] }
-        }
         {this.state.showApp || (this.props.appDetails.data && !this.props.appDetails.recordsAvailable)
           ? <div className={classes.root} style={{ margin: '10px' }}>
             {/* <Student erp={this.props.erpCode} user={this.props.user} /> */}
