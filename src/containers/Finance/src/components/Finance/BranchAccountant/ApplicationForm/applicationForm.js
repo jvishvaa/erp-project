@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import { Button, withStyles,
   Radio, StepLabel, Step, Stepper, Typography,
-  Table, TableBody, TableCell, TableRow, TableHead, Paper, Grid } from '@material-ui/core/'
+  Table, TableBody, TableCell, TableRow, TableHead, TablePagination, Paper, Grid } from '@material-ui/core/'
 // import { makeStyles } from '@material-ui/core/styles'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -80,6 +80,8 @@ class ApplicationFormAcc extends Component {
   constructor (props) {
     super(props)
     this.state = {
+    page: 0,
+    rowsPerPage: 10,
       session: '2020-21',
       sessionData: {
         label: '2020-21',
@@ -178,6 +180,21 @@ class ApplicationFormAcc extends Component {
       this.props.fetchGrade(this.state.session, this.props.alert, this.props.user)
       this.props.fetchReceiptRange(this.state.session, this.props.alert, this.props.user)
     }
+  }
+
+  handleChangePage = (event, newPage) => {
+    this.setState({
+      page: newPage
+    })
+  }
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({
+      rowsPerPage:+event.target.value
+    })
+    this.setState({
+      page: 0
+    })
   }
 
   handleAcademicyear = (e) => {
@@ -1719,6 +1736,7 @@ class ApplicationFormAcc extends Component {
     let { classes } = this.props
     const steps = getSteps()
     const { activeStep } = this.state
+    let { appDetails } = this.props
     let siblings = null
     // console.log('===>appDetails: ', this.props.appDetails)
     if (this.props.appDetails.recordsAvailable) {
@@ -1884,7 +1902,49 @@ class ApplicationFormAcc extends Component {
             </Button>
           </Grid>
         </Grid>
-        {siblings}
+        {/* {siblings} */}
+        { appDetails.data && appDetails.data[0] && appDetails.data[0].child_detail_fk.length > 0 && appDetails && appDetails.data[0] && appDetails.data[0].child_detail_fk ?
+          <React.Fragment>
+             <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Lead Name</TableCell>
+                      <TableCell>Lead Number</TableCell>
+                      <TableCell> Student Name</TableCell>
+                      <TableCell> Apllication No</TableCell>
+                      <TableCell> Opting Class</TableCell>
+                      <TableCell>Lead Status</TableCell>
+                      <TableCell>App</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                  {appDetails.data && appDetails.data[0] && appDetails.data[0].child_detail_fk.length > 0 && appDetails && appDetails.data[0] && appDetails.data[0].child_detail_fk.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((val, i) => { 
+                    return (
+                  <TableRow>
+                     <TableCell> {appDetails.data[0].lead_name ? appDetails.data[0].lead_name : 'No data'}</TableCell>
+                     <TableCell>{appDetails.data[0].lead_contact_no ? appDetails.data[0].lead_contact_no : 'No data'}</TableCell>
+                      <TableCell>{ val.child_name ? val.child_name : 'No data'}</TableCell>
+                      <TableCell> {val.application_no ? val.application_no : 'No data'}</TableCell>
+                      <TableCell> {val.child_class && val.child_class.grade ? val.child_class.grade : 'No data'}</TableCell>
+                      <TableCell>{val.lead_status && val.lead_status.status_name ? val.lead_status.status_name : 'No Data'}</TableCell>
+                      <TableCell> {val.application_no ? 'Application Completed' : <Button variant='extended' color='primary' className={classes.button} disabled={!this.state.session} onClick={() => { this.showAppHandler(val.id) }}>Create Application</Button>}</TableCell>
+                  </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={appDetails.data && appDetails.data.length}
+                rowsPerPage={this.state.rowsPerPage}
+                page={this.state.page}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
+            </React.Fragment>
+            : [] }
+        }
         {this.state.showApp || (this.props.appDetails.data && !this.props.appDetails.recordsAvailable)
           ? <div className={classes.root} style={{ margin: '10px' }}>
             {/* <Student erp={this.props.erpCode} user={this.props.user} /> */}
