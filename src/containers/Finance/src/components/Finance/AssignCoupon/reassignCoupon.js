@@ -10,7 +10,8 @@ import {
   TableRow,
   TableCell,
   TableHead,
-  TextField
+  TextField,
+  TablePagination
 //   withStyles
 } from '@material-ui/core'
 // import { Edit } from '@material-ui/icons'
@@ -63,6 +64,8 @@ const ReAssignCoupon = ({ classes, session, branches, sessionData, gradeData, er
   const [applicableTo, setApplicableTo] = useState(null)
   const [deleteCouponModal, setDeleteCouponModal] = useState(false)
   // const [deleteErp, setDeleteErp] = useState(false)
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     listCoupon(alert, user)
@@ -232,6 +235,14 @@ const ReAssignCoupon = ({ classes, session, branches, sessionData, gradeData, er
   //     </Modal>
   //   )
   // }
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  }
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  }
   const deleteCouponHandler = (id, erp) => {
     const data = {
       id: id,
@@ -808,6 +819,107 @@ const ReAssignCoupon = ({ classes, session, branches, sessionData, gradeData, er
         ? <div>
           {/* {checkedAlls} */}
           {/* {studentErpTable} */}
+          {
+            <React.Fragment>
+        <div style={{ display: 'flex' }}>
+        <div style={{ padding: '10px' }}>
+         <input
+            type='checkbox'
+            style={{ width: '20px', height: '20px', paddingBottom: '35px' }}
+            checked={checkedAll || false}
+            onChange={checkAllStudentsHandler}
+          /> &nbsp; <b>Select All Students</b>
+        </div>
+        <div>
+          <TextField
+            id='erp1'
+            label='Search ERP'
+            type='number'
+            variant='outlined'
+            value={erpSearchValue || ''}
+            style={{ zIndex: 0, marginTop: '0px', marginBottom: 20 }}
+            onChange={erpSearchHandler}
+            InputLabelProps={{ shrink: true }}
+            InputProps={{
+              style: {
+                height: 35
+              }
+            }}
+          />
+        </div>
+      </div>
+                 <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell> Select</TableCell>
+                      <TableCell> Erp Code</TableCell>
+                      <TableCell>Coupon </TableCell>
+                      <TableCell>Applicale To</TableCell>
+                      <TableCell> valid</TableCell>
+                      <TableCell> Applicable</TableCell>
+                      <TableCell>Used</TableCell>
+                      {/* <TableCell>Edit</TableCell> */}
+                      <TableCell>View Details</TableCell>
+                      <TableCell>Delete Coupon</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  {studentErpList && studentErpList.length > 0 ?
+                  <TableBody>
+                  {studentErpList && studentErpList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((val, i) => { 
+                    return (
+                  <TableRow>
+                     <TableCell><input
+          type='checkbox'
+          name='checking'
+          value={i + 1}
+          // disabled={val.coupon && val.coupon.coupon}
+          checked={isChecked[val.id]}
+          onChange={
+            (e) => { checkBoxHandler(e, val.id) }
+          } /></TableCell>
+                     <TableCell>{val.student ? val.student.erp : ''}</TableCell>
+                      <TableCell>{val.student && val.coupon && val.coupon.coupon ? val.coupon.coupon : ''}</TableCell>
+                      <TableCell>{<p> {val.applicable_to === 'both' ? 'Stationary/Uniform' : val.applicable_to}</p>}</TableCell>
+                      <TableCell> {val.student && val.is_coupon_valid ? 'Yes' : val.student && 'No'}</TableCell>
+                      <TableCell> {val.student && val.is_coupon_applicable ? 'Yes' : val.student && 'No'}</TableCell>
+                      <TableCell>{ val.student && val.is_coupon_used ? 'Yes' : val.student && 'No'}</TableCell>
+                      <TableCell>{val.student && <Button
+          // style={{ marginTop: '25px' }}
+          variant='contained'
+          color='primary'
+          // disabled={!this.state.changedFeePlanId}
+          onClick={() => studentAllcoupondetail((val.student && val.student.erp))}
+        >
+        View Details
+        </Button>}</TableCell>
+<TableCell>
+  {val.student && <Button
+        // style={{ marginTop: '25px' }}
+          variant='contained'
+          color='primary'
+          // disabled={!this.state.changedFeePlanId}
+          onClick={() => deleteCouponHandler(val.id, val.student && val.student.erp)}
+        >
+      DELETE
+        </Button>}
+</TableCell>
+                  </TableRow>
+                    )
+                  })}
+                </TableBody>
+                   : '' }
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={studentErpList && studentErpList.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onChangePage={handleChangePage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+              />
+            </React.Fragment>
+          }
           {multiChange}
           {couponDetail}
           {detailsModal}
