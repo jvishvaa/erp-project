@@ -5,7 +5,8 @@ import { Divider, Grid, makeStyles, useTheme, withStyles, Button, TextField, Swi
 import ClassdetailsCard from './ClassdetailCard';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import Pagination from './Pagination';
+// import Pagination from './Pagination';
+import { Pagination } from '@material-ui/lab';
 // import MomentUtils from '@date-io/moment';
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 
@@ -151,7 +152,8 @@ const UpcomingClasses = () => {
     const [startDate, setStartDate] = React.useState(null);
     const [endDate, setEndDate] = React.useState(null);
     const [isLoding, setIsLoding] = React.useState(false);
-
+    const [page, setPage] = useState(1);
+    const [totalCount, setTotalCount] = useState(0);
     const [gradeDropdown, setGradeDropdown] = useState([])
     const [courseDropdown, setCourseDropdown] = useState([])
     const [batch, setBatch] = useState([])
@@ -159,6 +161,7 @@ const UpcomingClasses = () => {
     const [toggledData, setToggledData] = useState([])
 
     const [reload, setReload] = useState(false)
+    const limit =12;
 
     const [dateRangeTechPer, setDateRangeTechPer] = useState([
         moment().subtract(6, 'days'),
@@ -191,7 +194,9 @@ const UpcomingClasses = () => {
     function getDaysBefore(date, amount) {
         return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
     }
-
+    const handlePagination = (event, page) => {
+        setPage(page);
+      };
 
     const handleBranch = (event, value) => {
         setFilterData({ ...filterData, branch: '' })
@@ -276,9 +281,10 @@ const UpcomingClasses = () => {
                 })
         }
         else {
-            axiosInstance.get(`${endpoints.aol.classes}?page_number=1&page_size=15&class_type=1&is_aol=1&batch_limit=${filterData.batch.batch_size}&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}`)
+            axiosInstance.get(`${endpoints.aol.classes}?page_number=${page}&page_size=${limit}&class_type=1&is_aol=1&batch_limit=${filterData.batch.batch_size}&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}`)
                 // axiosInstance.get(`${endpoints.aol.classes}?class_type=1&page_number=1&aol_batch=4&page_size=15&is_aol=1&start_date=2021-02-06&end_date=2021-04-1`)
                 .then(result => {
+                    setTotalCount(result.data.count)
                     setClassesdata(result.data.data)
                     setToggledData([]);
                 })
@@ -684,12 +690,26 @@ const UpcomingClasses = () => {
                     </Grid>
                 ) */}
             </Grid>
-            {classesData.length > showPerPage && (
+            {classesData?.length > 0 && (
+                <div style={{alignItems:'center'}}>
+                <Pagination
+                onChange={handlePagination}
+                style={{ marginTop: 25,marginLeft:'38rem' }}
+                count={Math.ceil(totalCount / limit)}
+                color='primary'
+                page={page}
+              />
+                </div>
+            )}
+            {toggledData?.length >0 && (
                 <div>
+                    
                     <Pagination
-                        showPerPage={showPerPage}
-                        onPaginationChange={onPaginationChange}
-                        totalCategory={classesData.length}
+                        onChange={handlePagination}
+                        style={{ marginTop: 25,marginLeft:'38rem' }}
+                        count={Math.ceil(toggledData?.length / limit)}
+                        color='primary'
+                        page={page}
                     />
                 </div>
             )}

@@ -224,7 +224,7 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
       axiosInstance
         .get(
           `erp_user/${
-            fullData && fullData.online_class && fullData.online_class.id
+            fullData  && fullData.id
           }/online-class-details/`
         )
         .then((res) => {
