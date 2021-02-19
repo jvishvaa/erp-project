@@ -2,7 +2,13 @@ import React, { useEffect, useState } from 'react'
 import {
   TextField,
   Grid,
-  Button
+  Button,
+  Table,
+  TableCell,
+  TableRow,
+  TableHead,
+  TableBody,
+  TablePagination
 } from '@material-ui/core'
 import Select from 'react-select'
 // import ReactTable from 'react-table'
@@ -36,6 +42,8 @@ const CustomerDeatils = ({ setCustomerDetails, user, alert, fetchBranches, domai
   const [updateEmail, setUpdateEmail] = useState('')
   const [updateNumber, setUpdateNumber] = useState('')
   const [domainId, setDomainId] = useState(null)
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     // listDomainName(sessionData && sessionData.value, user, alert)
@@ -52,6 +60,15 @@ const CustomerDeatils = ({ setCustomerDetails, user, alert, fetchBranches, domai
       setShowTable(true)
     }
   }, [role, getCustomerDetails, sessionData, user, alert])
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  }
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  }
 
   const handleClickSessionYear = (e) => {
     setSessionData(e)
@@ -452,6 +469,49 @@ const CustomerDeatils = ({ setCustomerDetails, user, alert, fetchBranches, domai
       {customerDetModal}
       {editcustomerDetModal}
       {/* {showTable ? studentErpTable : []} */}
+      {
+        showTable ?
+        <React.Fragment>
+                 <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Branch Name</TableCell>
+                      <TableCell> Customer Name</TableCell>
+                      <TableCell> E-Mail</TableCell>
+                      <TableCell> Number</TableCell>
+                      <TableCell> Edit</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                  {custDetails && custDetails.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((val, i) => { 
+                    return (
+                  <TableRow>
+                     <TableCell> {val.branch && val.branch.branch_name ? val.branch.branch_name : val.branch}</TableCell>
+                      {/* <TableCell>{ val.id} </TableCell> */}
+                      <TableCell>{val.name ? val.name : ''}</TableCell>
+                      <TableCell>{val.email ? val.email : ''} </TableCell>
+                      <TableCell>{val.contact ? val.contact : ''} </TableCell>
+                      <TableCell> <Button
+          variant='contained'
+          color='primary'
+          onClick={() => editCusDetailsHandler(val.id, val.name, val.email, val.contact)}
+        >EDIT CUSTOMER DETAILS</Button> </TableCell>
+                  </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={custDetails && custDetails.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onChangePage={handleChangePage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+              />
+        </React.Fragment>
+        : []}
     </div>
   )
 }
