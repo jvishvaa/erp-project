@@ -4,12 +4,13 @@ import {
   TextField,
   Grid,
   Button,
-  // Table,
-  // TableCell,
-  // TableRow,
-  // TableHead,
-  // TableBody,
-CircularProgress
+  Table,
+  TableCell,
+  TableRow,
+  TableHead,
+  TableBody,
+CircularProgress,
+TablePagination
 } from '@material-ui/core'
 import Select from 'react-select'
 // import ReactTable from 'react-table' // rajneesh
@@ -38,6 +39,8 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
   const [updatedate, setUpdateDate] = useState('')
   const [updateendDate, setUpdateEndDate] = useState('')
   const [rowId, setRowId] = useState('')
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   // const selectDomainHandler = (e) => {
   //   setSelectedDomain(e)
@@ -54,6 +57,16 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
       setShowTable(true)
     }
   }, [alert, role, sessionData, todayEMandateDetails, user])
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  }
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  }
+
   const handleClickSessionYear = (e) => {
     setSessionData(e)
     setShowTable(false)
@@ -634,6 +647,48 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
       </Grid>
       {/* {todayDeatilsModal} */}
       {/* {showTable ? studentErpTable : []} */}
+      { showTable ? 
+        <React.Fragment>
+               <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Branch Name</TableCell>
+                      <TableCell> Amount Per Student</TableCell>
+                      <TableCell> Billing Start Date</TableCell>
+                      <TableCell> Billing End Date</TableCell>
+                      <TableCell> Edit</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                  {todayDetail && todayDetail.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((val, i) => { 
+                    return (
+                  <TableRow>
+                     <TableCell> { val.branch && val.branch.branch_name ? val.branch.branch_name : ''}</TableCell>
+                      {/* <TableCell>{ val.id} </TableCell> */}
+                      <TableCell>{val.amount ? val.amount : ''}</TableCell>
+                      <TableCell>{val.billing_start_date ? val.billing_start_date : ''} </TableCell>
+                      <TableCell>{val.billing_end_date ? val.billing_end_date : ''} </TableCell>
+                      <TableCell> {<Button
+          variant='contained'
+          color='primary'
+          onClick={() => editModalHandler(val.branch && val.branch.id, val.amount, val.billing_start_date, val.billing_end_date)}
+        >EDIT</Button>} </TableCell>
+                  </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={todayDetail && todayDetail.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onChangePage={handleChangePage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+              />
+        </React.Fragment>
+        : [] }
       {todayDeatilsModal}
       {editDeatilsModal}
       {dataLoadingStatus ? <CircularProgress open /> : null}
