@@ -400,9 +400,9 @@ export const getGenerateSubsequents = (payload) => {
         }
       })
       if (response.status === 200 && response.data && response.data.length > 0) {
-        payload.alert.success('Successfully Subsequent Payment Details!')
+        // payload.alert.success('Successfully Subsequent Payment Details!')
       } else {
-        payload.alert.success('No Record Found!')
+        // payload.alert.success('No Record Found!')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
@@ -432,7 +432,7 @@ export const updateCustDetails = (payload) => {
         }
       })
       if (response.status === 200) {
-        payload.alert.success('Successfully Updated!')
+        // payload.alert.success('Successfully Updated!')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
@@ -469,9 +469,9 @@ export const totalBillingDetails = (payload) => {
             data: response.data
           }
         })
-        payload.alert.success('Successfully got Total Billing Details!')
+        // payload.alert.success('Successfully got Total Billing Details!')
       } else {
-        payload.alert.success('No Record Found!')
+        // payload.alert.success('No Record Found!')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
@@ -501,9 +501,9 @@ export const getDomainNameWithCusId = (payload) => {
         }
       })
       if (response.status === 200 && response.data && response.data.length > 0) {
-        payload.alert.success('Successfully Get Order Details!')
+        // payload.alert.success('Successfully Get Order Details!')
       } else {
-        payload.alert.success('No Record Found!')
+        // payload.alert.success('No Record Found!')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
@@ -529,7 +529,7 @@ export const updateDomainName = (payload) => {
         }
       })
       if (response.status === 200) {
-        payload.alert.success('Successfully Updated!')
+        // payload.alert.success('Successfully Updated!')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
@@ -559,7 +559,7 @@ export const generateSubsequentPayment = (payload) => {
         }
       })
       if (response.status === 201) {
-        payload.alert.success('Payment Successfully !')
+        // payload.alert.success('Payment Successfully !')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
@@ -590,7 +590,7 @@ export const createLink = (payload) => {
             data1: response.status
           }
         })
-        payload.alert.success('Created Successfully !')
+        // payload.alert.success('Created Successfully !')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
@@ -598,7 +598,7 @@ export const createLink = (payload) => {
       if (err.response && (err.response.status === 400 || err.response.status === 401)) {
         payload.alert.warning(err.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
     })
@@ -620,7 +620,7 @@ export const domainDailyBillGenerateStatus = (payload) => {
         }
       })
       if (response.status === 200) {
-        payload.alert.success('Successfully Generated Daily Billing Details!')
+        // payload.alert.success('Successfully Generated Daily Billing Details!')
       }
       // else {
       //   payload.alert.success('No Record Found!')
