@@ -9,6 +9,7 @@ import {
   TableRow,
   TableHead,
   TableBody,
+  TablePagination,
 CircularProgress
 } from '@material-ui/core'
 import Select from 'react-select'
@@ -42,6 +43,8 @@ const DailyBillingDetails = ({ dataLoadingStatus, alert, fetchBranches, todayEMa
   // const [endDate, setEnddate] = useState(null)
   // const [startDate, setStartdate] = useState(null)
   const [role, setRole] = useState('')
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   // const selectDomainHandler = (e) => {
   //   setSelectedDomain(e)
@@ -75,6 +78,15 @@ const DailyBillingDetails = ({ dataLoadingStatus, alert, fetchBranches, todayEMa
       setShowTable(true)
     }
   }, [alert, listDomainName, role, sessionData, totalBillingDetails, user])
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  }
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  }
 
   const handleClickSessionYear = (e) => {
     setSessionData(e)
@@ -531,6 +543,48 @@ const DailyBillingDetails = ({ dataLoadingStatus, alert, fetchBranches, todayEMa
       /> : [] }
       {/* {ShowDailyDetPage ? <DailyBillingDetailsPage /> : []} */}
       {/* {totalBillingDetail && totalBillingDetail.length > 0 && showTable ? studentErpTable : []} */} // rajneesh
+      { totalBillingDetail && totalBillingDetail.length > 0 && showTable ?
+        <React.Fragment>
+        <Table>
+           <TableHead>
+             <TableRow>
+               <TableCell>Branch Name</TableCell>
+               <TableCell> Total Amount</TableCell>
+               <TableCell> Paid Amount</TableCell>
+               <TableCell> Daily Details</TableCell>
+             </TableRow>
+           </TableHead>
+           <TableBody>
+           {totalBillingDetail && totalBillingDetail.length > 0 && data && data.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((val, i) => { 
+             return (
+           <TableRow>
+              <TableCell> { val.branch_name ? val.branch_name : ''}</TableCell>
+               {/* <TableCell>{ val.id} </TableCell> */}
+               <TableCell>{totalBillingDetail && totalBillingDetail[totalBillingDetail.length - 1] && totalBillingDetail[totalBillingDetail.length - 1].total_amount && '₹' + totalBillingDetail[totalBillingDetail.length - 1].total_amount.toFixed(2) ? totalBillingDetail && totalBillingDetail[totalBillingDetail.length - 1] && totalBillingDetail[totalBillingDetail.length - 1].total_amount && '₹' + totalBillingDetail && totalBillingDetail[totalBillingDetail.length - 1] && totalBillingDetail[totalBillingDetail.length - 1].total_amount.toFixed(2) : '0'}</TableCell>
+               <TableCell>{totalBillingDetail && totalBillingDetail[totalBillingDetail.length - 1] && totalBillingDetail[totalBillingDetail.length - 1].total_paid_amount && '₹' + totalBillingDetail[totalBillingDetail.length - 1].total_paid_amount.toFixed(2) ? totalBillingDetail && totalBillingDetail[totalBillingDetail.length - 1] && totalBillingDetail[totalBillingDetail.length - 1].total_paid_amount && '₹' + totalBillingDetail[totalBillingDetail.length - 1].total_paid_amount.toFixed(2) : '0'
+} </TableCell>
+               <TableCell> <Button
+          variant='contained'
+          color='primary'
+          style={{ marginTop: -5 }}
+          onClick={showTodayDetailPage}
+        >DAILY Billing DETAILS</Button> </TableCell>
+           </TableRow>
+             )
+           })}
+         </TableBody>
+       </Table>
+       <TablePagination
+         rowsPerPageOptions={[10, 25, 100]}
+         component="div"
+         count={totalBillingDetail && totalBillingDetail.length > 0 && data && data.length}
+         rowsPerPage={rowsPerPage}
+         page={page}
+         onChangePage={handleChangePage}
+         onChangeRowsPerPage={handleChangeRowsPerPage}
+       />
+ </React.Fragment>
+      : [] }
       { billingDeatilsModal }
       {/* {todayDeatilsModal} */}
       {dataLoadingStatus ? <CircularProgress open /> : null}
