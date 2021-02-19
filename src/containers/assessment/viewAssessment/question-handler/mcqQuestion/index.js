@@ -8,7 +8,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 import ReactHtmlParser from 'react-html-parser';
 import { AssessmentHandlerContext } from '../../../assess-attemption/assess-attemption-context';
 
-const McqQuestion = () => {
+const McqQuestion = (props) => {
   const {
     assessmentQp: { fetching },
     fetchAssessmentQp,
@@ -27,7 +27,8 @@ const McqQuestion = () => {
     },
   } = useContext(AssessmentHandlerContext);
 
-  const { [currentQuesionId]: currentQuestionObj = {} } = questionsDataObj || {};
+  // const { [currentQuesionId]: currentQuestionObj = {} } = questionsDataObj || {};
+  const { questionObj: currentQuestionObj } = props || {};
 
   const {
     id: qId,

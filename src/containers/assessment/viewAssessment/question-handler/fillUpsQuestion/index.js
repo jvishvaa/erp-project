@@ -1,15 +1,13 @@
 import React, { useState, useContext, useEffect } from 'react';
-import '../../viewAssessment.css';
 import { TextField } from '@material-ui/core';
 import ReactHtmlParser from 'react-html-parser';
-import TinyMce from '../../../../../components/TinyMCE/tinyMce';
+
+// import TinyMce from '../../../../../components/TinyMCE/tinyMce';
 import { AssessmentHandlerContext } from '../../../assess-attemption/assess-attemption-context';
+import '../../viewAssessment.css';
 
-const FillUpsQuestion = () => {
+const FillUpsQuestion = (props) => {
   const {
-    assessmentQp: { fetching },
-    fetchAssessmentQp,
-
     questionsDataObj,
     questionsArray,
     controls: {
@@ -24,8 +22,8 @@ const FillUpsQuestion = () => {
     },
   } = useContext(AssessmentHandlerContext);
 
-  const { [currentQuesionId]: currentQuestionObj = {} } = questionsDataObj || {};
-
+  // const { [currentQuesionId]: currentQuestionObj = {} } = questionsDataObj || {};
+  const { questionObj: currentQuestionObj } = props || {};
   const {
     id: qId,
     question_type: questionType,

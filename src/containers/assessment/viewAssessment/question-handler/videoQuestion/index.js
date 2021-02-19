@@ -9,7 +9,7 @@ import ReactHtmlParser from 'react-html-parser';
 import { AssessmentHandlerContext } from '../../../assess-attemption/assess-attemption-context';
 import TinyMce from '../../../../../components/TinyMCE/tinyMce';
 
-const VideoQuestion = () => {
+const VideoQuestion = (props) => {
   const {
     assessmentQp: { fetching },
     fetchAssessmentQp,
@@ -28,7 +28,8 @@ const VideoQuestion = () => {
     },
   } = useContext(AssessmentHandlerContext);
 
-  const { [currentQuesionId]: currentQuestionObj = {} } = questionsDataObj || {};
+  // const { [currentQuesionId]: currentQuestionObj = {} } = questionsDataObj || {};
+  const { questionObj: currentQuestionObj } = props || {};
 
   const {
     id: qId,

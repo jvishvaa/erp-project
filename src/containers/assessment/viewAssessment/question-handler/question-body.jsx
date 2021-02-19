@@ -15,13 +15,17 @@ const QuestionBody = ({ children, ...restProps }) => {
     4: (propObj) => <VideoQuestion {...propObj} />,
     6: (propObj) => <MatrixQuestion {...propObj} />,
     7: (propObj) => {
+      const { questionObj } = propObj;
+      const { question_answer: questionAnswer } = questionObj || {};
+      const [{ question: comprehensionText }] = questionAnswer || [];
       return (
         <>
-          <p>Comp questions</p>
+          <p>{comprehensionText}</p>
           <p>Sub questions</p>
-          {
-           console.log('propObj.questionObj.sub_questions', propObj.questionObj.sub_questions) 
-          }
+          {console.log(
+            'propObj.questionObj.sub_questions',
+            propObj.questionObj.sub_questions
+          )}
           {propObj.questionObj.sub_questions.map((subQues, index) => {
             return <QuestionBody key={subQues.id} qIndex={index} questionObj={subQues} />;
           })}
