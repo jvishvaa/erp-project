@@ -382,6 +382,11 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
               </Grid>
               <Grid item md={12} xs={12}>
                 <Divider className='fullViewDivider' />
+                {noOfPeriods && noOfPeriods.length === 0 && (
+                  <Typography style={{color: '#ff6b6b', margin: '10px'}}>
+                    No Record found
+                  </Typography>
+                )}
                 {noOfPeriods && noOfPeriods.length > 0 && noOfPeriods.map((data) => <JoinClass  data={data} fullData={fullData} handleClose={handleClose}/>)}
                 {/* window.location.pathname === '/online-class/attend-class' ?
                   noOfPeriods && noOfPeriods.length > 0 && noOfPeriods.map((data) => <JoinClass  date={data.date} fullData={fullData} handleClose={handleClose}/>)

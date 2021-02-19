@@ -177,7 +177,8 @@ export default function ResourceDetailsCardComponent(props) {
 
     React.useEffect(() => {
         if (props.resourceData) {
-          axiosInstance
+            setNoOfPeriods([]);
+            axiosInstance
             .get(`erp_user/${props.resourceData && props.resourceData.id}/online-class-details/`)
             .then((res) => {
               console.log(res.data );
@@ -185,7 +186,7 @@ export default function ResourceDetailsCardComponent(props) {
             })
             .catch((error) => setAlert('error', error.message));
         }
-      }, [props.resourceData]);
+    }, [props.resourceData]);
 
     return (
         <div className={classes.classDetailsBox}>
