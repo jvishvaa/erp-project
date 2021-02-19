@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import { TextField, Switch, FormControlLabel, Button, SvgIcon } from '@material-ui/core';
 import './duration.css';
 import { Add, Remove } from '@material-ui/icons';
@@ -21,9 +22,10 @@ const DurationContainer = (props) => {
     resetContent,
     clearFlag,
     setCourseId,
-    setSelectedCourse
+    setSelectedCourse,
   } = props;
 
+  const history = useHistory();
   const { setAlert } = useContext(AlertNotificationContext);
   const [noOfWeeks, setNoOfWeeks] = useState(
     '' || [...collectData][funBatchSize(Number(selectedLimit.substring(2)))]['weeks']
@@ -52,11 +54,10 @@ const DurationContainer = (props) => {
       const index = collectData.findIndex(
         (datarow) => datarow['limit'] === selectedLimit
       );
-      setNoOfWeeks(collectData[index]['weeks']||'');
+      setNoOfWeeks(collectData[index]['weeks'] || '');
       // setToggle(collectData[index]['toggle']);
       setEditToggle(collectData[index]['toggle']);
-      if(collectData[index]['toggle']) 
-        setToggle(true);
+      if (collectData[index]['toggle']) setToggle(true);
       else setToggle(false);
       setRecursiveContent(collectData[index]['data']);
       setNonRecursiveContent(collectData[index]['singleData']);
@@ -69,8 +70,9 @@ const DurationContainer = (props) => {
     if (toggle) {
       const list = [...recursiveContent];
       if (name === 'price') {
-        if (value.match(/^[0-9]*\.?([0-9]+)?$/)) list[index][name] = value;
-        else setAlert('warning', 'Price can contain only numbers!');
+        if (value.match(/^[0-9]*\.?([0-9]+)?$/)) {
+          list[index][name] = value;
+        } else setAlert('warning', 'Price can contain only numbers!');
       } else {
         list[index][name] = value;
       }
@@ -89,7 +91,24 @@ const DurationContainer = (props) => {
 
   const handleAdd = () => {
     const list = [...recursiveContent];
-    list.push({ weeks: '', price: '', id: '' });
+    let flag = true,ind=0;
+    if (list.length >=2) {
+      for (let i = 1; i < list.length; i++) {
+        if (
+          list[i - 1]['price']+1 > list[i]['price'] ||
+          list[i - 1]['weeks']+1 > list[i]['weeks']
+        ) {
+          flag = false;
+          ind=i;
+          break;
+        } else {
+          flag = true;
+        }
+      }
+    }
+    if(flag) list.push({ weeks: '', price: '', id: '' });
+    else setAlert('error', `Price and weeks must be more than it's previous value for index ${ind+1}`);
+
     setRecursiveContent(list);
   };
 
@@ -111,13 +130,10 @@ const DurationContainer = (props) => {
 
   const handleNumberOfWeeks = (value) => {
     setNoOfWeeks(value);
-    // if (toggle) {
     [...recursiveContent][0]['weeks'] = parseInt(value);
     setRecursiveContent([...recursiveContent]);
-    // } else {
     [...nonRecursiveContent][0]['weeks'] = parseInt(value);
     setNonRecursiveContent([...nonRecursiveContent]);
-    // }
   };
 
   useEffect(() => {
@@ -125,7 +141,7 @@ const DurationContainer = (props) => {
     for (let i = 0; i < list.length; i++) {
       if (list[i]['limit'] === selectedLimit) {
         list[i]['weeks'] = noOfWeeks;
-        list[i]['toggle'] = editToggle?editToggle:toggle;
+        list[i]['toggle'] = editToggle ? editToggle : toggle;
         list[i]['data'] = recursiveContent;
         list[i]['singleData'] = nonRecursiveContent;
         break;
@@ -183,7 +199,7 @@ const DurationContainer = (props) => {
         batch_size: list[i]['limit'].substring(2),
         is_recurring: list[i]['toggle'] ? 'True' : 'False',
         course_price: coursePriceArray,
-        id: list[i]['id'],
+        id: Number(list[i]['id']),
       });
     }
     let request = {};
@@ -211,6 +227,7 @@ const DurationContainer = (props) => {
               resetContent();
               setCourseId('');
               setSelectedCourse('');
+              history.push('/create/course');
             } else {
               setAlert('error', result.data.message);
             }
