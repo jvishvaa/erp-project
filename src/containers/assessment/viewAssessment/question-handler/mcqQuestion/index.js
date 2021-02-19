@@ -1,69 +1,33 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
-import '../../viewAssessment.css';
+import React, { useContext } from 'react';
 import Radio from '@material-ui/core/Radio';
+import ReactHtmlParser from 'react-html-parser';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
-import ReactHtmlParser from 'react-html-parser';
+// import FormLabel from '@material-ui/core/FormLabel';
+
 import { AssessmentHandlerContext } from '../../../assess-attemption/assess-attemption-context';
+import '../../viewAssessment.css';
 
 const McqQuestion = (props) => {
   const {
-    assessmentQp: { fetching },
-    fetchAssessmentQp,
-
-    questionsDataObj,
-    questionsArray,
-    controls: {
-      selectQues,
-      nextQues,
-      //   prevQues,
-      attemptQuestion,
-      isStarted,
-      currentQuesionId,
-      start,
-      //   startedAt,
-    },
+    controls: { attemptQuestion },
   } = useContext(AssessmentHandlerContext);
 
-  // const { [currentQuesionId]: currentQuestionObj = {} } = questionsDataObj || {};
   const { questionObj: currentQuestionObj } = props || {};
 
   const {
     id: qId,
-    question_type: questionType,
-    meta: { index: qIndex } = {},
-    question_answer,
-    user_response: { attemption_status: attemptionStatus } = {},
+    question_answer: questionAnswer,
+    user_response: { answer: existingAnswerArray } = {},
   } = currentQuestionObj || {};
 
-  const [{ answer, options, question }] = question_answer;
-  const [optionSelected, setOptionSelected] = React.useState(null);
-  // const [isChecked, setIsChecked] = useState([]);
-  useEffect(() => {
-    console.log('is CHecked: ', currentQuestionObj);
-    // if (currentQuestionObj?.user_response?.attemptionStatus) {
-    //   console.log('selected answer: ', currentQuestionObj?.user_response);
-    //   setOptionSelected(currentQuestionObj?.user_response?.answer);
-    // }
-  }, []);
+  const [existingAnswer] = existingAnswerArray || [];
 
-  function removeTags(str) {
-    if (str === null || str === '') return false;
-    str = str.toString();
-    return str.replace(/(<([^>]+)>)/gi, '');
-  }
+  const [{ options, question }] = questionAnswer || [];
 
   const handleOptionValue = (event) => {
-    // setIsChecked([{ [qId]: event.target.value }]);
-    setOptionSelected(event.target.value);
-    attemptQuestion(qId, { attemptionStatus: true, answer: event.target.value });
-    // console.log('selected value : ', attemptQuestion);
-  };
-
-  const handleNextQuestion = () => {
-    nextQues(qId);
+    attemptQuestion(qId, { attemptionStatus: true, answer: [event.target.value] });
   };
 
   return (
@@ -79,7 +43,9 @@ const McqQuestion = (props) => {
         </div>
       </div> */}
       <div className='mcq-question-wrapper'>
-        <h3>{ReactHtmlParser(question)}</h3>
+        <div style={{ fontWeight: 'bold', textAlign: 'center' }}>
+          {ReactHtmlParser(question)}
+        </div>
         {/* <img src='https://via.placeholder.com/150' alt='question image' /> */}
         {/* {options.map((option, index) => {
           return (
@@ -97,30 +63,35 @@ const McqQuestion = (props) => {
             </div>
           );
         })} */}
-        <FormControl component='fieldset'>
+        <FormControl
+          component='fieldset'
+          // style={{ width: '80%' }}
+          onChange={handleOptionValue}
+        >
           {/* <FormLabel component='legend'>Options</FormLabel> */}
           <RadioGroup
             aria-label='gender'
             name='options'
-            value={currentQuestionObj?.user_response?.answer}
+            // value={currentQuestionObj?.user_response?.answer}
+            value={existingAnswer}
             onChange={handleOptionValue}
           >
             <FormControlLabel
               className='mcq-options'
-              value='Option1'
+              value='option1'
               control={<Radio />}
               label={options[0].option1.optionValue}
             />
             <FormControlLabel
               className='mcq-options'
-              value='Option2'
+              value='option2'
               control={<Radio />}
               label={options[1].option2.optionValue}
             />
             {options[2]?.option3?.optionValue ? (
               <FormControlLabel
                 className='mcq-options'
-                value='Option3'
+                value='option3'
                 control={<Radio />}
                 label={options[2].option3.optionValue}
               />
@@ -129,7 +100,7 @@ const McqQuestion = (props) => {
             {options[3]?.option4?.optionValue ? (
               <FormControlLabel
                 className='mcq-options'
-                value='Option4'
+                value='option4'
                 control={<Radio />}
                 label={options[3].option4.optionValue}
               />
@@ -138,7 +109,7 @@ const McqQuestion = (props) => {
             {options[4]?.option5?.optionValue ? (
               <FormControlLabel
                 className='mcq-options'
-                value='Option5'
+                value='option5'
                 control={<Radio />}
                 label={options[4].option5.optionValue}
               />

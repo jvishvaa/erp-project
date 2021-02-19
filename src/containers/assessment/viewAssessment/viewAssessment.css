@@ -30,6 +30,12 @@
 
 .mcq-question-wrapper img {
   margin-bottom: 20px;
+  width: 100% !important;
+  /* border: 1px solid #055888; */
+  border-radius: 5px;
+  height: auto !important;
+  max-height: 300px;
+  object-fit: contain !important;
 }
 
 .mcq-options {
@@ -39,7 +45,7 @@
   padding: 10px;
   width: 100%;
   text-align: center;
-  max-width: 400px;
+  /* max-width: 400px; */
   cursor: pointer;
   margin-bottom: 10px;
 }

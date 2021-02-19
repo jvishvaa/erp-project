@@ -1,14 +1,14 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useContext, useState, useEffect } from 'react';
-import { AssessmentHandlerContext } from '../../assess-attemption/assess-attemption-context';
-import './sidebarPanel.css';
+import React, { useContext, useState } from 'react';
 import { Button } from '@material-ui/core';
-// import { AssessmentHandlerContext } from '../../assess-attemption/assess-attemption-context';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import GeneralGuide from '../generalGuide';
+import TimerComponent from './timer';
+import { AssessmentHandlerContext } from '../../assess-attemption/assess-attemption-context';
+import './sidebarPanel.css';
 
 function rand() {
   return Math.round(Math.random() * 20) - 10;
@@ -49,60 +49,37 @@ const SidebarCounterPanel = () => {
   };
 
   const {
-    assessmentQp: { fetching },
-    fetchAssessmentQp,
-
-    questionsDataObj,
+    assessmentDetails: { test_duration: testDuration } = {},
+    questionsMetaInfo: { is_ready_to_submit: isReadyToSubmit },
     questionsArray,
-    controls: {
-      selectQues,
-      nextQues,
-      //   prevQues,
-      attemptQuestion,
-      isStarted,
-      currentQuesionId,
-      start,
-      //   startedAt,
-    },
+    questionsDataObj,
+    controls: { selectQues, isStarted, currentQuesionId, start, submit, startedAt },
   } = useContext(AssessmentHandlerContext);
   const { setAlert } = useContext(AlertNotificationContext);
 
   const { [currentQuesionId]: currentQuestionObj = {} } = questionsDataObj || {};
 
-  const {
-    id: qId,
-    question_type: questionType,
-    meta: { index: qIndex } = {},
-    question_answer,
-    topic,
-    topic_name: topicName,
-    user_response: { attemption_status: attemptionStatus } = {},
-  } = currentQuestionObj || {};
+  const { topic, topic_name: topicName } = currentQuestionObj || {};
 
-  // const [{ answer, options, question }] = question_answer;
-  const [minutes, setMinutes] = useState(60);
-  const [seconds, setSeconds] = useState(0);
-
-  useEffect(() => {
-    const myInterval = setInterval(() => {
-      if (seconds > 0) {
-        setSeconds(seconds - 1);
-      }
-      if (seconds === 0) {
-        if (minutes === 0) {
-          clearInterval(myInterval);
-        } else {
-          setMinutes(minutes - 1);
-          setSeconds(59);
-        }
-      }
-    }, 1000);
-    return () => {
-      clearInterval(myInterval);
-    };
-  });
   const submitTheResult = () => {
-    setAlert('Success', 'Result Submitted Successfully!');
+    const onSubmitSuccess = (res = {}) => {
+      const { message, status_code: statusCodeResponse } = res.data || {};
+      const statusCode = Number(statusCodeResponse);
+      if (statusCode > 199 && statusCode < 300) {
+        setAlert('Success', `${message}`);
+        // 'Result Submitted Successfully!'
+      } else {
+        setAlert('error', `${message}`);
+      }
+    };
+    const onSubmitFailure = (err) => {
+      const {
+        response: { statusText = 'Failed to connect to server' } = {},
+        data: { message: messageFromDev } = {},
+      } = err || {};
+      setAlert('error', `${messageFromDev || statusText}`);
+    };
+    submit({ onResolve: onSubmitSuccess, onReject: onSubmitFailure });
   };
 
   const body = (
@@ -120,13 +97,9 @@ const SidebarCounterPanel = () => {
           <h4 className='cardTitleHeading'>{topic || 'NA'}</h4>
           <h5>{topicName || 'NA'}</h5>
         </div>
-        <div className='sidebar-time-counter'>
-          <h4>Time Remaining</h4>
-          <h5 className='counter-timer'>
-            {minutes}:
-{seconds}
-          </h5>
-        </div>
+        {testDuration ? (
+          <TimerComponent submit={submitTheResult} duration={testDuration} />
+        ) : null}
       </div>
       <div className='sidebar-question-list'>
         <h6>Question List</h6>
@@ -177,6 +150,7 @@ const SidebarCounterPanel = () => {
           className='contained'
           variant='contained'
           color='primary'
+          disabled={!isReadyToSubmit}
           onClick={submitTheResult}
         >
           Submit

@@ -1,25 +1,26 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Container, Grid } from '@material-ui/core';
+import React, { useContext } from 'react';
 import { withRouter } from 'react-router-dom';
-import axios from 'axios';
+import { Container, Grid } from '@material-ui/core';
 import Loading from '../../../components/loader/loader';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-import axiosInstance from '../../../config/axios';
-import endpoints from '../../../config/endpoints';
-import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-import './viewAssessment.css';
 import SidebarCounterPanel from './sidebarCounterPanel';
 import GeneralGuide from './generalGuide';
 import { AssessmentHandlerContext } from '../assess-attemption/assess-attemption-context';
+import './viewAssessment.css';
 
 import QuestionHandler from './question-handler/question-handler';
 
-const ViewAssessmentUI = () => {
+const ViewAssessmentUI = (props) => {
+  const {
+    match: {
+      params: { assessmentId },
+    },
+  } = props || {};
   const {
     assessmentQp: { fetching },
     fetchAssessmentQp,
 
-    questionsDataObj,
+    // questionsDataObj,
     // questionsArray,
     controls: {
       //   selectQues,
@@ -27,23 +28,23 @@ const ViewAssessmentUI = () => {
       //   prevQues,
       //   attemptQuestion,
       isStarted,
-      currentQuesionId,
+      // currentQuesionId,
       start,
       //   startedAt,
     },
   } = useContext(AssessmentHandlerContext);
   React.useEffect(() => {
-    fetchAssessmentQp({ assessment_id: 20 });
+    fetchAssessmentQp({ assessment_id: assessmentId });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { [currentQuesionId]: currentQuestionObj = {} } = questionsDataObj || {};
-  const {
-    id: qId,
-    question_type: questionType,
-    meta: { index: qIndex } = {},
-    user_response: { attemption_status: attemptionStatus } = {},
-  } = currentQuestionObj || {};
+  // const { [currentQuesionId]: currentQuestionObj = {} } = questionsDataObj || {};
+  // const {
+  //   id: qId,
+  //   question_type: questionType,
+  //   meta: { index: qIndex } = {},
+  //   user_response: { attemption_status: attemptionStatus } = {},
+  // } = currentQuestionObj || {};
 
   return (
     <>
@@ -64,21 +65,6 @@ const ViewAssessmentUI = () => {
         ) : (
           <div className='instruction-screen-wrapper'>
             <div className='instruction-screen'>
-              {/* <h2>
-                There are 20 questions with instructions given , kindly read the
-                instructions before answering
-              </h2>
-              <div className='instruction-question'>
-                <div>Q1</div>
-                <div>Progress 1/20</div>
-              </div>
-              <p>Passage or image based questions</p>
-              <div className='mcq-question-wrapper'>
-                <div className='mcq-options'>Option 1</div>
-                <div className='mcq-options'>Option 2</div>
-                <div className='mcq-options'>Option 3</div>
-                <div className='mcq-options'>Option 4</div>
-              </div> */}
               <GeneralGuide />
               <button type='button' className='question-submit-btn' onClick={start}>
                 Start

@@ -14,17 +14,25 @@ const QuestionHandler = () => {
 
   const { [currentQuesionId]: currentQuestionObj = {} } = questionsDataObj || {};
   const { meta: { index: qIndex } = {} } = currentQuestionObj || {};
-  const propsObj = { qIndex, questionsArray, questionObj: currentQuestionObj };
+  const propsObj = {
+    questionsDataObj,
+    qIndex,
+    questionsArray,
+    questionObj: currentQuestionObj,
+  };
   return (
     <>
       <QuestionHeader {...propsObj} />
       <QuestionBody {...propsObj} />
-      <div
-        key='question-submit-btn'
-        className='question-submit-btn'
-        onClick={() => nextQues()}
-      >
-        Next
+      <div style={{ display: 'flex', margin: 5 }}>
+        <div
+          key='question-submit-btn'
+          className='question-submit-btn'
+          style={{ margin: 'auto' }}
+          onClick={() => nextQues()}
+        >
+          Next
+        </div>
       </div>
     </>
   );

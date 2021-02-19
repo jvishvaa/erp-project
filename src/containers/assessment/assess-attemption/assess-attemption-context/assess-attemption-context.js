@@ -16,7 +16,7 @@ export const AssessmentHandlerContext = createContext();
 const APIEndpoint =
   'http://13.232.30.169/qbox/assessment/<question-paper-id>/qp-questions-list/';
 
-const sortQuestions = (dataObj) => {
+const getSortedAndMainQuestions = (dataObj) => {
   function compareObjects(object1, object2) {
     const { meta: { index: index1 } = {} } = object1 || {};
     const { meta: { index: index2 } = {} } = object2 || {};
@@ -28,9 +28,11 @@ const sortQuestions = (dataObj) => {
     }
     return 0;
   }
-  const sortedArray = Object.values(dataObj).sort((item1, item2) => {
-    return compareObjects(item1, item2, 'name');
-  });
+  const sortedArray = Object.values(dataObj)
+    .filter((dataObj) => !dataObj.parent_id > 0)
+    .sort((item1, item2) => {
+      return compareObjects(item1, item2, 'name');
+    });
   return sortedArray;
 };
 
@@ -42,6 +44,43 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
   const [currentQuesionId, setCurrentQuesionId] = useState();
   const [startedAt, setStartedAt] = useState();
 
+  // const [currentSubQuestionId, setCurrentSubQuestionId] = useState();
+  const [assessmentDetails, setAssessmentDetails] = useState({});
+
+  function updateAssessmentDetails(res) {
+    const { data: { result = {} } = {} } = res || {};
+    const { assessment_details: assessmentDetailsObj } = result || {};
+    const {
+      id: testId,
+      test_duration: testDuration,
+      question_paper_id: questionPaperId,
+      question_paper__subject_name: questionPaperSubjectNames = [],
+    } = assessmentDetailsObj || {};
+
+    let userDetails = {};
+    try {
+      const { user_id: userId, role_details: { name: userName } = {} } =
+        JSON.parse(localStorage.getItem('userDetails')) || {};
+      userDetails = {
+        user: userId,
+        user_name: userName,
+        user_grade: 'Grade1',
+        user_section: 'SecA',
+      };
+    } catch (e) {
+      userDetails = {};
+    }
+    const assessmentDtObj = {
+      ...userDetails,
+      subject_name: questionPaperSubjectNames,
+      paper_id: questionPaperId,
+      test: testId,
+      start_time: startedAt,
+      test_duration: testDuration,
+      // end_time: new Date().getTime(),
+    };
+    setAssessmentDetails(assessmentDtObj);
+  }
   // eslint-disable-next-line no-console
   console.log(restProps);
   function setLocalData(questionsData, metaInfo) {
@@ -90,7 +129,8 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
             last_updated_at: new Date().getTime()
         },
     */
-    const questionsArray = Object.values(questionsDataObj || {});
+    // const questionsArray = Object.values(questionsDataObj || {});
+    const questionsArray = getSortedAndMainQuestions(questionsDataObj || {});
     const noOfQuestions = questionsArray.length;
     let noOfAttempted = 0; //  if attemption_status in user_response is true, count it as attempted.
     let noOfIncomplete = 0; //  if attemption_status in user_response is true, count it as attempted.
@@ -161,7 +201,7 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
     const { questions = [], sections = [] } = apiData;
 
     const questionsObj = {};
-    questions.forEach((element, index) => {
+    const processFunc = (element, index, subIndex = null, isSubQuestion = false) => {
       const { id: questionId } = element || {};
 
       const { id: nextQuesId = null } = questions[index + 1] || {};
@@ -173,6 +213,8 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
 
         meta: {
           index,
+          subIndex,
+          isSubQuestion,
           next_question: nextQuesId,
           prev_question: prevQuesId,
 
@@ -181,6 +223,14 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
         },
         user_response: userResponse,
       };
+    };
+    questions.forEach((element, index) => {
+      processFunc(element, index, null);
+      const { sub_questions: subQuestions = [] } = element || {};
+      subQuestions.forEach((subeElement, subIndex) => {
+        const isSubQuestion = true;
+        processFunc(subeElement, index, subIndex, isSubQuestion);
+      });
     });
     // console.log({ apiData, questionsObj }, 'apiData');
     updateQuestionsDataObj(questionsObj);
@@ -207,12 +257,13 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
     const APIEndpointURL = APIEndpoint.replace('<question-paper-id>', assessmentId);
     const dataProp = {
       url: APIEndpointURL,
-      queryParamObj: { assessment_id: assessmentId },
+      // queryParamObj: { assessment_id: assessmentId },
       callbacks: {
         ...callbacks,
         onResolve: (res) => {
           onResolveInstacnceOne(res);
           questionDataProcessor(res);
+          updateAssessmentDetails(res);
         },
       },
     };
@@ -231,12 +282,11 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
   }
 
   function start() {
-    const [firstQuestionObj] = sortQuestions(questionsDataObj || {});
+    const [firstQuestionObj] = getSortedAndMainQuestions(questionsDataObj || {});
     const { id, duration } = firstQuestionObj || {};
     if (id) {
       selectQues(id);
       setStartedAt(new Date());
-      // startClock(duration);
     } else {
       // eslint-disable-next-line no-alert
       window.alert(`Question not found to start the assessment.`);
@@ -254,7 +304,12 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
     } = questionsObj;
     if (isLastQues) {
       // eslint-disable-next-line no-alert
-      window.alert('Jump to first question ?');
+      const jumptToFirst = window.confirm('Jump to first question ?');
+      if (jumptToFirst) {
+        const [firstQuestionObj] = getSortedAndMainQuestions(questionsDataObj || {});
+        const { id: firstQuestionId } = firstQuestionObj || {};
+        selectQues(firstQuestionId);
+      }
     } else {
       selectQues(nextQuesId);
     }
@@ -276,6 +331,51 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
       selectQues(prevQuesId);
     }
   }
+
+  function submit(callbacks = {}) {
+    const userReponses = [];
+    Object.values(questionsDataObj).forEach((item) => {
+      const {
+        id: qId,
+        parent_id: parentId,
+        user_response: { answer, attemptionStatus } = {},
+        question_type: questionType,
+      } = item || {};
+      const hasParentId = parentId > 0;
+      const obj = {
+        question: qId,
+        question_type: questionType,
+        is_parent: !hasParentId,
+        parent_id: parentId,
+        user_answer: answer,
+      };
+      if (attemptionStatus) {
+        userReponses.push(obj);
+      }
+    });
+    const payLoad = {
+      ...assessmentDetails,
+      start_time: new Date(startedAt),
+      end_time: new Date(),
+      user_response: userReponses,
+    };
+
+    const API = 'http://13.232.30.169/qbox/assessment/user_response/';
+    const { onStart = () => {}, onResolve = () => {}, onReject = () => {} } =
+      callbacks || {};
+    onStart();
+    axios
+      .post(API, payLoad, { headers: { 'x-api-key': 'vikash@12345#1231' } })
+      .then((res) => {
+        onResolve(res);
+        // console.log(res);
+      })
+      .catch((er) => {
+        onReject(er);
+        // console.log(er);
+      });
+  }
+
   return (
     <AssessmentHandlerContext.Provider
       value={{
@@ -284,7 +384,7 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
 
         questionsDataObj,
 
-        questionsArray: sortQuestions(questionsDataObj || {}),
+        questionsArray: getSortedAndMainQuestions(questionsDataObj || {}),
 
         questionsMetaInfo,
 
@@ -298,7 +398,10 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
           isStarted: Boolean(currentQuesionId),
           start,
           startedAt,
+          submit,
         },
+
+        assessmentDetails,
       }}
     >
       {children}
