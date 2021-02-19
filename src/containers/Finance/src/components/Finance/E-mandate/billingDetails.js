@@ -660,7 +660,7 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                  {todayDetail && todayDetail.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((val, i) => { 
+                  {todayDetail && todayDetail.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((val, i) => { 
                     return (
                   <TableRow>
                      <TableCell> { val.branch && val.branch.branch_name ? val.branch.branch_name : ''}</TableCell>

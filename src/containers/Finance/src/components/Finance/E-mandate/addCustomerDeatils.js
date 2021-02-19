@@ -483,7 +483,7 @@ const CustomerDeatils = ({ setCustomerDetails, user, alert, fetchBranches, domai
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                  {custDetails && custDetails.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((val, i) => { 
+                  {custDetails && custDetails.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((val, i) => { 
                     return (
                   <TableRow>
                      <TableCell> {val.branch && val.branch.branch_name ? val.branch.branch_name : val.branch}</TableCell>

@@ -555,7 +555,7 @@ const DailyBillingDetails = ({ dataLoadingStatus, alert, fetchBranches, todayEMa
              </TableRow>
            </TableHead>
            <TableBody>
-           {totalBillingDetail && totalBillingDetail.length > 0 && data && data.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((val, i) => { 
+           {totalBillingDetail && totalBillingDetail.length > 0 && data && data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((val, i) => { 
              return (
            <TableRow>
               <TableCell> { val.branch_name ? val.branch_name : ''}</TableCell>
