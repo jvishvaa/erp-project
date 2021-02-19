@@ -17,6 +17,7 @@ import { connect } from 'react-redux'
 import Modal from '../../../ui/Modal/modal'
 import * as actionTypes from '../store/actions'
 import { apiActions } from '../../../_actions'
+import Layout from '../../../../../Layout'
 
 const selectStyles = {
   menuPortal: base => ({ ...base, zIndex: 9999 }),
@@ -423,6 +424,7 @@ const CustomerDeatils = ({ setCustomerDetails, user, alert, fetchBranches, domai
   // />
 
   return (
+    <Layout>
     <div>
       <Grid container spacing={1} style={{ padding: 10 }} >
         {role !== 'FinanceAdmin' && role !== 'FinanceAccountant'
@@ -513,6 +515,7 @@ const CustomerDeatils = ({ setCustomerDetails, user, alert, fetchBranches, domai
         </React.Fragment>
         : []}
     </div>
+    </Layout>
   )
 }
 

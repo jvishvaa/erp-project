@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react'
 
-import { Grid, Button, CircularProgress } from '@material-ui/core'
+import { Grid, Button, CircularProgress,  Table,
+  TableCell,
+  TableRow,
+  TableHead,
+  TableBody,
+  TablePagination } from '@material-ui/core'
 // import Select from 'react-select'
 // import ReactTable from 'react-table'
 import Select from 'react-select'
@@ -12,16 +17,20 @@ import { apiActions } from '../../../_actions'
 // import Modal from '../../../ui/Modal/modal'
 // import { CircularProgress } from '../../../ui'
 import BillingReceipts from '../Receipts/billingDetailsReceipts'
+import Layout from '../../../../../Layout'
 
 const DailyBillingDetailsPage = ({ dataLoadingStatus, totalBillingDetails, domain, sessionData, qwerty, alert, todayEMandateDetails, totalBillingDetai, totalBillingDetail, listDomainName, user, domainNames, session }) => {
   const [data, setData] = useState([])
   const [dataDateWsie, setDataDateWsie] = useState([])
   const [month, setMonth] = useState('')
   const [role, setRole] = useState('')
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     let role = ''
-    role = JSON.parse(localStorage.getItem('user_profile')).personal_info.role
+    // role = JSON.parse(localStorage.getItem('user_profile')).personal_info.role
+    role = JSON.parse(localStorage.getItem('userDetails')).user_role
     setRole(role)
   }, [])
 
@@ -46,6 +55,15 @@ const DailyBillingDetailsPage = ({ dataLoadingStatus, totalBillingDetails, domai
       console.log('new', totalBillingDetail)
     }
   }, [totalBillingDetail])
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  }
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  }
 
   const renderStudentErpTable = () => {
     let dataToShow = []
@@ -178,6 +196,7 @@ const DailyBillingDetailsPage = ({ dataLoadingStatus, totalBillingDetails, domai
 
   console.log(data)
   return (
+    <Layout>
     <div>
       <Grid container spacing={3} style={{ padding: 15 }} >
         <Grid item xs={7} style={{ }}>
@@ -272,6 +291,43 @@ const DailyBillingDetailsPage = ({ dataLoadingStatus, totalBillingDetails, domai
         </Grid>
         <Grid item xs={12} style={{ margin: 'auto' }}>
           {/* {studentErpTable} */}
+          {
+        <React.Fragment>
+        <Table>
+           <TableHead>
+             <TableRow>
+               <TableCell>Billing Date</TableCell>
+               <TableCell> Total Active User Per Day</TableCell>
+               <TableCell> Per Month User Amount</TableCell>
+               <TableCell> Total Amount</TableCell>
+             </TableRow>
+           </TableHead>
+           <TableBody>
+           {dataDateWsie && dataDateWsie && dataDateWsie.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((val, i) => { 
+             return (
+           <TableRow>
+              <TableCell> {val.date ? val.date && val.date.split('T')[0] : ''}</TableCell>
+               {/* <TableCell>{ val.id} </TableCell> */}
+               <TableCell>{val.active_user ? val.active_user : 'NA'} </TableCell>
+               <TableCell>{ val.amount_per_user ? '₹' + val.amount_per_user : 'NA'
+} </TableCell>
+               <TableCell> {val.amount ? '₹' + val.amount.toFixed(2) : 'NA'}</TableCell>
+           </TableRow>
+             )
+           })}
+         </TableBody>
+       </Table>
+       <TablePagination
+         rowsPerPageOptions={[10, 25, 100]}
+         component="div"
+         count={dataDateWsie && dataDateWsie && dataDateWsie.length}
+         rowsPerPage={rowsPerPage}
+         page={page}
+         onChangePage={handleChangePage}
+         onChangeRowsPerPage={handleChangeRowsPerPage}
+       />
+ </React.Fragment>
+          }
         </Grid>
         {/* <Grid item xs={12} style={{ display: 'flex', justifyContent: 'center' }}>
           <p style={{ fontSize: 18 }}>TOTAL BILLS :</p>
@@ -280,6 +336,7 @@ const DailyBillingDetailsPage = ({ dataLoadingStatus, totalBillingDetails, domai
       {/* {todayDeatilsModal} */}
       {dataLoadingStatus ? <CircularProgress open /> : null}
     </div>
+    </Layout>
   )
 }
 

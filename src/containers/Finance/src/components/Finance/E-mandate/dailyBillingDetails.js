@@ -22,6 +22,7 @@ import { apiActions } from '../../../_actions'
 // import Modal from '../../../ui/Modal/modal'
 // import { CircularProgress } from '../../../ui'
 import DailyBillingDetailsPage from './dailyDetails'
+import Layout from '../../../../../Layout'
 
 const DailyBillingDetails = ({ dataLoadingStatus, alert, fetchBranches, todayEMandateDetails, branches, domainDailyBillStatus, domainDailyBillGenerateStatus, totalBillingDetail, totalBillingDetails, listDomainName, user, domainNames, session }) => {
   // const [selectedDomain, setSelectedDomain] = useState(null)
@@ -51,7 +52,8 @@ const DailyBillingDetails = ({ dataLoadingStatus, alert, fetchBranches, todayEMa
   // }
   useEffect(() => {
     let role = ''
-    role = JSON.parse(localStorage.getItem('user_profile')).personal_info.role
+    // role = JSON.parse(localStorage.getItem('user_profile')).personal_info.role
+    role = JSON.parse(localStorage.getItem('userDetails')).user_role
     setRole(role)
   }, [])
 
@@ -454,6 +456,7 @@ const DailyBillingDetails = ({ dataLoadingStatus, alert, fetchBranches, todayEMa
     )
   }
   return (
+    <Layout>
     <div>
       {ShowDailyDetPage ? <h2 style={{ textAlign: 'center' }}>Daily Billing Details</h2> : [] }
       {hide
@@ -589,6 +592,7 @@ const DailyBillingDetails = ({ dataLoadingStatus, alert, fetchBranches, todayEMa
       {/* {todayDeatilsModal} */}
       {dataLoadingStatus ? <CircularProgress open /> : null}
     </div>
+    </Layout>
   )
 }
 

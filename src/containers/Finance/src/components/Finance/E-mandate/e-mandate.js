@@ -18,6 +18,7 @@ import * as actionTypes from '../store/actions'
 import { apiActions } from '../../../_actions'
 import Modal from '../../../ui/Modal/modal'
 import { CircularProgress } from '../../../ui'
+import Layout from '../../../../../Layout'
 
 const EMandate = ({ session, dataLoadingStatus, todayDetail, updateDomainName, dailyDetail, dailyEMandateDetails, todayEMandateDetails, alert, setDomainDetails, listDomainName, user, domainNames, createDomainName }) => {
   const [sessionData, setSessionData] = useState({
@@ -391,6 +392,7 @@ const EMandate = ({ session, dataLoadingStatus, todayDetail, updateDomainName, d
   />
 
   return (
+    <Layout>
     <div>
       <Grid container spacing={3} style={{ padding: 15 }}>
         <Grid item xs={9} />
@@ -517,6 +519,7 @@ const EMandate = ({ session, dataLoadingStatus, todayDetail, updateDomainName, d
       {dailyDeatilsModal} */}
       {dataLoadingStatus ? <CircularProgress open /> : null}
     </div>
+    </Layout>
   )
 }
 

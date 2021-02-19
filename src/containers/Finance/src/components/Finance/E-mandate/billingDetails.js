@@ -19,6 +19,7 @@ import { connect } from 'react-redux'
 import * as actionTypes from '../store/actions'
 import { apiActions } from '../../../_actions'
 import Modal from '../../../ui/Modal/modal'
+import Layout from '../../../../../Layout'
 // import { CircularProgress } from '../../../ui'
 
 const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDomainDetails, todayDetail, fetchBranches, user, domainNames, branches, session }) => {
@@ -47,7 +48,7 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
   // }
   useEffect(() => {
     let role = ''
-    role = JSON.parse(localStorage.getItem('user_profile')).personal_info.role
+    role = JSON.parse(localStorage.getItem('userDetails')).user_role
     setRole(role)
   }, [])
   useEffect(() => {
@@ -602,6 +603,7 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
     )
   }
   return (
+    <Layout>
     <div>
       <Grid container spacing={3} style={{ padding: 15 }}>
         {role !== 'FinanceAdmin' && role !== 'FinanceAccountant'
@@ -693,6 +695,7 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
       {editDeatilsModal}
       {dataLoadingStatus ? <CircularProgress open /> : null}
     </div>
+    </Layout>
   )
 }
 

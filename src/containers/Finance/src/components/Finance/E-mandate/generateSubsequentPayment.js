@@ -9,6 +9,7 @@ import 'react-table/react-table.css'
 import { connect } from 'react-redux'
 import * as actionTypes from '../store/actions'
 import { apiActions } from '../../../_actions'
+import Layout from '../../../../../Layout'
 
 const GenerateSubsequentPayment = ({ user, alert, getGenerateSubsequent, generateSubsequentPayment, getGenerateSubsequents, session }) => {
   const [sessionData, setSessionData] = useState({
@@ -105,6 +106,7 @@ const GenerateSubsequentPayment = ({ user, alert, getGenerateSubsequent, generat
   />
 
   return (
+    <Layout>
     <div>
       <Grid container spacing={1} style={{ padding: 10 }} >
         <Grid item xs={3}>
@@ -133,6 +135,7 @@ const GenerateSubsequentPayment = ({ user, alert, getGenerateSubsequent, generat
       </Grid>
       {showTable ? studentErpTable : []}
     </div>
+    </Layout>
   )
 }
 

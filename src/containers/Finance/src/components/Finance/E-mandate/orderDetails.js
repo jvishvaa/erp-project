@@ -12,6 +12,7 @@ import * as actionTypes from '../store/actions'
 import { apiActions } from '../../../_actions'
 import Modal from '../../../ui/Modal/modal'
 import { Razorpay } from '../PaymentGateways'
+import Layout from '../../../../../Layout'
 // import { Razorpay } from '../PaymentGateways'
 // import { Razorpay } from '../PaymentGateways'
 const selectStyles = {
@@ -40,7 +41,8 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
 
   useEffect(() => {
     let role = ''
-    role = JSON.parse(localStorage.getItem('user_profile')).personal_info.role
+    // role = JSON.parse(localStorage.getItem('user_profile')).personal_info.role
+    role = JSON.parse(localStorage.getItem('userDetails')).user_role
     setRole(role)
     getDomainNameWithCusId(sessionData && sessionData.value, user, alert)
     fetchBranches(sessionData && sessionData.value, alert, user)
@@ -458,6 +460,7 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
   //   className='-striped -highlight'
   // /> 
   return (
+    <Layout>
     <div>
       <Grid container spacing={1} style={{ padding: 10 }} >
         {(role !== 'FinanceAdmin' && role !== 'FinanceAccountant')
@@ -513,6 +516,7 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
       /> : []}
       {createOrderDetailsModel}
     </div>
+    </Layout>
   )
 }
 

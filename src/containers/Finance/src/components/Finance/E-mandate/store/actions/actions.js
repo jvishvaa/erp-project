@@ -146,9 +146,9 @@ export const todayEMandateDetails = (payload) => {
     }).catch(err => {
       console.error(err)
       if (err.response && (err.response.status === 400 || err.response.status === 401)) {
-        payload.alert.warning(err.response.data.err_msg)
+        // payload.alert.warning(err.response.data.err_msg)
       } else {
-        payload.alert.warning('Something Went Wrong!')
+        // payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
     })
