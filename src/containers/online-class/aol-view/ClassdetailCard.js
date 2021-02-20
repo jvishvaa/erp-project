@@ -176,7 +176,7 @@ export default function ClassdetailsCardComponent(props) {
 
     const handleReshuffle = () => {
         if (props.toggle) {
-            history.push(`/aol-reshuffle/${props?.classData?.batch_details_id}`)
+            history.push(`/aol-reshuffle/${props?.classData?.id}`)
         } else {
             history.push(`/aol-reshuffle/${props?.classData?.online_class?.aol_batch_id}`)
 
