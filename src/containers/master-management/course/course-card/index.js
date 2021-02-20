@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-// import { Button, useTheme ,IconButton} from '@material-ui/core';
+import '../create-course/style.css';
 import Box from '@material-ui/core/Box';
 import useStyles from './useStyles';
 import endpoints from '../../../../config/endpoints';
@@ -36,21 +36,24 @@ const CourseCard = ({ index, cData, setData }) => {
 
   const handleImageChange = (event) => {
     const dataList = [...cData];
-    const fileList=[...filePath];
+    const fileList = [...filePath];
     if (dataList[index]['files'].length < 10) {
       const fd = new FormData();
       fd.append('file', event.target.files[0]);
-      axiosInstance.post(`${endpoints.onlineCourses.fileUpload}`, fd)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          dataList[index]['files'].push(result.data?.result?.get_file_path);
-          fileList.push(result.data?.result?.get_file_path);
-          setAlert('success', result.data.message);
-        } else {
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch(error=>setAlert('error',error.response?.data?.msg||error.response?.data?.message));
+      axiosInstance
+        .post(`${endpoints.onlineCourses.fileUpload}`, fd)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            dataList[index]['files'].push(result.data?.result?.get_file_path);
+            fileList.push(result.data?.result?.get_file_path);
+            setAlert('success', result.data.message);
+          } else {
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) =>
+          setAlert('error', error.response?.data?.msg || error.response?.data?.message)
+        );
       setData(dataList);
       setFilePath(fileList);
     } else {
@@ -59,14 +62,9 @@ const CourseCard = ({ index, cData, setData }) => {
   };
 
   const removeFileHandler = (i) => {
-    const dataList = [...cData];
-    dataList.splice(i,1);
-    setData(dataList);
-
     const fileList = [...filePath];
     fileList.splice(i, 1);
     setFilePath(fileList);
-    setAlert('success', 'File successfully deleted');
   };
 
   const FileRow = (props) => {
@@ -116,8 +114,7 @@ const CourseCard = ({ index, cData, setData }) => {
                 color='secondary'
                 style={{ width: '100%' }}
                 name='title'
-                // defaultValue="Default Value"
-                value={cData[index].title}
+                value={cData[index]?.title}
                 variant='outlined'
                 onChange={handleCardSubmit}
               />
@@ -134,15 +131,14 @@ const CourseCard = ({ index, cData, setData }) => {
                 color='secondary'
                 style={{ width: '100%' }}
                 name='description'
-                // defaultValue="Default Value"
-                value={cData[index].description}
+                value={cData[index]?.description}
                 variant='outlined'
                 onChange={handleCardSubmit}
               />
             </Box>
           </Grid>
           <div className='attachmentContainer'>
-            <div className='scrollableContent'>
+            <div className='scrollableContent1'>
               {filePath?.length > 0
                 ? filePath?.map((file, i) => (
                     <FileRow

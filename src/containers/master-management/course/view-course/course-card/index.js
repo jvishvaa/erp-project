@@ -14,7 +14,7 @@ import axiosInstance from '../../../../../config/axios';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
 import {Context} from '../context/ViewStore'
 
-const CourseCard = ({period, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex,   setEditData}) => {
+const CourseCard = ({period, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex,   setEditData,deleteFlag,setDeleteFlag}) => {
 
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -73,6 +73,7 @@ const CourseCard = ({period, setPeriodDataForView, setViewMoreData, setViewMore 
 
       if(result.data.status_code===200){
         setAlert('success',result.data.message)
+        setDeleteFlag(!deleteFlag)
         
       }else{
         setAlert('error', 'ERROR!')

@@ -16,6 +16,7 @@ import ViewCourseCard from './ViewCourseCard';
 import ViewStore from '../context/ViewStore'
 import { Context } from '../context/ViewStore'
 import './view-more-course.css';
+// import downloadAll from '../../../../../assets/images/downloadAll.svg';
 
 
 const ViewMoreCard = ({
@@ -59,6 +60,12 @@ const ViewMoreCard = ({
     setState({ ...state, isEdit: true })
     history.push('/create/course')
   }
+  const handleDownload = (e) => {
+    // e.preventDefault();
+    // periodDataForView && periodDataForView.map((path) => {
+    //   path.files && path.files.map((file, i) => window.location.href = (`${endpoints.s3}/${file}`))
+    // })
+  }
   return (
     <>
       {/* <ViewStore> */}
@@ -66,7 +73,7 @@ const ViewMoreCard = ({
         <Paper className='rootViewMore'>
           <div className='viewMoreHeader'>
             <div className='leftHeader'>
-              <div className='headerTitle'>{periodDataForView.course_name}</div>
+              <div className='headerTitle'>{periodDataForView?.course_name}</div>
               <div className='headerContent'> Level - {periodDataForView?.level}</div>
             </div>
             <div className='rightHeader'>
@@ -105,29 +112,44 @@ const ViewMoreCard = ({
             </div>
             <div className='scrollableContent'>
               <div className='bodyContent'>
-                <div>{periodDataForView.learn}</div>
+                <div>{periodDataForView?.learn}</div>
               </div>
             </div>
           </div>
           <div className='viewMoreBody'>
             <div className='scrollableContent'>
               <div className='bodyContent'>
-                <div> No Of Periods - {periodDataForView.no_of_periods}</div>
+                <div> No Of Periods : {periodDataForView?.no_of_periods}</div>
               </div>
             </div>
           </div>
           <div className='viewMoreBody'>
             <div className='scrollableContent'>
               <div className='bodyContent'>
-                <div>Attachments
-              {periodDataForView?.files?.map((file, i) => (
+                <div>
+                No Of Attachments : {periodDataForView?.files && periodDataForView?.files?.length}
+                {periodDataForView?.files?.length > 0 ?
+                      <IconButton
+                        onClick={handleDownload}>
+                        <SvgIcon
+                          component={() => (
+                            <img
+                              target='blank'
+                              style={{ height: '21px', width: '21px' }}
+                              src={downloadAll}
+                              alt='downloadAll'
+                            />
+                          )}
+                        />
+                      </IconButton> : ''}
+              {/* {periodDataForView?.files?.map((file, i) => (
                   <FileRow
                     key={`filess${i}`}
                     file={file}
                     index={i}
 
                   />
-                ))}
+                ))} */}
                 </div>
               </div>
             </div>

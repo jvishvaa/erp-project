@@ -27,14 +27,57 @@
   margin-left: 10px;
   margin-bottom: 10px;
   margin-right: 100px;
-  width: 100%;
+  width: 70%;
 }
 
 .file_name_container_course1 {
   justify-content: space-between;
 }
 
-.scrollableContent {
+.scrollableContent1 {
   display: grid;
   grid-template-columns: auto auto;
+}
+
+.scrollableContent {
+  display: grid;
+  grid-template-columns: auto auto auto;
+}
+
+.buttonContainer {
+  width: 30%;
+  margin-left: 2%;
+  display: flex;
+  justify-content: space-between;
+  align-self: flex-end;
+}
+
+.periodBackButton.MuiButtonBase-root {
+  width: 100%;
+  border-radius: 10px;
+  background: #e0e0e0;
+  color: rgb(140, 140, 140);
+  margin-right: 5%;
+}
+
+.periodBackButton.MuiButtonBase-root:hover {
+  background:  #e0e0e0;
+}
+
+.nextPageButton.MuiButtonBase-root {
+  width: 40%;
+  border-radius: 10px;
+}
+
+.nextPageButton.MuiButtonBase-root:hover {
+  background: #ff6b6b;
+}
+
+.periodSubmitButton.MuiButtonBase-root {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.periodSubmitButton.MuiButtonBase-root:hover {
+  background: #ff6b6b;
 }

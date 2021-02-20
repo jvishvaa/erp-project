@@ -72,7 +72,7 @@ const CreateCourse = () => {
   const [age, setAge] = useState([]);
 
   const [classDuration, setClassDuration] = useState('');
-  const [noOfPeriods, setNoPeriods] = useState(state.editData.no_of_periods || 0);
+  const [noOfPeriods, setNoPeriods] = useState(state.editData.no_of_periods || '');
   const [title, setTitle] = useState('');
   const [coursePre, setCoursePre] = useState('');
   const [learn, setLearn] = useState('');
@@ -80,8 +80,6 @@ const CreateCourse = () => {
   const [filePath, setFilePath] = useState([]);
   const [nextToggle, setNextToggle] = useState(false);
   const [thumbnailImage, setThumbnailImage] = useState('');
-
-  // const [erpGradeId,setErpGradeId]=useState([])
 
   const [card, setCard] = useState(0);
 
@@ -111,48 +109,6 @@ const CreateCourse = () => {
     { value: 'Advance', level: 'High' },
   ];
 
-  //hardcoded data
-
-  // const category = [
-  //   { value: 'Pre-Primary', },
-  //   { value: 'Primary', },
-  //   { value: 'Secondary', },
-  // ];
-
-  // const age = [
-  //   { value: '2-3', },
-  //   { value: '3-4', },
-  //   { value: '4-5', },
-  //   { value: '5-6' },
-  //   { value: '6-7' },
-  //   { value: '7-8' },
-  //   { value: '8-9' },
-  //   { value: '9-10' },
-  //   { value: '10-11' },
-  //   { value: '11-12' },
-  //   { value: '12-13' },
-  //   { value: '13-14' },
-  //   { value: '14-15' },
-
-  // ];
-
-  // const subject = [
-  //   { value: 'Music' },
-  //   { value: 'Dance' },
-  //   { value: 'Art' },
-  //   { value: 'Fit-Kids-Physical Education' },
-  //   { value: 'Instrument' },
-  //   { value: 'Numeracy' },
-  //   { value: 'Literacy' },
-  //   { value: 'English' },
-  //   { value: 'French' },
-  //   { value: 'Robotics' },
-  //   { value: 'Hindi' },
-  //   { value: 'Coding' },
-  //   { value: 'Science' },
-
-  // ]
-
   const handleCourseLevel = (event, value) => {
     setFilterData({ ...filterData, courseLevel: '' });
     if (value) {
@@ -160,21 +116,33 @@ const CreateCourse = () => {
     }
   };
 
+  const handleBack = () => {
+    setData([]);
+    setNextToggle((prev) => !prev);
+  };
+
   const handleNext = () => {
-    if (flag) {
-      setData(secondPageData || []);
-      setNextToggle(!nextToggle);
-    } else {
-      if (noOfPeriods > 0) {
-        const list = [...data];
-        for (let i = 0; i < noOfPeriods; i++) {
-          list.push({ title: '', description: '', files: [] });
-        }
-        setData(list);
-        setNextToggle(!nextToggle);
+    if (filePath?.length === 1 && thumbnailImage!=='') {
+      if (flag) {
+        setData(secondPageData || []);
+        setNextToggle((prev) => !prev);
       } else {
-        setAlert('warning', 'Periods should be more than or equal to 1');
+        if (noOfPeriods > 0) {
+          const list = [...data];
+          for (let i = 0; i < noOfPeriods; i++) {
+            list.push({ title: '', description: '', files: [] });
+          }
+          setData(list);
+          setNextToggle((prev) => !prev);
+        } else {
+          setAlert('warning', 'Periods should be more than or equal to 1');
+        }
       }
+    } else {
+      if(thumbnailImage==='') 
+      setAlert('warning', 'Thumbnail Image is compulsory!');
+      if(filePath?.length !== 1)
+      setAlert('warning', 'Document is compulsory!');
     }
   };
 
@@ -185,23 +153,13 @@ const CreateCourse = () => {
         ...filterData,
         branch: value,
       });
-      axiosInstance
-        .get(`${endpoints.communication.grades}?branch_id=${5}&module_id=8`)
-        .then((result) => {
-          if (result.data.status_code === 200) {
-            // setGradeDropdown(result.data.data);
-          } else {
-            setAlert('error', result.data.message);
-            // setGradeDropdown([]);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error.message);
-          // setGradeDropdown([]);
-        });
-    } else {
-      // setGradeDropdown([]);
     }
+  };
+
+  const handleNoOfPeriods = (event) => {
+    let val = event.target.value;
+    if (val <= 100) setNoPeriods(val);
+    else setAlert('warning', "No. of periods can't be more than 100");
   };
 
   const handleCategory = (event, value) => {
@@ -275,7 +233,7 @@ const CreateCourse = () => {
   const removeFileHandler = (i, fileType) => {
     // const list = [...filePath];
     if (fileType === 'thumbnail') {
-      setThumbnailImage('')
+      setThumbnailImage('');
     } else if (fileType === 'doc') {
       filePath.splice(i, 1);
     }
@@ -293,9 +251,9 @@ const CreateCourse = () => {
           const fileList = [...filePath];
           fileList.push(result.data?.result?.get_file_path);
           setFilePath(fileList);
-          setAlert('success', result.data.message);
+          setAlert('success', result.data?.message);
         } else {
-          setAlert('error', result.data.message);
+          setAlert('error', result.data?.message);
         }
       });
     } else {
@@ -326,56 +284,56 @@ const CreateCourse = () => {
   };
 
   const handleSubmit = () => {
-    if (filePath?.length === 1) {
-      axiosInstance
-        .post(`${endpoints.onlineCourses.createCourse}`, {
-          course_name: title,
-          pre_requirement: coursePre,
-          overview: overview,
-          learn: learn,
-          // grade: gradeIds,
-          grade: [filterData.erpGrade],
-          level: filterData.courseLevel.level,
-          no_of_periods: parseInt(noOfPeriods),
-          files: filePath,
-          thumbnail: [thumbnailImage],
-          period_data: data,
-          tag_id: `${filterData.age.id},${filterData.subject.id}`,
-        })
-        .then((result) => {
-          if (result.data.status_code === 200) {
-            setFilePath([]);
-            setThumbnailImage('');
-            setData([]);
-            setNoPeriods(0);
-            setTitle('');
-            setCoursePre('');
-            setOverview('');
-            setLearn('');
-            setFilterData({
-              branch: '',
-              grade: [],
-              courseLevel: '',
-              category: '',
-              age: '',
-              subject: '',
-            });
-            setAlert('success', result.data.message);
-            setNextToggle(!nextToggle);
-            history.push('/course-list');
-          } else {
-            setAlert('error', result.data.message);
-            setGradeDropdown([]);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error.response?.data?.message || error.response?.data?.msg || error.response?.data?.description);
+    axiosInstance
+      .post(`${endpoints.onlineCourses.createCourse}`, {
+        course_name: title,
+        pre_requirement: coursePre,
+        overview: overview,
+        learn: learn,
+        // grade: gradeIds,
+        grade: [filterData.erpGrade],
+        level: filterData.courseLevel.level,
+        no_of_periods: parseInt(noOfPeriods),
+        files: filePath,
+        thumbnail: [thumbnailImage],
+        period_data: data,
+        tag_id: `${filterData.age.id},${filterData.subject.id}`,
+      })
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setFilePath([]);
+          setThumbnailImage('');
+          setData([]);
+          setNoPeriods(0);
+          setTitle('');
+          setCoursePre('');
+          setOverview('');
+          setLearn('');
+          setFilterData({
+            branch: '',
+            grade: [],
+            courseLevel: '',
+            category: '',
+            age: '',
+            subject: '',
+          });
+          setAlert('success', result.data.message);
+          setNextToggle((prev) => !prev);
+          history.push('/course-list');
+        } else {
+          setAlert('error', result.data.message);
           setGradeDropdown([]);
-        });
-    }
-    else {
-      setAlert('warning', 'Document is compulsory!');
-    }
+        }
+      })
+      .catch((error) => {
+        setAlert(
+          'error',
+          error.response?.data?.message ||
+            error.response?.data?.msg ||
+            error.response?.data?.description
+        );
+        setGradeDropdown([]);
+      });
   };
 
   const handleEdit = () => {
@@ -411,7 +369,7 @@ const CreateCourse = () => {
             subject: '',
           });
           setAlert('success', result.data.message);
-          setNextToggle(!nextToggle);
+          setNextToggle((prev) => !prev);
           history.push('/course-list');
         }
       });
@@ -631,9 +589,9 @@ const CreateCourse = () => {
                 variant='outlined'
                 size='small'
                 value={noOfPeriods}
-                inputProps={{ pattern: '[0-9]*', min: 0, maxLength: 20 }}
+                inputProps={{ min: 0, max: 100, maxLength: 3 }}
                 name='subname'
-                onChange={(e) => setNoPeriods(e.target.value)}
+                onChange={(e) => handleNoOfPeriods(e)}
                 required
               />
             </Grid>
@@ -699,14 +657,14 @@ const CreateCourse = () => {
                 <div style={{ display: 'flex' }}>
                   {filePath?.length > 0
                     ? filePath?.map((file, i) => (
-                      <FileRow
-                        name='File'
-                        key={`homework_student_question_attachment_${i}`}
-                        file={file}
-                        index={i}
-                        onClose={() => removeFileHandler(i, 'doc')}
-                      />
-                    ))
+                        <FileRow
+                          name='File'
+                          key={`homework_student_question_attachment_${i}`}
+                          file={file}
+                          index={i}
+                          onClose={() => removeFileHandler(i, 'doc')}
+                        />
+                      ))
                     : null}
                 </div>
 
@@ -746,13 +704,14 @@ const CreateCourse = () => {
                   </div>
                 )}
 
-                {thumbnailImage !== '' &&
+                {thumbnailImage !== '' && (
                   <FileRow
                     name='Thumbnail'
                     key='Thumbnail'
                     file={thumbnailImage}
                     onClose={() => removeFileHandler(0, 'thumbnail')}
-                  />}
+                  />
+                )}
 
                 {thumbnailImage === '' && (
                   <div className='attachmentButtonContainer'>
@@ -796,60 +755,56 @@ const CreateCourse = () => {
               <Divider />
             </Grid>
             <Grid item xs={12} sm={6} className={isMobile ? '' : 'filterPadding'}>
-              <Button style={{ width: '15rem' }} onClick={handleNext}>
+              <Button className='nextPageButton' onClick={handleNext}>
                 NEXT
               </Button>
             </Grid>
           </Grid>
         ) : (
-            <>
-              <Paper className={classes.root}>
-                <Grid
-                  container
-                  style={
-                    isMobile
-                      ? { width: '95%', margin: '20px auto' }
-                      : { width: '100%', margin: '20px auto' }
-                  }
-                  spacing={5}
-                >
-                  <Grid item xs={12} sm={12}>
-                    <Grid container spacing={isMobile ? 3 : 5}>
-                      {data?.map((period, i) => (
-                        <Grid
-                          item
-                          xs={12}
-                          style={isMobile ? { marginLeft: '-8px' } : null}
-                          sm={4}
-                        >
-                          <CourseCard key={i} index={i} cData={data} setData={setData} />
-                        </Grid>
-                      ))}
-                    </Grid>
+          <>
+            <Paper className={classes.root}>
+              <Grid
+                container
+                style={
+                  isMobile
+                    ? { width: '95%', margin: '20px auto' }
+                    : { width: '100%', margin: '20px auto' }
+                }
+                spacing={5}
+              >
+                <Grid item xs={12} sm={12}>
+                  <Grid container spacing={isMobile ? 3 : 5}>
+                    {data?.map((period, i) => (
+                      <Grid
+                        item
+                        xs={12}
+                        style={isMobile ? { marginLeft: '-8px' } : null}
+                        sm={4}
+                      >
+                        <CourseCard key={i} index={i} cData={data} setData={setData} />
+                      </Grid>
+                    ))}
                   </Grid>
                 </Grid>
-              </Paper>
-              <div className='submit'>
-                <Grid item xs={12} sm={12}>
-                  {!state?.isEdit ? (
-                    <Button
-                      onClick={handleSubmit}
-                      style={{ width: '16rem', marginLeft: '1.2rem' }}
-                    >
-                      SUBMIT
-                    </Button>
-                  ) : (
-                      <Button
-                        onClick={handleEdit}
-                        style={{ width: '16rem', marginLeft: '1.2rem' }}
-                      >
-                        EDIT
-                      </Button>
-                    )}
-                </Grid>
-              </div>
-            </>
-          )}
+              </Grid>
+            </Paper>
+            <div className='submit'>
+              <Grid item xs={12} sm={12}>
+                <div className='buttonContainer'>
+                  <Button onClick={handleBack} className='periodBackButton'>
+                    Back
+                  </Button>
+                  <Button
+                    onClick={state?.isEdit ? handleEdit : handleSubmit}
+                    className='periodSubmitButton'
+                  >
+                    Submit
+                  </Button>
+                </div>
+              </Grid>
+            </div>
+          </>
+        )}
       </Layout>
     </>
   );
