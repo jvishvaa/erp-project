@@ -1,4 +1,5 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
+import CloseIcon from '@material-ui/icons/Close';
 import Paper from '@material-ui/core/Paper';
 import {
   Grid,
@@ -7,6 +8,7 @@ import {
   useTheme,
   SvgIcon,
   Typography,
+  IconButton,
 } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import '../create-course/style.css';
@@ -19,7 +21,7 @@ import deleteIcon from '../../../../assets/images/delete.svg';
 import attachmenticon from '../../../../assets/images/attachmenticon.svg';
 import Divider from '@material-ui/core/Divider';
 
-const CourseCard = ({ index, cData, setData }) => {
+const CourseCard = ({ index, cData, setData, setNextToggle }) => {
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -60,15 +62,18 @@ const CourseCard = ({ index, cData, setData }) => {
   };
 
   const removeFileHandler = (i) => {
-
     const list = [...cData];
-    list[i]['files'].splice(i, 1);
+    list[index]['files'].splice(i, 1);
     setData(list);
 
     const fileList = [...filePath];
     fileList.splice(i, 1);
     setFilePath(fileList);
   };
+
+  const handleRemovePeriod = () => {
+    setData([...cData].filter((_,i)=>index!==i));
+  }
 
   const FileRow = (props) => {
     const { file, onClose, index } = props;
@@ -82,9 +87,8 @@ const CourseCard = ({ index, cData, setData }) => {
               component={() => (
                 <img
                   style={{
-                    width: '20px',
+                    width: '15px',
                     height: '20px',
-                    // padding: '5px',
                     cursor: 'pointer',
                   }}
                   src={deleteIcon}
@@ -101,19 +105,28 @@ const CourseCard = ({ index, cData, setData }) => {
   return (
     <>
       <Paper
-        className="courseCardContainer"
+        className='courseCardContainer'
         style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }}
       >
         <Grid container spacing={2}>
+          {/* <Grid item xs={12}> */}
+          <div className='periodCrossWrapper'>
+            <div className='periodTag'>Period {`${index + 1}`}</div>
+            <div className='removePeriodIcon'>
+              <IconButton onClick={handleRemovePeriod}>
+                <CloseIcon color='secondary'/>
+              </IconButton>
+            </div>
+          </div>
+          {/* </Grid> */}
           <Grid item xs={12}>
             <Box>
-              <Typography>{`${index + 1}`}</Typography>
               <TextField
                 id={`title${index}`}
-                label='Period Title'
                 placeholder='Period Title'
                 multiline
                 rows='1'
+                className='periodDescBox'
                 color='secondary'
                 style={{ width: '100%' }}
                 name='title'
@@ -127,10 +140,10 @@ const CourseCard = ({ index, cData, setData }) => {
             <Box>
               <TextField
                 id={`desc${index}`}
-                label='Period Description'
                 placeholder='Period Description'
                 multiline
                 rows='3'
+                className='periodDescBox'
                 color='secondary'
                 style={{ width: '100%' }}
                 name='description'

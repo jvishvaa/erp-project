@@ -4,6 +4,7 @@ import Loading from '../../../../components/loader/loader';
 import CommonBreadcrumbs from '../../../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import Layout from '../../../Layout';
+import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import { Grid, TextField, Button, useTheme, SvgIcon } from '@material-ui/core';
@@ -116,13 +117,19 @@ const CreateCourse = () => {
     }
   };
 
+  const handleAddPeriod = () => {
+    const list = [...data];
+    list.push({ title: '', description: '', files: [] });
+    setData(list);
+  };
+
   const handleBack = () => {
     setData([]);
     setNextToggle((prev) => !prev);
   };
 
   const handleNext = () => {
-    if (filePath?.length === 1 && thumbnailImage!=='') {
+    if (filePath?.length === 1 && thumbnailImage !== '') {
       if (flag) {
         setData(secondPageData || []);
         setNextToggle((prev) => !prev);
@@ -139,10 +146,8 @@ const CreateCourse = () => {
         }
       }
     } else {
-      if(thumbnailImage==='') 
-      setAlert('warning', 'Thumbnail Image is compulsory!');
-      if(filePath?.length !== 1)
-      setAlert('warning', 'Document is compulsory!');
+      if (thumbnailImage === '') setAlert('warning', 'Thumbnail Image is compulsory!');
+      if (filePath?.length !== 1) setAlert('warning', 'Document is compulsory!');
     }
   };
 
@@ -169,7 +174,7 @@ const CreateCourse = () => {
       axiosInstance
         .get(`${endpoints.onlineCourses.categoryList}?tag_type=2&parent_id=${value.id}`)
         .then((result) => {
-          if (result.data.status_code === 201) {
+          if (result.data?.status_code === 201) {
             const list1 = [...subjectDropdown];
             const list2 = [...gradeDropdown];
             result.data.result.map((object) => {
@@ -293,7 +298,7 @@ const CreateCourse = () => {
         // grade: gradeIds,
         grade: [filterData.erpGrade],
         level: filterData.courseLevel.level,
-        no_of_periods: parseInt(noOfPeriods),
+        no_of_periods: parseInt(data?.length),
         files: filePath,
         thumbnail: [thumbnailImage],
         period_data: data,
@@ -389,7 +394,6 @@ const CreateCourse = () => {
                   style={{
                     width: '15px',
                     height: '15px',
-                    // padding: '5px',
                     cursor: 'pointer',
                   }}
                   src={deleteIcon}
@@ -432,6 +436,11 @@ const CreateCourse = () => {
         setAlert('error', error.message);
       });
   }, []);
+
+  useEffect(() => {
+    if (data.length < 1) setNextToggle(false);
+  }, [data.length]);
+
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
@@ -596,8 +605,12 @@ const CreateCourse = () => {
               />
             </Grid>
             <Grid item xs={12}>
+              <Divider />
+            </Grid>
+            <Grid item xs={12}>
               <TextField
-                id='outlined-multiline-static'
+                className='multiRowTextfield'
+                id='outlined-multiline-static1'
                 label='Course Title'
                 placeholder='Course Title'
                 multiline
@@ -611,7 +624,8 @@ const CreateCourse = () => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                id='outlined-multiline-static'
+                className='multiRowTextfield'
+                id='outlined-multiline-static2'
                 label='Course Prerequisites'
                 placeholder='Course Prerequisites'
                 multiline
@@ -625,7 +639,8 @@ const CreateCourse = () => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                id='outlined-multiline-static'
+                className='multiRowTextfield'
+                id='outlined-multiline-static3'
                 label='What Will You Learn From This Course'
                 placeholder='What Will You Learn From This Course'
                 multiline
@@ -639,7 +654,8 @@ const CreateCourse = () => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                id='outlined-multiline-static'
+                className='multiRowTextfield'
+                id='outlined-multiline-static4'
                 label='Course Overview'
                 placeholder='Course Overview'
                 multiline
@@ -681,7 +697,7 @@ const CreateCourse = () => {
                           )}
                         />
                       }
-                      className='attchment_button'
+                      className='attachment_button_doc'
                       title='Attach Supporting File'
                       variant='contained'
                       size='small'
@@ -726,7 +742,7 @@ const CreateCourse = () => {
                           )}
                         />
                       }
-                      className='attchment_button'
+                      className='attachment_button_doc'
                       title='Attach Supporting File'
                       variant='contained'
                       size='small'
@@ -763,32 +779,28 @@ const CreateCourse = () => {
         ) : (
           <>
             <Paper className={classes.root}>
-              <Grid
-                container
-                style={
-                  isMobile
-                    ? { width: '95%', margin: '20px auto' }
-                    : { width: '100%', margin: '20px auto' }
-                }
-                spacing={5}
-              >
-                <Grid item xs={12} sm={12}>
-                  <Grid container spacing={isMobile ? 3 : 5}>
-                    {data?.map((period, i) => (
-                      <Grid
-                        item
-                        xs={12}
-                        style={isMobile ? { marginLeft: '-8px' } : null}
-                        sm={4}
-                      >
-                        <CourseCard key={i} index={i} cData={data} setData={setData} />
-                      </Grid>
-                    ))}
+              <Grid container className='periodCardsContainer' spacing={isMobile ? 3 : 5}>
+                {data?.map((period, i) => (
+                  <Grid item xs={12} sm={4}>
+                    <CourseCard
+                      setNextToggle={setNextToggle}
+                      key={i}
+                      index={i}
+                      cData={data}
+                      setData={setData}
+                    />
                   </Grid>
+                ))}
+                <Grid item xs={12} sm={4}>
+                  {data.length < 99 && (
+                    <Button onClick={handleAddPeriod} className='periodAddButton'>
+                      <AddOutlinedIcon style={{fontSize:'100px'}}/>
+                    </Button>
+                  )}
                 </Grid>
               </Grid>
             </Paper>
-            <div className='submit'>
+            <div className='submitContainer'>
               <Grid item xs={12} sm={12}>
                 <div className='buttonContainer'>
                   <Button onClick={handleBack} className='periodBackButton'>
