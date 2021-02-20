@@ -26,8 +26,6 @@ const CourseCard = ({ index, cData, setData }) => {
   const classes = useStyles();
   const [filePath, setFilePath] = useState([]);
 
-  console.log(cData, 'cData');
-
   const handleCardSubmit = (e) => {
     const list = [...cData];
     list[index][e.target.name] = e.target.value;
@@ -57,11 +55,16 @@ const CourseCard = ({ index, cData, setData }) => {
       setData(dataList);
       setFilePath(fileList);
     } else {
-      setAlert('warning', 'Exceed Maximum Number Attachment');
+      setAlert('warning', 'Attachment limit exceeded!');
     }
   };
 
   const removeFileHandler = (i) => {
+
+    const list = [...cData];
+    list[i]['files'].splice(i, 1);
+    setData(list);
+
     const fileList = [...filePath];
     fileList.splice(i, 1);
     setFilePath(fileList);
@@ -98,7 +101,7 @@ const CourseCard = ({ index, cData, setData }) => {
   return (
     <>
       <Paper
-        className={classes.root}
+        className="courseCardContainer"
         style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }}
       >
         <Grid container spacing={2}>
@@ -151,7 +154,7 @@ const CourseCard = ({ index, cData, setData }) => {
                 : null}
             </div>
 
-            <div>
+            <div className='attachment_button'>
               <Button
                 startIcon={
                   <SvgIcon
@@ -163,7 +166,6 @@ const CourseCard = ({ index, cData, setData }) => {
                     )}
                   />
                 }
-                className='attchment_button'
                 title='Attach Supporting File'
                 variant='contained'
                 size='medium'
@@ -185,18 +187,6 @@ const CourseCard = ({ index, cData, setData }) => {
               </Button>
             </div>
           </div>
-          {/* <Grid item xs={6}>
-          <Button
-            variant='contained'
-            style={{ color: 'white' }}
-            color='primary'
-            className='custom_button_master'
-            size='small'
-            //   onClick={handleCardSubmit}
-          >
-            SAVE
-          </Button>
-        </Grid> */}
         </Grid>
       </Paper>
     </>

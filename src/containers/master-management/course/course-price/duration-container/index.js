@@ -11,6 +11,7 @@ import { AlertNotificationContext } from '../../../../../context-api/alert-conte
 const DurationContainer = (props) => {
   const {
     isEdit,
+    courseKey,
     gradeKey,
     timeSlot,
     timeSlotDisplay,
@@ -236,7 +237,7 @@ const DurationContainer = (props) => {
               resetContent();
               setCourseId('');
               setSelectedCourse('');
-              history.push(`/course-list/${gradeKey}`);
+              if (gradeKey && courseKey) history.push(`/course-list/${gradeKey}`);
             } else {
               setAlert('error', result.data.message);
             }
@@ -245,21 +246,25 @@ const DurationContainer = (props) => {
             setAlert('error', error.message);
           });
       } else {
-        axiosInstance
-          .post(`${endpoints.aol.createCoursePrice}`, request)
-          .then((result) => {
-            if (result.data.status_code === 200) {
-              setAlert('success', result.data.message);
-              resetContent();
-              setCourseId('');
-              setSelectedCourse('');
-            } else {
-              setAlert('error', result.data.message);
-            }
-          })
-          .catch((error) => {
-            setAlert('error', error.message);
-          });
+        if (timeSlot.length > 0) {
+          axiosInstance
+            .post(`${endpoints.aol.createCoursePrice}`, request)
+            .then((result) => {
+              if (result.data.status_code === 200) {
+                setAlert('success', result.data.message);
+                resetContent();
+                setCourseId('');
+                setSelectedCourse('');
+              } else {
+                setAlert('error', result.data.message);
+              }
+            })
+            .catch((error) => {
+              setAlert('error', error.message);
+            });
+        } else {
+          setAlert('warning', 'Time slot is mandatory!');
+        }
       }
     } else {
       setAlert('warning', 'Please select course!');
@@ -423,8 +428,12 @@ const DurationContainer = (props) => {
           </div>
         )}
       </div>
-      <div className={isEdit ? 'buttonContainer' : 'singleButtonContainer'}>
-        {isEdit && (
+      <div
+        className={
+          courseKey && gradeKey ? 'multiButtonContainer' : 'singleButtonContainer'
+        }
+      >
+        {courseKey && gradeKey && (
           <Button onClick={handleBack} className='backCoursePriceButton'>
             Back
           </Button>

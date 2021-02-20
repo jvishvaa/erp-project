@@ -258,6 +258,7 @@ const CoursePrice = () => {
               clearFlag={clearFlag}
               isEdit={isEdit}
               gradeKey={gradeKey}
+              courseKey={courseKey}
               timeSlot={timeSlot}
               timeSlotDisplay={timeSlotDisplay}
               courseId={courseId}

@@ -19,7 +19,6 @@ const CoursePriceFilters = (props) => {
     setSelectedCourse,
     courseKey,
     gradeKey,
-    isEdit,
   } = props;
   const { setAlert } = useContext(AlertNotificationContext);
   const [selectedGrade, setSelectedGrade] = useState('');
@@ -127,7 +126,7 @@ const CoursePriceFilters = (props) => {
           filterSelectedOptions
           value={selectedGrade}
           onChange={handleGrade}
-          disabled={isEdit}
+          disabled={gradeKey&&courseKey}
           renderInput={(params) => (
             <TextField
               {...params}
@@ -149,7 +148,7 @@ const CoursePriceFilters = (props) => {
           filterSelectedOptions
           value={selectedCourse}
           onChange={handleCourse}
-          disabled={isEdit}
+          disabled={gradeKey&&courseKey}
           renderInput={(params) => (
             <TextField
               {...params}
