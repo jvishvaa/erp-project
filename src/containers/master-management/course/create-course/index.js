@@ -111,47 +111,7 @@ const CreateCourse = () => {
     { value: 'Advance', level: 'High' },
   ];
 
-  //hardcoded data
 
-  // const category = [
-  //   { value: 'Pre-Primary', },
-  //   { value: 'Primary', },
-  //   { value: 'Secondary', },
-  // ];
-
-  // const age = [
-  //   { value: '2-3', },
-  //   { value: '3-4', },
-  //   { value: '4-5', },
-  //   { value: '5-6' },
-  //   { value: '6-7' },
-  //   { value: '7-8' },
-  //   { value: '8-9' },
-  //   { value: '9-10' },
-  //   { value: '10-11' },
-  //   { value: '11-12' },
-  //   { value: '12-13' },
-  //   { value: '13-14' },
-  //   { value: '14-15' },
-
-  // ];
-
-  // const subject = [
-  //   { value: 'Music' },
-  //   { value: 'Dance' },
-  //   { value: 'Art' },
-  //   { value: 'Fit-Kids-Physical Education' },
-  //   { value: 'Instrument' },
-  //   { value: 'Numeracy' },
-  //   { value: 'Literacy' },
-  //   { value: 'English' },
-  //   { value: 'French' },
-  //   { value: 'Robotics' },
-  //   { value: 'Hindi' },
-  //   { value: 'Coding' },
-  //   { value: 'Science' },
-
-  // ]
 
   const handleCourseLevel = (event, value) => {
     setFilterData({ ...filterData, courseLevel: '' });
@@ -184,25 +144,26 @@ const CreateCourse = () => {
       setFilterData({
         ...filterData,
         branch: value,
-      });
-      axiosInstance
-        .get(`${endpoints.communication.grades}?branch_id=${5}&module_id=8`)
-        .then((result) => {
-          if (result.data.status_code === 200) {
-            // setGradeDropdown(result.data.data);
-          } else {
-            setAlert('error', result.data.message);
-            // setGradeDropdown([]);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error.message);
-          // setGradeDropdown([]);
-        });
-    } else {
-      // setGradeDropdown([]);
+      })
     }
-  };
+    //   axiosInstance
+    //     .get(`${endpoints.communication.grades}?branch_id=${5}&module_id=8`)
+    //     .then((result) => {
+    //       if (result.data.status_code === 200) {
+    //         // setGradeDropdown(result.data.data);
+    //       } else {
+    //         setAlert('error', result.data.message);
+    //         // setGradeDropdown([]);
+    //       }
+    //     })
+    //     .catch((error) => {
+    //       setAlert('error', error.message);
+    //       // setGradeDropdown([]);
+    //     });
+    // } else {
+    //   // setGradeDropdown([]);
+    // }
+  }
 
   const handleCategory = (event, value) => {
     setFilterData({ ...filterData, category: '' });
@@ -631,7 +592,7 @@ const CreateCourse = () => {
                 variant='outlined'
                 size='small'
                 value={noOfPeriods}
-                inputProps={{ pattern: '[0-9]*', min: 0, maxLength: 20 }}
+                inputProps={{ pattern: '[0-9]*', min: 0, maxLength: 100 }}
                 name='subname'
                 onChange={(e) => setNoPeriods(e.target.value)}
                 required
@@ -827,24 +788,35 @@ const CreateCourse = () => {
                       ))}
                     </Grid>
                   </Grid>
+                  {/* <Grid item xs={12} sm={12}>
+                        <Button style={{width:'15rem'}} onClick={()=>setNextToggle(!nextToggle)} >Back</Button>
+                  </Grid> */}
                 </Grid>
               </Paper>
               <div className='submit'>
                 <Grid item xs={12} sm={12}>
                   {!state?.isEdit ? (
+                    <div>
+                    <Button style={{width:'15rem', marginLeft: '1.2rem'}} onClick={()=>setNextToggle(!nextToggle)} >Back</Button>
+
                     <Button
                       onClick={handleSubmit}
                       style={{ width: '16rem', marginLeft: '1.2rem' }}
                     >
                       SUBMIT
                     </Button>
+                    </div>
                   ) : (
+                    <div>
+                    <Button style={{width:'15rem', marginLeft: '1.2rem'}} onClick={()=>setNextToggle(!nextToggle)} >Back</Button>
+
                       <Button
                         onClick={handleEdit}
                         style={{ width: '16rem', marginLeft: '1.2rem' }}
                       >
                         EDIT
                       </Button>
+                      </div>
                     )}
                 </Grid>
               </div>

@@ -44,8 +44,9 @@ const CourseView = () => {
   const [viewMoreData, setViewMoreData] = useState([]);
   const [periodDataForView, setPeriodDataForView] = useState({});
   const [sendGrade, setSendGrade] = useState([]);
+  const [deleteFlag,setDeleteFlag] = useState(false)
   //context Data
-  // const [state,setState] = useContext(Context)
+//   const [state,setState] = useContext(Context)
 
   const [courseData,setCourseData]=useState([])
 
@@ -74,6 +75,11 @@ const CourseView = () => {
       })
 
   }
+  useEffect(()=>{
+      if(deleteFlag){
+        handleCourseList(sendGrade)
+      }
+  },[deleteFlag])
 
   return (
     <>
@@ -113,8 +119,9 @@ const CourseView = () => {
                                                     setViewMore={setViewMore}
                                                     setViewMoreData={setViewMoreData}
                                                     setPeriodDataForView={setPeriodDataForView}
+                                                    deleteFlag={deleteFlag}
+                                                    setDeleteFlag={setDeleteFlag}
                                                     // setCompletedStatus={setCompletedStatus}
-
                                                     // setEditData={setEditData}
                                                 />
                                             </Grid>
