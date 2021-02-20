@@ -281,7 +281,7 @@ const UpcomingClasses = () => {
                 })
         }
         else {
-            axiosInstance.get(`${endpoints.aol.classes}?page_number=${page}&page_size=${limit}&class_type=1&is_aol=1&batch_limit=${filterData.batch.batch_size}&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}`)
+            axiosInstance.get(`${endpoints.aol.classes}?page_number=${page}&page_size=${limit}&class_type=1&is_aol=1&course=${filterData.course.id}&batch_limit=${filterData.batch.batch_size}&start_date=${startDateTechPer.format('YYYY-MM-DD')}&end_date=${endDateTechPer.format('YYYY-MM-DD')}`)
                 // axiosInstance.get(`${endpoints.aol.classes}?class_type=1&page_number=1&aol_batch=4&page_size=15&is_aol=1&start_date=2021-02-06&end_date=2021-04-1`)
                 .then(result => {
                     setTotalCount(result.data.count)
