@@ -794,7 +794,7 @@ const CreateCourse = () => {
                 <Grid item xs={12} sm={4}>
                   {data.length < 99 && (
                     <Button onClick={handleAddPeriod} className='periodAddButton'>
-                      <AddOutlinedIcon style={{fontSize:'100px'}}/>
+                      <AddOutlinedIcon style={{ fontSize: '100px' }} />
                     </Button>
                   )}
                 </Grid>
