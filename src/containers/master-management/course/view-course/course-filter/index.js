@@ -1,13 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import {useHistory} from 'react-router-dom'
-import Paper from '@material-ui/core/Paper';
+import {useHistory,useParams} from 'react-router-dom';
 import {
   Grid,
   TextField,
   Button,
   useTheme,
-  SvgIcon,
-  Typography,
 } from '@material-ui/core';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -21,14 +18,12 @@ import Divider from '@material-ui/core/Divider';
 
 const CourseFilter = ({handleCourseList}) => {
     const themeContext = useTheme();
+    const { gradeKey } = useParams();
     const { setAlert } = useContext(AlertNotificationContext);
     const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-    // const classes = useStyles();
     const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
     const widerWidth = isMobile ? '98%' : '95%';
-    const history =useHistory()
-
-
+    const history =useHistory();
     const [branchDropdown, setBranchDropdown] = useState([]);
     const [gradeDropdown, setGradeDropdown] = useState([]);
     const [gradeIds, setGradeIds] = useState([]);
@@ -48,7 +43,7 @@ const CourseFilter = ({handleCourseList}) => {
     }
 
     const handleFilter=()=>{
-        handleCourseList(gradeIds)
+        handleCourseList(gradeIds);
     }
   
     const handleBranch = (event, value) => {
@@ -62,9 +57,9 @@ const CourseFilter = ({handleCourseList}) => {
           .get(`${endpoints.communication.grades}?branch_id=${5}&module_id=8`)
           .then((result) => {
             if (result.data.status_code === 200) {
-              setGradeDropdown(result.data.data);
+              setGradeDropdown(result?.data?.data);
             } else {
-              setAlert('error', result.data.message);
+              setAlert('error', result?.data?.message);
               setGradeDropdown([]);
             }
           })
@@ -76,11 +71,39 @@ const CourseFilter = ({handleCourseList}) => {
         setGradeDropdown([]);
       }
     };
+
+    useEffect(()=>{
+      if(gradeKey) {
+        axiosInstance
+          .get(`${endpoints.communication.grades}?branch_id=${5}&module_id=8`)
+          .then((result) => {
+            if (result.data.status_code === 200) {
+              setGradeDropdown(result?.data?.data);
+              const gradeObj = result.data?.data?.find(
+                ({ grade_id }) => grade_id === Number(gradeKey)
+              );
+              if(gradeKey) {
+                setFilterData({
+                  grade: gradeObj,
+                  branch:{branch_name:'AOL'},
+                });
+                handleCourseList(gradeKey);
+              }
+            } else {
+              setAlert('error', result?.data?.message);
+              setGradeDropdown([]);
+            }
+          })
+          .catch((error) => {
+            setAlert('error', error.message);
+            setGradeDropdown([]);
+          });
+      }
+    },[gradeKey]);
   
     const handleGrade = (event, value) => {
       setFilterData({ ...filterData, grade: '' });
       if (value) {
-        // const ids = value.map((obj) => obj.grade_id);
         setGradeIds(value.grade_id);
         setFilterData({
           ...filterData,
@@ -88,20 +111,21 @@ const CourseFilter = ({handleCourseList}) => {
         });
       }
     };
-    useEffect(() => {
-      axiosInstance
-        .get(`${endpoints.communication.branches}`)
-        .then((result) => {
-          if (result.data.status_code === 200) {
-            setBranchDropdown(result.data.data);
-          } else {
-            setAlert('error', result.data.message);
-          }
-        })
-        .catch((error) => {
-          setBranchDropdown('error', error.message);
-        });
-    }, []);
+    // useEffect(() => {
+    //   axiosInstance
+    //     .get(`${endpoints.communication.branches}`)
+    //     .then((result) => {
+    //       if (result.data.status_code === 200) {
+    //         setBranchDropdown(result.data.data);
+    //       } else {
+    //         setAlert('error', result.data.message);
+    //       }
+    //     })
+    //     .catch((error) => {
+    //       setBranchDropdown('error', error.message);
+    //     });
+    // }, []);
+
     return(
         <>
         <Grid

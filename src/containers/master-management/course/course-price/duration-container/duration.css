@@ -83,11 +83,30 @@
   fill: #014b7e;
 }
 
+.singleButtonContainer {
+  width: 40%;
+  display: flex;
+  justify-content: space-between;
+  align-self: flex-end; 
+}
+
 .buttonContainer {
-  width: 30%;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-self: flex-end;
+}
+
+.backCoursePriceButton.MuiButtonBase-root {
+  width: 100%;
+  border-radius: 10px;
+  background: #e0e0e0;
+  color: rgb(140, 140, 140);
+  margin-right: 10%;
+}
+
+.backCoursePriceButton.MuiButtonBase-root:hover {
+  background:  #e0e0e0;
 }
 
 .submitCoursePriceButton.MuiButtonBase-root {

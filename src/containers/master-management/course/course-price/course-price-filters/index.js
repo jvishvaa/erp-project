@@ -19,6 +19,7 @@ const CoursePriceFilters = (props) => {
     setSelectedCourse,
     courseKey,
     gradeKey,
+    isEdit,
   } = props;
   const { setAlert } = useContext(AlertNotificationContext);
   const [selectedGrade, setSelectedGrade] = useState('');
@@ -69,7 +70,7 @@ const CoursePriceFilters = (props) => {
     setCourseId('');
     if (value) {
       setSelectedCourse(value);
-      setCourseId(value.id);
+      setCourseId(value?.id);
     }
   };
 
@@ -97,10 +98,10 @@ const CoursePriceFilters = (props) => {
   };
 
   const [timeSlotList, setTimeSlotList] = useState([
-    { slot: '12-3 PM' },
-    { slot: '3-6 PM' },
-    { slot: '6-9 AM' },
-    { slot: '9-12 AM' },
+    { slot: '12-3PM' },
+    { slot: '3-6PM' },
+    { slot: '6-9AM' },
+    { slot: '9-12AM' },
   ]);
 
   const handleTimeSlot = (event, value) => {
@@ -126,7 +127,7 @@ const CoursePriceFilters = (props) => {
           filterSelectedOptions
           value={selectedGrade}
           onChange={handleGrade}
-          disabled={Number(courseKey) ? true : false}
+          disabled={isEdit}
           renderInput={(params) => (
             <TextField
               {...params}
@@ -148,7 +149,7 @@ const CoursePriceFilters = (props) => {
           filterSelectedOptions
           value={selectedCourse}
           onChange={handleCourse}
-          disabled={Number(courseKey) ? true : false}
+          disabled={isEdit}
           renderInput={(params) => (
             <TextField
               {...params}

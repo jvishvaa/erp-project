@@ -11,6 +11,7 @@ import { AlertNotificationContext } from '../../../../../context-api/alert-conte
 const DurationContainer = (props) => {
   const {
     isEdit,
+    gradeKey,
     timeSlot,
     timeSlotDisplay,
     courseId,
@@ -55,7 +56,6 @@ const DurationContainer = (props) => {
         (datarow) => datarow['limit'] === selectedLimit
       );
       setNoOfWeeks(collectData[index]['weeks'] || '');
-      // setToggle(collectData[index]['toggle']);
       setEditToggle(collectData[index]['toggle']);
       if (collectData[index]['toggle']) setToggle(true);
       else setToggle(false);
@@ -91,23 +91,28 @@ const DurationContainer = (props) => {
 
   const handleAdd = () => {
     const list = [...recursiveContent];
-    let flag = true,ind=0;
-    if (list.length >=2) {
+    let flag = true,
+      ind = 0;
+    if (list.length >= 2) {
       for (let i = 1; i < list.length; i++) {
         if (
-          list[i - 1]['price']+1 > list[i]['price'] ||
-          list[i - 1]['weeks']+1 > list[i]['weeks']
+          list[i - 1]['price'] + 1 > list[i]['price'] ||
+          list[i - 1]['weeks'] + 1 > list[i]['weeks']
         ) {
           flag = false;
-          ind=i;
+          ind = i;
           break;
         } else {
           flag = true;
         }
       }
     }
-    if(flag) list.push({ weeks: '', price: '', id: '' });
-    else setAlert('error', `Price and weeks must be more than it's previous value for index ${ind+1}`);
+    if (flag) list.push({ weeks: '', price: '', id: '' });
+    else
+      setAlert(
+        'error',
+        `Price and weeks must be more than it's previous value for index ${ind + 1}`
+      );
 
     setRecursiveContent(list);
   };
@@ -149,6 +154,10 @@ const DurationContainer = (props) => {
     }
     setCollectData(list);
   }, [noOfWeeks, recursiveContent, nonRecursiveContent]);
+
+  const handleBack = () => {
+    history.push(`/course-list/${gradeKey}`);
+  };
 
   const handleSubmit = () => {
     const list = [...collectData];
@@ -227,7 +236,7 @@ const DurationContainer = (props) => {
               resetContent();
               setCourseId('');
               setSelectedCourse('');
-              history.push('/create/course');
+              history.push(`/course-list/${gradeKey}`);
             } else {
               setAlert('error', result.data.message);
             }
@@ -291,13 +300,13 @@ const DurationContainer = (props) => {
         </div>
         {toggle ? (
           <div className='recursiveContainer'>
-            {recursiveContent.map((row, index) => (
+            {recursiveContent?.map((row, index) => (
               <div className='recursiveRow'>
                 <div className='addRemoveIconContainer'>
-                  {index === recursiveContent.length - 1 && (
+                  {index === recursiveContent?.length - 1 && (
                     <Add className='addRecIcon' onClick={handleAdd} />
                   )}
-                  {index !== recursiveContent.length - 1 && (
+                  {index !== recursiveContent?.length - 1 && (
                     <Remove
                       className='removeRecIcon'
                       onClick={() => handleRemove(index)}
@@ -332,7 +341,7 @@ const DurationContainer = (props) => {
                     variant='outlined'
                     name='price'
                     placeholder='Price'
-                    value={row.price}
+                    value={row?.price}
                     onChange={(e) => handleChange(e, index)}
                     InputProps={{
                       inputProps: { autoComplete: 'off' },
@@ -414,7 +423,12 @@ const DurationContainer = (props) => {
           </div>
         )}
       </div>
-      <div className='buttonContainer'>
+      <div className={isEdit ? 'buttonContainer' : 'singleButtonContainer'}>
+        {isEdit && (
+          <Button onClick={handleBack} className='backCoursePriceButton'>
+            Back
+          </Button>
+        )}
         <Button onClick={handleSubmit} className='submitCoursePriceButton'>
           Submit
         </Button>

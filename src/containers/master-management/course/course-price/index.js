@@ -147,21 +147,14 @@ const CoursePrice = () => {
       axiosInstance
         .get(`${endpoints.aol.createCoursePrice}?course=${courseId}`)
         .then((res) => {
-          const { message, status_code } = res.data;
+          const { message, status_code } = res?.data;
           setFirstHit(false);
           if (status_code === 200) {
-            if (res.data.result.length > 0) {
+            if (res?.data?.result?.length > 0) {
               setIsEdit(true);
-              const list = [...res.data.result];
+              const list = [...res?.data?.result];
               const collectionList = [...collectData];
-              setTimeSlotDisplay(
-                list[0]['time_slot'].map(
-                  (obj) =>
-                    `${obj.substring(0, obj.lastIndexOf('-'))} ${obj.substring(
-                      obj.lastIndexOf('-') + 1
-                    )}`
-                )
-              );
+              setTimeSlotDisplay(list[0]['time_slot']);
               for (let i = 0; i < list.length; i++) {
                 const { batch_size, course_price, is_recurring, week_days, id } = list[i];
                 const index = funBatchSize(batch_size);
@@ -208,7 +201,6 @@ const CoursePrice = () => {
         .catch((error) => {
           resetContent();
           setIsEdit(false);
-          //   setAlert('error', error.message);
         });
     } else {
       resetContent();
@@ -236,6 +228,7 @@ const CoursePrice = () => {
         setSelectedCourse={setSelectedCourse}
         courseKey={courseKey}
         gradeKey={gradeKey}
+        isEdit={isEdit}
       />
       <div>
         {' '}
@@ -264,6 +257,7 @@ const CoursePrice = () => {
             <DurationContainer
               clearFlag={clearFlag}
               isEdit={isEdit}
+              gradeKey={gradeKey}
               timeSlot={timeSlot}
               timeSlotDisplay={timeSlotDisplay}
               courseId={courseId}

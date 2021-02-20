@@ -28,7 +28,6 @@ const ViewMoreCard = ({
   section,
 }) => {
 
-  console.log(sendGrade, "========");
   const themeContext = useTheme();
   const classes = useStyles();
 
@@ -53,7 +52,7 @@ const ViewMoreCard = ({
   }
 
   const handleEditCoursePrice = () => {
-    history.push(`./course-price/${viewMoreData[0]?.course}/${sendGrade}`);
+    history.push(`/course-price/${viewMoreData[0]?.course}/${sendGrade}`);
   }
 
   const handleEdit = () => {

@@ -390,7 +390,7 @@ function App() {
                         <Route exact path='/create/course'>
                           {({ match }) => <CreateCourse match={match} />}
                         </Route>
-                        <Route exact path='/course-list'>
+                        <Route exact path='/course-list/:gradeKey?'>
                           {({ match }) => <CourseView match={match} />}
                         </Route>
                         <Route exact path='/view-period'>
