@@ -60,11 +60,13 @@ const ViewMoreCard = ({
     setState({ ...state, isEdit: true })
     history.push('/create/course')
   }
-  const handleDownload = (e) => {
-    // e.preventDefault();
-    // periodDataForView && periodDataForView.map((path) => {
-    //   path.files && path.files.map((file, i) => window.location.href = (`${endpoints.s3}/${file}`))
-    // })
+  const handleDownload = (type) => {
+    if(type==='course'){
+      window.href=`https://erpnew.letseduvate.com/qbox/aol/file-upload/dev/${periodDataForView?.files[0]}`
+    }
+    if(type==='thumbnail'){
+      window.open("https://erpnew.letseduvate.com/qbox/aol/file-upload/2021-02-20 16:31:24.776679_LogoBanner.png")
+    }
   }
   return (
     <>
@@ -127,10 +129,10 @@ const ViewMoreCard = ({
             <div className='scrollableContent'>
               <div className='bodyContent'>
                 <div>
-                No Of Attachments : {periodDataForView?.files && periodDataForView?.files?.length}
+                Course Attachments : {periodDataForView?.files && periodDataForView?.files?.length}
                 {periodDataForView?.files?.length > 0 ?
-                      <IconButton
-                        onClick={handleDownload}>
+                      <IconButton>
+                        <a href={`https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/aol_file/course/${periodDataForView?.files[0]}`}>
                         <SvgIcon
                           component={() => (
                             <img
@@ -141,15 +143,25 @@ const ViewMoreCard = ({
                             />
                           )}
                         />
+                        </a>
                       </IconButton> : ''}
-              {/* {periodDataForView?.files?.map((file, i) => (
-                  <FileRow
-                    key={`filess${i}`}
-                    file={file}
-                    index={i}
+                  Thumbnail : {periodDataForView?.thumbnail && periodDataForView?.thumbnail?.length}
+                  {periodDataForView?.thumbnail?.length > 0 ?
+                      <IconButton>
+                       <a href={`https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/aol_file/course/${periodDataForView?.thumbnail[0]}`}>
 
-                  />
-                ))} */}
+                        <SvgIcon
+                          component={() => (
+                            <img
+                              target='blank'
+                              style={{ height: '21px', width: '21px' }}
+                              src={downloadAll}
+                              alt='downloadAll'
+                            />
+                          )}
+                        />
+                        </a>
+                      </IconButton> : ''}
                 </div>
               </div>
             </div>

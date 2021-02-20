@@ -64,7 +64,7 @@ const CreateCourse = () => {
 
   //context
   const [state, setState] = useContext(Context);
-
+  console.log(state,'==================')
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [gradeIds, setGradeIds] = useState([]);
@@ -73,7 +73,7 @@ const CreateCourse = () => {
   const [age, setAge] = useState([]);
 
   const [classDuration, setClassDuration] = useState('');
-  const [noOfPeriods, setNoPeriods] = useState(state.editData.no_of_periods || '');
+  const [noOfPeriods, setNoPeriods] = useState('');
   const [title, setTitle] = useState('');
   const [coursePre, setCoursePre] = useState('');
   const [learn, setLearn] = useState('');
@@ -82,16 +82,10 @@ const CreateCourse = () => {
   const [nextToggle, setNextToggle] = useState(false);
   const [thumbnailImage, setThumbnailImage] = useState('');
 
-  const [card, setCard] = useState(0);
-
-  const firstPageData = state.editData;
-  const [secondPageData, setSecondPageData] = useState(state?.viewPeriodData || []);
+  const [secondPageData, setSecondPageData] = useState([]);
   const flag = state?.isEdit;
 
   const [data, setData] = useState([]);
-
-  const [cardTitle, setCardTitle] = useState(null);
-  const [cardDesc, setCardDesc] = useState(null);
 
   const branchDrop = [{ branch_name: 'AOL' }];
   const [filterData, setFilterData] = useState({
@@ -251,7 +245,7 @@ const CreateCourse = () => {
       const fd = new FormData();
       fd.append('file', event.target.files[0]);
 
-      axiosInstance.post(`${endpoints.onlineCourses.fileUpload}`, fd).then((result) => {
+      axiosInstance.post(`${endpoints.onlineCourses.fileUpload}`,fd).then((result) => {
         if (result.data.status_code === 200) {
           const fileList = [...filePath];
           fileList.push(result.data?.result?.get_file_path);
@@ -343,12 +337,12 @@ const CreateCourse = () => {
 
   const handleEdit = () => {
     axiosInstance
-      .put(`${endpoints.onlineCourses.updateCourse}11/update-course/`, {
+      .put(`${endpoints.onlineCourses.updateCourse}${state?.editData?.id}/update-course/`, {
         course_name: title,
         pre_requirement: coursePre,
         overview: overview,
         learn: learn,
-        grade: [24],
+        grade: [`${state?.editData?.grade}`],
         level: filterData.courseLevel.level,
         no_of_periods: parseInt(noOfPeriods),
         period_data: data,
@@ -617,7 +611,7 @@ const CreateCourse = () => {
                 rows='1'
                 color='secondary'
                 style={{ width: '100%' }}
-                value={firstPageData?.course_name || title}
+                value={title}
                 variant='outlined'
                 onChange={(e) => setTitle(e.target.value)}
               />
@@ -632,7 +626,7 @@ const CreateCourse = () => {
                 rows='6'
                 color='secondary'
                 style={{ width: '100%' }}
-                value={firstPageData?.pre_requirement || coursePre}
+                value={coursePre}
                 variant='outlined'
                 onChange={(e) => setCoursePre(e.target.value)}
               />
@@ -647,7 +641,7 @@ const CreateCourse = () => {
                 rows='6'
                 color='secondary'
                 style={{ width: '100%' }}
-                value={firstPageData?.learn || learn}
+                value={learn}
                 variant='outlined'
                 onChange={(e) => setLearn(e.target.value)}
               />
@@ -662,7 +656,7 @@ const CreateCourse = () => {
                 rows='6'
                 color='secondary'
                 style={{ width: '100%' }}
-                value={firstPageData?.overview || overview}
+                value={overview}
                 variant='outlined'
                 onChange={(e) => setOverview(e.target.value)}
               />

@@ -70,15 +70,13 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
         setSelectedDate(date);
     };
     useEffect(() => {
-        // axiosInstance.get(`https://erpnew.letseduvate.com/qbox/aol/batch_shuffle/?batch_id=12`)
-        // axiosInstance.get(`http://erpnew.letseduvate.com/qbox/aol/batch_shuffle/?batch_id=${id}`)
         axiosInstance.get(`${endpoints.aol.reshuffleBatchList}?batch_id=${id}`)
             .then((result) => {
                 setBatchList(result.data.result)
             })
     }, [])
     const handleReshuffle = () => {
-        axiosInstance.post(`${endpoints.aol.studentReshuffle}`, {
+        axiosInstance.post(`${endpoints.aol.studentReshuffle}?aol=1`, {
             "batch":parseInt(id),
             "new_batch": filterData?.batch?.id,
             "students": [modalData?.user_id]
