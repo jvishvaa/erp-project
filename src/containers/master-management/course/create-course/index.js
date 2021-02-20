@@ -64,7 +64,7 @@ const CreateCourse = () => {
 
   //context
   const [state, setState] = useContext(Context);
-  console.log(state,'==================')
+  console.log(state, '==================');
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [gradeIds, setGradeIds] = useState([]);
@@ -123,7 +123,21 @@ const CreateCourse = () => {
   };
 
   const handleNext = () => {
-    if (filePath?.length === 1 && thumbnailImage !== '') {
+    if (
+      filePath?.length === 1 &&
+      Boolean(thumbnailImage) &&
+      Boolean(title) &&
+      noOfPeriods>0 &&
+      // coursePre !== '' &&
+      // overview !== '' &&
+      // learn !== '' &&
+      Boolean(filterData.erpGrade) &&
+      Boolean(filterData.courseLevel.level) &&
+      Boolean(filterData.category.id) &&
+      Boolean(filterData.branch?.branch_name) &&
+      Boolean(filterData.age.id) &&
+      Boolean(filterData.subject.id)
+    ) {
       if (flag) {
         setData(secondPageData || []);
         setNextToggle((prev) => !prev);
@@ -140,8 +154,22 @@ const CreateCourse = () => {
         }
       }
     } else {
-      if (thumbnailImage === '') setAlert('warning', 'Thumbnail Image is compulsory!');
+      if (!Boolean(thumbnailImage)) setAlert('warning', 'Thumbnail Image is compulsory!');
       if (filePath?.length !== 1) setAlert('warning', 'Document is compulsory!');
+      if (!Boolean(title)) setAlert('warning', 'Title is compulsory!');
+      // if (coursePre === '') setAlert('warning', 'Document is compulsory!');
+      // if (overview === '') setAlert('warning', 'Document is compulsory!');
+      // if (learn === '') setAlert('warning', 'Document is compulsory!');
+      if (noOfPeriods<=0) setAlert('warning', 'No. of periods should be more than 0!');
+      if (!Boolean(filterData.subject.id)) setAlert('warning', 'Subject is compulsory!');
+      if (!Boolean(filterData.age.id)) setAlert('warning', 'Age is compulsory!');
+      if (!Boolean(filterData.erpGrade)) setAlert('warning', 'Grade is compulsory!');
+      if (!Boolean(filterData.category.id))
+        setAlert('warning', 'Category is compulsory!');
+      if (!Boolean(filterData.branch.branch_name))
+        setAlert('warning', 'Branch is compulsory!');
+      if (!Boolean(filterData.courseLevel.level))
+        setAlert('warning', 'Level is compulsory!');
     }
   };
 
@@ -245,7 +273,7 @@ const CreateCourse = () => {
       const fd = new FormData();
       fd.append('file', event.target.files[0]);
 
-      axiosInstance.post(`${endpoints.onlineCourses.fileUpload}`,fd).then((result) => {
+      axiosInstance.post(`${endpoints.onlineCourses.fileUpload}`, fd).then((result) => {
         if (result.data.status_code === 200) {
           const fileList = [...filePath];
           fileList.push(result.data?.result?.get_file_path);
@@ -289,7 +317,6 @@ const CreateCourse = () => {
         pre_requirement: coursePre,
         overview: overview,
         learn: learn,
-        // grade: gradeIds,
         grade: [filterData.erpGrade],
         level: filterData.courseLevel.level,
         no_of_periods: parseInt(data?.length),
@@ -337,17 +364,20 @@ const CreateCourse = () => {
 
   const handleEdit = () => {
     axiosInstance
-      .put(`${endpoints.onlineCourses.updateCourse}${state?.editData?.id}/update-course/`, {
-        course_name: title,
-        pre_requirement: coursePre,
-        overview: overview,
-        learn: learn,
-        grade: [`${state?.editData?.grade}`],
-        level: filterData.courseLevel.level,
-        no_of_periods: parseInt(noOfPeriods),
-        period_data: data,
-        tag_id: `${filterData.age.id},${filterData.subject.id}`,
-      })
+      .put(
+        `${endpoints.onlineCourses.updateCourse}${state?.editData?.id}/update-course/`,
+        {
+          course_name: title,
+          pre_requirement: coursePre,
+          overview: overview,
+          learn: learn,
+          grade: [`${state?.editData?.grade}`],
+          level: filterData.courseLevel.level,
+          no_of_periods: parseInt(noOfPeriods),
+          period_data: data,
+          tag_id: `${filterData.age.id},${filterData.subject.id}`,
+        }
+      )
       .then((result) => {
         if (result.data.status_code === 200) {
           setState({ ...state, isEdit: false, viewPeriodData: [], editData: [] });
@@ -459,7 +489,6 @@ const CreateCourse = () => {
                 style={{ width: '100%' }}
                 size='small'
                 onChange={handleCourseLevel}
-                // onChange={e=> handleCourseLevel(courseLevel)}
                 id='academic-year'
                 className='dropdownIcon'
                 value={filterData?.courseLevel}
