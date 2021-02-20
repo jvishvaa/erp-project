@@ -133,8 +133,7 @@ const CourseCard = ({period, setPeriodDataForView, setViewMoreData, setViewMore 
                 showMenu) ? (
                   <div className="tooltip" style={{display:'flex',justifyContent:'space-between'}}>
                     <span className='tooltiptext' >
-                        <Button className='tooltip' onClick={e=> handleDelete(period)}>Delete</Button>
-                        {/* <Button className='tooltip' onClick={e=> handleEdit(period)}> Edit</Button> */}
+                        <div className='tooltip' onClick={e=> handleDelete(period)}>Delete</div>
                     </span>
                   </div>
                 ) : null}

@@ -10,9 +10,9 @@ const DaysFilterContainer = (props) => {
 
   useEffect(() => {
     if (clearFlag) {
-        setComboDays([]);
-        setOtherDays([]);
-        setDaysDisplay([]);
+      setComboDays([]);
+      setOtherDays([]);
+      setDaysDisplay([]);
     }
   }, [clearFlag]);
 
@@ -30,9 +30,9 @@ const DaysFilterContainer = (props) => {
   const [comboDays, setComboDays] = useState([]);
 
   const [comboDaysList, setComboDaysList] = useState([
-    { id: 1, combo: 'Mon / Wed / Fri', send: 'M/W/F' },
-    { id: 2, combo: 'Tue / Thur / Sat', send: 'T/T/S' },
-    { id: 3, combo: 'Fri / Sat / Sun', send: 'F/S/S' },
+    { id: 1, combo: 'Mon / Wed / Fri', send: 'Mon/Wed/Fri' },
+    { id: 2, combo: 'Tue / Thu / Sat', send: 'Tue/Thu/Sat' },
+    { id: 3, combo: 'Fri / Sat / Sun', send: 'Fri/Sat/Sun' },
     { id: 4, combo: 'Others' },
   ]);
 
@@ -51,13 +51,13 @@ const DaysFilterContainer = (props) => {
   const [otherDays, setOtherDays] = useState([]);
 
   const [otherDaysList, setOtherDaysList] = useState([
-    { id: 1, day: 'Monday', send: 'M' },
-    { id: 2, day: 'Tuesday', send: 'T' },
-    { id: 3, day: 'Wednesday', send: 'W' },
-    { id: 4, day: 'Thursday', send: 'TH' },
-    { id: 5, day: 'Friday', send: 'F' },
-    { id: 6, day: 'Saturday', send: 'SA' },
-    { id: 7, day: 'Sunday', send: 'S' },
+    { id: 1, day: 'Monday', send: 'Mon' },
+    { id: 2, day: 'Tuesday', send: 'Tue' },
+    { id: 3, day: 'Wednesday', send: 'Wed' },
+    { id: 4, day: 'Thursday', send: 'Thu' },
+    { id: 5, day: 'Friday', send: 'Fri' },
+    { id: 6, day: 'Saturday', send: 'Sat' },
+    { id: 7, day: 'Sunday', send: 'Sun' },
   ]);
 
   const handleOtherDays = (event, value) => {
@@ -74,34 +74,34 @@ const DaysFilterContainer = (props) => {
 
   const funDayName = (day) => {
     switch (day) {
-      case 'M':
+      case 'Mon':
         return 'Monday';
         break;
-      case 'T':
+      case 'Tue':
         return 'Tuesday';
         break;
-      case 'W':
+      case 'Wed':
         return 'Wednesday';
         break;
-      case 'TH':
+      case 'Thu':
         return 'Thursday';
         break;
-      case 'F':
+      case 'Fri':
         return 'Friday';
         break;
-      case 'SA':
+      case 'Sat':
         return 'Saturday';
         break;
-      case 'S':
+      case 'Sun':
         return 'Sunday';
         break;
-      case 'F/S/S':
+      case 'Fri/Sat/Sun':
         return 'Friday / Saturday / Sunday';
         break;
-      case 'M/W/F':
+      case 'Mon/Wed/Fri':
         return 'Monday / Wednesday / Friday';
         break;
-      case 'T/T/S':
+      case 'Tue/Thu/Sat':
         return 'Tuesday / Thursday / Saturday';
         break;
     }

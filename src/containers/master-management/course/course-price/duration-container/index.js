@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import { TextField, Switch, FormControlLabel, Button, SvgIcon } from '@material-ui/core';
 import './duration.css';
 import { Add, Remove } from '@material-ui/icons';
@@ -10,6 +11,8 @@ import { AlertNotificationContext } from '../../../../../context-api/alert-conte
 const DurationContainer = (props) => {
   const {
     isEdit,
+    courseKey,
+    gradeKey,
     timeSlot,
     timeSlotDisplay,
     courseId,
@@ -21,9 +24,10 @@ const DurationContainer = (props) => {
     resetContent,
     clearFlag,
     setCourseId,
-    setSelectedCourse
+    setSelectedCourse,
   } = props;
 
+  const history = useHistory();
   const { setAlert } = useContext(AlertNotificationContext);
   const [noOfWeeks, setNoOfWeeks] = useState(
     '' || [...collectData][funBatchSize(Number(selectedLimit.substring(2)))]['weeks']
@@ -52,11 +56,9 @@ const DurationContainer = (props) => {
       const index = collectData.findIndex(
         (datarow) => datarow['limit'] === selectedLimit
       );
-      setNoOfWeeks(collectData[index]['weeks']||'');
-      // setToggle(collectData[index]['toggle']);
+      setNoOfWeeks(collectData[index]['weeks'] || '');
       setEditToggle(collectData[index]['toggle']);
-      if(collectData[index]['toggle']) 
-        setToggle(true);
+      if (collectData[index]['toggle']) setToggle(true);
       else setToggle(false);
       setRecursiveContent(collectData[index]['data']);
       setNonRecursiveContent(collectData[index]['singleData']);
@@ -69,8 +71,9 @@ const DurationContainer = (props) => {
     if (toggle) {
       const list = [...recursiveContent];
       if (name === 'price') {
-        if (value.match(/^[0-9]*\.?([0-9]+)?$/)) list[index][name] = value;
-        else setAlert('warning', 'Price can contain only numbers!');
+        if (value.match(/^[0-9]*\.?([0-9]+)?$/)) {
+          list[index][name] = value;
+        } else setAlert('warning', 'Price can contain only numbers!');
       } else {
         list[index][name] = value;
       }
@@ -89,7 +92,29 @@ const DurationContainer = (props) => {
 
   const handleAdd = () => {
     const list = [...recursiveContent];
-    list.push({ weeks: '', price: '', id: '' });
+    let flag = true,
+      ind = 0;
+    if (list.length >= 2) {
+      for (let i = 1; i < list.length; i++) {
+        if (
+          list[i - 1]['price'] + 1 > list[i]['price'] ||
+          list[i - 1]['weeks'] + 1 > list[i]['weeks']
+        ) {
+          flag = false;
+          ind = i;
+          break;
+        } else {
+          flag = true;
+        }
+      }
+    }
+    if (flag) list.push({ weeks: '', price: '', id: '' });
+    else
+      setAlert(
+        'error',
+        `Price and weeks must be more than it's previous value for index ${ind + 1}`
+      );
+
     setRecursiveContent(list);
   };
 
@@ -111,13 +136,10 @@ const DurationContainer = (props) => {
 
   const handleNumberOfWeeks = (value) => {
     setNoOfWeeks(value);
-    // if (toggle) {
     [...recursiveContent][0]['weeks'] = parseInt(value);
     setRecursiveContent([...recursiveContent]);
-    // } else {
     [...nonRecursiveContent][0]['weeks'] = parseInt(value);
     setNonRecursiveContent([...nonRecursiveContent]);
-    // }
   };
 
   useEffect(() => {
@@ -125,7 +147,7 @@ const DurationContainer = (props) => {
     for (let i = 0; i < list.length; i++) {
       if (list[i]['limit'] === selectedLimit) {
         list[i]['weeks'] = noOfWeeks;
-        list[i]['toggle'] = editToggle?editToggle:toggle;
+        list[i]['toggle'] = editToggle ? editToggle : toggle;
         list[i]['data'] = recursiveContent;
         list[i]['singleData'] = nonRecursiveContent;
         break;
@@ -133,6 +155,10 @@ const DurationContainer = (props) => {
     }
     setCollectData(list);
   }, [noOfWeeks, recursiveContent, nonRecursiveContent]);
+
+  const handleBack = () => {
+    history.push(`/course-list/${gradeKey}`);
+  };
 
   const handleSubmit = () => {
     const list = [...collectData];
@@ -183,7 +209,7 @@ const DurationContainer = (props) => {
         batch_size: list[i]['limit'].substring(2),
         is_recurring: list[i]['toggle'] ? 'True' : 'False',
         course_price: coursePriceArray,
-        id: list[i]['id'],
+        id: Number(list[i]['id']),
       });
     }
     let request = {};
@@ -211,6 +237,7 @@ const DurationContainer = (props) => {
               resetContent();
               setCourseId('');
               setSelectedCourse('');
+              if (gradeKey && courseKey) history.push(`/course-list/${gradeKey}`);
             } else {
               setAlert('error', result.data.message);
             }
@@ -219,21 +246,25 @@ const DurationContainer = (props) => {
             setAlert('error', error.message);
           });
       } else {
-        axiosInstance
-          .post(`${endpoints.aol.createCoursePrice}`, request)
-          .then((result) => {
-            if (result.data.status_code === 200) {
-              setAlert('success', result.data.message);
-              resetContent();
-              setCourseId('');
-              setSelectedCourse('');
-            } else {
-              setAlert('error', result.data.message);
-            }
-          })
-          .catch((error) => {
-            setAlert('error', error.message);
-          });
+        if (timeSlot.length > 0) {
+          axiosInstance
+            .post(`${endpoints.aol.createCoursePrice}`, request)
+            .then((result) => {
+              if (result.data.status_code === 200) {
+                setAlert('success', result.data.message);
+                resetContent();
+                setCourseId('');
+                setSelectedCourse('');
+              } else {
+                setAlert('error', result.data.message);
+              }
+            })
+            .catch((error) => {
+              setAlert('error', error.message);
+            });
+        } else {
+          setAlert('warning', 'Time slot is mandatory!');
+        }
       }
     } else {
       setAlert('warning', 'Please select course!');
@@ -274,13 +305,13 @@ const DurationContainer = (props) => {
         </div>
         {toggle ? (
           <div className='recursiveContainer'>
-            {recursiveContent.map((row, index) => (
+            {recursiveContent?.map((row, index) => (
               <div className='recursiveRow'>
                 <div className='addRemoveIconContainer'>
-                  {index === recursiveContent.length - 1 && (
+                  {index === recursiveContent?.length - 1 && (
                     <Add className='addRecIcon' onClick={handleAdd} />
                   )}
-                  {index !== recursiveContent.length - 1 && (
+                  {index !== recursiveContent?.length - 1 && (
                     <Remove
                       className='removeRecIcon'
                       onClick={() => handleRemove(index)}
@@ -315,7 +346,7 @@ const DurationContainer = (props) => {
                     variant='outlined'
                     name='price'
                     placeholder='Price'
-                    value={row.price}
+                    value={row?.price}
                     onChange={(e) => handleChange(e, index)}
                     InputProps={{
                       inputProps: { autoComplete: 'off' },
@@ -397,7 +428,16 @@ const DurationContainer = (props) => {
           </div>
         )}
       </div>
-      <div className='buttonContainer'>
+      <div
+        className={
+          courseKey && gradeKey ? 'multiButtonContainer' : 'singleButtonContainer'
+        }
+      >
+        {courseKey && gradeKey && (
+          <Button onClick={handleBack} className='backCoursePriceButton'>
+            Back
+          </Button>
+        )}
         <Button onClick={handleSubmit} className='submitCoursePriceButton'>
           Submit
         </Button>

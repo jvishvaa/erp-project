@@ -4,6 +4,7 @@ import Loading from '../../../../components/loader/loader';
 import CommonBreadcrumbs from '../../../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import Layout from '../../../Layout';
+import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import { Grid, TextField, Button, useTheme, SvgIcon } from '@material-ui/core';
@@ -72,27 +73,19 @@ const CreateCourse = () => {
   const [age, setAge] = useState([]);
 
   const [classDuration, setClassDuration] = useState('');
-  const [noOfPeriods, setNoPeriods] = useState(state?.editData?.no_of_periods || 0);
-  const [title, setTitle] = useState(state?.editData?.course_name ||'');
-  const [coursePre, setCoursePre] = useState(state?.editData?.pre_requirement || '');
-  const [learn, setLearn] = useState(state?.editData?.learn || '');
-  const [overview, setOverview] = useState(state?.editData?.overview || '');
+  const [noOfPeriods, setNoPeriods] = useState('');
+  const [title, setTitle] = useState('');
+  const [coursePre, setCoursePre] = useState('');
+  const [learn, setLearn] = useState('');
+  const [overview, setOverview] = useState('');
   const [filePath, setFilePath] = useState([]);
   const [nextToggle, setNextToggle] = useState(false);
   const [thumbnailImage, setThumbnailImage] = useState('');
 
-  // const [erpGradeId,setErpGradeId]=useState([])
-
-  const [card, setCard] = useState(0);
-
-  const firstPageData = state.editData;
-  const [secondPageData, setSecondPageData] = useState(state?.viewPeriodData || []);
+  const [secondPageData, setSecondPageData] = useState([]);
   const flag = state?.isEdit;
 
   const [data, setData] = useState([]);
-
-  const [cardTitle, setCardTitle] = useState(null);
-  const [cardDesc, setCardDesc] = useState(null);
 
   const branchDrop = [{ branch_name: 'AOL' }];
   const [filterData, setFilterData] = useState({
@@ -111,8 +104,6 @@ const CreateCourse = () => {
     { value: 'Advance', level: 'High' },
   ];
 
-
-
   const handleCourseLevel = (event, value) => {
     setFilterData({ ...filterData, courseLevel: '' });
     if (value) {
@@ -120,21 +111,37 @@ const CreateCourse = () => {
     }
   };
 
+  const handleAddPeriod = () => {
+    const list = [...data];
+    list.push({ title: '', description: '', files: [] });
+    setData(list);
+  };
+
+  const handleBack = () => {
+    setData([]);
+    setNextToggle((prev) => !prev);
+  };
+
   const handleNext = () => {
-    if (flag) {
-      setData(secondPageData || []);
-      setNextToggle(!nextToggle);
-    } else {
-      if (noOfPeriods > 0) {
-        const list = [...data];
-        for (let i = 0; i < noOfPeriods; i++) {
-          list.push({ title: '', description: '', files: [] });
-        }
-        setData(list);
-        setNextToggle(!nextToggle);
+    if (filePath?.length === 1 && thumbnailImage !== '') {
+      if (flag) {
+        setData(secondPageData || []);
+        setNextToggle((prev) => !prev);
       } else {
-        setAlert('warning', 'Periods should be more than or equal to 1');
+        if (noOfPeriods > 0) {
+          const list = [...data];
+          for (let i = 0; i < noOfPeriods; i++) {
+            list.push({ title: '', description: '', files: [] });
+          }
+          setData(list);
+          setNextToggle((prev) => !prev);
+        } else {
+          setAlert('warning', 'Periods should be more than or equal to 1');
+        }
       }
+    } else {
+      if (thumbnailImage === '') setAlert('warning', 'Thumbnail Image is compulsory!');
+      if (filePath?.length !== 1) setAlert('warning', 'Document is compulsory!');
     }
   };
 
@@ -144,26 +151,15 @@ const CreateCourse = () => {
       setFilterData({
         ...filterData,
         branch: value,
-      })
+      });
     }
-    //   axiosInstance
-    //     .get(`${endpoints.communication.grades}?branch_id=${5}&module_id=8`)
-    //     .then((result) => {
-    //       if (result.data.status_code === 200) {
-    //         // setGradeDropdown(result.data.data);
-    //       } else {
-    //         setAlert('error', result.data.message);
-    //         // setGradeDropdown([]);
-    //       }
-    //     })
-    //     .catch((error) => {
-    //       setAlert('error', error.message);
-    //       // setGradeDropdown([]);
-    //     });
-    // } else {
-    //   // setGradeDropdown([]);
-    // }
-  }
+  };
+
+  const handleNoOfPeriods = (event) => {
+    let val = event.target.value;
+    if (val <= 100) setNoPeriods(val);
+    else setAlert('warning', "No. of periods can't be more than 100");
+  };
 
   const handleCategory = (event, value) => {
     setFilterData({ ...filterData, category: '' });
@@ -172,7 +168,7 @@ const CreateCourse = () => {
       axiosInstance
         .get(`${endpoints.onlineCourses.categoryList}?tag_type=2&parent_id=${value.id}`)
         .then((result) => {
-          if (result.data.status_code === 201) {
+          if (result.data?.status_code === 201) {
             const list1 = [...subjectDropdown];
             const list2 = [...gradeDropdown];
             result.data.result.map((object) => {
@@ -236,7 +232,7 @@ const CreateCourse = () => {
   const removeFileHandler = (i, fileType) => {
     // const list = [...filePath];
     if (fileType === 'thumbnail') {
-      setThumbnailImage('')
+      setThumbnailImage('');
     } else if (fileType === 'doc') {
       filePath.splice(i, 1);
     }
@@ -254,9 +250,9 @@ const CreateCourse = () => {
           const fileList = [...filePath];
           fileList.push(result.data?.result?.get_file_path);
           setFilePath(fileList);
-          setAlert('success', result.data.message);
+          setAlert('success', result.data?.message);
         } else {
-          setAlert('error', result.data.message);
+          setAlert('error', result.data?.message);
         }
       });
     } else {
@@ -287,56 +283,56 @@ const CreateCourse = () => {
   };
 
   const handleSubmit = () => {
-    if (filePath?.length === 1) {
-      axiosInstance
-        .post(`${endpoints.onlineCourses.createCourse}`, {
-          course_name: title,
-          pre_requirement: coursePre,
-          overview: overview,
-          learn: learn,
-          // grade: gradeIds,
-          grade: [filterData.erpGrade],
-          level: filterData.courseLevel.level,
-          no_of_periods: parseInt(noOfPeriods),
-          files: filePath,
-          thumbnail: [thumbnailImage],
-          period_data: data,
-          tag_id: `${filterData.age.id},${filterData.subject.id}`,
-        })
-        .then((result) => {
-          if (result.data.status_code === 200) {
-            setFilePath([]);
-            setThumbnailImage('');
-            setData([]);
-            setNoPeriods(0);
-            setTitle('');
-            setCoursePre('');
-            setOverview('');
-            setLearn('');
-            setFilterData({
-              branch: '',
-              grade: [],
-              courseLevel: '',
-              category: '',
-              age: '',
-              subject: '',
-            });
-            setAlert('success', result.data.message);
-            setNextToggle(!nextToggle);
-            history.push('/course-list');
-          } else {
-            setAlert('error', result.data.message);
-            setGradeDropdown([]);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error.response?.data?.message || error.response?.data?.msg || error.response?.data?.description);
+    axiosInstance
+      .post(`${endpoints.onlineCourses.createCourse}`, {
+        course_name: title,
+        pre_requirement: coursePre,
+        overview: overview,
+        learn: learn,
+        // grade: gradeIds,
+        grade: [filterData.erpGrade],
+        level: filterData.courseLevel.level,
+        no_of_periods: parseInt(data?.length),
+        files: filePath,
+        thumbnail: [thumbnailImage],
+        period_data: data,
+        tag_id: `${filterData.age.id},${filterData.subject.id}`,
+      })
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setFilePath([]);
+          setThumbnailImage('');
+          setData([]);
+          setNoPeriods(0);
+          setTitle('');
+          setCoursePre('');
+          setOverview('');
+          setLearn('');
+          setFilterData({
+            branch: '',
+            grade: [],
+            courseLevel: '',
+            category: '',
+            age: '',
+            subject: '',
+          });
+          setAlert('success', result.data.message);
+          setNextToggle((prev) => !prev);
+          history.push('/course-list');
+        } else {
+          setAlert('error', result.data.message);
           setGradeDropdown([]);
-        });
-    }
-    else {
-      setAlert('warning', 'Document is compulsory!');
-    }
+        }
+      })
+      .catch((error) => {
+        setAlert(
+          'error',
+          error.response?.data?.message ||
+            error.response?.data?.msg ||
+            error.response?.data?.description
+        );
+        setGradeDropdown([]);
+      });
   };
 
   const handleEdit = () => {
@@ -372,7 +368,7 @@ const CreateCourse = () => {
             subject: '',
           });
           setAlert('success', result.data.message);
-          setNextToggle(!nextToggle);
+          setNextToggle((prev) => !prev);
           history.push('/course-list');
         }
       });
@@ -392,7 +388,6 @@ const CreateCourse = () => {
                   style={{
                     width: '15px',
                     height: '15px',
-                    // padding: '5px',
                     cursor: 'pointer',
                   }}
                   src={deleteIcon}
@@ -435,6 +430,11 @@ const CreateCourse = () => {
         setAlert('error', error.message);
       });
   }, []);
+
+  useEffect(() => {
+    if (data.length < 1) setNextToggle(false);
+  }, [data.length]);
+
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
@@ -592,15 +592,19 @@ const CreateCourse = () => {
                 variant='outlined'
                 size='small'
                 value={noOfPeriods}
-                inputProps={{ pattern: '[0-9]*', min: 0, maxLength: 100 }}
+                inputProps={{ min: 0, max: 100, maxLength: 3 }}
                 name='subname'
-                onChange={(e) => setNoPeriods(e.target.value)}
+                onChange={(e) => handleNoOfPeriods(e)}
                 required
               />
             </Grid>
             <Grid item xs={12}>
+              <Divider />
+            </Grid>
+            <Grid item xs={12}>
               <TextField
-                id='outlined-multiline-static'
+                className='multiRowTextfield'
+                id='outlined-multiline-static1'
                 label='Course Title'
                 placeholder='Course Title'
                 multiline
@@ -614,7 +618,8 @@ const CreateCourse = () => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                id='outlined-multiline-static'
+                className='multiRowTextfield'
+                id='outlined-multiline-static2'
                 label='Course Prerequisites'
                 placeholder='Course Prerequisites'
                 multiline
@@ -628,7 +633,8 @@ const CreateCourse = () => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                id='outlined-multiline-static'
+                className='multiRowTextfield'
+                id='outlined-multiline-static3'
                 label='What Will You Learn From This Course'
                 placeholder='What Will You Learn From This Course'
                 multiline
@@ -642,7 +648,8 @@ const CreateCourse = () => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                id='outlined-multiline-static'
+                className='multiRowTextfield'
+                id='outlined-multiline-static4'
                 label='Course Overview'
                 placeholder='Course Overview'
                 multiline
@@ -660,14 +667,14 @@ const CreateCourse = () => {
                 <div style={{ display: 'flex' }}>
                   {filePath?.length > 0
                     ? filePath?.map((file, i) => (
-                      <FileRow
-                        name='File'
-                        key={`homework_student_question_attachment_${i}`}
-                        file={file}
-                        index={i}
-                        onClose={() => removeFileHandler(i, 'doc')}
-                      />
-                    ))
+                        <FileRow
+                          name='File'
+                          key={`homework_student_question_attachment_${i}`}
+                          file={file}
+                          index={i}
+                          onClose={() => removeFileHandler(i, 'doc')}
+                        />
+                      ))
                     : null}
                 </div>
 
@@ -684,7 +691,7 @@ const CreateCourse = () => {
                           )}
                         />
                       }
-                      className='attchment_button'
+                      className='attachment_button_doc'
                       title='Attach Supporting File'
                       variant='contained'
                       size='small'
@@ -707,13 +714,14 @@ const CreateCourse = () => {
                   </div>
                 )}
 
-                {thumbnailImage !== '' &&
+                {thumbnailImage !== '' && (
                   <FileRow
                     name='Thumbnail'
                     key='Thumbnail'
                     file={thumbnailImage}
                     onClose={() => removeFileHandler(0, 'thumbnail')}
-                  />}
+                  />
+                )}
 
                 {thumbnailImage === '' && (
                   <div className='attachmentButtonContainer'>
@@ -728,7 +736,7 @@ const CreateCourse = () => {
                           )}
                         />
                       }
-                      className='attchment_button'
+                      className='attachment_button_doc'
                       title='Attach Supporting File'
                       variant='contained'
                       size='small'
@@ -757,71 +765,52 @@ const CreateCourse = () => {
               <Divider />
             </Grid>
             <Grid item xs={12} sm={6} className={isMobile ? '' : 'filterPadding'}>
-              <Button style={{ width: '15rem' }} onClick={handleNext}>
+              <Button className='nextPageButton' onClick={handleNext}>
                 NEXT
               </Button>
             </Grid>
           </Grid>
         ) : (
-            <>
-              <Paper className={classes.root}>
-                <Grid
-                  container
-                  style={
-                    isMobile
-                      ? { width: '95%', margin: '20px auto' }
-                      : { width: '100%', margin: '20px auto' }
-                  }
-                  spacing={5}
-                >
-                  <Grid item xs={12} sm={12}>
-                    <Grid container spacing={isMobile ? 3 : 5}>
-                      {data?.map((period, i) => (
-                        <Grid
-                          item
-                          xs={12}
-                          style={isMobile ? { marginLeft: '-8px' } : null}
-                          sm={4}
-                        >
-                          <CourseCard key={i} index={i} cData={data} setData={setData} />
-                        </Grid>
-                      ))}
-                    </Grid>
+          <>
+            <Paper className={classes.root}>
+              <Grid container className='periodCardsContainer' spacing={isMobile ? 3 : 5}>
+                {data?.map((period, i) => (
+                  <Grid item xs={12} sm={4}>
+                    <CourseCard
+                      setNextToggle={setNextToggle}
+                      key={i}
+                      index={i}
+                      cData={data}
+                      setData={setData}
+                    />
                   </Grid>
-                  {/* <Grid item xs={12} sm={12}>
-                        <Button style={{width:'15rem'}} onClick={()=>setNextToggle(!nextToggle)} >Back</Button>
-                  </Grid> */}
-                </Grid>
-              </Paper>
-              <div className='submit'>
-                <Grid item xs={12} sm={12}>
-                  {!state?.isEdit ? (
-                    <div>
-                    <Button style={{width:'15rem', marginLeft: '1.2rem'}} onClick={()=>setNextToggle(!nextToggle)} >Back</Button>
-
-                    <Button
-                      onClick={handleSubmit}
-                      style={{ width: '16rem', marginLeft: '1.2rem' }}
-                    >
-                      SUBMIT
+                ))}
+                <Grid item xs={12} sm={4}>
+                  {data.length < 99 && (
+                    <Button onClick={handleAddPeriod} className='periodAddButton'>
+                      <AddOutlinedIcon style={{ fontSize: '100px' }} />
                     </Button>
-                    </div>
-                  ) : (
-                    <div>
-                    <Button style={{width:'15rem', marginLeft: '1.2rem'}} onClick={()=>setNextToggle(!nextToggle)} >Back</Button>
-
-                      <Button
-                        onClick={handleEdit}
-                        style={{ width: '16rem', marginLeft: '1.2rem' }}
-                      >
-                        EDIT
-                      </Button>
-                      </div>
-                    )}
+                  )}
                 </Grid>
-              </div>
-            </>
-          )}
+              </Grid>
+            </Paper>
+            <div className='submitContainer'>
+              <Grid item xs={12} sm={12}>
+                <div className='buttonContainer'>
+                  <Button onClick={handleBack} className='periodBackButton'>
+                    Back
+                  </Button>
+                  <Button
+                    onClick={state?.isEdit ? handleEdit : handleSubmit}
+                    className='periodSubmitButton'
+                  >
+                    Submit
+                  </Button>
+                </div>
+              </Grid>
+            </div>
+          </>
+        )}
       </Layout>
     </>
   );
