@@ -70,7 +70,8 @@ const Resource = (props) => {
     const [ hideButton, setHideButton ] = React.useState(false);
 
     React.useEffect(() => {
-        axiosInstance.get(`${endpoints.onlineClass.resourceFile}?online_class_id=${props.resourceId}&class_date=${moment(props.date).format('DD-MM-YYYY')}`)
+        setHideButton(false);
+        axiosInstance.get(`${endpoints.onlineClass.resourceFile}?online_class_id=${props.onlineClassId}&class_date=${moment(props.date).format('DD-MM-YYYY')}`)
         .then((res) => {
             if(res.data.result.length > 0) {
                 res.data.result.map((path) => {
@@ -118,6 +119,7 @@ const Resource = (props) => {
 export default function ResourceDialogComponent(props) {
     const classes = useStyles();
     const { onClose, selectedValue, open } = props;
+    const [ periodsData, setPeriodsData ] = React.useState([]);
 
     //Periods date start
     const startDate = new Date(props.startDate);
@@ -149,6 +151,14 @@ export default function ResourceDialogComponent(props) {
     const handleClose = () => {
         onClose(selectedValue);
     };
+    React.useEffect(() => {
+        axiosInstance.get(`erp_user/${props.resourceId}/student-oc-details/`)
+        .then((res) => {
+            console.log(res);
+            setPeriodsData(res.data.data);
+        })
+        .catch((error) => console.log(error))
+    },[props.resourceId]);
 
 
     return (
@@ -158,7 +168,7 @@ export default function ResourceDialogComponent(props) {
                 <CloseIcon onClick={handleClose} className={classes.closeDetailCard}/>
             </div>
             <div className={classes.joinClassDiv}>
-                {dateArray.length > 0 && dateArray.map((date) => <Resource date={date} resourceId={props.resourceId}/>)}
+                {periodsData && periodsData.length > 0 && periodsData.map((data) => <Resource date={data.date} onlineClassId={props.onlineClassId}/>)}
             </div>
         </Dialog>
     );

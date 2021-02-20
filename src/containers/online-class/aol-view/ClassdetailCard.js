@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Divider, makeStyles, withStyles, Typography, Button } from '@material-ui/core';
 //import AttachmentIcon from '../components/icons/AttachmentIcon';
 import moment from 'moment';
 import JoinClass from './JoinClass';
 import { useHistory } from 'react-router-dom';
-import ResourceDialog from '../online-class-resources/resourceDialog';
 import axiosInstance from '../../../config/axios';
+import endpoints from '../../../config/endpoints';
+import AssignModal from './assign-modal';
 
 const useStyles = makeStyles({
     classDetailsBox: {
@@ -110,6 +111,7 @@ const OutlineButton = withStyles({
 const StyledButton = withStyles({
     root: {
         marginTop: '16px',
+        marginLeft: '1rem',
         height: '31px',
         width: '100%',
         fontSize: '18px',
@@ -124,127 +126,172 @@ const StyledButton = withStyles({
     }
 })(Button);
 
+
+const StyledAcceptButton = withStyles({
+    root: {
+        height: '2rem',
+        width: '80px',
+        padding: '0',
+        fontSize: '18px',
+        fontFamily: 'Open Sans',
+        color: '#FFFFFF',
+        backgroundColor: '#ff6b6b',
+        borderRadius: '5px',
+        letterSpacing: 0,
+    }
+})(Button);
+
 export default function ClassdetailsCardComponent(props) {
     const classes = useStyles({});
-    //console.log(props.classData);
-    const [ periodsData, setPeriodsData ] = React.useState([]);
+    // <<<<<<<<<<<>>>>>>>>>>>>MODAL >>>>><<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    const [openAssignModal, setOpenAssignModal] = useState(false);
+    const [teacherDropdown, setTeacherDropdown] = useState([])
+    const [cancelFlag,setCancelFlag] = useState(false)
+
+    const assignData = props
+    const [periodsData, setPeriodsData] = React.useState([]);
     //Periods date start
     const history = useHistory();
-    const startDate = new Date(props.classData.online_class.start_time);
-    const endDate = new Date(props.classData.online_class.end_time);
-    const Difference_In_Time = endDate.getTime() - startDate.getTime();
-    const Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
-    // role_details
-    let isTeacher = props.classData.is_canceled !== undefined ? true : false;
-    console.log(isTeacher);
-    let periods;
-    if(moment(startDate).format('ll') === moment(endDate).format('ll')) {
-        periods = 0;
-    }
-    else {
-        periods = Math.floor(Difference_In_Days + 1);
-    }
-    //console.log(startDate.setDate(startDate.getDate() + 1));
-    // 686 - 658 777 
-    React.useEffect(() => {
-        axiosInstance.get(`erp_user/${props.classData.id}/online-class-details/`)
-        .then((res) => {
-            console.log(res);
-            setPeriodsData(res.data.data);
-        })
-        .catch((error) => console.log(error))
-    },[]);
 
-    let dateArray = [];
-    for(var i = 0; i <= periods; i++){
-        let day;
-        if(i === 0) {
-            day = startDate.setDate(startDate.getDate());
+
+    let isTeacher = props.classData && props.classData.hasOwnProperty('is_canceled');
+
+    useEffect(() => {
+        if (props.classData) {
+            axiosInstance.get(`erp_user/${props?.classData?.id}/online-class-details/`)
+                .then((res) => {
+                    setPeriodsData(res.data.data);
+                })
         }
-        else {
-            day = startDate.setDate(startDate.getDate() + 1);
-        }
-        dateArray.push(day);
-        //console.log(moment(day).format('ll'));
-    }
-    ////Periods date end
+    }, [props.classData,cancelFlag]);
 
     const handleAttendance = () => {
-        history.push(`/aol-attendance-list/${props.classData.id}`);
+        history.push(`/aol-attendance-list/${props?.classData?.id}`);
     }
 
-    // resource module
-    const [open, setOpen] = React.useState(false);
-    const [selectedValue, setSelectedValue] = React.useState("");
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-    
-    const handleClose = (value) => {
-        setOpen(false);
-        setSelectedValue(value);
-    };
+    const handleAssign = () => {
+        setOpenAssignModal(true);
+    }
+
+    const handleReshuffle = () => {
+        if (props.toggle) {
+            history.push(`/aol-reshuffle/${props?.classData?.batch_details_id}`)
+        } else {
+            history.push(`/aol-reshuffle/${props?.classData?.online_class?.aol_batch_id}`)
+
+        }
+    }
+    const handleCoursePlan = () => {
+        history.push(`/view-period/${props.filterData && props?.filterData?.course?.id}`)
+    }
+
+    useEffect(() => {
+        axiosInstance.get(`${endpoints.aol.teacherList}?branch_id=${props?.filterData?.branch?.id}&grade_id=${props?.filterData?.grade?.grade_id}`)
+            .then(result => {
+                if (result.data.status_code === 200) {
+                    setTeacherDropdown(result.data.data)
+                }
+            })
+    }, [])
 
     return (
         <>
             <div className={classes.classDetailsBox}>
                 <div className={classes.classHeader}>
+                    {props.classData.online_class && (
+                        <div>
+                            <Typography className={classes.classHeaderText}>
+                                {props.classData && props.classData.online_class && props.classData.online_class.title}
+                            </Typography>
+                            <Typography className={classes.classHeaderTime}>
+                                {props.classData && props.classData.online_class && moment(props.classData.join_time).format('h:mm:ss')}
+                            </Typography>
+                        </div>
+                    )}
                     <div>
-                        <Typography className={classes.classHeaderText}>
-                            {props.classData.online_class.title}
-                        </Typography>
-                        <Typography className={classes.classHeaderTime}>
-                            {moment(props.classData.join_time).format('h:mm:ss')}
-                        </Typography>
-                    </div>
-                    <div>
+                        {/* {props.classData.online_class && (
+                            <Typography className={classes.classHeaderSub}>
+                                {props.classData && props.classData.online_class.subject[0] && props.classData.online_class.subject[0].subject_name}
+                            </Typography>
+                        )} */}
+
                         <Typography className={classes.classHeaderSub}>
-                            {props.classData.online_class.subject[0].subject_name}
+                            {props.toggle ? props.classData.batch_name : ''}
+                            {props.toggle ? <StyledAcceptButton onClick={handleAssign}>ASSIGN</StyledAcceptButton> : null}
                         </Typography>
-                        <Typography className={classes.subPeriods}>{periods + 1} periods</Typography>
                     </div>
                 </div>
                 <div className={classes.classDetails}>
+                    {props?.toggle && props?.classData?.online_class?.is_canceled ? '' :
+                        <Typography className={classes.classDetailsTitle}>
+                            Description
+                        </Typography>
+                    }
 
-                    <Typography className={classes.classDetailsTitle}>
-                        Description
-                    </Typography>
-                    <Divider className={classes.classDetailsDivider}/>
+                    <Divider className={classes.classDetailsDivider} />
                     <div className={classes.joinClassDiv}>
-                        {dateArray !== undefined && dateArray.map((date, id) => (
+                        {/* {props.toggle ? '' : periodsData.length > 0 && periodsData.map((data, id) => ( */}
+                        {props.toggle ? '' :
+                            periodsData.length > 0 && periodsData.map((data,id)=>(
+ 
                             <JoinClass
-                                key={id}
-                                date={date}
-                                joinUrl={props.classData.join_url}
-                                isTeacher={isTeacher}
+                                // key={id}
+                                // data={props.classData}
+                                data={data}
+                                joinUrl={props.classData?.presenter_url}
+                                cancelFlag={cancelFlag}
+                                setCancelFlag={setCancelFlag}
+                            // isTeacher={isTeacher}
                             />
-                        ))}
-                    </div>
-                    <Divider className={classes.classDetailsDivider}/>
+                            ))
+                        }
+                        
 
-                    {!isTeacher ? (
-                        <StyledButton
-                            onClick={handleAttendance}
-                            color="primary"
-                        >
-                            Attendance
-                        </StyledButton>
-                    ) : (
-                        <StyledButton
-                            color="primary"
-                            onClick={handleClickOpen}
-                        >
-                            Resources
-                        </StyledButton>
-                    )}
-                    <StyledButton
-                        color="primary">
-                        View lesson plan
+                        
+                    </div>
+                    <Divider className={classes.classDetailsDivider} />
+
+                    {props.toggle === false ? (
+                        <>
+                            <StyledButton
+                                onClick={handleAttendance}
+                                color="primary"
+                            >
+                                Attendance
                     </StyledButton>
+                            <StyledButton
+                                onClick={handleReshuffle}
+                                color="primary"
+                            >
+                                Reshuffle
+                    </StyledButton>
+                        </>
+                    ) : (
+                            <>
+                                <StyledButton
+                                    onClick={handleReshuffle}
+                                    color="primary"
+                                >
+                                    Reshuffle
+                    </StyledButton>
+                                {/* <StyledButton color="primary">Resources</StyledButton> */}
+                            </>
+                        )}
+                    <StyledButton
+                        color="primary" onClick={handleCoursePlan}>
+                        View Course Plan
+                </StyledButton>
                 </div>
             </div>
-            <ResourceDialog selectedValue={selectedValue} open={open} onClose={handleClose} />
+            <AssignModal
+                openAssignModal={openAssignModal}
+                setOpenAssignModal={setOpenAssignModal}
+                teacherDropdown={teacherDropdown}
+                assignData={assignData}
+                reload={props.reload}
+                setReload={props.setReload}
+            />
         </>
     )
 }

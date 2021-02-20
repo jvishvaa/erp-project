@@ -9,6 +9,8 @@ import { ResourceDialog } from './resourceDialog';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import CloseIcon from '@material-ui/icons/Close';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+//import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
 const useStyles = makeStyles({
     classDetailsBox: {
@@ -115,6 +117,8 @@ const StyledButton = withStyles({
 export default function ResourceDetailsCardComponent(props) {
     const classes = useStyles({});
     const location = useLocation();
+    const { setAlert } = React.useContext(AlertNotificationContext);
+    const [noOfPeriods, setNoOfPeriods] = React.useState([]);
 
     //Periods date start
     const startDate = new Date(props.resourceData.online_class.start_time);
@@ -171,6 +175,19 @@ export default function ResourceDetailsCardComponent(props) {
         setSelectedValue(value);
     };
 
+    React.useEffect(() => {
+        if (props.resourceData) {
+            setNoOfPeriods([]);
+            axiosInstance
+            .get(`erp_user/${props.resourceData && props.resourceData.id}/online-class-details/`)
+            .then((res) => {
+              console.log(res.data );
+              setNoOfPeriods(res.data.data);
+            })
+            .catch((error) => setAlert('error', error.message));
+        }
+    }, [props.resourceData]);
+
     return (
         <div className={classes.classDetailsBox}>
             <div className={classes.classHeader}>
@@ -183,14 +200,22 @@ export default function ResourceDetailsCardComponent(props) {
             </div>
             <div className={classes.classDetails}>
                 <div className={classes.joinClassDiv}>
-                    {dateArray !== undefined && dateArray.map((date, id) => (
+                    { noOfPeriods && noOfPeriods.length > 0 && noOfPeriods.map((data) => (
+                        <ResourceClass
+                            key={data.zoom_id}
+                            date={data.date}
+                            resourceId={props.resourceData.online_class.id}
+                        />
+                    ))}
+                    {/*dateArray && dateArray.length > 0 && dateArray.map((date, id) => (
                         <ResourceClass
                             key={id}
                             date={date}
                             resourceId={props.resourceData.online_class.id}
                         />
-                    ))}
+                    ))*/}
                 </div>
+                {/*
                 <Divider className={classes.classDetailsDivider}/>
 
                 <StyledButton
@@ -199,6 +224,7 @@ export default function ResourceDetailsCardComponent(props) {
                 >
                     Submit
                 </StyledButton>
+                */}
             </div>
             <ResourceDialog
                 selectedValue={selectedValue}

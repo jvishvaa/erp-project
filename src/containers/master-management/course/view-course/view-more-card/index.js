@@ -8,14 +8,14 @@ import CloseIcon from '@material-ui/icons/Close';
 import Box from '@material-ui/core/Box';
 import useStyles from './useStyles';
 import downloadAll from '../../../../../assets/images/downloadAll.svg';
-import './view-more.css';
+import './view-more-course.css';
 import endpoints from '../../../../../config/endpoints';
 import axiosInstance from '../../../../../config/axios';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
 import ViewCourseCard from './ViewCourseCard';
 import ViewStore from '../context/ViewStore'
 import { Context } from '../context/ViewStore'
-import './view-more.css';
+import './view-more-course.css';
 
 
 const ViewMoreCard = ({
@@ -136,16 +136,17 @@ const ViewMoreCard = ({
             <Button
               className="courseButton"
               onClick={handleViewCard}
-            >View Period Details</Button>
+            >
+              View Period Details
+            </Button>
             <Button
-            className="courseButton"
+              className="courseButton"
               onClick={handleEditCoursePrice}
-            >Edit Course Price</Button>
+            >
+              Edit Course Price
+            </Button>
           </div>
-
         </Paper>
-
-
         : <ViewCourseCard />}
       {/* </ViewStore> */}
     </>

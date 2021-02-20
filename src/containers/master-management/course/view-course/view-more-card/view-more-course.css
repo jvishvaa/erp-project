@@ -1,4 +1,4 @@
-.rootViewMore {
+.rootViewMoreCourse{
     border: 1px solid #ff6b6b;
     border-radius: 10px !important;
     height:70vh;
@@ -79,7 +79,7 @@
 
 .headerTitle {
     font-size: 1.1rem;
-    color: #014B7E;
+    color: #ff6b6b;
     margin-bottom: 7px;
 }
 
@@ -88,6 +88,7 @@
     color: #014b7e;
     display: flex;
     flex-direction: column;
+    cursor: pointer;
 }
 
 .resourceBulkDownload {
@@ -125,39 +126,32 @@
     justify-content: space-between;
 }
 
-.messageDivider.MuiDivider-root {
-    border: none;
-    height: 1px;
-    width: 24.375;
-    margin: 0;
-    flex-shrink: 0;
-    background-color: #E87BCB;
-    opacity: 100;
-    margin-top: .4rem;
-    margin-bottom: 1rem;
+.courseCardContainer {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ff6b6b;
+  border-radius: 10px;
+  margin: 20px;
+  padding: 10px;
+}
+.MuiButton-root.courseButton:first-child {
+  margin-right: 10%;
 }
 
-.titleDivider.MuiDivider-root {
-    border: none;
-    height: 1px;
-    width: 24.375;
-    margin: 0;
-    flex-shrink: 0;
-    background-color: #00D97D;
-    opacity: 100;
-    margin-top: .4rem;
-    margin-bottom: 1rem;
+.MuiButton-root.courseButton {
+  width: 45%;
+  margin: 1% auto;
 }
 
-.mediaBody{
-    height: 2rem;
-    border: 1px solid #ff6b6b;
-    border-radius: 10px;
-    margin:10px 0px 0px 20px;
+.MuiButton-root.courseButton:hover {
+  background: #ff6b6b;
+}
+.courseButton>.MuiButton-label {
+  text-transform: none;
 }
 
 @media screen and (max-width:768px) {
-    .rootViewMore {
+    .rootViewMoreCourse {
         margin:0 auto;
       }
 }

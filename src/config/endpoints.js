@@ -36,10 +36,6 @@ export default {
     userStatusChange: '/erp_user/',
     getMessages: '/communication/email-sms-logs/',
   },
-  aol: {
-    createCoursePrice: '/aol/course-details/',
-    updateCoursePrice: '/aol/course_details_update/',
-  },
   onlineClass: {
     // batchList: '/erp_user/batch-student-list/',
     batchList: '/aol/batch_shuffle/',
@@ -145,6 +141,45 @@ export default {
     overviewSynopsis: `${baseURLCentral}/lesson_plan/list-lesson-overview/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },
+  aol:{
+    cardData:'/erp_user/teacher_online_class/',
+    courseList:'/aol/courses/',
+    batchLimitList:'/aol/aol-course-batch/',
+    classes:'/erp_user/teacher_online_class/',
+    teacherList:'/erp_user/teacher-list/',
+    draftBatch:'/aol/mixed-batch-details/',
+    assignTeacher:'/aol/teacher-assign/',
+    reshuffleBatchList:'/aol/batch_shuffle/',
+    studentReshuffle:'/aol/student-shuffle/',
+    cancelClass:'erp_user/cancel-online-class/',
+    createCoursePrice: '/aol/course-details/',
+    updateCoursePrice: '/aol/course_details_update/',
+  },
+  onlineCourses:{
+    createCourse:'/aol/courses/',
+    fileUpload:'/aol/file-upload/',
+    courseList:'/aol/courses/',
+    deleteCourse:'/aol/',
+    courseDetails:'/aol/courses/',
+    categoryList:'/aol/tagging-list/',
+    updateCourse:'/aol/',
+    studentList:'/erp_user/batch-student-list/',
+  },
+attendanceList:{
+  list:'/erp_user/onlineclass_attendeelist/',
+  updateAttendance:'/erp_user/mark_attendance/',
+},
+  blog: {
+    genreList: '/academic/genre/',
+    Blog: '/academic/blog/',
+    BlogLike:'/academic/like_blog/',
+    BlogView:'/academic/view_blog/',
+    WordCountConfig:'/academic/word_count_config/',
+
+    
+  },
+
+    
   discussionForum: {
     categoryList: '/academic/categories/',
     branch: '/erp_user/branch/',
@@ -185,6 +220,7 @@ export default {
     courseDetails: '/aol/courses/',
     categoryList: '/aol/tagging-list/',
     updateCourse: '/aol/',
+    studentList:'/erp_user/batch-student-list/',
   },
   attendanceList: {
     list: '/erp_user/onlineclass_attendeelist/',

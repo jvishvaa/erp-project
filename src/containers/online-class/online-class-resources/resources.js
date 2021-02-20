@@ -14,6 +14,7 @@ import { OnlineclassViewContext } from '../online-class-context/online-class-sta
 import Pagination from '../../../components/Pagination';
 import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectFilter from '../../../assets/images/selectfilter.svg';
+import Filter from './components/filters';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -113,11 +114,13 @@ const useStyles = makeStyles((theme) => ({
     },
     unfilteredImg: {
         display: 'block',
-        height: '300px',
+        height: '50%',
         margin: 'auto',
+        marginTop: '20px',
     },
     unfilteredTextImg: {
         display: 'block',
+        marginTop: '10px',
         margin: 'auto',
     }
 }));
@@ -146,17 +149,19 @@ const Resources = () => {
     const [ itemSize, setItemSize ] = React.useState(3);
     const [ size, setSize ] = React.useState(12);
     const [ resourceData, setResourceData ] = React.useState();
-
+    const [resourceOnlineClasses, setResourceOnlineClasses] = React.useState([]);
+    /**
     const {
         resourceView: {
-          resourceOnlineClasses,
-          totalPages,
-          loadingResourceOnlineClasses,
-          currentPage,
-          count,
+            resourceOnlineClasses,
+            totalPages,
+            loadingResourceOnlineClasses,
+            currentPage,
+            count,
         },
         setResourcePage,
-      } = useContext(OnlineclassViewContext);
+    } = useContext(OnlineclassViewContext);
+       */
 
     const handleSelctedClass = (data) => {
         setItemSize(4);
@@ -185,6 +190,9 @@ const Resources = () => {
             end: end
         });
     }
+    const getResourceData = (data) => {
+        setResourceOnlineClasses(data);
+    }
 
     return (
         <>
@@ -196,7 +204,7 @@ const Resources = () => {
             </div>
             <Grid container spacing={4} className={classes.topFilter}>
                 <Grid item xs={12}>
-                    <ResourceFilter />
+                    <Filter getResourceData={getResourceData}/>
                 </Grid>
             </Grid>
             <Divider />
