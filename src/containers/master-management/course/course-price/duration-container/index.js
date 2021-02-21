@@ -286,7 +286,7 @@ const DurationContainer = (props) => {
             name='weeks'
             value={noOfWeeks}
             onChange={(e) => handleNumberOfWeeks(e.target.value)}
-            InputProps={{ inputProps: { min: 0, autoComplete: 'off' } }}
+            InputProps={{ inputProps: { min: 1, autoComplete: 'off' } }}
           />
         </div>
         <div className='isRecursiveSwitch'>
@@ -331,7 +331,7 @@ const DurationContainer = (props) => {
                       onChange={(e) => handleChange(e, index)}
                       InputProps={{
                         inputProps: {
-                          min: 0,
+                          min: 1,
                           autoComplete: 'off',
                           readOnly: index === 0 && true,
                         },

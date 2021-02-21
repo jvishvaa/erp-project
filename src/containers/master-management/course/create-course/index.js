@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useMemo } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import Loading from '../../../../components/loader/loader';
 import CommonBreadcrumbs from '../../../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
@@ -12,16 +12,11 @@ import Divider from '@material-ui/core/Divider';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
-import axios from 'axios';
-import moment from 'moment';
-import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
-import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 import CourseCard from '../course-card';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import './style.css';
 import deleteIcon from '../../../../assets/images/delete.svg';
 import attachmenticon from '../../../../assets/images/attachmenticon.svg';
-import { LeakAddRounded } from '@material-ui/icons';
 import { Context } from '../view-course/context/ViewStore';
 import { filter } from 'lodash';
 
@@ -61,32 +56,25 @@ const CreateCourse = () => {
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
-
+  const { courseKey } = useParams();
   //context
   const [state, setState] = useContext(Context);
   console.log(state, '==================');
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
-  const [gradeIds, setGradeIds] = useState([]);
   const [categoryDropdown, setCategoryDropdown] = useState([]);
   const [subjectDropdown, setSubjectDropdown] = useState([]);
   const [age, setAge] = useState([]);
-
-  const [classDuration, setClassDuration] = useState('');
   const [noOfPeriods, setNoPeriods] = useState('');
   const [title, setTitle] = useState('');
+  const [editData, setEditData] = useState({});
   const [coursePre, setCoursePre] = useState('');
   const [learn, setLearn] = useState('');
   const [overview, setOverview] = useState('');
   const [filePath, setFilePath] = useState([]);
   const [nextToggle, setNextToggle] = useState(false);
   const [thumbnailImage, setThumbnailImage] = useState('');
-
-  const [secondPageData, setSecondPageData] = useState([]);
-  const flag = state?.isEdit;
-
   const [data, setData] = useState([]);
-
   const branchDrop = [{ branch_name: 'AOL' }];
   const [filterData, setFilterData] = useState({
     branch: '',
@@ -98,11 +86,11 @@ const CreateCourse = () => {
     erpGrade: '',
   });
 
-  const courseLevel = [
+  const [courseLevelDrop, setCourseLevelDrop] = useState([
     { value: 'Beginner', level: 'Low' },
     { value: 'Intermediate', level: 'Mid' },
     { value: 'Advance', level: 'High' },
-  ];
+  ]);
 
   const handleCourseLevel = (event, value) => {
     setFilterData({ ...filterData, courseLevel: '' });
@@ -113,24 +101,75 @@ const CreateCourse = () => {
 
   const handleAddPeriod = () => {
     const list = [...data];
+    setNoPeriods((prev) => Number(prev) + 1);
     list.push({ title: '', description: '', files: [] });
     setData(list);
   };
 
   const handleBack = () => {
-    setData([]);
     setNextToggle((prev) => !prev);
   };
+
+  useEffect(() => {
+    if (courseKey) {
+      axiosInstance
+        .get(
+          `${endpoints.onlineCourses.fetchCourseDetails}?tag_id=1&course_id=${courseKey}`
+        )
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            const {
+              course_period,
+              no_of_periods,
+              learn: learn_text,
+              pre_requirement,
+              overview: overview_text,
+              course_name,
+              files: doc_file,
+              thumbnail: thumbnail_file,
+              grade: grade_data,
+              level: level_name,
+            } = result.data?.result[0]?.course_id;
+            setData(course_period);
+            setNoPeriods(no_of_periods);
+            setLearn(learn_text);
+            setCoursePre(pre_requirement);
+            setOverview(overview_text);
+            setTitle(course_name);
+            setFilePath(doc_file);
+            setThumbnailImage(thumbnail_file[0]);
+            setFilterData({
+              branch: { branch_name: 'AOL' },
+              erpGrade: '',
+              courseLevel: courseLevelDrop.find((obj) => obj.level === level_name),
+              category: '',
+              age: '',
+              subject: {
+                id: '',
+                subjectName: '',
+              },
+              grade: {
+                id: '',
+                gradeId: grade_data[0]?.id,
+                gradeName: grade_data[0]?.grade_name,
+              },
+            });
+          } else {
+            // setAlert('error','')
+          }
+        })
+        .catch((error) => {
+          //  setAlert('error','')
+        });
+    }
+  }, []);
 
   const handleNext = () => {
     if (
       filePath?.length === 1 &&
       Boolean(thumbnailImage) &&
       Boolean(title) &&
-      noOfPeriods>0 &&
-      // coursePre !== '' &&
-      // overview !== '' &&
-      // learn !== '' &&
+      noOfPeriods > 0 &&
       Boolean(filterData.erpGrade) &&
       Boolean(filterData.courseLevel.level) &&
       Boolean(filterData.category.id) &&
@@ -138,29 +177,23 @@ const CreateCourse = () => {
       Boolean(filterData.age.id) &&
       Boolean(filterData.subject.id)
     ) {
-      if (flag) {
-        setData(secondPageData || []);
-        setNextToggle((prev) => !prev);
-      } else {
-        if (noOfPeriods > 0) {
+      if (noOfPeriods > 0) {
+        if (data.length === 0) {
           const list = [...data];
           for (let i = 0; i < noOfPeriods; i++) {
             list.push({ title: '', description: '', files: [] });
           }
           setData(list);
-          setNextToggle((prev) => !prev);
-        } else {
-          setAlert('warning', 'Periods should be more than or equal to 1');
         }
+        setNextToggle((prev) => !prev);
+      } else {
+        setAlert('warning', 'Periods should be more than or equal to 1');
       }
     } else {
       if (!Boolean(thumbnailImage)) setAlert('warning', 'Thumbnail Image is compulsory!');
       if (filePath?.length !== 1) setAlert('warning', 'Document is compulsory!');
       if (!Boolean(title)) setAlert('warning', 'Title is compulsory!');
-      // if (coursePre === '') setAlert('warning', 'Document is compulsory!');
-      // if (overview === '') setAlert('warning', 'Document is compulsory!');
-      // if (learn === '') setAlert('warning', 'Document is compulsory!');
-      if (noOfPeriods<=0) setAlert('warning', 'No. of periods should be more than 0!');
+      if (noOfPeriods <= 0) setAlert('warning', 'No. of periods should be more than 0!');
       if (!Boolean(filterData.subject.id)) setAlert('warning', 'Subject is compulsory!');
       if (!Boolean(filterData.age.id)) setAlert('warning', 'Age is compulsory!');
       if (!Boolean(filterData.erpGrade)) setAlert('warning', 'Grade is compulsory!');
@@ -233,10 +266,7 @@ const CreateCourse = () => {
 
   const handleGrade = (event, value) => {
     setFilterData({ ...filterData, grade: [], erpGrade: '' });
-    // if (value?.length > 0) {
     if (value) {
-      // const ids = value.map((obj) => obj.id);
-      // setGradeIds(ids);
       setFilterData({
         ...filterData,
         grade: value,
@@ -258,7 +288,6 @@ const CreateCourse = () => {
   };
 
   const removeFileHandler = (i, fileType) => {
-    // const list = [...filePath];
     if (fileType === 'thumbnail') {
       setThumbnailImage('');
     } else if (fileType === 'doc') {
@@ -330,7 +359,7 @@ const CreateCourse = () => {
           setFilePath([]);
           setThumbnailImage('');
           setData([]);
-          setNoPeriods(0);
+          setNoPeriods('');
           setTitle('');
           setCoursePre('');
           setOverview('');
@@ -384,7 +413,7 @@ const CreateCourse = () => {
           setFilePath([]);
           setThumbnailImage('');
           setData([]);
-          setNoPeriods(0);
+          setNoPeriods('');
           setTitle('');
           setCoursePre('');
           setOverview('');
@@ -462,8 +491,8 @@ const CreateCourse = () => {
   }, []);
 
   useEffect(() => {
-    if (data.length < 1) setNextToggle(false);
-  }, [data.length]);
+    if (data?.length < 1) setNextToggle(false);
+  }, [data?.length]);
 
   return (
     <>
@@ -473,8 +502,8 @@ const CreateCourse = () => {
           <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
               componentName='Master Management'
-              // childComponentName='Course List'
-              childComponentNameNext='Create Courses'
+              childComponentName={Boolean(courseKey) ? 'Edit Course' : 'Create Course'}
+              childComponentNameNext={nextToggle && 'Periods'}
             />
           </div>
         </div>
@@ -492,7 +521,7 @@ const CreateCourse = () => {
                 id='academic-year'
                 className='dropdownIcon'
                 value={filterData?.courseLevel}
-                options={courseLevel}
+                options={courseLevelDrop}
                 getOptionLabel={(option) => option?.value}
                 filterSelectedOptions
                 renderInput={(params) => (
@@ -612,7 +641,7 @@ const CreateCourse = () => {
             </Grid>
             <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
               <TextField
-                id='subname'
+                id='noofperiods'
                 type='number'
                 className='dropdownIcon'
                 style={{ width: '100%' }}
@@ -621,8 +650,8 @@ const CreateCourse = () => {
                 variant='outlined'
                 size='small'
                 value={noOfPeriods}
-                inputProps={{ min: 0, max: 100, maxLength: 3 }}
-                name='subname'
+                inputProps={{ min: 0, max: 100, maxLength: 3, readOnly: data.length > 0 }}
+                name='noofperiods'
                 onChange={(e) => handleNoOfPeriods(e)}
                 required
               />
@@ -691,104 +720,102 @@ const CreateCourse = () => {
               />
             </Grid>
 
-            {!flag ? (
-              <div className='attachmentContainer'>
-                <div style={{ display: 'flex' }}>
-                  {filePath?.length > 0
-                    ? filePath?.map((file, i) => (
-                        <FileRow
-                          name='File'
-                          key={`homework_student_question_attachment_${i}`}
-                          file={file}
-                          index={i}
-                          onClose={() => removeFileHandler(i, 'doc')}
-                        />
-                      ))
-                    : null}
-                </div>
-
-                {filePath?.length < 1 && (
-                  <div className='attachmentButtonContainer'>
-                    <Button
-                      startIcon={
-                        <SvgIcon
-                          component={() => (
-                            <img
-                              style={{ height: '20px', width: '20px' }}
-                              src={attachmenticon}
-                            />
-                          )}
-                        />
-                      }
-                      className='attachment_button_doc'
-                      title='Attach Supporting File'
-                      variant='contained'
-                      size='small'
-                      disableRipple
-                      disableElevation
-                      disableFocusRipple
-                      disableTouchRipple
-                      component='label'
-                      style={{ textTransform: 'none' }}
-                    >
-                      <input
-                        type='file'
-                        style={{ display: 'none' }}
-                        id='raised-button-file'
-                        accept='image/*'
-                        onChange={handleImageChange}
+            <div className='attachmentContainer'>
+              <div style={{ display: 'flex' }}>
+                {filePath?.length > 0
+                  ? filePath?.map((file, i) => (
+                      <FileRow
+                        name='File'
+                        key={`homework_student_question_attachment_${i}`}
+                        file={file}
+                        index={i}
+                        onClose={() => removeFileHandler(i, 'doc')}
                       />
-                      Add Document
-                    </Button>
-                  </div>
-                )}
-
-                {thumbnailImage !== '' && (
-                  <FileRow
-                    name='Thumbnail'
-                    key='Thumbnail'
-                    file={thumbnailImage}
-                    onClose={() => removeFileHandler(0, 'thumbnail')}
-                  />
-                )}
-
-                {thumbnailImage === '' && (
-                  <div className='attachmentButtonContainer'>
-                    <Button
-                      startIcon={
-                        <SvgIcon
-                          component={() => (
-                            <img
-                              style={{ height: '20px', width: '20px' }}
-                              src={attachmenticon}
-                            />
-                          )}
-                        />
-                      }
-                      className='attachment_button_doc'
-                      title='Attach Supporting File'
-                      variant='contained'
-                      size='small'
-                      disableRipple
-                      disableElevation
-                      disableFocusRipple
-                      disableTouchRipple
-                      component='label'
-                      style={{ textTransform: 'none' }}
-                    >
-                      <input
-                        type='file'
-                        style={{ display: 'none' }}
-                        id='raised-button-file'
-                        accept='image/*'
-                        onChange={handleThumbnail}
-                      />
-                      Add Thumbnail
-                    </Button>
-                  </div>
-                )}
+                    ))
+                  : null}
               </div>
-            ) : null}
+
+              {filePath?.length < 1 && (
+                <div className='attachmentButtonContainer'>
+                  <Button
+                    startIcon={
+                      <SvgIcon
+                        component={() => (
+                          <img
+                            style={{ height: '20px', width: '20px' }}
+                            src={attachmenticon}
+                          />
+                        )}
+                      />
+                    }
+                    className='attachment_button_doc'
+                    title='Attach Supporting File'
+                    variant='contained'
+                    size='small'
+                    disableRipple
+                    disableElevation
+                    disableFocusRipple
+                    disableTouchRipple
+                    component='label'
+                    style={{ textTransform: 'none' }}
+                  >
+                    <input
+                      type='file'
+                      style={{ display: 'none' }}
+                      id='raised-button-file'
+                      accept='image/*'
+                      onChange={handleImageChange}
+                    />
+                    Add Document
+                  </Button>
+                </div>
+              )}
+
+              {thumbnailImage !== '' && (
+                <FileRow
+                  name='Thumbnail'
+                  key='Thumbnail'
+                  file={thumbnailImage}
+                  onClose={() => removeFileHandler(0, 'thumbnail')}
+                />
+              )}
+
+              {thumbnailImage === '' && (
+                <div className='attachmentButtonContainer'>
+                  <Button
+                    startIcon={
+                      <SvgIcon
+                        component={() => (
+                          <img
+                            style={{ height: '20px', width: '20px' }}
+                            src={attachmenticon}
+                          />
+                        )}
+                      />
+                    }
+                    className='attachment_button_doc'
+                    title='Attach Supporting File'
+                    variant='contained'
+                    size='small'
+                    disableRipple
+                    disableElevation
+                    disableFocusRipple
+                    disableTouchRipple
+                    component='label'
+                    style={{ textTransform: 'none' }}
+                  >
+                    <input
+                      type='file'
+                      style={{ display: 'none' }}
+                      id='raised-button-file'
+                      accept='image/*'
+                      onChange={handleThumbnail}
+                    />
+                    Add Thumbnail
+                  </Button>
+                </div>
+              )}
+            </div>
 
             <Grid item xs={12} sm={12}>
               <Divider />
@@ -803,10 +830,10 @@ const CreateCourse = () => {
           <>
             <Paper className={classes.root}>
               <Grid container className='periodCardsContainer' spacing={isMobile ? 3 : 5}>
-                {data?.map((period, i) => (
+                {data?.map((_, i) => (
                   <Grid item xs={12} sm={4}>
                     <CourseCard
-                      setNextToggle={setNextToggle}
+                      setNoPeriods={setNoPeriods}
                       key={i}
                       index={i}
                       cData={data}

@@ -21,7 +21,7 @@ import deleteIcon from '../../../../assets/images/delete.svg';
 import attachmenticon from '../../../../assets/images/attachmenticon.svg';
 import Divider from '@material-ui/core/Divider';
 
-const CourseCard = ({ index, cData, setData, setNextToggle }) => {
+const CourseCard = ({ index, cData, setData, setNoPeriods }) => {
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -73,6 +73,7 @@ const CourseCard = ({ index, cData, setData, setNextToggle }) => {
 
   const handleRemovePeriod = () => {
     setData([...cData].filter((_,i)=>index!==i));
+    setNoPeriods(prev=>prev-1);
   }
 
   const FileRow = (props) => {
@@ -109,7 +110,6 @@ const CourseCard = ({ index, cData, setData, setNextToggle }) => {
         style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }}
       >
         <Grid container spacing={2}>
-          {/* <Grid item xs={12}> */}
           <div className='periodCrossWrapper'>
             <div className='periodTag'>Period {`${index + 1}`}</div>
             <div className='removePeriodIcon'>
@@ -118,7 +118,6 @@ const CourseCard = ({ index, cData, setData, setNextToggle }) => {
               </IconButton>
             </div>
           </div>
-          {/* </Grid> */}
           <Grid item xs={12}>
             <Box>
               <TextField
