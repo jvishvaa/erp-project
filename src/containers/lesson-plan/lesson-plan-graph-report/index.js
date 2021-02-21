@@ -126,7 +126,6 @@ const LessonPlanGraphReport = ({
     setDateRangeTechPer(e);
     const startDate = e[0].format('YYYY-MM-DD');
     const endDate = e[1]?.format('YYYY-MM-DD');
-    // console.log(filterData.grade.grade_id,filterData.volume.id,subjectIds,'ggggg')
 
     // ><<<<<>>>>>>>>>>>NEED DISCUSSION WITH BACKEND<<<<<<<<<>>>>>>>>><<<
     // axiosInstance.get(
@@ -190,7 +189,6 @@ const LessonPlanGraphReport = ({
     }
   };
   const handleSection = (event, value) => {
-    // console.log(value);
     setFilterData({ ...filterData, section: '' });
     if (value) {
       setFilterData({ ...filterData, section: value });
@@ -263,7 +261,6 @@ const LessonPlanGraphReport = ({
   const handleTeacher = (event, value) => {
     setFilterData({ ...filterData, teacher: '' });
     if (value) {
-      // console.log(value,'vvvvvvv')
       setFilterData({ ...filterData, teacher: value });
     }
   };
@@ -433,7 +430,6 @@ const LessonPlanGraphReport = ({
       },
     ],
   };
-  console.log(graphData, 'GGGG');
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}

@@ -37,11 +37,13 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
     const [list, setList] = useState([])
     const [toggle, setToggle] = useState(false);
     const { setAlert } = useContext(AlertNotificationContext);
-    const [selectedDate, setSelectedDate] = React.useState(new Date());
-    const [durations, setDurations] = React.useState(30);
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [durations, setDurations] = useState('');
     const [hour,setHour]=useState('');
     const [mins,setMins]= useState('');
     const [ampm,setAmpm] =useState('');
+    const [divideHour,setDivideHour] = useState('');
+    const [divideSec,setDivideSec] = useState('');
     const [filterData, setFilterData] = useState({
         teacher: '',
     })
@@ -76,9 +78,13 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
         handleHour();
     }, [selectedDate])
 
-    // console.log(batchSlot,ampm,'=============')
+    const handleDuration=(e)=>{
+        setDurations(e.target.value)
+        setDivideHour()
+    }
+
     const handleAssign = () => {
-        if (parseInt(batchSlot && batchSlot[0]) % 12 <= hour && parseInt(batchSlot && batchSlot[1]) % 12 > hour &&  batchSlot && batchSlotAMPM === ampm ) {
+        if (parseInt(batchSlot && batchSlot[0]) % 12 <= hour%12 && parseInt(batchSlot && batchSlot[1]) % 12 > hour%12 &&  batchSlot && batchSlotAMPM === ampm ) {
             const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
             const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
             const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(selectedDate);
@@ -97,7 +103,7 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                 }
             })
 
-        } else if (parseInt(batchSlot && batchSlot[0]) % 12 <= hour && parseInt(batchSlot && batchSlot[0]) % 12 == hour && batchSlot && batchSlotAMPM === ampm ) {
+        } else if (parseInt(batchSlot && batchSlot[0]) % 12 <= hour%12 && parseInt(batchSlot && batchSlot[1]) % 12 == hour%12 && batchSlot && batchSlotAMPM === ampm ) {
             if (mins == 0) {
                 const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
                 const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
@@ -150,18 +156,24 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                                     )}
                                 />
                             </Grid>
-                            <Grid xs={12} style={{ marginLeft: '15px'}}>
+                            <Grid container spacing={4} >
+                                <Grid item xs={12} sm={12}>
                                 <TextField
+                                    style={{ width: '100%' }}
+                                    size='small'
+                                    margin="normal"
                                     variant='outlined'
                                     label='Durations'
+                                    type='number'
                                     placeholder='Enter Durations in minutes'
                                     value={durations}
-                                    onChange={(e) => setDurations(e.target.value)}
+                                    onChange={(e)=>handleDuration(e)}
                                     size='small'
                                 />
+                                </Grid>
                             </Grid>
                         </Grid>
-                        <Grid container spacing={4} className='create-class-container'>
+                        <Grid container spacing={4} >
                             <Grid item xs={12} sm={12}>
                                 <MuiPickersUtilsProvider utils={MomentUtils}>
                                     <KeyboardDatePicker
@@ -169,7 +181,7 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                                         margin="normal"
                                         id="date-picker-dialog"
                                         label="Start Date"
-                                        format="MM/dd/yyyy"
+                                        format='MM-DD-YYYY'
                                         value={selectedDate}
                                         onChange={handleDateChange}
                                         KeyboardButtonProps={{
@@ -179,7 +191,7 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                                 </MuiPickersUtilsProvider>
                             </Grid>
                         </Grid>
-                        <Grid container spacing={4} className='create-class-container'>
+                        <Grid container spacing={4} >
                             <Grid item xs={12} sm={12}>
                                 <MuiPickersUtilsProvider utils={MomentUtils}>
                                     <KeyboardTimePicker
@@ -198,7 +210,7 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                                 </MuiPickersUtilsProvider>
                             </Grid>
                         </Grid>
-                        <Grid container spacing={2} className='create-class-container'>
+                        <Grid container spacing={2} >
                             <Grid item xs={12} sm={6}>
                                 <Button onClick={() => setOpenAssignModal(false)} color="primary" style={{ width: '7.5rem' }}>
                                     Cancel

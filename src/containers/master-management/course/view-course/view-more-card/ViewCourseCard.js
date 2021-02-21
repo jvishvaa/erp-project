@@ -103,12 +103,8 @@ const ViewCourseCard = ({ index, cData, setData }) => {
   const handleDownload = (e,data) => {
     console.log(e.files,data,'=============')
     for(let i=0;i<e.files.length;i++){
-      window.open(`https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/aol_file/course/${e.files[i]}`,'_blank','noopener')
+      window.open(`https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/aol_file/course/${e.files[i]}`)
     }
-    // e.preventDefault();
-    // aolCardData && aolCardData.map((path) => {
-    //   path.files && path.files.map((file, i) => window.location.href = (`${endpoints.s3}/${file}`))
-    // })
   }
   if (id) {
     return (
