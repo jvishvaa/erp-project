@@ -43,7 +43,8 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
     const [mins,setMins]= useState('');
     const [ampm,setAmpm] =useState('');
     const [divideHour,setDivideHour] = useState('');
-    const [divideSec,setDivideSec] = useState('');
+    const [divideMin,setDivideMin] = useState('');
+    
     const [filterData, setFilterData] = useState({
         teacher: '',
     })
@@ -54,7 +55,7 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
     const handleDateChange = (date) => {
         setSelectedDate(date);
     };
-
+    let end_time;
     const handleHour = () => {
         const hr = new Intl.DateTimeFormat('en', { hour: 'numeric' }).format(selectedDate);
         const min = new Intl.DateTimeFormat('en', { minute: 'numeric' }).format(selectedDate);
@@ -80,10 +81,15 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
 
     const handleDuration=(e)=>{
         setDurations(e.target.value)
-        setDivideHour()
+        setDivideHour(e.target.value / 60)
+        setDivideMin(e.target.value % 60)
     }
-
+    console.log(divideHour,divideMin,'SECCCCCCCC')
     const handleAssign = () => {
+        if(divideSec===0){
+            end_time = batchSlot[1] -divideHour
+
+        }
         if (parseInt(batchSlot && batchSlot[0]) % 12 <= hour%12 && parseInt(batchSlot && batchSlot[1]) % 12 > hour%12 &&  batchSlot && batchSlotAMPM === ampm ) {
             const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
             const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
