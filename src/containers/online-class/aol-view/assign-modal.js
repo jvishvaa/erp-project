@@ -38,15 +38,17 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
     const [toggle, setToggle] = useState(false);
     const { setAlert } = useContext(AlertNotificationContext);
     const [selectedDate, setSelectedDate] = React.useState(new Date());
+    const [durations, setDurations] = React.useState(30);
     const [hour,setHour]=useState('');
     const [mins,setMins]= useState('');
     const [ampm,setAmpm] =useState('');
     const [filterData, setFilterData] = useState({
         teacher: '',
     })
-    const batchSlot = assignData?.classData?.batch_time_slot && assignData?.classData?.batch_time_slot.split('-',3)
+    const batchSlot = assignData?.classData?.batch_time_slot && assignData?.classData?.batch_time_slot.split('-',2)
+    const batchSlotAMPM = assignData?.classData?.batch_time_slot && assignData?.classData?.batch_time_slot.slice(-2);
     const helperTextMsg=`Select time between ${batchSlot && parseInt(batchSlot[0])} to ${batchSlot && parseInt(batchSlot[1])}`
-    console.log(batchSlot,'BBBBBB')
+    console.log(batchSlot +'---'+batchSlotAMPM ,'BBBBBB')
     const handleDateChange = (date) => {
         setSelectedDate(date);
     };
@@ -66,13 +68,17 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
         }
     }
 
+    const handleDurations = (e) => {
+        setDurations(e.target.value);
+    }
+
     useEffect(() => {
         handleHour();
     }, [selectedDate])
 
     // console.log(batchSlot,ampm,'=============')
     const handleAssign = () => {
-        if (parseInt(batchSlot && batchSlot[0]) % 12 <= hour && parseInt(batchSlot && batchSlot[1]) % 12 > hour &&  batchSlot && batchSlot[2] === ampm ) {
+        if (parseInt(batchSlot && batchSlot[0]) % 12 <= hour && parseInt(batchSlot && batchSlot[1]) % 12 > hour &&  batchSlot && batchSlotAMPM === ampm ) {
             const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
             const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
             const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(selectedDate);
@@ -80,7 +86,7 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                 "batch_id": assignData?.classData?.id,
                 "start_date_time": selectedDate.format(`${ye}-${mo}-${da} hh:mm:ss`),
                 "teacher": filterData.teacher.tutor_id,
-                "durations":"30",
+                "durations": durations,
             }).then(result => {
                 if (result.data.status_code === 200) {
                     setAlert('success', result.data.message)
@@ -91,7 +97,7 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                 }
             })
 
-        } else if (parseInt(batchSlot && batchSlot[0]) % 12 <= hour && parseInt(batchSlot && batchSlot[0]) % 12 == hour && batchSlot && batchSlot[2] === ampm ) {
+        } else if (parseInt(batchSlot && batchSlot[0]) % 12 <= hour && parseInt(batchSlot && batchSlot[0]) % 12 == hour && batchSlot && batchSlotAMPM === ampm ) {
             if (mins == 0) {
                 const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
                 const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
@@ -109,11 +115,11 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                 })
             }
             else {
-                setAlert('warning', `set the time between ${parseInt(batchSlot && batchSlot[0])} to ${parseInt(batchSlot && batchSlot[1])} ${parseInt(batchSlot && batchSlot[2])}`)
+                setAlert('warning', `set the time between ${parseInt(batchSlot && batchSlot[0])} to ${parseInt(batchSlot && batchSlot[1])} ${parseInt(batchSlot && batchSlotAMPM)}`)
             }
         }
          else {
-            setAlert('warning', `set the time between ${parseInt(batchSlot && batchSlot[0])} to ${parseInt(batchSlot && batchSlot[1])} ${batchSlot && batchSlot[2]}`)
+            setAlert('warning', `set the time between ${parseInt(batchSlot && batchSlot[0])} to ${parseInt(batchSlot && batchSlot[1])} ${batchSlot && batchSlotAMPM}`)
         }
     }
     return (
@@ -142,6 +148,16 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                                             placeholder='Teacher Name'
                                         />
                                     )}
+                                />
+                            </Grid>
+                            <Grid xs={12} style={{ marginLeft: '15px'}}>
+                                <TextField
+                                    variant='outlined'
+                                    label='Durations'
+                                    placeholder='Enter Durations in minutes'
+                                    value={durations}
+                                    onChange={(e) => setDurations(e.target.value)}
+                                    size='small'
                                 />
                             </Grid>
                         </Grid>
@@ -193,7 +209,7 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                                     onClick={handleAssign}
                                     style={{ width: '7.5rem' }}>
                                     ASSIGN
-                                    </Button>
+                                </Button>
                             </Grid>
                         </Grid>
                     </DialogContentText>

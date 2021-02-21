@@ -88,10 +88,22 @@ const Resource = (props) => {
 
     const handleDownload = (e) => {
         e.preventDefault();
+        e.preventDefault();
+        const download = (path) => {
+            //console.log(path);
+             //window.location.href=path;
+            window.open(path, '_blank');
+        }
+        const downloadFilePath = (files) => {
+            files.map((file) => download(`${endpoints.s3}/${file}`));
+        }
+        isDownload && isDownload.map((path) => downloadFilePath(path.files));
+        /**
         isDownload && isDownload.map((path) => {
             path.files && path.files.map((file, i) => window.location.href=(`${endpoints.s3}/${file}`))
             //window.location.href=(`${endpoints.s3}/${path?.files[0]}`
         })
+         */
     }
 
     return (

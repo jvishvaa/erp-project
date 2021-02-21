@@ -1,10 +1,11 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { Button, Grid, Typography, withStyles } from '@material-ui/core';
 import moment from 'moment';
 import UploadModalWrapper from './modal';
 import UploadModal from './upload-modal';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import { useLocation } from 'react-router-dom';
 
 const StyledButton = withStyles({
@@ -27,6 +28,7 @@ export default function ResourceClassComponent(props) {
     const [ isDown, setIsDown] = React.useState(0);
     const [ isUpload, setIsUpload ] = React.useState(0);
     const [ hideButton, setHideButton ] = React.useState(false);
+    const { setAlert } = useContext(AlertNotificationContext);
     const location = useLocation();
     
     const handleIsUpload = () => {
@@ -54,10 +56,21 @@ export default function ResourceClassComponent(props) {
 
     const handleDownload = (e) => {
         e.preventDefault();
-        isDownload && isDownload.map((path) => {
-            path.files && path.files.map((file, i) => window.location.href=(`${endpoints.s3}/${file}`))
-            //window.location.href=(`${endpoints.s3}/${path?.files[0]}`
+        const download = (path) => {
+            //console.log(path);
+             //window.location.href=path;
+            window.open(path, '_blank');
+        }
+        const downloadFilePath = (files) => {
+            files.map((file) => download(`${endpoints.s3}/${file}`));
+        }
+        isDownload && isDownload.map((path) => downloadFilePath(path.files));
+        /** 
+        isDownload && isDownload.map((path,i) => {
+            //path.files && path.files && path.files.map((file, i) => window.location.href=(`${endpoints.s3}/${file}`));
+            path.files && path.files.map((file, i) => download(`${endpoints.s3}/${file}`));
         })
+        */
     }
 
     React.useEffect(() => {

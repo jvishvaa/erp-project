@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import ClassCard from './ClassCard';
-import { Divider, Grid, makeStyles, useTheme, withStyles, Button, TextField, Switch, FormControlLabel } from '@material-ui/core';
-// import axiosInstance from '../../../config/axios';
+import { Divider, Grid, makeStyles, useTheme, withStyles, Button, TextField, Switch, FormControlLabel, Typography } from '@material-ui/core';
 import ClassdetailsCard from './ClassdetailCard';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -9,7 +8,6 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Pagination } from '@material-ui/lab';
 // import MomentUtils from '@date-io/moment';
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
-
 import { LocalizationProvider, DateRangePicker, KeyboardDate } from '@material-ui/pickers-4.2';
 import moment from 'moment';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
@@ -19,8 +17,7 @@ import { useLocation } from 'react-router-dom';
 import axiosInstance from '../../../config/axios'
 import endpoints from '../../../config/endpoints'
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-
-
+import filterImage from '../../../assets/images/unfiltered.svg'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -640,6 +637,19 @@ const UpcomingClasses = () => {
             <Grid container spacing={3} className={classes.root}>
                 <Grid item sm={size} xs={12}>
                     <Grid container spacing={3}>
+                        {classesData.length === 0 && toggledData.length === 0 && (
+                            <Grid item xs={12} style={{ textAlign: 'center', marginTop: '10px' }}>
+                                <img
+                                    src={filterImage}
+                                    alt='crash'
+                                    height='250px'
+                                    width='250px'
+                                />
+                                <Typography>
+                                    Please select the filter to dislpay classes
+                                </Typography>
+                            </Grid>
+                        )}
                         {classesData.length > 0 && classesData.map((data, id) => {
                             return (
                                 <Grid item sm={itemSize} xs={12} key={id}>
