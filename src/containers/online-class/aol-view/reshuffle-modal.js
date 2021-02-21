@@ -76,10 +76,11 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
             })
     }, [])
     const handleReshuffle = () => {
-        axiosInstance.post(`${endpoints.aol.studentReshuffle}?aol=1`, {
+        axiosInstance.post(`${endpoints.aol.studentReshuffle}`, {
             "batch":parseInt(id),
             "new_batch": filterData?.batch?.id,
-            "students": [modalData?.user_id]
+            "students": [modalData?.user_id],
+            "aol":"1",
         })
             .then((result => {
                 if (result.data.status_code === 200) {
