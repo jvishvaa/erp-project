@@ -1,134 +1,98 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
-import '../../viewAssessment.css';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
+import React, { useContext } from 'react';
 import ReactHtmlParser from 'react-html-parser';
+
 import { AssessmentHandlerContext } from '../../../assess-attemption/assess-attemption-context';
-import TinyMce from '../../../../../components/TinyMCE/tinyMce';
+import '../../viewAssessment.css';
 
 const MatrixQuestion = (props) => {
   const {
-    assessmentQp: { fetching },
-    fetchAssessmentQp,
-
-    questionsDataObj,
-    questionsArray,
-    controls: {
-      selectQues,
-      nextQues,
-      //   prevQues,
-      attemptQuestion,
-      isStarted,
-      currentQuesionId,
-      start,
-      //   startedAt,
-    },
+    controls: { attemptQuestion },
   } = useContext(AssessmentHandlerContext);
 
-  // const { [currentQuesionId]: currentQuestionObj = {} } = questionsDataObj || {};
   const { questionObj: currentQuestionObj } = props || {};
 
   const {
     id: qId,
-    question_type: questionType,
-    meta: { index: qIndex } = {},
-    question_answer,
-    user_response: { attemption_status: attemptionStatus } = {},
+    // meta: { index: qIndex } = {},
+    question_answer: questionAnswer,
+    user_response: { answer: existingAnswerObj = {} } = {},
   } = currentQuestionObj || {};
 
-  const [{ answer, options, question, matrixOptions }] = question_answer;
-  // const [isChecked, setIsChecked] = useState([]);
-  useEffect(() => {
-    console.log('is CHecked: ', currentQuestionObj);
-  }, []);
-
-  const handleNextQuestion = () => {
-    nextQues(qId);
-  };
+  const [{ options = [], question, matrixOptions }] = questionAnswer || {};
 
   const handleOptionValue = (event) => {
-    // setIsChecked([{ [qId]: event.target.value }]);
-    // setOptionSelected(event.target.value);
-    attemptQuestion(qId, { attemptionStatus: true, answer: event.target.value });
-    // console.log('selected value : ', attemptQuestion);
+    const { target: { value, name } = {} } = event || {};
+    /* 
+      {
+        value: "low",
+        name: "2_bike"
+      }
+    */
+    const [index, questionLabel] = name.split('_');
+    const answerObj = {
+      [`question${index}`]: questionLabel,
+      [`answer${index}`]: value,
+    };
+    const noOfOptions = Array.isArray(options) ? options.length : null;
+
+    const updatedAnswerObj = { ...existingAnswerObj, ...answerObj };
+    attemptQuestion(qId, {
+      attemptionStatus: noOfOptions * 2 === Object.keys(updatedAnswerObj).length,
+      answer: updatedAnswerObj,
+    });
   };
 
-  const handleTextEditor = (event) => {
-    // console.log('from editor', e);
-    // setTextEditorContent(event);
-    attemptQuestion(qId, { attemptionStatus: true, answer: event });
-  };
+  //   const handleTextEditor = (event) => {
+  //     attemptQuestion(qId, { attemptionStatus: true, answer: event });
+  //   };
   return (
     <div>
-      {/* <div className='question-header'>
-        Description specific to this test to be followed by all appearing students/pupils
-        / attendees (Write if req. else leave empty)
-      </div>
-      <div className='question-numbers'>
-        <div>{qIndex + 1}</div>
-        <div>
-          Progress - {qIndex + 1}/{questionsArray.length}
-        </div>
-      </div> */}
       <div className='mcq-question-wrapper'>
         <h3>{ReactHtmlParser(question)}</h3>
-        <div className='match-question-wrapper'>
-          {/* <div className='matrix-main-option'>
-            {options.map((option, index) => {
-              return (
-                <div key={index + 1} className='match-image'>
-                  <p>{option.optionValue}</p>
-                </div>
-              );
-            })}
-          </div> */}
-
-          <div>
-            {options.map((option, index) => {
-              return (
-                <div>
-                  <FormControl
-                    component='fieldset'
-                    style={{ flexDirection: 'row', marginTop: 25 }}
-                  >
-                    <FormLabel
-                      style={{ marginBottom: 15, color: '#014b7e' }}
-                      component='legend'
-                    >
-                      {option.optionValue}
-                    </FormLabel>
-                    <RadioGroup
-                      aria-label='gender'
-                      name='options'
-                      //   value={currentQuestionObj?.user_response?.answer}
-                      onChange={handleOptionValue}
-                      style={{ flexDirection: 'row' }}
-                    >
-                      {matrixOptions.length &&
-                        matrixOptions.map((matrix) => {
-                          return (
-                            <FormControlLabel
-                              className='matrix-options'
-                              value='Option1'
-                              control={<Radio />}
-                              label={matrix.optionValue}
-                              labelPlacement='top'
+        <div className='matrix-table-container'>
+          <form onChange={handleOptionValue}>
+            <table className='matrix-table'>
+              <thead>
+                <tr>
+                  <th>&nbsp;</th>
+                  {matrixOptions.map((matrix) => {
+                    return <th>{matrix.optionValue}</th>;
+                  })}
+                </tr>
+              </thead>
+              <tbody>
+                {options.map((option, optionIndex) => {
+                  return (
+                    <tr>
+                      <td>{option.optionValue}</td>
+                      {matrixOptions.map((matrix, matrixIndex) => {
+                        const questionIndex = optionIndex + 1;
+                        const name = `${questionIndex}_${option.optionValue}`;
+                        const value = matrix.optionValue;
+                        const { [`answer${questionIndex}`]: existingAns } =
+                          existingAnswerObj || {};
+                        return (
+                          <td>
+                            {/* {matrix.optionValue} */}
+                            <input
+                              type='radio'
+                              // name={`question-${index + 1}`}
+                              // value={`option-${matrixIndex + 1}`}
+                              checked={existingAns === value}
+                              name={name}
+                              value={value}
                             />
-                          );
-                        })}
-                    </RadioGroup>
-                  </FormControl>
-                </div>
-              );
-            })}
-          </div>
+                          </td>
+                        );
+                      })}
+                      {/* </RadioGroup> */}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </form>
         </div>
-        {/* <div className='question-submit-btn' onClick={handleNextQuestion}>
-          Next
-        </div> */}
       </div>
     </div>
   );

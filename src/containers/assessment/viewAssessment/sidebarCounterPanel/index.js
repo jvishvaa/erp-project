@@ -50,11 +50,11 @@ const SidebarCounterPanel = () => {
 
   const {
     assessmentDetails: { test_duration: testDuration } = {},
-    questionsMetaInfo: { is_ready_to_submit: isReadyToSubmit },
+    questionsMetaInfo: { is_ready_to_submit: isReadyToSubmit } = {},
     questionsArray,
     questionsDataObj,
     controls: { selectQues, isStarted, currentQuesionId, start, submit, startedAt },
-  } = useContext(AssessmentHandlerContext);
+  } = useContext(AssessmentHandlerContext) || {};
   const { setAlert } = useContext(AlertNotificationContext);
 
   const { [currentQuesionId]: currentQuestionObj = {} } = questionsDataObj || {};
