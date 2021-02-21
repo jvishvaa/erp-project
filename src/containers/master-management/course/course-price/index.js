@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import {useParams} from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Grid, useTheme, Paper, Divider } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import CoursePriceFilters from '../course-price/course-price-filters';
@@ -31,13 +31,13 @@ const useStyles = makeStyles((theme) => ({
 
 const CoursePrice = () => {
   const { setAlert } = useContext(AlertNotificationContext);
-  const {courseKey, gradeKey} = useParams();
+  const { courseKey, gradeKey } = useParams();
   const classes = useStyles();
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
-  const [courseId, setCourseId] = useState(''||courseKey);
+  const [courseId, setCourseId] = useState('' || courseKey);
   const [selectedCourse, setSelectedCourse] = useState('');
   const [timeSlot, setTimeSlot] = useState([]);
   const [selectedLimit, setSelectedLimit] = useState('1:1');
@@ -55,7 +55,7 @@ const CoursePrice = () => {
       id: '',
       toggle: false,
       data: [{ weeks: '', price: '', id: '' }],
-      singleData: [{ weeks: '', price: '', id: '' }]
+      singleData: [{ weeks: '', price: '', id: '' }],
     },
     {
       days: [],
@@ -66,7 +66,7 @@ const CoursePrice = () => {
       id: '',
       toggle: false,
       data: [{ weeks: '', price: '', id: '' }],
-      singleData: [{ weeks: '', price: '', id: '' }]
+      singleData: [{ weeks: '', price: '', id: '' }],
     },
     {
       days: [],
@@ -77,7 +77,7 @@ const CoursePrice = () => {
       id: '',
       toggle: false,
       data: [{ weeks: '', price: '', id: '' }],
-      singleData: [{ weeks: '', price: '', id: '' }]
+      singleData: [{ weeks: '', price: '', id: '' }],
     },
     {
       days: [],
@@ -88,7 +88,7 @@ const CoursePrice = () => {
       id: '',
       toggle: false,
       data: [{ weeks: '', price: '', id: '' }],
-      singleData: [{ weeks: '', price: '', id: '' }]    
+      singleData: [{ weeks: '', price: '', id: '' }],
     },
     {
       days: [],
@@ -147,12 +147,12 @@ const CoursePrice = () => {
       axiosInstance
         .get(`${endpoints.aol.createCoursePrice}?course=${courseId}`)
         .then((res) => {
-          const { message, status_code } = res.data;
+          const { message, status_code } = res?.data;
           setFirstHit(false);
           if (status_code === 200) {
-            if (res.data.result.length > 0) {
+            if (res?.data?.result?.length > 0) {
               setIsEdit(true);
-              const list = [...res.data.result];
+              const list = [...res?.data?.result];
               const collectionList = [...collectData];
               setTimeSlotDisplay(list[0]['time_slot']);
               for (let i = 0; i < list.length; i++) {
@@ -168,22 +168,24 @@ const CoursePrice = () => {
                 if (Boolean(is_recurring)) {
                   for (let k = 0; k < course_price?.length; k++) {
                     collectionList[index]['data'].push({
-                      weeks: course_price[k]['no_of_week']||'',
-                      price: course_price[k]['price']||'',
+                      weeks: course_price[k]['no_of_week'] || '',
+                      price: course_price[k]['price'] || '',
                       id: course_price[k]['id'],
                     });
                   }
                 } else {
-                    collectionList[index]['data'].push({
-                        weeks: course_price[0]['no_of_week']||'',
-                        price: course_price[0]['price']||'',
-                        id: course_price[0]['id'],
-                      });
-                    collectionList[index]['singleData']=[{
-                        weeks: course_price[0]['no_of_week'],
-                        price: course_price[0]['price']||'',
-                        id: course_price[0]['id'],
-                      }];
+                  collectionList[index]['data'].push({
+                    weeks: course_price[0]['no_of_week'] || '',
+                    price: course_price[0]['price'] || '',
+                    id: course_price[0]['id'],
+                  });
+                  collectionList[index]['singleData'] = [
+                    {
+                      weeks: course_price[0]['no_of_week'],
+                      price: course_price[0]['price'] || '',
+                      id: course_price[0]['id'],
+                    },
+                  ];
                 }
               }
               setCollectData(collectionList);
@@ -199,7 +201,6 @@ const CoursePrice = () => {
         .catch((error) => {
           resetContent();
           setIsEdit(false);
-          //   setAlert('error', error.message);
         });
     } else {
       resetContent();
@@ -223,10 +224,11 @@ const CoursePrice = () => {
         setCourseId={setCourseId}
         setCollectData={setCollectData}
         resetContent={resetContent}
-        selectedCourse={selectedCourse} 
+        selectedCourse={selectedCourse}
         setSelectedCourse={setSelectedCourse}
         courseKey={courseKey}
         gradeKey={gradeKey}
+        isEdit={isEdit}
       />
       <div>
         {' '}
@@ -255,6 +257,8 @@ const CoursePrice = () => {
             <DurationContainer
               clearFlag={clearFlag}
               isEdit={isEdit}
+              gradeKey={gradeKey}
+              courseKey={courseKey}
               timeSlot={timeSlot}
               timeSlotDisplay={timeSlotDisplay}
               courseId={courseId}

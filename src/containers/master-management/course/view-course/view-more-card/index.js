@@ -16,6 +16,7 @@ import ViewCourseCard from './ViewCourseCard';
 import ViewStore from '../context/ViewStore'
 import { Context } from '../context/ViewStore'
 import './view-more-course.css';
+// import downloadAll from '../../../../../assets/images/downloadAll.svg';
 
 
 const ViewMoreCard = ({
@@ -28,7 +29,6 @@ const ViewMoreCard = ({
   section,
 }) => {
 
-  console.log(sendGrade, "========");
   const themeContext = useTheme();
   const classes = useStyles();
 
@@ -53,12 +53,20 @@ const ViewMoreCard = ({
   }
 
   const handleEditCoursePrice = () => {
-    history.push(`./course-price/${viewMoreData[0]?.course}/${sendGrade}`);
+    history.push(`/course-price/${viewMoreData[0]?.course}/${sendGrade}`);
   }
 
   const handleEdit = () => {
     setState({ ...state, isEdit: true })
     history.push('/create/course')
+  }
+  const handleDownload = (type) => {
+    if(type==='course'){
+      window.href=`https://erpnew.letseduvate.com/qbox/aol/file-upload/dev/${periodDataForView?.files[0]}`
+    }
+    if(type==='thumbnail'){
+      window.open("https://erpnew.letseduvate.com/qbox/aol/file-upload/2021-02-20 16:31:24.776679_LogoBanner.png")
+    }
   }
   return (
     <>
@@ -67,7 +75,7 @@ const ViewMoreCard = ({
         <Paper className='rootViewMore'>
           <div className='viewMoreHeader'>
             <div className='leftHeader'>
-              <div className='headerTitle'>{periodDataForView.course_name}</div>
+              <div className='headerTitle'>{periodDataForView?.course_name}</div>
               <div className='headerContent'> Level - {periodDataForView?.level}</div>
             </div>
             <div className='rightHeader'>
@@ -106,29 +114,54 @@ const ViewMoreCard = ({
             </div>
             <div className='scrollableContent'>
               <div className='bodyContent'>
-                <div>{periodDataForView.learn}</div>
+                <div>{periodDataForView?.learn}</div>
               </div>
             </div>
           </div>
           <div className='viewMoreBody'>
             <div className='scrollableContent'>
               <div className='bodyContent'>
-                <div> No Of Periods - {periodDataForView.no_of_periods}</div>
+                <div> No Of Periods : {periodDataForView?.no_of_periods}</div>
               </div>
             </div>
           </div>
           <div className='viewMoreBody'>
             <div className='scrollableContent'>
               <div className='bodyContent'>
-                <div>Attachments
-              {periodDataForView?.files?.map((file, i) => (
-                  <FileRow
-                    key={`filess${i}`}
-                    file={file}
-                    index={i}
+                <div>
+                Course Attachments : {periodDataForView?.files && periodDataForView?.files?.length}
+                {periodDataForView?.files?.length > 0 ?
+                      <IconButton>
+                        <a href={`https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/aol_file/course/${periodDataForView?.files[0]}`}>
+                        <SvgIcon
+                          component={() => (
+                            <img
+                              target='blank'
+                              style={{ height: '21px', width: '21px' }}
+                              src={downloadAll}
+                              alt='downloadAll'
+                            />
+                          )}
+                        />
+                        </a>
+                      </IconButton> : ''}
+                  Thumbnail : {periodDataForView?.thumbnail && periodDataForView?.thumbnail?.length}
+                  {periodDataForView?.thumbnail?.length > 0 ?
+                      <IconButton>
+                       <a href={`https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/aol_file/course/${periodDataForView?.thumbnail[0]}`}>
 
-                  />
-                ))}
+                        <SvgIcon
+                          component={() => (
+                            <img
+                              target='blank'
+                              style={{ height: '21px', width: '21px' }}
+                              src={downloadAll}
+                              alt='downloadAll'
+                            />
+                          )}
+                        />
+                        </a>
+                      </IconButton> : ''}
                 </div>
               </div>
             </div>

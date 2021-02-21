@@ -1,4 +1,5 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
+import CloseIcon from '@material-ui/icons/Close';
 import Paper from '@material-ui/core/Paper';
 import {
   Grid,
@@ -7,9 +8,10 @@ import {
   useTheme,
   SvgIcon,
   Typography,
+  IconButton,
 } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-// import { Button, useTheme ,IconButton} from '@material-ui/core';
+import '../create-course/style.css';
 import Box from '@material-ui/core/Box';
 import useStyles from './useStyles';
 import endpoints from '../../../../config/endpoints';
@@ -19,14 +21,12 @@ import deleteIcon from '../../../../assets/images/delete.svg';
 import attachmenticon from '../../../../assets/images/attachmenticon.svg';
 import Divider from '@material-ui/core/Divider';
 
-const CourseCard = ({ index, cData, setData }) => {
+const CourseCard = ({ index, cData, setData, setNextToggle }) => {
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const classes = useStyles();
   const [filePath, setFilePath] = useState([]);
-
-  console.log(cData, 'cData');
 
   const handleCardSubmit = (e) => {
     const list = [...cData];
@@ -36,38 +36,44 @@ const CourseCard = ({ index, cData, setData }) => {
 
   const handleImageChange = (event) => {
     const dataList = [...cData];
-    const fileList=[...filePath];
+    const fileList = [...filePath];
     if (dataList[index]['files'].length < 10) {
       const fd = new FormData();
       fd.append('file', event.target.files[0]);
-      axiosInstance.post(`${endpoints.onlineCourses.fileUpload}`, fd)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          dataList[index]['files'].push(result.data?.result?.get_file_path);
-          fileList.push(result.data?.result?.get_file_path);
-          setAlert('success', result.data.message);
-        } else {
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch(error=>setAlert('error',error.response?.data?.msg||error.response?.data?.message));
+      axiosInstance
+        .post(`${endpoints.onlineCourses.fileUpload}`, fd)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            dataList[index]['files'].push(result.data?.result?.get_file_path);
+            fileList.push(result.data?.result?.get_file_path);
+            setAlert('success', result.data.message);
+          } else {
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) =>
+          setAlert('error', error.response?.data?.msg || error.response?.data?.message)
+        );
       setData(dataList);
       setFilePath(fileList);
     } else {
-      setAlert('warning', 'Exceed Maximum Number Attachment');
+      setAlert('warning', 'Attachment limit exceeded!');
     }
   };
 
   const removeFileHandler = (i) => {
-    const dataList = [...cData];
-    dataList.splice(i,1);
-    setData(dataList);
+    const list = [...cData];
+    list[index]['files'].splice(i, 1);
+    setData(list);
 
     const fileList = [...filePath];
     fileList.splice(i, 1);
     setFilePath(fileList);
-    setAlert('success', 'File successfully deleted');
   };
+
+  const handleRemovePeriod = () => {
+    setData([...cData].filter((_,i)=>index!==i));
+  }
 
   const FileRow = (props) => {
     const { file, onClose, index } = props;
@@ -81,9 +87,8 @@ const CourseCard = ({ index, cData, setData }) => {
               component={() => (
                 <img
                   style={{
-                    width: '20px',
+                    width: '15px',
                     height: '20px',
-                    // padding: '5px',
                     cursor: 'pointer',
                   }}
                   src={deleteIcon}
@@ -100,24 +105,32 @@ const CourseCard = ({ index, cData, setData }) => {
   return (
     <>
       <Paper
-        className={classes.root}
+        className='courseCardContainer'
         style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }}
       >
         <Grid container spacing={2}>
+          {/* <Grid item xs={12}> */}
+          <div className='periodCrossWrapper'>
+            <div className='periodTag'>Period {`${index + 1}`}</div>
+            <div className='removePeriodIcon'>
+              <IconButton onClick={handleRemovePeriod}>
+                <CloseIcon color='secondary'/>
+              </IconButton>
+            </div>
+          </div>
+          {/* </Grid> */}
           <Grid item xs={12}>
             <Box>
-              <Typography>{`${index + 1}`}</Typography>
               <TextField
                 id={`title${index}`}
-                label='Period Title'
                 placeholder='Period Title'
                 multiline
                 rows='1'
+                className='periodDescBox'
                 color='secondary'
                 style={{ width: '100%' }}
                 name='title'
-                // defaultValue="Default Value"
-                value={cData[index].title}
+                value={cData[index]?.title}
                 variant='outlined'
                 onChange={handleCardSubmit}
               />
@@ -127,22 +140,21 @@ const CourseCard = ({ index, cData, setData }) => {
             <Box>
               <TextField
                 id={`desc${index}`}
-                label='Period Description'
                 placeholder='Period Description'
                 multiline
                 rows='3'
+                className='periodDescBox'
                 color='secondary'
                 style={{ width: '100%' }}
                 name='description'
-                // defaultValue="Default Value"
-                value={cData[index].description}
+                value={cData[index]?.description}
                 variant='outlined'
                 onChange={handleCardSubmit}
               />
             </Box>
           </Grid>
           <div className='attachmentContainer'>
-            <div className='scrollableContent'>
+            <div className='scrollableContent1'>
               {filePath?.length > 0
                 ? filePath?.map((file, i) => (
                     <FileRow
@@ -155,7 +167,7 @@ const CourseCard = ({ index, cData, setData }) => {
                 : null}
             </div>
 
-            <div>
+            <div className='attachment_button'>
               <Button
                 startIcon={
                   <SvgIcon
@@ -167,7 +179,6 @@ const CourseCard = ({ index, cData, setData }) => {
                     )}
                   />
                 }
-                className='attchment_button'
                 title='Attach Supporting File'
                 variant='contained'
                 size='medium'
@@ -189,18 +200,6 @@ const CourseCard = ({ index, cData, setData }) => {
               </Button>
             </div>
           </div>
-          {/* <Grid item xs={6}>
-          <Button
-            variant='contained'
-            style={{ color: 'white' }}
-            color='primary'
-            className='custom_button_master'
-            size='small'
-            //   onClick={handleCardSubmit}
-          >
-            SAVE
-          </Button>
-        </Grid> */}
         </Grid>
       </Paper>
     </>
