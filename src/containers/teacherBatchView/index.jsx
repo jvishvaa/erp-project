@@ -90,6 +90,7 @@ const TeacherBatchView = ({ history }) => {
 
   function handleClose(data) {
     setSelectedViewMore('');
+    /** 
     if (data === 'success') {
       setPage(1);
       callApi(
@@ -99,6 +100,7 @@ const TeacherBatchView = ({ history }) => {
         'filter'
       );
     }
+    */
   }
 
   useEffect(() => {
@@ -108,8 +110,7 @@ const TeacherBatchView = ({ history }) => {
       callApi(
         //`${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=1362&page_number=1&page_size=15&class_type=1`,
         `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
-          // studentDetails && studentDetails.role_details.erp_user_id
-          1362
+            studentDetails && studentDetails.role_details.erp_user_id
         }&page_number=1&page_size=15&class_type=1`,
         'filter'
       );
@@ -165,7 +166,7 @@ const TeacherBatchView = ({ history }) => {
     callApi(
       `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
         selectedBatch && selectedBatch.id
-      }&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=12&module_id=4&class_type=1&batch_limit=${selectedBatch && selectedBatch.batch_size}&batch_limit=${selectedBatch.batch_size}`,
+      }&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=12&module_id=4&class_type=1&batch_limit=${selectedBatch && selectedBatch.batch_size}`,
       'filter'
     );
   }
@@ -370,7 +371,9 @@ const TeacherBatchView = ({ history }) => {
                 </Grid>
               </Grid>
             )}
-            <Divider style={{ margin: '10px 0px' }} />
+            {window.location.pathname !== '/online-class/attend-class' && (
+              <Divider style={{ margin: '10px 0px' }} />
+            )}
             <Grid container spacing={2}>
               {window.location.pathname !== '/online-class/attend-class' && (
                 <Grid item md={12} xs={12}>
@@ -405,7 +408,13 @@ const TeacherBatchView = ({ history }) => {
                       <Grid item md={12} xs={12}>
                         <Grid container spacing={2}>
                           <Grid item md={12} xs={12} style={{ textAlign: 'center' }}>
-                            <Typography>Classes Not Found</Typography>
+                            <img
+                              src={filterImage}
+                              alt='crash'
+                              height='250px'
+                              width='250px'
+                            />
+                            <Typography style={{ fontSize: '24px', fontWeight: 'bold'}}>Classes Not Found</Typography>
                           </Grid>
                         </Grid>
                       </Grid>
