@@ -101,7 +101,6 @@ const ViewCourseCard = ({ index, cData, setData }) => {
   }, [id])
 
   const handleDownload = (e,data) => {
-    console.log(e.files,data,'=============')
     for(let i=0;i<e.files.length;i++){
       window.open(`https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/aol_file/course/${e.files[i]}`)
     }
@@ -156,7 +155,7 @@ const ViewCourseCard = ({ index, cData, setData }) => {
                     <Typography>No Of Files : {data.files.length} </Typography>
                     {data.files.length > 0 ?
                       <IconButton
-                        onClick={handleDownload}>
+                        onClick={(e)=>handleDownload(data)}>
                         <SvgIcon
                           component={() => (
                             <img
