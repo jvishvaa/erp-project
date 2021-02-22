@@ -49,17 +49,24 @@ const SidebarCounterPanel = () => {
   };
 
   const {
-    assessmentDetails: { test_duration: testDuration } = {},
+    assessmentDetails,
     questionsMetaInfo: { is_ready_to_submit: isReadyToSubmit } = {},
     questionsArray,
     questionsDataObj,
-    controls: { selectQues, isStarted, currentQuesionId, start, submit, startedAt },
+    controls: { selectQues, currentQuesionId, submit },
   } = useContext(AssessmentHandlerContext) || {};
+  const {
+    test_duration: testDuration,
+    question_paper__grade_name: questionPaperGradeName,
+    question_paper__subject_name: subjectNames = [],
+    test_name: assessmentTitle,
+  } = assessmentDetails || {};
   const { setAlert } = useContext(AlertNotificationContext);
 
   const { [currentQuesionId]: currentQuestionObj = {} } = questionsDataObj || {};
 
-  const { topic, topic_name: topicName } = currentQuestionObj || {};
+  // const { topic, topic_name: topicName } = currentQuestionObj || {};
+  const { section: { name: sectionName } = {} } = currentQuestionObj || {};
 
   const submitTheResult = () => {
     const onSubmitSuccess = (res = {}) => {
@@ -90,12 +97,18 @@ const SidebarCounterPanel = () => {
       </p>
     </div>
   );
+  const description = [questionPaperGradeName, ...(subjectNames || [])].join(', ');
   return (
     <div className='sidebar-panel'>
       <div className='sidebar-panel-wrapper'>
         <div className='sidebar-content'>
-          <h4 className='cardTitleHeading'>{topic || 'NA'}</h4>
-          <h5>{topicName || 'NA'}</h5>
+          <h4 className='cardTitleHeading'>
+            {[
+              assessmentTitle,
+              ...(sectionName ? [`sec-${sectionName}`.toLowerCase()] : []),
+            ].join(', ') || 'NA'}
+          </h4>
+          <h5>{description || 'NA'}</h5>
         </div>
         {testDuration ? (
           <TimerComponent submit={submitTheResult} duration={testDuration} />

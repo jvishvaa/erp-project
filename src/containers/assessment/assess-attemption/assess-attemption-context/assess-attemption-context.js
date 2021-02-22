@@ -74,6 +74,7 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
       userDetails = {};
     }
     const assessmentDtObj = {
+      ...assessmentDetailsObj,
       ...userDetails,
       subject_name: questionPaperSubjectNames,
       paper_id: questionPaperId,
@@ -197,22 +198,56 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
     // updateQuestionsUserResponse(9, { attemption_status: true, ...userResponse });
     updateQuestionsUserResponse(qId, userResponse);
   }
+  function parseSectionData(sections) {
+    /*
+      from:
+        0: {A: Array(9), discription: "section-a"}
+        1: {B: Array(8), discription: "section-b"}
+        2: {C: Array(8), discription: "section-c"}
+        length: 3
+        __proto__: Array(0)
+      to:
+        { 
+          A:{ name: '', description: "section-a" },
+          B:{ name: '', description: "section-b" },
+          C:{ name: '', description: "section-c" },
+          "276": "A",
+          "<question-id>": "<section-name>"
+          ...
+        }
+    */
+    const questionSectionsObj = {};
+    sections.forEach((itemObj = {}) => {
+      Object.entries(itemObj || {}).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          // questionSectionsObj[key] = { name: key, description: itemObj.description };
+          questionSectionsObj[key] = { name: key, description: itemObj.discription }; // description ==> discription
+          const questionIds = value;
+          questionIds.forEach((questionId) => {
+            questionSectionsObj[questionId] = key;
+          });
+        }
+      });
+    });
+    return questionSectionsObj;
+  }
   function questionDataProcessor(apiResp) {
     const { data: { result: apiData = {} } = {} } = apiResp || {};
 
     const { questions = [], sections = [] } = apiData;
-
+    const questionSectionsObj = parseSectionData(sections);
     const questionsObj = {};
     const processFunc = (element, index, subIndex = null, isSubQuestion = false) => {
       const { id: questionId } = element || {};
 
       const { id: nextQuesId = null } = questions[index + 1] || {};
       const { id: prevQuesId = null } = questions[index - 1] || {};
-      const mk = retrieveLocalQuestion(questionId);
-      const { user_response: userResponse } = mk;
+      const { user_response: userResponse } = retrieveLocalQuestion(questionId) || {};
+      const { [questionId]: questionSectionName } = questionSectionsObj || {};
+      const { [questionSectionName]: questionSectionObj } = questionSectionsObj || {};
       questionsObj[questionId] = {
         ...element,
-
+        section: questionSectionObj || {},
         meta: {
           index,
           subIndex,
