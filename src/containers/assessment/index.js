@@ -57,11 +57,11 @@ const Assessment = ({ history }) => {
     setShowInfo(false);
   };
 
-  const handleStartTest = (testId) => {
-    console.log('push to test start page', testId);
+  const handleStartTest = (questionPaperId) => {
+    console.log('push to test start page', questionPaperId);
 
     // history.push('/assessment/view-assessment');
-    history.push('/assessment/20/attempt');
+    history.push(`/assessment/${questionPaperId}/attempt`);
     // history.push('/assessment/11/qp-questions-list/');
   };
   return (
@@ -95,6 +95,7 @@ const Assessment = ({ history }) => {
                       testTotalQuestions={qp?.total_question}
                       testTotalMarks={qp?.total_mark}
                       handleStartTest={handleStartTest}
+                      {...(qp || {})}
                     />
                   </Grid>
                 ))}

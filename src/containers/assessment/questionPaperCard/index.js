@@ -24,6 +24,7 @@ const QuestionPaperCard = ({
   testTotalQuestions,
   testTotalMarks,
   handleStartTest,
+  question_paper: { id: questionPaperId },
 }) => {
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -47,7 +48,7 @@ const QuestionPaperCard = ({
             className={classes.cardStartButton}
             variant='contained'
             color='primary'
-            onClick={() => handleStartTest(testId)}
+            onClick={() => handleStartTest(questionPaperId)}
           >
             Start
           </Button>
