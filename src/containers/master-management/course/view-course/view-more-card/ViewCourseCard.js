@@ -100,11 +100,10 @@ const ViewCourseCard = ({ index, cData, setData }) => {
       })
   }, [id])
 
-  const handleDownload = (e) => {
-    e.preventDefault();
-    aolCardData && aolCardData.map((path) => {
-      path.files && path.files.map((file, i) => window.location.href = (`${endpoints.s3}/${file}`))
-    })
+  const handleDownload = (e,data) => {
+    for(let i=0;i<e.files.length;i++){
+      window.open(`https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/aol_file/course/${e.files[i]}`)
+    }
   }
   if (id) {
     return (
@@ -156,7 +155,7 @@ const ViewCourseCard = ({ index, cData, setData }) => {
                     <Typography>No Of Files : {data.files.length} </Typography>
                     {data.files.length > 0 ?
                       <IconButton
-                        onClick={handleDownload}>
+                        onClick={(e)=>handleDownload(data)}>
                         <SvgIcon
                           component={() => (
                             <img
@@ -231,8 +230,28 @@ const ViewCourseCard = ({ index, cData, setData }) => {
                   />
                 </Box>
               </Grid>
+              <div style={{ display: 'flex', marginLeft: '5px' }}>
+
+                    <Typography>No Of Files : {data.files.length} </Typography>
+                    {data.files.length > 0 ?
+                      <IconButton
+                        onClick={(e)=>handleDownload(data)}>
+                        <SvgIcon
+                          component={() => (
+                            <img
+                              target='blank'
+                              style={{ height: '21px', width: '21px' }}
+                              src={downloadAll}
+                              alt='downloadAll'
+                            />
+                          )}
+                        />
+                      </IconButton> : ''}
+
+                  </div>
 
             </div>
+            
 
           ))}
 
