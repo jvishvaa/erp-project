@@ -53,7 +53,7 @@ const MatchFollowingQuestion = (props) => {
   const handleTextEditor = (event) => {
     // console.log('from editor', e);
     // setTextEditorContent(event);
-    attemptQuestion(qId, { attemptionStatus: true, answer: event });
+    attemptQuestion(qId, { attemption_status: true, answer: event });
   };
   const imgSt = {
     border: '1px solid red',

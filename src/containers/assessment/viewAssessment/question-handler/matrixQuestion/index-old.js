@@ -52,14 +52,14 @@ const MatrixQuestion = (props) => {
   const handleOptionValue = (event) => {
     // setIsChecked([{ [qId]: event.target.value }]);
     // setOptionSelected(event.target.value);
-    attemptQuestion(qId, { attemptionStatus: true, answer: event.target.value });
+    attemptQuestion(qId, { attemption_status: true, answer: event.target.value });
     // console.log('selected value : ', attemptQuestion);
   };
 
   const handleTextEditor = (event) => {
     // console.log('from editor', e);
     // setTextEditorContent(event);
-    attemptQuestion(qId, { attemptionStatus: true, answer: event });
+    attemptQuestion(qId, { attemption_status: true, answer: event });
   };
   return (
     <div>

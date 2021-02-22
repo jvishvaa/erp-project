@@ -111,7 +111,7 @@ const SidebarCounterPanel = () => {
                 selectQues(ques.id);
               }}
               className={`box ${
-                ques?.user_response?.attemptionStatus ? 'green' : 'purple'
+                ques?.user_response?.attemption_status ? 'green' : 'purple'
               } ${currentQuesionId == ques.id ? 'ongoing' : ''}`}
             >
               {` ${index + 1}`}

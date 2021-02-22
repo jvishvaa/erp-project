@@ -37,13 +37,13 @@ const MatrixQuestion = (props) => {
 
     const updatedAnswerObj = { ...existingAnswerObj, ...answerObj };
     attemptQuestion(qId, {
-      attemptionStatus: noOfOptions * 2 === Object.keys(updatedAnswerObj).length,
+      attemption_status: noOfOptions * 2 === Object.keys(updatedAnswerObj).length,
       answer: updatedAnswerObj,
     });
   };
 
   //   const handleTextEditor = (event) => {
-  //     attemptQuestion(qId, { attemptionStatus: true, answer: event });
+  //     attemptQuestion(qId, { attemption_status: true, answer: event });
   //   };
   return (
     <div>

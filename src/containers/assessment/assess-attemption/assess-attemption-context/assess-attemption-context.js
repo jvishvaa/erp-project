@@ -40,9 +40,12 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
   const storageKey = 'mk';
 
   const [questionsDataObj, setQuestionsDataObj] = useState();
+  // JSON.parse(localStorage.getItem(storageKey)).questions
   const [questionsMetaInfo, setQuestionsMetaInfo] = useState();
   const [currentQuesionId, setCurrentQuesionId] = useState();
   const [startedAt, setStartedAt] = useState();
+  // const [currentQuesionId, setCurrentQuesionId] = useState(288);
+  // const [startedAt, setStartedAt] = useState(new Date());
 
   // const [currentSubQuestionId, setCurrentSubQuestionId] = useState();
   const [assessmentDetails, setAssessmentDetails] = useState({});
@@ -136,8 +139,8 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
     let noOfIncomplete = 0; //  if attemption_status in user_response is true, count it as attempted.
     let noOfUnattempted = 0; //  if attemption_status in user_response is true, count it as attempted.
     questionsArray.forEach((questionObj) => {
-      const { user_response: { attemptionStatus = null } = {} } = questionObj || {};
-      console.log('inside meta updation: ', questionObj);
+      const { user_response: { attemption_status: attemptionStatus = null } = {} } =
+        questionObj || {};
       switch (attemptionStatus) {
         case true: {
           noOfAttempted += 1;
@@ -155,7 +158,6 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
     });
     const lastUpdatedAt = new Date().getTime();
     const isReadyToSubmit = noOfQuestions === noOfAttempted;
-    const testDuration = questionsArray[0].duration;
     return {
       no_of_questions: noOfQuestions,
       no_of_attempted: noOfAttempted,
@@ -163,7 +165,7 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
       no_of_unattempted: noOfUnattempted,
       is_ready_to_submit: isReadyToSubmit,
       last_updated_at: lastUpdatedAt,
-      test_duration: testDuration,
+      // test_duration: testDuration,
     };
   }
 
@@ -338,7 +340,7 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
       const {
         id: qId,
         parent_id: parentId,
-        user_response: { answer, attemptionStatus } = {},
+        user_response: { answer, attemption_status: attemptionStatus } = {},
         question_type: questionType,
       } = item || {};
       const hasParentId = parentId > 0;
@@ -364,6 +366,7 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
     const { onStart = () => {}, onResolve = () => {}, onReject = () => {} } =
       callbacks || {};
     onStart();
+
     axios
       .post(API, payLoad, { headers: { 'x-api-key': 'vikash@12345#1231' } })
       .then((res) => {

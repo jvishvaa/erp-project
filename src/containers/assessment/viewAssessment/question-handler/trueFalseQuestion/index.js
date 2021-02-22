@@ -26,7 +26,7 @@ const TrueFalseQuestion = (props) => {
 
   const [{ options, question }] = questionAnswer || [];
   const handleOptionValue = (event) => {
-    attemptQuestion(qId, { attemptionStatus: true, answer: [event.target.value] });
+    attemptQuestion(qId, { attemption_status: true, answer: [event.target.value] });
   };
   return (
     <div>

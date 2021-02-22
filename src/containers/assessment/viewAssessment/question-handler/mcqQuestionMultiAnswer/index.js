@@ -38,7 +38,7 @@ const McqQuestionMultiAnswer = (props) => {
       const itemIndex = answersArray.indexOf(value);
       answersArray.splice(itemIndex, 1);
     }
-    attemptQuestion(qId, { attemptionStatus: true, answer: answersArray });
+    attemptQuestion(qId, { attemption_status: true, answer: answersArray });
   };
 
   return (

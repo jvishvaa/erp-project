@@ -29,10 +29,7 @@ const QuestionBody = ({ children, ...restProps }) => {
       const [{ question: comprehensionText }] = questionAnswer;
       return (
         <>
-          {/* {questionObj.id} */}
           <div>{ReactHtmlParser(comprehensionText)}</div>
-          {/* <hr /> */}
-          {/* <p>Sub questions</p> */}
           {propObj.questionObj.sub_questions.map((subQuesItem, index) => {
             const { id: subQuesId } = subQuesItem || {};
             const { [subQuesId]: subQuesObj } = restProps.questionsDataObj || {};
@@ -52,8 +49,14 @@ const QuestionBody = ({ children, ...restProps }) => {
     10: (propObj) => <DescriptiveQuestion {...propObj} />,
   };
 
-  const { qIndex, questionObj } = restProps || {};
-  const { id: qId, question_type: questionType } = questionObj || {};
+  const {
+    // qIndex,
+    questionObj,
+  } = restProps || {};
+  const {
+    // id: qId,
+    question_type: questionType,
+  } = questionObj || {};
   const { [questionType]: questionrenderer = () => <></> } = decideQuestion || {};
   return (
     <>
@@ -61,9 +64,7 @@ const QuestionBody = ({ children, ...restProps }) => {
       {qId}
       ,index:
       {qIndex} */}
-      {/* {questionrenderer(restProps)} */}
       {questionrenderer({ ...restProps, key: restProps.qIndex })}
-      {/* <hr /> */}
     </>
   );
 };

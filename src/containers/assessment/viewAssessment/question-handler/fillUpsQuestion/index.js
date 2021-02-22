@@ -52,7 +52,7 @@ const FillUpsQuestion = (props) => {
   const handleFillups = (event, index) => {
     setFillupAnswers({ ...fillupAnswers, [index]: event.target.value });
     attemptQuestion(qId, {
-      attemptionStatus: true,
+      attemption_status: true,
       answer: { ...fillupAnswers, [index]: event.target.value },
     });
   };
