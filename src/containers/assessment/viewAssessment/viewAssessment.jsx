@@ -17,40 +17,39 @@ const ViewAssessmentUI = (props) => {
     },
   } = props || {};
   const {
+    assessmentDetails: {
+      question_paper__grade_name: questionPaperGradeName,
+      question_paper__subject_name: subjectNames = [],
+    },
     assessmentQp: { fetching },
     fetchAssessmentQp,
-
-    // questionsDataObj,
-    // questionsArray,
-    controls: {
-      //   selectQues,
-      //   nextQues,
-      //   prevQues,
-      //   attemptQuestion,
-      isStarted,
-      // currentQuesionId,
-      start,
-      //   startedAt,
-    },
+    controls: { isStarted, start },
   } = useContext(AssessmentHandlerContext);
   React.useEffect(() => {
     fetchAssessmentQp({ assessment_id: assessmentId });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // const { [currentQuesionId]: currentQuestionObj = {} } = questionsDataObj || {};
   // const {
-  //   id: qId,
-  //   question_type: questionType,
-  //   meta: { index: qIndex } = {},
-  //   user_response: { attemption_status: attemptionStatus } = {},
-  // } = currentQuestionObj || {};
-
+  //   test_duration: testDuration,
+  //   question_paper__grade_name: questionPaperGradeName,
+  //   question_paper__subject_name: subjectNames = [],
+  //   test_name: assessmentTitle,
+  // } = assessmentDetails || {};
+  // const description = [questionPaperGradeName, ...(subjectNames || [])].join(', ');
   return (
     <>
       {fetching ? <Loading message='Loading...' /> : null}
       <Container>
-        <CommonBreadcrumbs componentName='Assessment' childComponentName='English' />
+        <CommonBreadcrumbs
+          componentName='Assessment'
+          {...(questionPaperGradeName
+            ? { childComponentName: questionPaperGradeName }
+            : {})}
+          {...(subjectNames && subjectNames.length
+            ? { childComponentNameNext: subjectNames[0] }
+            : {})}
+        />
         {isStarted ? (
           <Grid container spacing={2}>
             <Grid item md={9} xs={12}>
