@@ -134,19 +134,35 @@
   margin: 20px;
   padding: 10px;
 }
+
 .MuiButton-root.courseButton:first-child {
   margin-right: 10%;
 }
 
-.MuiButton-root.courseButton {
+.courseButton.MuiButton-root {
   width: 45%;
   margin: 1% auto;
+  border-radius: 10px;
 }
 
-.MuiButton-root.courseButton:hover {
+.courseButton:hover.MuiButton-root {
   background: #ff6b6b;
 }
 .courseButton>.MuiButton-label {
+  text-transform: none;
+}
+
+.editDetailsButton.MuiButton-root {
+  width: 100%;
+  /* margin: 1% auto; */
+  border-radius: 10px;
+}
+
+.editDetailsButton:hover.MuiButton-root {
+  background: #ff6b6b;
+}
+
+.editDetailsButton>.MuiButton-label {
   text-transform: none;
 }
 

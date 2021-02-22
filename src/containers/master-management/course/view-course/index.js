@@ -90,7 +90,6 @@ const CourseView = () => {
             <CommonBreadcrumbs
               componentName='Master Management'
               childComponentName='Course List'
-              // childComponentNameNext='Create Courses'
             />
           </div>
         </div>
@@ -130,8 +129,8 @@ const CourseView = () => {
                         setPeriodDataForView={setPeriodDataForView}
                         deleteFlag={deleteFlag}
                         setDeleteFlag={setDeleteFlag}
-                        // setCompletedStatus={setCompletedStatus}
-                        // setEditData={setEditData}
+                        sendGrade={sendGrade}
+                        selectedIndex={selectedIndex}
                       />
                     </Grid>
                   ))}
@@ -140,15 +139,11 @@ const CourseView = () => {
               {viewMore ? (
                 <Grid item xs={12} sm={5} style={{ width: '100%' }}>
                   <ViewMoreCard
-                    // completedStatus={completedStatus}
                     viewMoreData={viewMoreData}
                     setViewMore={setViewMore}
                     setSelectedIndex={setSelectedIndex}
-                    // filterDataDown={filterDataDown}
                     periodDataForView={periodDataForView}
                     sendGrade={sendGrade}
-                    // section={section}
-                    // branch={branch}
                   />
                 </Grid>
               ) : null}
