@@ -87,23 +87,22 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
         setDivideMin(e.target.value % 60)
     }
     const handleAssign = () => {
-        if(!durations){
-            return setAlert('warning','Select Class Durations');
+        if (!filterData.teacher) {
+            return setAlert('warning', 'Assign Teacher');
         }
-        if(!filterData.teacher){
-            return setAlert('warning','Assign Teacher');
+        if (!durations) {
+            return setAlert('warning', 'Select Class Durations');
         }
-       
         if (divideMin == 0) {
             new_slot_end_h = parseInt(batchSlot[1]) - divideHour
         }
         else if (divideMin > 0) {
-            new_slot_end_h = parseInt(batchSlot[1]) - divideHour -1
-            new_slot_end_m = 60 - divideMin 
+            new_slot_end_h = parseInt(batchSlot[1]) - divideHour - 1
+            new_slot_end_m = 60 - divideMin
 
         }
-        console.log(new_slot_end_h,new_slot_end_m,hour,'++++++++++++++')
-        if (parseInt(hour) % 12 >= batchSlot[0] % 12 &&  batchSlot && batchSlotAMPM === ampm) {
+        console.log(new_slot_end_h, new_slot_end_m, hour, '++++++++++++++')
+        if (parseInt(hour) % 12 >= batchSlot[0] % 12 && batchSlot && batchSlotAMPM === ampm) {
             if (parseInt(hour) % 12 < new_slot_end_h % 12) {
                 const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
                 const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
@@ -124,8 +123,8 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                     }
                 })
             }
-            else if(parseInt(hour) % 12 == new_slot_end_h % 12){
-                if(parseInt(mins) % 60 <= new_slot_end_m % 60 ){
+            else if (parseInt(hour) % 12 == new_slot_end_h % 12) {
+                if (parseInt(mins) % 60 <= new_slot_end_m % 60) {
                     const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
                     const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
                     const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(selectedDate);
@@ -145,24 +144,24 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                     })
 
                 }
-                else{
+                else {
                     //alert message
                     setAlert('warning', `set the time between ${parseInt(batchSlot && batchSlot[0])} to ${parseInt(batchSlot && batchSlot[1])} ${batchSlot && batchSlotAMPM}`)
                 }
             }
-            else{
+            else {
                 //alert message
                 setAlert('warning', `set the time between ${parseInt(batchSlot && batchSlot[0])} to ${parseInt(batchSlot && batchSlot[1])} ${batchSlot && batchSlotAMPM}`)
 
             }
-           
+
         }
-        else{
+        else {
             //alert message
             setAlert('warning', `set the time between ${parseInt(batchSlot && batchSlot[0])} to ${parseInt(batchSlot && batchSlot[1])} ${batchSlot && batchSlotAMPM}`)
 
         }
-   
+
         //     if (parseInt(batchSlot && batchSlot[0]) % 12 <= hour%12 && parseInt(batchSlot && batchSlot[1]) % 12 > hour%12 &&  batchSlot && batchSlotAMPM === ampm ) {
         //         const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
         //         const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
