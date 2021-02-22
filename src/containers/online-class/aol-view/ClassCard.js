@@ -153,9 +153,8 @@ export default function ClassCardComponent(props) {
                             )}
                         </div>
                     </Box>
-                </div>)
-
-                : (
+                </div>
+                ) : (
                     <Box className={`${props.selectedId === classData.id ? classes.activeCard : classes.card}`}>
                         <div>
                             <Typography className={classes.classTitle}>
@@ -163,14 +162,15 @@ export default function ClassCardComponent(props) {
                             </Typography>
                         </div>
                         {/* <Typography className={classes.classTitle}>
-                    { classData.online_class.subject[0] && classData.online_class ? classData.online_class.subject[0]?.subject_name : ''}
-                </Typography> */}
+                                { classData.online_class.subject[0] && classData.online_class ? classData.online_class.subject[0]?.subject_name : ''}
+                            </Typography>
+                        */}
                         <Typography className={classes.classSchedule}>
-                            Start Date: {classData.online_class ? moment(classData.online_class.start_time).format('Do MMM YYYY') : ''}
+                            Start Date: {classData.online_class ? moment(classData.online_class.start_time).format('DD-MM-YYYY') : ''}
                         </Typography>
 
                         <Typography className={classes.classSchedule}>
-                            End Date: {classData.online_class ? moment(classData.online_class.end_time).format('Do MMM YYYY') : ''}
+                            End Date: {classData.online_class ? moment(classData.online_class.end_time).format('DD-MM-YYYY') : ''}
                         </Typography>
 
                         <div style={{ marginTop: '15px', width: '100%' }}>
@@ -187,7 +187,6 @@ export default function ClassCardComponent(props) {
                     </Box>
                 )}
         </>
-
     )
 }
 

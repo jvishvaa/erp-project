@@ -215,16 +215,6 @@ export default function ResourceDetailsCardComponent(props) {
                         />
                     ))*/}
                 </div>
-                {/*
-                <Divider className={classes.classDetailsDivider}/>
-
-                <StyledButton
-                    color="primary"
-                    onClick={handleClickOpen}
-                >
-                    Submit
-                </StyledButton>
-                */}
             </div>
             <ResourceDialog
                 selectedValue={selectedValue}
@@ -234,6 +224,7 @@ export default function ResourceDetailsCardComponent(props) {
                 resourceId={props.resourceData.online_class.id}
                 startDate={props.resourceData.online_class.start_time}
                 endDate={props.resourceData.online_class.end_time}
+                hendleCloseDetails={props.hendleCloseDetails}
             />
         </div>
     )

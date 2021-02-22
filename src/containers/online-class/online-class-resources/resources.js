@@ -198,6 +198,7 @@ const Resources = () => {
     const getResourceData = (data) => {
         setResourceOnlineClasses(data);
         setFilter(true);
+        hendleCloseDetails();
         if(data && data.length === 0){
             //alert("flase");
             //setFilter(true);

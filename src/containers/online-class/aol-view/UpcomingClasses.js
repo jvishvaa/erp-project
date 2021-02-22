@@ -375,6 +375,7 @@ const UpcomingClasses = () => {
     }
     const handleFilter = () => {
         getClasses();
+        hendleCloseDetails();
     }
 
     const clearAll = () => {
@@ -383,7 +384,9 @@ const UpcomingClasses = () => {
         setClassType([]);
         setFilterData([])
         setClassesdata([])
-        setClassData([])
+        setClassData('');
+        setItemSize(3);
+        setSize(12);
     }
 
     const handleToggle = () => {
@@ -395,6 +398,14 @@ const UpcomingClasses = () => {
         }
         setClassData(null);
         setSelected();
+    }
+
+    const hendleCloseDetails = () => {
+        setItemSize(3);
+        setSize(12);
+        setSelected(0);
+        setClassData('');
+        //setFilter(false);
     }
 
     // const classCardData = classesData && classesData.slice(pagination.start, pagination.end).filter((data) => {
@@ -686,6 +697,7 @@ const UpcomingClasses = () => {
                             toggle={toggle}
                             reload={reload}
                             setReload={setReload}
+                            hendleCloseDetails={hendleCloseDetails}
                         />
                     </Grid>
                 )}
