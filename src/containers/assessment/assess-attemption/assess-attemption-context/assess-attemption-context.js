@@ -36,16 +36,27 @@ const getSortedAndMainQuestions = (dataObj) => {
   return sortedArray;
 };
 
-export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => {
-  const storageKey = 'mk';
+export const AssessmentHandlerContextProvider = ({
+  children,
+  assessmentId,
+  ...restProps
+}) => {
+  const storageKey = `assessment-${assessmentId}`;
+  const retrieveLocalData = () => {
+    try {
+      return JSON.parse(localStorage.getItem(storageKey)) || {};
+    } catch (e) {
+      return {};
+    }
+  };
 
   const [questionsDataObj, setQuestionsDataObj] = useState();
-  // JSON.parse(localStorage.getItem(storageKey)).questions
   const [questionsMetaInfo, setQuestionsMetaInfo] = useState();
-  const [currentQuesionId, setCurrentQuesionId] = useState();
-  const [startedAt, setStartedAt] = useState();
-  // const [currentQuesionId, setCurrentQuesionId] = useState(288);
-  // const [startedAt, setStartedAt] = useState(new Date());
+  const [currentQuesionId, setCurrentQuesionId] = useState(
+    retrieveLocalData().currentQuesionId
+  );
+
+  const [startedAt, setStartedAt] = useState(retrieveLocalData().startedAt);
 
   // const [currentSubQuestionId, setCurrentSubQuestionId] = useState();
   const [assessmentDetails, setAssessmentDetails] = useState({});
@@ -87,14 +98,29 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
   }
   // eslint-disable-next-line no-console
   console.log(restProps);
-  function setLocalData(questionsData, metaInfo) {
+  // function setLocalData(questionsData, metaInfo) {
+  //   try {
+  //     let prevlocalData = localStorage.getItem(storageKey);
+  //     prevlocalData = JSON.parse(prevlocalData);
+  //     const localData = JSON.stringify({
+  //       ...prevlocalData,
+  //       questions: questionsData,
+  //       meta: metaInfo,
+  //     });
+  //     localStorage.setItem(storageKey, localData);
+  //     return true;
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
+  function setLocalData(data = {}) {
+    const dataObj = data || {};
     try {
       let prevlocalData = localStorage.getItem(storageKey);
       prevlocalData = JSON.parse(prevlocalData);
       const localData = JSON.stringify({
         ...prevlocalData,
-        questions: questionsData,
-        meta: metaInfo,
+        ...dataObj,
       });
       localStorage.setItem(storageKey, localData);
       return true;
@@ -102,6 +128,10 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
       return false;
     }
   }
+  React.useEffect(() => {
+    setLocalData({ startedAt, currentQuesionId });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentQuesionId, startedAt]);
 
   function retrieveLocalQuestion(questionId) {
     let localData = {};
@@ -172,7 +202,8 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
 
   function updateLocalDataAndSetMetaInfo(questionsData) {
     const metaInfo = formulateQuestionMetaInfo(questionsData) || {};
-    setLocalData(questionsData, metaInfo);
+    setLocalData({ questions: questionsData });
+    setLocalData({ meta: metaInfo });
     setQuestionsMetaInfo(metaInfo);
   }
 
@@ -440,6 +471,7 @@ export const AssessmentHandlerContextProvider = ({ children, ...restProps }) => 
         },
 
         assessmentDetails,
+        storageKey,
       }}
     >
       {children}
