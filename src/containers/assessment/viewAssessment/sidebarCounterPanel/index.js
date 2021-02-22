@@ -49,18 +49,17 @@ const SidebarCounterPanel = () => {
   };
 
   const {
-    assessmentDetails,
+    assessmentDetails: {
+      test_duration: testDuration,
+      question_paper__grade_name: questionPaperGradeName,
+      question_paper__subject_name: subjectNames = [],
+      test_name: assessmentTitle,
+    },
     questionsMetaInfo: { is_ready_to_submit: isReadyToSubmit } = {},
     questionsArray,
     questionsDataObj,
     controls: { selectQues, currentQuesionId, submit },
   } = useContext(AssessmentHandlerContext) || {};
-  const {
-    test_duration: testDuration,
-    question_paper__grade_name: questionPaperGradeName,
-    question_paper__subject_name: subjectNames = [],
-    test_name: assessmentTitle,
-  } = assessmentDetails || {};
   const { setAlert } = useContext(AlertNotificationContext);
 
   const { [currentQuesionId]: currentQuestionObj = {} } = questionsDataObj || {};
@@ -117,19 +116,28 @@ const SidebarCounterPanel = () => {
       <div className='sidebar-question-list'>
         <h6>Question List</h6>
         <div className='sidebar-box-wrapper'>
-          {questionsArray.map((ques, index) => (
-            <div
-              key={ques.id}
-              onClick={() => {
-                selectQues(ques.id);
-              }}
-              className={`box ${
-                ques?.user_response?.attemption_status ? 'green' : 'purple'
-              } ${currentQuesionId == ques.id ? 'ongoing' : ''}`}
-            >
-              {` ${index + 1}`}
-            </div>
-          ))}
+          {questionsArray.map((ques, index) => {
+            const {
+              user_response: { attemption_status: attemptionStatus },
+            } = ques || {};
+            const classsesObj = { true: 'green', false: 'purple', null: '' };
+            const classAsPerStatus = classsesObj[attemptionStatus];
+            return (
+              <div
+                key={ques.id}
+                onClick={() => {
+                  selectQues(ques.id);
+                }}
+                className={[
+                  'box',
+                  classAsPerStatus,
+                  currentQuesionId == ques.id ? 'ongoing' : '',
+                ].join(' ')}
+              >
+                {` ${index + 1}`}
+              </div>
+            );
+          })}
         </div>
       </div>
       <div className='sidebar-legend'>
@@ -141,11 +149,11 @@ const SidebarCounterPanel = () => {
           <div className='box'>
             <div className='demo-box purple' /> Incomplete
           </div>
-          {/* <div className='box'>
-            <div className='demo-box' /> Unattempted
-          </div> */}
           <div className='box'>
-            <div className='demo-box purple ongoing' /> Ongoing
+            <div className='demo-box' /> Unattempted
+          </div>
+          <div className='box'>
+            <div className='demo-box purple ongoing' /> Ongoing.&nbsp;&nbsp;&nbsp;.
           </div>
         </div>
         <p>Note: Only attempted questions will be considered for review.</p>
