@@ -37,7 +37,7 @@ const CourseCard = ({ index, cData, setData, setNoPeriods, gradeKey }) => {
 
   const handleImageChange = (event) => {
     const dataList = [...cData];
-    const fileList = [...filePath];
+    // const fileList = [...filePath];
     if (dataList[index]['files'].length < 10) {
       const fd = new FormData();
       fd.append('file', event.target.files[0]);
@@ -46,7 +46,7 @@ const CourseCard = ({ index, cData, setData, setNoPeriods, gradeKey }) => {
         .then((result) => {
           if (result.data.status_code === 200) {
             dataList[index]['files'].push(result.data?.result?.get_file_path);
-            fileList.push(result.data?.result?.get_file_path);
+            // fileList.push(result.data?.result?.get_file_path);
             setAlert('success', result.data.message);
           } else {
             setAlert('error', result.data.message);
@@ -56,7 +56,7 @@ const CourseCard = ({ index, cData, setData, setNoPeriods, gradeKey }) => {
           setAlert('error', error.response?.data?.msg || error.response?.data?.message)
         );
       setData(dataList);
-      setFilePath(fileList);
+      // setFilePath(fileList);
     } else {
       setAlert('warning', 'Attachment limit exceeded!');
     }
@@ -85,9 +85,9 @@ const CourseCard = ({ index, cData, setData, setNoPeriods, gradeKey }) => {
     list[index]['files'].splice(i, 1);
     setData(list);
 
-    const fileList = [...filePath];
-    fileList.splice(i, 1);
-    setFilePath(fileList);
+    // const fileList = [...filePath];
+    // fileList.splice(i, 1);
+    // setFilePath(fileList);
   };
 
   const handleRemovePeriod = () => {
@@ -182,8 +182,8 @@ const CourseCard = ({ index, cData, setData, setNoPeriods, gradeKey }) => {
           <div className='attachmentContainer1'>
             {!gradeKey && (
               <div className='scrollableContent1'>
-                {filePath?.length > 0
-                  ? filePath?.map((file, i) => (
+                {cData[index]?.files?.length > 0
+                  ? cData[index]?.files?.map((file, i) => (
                       <FileRow
                         key={`homework_student_question_attachment_${i}`}
                         file={file}
@@ -233,7 +233,7 @@ const CourseCard = ({ index, cData, setData, setNoPeriods, gradeKey }) => {
                   No. of files : {cData[index].files.length}{' '}
                 </div>
                 <div className='downloadAllIconContainer'>
-                  {cData[index]?.files.length > 0 && (
+                  {cData[index]?.files?.length > 0 && (
                     <IconButton onClick={() => handleDownload(cData[index])}>
                       <SvgIcon
                         component={() => (

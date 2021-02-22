@@ -51,8 +51,8 @@
 
 .scrollableContent1 {
   display: grid;
-  grid-gap: 5%;
-  grid-template-columns: 30% 30% 30%;
+  grid-column-gap: 5%;
+  grid-template-columns: 32% 32% 32%;
 }
 
 .scrollableContent {
@@ -199,7 +199,7 @@
 
 .noOfFilesTag {
   color: #014b7e;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   margin: 5%;
 }
@@ -207,7 +207,7 @@
 @media screen and (max-width: 768px) {
   .scrollableContent1 {
     display: grid;
-    grid-gap: 5%;
+    grid-column-gap: 5%;
     grid-template-columns: 40% 40%;
   }
 }

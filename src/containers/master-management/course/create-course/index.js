@@ -58,7 +58,6 @@ const CreateCourse = () => {
   const widerWidth = isMobile ? '98%' : '95%';
   const { courseKey, gradeKey } = useParams();
   //context
-  const [state, setState] = useContext(Context);
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [categoryDropdown, setCategoryDropdown] = useState([]);
@@ -67,6 +66,7 @@ const CreateCourse = () => {
   const [noOfPeriods, setNoPeriods] = useState('');
   const [title, setTitle] = useState('');
   const [editData, setEditData] = useState({});
+  const [editFlag, setEditFlag] = useState(false);
   const [coursePre, setCoursePre] = useState('');
   const [learn, setLearn] = useState('');
   const [overview, setOverview] = useState('');
@@ -116,6 +116,9 @@ const CreateCourse = () => {
         .then((result) => {
           if (result.data?.result?.length > 0) {
             if (result.data?.status_code === 200) {
+              handleCategory();
+              handleGrade();
+              setEditFlag(true);
               const {
                 course_period,
                 no_of_periods,
@@ -127,11 +130,11 @@ const CreateCourse = () => {
                 thumbnail: thumbnail_file,
                 level: level_name,
                 tags: {
-                  age:age_data,
-                  category:category_data,
-                  grade:grade_data,
-                  subject:subject_data,
-                }
+                  age: age_data,
+                  category: category_data,
+                  grade: grade_data,
+                  subjects: subject_data,
+                },
               } = result.data?.result[0]?.course_id;
               setData(course_period);
               setNoPeriods(no_of_periods);
@@ -158,19 +161,22 @@ const CreateCourse = () => {
                 },
               });
             } else {
+              setEditFlag(false);
               // setAlert('error','')
             }
           } else {
-            // setAlert('error','')
+            setEditFlag(false);
             if (courseKey && gradeKey) {
               setAlert('error', 'No period details available.');
               history.push(`/course-list/${gradeKey}`);
-            } else if (courseKey && !gradeKey) {
-              history.push(`/course-list/${gradeKey}`);
+            } else if(courseKey && !gradeKey) {
+              history.push(`/course-list/${sessionStorage.getItem('gradeKey')}`);
+              sessionStorage.removeItem('gradeKey');
             }
           }
         })
         .catch((error) => {
+          setEditFlag(false);
           // setAlert('error','')
         });
     }
@@ -317,7 +323,6 @@ const CreateCourse = () => {
       const data = event.target.files[0];
       const fd = new FormData();
       fd.append('file', event.target.files[0]);
-
       axiosInstance.post(`${endpoints.onlineCourses.fileUpload}`, fd).then((result) => {
         if (result.data.status_code === 200) {
           const fileList = [...filePath];
@@ -380,6 +385,8 @@ const CreateCourse = () => {
           setCoursePre('');
           setOverview('');
           setLearn('');
+          setEditData();
+          setEditFlag(false);
           setFilterData({
             branch: '',
             grade: [],
@@ -389,8 +396,8 @@ const CreateCourse = () => {
             subject: '',
           });
           setAlert('success', result.data.message);
-          setNextToggle((prev) => !prev);
-          history.push('/course-list');
+          setNextToggle(false);
+          history.push(`/course-list`);
         } else {
           setAlert('error', result.data.message);
           setGradeDropdown([]);
@@ -409,23 +416,21 @@ const CreateCourse = () => {
 
   const handleEdit = () => {
     axiosInstance
-      .put(
-        `${endpoints.onlineCourses.updateCourse}${state?.editData?.id}/update-course/`,
-        {
-          course_name: title,
-          pre_requirement: coursePre,
-          overview: overview,
-          learn: learn,
-          grade: [`${state?.editData?.grade}`],
-          level: filterData.courseLevel.level,
-          no_of_periods: parseInt(noOfPeriods),
-          period_data: data,
-          tag_id: `${filterData.age.id},${filterData.subject.id}`,
-        }
-      )
+      .put(`${endpoints.onlineCourses.updateCourse}${courseKey}/update-course/`, {
+        course_name: title,
+        pre_requirement: coursePre,
+        overview: overview,
+        learn: learn,
+        grade: [filterData.grade.gradeId],
+        level: filterData.courseLevel.level,
+        no_of_periods: parseInt(data?.length),
+        files: filePath,
+        thumbnail: [thumbnailImage],
+        period_data: data,
+        tag_id: `${filterData.age.id},${filterData.subject.id}`,
+      })
       .then((result) => {
         if (result.data.status_code === 200) {
-          setState({ ...state, isEdit: false, viewPeriodData: [], editData: [] });
           setFilePath([]);
           setThumbnailImage('');
           setData([]);
@@ -434,6 +439,8 @@ const CreateCourse = () => {
           setCoursePre('');
           setOverview('');
           setLearn('');
+          setEditData();
+          setEditFlag(false);
           setFilterData({
             branch: '',
             grade: [],
@@ -444,7 +451,8 @@ const CreateCourse = () => {
           });
           setAlert('success', result.data.message);
           setNextToggle((prev) => !prev);
-          history.push('/course-list');
+          history.push(`/course-list/${sessionStorage.getItem('gradeKey')}`);
+          sessionStorage.removeItem('gradeKey');
         }
       });
   };
@@ -890,7 +898,7 @@ const CreateCourse = () => {
                   </Button>
                   {!gradeKey && (
                     <Button
-                      onClick={state?.isEdit ? handleEdit : handleSubmit}
+                      onClick={editFlag ? handleEdit : handleSubmit}
                       className='periodSubmitButton'
                     >
                       Submit

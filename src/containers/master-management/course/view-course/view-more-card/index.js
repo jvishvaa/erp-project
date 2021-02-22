@@ -47,7 +47,6 @@ const ViewMoreCard = ({
   };
 
   const handleViewCard = () => {
-    // history.push('/view-period');
     history.push(`/create/course/${viewMoreData[0]?.course}/${sendGrade}`);
   };
 
@@ -56,8 +55,8 @@ const ViewMoreCard = ({
   };
 
   const handleEdit = () => {
-    // setState({ ...state, isEdit: true })s;
     history.push(`/create/course/${viewMoreData[0]?.course}`);
+    sessionStorage.setItem('gradeKey', sendGrade);
   };
   const handleDownload = (type) => {
     if (type === 'course') {
