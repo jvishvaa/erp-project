@@ -194,14 +194,14 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
                 </DialogContent>
                 <DialogActions>
                     {/* <Button onClick={() => setOpenReshuffleModal(false)} color="primary">
-                        Cancel
-            </Button>
+                            Cancel
+                    </Button>
                     <Button color="primary"
                         // onClick={() => setOpenReshuffleModal(false)}
                         onClick={handleReshuffle}
                     >
                         Reshuffle
-            </Button> */}
+                    </Button> */}
                 </DialogActions>
             </Dialog>
         </div>

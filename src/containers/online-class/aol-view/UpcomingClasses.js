@@ -375,6 +375,7 @@ const UpcomingClasses = () => {
     }
     const handleFilter = () => {
         getClasses();
+        hendleCloseDetails();
     }
 
     const clearAll = () => {
