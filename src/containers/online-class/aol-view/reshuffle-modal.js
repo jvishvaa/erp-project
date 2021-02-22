@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName, modalData, id }) => {
+const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName, modalData, id, reshuffleFlag,setReshuffleFlag }) => {
     const classes = useStyles();
     const { setAlert } = useContext(AlertNotificationContext);
     const [batchList, setBatchList] = useState([]);
@@ -76,15 +76,17 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
             })
     }, [])
     const handleReshuffle = () => {
-        axiosInstance.post(`${endpoints.aol.studentReshuffle}?aol=1`, {
+        axiosInstance.post(`${endpoints.aol.studentReshuffle}`, {
             "batch":parseInt(id),
             "new_batch": filterData?.batch?.id,
-            "students": [modalData?.user_id]
+            "students": [modalData?.user_id],
+            "aol":"1",
         })
             .then((result => {
                 if (result.data.status_code === 200) {
                     setAlert('success', result.data.message)
                     setOpenReshuffleModal(false)
+                    setReshuffleFlag(!reshuffleFlag)
                 }
                 else{
                     setAlert('error',result.data.message)
@@ -193,14 +195,14 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
                 </DialogContent>
                 <DialogActions>
                     {/* <Button onClick={() => setOpenReshuffleModal(false)} color="primary">
-                        Cancel
-            </Button>
+                            Cancel
+                    </Button>
                     <Button color="primary"
                         // onClick={() => setOpenReshuffleModal(false)}
                         onClick={handleReshuffle}
                     >
                         Reshuffle
-            </Button> */}
+                    </Button> */}
                 </DialogActions>
             </Dialog>
         </div>

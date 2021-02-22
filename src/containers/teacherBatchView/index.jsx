@@ -142,6 +142,8 @@ const TeacherBatchView = ({ history }) => {
     setSelectedCourse('');
     setBatchList([]);
     setSelectedBatch('');
+    setFilterList([]);
+    setSelectedViewMore('');
   }
 
   function handleFilter() {

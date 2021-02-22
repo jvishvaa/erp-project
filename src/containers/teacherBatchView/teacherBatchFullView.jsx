@@ -2,7 +2,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Grid, Card, Divider, Button, Popover, Typography } from '@material-ui/core';
 import {useHistory} from 'react-router-dom'
-// import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@material-ui/icons/Close';
 import moment from 'moment';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
@@ -93,7 +93,7 @@ const JoinClass = (props) => {
     <Grid container spacing={2} direction='row' alignItems='center'>
       <Grid item md={6} xs={12}>
         <span className='TeacherFullViewdescreption1'>
-          {moment(props.data? props.data.date : '').format('Do MMM YYYY')}
+          {moment(props.data? props.data.date : '').format('DD-MM-YYYY')}
         </span>
       </Grid>
       {isAccept ? (
@@ -329,7 +329,13 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
         <Grid item md={12} xs={12} className='teacherBatchFullViewMainDiv'>
           <Card className='teacherBatchFullViewMainCard'>
             <Grid container spacing={2} className='teacherBatchFullViewHeader'>
-              <Grid item md={12} xs={12}>
+              <Grid item xs={12} style={{ textAlign: 'right' }}>
+                <CloseIcon
+                  style={{color: '#014B7E'}}
+                  onClick={() => handleClose()}
+                />
+              </Grid>
+              <Grid item xs={12}>
                 <Grid container spacing={2}>
                   <Grid item md={8} xs={8}>
                     <h4 className='teacherBatchFullCardLable'>
@@ -364,7 +370,9 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
                       &nbsp;Periods
                     </h4>
                   </Grid>
-                  {/* <Grid item md={1} xs={1} style={{ textAlign: 'right' }}>
+                </Grid>
+              </Grid>
+                  {/* 
                     <IconButton
                       size='small'
                       className='teacherBatchFullViewClose'
@@ -373,8 +381,7 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
                       <CloseIcon className='teacherBatchFullViewCloseIcon' />
                     </IconButton>
                   </Grid> */}
-                </Grid>
-              </Grid>
+              
             </Grid>
             <Grid container spacing={2}>
               <Grid item md={12} xs={12}>

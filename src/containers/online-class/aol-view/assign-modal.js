@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
         paddingRight: '0px'
     }
 }))
-const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, assignData, setReload, reload }) => {
+const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, assignData, setReload, reload, hendleCloseDetails }) => {
     const classes = useStyles();
     const [batchList, setBatchList] = useState([]);
     const [date, setDate] = useState(new Date())
@@ -113,6 +113,7 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                         setReload(!reload)
                         setFilterData([])
                         setSelectedDate([])
+                        hendleCloseDetails();
                     }
                 })
             }
