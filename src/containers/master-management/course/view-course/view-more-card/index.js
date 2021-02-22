@@ -47,7 +47,8 @@ const ViewMoreCard = ({
   };
 
   const handleViewCard = () => {
-    history.push('/view-period');
+    // history.push('/view-period');
+    history.push(`/create/course/${viewMoreData[0]?.course}/${sendGrade}`);
   };
 
   const handleEditCoursePrice = () => {
@@ -108,7 +109,7 @@ const ViewMoreCard = ({
             </div>
             <div className='scrollableContent'>
               <div className='bodyContent'>
-                <div>{periodDataForView.overview}</div>
+                <div>{periodDataForView?.overview}</div>
               </div>
             </div>
           </div>

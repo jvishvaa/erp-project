@@ -388,7 +388,7 @@ const DurationContainer = (props) => {
                     value={noOfWeeks}
                     onChange={(e) => handleChange(e, 0)}
                     InputProps={{
-                      inputProps: { min: 0, autoComplete: 'off', readOnly: true },
+                      inputProps: { min: 1, autoComplete: 'off', readOnly: true },
                     }}
                   />
                 </div>

@@ -56,10 +56,9 @@ const CreateCourse = () => {
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
-  const { courseKey } = useParams();
+  const { courseKey, gradeKey } = useParams();
   //context
   const [state, setState] = useContext(Context);
-  console.log(state, '==================');
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [categoryDropdown, setCategoryDropdown] = useState([]);
@@ -83,7 +82,6 @@ const CreateCourse = () => {
     category: '',
     age: '',
     subject: '',
-    erpGrade: '',
   });
 
   const [courseLevelDrop, setCourseLevelDrop] = useState([
@@ -107,55 +105,59 @@ const CreateCourse = () => {
   };
 
   const handleBack = () => {
-    setNextToggle((prev) => !prev);
+    if (Boolean(gradeKey)) history.push(`/course-list/${gradeKey}`);
+    else setNextToggle((prev) => !prev);
   };
 
   useEffect(() => {
     if (courseKey) {
       axiosInstance
-        .get(
-          `${endpoints.onlineCourses.fetchCourseDetails}?tag_id=1&course_id=${courseKey}`
-        )
+        .get(`${endpoints.onlineCourses.fetchCourseDetails}?course_id=${courseKey}`)
         .then((result) => {
-          if (result.data.status_code === 200) {
-            const {
-              course_period,
-              no_of_periods,
-              learn: learn_text,
-              pre_requirement,
-              overview: overview_text,
-              course_name,
-              files: doc_file,
-              thumbnail: thumbnail_file,
-              grade: grade_data,
-              level: level_name,
-            } = result.data?.result[0]?.course_id;
-            setData(course_period);
-            setNoPeriods(no_of_periods);
-            setLearn(learn_text);
-            setCoursePre(pre_requirement);
-            setOverview(overview_text);
-            setTitle(course_name);
-            setFilePath(doc_file);
-            setThumbnailImage(thumbnail_file[0]);
-            setFilterData({
-              branch: { branch_name: 'AOL' },
-              erpGrade: '',
-              courseLevel: courseLevelDrop.find((obj) => obj.level === level_name),
-              category: '',
-              age: '',
-              subject: {
-                id: '',
-                subjectName: '',
-              },
-              grade: {
-                id: '',
-                gradeId: grade_data[0]?.id,
-                gradeName: grade_data[0]?.grade_name,
-              },
-            });
+          if (result.data.result.length > 0) {
+            if (result.data.status_code === 200) {
+              const {
+                course_period,
+                no_of_periods,
+                learn: learn_text,
+                pre_requirement,
+                overview: overview_text,
+                course_name,
+                files: doc_file,
+                thumbnail: thumbnail_file,
+                grade: grade_data,
+                level: level_name,
+              } = result.data?.result[0]?.course_id;
+              setData(course_period);
+              setNoPeriods(no_of_periods);
+              setLearn(learn_text);
+              setCoursePre(pre_requirement);
+              setOverview(overview_text);
+              setTitle(course_name);
+              setFilePath(doc_file);
+              setThumbnailImage(thumbnail_file[0]);
+              if (gradeKey > 0) setNextToggle((prev) => !prev);
+              setFilterData({
+                branch: { branch_name: 'AOL' },
+                courseLevel: courseLevelDrop?.find((obj) => obj?.level === level_name),
+                category: '',
+                age: '',
+                subject: {
+                  id: '',
+                  subjectName: '',
+                },
+                grade: {
+                  id: '',
+                  gradeId: grade_data[0]?.id,
+                  gradeName: grade_data[0]?.grade_name,
+                },
+              });
+            } else {
+              // setAlert('error','')
+            }
           } else {
-            // setAlert('error','')
+            setAlert('error', 'Sorry. No period details available!');
+            history.push(`/course-list/${gradeKey}`);
           }
         })
         .catch((error) => {
@@ -170,7 +172,7 @@ const CreateCourse = () => {
       Boolean(thumbnailImage) &&
       Boolean(title) &&
       noOfPeriods > 0 &&
-      Boolean(filterData.erpGrade) &&
+      Boolean(filterData.grade.gradeId) &&
       Boolean(filterData.courseLevel.level) &&
       Boolean(filterData.category.id) &&
       Boolean(filterData.branch?.branch_name) &&
@@ -196,7 +198,7 @@ const CreateCourse = () => {
       if (noOfPeriods <= 0) setAlert('warning', 'No. of periods should be more than 0!');
       if (!Boolean(filterData.subject.id)) setAlert('warning', 'Subject is compulsory!');
       if (!Boolean(filterData.age.id)) setAlert('warning', 'Age is compulsory!');
-      if (!Boolean(filterData.erpGrade)) setAlert('warning', 'Grade is compulsory!');
+      if (!Boolean(filterData.grade.gradeId)) setAlert('warning', 'Grade is compulsory!');
       if (!Boolean(filterData.category.id))
         setAlert('warning', 'Category is compulsory!');
       if (!Boolean(filterData.branch.branch_name))
@@ -223,9 +225,11 @@ const CreateCourse = () => {
   };
 
   const handleCategory = (event, value) => {
-    setFilterData({ ...filterData, category: '' });
+    setFilterData({ ...filterData, category: '', grade: '', subject: '' });
+    setGradeDropdown([]);
+    setSubjectDropdown([]);
     if (value) {
-      setFilterData({ ...filterData, category: value });
+      setFilterData({ ...filterData, category: value, grade: '', subject: '' });
       axiosInstance
         .get(`${endpoints.onlineCourses.categoryList}?tag_type=2&parent_id=${value.id}`)
         .then((result) => {
@@ -234,7 +238,10 @@ const CreateCourse = () => {
             const list2 = [...gradeDropdown];
             result.data.result.map((object) => {
               if (object?.tag_type === '1') {
-                list1.push({ id: object.id, subjectName: object?.subject__subject_name });
+                list1.push({
+                  id: object?.id,
+                  subjectName: object?.subject__subject_name,
+                });
               } else {
                 list2.push({
                   id: object.id,
@@ -265,12 +272,11 @@ const CreateCourse = () => {
   };
 
   const handleGrade = (event, value) => {
-    setFilterData({ ...filterData, grade: [], erpGrade: '' });
+    setFilterData({ ...filterData, grade: [] });
     if (value) {
       setFilterData({
         ...filterData,
         grade: value,
-        erpGrade: value.gradeId,
       });
       axiosInstance
         .get(`${endpoints.onlineCourses.categoryList}?tag_type=3&parent_id=${value.id}`)
@@ -346,7 +352,7 @@ const CreateCourse = () => {
         pre_requirement: coursePre,
         overview: overview,
         learn: learn,
-        grade: [filterData.erpGrade],
+        grade: [filterData.grade.gradeId],
         level: filterData.courseLevel.level,
         no_of_periods: parseInt(data?.length),
         files: filePath,
@@ -502,330 +508,343 @@ const CreateCourse = () => {
           <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
               componentName='Master Management'
-              childComponentName={Boolean(courseKey) ? 'Edit Course' : 'Create Course'}
-              childComponentNameNext={nextToggle && 'Periods'}
+              childComponentName={
+                Boolean(gradeKey)
+                  ? 'Period Details'
+                  : Boolean(courseKey)
+                  ? 'Edit Course'
+                  : 'Create Course'
+              }
+              childComponentNameNext={!Boolean(gradeKey) && nextToggle && 'Periods'}
             />
           </div>
         </div>
         {!nextToggle ? (
-          <Grid
-            container
-            spacing={isMobile ? 3 : 5}
-            style={{ width: widerWidth, margin: wider }}
-          >
-            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-              <Autocomplete
-                style={{ width: '100%' }}
-                size='small'
-                onChange={handleCourseLevel}
-                id='academic-year'
-                className='dropdownIcon'
-                value={filterData?.courseLevel}
-                options={courseLevelDrop}
-                getOptionLabel={(option) => option?.value}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Course Level'
-                    placeholder='Course Level'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-              <Autocomplete
-                style={{ width: '100%' }}
-                size='small'
-                onChange={handleBranch}
-                id='grade'
-                className='dropdownIcon'
-                value={filterData?.branch}
-                options={branchDrop}
-                getOptionLabel={(option) => option?.branch_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Branch'
-                    placeholder='Branch'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-              <Autocomplete
-                style={{ width: '100%' }}
-                size='small'
-                onChange={handleCategory}
-                id='volume'
-                className='dropdownIcon'
-                value={filterData?.category}
-                options={categoryDropdown}
-                getOptionLabel={(option) => option?.tag_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Category'
-                    placeholder='Category'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-              <Autocomplete
-                style={{ width: '100%' }}
-                size='small'
-                onChange={handleGrade}
-                id='volume'
-                className='dropdownIcon'
-                value={filterData?.grade}
-                options={gradeDropdown}
-                getOptionLabel={(option) => option?.gradeName}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Grade'
-                    placeholder='Grade'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-              <Autocomplete
-                style={{ width: '100%' }}
-                size='small'
-                onChange={handleAge}
-                id='volume'
-                className='dropdownIcon'
-                value={filterData?.age}
-                options={age}
-                getOptionLabel={(option) => option?.tag_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Age'
-                    placeholder='Age'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-              <Autocomplete
-                style={{ width: '100%' }}
-                size='small'
-                onChange={handleSubject}
-                id='volume'
-                className='dropdownIcon'
-                value={filterData?.subject}
-                options={subjectDropdown}
-                getOptionLabel={(option) => option?.subjectName}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Subject'
-                    placeholder='Subject'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-              <TextField
-                id='noofperiods'
-                type='number'
-                className='dropdownIcon'
-                style={{ width: '100%' }}
-                label='No. Of Periods'
-                placeholder='No. Of Periods'
-                variant='outlined'
-                size='small'
-                value={noOfPeriods}
-                inputProps={{ min: 0, max: 100, maxLength: 3, readOnly: data.length > 0 }}
-                name='noofperiods'
-                onChange={(e) => handleNoOfPeriods(e)}
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Divider />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                className='multiRowTextfield'
-                id='outlined-multiline-static1'
-                label='Course Title'
-                placeholder='Course Title'
-                multiline
-                rows='1'
-                color='secondary'
-                style={{ width: '100%' }}
-                value={title}
-                variant='outlined'
-                onChange={(e) => setTitle(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                className='multiRowTextfield'
-                id='outlined-multiline-static2'
-                label='Course Prerequisites'
-                placeholder='Course Prerequisites'
-                multiline
-                rows='6'
-                color='secondary'
-                style={{ width: '100%' }}
-                value={coursePre}
-                variant='outlined'
-                onChange={(e) => setCoursePre(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                className='multiRowTextfield'
-                id='outlined-multiline-static3'
-                label='What Will You Learn From This Course'
-                placeholder='What Will You Learn From This Course'
-                multiline
-                rows='6'
-                color='secondary'
-                style={{ width: '100%' }}
-                value={learn}
-                variant='outlined'
-                onChange={(e) => setLearn(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                className='multiRowTextfield'
-                id='outlined-multiline-static4'
-                label='Course Overview'
-                placeholder='Course Overview'
-                multiline
-                rows='6'
-                color='secondary'
-                style={{ width: '100%' }}
-                value={overview}
-                variant='outlined'
-                onChange={(e) => setOverview(e.target.value)}
-              />
-            </Grid>
+          !gradeKey && (
+            <Grid
+              container
+              spacing={isMobile ? 3 : 5}
+              style={{ width: widerWidth, margin: wider }}
+            >
+              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <Autocomplete
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={handleCourseLevel}
+                  id='academic-year'
+                  className='dropdownIcon'
+                  value={filterData?.courseLevel}
+                  options={courseLevelDrop}
+                  getOptionLabel={(option) => option?.value}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Course Level'
+                      placeholder='Course Level'
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <Autocomplete
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={handleBranch}
+                  id='grade'
+                  className='dropdownIcon'
+                  value={filterData?.branch}
+                  options={branchDrop}
+                  getOptionLabel={(option) => option?.branch_name}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Branch'
+                      placeholder='Branch'
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <Autocomplete
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={handleCategory}
+                  id='volume'
+                  className='dropdownIcon'
+                  value={filterData?.category}
+                  options={categoryDropdown}
+                  getOptionLabel={(option) => option?.tag_name}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Category'
+                      placeholder='Category'
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <Autocomplete
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={handleGrade}
+                  id='volume'
+                  className='dropdownIcon'
+                  value={filterData?.grade}
+                  options={gradeDropdown}
+                  getOptionLabel={(option) => option?.gradeName}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Grade'
+                      placeholder='Grade'
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <Autocomplete
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={handleAge}
+                  id='volume'
+                  className='dropdownIcon'
+                  value={filterData?.age}
+                  options={age}
+                  getOptionLabel={(option) => option?.tag_name}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Age'
+                      placeholder='Age'
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <Autocomplete
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={handleSubject}
+                  id='volume'
+                  className='dropdownIcon'
+                  value={filterData?.subject}
+                  options={subjectDropdown}
+                  getOptionLabel={(option) => option?.subjectName}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Subject'
+                      placeholder='Subject'
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <TextField
+                  id='noofperiods'
+                  type='number'
+                  className='dropdownIcon'
+                  style={{ width: '100%' }}
+                  label='No. Of Periods'
+                  placeholder='No. Of Periods'
+                  variant='outlined'
+                  size='small'
+                  value={noOfPeriods}
+                  inputProps={{
+                    min: 0,
+                    max: 100,
+                    maxLength: 3,
+                    readOnly: data.length > 0,
+                  }}
+                  name='noofperiods'
+                  onChange={(e) => handleNoOfPeriods(e)}
+                  required
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Divider />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  className='multiRowTextfield'
+                  id='outlined-multiline-static1'
+                  label='Course Title'
+                  placeholder='Course Title'
+                  multiline
+                  rows='1'
+                  color='secondary'
+                  style={{ width: '100%' }}
+                  value={title}
+                  variant='outlined'
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  className='multiRowTextfield'
+                  id='outlined-multiline-static2'
+                  label='Course Prerequisites'
+                  placeholder='Course Prerequisites'
+                  multiline
+                  rows='6'
+                  color='secondary'
+                  style={{ width: '100%' }}
+                  value={coursePre}
+                  variant='outlined'
+                  onChange={(e) => setCoursePre(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  className='multiRowTextfield'
+                  id='outlined-multiline-static3'
+                  label='What Will You Learn From This Course'
+                  placeholder='What Will You Learn From This Course'
+                  multiline
+                  rows='6'
+                  color='secondary'
+                  style={{ width: '100%' }}
+                  value={learn}
+                  variant='outlined'
+                  onChange={(e) => setLearn(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  className='multiRowTextfield'
+                  id='outlined-multiline-static4'
+                  label='Course Overview'
+                  placeholder='Course Overview'
+                  multiline
+                  rows='6'
+                  color='secondary'
+                  style={{ width: '100%' }}
+                  value={overview}
+                  variant='outlined'
+                  onChange={(e) => setOverview(e.target.value)}
+                />
+              </Grid>
 
-            <div className='attachmentContainer'>
-              <div style={{ display: 'flex' }}>
-                {filePath?.length > 0
-                  ? filePath?.map((file, i) => (
-                      <FileRow
-                        name='File'
-                        key={`homework_student_question_attachment_${i}`}
-                        file={file}
-                        index={i}
-                        onClose={() => removeFileHandler(i, 'doc')}
+              <div className='attachmentContainer'>
+                <div style={{ display: 'flex' }}>
+                  {filePath?.length > 0
+                    ? filePath?.map((file, i) => (
+                        <FileRow
+                          name='File'
+                          key={`homework_student_question_attachment_${i}`}
+                          file={file}
+                          index={i}
+                          onClose={() => removeFileHandler(i, 'doc')}
+                        />
+                      ))
+                    : null}
+                </div>
+
+                {filePath?.length < 1 && (
+                  <div className='attachmentButtonContainer'>
+                    <Button
+                      startIcon={
+                        <SvgIcon
+                          component={() => (
+                            <img
+                              style={{ height: '20px', width: '20px' }}
+                              src={attachmenticon}
+                            />
+                          )}
+                        />
+                      }
+                      className='attachment_button_doc'
+                      title='Attach Supporting File'
+                      variant='contained'
+                      size='small'
+                      disableRipple
+                      disableElevation
+                      disableFocusRipple
+                      disableTouchRipple
+                      component='label'
+                      style={{ textTransform: 'none' }}
+                    >
+                      <input
+                        type='file'
+                        style={{ display: 'none' }}
+                        id='raised-button-file'
+                        accept='image/*'
+                        onChange={handleImageChange}
                       />
-                    ))
-                  : null}
+                      Add Document
+                    </Button>
+                  </div>
+                )}
+
+                {thumbnailImage !== '' && (
+                  <FileRow
+                    name='Thumbnail'
+                    key='Thumbnail'
+                    file={thumbnailImage}
+                    onClose={() => removeFileHandler(0, 'thumbnail')}
+                  />
+                )}
+
+                {thumbnailImage === '' && (
+                  <div className='attachmentButtonContainer'>
+                    <Button
+                      startIcon={
+                        <SvgIcon
+                          component={() => (
+                            <img
+                              style={{ height: '20px', width: '20px' }}
+                              src={attachmenticon}
+                            />
+                          )}
+                        />
+                      }
+                      className='attachment_button_doc'
+                      title='Attach Supporting File'
+                      variant='contained'
+                      size='small'
+                      disableRipple
+                      disableElevation
+                      disableFocusRipple
+                      disableTouchRipple
+                      component='label'
+                      style={{ textTransform: 'none' }}
+                    >
+                      <input
+                        type='file'
+                        style={{ display: 'none' }}
+                        id='raised-button-file'
+                        accept='image/*'
+                        onChange={handleThumbnail}
+                      />
+                      Add Thumbnail
+                    </Button>
+                  </div>
+                )}
               </div>
 
-              {filePath?.length < 1 && (
-                <div className='attachmentButtonContainer'>
-                  <Button
-                    startIcon={
-                      <SvgIcon
-                        component={() => (
-                          <img
-                            style={{ height: '20px', width: '20px' }}
-                            src={attachmenticon}
-                          />
-                        )}
-                      />
-                    }
-                    className='attachment_button_doc'
-                    title='Attach Supporting File'
-                    variant='contained'
-                    size='small'
-                    disableRipple
-                    disableElevation
-                    disableFocusRipple
-                    disableTouchRipple
-                    component='label'
-                    style={{ textTransform: 'none' }}
-                  >
-                    <input
-                      type='file'
-                      style={{ display: 'none' }}
-                      id='raised-button-file'
-                      accept='image/*'
-                      onChange={handleImageChange}
-                    />
-                    Add Document
-                  </Button>
-                </div>
-              )}
-
-              {thumbnailImage !== '' && (
-                <FileRow
-                  name='Thumbnail'
-                  key='Thumbnail'
-                  file={thumbnailImage}
-                  onClose={() => removeFileHandler(0, 'thumbnail')}
-                />
-              )}
-
-              {thumbnailImage === '' && (
-                <div className='attachmentButtonContainer'>
-                  <Button
-                    startIcon={
-                      <SvgIcon
-                        component={() => (
-                          <img
-                            style={{ height: '20px', width: '20px' }}
-                            src={attachmenticon}
-                          />
-                        )}
-                      />
-                    }
-                    className='attachment_button_doc'
-                    title='Attach Supporting File'
-                    variant='contained'
-                    size='small'
-                    disableRipple
-                    disableElevation
-                    disableFocusRipple
-                    disableTouchRipple
-                    component='label'
-                    style={{ textTransform: 'none' }}
-                  >
-                    <input
-                      type='file'
-                      style={{ display: 'none' }}
-                      id='raised-button-file'
-                      accept='image/*'
-                      onChange={handleThumbnail}
-                    />
-                    Add Thumbnail
-                  </Button>
-                </div>
-              )}
-            </div>
-
-            <Grid item xs={12} sm={12}>
-              <Divider />
+              <Grid item xs={12} sm={12}>
+                <Divider />
+              </Grid>
+              <Grid item xs={12} sm={6} className={isMobile ? '' : 'filterPadding'}>
+                <Button className='nextPageButton' onClick={handleNext}>
+                  NEXT
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item xs={12} sm={6} className={isMobile ? '' : 'filterPadding'}>
-              <Button className='nextPageButton' onClick={handleNext}>
-                NEXT
-              </Button>
-            </Grid>
-          </Grid>
+          )
         ) : (
           <>
             <Paper className={classes.root}>
@@ -833,6 +852,7 @@ const CreateCourse = () => {
                 {data?.map((_, i) => (
                   <Grid item xs={12} sm={4}>
                     <CourseCard
+                      gradeKey={gradeKey}
                       setNoPeriods={setNoPeriods}
                       key={i}
                       index={i}
@@ -841,13 +861,15 @@ const CreateCourse = () => {
                     />
                   </Grid>
                 ))}
-                <Grid item xs={12} sm={4}>
-                  {data.length < 99 && (
-                    <Button onClick={handleAddPeriod} className='periodAddButton'>
-                      <AddOutlinedIcon style={{ fontSize: '100px' }} />
-                    </Button>
-                  )}
-                </Grid>
+                {!gradeKey && (
+                  <Grid item xs={12} sm={4}>
+                    {data.length < 99 && (
+                      <Button onClick={handleAddPeriod} className='periodAddButton'>
+                        <AddOutlinedIcon style={{ fontSize: '100px' }} />
+                      </Button>
+                    )}
+                  </Grid>
+                )}
               </Grid>
             </Paper>
             <div className='submitContainer'>
@@ -856,12 +878,14 @@ const CreateCourse = () => {
                   <Button onClick={handleBack} className='periodBackButton'>
                     Back
                   </Button>
-                  <Button
-                    onClick={state?.isEdit ? handleEdit : handleSubmit}
-                    className='periodSubmitButton'
-                  >
-                    Submit
-                  </Button>
+                  {!gradeKey && (
+                    <Button
+                      onClick={state?.isEdit ? handleEdit : handleSubmit}
+                      className='periodSubmitButton'
+                    >
+                      Submit
+                    </Button>
+                  )}
                 </div>
               </Grid>
             </div>

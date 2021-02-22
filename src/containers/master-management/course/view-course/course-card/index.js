@@ -88,6 +88,10 @@ const CourseCard = ({
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
           setDeleteFlag(!deleteFlag);
+          setViewMore(false);
+          setSelectedIndex(-1);
+          setPeriodColor(false);
+          setPeriodDataForView();
         } else {
           setAlert('error', 'ERROR!');
         }
