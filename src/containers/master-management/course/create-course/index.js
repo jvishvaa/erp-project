@@ -114,8 +114,8 @@ const CreateCourse = () => {
       axiosInstance
         .get(`${endpoints.onlineCourses.fetchCourseDetails}?course_id=${courseKey}`)
         .then((result) => {
-          if (result.data.result.length > 0) {
-            if (result.data.status_code === 200) {
+          if (result.data?.result?.length > 0) {
+            if (result.data?.status_code === 200) {
               const {
                 course_period,
                 no_of_periods,
@@ -125,8 +125,13 @@ const CreateCourse = () => {
                 course_name,
                 files: doc_file,
                 thumbnail: thumbnail_file,
-                grade: grade_data,
                 level: level_name,
+                tags: {
+                  age:age_data,
+                  category:category_data,
+                  grade:grade_data,
+                  subject:subject_data,
+                }
               } = result.data?.result[0]?.course_id;
               setData(course_period);
               setNoPeriods(no_of_periods);
@@ -140,28 +145,33 @@ const CreateCourse = () => {
               setFilterData({
                 branch: { branch_name: 'AOL' },
                 courseLevel: courseLevelDrop?.find((obj) => obj?.level === level_name),
-                category: '',
-                age: '',
+                category: category_data,
+                age: age_data,
                 subject: {
-                  id: '',
-                  subjectName: '',
+                  id: subject_data?.id,
+                  subjectName: subject_data?.subject_name,
                 },
                 grade: {
-                  id: '',
-                  gradeId: grade_data[0]?.id,
-                  gradeName: grade_data[0]?.grade_name,
+                  id: grade_data?.id,
+                  gradeId: grade_data?.grade_id,
+                  gradeName: grade_data?.grade_name,
                 },
               });
             } else {
               // setAlert('error','')
             }
           } else {
-            setAlert('error', 'Sorry. No period details available!');
-            history.push(`/course-list/${gradeKey}`);
+            // setAlert('error','')
+            if (courseKey && gradeKey) {
+              setAlert('error', 'No period details available.');
+              history.push(`/course-list/${gradeKey}`);
+            } else if (courseKey && !gradeKey) {
+              history.push(`/course-list/${gradeKey}`);
+            }
           }
         })
         .catch((error) => {
-          //  setAlert('error','')
+          // setAlert('error','')
         });
     }
   }, []);

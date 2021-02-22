@@ -124,7 +124,7 @@
 }
 
 .attachment_button {
-  margin: 4% 5% 6% 6%;
+  margin: 3% 5% 3% 3%;
   width: 100%;
 }
 
@@ -189,12 +189,11 @@
   width: 100%;
 }
 
-
 .downloadAllContainer {
   display: flex;
 }
 
-.attachmentContainer {
+.attachmentContainer1 {
   width: 90%;
 }
 

@@ -179,7 +179,7 @@ const CourseCard = ({ index, cData, setData, setNoPeriods, gradeKey }) => {
               />
             </Box>
           </Grid>
-          <div className='attachmentContainer'>
+          <div className='attachmentContainer1'>
             {!gradeKey && (
               <div className='scrollableContent1'>
                 {filePath?.length > 0
