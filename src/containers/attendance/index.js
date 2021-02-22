@@ -76,7 +76,6 @@ const AttendeeListRemake = (props) => {
   useEffect(()=>{
    getAttendeeList(dateValue)
   },[])
-  console.log(dateValue,'=====================')
   const handlePagination = (event, page) => {
     setCurrentPage(page);
   };

@@ -384,6 +384,7 @@ const UpcomingClasses = () => {
         setClassType([]);
         setFilterData([])
         setClassesdata([])
+        setToggledData([])
         setClassData('');
         setItemSize(3);
         setSize(12);

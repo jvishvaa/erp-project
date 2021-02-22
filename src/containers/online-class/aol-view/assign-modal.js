@@ -50,7 +50,7 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
     })
     const batchSlot = assignData?.classData?.batch_time_slot && assignData?.classData?.batch_time_slot.split('-', 2)
     const batchSlotAMPM = assignData?.classData?.batch_time_slot && assignData?.classData?.batch_time_slot.slice(-2);
-    const helperTextMsg = `Select time between ${batchSlot && parseInt(batchSlot[0])} to ${batchSlot && parseInt(batchSlot[1])}`
+    const helperTextMsg = `Select time between ${batchSlot && parseInt(batchSlot[0])} to ${batchSlot && parseInt(batchSlot[1])} ${batchSlotAMPM}`
     console.log(batchSlot + '---' + batchSlotAMPM, 'BBBBBB')
     const handleDateChange = (date) => {
         setSelectedDate(date);
@@ -61,9 +61,9 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
     const handleHour = () => {
         const hr = new Intl.DateTimeFormat('en', { hour: 'numeric' }).format(selectedDate);
         const min = new Intl.DateTimeFormat('en', { minute: 'numeric' }).format(selectedDate);
-        setHour(hr.split(' ')[0])
+        setHour(hr?.split(' ')[0])
         setMins(min)
-        setAmpm(hr.split(' ')[1])
+        setAmpm(hr?.split(' ')[1])
     }
 
     const handleTeacher = (event, value) => {
@@ -83,21 +83,27 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
 
     const handleDuration = (e) => {
         setDurations(e.target.value)
-        setDivideHour(e.target.value / 60)
+        setDivideHour(Math.floor(e.target.value / 60))
         setDivideMin(e.target.value % 60)
-
     }
     const handleAssign = () => {
-        if (divideMin === 0) {
-            new_slot_end_h = batchSlot[1] - divideHour
+        if (!filterData.teacher) {
+            return setAlert('warning', 'Assign Teacher');
+        }
+        if (!durations) {
+            return setAlert('warning', 'Select Class Durations');
+        }
+        if (divideMin == 0) {
+            new_slot_end_h = parseInt(batchSlot[1]) - divideHour
         }
         else if (divideMin > 0) {
-            new_slot_end_h = batchSlot[1] - divideHour -1
+            new_slot_end_h = parseInt(batchSlot[1]) - divideHour - 1
             new_slot_end_m = 60 - divideMin
 
         }
-        if (hour % 12 >= batchSlot[0] % 12) {
-            if (hour % 12 < new_slot_end_h % 12) {
+        console.log(new_slot_end_h, new_slot_end_m, hour, '++++++++++++++')
+        if (parseInt(hour) % 12 >= batchSlot[0] % 12 && batchSlot && batchSlotAMPM === ampm) {
+            if (parseInt(hour) % 12 < new_slot_end_h % 12) {
                 const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
                 const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
                 const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(selectedDate);
@@ -117,8 +123,8 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                     }
                 })
             }
-            else if(hour % 12 === new_slot_end_h % 12){
-                if(mins % 60 <= new_slot_end_m % 60 ){
+            else if (parseInt(hour) % 12 == new_slot_end_h % 12) {
+                if (parseInt(mins) % 60 <= new_slot_end_m % 60) {
                     const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
                     const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
                     const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(selectedDate);
@@ -138,18 +144,24 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                     })
 
                 }
-                else{
+                else {
                     //alert message
+                    setAlert('warning', `set the time between ${parseInt(batchSlot && batchSlot[0])} to ${parseInt(batchSlot && batchSlot[1])} ${batchSlot && batchSlotAMPM}`)
                 }
             }
-            else{
+            else {
                 //alert message
+                setAlert('warning', `set the time between ${parseInt(batchSlot && batchSlot[0])} to ${parseInt(batchSlot && batchSlot[1])} ${batchSlot && batchSlotAMPM}`)
+
             }
-           
+
         }
-        else{
+        else {
             //alert message
+            setAlert('warning', `set the time between ${parseInt(batchSlot && batchSlot[0])} to ${parseInt(batchSlot && batchSlot[1])} ${batchSlot && batchSlotAMPM}`)
+
         }
+
         //     if (parseInt(batchSlot && batchSlot[0]) % 12 <= hour%12 && parseInt(batchSlot && batchSlot[1]) % 12 > hour%12 &&  batchSlot && batchSlotAMPM === ampm ) {
         //         const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(selectedDate);
         //         const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(selectedDate);
