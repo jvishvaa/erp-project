@@ -77,13 +77,14 @@ const CourseFilter = ({ handleCourseList }) => {
             const gradeObj = result.data?.data?.find(
               ({ grade_id }) => grade_id === Number(gradeKey)
             );
-            if (gradeKey) {
+            if (gradeKey>0) {
               setFilterData({
                 grade: gradeObj,
                 branch: { branch_name: 'AOL' },
               });
+              setGradeIds(gradeKey);
               handleCourseList(gradeKey);
-            }
+            } else history.push('/course-list');
           } else {
             setAlert('error', result?.data?.message);
             setGradeDropdown([]);

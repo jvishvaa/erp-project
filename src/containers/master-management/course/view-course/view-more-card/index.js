@@ -51,13 +51,14 @@ const ViewMoreCard = ({
   };
 
   const handleEditCoursePrice = () => {
-    history.push(`/course-price/${viewMoreData[0]?.course}/${sendGrade}`);
+    history.push(`/course-price/${viewMoreData[0]?.course}/${sendGrade=''}`);
   };
 
   const handleEdit = () => {
     history.push(`/create/course/${viewMoreData[0]?.course}`);
     sessionStorage.setItem('gradeKey', sendGrade);
   };
+
   const handleDownload = (type) => {
     if (type === 'course') {
       window.href = `https://erpnew.letseduvate.com/qbox/aol/file-upload/dev/${periodDataForView?.files[0]}`
