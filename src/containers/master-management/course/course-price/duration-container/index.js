@@ -255,6 +255,7 @@ const DurationContainer = (props) => {
                 resetContent();
                 setCourseId('');
                 setSelectedCourse('');
+                if (gradeKey && courseKey) history.push(`/course-list/${gradeKey}`);
               } else {
                 setAlert('error', result.data.message);
               }

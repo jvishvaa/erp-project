@@ -99,7 +99,7 @@ export default function JoinClassComponent(props) {
         <div>
         {props.data && props?.data?.online_class?.is_canceled ? '' :
             <Typography className={classes.classDetailsDescription}>
-                    {props.data && props?.data?.date}
+                {moment(props.data && props?.data?.date).format('DD-MM-YYYY')}
             </Typography>
         }
            

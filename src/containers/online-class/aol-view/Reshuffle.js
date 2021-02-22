@@ -31,6 +31,7 @@ const Reshuffle = () => {
     const [openReshuffleModal, setOpenReshuffleModal] = useState(false);
     const [studentName, setStudentName] = useState([])
     const [modalData, setModalData] = useState({})
+    const [reshuffleFlag,setReshuffleFlag] = useState(false)
     const { id } = useParams()
     const handleShuffle = (data) => {
         setModalData(data)
@@ -41,7 +42,7 @@ const Reshuffle = () => {
             .then((result) => {
                 setStudentName(result.data.data)
             })
-    }, [])
+    }, [reshuffleFlag])
     return (
         <Layout>
             <div className='breadcrumb-container'>
@@ -97,6 +98,8 @@ const Reshuffle = () => {
                 // studentName={studentName}
                 modalData={modalData}
                 id={id}
+                reshuffleFlag={reshuffleFlag}
+                setReshuffleFlag={setReshuffleFlag}
             />
         </Layout>
 

@@ -17,6 +17,7 @@ import {
   Checkbox,
   Switch,
 } from '@material-ui/core';
+import moment from 'moment';
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
@@ -49,7 +50,7 @@ const AttendeeListRemake = (props) => {
   const [loading, setLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isHidden, setIsHidden] = useState(window.innerWidth < 600);
-  const [dateValue, setDateValue] = useState(new Date());
+  const [dateValue, setDateValue] = useState(moment(new Date()).format('YYYY-MM-DD'));
   const history = useHistory();
   const [openShuffleModal, setOpenShuffleModal] = useState(false);
   const pageSize = 10;
@@ -72,7 +73,9 @@ const AttendeeListRemake = (props) => {
   //   useEffect(() => {
   //     getAttendeeList();
   //   }, [currentPage]);
-
+  useEffect(()=>{
+   getAttendeeList(dateValue)
+  },[])
   const handlePagination = (event, page) => {
     setCurrentPage(page);
   };
@@ -82,7 +85,7 @@ const AttendeeListRemake = (props) => {
   };
 
   const handleCheck = (index, checked, student) => {
-    console.log(student.id, 'index')
+    // console.log(student.id, 'index')
     setIsUpdating(true);
     // checked= !checked
     const { match } = props;
@@ -151,6 +154,10 @@ const AttendeeListRemake = (props) => {
     setOpenShuffleModal(true);
   }
 
+  const handleGoBack=()=>{
+    history.goBack()
+  }
+
   return (
     <Layout>
       <div className='breadcrumb-container'>
@@ -178,7 +185,6 @@ const AttendeeListRemake = (props) => {
               />
             </MuiPickersUtilsProvider>
           </Grid>
-
           <Grid item xs={12} sm={2}>
             <Button onClick={handleExcelDownload}>Download Excel</Button>
           </Grid>
@@ -211,6 +217,9 @@ const AttendeeListRemake = (props) => {
               }
               label={<Typography variant='h6'>Edit attendance</Typography>}
             />
+          </Grid>
+          <Grid item xs={12} sm={2}>
+              <Button onClick={handleGoBack} style={{width:'100%',backgroundColor:'lightgray'}}>BACK</Button>
           </Grid>
         </Grid>
       </div>

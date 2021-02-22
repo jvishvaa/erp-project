@@ -60,14 +60,91 @@ const ViewCourseCard = ({ index, cData, setData }) => {
       });
   }, [id]);
 
-  const handleDownload = (e) => {
-    e.preventDefault();
-    aolCardData &&
-      aolCardData.map((path) => {
-        path.files &&
-          path.files.map((file, i) => (window.location.href = `${endpoints.s3}/${file}`));
-      });
-  };
+  const handleDownload = (e,data) => {
+    for(let i=0;i<e.files.length;i++){
+      window.open(`https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/aol_file/course/${e.files[i]}`)
+    }
+  }
+  if (id) {
+    return (
+      <>
+        <Layout>
+          <Grid
+            container
+            spacing={5}
+            style={{ marginLeft: '2rem' }}
+          >
+            {aolCardData && aolCardData?.map((data, index) => (
+              <div className="courseCardContainer">
+                <Grid item xs={12} style={{ marginBottom: '1rem' }}>
+                  <Box>
+                    <Typography>{`${index + 1}`}</Typography>
+                    <TextField
+                      id={`title${index}`}
+                      label='Period Title'
+                      placeholder='Period Title'
+                      multiline
+                      rows='1'
+                      color='secondary'
+                      style={{ width: '100%' }}
+                      name='title'
+                      value={data?.title}
+                      variant='outlined'
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12} >
+                  <Box>
+                    <TextField
+                      id={`desc${index}`}
+                      label='Period Description'
+                      placeholder='Period Description'
+                      multiline
+                      rows='3'
+                      color='secondary'
+                      style={{ width: '100%' }}
+                      name='description'
+                      value={data?.description}
+                      variant='outlined'
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <div style={{ display: 'flex', marginLeft: '5px' }}>
+
+                    <Typography>No Of Files : {data.files.length} </Typography>
+                    {data.files.length > 0 ?
+                      <IconButton
+                        onClick={(e)=>handleDownload(data)}>
+                        <SvgIcon
+                          component={() => (
+                            <img
+                              target='blank'
+                              style={{ height: '21px', width: '21px' }}
+                              src={downloadAll}
+                              alt='downloadAll'
+                            />
+                          )}
+                        />
+                      </IconButton> : ''}
+
+                  </div>
+                </Grid>
+
+              </div>
+
+            ))}
+
+
+          </Grid>
+          <Button style={{ margin: '40px', width: '16rem' }} onClick={handleBack}>
+            Back
+              </Button>
+
+        </Layout>
+      </>
+    )
+  }
 
   // if (id) {
   //   return (
@@ -201,7 +278,29 @@ const ViewCourseCard = ({ index, cData, setData }) => {
                   />
                 </Box>
               </Grid>
+              <div style={{ display: 'flex', marginLeft: '5px' }}>
+
+                    <Typography>No Of Files : {data.files.length} </Typography>
+                    {data.files.length > 0 ?
+                      <IconButton
+                        onClick={(e)=>handleDownload(data)}>
+                        <SvgIcon
+                          component={() => (
+                            <img
+                              target='blank'
+                              style={{ height: '21px', width: '21px' }}
+                              src={downloadAll}
+                              alt='downloadAll'
+                            />
+                          )}
+                        />
+                      </IconButton> : ''}
+
+                  </div>
+
             </div>
+            
+
           ))}
         </Grid>
         <Button className='periodBackButton2' onClick={handleBack}>

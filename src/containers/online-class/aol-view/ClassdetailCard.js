@@ -7,6 +7,7 @@ import { useHistory } from 'react-router-dom';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import AssignModal from './assign-modal';
+import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles({
     classDetailsBox: {
@@ -16,7 +17,7 @@ const useStyles = makeStyles({
     },
     classHeader: {
         minHeight: '64px',
-        padding: '8px 15px',
+        padding: '8px 8px 15px 15px',
         backgroundColor: '#F9D474',
         borderRadius: '10px 10px 0px 0px',
     },
@@ -27,6 +28,7 @@ const useStyles = makeStyles({
         fontWeight: 300,
         fontFamily: 'Poppins',
         lineHeight: '25px',
+        marginTop: '5px',
     },
     classHeaderTime: {
         display: 'inline-block',
@@ -35,6 +37,7 @@ const useStyles = makeStyles({
         fontFamily: 'Poppins',
         lineHeight: '25px',
         float: 'right',
+        marginTop: '5px',
     },
     classHeaderSub: {
         display: 'inline-block',
@@ -88,32 +91,17 @@ const useStyles = makeStyles({
         lineHeight: '25px',
         overflow: 'hidden',
     },
+    closeDetailCard: {
+        float: 'right',
+        fontSize: '18px',
+        color: '#014B7E',
+    },
 })
-
-const OutlineButton = withStyles({
-    root: {
-        marginTop: '12px',
-        height: '31px',
-        width: '100%',
-        fontSize: '15px',
-        fontFamily: 'Poppins',
-        fontWeight: '',
-        lineHeight: '27px',
-        letterSpacing: 0,
-        textTransform: 'capitalize',
-        backgroundColor: 'transparent',
-        borderRadius: '10px',
-        border: '1px solid #FFAF71',
-        padding: '0px',
-    }
-})(Button);
 
 const StyledButton = withStyles({
     root: {
-        marginTop: '16px',
-        marginLeft: '1rem',
+        marginTop: '10px',
         height: '31px',
-        width: '100%',
         fontSize: '18px',
         fontFamily: 'Poppins',
         fontWeight: '',
@@ -154,7 +142,7 @@ export default function ClassdetailsCardComponent(props) {
     const history = useHistory();
 
 
-    let isTeacher = props.classData && props.classData.hasOwnProperty('is_canceled');
+    // let isTeacher = props.classData && props.classData.hasOwnProperty('is_canceled');
 
     useEffect(() => {
         if (props.classData) {
@@ -200,14 +188,19 @@ export default function ClassdetailsCardComponent(props) {
             <div className={classes.classDetailsBox}>
                 <div className={classes.classHeader}>
                     {props.classData.online_class && (
-                        <div>
-                            <Typography className={classes.classHeaderText}>
-                                {props.classData && props.classData.online_class && props.classData.online_class.title}
-                            </Typography>
-                            <Typography className={classes.classHeaderTime}>
-                                {props.classData && props.classData.online_class && moment(props.classData.join_time).format('h:mm:ss')}
-                            </Typography>
-                        </div>
+                        <>
+                            <div>
+                                <CloseIcon  onClick={(e) => props.hendleCloseDetails() } className={classes.closeDetailCard}/>
+                            </div>
+                            <div>
+                                <Typography className={classes.classHeaderText}>
+                                    {props.classData && props.classData.online_class && props.classData.online_class.title}
+                                </Typography>
+                                <Typography className={classes.classHeaderTime}>
+                                    {props.classData && props.classData.online_class && moment(props.classData.join_time).format('h:mm:ss')}
+                                </Typography>
+                            </div>
+                        </>
                     )}
                     <div>
                         {/* {props.classData.online_class && (
@@ -245,10 +238,7 @@ export default function ClassdetailsCardComponent(props) {
                             // isTeacher={isTeacher}
                             />
                             ))
-                        }
-                        
-
-                        
+                        }  
                     </div>
                     <Divider className={classes.classDetailsDivider} />
 
@@ -257,31 +247,37 @@ export default function ClassdetailsCardComponent(props) {
                             <StyledButton
                                 onClick={handleAttendance}
                                 color="primary"
+                                fullWidth
                             >
                                 Attendance
-                    </StyledButton>
+                            </StyledButton>
                             <StyledButton
                                 onClick={handleReshuffle}
                                 color="primary"
+                                fullWidth
                             >
                                 Reshuffle
-                    </StyledButton>
+                            </StyledButton>
                         </>
                     ) : (
-                            <>
-                                <StyledButton
-                                    onClick={handleReshuffle}
-                                    color="primary"
-                                >
-                                    Reshuffle
-                    </StyledButton>
+                        <>
+                            <StyledButton
+                                onClick={handleReshuffle}
+                                color="primary"
+                                fullWidth
+                            >
+                                Reshuffle
+                            </StyledButton>
                                 {/* <StyledButton color="primary">Resources</StyledButton> */}
-                            </>
-                        )}
+                        </>
+                    )}
                     <StyledButton
-                        color="primary" onClick={handleCoursePlan}>
+                        color="primary"
+                        onClick={handleCoursePlan}
+                        fullWidth
+                    >
                         View Course Plan
-                </StyledButton>
+                    </StyledButton>
                 </div>
             </div>
             <AssignModal
@@ -291,6 +287,7 @@ export default function ClassdetailsCardComponent(props) {
                 assignData={assignData}
                 reload={props.reload}
                 setReload={props.setReload}
+                hendleCloseDetails={props.hendleCloseDetails}
             />
         </>
     )

@@ -136,7 +136,7 @@ const CreateCourse = () => {
                   subjects: subject_data,
                 },
               } = result.data?.result[0]?.course_id;
-              setData(course_period);
+              setData(course_period.reverse());
               setNoPeriods(no_of_periods);
               setLearn(learn_text);
               setCoursePre(pre_requirement);
@@ -170,8 +170,10 @@ const CreateCourse = () => {
               setAlert('error', 'No period details available.');
               history.push(`/course-list/${gradeKey}`);
             } else if(courseKey && !gradeKey) {
-              history.push(`/course-list/${sessionStorage.getItem('gradeKey')}`);
+              const gkey=JSON.parse(sessionStorage.getItem('gradeKey'));
               sessionStorage.removeItem('gradeKey');
+              setAlert('error', 'Can\'t edit following course.');
+              history.push(`/course-list/${gkey}`);
             }
           }
         })

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -24,9 +24,10 @@ const CourseCard = ({
   periodColor,
   setPeriodColor,
   setSelectedIndex,
-  setEditData,
   deleteFlag,
   setDeleteFlag,
+  sendGrade,
+  selectedIndex,
 }) => {
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -38,6 +39,13 @@ const CourseCard = ({
 
   const [state, setState] = useContext(Context);
   const history = useHistory();
+
+  // useEffect(() => {
+  //   if (sessionStorage.getItem('selectedIndex') === index) {
+  //     handleViewMore();
+  //     sessionStorage.removeItem('selectedIndex');
+  //   }
+  // }, []);
 
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
@@ -100,12 +108,10 @@ const CourseCard = ({
         setAlert('error', error.response?.data?.message || error.response?.data?.msg)
       );
   };
-  const handleEdit = (data) => {
-    // console.log(data,'PPP')
-    // setEditData(e)
-    // setState({isEdit:true,editData:data});
-    // history.push('/create-circular')
-  };
+  // const handleEdit = () => {
+  //   history.push(`/create/course/${sendGrade}`);
+  //   sessionStorage.setItem('selectedIndex', selectedIndex);
+  // };
 
   return (
     <Paper
@@ -154,9 +160,12 @@ const CourseCard = ({
                   style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
                   <span className='tooltiptext'>
-                    <div className='tooltip' onClick={(e) => handleDelete(period)}>
+                    <div className='tooltip' onClick={() => handleDelete(period)}>
                       Delete
                     </div>
+                    {/* <div className='tooltip' onClick={handleEdit}>
+                      Edit
+                    </div> */}
                   </span>
                 </div>
               ) : null}

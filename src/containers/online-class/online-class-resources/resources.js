@@ -7,7 +7,7 @@ import Loader from '../../../components/loader/loader';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ResourceCard from './resourceCard';
 import ResourceDetailsCard from './resourceDetailsCard';
-import { Divider, Grid, makeStyles, useTheme, withStyles, Button, TextField } from '@material-ui/core';
+import { Divider, Grid, makeStyles, useTheme, withStyles, Button, TextField, Typography } from '@material-ui/core';
 import Layout from '../../Layout/index';
 import ResourceFilter from './components/resourceFilter';
 import { OnlineclassViewContext } from '../online-class-context/online-class-state';
@@ -111,6 +111,7 @@ const useStyles = makeStyles((theme) => ({
     selectFilterGrid: {
         height: '400px',
         justifyContent: 'center',
+        textAlign: 'center',
     },
     unfilteredImg: {
         display: 'block',
@@ -149,6 +150,7 @@ const Resources = () => {
     const [ itemSize, setItemSize ] = React.useState(3);
     const [ size, setSize ] = React.useState(12);
     const [ resourceData, setResourceData ] = React.useState();
+    const [filter, setFilter] = React.useState(false);
     const [resourceOnlineClasses, setResourceOnlineClasses] = React.useState([]);
     /**
     const {
@@ -175,6 +177,8 @@ const Resources = () => {
         setSize(12);
         setResourceData('');
         setSelected(0);
+        setFilter(false);
+        //setResourceOnlineClasses([]);
     }
 
     // pagination
@@ -190,8 +194,15 @@ const Resources = () => {
             end: end
         });
     }
+
     const getResourceData = (data) => {
         setResourceOnlineClasses(data);
+        setFilter(true);
+        hendleCloseDetails();
+        if(data && data.length === 0){
+            //alert("flase");
+            //setFilter(true);
+        }
     }
 
     return (
@@ -204,14 +215,13 @@ const Resources = () => {
             </div>
             <Grid container spacing={4} className={classes.topFilter}>
                 <Grid item xs={12}>
-                    <Filter getResourceData={getResourceData}/>
+                    <Filter getResourceData={getResourceData} hendleDetails={hendleCloseDetails}/>
                 </Grid>
             </Grid>
             <Divider />
             <Grid container spacing={3} className={classes.root}>
                 <Grid item sm={size} xs={12}>
                     <Grid container spacing={3}>
-                        {/* !isLoding ? ( <Loader /> ) : (classCardData) */}
                         {resourceOnlineClasses.length > 0 && resourceOnlineClasses.slice(pagination.start, pagination.end).map((data, id) => (
                             <Grid item sm={itemSize} xs={12} key={id}>
                                 <ResourceCard
@@ -221,7 +231,7 @@ const Resources = () => {
                                 />
                             </Grid>
                         ))}
-                        {resourceOnlineClasses.length === 0 && (
+                        {!filter && resourceOnlineClasses.length === 0 && (
                             <Grid item xs={12} className={classes.selectFilterGrid}>
                                 <img
                                     src={unfiltered}
@@ -233,6 +243,16 @@ const Resources = () => {
                                     alt="unFilter"
                                     className={classes.unfilteredTextImg}
                                 />
+                            </Grid>
+                        )}
+                        {filter && resourceOnlineClasses.length === 0 && (
+                            <Grid item xs={12} className={classes.selectFilterGrid}>
+                                <img
+                                    src={unfiltered}
+                                    alt="unFilter"
+                                    className={classes.unfilteredImg}
+                                />
+                                <Typography>Class NOT found</Typography>
                             </Grid>
                         )}
                     </Grid>

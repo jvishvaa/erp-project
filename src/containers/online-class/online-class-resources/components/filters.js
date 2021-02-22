@@ -136,6 +136,8 @@ const Filter = (props) => {
         setSelectedCourse('');
         setBatchList([]);
         setSelectedBatch('');
+        props.hendleDetails();
+        props.getResourceData([]);
     }
     
     function handleFilter() {
@@ -332,7 +334,7 @@ const Filter = (props) => {
                             <Button
                                 variant='contained'
                                 size='large'
-                                className='BatchViewfilterButtons'
+                                color="primary"
                                 onClick={() => handleFilter()}
                             >
                                 Get Classes

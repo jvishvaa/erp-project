@@ -1,6 +1,7 @@
 import React from 'react';
+import moment from 'moment';
 import './style.scss';
-import { Grid, Card, Button } from '@material-ui/core';
+import { Grid, Card, Button, Typography } from '@material-ui/core';
 
 const TeacherBatchViewCard = ({ fullData, handleViewMore, selectedViewMore }) => {
   return (
@@ -15,17 +16,16 @@ const TeacherBatchViewCard = ({ fullData, handleViewMore, selectedViewMore }) =>
             }
           >
             <Grid container spacing={2}>
-              <Grid item md={12} xs={12} style={{ padding: '5px' }}>
-                <span className='teacherBatchCardLable'>
-                  {(fullData && fullData.online_class && fullData.online_class.course_name) ||
-                    ''}
-                </span>
+              <Grid item md={9} xs={9} style={{ padding: '5px' }}>
+                {fullData && fullData.online_class && fullData.online_class.course_name && (
+                  <span className='teacherBatchCardLable'>{fullData.online_class.course_name}</span>
+                )}
+                {fullData && fullData.online_class && fullData.online_class.title && (
+                  <span className='teacherBatchCardLable'>{fullData.online_class.title}</span>
+                )}
               </Grid>
-              <Grid item md={12} xs={12} style={{ padding: '5px' }}>
-                <span className='teacherBatchCardLable'>
-                  {(fullData && fullData.online_class && fullData.online_class.title) ||
-                    ''}
-                </span>
+              <Grid item xs={3}>
+                <Typography>{moment(fullData.online_class ? fullData.online_class.start_time : '').format('hh:mm A')}</Typography>
               </Grid>
               <Grid item md={12} xs={12} style={{ padding: '5px' }}>
                 <span className='teacherBatchCardLable'>
@@ -45,27 +45,29 @@ const TeacherBatchViewCard = ({ fullData, handleViewMore, selectedViewMore }) =>
               <Grid item md={12} xs={12} style={{ padding: '5px' }}>
                 <span className='teacherBatchCardLable1'>
                   Start Date:&nbsp;
-                  {(fullData &&
+                  {/*(fullData &&
                     fullData.online_class &&
                     fullData.online_class.start_time &&
                     new Date(fullData.online_class.start_time)
                       .toString()
                       .split('G')[0]
                       .substring(0, 16)) ||
-                    ''}
+                  ''*/}
+                  {fullData.online_class ? moment(fullData.online_class.start_time).format('DD-MM-YYYY') : ''}
                 </span>
               </Grid>
               <Grid item md={12} xs={12} style={{ padding: '5px' }}>
                 <span className='teacherBatchCardLable1'>
                   End Date:&nbsp;
-                  {(fullData &&
+                  {/*(fullData &&
                     fullData.online_class &&
                     fullData.online_class.end_time &&
                     new Date(fullData.online_class.end_time)
                       .toString()
                       .split('G')[0]
                       .substring(0, 16)) ||
-                    ''}
+                  '' */}
+                  {fullData.online_class ? moment(fullData.online_class.end_time).format('DD-MM-YYYY') : ''}
                 </span>
               </Grid>
               <Grid item md={12} xs={12} style={{ textAlign: 'right' }}>

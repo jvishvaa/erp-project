@@ -2,7 +2,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Grid, Card, Divider, Button, Popover, Typography } from '@material-ui/core';
 import {useHistory} from 'react-router-dom'
-// import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@material-ui/icons/Close';
 import moment from 'moment';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
@@ -93,7 +93,7 @@ const JoinClass = (props) => {
     <Grid container spacing={2} direction='row' alignItems='center'>
       <Grid item md={6} xs={12}>
         <span className='TeacherFullViewdescreption1'>
-          {moment(props.data? props.data.date : '').format('Do MMM YYYY')}
+          {moment(props.data? props.data.date : '').format('DD-MM-YYYY')}
         </span>
       </Grid>
       {isAccept ? (
@@ -249,7 +249,7 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
         })
         .catch((error) => setAlert('error', error.message));
     }
-  }, [fullData]);
+  }, [fullData, handleClose]);
 
   const handleCloseData = () => {
     setAnchorEl(null);
@@ -329,7 +329,13 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
         <Grid item md={12} xs={12} className='teacherBatchFullViewMainDiv'>
           <Card className='teacherBatchFullViewMainCard'>
             <Grid container spacing={2} className='teacherBatchFullViewHeader'>
-              <Grid item md={12} xs={12}>
+              <Grid item xs={12} style={{ textAlign: 'right' }}>
+                <CloseIcon
+                  style={{color: '#014B7E'}}
+                  onClick={() => handleClose()}
+                />
+              </Grid>
+              <Grid item xs={12}>
                 <Grid container spacing={2}>
                   <Grid item md={8} xs={8}>
                     <h4 className='teacherBatchFullCardLable'>
@@ -364,7 +370,9 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
                       &nbsp;Periods
                     </h4>
                   </Grid>
-                  {/* <Grid item md={1} xs={1} style={{ textAlign: 'right' }}>
+                </Grid>
+              </Grid>
+                  {/* 
                     <IconButton
                       size='small'
                       className='teacherBatchFullViewClose'
@@ -373,12 +381,11 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
                       <CloseIcon className='teacherBatchFullViewCloseIcon' />
                     </IconButton>
                   </Grid> */}
-                </Grid>
-              </Grid>
+              
             </Grid>
             <Grid container spacing={2}>
               <Grid item md={12} xs={12}>
-                <span className='TeacherFullViewdescreption'>Description</span>
+                <span className='TeacherFullViewdescreption'>Periods Date</span>
               </Grid>
               <Grid item md={12} xs={12}>
                 <Divider className='fullViewDivider' />
@@ -388,102 +395,7 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
                   </Typography>
                 )}
                 {noOfPeriods && noOfPeriods.length > 0 && noOfPeriods.map((data) => <JoinClass  data={data} fullData={fullData} handleClose={handleClose}/>)}
-                {/* window.location.pathname === '/online-class/attend-class' ?
-                  noOfPeriods && noOfPeriods.length > 0 && noOfPeriods.map((data) => <JoinClass  date={data.date} fullData={fullData} handleClose={handleClose}/>)
-                  : (
-                    <Grid container spacing={2} direction='row' alignItems='center'>
-                      <Grid item md={6} xs={12}>
-                        <span className='TeacherFullViewdescreption1'>
-                          {(fullData &&
-                            fullData.online_class &&
-                            fullData.online_class.start_time &&
-                            new Date(fullData.online_class.start_time)
-                              .toString()
-                              .split('G')[0]
-                              .substring(0, 16)) ||
-                            ''}
-                        </span>
-                      </Grid>
-                      <Grid item md={3} xs={6}>
-                        <Button
-                          size='small'
-                          fullWidth
-                          variant='contained'
-                          onClick={() =>
-                            window.open(
-                              window.location.pathname === '/online-class/attend-class'
-                                ? fullData && fullData.join_url
-                                : fullData && fullData.presenter_url,
-                              '_blank'
-                            )}
-                          className='teacherFullViewSmallButtons'
-                        >
-                          {window.location.pathname === '/online-class/attend-class'
-                            ? 'Accept'
-                            : 'Host'}
-                        </Button>
-                      </Grid>
-                      <Grid item md={3} xs={6}>
-                        <Popover
-                          id={id}
-                          open={open}
-                          anchorEl={anchorEl}
-                          onClose={handleClose}
-                          style={{ overflow: 'hidden' }}
-                          anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'center',
-                          }}
-                          transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'center',
-                          }}
-                        >
-                          <Grid
-                            container
-                            spacing={2}
-                            style={{ textAlign: 'center', padding: '10px' }}
-                          >
-                            <Grid item md={12} xs={12}>
-                              <Typography>Are you sure to Cancel ?</Typography>
-                            </Grid>
-                            <Grid item md={6} xs={12}>
-                              <Button
-                                variant='contained'
-                                size='small'
-                                style={{ fontSize: '11px' }}
-                                onClick={() => handleCloseData()}
-                              >
-                                Cancel
-                              </Button>
-                            </Grid>
-                            <Grid item md={6} xs={12}>
-                              <Button
-                                variant='contained'
-                                color='primary'
-                                style={{ fontSize: '11px' }}
-                                size='small'
-                                onClick={() => handleCancel()}
-                              >
-                                Confirm
-                              </Button>
-                            </Grid>
-                          </Grid>
-                        </Popover>
-                        <Button
-                          size='small'
-                          fullWidth
-                          variant='contained'
-                          onClick={(e) => handleClick(e)}
-                          className='teacherFullViewSmallButtons1'
-                        >
-                          {window.location.pathname === '/online-class/attend-class'
-                            ? 'Reject'
-                            : 'Cancel'}
-                        </Button>
-                      </Grid>
-                    </Grid>
-                        ) */}
+                
                 <Divider className='fullViewDivider' />
               </Grid>
               <Grid item md={12} xs={12}>
