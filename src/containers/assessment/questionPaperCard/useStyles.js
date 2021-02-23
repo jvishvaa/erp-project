@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: '5px',
   },
   cardAttemptedTextRed: {
-    color: '#168D00',
+    color: '#FE6B6B',
   },
   cardAttemptedTextGreen: {
     color: '#168D00',

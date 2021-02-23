@@ -17,12 +17,7 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 
 const QuestionPaperCard = ({
   testTitle,
-  testDescription,
-  testId,
-  testDuration,
-  testType,
-  testTotalQuestions,
-  testTotalMarks,
+  is_test_completed: { is_completed: isTestAttempted, completed_date: testAttemptedDate },
   handleStartTest,
   test_date: testDate,
   question_paper: {
@@ -50,10 +45,17 @@ const QuestionPaperCard = ({
             <div className={classes.cardDescription}>
               {[gradeName, ...(subjects || [])].join(', ')}
             </div>
-            <div className={classes.cardAttemptedTextGreen}>
-              Completed at &nbsp;
-              {new Date(testDate).toDateString()}
-            </div>
+            {isTestAttempted ? (
+              <div className={classes.cardAttemptedTextGreen}>
+                Completed at - &nbsp;
+                {new Date(testAttemptedDate).toDateString()}
+              </div>
+            ) : (
+              <div className={classes.cardAttemptedTextRed}>
+                Scheduled at - &nbsp;
+                {new Date(testDate).toDateString()}
+              </div>
+            )}
           </div>
           <Button
             className={classes.cardStartButton}
