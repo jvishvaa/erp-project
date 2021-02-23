@@ -438,7 +438,7 @@ const SectionTable = () => {
           </DialogTitle>
           <DialogContent>
             <DialogContentText>
-              {`Confirm Delete Section Mapping ${sectionName}`}
+              {`Confirm Delete Section Mapping`}
             </DialogContentText>
           </DialogContent>
           <DialogActions>

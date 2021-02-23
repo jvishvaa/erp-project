@@ -159,9 +159,9 @@ const SubjectMappingTable = () => {
     e.preventDefault();
     setLoading(true);
     axiosInstance
-      .put(`${endpoints.masterManagement.updateSubject}${subjectId}`)
+      .delete(`${endpoints.masterManagement.deleteSubjectMapping}${subjectId}`)
       .then((result) => {
-        if (result.data.status_code === 201) {
+        if (result.data.status_code === 200) {
           setDelFlag(!delFlag);
           setLoading(false);
           setAlert('success', result.data.msg || result.data.message);
@@ -427,7 +427,7 @@ const SubjectMappingTable = () => {
           </DialogTitle>
           <DialogContent>
             <DialogContentText>
-              {`Confirm Delete Subject ${subjectName}`}
+              {`Confirm Delete Subject Mapping`}
             </DialogContentText>
           </DialogContent>
           <DialogActions>

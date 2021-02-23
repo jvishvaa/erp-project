@@ -1,12 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import {
-  Grid,
-  TextField,
-  Button,
-  useTheme,
-  Switch,
-  FormControlLabel,
-} from '@material-ui/core';
+import { Grid, TextField, Button, useTheme } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import endpoints from '../../../config/endpoints';
@@ -40,14 +33,14 @@ const CreateSubjectMapping = ({ setLoading, handleGoBack }) => {
     setLoading(true);
     axiosInstance
       .post(endpoints.masterManagement.createSubjectMapping, {
-        session_year: 1,
-        branch_id: 1,
-        grade_id: 1,
-        section_id: 1,
-        subject_id: 2,
+        session_year: filterData.session?.map(({ id }) => id),
+        branch_id: filterData.branch?.map(({ id }) => id),
+        grade_id: filterData.grade?.map(({ grade_id }) => grade_id),
+        section_id: filterData.section?.map(({ id }) => id),
+        subject_id: filterData.subject?.map(({ id }) => id),
       })
       .then((result) => {
-        if (result.data?.status_code === 201) {
+        if (result.data?.status_code > 199 && result.data?.status_code < 300) {
           setLoading(false);
           handleGoBack();
           setAlert('success', result.data?.message || result.data?.msg);
@@ -67,7 +60,7 @@ const CreateSubjectMapping = ({ setLoading, handleGoBack }) => {
     axiosInstance
       .get(url)
       .then((result) => {
-        if (result.data.status_code === 200) {
+        if (result.data?.status_code > 199 && result.data?.status_code < 300) {
           setDropDown({
             sessionDrop: result.data?.result?.results,
             branchDrop: [],
@@ -92,6 +85,13 @@ const CreateSubjectMapping = ({ setLoading, handleGoBack }) => {
       section: [],
       subject: [],
     });
+    setDropDown({
+      ...dropDown,
+      branchDrop: [],
+      gradeDrop: [],
+      sectionDrop: [],
+      subjectDrop: [],
+    });
     if (value?.length > 0) {
       setFilterData({
         session: value,
@@ -100,98 +100,169 @@ const CreateSubjectMapping = ({ setLoading, handleGoBack }) => {
         section: [],
         subject: [],
       });
+      let ids = value.map(({ id }) => id);
+      axiosInstance
+        .get(`${endpoints.academics.branches}?session_year=${ids}`)
+        .then((result) => {
+          if (result.data.status_code > 199 && result.data.status_code < 300) {
+            setDropDown({
+              ...dropDown,
+              branchDrop: result.data?.data?.results.map((obj) => obj?.branch),
+              gradeDrop: [],
+              sectionDrop: [],
+              subjectDrop: [],
+            });
+          } else {
+            setAlert('error', result.data?.message || result.data?.msg);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.response?.data?.message || error.response?.data?.msg);
+        });
     }
   };
 
-  // const handleAcademicYear = (event, value) => {
-  //   setFilterData({
-  //     session: [],
-  //     branch: [],
-  //     grade: [],
-  //     section: [],
-  //     subject: [],
-  //   });
-  //   if (value?.length > 0) {
-  //     // const ids
-  //     axiosInstance
-  //       .get(`${endpoints.masterManagement.branchMappingTable}`)
-  //       .then((result) => {
-  //         if (result.data.status_code === 200) {
-  //           // setBranchDrop(result.data.result.results);
-  //           // console.log(result.data.result.results,"==========");
-  //         } else {
-  //           setAlert('error', result.data?.message || result.data?.msg);
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         setAlert('error', error.response?.data?.message || error.response?.data?.msg);
-  //       });
-  //   }
-  // };
+  const handleBranch = (event, value) => {
+    setFilterData({
+      ...filterData,
+      branch: [],
+      grade: [],
+      section: [],
+      subject: [],
+    });
+    setDropDown({
+      ...dropDown,
+      gradeDrop: [],
+      sectionDrop: [],
+      subjectDrop: [],
+    });
+    if (value?.length > 0) {
+      setFilterData({
+        ...filterData,
+        branch: value,
+        grade: [],
+        section: [],
+        subject: [],
+      });
+      let ids = value.map(({ id }) => id);
+      let sessionIds = filterData.session?.map(({ id }) => id);
+      axiosInstance
+        .get(
+          `${endpoints.masterManagement.gradesDrop}?session_year=${sessionIds}&branch_id=${ids}`
+        )
+        .then((result) => {
+          if (result.data.status_code > 199 && result.data.status_code < 300) {
+            setDropDown({
+              ...dropDown,
+              gradeDrop: result.data?.data,
+              sectionDrop: [],
+              subjectDrop: [],
+            });
+          } else {
+            setAlert('error', result.data?.message || result.data?.msg);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.response?.data?.message || error.response?.data?.msg);
+        });
+    }
+  };
 
-  // const handleBranch = (event, value) => {
-  //   setFilterData({
-  //     ...filterData,
-  //     branch: [],
-  //     grade: [],
-  //     section: [],
-  //     subject: [],
-  //   });
-  //   if (value.length > 0) {
-  //     setFilterData({
-  //       ...filterData,
-  //       branch: value,
-  //       grade: [],
-  //       section: [],
-  //       subject: [],
-  //     });
-  //   }
-  // };
+  const handleGrade = (event, value) => {
+    setFilterData({
+      ...filterData,
+      grade: [],
+      section: [],
+      subject: [],
+    });
+    setDropDown({
+      ...dropDown,
+      sectionDrop: [],
+      subjectDrop: [],
+    });
+    if (value?.length > 0) {
+      setFilterData({
+        ...filterData,
+        grade: value,
+        section: [],
+        subject: [],
+      });
+      let ids = value.map(({ grade_id }) => grade_id);
+      let sessionIds = filterData.session?.map(({ id }) => id);
+      let branchIds = filterData.branch?.map(({ id }) => id);
+      axiosInstance
+        .get(
+          `${endpoints.masterManagement.listSectionMap}?session_year=${sessionIds}&branch_id=${branchIds}&grade_id=${ids}`
+        )
+        .then((result) => {
+          if (result.data.status_code > 199 && result.data.status_code < 300) {
+            setDropDown({
+              ...dropDown,
+              sectionDrop: result.data?.data,
+              subjectDrop: [],
+            });
+          } else {
+            setAlert('error', result.data?.message || result.data?.msg);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.response?.data?.message || error.response?.data?.msg);
+        });
+    }
+  };
 
-  // const handleGrade = (event, value) => {
-  //   setFilterData({
-  //     ...filterData,
-  //     grade: [],
-  //     section: [],
-  //     subject: [],
-  //   });
-  //   if (value.length > 0) {
-  //     setFilterData({
-  //       ...filterData,
-  //       grade: value,
-  //       section: [],
-  //       subject: [],
-  //     });
-  //   }
-  // };
+  const handleSection = (event, value) => {
+    setFilterData({
+      ...filterData,
+      section: [],
+      subject: [],
+    });
+    setDropDown({
+      ...dropDown,
+      subjectDrop: [],
+    });
+    if (value?.length > 0) {
+      setFilterData({
+        ...filterData,
+        section: value,
+        subject: [],
+      });
+      let ids = value.map(({ id }) => id);
+      let sessionIds = filterData.session?.map(({ id }) => id);
+      let branchIds = filterData.branch?.map(({ id }) => id);
+      let gradeIds = filterData.section?.map(({ grade_id }) => grade_id);
+      axiosInstance
+        .get(
+          `${endpoints.masterManagement.subjects}?session_year=${sessionIds}&branch_id=${branchIds}&grade_id=${gradeIds}&section_id=${ids}`
+        )
+        .then((result) => {
+          if (result.data.status_code > 199 && result.data.status_code < 300) {
+            setDropDown({
+              ...dropDown,
+              subjectDrop: result.data?.data?.results,
+            });
+          } else {
+            setAlert('error', result.data?.message || result.data?.msg);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.response?.data?.message || error.response?.data?.msg);
+        });
+    }
+  };
 
-  // const handleSection = (event, value) => {
-  //   setFilterData({
-  //     ...filterData,
-  //     section: [],
-  //     subject: [],
-  //   });
-  //   if (value.length > 0) {
-  //     setFilterData({
-  //       ...filterData,
-  //       section: value,
-  //       subject: [],
-  //     });
-  //   }
-  // };
-
-  // const handleSubject = (event, value) => {
-  //   setFilterData({
-  //     ...filterData,
-  //     subject: [],
-  //   });
-  //   if (value.length > 0) {
-  //     setFilterData({
-  //       ...filterData,
-  //       subject: value,
-  //     });
-  //   }
-  // };
+  const handleSubject = (event, value) => {
+    setFilterData({
+      ...filterData,
+      subject: [],
+    });
+    if (value?.length > 0) {
+      setFilterData({
+        ...filterData,
+        subject: value,
+      });
+    }
+  };
 
   return (
     <form autoComplete='off' onSubmit={handleSubmit}>
@@ -225,13 +296,13 @@ const CreateSubjectMapping = ({ setLoading, handleGoBack }) => {
             <Autocomplete
               multiple
               size='small'
-              // onChange={handleBranch}
+              onChange={handleBranch}
               style={{ width: '100%' }}
               id='branch'
               name='branch'
               options={dropDown?.branchDrop}
               value={filterData?.branch}
-              // getOptionLabel={(option) => option?.session_year}
+              getOptionLabel={(option) => option?.branch_name}
               filterSelectedOptions
               renderInput={(params) => (
                 <TextField
@@ -249,13 +320,13 @@ const CreateSubjectMapping = ({ setLoading, handleGoBack }) => {
             <Autocomplete
               multiple
               size='small'
-              // onChange={handleGrade}
+              onChange={handleGrade}
               style={{ width: '100%' }}
               id='grade'
               name='grade'
               options={dropDown?.gradeDrop}
               value={filterData?.grade}
-              // getOptionLabel={(option) => option?.session_year}
+              getOptionLabel={(option) => option?.grade_name}
               filterSelectedOptions
               renderInput={(params) => (
                 <TextField
@@ -273,13 +344,13 @@ const CreateSubjectMapping = ({ setLoading, handleGoBack }) => {
             <Autocomplete
               multiple
               size='small'
-              // onChange={handleSection}
+              onChange={handleSection}
               style={{ width: '100%' }}
               id='section'
               name='section'
               options={dropDown?.sectionDrop}
               value={filterData?.section}
-              // getOptionLabel={(option) => option?.session_year}
+              getOptionLabel={(option) => option?.section_name}
               filterSelectedOptions
               renderInput={(params) => (
                 <TextField
@@ -297,13 +368,13 @@ const CreateSubjectMapping = ({ setLoading, handleGoBack }) => {
             <Autocomplete
               multiple
               size='small'
-              // onChange={handleSubject}
+              onChange={handleSubject}
               style={{ width: '100%' }}
               id='subject'
               name='subject'
               options={dropDown?.subjectDrop}
               value={filterData?.subject}
-              // getOptionLabel={(option) => option?.session_year}
+              getOptionLabel={(option) => option?.subject_name}
               filterSelectedOptions
               renderInput={(params) => (
                 <TextField
