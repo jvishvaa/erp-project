@@ -24,7 +24,12 @@ const QuestionPaperCard = ({
   testTotalQuestions,
   testTotalMarks,
   handleStartTest,
-  question_paper: { id: questionPaperId },
+  test_date: testDate,
+  question_paper: {
+    id: questionPaperId,
+    grade_name: gradeName,
+    subject_name: subjects = [],
+  },
 }) => {
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -32,25 +37,31 @@ const QuestionPaperCard = ({
   const classes = useStyles();
 
   return (
-    <Paper elevation={1}>
+    <Paper elevation={2} className={classes.paper}>
       <div className={classes.cardWrapper}>
         <div>
           <h3 className={classes.cardTitleHeading}>{testTitle}</h3>
-          <h4 className={classes.cardQuestions}>
-            <span className={classes.cardQuestionNumber}>{testTotalQuestions ?? 20}</span>
-            Questions
+          <h4 className={classes.cardDescription}>
+            Some test name, (This includes module)
           </h4>
-          <p className={classes.cardAttemptedText}>Last Attempted on 23.11.21 </p>
         </div>
         <div className={classes.cardEasyWrapper}>
-          <div className={classes.cardDifficulty}>E</div>
+          <div>
+            <div className={classes.cardDescription}>
+              {[gradeName, ...(subjects || [])].join(', ')}
+            </div>
+            <div className={classes.cardAttemptedTextGreen}>
+              Completed at &nbsp;
+              {new Date(testDate).toDateString()}
+            </div>
+          </div>
           <Button
             className={classes.cardStartButton}
             variant='contained'
             color='primary'
             onClick={() => handleStartTest(questionPaperId)}
           >
-            Start
+            View more
           </Button>
         </div>
       </div>

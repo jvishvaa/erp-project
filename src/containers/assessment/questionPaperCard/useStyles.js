@@ -17,6 +17,9 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '10px',
     width: '105%',
   },
+  paper: {
+    borderRadius: '10px',
+  },
   title: {
     fontSize: '1.1rem',
   },
@@ -29,18 +32,19 @@ const useStyles = makeStyles((theme) => ({
   cardWrapper: {
     display: 'flex',
     padding: '15px',
-    justifyContent: 'space-around',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
     '&:hover': {
       background: '#FCEEEE',
       cursor: 'pointer',
     },
   },
   cardTitleHeading: {
-    marginTop: '0px',
+    margin: 2,
     color: '#FF6B6B',
   },
-  cardQuestions: {
-    marginTop: '0px',
+  cardDescription: {
+    margin: 2,
     color: '#014B7E',
   },
   cardQuestionNumber: {
@@ -48,28 +52,26 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '20px',
     marginRight: '5px',
   },
-  cardAttemptedText: {
+  cardAttemptedTextRed: {
+    color: '#168D00',
+  },
+  cardAttemptedTextGreen: {
     color: '#168D00',
   },
   cardEasyWrapper: {
+    fontWeight: 'bold',
+    marginTop: 7,
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  cardDifficulty: {
-    width: '40px',
-    height: '40px',
-    display: 'grid',
-    placeItems: 'center',
-    borderRadius: '50%',
-    border: '3px solid #bebebe',
-    color: '#fff',
-    background: 'green',
-  },
   cardStartButton: {
     // background: '#FF6B6B',
-    borderRadius: '10px',
+    // borderRadius: '10px',
+    padding: '0.3rem 1.1rem',
+    borderRadius: '0.6rem',
+    fontSize: '0.8rem',
   },
 }));
 
