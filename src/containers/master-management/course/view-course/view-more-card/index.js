@@ -51,7 +51,7 @@ const ViewMoreCard = ({
   };
 
   const handleEditCoursePrice = () => {
-    history.push(`/course-price/${viewMoreData[0]?.course}/${sendGrade=''}`);
+    history.push(`/course-price/${viewMoreData[0]?.course}/${sendGrade}`);
   };
 
   const handleEdit = () => {
