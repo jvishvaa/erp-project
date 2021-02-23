@@ -106,7 +106,7 @@ const Assessment = ({ history, ...restProps }) => {
   const [questionPaperList, setQuestionPaperList] = useState([]);
   const [page, setPageNumber] = useState(getSearchParams(restProps).page || 1);
   const [totalCount, setTotalCount] = useState(0);
-  const [status, setStatus] = useState(0);
+  const [status, setStatus] = useState(+getSearchParams(restProps).status || 0);
   // const [questionPaperInfoObj, setQuestionPaperInfoObj] = useState();
 
   const getInfoDefaultVal = () => {
@@ -114,32 +114,34 @@ const Assessment = ({ history, ...restProps }) => {
     return questionPaperId || undefined;
   };
   const [showInfo, setShowInfo] = useState(getInfoDefaultVal());
-  // const { setAlert } = useContext(AlertNotificationContext);
+  const { setAlert } = useContext(AlertNotificationContext);
   useEffect(() => {
     fetchQuestionPapers();
   }, [page, status]);
 
   const fetchQuestionPapers = () => {
-    // setLoading(true);
-    // axiosInstance
-    //   .get(`${endpoints.assessment.questionPaperList}?user=${user}&page=${page}&status=${status}`)
-    //   .then((response) => {
-    //     console.log('qp result:', response);
-    //     if (response.data.status_code === 200) {
-    //       setQuestionPaperList(response.data.result.result);
-    //       setTotalCount(response.data.result.count);
-    //       setLoading(false);
-    //     } else {
-    //       setLoading(false);
-    //       setAlert('error', response.data.description);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     setLoading(false);
-    //     setAlert('error', error.message);
-    //   });
-    setQuestionPaperList(x.result.result);
-    setTotalCount(x.result.count);
+    setLoading(true);
+    axiosInstance
+      .get(
+        `${endpoints.assessment.questionPaperList}?user=${user}&page=${page}&status=${status}`
+      )
+      .then((response) => {
+        console.log('qp result:', response);
+        if (response.data.status_code === 200) {
+          setQuestionPaperList(response.data.result.result);
+          setTotalCount(response.data.result.count);
+          setLoading(false);
+        } else {
+          setLoading(false);
+          setAlert('error', response.data.description);
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', error.message);
+      });
+    // setQuestionPaperList(x.result.result);
+    // setTotalCount(x.result.count);
   };
 
   const handlePagination = (event, page) => {
@@ -149,17 +151,14 @@ const Assessment = ({ history, ...restProps }) => {
   const handleShowInfo = (paperInfoObj) => setShowInfo(paperInfoObj.id);
   useEffect(
     () =>
-      history.push(`/assessment/?${generateQueryParamSting({ page, info: showInfo })}`),
-    [showInfo, page]
+      history.push(
+        `/assessment/?${generateQueryParamSting({ page, info: showInfo, status })}`
+      ),
+    [showInfo, page, status]
   );
 
   const handleCloseInfo = () => {
     setShowInfo(undefined);
-  };
-
-  const handleStartTest = (questionPaperId) => {
-    history.push(`/assessment/${questionPaperId}/attempt`);
-    // history.push('/assessment/11/qp-questions-list/');
   };
 
   const tabBar = () => {
@@ -181,9 +180,7 @@ const Assessment = ({ history, ...restProps }) => {
       </>
     );
   };
-  // if (tabBar) {
-  //   return <Mk />;
-  // }
+
   return (
     <>
       <AssessmentReviewContextProvider>

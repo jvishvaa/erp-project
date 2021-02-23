@@ -143,7 +143,8 @@ const useStyles = makeStyles((theme) => ({
   scoreGain: {
     letterSpacing: '0.2rem',
     fontWeight: 'bold',
-    fontSize: '2.5rem',
+    // fontSize: '2.5rem',
+    fontSize: '2.3rem',
     color: '#004770',
     borderRadius: '7px 7px 0 0',
     border: '2px solid #004770',
@@ -161,19 +162,22 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '1.4rem',
   },
   timeTakenContainer: {
+    marginTop: 4,
     textAlign: 'center',
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
   },
   timeTakenLabel: {
     color: '#004770',
-    fontSize: '1.2rem',
+    fontSize: '1rem',
+    fontWeight: 'normal',
   },
   timeTaken: {
     color: '#004770',
     fontSize: '1.4rem',
     // border: '1px solid red',
     borderRadius: '5px',
-    padding: 2,
+    // padding: 2,
+    padding: '2px 5px',
     background: 'white',
   },
   timeUnits: {
