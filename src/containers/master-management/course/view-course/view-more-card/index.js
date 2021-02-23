@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
 import { Grid, TextField, Button, Typography } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -13,11 +13,10 @@ import endpoints from '../../../../../config/endpoints';
 import axiosInstance from '../../../../../config/axios';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
 import ViewCourseCard from './ViewCourseCard';
-import ViewStore from '../context/ViewStore'
-import { Context } from '../context/ViewStore'
+import ViewStore from '../context/ViewStore';
+import { Context } from '../context/ViewStore';
 import './view-more-course.css';
 // import downloadAll from '../../../../../assets/images/downloadAll.svg';
-
 
 const ViewMoreCard = ({
   viewMoreData,
@@ -28,16 +27,15 @@ const ViewMoreCard = ({
   branch,
   section,
 }) => {
-
   const themeContext = useTheme();
   const classes = useStyles();
 
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const { setAlert } = useContext(AlertNotificationContext);
 
-  const [cardDetailsFlag, setCardDetailsFlag] = useState(false)
-  const history = useHistory()
-  const [state, setState] = useContext(Context)
+  const [cardDetailsFlag, setCardDetailsFlag] = useState(false);
+  const history = useHistory();
+  const [state, setState] = useContext(Context);
 
   const FileRow = (props) => {
     const { file, onClose, index } = props;
@@ -49,17 +47,17 @@ const ViewMoreCard = ({
   };
 
   const handleViewCard = () => {
-    history.push('./view-period');
-  }
+    history.push(`/create/course/${viewMoreData[0]?.course}/${sendGrade}`);
+  };
 
   const handleEditCoursePrice = () => {
     history.push(`/course-price/${viewMoreData[0]?.course}/${sendGrade}`);
-  }
+  };
 
   const handleEdit = () => {
-    setState({ ...state, isEdit: true })
-    history.push('/create/course')
-  }
+    history.push(`/create/course/${viewMoreData[0]?.course}`);
+    sessionStorage.setItem('gradeKey', sendGrade);
+  };
   const handleDownload = (type) => {
     if (type === 'course') {
       window.href = `https://erpnew.letseduvate.com/qbox/aol/file-upload/dev/${periodDataForView?.files[0]}`
@@ -67,11 +65,11 @@ const ViewMoreCard = ({
     if (type === 'thumbnail') {
       window.open("https://erpnew.letseduvate.com/qbox/aol/file-upload/2021-02-20 16:31:24.776679_LogoBanner.png")
     }
-  }
+  };
   return (
     <>
       {/* <ViewStore> */}
-      {!cardDetailsFlag ?
+      {!cardDetailsFlag ? (
         <Paper className='rootViewMore'>
           <div className='viewMoreHeader'>
             <div className='leftHeader'>
@@ -89,22 +87,26 @@ const ViewMoreCard = ({
                   <CloseIcon color='primary' />
                 </IconButton>
               </div>
-              <div className='headerContent' sytle={{ cursor: 'pointer' }} onClick={handleEdit}>Edit Details</div>
+              <Button
+                className='editDetailsButton'
+                sytle={{ cursor: 'pointer' }}
+                onClick={handleEdit}
+              >
+                Edit Details
+              </Button>
             </div>
           </div>
           <div className='resourceBulkDownload'>
             <div>Course Wise Details</div>
           </div>
-          <div className='bodyContent'>
-            {/* <div>Overview</div> */}
-          </div>
+          <div className='bodyContent'>{/* <div>Overview</div> */}</div>
           <div className='viewMoreBody'>
             <div className='bodyTitle'>
               <div>Overview</div>
             </div>
             <div className='scrollableContent'>
               <div className='bodyContent'>
-                <div>{periodDataForView.overview}</div>
+                <div>{periodDataForView?.overview}</div>
               </div>
             </div>
           </div>
@@ -167,21 +169,17 @@ const ViewMoreCard = ({
             </div>
           </div>
           <div className='viewMoreBody'>
-            <Button
-              className="courseButton"
-              onClick={handleViewCard}
-            >
+            <Button className='courseButton' onClick={handleViewCard}>
               View Period Details
             </Button>
-            <Button
-              className="courseButton"
-              onClick={handleEditCoursePrice}
-            >
+            <Button className='courseButton' onClick={handleEditCoursePrice}>
               Edit Course Price
             </Button>
           </div>
         </Paper>
-        : <ViewCourseCard />}
+      ) : (
+        <ViewCourseCard />
+      )}
       {/* </ViewStore> */}
     </>
   );

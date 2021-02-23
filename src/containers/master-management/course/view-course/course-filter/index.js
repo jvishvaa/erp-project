@@ -10,6 +10,7 @@ import endpoints from '../../../../../config/endpoints';
 import axiosInstance from '../../../../../config/axios';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
 import Divider from '@material-ui/core/Divider';
+import '../../create-course/style.css';
 
 const CourseFilter = ({ handleCourseList }) => {
   const themeContext = useTheme();
@@ -164,7 +165,7 @@ const CourseFilter = ({ handleCourseList }) => {
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
           <Button
             variant='contained'
-            className='custom_button_master labelColor'
+            className='labelColor buttonModifiedDesign'
             size='medium'
             onClick={handleClear}
           >
@@ -176,7 +177,7 @@ const CourseFilter = ({ handleCourseList }) => {
             variant='contained'
             style={{ color: 'white' }}
             color='primary'
-            className='custom_button_master'
+            className='buttonModifiedDesign'
             size='medium'
             onClick={handleFilter}
           >
@@ -206,7 +207,7 @@ const CourseFilter = ({ handleCourseList }) => {
             variant='contained'
             style={{ color: 'white' }}
             color='primary'
-            className='custom_button_master'
+            className='buttonModifiedDesign'
             onClick={() => history.push('/create/course')}
             size='medium'
           >
