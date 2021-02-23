@@ -73,9 +73,9 @@ const AttendeeListRemake = (props) => {
   //   useEffect(() => {
   //     getAttendeeList();
   //   }, [currentPage]);
-  useEffect(()=>{
-   getAttendeeList(dateValue)
-  },[])
+  useEffect(() => {
+    getAttendeeList(dateValue)
+  }, [])
   const handlePagination = (event, page) => {
     setCurrentPage(page);
   };
@@ -115,31 +115,47 @@ const AttendeeListRemake = (props) => {
     }
   };
 
-// if(isEdit){
-//  const attendee = attendeeList.map((el,i)=>({[el.user.user.id]:{isChecked: true}}))
-// }
+  const handleExcelDownload = () => {
+    const { data } = axiosInstance.get(`${endpoints.attendanceList.list}?zoom_meeting_id=767&class_date=2021-02-22&type=excel&page_number=1&page_size=10`, {
+      responseType: 'arraybuffer',
+    })
+    const blob = new Blob([data])
+      // {
+      // type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    // });
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = 'aol_attendance_report.xlsx';
+    link.click();
+    link.remove();
+  }
 
-  const handleExcelDownload = async () => {
-    const { match } = props;
-    try {
-      const { data } = await axiosInstance.get(
-        `${endpoints.onlineClass.attendeeList}?zoom_meeting_id=${694}&type=excel`,
-        {
-          responseType: 'arraybuffer',
-        }
-      );
-      const blob = new Blob([data], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      });
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = 'online_class_attendance_report.xlsx';
-      link.click();
-      link.remove();
-    } catch (error) {
-      setAlert('error', 'Failed to download attendee list');
-    }
-  };
+
+  // if(isEdit){
+  //  const attendee = attendeeList.map((el,i)=>({[el.user.user.id]:{isChecked: true}}))
+  // }
+
+  // const handleExcelDownload = async () => {
+  //   const { match } = props;
+  //   try {
+  //     const { data } = await axiosInstance.get(
+  //       `${endpoints.onlineClass.attendeeList}?zoom_meeting_id=${694}&type=excel`,
+  //       {
+  //         responseType: 'arraybuffer',
+  //       }
+  //     );
+  //     const blob = new Blob([data], {
+  //       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  //     });
+  //     const link = document.createElement('a');
+  //     link.href = window.URL.createObjectURL(blob);
+  //     link.download = 'online_class_attendance_report.xlsx';
+  //     link.click();
+  //     link.remove();
+  //   } catch (error) {
+  //     setAlert('error', 'Failed to download attendee list');
+  //   }
+  // };
 
   const toggleHide = () => {
     setIsHidden(!isHidden);
@@ -154,7 +170,7 @@ const AttendeeListRemake = (props) => {
     setOpenShuffleModal(true);
   }
 
-  const handleGoBack=()=>{
+  const handleGoBack = () => {
     history.goBack()
   }
 
@@ -219,7 +235,7 @@ const AttendeeListRemake = (props) => {
             />
           </Grid>
           <Grid item xs={12} sm={2}>
-              <Button onClick={handleGoBack} style={{width:'100%',backgroundColor:'lightgray'}}>BACK</Button>
+            <Button onClick={handleGoBack} style={{ width: '100%', backgroundColor: 'lightgray' }}>BACK</Button>
           </Grid>
         </Grid>
       </div>
@@ -258,7 +274,7 @@ const AttendeeListRemake = (props) => {
                         {isEdit ? (
                           <Switch
                             disabled={isUpdating}
-                            checked={ el.attendance_details.is_attended}
+                            checked={el.attendance_details.is_attended}
                             onChange={(event, checked) => {
                               handleCheck(index, checked, el);
                             }}
