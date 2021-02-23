@@ -146,7 +146,7 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
       <div className={classes.testInfo}>
         {headersUI}
         {isTestAttempted ? assessmentAnalysis : takeTestUI}
-        {takeTestUI}
+        {/* {takeTestUI} */}
       </div>
     </Paper>
   );
