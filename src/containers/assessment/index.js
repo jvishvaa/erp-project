@@ -97,7 +97,7 @@ const Assessment = ({ history, ...restProps }) => {
   const [questionPaperList, setQuestionPaperList] = useState([]);
   const [page, setPageNumber] = useState(getSearchParams(restProps).page || 1);
   const [totalCount, setTotalCount] = useState(0);
-  const [questionPaperInfoObj, setQuestionPaperInfoObj] = useState();
+  // const [questionPaperInfoObj, setQuestionPaperInfoObj] = useState();
 
   const getInfoDefaultVal = () => {
     const questionPaperId = getSearchParams(restProps).info;
@@ -119,14 +119,14 @@ const Assessment = ({ history, ...restProps }) => {
           setQuestionPaperList(response.data.result.result);
           setTotalCount(response.data.result.count);
           setLoading(false);
-          const quesPaperList = response.data.result.result;
-          let quesPaperInfoObj = quesPaperList.filter((q) => +q.id === +showInfo);
-          quesPaperInfoObj = quesPaperInfoObj.length ? quesPaperInfoObj[0] : undefined;
-          if (quesPaperInfoObj) {
-            setQuestionPaperInfoObj(quesPaperInfoObj);
-          } else {
-            setShowInfo(undefined);
-          }
+          // const quesPaperList = response.data.result.result;
+          // let quesPaperInfoObj = quesPaperList.filter((q) => +q.id === +showInfo);
+          // quesPaperInfoObj = quesPaperInfoObj.length ? quesPaperInfoObj[0] : undefined;
+          // if (quesPaperInfoObj) {
+          //   setQuestionPaperInfoObj(quesPaperInfoObj);
+          // } else {
+          //   setShowInfo(undefined);
+          // }
         } else {
           setLoading(false);
           setAlert('error', response.data.description);
@@ -156,7 +156,7 @@ const Assessment = ({ history, ...restProps }) => {
 
   const handleShowInfo = (paperInfoObj) => {
     setShowInfo(paperInfoObj.id);
-    setQuestionPaperInfoObj(paperInfoObj);
+    // setQuestionPaperInfoObj(paperInfoObj);
   };
   useEffect(
     () =>
@@ -179,7 +179,6 @@ const Assessment = ({ history, ...restProps }) => {
   // questionPaperInfoObj = questionPaperInfoObj.length
   //   ? questionPaperInfoObj[0]
   //   : undefined;
-  console.log(questionPaperInfoObj, 'questionPaperInfoObj');
   return (
     <>
       <AssessmentReviewContextProvider>
@@ -236,8 +235,9 @@ const Assessment = ({ history, ...restProps }) => {
               {showInfo && (
                 <Grid item xs={12} md={6}>
                   <QuestionPaperInfo
-                    key={questionPaperInfoObj?.id}
-                    {...questionPaperInfoObj}
+                    assessmentId={showInfo}
+                    key={showInfo}
+                    // {...questionPaperInfoObj}
                     loading={loading}
                     handleCloseInfo={handleCloseInfo}
                   />
