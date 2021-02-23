@@ -62,39 +62,75 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const testAnalysisRouteBtn = (
+    <>
+      <br />
+      <div style={{ display: 'flex' }}>
+        <Button
+          style={{
+            padding: '0.3rem 1rem',
+            borderRadius: '0.6rem',
+            fontSize: '0.9rem',
+            margin: 'auto',
+          }}
+          onClick={() => {
+            restProps.history.push(`/assessment/${questionPaperId}/analysis/`);
+          }}
+        >
+          View question wise analysis
+        </Button>
+      </div>
+      <br />
+    </>
+  );
+
   const assessmentAnalysis = (
-    <div className={classes.analysisWrapper}>
-      <h3 className={classes.cardTitleHeading}>Assessment Analysis</h3>
-      <div className={classes.analysisContainer}>
-        <div>
-          18 Out of &nbsp;
-          {totalMarks}
-        </div>
-        <div className={classes.marksBarContainer}>
-          <div className={classes.marksBar}>
-            <div>Correct </div>
-            <div>{correctAnswers}</div>
+    <>
+      <div className={classes.analysisWrapper}>
+        <h3 className={classes.cardTitleHeading}>Assessment Analysis</h3>
+        <div className={classes.analysisContainer}>
+          <div className={classes.scoreBoard}>
+            <div className={classes.scoreContainer}>
+              <div className={classes.scoreGain}>18</div>
+              <div className={classes.scoreOutOf}>Out of 20</div>
+            </div>
+            <div className={classes.timeTakenContainer}>
+              <div className={classes.timeTakenLabel}>You took</div>
+              <div className={classes.timeTaken}>
+                O2
+                <span className={classes.timeUnits}>min</span>
+                &nbsp; 01
+                <span className={classes.timeUnits}>secs</span>
+              </div>
+            </div>
           </div>
-          <div className={classes.marksBar}>
-            <div>Wrong</div>
-            <div>{wrongAnswer}</div>
+          <div className={classes.marksBarContainer}>
+            <div className={classes.marksBar}>
+              <div>Correct </div>
+              <div>{correctAnswers}</div>
+            </div>
+            <div className={classes.marksBar}>
+              <div>Wrong</div>
+              <div>{wrongAnswer}</div>
+            </div>
+            <div className={classes.marksBar}>
+              <div>No. of Questions</div>
+              <div>{totalQuestions}</div>
+            </div>
+            <div className={classes.marksBar}>
+              <div>Ques. attempted</div>
+              <div>{attemptedQuestions}</div>
+            </div>
           </div>
-          <div className={classes.marksBar}>
-            <div>No. of Questions</div>
-            <div>{totalQuestions}</div>
-          </div>
-          <div className={classes.marksBar}>
-            <div>Ques. attempted</div>
-            <div>{attemptedQuestions}</div>
-          </div>
-        </div>
-        <div className={classes.toddlerContainer}>
-          <div className={classes.toddlerWrapper}>
-            <img className={classes.toddler} alt='toddler' src={toddlerGroup} />
+          <div className={classes.toddlerContainer}>
+            <div className={classes.toddlerWrapper}>
+              <img className={classes.toddler} alt='toddler' src={toddlerGroup} />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      {testAnalysisRouteBtn}
+    </>
   );
   const headersUI = (
     <>
@@ -131,6 +167,7 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
             fontSize: '0.9rem',
             margin: 'auto',
           }}
+          disabled={!questionPaperId}
           onClick={() => {
             restProps.history.push(`/assessment/${questionPaperId}/attempt/`);
           }}

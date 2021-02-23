@@ -134,6 +134,52 @@ const useStyles = makeStyles((theme) => ({
       textAlign: 'center',
     },
   },
+  scoreBoard: {
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'column',
+  },
+  scoreContainer: {},
+  scoreGain: {
+    letterSpacing: '0.2rem',
+    fontWeight: 'bold',
+    fontSize: '2.5rem',
+    color: '#004770',
+    borderRadius: '7px 7px 0 0',
+    border: '2px solid #004770',
+    margin: '1.2rem',
+    marginBottom: 0,
+    borderBottom: 'none',
+    textAlign: 'center',
+  },
+  scoreOutOf: {
+    border: '1px solid #004770',
+    background: '#004770',
+    borderRadius: '4px',
+    color: 'white',
+    padding: '0.25rem 0.9rem',
+    fontSize: '1.4rem',
+  },
+  timeTakenContainer: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  timeTakenLabel: {
+    color: '#004770',
+    fontSize: '1.2rem',
+  },
+  timeTaken: {
+    color: '#004770',
+    fontSize: '1.4rem',
+    // border: '1px solid red',
+    borderRadius: '5px',
+    padding: 2,
+    background: 'white',
+  },
+  timeUnits: {
+    fontWeight: 'normal',
+    fontSize: '0.9rem',
+  },
 }));
 
 export default useStyles;

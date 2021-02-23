@@ -155,7 +155,6 @@ export const AssessmentReviewContextProvider = ({ children, ...restProps }) => {
   React.useEffect(() => {
     const { user_id: user } = JSON.parse(localStorage.getItem('userDetails') || {});
     if (assessmentId) {
-      debugger
       fetchAssessmentResult({ user_id: user, test_id: assessmentId });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
