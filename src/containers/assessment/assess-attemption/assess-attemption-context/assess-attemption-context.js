@@ -437,6 +437,7 @@ export const AssessmentHandlerContextProvider = ({
       .post(API, payLoad, { headers: { 'x-api-key': 'vikash@12345#1231' } })
       .then((res) => {
         onResolve(res);
+        localStorage.removeItem(storageKey);
         // console.log(res);
       })
       .catch((er) => {

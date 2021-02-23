@@ -2,6 +2,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useContext, useState } from 'react';
 import { Button } from '@material-ui/core';
+import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2, 4, 3),
   },
 }));
-const SidebarCounterPanel = () => {
+const SidebarCounterPanel = (props) => {
   const classes = useStyles();
   const [modalStyle] = useState(getModalStyle);
   const [open, setOpen] = useState(false);
@@ -50,6 +51,7 @@ const SidebarCounterPanel = () => {
 
   const {
     assessmentDetails: {
+      test: assessmentId,
       test_duration: testDuration,
       question_paper__grade_name: questionPaperGradeName,
       question_paper__subject_name: subjectNames = [],
@@ -73,6 +75,7 @@ const SidebarCounterPanel = () => {
       const statusCode = Number(statusCodeResponse);
       if (statusCode > 199 && statusCode < 300) {
         setAlert('Success', `${message}`);
+        props.history.push(`/assessment/?info=${assessmentId}`);
         // 'Result Submitted Successfully!'
       } else {
         setAlert('error', `${message}`);
@@ -189,4 +192,4 @@ const SidebarCounterPanel = () => {
   );
 };
 
-export default SidebarCounterPanel;
+export default withRouter(SidebarCounterPanel);
