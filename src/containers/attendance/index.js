@@ -54,9 +54,11 @@ const AttendeeListRemake = (props) => {
   const history = useHistory();
   const [openShuffleModal, setOpenShuffleModal] = useState(false);
   const pageSize = 10;
+  const [excelDate,setExcelDate]=useState('')
   const { setAlert } = useContext(AlertNotificationContext);
 
   const getAttendeeList = async (date) => {
+    setExcelDate(date)
     axiosInstance.get(`${endpoints.attendanceList.list}?zoom_meeting_id=${id}&class_date=${date}&type=json&page_number=1&page_size=10`)
       .then((result) => {
         setTotalPages(result.data.total_pages);
@@ -116,7 +118,7 @@ const AttendeeListRemake = (props) => {
   };
 
   const handleExcelDownload = () => {
-    const { data } = axiosInstance.get(`${endpoints.attendanceList.list}?zoom_meeting_id=767&class_date=2021-02-22&type=excel&page_number=1&page_size=10`, {
+    const { data } = axiosInstance.get(`${endpoints.attendanceList.list}?zoom_meeting_id=${id}&class_date=${excelDate}&type=excel&page_number=1&page_size=10`, {
       responseType: 'arraybuffer',
     })
     const blob = new Blob([data])

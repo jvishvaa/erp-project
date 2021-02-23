@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams,useHistory } from 'react-router-dom'
 import {
     CircularProgress,
     Grid,
@@ -33,6 +33,7 @@ const Reshuffle = () => {
     const [modalData, setModalData] = useState({})
     const [reshuffleFlag,setReshuffleFlag] = useState(false)
     const { id } = useParams()
+    const history = useHistory()
     const handleShuffle = (data) => {
         setModalData(data)
         setOpenReshuffleModal(true);
@@ -43,10 +44,17 @@ const Reshuffle = () => {
                 setStudentName(result.data.data)
             })
     }, [reshuffleFlag])
+
+    const handleBack=()=>{
+        history.goBack();
+    }
     return (
         <Layout>
             <div className='breadcrumb-container'>
                 <CommonBreadcrumbs componentName='Online Class' childComponentName='Reshuffle Batch' />
+            </div>
+            <div>
+                <Button style={{backgroundColor:'lightgray',width:'16rem'}} onClick={handleBack}>BACK</Button>
             </div>
             <div className='attendee__management-table'>
                 <TableContainer>
