@@ -105,10 +105,9 @@ const SidebarCounterPanel = (props) => {
       <div className='sidebar-panel-wrapper'>
         <div className='sidebar-content'>
           <h4 className='cardTitleHeading'>
-            {[
-              assessmentTitle,
-              ...(sectionName ? [`sec-${sectionName}`.toLowerCase()] : []),
-            ].join(', ') || 'NA'}
+            {[assessmentTitle, ...(sectionName ? [`sec-${sectionName}`] : [])].join(
+              ', '
+            ) || 'NA'}
           </h4>
           <h5>{description || 'NA'}</h5>
         </div>

@@ -59,17 +59,25 @@ function MatchAndDraw({ lines: linesFromProps, points = [], ...restProps }) {
       document.body.appendChild(line);
     }
   }
-  function addWHtoxy(obj) {
+  function addWHtoxy(obj, startOnRight) {
     const { x, y, height, width } = obj || {};
-    return { ...obj, x: x + width / 2, y: y + height / 2 };
+    const lineToPointDistance = 5;
+    // return { ...obj, x: x + width / 2, y: y + height / 2 };
+    if (startOnRight) {
+      return { ...obj, x: x + width + lineToPointDistance, y: y + height / 2 };
+    }
+    return { ...obj, x: x + lineToPointDistance, y: y + height / 2 };
   }
-  function boundingClientRect(elementId) {
+  function boundingClientRect(elementId, startOnRight) {
     const element = document.getElementById(elementId);
     if (element) {
       const rect = element.getBoundingClientRect();
       const { bottom, height, left, right, top, width, x, y } = rect || {};
       const name = elementId;
-      return addWHtoxy({ bottom, height, left, right, top, width, x, y, name });
+      return addWHtoxy(
+        { bottom, height, left, right, top, width, x, y, name },
+        startOnRight
+      );
     }
     return {};
   }
@@ -90,8 +98,8 @@ function MatchAndDraw({ lines: linesFromProps, points = [], ...restProps }) {
   function drawlinesFromPoints(linesObj) {
     removeLines();
     Object.entries(linesObj).forEach(([p1Label, p2Label]) => {
-      const p1 = boundingClientRect(p1Label);
-      const p2 = boundingClientRect(p2Label);
+      const p1 = boundingClientRect(p1Label, true);
+      const p2 = boundingClientRect(p2Label, false);
       drawline(p1, p2, p1.name);
     });
   }
@@ -157,7 +165,8 @@ function MatchAndDraw({ lines: linesFromProps, points = [], ...restProps }) {
 
   function drawLineWithCursor(event) {
     const { x, y, width, height, name: lineId } = dragStart || {};
-    const p1 = { x: x + width / 2, y: y + height / 2 };
+    // const p1 = { x: x + width / 2, y: y + height / 2 };
+    const p1 = { x: x + width, y: y + height };
     const p2 = { x: event.clientX, y: event.clientY };
     if (dragStart) {
       drawline(p1, p2, lineId);
@@ -179,6 +188,7 @@ function MatchAndDraw({ lines: linesFromProps, points = [], ...restProps }) {
                   name={questionPointObj.value}
                   value={questionPointObj.value}
                   className='points'
+                  draggable={false}
                   onClick={(event) => {
                     if (!dragStart) {
                       onDragStart(event);
@@ -198,6 +208,7 @@ function MatchAndDraw({ lines: linesFromProps, points = [], ...restProps }) {
             <td>
               <span>
                 <img
+                  draggable={false}
                   onClick={(event) => {
                     const { name: starPoint } = dragStart || {};
                     if (dragStart && starPoint !== event.target.name) {
