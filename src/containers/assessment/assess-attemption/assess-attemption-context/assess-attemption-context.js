@@ -6,15 +6,15 @@ import useFetcher from '../../../../utility-functions/custom-hooks/use-fetcher';
 
 const {
   assessment: {
-    userAssessmentQuestionAnalysis: userAssessmentQuestionAnalysisAPIEndpoint,
-    assessmentAnalysisTeacherExcel: assessmentAnalysisTeacherExcelAPIEndpoint,
+    userAssessmentSubmission: userAssessmentSubmissionAPIEndpoint,
+    fetchAssessmentQuestionPapersQuestions: fetchAssessmentQuestionPapersQuestionsAPIEndpoint,
   } = {},
 } = endpoints || {};
 
 export const AssessmentHandlerContext = createContext();
 
-const APIEndpoint =
-  'http://13.232.30.169/qbox/assessment/<question-paper-id>/qp-questions-list/';
+// const APIEndpoint =
+//   'http://13.232.30.169/qbox/assessment/<question-paper-id>/qp-questions-list/';
 
 const getSortedAndMainQuestions = (dataObj) => {
   function compareObjects(object1, object2) {
@@ -330,7 +330,10 @@ export const AssessmentHandlerContextProvider = ({
       window.alert('param not fed');
       return null;
     }
-    const APIEndpointURL = APIEndpoint.replace('<question-paper-id>', assessmentId);
+    const APIEndpointURL = fetchAssessmentQuestionPapersQuestionsAPIEndpoint.replace(
+      '<question-paper-id>',
+      assessmentId
+    );
     const dataProp = {
       url: APIEndpointURL,
       // queryParamObj: { assessment_id: assessmentId },
@@ -414,12 +417,16 @@ export const AssessmentHandlerContextProvider = ({
       const {
         id: qId,
         parent_id: parentId,
+        question_categories: questionCategories,
+        question_level: questionLevel,
         user_response: { answer, attemption_status: attemptionStatus } = {},
         question_type: questionType,
       } = item || {};
       const hasParentId = parentId > 0;
       const obj = {
         question: qId,
+        question_categories: questionCategories,
+        question_level: questionLevel,
         question_type: questionType,
         is_parent: !hasParentId,
         parent_id: parentId,
@@ -436,13 +443,15 @@ export const AssessmentHandlerContextProvider = ({
       user_response: userReponses,
     };
 
-    const API = 'http://13.232.30.169/qbox/assessment/user_response/';
+    // const API = 'http://13.232.30.169/qbox/assessment/user_response/';
     const { onStart = () => {}, onResolve = () => {}, onReject = () => {} } =
       callbacks || {};
     onStart();
 
     axios
-      .post(API, payLoad, { headers: { 'x-api-key': 'vikash@12345#1231' } })
+      .post(userAssessmentSubmissionAPIEndpoint, payLoad, {
+        headers: { 'x-api-key': 'vikash@12345#1231' },
+      })
       .then((res) => {
         onResolve(res);
         localStorage.removeItem(storageKey);
