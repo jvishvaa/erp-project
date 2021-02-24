@@ -5,6 +5,7 @@
 import React, { useContext, useEffect } from 'react';
 import { Paper, Button } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
+import { timeDeltaDiff } from '../../../utility-functions';
 // import useMediaQuery from '@material-ui/core/useMediaQuery';
 // import { useTheme } from '@material-ui/core';
 
@@ -53,6 +54,8 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
     total_question: totalQuestions,
     wrong_answer: wrongAnswer,
   } = analysis || {};
+
+  // const timeTakenForTest = timeDeltaDiff(new Date(endTime), new Date(startTime), true);
   // const themeContext = useTheme();
   // const { setAlert } = useContext(AlertNotificationContext);
   // const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -92,14 +95,21 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
           <div className={classes.scoreBoard}>
             <div className={classes.scoreContainer}>
               <div className={classes.scoreGain}>18</div>
-              <div className={classes.scoreOutOf}>Out of 20</div>
+              <div className={classes.scoreOutOf}>
+                Out of
+                {` ${totalMarks}`}
+              </div>
             </div>
             <div className={classes.timeTakenContainer}>
               <div className={classes.timeTakenLabel}>You took</div>
               <div className={classes.timeTaken}>
-                O2
+                {`${
+                  timeDeltaDiff(new Date(endTime), new Date(startTime), true)?.minutes
+                }`}
                 <span className={classes.timeUnits}>min</span>
-                &nbsp; 01
+                {` ${
+                  timeDeltaDiff(new Date(endTime), new Date(startTime), true)?.seconds
+                }`}
                 <span className={classes.timeUnits}>secs</span>
               </div>
             </div>

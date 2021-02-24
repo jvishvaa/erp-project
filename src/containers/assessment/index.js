@@ -104,7 +104,7 @@ const Assessment = ({ history, ...restProps }) => {
   const { user_id: user } = JSON.parse(localStorage.getItem('userDetails') || {});
   const [loading, setLoading] = useState(false);
   const [questionPaperList, setQuestionPaperList] = useState([]);
-  const [page, setPageNumber] = useState(getSearchParams(restProps).page || 1);
+  const [page, setPageNumber] = useState(+getSearchParams(restProps).page || 1);
   const [totalCount, setTotalCount] = useState(0);
   const [status, setStatus] = useState(+getSearchParams(restProps).status || 0);
   // const [questionPaperInfoObj, setQuestionPaperInfoObj] = useState();

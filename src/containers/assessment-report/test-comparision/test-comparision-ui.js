@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React, { useContext } from 'react';
-import { makeStyles, Button, Grid, Box, Paper } from '@material-ui/core';
+import { makeStyles, Button, Grid, Box, Paper, Divider } from '@material-ui/core';
 import {
   TestCardDropdown,
   TestComparisionReportTable,
@@ -8,6 +8,7 @@ import {
 } from './test-comparision-ui-components';
 import Loading from '../../../components/loader/loader';
 import { TestComparisionContext } from './test-comparision-context';
+import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 const useStyles = makeStyles(() => ({
@@ -114,6 +115,13 @@ const TestComparisionUI = () => {
 
       <Paper elevation={0}>
         <Box m={{ xs: '1rem', sm: '2rem' }} className={classes.root}>
+          <CommonBreadcrumbs
+            componentName='Assessment'
+            childComponentName='Report - Student test comparision'
+          />
+          <br />
+          <Divider />
+          <br />
           <UserSpecificSubjectDropdown
             options={userSubjects && userSubjects.data ? userSubjects.data : []}
             value={subjectSelected || {}}
