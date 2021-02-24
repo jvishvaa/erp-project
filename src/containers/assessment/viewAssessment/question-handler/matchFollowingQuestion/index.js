@@ -56,19 +56,27 @@ const MatchFollowingQuestion = (props) => {
         options[rowIndex] || {};
       const { images: [ansImgSrc] = [], optionValue: answerValue } =
         matchingOptions[rowIndex] || {};
+      // const src =
+      //   'https://hips.hearstapps.com/amv-prod-gp.s3.amazonaws.com/gearpatrol/wp-content/uploads/2019/10/Buy-a-Kia-Telluride-Instead-gear-patrol-slide-1.jpg?crop=1.00xw:0.754xh;0,0.124xh&resize=980:*';
       const rowArray = [
         {
           name: `p${rowIndex + 1}1`,
           option: options[rowIndex],
           matchingOption: matchingOptions[rowIndex],
-          src: endpoints.discussionForum.s3 + quesImgSrc,
+          src: quesImgSrc.includes('s3')
+            ? endpoints.discussionForum.s3 + quesImgSrc
+            : quesImgSrc,
+          // src,
           value: questionValue,
         },
         {
           name: `p${rowIndex + 1}2`,
           option: options[rowIndex],
           matchingOption: matchingOptions[rowIndex],
-          src: endpoints.discussionForum.s3 + ansImgSrc,
+          src: ansImgSrc.includes('s3')
+            ? endpoints.discussionForum.s3 + ansImgSrc
+            : ansImgSrc,
+          // src,
           value: answerValue,
         },
       ];
