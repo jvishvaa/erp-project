@@ -93,7 +93,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
       const transformedData = data
         ? data.map((grade) => ({
             id: grade.grade_id,
-            grade_name: grade.grade__grade_name,
+            grade_name: grade.grade_name,
           }))
         : [];
       setGrades(transformedData);

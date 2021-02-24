@@ -189,7 +189,7 @@ export const fetchBranchesForCreateUser = () => {
   return axios
     .get('/erp_user/branch/')
     .then((response) => {
-      return response.data.data;
+      return response.data.data?.results.map(obj=>obj?.branch);
     })
     .catch(() => {});
 };

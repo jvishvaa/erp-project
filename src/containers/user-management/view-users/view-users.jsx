@@ -145,7 +145,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         },
       });
       if (result.status === 200) {
-        setBranchList(result.data.data);
+        setBranchList(result.data?.data?.results?.map(obj=>obj?.branch));
       } else {
         setAlert('error', result.data.message);
       }
@@ -166,7 +166,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
       );
       const resultOptions = [];
       if (result.status === 200) {
-        result.data.data.map((items) => resultOptions.push(items.grade__grade_name));
+        result.data.data.map((items) => resultOptions.push(items.grade_name));
         if (selectedBranch) {
           setGrade([...resultOptions]);
         }
@@ -413,7 +413,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                   <MenuItem value=''>
                     <em>None</em>
                   </MenuItem>
-                  {branchList.map((items, index) => (
+                  {branchList?.map((items, index) => (
                     <MenuItem key={`branch_user_details_${index}`} value={items.id}>
                       {items.branch_name}
                     </MenuItem>
