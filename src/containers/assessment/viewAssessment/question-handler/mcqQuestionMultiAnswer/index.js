@@ -56,14 +56,14 @@ const McqQuestionMultiAnswer = (props) => {
             <FormControlLabel
               className='mcq-options'
               value='option1'
-              checked={existingAnswer.includes('Option1')}
+              checked={existingAnswer.includes('option1')}
               control={<Checkbox />}
               label={options[0].option1.optionValue}
             />
             <FormControlLabel
               className='mcq-options'
               value='option2'
-              checked={existingAnswer.includes('Option2')}
+              checked={existingAnswer.includes('option2')}
               control={<Checkbox />}
               label={options[1].option2.optionValue}
             />
@@ -71,7 +71,7 @@ const McqQuestionMultiAnswer = (props) => {
               <FormControlLabel
                 className='mcq-options'
                 value='option3'
-                checked={existingAnswer.includes('Option3')}
+                checked={existingAnswer.includes('option3')}
                 control={<Checkbox />}
                 label={options[2].option3.optionValue}
               />
@@ -81,7 +81,7 @@ const McqQuestionMultiAnswer = (props) => {
               <FormControlLabel
                 className='mcq-options'
                 value='option4'
-                checked={existingAnswer.includes('Option4')}
+                checked={existingAnswer.includes('option4')}
                 control={<Checkbox />}
                 label={options[3].option4.optionValue}
               />
@@ -91,7 +91,7 @@ const McqQuestionMultiAnswer = (props) => {
               <FormControlLabel
                 className='mcq-options'
                 value='option5'
-                checked={existingAnswer.includes('Option5')}
+                checked={existingAnswer.includes('option5')}
                 control={<Checkbox />}
                 label={options[4].option5.optionValue}
               />
