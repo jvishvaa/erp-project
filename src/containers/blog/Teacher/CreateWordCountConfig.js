@@ -1,12 +1,15 @@
 
 import React, { useState, useContext,useEffect } from 'react'
-import { withRouter } from 'react-router-dom';
+import { withRouter ,Link} from 'react-router-dom';
 import Layout from '../../Layout'
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {  TextField, Grid, Button, useTheme,Tabs, Tab ,Typography, Card, CardContent,CardHeader} from '@material-ui/core'
 import moment from 'moment';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import IconButton from '@material-ui/core/IconButton';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import { Pagination } from '@material-ui/lab';
+
 
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -53,12 +56,13 @@ const useStyles = makeStyles((theme) => ({
   
 
 
-const CreateWordCountConfig = () => {
+const CreateWordCountConfig = (props) => {
   const classes = useStyles()
 
   const [currentTab,setCurrentTab] =useState(0)
 
-  
+  const { match } = props
+
   const [wordCount,setWordCount] =useState('');
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false)
@@ -71,14 +75,16 @@ const CreateWordCountConfig = () => {
   const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
   const [grade, setGrade] = useState([]);
   const [selectedGrades, setSelectedGrades] = useState('');
-  const [moduleId, setModuleId] = useState(68);
+  const [moduleId, setModuleId] = useState(144);
+  const [pageSize,setPageSize] = useState(9);
+  const [pageNumber,setPageNumber]=useState(1);
+  const [totalWc,setTotalWc]=useState(0);
 
   const [gradeList, setGradeList] = useState([]);
 
   const branchId=roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0]
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
-  
   const handleDelete = (data) => {
 
         let requestData = {
@@ -91,7 +97,6 @@ const CreateWordCountConfig = () => {
       if (result.data.status_code === 200) {
         setLoading(false);
         setAlert('success', result.data.message);
-        getInActiveList()
         getActiveList()
       } else {        
         setLoading(false);
@@ -102,6 +107,11 @@ const CreateWordCountConfig = () => {
         setAlert('error', error.message);
       })
     };
+    const handlePagination = (event, page) => {
+      setPageNumber(page);
+      setActiveListRes([]);
+      getActiveList()
+     };
   const handleSubmit = (e) => {
     const chkWordCount=+wordCount
     const chkNumber = Number.isInteger(chkWordCount)
@@ -135,26 +145,15 @@ const CreateWordCountConfig = () => {
       setAlert('error', "word config already existing for this grade");
     }) }
     };
-    useEffect(() => {
-        
-        getInActiveList();
-      }, []);
-      const getInActiveList = () => {
-        axiosInstance.get(`${endpoints.blog.WordCountConfig}?is_delete=True`)
-          .then((res) => {
-              setInActiveListRes(res.data.result)
-          }).catch(err => {
-              console.log(err)
-          })
-      }
       useEffect(() => {
        
         getActiveList();
       }, []);
       const getActiveList = () => {
-        axiosInstance.get(`${endpoints.blog.WordCountConfig}?is_delete=False`)
+        axiosInstance.get(`${endpoints.blog.WordCountConfig}?page_number=${pageNumber}&page_size=${pageSize}`)
           .then((res) => {
-              setActiveListRes(res.data.result)
+              setActiveListRes(res.data.result.data)
+              setTotalWc(res.data.result.total_wc)
           }).catch(err => {
               console.log(err)
           })
@@ -165,12 +164,11 @@ const CreateWordCountConfig = () => {
           getGradeApi();
         }
       }, [branchId]);
-
       const getGradeApi = async () => {
         try {
           setLoading(true);
           const result = await axiosInstance.get(
-            `${endpoints.communication.grades}?branch_id=${branchId}&module_id=${moduleId}`,
+            `${endpoints.masterManagement.grades}?page=${1}&page_size=${30}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -179,11 +177,7 @@ const CreateWordCountConfig = () => {
           );
           const resultOptions = [];
           if (result.status === 200) {
-            result.data.data.map((items) => resultOptions.push(items.grade__grade_name));
-            if (branchId) {
-              setGrade(resultOptions);
-            }
-            setGradeList(result.data.data);
+            setGradeList(result.data.result.results);
             setLoading(false);
           } else {
             setAlert('error', result.data.message);
@@ -194,61 +188,14 @@ const CreateWordCountConfig = () => {
           setLoading(false);
         }
       };
-
   const handleGrade = (event, value) => {
     if (value) {
-      setSelectedGrades(value.grade_id);
+      setSelectedGrades(value.id);
     } else {
         setSelectedGrades();
     }
     }
       
-        const inActiveTabContent= () =>{
-          return <div> 
-          <Grid container spacing={2}>
-          { inActiveListRes && inActiveListRes.length
-            ? inActiveListRes.map((item) => {
-              return <Grid item xs={12} sm={6} md={4}>
-                <Card className={classes.root} >
-                <CardHeader
-                style={{padding:'0px'}}
-//                 action=       {
-// <IconButton
-//                   title='Delete'
-//                   onClick={()=>handleDelete(item)}
-                  
-//                 >
-//                   <DeleteOutlinedIcon
-//                     style={{ color: themeContext.palette.primary.main }}
-//                   />
-//                 </IconButton>
-//               }
-              subheader={
-                <Typography
-                  gutterBottom
-                  variant='body2'
-                  align='left'
-                  component='p'
-                  style={{ color: '#014b7e' ,pagging:'0px'}}
-                >
-                Created At: {item && moment(item.created_at).format('MMM DD YYYY')}
-                </Typography>
-              }
-                />
-      <CardContent>
-      <Typography  className={classes.typoStyle}>Grade Name: {item.grade.grade_name} </Typography>
-        <Typography   className={classes.typoStyle}>Word Count : {item.word_count}</Typography>
-        <Typography   className={classes.typoStyle}>Created By : {item.created_by.first_name}</Typography>
-      </CardContent>
-                </Card>                        
-                </Grid>
-                                                      
-                })
-            : ''
-          }
-        </Grid>
-          </div>
-        }
          
 const handleWordCountChange = (e) => {
   setWordCount(e.target.value);
@@ -258,13 +205,11 @@ const handleTabChange = (event,value) =>{
   }
   const decideTab =() => {
     if (currentTab === 0) {
-      return activeTabContent()
-    } else if (currentTab === 1) {
-      return inActiveTabContent()
-    }
+      return viewTabContent()
+    } 
   }
 
-  const activeTabContent= () =>{
+  const viewTabContent= () =>{
     return <div> 
     <Grid container spacing={2}>
     { activeListRes && activeListRes.length
@@ -273,17 +218,31 @@ const handleTabChange = (event,value) =>{
         <Card className={classes.root} >
         <CardHeader
         style={{padding:'0px'}}
-        action=       {
-<IconButton
-          title='Delete'
-          onClick={()=>handleDelete(item)}
+//         action=       {
+// <IconButton
+//           title='Delete'
+//           onClick={()=>handleDelete(item)}
           
+//         >
+//           <DeleteOutlinedIcon
+//             style={{ color: themeContext.palette.primary.main }}
+//           />
+//         </IconButton>
+//       }
+        action ={
+          <IconButton
+        title='edit'
+        onClick={() =>
+          props.history.push({
+            pathname: '/blog/wordcount-config/edit',
+            state: { data: item },
+          })}
         >
-          <DeleteOutlinedIcon
-            style={{ color: themeContext.palette.primary.main }}
-          />
+        <EditOutlinedIcon
+        style={{ color: themeContext.palette.primary.main }}
+        />
         </IconButton>
-      }
+        }
       subheader={
         <Typography
           gutterBottom
@@ -324,10 +283,11 @@ const handleTabChange = (event,value) =>{
               size='small'
               onChange={handleGrade}
               id='grade'
+              disableClearable
               className='dropdownIcon'
               options={gradeList}
               filterSelectedOptions
-              getOptionLabel={(option) => option?.grade__grade_name}
+              getOptionLabel={(option) => option?.grade_name}
 
               renderInput={(params) => (
                 <TextField
@@ -375,15 +335,22 @@ const handleTabChange = (event,value) =>{
             <Tabs value={currentTab} indicatorColor='primary'
               textColor='primary'
               onChange={handleTabChange} aria-label='simple tabs example'>
-              <Tab label='Active'
-              />
-              <Tab label='In-Active'
+              <Tab label='View'
               />
             </Tabs>
           </Grid>
         </Grid>{decideTab()}
-
-       
+<Grid container>
+        <Grid item xs={12}>
+                    <Pagination
+                    onChange={handlePagination}
+                    style={{ paddingLeft:'500px' }}
+                    count={Math.ceil(totalWc / pageSize)}
+                    color='primary'
+                    page={pageNumber}
+                    />
+            </Grid>
+             </Grid>
 
       </Layout>
     </>

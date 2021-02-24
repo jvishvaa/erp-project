@@ -284,6 +284,24 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
           <ListItem
             button
             className={
+              history.location.pathname === '/master-mgmt/signature-upload'
+                ? 'menu_selection'
+                : null
+            }
+            onClick={() => {
+              onClickMenuItem('signature-upload');
+            }}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+              {/* <MenuIcon name={child.child_name} /> */}
+              {/* {menuIcon(child.child_name)} */}
+            </ListItemIcon>
+            <ListItemText primary='Signature Upload' className='menu-item-text' />
+          </ListItem>
+
+          <ListItem
+            button
+            className={
               history.location.pathname === '/course-list'
                 ? 'menu_selection'
                 : null
@@ -297,6 +315,24 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
               {/* {menuIcon(child.child_name)} */}
             </ListItemIcon>
             <ListItemText primary='Course' className='menu-item-text' />
+          </ListItem>
+
+          <ListItem
+            button
+            className={
+              history.location.pathname === '/course-price'
+                ? 'menu_selection'
+                : null
+            }
+            onClick={() => {
+              onClickMenuItem('course-price');
+            }}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+              {/* <MenuIcon name={child.child_name} /> */}
+              {/* {menuIcon(child.child_name)} */}
+            </ListItemIcon>
+            <ListItemText primary='Course Price' className='menu-item-text' />
           </ListItem>
 
           <ListItem

@@ -1,0 +1,46 @@
+.timeSlotValue::before {
+  content: ' ';
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-top: 5px solid #014b7e;
+  border-bottom: 5px solid #ff6b6b;
+  border-right: 5px solid #014b7e;
+  border-left: 5px solid #ff6b6b;
+  margin-right: 10%;
+}
+
+.timeSlotValue {
+  margin: 1%;
+  font-size: 16px;
+  font-weight: 600;
+  color: #014b7e;
+  text-align: left;
+  width: 10%;
+}
+
+.timeSlotWrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.timeSlotTag {
+  width: 15%;
+  color: #014b7e;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  align-self: center;
+  margin-right: 2%;
+}
+
+@media screen and (max-width:786px) {
+
+  .timeSlotTag { 
+    width: 100%;
+    margin-bottom: 2%;
+  }
+  .timeSlotValue {
+    width: 30%;
+  }
+}

@@ -3,6 +3,8 @@
 import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 // import { connect } from 'react-redux';
+import ReactHtmlParser from 'react-html-parser'
+
 import {
   Grid,
   Card,
@@ -77,7 +79,7 @@ class WriteBlog extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      parsedTextEditorContentLen:this.props.location.state.parsedTextEditorContentLen ? this.props.location.state.parsedTextEditorContentLen : 0,
       image :'',
       // files:[],
       relatedBlog: true,
@@ -145,9 +147,7 @@ class WriteBlog extends Component {
     let { roleDetails } = this.state;
     const erpUserId = roleDetails.role_details.erp_user_id;
     axios
-      .get(`${endpoints.blog.genreList}?is_delete=${
-        'False'
-      }&erp_user_id=${
+      .get(`${endpoints.blog.genreList}?erp_user_id=${
         erpUserId
       }`)
       .then((res) => {
@@ -171,27 +171,36 @@ class WriteBlog extends Component {
 
   isWordCountSubceeded = () => {
     let { textEditorContent, wordCountLimit } = this.state
-    const parsedTextEditorContent=textEditorContent.split(' ')
-    // const parsedTextEditorContent = textEditorContent.replace(/(<([^>]+)>)/ig, '').split(' ')
-    const textWordCount = parsedTextEditorContent.length
+    // const parsedTextEditorContent=textEditorContent.split(' ')
+    const parsedTextEditorContent = textEditorContent.replace(/(<([^>]+)>)/ig, ' ').split(' ')
+    let count =0
+    parsedTextEditorContent.map((item)=>{
+      if(item.length){
+        count=count+1
+      }
+      console.log(count,"@@@")
+    })
+
+    // const textWordCount = parsedTextEditorContent.length
+    const textWordCount=count
     this.setState({ parsedTextEditorContentLen: textWordCount })
-    console.log(parsedTextEditorContent.length,"@@@@")
     if (parsedTextEditorContent && parsedTextEditorContent.length < wordCountLimit) {
-      const errorMsg = `Please write atleast ${wordCountLimit} words.Currently only ${parsedTextEditorContent.length} words have been written`
+      const errorMsg = `Please write atleast ${wordCountLimit} words.Currently only ${textWordCount} words have been written`
       return errorMsg
     }
+    this.setState({ parsedTextEditorContentLen: textWordCount})
+
     return false
   }
   
  
   handleTextEditor = (content) => {
-    const { blogId } = this.state;
-    console.log(content.replace(/&nbsp;/g, ''));
-
     // remove  begining and end white space
     // eslint-disable-next-line no-param-reassign
     content = content.replace(/&nbsp;/g, '');
     this.setState({ textEditorContent: content, fadeIn: false });
+    const subceededWordCount = this.isWordCountSubceeded()
+
     // localStorage.setItem('blogContent', content);
   };
 
@@ -238,7 +247,7 @@ class WriteBlog extends Component {
   };
 
   PreviewBlogNav = () => {
-    let{genreId ,files, title ,textEditorContent,genreObj}=this.state
+    let{genreId ,files, title ,textEditorContent,genreObj,parsedTextEditorContentLen}=this.state
 
     
     if(!genreId ){
@@ -271,7 +280,6 @@ class WriteBlog extends Component {
       creationDate,
       // files,
       genreName,
-      parsedTextEditorContentLen
     } = this.state;
     this.props.history.push({
       pathname: '/blog/student/preview-blog',
@@ -299,7 +307,6 @@ class WriteBlog extends Component {
       studentName,
       creationDate,wordCountLimit
     } = this.state;
-    console.log(genreList,genreName,"@250")
     return Preview ? (
       <PreviewBlog
         content={textEditorContent}
@@ -335,6 +342,7 @@ class WriteBlog extends Component {
                     <Autocomplete
                       size='small'
                       id='combo-box-demo'
+                      disableClearable
                       options={genreList}
                       value={genreObj}
                       getOptionLabel={(option) => option.genre}
@@ -376,7 +384,10 @@ class WriteBlog extends Component {
                       id={key}
                       get={this.handleTextEditor}
                       content={textEditorContent}
+                      
                     />
+                    
+
                   </Grid>
                   <Grid item xs={12}>
                     <Typography style={{ margin: 10 }} variant='body1'>

@@ -4,26 +4,38 @@ import { Divider, makeStyles, withStyles, Typography, Button } from '@material-u
 import moment from 'moment';
 import ResourceClass from './resourceClass';
 import { useHistory } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { ResourceDialog } from './resourceDialog';
+import axiosInstance from '../../../config/axios';
+import endpoints from '../../../config/endpoints';
+import CloseIcon from '@material-ui/icons/Close';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+//import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
 const useStyles = makeStyles({
     classDetailsBox: {
         backgroundColor: '#FFFFFF',
         border: '1px solid #F9D474',
-        borderRadius: '10px',
+        borderRadius: '5px',
     },
     classHeader: {
         minHeight: '64px',
         padding: '8px 15px',
-        backgroundColor: '#ff6b6b',
-        borderRadius: '10px 10px 0px 0px',
+        backgroundColor: '#F9D474',
+        borderRadius: '5px 5px 0px 0px',
     },
     classHeaderText: {
         display: 'inline-block',
         color: '#014B7E',
-        fontSize: '16px',
-        fontWeight: 300,
+        fontSize: '18px',
+        fontWeight: 'bold',
         fontFamily: 'Poppins',
         lineHeight: '25px',
+    },
+    closeDetailCard: {
+        float: 'right',
+        fontSize: '20px',
+        color: '#014B7E',
     },
     classHeaderTime: {
         display: 'inline-block',
@@ -70,7 +82,7 @@ const useStyles = makeStyles({
         marginBottom: '10px',
     },
     joinClassDiv: {
-        maxHeight: '415px',
+        height: '320px',
         overflowY: 'scroll',
         '&::-webkit-scrollbar': {
             display: 'none',
@@ -89,7 +101,7 @@ const useStyles = makeStyles({
 
 const StyledButton = withStyles({
     root: {
-        marginTop: '16px',
+        marginTop: '6px',
         height: '31px',
         width: '100%',
         fontSize: '18px',
@@ -104,7 +116,9 @@ const StyledButton = withStyles({
 
 export default function ResourceDetailsCardComponent(props) {
     const classes = useStyles({});
-    console.log(props.resourceData);
+    const location = useLocation();
+    const { setAlert } = React.useContext(AlertNotificationContext);
+    const [noOfPeriods, setNoOfPeriods] = React.useState([]);
 
     //Periods date start
     const startDate = new Date(props.resourceData.online_class.start_time);
@@ -134,6 +148,45 @@ export default function ResourceDetailsCardComponent(props) {
         //console.log(moment(day).format('ll'));
     }
     ////Periods date end
+/**
+    React.useEffect(() => {
+        const params = {
+            online_class_id: props.resourceData.id,
+            class_date: '31-01-2021'
+        };
+        axiosInstance.get(endpoints.onlineClass.resourceFile,params)
+        .then((res) => {
+            console.log(res.data);
+            //setPeriodsData(res.data.data);
+        })
+        .catch((error) => console.log(error))
+    },[]);
+ */
+    // resource module
+    const [open, setOpen] = React.useState(false);
+    const [selectedValue, setSelectedValue] = React.useState("");
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+    
+    const handleClose = (value) => {
+        setOpen(false);
+        setSelectedValue(value);
+    };
+
+    React.useEffect(() => {
+        if (props.resourceData) {
+            setNoOfPeriods([]);
+            axiosInstance
+            .get(`erp_user/${props.resourceData && props.resourceData.id}/online-class-details/`)
+            .then((res) => {
+              console.log(res.data );
+              setNoOfPeriods(res.data.data);
+            })
+            .catch((error) => setAlert('error', error.message));
+        }
+    }, [props.resourceData]);
 
     return (
         <div className={classes.classDetailsBox}>
@@ -142,25 +195,37 @@ export default function ResourceDetailsCardComponent(props) {
                     <Typography className={classes.classHeaderText}>
                         {props.resourceData.online_class.title}
                     </Typography>
+                    <CloseIcon  onClick={(e) => props.hendleCloseDetails() } className={classes.closeDetailCard}/>
                 </div>
             </div>
             <div className={classes.classDetails}>
                 <div className={classes.joinClassDiv}>
-                    {dateArray !== undefined && dateArray.map((date, id) => (
+                    { noOfPeriods && noOfPeriods.length > 0 && noOfPeriods.map((data) => (
+                        <ResourceClass
+                            key={data.zoom_id}
+                            date={data.date}
+                            resourceId={props.resourceData.online_class.id}
+                        />
+                    ))}
+                    {/*dateArray && dateArray.length > 0 && dateArray.map((date, id) => (
                         <ResourceClass
                             key={id}
                             date={date}
                             resourceId={props.resourceData.online_class.id}
                         />
-                    ))}
+                    ))*/}
                 </div>
-                <Divider className={classes.classDetailsDivider}/>
-
-                <StyledButton
-                    color="primary">
-                    Submit
-                </StyledButton>
             </div>
+            <ResourceDialog
+                selectedValue={selectedValue}
+                open={open}
+                onClose={handleClose}
+                title={props.resourceData.online_class.title}
+                resourceId={props.resourceData.online_class.id}
+                startDate={props.resourceData.online_class.start_time}
+                endDate={props.resourceData.online_class.end_time}
+                hendleCloseDetails={props.hendleCloseDetails}
+            />
         </div>
     )
 }

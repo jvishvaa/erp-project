@@ -1,7 +1,9 @@
-import React from 'react';
+import React,{useContext,useEffect} from 'react';
 import moment from 'moment';
 import { makeStyles, withStyles, Typography, Button } from '@material-ui/core';
 import axiosInstance from '../../../config/axios';
+import endpoints from '../../../config/endpoints'
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 const useStyles = makeStyles({
     classDetailsDescription: {
@@ -76,27 +78,32 @@ export default function JoinClassComponent(props) {
     const [ isAccepted, setIsAccept ] = React.useState(false);
     const [ isRejected, setIsRejected ] = React.useState(false);
     const [ isCancel, setIsCancel] = React.useState(false);
+    const { setAlert } = useContext(AlertNotificationContext);
 
+    // const date=props?.data?.online_class?.start_time.split('T')
     //console.log(props.data.is_cancelled + " ==="+ isCancel );
     const params ={
-        zoom_meeting_id: props.data.zoom_id,
-        class_date: props.data.date
+        zoom_meeting_id: props?.data?.zoom_id,
+        class_date: props?.data?.date
     }
     const handleCancel = () => {
-        axiosInstance.put('erp_user/cancel-online-class/',params)
+        axiosInstance.put(`${endpoints.aol.cancelClass}`,params)
         .then((res) => {
-            console.log(res);
-            setIsCancel(true);
+            setAlert('success',res.data.message)
+            setIsCancel(!isCancel);
+            props.setCancelFlag(!props.cancelFlag)
         })
         .catch((error) => console.log(error))
     }
-
     return (
         <div>
+        {props.data && props?.data?.online_class?.is_canceled ? '' :
             <Typography className={classes.classDetailsDescription}>
-                {props.data.date}
+                {moment(props.data && props?.data?.date).format('DD-MM-YYYY')}
             </Typography>
-            {!isAccepted && isRejected && (
+        }
+           
+              {/*  {!isAccepted && isRejected && (
                 <Typography className={classes.rejectText}>Rejected</Typography>
             )}
             {props.isTeacher && isCancel && (
@@ -128,25 +135,34 @@ export default function JoinClassComponent(props) {
                         Reject
                     </StyledRejectButton>
                 </div>
-            )}
-            {(!isAccepted && props.isTeacher) && !isCancel && (
+            )} */}
+            {/* {(!isAccepted && props.isTeacher) && !isCancel && ( */}
+
+
+             {/* {props.data && props?.data?.online_class?.is_canceled ? 
+                
+                <Typography className={classes.rejectText}>Canceled</Typography>
+            
+              : */}
                 <div className={classes.buttonDiv}>
-                    <StyledAcceptButton
-                        variant="contained"
-                        color="secondary"
-                        href={props.joinUrl}
-                    >
-                        Host
-                    </StyledAcceptButton>
-                    <StyledRejectButton
-                        variant="contained"
-                        color="primary"
-                        onClick={handleCancel}
-                    >
-                        Cancel
-                    </StyledRejectButton>
-                </div>
-            )}
+                        <StyledAcceptButton
+                            variant="contained"
+                            color="secondary"
+                            href={props.joinUrl}
+                            target="_blank"
+                        >
+                            Host
+                        </StyledAcceptButton>
+                        <StyledRejectButton
+                            variant="contained"
+                            color="primary"
+                            onClick={handleCancel}
+                        >
+                            Cancel
+                        </StyledRejectButton>
+                    </div>
+             {/* }   */}
+            {/* )} */}
         </div>
     )
 }

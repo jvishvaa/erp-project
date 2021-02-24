@@ -66,7 +66,6 @@ const CreateDailyDairy = (details, onSubmit) => {
         const{setIsEdit,setEditData}=setState;
         const [title,setTitle] = useState(editData.circular_name || '')
         const [description,setDescription] = useState(editData.description || '')
-        console.log(state,'CCCCC',editData.circular_name)
 
   const [filterData, setFilterData] = useState({
     year: '',
@@ -186,7 +185,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const fetchChapters = () => {
-    debugger
+    //debugger
         axios.get(`/qbox/academic/chapters/?academic_year=${searchAcademicYear}&subject=${subjectIds}`)
         .then((result => {
             if (result.data.status_code === 200) {
@@ -247,11 +246,12 @@ const CreateDailyDairy = (details, onSubmit) => {
     // if (value) {
     //     setFilterData({ ...filterData });
     // }
+    console.log(value);
     if (value.length > 0) {
       const ids = value.map((el) => el.id);
+      console.log(ids);
       setSubjectIds(ids);
-    axiosInstance.get(`${endpoints.dailyDairy.branches}?academic_year=${searchAcademicYear}&subject=${ids}`)
-
+      axiosInstance.get(`${endpoints.dailyDairy.branches}?academic_year=${searchAcademicYear}&subject=${ids}`)
         .then((result => {
             if (result.data.status_code === 200) {
                 setChapterDropdown(result.data.result)
@@ -267,38 +267,41 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleImageChange = (event) =>{
-    if(filePath.length<10){
+    if(filePath.length<10) {
       const data  = event.target.files[0];
-      console.log(formik.values.grade);
+      console.log(formik.values.branch);
       const fd = new FormData();
-      fd.append('file',data)
-      fd.append('branch_name',formik.values.branch.branch_name)
-      fd.append('grades',formik.values.grade[0].id)
-      fd.append('section',formik.values.section[0].id)
+      fd.append('file', data)
+      fd.append('branch_name', formik.values.branch.branch_name)
+      fd.append('grades', formik.values.grade[0].id)
+      fd.append('section', formik.values.section[0].id)
       axiosInstance.post(`academic/dairy-upload/`, fd)
-        .then((result)=>{
+      .then((result)=>{
             console.log(fd);
-            if(result.data.status_code === 200){
+            if (result.data.status_code === 200) {
                 console.log(result.data,'resp')
                 setAlert('success',result.data.message)
                 setFilePath([ ...filePath,result.data.result])
             }
-            else{
+            else {
                 setAlert('error',result.data.message)
             }
-  
-        })
-    }else{
+      })
+    } else {
         setAlert('warning','Exceed Maximum Number Attachment')
     }
-    
-  
   }
 
   const handleSubmit = async () => {
     const createDairyEntry = endpoints.dailyDairy.createDailyDairy;
+    const ids = formik.values.section.map((el) => el.id);
+    const grade = formik.values.grade.map((el) => el.id);
+    const subjectId = formik.values.subjects.map((el) => el.id);
+    console.log("===============");
+    console.log(subjectId);
+    console.log(formik.values.subjects);
     const teacherReport=[] 
-    debugger
+    //debugger
     try {
       const response = await axiosInstance.post(
         createDairyEntry,
@@ -306,10 +309,10 @@ const CreateDailyDairy = (details, onSubmit) => {
           // title:title,
               // description:description,
               // module_name:filterData.role.value,
-              branch:5,
-              grade:[54],
-              mapping_bgs:[75],
-              subject:162,
+              branch: formik.values.branch.id,
+              grade: grade,
+              section: ids,
+              subject: subjectIds.join(),
               // teacher_report:
               documents:filePath,
               teacher_report:{
@@ -370,7 +373,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleEdited =()=>{
-   debugger
+   //debugger
    console.log(editData)
     axiosInstance.put(`${endpoints.dailyDairy.updateDelete}`,{
         'circular_id':editData.id,
@@ -527,9 +530,9 @@ const CreateDailyDairy = (details, onSubmit) => {
               formik.setFieldValue('subjects', []);
               handleChangeBranch(value ? [value] : null);
             }}
-            value={state.isEdit?editData.branch :formik.values.branch}
-            options={branches}
-            getOptionLabel={(option) => option?.branch_name || ''}
+            value={ state.isEdit ? editData.branch : formik.values.branch }
+            options={ branches }
+            getOptionLabel={ (option) => option ?.branch_name || ''}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -574,9 +577,9 @@ const CreateDailyDairy = (details, onSubmit) => {
             {formik.errors.grade ? formik.errors.grade : ''}
           </FormHelperText>
         </FormControl>
-          </Grid>
-          </Grid>
-          <Grid
+        </Grid>
+        </Grid>
+        <Grid
           container
           spacing={isMobile ? 3 : 5}
           style={{ width: widerWidth, margin: wider }}
@@ -672,7 +675,7 @@ const CreateDailyDairy = (details, onSubmit) => {
         <div>
         <div className='descriptionBorder'>
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
-        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
                 <TextField
                     id="outlined-multiline-static"
                     label="Recap of previous class"
@@ -686,7 +689,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     onChange={e=> setRecap(e.target.value)}
                 />
             </Grid>
-                <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
                 <TextField
                     id="outlined-multiline-static"
                     label="Details of classwork"
@@ -700,7 +703,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     onChange={e=> setDetails(e.target.value)}
                 />
             </Grid>
-            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+            <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
                 <TextField
                     id="outlined-multiline-static"
                     label="Summary"
@@ -716,7 +719,7 @@ const CreateDailyDairy = (details, onSubmit) => {
             </Grid>
             </Grid>
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
-        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
                 <TextField
                     id="outlined-multiline-static"
                     label="Tools Used"
@@ -730,7 +733,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     onChange={e=> setTools(e.target.value)}
                 />
             </Grid>
-                <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
                 <TextField
                     id="outlined-multiline-static"
                     label="Homework"
@@ -745,7 +748,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                 />
             </Grid>
             
-            <Grid item xs={12} sm={5} className={isMobile ? '' : 'filterPadding'}>
+            <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
             <div style={{display:'flex'}} className='scrollable'>
             {filePath?.length>0  ?    
                     filePath?.map((file, i) => (
@@ -795,12 +798,12 @@ const CreateDailyDairy = (details, onSubmit) => {
             </Grid>
             </Grid>
         </div>
-        <div>
-            <Button 
-            style={{ marginLeft:'80%' }}
-             onClick={state.isEdit? handleEdited : handleSubmit}
-              className='submit_button'>SUBMIT</Button>
-        </div>
+          <div>
+              <Button 
+              style={{ marginLeft:'80%' }}
+              onClick={state.isEdit? handleEdited : handleSubmit}
+                className='submit_button'>SUBMIT</Button>
+          </div>
         </div>
       </Layout>
     </>

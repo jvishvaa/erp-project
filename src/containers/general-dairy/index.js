@@ -16,6 +16,7 @@ import GeneralDairyFilter from './filterdata';
 import PeriodCard from './dairy-card';
 import ViewMoreCard from './view-more-card';
 import {Context} from './context/context';
+import {useLocation} from 'react-router-dom';
 
 // component import from DailyDairy
 import DailyDairy from '../daily-dairy/dairy-card/index';
@@ -53,22 +54,44 @@ const GeneralDairyList = () => {
     const [state,setState] = useContext(Context);
     const [ activeTab, setActiveTab ] = useState(0);
     const [ dairyType, setDairyType ] = useState(1);
+    const [studentModuleId, setStudentModuleId] = useState();
+    const [teacherModuleId, setTeacherModuleId] = useState();
+    const location = useLocation();
 
     const handlePagination = (event, page) => {
         setPage(page);
     };
 
+    const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+    useEffect(() => {
+        if (NavData && NavData.length) {
+          NavData.forEach((item) => {
+            if (
+              item.parent_modules === 'Dairy' &&
+              item.child_module &&
+              item.child_module.length > 0
+            ) {
+              item.child_module.forEach((item) => {
+                if(location.pathname === "/dairy/student" && item.child_name === "Student Dairy") {
+                    setStudentModuleId(item?.child_id);
+                } else if(location.pathname === "/dairy/teacher" && item.child_name === "Teacher") {
+                    setTeacherModuleId(item?.child_id);
+                } 
+              });
+            }
+          });
+        }
+      }, [location.pathname]);
+
     const handleDairyList = (branchId, gradeId, sectionIds, startDate, endDate, activeTab) => {
         //console.log(branchId, gradeId, sectionIds, startDate, endDate, '===');
         setLoading(true);
         setPeriodData([]);
-        axiosInstance
-            .get(
-                `${endpoints.generalDairy.dairyList
-                }?branch=${branchId}&grades=${gradeId}&sections=${sectionIds}&page=${page}&start_date=${startDate.format(
-                    'YYYY-MM-DD'
-                )}&end_date=${endDate.format('YYYY-MM-DD')}${activeTab !== 0? ('&dairy_type='+activeTab) : ''}`
-            )
+        const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
+        console.log(roleDetails);
+        const diaryUrl =  isTeacher ? `${endpoints.generalDairy.dairyList}?branch=${branchId}&grades=${gradeId}&sections=${sectionIds}&page=${page}&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}${activeTab !== 0? ('&dairy_type='+activeTab) : ''}`
+            : `${endpoints.generalDairy.dairyList}?module_id=${studentModuleId}&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}${activeTab !== 0? ('&dairy_type='+activeTab) : ''}`;
+        axiosInstance.get(diaryUrl)
             // axiosInstance.get(`${endpoints.generalDairy.dairyList}?start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}`)
             // axiosInstance.get(`${endpoints.generalDairy.dairyList}?grades=${gradeId}&sections=${sectionIds}`)
             .then((result) => {
@@ -91,6 +114,8 @@ const GeneralDairyList = () => {
     const handleDairyType = (type) => {
         setDairyType(type);
     }
+    const isTeacher = location.pathname === '/dairy/teacher' ? true : false;
+    const path = isTeacher ? 'Teacher Diary' : 'Student Diary';
 
     return (
         <>
@@ -98,14 +123,18 @@ const GeneralDairyList = () => {
             <Layout>
                 <div>
                     <div style={{ width: '95%', margin: '20px auto' }}>
-                        <CommonBreadcrumbs componentName='Dairy' />
+                        <CommonBreadcrumbs
+                            componentName='Dairy'
+                            childComponentName={path}
+                        />
                     </div>
                 </div>
                 <GeneralDairyFilter
-                 handleDairyList={handleDairyList}
-                 setPeriodData={setPeriodData}
-                //  setCurrentTab={setCurrentTab}
-                  />
+                    handleDairyList={handleDairyList}
+                    setPeriodData={setPeriodData}
+                    isTeacher={isTeacher}
+                    //  setCurrentTab={setCurrentTab}
+                />
                 <Paper className={classes.root}>
                     {periodData?.length > 0 ? (
                         <Grid

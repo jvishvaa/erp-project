@@ -1,4 +1,4 @@
-.rootViewMore {
+.rootViewMoreReport{
     border: 1px solid #ff6b6b;
     border-radius: 10px !important;
     height:70vh;
@@ -88,7 +88,6 @@
     color: #014b7e;
     display: flex;
     flex-direction: column;
-    cursor: pointer;
 }
 
 .resourceBulkDownload {
@@ -127,7 +126,7 @@
 }
 
 @media screen and (max-width:768px) {
-    .rootViewMore {
+    .rootViewMoreReport {
         margin:0 auto;
       }
 }

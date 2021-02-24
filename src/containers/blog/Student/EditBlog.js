@@ -100,6 +100,8 @@ class EditBlog extends Component {
       starsRating: 0,
       feedBack: false,
       key: 0,
+      parsedTextEditorContentLen:this.props.location.state.parsedTextEditorContentLen &&  this.props.location.state.parsedTextEditorContentLen !==0 ?
+      this.props.location.state.parsedTextEditorContentLen : '',
       title:
         this.props.location.state.title && this.props.location.state.title.length !== 0
           ? this.props.location.state.title
@@ -137,9 +139,8 @@ class EditBlog extends Component {
         this.props.location.state.files && this.props.location.state.files.length !== 0
           ? this.props.location.state.files
           : [],
-          wordCountLimit:0
+      wordCountLimit:0
     };
-    console.log(this.props,"@@@")
   }
   static contextType = AlertNotificationContext
 
@@ -161,9 +162,8 @@ class EditBlog extends Component {
     let { roleDetails } = this.state;
     const erpUserId = roleDetails.role_details.erp_user_id;
     axios
-      .get(`${endpoints.blog.genreList}?is_delete=${
-        'False'
-      }&erp_user_id=${
+      .get(`${endpoints.blog.genreList}
+      ?erp_user_id=${
         erpUserId
       }`)
       .then((res) => {
@@ -174,14 +174,24 @@ class EditBlog extends Component {
 
   isWordCountSubceeded = () => {
     let { textEditorContent, wordCountLimit } = this.state
-    const parsedTextEditorContent=textEditorContent.split(' ')
-    // const parsedTextEditorContent = textEditorContent.replace(/(<([^>]+)>)/ig, '').split(' ')
-    const textWordCount = parsedTextEditorContent.length
+    // const parsedTextEditorContent=textEditorContent.split(' ')
+    const parsedTextEditorContent = textEditorContent.replace(/(<([^>]+)>)/ig, ' ').split(' ')
+    let count =0
+    parsedTextEditorContent.map((item)=>{
+      if(item.length){
+        count=count+1
+      }
+    })
+
+    // const textWordCount = parsedTextEditorContent.length
+    const textWordCount=count
     this.setState({ parsedTextEditorContentLen: textWordCount })
     if (parsedTextEditorContent && parsedTextEditorContent.length < wordCountLimit) {
-      const errorMsg = `Please write atleast ${wordCountLimit} words.Currently only ${parsedTextEditorContent.length} words have been written`
+      const errorMsg = `Please write atleast ${wordCountLimit} words.Currently only ${textWordCount} words have been written`
       return errorMsg
     }
+    this.setState({ parsedTextEditorContentLen: textWordCount})
+
     return false
   }
   
@@ -202,13 +212,14 @@ class EditBlog extends Component {
 
  
   handleTextEditor = (content) => {
-    const { blogId } = this.state;
-    console.log(content.replace(/&nbsp;/g, ''));
 
     // remove  begining and end white space
     // eslint-disable-next-line no-param-reassign
     content = content.replace(/&nbsp;/g, '');
+    // content=content.replace(/<br ?\/?>/g,'');
     this.setState({ textEditorContent: content, fadeIn: false });
+    const subceededWordCount = this.isWordCountSubceeded()
+
     // localStorage.setItem('blogContent', content);
   };
 
@@ -272,10 +283,10 @@ class EditBlog extends Component {
       this.context.setAlert('error',"please enter description to the blog")
       return
     }
-    if (files.length> 0 && image){
-      this.context.setAlert('error',"please remove already existing  image")
-      return
-    }
+    // if (files.length> 0 && image){
+    //   this.context.setAlert('error',"please remove already existing  image")
+    //   return
+    // }
     
     // if(!files.length> 0  && !image){
     //   this.context.setAlert('error',"please select all fields")
@@ -297,7 +308,6 @@ class EditBlog extends Component {
       // files,
       genreName
     } = this.state;
-    console.log(genreObj,"@@@@")
     this.props.history.push({
       pathname: '/blog/student/preview-edit-blog',
       state: {genreName,genreObj, studentName, creationDate, genreId, textEditorContent, title, files,blogId,image,parsedTextEditorContentLen },
@@ -328,6 +338,7 @@ class EditBlog extends Component {
       studentName,
       creationDate,wordCountLimit
     } = this.state;
+    console.log(image,"2222@@@@@@@@")
     return Preview ? (
       <PreviewBlog
         content={textEditorContent}
@@ -364,6 +375,7 @@ class EditBlog extends Component {
                       size='small'
                       id='combo-box-demo'
                       options={genreList}
+                      disableClearable
                       value={genreObj}
                       getOptionLabel={(option) => option.genre}
                       style={{ width: 300 }}
