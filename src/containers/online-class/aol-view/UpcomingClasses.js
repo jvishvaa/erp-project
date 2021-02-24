@@ -158,7 +158,7 @@ const UpcomingClasses = () => {
     const [toggledData, setToggledData] = useState([])
 
     const [reload, setReload] = useState(false)
-    const limit =15;
+    const limit = 15;
 
     const [dateRangeTechPer, setDateRangeTechPer] = useState([
         moment().subtract(6, 'days'),
@@ -193,7 +193,7 @@ const UpcomingClasses = () => {
     }
     const handlePagination = (event, page) => {
         setPage(page);
-      };
+    };
 
     const handleBranch = (event, value) => {
         setFilterData({ ...filterData, branch: '' })
@@ -435,7 +435,7 @@ const UpcomingClasses = () => {
         setReload(!reload)
     }
 
-    console.log(reload, 'RRRRRRRRRR')
+    console.log(totalCount, '====================')
     return (
         <>
             <div className='breadcrumb-container-create' style={{ marginLeft: '15px' }}>
@@ -714,22 +714,22 @@ const UpcomingClasses = () => {
                 ) */}
             </Grid>
             {classesData?.length > 0 && (
-                <div style={{alignItems:'center'}}>
-                <Pagination
-                onChange={handlePagination}
-                style={{ marginTop: 25,marginLeft:'38rem' }}
-                count={Math.ceil(totalCount / limit)}
-                color='primary'
-                page={page}
-              />
-                </div>
-            )}
-            {toggledData?.length >0 && (
-                <div>
-                    
+                <div style={{ alignItems: 'center' }}>
                     <Pagination
                         onChange={handlePagination}
-                        style={{ marginTop: 25,marginLeft:'38rem' }}
+                        style={{ marginTop: 25, marginLeft: '38rem' }}
+                        count={Math.ceil(totalCount / limit)}
+                        color='primary'
+                        page={page}
+                    />
+                </div>
+            )}
+            {toggledData?.length > 0 && (
+                <div>
+
+                    <Pagination
+                        onChange={handlePagination}
+                        style={{ marginTop: 25, marginLeft: '38rem' }}
                         count={Math.ceil(toggledData?.length / limit)}
                         color='primary'
                         page={page}
