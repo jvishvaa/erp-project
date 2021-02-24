@@ -57,7 +57,7 @@ export const AssessmentHandlerContextProvider = ({
   );
 
   const [startedAt, setStartedAt] = useState(retrieveLocalData().startedAt);
-  const [readOnly, setReadOnly] = useState(true);
+  const [readOnly, setReadOnly] = useState(false);
 
   // const [currentSubQuestionId, setCurrentSubQuestionId] = useState();
   const [assessmentDetails, setAssessmentDetails] = useState({});

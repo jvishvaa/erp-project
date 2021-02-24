@@ -79,20 +79,21 @@ const McqQuestion = (props) => {
             <FormControlLabel
               className='mcq-options'
               value='option1'
-              control={<Radio />}
+              control={<Radio checked={existingAnswer === 'option1'} />}
               label={options[0].option1.optionValue}
             />
             <FormControlLabel
               className='mcq-options'
               value='option2'
-              control={<Radio />}
+              control={<Radio checked={existingAnswer === 'option2'} />}
               label={options[1].option2.optionValue}
             />
             {options[2]?.option3?.optionValue ? (
               <FormControlLabel
                 className='mcq-options'
                 value='option3'
-                control={<Radio />}
+                // control={<Radio />}
+                control={<Radio checked={existingAnswer === 'option3'} />}
                 label={options[2].option3.optionValue}
               />
             ) : null}
@@ -101,7 +102,8 @@ const McqQuestion = (props) => {
               <FormControlLabel
                 className='mcq-options'
                 value='option4'
-                control={<Radio />}
+                // control={<Radio />}
+                control={<Radio checked={existingAnswer === 'option4'} />}
                 label={options[3].option4.optionValue}
               />
             ) : null}
@@ -110,7 +112,8 @@ const McqQuestion = (props) => {
               <FormControlLabel
                 className='mcq-options'
                 value='option5'
-                control={<Radio />}
+                // control={<Radio />}
+                control={<Radio checked={existingAnswer === 'option5'} />}
                 label={options[4].option5.optionValue}
               />
             ) : null}
