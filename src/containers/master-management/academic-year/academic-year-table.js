@@ -124,10 +124,7 @@ const AcademicYearTable = () => {
     e.preventDefault();
     setLoading(true);
     axiosInstance
-      .put(endpoints.masterManagement.updateAcademicYear, {
-        is_delete: true,
-        academic_year_id: yearId,
-      })
+      .put(`${endpoints.masterManagement.updateAcademicYear}${yearId}`)
       .then((result) => {
         if (result.data.status_code === 200) {
             setDelFlag(!delFlag);

@@ -123,12 +123,9 @@ const GradeTable = () => {
     e.preventDefault();
     setLoading(true);
     axiosInstance
-      .put(endpoints.masterManagement.updateGrade, {
-        is_delete: true,
-        grade_id: gradeId,
-      })
+      .delete(`${endpoints.masterManagement.updateGrade}${gradeId}`)
       .then((result) => {
-        if (result.data.status_code === 200) {
+        if (result.data.status_code > 199 && result.data.status_code < 300) {
             setDelFlag(!delFlag);
             setLoading(false);
             setAlert('success', result.data.message||result.data.msg);
