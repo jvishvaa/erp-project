@@ -72,9 +72,14 @@
   border-radius: 5px;
   background: #fff;
   color: #014b7e;
-  padding: 8px 12px;
+  /* padding: 8px 12px; */
   cursor: pointer;
-  text-align: center;
+  /* text-align: center; */
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .sidebar-legend {
