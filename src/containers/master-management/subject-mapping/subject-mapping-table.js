@@ -201,10 +201,10 @@ const SubjectMappingTable = () => {
       .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
-          // setTotalCount(result.data.result.count)
-          setSubjects(result.data?.data);
+          setTotalCount(result.data?.data?.count)
+          setSubjects(result.data?.data?.results);
         } else {
-          setAlert('error', result.data.msg || result.data.message);
+          setAlert('error', result.data?.msg || result.data?.message);
         }
       })
       .catch((error) => {
