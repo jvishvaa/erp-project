@@ -163,7 +163,7 @@ export default function ClassCardComponent(props) {
                         </div>
                         <div>
                             <Typography className={classes.classTitle}>
-                                { classData.online_class ? 'No. Seat Left : xx' : ''}
+                                { classData.online_class ? `No. Seat Left : ${classData.online_class&& classData.online_class.seat_left}`  : ''}
                             </Typography>
                         </div>
                        
@@ -175,7 +175,7 @@ export default function ClassCardComponent(props) {
                             End Date: {classData.online_class ? moment(classData.online_class.end_time).format('DD-MM-YYYY') : ''}
                         </Typography>
                         <Typography className={classes.classSchedule}>
-                            Assigned To: {`Mr.xyzzzzzzzzzzzzzzzzzzzzzzzzzzzz`}
+                            Assigned To: {classData.online_class  && classData.online_class.teacher.split('@')[0] }
                         </Typography>
 
                         <div style={{ marginTop: '-2px', width: '100%' }}>
