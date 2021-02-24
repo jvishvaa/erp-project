@@ -240,6 +240,8 @@ export default {
     userSpecificSubjects: `/academic/users-subjects/`, // ?module_id=112
     userAssessmentQuestionAnalysis: `${baseURLCentral}/assessment/category_analysis_report/`, // ?user=3446&assessment_id=3
     assessmentAnalysisTeacherExcel: `${baseURLCentral}/assessment/teacher-report/`, // ?type=1
+    userAssessmentSubmission: `${baseURLCentral}/assessment/user_response/`,
+    fetchAssessmentQuestionPapersQuestions: `${baseURLCentral}/assessment/<question-paper-id>/qp-questions-list/`,
   },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
