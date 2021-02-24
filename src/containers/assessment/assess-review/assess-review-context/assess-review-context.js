@@ -139,7 +139,7 @@ export const AssessmentReviewContextProvider = ({ children, ...restProps }) => {
       return null;
     }
     const dataProp = {
-      queryParamObj: { test_id: testId, student_id: userId, user_id: userId },
+      queryParamObj: { test_id: testId, user_id: userId },
       callbacks: {
         ...callbacks,
         onResolve: (res) => {

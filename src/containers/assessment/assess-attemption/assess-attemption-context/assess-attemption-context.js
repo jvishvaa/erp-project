@@ -438,6 +438,7 @@ export const AssessmentHandlerContextProvider = ({
     });
     const payLoad = {
       ...assessmentDetails,
+      total_question: (getSortedAndMainQuestions(questionsDataObj || {}) || []).length,
       start_time: new Date(startedAt),
       end_time: new Date(),
       user_response: userReponses,

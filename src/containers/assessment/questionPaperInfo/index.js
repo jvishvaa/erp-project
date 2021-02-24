@@ -39,6 +39,7 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
           subject_name: subjects = [],
         } = {},
         total_mark: totalMarks,
+        obtained_mark: obtainedMarks,
         analysis = {},
         user_response: userResponseObj,
       } = {},
@@ -48,7 +49,6 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
     } = {},
     questionsArray,
   } = useContext(AssessmentReviewContext) || {};
-  console.log(useContext(AssessmentReviewContext), 'useContext(AssessmentReviewContext)');
 
   const isTestAttempted = !!userResponseObj;
   const {
@@ -99,7 +99,7 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
         <div className={classes.analysisContainer}>
           <div className={classes.scoreBoard}>
             <div className={classes.scoreContainer}>
-              <div className={classes.scoreGain}>18</div>
+              <div className={classes.scoreGain}>{obtainedMarks || 0}</div>
               <div className={classes.scoreOutOf}>
                 Out of
                 {` ${totalMarks}`}
