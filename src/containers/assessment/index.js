@@ -133,7 +133,8 @@ const Assessment = ({ history, ...restProps }) => {
           setLoading(false);
         } else {
           setLoading(false);
-          setAlert('error', response.data.description);
+          const { data: { message } = {} } = response;
+          setAlert('error', `${message || 'Failed to fetch assessments.'}`);
         }
       })
       .catch((error) => {

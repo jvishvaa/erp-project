@@ -70,6 +70,7 @@ export const AssessmentHandlerContextProvider = ({
       test_duration: testDuration,
       question_paper_id: questionPaperId,
       question_paper__subject_name: questionPaperSubjectNames = [],
+      question_paper__grade_name: questionPaperGradeName,
     } = assessmentDetailsObj || {};
 
     let userDetails = {};
@@ -79,8 +80,8 @@ export const AssessmentHandlerContextProvider = ({
       userDetails = {
         user: userId,
         user_name: userName,
-        user_grade: 'Grade1',
-        user_section: 'SecA',
+        // user_grade: 'Grade1',
+        // user_section: 'SecA',
       };
     } catch (e) {
       userDetails = {};
@@ -90,7 +91,9 @@ export const AssessmentHandlerContextProvider = ({
       ...userDetails,
       subject_name: questionPaperSubjectNames,
       paper_id: questionPaperId,
+      question_paper: questionPaperId,
       test: testId,
+      grade_name: questionPaperGradeName,
       start_time: startedAt,
       test_duration: testDuration,
       // end_time: new Date().getTime(),
