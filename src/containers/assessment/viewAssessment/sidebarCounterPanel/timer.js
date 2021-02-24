@@ -15,12 +15,12 @@ const TimerComponent = (props) => {
   const testDurationInMilliSec = durationInMin * 60 * 1000;
   const durationLeft = testDurationInMilliSec - duratonPassedAlreadyInMilliSec;
   if (durationLeft <= 0) {
-    const isConfirm = window.confirm('Time ran out.');
-    if (isConfirm) {
-      submit();
-    } else {
-      window.alert('Please submit the test');
-    }
+    // const isConfirm = window.confirm('Time ran out.');
+    // if (isConfirm) {
+    //   submit();
+    // } else {
+    //   window.alert('Please submit the test');
+    // }
   }
   return (
     <Timer

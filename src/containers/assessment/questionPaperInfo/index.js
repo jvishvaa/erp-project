@@ -130,7 +130,7 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
             </div>
             <div className={classes.marksBar}>
               <div>No. of Questions</div>
-              <div>{totalQuestions}</div>
+              <div>{totalQuestions || (questionsArray && questionsArray.length)}</div>
             </div>
             <div className={classes.marksBar}>
               <div>Ques. attempted</div>
