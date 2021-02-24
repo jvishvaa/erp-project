@@ -94,7 +94,10 @@ const CourseView = () => {
           </div>
         </div>
         <div>
-          <CourseFilter handleCourseList={handleCourseList} />
+          <CourseFilter 
+          handleCourseList={handleCourseList}
+          setCourseData={setCourseData}
+           />
         </div>
         <Paper className={classes.root}>
           {courseData?.length > 0 ? (

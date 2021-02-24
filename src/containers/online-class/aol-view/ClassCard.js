@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: '10px',
         backgroundColor: '#FFFADF',
         cursor: 'pointer',
-        minHeight: '165px',
+        minHeight: '200px',
     },
     activeCard: {
         padding: '8px',
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: '10px',
         backgroundColor: '#F9D474',
         height: 'auto',
-        minHeight: '165px',
+        minHeight: '200px',
     },
     classTitle: {
         display: 'inline-block',
@@ -161,10 +161,12 @@ export default function ClassCardComponent(props) {
                                 {classData.online_class ? classData.online_class.title : ''}
                             </Typography>
                         </div>
-                        {/* <Typography className={classes.classTitle}>
-                                { classData.online_class.subject[0] && classData.online_class ? classData.online_class.subject[0]?.subject_name : ''}
+                        <div>
+                            <Typography className={classes.classTitle}>
+                                { classData.online_class ? 'No. Seat Left : xx' : ''}
                             </Typography>
-                        */}
+                        </div>
+                       
                         <Typography className={classes.classSchedule}>
                             Start Date: {classData.online_class ? moment(classData.online_class.start_time).format('DD-MM-YYYY') : ''}
                         </Typography>
@@ -172,8 +174,11 @@ export default function ClassCardComponent(props) {
                         <Typography className={classes.classSchedule}>
                             End Date: {classData.online_class ? moment(classData.online_class.end_time).format('DD-MM-YYYY') : ''}
                         </Typography>
+                        <Typography className={classes.classSchedule}>
+                            Assigned To: {`Mr.xyzzzzzzzzzzzzzzzzzzzzzzzzzzzz`}
+                        </Typography>
 
-                        <div style={{ marginTop: '15px', width: '100%' }}>
+                        <div style={{ marginTop: '-2px', width: '100%' }}>
                             {props.selectedId !== props.classData.id && (
                                 <StyledButton
                                     variant="contained"

@@ -8,6 +8,7 @@ import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import AssignModal from './assign-modal';
 import CloseIcon from '@material-ui/icons/Close';
+import { Pointer } from 'highcharts';
 
 const useStyles = makeStyles({
     classDetailsBox: {
@@ -93,7 +94,7 @@ const useStyles = makeStyles({
     },
     closeDetailCard: {
         float: 'right',
-        fontSize: '18px',
+        fontSize: '30px',
         color: '#014B7E',
     },
 })
@@ -126,6 +127,7 @@ const StyledAcceptButton = withStyles({
         backgroundColor: '#ff6b6b',
         borderRadius: '5px',
         letterSpacing: 0,
+        cursor: 'pointer'
     }
 })(Button);
 
@@ -134,7 +136,7 @@ export default function ClassdetailsCardComponent(props) {
     // <<<<<<<<<<<>>>>>>>>>>>>MODAL >>>>><<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     const [openAssignModal, setOpenAssignModal] = useState(false);
     const [teacherDropdown, setTeacherDropdown] = useState([])
-    const [cancelFlag,setCancelFlag] = useState(false)
+    const [cancelFlag, setCancelFlag] = useState(false)
 
     const assignData = props
     const [periodsData, setPeriodsData] = React.useState([]);
@@ -151,7 +153,7 @@ export default function ClassdetailsCardComponent(props) {
                     setPeriodsData(res.data.data);
                 })
         }
-    }, [props.classData,cancelFlag]);
+    }, [props.classData, cancelFlag]);
 
     const handleAttendance = () => {
         history.push(`/aol-attendance-list/${props?.classData?.id}`);
@@ -183,21 +185,23 @@ export default function ClassdetailsCardComponent(props) {
             })
     }, [])
 
+    console.log(props, '|||||||||||||||')
     return (
         <>
             <div className={classes.classDetailsBox}>
                 <div className={classes.classHeader}>
+                    <div>
+                        <CloseIcon  onClick={(e) => props.hendleCloseDetails()} className={classes.closeDetailCard} />
+                    </div>
                     {props.classData.online_class && (
                         <>
-                            <div>
-                                <CloseIcon  onClick={(e) => props.hendleCloseDetails() } className={classes.closeDetailCard}/>
-                            </div>
+
                             <div>
                                 <Typography className={classes.classHeaderText}>
                                     {props.classData && props.classData.online_class && props.classData.online_class.title}
                                 </Typography>
                                 <Typography className={classes.classHeaderTime}>
-                                    {props.classData && props.classData.online_class && moment(props.classData.join_time).format('h:mm:ss')}
+                                    {props.classData && props.classData.online_class && moment(props.classData.online_class.start_time).format('h:mm:ss')}
                                 </Typography>
                             </div>
                         </>
@@ -216,7 +220,7 @@ export default function ClassdetailsCardComponent(props) {
                     </div>
                 </div>
                 <div className={classes.classDetails}>
-                    {props?.toggle && props?.classData?.online_class?.is_canceled ? '' :
+                    {props?.toggle ? '' :
                         <Typography className={classes.classDetailsTitle}>
                             Description
                         </Typography>
@@ -226,19 +230,19 @@ export default function ClassdetailsCardComponent(props) {
                     <div className={classes.joinClassDiv}>
                         {/* {props.toggle ? '' : periodsData.length > 0 && periodsData.map((data, id) => ( */}
                         {props.toggle ? '' :
-                            periodsData.length > 0 && periodsData.map((data,id)=>(
- 
-                            <JoinClass
-                                // key={id}
-                                // data={props.classData}
-                                data={data}
-                                joinUrl={props.classData?.presenter_url}
-                                cancelFlag={cancelFlag}
-                                setCancelFlag={setCancelFlag}
-                            // isTeacher={isTeacher}
-                            />
+                            periodsData.length > 0 && periodsData.map((data, id) => (
+
+                                <JoinClass
+                                    // key={id}
+                                    // data={props.classData}
+                                    data={data}
+                                    joinUrl={props.classData?.presenter_url}
+                                    cancelFlag={cancelFlag}
+                                    setCancelFlag={setCancelFlag}
+                                // isTeacher={isTeacher}
+                                />
                             ))
-                        }  
+                        }
                     </div>
                     <Divider className={classes.classDetailsDivider} />
 
@@ -260,17 +264,17 @@ export default function ClassdetailsCardComponent(props) {
                             </StyledButton>
                         </>
                     ) : (
-                        <>
-                            <StyledButton
-                                onClick={handleReshuffle}
-                                color="primary"
-                                fullWidth
-                            >
-                                Reshuffle
+                            <>
+                                <StyledButton
+                                    onClick={handleReshuffle}
+                                    color="primary"
+                                    fullWidth
+                                >
+                                    Reshuffle
                             </StyledButton>
                                 {/* <StyledButton color="primary">Resources</StyledButton> */}
-                        </>
-                    )}
+                            </>
+                        )}
                     <StyledButton
                         color="primary"
                         onClick={handleCoursePlan}

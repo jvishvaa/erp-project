@@ -7,3 +7,12 @@
 .helperText.MuiFormHelperText-root {
     color: red;
 }
+.reshuffleDataUnavailable{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 5%;
+    margin-left: 85%;
+    margin-top: 21%;
+  }
