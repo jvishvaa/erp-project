@@ -410,7 +410,7 @@ function App() {
                         <Route exact path='/assessment'>
                           {({ match }) => <Assessment match={match} />}
                         </Route>
-                        <Route exact path='/assessment/view-assessment'>
+                        <Route exact path='/assessment/:assessmentId/attempt'>
                           {({ match }) => <ViewAssessment match={match} />}
                         </Route>
                         <Route exact path='/assessment/:assessmentId/state-management-intg-temp'>
