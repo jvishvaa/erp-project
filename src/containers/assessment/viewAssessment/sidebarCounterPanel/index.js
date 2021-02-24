@@ -60,7 +60,7 @@ const SidebarCounterPanel = (props) => {
     questionsMetaInfo: { is_ready_to_submit: isReadyToSubmit } = {},
     questionsArray,
     questionsDataObj,
-    controls: { selectQues, currentQuesionId, submit },
+    controls: { selectQues, currentQuesionId, submit, startedAt },
   } = useContext(AssessmentHandlerContext) || {};
   const { setAlert } = useContext(AlertNotificationContext);
 
@@ -113,7 +113,11 @@ const SidebarCounterPanel = (props) => {
           <h5>{description || 'NA'}</h5>
         </div>
         {testDuration ? (
-          <TimerComponent submit={submitTheResult} duration={testDuration} />
+          <TimerComponent
+            startedAt={startedAt}
+            submit={submitTheResult}
+            duration={testDuration}
+          />
         ) : null}
       </div>
       <div className='sidebar-question-list'>

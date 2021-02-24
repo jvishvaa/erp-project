@@ -57,6 +57,7 @@ export const AssessmentHandlerContextProvider = ({
   );
 
   const [startedAt, setStartedAt] = useState(retrieveLocalData().startedAt);
+  const [readOnly, setReadOnly] = useState(true);
 
   // const [currentSubQuestionId, setCurrentSubQuestionId] = useState();
   const [assessmentDetails, setAssessmentDetails] = useState({});
@@ -226,8 +227,12 @@ export const AssessmentHandlerContextProvider = ({
     });
   }
   function attemptQuestion(qId, userResponse = {}) {
-    // updateQuestionsUserResponse(9, { attemption_status: true, ...userResponse });
-    updateQuestionsUserResponse(qId, userResponse);
+    if (readOnly) {
+      console.log('No questions can be attempted.');
+    } else {
+      // updateQuestionsUserResponse(9, { attemption_status: true, ...userResponse });
+      updateQuestionsUserResponse(qId, userResponse);
+    }
   }
   function parseSectionData(sections) {
     /*

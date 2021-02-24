@@ -1,4 +1,3 @@
-import { duration } from '@material-ui/core';
 import React from 'react';
 import Timer from 'react-compound-timer';
 
@@ -11,16 +10,26 @@ m:
 <Timer.Seconds />
 s */
 const TimerComponent = (props) => {
-  const { submit, duration: durationInMin } = props || {};
-  const durationInMilliSec = durationInMin * 60 * 1000;
+  const { submit, startedAt, duration: durationInMin } = props || {};
+  const duratonPassedAlreadyInMilliSec = new Date() - new Date(startedAt);
+  const testDurationInMilliSec = durationInMin * 60 * 1000;
+  const durationLeft = testDurationInMilliSec - duratonPassedAlreadyInMilliSec;
+  if (durationLeft <= 0) {
+    const isConfirm = window.confirm('Time ran out.');
+    if (isConfirm) {
+      submit();
+    } else {
+      window.alert('Please submit the test');
+    }
+  }
   return (
     <Timer
-      initialTime={durationInMilliSec}
+      initialTime={durationLeft}
       direction='backward'
       lastUnit='m'
       checkpoints={[
         {
-          time: durationInMilliSec,
+          time: durationLeft,
           callback: () => submit(),
         },
       ]}
