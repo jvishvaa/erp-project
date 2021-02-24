@@ -63,9 +63,7 @@ const MatchFollowingQuestion = (props) => {
           name: `p${rowIndex + 1}1`,
           option: options[rowIndex],
           matchingOption: matchingOptions[rowIndex],
-          src: quesImgSrc.includes('s3')
-            ? endpoints.discussionForum.s3 + quesImgSrc
-            : quesImgSrc,
+          src: `${endpoints.s3}/${quesImgSrc}`,
           // src,
           value: questionValue,
         },
@@ -73,9 +71,10 @@ const MatchFollowingQuestion = (props) => {
           name: `p${rowIndex + 1}2`,
           option: options[rowIndex],
           matchingOption: matchingOptions[rowIndex],
-          src: ansImgSrc.includes('s3')
-            ? endpoints.discussionForum.s3 + ansImgSrc
-            : ansImgSrc,
+          src: `${endpoints.s3}/${ansImgSrc}`,
+          // src: (ansImgSrc || '').includes('s3')
+          //   ? endpoints.discussionForum.s3 + ansImgSrc
+          //   : ansImgSrc,
           // src,
           value: answerValue,
         },

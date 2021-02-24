@@ -287,7 +287,7 @@
     transform:scale(1);
   }
 }
-.lines:before{
+/* .lines:before{
   float: left;
   content: '';
   width: 10px;
@@ -308,4 +308,4 @@
   right: -2px;
   top: -5px;
   background-color: #DC7C00;
-}
+} */
