@@ -4,19 +4,12 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     borderRadius: '15px',
     padding: 0,
-    marginBottom: 40,
-    // border: '1px solid #FF6B6B',
-  },
-  paperWrap: {
-    // padding: 2.3,
-    // borderRadius: '10px',
-    // border: '1px solid #FF6B6B',
+    background: '#fafafa',
   },
   testInfo: {
-    backgroundColor: '#fff',
+    borderRadius: '15px',
   },
   testInfoHeader: {
-    // borderRadius: '10px',
     borderRadius: '15px 15px 0 0',
     display: 'flex',
     justifyContent: 'space-between',
@@ -31,7 +24,6 @@ const useStyles = makeStyles((theme) => ({
   },
   cardDescription: {
     margin: 0,
-    // marginTop: 2,
     color: '#014B7E',
   },
   cardDate: {

@@ -4,6 +4,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useContext, useEffect } from 'react';
 import { Paper, Button } from '@material-ui/core';
+import ReactHtmlParser from 'react-html-parser';
 import { withRouter } from 'react-router-dom';
 import { timeDeltaDiff } from '../../../utility-functions';
 // import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -26,6 +27,8 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
     setAssessmentId,
     assessmentResult: {
       data: {
+        instructions: testInstructions,
+        descriptions: testDescription,
         test_name: testTitle,
         test_date: testDate,
         // id: assessmentId,
@@ -43,7 +46,9 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
       fetchFailed,
       message,
     } = {},
+    questionsArray,
   } = useContext(AssessmentReviewContext) || {};
+  console.log(useContext(AssessmentReviewContext), 'useContext(AssessmentReviewContext)');
 
   const isTestAttempted = !!userResponseObj;
   const {
@@ -167,8 +172,29 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
     </>
   );
   const takeTestUI = (
-    <>
-      <br />
+    <div style={{ padding: '10px' }}>
+      <div>
+        <h4 className={classes.cardTitleHeading}>Description:</h4>
+        <div>
+          &nbsp; &nbsp;
+          {ReactHtmlParser(testDescription)}
+        </div>
+      </div>
+      <div>
+        <h4 className={classes.cardTitleHeading}>Instructions</h4>
+        <div>
+          &nbsp; &nbsp;
+          {ReactHtmlParser(testInstructions)}
+        </div>
+      </div>
+      {questionsArray && questionsArray.length ? (
+        <div>
+          <h4 className={classes.cardTitleHeading}>
+            No of questions: &nbsp;
+            {questionsArray && questionsArray.length}
+          </h4>
+        </div>
+      ) : null}
       <div style={{ display: 'flex' }}>
         <Button
           style={{
@@ -185,8 +211,8 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
           Take Test
         </Button>
       </div>
-      <br />
-    </>
+      {/* <br /> */}
+    </div>
   );
   return (
     <Paper elevation={2} className={classes.paper}>

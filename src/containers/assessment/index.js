@@ -192,13 +192,13 @@ const Assessment = ({ history, ...restProps }) => {
             {tabBar()}
             <Divider variant='middle' />
             {/* <h4 className='assessment_heading'>All | Completed | Upcoming</h4> */}
-            <Grid container spacing={2}>
+            <Grid
+              container
+              spacing={2}
+              style={{ marginTop: '20px', marginBottom: '20px' }}
+            >
               <Grid item md={showInfo ? 6 : 12} xs={12}>
-                <Grid
-                  container
-                  spacing={2}
-                  style={{ marginTop: '20px', marginBottom: '20px' }}
-                >
+                <Grid container spacing={2}>
                   {questionPaperList.map((qp, index) => (
                     <Grid
                       item
