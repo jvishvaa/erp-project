@@ -18,7 +18,7 @@ const MatchFollowingQuestion = (props) => {
     id: qId,
     question_answer: questionAnswer,
     user_response: {
-      attemption_status: attemptionStatus,
+      // attemption_status: attemptionStatus,
       answer: existingAnswer = [],
     } = {},
   } = currentQuestionObj || {};
@@ -28,25 +28,25 @@ const MatchFollowingQuestion = (props) => {
       ? questionAnswer
       : [{ options: [], matchingOptions: [] }];
 
-  function shuffle(array) {
-    let currentIndex = array.length;
-    let temporaryValue;
-    let randomIndex;
+  // function shuffle(array) {
+  //   let currentIndex = array.length;
+  //   let temporaryValue;
+  //   let randomIndex;
 
-    // While there remain elements to shuffle...
-    while (currentIndex !== 0) {
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
+  //   // While there remain elements to shuffle...
+  //   while (currentIndex !== 0) {
+  //     // Pick a remaining element...
+  //     randomIndex = Math.floor(Math.random() * currentIndex);
+  //     currentIndex -= 1;
 
-      // And swap it with the current element.
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
-    }
+  //     // And swap it with the current element.
+  //     temporaryValue = array[currentIndex];
+  //     array[currentIndex] = array[randomIndex];
+  //     array[randomIndex] = temporaryValue;
+  //   }
 
-    return array;
-  }
+  //   return array;
+  // }
   const generatePoints = () => {
     const noOfRows = options.length === matchingOptions.length ? options.length : 0;
     const dummyRowsArray = new Array(noOfRows).fill('dummy');
@@ -56,26 +56,19 @@ const MatchFollowingQuestion = (props) => {
         options[rowIndex] || {};
       const { images: [ansImgSrc] = [], optionValue: answerValue } =
         matchingOptions[rowIndex] || {};
-      // const src =
-      //   'https://hips.hearstapps.com/amv-prod-gp.s3.amazonaws.com/gearpatrol/wp-content/uploads/2019/10/Buy-a-Kia-Telluride-Instead-gear-patrol-slide-1.jpg?crop=1.00xw:0.754xh;0,0.124xh&resize=980:*';
       const rowArray = [
         {
           name: `p${rowIndex + 1}1`,
           option: options[rowIndex],
           matchingOption: matchingOptions[rowIndex],
-          src: `${endpoints.s3}/${quesImgSrc}`,
-          // src,
+          src: `${endpoints.assessment.s3}${quesImgSrc}`,
           value: questionValue,
         },
         {
           name: `p${rowIndex + 1}2`,
           option: options[rowIndex],
           matchingOption: matchingOptions[rowIndex],
-          src: `${endpoints.s3}/${ansImgSrc}`,
-          // src: (ansImgSrc || '').includes('s3')
-          //   ? endpoints.discussionForum.s3 + ansImgSrc
-          //   : ansImgSrc,
-          // src,
+          src: `${endpoints.assessment.s3}${ansImgSrc}`,
           value: answerValue,
         },
       ];
