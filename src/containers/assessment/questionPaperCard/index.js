@@ -17,6 +17,7 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 
 const QuestionPaperCard = ({
   testTitle,
+  descriptions: testDescription,
   is_test_completed: { is_completed: isTestAttempted, completed_date: testAttemptedDate },
   handleStartTest,
   test_date: testDate,
@@ -37,7 +38,8 @@ const QuestionPaperCard = ({
         <div>
           <h3 className={classes.cardTitleHeading}>{testTitle}</h3>
           <h4 className={classes.cardDescription}>
-            Some test name, (This includes module)
+            {/* Some test name, (This includes module) */}
+            {testDescription}
           </h4>
         </div>
         <div className={classes.cardEasyWrapper}>
