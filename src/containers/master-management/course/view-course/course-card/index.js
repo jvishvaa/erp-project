@@ -26,8 +26,10 @@ const CourseCard = ({
   setSelectedIndex,
   deleteFlag,
   setDeleteFlag,
+  handleCourseList,
   sendGrade,
   selectedIndex,
+  tabVal
 }) => {
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -39,13 +41,6 @@ const CourseCard = ({
 
   const [state, setState] = useContext(Context);
   const history = useHistory();
-
-  // useEffect(() => {
-  //   if (sessionStorage.getItem('selectedIndex') === index) {
-  //     handleViewMore();
-  //     sessionStorage.removeItem('selectedIndex');
-  //   }
-  // }, []);
 
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
@@ -110,9 +105,37 @@ const CourseCard = ({
   };
   // const handleEdit = () => {
   //   history.push(`/create/course/${sendGrade}`);
-  //   sessionStorage.setItem('selectedIndex', selectedIndex);
+  //   sessionStora ge.setItem('selectedIndex', selectedIndex);
   // };
-
+  const handleStatus=(e,index)=>{
+    if(tabVal== 1){
+      axiosInstance.put(`${endpoints.onlineCourses.updateCourseStatus}${e.id}/update-course/`,{
+        "is_active":0
+      }).then(result=>{
+        if(result.data.status_code === 200){
+          setAlert('success',result.data.message)
+          handleCourseList(sendGrade);
+        }
+        else{
+          setAlert('error','Not Updated, Try After Few Mins.')
+        }
+      })
+    }
+    if(tabVal == 2){
+      axiosInstance.put(`${endpoints.onlineCourses.updateCourseStatus}${e.id}/update-course/`,{
+        "is_active":1
+      }).then(result=>{
+        if(result.data.status_code === 200){
+          setAlert('success',result.data.message)
+          handleCourseList(sendGrade);
+        }
+        else{
+          setAlert('error','Not Updated, Try After Few Mins.')
+        }
+      })
+    }
+    
+  }
   return (
     <Paper
       className={periodColor ? classes.selectedRoot : classes.root}
@@ -163,9 +186,14 @@ const CourseCard = ({
                     <div className='tooltip' onClick={() => handleDelete(period)}>
                       Delete
                     </div>
-                    {/* <div className='tooltip' onClick={handleEdit}>
-                      Edit
-                    </div> */}
+                    <div onClick={() => handleStatus(period)} >
+                     {/* {tabVal ==0 || tabVal == undefined ? 'Active' : '' } */}
+                     {tabVal == 1  ? 'Inactive' : '' }
+                     {tabVal == 2  ? 'Active' : '' }
+                    </div>
+                    <div>
+                    {/* {tabVal ==0 || tabVal == undefined ? 'Inactive' : '' } */}
+                    </div>
                   </span>
                 </div>
               ) : null}

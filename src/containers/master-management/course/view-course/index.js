@@ -29,6 +29,7 @@ import CourseFilter from './course-filter';
 import CourseCard from './course-card';
 import ViewMoreCard from './view-more-card';
 import Context from './context/ViewStore';
+import TabPanel from './course-tab';
 
 const CourseView = () => {
   const themeContext = useTheme();
@@ -45,20 +46,31 @@ const CourseView = () => {
   const [periodDataForView, setPeriodDataForView] = useState({});
   const [sendGrade, setSendGrade] = useState([]);
   const [deleteFlag, setDeleteFlag] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(1);
+  const [pageFlag,setPageFlag]= useState(false)
+  const [tabValue, setTabValue] = useState(0);
+  const limit = 9;
+  const [tabVal,setTabVal] = useState('')
+
+
   //context Data
   //   const [state,setState] = useContext(Context)
 
   const [courseData, setCourseData] = useState([]);
 
-  const handleCourseList = (gradeIds) => {
+  const handleCourseList = (gradeIds,tabMenuval) => {
+    console.log(tabMenuval,'+++++++++++')
+    setTabVal(tabMenuval)
     setLoading(true);
     setSendGrade(gradeIds);
     const tag_val = [16, 20];
-    axiosInstance
-      .get(`${endpoints.onlineCourses.courseList}?grade=${gradeIds}`)
+    if(tabMenuval== 0 || tabMenuval == undefined){
+      axiosInstance
+      .get(`${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}&all=chacha`)
       .then((result) => {
         if (result.data.status_code === 200) {
-          // setTotalCount(result.data.count);
+          setTotalCount(result.data.count);
           setLoading(false);
           setCourseData(result.data.result);
           // setState({...state,editData:result.data.result})
@@ -73,12 +85,61 @@ const CourseView = () => {
         setLoading(false);
         setAlert('error', error.message);
       });
+    }
+    if(tabMenuval == 1){
+      axiosInstance
+      .get(`${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}&all&is_active=True`)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setTotalCount(result.data.count);
+          setLoading(false);
+          setCourseData(result.data.result);
+        } else {
+          setLoading(false);
+          setAlert('error', result.data.description);
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', error.message);
+      });
+    }
+    if(tabMenuval == 2){
+      axiosInstance
+      .get(`${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}&all&is_active=False`)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setTotalCount(result.data.count);
+          setLoading(false);
+          setCourseData(result.data.result);
+        } else {
+          setLoading(false);
+          setAlert('error', result.data.description);
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', error.message);
+      });
+    }
+    
+
+  };
+
+  const handlePagination = (event, page) => {
+    setPage(page);
+    setPageFlag(true)  
   };
   useEffect(() => {
     if (deleteFlag) {
       handleCourseList(sendGrade);
     }
   }, [deleteFlag]);
+  useEffect(()=>{
+    if(pageFlag== true && page){
+      handleCourseList(sendGrade);
+    }
+  },[page])
 
   return (
     <>
@@ -97,7 +158,16 @@ const CourseView = () => {
           <CourseFilter 
           handleCourseList={handleCourseList}
           setCourseData={setCourseData}
+          setPageFlag={setPageFlag}
            />
+        </div>
+        <div>
+            <TabPanel
+              handleCourseList={handleCourseList}
+              sendGrade={sendGrade}
+              setTabValue={setTabValue}
+              tabValue={tabValue}
+            />
         </div>
         <Paper className={classes.root}>
           {courseData?.length > 0 ? (
@@ -134,6 +204,9 @@ const CourseView = () => {
                         setDeleteFlag={setDeleteFlag}
                         sendGrade={sendGrade}
                         selectedIndex={selectedIndex}
+                        tabVal={tabVal}
+                        handleCourseList={handleCourseList}
+                        sendGrade={sendGrade}
                       />
                     </Grid>
                   ))}
@@ -182,11 +255,11 @@ const CourseView = () => {
           {courseData?.length > 0 && (
             <div className='paginateData paginateMobileMargin'>
               <Pagination
-              // onChange={handlePagination}
-              // style={{ marginTop: 25 }}
-              // count={Math.ceil(totalCount / limit)}
-              // color='primary'
-              // page={page}
+              onChange={handlePagination}
+              style={{ marginTop: 25 }}
+              count={Math.ceil(totalCount / limit)}
+              color='primary'
+              page={page}
               />
             </div>
           )}

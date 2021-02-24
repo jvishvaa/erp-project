@@ -210,6 +210,7 @@ export default {
     categoryList: '/aol/tagging-list/',
     updateCourse: '/aol/',
     studentList: '/erp_user/batch-student-list/',
+    updateCourseStatus:'/aol/',
   },
   attendanceList: {
     list: '/erp_user/onlineclass_attendeelist/',
