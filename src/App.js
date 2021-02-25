@@ -40,8 +40,14 @@ import CoordinatorHomework from './containers/homework/coordinator-homework';
 import AddHomeworkCoord from './containers/homework/coordinator-homework/add-homework';
 import LessonReport from './containers/lesson-plan/lesson-plan-report';
 import LessonPlan from './containers/lesson-plan/lesson-plan-view';
-import ViewAssessments from './containers/assessment/view-assessment';
-import AssessmentAttemption from './containers/assessment/assess-attemption';
+import {
+  ViewAssessments,
+  AssessmentAttemption,
+  AssessmentAnalysis,
+  AssessmentHandlerUI,
+  AssessmentComparisionUI,
+} from './containers/assessment';
+
 import {
   TeacherBlog,
   ContentView,
@@ -94,9 +100,6 @@ import ViewCourseCard from './containers/master-management/course/view-course/vi
 import ViewStore from './containers/master-management/course/view-course/context/ViewStore';
 import DailyDairyStore from './containers/daily-dairy/context/context';
 import AttendeeListRemake from './containers/attendance';
-import AssessmentComparisionUI from './containers/assessment/assessment-report/assessment-comparision';
-import AssessmentAnalysis from './containers/assessment/assessment-report/assessment-analysis';
-import AssessmentHandlerUI from './containers/assessment/assess-attemption/template/index-template';
 import Reshuffle from './containers/online-class/aol-view/Reshuffle';
 import StudentStrength from './containers/student-strength';
 import StudentIdCard from './containers/student-Id-Card';
@@ -409,13 +412,16 @@ function App() {
                         <Route exact path='/aol-attendance-list/:id?'>
                           {({ match }) => <AttendeeListRemake match={match} />}
                         </Route>
-                        <Route exact path='/assessment'>
+                        <Route exact path='/assessment/'>
                           {({ match }) => <ViewAssessments match={match} />}
                         </Route>
                         <Route exact path='/assessment/:assessmentId/attempt'>
                           {({ match }) => <AssessmentAttemption match={match} />}
                         </Route>
-                        <Route exact path='/assessment/:assessmentId/state-management-intg-temp'>
+                        <Route
+                          exact
+                          path='/assessment/:assessmentId/state-management-intg-temp'
+                        >
                           {({ match }) => <AssessmentHandlerUI match={match} />}
                         </Route>
                         <Route exact path='/student-strength'>
