@@ -198,6 +198,7 @@ export default function DiscussionComponent(props) {
   const dispatch = useDispatch();
   const { setAlert } = useContext(AlertNotificationContext);
   const [reply, setReply] = React.useState('');
+  const [ addComment, setAddComment] = React.useState(0);
   const [commentList, setCommentList] = React.useState([]);
   const handleChange = (e) => {
     setReply(e.target.value);
@@ -205,7 +206,7 @@ export default function DiscussionComponent(props) {
   const handleReply = () => {
     const param = {
       answer: reply,
-      replay: props.rowData.id,
+      post: props.rowData.id,
     };
 
     axiosInstance
@@ -214,6 +215,7 @@ export default function DiscussionComponent(props) {
         //console.log(res);
         setReply('');
         setAlert('success', res.data.message);
+        setAddComment(addComment + 1);
       })
       .catch((error) => console.log(error));
   };
@@ -227,13 +229,13 @@ export default function DiscussionComponent(props) {
       comment: props.rowData.id,
     };
     axiosInstance
-      .get(endpoints.discussionForum.ViewCommentsList, params)
+      .get(`${endpoints.discussionForum.postLike}?post=${props.rowData.id}&type=2`)
       .then((res) => {
         //console.log(res.data.result.results);
         setCommentList(res.data.result.results);
       })
       .catch((error) => console.log(error));
-  }, [props.rowData]);
+  }, [props.rowData, addComment]);
 
   // awards popover
   const [anchorEl, setAnchorEl] = React.useState(null);

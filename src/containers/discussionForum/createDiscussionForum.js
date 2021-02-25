@@ -399,7 +399,7 @@ const handleEditorChange = (content, editor) => {
                   </Grid>
          
           <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
-           <Grid item xs={12} sm={3}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+           <Grid item xs={12} sm={4}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
                <Autocomplete
                    style={{ width: '100%' }}
                    id="tags-outlined"
@@ -420,7 +420,7 @@ const handleEditorChange = (content, editor) => {
                    }
                />
                </Grid>
-          <Grid item xs={12} sm={3}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+          <Grid item xs={12} sm={4}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
           {selectedCategory && subCategoryListRes.length ? ( 
           <Autocomplete
               style={{ width: '100%' }}
@@ -443,7 +443,7 @@ const handleEditorChange = (content, editor) => {
           />
           ) : null}
           </Grid>
-          <Grid item xs={12} sm={3}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+          <Grid item xs={12} sm={4}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
           {selectedSubCategory && subSubCategoryListRes.length ? ( 
           <Autocomplete
               style={{ width: '100%' }}

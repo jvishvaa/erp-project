@@ -243,7 +243,7 @@ export default function DiscussionPostComponent(props) {
       comment: postsId.id,
     };
     axiosInstance
-      .get(endpoints.discussionForum.ViewCommentsList, params)
+      .get(`${endpoints.discussionForum.postLike}?comment=${postsId.id}`)
       .then((res) => {
         //console.log(res.data.result.results);
         setCommentsList(res.data.result.results);
