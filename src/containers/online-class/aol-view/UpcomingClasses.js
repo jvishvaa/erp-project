@@ -228,6 +228,7 @@ const UpcomingClasses = () => {
     }
     const handleCourse = (event, value) => {
         setFilterData({ ...filterData, course: '' })
+        setBatch([])
         if (value) {
             setFilterData({ ...filterData, course: value })
             axiosInstance.get(`${endpoints.aol.batchLimitList}?course_id=${value.id}`)
@@ -409,27 +410,6 @@ const UpcomingClasses = () => {
         //setFilter(false);
     }
 
-    // const classCardData = classesData && classesData.slice(pagination.start, pagination.end).filter((data) => {
-    //     const classData = data.zoom_meeting ? data.zoom_meeting : data;
-    //     if (startDate === null && endDate === null) {
-    //         return data;
-    //     }
-    //     else if (startDate === moment(classData.online_class && classData.online_class.start_time).format('YYYY-MM-DD') && endDate === moment(classData.online_class && classData.online_class.end_time).format('YYYY-MM-DD')) {
-    //         return data;
-    //     }
-    // }).map((data, id) => {
-    //     return (
-    //         <Grid item sm={itemSize} xs={12} key={id}>
-    //             <ClassCard
-    //                 classData={data}
-    //                 selectedId={selected}
-    //                 handleSelctedClass={handleSelctedClass}
-    //                 toggle={toggle}
-    //             />
-    //         </Grid>
-    //     )
-    // });
-
     if (reload) {
         getClasses();
         setReload(!reload)
@@ -569,7 +549,6 @@ const UpcomingClasses = () => {
                     <Autocomplete
                         style={{ width: '100%' }}
                         size='small'
-                        // type='number'
                         onChange={handleBatch}
                         id='batch'
                         className='dropdownIcon'
@@ -581,7 +560,6 @@ const UpcomingClasses = () => {
                             <TextField
                                 {...params}
                                 variant='outlined'
-                                // type='number'
                                 label='Batch Limit'
                                 placeholder='Batch Limit'
                             />

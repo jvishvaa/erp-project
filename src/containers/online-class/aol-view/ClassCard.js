@@ -160,6 +160,15 @@ export default function ClassCardComponent(props) {
                             <Typography className={classes.classTitle}>
                                 {classData.online_class ? classData.online_class.title : ''}
                             </Typography>
+                            <IconButton
+                                onClick={handleEditClass}
+                                title='Edit Teacher'
+                                style={{ float: 'right', verticalAlign: 'top', display: 'inline-block', padding: '7px' }}
+                            >
+                                <EditOutlinedIcon style={{ color: '#fe6b6b', fontSize: '22px' }} />
+                            </IconButton>
+                            {editClassJsx}
+
                         </div>
                         <div>
                             <Typography className={classes.classTitle}>
