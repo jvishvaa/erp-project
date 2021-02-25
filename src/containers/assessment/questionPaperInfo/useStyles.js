@@ -45,15 +45,12 @@ const useStyles = makeStyles((theme) => ({
   // },
   analysisWrapper: {
     padding: 5,
-    height: '50vh',
-    overflowX: 'hidden',
-    overflowY: 'auto',
-    // fontWeight: 'bold',
-    // marginTop: 7,
-    // display: 'flex',
-    // flexDirection: 'row',
-    // justifyContent: 'space-between',
-    // alignItems: 'center',
+    [theme.breakpoints.up('md')]: {
+      maxHeight: '50vh',
+      overflowX: 'hidden',
+      overflowY: 'auto',
+      margin: '10px 0px',
+    },
   },
   analysisContainer: {
     padding: 10,

@@ -13,11 +13,8 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '0.8rem',
   },
   questionCotainer: {
-    color: theme.palette.secondary.main,
     margin: '10px 0px',
-    '& *': {
-      //   border: '1px solid red',
-    },
+    color: theme.palette.secondary.main,
   },
   questionText: {
     background: '#ECECEC',

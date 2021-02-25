@@ -2,11 +2,12 @@ import React, { useState, useEffect, useContext } from 'react';
 import { withRouter } from 'react-router-dom';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import { Container, Grid, Divider } from '@material-ui/core';
+import { useMediaQuery, useTheme, Container, Grid, Divider } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
+import Layout from '../Layout';
 import { generateQueryParamSting } from '../../utility-functions';
 import { AssessmentReviewContextProvider } from './assess-review/assess-review-context';
-import Layout from '../Layout';
+
 import Loading from '../../components/loader/loader';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import QuestionPaperCard from './questionPaperCard';
@@ -24,76 +25,6 @@ function a11yProps(index) {
   };
 }
 
-const x = {
-  status_code: 200,
-  message: 'successfully fetched question paper list',
-  result: {
-    next: null,
-    previous: null,
-    count: 2,
-    limit: 10,
-    current_page: 1,
-    total_pages: 1,
-    result: [
-      {
-        id: 61,
-        question_paper: {
-          id: 21,
-          branch: 1,
-          grade: 16,
-          grade_name: 'Grade 2',
-          subject: [2],
-          subject_name: ['Hindi'],
-          paper_level: '1',
-        },
-        is_test_completed: {
-          is_completed: true,
-          completed_date: '2021-02-19T12:09:52.461000Z',
-        },
-        test_name: 'Unit Testing',
-        test_id: 67091,
-        teacher: null,
-        test_mode: '1',
-        total_mark: 16,
-        test_date: '2012-09-04T06:00:00Z',
-        test_duration: 30,
-        instructions: 'Mark Proper',
-        descriptions: 'Hii Hello',
-        total_question: 0,
-        is_completed: false,
-        test_type: 1,
-      },
-      {
-        id: 60,
-        question_paper: {
-          id: 20,
-          branch: 1,
-          grade: 16,
-          grade_name: 'Grade 1',
-          subject: [2],
-          subject_name: ['Hindi'],
-          paper_level: '1',
-        },
-        is_test_completed: {
-          is_completed: true,
-          completed_date: '2021-02-22T12:14:39.072000Z',
-        },
-        test_name: 'Normal Test',
-        test_id: 1,
-        teacher: 'Manoj Kumar',
-        test_mode: null,
-        total_mark: 50,
-        test_date: '2021-02-15T10:55:04.237796Z',
-        test_duration: 180,
-        instructions: 'Please read the details below',
-        descriptions: 'The test contains 10 objective type of quesions',
-        total_question: 10,
-        is_completed: false,
-        test_type: 1,
-      },
-    ],
-  },
-};
 const getSearchParams = (propsObj) => {
   const { location: { search = '' } = {} } = propsObj;
   const urlParams = new URLSearchParams(search); // search = ?open=true&qId=123
@@ -115,9 +46,6 @@ const Assessment = ({ history, ...restProps }) => {
   };
   const [showInfo, setShowInfo] = useState(getInfoDefaultVal());
   const { setAlert } = useContext(AlertNotificationContext);
-  useEffect(() => {
-    fetchQuestionPapers();
-  }, [page, status]);
 
   const fetchQuestionPapers = () => {
     setLoading(true);
@@ -144,17 +72,24 @@ const Assessment = ({ history, ...restProps }) => {
     // setQuestionPaperList(x.result.result);
     // setTotalCount(x.result.count);
   };
+  useEffect(() => {
+    fetchQuestionPapers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, status]);
 
   const handlePagination = (event, page) => {
     setPageNumber(page);
   };
 
-  const handleShowInfo = (paperInfoObj) => setShowInfo(paperInfoObj.id);
+  const handleShowInfo = (paperInfoObj) => {
+    setShowInfo(paperInfoObj.id);
+  };
   useEffect(
     () =>
       history.push(
         `/assessment/?${generateQueryParamSting({ page, info: showInfo, status })}`
       ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [showInfo, page, status]
   );
 
@@ -182,6 +117,9 @@ const Assessment = ({ history, ...restProps }) => {
     );
   };
 
+  const themeContext = useTheme();
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+
   return (
     <>
       <AssessmentReviewContextProvider>
@@ -195,6 +133,7 @@ const Assessment = ({ history, ...restProps }) => {
             <Grid
               container
               spacing={2}
+              direction={isMobile ? 'column-reverse' : 'row'}
               style={{ marginTop: '20px', marginBottom: '20px' }}
             >
               <Grid item md={showInfo ? 6 : 12} xs={12}>
@@ -208,15 +147,8 @@ const Assessment = ({ history, ...restProps }) => {
                       onClick={() => handleShowInfo(qp)}
                     >
                       <QuestionPaperCard
-                        testTitle={qp?.test_name}
-                        testDescription={qp?.descriptions}
-                        testId={qp?.question_paper?.id}
-                        testDuration={qp?.test_duration}
-                        testType={qp?.test_type}
-                        testTotalQuestions={qp?.total_question}
-                        testTotalMarks={qp?.total_mark}
-                        handleStartTest={() => handleShowInfo(qp)}
                         {...(qp || {})}
+                        handleViewMore={() => handleShowInfo(qp)}
                       />
                     </Grid>
                   ))}
@@ -241,7 +173,6 @@ const Assessment = ({ history, ...restProps }) => {
                   <QuestionPaperInfo
                     assessmentId={showInfo}
                     key={showInfo}
-                    // {...questionPaperInfoObj}
                     loading={loading}
                     handleCloseInfo={handleCloseInfo}
                   />
