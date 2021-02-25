@@ -88,6 +88,7 @@ export const fetchUser = (id) => (dispatch) => {
         middle_name: user.user_middle_name || '',
         last_name: user.user.last_name || '',
         email: user.user.email || '',
+        erp_user: user.erp_user || '',
         academic_year: user.academic_year && {
           id: user.academic_year.id,
           session_year: user.academic_year.session_year,
@@ -191,7 +192,7 @@ export const fetchBranchesForCreateUser = () => {
     .then((response) => {
       return response.data.data;
     })
-    .catch(() => {});
+    .catch(() => { });
 };
 
 export const fetchAcademicYears = () => {
@@ -200,7 +201,7 @@ export const fetchAcademicYears = () => {
     .then((response) => {
       return response.data.data;
     })
-    .catch(() => {});
+    .catch(() => { });
 };
 
 export const fetchSubjects = () => {
@@ -209,5 +210,5 @@ export const fetchSubjects = () => {
     .then((response) => {
       return response.data.data;
     })
-    .catch(() => {});
+    .catch(() => { });
 };

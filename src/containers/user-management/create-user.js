@@ -43,6 +43,7 @@ class CreateUser extends Component {
         gender: '',
         profile: '',
         address: '',
+        erp_user:'',
         parent: {
           father_first_name: '',
           father_last_name: '',
@@ -137,6 +138,7 @@ class CreateUser extends Component {
       address,
       contact,
       email,
+      erp_user,
       profile,
       parent,
     } = requestObj;
@@ -176,6 +178,7 @@ class CreateUser extends Component {
       address,
       contact,
       email,
+      erp_user,
       profile,
       father_photo,
       mother_photo,
