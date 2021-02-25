@@ -85,11 +85,8 @@ export default function ClassCardComponent(props) {
 
     const { dispatch, setEditData } = useContext(CreateclassContext);
     const handleEditClass = () => {
-        // dispatch(setEditData(classData));
-        // history.push('/online-class/create-class');
         handleOpen()
     }
-    console.log(props, '...........');
 
     const handleOpen = () => { setEnabelEdit(true) }
     const handleClose = () => { setEnabelEdit(false) }
@@ -110,26 +107,26 @@ export default function ClassCardComponent(props) {
             float: 'right',
         }
     })(IconButton);
-    const editClassJsx = (
-        <>
-            <Modal
-                open={enableEdit}
-                onClose={handleClose}
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
-                className={classes.modal}
-                closeAfterTransition
-                BackdropComponent={Backdrop}
-                BackdropProps={{ timeout: 500 }}
-            >
-                <Fade in={enableEdit}>
-                    <div className={classes.paper}>
-                        <ClassUpdation handleClose={updateClassesAndHandleClose} classData={classData} />
-                    </div>
-                </Fade>
-            </Modal>
-        </>
-    )
+    // const editClassJsx = (
+    //     <>
+    //         <Modal
+    //             open={enableEdit}
+    //             onClose={handleClose}
+    //             aria-labelledby="transition-modal-title"
+    //             aria-describedby="transition-modal-description"
+    //             className={classes.modal}
+    //             closeAfterTransition
+    //             BackdropComponent={Backdrop}
+    //             BackdropProps={{ timeout: 500 }}
+    //         >
+    //             <Fade in={enableEdit}>
+    //                 <div className={classes.paper}>
+    //                     <ClassUpdation handleClose={updateClassesAndHandleClose} classData={classData} />
+    //                 </div>
+    //             </Fade>
+    //         </Modal>
+    //     </>
+    // )
     return (
         <>
             {(props && props.toggle) ?
@@ -160,14 +157,14 @@ export default function ClassCardComponent(props) {
                             <Typography className={classes.classTitle}>
                                 {classData.online_class ? classData.online_class.title : ''}
                             </Typography>
-                            <IconButton
+                            {/* <IconButton
                                 onClick={handleEditClass}
                                 title='Edit Teacher'
                                 style={{ float: 'right', verticalAlign: 'top', display: 'inline-block', padding: '7px' }}
                             >
                                 <EditOutlinedIcon style={{ color: '#fe6b6b', fontSize: '22px' }} />
                             </IconButton>
-                            {editClassJsx}
+                            {editClassJsx} */}
 
                         </div>
                         <div>

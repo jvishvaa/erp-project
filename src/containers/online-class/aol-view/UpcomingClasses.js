@@ -415,7 +415,6 @@ const UpcomingClasses = () => {
         setReload(!reload)
     }
 
-    console.log(totalCount, '====================')
     return (
         <>
             <div className='breadcrumb-container-create' style={{ marginLeft: '15px' }}>

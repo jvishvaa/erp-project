@@ -8,6 +8,7 @@ import endpoints from '../../../config/endpoints';
 import AssignModal from './assign-modal';
 import CloseIcon from '@material-ui/icons/Close';
 import { Pointer } from 'highcharts';
+import ReassignModal from './re-assign-modal';
 
 const useStyles = makeStyles({
     classDetailsBox: {
@@ -117,8 +118,8 @@ const StyledButton = withStyles({
 
 const StyledAcceptButton = withStyles({
     root: {
-        height: '2rem',
-        width: '80px',
+        height: '30px',
+        width: '110px',
         padding: '0',
         fontSize: '18px',
         fontFamily: 'Open Sans',
@@ -136,6 +137,8 @@ export default function ClassdetailsCardComponent(props) {
     const [openAssignModal, setOpenAssignModal] = useState(false);
     const [teacherDropdown, setTeacherDropdown] = useState([])
     const [cancelFlag, setCancelFlag] = useState(false)
+    // <<<<<<<<<<<<<<<<<<<<<<<Reassign Modal>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    const [openReassignModal,setOpenReassignModal] = useState(false)
 
     const assignData = props
     const [periodsData, setPeriodsData] = React.useState([]);
@@ -163,6 +166,10 @@ export default function ClassdetailsCardComponent(props) {
         setOpenAssignModal(true);
     }
 
+    const handleReassign=()=>{
+        setOpenReassignModal(true);
+    }
+
     const handleReshuffle = () => {
         if (props.toggle) {
             history.push(`/aol-reshuffle/${props?.classData?.id}`)
@@ -183,7 +190,6 @@ export default function ClassdetailsCardComponent(props) {
                 }
             })
     }, [])
-
     return (
         <>
             <div className={classes.classDetailsBox}>
@@ -213,7 +219,7 @@ export default function ClassdetailsCardComponent(props) {
 
                         <Typography className={classes.classHeaderSub}>
                             {props.toggle ? props.classData.batch_name : ''}
-                            {props.toggle ? <StyledAcceptButton onClick={handleAssign}>ASSIGN</StyledAcceptButton> : null}
+                            {props.toggle ? <StyledAcceptButton onClick={handleAssign}>ASSIGN</StyledAcceptButton> : <StyledAcceptButton onClick={handleReassign}>RE-ASSIGN</StyledAcceptButton>}
                         </Typography>
                     </div>
                 </div>
@@ -290,6 +296,11 @@ export default function ClassdetailsCardComponent(props) {
                 reload={props.reload}
                 setReload={props.setReload}
                 hendleCloseDetails={props.hendleCloseDetails}
+            />
+            <ReassignModal
+            openReassignModal={openReassignModal}
+            setOpenReassignModal={setOpenReassignModal}
+            teacherDropdown={teacherDropdown}
             />
         </>
     )
