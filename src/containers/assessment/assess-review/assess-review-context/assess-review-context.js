@@ -4,7 +4,8 @@ import useFetcher from '../../../../utility-functions/custom-hooks/use-fetcher';
 
 const {
   assessment: {
-    assessmentResultAnalysis: assessmentResultAnalysisAPIEndpoint = 'http://13.232.30.169/qbox/assessment/student-reports/',
+    // assessmentResultAnalysis: assessmentResultAnalysisAPIEndpoint = 'http://13.232.30.169/qbox/assessment/student-reports/',
+    assessmentResultAnalysis: assessmentResultAnalysisAPIEndpoint,
   } = {},
 } = endpoints || {};
 
