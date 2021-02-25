@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Divider, makeStyles, withStyles, Typography, Button } from '@material-ui/core';
-//import AttachmentIcon from '../components/icons/AttachmentIcon';
 import moment from 'moment';
 import JoinClass from './JoinClass';
 import { useHistory } from 'react-router-dom';
@@ -185,7 +184,6 @@ export default function ClassdetailsCardComponent(props) {
             })
     }, [])
 
-    console.log(props, '|||||||||||||||')
     return (
         <>
             <div className={classes.classDetailsBox}>
