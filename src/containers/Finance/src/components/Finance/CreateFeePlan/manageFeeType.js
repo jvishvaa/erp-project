@@ -385,7 +385,7 @@ class ManageFeeType extends Component {
     if (isValid) {
       let finaldata = {
         fee_type: String(this.state.FeeId),
-        fee_plan: this.props.match.params.id,
+        fee_plan: this.props.location.state,
         numberOfInstallments: parseInt(this.state.numberOfRows),
         installments: installData
       }
