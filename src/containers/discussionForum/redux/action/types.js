@@ -1,0 +1,1 @@
+export const DISCUSSION_POST = 'DISCUSSION_POST';
