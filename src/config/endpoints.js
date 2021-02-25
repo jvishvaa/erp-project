@@ -155,6 +155,7 @@ export default {
     cancelClass: 'erp_user/cancel-online-class/',
     createCoursePrice: '/aol/course-details/',
     updateCoursePrice: '/aol/course_details_update/',
+    updateTeacher:'/aol/update-batch-teacher/',
   },
 
   attendanceList: {
@@ -211,6 +212,7 @@ export default {
     categoryList: '/aol/tagging-list/',
     updateCourse: '/aol/',
     studentList: '/erp_user/batch-student-list/',
+    updateCourseStatus:'/aol/',
   },
   attendanceList: {
     list: '/erp_user/onlineclass_attendeelist/',
