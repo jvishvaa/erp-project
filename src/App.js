@@ -93,7 +93,7 @@ import ViewCourseCard from './containers/master-management/course/view-course/vi
 import ViewStore from './containers/master-management/course/view-course/context/ViewStore';
 import DailyDairyStore from './containers/daily-dairy/context/context';
 import AttendeeListRemake from './containers/attendance';
-import TestComparisionUI from './containers/assessment-report/test-comparision';
+import AssessmentComparisionUI from './containers/assessment-report/assessment-comparision';
 import AssessmentAnalysis from './containers/assessment-report/assessment-analysis';
 import AssessmentHandlerUI from './containers/assessment/assess-attemption/template/index-template';
 import Reshuffle from './containers/online-class/aol-view/Reshuffle';
@@ -396,8 +396,8 @@ function App() {
                         <Route exact path='/view-period/:id?'>
                           {({ match }) => <ViewCourseCard match={match} />}
                         </Route>
-                        <Route exact path='/assessment/test-comparision'>
-                          {({ match }) => <TestComparisionUI match={match} />}
+                        <Route exact path='/assessment/comparision'>
+                          {({ match }) => <AssessmentComparisionUI match={match} />}
                         </Route>
                         <Route exact path='/assessment/:assessmentId/analysis'>
                           {({ match }) => <AssessmentAnalysis match={match} />}

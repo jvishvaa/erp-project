@@ -167,7 +167,7 @@ const AssessmentAnalysisUI = (props) => {
                     <div
                       style={{ margin: 3, cursor: 'pointer' }}
                       onClick={() => {
-                        history.push('/assessment/test-comparision/');
+                        history.push('/assessment/comparision/');
                       }}
                     >
                       <Grid container justify='space-between'>
