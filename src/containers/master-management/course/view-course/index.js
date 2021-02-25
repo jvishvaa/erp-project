@@ -54,25 +54,27 @@ const CourseView = () => {
     setLoading(true);
     setSendGrade(gradeIds);
     const tag_val = [16, 20];
-    axiosInstance
-      .get(`${endpoints.onlineCourses.courseList}?grade=${gradeIds}`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          // setTotalCount(result.data.count);
+    if (gradeIds !== null) {
+      axiosInstance
+        .get(`${endpoints.onlineCourses.courseList}?grade=${gradeIds}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            // setTotalCount(result.data.count);
+            setLoading(false);
+            setCourseData(result.data.result);
+            // setState({...state,editData:result.data.result})
+            // setViewMore(false);
+            // setViewMoreData({});
+          } else {
+            setLoading(false);
+            setAlert('error', result.data.description);
+          }
+        })
+        .catch((error) => {
           setLoading(false);
-          setCourseData(result.data.result);
-          // setState({...state,editData:result.data.result})
-          // setViewMore(false);
-          // setViewMoreData({});
-        } else {
-          setLoading(false);
-          setAlert('error', result.data.description);
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', error.message);
-      });
+          setAlert('error', error.message);
+        });
+    }
   };
   useEffect(() => {
     if (deleteFlag) {
