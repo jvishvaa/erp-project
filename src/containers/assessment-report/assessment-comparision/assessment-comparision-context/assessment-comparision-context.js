@@ -1,4 +1,4 @@
-import React, { createContext, useEffect } from 'react';
+import React, { createContext } from 'react';
 import endpoints from '../../../../config/endpoints';
 import useFetcher from '../../../../utility-functions/custom-hooks/use-fetcher';
 
@@ -10,9 +10,9 @@ const {
   } = {},
 } = endpoints || {};
 
-export const TestComparisionContext = createContext();
+export const AssessmentComparisionContext = createContext();
 
-export const TestComparisionContextProvider = ({ children, ...restProps }) => {
+export const AssessmentComparisionContextProvider = ({ children, ...restProps }) => {
   // eslint-disable-next-line no-console
   console.log(restProps);
 
@@ -93,7 +93,7 @@ export const TestComparisionContextProvider = ({ children, ...restProps }) => {
   };
 
   return (
-    <TestComparisionContext.Provider
+    <AssessmentComparisionContext.Provider
       value={{
         userTests,
         fetchUserTests,
@@ -106,6 +106,6 @@ export const TestComparisionContextProvider = ({ children, ...restProps }) => {
       }}
     >
       {children}
-    </TestComparisionContext.Provider>
+    </AssessmentComparisionContext.Provider>
   );
 };

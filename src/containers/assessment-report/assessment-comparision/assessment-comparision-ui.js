@@ -5,9 +5,9 @@ import {
   TestCardDropdown,
   TestComparisionReportTable,
   UserSpecificSubjectDropdown,
-} from './test-comparision-ui-components';
+} from './assessment-comparision-ui-components';
 import Loading from '../../../components/loader/loader';
-import { TestComparisionContext } from './test-comparision-context';
+import { AssessmentComparisionContext } from './assessment-comparision-context';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
@@ -46,7 +46,7 @@ const TestComparisionUI = () => {
 
     userSubjects,
     fetchUserSubjects,
-  } = useContext(TestComparisionContext) || {};
+  } = useContext(AssessmentComparisionContext) || {};
 
   // const [testOneObj, setTestOneObj] = React.useState({
   //   test_id: 7,

@@ -1,15 +1,15 @@
 import React from 'react';
-import TestComparisionUI from './test-comparision-ui';
-import Layout from '../../Layout'
-import { TestComparisionContextProvider } from './test-comparision-context';
+import AssessmentComparisionUI from './assessment-comparision-ui';
+import Layout from '../../Layout';
+import { AssessmentComparisionContextProvider } from './assessment-comparision-context';
 
-const TestComparision = () => {
+const AssessmentComparision = () => {
   return (
     <Layout>
-      <TestComparisionContextProvider>
-        <TestComparisionUI />
-      </TestComparisionContextProvider>
+      <AssessmentComparisionContextProvider>
+        <AssessmentComparisionUI />
+      </AssessmentComparisionContextProvider>
     </Layout>
   );
 };
-export default TestComparision;
+export default AssessmentComparision;
