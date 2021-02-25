@@ -4,18 +4,18 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { useMediaQuery, useTheme, Container, Grid, Divider } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
-import Layout from '../Layout';
-import { generateQueryParamSting } from '../../utility-functions';
-import { AssessmentReviewContextProvider } from './assess-attemption/assess-review-context';
+import Layout from '../../Layout';
+import { generateQueryParamSting } from '../../../utility-functions';
+import { AssessmentReviewContextProvider } from '../assess-attemption/assess-review-context';
 
-import Loading from '../../components/loader/loader';
-import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
-import QuestionPaperCard from './questionPaperCard';
-import QuestionPaperInfo from './questionPaperInfo';
-import endpoints from '../../config/endpoints';
-import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import axiosInstance from '../../config/axios';
-import './assessment.css';
+import Loading from '../../../components/loader/loader';
+import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
+import QuestionPaperCard from '../questionPaperCard';
+import QuestionPaperInfo from '../questionPaperInfo';
+import endpoints from '../../../config/endpoints';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import axiosInstance from '../../../config/axios';
+import './view-assessment.css';
 
 function a11yProps(index) {
   return {

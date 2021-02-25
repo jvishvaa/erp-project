@@ -40,7 +40,7 @@ import CoordinatorHomework from './containers/homework/coordinator-homework';
 import AddHomeworkCoord from './containers/homework/coordinator-homework/add-homework';
 import LessonReport from './containers/lesson-plan/lesson-plan-report';
 import LessonPlan from './containers/lesson-plan/lesson-plan-view';
-import Assessment from './containers/assessment';
+import ViewAssessments from './containers/assessment/view-assessment';
 import AssessmentAttemption from './containers/assessment/assess-attemption';
 import {
   TeacherBlog,
@@ -406,7 +406,7 @@ function App() {
                           {({ match }) => <AttendeeListRemake match={match} />}
                         </Route>
                         <Route exact path='/assessment'>
-                          {({ match }) => <Assessment match={match} />}
+                          {({ match }) => <ViewAssessments match={match} />}
                         </Route>
                         <Route exact path='/assessment/:assessmentId/attempt'>
                           {({ match }) => <AssessmentAttemption match={match} />}
