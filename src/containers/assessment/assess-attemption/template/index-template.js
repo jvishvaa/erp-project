@@ -1,7 +1,7 @@
 import React from 'react';
-import Layout from '../../Layout';
-import AssessmentHandlerUI from './assess-attemption-ui';
-import { AssessmentHandlerContextProvider } from './assess-attemption-context';
+import Layout from '../../../Layout';
+import AssessmentHandlerUI from './assess-attemption-ui-template';
+import { AssessmentHandlerContextProvider } from '../assess-attemption-context';
 
 const AssessmentAttemption = () => {
   return (

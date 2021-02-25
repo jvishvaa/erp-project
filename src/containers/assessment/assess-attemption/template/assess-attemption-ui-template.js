@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
-import Loader from '../../../components/loader/loader';
-import { AssessmentHandlerContext } from './assess-attemption-context';
-import Loading from '../../../components/loader/loader';
+import { AssessmentHandlerContext } from '../assess-attemption-context';
+import Loading from '../../../../components/loader/loader';
 
 const AssessmentHandlerUI = () => {
   const {
@@ -37,7 +36,7 @@ const AssessmentHandlerUI = () => {
   const {
     id: qId,
     meta: { index: qIndex } = {},
-    user_response: { attemption_status: attemptionStatus } = {},
+    // user_response: { attemption_status: attemptionStatus } = {},
   } = currentQuestionObj || {};
   return (
     <>
