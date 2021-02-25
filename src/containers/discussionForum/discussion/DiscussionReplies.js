@@ -36,7 +36,7 @@ const useStyles = makeStyles({
     lineHeight: '27px',
   },
   replyCommentDiv: {
-    width: '26%',
+    width: '30%',
     display: 'inline-block',
     overflow: 'hidden',
     '@media (max-width: 600px)': {
@@ -44,7 +44,7 @@ const useStyles = makeStyles({
     },
   },
   replyCommentSpan: {
-    width: '74%',
+    width: '70%',
     '@media (max-width: 600px)': {
       width: '100%!important',
       marginLeft: '10px',
@@ -54,7 +54,7 @@ const useStyles = makeStyles({
   },
   replyComment: {
     display: 'inline-block',
-    width: '85%',
+    width: '80%',
     height: '24px',
     fontSize: '18px',
     color: '#042955',
@@ -65,7 +65,7 @@ const useStyles = makeStyles({
   },
   commentsCount: {
     display: 'inline-block',
-    width: '15%',
+    width: '20%',
     color: '#042955',
     float: 'right',
     fontSize: '18px',
