@@ -7,6 +7,7 @@ import { Paper, Button } from '@material-ui/core';
 import ReactHtmlParser from 'react-html-parser';
 import { withRouter } from 'react-router-dom';
 import { timeDeltaDiff } from '../../../utility-functions';
+import QuestionReview from './questions-review';
 // import useMediaQuery from '@material-ui/core/useMediaQuery';
 // import { useTheme } from '@material-ui/core';
 
@@ -72,7 +73,6 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
   }, []);
   const testAnalysisRouteBtn = (
     <>
-      <br />
       <div style={{ display: 'flex' }}>
         <Button
           style={{
@@ -143,6 +143,7 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
             </div>
           </div>
         </div>
+        <QuestionReview />
       </div>
       {testAnalysisRouteBtn}
     </>

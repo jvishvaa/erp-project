@@ -69,8 +69,6 @@ export const AssessmentReviewContextProvider = ({ children, ...restProps }) => {
       userDetails = {
         user: userId,
         user_name: userName,
-        user_grade: 'Grade1',
-        user_section: 'SecA',
       };
     } catch (e) {
       userDetails = {};
@@ -89,23 +87,70 @@ export const AssessmentReviewContextProvider = ({ children, ...restProps }) => {
   function updateQuestionsDataObj(questionsData) {
     setQuestionsDataObj(questionsData);
   }
+  function parseSectionData(sections) {
+    /*
+      from:
+        0: {A: Array(9), discription: "section-a"}
+        1: {B: Array(8), discription: "section-b"}
+        2: {C: Array(8), discription: "section-c"}
+        length: 3
+        __proto__: Array(0)
+      to:
+        { 
+          A:{ name: '', description: "section-a" },
+          B:{ name: '', description: "section-b" },
+          C:{ name: '', description: "section-c" },
+          "276": "A",
+          "<question-id>": "<section-name>"
+          ...
+        }
+    */
+    const questionSectionsObj = {};
+    sections.forEach((itemObj = {}) => {
+      Object.entries(itemObj || {}).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          // questionSectionsObj[key] = { name: key, description: itemObj.description };
+          questionSectionsObj[key] = { name: key, description: itemObj.discription }; // description ==> discription
+          const questionIds = value;
+          questionIds.forEach((questionId) => {
+            questionSectionsObj[questionId] = key;
+          });
+        }
+      });
+    });
+    return questionSectionsObj;
+  }
+  const formatQuesUserResponseObj = (apiData) => {
+    const { user_response: userQuesResponsesArray = [] } = apiData || {};
+    const userQuesResponsesObj = {};
+    userQuesResponsesArray.forEach((quesResp) => {
+      userQuesResponsesObj[quesResp.question] = {
+        ...quesResp,
+        answer: quesResp.user_answer,
+      };
+    });
+    return userQuesResponsesObj;
+  };
   function questionDataProcessor(apiResp) {
     const { data: { result: apiData = {} } = {} } = apiResp || {};
 
     const { questions = [], sections = [] } = apiData;
-    // const questionSectionsObj = parseSectionData(sections);
+    const questionSectionsObj = parseSectionData(sections);
+    const userQuesResponsesObj = formatQuesUserResponseObj(apiData || {}) || {};
     const questionsObj = {};
     const processFunc = (element, index, subIndex = null, isSubQuestion = false) => {
       const { id: questionId } = element || {};
 
       const { id: nextQuesId = null } = questions[index + 1] || {};
       const { id: prevQuesId = null } = questions[index - 1] || {};
-      //   const { user_response: userResponse } = retrieveLocalQuestion(questionId) || {};
-      //   const { [questionId]: questionSectionName } = questionSectionsObj || {};
-      //   const { [questionSectionName]: questionSectionObj } = questionSectionsObj || {};
+      // const { user_response: userResponse } = retrieveLocalQuestion(questionId) || {};
+      const userResponse = userQuesResponsesObj[questionId] || {};
+
+      const { [questionId]: questionSectionName } = questionSectionsObj || {};
+      const { [questionSectionName]: questionSectionObj } = questionSectionsObj || {};
       questionsObj[questionId] = {
         ...element,
-        // section: questionSectionObj || {},
+        section: questionSectionObj || {},
         meta: {
           index,
           subIndex,
@@ -116,7 +161,7 @@ export const AssessmentReviewContextProvider = ({ children, ...restProps }) => {
           is_first_ques: !prevQuesId,
           is_last_ques: !nextQuesId,
         },
-        // user_response: userResponse,
+        user_response: userResponse,
       };
     };
     questions.forEach((element, index) => {
