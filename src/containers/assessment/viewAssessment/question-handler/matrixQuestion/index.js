@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 
 import { AssessmentHandlerContext } from '../../../assess-attemption/assess-attemption-context';
-import '../../viewAssessment.css';
+import '../../assess-attemption.css';
 
 const MatrixQuestion = (props) => {
   const {

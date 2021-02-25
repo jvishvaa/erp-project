@@ -7,7 +7,7 @@ import FormControl from '@material-ui/core/FormControl';
 // import FormLabel from '@material-ui/core/FormLabel';
 
 import { AssessmentHandlerContext } from '../../../assess-attemption/assess-attemption-context';
-import '../../viewAssessment.css';
+import '../../assess-attemption.css';
 
 const McqQuestion = (props) => {
   const {

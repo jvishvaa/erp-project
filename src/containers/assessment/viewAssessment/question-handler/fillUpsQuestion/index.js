@@ -4,7 +4,7 @@ import ReactHtmlParser from 'react-html-parser';
 
 // import TinyMce from '../../../../../components/TinyMCE/tinyMce';
 import { AssessmentHandlerContext } from '../../../assess-attemption/assess-attemption-context';
-import '../../viewAssessment.css';
+import '../../assess-attemption.css';
 
 const FillUpsQuestion = (props) => {
   const {

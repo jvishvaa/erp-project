@@ -16,7 +16,7 @@ import QuestionReview from './questions-review';
 import toddlerGroup from '../../../assets/images/toddler-group.svg';
 
 // import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-import { AssessmentReviewContext } from '../assess-review/assess-review-context';
+import { AssessmentReviewContext } from '../assess-attemption/assess-review-context';
 
 import './questionPaperInfo.css';
 import useStyles from './useStyles';

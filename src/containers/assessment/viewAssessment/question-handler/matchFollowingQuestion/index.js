@@ -7,7 +7,7 @@ import endpoints from '../../../../../config/endpoints';
 
 import { AssessmentHandlerContext } from '../../../assess-attemption/assess-attemption-context';
 import MatchAndDraw from './match-and-draw-UI';
-import '../../viewAssessment.css';
+import '../../assess-attemption.css';
 
 const MatchFollowingQuestion = (props) => {
   const {

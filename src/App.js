@@ -41,7 +41,7 @@ import AddHomeworkCoord from './containers/homework/coordinator-homework/add-hom
 import LessonReport from './containers/lesson-plan/lesson-plan-report';
 import LessonPlan from './containers/lesson-plan/lesson-plan-view';
 import Assessment from './containers/assessment';
-import ViewAssessment from './containers/assessment/viewAssessment';
+import AssessmentAttemption from './containers/assessment/viewAssessment';
 import {
   TeacherBlog,
   ContentView,
@@ -59,7 +59,6 @@ import {
   ViewGenre,
   ContentViewPublish,
   ContentViewPublishStudent,
-
   AdminBlog,
   PrincipalBlog,
   PrincipalPublishBlogView,
@@ -96,7 +95,7 @@ import DailyDairyStore from './containers/daily-dairy/context/context';
 import AttendeeListRemake from './containers/attendance';
 import TestComparisionUI from './containers/assessment-report/test-comparision';
 import AssessmentAnalysis from './containers/assessment-report/assessment-analysis';
-import AssessmentHandlerUI from './containers/assessment/assess-attemption/template/index-template'
+import AssessmentHandlerUI from './containers/assessment/assess-attemption/template/index-template';
 import Reshuffle from './containers/online-class/aol-view/Reshuffle';
 import StudentStrength from './containers/student-strength';
 import StudentIdCard from './containers/student-Id-Card';
@@ -194,7 +193,6 @@ function App() {
                         <Route exact path='/blog/wordcount-config/edit'>
                           {({ match }) => <EditWordCountConfig match={match} />}
                         </Route>
-
 
                         <Route exact path='/blog/teacher'>
                           {({ match }) => <TeacherBlog match={match} />}
@@ -411,7 +409,7 @@ function App() {
                           {({ match }) => <Assessment match={match} />}
                         </Route>
                         <Route exact path='/assessment/:assessmentId/attempt'>
-                          {({ match }) => <ViewAssessment match={match} />}
+                          {({ match }) => <AssessmentAttemption match={match} />}
                         </Route>
                         <Route exact path='/assessment/:assessmentId/state-management-intg-temp'>
                           {({ match }) => <AssessmentHandlerUI match={match} />}
@@ -434,7 +432,6 @@ function App() {
                         <Route exact path='/aol-reshuffle/:id?'>
                           {({ match }) => <Reshuffle match={match} />}
                         </Route>
-
                       </Switch>
                     </DailyDairyStore>
                   </ViewStore>

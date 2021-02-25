@@ -7,7 +7,7 @@ import FormControl from '@material-ui/core/FormControl';
 import ReactHtmlParser from 'react-html-parser';
 
 import { AssessmentHandlerContext } from '../../../assess-attemption/assess-attemption-context';
-import '../../viewAssessment.css';
+import '../../assess-attemption.css';
 
 const TrueFalseQuestion = (props) => {
   const {

@@ -8,7 +8,8 @@ import TrueFalseQuestion from './trueFalseQuestion';
 import VideoQuestion from './videoQuestion';
 import MatchFollowingQuestion from './matchFollowingQuestion';
 import MatrixQuestion from './matrixQuestion';
-import '../viewAssessment.css';
+import '../assess-attemption.css';
+
 
 const QuestionBody = ({ children, ...restProps }) => {
   const decideQuestion = {

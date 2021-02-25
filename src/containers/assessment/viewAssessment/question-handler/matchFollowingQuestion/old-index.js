@@ -5,7 +5,7 @@ import endpoints from '../../../../../config/endpoints';
 
 import { AssessmentHandlerContext } from '../../../assess-attemption/assess-attemption-context';
 
-import '../../viewAssessment.css';
+import '../../assess-attemption.css';
 
 const MatchFollowingQuestion = (props) => {
   const {

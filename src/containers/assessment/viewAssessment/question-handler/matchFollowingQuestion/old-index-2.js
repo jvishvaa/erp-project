@@ -8,7 +8,7 @@ import endpoints from '../../../../../config/endpoints';
 
 import { AssessmentHandlerContext } from '../../../assess-attemption/assess-attemption-context';
 
-import '../../viewAssessment.css';
+import '../../assess-attemption.css';
 
 const imgSt = {
   border: '1px solid #055888',

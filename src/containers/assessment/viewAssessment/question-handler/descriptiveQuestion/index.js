@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import '../../viewAssessment.css';
+import '../../assess-attemption.css';
 import { TextareaAutosize } from '@material-ui/core';
 import ReactHtmlParser from 'react-html-parser';
 import TinyMce from '../../../../../components/TinyMCE/tinyMce';

@@ -6,11 +6,11 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import SidebarCounterPanel from './sidebarCounterPanel';
 import GeneralGuide from './generalGuide';
 import { AssessmentHandlerContext } from '../assess-attemption/assess-attemption-context';
-import './viewAssessment.css';
+import './assess-attemption.css';
 
 import QuestionHandler from './question-handler/question-handler';
 
-const ViewAssessmentUI = (props) => {
+const AssessmentAttemptionUI = (props) => {
   const {
     match: {
       params: { assessmentId },
@@ -20,11 +20,11 @@ const ViewAssessmentUI = (props) => {
     assessmentDetails: {
       question_paper__grade_name: questionPaperGradeName,
       question_paper__subject_name: subjectNames = [],
-    },
-    assessmentQp: { fetching },
+    } = {},
+    assessmentQp: { fetching } = {},
     fetchAssessmentQp,
-    controls: { isStarted, start },
-  } = useContext(AssessmentHandlerContext);
+    controls: { isStarted, start } = {},
+  } = useContext(AssessmentHandlerContext) || {};
   React.useEffect(() => {
     fetchAssessmentQp({ assessment_id: assessmentId });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -75,4 +75,4 @@ const ViewAssessmentUI = (props) => {
     </>
   );
 };
-export default withRouter(ViewAssessmentUI);
+export default withRouter(AssessmentAttemptionUI);

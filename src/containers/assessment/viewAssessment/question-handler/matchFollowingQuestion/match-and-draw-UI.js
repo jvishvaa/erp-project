@@ -3,7 +3,7 @@
 import React, { useContext, useState } from 'react';
 import { ContainerContext } from '../../../../Layout';
 
-import '../../viewAssessment.css';
+import '../../assess-attemption.css';
 
 const imgSt = {
   border: '1px solid #055888',

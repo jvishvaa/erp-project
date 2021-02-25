@@ -1,5 +1,5 @@
 import React from 'react';
-import '../viewAssessment.css';
+import '../assess-attemption.css';
 
 const QuestionHeader = (props) => {
   const { qIndex, questionsArray } = props || {};

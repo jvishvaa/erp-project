@@ -6,7 +6,7 @@ import { useMediaQuery, useTheme, Container, Grid, Divider } from '@material-ui/
 import { Pagination } from '@material-ui/lab';
 import Layout from '../Layout';
 import { generateQueryParamSting } from '../../utility-functions';
-import { AssessmentReviewContextProvider } from './assess-review/assess-review-context';
+import { AssessmentReviewContextProvider } from './assess-attemption/assess-review-context';
 
 import Loading from '../../components/loader/loader';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
