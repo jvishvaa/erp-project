@@ -16,7 +16,7 @@ import {
 import Loading from '../../../components/loader/loader';
 import { AssessmentAnalysisContext } from './assessment-analysis-context';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-import { LevelsChart, CategoryChart } from './test-assessment-charts';
+import { LevelsChart, CategoryChart } from './assessment-analysis-charts';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 
 import teacherSideReport from '../../../assets/images/teacherSideReport.svg';
