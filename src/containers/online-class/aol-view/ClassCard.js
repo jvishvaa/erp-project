@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: '10px',
         backgroundColor: '#FFFADF',
         cursor: 'pointer',
-        minHeight: '165px',
+        minHeight: '200px',
     },
     activeCard: {
         padding: '8px',
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: '10px',
         backgroundColor: '#F9D474',
         height: 'auto',
-        minHeight: '165px',
+        minHeight: '200px',
     },
     classTitle: {
         display: 'inline-block',
@@ -85,11 +85,8 @@ export default function ClassCardComponent(props) {
 
     const { dispatch, setEditData } = useContext(CreateclassContext);
     const handleEditClass = () => {
-        // dispatch(setEditData(classData));
-        // history.push('/online-class/create-class');
         handleOpen()
     }
-    console.log(props, '...........');
 
     const handleOpen = () => { setEnabelEdit(true) }
     const handleClose = () => { setEnabelEdit(false) }
@@ -110,26 +107,26 @@ export default function ClassCardComponent(props) {
             float: 'right',
         }
     })(IconButton);
-    const editClassJsx = (
-        <>
-            <Modal
-                open={enableEdit}
-                onClose={handleClose}
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
-                className={classes.modal}
-                closeAfterTransition
-                BackdropComponent={Backdrop}
-                BackdropProps={{ timeout: 500 }}
-            >
-                <Fade in={enableEdit}>
-                    <div className={classes.paper}>
-                        <ClassUpdation handleClose={updateClassesAndHandleClose} classData={classData} />
-                    </div>
-                </Fade>
-            </Modal>
-        </>
-    )
+    // const editClassJsx = (
+    //     <>
+    //         <Modal
+    //             open={enableEdit}
+    //             onClose={handleClose}
+    //             aria-labelledby="transition-modal-title"
+    //             aria-describedby="transition-modal-description"
+    //             className={classes.modal}
+    //             closeAfterTransition
+    //             BackdropComponent={Backdrop}
+    //             BackdropProps={{ timeout: 500 }}
+    //         >
+    //             <Fade in={enableEdit}>
+    //                 <div className={classes.paper}>
+    //                     <ClassUpdation handleClose={updateClassesAndHandleClose} classData={classData} />
+    //                 </div>
+    //             </Fade>
+    //         </Modal>
+    //     </>
+    // )
     return (
         <>
             {(props && props.toggle) ?
@@ -160,11 +157,22 @@ export default function ClassCardComponent(props) {
                             <Typography className={classes.classTitle}>
                                 {classData.online_class ? classData.online_class.title : ''}
                             </Typography>
+                            {/* <IconButton
+                                onClick={handleEditClass}
+                                title='Edit Teacher'
+                                style={{ float: 'right', verticalAlign: 'top', display: 'inline-block', padding: '7px' }}
+                            >
+                                <EditOutlinedIcon style={{ color: '#fe6b6b', fontSize: '22px' }} />
+                            </IconButton>
+                            {editClassJsx} */}
+
                         </div>
-                        {/* <Typography className={classes.classTitle}>
-                                { classData.online_class.subject[0] && classData.online_class ? classData.online_class.subject[0]?.subject_name : ''}
+                        <div>
+                            <Typography className={classes.classTitle}>
+                                {classData.online_class ? `No. Seat Left : ${classData.online_class && classData.online_class.seat_left}` : ''}
                             </Typography>
-                        */}
+                        </div>
+
                         <Typography className={classes.classSchedule}>
                             Start Date: {classData.online_class ? moment(classData.online_class.start_time).format('DD-MM-YYYY') : ''}
                         </Typography>
@@ -172,8 +180,11 @@ export default function ClassCardComponent(props) {
                         <Typography className={classes.classSchedule}>
                             End Date: {classData.online_class ? moment(classData.online_class.end_time).format('DD-MM-YYYY') : ''}
                         </Typography>
+                        <Typography className={classes.classSchedule}>
+                            Assigned To: {classData.online_class && classData.online_class.teacher.email.split('@')[0]}
+                        </Typography>
 
-                        <div style={{ marginTop: '15px', width: '100%' }}>
+                        <div style={{ marginTop: '-2px', width: '100%' }}>
                             {props.selectedId !== props.classData.id && (
                                 <StyledButton
                                     variant="contained"
