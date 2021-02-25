@@ -1,7 +1,7 @@
 import React, { createContext, useState } from 'react';
 import axios from 'axios';
-import endpoints from '../../../../config/endpoints';
-import useFetcher from '../../../../utility-functions/custom-hooks/use-fetcher';
+import endpoints from 'config/endpoints';
+import useFetcher from 'utility-functions/custom-hooks/use-fetcher';
 // import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 
 const {

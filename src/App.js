@@ -93,8 +93,8 @@ import ViewCourseCard from './containers/master-management/course/view-course/vi
 import ViewStore from './containers/master-management/course/view-course/context/ViewStore';
 import DailyDairyStore from './containers/daily-dairy/context/context';
 import AttendeeListRemake from './containers/attendance';
-import AssessmentComparisionUI from './containers/assessment-report/assessment-comparision';
-import AssessmentAnalysis from './containers/assessment-report/assessment-analysis';
+import AssessmentComparisionUI from './containers/assessment/assessment-report/assessment-comparision';
+import AssessmentAnalysis from './containers/assessment/assessment-report/assessment-analysis';
 import AssessmentHandlerUI from './containers/assessment/assess-attemption/template/index-template';
 import Reshuffle from './containers/online-class/aol-view/Reshuffle';
 import StudentStrength from './containers/student-strength';

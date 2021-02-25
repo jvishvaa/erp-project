@@ -13,14 +13,14 @@ import {
   Paper,
   Button,
 } from '@material-ui/core';
-import Loading from '../../../components/loader/loader';
-import { AssessmentAnalysisContext } from './assessment-analysis-context';
-import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-import { LevelsChart, CategoryChart } from './assessment-analysis-charts';
-import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
+import Loading from 'components/loader/loader';
+import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
+import CommonBreadcrumbs from 'components/common-breadcrumbs/breadcrumbs';
 
-import teacherSideReport from '../../../assets/images/teacherSideReport.svg';
-import studentTestComparision from '../../../assets/images/analysis-svgrepo-com.svg';
+import teacherSideReport from 'assets/images/teacherSideReport.svg';
+import studentTestComparision from 'assets/images/analysis-svgrepo-com.svg';
+import { LevelsChart, CategoryChart } from './assessment-analysis-charts';
+import { AssessmentAnalysisContext } from './assessment-analysis-context';
 
 const useStyles = makeStyles(() => ({
   root: {

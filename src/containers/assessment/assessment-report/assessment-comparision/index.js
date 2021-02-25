@@ -1,6 +1,6 @@
 import React from 'react';
+import Layout from 'containers/Layout';
 import AssessmentComparisionUI from './assessment-comparision-ui';
-import Layout from '../../Layout';
 import { AssessmentComparisionContextProvider } from './assessment-comparision-context';
 
 const AssessmentComparision = () => {

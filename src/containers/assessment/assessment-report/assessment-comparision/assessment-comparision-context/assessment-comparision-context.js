@@ -1,6 +1,6 @@
 import React, { createContext } from 'react';
-import endpoints from '../../../../config/endpoints';
-import useFetcher from '../../../../utility-functions/custom-hooks/use-fetcher';
+import endpoints from 'config/endpoints';
+import useFetcher from 'utility-functions/custom-hooks/use-fetcher';
 
 const {
   assessment: {

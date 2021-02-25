@@ -1,15 +1,15 @@
 /* eslint-disable no-nested-ternary */
 import React, { useContext } from 'react';
 import { makeStyles, Button, Grid, Box, Paper, Divider } from '@material-ui/core';
+import Loading from 'components/loader/loader';
+import CommonBreadcrumbs from 'components/common-breadcrumbs/breadcrumbs';
+import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
+import { AssessmentComparisionContext } from './assessment-comparision-context';
 import {
   TestCardDropdown,
   TestComparisionReportTable,
   UserSpecificSubjectDropdown,
 } from './assessment-comparision-ui-components';
-import Loading from '../../../components/loader/loader';
-import { AssessmentComparisionContext } from './assessment-comparision-context';
-import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 const useStyles = makeStyles(() => ({
   root: {
