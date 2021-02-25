@@ -1,6 +1,14 @@
 import React, { useEffect, useState, useContext } from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { SvgIcon, Button, Grid, FormControl, TextField, Divider } from '@material-ui/core';
+import {
+  SvgIcon,
+  Button,
+  Grid,
+  FormControl,
+  TextField,
+  Divider,
+} from '@material-ui/core';
+import IconButton from '@material-ui/core/IconButton';
 import Layout from '../Layout';
 import Filter from '../../assets/images/Filter.svg';
 import Activity from '../../assets/images/activity.svg';
@@ -13,7 +21,6 @@ import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import Viewmore from './viewMore';
 
-import IconButton from '@material-ui/core/IconButton';
 
 import Pagination from '@material-ui/lab/Pagination';
 import './discussionForum.scss';
@@ -22,236 +29,248 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import { withRouter } from 'react-router-dom';
 
-
 const Discussionforum = (props) => {
-    const { match } = props
-    const [categoryListRes, setcategoryListRes] = useState([]);
-    const [branch, setBranchRes] = useState([]);
-    const [gradeRes, setGradeRes] = useState([]);
-    const [postListRes, setPostListRes] = useState([]);
-    const [categoryValue, setCategoryValue] = useState('');
-    const [branchValue, setBranchValue] = useState(null);
-    const [gradeValue, setGradeValue] = useState('');
-    const [isViewmoreView, setisViewmoreView] = useState(false);
-    const [viewMoreList, setViewMoreList] = useState(null);
-    const [PostListResPagenation, setPostListResPagenation] = useState(null);
-    const [page, setPage] = React.useState(1);
-    const [anstrue, setanstrue] = React.useState(false);
-    const { setAlert } = useContext(AlertNotificationContext);
+  const { match } = props;
+  const [categoryListRes, setcategoryListRes] = useState([]);
+  const [branch, setBranchRes] = useState([]);
+  const [gradeRes, setGradeRes] = useState([]);
+  const [postListRes, setPostListRes] = useState([]);
+  const [categoryValue, setCategoryValue] = useState('');
+  const [branchValue, setBranchValue] = useState(null);
+  const [gradeValue, setGradeValue] = useState('');
+  const [isViewmoreView, setisViewmoreView] = useState(false);
+  const [viewMoreList, setViewMoreList] = useState(null);
+  const [PostListResPagenation, setPostListResPagenation] = useState(null);
+  const [page, setPage] = React.useState(1);
+  const [anstrue, setanstrue] = React.useState(false);
+  const { setAlert } = useContext(AlertNotificationContext);
 
-
-    useEffect(() => {
-        const getCategoryList = () => {
-            axiosInstance.get(endpoints.discussionForum.categoryList).then((res) => {
-                setcategoryListRes(res.data.result)
-            }).catch(err => {
-                console.log(err)
-            })
-        }
-
-        getCategoryList();
-        getBranch();
-    }, []);
-
-    const getBranch = () => {
-        axiosInstance.get(endpoints.discussionForum.branch).then(res => {
-            if (res.data.data) {
-                setBranchRes(res.data.data)
-            }
-        }).catch(err => {
-            console.log(err)
+  useEffect(() => {
+    const getCategoryList = () => {
+      axiosInstance
+        .get(endpoints.discussionForum.categoryList)
+        .then((res) => {
+          setcategoryListRes(res.data.result);
         })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
 
-    }
+    getCategoryList();
+    getBranch();
+  }, []);
 
-    const handleChangeBranch = (value) => {
-        if (value) {
-            setBranchValue(value);
-            axiosInstance.get(`${endpoints.discussionForum.grade}?branch_id=${value.id}&module_id=8`).then(res => {
-                if (res.data.data) {
-                    setGradeRes(res.data.data)
-                }
-            }).catch(err => {
-                console.log(err)
-            })
-        } else {
-            setBranchValue(null)
+  const getBranch = () => {
+    axiosInstance
+      .get(endpoints.discussionForum.branch)
+      .then((res) => {
+        if (res.data.data) {
+          setBranchRes(res.data.data);
         }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
-    }
-
-    const handleGradeChange = (value) => {
-        setGradeValue(value);
-        if (value) {
-            setGradeValue(value);
-        } else {
-            setGradeValue(null);
-        }
-    }
-
-
-
-
-    const handleCategoryChange = (value) => {
-        if (value) {
-            setCategoryValue(value);
-        } else {
-            setCategoryValue(null);
-        }
-    }
-
-
-    const callFilter = () => {
-        const body = {
-            categoryValue: categoryValue ? categoryValue : '',
-            gradeValue: gradeValue ? gradeValue : ''
-        }
-        filterValid(body)
-    }
-
-    const filterValid = (body) => {
-        // console.log(body.gradeValue.grade_id, "body")
-        if (body && body.gradeValue !== null && body.categoryValue.id === undefined) {
-
-            axiosInstance.get(`${endpoints.discussionForum.filterCategory}?grade=${gradeValue.grade_id}&page=${page}`).then(res => {
-                if (res.data.status_code === 200) {
-                    setPostListRes(res.data.data.results);
-                    setPostListResPagenation(res.data.data.results)
-
-
-                } else {
-                    setAlert('error', res.data.message)
-                }
-            }).catch(err => {
-                setAlert('error', err.message)
-
-                console.log(err)
-            })
-        }
-        else if (body && body.categoryValue.id !== undefined && body.gradeValue.grade_id === undefined) {
-            axiosInstance.get(`${endpoints.discussionForum.filterCategory}?category=${categoryValue.id}&page=${page}`).then(res => {
-                if (res.data.status_code === 200) {
-                    setPostListRes(res.data.data.results);
-                    setPostListResPagenation(res.data.data.results)
-                } 
-                // else {
-                //     setAlert('error', res.data.message)
-                // }
-            }).catch(err => {
-                setAlert('error', err.message)
-                console.log(err)
-            })
-        }
-        else if (body.categoryValue.id && body.gradeValue.grade_id) {
-            axiosInstance.get(`${endpoints.discussionForum.filterCategory}?category=${categoryValue.id}&grade=${gradeValue.grade_id}&page=${page}`).then(res => {
-                if (res.data.status_code === 200) {
-                    setPostListRes(res.data.data.results)
-                    setPostListResPagenation(res.data.data.results)
-                } else {
-                    setAlert('error', res.data.message)
-                }
-            }).catch(err => {
-                setAlert('error', err.message)
-                console.log(err)
-            })
-        }
-    }
-
-    useEffect(() => {
-
-        getPostList()
-
-    }, [...postListRes]);
-
-    const getPostList = () => {
-        axiosInstance.get(`${endpoints.discussionForum.filterCategory}?&page=${page}`).then(res => {
-            if (res.data.status_code === 200) {
-                setPostListRes(res.data.data.results);
-                setPostListResPagenation(res.data.data)
-            } else {
-                setAlert('error', res.data.message)
-            }
-
-        }).catch(err => {
-            setAlert('error', err.message)
-            console.log(err)
+  const handleChangeBranch = (value) => {
+    if (value) {
+      setBranchValue(value);
+      axiosInstance
+        .get(`${endpoints.discussionForum.grade}?branch_id=${value.id}&module_id=8`)
+        .then((res) => {
+          if (res.data.data) {
+            setGradeRes(res.data.data);
+          }
         })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      setBranchValue(null);
     }
+  };
 
-
-
-
-    const clearAll = () => {
-        setBranchValue(null);
-        setCategoryValue(null);
-        setGradeValue(null);
-        getPostList()
+  const handleGradeChange = (value) => {
+    setGradeValue(value);
+    if (value) {
+      setGradeValue(value);
+    } else {
+      setGradeValue(null);
     }
-    const handleViewmore = (list, ansTrue) => {
-        setViewMoreList(list)
-        setisViewmoreView(true)
-        setanstrue(ansTrue)
+  };
+
+  const handleCategoryChange = (value) => {
+    if (value) {
+      setCategoryValue(value);
+    } else {
+      setCategoryValue(null);
     }
-    const handlePageChange = (event, value) => {
-        setPage(value);
+  };
 
-    }
+  const callFilter = () => {
+    const body = {
+      categoryValue: categoryValue ? categoryValue : '',
+      gradeValue: gradeValue ? gradeValue : '',
+    };
+    filterValid(body);
+  };
 
-    const deletPost = (id, index) => {
-        axiosInstance.delete(`${endpoints.discussionForum.deletePost}${id}/update-post/`).then(res => {
-            if (res.data.status_code === 200) {
-                setAlert('success', res.data.message)
-                const postList = postListRes;
-                postList.splice(index, 1);
-                setPostListRes(postList)
-            }
-
-        }).catch(err => {
-            setAlert('error', err.message)
-            console.log(err)
+  const filterValid = (body) => {
+    // console.log(body.gradeValue.grade_id, "body")
+    if (body && body.gradeValue !== null && body.categoryValue.id === undefined) {
+      axiosInstance
+        .get(
+          `${endpoints.discussionForum.filterCategory}?grade=${gradeValue.grade_id}&page=${page}`
+        )
+        .then((res) => {
+          if (res.data.status_code === 200) {
+            setPostListRes(res.data.data.results);
+            setPostListResPagenation(res.data.data.results);
+          } else {
+            setAlert('error', res.data.message);
+          }
         })
-    }
-    const back = () => {
-        setisViewmoreView(false)
-    }
+        .catch((err) => {
+          setAlert('error', err.message);
 
-    const navigateToCreatePage = () => {
-        props.history.push(`${match.url}/create`)
+          console.log(err);
+        });
+    } else if (
+      body &&
+      body.categoryValue.id !== undefined &&
+      body.gradeValue.grade_id === undefined
+    ) {
+      axiosInstance
+        .get(
+          `${endpoints.discussionForum.filterCategory}?category=${categoryValue.id}&page=${page}`
+        )
+        .then((res) => {
+          if (res.data.status_code === 200) {
+            setPostListRes(res.data.data.results);
+            setPostListResPagenation(res.data.data.results);
+          }
+          // else {
+          //     setAlert('error', res.data.message)
+          // }
+        })
+        .catch((err) => {
+          setAlert('error', err.message);
+          console.log(err);
+        });
+    } else if (body.categoryValue.id && body.gradeValue.grade_id) {
+      axiosInstance
+        .get(
+          `${endpoints.discussionForum.filterCategory}?category=${categoryValue.id}&grade=${gradeValue.grade_id}&page=${page}`
+        )
+        .then((res) => {
+          if (res.data.status_code === 200) {
+            setPostListRes(res.data.data.results);
+            setPostListResPagenation(res.data.data.results);
+          } else {
+            setAlert('error', res.data.message);
+          }
+        })
+        .catch((err) => {
+          setAlert('error', err.message);
+          console.log(err);
+        });
     }
+  };
 
-    const validate = (formData) => {
-        let input = formData;
-        let errors = {};
-        let isValid = true;
-        if (!input["categoryValue"]) {
-            isValid = false;
-            errors["categoryValue"] = "Please enter your event category.";
+  useEffect(() => {
+    getPostList();
+  }, [...postListRes]);
+
+  const getPostList = () => {
+    axiosInstance
+      .get(`${endpoints.discussionForum.filterCategory}?&page=${page}`)
+      .then((res) => {
+        if (res.data.status_code === 200) {
+          setPostListRes(res.data.data.results);
+          setPostListResPagenation(res.data.data);
+        } else {
+          setAlert('error', res.data.message);
         }
+      })
+      .catch((err) => {
+        setAlert('error', err.message);
+        console.log(err);
+      });
+  };
 
-        if (!input["gradeValue"]) {
-            isValid = false;
-            errors["gradeValue"] = "Please enter your event grade.";
+  const clearAll = () => {
+    setBranchValue(null);
+    setCategoryValue(null);
+    setGradeValue(null);
+    getPostList();
+  };
+  const handleViewmore = (list, ansTrue) => {
+    setViewMoreList(list);
+    setisViewmoreView(true);
+    setanstrue(ansTrue);
+  };
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
+
+  const deletPost = (id, index) => {
+    axiosInstance
+      .delete(`${endpoints.discussionForum.deletePost}${id}/update-post/`)
+      .then((res) => {
+        if (res.data.status_code === 200) {
+          setAlert('success', res.data.message);
+          const postList = postListRes;
+          postList.splice(index, 1);
+          setPostListRes(postList);
         }
+      })
+      .catch((err) => {
+        setAlert('error', err.message);
+        console.log(err);
+      });
+  };
+  const back = () => {
+    setisViewmoreView(false);
+  };
 
-        let errorPayload = {
-            errors,
-            isValid
-        };
+  const navigateToCreatePage = () => {
+    props.history.push(`${match.url}/create`);
+  };
 
-        return errorPayload;
-
-
+  const validate = (formData) => {
+    let input = formData;
+    let errors = {};
+    let isValid = true;
+    if (!input['categoryValue']) {
+      isValid = false;
+      errors['categoryValue'] = 'Please enter your event category.';
     }
-    return (
-        <Layout>
-            <>
-                <div className={`bread-crumbs-container ds-forum`} onClick={back}>
-                    <CommonBreadcrumbs
-                        componentName='Discussion Forum'
-                        childComponentName={isViewmoreView ? "Post" : ''}
-                    />
-                </div>
-                {  !isViewmoreView && <div className="df-container" >
+
+    if (!input['gradeValue']) {
+      isValid = false;
+      errors['gradeValue'] = 'Please enter your event grade.';
+    }
+
+    let errorPayload = {
+      errors,
+      isValid,
+    };
+
+    return errorPayload;
+  };
+  return (
+      <Layout>
+          <>
+              <div className="bread-crumbs-container ds-forum" onClick={back}>
+                  <CommonBreadcrumbs
+                      componentName='Discussion Forum'
+                      childComponentName={isViewmoreView ? "Post" : ''}
+          />
+        </div>
+              {  !isViewmoreView && (
+<div className="df-container" >
                     <Grid container spacing={2}>
                         <Grid item xs={10} style={{ display: 'flex', marginTop: 30, marginLeft: 20, borderBottom: '1px solid #E2E2E2', }}>
                             <div className="branch-dropdown">
@@ -392,8 +411,10 @@ const Discussionforum = (props) => {
 
                     </Grid>
                 </div>
-                }
-                {   !isViewmoreView && <div className="env-container" >
+)
+        )}
+              {   !isViewmoreView && (
+<div className="env-container" >
                     <Grid item xs={11} className="catname-df-forum">
                         <div className="env-name" style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #E2E2E2' }}>
 
@@ -472,24 +493,27 @@ const Discussionforum = (props) => {
 
                     </div>
                 </div>
-                }
+)
+        )}
 
-                <div className="view-more-container">
-                    {
+              <div className="view-more-container">
+                  {
                         isViewmoreView && <Viewmore viewMoreList={viewMoreList} anstrue={anstrue} />
                     }
-                </div>
-                <div className="pagination-cont">
-                    { !isViewmoreView && <Pagination
+        </div>
+              <div className="pagination-cont">
+                  { !isViewmoreView && (
+<Pagination
                         onChange={handlePageChange}
                         count={Math.ceil(PostListResPagenation && PostListResPagenation.total_pages )} color="secondary" 
-                        />}
+                        />
+)}
                 </div>
-            </>
-            
-        </Layout>
-
-    )
-}
+          )}
+        </div>
+      </>
+    </Layout>
+  );
+};
 
 export default withRouter(Discussionforum);
