@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName, modalData, id }) => {
+const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName, modalData, id, reshuffleFlag,setReshuffleFlag }) => {
     const classes = useStyles();
     const { setAlert } = useContext(AlertNotificationContext);
     const [batchList, setBatchList] = useState([]);
@@ -76,6 +76,9 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
             })
     }, [])
     const handleReshuffle = () => {
+        if(!filterData.batch){
+          return  setAlert('warning','Select Batch')
+        }
         axiosInstance.post(`${endpoints.aol.studentReshuffle}`, {
             "batch":parseInt(id),
             "new_batch": filterData?.batch?.id,
@@ -86,6 +89,7 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
                 if (result.data.status_code === 200) {
                     setAlert('success', result.data.message)
                     setOpenReshuffleModal(false)
+                    setReshuffleFlag(!reshuffleFlag)
                 }
                 else{
                     setAlert('error',result.data.message)

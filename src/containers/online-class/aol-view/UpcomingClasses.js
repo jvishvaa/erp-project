@@ -158,7 +158,7 @@ const UpcomingClasses = () => {
     const [toggledData, setToggledData] = useState([])
 
     const [reload, setReload] = useState(false)
-    const limit =15;
+    const limit = 15;
 
     const [dateRangeTechPer, setDateRangeTechPer] = useState([
         moment().subtract(6, 'days'),
@@ -193,7 +193,7 @@ const UpcomingClasses = () => {
     }
     const handlePagination = (event, page) => {
         setPage(page);
-      };
+    };
 
     const handleBranch = (event, value) => {
         setFilterData({ ...filterData, branch: '' })
@@ -228,6 +228,7 @@ const UpcomingClasses = () => {
     }
     const handleCourse = (event, value) => {
         setFilterData({ ...filterData, course: '' })
+        setBatch([])
         if (value) {
             setFilterData({ ...filterData, course: value })
             axiosInstance.get(`${endpoints.aol.batchLimitList}?course_id=${value.id}`)
@@ -384,6 +385,7 @@ const UpcomingClasses = () => {
         setClassType([]);
         setFilterData([])
         setClassesdata([])
+        setToggledData([])
         setClassData('');
         setItemSize(3);
         setSize(12);
@@ -408,33 +410,11 @@ const UpcomingClasses = () => {
         //setFilter(false);
     }
 
-    // const classCardData = classesData && classesData.slice(pagination.start, pagination.end).filter((data) => {
-    //     const classData = data.zoom_meeting ? data.zoom_meeting : data;
-    //     if (startDate === null && endDate === null) {
-    //         return data;
-    //     }
-    //     else if (startDate === moment(classData.online_class && classData.online_class.start_time).format('YYYY-MM-DD') && endDate === moment(classData.online_class && classData.online_class.end_time).format('YYYY-MM-DD')) {
-    //         return data;
-    //     }
-    // }).map((data, id) => {
-    //     return (
-    //         <Grid item sm={itemSize} xs={12} key={id}>
-    //             <ClassCard
-    //                 classData={data}
-    //                 selectedId={selected}
-    //                 handleSelctedClass={handleSelctedClass}
-    //                 toggle={toggle}
-    //             />
-    //         </Grid>
-    //     )
-    // });
-
     if (reload) {
         getClasses();
         setReload(!reload)
     }
 
-    console.log(reload, 'RRRRRRRRRR')
     return (
         <>
             <div className='breadcrumb-container-create' style={{ marginLeft: '15px' }}>
@@ -568,7 +548,6 @@ const UpcomingClasses = () => {
                     <Autocomplete
                         style={{ width: '100%' }}
                         size='small'
-                        // type='number'
                         onChange={handleBatch}
                         id='batch'
                         className='dropdownIcon'
@@ -580,7 +559,6 @@ const UpcomingClasses = () => {
                             <TextField
                                 {...params}
                                 variant='outlined'
-                                // type='number'
                                 label='Batch Limit'
                                 placeholder='Batch Limit'
                             />
@@ -698,6 +676,7 @@ const UpcomingClasses = () => {
                             reload={reload}
                             setReload={setReload}
                             hendleCloseDetails={hendleCloseDetails}
+                            getClasses={getClasses}
                         />
                     </Grid>
                 )}
@@ -713,22 +692,22 @@ const UpcomingClasses = () => {
                 ) */}
             </Grid>
             {classesData?.length > 0 && (
-                <div style={{alignItems:'center'}}>
-                <Pagination
-                onChange={handlePagination}
-                style={{ marginTop: 25,marginLeft:'38rem' }}
-                count={Math.ceil(totalCount / limit)}
-                color='primary'
-                page={page}
-              />
-                </div>
-            )}
-            {toggledData?.length >0 && (
-                <div>
-                    
+                <div style={{ alignItems: 'center' }}>
                     <Pagination
                         onChange={handlePagination}
-                        style={{ marginTop: 25,marginLeft:'38rem' }}
+                        style={{ marginTop: 25, marginLeft: '38rem' }}
+                        count={Math.ceil(totalCount / limit)}
+                        color='primary'
+                        page={page}
+                    />
+                </div>
+            )}
+            {toggledData?.length > 0 && (
+                <div>
+
+                    <Pagination
+                        onChange={handlePagination}
+                        style={{ marginTop: 25, marginLeft: '38rem' }}
                         count={Math.ceil(toggledData?.length / limit)}
                         color='primary'
                         page={page}

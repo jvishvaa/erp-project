@@ -97,6 +97,7 @@ import DailyDairyStore from './containers/daily-dairy/context/context';
 import AttendeeListRemake from './containers/attendance';
 import TestComparisionUI from './containers/assessment-report/test-comparision';
 import AssessmentAnalysis from './containers/assessment-report/assessment-analysis';
+import AssessmentHandlerUI from './containers/assessment/assess-attemption'
 import Reshuffle from './containers/online-class/aol-view/Reshuffle';
 import StudentStrength from './containers/student-strength';
 import StudentIdCard from './containers/student-Id-Card';
@@ -392,7 +393,7 @@ function App() {
                         <Route exact path='/course-price/:courseKey?/:gradeKey?'>
                           {({ match }) => <CoursePrice match={match} />}
                         </Route>
-                        <Route exact path='/create/course'>
+                        <Route exact path='/create/course/:courseKey?/:gradeKey?'>
                           {({ match }) => <CreateCourse match={match} />}
                         </Route>
                         <Route exact path='/course-list/:gradeKey?'>
@@ -413,8 +414,11 @@ function App() {
                         <Route exact path='/assessment'>
                           {({ match }) => <Assessment match={match} />}
                         </Route>
-                        <Route exact path='/assessment/view-assessment'>
+                        <Route exact path='/assessment/:assessmentId/attempt'>
                           {({ match }) => <ViewAssessment match={match} />}
+                        </Route>
+                        <Route exact path='/assessment/:assessmentId/state-management-intg-temp'>
+                          {({ match }) => <AssessmentHandlerUI match={match} />}
                         </Route>
 
                         <Route exact path='/student-strength'>

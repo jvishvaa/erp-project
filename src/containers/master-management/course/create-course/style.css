@@ -30,11 +30,18 @@
   padding: 5px 10px;
   border: 1px solid #ff6b6b;
   border-radius: 10px;
-  margin-top:5px;
+  margin-top: 5px;
   margin-left: 10px;
   margin-right: 25px;
   margin-bottom: 5px;
   width: 100%;
+  position: relative;
+}
+
+.file_close {
+  position: absolute;
+  right: 0;
+  margin-right: 5%;
 }
 
 .file_name_container_course1 {
@@ -44,8 +51,8 @@
 
 .scrollableContent1 {
   display: grid;
-  grid-gap: 5%;
-  grid-template-columns: auto auto auto;
+  grid-column-gap: 5%;
+  grid-template-columns: 32% 32% 32%;
 }
 
 .scrollableContent {
@@ -70,7 +77,19 @@
 }
 
 .periodBackButton.MuiButtonBase-root:hover {
-  background:  #e0e0e0;
+  background: #e0e0e0;
+}
+
+.periodBackButton2.MuiButtonBase-root {
+  width: 20%;
+  border-radius: 10px;
+  background: #e0e0e0;
+  color: rgb(140, 140, 140);
+  margin: 4%;
+}
+
+.periodBackButton2.MuiButtonBase-root:hover {
+  background: #e0e0e0;
 }
 
 .nextPageButton.MuiButtonBase-root {
@@ -97,7 +116,7 @@
   border-radius: 10px;
   color: rgb(140, 140, 140);
   background: #e0e0e0;
-} 
+}
 
 .attachmentButtonContainer {
   margin-left: 10%;
@@ -105,7 +124,7 @@
 }
 
 .attachment_button {
-  margin: 4% 5% 6% 6%;
+  margin: 3% 5% 3% 3%;
   width: 100%;
 }
 
@@ -125,8 +144,8 @@
 
 .periodDescBox .MuiInputBase-root {
   border-radius: 10px;
-  background:#e0e0e0;
-} 
+  background: #e0e0e0;
+}
 
 .periodDescBox .MuiOutlinedInput-notchedOutline {
   border: none;
@@ -157,10 +176,45 @@
 }
 
 .multiRowTextfield .MuiFormLabel-root.Mui-focused {
-  font-weight: 600; 
+  font-weight: 600;
 }
 
 .periodCardsContainer.MuiGrid-root {
   margin: 20px auto;
   width: 100%;
+}
+
+.buttonModifiedDesign.MuiButtonBase-root {
+  border-radius: 10px;
+  width: 100%;
+}
+
+.downloadAllContainer {
+  display: flex;
+}
+
+.attachmentContainer1 {
+  width: 90%;
+}
+
+.noOfFilesTag {
+  color: #014b7e;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 5%;
+}
+
+.deleteEditDiv {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media screen and (max-width: 768px) {
+  .scrollableContent1 {
+    display: grid;
+    grid-column-gap: 5%;
+    grid-template-columns: 40% 40%;
+  }
 }

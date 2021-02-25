@@ -1,55 +1,70 @@
-import React, { useState, useContext } from 'react';
+import React from 'react';
 import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { Button, useTheme, IconButton, SvgIcon } from '@material-ui/core';
-import Box from '@material-ui/core/Box';
-// import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-// import axios from 'axios';
-// import { useLocation } from 'react-router-dom';
+import { Button, useTheme } from '@material-ui/core';
+import { ContainerContext } from '../../Layout';
 import useStyles from './useStyles';
-// import endpoints from '../../../config/endpoints';
-// import axiosInstance from '../../../config/axios';
-// import '../../lesson-plan/lesson-plan-view/lesson.css';
-// import downloadAll from '../../../assets/images/downloadAll.svg';
-import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 const QuestionPaperCard = ({
-  testTitle,
-  testDescription,
-  testId,
-  testDuration,
-  testType,
-  testTotalQuestions,
-  testTotalMarks,
-  handleStartTest,
+  // testTitle,
+  descriptions: testDescription,
+  is_test_completed: { is_completed: isTestAttempted, completed_date: testAttemptedDate },
+  handleViewMore,
+  test_date: testDate,
+  test_name: testTitle,
+  question_paper: {
+    id: questionPaperId,
+    grade_name: gradeName,
+    subject_name: subjects = [],
+  },
 }) => {
   const themeContext = useTheme();
-  const { setAlert } = useContext(AlertNotificationContext);
+  // const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+  const { containerRef } = React.useContext(ContainerContext);
   const classes = useStyles();
 
   return (
-    <Paper elevation={1}>
+    <Paper elevation={2} className={classes.paper}>
       <div className={classes.cardWrapper}>
         <div>
           <h3 className={classes.cardTitleHeading}>{testTitle}</h3>
-          <h4 className={classes.cardQuestions}>
-            <span className={classes.cardQuestionNumber}>{testTotalQuestions ?? 20}</span>
-            Questions
+          <h4 className={classes.cardDescription}>
+            {/* Some test name, (This includes module) */}
+            {testDescription}
           </h4>
-          <p className={classes.cardAttemptedText}>Last Attempted on 23.11.21 </p>
         </div>
         <div className={classes.cardEasyWrapper}>
-          <div className={classes.cardDifficulty}>E</div>
+          <div>
+            <div className={classes.cardDescription}>
+              {[gradeName, ...(subjects || [])].join(', ')}
+            </div>
+            {isTestAttempted ? (
+              <div className={classes.cardAttemptedTextGreen}>
+                Completed at - &nbsp;
+                {new Date(testAttemptedDate).toDateString()}
+              </div>
+            ) : (
+              <div className={classes.cardAttemptedTextRed}>
+                Scheduled at - &nbsp;
+                {new Date(testDate).toDateString()}
+              </div>
+            )}
+          </div>
           <Button
             className={classes.cardStartButton}
             variant='contained'
             color='primary'
-            onClick={() => handleStartTest(testId)}
+            onClick={(e) => {
+              handleViewMore(questionPaperId);
+              e.stopPropagation();
+              if (containerRef.current) {
+                containerRef.current.style.scrollBehavior = 'smooth';
+                containerRef.current.scrollTo(0, 0);
+              }
+            }}
           >
-            Start
+            View more
           </Button>
         </div>
       </div>

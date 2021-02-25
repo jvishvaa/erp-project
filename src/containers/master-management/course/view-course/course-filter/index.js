@@ -10,8 +10,9 @@ import endpoints from '../../../../../config/endpoints';
 import axiosInstance from '../../../../../config/axios';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
 import Divider from '@material-ui/core/Divider';
+import '../../create-course/style.css';
 
-const CourseFilter = ({ handleCourseList }) => {
+const CourseFilter = ({ handleCourseList, setCourseData ,setPageFlag}) => {
   const themeContext = useTheme();
   const { gradeKey } = useParams();
   const history = useHistory();
@@ -34,6 +35,8 @@ const CourseFilter = ({ handleCourseList }) => {
       grade: [],
       branch: '',
     });
+    setCourseData([])
+    setPageFlag(false)
   };
 
   const handleFilter = () => {
@@ -76,13 +79,14 @@ const CourseFilter = ({ handleCourseList }) => {
             const gradeObj = result.data?.data?.find(
               ({ grade_id }) => grade_id === Number(gradeKey)
             );
-            if (gradeKey) {
+            if (gradeKey>0) {
               setFilterData({
                 grade: gradeObj,
                 branch: { branch_name: 'AOL' },
               });
+              setGradeIds(gradeKey);
               handleCourseList(gradeKey);
-            }
+            } else history.push('/course-list');
           } else {
             setAlert('error', result?.data?.message);
             setGradeDropdown([]);
@@ -164,7 +168,7 @@ const CourseFilter = ({ handleCourseList }) => {
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
           <Button
             variant='contained'
-            className='custom_button_master labelColor'
+            className='labelColor buttonModifiedDesign'
             size='medium'
             onClick={handleClear}
           >
@@ -176,7 +180,7 @@ const CourseFilter = ({ handleCourseList }) => {
             variant='contained'
             style={{ color: 'white' }}
             color='primary'
-            className='custom_button_master'
+            className='buttonModifiedDesign'
             size='medium'
             onClick={handleFilter}
           >
@@ -206,7 +210,7 @@ const CourseFilter = ({ handleCourseList }) => {
             variant='contained'
             style={{ color: 'white' }}
             color='primary'
-            className='custom_button_master'
+            className='buttonModifiedDesign'
             onClick={() => history.push('/create/course')}
             size='medium'
           >

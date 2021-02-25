@@ -17,6 +17,7 @@ import Loading from '../../../components/loader/loader';
 import { AssessmentAnalysisContext } from './assessment-analysis-context';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import { LevelsChart, CategoryChart } from './test-assessment-charts';
+import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 
 import teacherSideReport from '../../../assets/images/teacherSideReport.svg';
 import studentTestComparision from '../../../assets/images/analysis-svgrepo-com.svg';
@@ -97,10 +98,11 @@ const AssessmentAnalysisUI = (props) => {
 
       <Paper elevation={0}>
         <Box m={{ xs: '1rem', sm: '2rem' }} className={classes.root}>
+          <CommonBreadcrumbs componentName='Assessment' childComponentName='Reports' />
+          <hr className={classes.hr} />
           <Typography variant='h6' className={classes.title}>
             Analysis
           </Typography>
-          <hr className={classes.hr} />
 
           <Grid container spacing={3}>
             <Grid item xs={12} sm={12} md={6}>
@@ -139,7 +141,6 @@ const AssessmentAnalysisUI = (props) => {
                             {},
                             {
                               onReject: (errorOrResp) => {
-                                debugger
                                 const {
                                   message: errorMessage = 'Failed to connect to server',
                                   response: { statusText } = {},

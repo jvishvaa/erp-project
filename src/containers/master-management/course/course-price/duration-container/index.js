@@ -255,6 +255,7 @@ const DurationContainer = (props) => {
                 resetContent();
                 setCourseId('');
                 setSelectedCourse('');
+                if (gradeKey && courseKey) history.push(`/course-list/${gradeKey}`);
               } else {
                 setAlert('error', result.data.message);
               }
@@ -286,7 +287,7 @@ const DurationContainer = (props) => {
             name='weeks'
             value={noOfWeeks}
             onChange={(e) => handleNumberOfWeeks(e.target.value)}
-            InputProps={{ inputProps: { min: 0, autoComplete: 'off' } }}
+            InputProps={{ inputProps: { min: 1, autoComplete: 'off' } }}
           />
         </div>
         <div className='isRecursiveSwitch'>
@@ -331,7 +332,7 @@ const DurationContainer = (props) => {
                       onChange={(e) => handleChange(e, index)}
                       InputProps={{
                         inputProps: {
-                          min: 0,
+                          min: 1,
                           autoComplete: 'off',
                           readOnly: index === 0 && true,
                         },
@@ -388,7 +389,7 @@ const DurationContainer = (props) => {
                     value={noOfWeeks}
                     onChange={(e) => handleChange(e, 0)}
                     InputProps={{
-                      inputProps: { min: 0, autoComplete: 'off', readOnly: true },
+                      inputProps: { min: 1, autoComplete: 'off', readOnly: true },
                     }}
                   />
                 </div>
