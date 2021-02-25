@@ -181,7 +181,7 @@ export default function ClassCardComponent(props) {
                             End Date: {classData.online_class ? moment(classData.online_class.end_time).format('DD-MM-YYYY') : ''}
                         </Typography>
                         <Typography className={classes.classSchedule}>
-                            Assigned To: {classData.online_class && classData.online_class.teacher.split('@')[0]}
+                            Assigned To: {classData.online_class && classData.online_class.teacher.email.split('@')[0]}
                         </Typography>
 
                         <div style={{ marginTop: '-2px', width: '100%' }}>

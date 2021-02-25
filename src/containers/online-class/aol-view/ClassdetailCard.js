@@ -190,6 +190,7 @@ export default function ClassdetailsCardComponent(props) {
                 }
             })
     }, [])
+    console.log(props,'==============')
     return (
         <>
             <div className={classes.classDetailsBox}>
@@ -301,6 +302,9 @@ export default function ClassdetailsCardComponent(props) {
             openReassignModal={openReassignModal}
             setOpenReassignModal={setOpenReassignModal}
             teacherDropdown={teacherDropdown}
+            selectedTeacher={props.classData.online_class.teacher}
+            allData={props.classData}
+            getClasses={props.getClasses}
             />
         </>
     )

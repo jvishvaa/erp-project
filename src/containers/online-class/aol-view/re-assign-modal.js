@@ -17,73 +17,83 @@ const useStyles = makeStyles(theme => ({
         padding: theme.spacing(2),
         position: 'absolute',
         top: theme.spacing(5),
-        width: '25%'
+        width: '95%'
     },
     dialogTitle: {
         paddingRight: '0px'
     }
 }))
-const ReassignModal = ({ openReassignModal, setOpenReassignModal, teacherDropdown }) => {
+const ReassignModal = ({ openReassignModal, setOpenReassignModal, teacherDropdown, selectedTeacher,allData, getClasses }) => {
     const { setAlert } = useContext(AlertNotificationContext);
-    const [teacherData,setTeacherData]= useState(teacherDropdown)
+    const [teacherData, setTeacherData] = useState(teacherDropdown)
+
+    const [filterData, setFilterData] = useState({
+        selectedTeacher: selectedTeacher
+    })
 
 
-    useEffect(() => {
-        // axiosInstance.get(`${endpoints.}`)
-    }, [])
 
+    const handleTeacher=(event,value)=>{
+        setFilterData({...filterData,selectedTeacher:''})
+        if(value){
+            setFilterData({...filterData,selectedTeacher:value})
+        }
+    }
     const handleSubmit = () => {
         axiosInstance.put(`${endpoints.aol.updateTeacher}`, {
-            "teacher": 1441,
-            "batch_id": 62
-        }).then(result=>{
-            if(result.data.status_code === 200){
-                setAlert('success',result.data.message)
+            "teacher": filterData.selectedTeacher.tutor_id,
+            "batch_id": allData && allData.online_class.aol_batch_id
+        }).then(result => {
+            if (result.data.status_code === 200 || result.data.status_code === null) {
+                setAlert('success', result.data.message)
                 setOpenReassignModal(false)
+                getClasses()
+            }
+            else{
+                setAlert('error','Teacher is not Available')
             }
         })
     }
 
     return (
-        <div>
-            <Dialog open={openReassignModal} onClose={() => setOpenReassignModal(false)} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title" className='reshuffle-header' style={{ color: '#ffffff' }}>Reassign Teacher</DialogTitle>
-                <DialogContent>
-                    <DialogContentText style={{ marginTop: '1.25rem' }}>
-                        <Grid container spacing={4} >
-                            <Grid item xs={12} sm={12} >
-                                <Autocomplete
-                                    style={{ width: '100%' }}
-                                    size='small'
-                                    // onChange={handleTeacher}
-                                    id='grade'
-                                    className='dropdownIcon'
-                                    // value={filterData?.teacher}
-                                    // options={teacherDropdown}
-                                    // getOptionLabel={(option) => option?.email}
-                                    filterSelectedOptions
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            variant='outlined'
-                                            label='Teacher Name'
-                                            placeholder='Teacher Name'
-                                        />
-                                    )}
-                                />
-                            </Grid>
+        <Dialog open={openReassignModal} className='reAssignModal' onClose={() => setOpenReassignModal(false)} aria-labelledby="form-dialog-title">
+            <DialogTitle id="form-dialog-title" className='reshuffle-header'>Reassign Teacher</DialogTitle>
+            <DialogContent>
+                <DialogContentText style={{ marginTop: '1.25rem' }} className='reAssignDisplay'>
+                    <Grid container spacing={4} className='margin'>
+                        <Grid item xs={12} sm={12} >
+                            <Autocomplete
+                                style={{ width: '100%' }}
+                                size='small'
+                                onChange={handleTeacher}
+                                id='grade'
+                                className='dropdownIcon'
+                                value={filterData?.selectedTeacher}
+                                options={teacherDropdown}
+                                getOptionLabel={(option) => option?.email}
+                                filterSelectedOptions
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        variant='outlined'
+                                        label='Teacher Name'
+                                        placeholder='Teacher Name'
+                                    />
+                                )}
+                            />
                         </Grid>
-                        <Grid>
-                            <Button onClick={handleSubmit}>
-                                SUBMIT
+                    </Grid>
+                    <Grid>
+                        <Button onClick={handleSubmit}>
+                            SUBMIT
                             </Button>
-                        </Grid>
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                </DialogActions>
-            </Dialog>
-        </div>
+                    </Grid>
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+            </DialogActions>
+        </Dialog>
+
     )
 }
 

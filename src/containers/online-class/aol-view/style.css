@@ -16,3 +16,16 @@
     margin-left: 85%;
     margin-top: 21%;
   }
+  .reAssignModal .MuiDialog-paperWidthSm {
+      width: 65%;
+      height: auto;
+      border-radius: 10px;
+  }
+  .reAssignDisplay.MuiDialogContentText-root {
+      display: flex;
+      margin-bottom: 12px;
+  }
+  .margin.MuiGrid-spacing-xs-4{
+    width: calc(100% + 32px);
+    margin: -16px 10px;
+  }

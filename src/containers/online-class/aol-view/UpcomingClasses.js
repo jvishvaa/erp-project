@@ -676,6 +676,7 @@ const UpcomingClasses = () => {
                             reload={reload}
                             setReload={setReload}
                             hendleCloseDetails={hendleCloseDetails}
+                            getClasses={getClasses}
                         />
                     </Grid>
                 )}
