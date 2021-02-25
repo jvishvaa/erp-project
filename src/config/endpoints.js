@@ -1,4 +1,5 @@
-const baseURLCentral = 'https://13.232.30.169/qbox';
+// const baseURLCentral = 'http://13.232.30.169/qbox/';
+const baseURLCentral = 'https://dev.mgmt.letseduvate.com/qbox';
 export default {
   auth: {
     login: '/auth/login/',
@@ -242,6 +243,7 @@ export default {
     assessmentAnalysisTeacherExcel: `${baseURLCentral}/assessment/teacher-report/`, // ?type=1
     userAssessmentSubmission: `${baseURLCentral}/assessment/user_response/`,
     fetchAssessmentQuestionPapersQuestions: `${baseURLCentral}/assessment/<question-paper-id>/qp-questions-list/`,
+    assessmentResultAnalysis: `${baseURLCentral}/assessment/student-reports/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
