@@ -41,7 +41,7 @@ import AddHomeworkCoord from './containers/homework/coordinator-homework/add-hom
 import LessonReport from './containers/lesson-plan/lesson-plan-report';
 import LessonPlan from './containers/lesson-plan/lesson-plan-view';
 import Assessment from './containers/assessment';
-import AssessmentAttemption from './containers/assessment/viewAssessment';
+import AssessmentAttemption from './containers/assessment/assess-attemption';
 import {
   TeacherBlog,
   ContentView,
