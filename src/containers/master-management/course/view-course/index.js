@@ -132,12 +132,12 @@ const CourseView = () => {
   };
   useEffect(() => {
     if (deleteFlag) {
-      handleCourseList(sendGrade);
+      handleCourseList(sendGrade,tabVal);
     }
   }, [deleteFlag]);
   useEffect(()=>{
     if(pageFlag== true && page){
-      handleCourseList(sendGrade);
+      handleCourseList(sendGrade,tabVal);
     }
   },[page])
 

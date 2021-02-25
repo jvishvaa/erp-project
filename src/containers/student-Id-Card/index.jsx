@@ -372,8 +372,11 @@ const StudentIdCard = ({ history }) => {
                     FILTER
                   </Button>
                 </Grid>
-                <span className='studentIdCardButtonBorderDivider' />
-                <Grid item md={2} xs={12}>
+                <span
+                  className='studentIdCardButtonBorderDivider'
+                  style={{ display: 'none' }}
+                />
+                <Grid item md={2} xs={12} style={{ display: 'none' }}>
                   <Button
                     variant='contained'
                     size='small'

@@ -58,6 +58,7 @@ const ViewMoreCard = ({
     history.push(`/create/course/${viewMoreData[0]?.course}`);
     sessionStorage.setItem('gradeKey', sendGrade);
   };
+
   const handleDownload = (type) => {
     if (type === 'course') {
       window.href = `https://erpnew.letseduvate.com/qbox/aol/file-upload/dev/${periodDataForView?.files[0]}`
