@@ -70,6 +70,7 @@ import {
 } from './containers/blog';
 import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
 import Discussionforum from './containers/discussionForum/index';
+import DiscussionPost from './containers/discussionForum/discussion/DiscussionPost';
 import CreateCategory from './containers/discussionForum/createCategory';
 import CreateDiscussionForum from './containers/discussionForum/createDiscussionForum';
 import CircularList from './containers/circular';
@@ -350,6 +351,9 @@ function App() {
                         </Route>
                         <Route exact path='/discussion-forum'>
                           {({ match }) => <Discussionforum match={match} />}
+                        </Route>
+                        <Route exact path='/discussion-forum/post/:id'>
+                          {({ match }) => <DiscussionPost match={match} />}
                         </Route>
                         <Route exact path='/category/create'>
                           {({ match }) => <CreateCategory match={match} />}

@@ -511,7 +511,7 @@ const handleEditorChange = (content, editor) => {
               disabled={!selectedSubCategory || !selectedCategory ||!selectedSubSubCategory || !selectedBranch
               ||!setTitle ||!setDescriptionDisplay }
             >
-              Save
+              Submit
         </Button>
           </Grid>
         </Grid>
@@ -520,4 +520,4 @@ const handleEditorChange = (content, editor) => {
   )
 }
 
-export default CreateDiscussionForum
+export default CreateDiscussionForum;

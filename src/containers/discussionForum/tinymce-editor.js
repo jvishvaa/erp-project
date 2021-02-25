@@ -27,15 +27,15 @@ const MyTinyEditor = ({ id, description, handleEditorChange, setOpenEditor }) =>
         image_title: true,
         automatic_uploads: true,
         file_picker_types: 'file image media',
-        file_picker_callback: function (cb, value, meta) {
-          var input = document.createElement('input');
+        file_picker_callback(cb, value, meta) {
+          const input = document.createElement('input');
           input.setAttribute('type', 'file');
           input.setAttribute('accept', 'image/*');
           input.onchange = function () {
-            var file = this.files[0];
+            const file = this.files[0];
             // axiosInstance.post(`${endpoints.}`)
             setTimeout(() => {
-              var imageUrl = URL.createObjectURL(file);
+              const imageUrl = URL.createObjectURL(file);
               // var imageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSScT3fIZdyH0OiFY1n1jVeEwrZ0PZy_FwzjA&usqp=CAU"
               cb(imageUrl, { alt: 'My alt text' });
             }, 100);
