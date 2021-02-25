@@ -31,7 +31,7 @@ const getSearchParams = (propsObj) => {
   const searchParamsObj = Object.fromEntries(urlParams); // {open: "true", def: "[asf]", xyz: "5"}
   return searchParamsObj;
 };
-const Assessment = ({ history, ...restProps }) => {
+const ViewAssessments = ({ history, ...restProps }) => {
   const { user_id: user } = JSON.parse(localStorage.getItem('userDetails') || {});
   const [loading, setLoading] = useState(false);
   const [questionPaperList, setQuestionPaperList] = useState([]);
@@ -186,4 +186,4 @@ const Assessment = ({ history, ...restProps }) => {
   );
 };
 
-export default withRouter(Assessment);
+export default withRouter(ViewAssessments);
