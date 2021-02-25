@@ -77,10 +77,10 @@ function SignIn({ onLogin, history }) {
     };
     if (username && password) {
       onLogin(params).then((response) => {
-        if (response.isLogin) {
+        if (response?.isLogin) {
           history.push('/profile');
         } else {
-          setAlert('error', response.message);
+          setAlert('error', response?.message);
         }
       });
     }
@@ -89,10 +89,10 @@ function SignIn({ onLogin, history }) {
         username: "2000000002",
         password: "erp_1992",
       }).then((response) => {
-        if (response.isLogin) {
+        if (response?.isLogin) {
           history.push('/dashboard');
         } else {
-          setAlert('error', response.message);
+          setAlert('error', response?.message);
         }
       });
     }

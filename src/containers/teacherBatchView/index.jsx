@@ -223,7 +223,7 @@ const TeacherBatchView = ({ history }) => {
                 <ArrowForwardIosIcon className='SignatureUploadNavArrow' />
                 <span className='SignatureNavigationLinks'>Online Class</span>
                 <ArrowForwardIosIcon className='SignatureUploadNavArrow' />
-                <span className='SignatureNavigationLinks'>Aol Class View</span>
+                <span className='SignatureNavigationLinks'>{window.location.pathname ==="/online-class/teacher-view-class" ? 'Teacher Class View' : 'Student Class View '}</span>
               </Grid>
             </Grid>
           </Grid>
