@@ -5,7 +5,7 @@ import Collapse from '@material-ui/core/Collapse';
 import { Button } from '@material-ui/core';
 import useStyles from './questions-review.styles';
 
-import { AssessmentReviewContext } from '../assess-attemption/assess-review-context';
+import { AssessmentReviewContext } from '../../assess-attemption/assess-review-context';
 
 function QuestionReview() {
   const classes = useStyles();

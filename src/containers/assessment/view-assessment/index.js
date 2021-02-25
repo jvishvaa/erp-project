@@ -10,8 +10,8 @@ import { AssessmentReviewContextProvider } from '../assess-attemption/assess-rev
 
 import Loading from '../../../components/loader/loader';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
-import QuestionPaperCard from '../questionPaperCard';
-import QuestionPaperInfo from '../questionPaperInfo';
+import QuestionPaperCard from './questionPaperCard';
+import QuestionPaperInfo from './questionPaperInfo';
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import axiosInstance from '../../../config/axios';

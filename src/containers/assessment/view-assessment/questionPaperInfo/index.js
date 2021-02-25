@@ -6,17 +6,11 @@ import React, { useContext, useEffect } from 'react';
 import { Paper, Button } from '@material-ui/core';
 import ReactHtmlParser from 'react-html-parser';
 import { withRouter } from 'react-router-dom';
-import { timeDeltaDiff } from '../../../utility-functions';
+import { timeDeltaDiff } from '../../../../utility-functions';
 import QuestionReview from './questions-review';
-// import useMediaQuery from '@material-ui/core/useMediaQuery';
-// import { useTheme } from '@material-ui/core';
+import toddlerGroup from '../../../../assets/images/toddler-group.svg';
 
-// import toddler from '../../../assets/images/toddler.png';
-// import toddlerBg from '../../../assets/images/toddler-bg.svg';
-import toddlerGroup from '../../../assets/images/toddler-group.svg';
-
-// import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-import { AssessmentReviewContext } from '../assess-attemption/assess-review-context';
+import { AssessmentReviewContext } from '../../assess-attemption/assess-review-context';
 
 import './questionPaperInfo.css';
 import useStyles from './useStyles';
