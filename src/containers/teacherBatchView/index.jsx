@@ -52,7 +52,7 @@ const TeacherBatchView = ({ history }) => {
   const [selectedBatch, setSelectedBatch] = useState('');
   const [filterList, setFilterList] = useState('');
   const [filterFullData, setFilterFullData] = useState('');
-  const [selectedModule, setSelectedModule] = useState(4);
+  const [selectedModule] = useState(4);
   const [selectedViewMore, setSelectedViewMore] = useState('');
   const [page, setPage] = useState(1);
 
@@ -90,28 +90,40 @@ const TeacherBatchView = ({ history }) => {
 
   function handleClose(data) {
     setSelectedViewMore('');
-    /** 
     if (data === 'success') {
       setPage(1);
-      callApi(
-        `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
-          selectedBatch && selectedBatch.id
-        }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${selectedModule}&class_type=1&batch_limit=${selectedBatch.batch_size}`,
-        'filter'
-      );
+      if (window.location.pathname === '/online-class/attend-class') {
+        setPage(1);
+        callApi(
+          `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
+            studentDetails &&
+            studentDetails.role_details &&
+            studentDetails.role_details.erp_user_id
+          }&page_number=1&page_size=15`,
+          'filter'
+        );
+      } else {
+        callApi(
+          `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
+            selectedBatch && selectedBatch.id
+          }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${selectedModule}&class_type=1`,
+          'filter'
+        );
+      }
     }
-    */
   }
 
   useEffect(() => {
     if (window.location.pathname === '/online-class/attend-class') {
       setPage(1);
-      //${studentDetails && studentDetails.role_details.erp_user_id}
+      // ${studentDetails && studentDetails.role_details.erp_user_id}
       callApi(
-        //`${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=1362&page_number=1&page_size=15&class_type=1`,
+        // `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=1362&page_number=1&page_size=15&class_type=1`,
         `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
-            studentDetails && studentDetails.role_details.erp_user_id
-        }&page_number=1&page_size=15&class_type=1`,
+          studentDetails &&
+          studentDetails.role_details &&
+          studentDetails.role_details.erp_user_id
+        }&page_number=1&page_size=15`,
         'filter'
       );
     } else {
@@ -124,12 +136,23 @@ const TeacherBatchView = ({ history }) => {
 
   function handlePagination(e, page) {
     setPage(page);
-    callApi(
-      `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
-        selectedBatch && selectedBatch.id
-      }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${selectedModule}&class_type=1&batch_limit=${selectedBatch.batch_size}`,
-      'filter'
-    );
+    if (window.location.pathname === '/online-class/attend-class') {
+      callApi(
+        `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
+          studentDetails &&
+          studentDetails.role_details &&
+          studentDetails.role_details.erp_user_id
+        }&page_number=${page}&page_size=15`,
+        'filter'
+      );
+    } else {
+      callApi(
+        `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
+          selectedBatch && selectedBatch.id
+        }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${selectedModule}&class_type=1`,
+        'filter'
+      );
+    }
   }
 
   function handleClearFilter() {
@@ -168,7 +191,9 @@ const TeacherBatchView = ({ history }) => {
     callApi(
       `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
         selectedBatch && selectedBatch.id
-      }&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=12&module_id=4&class_type=1&batch_limit=${selectedBatch && selectedBatch.batch_size}`,
+      }&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=12&module_id=4&class_type=1&batch_limit=${
+        selectedBatch && selectedBatch.batch_size
+      }`,
       'filter'
     );
   }
@@ -416,7 +441,9 @@ const TeacherBatchView = ({ history }) => {
                               height='250px'
                               width='250px'
                             />
-                            <Typography style={{ fontSize: '24px', fontWeight: 'bold'}}>Classes Not Found</Typography>
+                            <Typography style={{ fontSize: '24px', fontWeight: 'bold' }}>
+                              Classes Not Found
+                            </Typography>
                           </Grid>
                         </Grid>
                       </Grid>

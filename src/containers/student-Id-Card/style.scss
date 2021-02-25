@@ -155,10 +155,12 @@
         border: 1px solid #C5CED4 !important;
     }
     .studentIdCardAddress {
-        padding: 0 !important;
+        padding: 1px 15px!important;
         background-color: #FCEEEE;
         color: #014b7e;
+        text-align: left;
         font-weight: bold;
+        line-height: 15px !important;
     }
     .studentIdCardName {
         padding: 0 !important;
@@ -173,7 +175,8 @@
     }
     .studentMainIdCardAddresslable {
         font-size: 10px;
-        padding: 5px 20px !important;   
+        line-height: 1px !important;
+        // padding: 0px 30px 0px 0px !important;   
     }
     .studentIdCardCell {
         padding: 0 !important;
