@@ -44,7 +44,6 @@ import {
   ViewAssessments,
   AssessmentAttemption,
   AssessmentAnalysis,
-  AssessmentHandlerUI,
   AssessmentComparisionUI,
 } from './containers/assessment';
 
@@ -417,12 +416,6 @@ function App() {
                         </Route>
                         <Route exact path='/assessment/:assessmentId/attempt'>
                           {({ match }) => <AssessmentAttemption match={match} />}
-                        </Route>
-                        <Route
-                          exact
-                          path='/assessment/:assessmentId/state-management-intg-temp'
-                        >
-                          {({ match }) => <AssessmentHandlerUI match={match} />}
                         </Route>
                         <Route exact path='/student-strength'>
                           {({ match }) => <StudentStrength match={match} />}
