@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid, Button } from '@material-ui/core'
+import { Grid, Button, TablePagination } from '@material-ui/core'
 import Select from 'react-select'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -9,13 +9,19 @@ import Layout from '../../../../../../Layout'
 // import * as actionTypes from '../store/action'
 
 class FeeCollection extends Component {
-  state = {
+  constructor (props) {
+    super(props)
+  this.state = {
     FeeCollecyionType: '',
     SubType: '',
     FeeAccount: '',
     sessionData: ''
   }
-  ButtonHandler = (e) => {
+  this.buttonHandler = this.buttonHandler.bind(this)
+  this.selectHandler = this.selectHandler.bind(this)
+}
+  
+  buttonHandler = (e) => {
     if (this.state.sessionData.value) {
       // this.props.fetchFeeCollection(this.state.sessionData.value, this.props.user, this.props.alert)
       this.props.history.push({
@@ -37,7 +43,7 @@ class FeeCollection extends Component {
   render () {
     return (
       <Layout>
-      <div style={{ marginLeft: '20px', marginTop: '20px' }}>
+      <div style={{ marginLeft: '20px', marginTop: '10px' }}>
         <Grid container spacing={3}>
           <Grid item xs={3}>
             <label>Academic Year*</label><br />
@@ -55,7 +61,7 @@ class FeeCollection extends Component {
           {
             this.state.sessionData
               ? <Grid item xs={3}>
-                <Button variant='contained' color='primary' onClick={this.ButtonHandler}
+                <Button variant='contained' color='primary' onClick={this.buttonHandler}
                   style={{ marginTop: '25px', marginLeft: '20px' }}
                 >
                 Add Entry
