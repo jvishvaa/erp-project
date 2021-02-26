@@ -1,8 +1,7 @@
 import React from 'react';
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createMuiTheme, makeStyles } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import Button from '@material-ui/core/Button';
-import {  makeStyles } from '@material-ui/core/styles';
 
 const theme = createMuiTheme({
   palette: {
@@ -29,7 +28,9 @@ export function OutlinedButton(props) {
   const classes = useStyels({});
   return (
     <ThemeProvider theme={theme}>
-      <Button color="primary" variant='outlined' className={classes.outlined}>Primary</Button>
+      <Button color='primary' variant='outlined' className={classes.outlined}>
+        Primary
+      </Button>
     </ThemeProvider>
   );
 }
@@ -38,21 +39,31 @@ export function ContainedButton() {
   const classes = useStyels({});
   return (
     <ThemeProvider theme={theme}>
-      <Button color="primary" variant='contained' className={classes.contained}>Secondary</Button>
+      <Button color='primary' variant='contained' className={classes.contained}>
+        Secondary
+      </Button>
     </ThemeProvider>
   );
 }
 
-export function MyButton({color, variant, ...props}) {
+export function MyButton({ color, variant, ...props }) {
   const classes = useStyels({});
 
   return variant === 'outlined' ? (
     <ThemeProvider theme={theme}>
-      <Button color={color ? color : 'primary'} variant='outlined' className={classes.outlined}>Primary</Button>
+      <Button color={color || 'primary'} variant='outlined' className={classes.outlined}>
+        Primary
+      </Button>
     </ThemeProvider>
   ) : (
     <ThemeProvider theme={theme}>
-      <Button color={color ? color : 'primary'} variant='contained' className={classes.contained}>Secondary</Button>
+      <Button
+        color={color || 'primary'}
+        variant='contained'
+        className={classes.contained}
+      >
+        Secondary
+      </Button>
     </ThemeProvider>
   );
 }

@@ -1,17 +1,19 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
+import { AssessmentHandlerContextProvider } from '../assess-attemption/assess-attemption-context';
+import AssessmentAttemptionUI from './assess-attemption';
 import Layout from '../../Layout';
-import AssessmentHandlerUI from './assess-attemption-ui';
-import { AssessmentHandlerContextProvider } from './assess-attemption-context';
 
-const AssessmentAttemption = () => {
+const AssessmentAttemption = (props) => {
+  const { match: { params: { assessmentId } = {} } = {} } = props || {};
   return (
     <>
       <Layout>
-        <AssessmentHandlerContextProvider>
-          <AssessmentHandlerUI />
+        <AssessmentHandlerContextProvider assessmentId={assessmentId}>
+          <AssessmentAttemptionUI />
         </AssessmentHandlerContextProvider>
       </Layout>
     </>
   );
 };
-export default AssessmentAttemption;
+export default withRouter(AssessmentAttemption);

@@ -1,11 +1,12 @@
-const categoryData = [{
+const categoryData = [
+  {
     id: 1,
     status: 'active',
     academicYear: '2018-2019',
     category: 'Sport',
     subCategory: 'Football',
     subSubCategory: 'LALIGA',
-    backgroundColor: '#EFFFB2'
+    backgroundColor: '#EFFFB2',
   },
   {
     id: 2,
@@ -14,7 +15,7 @@ const categoryData = [{
     category: 'Sport1',
     subCategory: 'Football',
     subSubCategory: 'LALIGA',
-    backgroundColor: '#D5FAFF'
+    backgroundColor: '#D5FAFF',
   },
   {
     id: 3,
@@ -23,7 +24,7 @@ const categoryData = [{
     category: 'Sport2',
     subCategory: 'Crecket',
     subSubCategory: 'LALIGA',
-    backgroundColor: '#CEFFCF'
+    backgroundColor: '#CEFFCF',
   },
   {
     id: 4,
@@ -32,7 +33,7 @@ const categoryData = [{
     category: 'Subject',
     subCategory: 'English',
     subSubCategory: 'LALIGA',
-    backgroundColor: '#FFC4BB'
+    backgroundColor: '#FFC4BB',
   },
   {
     id: 6,
@@ -68,7 +69,7 @@ const categoryData = [{
     category: 'Category4',
     subCategory: 'Hindi',
     subSubCategory: 'LALIGA',
-    backgroundColor: '#EFFFB2'
+    backgroundColor: '#EFFFB2',
   },
   {
     id: 10,
@@ -114,46 +115,52 @@ const categoryData = [{
     subCategory: 'Hindi',
     subSubCategory: 'LALIGA',
     backgroundColor: '#CEFFCF',
-  },{
+  },
+  {
     id: 15,
     status: 'active',
     academicYear: '2020-2021',
     category: 'Category3',
     subCategory: 'Hindi',
     subSubCategory: 'LALIGA',
-    backgroundColor: '#E8CDFF'
-  },{
+    backgroundColor: '#E8CDFF',
+  },
+  {
     id: 16,
     status: 'active',
     academicYear: '2020-2021',
     category: 'Category4',
     subCategory: 'Hindi',
     subSubCategory: 'LALIGA',
-    backgroundColor: '#E8CDFF'
-  },{
+    backgroundColor: '#E8CDFF',
+  },
+  {
     id: 17,
     status: 'inactive',
     academicYear: '2020-2021',
     category: 'Category5',
     subCategory: 'Hindi',
     subSubCategory: 'LALIGA',
-    backgroundColor: '#E8CDFF'
-  },{
+    backgroundColor: '#E8CDFF',
+  },
+  {
     id: 18,
     status: 'active',
     academicYear: '2020-2021',
     category: 'Category6',
     subCategory: 'Football',
     subSubCategory: 'LALIGA',
-    backgroundColor: '#E8CDFF'
-  },{
+    backgroundColor: '#E8CDFF',
+  },
+  {
     id: 19,
     status: 'active',
     academicYear: '2019-2020',
     category: 'Category7',
     subCategory: 'maths',
     subSubCategory: 'LALIGA',
-    backgroundColor: '#E8CDFF'
-  }];
+    backgroundColor: '#E8CDFF',
+  },
+];
 
 export default categoryData;
