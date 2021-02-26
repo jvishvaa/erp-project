@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import {
   Grid,
@@ -26,8 +26,8 @@ import Layout from '../../../../../Layout'
 // import { CircularProgress } from '../../../ui'
 
 const OnlineAdmission = ({ dataLoadingStatus, onlinePendingAdmissionData, getPendingOnlineAdmission, alert, airpayPayment, todayEMandateDetails, setDomainDetails, todayDetail, fetchBranches, user, domainNames, branches, session }) => {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);

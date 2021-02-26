@@ -92,8 +92,8 @@ const Layout = ({ children, history }) => {
   const [mobileSeach, setMobileSeach] = useState(false);
   const [displayUserDetails, setDisplayUserDetails] = useState(false);
   const [userId, setUserId] = useState();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const getGlobalUserRecords = async (text) => {
     try {
       const result = await axiosInstance.get(

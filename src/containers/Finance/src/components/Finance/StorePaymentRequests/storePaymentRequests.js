@@ -60,8 +60,8 @@ const StorePaymentRequests = ({ classes, session, history, dataLoading, requestL
   const [sessionYear, setSession] = useState(null)
   // const [shuffleStatus, setShuffleStatus] = useState({ label: 'Pending', value: 1 })
   // const [accReasonToApprove, setAccReason] = useState({})
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     // console.log('reason Data: ', studentShuffle)

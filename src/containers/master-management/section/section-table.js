@@ -90,7 +90,7 @@ const columns = [
 const SectionTable = () => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = useState(1);
   const [sections, setSections] = useState([]);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [sectionId, setSectionId] = useState();

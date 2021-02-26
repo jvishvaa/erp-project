@@ -58,7 +58,7 @@ const styles = theme => ({
 const FeePaymentChangeRequests = ({ classes, session, history, dataLoading, requestList, sessionRed, alert, user, fetchEditRequests }) => {
   const [sessionYear, setSession] = useState(null)
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   // const [shuffleStatus, setShuffleStatus] = useState({ label: 'Pending', value: 1 })
   // const [accReasonToApprove, setAccReason] = useState({})
 
