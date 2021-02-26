@@ -5,7 +5,7 @@ import Loading from '../../../components/loader/loader';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import SidebarCounterPanel from './sidebarCounterPanel';
 import GeneralGuide from './generalGuide';
-import { AssessmentHandlerContext } from '../assess-attemption/assess-attemption-context';
+import { AssessmentHandlerContext } from './assess-attemption-context';
 import './assess-attemption.css';
 
 import QuestionHandler from './question-handler/question-handler';
@@ -20,6 +20,7 @@ const AssessmentAttemptionUI = (props) => {
     assessmentDetails: {
       question_paper__grade_name: questionPaperGradeName,
       question_paper__subject_name: subjectNames = [],
+      instructions: assessmentInstructions,
     } = {},
     assessmentQp: { fetching } = {},
     fetchAssessmentQp,
@@ -64,7 +65,7 @@ const AssessmentAttemptionUI = (props) => {
         ) : (
           <div className='instruction-screen-wrapper'>
             <div className='instruction-screen'>
-              <GeneralGuide />
+              <GeneralGuide text={assessmentInstructions} />
               <button type='button' className='question-submit-btn' onClick={start}>
                 Start
               </button>

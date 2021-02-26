@@ -104,6 +104,9 @@ const useStyles = makeStyles((theme) => ({
     // border: '1px solid red',
     display: 'flex',
     // padding: 20,
+    [theme.breakpoints.down('md')]: {
+      display: 'none',
+    },
   },
   toddlerWrapper: {
     // border: '5px solid green',
