@@ -11,12 +11,12 @@ const validationSchema = Yup.object({
     .required('Required'),
   date_of_birth: Yup.mixed().required('Required'),
   email: Yup.string().email('Provide a valid email').required('Required'),
-  erp_user: Yup.string()
-  .required('Please Enter ERP_ID')
-  .matches(
-    erpAlphaNumericRegExp,
-    "Must Contain 10 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
-  ),
+  // erp_user: Yup.string()
+  // .required('Please Enter ERP_ID')
+  // .matches(
+  //   erpAlphaNumericRegExp,
+  //   "Must Contain 10 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
+  // ),
 });
 
 export default validationSchema;

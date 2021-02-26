@@ -53,10 +53,11 @@ const UserDetailsForm = ({
       email: details.email,
       date_of_birth: details.date_of_birth,
       address: details.address,
-      erp_user:details.erp_user,
+      // erp_user:details.erp_user,
     },
     validationSchema,
     onSubmit: (values) => {
+      console.log('submit',values)
       onSubmit(values);
     },
     validateOnChange: false,
@@ -92,7 +93,6 @@ const UserDetailsForm = ({
       },
     },
   });
-  console.log(formik.initialValues,'===========')
   return (
     <Grid container spacing={4} className='user-details-form-container'>
       <Grid container item xs={12}>
@@ -151,7 +151,8 @@ const UserDetailsForm = ({
           </FormHelperText>
         </FormControl>
       </Grid>
-      <Grid item md={4} xs={12}>
+      {/* ERP_ID input filed   */}
+      {/* <Grid item md={4} xs={12}>
       <FormControl variant='outlined' fullWidth size='small'>
           <InputLabel htmlFor='component-outlined'>ERP ID</InputLabel>
           <OutlinedInput
@@ -166,7 +167,7 @@ const UserDetailsForm = ({
             {formik.errors.erp_user ? formik.errors.erp_user: ''}
           </FormHelperText>
         </FormControl>
-      </Grid>
+      </Grid> */}
       {/* <Grid container item xs={12} spacing={8}> */}
       <Grid item md={4} xs={12}>
         <FormControl component='fieldset' fullWidth size='small'>
