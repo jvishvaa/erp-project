@@ -8,6 +8,10 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import InputAdornment from '@material-ui/core/InputAdornment';
+import { IconButton } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -61,6 +65,7 @@ function SignIn({ onLogin, history }) {
   const [username, setUsername] = useState('' || uname);
   const [password, setPassword] = useState('' || pass);
   const [check, setCheck] = useState(false || checked)
+  const [passwordFlag, setPasswordFlag] = useState(true); 
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
 
@@ -70,6 +75,9 @@ function SignIn({ onLogin, history }) {
     }
   }, [key]);
 
+  const handleToggler=()=>{
+    setPasswordFlag(prev=>!prev)
+  }
   const handleLogin = () => {
     const params = {
       username,
@@ -143,14 +151,14 @@ function SignIn({ onLogin, history }) {
             fullWidth
             name='password'
             label='Password'
-            type='password'
+            type={passwordFlag ? "password" : "text"}
             id='password'
             autoComplete='current-password'
             value={password}
-            inputProps={{ maxLength: 20 }}
             onChange={(e) => {
               setPassword(e.target.value);
             }}
+            InputProps={{maxLength: 20 , endAdornment:<IconButton onClick={handleToggler}>{passwordFlag?<VisibilityOff/>:<Visibility />}</IconButton>}}
           />
           <FormControlLabel
             control={<Checkbox value='remember' color='primary' checked={check} onClick={e => setCheck(!check)} />}
