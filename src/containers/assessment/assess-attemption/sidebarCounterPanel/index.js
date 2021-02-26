@@ -8,7 +8,7 @@ import Modal from '@material-ui/core/Modal';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import GeneralGuide from '../generalGuide';
 import TimerComponent from './timer';
-import { AssessmentHandlerContext } from '../../assess-attemption/assess-attemption-context';
+import { AssessmentHandlerContext } from '../assess-attemption-context';
 import './sidebarPanel.css';
 
 function rand() {
@@ -16,12 +16,15 @@ function rand() {
 }
 
 function getModalStyle() {
-  const top = 50 + rand();
-  const left = 50 + rand();
+  const top = 50;
+  const left = 50;
 
   return {
     top: `${top}%`,
     left: `${left}%`,
+    maxWidth: '100%',
+    // maxHeight: '50vh',
+    // overflowY: 'auto',
     transform: `translate(-${top}%, -${left}%)`,
   };
 }
@@ -56,6 +59,7 @@ const SidebarCounterPanel = (props) => {
       question_paper__grade_name: questionPaperGradeName,
       question_paper__subject_name: subjectNames = [],
       test_name: assessmentTitle,
+      instructions: testInstructions,
     },
     questionsMetaInfo: { is_ready_to_submit: isReadyToSubmit } = {},
     questionsArray,
@@ -95,7 +99,7 @@ const SidebarCounterPanel = (props) => {
     <div style={modalStyle} className={classes.paper}>
       {/* <h2 id='simple-modal-title'>Text in a modal</h2> */}
       <p id='simple-modal-description'>
-        <GeneralGuide />
+        <GeneralGuide text={testInstructions} handleClose={handleClose} />
       </p>
     </div>
   );
