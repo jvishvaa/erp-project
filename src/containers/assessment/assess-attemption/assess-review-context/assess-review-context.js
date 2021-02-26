@@ -123,7 +123,7 @@ export const AssessmentReviewContextProvider = ({ children, ...restProps }) => {
   const formatQuesUserResponseObj = (apiData) => {
     const { user_response: userQuesResponsesArray = [] } = apiData || {};
     const userQuesResponsesObj = {};
-    userQuesResponsesArray.forEach((quesResp) => {
+    (userQuesResponsesArray || []).forEach((quesResp) => {
       userQuesResponsesObj[quesResp.question] = {
         ...quesResp,
         answer: quesResp.user_answer,
