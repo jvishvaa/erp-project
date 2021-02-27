@@ -1,4 +1,4 @@
-const baseURLCentral = 'https://13.232.30.169/qbox';
+const baseURLCentral = 'http://13.232.30.169/qbox';
 export default {
   auth: {
     login: '/auth/login/',

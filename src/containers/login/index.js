@@ -14,10 +14,9 @@ import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import { login } from '../../redux/actions';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
 function Copyright() {
-
   return (
     <Typography variant='body2' color='textSecondary' align='center'>
       {'Copyright © '}
@@ -51,24 +50,24 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function SignIn({ onLogin, history }) {
-
   if (localStorage.getItem('userDetails') && localStorage.getItem('navigationData'))
-    history.push('/profile')
-
-  let { key } = useParams();
+    history.push('/profile');
   const loginButton = useRef(null);
-  const [uname, pass, checked] = JSON.parse(localStorage.getItem('rememberDetails')) || []
+  const [uname, pass, checked] =
+    JSON.parse(localStorage.getItem('rememberDetails')) || [];
   const [username, setUsername] = useState('' || uname);
   const [password, setPassword] = useState('' || pass);
-  const [check, setCheck] = useState(false || checked)
+  const [check, setCheck] = useState(false || checked);
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
-
+  const location = useLocation();
+  const urlParams = new URLSearchParams(location.search);
+  const erpSearch  = +urlParams.get('erp');
   useEffect(() => {
-    if (key === "2000000002") {
+    if (erpSearch === 2000000002) {
       handleLogin();
     }
-  }, [key]);
+  }, [erpSearch]);
 
   const handleLogin = () => {
     const params = {
@@ -83,24 +82,26 @@ function SignIn({ onLogin, history }) {
           setAlert('error', response.message);
         }
       });
-    }
-    else if (key === "2000000002") {
+    } 
+    else if (erpSearch === 2000000002) {
       onLogin({
-        username: "2000000002",
-        password: "erp_1992",
+        username: '2000000002',
+        password: 'erp_1992',
       }).then((response) => {
         if (response.isLogin) {
-          history.push('/dashboard');
+          history.push('/profile');
         } else {
           setAlert('error', response.message);
         }
       });
     }
     if (check) {
-      localStorage.setItem('rememberDetails', JSON.stringify([username, password, check]))
-    }
-    else {
-      localStorage.removeItem('rememberDetails')
+      localStorage.setItem(
+        'rememberDetails',
+        JSON.stringify([username, password, check])
+      );
+    } else {
+      localStorage.removeItem('rememberDetails');
     }
   };
 
@@ -153,7 +154,14 @@ function SignIn({ onLogin, history }) {
             }}
           />
           <FormControlLabel
-            control={<Checkbox value='remember' color='primary' checked={check} onClick={e => setCheck(!check)} />}
+            control={
+              <Checkbox
+                value='remember'
+                color='primary'
+                checked={check}
+                onClick={(e) => setCheck(!check)}
+              />
+            }
             label='Remember Me'
           />
           <Button
