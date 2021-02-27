@@ -271,9 +271,7 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
     hour = `${hour}`.length === 1 ? `0${hour}` : hour;
     return `${hour}:${min} ${part}`;
   };
-  console.log(fullData,'==========');
 
-  // const date= fullData?.online_class?.start_time.split('T')
   function handleCancel() {
     setLoading(true);
     const params = {
@@ -299,7 +297,6 @@ const TeacherBatchFullView = ({ fullData, handleClose }) => {
       });
   }
 
-  console.log(fullData,'==========')
   const handleAttendance=()=>{
     history.push(`/aol-attendance-list/${fullData.online_class && fullData.id}`)
   }

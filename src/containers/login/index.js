@@ -8,8 +8,8 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { IconButton } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
@@ -19,9 +19,9 @@ import { connect } from 'react-redux';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import { login } from '../../redux/actions';
 import { useParams } from 'react-router-dom';
+import './login.css';
 
 function Copyright() {
-
   return (
     <Typography variant='body2' color='textSecondary' align='center'>
       {'Copyright © '}
@@ -55,29 +55,29 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function SignIn({ onLogin, history }) {
-
   if (localStorage.getItem('userDetails') && localStorage.getItem('navigationData'))
-    history.push('/profile')
+    history.push('/profile');
 
   let { key } = useParams();
   const loginButton = useRef(null);
-  const [uname, pass, checked] = JSON.parse(localStorage.getItem('rememberDetails')) || []
+  const [uname, pass, checked] =
+    JSON.parse(localStorage.getItem('rememberDetails')) || [];
   const [username, setUsername] = useState('' || uname);
   const [password, setPassword] = useState('' || pass);
-  const [check, setCheck] = useState(false || checked)
-  const [passwordFlag, setPasswordFlag] = useState(true); 
+  const [check, setCheck] = useState(false || checked);
+  const [passwordFlag, setPasswordFlag] = useState(true);
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
 
   useEffect(() => {
-    if (key === "2000000002") {
+    if (key === '2000000002') {
       handleLogin();
     }
   }, [key]);
 
-  const handleToggler=()=>{
-    setPasswordFlag(prev=>!prev)
-  }
+  const handleToggler = () => {
+    setPasswordFlag((prev) => !prev);
+  };
   const handleLogin = () => {
     const params = {
       username,
@@ -91,11 +91,10 @@ function SignIn({ onLogin, history }) {
           setAlert('error', response?.message);
         }
       });
-    }
-    else if (key === "2000000002") {
+    } else if (key === '2000000002') {
       onLogin({
-        username: "2000000002",
-        password: "erp_1992",
+        username: '2000000002',
+        password: 'erp_1992',
       }).then((response) => {
         if (response?.isLogin) {
           history.push('/dashboard');
@@ -105,10 +104,12 @@ function SignIn({ onLogin, history }) {
       });
     }
     if (check) {
-      localStorage.setItem('rememberDetails', JSON.stringify([username, password, check]))
-    }
-    else {
-      localStorage.removeItem('rememberDetails')
+      localStorage.setItem(
+        'rememberDetails',
+        JSON.stringify([username, password, check])
+      );
+    } else {
+      localStorage.removeItem('rememberDetails');
     }
   };
 
@@ -151,17 +152,32 @@ function SignIn({ onLogin, history }) {
             fullWidth
             name='password'
             label='Password'
-            type={passwordFlag ? "password" : "text"}
+            type={passwordFlag ? 'password' : 'text'}
             id='password'
+            className='passwordField'
             autoComplete='current-password'
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
             }}
-            InputProps={{maxLength: 20 , endAdornment:<IconButton onClick={handleToggler}>{passwordFlag?<VisibilityOff/>:<Visibility />}</IconButton>}}
+            InputProps={{
+              maxLength: 20,
+              endAdornment: (
+                <IconButton onClick={handleToggler}>
+                  {passwordFlag ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              ),
+            }}
           />
           <FormControlLabel
-            control={<Checkbox value='remember' color='primary' checked={check} onClick={e => setCheck(!check)} />}
+            control={
+              <Checkbox
+                value='remember'
+                color='primary'
+                checked={check}
+                onClick={(e) => setCheck(!check)}
+              />
+            }
             label='Remember Me'
           />
           <Button
