@@ -53,6 +53,47 @@ export const login = (params) => (dispatch) => {
     });
 };
 
+export const aolLogin = (token) => (dispatch) => {
+  dispatch({ type: LOGIN_REQUEST });
+  return axios
+    .post(
+      '/erp_user/login/',
+      {
+        // data
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+    .then((response) => {
+      if (response.data.status_code === 200) {
+        dispatch({
+          type: LOGIN_SUCCESS,
+          userDetails: response.data.result.user_details,
+          navigationData: response.data.result.navigation_data,
+        });
+        localStorage.setItem(
+          'userDetails',
+          JSON.stringify(response.data.result.user_details)
+        );
+        localStorage.setItem(
+          'navigationData',
+          JSON.stringify(response.data.result.navigation_data)
+        );
+        const result = { isLogin: true, message: response.data.message };
+        return result;
+      }
+      dispatch({ type: LOGIN_FAILURE });
+      const result = { isLogin: false, message: response.data.message };
+      return result;
+    })
+    .catch(() => {
+      dispatch({ type: LOGIN_FAILURE });
+    });
+};
+
 export const logout = () => (dispatch) => {
   dispatch({ type: LOGOUT_REQUEST });
   if (JSON.parse(localStorage.getItem('rememberDetails'))) {
