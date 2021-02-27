@@ -99,8 +99,6 @@ import ViewCourseCard from './containers/master-management/course/view-course/vi
 import ViewStore from './containers/master-management/course/view-course/context/ViewStore';
 import DailyDairyStore from './containers/daily-dairy/context/context';
 import AttendeeListRemake from './containers/attendance';
-import TestComparisionUI from './containers/assessment-report/test-comparision';
-import AssessmentAnalysis from './containers/assessment-report/assessment-analysis';
 import Reshuffle from './containers/online-class/aol-view/Reshuffle';
 import StudentStrength from './containers/student-strength';
 import StudentIdCard from './containers/student-Id-Card';
@@ -416,10 +414,6 @@ function App() {
                         <Route exact path='/assessment/'>
                           {({ match }) => <ViewAssessments match={match} />}
                         </Route>
-                        <Route exact path='/assessment/view-assessment'>
-                          {({ match }) => <ViewAssessment match={match} />}
-                        </Route>
-
                         <Route exact path='/assessment/:assessmentId/attempt'>
                           {({ match }) => <AssessmentAttemption match={match} />}
                         </Route>

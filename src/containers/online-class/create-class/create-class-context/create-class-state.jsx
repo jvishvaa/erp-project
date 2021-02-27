@@ -19,6 +19,10 @@ import {
   VERIFY_TUTOREMAIL_FAILURE,
   CLEAR_VALIDATION,
   CLEAR_FILERED_STUDENTS,
+  CLEAR_GRADE_DROP,
+  CLEAR_SECTION_DROP,
+  CLEAR_SUBJECT_DROP,
+  CLEAR_COURSE_DROP,
   LIST_FILTERED_STUDENTS,
   CREATE_NEW_CLASS_REQUEST,
   CREATE_NEW_CLASS_SUCCESS,
@@ -60,7 +64,7 @@ const CreateclassProvider = (props) => {
     isCreated: false,
     tutorEmails: [],
     tutorEmailsLoading: false,
-    classTypeId: null,
+    classTypeId: -1,
   };
 
   const [state, dispatch] = useReducer(createClassReducer, initalState);
@@ -121,11 +125,11 @@ const CreateclassProvider = (props) => {
     dispatch(success([], LIST_TUTOR_EMAILS_SUCCESS));
   };
 
-  const listGradesCreateClass = async (moduleId) => {
+  const listGradesCreateClass = async (branch, moduleId) => {
     dispatch(request(LIST_GRADE_REQUEST));
     try {
       const { data } = await axiosInstance.get(
-        `${endpoints.academics.grades}?branch_id=${roleDetails.branch.join(
+        `${endpoints.academics.grades}?branch_id=${branch.join(
           ','
         )}&module_id=${moduleId}`
       );
@@ -142,8 +146,7 @@ const CreateclassProvider = (props) => {
       const { data } = await axiosInstance.get(
         `${endpoints.academics.courses}?grade=${gradeIds.join(',')}`
       );
-      if (data.status_code === 200)
-        dispatch(success(data.result, LIST_COURSE_SUCCESS));
+      if (data.status_code === 200) dispatch(success(data.result, LIST_COURSE_SUCCESS));
       else throw new Error(data.message);
     } catch (error) {
       dispatch(failure(error, LIST_COURSE_FAILURE));
@@ -169,10 +172,18 @@ const CreateclassProvider = (props) => {
     }
   };
 
-  const listSectionAndSubjects = async (roleId, moduleId, erpId, isSuperUser, gradeIds) => {
+  const listSectionAndSubjects = async (
+    roleId,
+    moduleId,
+    erpId,
+    isSuperUser,
+    gradeIds
+  ) => {
     try {
       const { data } = await axiosInstance.get(
-        `/erp_user/sub-sec-list/?role=${roleId}&module_id=${moduleId}&erp_id=${erpId}&is_super=${isSuperUser}&grade_id=${gradeIds.join(',')}`
+        `/erp_user/sub-sec-list/?role=${roleId}&module_id=${moduleId}&erp_id=${erpId}&is_super=${isSuperUser}&grade_id=${gradeIds.join(
+          ','
+        )}`
       );
       if (data.status === 'success') {
         const { section, subject } = data.data;
@@ -266,7 +277,7 @@ const CreateclassProvider = (props) => {
       );
       if (data.status_code === 200)
         dispatch(success(initalState, CREATE_NEW_CLASS_SUCCESS));
-      else if (data.status_code===404)
+      else if (data.status_code === 404)
         dispatch(success(initalState, CREATE_NEW_CLASS_FAILURE));
     } catch (error) {
       const { response } = error || {};
@@ -285,6 +296,22 @@ const CreateclassProvider = (props) => {
     return { type: CLEAR_FILERED_STUDENTS };
   };
 
+  const clearGrades = () => {
+    return { type: CLEAR_GRADE_DROP };
+  };
+
+  const clearSections = () => {
+    return { type: CLEAR_SECTION_DROP };
+  };
+
+  const clearSubjects = () => {
+    return { type: CLEAR_SUBJECT_DROP };
+  };
+
+  const clearCourses = () => {
+    return { type: CLEAR_COURSE_DROP };
+  };
+
   const listFilteredStudents = (students) => {
     return { type: LIST_FILTERED_STUDENTS, payload: students };
   };
@@ -294,11 +321,11 @@ const CreateclassProvider = (props) => {
   };
 
   const setEditData = (data) => {
-    return {type: SET_EDIT_DATA, payload:data};
+    return { type: SET_EDIT_DATA, payload: data };
   };
 
   const setEditDataFalse = (editData) => {
-    return {type: SET_EDIT_DATA_FALSE, payload:[]};
+    return { type: SET_EDIT_DATA_FALSE, payload: [] };
   };
 
   return (
@@ -322,8 +349,12 @@ const CreateclassProvider = (props) => {
         listSectionAndSubjects,
         clearTutorEmailsList,
         clearStudentsList,
+        clearGrades,
+        clearSections,
+        clearSubjects,
+        clearCourses,
         setEditData,
-        setEditDataFalse
+        setEditDataFalse,
       }}
     >
       {children}

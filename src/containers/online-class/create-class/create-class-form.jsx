@@ -87,7 +87,11 @@ const CreateClassForm = (props) => {
     listSectionAndSubjects,
     clearTutorEmailsList,
     clearStudentsList,
-    classTypeId,
+    clearGrades,
+    clearSubjects,
+    clearSections,
+    clearCourses,
+    classTypeId=-1,
     setClassTypeId,
   } = useContext(CreateclassContext);
 
@@ -147,10 +151,6 @@ const CreateClassForm = (props) => {
   }, []);
 
   useEffect(() => {
-    if (moduleId) dispatch(listGradesCreateClass(moduleId));
-  }, [moduleId]);
-
-  useEffect(() => {
     const filteredSelectedSections = sections.filter(
       (data) =>
         selectedSections.findIndex((sec) => sec.section_id == data.section_id) > -1
@@ -175,6 +175,34 @@ const CreateClassForm = (props) => {
     }
   }, [isCreated, moduleId]);
 
+  const handleClassType = (event, value) => {
+    setSelectedClassType('');
+    dispatch(setClassTypeId(null));
+    if (value) {
+      setSelectedClassType(value);
+      dispatch(setClassTypeId(value.id));
+    }
+  };
+
+  const [selectedBranches, setSelectedBranches] = useState([]);
+  const handleBranches = (event, value) => {
+    setSelectedBranches([]);
+    if (value?.length > 0) {
+      const ids = value.map((obj) => obj.id);
+      setSelectedBranches(value);
+      dispatch(listGradesCreateClass(ids, moduleId));
+      setOnlineClass((prevState) => ({ ...prevState, branchIds: ids }));
+    } else {
+      setSelectedGrades([]);
+      setSelectedSections([]);
+      setSelectedSubject([]);
+      dispatch(clearGrades());
+      dispatch(clearSections());
+      dispatch(clearSubjects());
+      dispatch(clearCourses());
+    }
+  };
+
   const handleGrade = (event, value) => {
     dispatch(clearFilteredStudents());
     setSelectedGrades(value);
@@ -193,9 +221,10 @@ const CreateClassForm = (props) => {
       ...prevState,
       tutorEmail: '',
       sectionIds: [],
-      subject: [],
       coHosts: [],
     }));
+    setSelectedSections([]);
+    setSelectedSubject([]);
   };
 
   const handleSection = (event, value) => {
@@ -212,6 +241,7 @@ const CreateClassForm = (props) => {
     setOnlineClass((prevState) => ({
       ...prevState,
       subject: [],
+      course: [],
       coHosts: [],
     }));
   };
@@ -313,7 +343,7 @@ const CreateClassForm = (props) => {
         listSectionAndSubjects(
           value.roles,
           moduleId,
-          value.user_id,
+          value.tutor_id,
           isSuperUser ? 1 : 0,
           gradeIds
         )
@@ -368,25 +398,6 @@ const CreateClassForm = (props) => {
       setOnlineClass((prevState) => ({ ...prevState, days: sendData }));
     } else {
       setOnlineClass((prevState) => ({ ...prevState, days: [] }));
-    }
-  };
-
-  const [selectedBranches, setSelectedBranches] = useState([]);
-  const handleBranches = (event, value) => {
-    setSelectedBranches([]);
-    if (value?.length > 0) {
-      const ids = value.map((obj) => obj.id);
-      setSelectedBranches(value);
-      setOnlineClass((prevState) => ({ ...prevState, branchIds: ids }));
-    }
-  };
-
-  const handleClassType = (event, value) => {
-    setSelectedClassType('');
-    dispatch(setClassTypeId(null));
-    if (value) {
-      setSelectedClassType(value);
-      dispatch(setClassTypeId(value.id));
     }
   };
 
@@ -482,6 +493,7 @@ const CreateClassForm = (props) => {
     } else if (selectedClassType?.id > 0) {
       request['course'] = courseId;
     }
+    request['tutor_id']=tutorEmail.tutor_id;
     request['tutor_emails'] = tutorEmails.join(',');
     request['role'] = 'Student';
     request['start_time'] = startTime;
@@ -755,6 +767,7 @@ const CreateClassForm = (props) => {
                 required
               />
             </Grid>
+            {classTypeId>-1 &&
             <Grid item xs={12} sm={2}>
               <Autocomplete
                 size='small'
@@ -775,7 +788,7 @@ const CreateClassForm = (props) => {
                   />
                 )}
               />
-            </Grid>
+            </Grid>}
             <Grid item xs={12} sm={2}>
               <Autocomplete
                 size='small'
