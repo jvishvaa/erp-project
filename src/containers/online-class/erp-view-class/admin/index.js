@@ -416,8 +416,8 @@ const ErpAdminViewClass = ({ history }) => {
                     id='course_id'
                     className='dropdownIcon'
                     value={selectedCourse}
-                    options={courseList}
-                    getOptionLabel={(option) => option?.course_name}
+                    options={subjectList}
+                    getOptionLabel={(option) => option?.subject_name}
                     filterSelectedOptions
                     renderInput={(params) => (
                       <TextField
