@@ -217,6 +217,8 @@ import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
 // import { useLocation, useParams } from 'react-router-dom';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import { useParams } from 'react-router-dom';
+import './login.css';
 import { login, aolLogin } from '../../redux/actions';
 import Loader from '../../components/loader/loader';
 
@@ -356,14 +358,23 @@ function SignIn({ onLogin, history, aolOnLogin }) {
                 fullWidth
                 name='password'
                 label='Password'
-                type='password'
+                type={passwordFlag ? 'password' : 'text'}
                 id='password'
+                className='passwordField'
                 autoComplete='current-password'
                 value={password}
                 inputProps={{ maxLength: 20 }}
                 onChange={(e) => {
                   setPassword(e.target.value);
                 }}
+                InputProps={{
+                  maxLength: 20,
+                  endAdornment: (
+                    <IconButton onClick={handleToggler}>
+                      {passwordFlag ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  ),
+                }}    
               />
               <FormControlLabel
                 control={
