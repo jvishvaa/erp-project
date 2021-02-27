@@ -40,8 +40,13 @@ import CoordinatorHomework from './containers/homework/coordinator-homework';
 import AddHomeworkCoord from './containers/homework/coordinator-homework/add-homework';
 import LessonReport from './containers/lesson-plan/lesson-plan-report';
 import LessonPlan from './containers/lesson-plan/lesson-plan-view';
-import Assessment from './containers/assessment';
-import ViewAssessment from './containers/assessment/viewAssessment';
+import {
+  ViewAssessments,
+  AssessmentAttemption,
+  AssessmentAnalysis,
+  AssessmentComparisionUI,
+} from './containers/assessment';
+
 import {
   TeacherBlog,
   ContentView,
@@ -59,7 +64,6 @@ import {
   ViewGenre,
   ContentViewPublish,
   ContentViewPublishStudent,
-
   AdminBlog,
   PrincipalBlog,
   PrincipalPublishBlogView,
@@ -71,6 +75,7 @@ import {
 } from './containers/blog';
 import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
 import Discussionforum from './containers/discussionForum/index';
+import DiscussionPost from './containers/discussionForum/discussion/DiscussionPost';
 import CreateCategory from './containers/discussionForum/createCategory';
 import CreateDiscussionForum from './containers/discussionForum/createDiscussionForum';
 import CircularList from './containers/circular';
@@ -193,7 +198,6 @@ function App() {
                         <Route exact path='/blog/wordcount-config/edit'>
                           {({ match }) => <EditWordCountConfig match={match} />}
                         </Route>
-
 
                         <Route exact path='/blog/teacher'>
                           {({ match }) => <TeacherBlog match={match} />}
@@ -352,6 +356,9 @@ function App() {
                         <Route exact path='/discussion-forum'>
                           {({ match }) => <Discussionforum match={match} />}
                         </Route>
+                        <Route exact path='/discussion-forum/post/:id'>
+                          {({ match }) => <DiscussionPost match={match} />}
+                        </Route>
                         <Route exact path='/category/create'>
                           {({ match }) => <CreateCategory match={match} />}
                         </Route>
@@ -397,8 +404,8 @@ function App() {
                         <Route exact path='/view-period/:id?'>
                           {({ match }) => <ViewCourseCard match={match} />}
                         </Route>
-                        <Route exact path='/assessment/test-comparision'>
-                          {({ match }) => <TestComparisionUI match={match} />}
+                        <Route exact path='/assessment/comparision'>
+                          {({ match }) => <AssessmentComparisionUI match={match} />}
                         </Route>
                         <Route exact path='/assessment/:assessmentId/analysis'>
                           {({ match }) => <AssessmentAnalysis match={match} />}
@@ -406,13 +413,16 @@ function App() {
                         <Route exact path='/aol-attendance-list/:id?'>
                           {({ match }) => <AttendeeListRemake match={match} />}
                         </Route>
-                        <Route exact path='/assessment'>
-                          {({ match }) => <Assessment match={match} />}
+                        <Route exact path='/assessment/'>
+                          {({ match }) => <ViewAssessments match={match} />}
                         </Route>
                         <Route exact path='/assessment/view-assessment'>
                           {({ match }) => <ViewAssessment match={match} />}
                         </Route>
 
+                        <Route exact path='/assessment/:assessmentId/attempt'>
+                          {({ match }) => <AssessmentAttemption match={match} />}
+                        </Route>
                         <Route exact path='/student-strength'>
                           {({ match }) => <StudentStrength match={match} />}
                         </Route>
@@ -431,7 +441,6 @@ function App() {
                         <Route exact path='/aol-reshuffle/:id?'>
                           {({ match }) => <Reshuffle match={match} />}
                         </Route>
-
                       </Switch>
                     </DailyDairyStore>
                   </ViewStore>

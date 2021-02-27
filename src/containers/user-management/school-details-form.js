@@ -35,6 +35,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
     },
     validationSchema,
     onSubmit: (values) => {
+      console.log(values,'===========================')
       onSubmit(values);
     },
     validateOnChange: false,
@@ -56,6 +57,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
       const transformedData = data?.map((obj) => ({
         id: obj.id,
         branch_name: obj.branch_name,
+        branch_code: obj.branch_code,
       }));
       setBranches(transformedData);
     });

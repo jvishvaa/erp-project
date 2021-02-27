@@ -76,6 +76,9 @@ const ReshuffleModal = ({ openReshuffleModal, setOpenReshuffleModal, studentName
             })
     }, [])
     const handleReshuffle = () => {
+        if(!filterData.batch){
+          return  setAlert('warning','Select Batch')
+        }
         axiosInstance.post(`${endpoints.aol.studentReshuffle}`, {
             "batch":parseInt(id),
             "new_batch": filterData?.batch?.id,

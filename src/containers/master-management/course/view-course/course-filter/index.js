@@ -12,7 +12,7 @@ import { AlertNotificationContext } from '../../../../../context-api/alert-conte
 import Divider from '@material-ui/core/Divider';
 import '../../create-course/style.css';
 
-const CourseFilter = ({ handleCourseList }) => {
+const CourseFilter = ({ handleCourseList, setCourseData ,setPageFlag}) => {
   const themeContext = useTheme();
   const { gradeKey } = useParams();
   const history = useHistory();
@@ -35,6 +35,8 @@ const CourseFilter = ({ handleCourseList }) => {
       grade: [],
       branch: '',
     });
+    setCourseData([])
+    setPageFlag(false)
   };
 
   const handleFilter = () => {

@@ -16,6 +16,7 @@ import {
   FormControlLabel,
   Checkbox,
   Switch,
+  SvgIcon
 } from '@material-ui/core';
 import moment from 'moment';
 import {
@@ -38,6 +39,9 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import Layout from '../Layout';
 import ShuffleModal from './shuffle-modal';
 import { result } from 'lodash';
+import unfiltered from '../../assets/images/unfiltered.svg';
+import selectfilter from '../../assets/images/selectfilter.svg';
+import './attendance.css' 
 
 const AttendeeListRemake = (props) => {
   const { id } = useParams();
@@ -54,7 +58,7 @@ const AttendeeListRemake = (props) => {
   const history = useHistory();
   const [openShuffleModal, setOpenShuffleModal] = useState(false);
   const pageSize = 10;
-  const [excelDate,setExcelDate]=useState('')
+  const [excelDate, setExcelDate] = useState('')
   const { setAlert } = useContext(AlertNotificationContext);
 
   const getAttendeeList = async (date) => {
@@ -122,8 +126,8 @@ const AttendeeListRemake = (props) => {
       responseType: 'arraybuffer',
     })
     const blob = new Blob([data])
-      // {
-      // type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    // {
+    // type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     // });
     const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
@@ -259,7 +263,7 @@ const AttendeeListRemake = (props) => {
                 <TableCell align='center'>Attended status</TableCell>
               </TableRow>
             </TableHead>
-            {!loading ? (
+            {attendeeList && attendeeList.length >0 ? (
               <TableBody className='styled__table-body'>
                 {attendeeList.map((el, index) => {
                   return (
@@ -295,47 +299,59 @@ const AttendeeListRemake = (props) => {
                 })}
               </TableBody>
             ) : (
-                ''
+              <div className='attendanceDataUnavailable'>
+              <SvgIcon
+                component={() => (
+                  <img
+                    style={
+                      // isMobile
+                      //   ? { height: '100px', width: '200px' }
+                        // :
+                         { height: '160px', width: '290px' }
+                    }
+                    src={unfiltered}
+                  />
+                )}
+              />
+              <SvgIcon
+                component={() => (
+                  <img
+                    style={
+                      // isMobile
+                      //   ? { height: '20px', width: '250px' }
+                      //   : 
+                        { height: '50px', width: '400px', marginLeft: '5%' }
+                    }
+                    src={selectfilter}
+                  />
+                )}
+              />
+            </div>
               )}
           </Table>
         </TableContainer>
-        {/* {loading ? (
-          <Grid
-            container
-            spacing={0}
-            direction='column'
-            alignItems='center'
-            justify='center'
-          >
-            <Grid item xs={3}>
-              <CircularProgress style={{ marginTop: 20 }} />
-            </Grid>
-          </Grid>
-        ) : (
-          ''
-        )} */}
-        <Grid
-          className='pagination__container'
-          container
-          direction='column'
-          alignItems='center'
-          justify='center'
-        >
-          <Grid item xs={12}>
-            {!loading ? (
-              <Pagination
-                onChange={handlePagination}
-                style={{ marginTop: 25 }}
-                count={totalPages}
-                color='primary'
-                page={currentPage}
-              />
-            ) : (
-                ''
-              )}
-          </Grid>
-        </Grid>
       </div>
+      <Grid
+        className='pagination__container'
+        container
+        direction='column'
+        alignItems='center'
+        justify='center'
+      >
+        <Grid item xs={12}>
+          {!loading ? (
+            <Pagination
+              onChange={handlePagination}
+              style={{ marginTop: 25 }}
+              count={totalPages}
+              color='primary'
+              page={currentPage}
+            />
+          ) : (
+              ''
+            )}
+        </Grid>
+      </Grid>
       <ShuffleModal
         openShuffleModal={openShuffleModal}
         setOpenShuffleModal={setOpenShuffleModal}
