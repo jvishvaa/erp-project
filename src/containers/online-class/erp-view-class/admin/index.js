@@ -19,11 +19,11 @@ import Loader from '../../../../components/loader/loader';
 import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
 import filterImage from '../../../../assets/images/unfiltered.svg';
-// import TeacherBatchViewCard from './teacherbatchViewCard';
-// import TeacherBatchFullView from './teacherBatchFullView';
+import CardView from './CardView';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import Layout from '../../../Layout';
 import { mapValues } from 'lodash';
+import DetailCardView from './DetailCardView';
 
 const ErpAdminViewClass = ({ history }) => {
   //   const NavData = JSON.parse(localStorage.getItem('navigationData')) || [];
@@ -36,7 +36,7 @@ const ErpAdminViewClass = ({ history }) => {
   const [branchList] = useState([
     {
       id: 5,
-      branch_name: 'AOL',
+      branch_name: 'ORCHIDS',
     },
   ]);
   const { setAlert } = useContext(AlertNotificationContext);
@@ -44,6 +44,7 @@ const ErpAdminViewClass = ({ history }) => {
   const [studentDetails] = useState(
     JSON.parse(window.localStorage.getItem('userDetails'))
   );
+
   const [selectedBranch, setSelectedBranch] = useState(branchList[0]);
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState('');
@@ -60,6 +61,13 @@ const ErpAdminViewClass = ({ history }) => {
   const [selectedModule] = useState(4);
   const [selectedViewMore, setSelectedViewMore] = useState('');
   const [page, setPage] = useState(1);
+  const [classTypes, setClassTypes] = useState([
+    { id: 0, type: 'Compulsory Class' },
+    { id: 1, type: 'Optional Class' },
+    { id: 2, type: 'Special Class' },
+    { id: 3, type: 'Parent Class' },
+  ]);
+  const [selectedClassType,setSelectedClassType] = useState('')
 
   function callApi(api, key) {
     setLoading(true);
@@ -178,6 +186,11 @@ const ErpAdminViewClass = ({ history }) => {
     setSelectedBatch('');
     setFilterList([]);
     setSelectedViewMore('');
+    setSectionList([])
+    setSelectedSection('')
+    setSubjectList([])
+    setSelectedSubject('')
+    setSelectedClassType('')
   }
 
   function handleFilter() {
@@ -185,13 +198,24 @@ const ErpAdminViewClass = ({ history }) => {
       setAlert('warning', 'Select Grade');
       return;
     }
-    if (!selectedCourse) {
-      setAlert('warning', 'Select Course');
+    if(!selectedClassType){
+      setAlert('warning', 'Select Classtype');
       return;
     }
-    if (!selectedBatch) {
-      setAlert('warning', 'Select Batch Size');
+    if(!selectedSection){
+      setAlert('warning', 'Select Section');
       return;
+    }
+    if(selectedClassType.id === 1){
+      if (!selectedCourse) {
+        setAlert('warning', 'Select Course');
+        return;
+      }
+    }else{
+      if(!selectedSubject){
+        setAlert('warning', 'Select Grade');
+        return;
+      }
     }
     if (!startDate) {
       setAlert('warning', 'Select Start Date');
@@ -199,12 +223,10 @@ const ErpAdminViewClass = ({ history }) => {
     }
     setLoading(true);
     setPage(1);
+
+    // `https://erpnew.letseduvate.com/qbox/erp_user/teacher_online_class/?page_number=1&page_size=15&class_type=1&is_aol=1&course=97&start_date=2021-02-21&end_date=2021-02-27`
     callApi(
-      `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
-        selectedBatch && selectedBatch.id
-      }&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=12&module_id=4&class_type=1&batch_limit=${
-        selectedBatch && selectedBatch.batch_size
-      }`,
+      `${endpoints.aol.classes}?is_aol=0&class_type=1&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=12&module_id=4&class_type=1`,
       'filter'
     );
   }
@@ -216,7 +238,7 @@ const ErpAdminViewClass = ({ history }) => {
     }
     setDateRangeTechPer(v1);
   }
-
+console.log(selectedClassType,selectedBranch,selectedGrade,selectedSection,selectedCourse,selectedSubject,'=========================================')
   return (
     <>
       <Layout>
@@ -246,13 +268,13 @@ const ErpAdminViewClass = ({ history }) => {
                     style={{ width: '100%' }}
                     size='small'
                     onChange={(event, value) => {
-                      setSelectedBranch(value);
+                      setSelectedClassType(value)
                     }}
                     id='branch_id'
                     className='dropdownIcon'
-                    // value={selectedBranch}
-                    // options={branchList}
-                    // getOptionLabel={(option) => option?.branch_name}
+                    value={selectedClassType}
+                    options={classTypes}
+                    getOptionLabel={(option) => option?.type}
                     filterSelectedOptions
                     renderInput={(params) => (
                       <TextField
@@ -344,10 +366,8 @@ const ErpAdminViewClass = ({ history }) => {
                           'subject'
                         );
                       }
-                      // setCourseList([]);
-                      // setBatchList([]);
-                      // setSelectedCourse('');
-                      // setSelectedBatch('');
+                      setSubjectList([])
+                      setSelectedSubject('')
                     }}
                     id='section_id'
                     className='dropdownIcon'
@@ -365,40 +385,8 @@ const ErpAdminViewClass = ({ history }) => {
                     )}
                   />
                 </Grid>
-                <Grid item md={3} xs={12}>
-                  <Autocomplete
-                    style={{ width: '100%' }}
-                    size='small'
-                    onChange={(event, value) => {
-                      setSelectedCourse(value);
-                      if (value) {
-                        callApi(
-                          `${endpoints.teacherViewBatches.batchSizeList}?course_id=${
-                            value && value.id
-                          }`,
-                          'batchsize'
-                        );
-                      }
-                      setBatchList([]);
-                      setSelectedBatch('');
-                    }}
-                    id='course_id'
-                    className='dropdownIcon'
-                    value={selectedCourse}
-                    options={courseList}
-                    getOptionLabel={(option) => option?.course_name}
-                    filterSelectedOptions
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant='outlined'
-                        label='Course'
-                        placeholder='Course'
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item md={3} xs={12}>
+                
+                {selectedClassType?.id === 0 && gradeList.length>0 ?  <Grid item md={3} xs={12}>
                   <Autocomplete
                     style={{ width: '100%' }}
                     size='small'
@@ -430,31 +418,39 @@ const ErpAdminViewClass = ({ history }) => {
                       />
                     )}
                   />
-                </Grid>
-                {/* <Grid item md={3} xs={12}>
+                </Grid> : <Grid item md={3} xs={12}>
                   <Autocomplete
                     style={{ width: '100%' }}
                     size='small'
                     onChange={(event, value) => {
-                      setSelectedBatch(value);
+                      setSelectedCourse(value);
+                      if (value) {
+                        callApi(
+                          `${endpoints.teacherViewBatches.batchSizeList}?course_id=${
+                            value && value.id
+                          }`,
+                          'batchsize'
+                        );
+                      }
+                      setBatchList([]);
+                      setSelectedBatch('');
                     }}
-                    id='batch_size_id'
+                    id='course_id'
                     className='dropdownIcon'
-                    value={selectedBatch}
-                    options={batchList}
-                    getOptionLabel={(option) =>
-                      option ? `1 : ${JSON.stringify(option.batch_size)}` : ''}
+                    value={selectedCourse}
+                    options={courseList}
+                    getOptionLabel={(option) => option?.course_name}
                     filterSelectedOptions
                     renderInput={(params) => (
                       <TextField
                         {...params}
                         variant='outlined'
-                        label='Batch Limit'
-                        placeholder='Batch Limit'
+                        label='Course'
+                        placeholder='Course'
                       />
                     )}
                   />
-                </Grid> */}
+                </Grid>}
                 <Grid item md={3} xs={12}>
                   <LocalizationProvider dateAdapter={MomentUtils}>
                     <DateRangePicker
@@ -565,21 +561,21 @@ const ErpAdminViewClass = ({ history }) => {
                             filterList.length !== 0 &&
                             filterList.map((item) => (
                               <Grid item md={selectedViewMore ? 6 : 4} xs={12}>
-                                {/* <TeacherBatchViewCard
+                                <CardView
                                   fullData={item}
                                   handleViewMore={setSelectedViewMore}
                                   selectedViewMore={selectedViewMore || {}}
-                                /> */}
+                                />
                               </Grid>
                             ))}
                         </Grid>
                       </Grid>
                       {selectedViewMore && (
                         <Grid item md={selectedViewMore ? 4 : 0} xs={12}>
-                          {/* <TeacherBatchFullView
+                          <DetailCardView
                             fullData={selectedViewMore}
                             handleClose={handleClose}
-                          /> */}
+                          />
                         </Grid>
                       )}
                     </Grid>
