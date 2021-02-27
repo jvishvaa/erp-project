@@ -91,7 +91,7 @@ const CreateClassForm = (props) => {
     clearSubjects,
     clearSections,
     clearCourses,
-    classTypeId=-1,
+    classTypeId,
     setClassTypeId,
   } = useContext(CreateclassContext);
 
@@ -99,7 +99,7 @@ const CreateClassForm = (props) => {
 
   const { setAlert } = useContext(AlertNotificationContext);
   const {
-    role_details: { branch = [], erp_user_id: erpUser },
+    // role_details: { branch = [], erp_user_id: erpUser },
     user_id: userId,
     is_superuser: isSuperUser,
   } = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -171,7 +171,7 @@ const CreateClassForm = (props) => {
       }));
       dispatch(resetContext());
       setSelectedGrades([]);
-      dispatch(listGradesCreateClass(moduleId));
+      dispatch(listGradesCreateClass(onlineClass?.branchIds, moduleId));
     }
   }, [isCreated, moduleId]);
 
@@ -187,19 +187,18 @@ const CreateClassForm = (props) => {
   const [selectedBranches, setSelectedBranches] = useState([]);
   const handleBranches = (event, value) => {
     setSelectedBranches([]);
+    setSelectedGrades([]);
+    setSelectedSections([]);
+    setSelectedSubject([]);
+    dispatch(clearGrades());
+    dispatch(clearSections());
+    dispatch(clearSubjects());
+    dispatch(clearCourses());
     if (value?.length > 0) {
       const ids = value.map((obj) => obj.id);
       setSelectedBranches(value);
       dispatch(listGradesCreateClass(ids, moduleId));
       setOnlineClass((prevState) => ({ ...prevState, branchIds: ids }));
-    } else {
-      setSelectedGrades([]);
-      setSelectedSections([]);
-      setSelectedSubject([]);
-      dispatch(clearGrades());
-      dispatch(clearSections());
-      dispatch(clearSubjects());
-      dispatch(clearCourses());
     }
   };
 
@@ -272,9 +271,8 @@ const CreateClassForm = (props) => {
   };
 
   useEffect(() => {
-    let listStudentUrl = `branch_ids=${branch.join(',')}`;
     const { gradeIds, sectionIds, subject, branchIds } = onlineClass;
-
+    let listStudentUrl = `branch_ids=${branchIds.join(',')}`;
     if (selectedClassType?.id === 0) {
       if (gradeIds.length && sectionIds.length && subject.length) {
         listStudentUrl = `section_mapping_ids=${sectionIds.join(
@@ -356,9 +354,9 @@ const CreateClassForm = (props) => {
     if (!isValidEmail || onlineClass.tutorEmail === '') {
       setAlert('error', 'Invalid email address');
     } else {
-      const { tutorEmail, selectedDate, selectedTime, duration } = onlineClass;
+      const { tutorEmail, selectedDate, selectedTime, duration, branchIds } = onlineClass;
       const data = {
-        branchId: branch.join(','),
+        branchId: branchIds.join(','),
         gradeId: onlineClass.gradeIds.join(','),
         sectionIds: onlineClass.sectionIds.join(','),
         subjectId: onlineClass.subject,
@@ -437,7 +435,7 @@ const CreateClassForm = (props) => {
   };
 
   const callGrades = () => {
-    dispatch(listGradesCreateClass(moduleId));
+    dispatch(listGradesCreateClass(onlineClass?.branchIds, moduleId));
   };
   const validateForm = (e) => {
     callGrades();
@@ -493,7 +491,7 @@ const CreateClassForm = (props) => {
     } else if (selectedClassType?.id > 0) {
       request['course'] = courseId;
     }
-    request['tutor_id']=tutorEmail.tutor_id;
+    request['tutor_id'] = tutorEmail.tutor_id;
     request['tutor_emails'] = tutorEmails.join(',');
     request['role'] = 'Student';
     request['start_time'] = startTime;
@@ -505,8 +503,11 @@ const CreateClassForm = (props) => {
     if (selectedClassType?.id === 0) {
       const arr = [];
       arr.push(days);
-      request['week_days'] = arr;
-    } else if (days.length) request['week_days'] = days;
+      request['week_days'] = arr.map((ob) => ob);
+    } else {
+      if (!Array.isArray(days)) request['week_days'] = [days];
+      else request['week_days'] = days.map(ob=>ob);
+    }
 
     if (selectedClassType?.id === 0) {
       if (filteredStudents.length > 0) request['student_ids'] = filteredStudents;
@@ -517,6 +518,8 @@ const CreateClassForm = (props) => {
         setAlert('warning', 'Join limit should be atleast 1.');
       }
     } else if (selectedClassType?.id > 0) {
+      request['price'] = 0;
+      request['final_price'] = 0;
       if (joinLimit > 0 && filteredStudents.length > 0) {
         request['student_ids'] = filteredStudents;
         request['join_limit'] = joinLimit;
@@ -565,14 +568,14 @@ const CreateClassForm = (props) => {
     if (onlineClass.coHosts[index].email) {
       try {
         const acadinfo = {
-          branchId: branch.join(','),
+          branchId: onlineClass.branchIds.join(','),
           gradeId: onlineClass.gradeIds.join(','),
           sectionIds: onlineClass.sectionIds.join(','),
           subjectId: onlineClass.subject,
         };
         const info = {
           email: [onlineClass.coHosts[index].email],
-          erp_user_id: erpUser,
+          // erp_user_id: erpUser,
         };
         if (acadinfo.branchId) info.branch_id = acadinfo.branchId;
         if (acadinfo.gradeId) info.grade_id = acadinfo.gradeId;
@@ -612,8 +615,7 @@ const CreateClassForm = (props) => {
 
   const fetchTutorEmails = () => {
     const data = {
-      branchIds:
-        selectedClassType.id === 0 ? branch.join(',') : onlineClass.branchIds.join(','),
+      branchIds: onlineClass.branchIds.join(','),
       gradeIds: onlineClass.gradeIds.join(','),
     };
     listTutorEmails(data);
@@ -681,7 +683,7 @@ const CreateClassForm = (props) => {
   ]);
 
   useEffect(() => {
-    if (branch.length && selectedGrades.length) {
+    if (onlineClass.branchIds?.length && selectedGrades.length) {
       fetchTutorEmails();
       tutorEmailRef.current.scrollIntoView();
       tutorEmailRef.current.focus();
@@ -767,7 +769,6 @@ const CreateClassForm = (props) => {
                 required
               />
             </Grid>
-            {classTypeId>-1 &&
             <Grid item xs={12} sm={2}>
               <Autocomplete
                 size='small'
@@ -788,7 +789,7 @@ const CreateClassForm = (props) => {
                   />
                 )}
               />
-            </Grid>}
+            </Grid>
             <Grid item xs={12} sm={2}>
               <Autocomplete
                 size='small'
