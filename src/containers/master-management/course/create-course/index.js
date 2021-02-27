@@ -97,6 +97,16 @@ const CreateCourse = () => {
     }
   };
 
+  const handleBranch = (event, value) => {
+    setFilterData({ ...filterData, branch: '' });
+    if (value) {
+      setFilterData({
+        ...filterData,
+        branch: value,
+      });
+    }
+  };
+
   const handleAddPeriod = () => {
     const list = [...data];
     setNoPeriods((prev) => Number(prev) + 1);
@@ -169,10 +179,10 @@ const CreateCourse = () => {
             if (courseKey && gradeKey) {
               setAlert('error', 'No period details available.');
               history.push(`/course-list/${gradeKey}`);
-            } else if(courseKey && !gradeKey) {
-              const gkey=JSON.parse(sessionStorage.getItem('gradeKey'));
+            } else if (courseKey && !gradeKey) {
+              const gkey = JSON.parse(sessionStorage.getItem('gradeKey'));
               sessionStorage.removeItem('gradeKey');
-              setAlert('error', 'Can\'t edit following course.');
+              setAlert('error', "Can't edit following course.");
               history.push(`/course-list/${gkey}`);
             }
           }
@@ -226,16 +236,6 @@ const CreateCourse = () => {
     }
   };
 
-  const handleBranch = (event, value) => {
-    setFilterData({ ...filterData, branch: '' });
-    if (value) {
-      setFilterData({
-        ...filterData,
-        branch: value,
-      });
-    }
-  };
-
   const handleNoOfPeriods = (event) => {
     let val = event.target.value;
     if (val <= 100) setNoPeriods(val);
@@ -246,25 +246,27 @@ const CreateCourse = () => {
     setFilterData({ ...filterData, category: '', grade: '', subject: '' });
     setGradeDropdown([]);
     setSubjectDropdown([]);
+    setAge([]);
     if (value) {
       setFilterData({ ...filterData, category: value, grade: '', subject: '' });
       axiosInstance
         .get(`${endpoints.onlineCourses.categoryList}?tag_type=2&parent_id=${value.id}`)
         .then((result) => {
           if (result.data?.status_code === 201) {
-            const list1 = [...subjectDropdown];
-            const list2 = [...gradeDropdown];
-            result.data.result.map((object) => {
-              if (object?.tag_type === '1') {
+            const list1 = [];
+            const list2 = [];
+            const resp = result.data?.result;
+            resp.forEach((obj) => {
+              if (obj?.tag_type === '1') {
                 list1.push({
-                  id: object?.id,
-                  subjectName: object?.subject__subject_name,
+                  id: obj?.id,
+                  subjectName: obj?.subject__subject_name,
                 });
               } else {
                 list2.push({
-                  id: object.id,
-                  gradeName: object?.grade__grade_name,
-                  gradeId: object?.grade_id,
+                  id: obj.id,
+                  gradeName: obj?.grade__grade_name,
+                  gradeId: obj?.grade_id,
                 });
               }
             });
@@ -308,6 +310,8 @@ const CreateCourse = () => {
         .catch((error) => {
           setAlert('error', error.description);
         });
+    } else {
+      setAge([]);
     }
   };
 

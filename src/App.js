@@ -104,6 +104,8 @@ import StudentStrength from './containers/student-strength';
 import StudentIdCard from './containers/student-Id-Card';
 import SignatureUpload from './containers/signature-upload';
 import TeacherBatchView from './containers/teacherBatchView';
+import ErpAdminViewClass from './containers/online-class/erp-view-class/admin'
+import AolLogin from './containers/aol-login';
 
 const theme = createMuiTheme({
   palette: {
@@ -179,24 +181,26 @@ function App() {
                             <Login match={match} history={history} />
                           )}
                         </Route>
+                        <Route exact path='/aol_login'>
+                          {({ match, history }) => (
+                            <AolLogin match={match} history={history} />
+                          )}
+                        </Route>
                         {/* <Route exact path='/assignrole'>
                   {({ match }) => <AssignRole match={match} />}
                 </Route> */}
                         <Route exact path='/blog/genre'>
                           {({ match }) => <CreateGenre match={match} />}
                         </Route>
-
                         {/* <Route exact path='/blog/genre/edit'>
                           {({ match }) => <EditGenre match={match} />}
                         </Route> */}
-
                         <Route exact path='/blog/wordcount-config'>
                           {({ match }) => <CreateWordCountConfig match={match} />}
                         </Route>
                         <Route exact path='/blog/wordcount-config/edit'>
                           {({ match }) => <EditWordCountConfig match={match} />}
                         </Route>
-
                         <Route exact path='/blog/teacher'>
                           {({ match }) => <TeacherBlog match={match} />}
                         </Route>
@@ -249,7 +253,6 @@ function App() {
                         <Route exact path='/blog/student/edit-blog'>
                           {({ match }) => <EditBlog match={match} />}
                         </Route>
-
                         <Route exact path='/blog/student/preview-blog'>
                           {({ match }) => <PreviewBlog match={match} />}
                         </Route>
@@ -434,6 +437,9 @@ function App() {
                         </Route>
                         <Route exact path='/aol-reshuffle/:id?'>
                           {({ match }) => <Reshuffle match={match} />}
+                        </Route>
+                        <Route exact path='/erp-online-class'>
+                          {({ match }) => <ErpAdminViewClass match={match} />}
                         </Route>
                       </Switch>
                     </DailyDairyStore>
