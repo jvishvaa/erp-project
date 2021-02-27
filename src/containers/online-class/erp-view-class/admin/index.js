@@ -49,6 +49,8 @@ const ErpAdminViewClass = ({ history }) => {
   const [selectedGrade, setSelectedGrade] = useState('');
   const [sectionList,setSectionList] = useState([])
   const [selectedSection,setSelectedSection] = useState('');
+  const [subjectList,setSubjectList] =useState([]);
+  const [selectedSubject,setSelectedSubject] = useState('');
   const [courseList, setCourseList] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState('');
   const [batchList, setBatchList] = useState([]);
@@ -76,6 +78,9 @@ const ErpAdminViewClass = ({ history }) => {
           }
           if (key === 'course') {
             setCourseList(result?.data?.result || []);
+          }
+          if(key === 'subject'){
+            setSubjectList(result?.data?.data)
           }
           if (key === 'filter') {
             setFilterFullData(result?.data || {});
@@ -331,7 +336,7 @@ const ErpAdminViewClass = ({ history }) => {
                       setSelectedSection(value);
                       if (value) {
                         callApi(
-                          `${endpoints.academics.subjects}?branch=${selectedBranch.id}grade=${
+                          `${endpoints.academics.subjects}?branch=${selectedBranch.id}&grade=${
                             selectedGrade.id
                           }&section=${value.section_id}`,
                           'subject'
