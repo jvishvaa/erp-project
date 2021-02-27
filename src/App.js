@@ -104,6 +104,7 @@ import StudentStrength from './containers/student-strength';
 import StudentIdCard from './containers/student-Id-Card';
 import SignatureUpload from './containers/signature-upload';
 import TeacherBatchView from './containers/teacherBatchView';
+import AolLogin from './containers/aol-login';
 
 const theme = createMuiTheme({
   palette: {
@@ -177,6 +178,11 @@ function App() {
                         <Route exact path='/'>
                           {({ match, history }) => (
                             <Login match={match} history={history} />
+                          )}
+                        </Route>
+                        <Route exact path='/aol_login'>
+                          {({ match, history }) => (
+                            <AolLogin match={match} history={history} />
                           )}
                         </Route>
                         {/* <Route exact path='/assignrole'>
