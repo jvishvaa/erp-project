@@ -311,6 +311,8 @@ const ErpAdminViewClass = ({ history }) => {
                       setBatchList([]);
                       setSelectedCourse('');
                       setSelectedBatch('');
+                      setSectionList([])
+                      setSelectedSection('')
                     }}
                     id='grade_id'
                     className='dropdownIcon'
@@ -337,7 +339,7 @@ const ErpAdminViewClass = ({ history }) => {
                       if (value) {
                         callApi(
                           `${endpoints.academics.subjects}?branch=${selectedBranch.id}&grade=${
-                            selectedGrade.id
+                            selectedGrade.grade_id
                           }&section=${value.section_id}`,
                           'subject'
                         );
@@ -401,23 +403,23 @@ const ErpAdminViewClass = ({ history }) => {
                     style={{ width: '100%' }}
                     size='small'
                     onChange={(event, value) => {
-                      setSelectedCourse(value);
-                      if (value) {
-                        callApi(
-                          `${endpoints.teacherViewBatches.batchSizeList}?course_id=${
-                            value && value.id
-                          }`,
-                          'batchsize'
-                        );
-                      }
+                      setSelectedSubject(value);
+                      // if (value) {
+                      //   callApi(
+                      //     `${endpoints.teacherViewBatches.batchSizeList}?course_id=${
+                      //       value && value.id
+                      //     }`,
+                      //     'batchsize'
+                      //   );
+                      // }
                       setBatchList([]);
                       setSelectedBatch('');
                     }}
                     id='course_id'
                     className='dropdownIcon'
-                    value={selectedCourse}
+                    value={selectedSubject}
                     options={subjectList}
-                    getOptionLabel={(option) => option?.subject_name}
+                    getOptionLabel={(option) => option?.subject__subject_name}
                     filterSelectedOptions
                     renderInput={(params) => (
                       <TextField
