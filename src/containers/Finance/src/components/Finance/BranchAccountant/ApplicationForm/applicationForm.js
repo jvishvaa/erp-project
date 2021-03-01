@@ -942,8 +942,8 @@ class ApplicationFormAcc extends Component {
             </TableRow>
             <TableRow>
               {/* <TableCell rowSpan={2} /> */}
-              <TableCell>Fee Application</TableCell>
-              <TableCell align='right'>{this.props.appNum && this.props.appNum.application_fee ? this.props.appNum.application_fee.amount : 'App amount not fixed'}</TableCell>
+              <TableCell>Fee Application </TableCell>
+              <TableCell align='right'>{this.props.appNum && this.props.appNum.application_fee ? this.props.appNum.application_fee.amount : 200}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
@@ -1239,7 +1239,7 @@ class ApplicationFormAcc extends Component {
         <TableRow>
           {/* <TableCell rowSpan={2} /> */}
           <TableCell>Type<br /><p style={{ fontSize: '14px' }}>Application Fee</p></TableCell>
-          <TableCell align='right'> Amount<br /><p style={{ fontSize: '16px' }}>{this.props.appNum && this.props.appNum.application_fee ? this.props.appNum.application_fee.amount : 'App amount not fixed'}</p></TableCell>
+          <TableCell align='right'> Amount<br /><p style={{ fontSize: '16px' }}>{this.props.appNum && this.props.appNum.application_fee ? this.props.appNum.application_fee.amount : 200}</p></TableCell>
         </TableRow>
         <Grid container spacing={3} style={{ padding: 15 }}>
           <Grid item xs='2'>

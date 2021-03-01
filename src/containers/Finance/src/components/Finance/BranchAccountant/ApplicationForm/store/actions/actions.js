@@ -109,7 +109,7 @@ export const saveAllFormData = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
-        if (response.status === 200) {
+        // if (response.status === 200) {
           payload.alert.success('Success')
           dispatch({
             type: SAVE_ALL_FORMDATA,
@@ -117,7 +117,8 @@ export const saveAllFormData = (payload) => {
               data: response.data
             }
           })
-        }
+          console.log('app+', response)
+        // }
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
