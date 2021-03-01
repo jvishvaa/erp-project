@@ -620,7 +620,7 @@ const Layout = ({ children, history }) => {
                 history.push('/finance/E-Mandate/AdminCustomerDetails')
                 break;
               }
-              case 'Order Details': {
+              case 'Add Order Details': {
                   history.push('/finance/E-Mandate/OrderDetails')
                     break;
                   }

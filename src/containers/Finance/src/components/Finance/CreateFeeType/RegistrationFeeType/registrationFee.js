@@ -41,7 +41,10 @@ class RegistrationFee extends Component {
       session: null,
       sessionData: null,
       showAddButton: false,
-      currentFeetype: ''
+      currentFeetype: '',
+      page: 0,
+      rowsPerPage: 10
+
     }
     this.handleClickFeeData.bind(this)
     this.handleAcademicyear.bind(this)
