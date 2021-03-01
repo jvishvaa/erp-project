@@ -29,6 +29,10 @@ import {
   LIST_SUBJECT_FAILURE,
   UPDATE_CLASS_TYPE,
   SET_EDIT_DATA,
+  CLEAR_GRADE_DROP,
+  CLEAR_SECTION_DROP,
+  CLEAR_SUBJECT_DROP,
+  CLEAR_COURSE_DROP,
   SET_EDIT_DATA_FALSE,
 } from './create-class-constants';
 
@@ -59,7 +63,6 @@ const createClassReducer = (state, action) => {
 
     case LIST_COURSE_FAILURE:
       return { ...state, courses: [], loading: false };
-
 
     // to get sections on select of grade
     case LIST_SECTION_REQUEST:
@@ -139,6 +142,26 @@ const createClassReducer = (state, action) => {
         filteredStudents: [],
       };
 
+    case CLEAR_GRADE_DROP:
+      return {
+        ...state,
+        grades: [],
+      };
+    case CLEAR_SUBJECT_DROP:
+      return {
+        ...state,
+        subjects: [],
+      };
+    case CLEAR_SECTION_DROP:
+      return {
+        ...state,
+        sections: [],
+      };
+    case CLEAR_COURSE_DROP:
+      return {
+        ...state,
+        courses: [],
+      };
     case LIST_FILTERED_STUDENTS:
       return {
         ...state,
@@ -165,16 +188,16 @@ const createClassReducer = (state, action) => {
 
     case LIST_TUTOR_EMAILS_FAILURE:
       return { ...state, tutorEmailsLoading: false };
-    
+
     //UPDATE_CLASS_TYPE
     case UPDATE_CLASS_TYPE:
       return { ...state, classTypeId: action.payload };
 
     //EDIT DATA
-    case SET_EDIT_DATA: 
-      return { ...state, editData: action.payload, isEdit: true};
+    case SET_EDIT_DATA:
+      return { ...state, editData: action.payload, isEdit: true };
     case SET_EDIT_DATA_FALSE:
-      return { ...state, editData: [], isEdit: false};
+      return { ...state, editData: [], isEdit: false };
 
     default:
       return { ...state };
