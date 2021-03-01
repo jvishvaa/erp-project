@@ -445,6 +445,12 @@ function App() {
                         <Route exact path='/erp-online-class'>
                           {({ match }) => <ErpAdminViewClass match={match} />}
                         </Route>
+                        <Route exact path='/erp-online-class-teacher-view'>
+                          {({ match }) => <ErpAdminViewClass match={match} />}
+                        </Route>
+                        <Route exact path='/erp-online-class-student-view'>
+                          {({ match }) => <ErpAdminViewClass match={match} />}
+                        </Route>
                       </Switch>
                     </DailyDairyStore>
                   </ViewStore>

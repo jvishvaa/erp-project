@@ -58,7 +58,7 @@ const JoinClass = (props) => {
       is_restricted: true
     };
 
-    if (window.location.pathname === '/online-class/attend-class') {
+    if (window.location.pathname === '/erp-online-class-student-view') {
       //url = endpoints.studentViewBatchesApi.rejetBatchApi;
       axiosInstance
       .put(endpoints.studentViewBatchesApi.rejetBatchApi, params2)
@@ -118,7 +118,7 @@ const JoinClass = (props) => {
           ) : (
             <>
               <Grid item md={3} xs={6}>
-                {window.location.pathname === '/online-class/attend-class' ? (
+                {window.location.pathname === '/erp-online-class-student-view' ? (
                   <Button
                     size='small'
                     color='secondary'
@@ -198,7 +198,7 @@ const JoinClass = (props) => {
                   onClick={(e) => handleClick(e)}
                   className='teacherFullViewSmallButtons1'
                 >
-                  {window.location.pathname === '/online-class/attend-class'
+                  {window.location.pathname === '/erp-online-class-student-view'
                     ? 'Reject'
                     : 'Cancel'}
                 </Button>
@@ -236,7 +236,7 @@ const DetailCardView = ({ fullData, handleClose }) => {
   */
   
   useEffect(() => {
-    let detailsURL = window.location.pathname === '/online-class/attend-class'
+    let detailsURL = window.location.pathname === '/erp-online-class-student-view'
     ? `erp_user/${fullData && fullData.id}/student-oc-details/`
     : `erp_user/${fullData && fullData.id}/online-class-details/`;
 
@@ -279,7 +279,7 @@ const DetailCardView = ({ fullData, handleClose }) => {
       class_date: fullData && fullData?.online_class?.start_time.split('T')[0],
     };
     let url = '';
-    if (window.location.pathname === '/online-class/attend-class') {
+    if (window.location.pathname === '/erp-online-class-student-view') {
       url = endpoints.studentViewBatchesApi.rejetBatchApi;
     } else {
       url = endpoints.teacherViewBatches.cancelBatchApi;
@@ -301,7 +301,7 @@ const DetailCardView = ({ fullData, handleClose }) => {
     history.push(`/aol-attendance-list/${fullData.online_class && fullData.id}`)
   }
   const handleCoursePlan=()=>{
-    if(window.location.pathname === '/online-class/attend-class'){
+    if(window.location.pathname === '/erp-online-class-student-view'){
       history.push(`/view-period/${fullData.online_class && fullData.online_class.course_id}`)
     }else{
       history.push(`/view-period/${fullData.online_class && fullData.online_class.cource_id}`)
@@ -396,7 +396,7 @@ const DetailCardView = ({ fullData, handleClose }) => {
                 <Divider className='fullViewDivider' />
               </Grid>
               <Grid item md={12} xs={12}>
-                {window.location.pathname !== '/online-class/attend-class' ? (
+                {window.location.pathname !== '/erp-online-class-student-view' ? (
                   <Button fullWidth size='small' className='teacherFullViewFullButtons' onClick={handleAttendance}>
                     Attendance
                   </Button>
@@ -405,9 +405,9 @@ const DetailCardView = ({ fullData, handleClose }) => {
                     Resources
                   </Button>
                 )}
-                {/* <Button fullWidth size='small' className='teacherFullViewFullButtons' onClick={handleCoursePlan}>
+                <Button fullWidth size='small' className='teacherFullViewFullButtons' onClick={handleCoursePlan}>
                   View Course Plan
-                </Button> */}
+                </Button>
               </Grid>
             </Grid>
           </Card>

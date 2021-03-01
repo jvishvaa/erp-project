@@ -24,6 +24,7 @@ import { AlertNotificationContext } from '../../../../context-api/alert-context/
 import Layout from '../../../Layout';
 import { mapValues } from 'lodash';
 import DetailCardView from './DetailCardView';
+import { LaptopWindowsSharp } from '@material-ui/icons';
 
 const ErpAdminViewClass = ({ history }) => {
   //   const NavData = JSON.parse(localStorage.getItem('navigationData')) || [];
@@ -111,7 +112,7 @@ const ErpAdminViewClass = ({ history }) => {
     setSelectedViewMore('');
     if (data === 'success') {
       setPage(1);
-      if (window.location.pathname === '/online-class/attend-class') {
+      if (window.location.pathname === '/erp-online-class-student-view') {
         setPage(1);
         callApi(
           `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
@@ -133,29 +134,50 @@ const ErpAdminViewClass = ({ history }) => {
   }
 
   useEffect(() => {
-    if (window.location.pathname === '/online-class/attend-class') {
-      setPage(1);
-      // ${studentDetails && studentDetails.role_details.erp_user_id}
+    if(window.location.pathname === '/erp-online-class'){
       callApi(
-        // `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=1362&page_number=1&page_size=15&class_type=1`,
-        `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
-          studentDetails &&
-          studentDetails.role_details &&
-          studentDetails.role_details.erp_user_id
-        }&page_number=1&page_size=15`,
-        'filter'
-      );
-    } else {
+            `${endpoints.academics.grades}?branch_id=${selectedBranch.id}&module_id=8`,
+            'gradeList'
+          );
+    }
+    if(window.location.pathname === '/erp-online-class-teacher-view'){
       callApi(
         `${endpoints.academics.grades}?branch_id=${selectedBranch.id}&module_id=4`,
         'gradeList'
       );
     }
-  }, []);
+    if(window.location.pathname === '/erp-online-class-student-view'){
+      callApi(`${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
+        studentDetails &&
+        studentDetails.role_details &&
+        studentDetails.role_details.erp_user_id
+      }&page_number=1&page_size=15&class_type=${selectedClassType.id}`,'filter')
+    }
+  
+    // if (window.location.pathname === '/online-class/attend-class') {
+    //   setPage(1);
+    //   // ${studentDetails && studentDetails.role_details.erp_user_id}
+    //   callApi(
+    //     // `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=1362&page_number=1&page_size=15&class_type=1`,
+    //     `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
+    //       studentDetails &&
+    //       studentDetails.role_details &&
+    //       studentDetails.role_details.erp_user_id
+    //     }&page_number=1&page_size=15`,
+    //     'filter'
+    //   );
+    // }
+    //  else {
+    //   callApi(
+    //     `${endpoints.academics.grades}?branch_id=${selectedBranch.id}&module_id=4`,
+    //     'gradeList'
+    //   );
+    // }
+  }, [selectedClassType]);
 
   function handlePagination(e, page) {
     setPage(page);
-    if (window.location.pathname === '/online-class/attend-class') {
+    if (window.location.pathname === '/erp-online-class-student-view') {
       callApi(
         `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
           studentDetails &&
@@ -178,7 +200,6 @@ const ErpAdminViewClass = ({ history }) => {
     setDateRangeTechPer([moment().subtract(6, 'days'), moment()]);
     setEndDate('');
     setStartDate('');
-    setSelectedBranch('');
     setSelectedGrade('');
     setCourseList([]);
     setSelectedCourse('');
@@ -225,10 +246,19 @@ const ErpAdminViewClass = ({ history }) => {
     setPage(1);
 
     // `https://erpnew.letseduvate.com/qbox/erp_user/teacher_online_class/?page_number=1&page_size=15&class_type=1&is_aol=1&course=97&start_date=2021-02-21&end_date=2021-02-27`
-    callApi(
-      `${endpoints.aol.classes}?is_aol=0&class_type=1&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=12&module_id=4&class_type=1`,
-      'filter'
-    );
+    console.log(selectedCourse.id,'||||||||||||||||')
+    if(selectedCourse.id){
+      callApi(
+        `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.id}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&course_id=${selectedCourse.id}&page_number=1&page_size=15`,
+        'filter'
+      );
+    }else{
+      callApi(
+        `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.id}&subject_id=${selectedSubject.subject__id}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=15`,
+        'filter'
+      );
+    }
+   
   }
 
   function handleDate(v1) {
@@ -261,7 +291,6 @@ console.log(selectedClassType,selectedBranch,selectedGrade,selectedSection,selec
             </Grid>
           </Grid>
           <Grid item md={12} xs={12} className='teacherBatchViewFilter'>
-            {window.location.pathname !== '/online-class/attend-class' && (
               <Grid container spacing={2} style={{ marginTop: '10px' }}>
                  <Grid item md={3} xs={12}>
                   <Autocomplete
@@ -286,6 +315,8 @@ console.log(selectedClassType,selectedBranch,selectedGrade,selectedSection,selec
                     )}
                   />
                 </Grid>
+                {window.location.pathname !== '/erp-online-class-student-view' && (
+                 <Grid container spacing={2} style={{ marginTop: '10px' }}>
                 <Grid item md={3} xs={12}>
                   <Autocomplete
                     style={{ width: '100%' }}
@@ -478,9 +509,11 @@ console.log(selectedClassType,selectedBranch,selectedGrade,selectedSection,selec
                     />
                   </LocalizationProvider>
                 </Grid>
+                </Grid>
+                )}
               </Grid>
-            )}
-            {window.location.pathname !== '/online-class/attend-class' && (
+            
+            {window.location.pathname !== '/erp-online-class-student-view' && (
               <Grid container spacing={2} style={{ marginTop: '5px' }}>
                 <Grid item md={2} xs={12}>
                   <Button
@@ -504,11 +537,11 @@ console.log(selectedClassType,selectedBranch,selectedGrade,selectedSection,selec
                 </Grid>
               </Grid>
             )}
-            {window.location.pathname !== '/online-class/attend-class' && (
+            {window.location.pathname !== '/erp-online-class-student-view' && (
               <Divider style={{ margin: '10px 0px' }} />
             )}
             <Grid container spacing={2}>
-              {window.location.pathname !== '/online-class/attend-class' && (
+              {window.location.pathname !== '/erp-online-class-student-view' && (
                 <Grid item md={12} xs={12}>
                   {!filterList && (
                     <Grid item md={12} xs={12}>

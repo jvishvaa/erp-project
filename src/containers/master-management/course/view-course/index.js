@@ -67,7 +67,7 @@ const CourseView = () => {
     const tag_val = [16, 20];
     if(gradeIds.length !== 0 && (tabMenuval === 0 || tabMenuval == undefined)){
       axiosInstance
-      .get(`${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}&all=chacha`)
+      .get(`${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}&all=1`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setTotalCount(result.data.count);
