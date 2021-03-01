@@ -1,10 +1,8 @@
-// const baseURLCentral = 'http://13.232.30.169/qbox/';
-const baseURLCentral = 'https://dev.mgmt.letseduvate.com/qbox';
+const baseURLCentral = 'http://13.232.30.169/qbox';
 export default {
   auth: {
     login: '/auth/login/',
   },
-
   academics: {
     subjects: '/erp_user/subject/',
     branches: '/erp_user/branch/',
@@ -155,7 +153,6 @@ export default {
     cancelClass: 'erp_user/cancel-online-class/',
     createCoursePrice: '/aol/course-details/',
     updateCoursePrice: '/aol/course_details_update/',
-    updateTeacher:'/aol/update-batch-teacher/',
   },
 
   attendanceList: {
@@ -176,14 +173,10 @@ export default {
     grade: '/erp_user/grademapping/',
     filterCategory: '/academic/posts/',
     postLike: '/academic/posts-like-users/',
-    postList: '/academic/posts/',
-    discussionPost: '/academic/16/retrieve-post/',
     PostCategory: '/academic/create-category/',
     CreateDissusionForum: '/academic/add-post/',
     CreateCommentAndReplay: '/academic/create-answer-replay/',
-    ViewCommentsList: '/academic/comments-list/',
     AwardListAPI: '/academic/',
-    GiveAwardAPI: 'academic/create-award/',
     s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
     deletePost: '/academic/',
   },
@@ -216,7 +209,6 @@ export default {
     categoryList: '/aol/tagging-list/',
     updateCourse: '/aol/',
     studentList: '/erp_user/batch-student-list/',
-    updateCourseStatus:'/aol/',
   },
   attendanceList: {
     list: '/erp_user/onlineclass_attendeelist/',
@@ -249,7 +241,6 @@ export default {
     assessmentAnalysisTeacherExcel: `${baseURLCentral}/assessment/teacher-report/`, // ?type=1
     userAssessmentSubmission: `${baseURLCentral}/assessment/user_response/`,
     fetchAssessmentQuestionPapersQuestions: `${baseURLCentral}/assessment/<question-paper-id>/qp-questions-list/`,
-    assessmentResultAnalysis: `${baseURLCentral}/assessment/student-reports/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',

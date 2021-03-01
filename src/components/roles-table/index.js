@@ -18,6 +18,7 @@ import './styles.scss';
 const columns = [
   //   { id: 'id', label: 'Id', minWidth: 170 },
   { id: 'sl-no', label: 'SL_NO.', minWidth: 100 },
+  {id:'id',label:'ROLE ID',minWidth:100},
   { id: 'role_name', label: 'Role', minWidth: 100 },
   { id: 'created_at', label: 'Created at', minWidth: 100 },
   { id: 'created_by', label: 'Created by', minWidth: 100 },
@@ -43,7 +44,7 @@ const RolesTable = ({ roles, onEdit, onDelete, count, limit, page, onChangePage 
   //   setRowsPerPage(+event.target.value);
   //   setPage(0);
   // };
-
+console.log(roles, onEdit, onDelete, count, limit, page, onChangePage,'==============')
   return (
     <Paper className={`${classes.root} roles-table`}>
       <TableContainer className={classes.container}>

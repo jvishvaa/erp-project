@@ -40,8 +40,13 @@ import CoordinatorHomework from './containers/homework/coordinator-homework';
 import AddHomeworkCoord from './containers/homework/coordinator-homework/add-homework';
 import LessonReport from './containers/lesson-plan/lesson-plan-report';
 import LessonPlan from './containers/lesson-plan/lesson-plan-view';
-import Assessment from './containers/assessment';
-import ViewAssessment from './containers/assessment/viewAssessment';
+import {
+  ViewAssessments,
+  AssessmentAttemption,
+  AssessmentAnalysis,
+  AssessmentComparisionUI,
+} from './containers/assessment';
+
 import {
   TeacherBlog,
   ContentView,
@@ -59,7 +64,6 @@ import {
   ViewGenre,
   ContentViewPublish,
   ContentViewPublishStudent,
-
   AdminBlog,
   PrincipalBlog,
   PrincipalPublishBlogView,
@@ -95,14 +99,13 @@ import ViewCourseCard from './containers/master-management/course/view-course/vi
 import ViewStore from './containers/master-management/course/view-course/context/ViewStore';
 import DailyDairyStore from './containers/daily-dairy/context/context';
 import AttendeeListRemake from './containers/attendance';
-import TestComparisionUI from './containers/assessment-report/test-comparision';
-import AssessmentAnalysis from './containers/assessment-report/assessment-analysis';
-import AssessmentHandlerUI from './containers/assessment/assess-attemption'
 import Reshuffle from './containers/online-class/aol-view/Reshuffle';
 import StudentStrength from './containers/student-strength';
 import StudentIdCard from './containers/student-Id-Card';
 import SignatureUpload from './containers/signature-upload';
 import TeacherBatchView from './containers/teacherBatchView';
+import ErpAdminViewClass from './containers/online-class/erp-view-class/admin'
+import AolLogin from './containers/aol-login';
 
 const theme = createMuiTheme({
   palette: {
@@ -180,6 +183,11 @@ function App() {
                             <Login match={match} history={history} />
                           )}
                         </Route>
+                        <Route exact path='/aol_login'>
+                          {({ match, history }) => (
+                            <AolLogin match={match} history={history} />
+                          )}
+                        </Route>
                         {/*
                         <Route exact path='/assignrole'>
                           {({ match }) => <AssignRole match={match} />}
@@ -188,20 +196,15 @@ function App() {
                         <Route exact path='/blog/genre'>
                           {({ match }) => <CreateGenre match={match} />}
                         </Route>
-
-                        {/*
-                        <Route exact path='/blog/genre/edit'>
+                        {/* <Route exact path='/blog/genre/edit'>
                           {({ match }) => <EditGenre match={match} />}
-                        </Route>
-                        */}
+                        </Route> */}
                         <Route exact path='/blog/wordcount-config'>
                           {({ match }) => <CreateWordCountConfig match={match} />}
                         </Route>
                         <Route exact path='/blog/wordcount-config/edit'>
                           {({ match }) => <EditWordCountConfig match={match} />}
                         </Route>
-
-
                         <Route exact path='/blog/teacher'>
                           {({ match }) => <TeacherBlog match={match} />}
                         </Route>
@@ -254,7 +257,6 @@ function App() {
                         <Route exact path='/blog/student/edit-blog'>
                           {({ match }) => <EditBlog match={match} />}
                         </Route>
-
                         <Route exact path='/blog/student/preview-blog'>
                           {({ match }) => <PreviewBlog match={match} />}
                         </Route>
@@ -407,8 +409,8 @@ function App() {
                         <Route exact path='/view-period/:id?'>
                           {({ match }) => <ViewCourseCard match={match} />}
                         </Route>
-                        <Route exact path='/assessment/test-comparision'>
-                          {({ match }) => <TestComparisionUI match={match} />}
+                        <Route exact path='/assessment/comparision'>
+                          {({ match }) => <AssessmentComparisionUI match={match} />}
                         </Route>
                         <Route exact path='/assessment/:assessmentId/analysis'>
                           {({ match }) => <AssessmentAnalysis match={match} />}
@@ -416,16 +418,12 @@ function App() {
                         <Route exact path='/aol-attendance-list/:id?'>
                           {({ match }) => <AttendeeListRemake match={match} />}
                         </Route>
-                        <Route exact path='/assessment'>
-                          {({ match }) => <Assessment match={match} />}
+                        <Route exact path='/assessment/'>
+                          {({ match }) => <ViewAssessments match={match} />}
                         </Route>
                         <Route exact path='/assessment/:assessmentId/attempt'>
-                          {({ match }) => <ViewAssessment match={match} />}
+                          {({ match }) => <AssessmentAttemption match={match} />}
                         </Route>
-                        <Route exact path='/assessment/:assessmentId/state-management-intg-temp'>
-                          {({ match }) => <AssessmentHandlerUI match={match} />}
-                        </Route>
-
                         <Route exact path='/student-strength'>
                           {({ match }) => <StudentStrength match={match} />}
                         </Route>
@@ -444,7 +442,9 @@ function App() {
                         <Route exact path='/aol-reshuffle/:id?'>
                           {({ match }) => <Reshuffle match={match} />}
                         </Route>
-
+                        <Route exact path='/erp-online-class'>
+                          {({ match }) => <ErpAdminViewClass match={match} />}
+                        </Route>
                       </Switch>
                     </DailyDairyStore>
                   </ViewStore>
