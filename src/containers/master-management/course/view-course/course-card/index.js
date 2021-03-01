@@ -4,7 +4,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { Button, useTheme, IconButton } from '@material-ui/core';
+import { Button, useTheme, IconButton, Popover, withStyles } from '@material-ui/core';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Box from '@material-ui/core/Box';
 import useStyles from './useStyles';
@@ -13,6 +13,26 @@ import endpoints from '../../../../../config/endpoints';
 import axiosInstance from '../../../../../config/axios';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
 import { Context } from '../context/ViewStore';
+
+const StyledButton = withStyles({
+  root: {
+    color: '#FFFFFF',
+    backgroundColor: '#FF6B6B',
+    '&:hover': {
+      backgroundColor: '#FF6B6B',
+    },
+  }
+})(Button);
+
+const CancelButton = withStyles({
+  root: {
+    color: '#8C8C8C',
+    backgroundColor: '#e0e0e0',
+    '&:hover': {
+      backgroundColor: '#e0e0e0',
+    },
+  }
+})(Button);
 
 const CourseCard = ({
   period,
@@ -89,7 +109,7 @@ const CourseCard = ({
       .delete(`${endpoints.onlineCourses.deleteCourse}${e.id}/update-course/`)
       .then((result) => {
         if (result.data.status_code === 200) {
-          setAlert('success', result.data.message);
+          setAlert('success', 'Course successfully Deleted');
           setDeleteFlag(!deleteFlag);
           setViewMore(false);
           setSelectedIndex(-1);
@@ -98,6 +118,7 @@ const CourseCard = ({
         } else {
           setAlert('error', 'ERROR!');
         }
+        handleClose();
       })
       .catch((error) =>
         setAlert('error', error.response?.data?.message || error.response?.data?.msg)
@@ -136,6 +157,19 @@ const CourseCard = ({
     }
     
   }
+  // Conform Popover 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
   return (
     <Paper
       className={periodColor ? classes.selectedRoot : classes.root}
@@ -183,7 +217,7 @@ const CourseCard = ({
                   style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
                   <span className='tooltiptext'>
-                    <div className='tooltip' onClick={() => handleDelete(period)}>
+                    <div className='tooltip' onClick={(e) => handleClick(e)}>
                       Delete
                     </div>
                     <div onClick={() => handleStatus(period)} >
@@ -195,6 +229,28 @@ const CourseCard = ({
                     {/* {tabVal ==0 || tabVal == undefined ? 'Inactive' : '' } */}
                     </div>
                   </span>
+                  <Popover
+                    id={id}
+                    open={open}
+                    anchorEl={anchorEl}
+                    onClose={handleClose}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'center',
+                    }}
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'center',
+                    }}
+                  >
+                    <div style={{ padding: '20px 30px'}}>
+                      <Typography style={{ fontSize: '20px', marginBottom: '15px'}}>Are you sure to Delete?</Typography>
+                      <div>
+                        <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
+                        <StyledButton onClick={(e) => handleDelete(period)} style={{float: 'right'}}>Conform</StyledButton>
+                      </div>
+                    </div>
+                  </Popover>
                 </div>
               ) : null}
             </span>

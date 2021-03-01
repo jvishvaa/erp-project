@@ -99,7 +99,7 @@ const TeacherBatchView = ({ history }) => {
             studentDetails &&
             studentDetails.role_details &&
             studentDetails.role_details.erp_user_id
-          }&page_number=1&page_size=15`,
+          }&page_number=1&page_size=19`,
           'filter'
         );
       } else {
@@ -123,7 +123,7 @@ const TeacherBatchView = ({ history }) => {
           studentDetails &&
           studentDetails.role_details &&
           studentDetails.role_details.erp_user_id
-        }&page_number=1&page_size=15`,
+        }&page_number=1&page_size=15&class_type=1`,
         'filter'
       );
     } else {
