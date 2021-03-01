@@ -436,61 +436,61 @@ const Filters = (props) => {
       <>
           {isMobile ? (
           <Grid container spacing={2}>
-              <Grid item xs={12}>
-                  <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
-                      <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-                          <Typography>Academic Year</Typography>
-              </AccordionSummary>
-                      <AccordionDetails style={{ backgroundColor: '#FFD9D9'}}>
-                          <div className={classes.contentDiv}>
-                              <List component="nav" aria-label="secondary mailbox folder" className={classes.listItems}>
-                                  {academicYear.map((el,id) => (
-                                      <ListItem
-                                          key={id}
-                                          button
-                                          selected={academicId === el?.id}
-                                          onClick={(event) => handleListItemClick(event, el?.id, el?.session_year)}
-                                          className={classes.listItem}
-                      >
-                                          <ListItemText primary={`${el?.session_year}`} />
-                      </ListItem>
-                    ))}
-                  </List>
-                </div>
-              </AccordionDetails>
-            </Accordion>
-                  <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
-                      <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-                          <Typography>Branch</Typography>
-              </AccordionSummary>
-                      <AccordionDetails style={{ backgroundColor: '#FFD9D9'}}>
-                          <div className={classes.contentDiv}>
-                              <List component="nav" aria-label="secondary mailbox folder" className={classes.listItems}>
-                                  {branch.length > 0 && branch.map((el,id) => (
-                                      <ListItem
-                                          key={id}
-                                          button
-                                          selected={branchId === el?.id}
-                                          onClick={(event) => handleBranchList(event, el?.id, el?.branch_name)}
-                                          className={classes.listItem}
+            <Grid item xs={12}>
+              <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+                <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+                  <Typography>Academic Year</Typography>
+                </AccordionSummary>
+                <AccordionDetails style={{ backgroundColor: '#FFD9D9'}}>
+                  <div className={classes.contentDiv}>
+                    <List component="nav" aria-label="secondary mailbox folder" className={classes.listItems}>
+                      {academicYear.map((el,id) => (
+                        <ListItem
+                          key={id}
+                          button
+                          selected={academicId === el?.id}
+                          onClick={(event) => handleListItemClick(event, el?.id, el?.session_year)}
+                          className={classes.listItem}
                         >
-                                          <ListItemText primary={`${el?.branch_name}`} />
+                          <ListItemText primary={`${el?.session_year}`} />
                         </ListItem>
                       ))}
-                                  {branch.length === 0 && (
-                                    <ListItem
-                                          button
-                                          selected={selectedIndex === 0}
-                                          className={classes.listItem}
-                      >
-                                          <ListItemText primary="Please select Academic Year"/>
-                      </ListItem>
-                    )}
-                  </List>
-                </div>
-              </AccordionDetails>
-            </Accordion>
-                  <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
+                    </List>
+                  </div>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
+                <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
+                  <Typography>Branch</Typography>
+                </AccordionSummary>
+                <AccordionDetails style={{ backgroundColor: '#FFD9D9'}}>
+                  <div className={classes.contentDiv}>
+                    <List component="nav" aria-label="secondary mailbox folder" className={classes.listItems}>
+                      {branch.length > 0 && branch.map((el,id) => (
+                        <ListItem
+                          key={id}
+                          button
+                          selected={branchId === el?.id}
+                          onClick={(event) => handleBranchList(event, el?.id, el?.branch_name)}
+                          className={classes.listItem}
+                        >
+                          <ListItemText primary={`${el?.branch_name}`} />
+                        </ListItem>
+                      ))}
+                      {branch.length === 0 && (
+                        <ListItem
+                          button
+                          selected={selectedIndex === 0}
+                          className={classes.listItem}
+                        >
+                          <ListItemText primary="Please select Academic Year"/>
+                        </ListItem>
+                      )}
+                    </List>
+                  </div>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
                       <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
                           <Typography>Grade</Typography>
               </AccordionSummary>
@@ -795,7 +795,7 @@ const Filters = (props) => {
             >
               Clear all
             </StyledClearButton>
-                  <StyledFilterButton
+              <StyledFilterButton
                       variant='contained'
                       color='secondary'
                       startIcon={<FilterFilledIcon className={classes.filterIcon} />}

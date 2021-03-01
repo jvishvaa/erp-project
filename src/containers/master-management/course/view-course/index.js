@@ -60,12 +60,12 @@ const CourseView = () => {
   const [courseData, setCourseData] = useState([]);
 
   const handleCourseList = (gradeIds,tabMenuval) => {
-    console.log(tabMenuval,'+++++++++++')
+    console.log(tabMenuval,'+++++++++++',gradeIds)
     setTabVal(tabMenuval)
     setLoading(true);
     setSendGrade(gradeIds);
     const tag_val = [16, 20];
-    if(tabMenuval== 0 || tabMenuval == undefined){
+    if(gradeIds.length !== 0 && (tabMenuval === 0 || tabMenuval == undefined)){
       axiosInstance
       .get(`${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}&all=chacha`)
       .then((result) => {
@@ -86,7 +86,7 @@ const CourseView = () => {
         setAlert('error', error.message);
       });
     }
-    if(tabMenuval == 1){
+    if(gradeIds.length !== 0 && tabMenuval === 1){
       axiosInstance
       .get(`${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}&all&is_active=True`)
       .then((result) => {
@@ -104,7 +104,7 @@ const CourseView = () => {
         setAlert('error', error.message);
       });
     }
-    if(tabMenuval == 2){
+    if(gradeIds.length !== 0 && tabMenuval === 2){
       axiosInstance
       .get(`${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}&all&is_active=False`)
       .then((result) => {
@@ -122,28 +122,33 @@ const CourseView = () => {
         setAlert('error', error.message);
       });
     }
-    
-
+    if(gradeIds.length === 0){
+      setAlert('warning', 'Select Grade');
+    }
   };
+
+  const handleClearFilter = () => {
+    setSendGrade([]);
+  }
 
   const handlePagination = (event, page) => {
     setPage(page);
-    setPageFlag(true)  
+    setPageFlag(true)
   };
   useEffect(() => {
     if (deleteFlag) {
       handleCourseList(sendGrade,tabVal);
     }
   }, [deleteFlag]);
-  useEffect(()=>{
-    if(pageFlag== true && page){
-      handleCourseList(sendGrade,tabVal);
+  useEffect(() => {
+    if(pageFlag === true && page){
+      handleCourseList(sendGrade, tabVal);
     }
-  },[page])
+  }, [page])
 
   return (
     <>
-      {loading ? <Loading message='Loading...' /> : null}
+      {sendGrade.length !== 0 && loading ? <Loading message='Loading...' /> : null}
 
       <Layout>
         <div>
@@ -156,18 +161,19 @@ const CourseView = () => {
         </div>
         <div>
           <CourseFilter 
-          handleCourseList={handleCourseList}
-          setCourseData={setCourseData}
-          setPageFlag={setPageFlag}
-           />
+            handleCourseList={handleCourseList}
+            handleClearFilter={handleClearFilter}
+            setCourseData={setCourseData}
+            setPageFlag={setPageFlag}
+          />
         </div>
         <div>
-            <TabPanel
-              handleCourseList={handleCourseList}
-              sendGrade={sendGrade}
-              setTabValue={setTabValue}
-              tabValue={tabValue}
-            />
+          <TabPanel
+            handleCourseList={handleCourseList}
+            sendGrade={sendGrade}
+            setTabValue={setTabValue}
+            tabValue={tabValue}
+          />
         </div>
         <Paper className={classes.root}>
           {courseData?.length > 0 ? (
