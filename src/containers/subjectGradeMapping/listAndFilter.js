@@ -3,7 +3,7 @@ import Layout from '../Layout/index';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import { withRouter } from 'react-router-dom';
-import { SvgIcon, Button, Grid, FormControl, TextField } from '@material-ui/core';
+import { SvgIcon, Button, Grid, FormControl, TextField, withStyles } from '@material-ui/core';
 import Addicon from '../../assets/images/Add.svg'
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import axiosInstance from '../../config/axios';
@@ -11,8 +11,16 @@ import endpoints from '../../config/endpoints';
 import Subjectcard from './subjectCard';
 import './subjectgrademapping.scss';
 
-
-
+const StyledButton = withStyles({
+    root: {
+      color: '#FFFFFF',
+      backgroundColor: '#FF6B6B',
+      '&:hover': {
+        backgroundColor: '#FF6B6B',
+      },
+    },
+    startIcon: {},
+  })(Button);
 
 const ListandFilter = (props) => {
     const [branch, setBranchRes] = useState([])
@@ -126,7 +134,7 @@ const ListandFilter = (props) => {
         <div className="list-and-filter">
             <Layout>
                 <div className='mapping-message_log_breadcrumb_wrapper' style={{ backgroundColor: '#F9F9F9' }}>
-                    <CommonBreadcrumbs componentName='Subject-Grade' />
+                    <CommonBreadcrumbs componentName='Master Management' childComponentName='School mapping'/>
                 </div>
                 <div className="mapping-grade-subject-dropdown-container">
                     <Grid container spacing={2}>
@@ -210,7 +218,7 @@ const ListandFilter = (props) => {
                         onClick={filter}>Filter</Button>
                 </div>
                 <div className="button-container-map">
-                    <Button variant="outlined" color="primary" style={{ color: 'white' }} onClick={navigateToCreatePage}>
+                    <StyledButton variant="outlined" color="primary" style={{ color: 'white' }} onClick={navigateToCreatePage}>
                         <SvgIcon
                             component={() => (
                                 <img
@@ -221,7 +229,7 @@ const ListandFilter = (props) => {
                             )}
                         />
                         Assign Role
-                </Button>
+                </StyledButton>
                 </div>
                 <div className="mapping-sub-grade-container">
                     <div className="mapping-grade-subject-container">

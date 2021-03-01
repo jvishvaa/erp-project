@@ -75,7 +75,13 @@ const SignatureUpload = ({ history }) => {
   useEffect(() => {
     getBranchList('');
   }, []);
-
+/*
+  useEffect(() => {
+    if(selectedBranch === ''){
+      setsignatureList([]);
+    }
+  }, [selectedBranch]);
+*/
   function handleEdit(data) {
     setUpdateData(data);
     setEdit(true);
@@ -127,7 +133,7 @@ const SignatureUpload = ({ history }) => {
                     size='small'
                     onChange={(event, value) => {
                       setSelectedBranch(value);
-                      getSignatures(value);
+                      //getSignatures(value);
                     }}
                     id='branch_id'
                     className='dropdownIcon'
@@ -157,7 +163,7 @@ const SignatureUpload = ({ history }) => {
                     Filter
                   </Button>
                 </Grid>
-                <Grid item md={3} xs={12}>
+                <Grid item md={12} xs={12}>
                   <Button
                     size='small'
                     variant='contained'

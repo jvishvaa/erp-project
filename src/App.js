@@ -167,9 +167,11 @@ function App() {
                         <Route path='/user-management'>
                           {({ match }) => <UserManagement match={match} />}
                         </Route>
-                        {/* <Route exact path='/view-users'>
-                  {({ match }) => <ViewUsers match={match} />}
-                </Route> */}
+                        {/*
+                        <Route exact path='/view-users'>
+                            {({ match }) => <ViewUsers match={match} />}
+                        </Route>
+                        */}
                         <Route path='/communication/messagelog'>
                           {({ match }) => <MessageLog match={match} />}
                         </Route>
@@ -186,9 +188,11 @@ function App() {
                             <AolLogin match={match} history={history} />
                           )}
                         </Route>
-                        {/* <Route exact path='/assignrole'>
-                  {({ match }) => <AssignRole match={match} />}
-                </Route> */}
+                        {/*
+                        <Route exact path='/assignrole'>
+                          {({ match }) => <AssignRole match={match} />}
+                        </Route>
+                        */}
                         <Route exact path='/blog/genre'>
                           {({ match }) => <CreateGenre match={match} />}
                         </Route>

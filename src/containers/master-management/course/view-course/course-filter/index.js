@@ -12,7 +12,7 @@ import { AlertNotificationContext } from '../../../../../context-api/alert-conte
 import Divider from '@material-ui/core/Divider';
 import '../../create-course/style.css';
 
-const CourseFilter = ({ handleCourseList, setCourseData ,setPageFlag}) => {
+const CourseFilter = ({ handleCourseList, setCourseData ,setPageFlag, handleClearFilter}) => {
   const themeContext = useTheme();
   const { gradeKey } = useParams();
   const history = useHistory();
@@ -35,8 +35,10 @@ const CourseFilter = ({ handleCourseList, setCourseData ,setPageFlag}) => {
       grade: [],
       branch: '',
     });
-    setCourseData([])
-    setPageFlag(false)
+    setGradeIds([]);
+    setCourseData([]);
+    setPageFlag(false);
+    handleClearFilter();
   };
 
   const handleFilter = () => {
@@ -68,7 +70,7 @@ const CourseFilter = ({ handleCourseList, setCourseData ,setPageFlag}) => {
       setGradeDropdown([]);
     }
   };
-
+/*
   useEffect(() => {
     if (gradeKey) {
       axiosInstance
@@ -98,7 +100,7 @@ const CourseFilter = ({ handleCourseList, setCourseData ,setPageFlag}) => {
         });
     }
   }, [gradeKey]);
-
+*/
   const handleGrade = (event, value) => {
     setFilterData({ ...filterData, grade: '' });
     if (value) {
