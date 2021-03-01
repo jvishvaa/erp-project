@@ -164,9 +164,11 @@ function App() {
                         <Route path='/user-management'>
                           {({ match }) => <UserManagement match={match} />}
                         </Route>
-                        {/* <Route exact path='/view-users'>
-                  {({ match }) => <ViewUsers match={match} />}
-                </Route> */}
+                        {/*
+                        <Route exact path='/view-users'>
+                            {({ match }) => <ViewUsers match={match} />}
+                        </Route>
+                        */}
                         <Route path='/communication/messagelog'>
                           {({ match }) => <MessageLog match={match} />}
                         </Route>
@@ -178,17 +180,20 @@ function App() {
                             <Login match={match} history={history} />
                           )}
                         </Route>
-                        {/* <Route exact path='/assignrole'>
-                  {({ match }) => <AssignRole match={match} />}
-                </Route> */}
+                        {/*
+                        <Route exact path='/assignrole'>
+                          {({ match }) => <AssignRole match={match} />}
+                        </Route>
+                        */}
                         <Route exact path='/blog/genre'>
                           {({ match }) => <CreateGenre match={match} />}
                         </Route>
 
-                        {/* <Route exact path='/blog/genre/edit'>
+                        {/*
+                        <Route exact path='/blog/genre/edit'>
                           {({ match }) => <EditGenre match={match} />}
-                        </Route> */}
-
+                        </Route>
+                        */}
                         <Route exact path='/blog/wordcount-config'>
                           {({ match }) => <CreateWordCountConfig match={match} />}
                         </Route>

@@ -92,8 +92,18 @@
   background: #e0e0e0;
 }
 
+.periodBackButton1.MuiButtonBase-root {
+  width: 15%;
+  border-radius: 10px;
+  background: #e0e0e0;
+  color: rgb(140, 140, 140);
+}
+
+.periodBackButton1.MuiButtonBase-root:hover {
+  background: #e0e0e0;
+}
 .nextPageButton.MuiButtonBase-root {
-  width: 40%;
+  width: 15%;
   border-radius: 10px;
 }
 

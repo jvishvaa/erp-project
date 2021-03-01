@@ -108,6 +108,9 @@ const CreateCourse = () => {
     if (Boolean(gradeKey)) history.push(`/course-list/${gradeKey}`);
     else setNextToggle((prev) => !prev);
   };
+  const handleBackToCourseList = () => {
+    history.push(`/course-list/`);
+  };
 
   useEffect(() => {
     if (courseKey) {
@@ -253,7 +256,8 @@ const CreateCourse = () => {
         .then((result) => {
           if (result.data?.status_code === 201) {
             const list1 = [...subjectDropdown];
-            const list2 = [...gradeDropdown];
+            //const list2 = [...gradeDropdown];
+            const list2 = [];
             result.data.result.map((object) => {
               if (object?.tag_type === '1') {
                 list1.push({
@@ -262,7 +266,7 @@ const CreateCourse = () => {
                 });
               } else {
                 list2.push({
-                  id: object.id,
+                  id: object.id,  
                   gradeName: object?.grade__grade_name,
                   gradeId: object?.grade_id,
                 });
@@ -858,8 +862,11 @@ const CreateCourse = () => {
               <Grid item xs={12} sm={12}>
                 <Divider />
               </Grid>
-              <Grid item xs={12} sm={6} className={isMobile ? '' : 'filterPadding'}>
-                <Button className='nextPageButton' onClick={handleNext}>
+              <Grid item xs={12} sm={12} className={isMobile ? '' : 'filterPadding'}>
+                <Button onClick={handleBackToCourseList} className='periodBackButton1'>
+                    Back
+                </Button>
+                <Button className='nextPageButton' onClick={handleNext} style={{ float: 'right'}}>
                   NEXT
                 </Button>
               </Grid>
