@@ -624,6 +624,10 @@ const Layout = ({ children, history }) => {
                   history.push('/finance/E-Mandate/OrderDetails')
                     break;
                   }
+              case 'Order Details': {
+                  history.push('/finance/E-Mandate/OrderDetails')
+                    break;
+                 }
               case 'Total Billing Details': {
                   history.push('/finance/E-Mandate/TotalBillingDetails')
                     break;
