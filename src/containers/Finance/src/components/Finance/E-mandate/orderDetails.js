@@ -2,7 +2,13 @@ import React, { useEffect, useState } from 'react'
 import {
   Grid,
   Button,
-  TextField
+  TextField,
+  Table,
+  TableCell,
+  TableRow,
+  TableHead,
+  TableBody,
+TablePagination
 } from '@material-ui/core'
 import Select from 'react-select'
 // import ReactTable from 'react-table'
@@ -37,6 +43,8 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
   const [order, setOrder] = useState(null)
   const [customer, setCustomer] = useState(null)
   const [customerId, setCustomerId] = useState('')
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   // const [allNetbankingData, setAllNetbankingData] = useState({})
 
   useEffect(() => {
@@ -49,13 +57,21 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
   }, [alert, fetchBranches, getDomainNameWithCusId, session, sessionData, user])
 
   useEffect(() => {
-    if (role === 'FinanceAdmin' || role === 'FinanceAccountant') {
+    if (role === 'F_Admin' || role === 'F_acc') {
       let branch
       getOrderDetails(branch, sessionData && sessionData.value, role, user, alert)
       setShowTable(true)
     }
   }, [role, getOrderDetails, sessionData, user, alert])
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  }
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  }
   const handleDomainNameChange = (e) => {
     setDomainName(e)
     setPaymnetMethod('')
@@ -314,7 +330,7 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
         customer_id: val.customer_id ? val.customer_id : '',
         order_id: val.razorpay_order_id ? val.razorpay_order_id : '',
         status: val.is_authentication_payment_done ? <span style={{ color: 'green', fontWeight: 'bold' }}>Done</span> : <span style={{ color: 'red', fontWeight: 'bold' }}>Not Done</span>,
-        CreateLink: val.is_authentication_payment_done ? <span style={{ color: 'green', fontWeight: 'bold' }}>Already Done </span> : (role === 'FinanceAdmin' || role === 'FinanceAccountant') ? <Button variant='contained' color='primary' onClick={() => paymentHandler(val.customer_id, val.razorpay_order_id)} style={{ marginTop: '-5px', marginLeft: '-10px' }}>{(role !== 'FinanceAdmin' && role !== 'FinanceAccountant') ? 'Create Link' : 'pay first payment'}</Button> : ''
+        CreateLink: val.is_authentication_payment_done ? <span style={{ color: 'green', fontWeight: 'bold' }}>Already Done </span> : (role === 'FinanceAdm' || role === 'F_acc') ? <Button variant='contained' color='primary' onClick={() => paymentHandler(val.customer_id, val.razorpay_order_id)} style={{ marginTop: '-5px', marginLeft: '-10px' }}>{(role !== 'F_Admin' && role !== 'F_acc') ? 'Create Link' : 'pay first payment'}</Button> : ''
         // Update: <Button variant='contained' color='primary' style={{ marginTop: '-5px' }}> Update </Button>
       }
     })
@@ -463,7 +479,7 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
     <Layout>
     <div>
       <Grid container spacing={1} style={{ padding: 10 }} >
-        {(role !== 'FinanceAdmin' && role !== 'FinanceAccountant')
+        {(role !== 'F_Admin' && role !== 'F_acc')
           ? <React.Fragment>
             <Grid item xs={9} />
             <Grid item xs={3}>
@@ -477,7 +493,7 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
           </React.Fragment>
 
           : []}
-        {(role !== 'FinanceAdmin' && role !== 'FinanceAccountant')
+        {(role !== 'F_Admin' && role !== 'F_acc')
           ? <React.Fragment>
             <Grid item xm={4} md={4}>
               <label>Academic Year*</label>
@@ -507,7 +523,53 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
           : []}
       </Grid>
       {/* {paymentNetbankingMethodModal} */}
-      {/* {showTable ? studentOrderDeatilsTable : []} */} // rajneesh
+      {/* {showTable ? studentOrderDeatilsTable : []} */} 
+      {
+          <React.Fragment>
+          <Table>
+             <TableHead>
+               <TableRow>
+                 <TableCell>Branch Name</TableCell>
+                 <TableCell> Beneficiary Name</TableCell>
+                 <TableCell> Account Number</TableCell>
+                 <TableCell> Account Type</TableCell>
+                 <TableCell>IFSC Code</TableCell>
+                 <TableCell>Customer Id</TableCell>
+                 <TableCell>Order Id</TableCell>
+                 <TableCell>Authentication Payment Status</TableCell>
+                 <TableCell>Authentication payment</TableCell>
+               </TableRow>
+             </TableHead>
+             <TableBody>
+             {orderDetails && orderDetails.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((val, i) => { 
+               return (
+             <TableRow>
+                <TableCell> { val.branch && val.branch.branch_name ? val.branch.branch_name : ''}</TableCell>
+                 {/* <TableCell>{ val.id} </TableCell> */}
+                 <TableCell>{val.beneficiary_name && val.beneficiary_name ? val.beneficiary_name : ''}</TableCell>
+                 <TableCell>{ val.account_number && val.account_number ? val.account_number : ''} </TableCell>
+                 <TableCell>{val.account_type && val.account_type ? val.account_type : ''} </TableCell>
+                 <TableCell>{val.ifsc_code && val.ifsc_code ? val.ifsc_code : ''}</TableCell>
+                 <TableCell>{val.customer_id ? val.customer_id : ''}</TableCell>
+                 <TableCell>{ val.razorpay_order_id ? val.razorpay_order_id : ''}</TableCell>
+                 <TableCell>{val.is_authentication_payment_done ? <span style={{ color: 'green', fontWeight: 'bold' }}>Done</span> : <span style={{ color: 'red', fontWeight: 'bold' }}>Not Done</span>}</TableCell>
+                 <TableCell>{val.is_authentication_payment_done ? <span style={{ color: 'green', fontWeight: 'bold' }}>Already Done </span> : (role === 'F_Admin' || role === 'F_acc') ? <Button variant='contained' color='primary' onClick={() => paymentHandler(val.customer_id, val.razorpay_order_id)} style={{ marginTop: '-5px', marginLeft: '-10px' }}>{(role !== 'F_Admin' && role !== 'F_acc') ? 'Create Link' : 'pay first payment'}</Button> : ''}</TableCell>
+             </TableRow>
+               )
+             })}
+           </TableBody>
+         </Table>
+         <TablePagination
+           rowsPerPageOptions={[10, 25, 100]}
+           component="div"
+           count={orderDetails && orderDetails.length}
+           rowsPerPage={rowsPerPage}
+           page={page}
+           onChangePage={handleChangePage}
+           onChangeRowsPerPage={handleChangeRowsPerPage}
+         />
+         </React.Fragment>
+      }
       {order && customer ? <Razorpay
         order={order}
         customer={customer}

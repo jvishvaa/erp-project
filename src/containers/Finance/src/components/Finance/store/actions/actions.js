@@ -74,7 +74,7 @@ export const fetchBranchPerSession = (payload) => {
     }).catch(error => {
       console.log(error)
       dispatch(dataLoaded())
-      payload.alert.warning('Unable To Load')
+      // payload.alert.warning('Unable To Load')
     })
   }
 }

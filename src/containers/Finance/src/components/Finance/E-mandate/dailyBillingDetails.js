@@ -368,7 +368,7 @@ const DailyBillingDetails = ({ dataLoadingStatus, alert, fetchBranches, todayEMa
 
     // }
     // domainDailyBillGenerateStatus(data, user, alert)
-    alert.warning('To Generate Daily Billing Please Click on Generate Daily Bill!')
+    // alert.warning('To Generate Daily Billing Please Click on Generate Daily Bill!')
     setShowModal(true)
     setDomainDailyBillStatus([])
   }
@@ -545,7 +545,7 @@ const DailyBillingDetails = ({ dataLoadingStatus, alert, fetchBranches, todayEMa
         alert={alert}
       /> : [] }
       {/* {ShowDailyDetPage ? <DailyBillingDetailsPage /> : []} */}
-      {/* {totalBillingDetail && totalBillingDetail.length > 0 && showTable ? studentErpTable : []} */} // rajneesh
+      {/* {totalBillingDetail && totalBillingDetail.length > 0 && showTable ? studentErpTable : []} */}
       { totalBillingDetail && totalBillingDetail.length > 0 && showTable ?
         <React.Fragment>
         <Table>

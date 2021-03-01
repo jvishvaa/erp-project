@@ -118,7 +118,8 @@ import AcceptRejectPayment from './containers/Finance/src/components/Finance/Bra
 import PostDateCheque from './containers/Finance/src/components/Finance/BranchAccountant/PostDateCheque/postDateCheque';
 import StudentInfoAdm from './containers/Finance/src/components/Finance/StudentInfo/studentInfo.js'
 import BillingDetails from './containers/Finance/src/components/Finance/E-mandate/billingDetails';
-import AddCustomerDeatils from './containers/Finance/src/components/Finance/E-mandate/addCustomerDeatils';
+import CustomerDeatils from './containers/Finance/src/components/Finance/E-mandate/addCustomerDeatils';
+// import CustomerDeatils from './containers/Finance/src/components/Finance/E-mandate/addCustomerDeatils.js'
 import OrderDetails from './containers/Finance/src/components/Finance/E-mandate/orderDetails';
 import DailyBillingDetails from './containers/Finance/src/components/Finance/E-mandate/dailyBillingDetails'
 import PettyExpenses from './containers/Finance/src/components/Finance/BranchAccountant/ExpenseManagement/PettyExpenses/pettyExpenses.js'
@@ -141,6 +142,7 @@ import AccountantLogin from './containers/Finance/src/components/Finance/BulkOpe
 import AddGst from './containers/Finance/src/components/Inventory/StoreAdmin/AddGst/addGst';
 import OrderStatusUpload from './containers/Finance/src/components/Inventory/StoreAdmin/OrderStatusUpload/orderStatusUpload';
 import ReceiptBook from './containers/Finance/src/components/Finance/AdmissionReports/ReceiptBook/receiptBook.js';
+import EMandate from './containers/Finance/src/components/Finance/E-mandate/e-mandate.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -519,9 +521,14 @@ function App() {
                 <Route exact path= '/finance/E-Mandate/BillingDetails'>
                   {({ match }) => <BillingDetails match={match} />}
                 </Route>
-
+                <Route exact path= '/finance/E-Mandate/AddBranch'>
+                  {({ match }) => <EMandate match={match} />}
+                </Route>
                 <Route exact path= '/finance/E-Mandate/CustomerDetails'>
-                  {({ match }) => <AddCustomerDeatils match={match} />}
+                  {({ match }) => <CustomerDeatils match={match} />}
+                </Route>
+                <Route exact path= '/finance/E-Mandate/AdminCustomerDetails'>
+                  {({ match }) => <CustomerDeatils match={match} />}
                 </Route>
                 <Route exact path= '/finance/E-Mandate/OrderDetails'>
                   {({ match }) => <OrderDetails match={match} />}

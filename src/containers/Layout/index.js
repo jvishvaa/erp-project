@@ -608,10 +608,18 @@ const Layout = ({ children, history }) => {
                 history.push('/finance/E-Mandate/BillingDetails')
                   break;
                 }
+                case 'Add Branch': {
+                  history.push('/finance/E-Mandate/AddBranch')
+                    break;
+                  }
               case 'Customer Details': {
                 history.push('/finance/E-Mandate/CustomerDetails')
                   break;
-                }
+                } 
+              case 'Add Customer Details': {
+                history.push('/finance/E-Mandate/AdminCustomerDetails')
+                break;
+              }
               case 'Order Details': {
                   history.push('/finance/E-Mandate/OrderDetails')
                     break;

@@ -3,21 +3,28 @@ import React, { useState } from 'react'
 import {
   TextField,
   Grid,
-  Button
+  Button,
   // Table,
   // TableCell,
   // TableRow,
   // TableHead,
   // TableBody
+  Table,
+  TableCell,
+  TableRow,
+  TableHead,
+  TableBody,
+TablePagination,
+  CircularProgress
 } from '@material-ui/core'
 import Select from 'react-select'
-import ReactTable from 'react-table'
-import 'react-table/react-table.css'
+// import ReactTable from 'react-table'
+// import 'react-table/react-table.css'
 import { connect } from 'react-redux'
 import * as actionTypes from '../store/actions'
 import { apiActions } from '../../../_actions'
 import Modal from '../../../ui/Modal/modal'
-import { CircularProgress } from '../../../ui'
+// import { CircularProgress } from '../../../ui'
 import Layout from '../../../../../Layout'
 
 const EMandate = ({ session, dataLoadingStatus, todayDetail, updateDomainName, dailyDetail, dailyEMandateDetails, todayEMandateDetails, alert, setDomainDetails, listDomainName, user, domainNames, createDomainName }) => {
@@ -37,6 +44,17 @@ const EMandate = ({ session, dataLoadingStatus, todayDetail, updateDomainName, d
   // const [dailyDetails, setDailyDetails] = useState(false)
   const [updateDomName, setUpdateDomName] = useState('')
   const [domId, setDomId] = useState(null)
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  }
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  }
 
   const handleClickSessionYear = (e) => {
     setSessionData(e)
@@ -358,38 +376,38 @@ const EMandate = ({ session, dataLoadingStatus, todayDetail, updateDomainName, d
     return dataToShow
   }
 
-  let studentErpTable = null
+  // let studentErpTable = null
 
-  studentErpTable = <ReactTable
-    style={{ marginTop: 60, textAlign: 'center' }}
-    data={renderStudentErpTable()}
-    // manual
-    columns={[
-      {
-        Header: 'Branch Name',
-        accessor: 'domain',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'CreatedAt',
-        accessor: 'created',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Edit',
-        accessor: 'edit',
-        filterable: false,
-        sortable: true
-      }
-    ]}
-    filterable
-    sortable
-    defaultPageSize={20}
-    showPageSizeOptions={false}
-    className='-striped -highlight'
-  />
+  // studentErpTable = <ReactTable
+  //   style={{ marginTop: 60, textAlign: 'center' }}
+  //   data={renderStudentErpTable()}
+  //   // manual
+  //   columns={[
+  //     {
+  //       Header: 'Branch Name',
+  //       accessor: 'domain',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'CreatedAt',
+  //       accessor: 'created',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Edit',
+  //       accessor: 'edit',
+  //       filterable: false,
+  //       sortable: true
+  //     }
+  //   ]}
+  //   filterable
+  //   sortable
+  //   defaultPageSize={20}
+  //   showPageSizeOptions={false}
+  //   className='-striped -highlight'
+  // />
 
   return (
     <Layout>
@@ -514,7 +532,46 @@ const EMandate = ({ session, dataLoadingStatus, todayDetail, updateDomainName, d
         </Grid> : []} */}
       {addDomainModal}
       {editDomainModals}
-      {showDomainDetail ? studentErpTable : []}
+      {/* {showDomainDetail ? studentErpTable : []} */}
+      {
+         <React.Fragment>
+         <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Branch Name</TableCell>
+                <TableCell> CreatedAt</TableCell>
+                <TableCell> Edit</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+            {domainNames && domainNames.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((val, i) => { 
+              return (
+            <TableRow>
+               <TableCell> { val.branch && val.branch ? val.branch : ''}</TableCell>
+                {/* <TableCell>{ val.id} </TableCell> */}
+                <TableCell>{val.createdAt.split('T') ? val.createdAt.split('T')[0] : ''}</TableCell>
+                <TableCell><Button
+          variant='contained'
+          color='primary'
+          onClick={() => openEditDomanModel(val.id, val.branch_name)}
+        >EDIT</Button>
+        </TableCell>
+            </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 100]}
+          component="div"
+          count={domainNames && domainNames.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+  </React.Fragment>
+      }
       {/* {todayDeatilsModal}
       {dailyDeatilsModal} */}
       {dataLoadingStatus ? <CircularProgress open /> : null}

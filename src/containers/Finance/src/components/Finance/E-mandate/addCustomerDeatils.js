@@ -8,13 +8,14 @@ import {
   TableRow,
   TableHead,
   TableBody,
-  TablePagination
+  TablePagination,
+  Modal
 } from '@material-ui/core'
 import Select from 'react-select'
 // import ReactTable from 'react-table'
 // import 'react-table/react-table.css'
 import { connect } from 'react-redux'
-import Modal from '../../../ui/Modal/modal'
+// import Modal from '../../../ui/Modal/modal'
 import * as actionTypes from '../store/actions'
 import { apiActions } from '../../../_actions'
 import Layout from '../../../../../Layout'
@@ -49,8 +50,11 @@ const CustomerDeatils = ({ setCustomerDetails, user, alert, fetchBranches, domai
   useEffect(() => {
     // listDomainName(sessionData && sessionData.value, user, alert)
     fetchBranches(sessionData && sessionData.value, alert, user)
+    // let role = ''
+    // role = JSON.parse(localStorage.getItem('user_profile')).personal_info.role
+    // setRole(role)
     let role = ''
-    role = JSON.parse(localStorage.getItem('user_profile')).personal_info.role
+    role = JSON.parse(localStorage.getItem('userDetails')).user_role
     setRole(role)
   }, [user, alert, listDomainName, sessionData, fetchBranches])
 
@@ -137,10 +141,11 @@ const CustomerDeatils = ({ setCustomerDetails, user, alert, fetchBranches, domai
   let customerDetModal = null
   if (showModal) {
     customerDetModal = (
-      <Modal open={showModal} click={hideDetailsModal} large>
+      <Modal open={showModal} onClose={hideDetailsModal} large>
+        <React.Fragment>
         <h3 style={{ textAlign: 'center' }}>Add Customer Details</h3>
         <hr />
-        <Grid container spacing={1} style={{ padding: 10 }} >
+        <Grid container spacing={1} style={{ padding: 10, background: 'white' }} >
           <Grid item xs={3}>
             <label> Branch Name*</label>
             <Select
@@ -236,7 +241,7 @@ const CustomerDeatils = ({ setCustomerDetails, user, alert, fetchBranches, domai
             >Create Customer Details</Button>
           </Grid>
         </Grid>
-
+        </React.Fragment>
       </Modal>
     )
   }
