@@ -55,7 +55,8 @@ const CreateClassForm = (props) => {
   const [selectedSections, setSelectedSections] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState('');
-  const [tutorNotAvailableMsg, setTutorNotAvailableMessage] = useState('');
+  const [selectedBranches, setSelectedBranches] = useState([]);
+  const [tutorNotAvailableMsg, setTutorNotAvailableMessage] = useState(null);
   const [selectedClassType, setSelectedClassType] = useState('');
   const [branches, setBranches] = useState([]);
   const {
@@ -161,7 +162,15 @@ const CreateClassForm = (props) => {
   useEffect(() => {
     if (isCreated) {
       setFormKey(new Date());
-      setAlert('success', 'Successfully created the class');
+      setSelectedGrades([]);
+      setSelectedSections([]);
+      setSelectedSubject([]);
+      setSelectedClassType('');
+      setSelectedBranches([]);
+      setSelectedCourse('');
+      setTutorNotAvailableMessage(null);
+      setToggle(false);
+      setSelectedDays([]);
       setOnlineClass((prevState) => ({
         ...prevState,
         ...initialFormStructure,
@@ -170,7 +179,12 @@ const CreateClassForm = (props) => {
         coHosts: [],
       }));
       dispatch(resetContext());
-      setSelectedGrades([]);
+      // dispatch(listGradesCreateClass());
+      dispatch(clearGrades());
+      dispatch(clearSections());
+      dispatch(clearSubjects());
+      dispatch(clearCourses());
+      setAlert('success', 'Successfully created the class');
       dispatch(listGradesCreateClass(onlineClass?.branchIds, moduleId));
     }
   }, [isCreated, moduleId]);
@@ -178,13 +192,13 @@ const CreateClassForm = (props) => {
   const handleClassType = (event, value) => {
     setSelectedClassType('');
     dispatch(setClassTypeId(null));
+    handleClear();
     if (value) {
       setSelectedClassType(value);
       dispatch(setClassTypeId(value.id));
     }
   };
 
-  const [selectedBranches, setSelectedBranches] = useState([]);
   const handleBranches = (event, value) => {
     setSelectedBranches([]);
     setSelectedGrades([]);
@@ -227,7 +241,7 @@ const CreateClassForm = (props) => {
   };
 
   const handleSection = (event, value) => {
-    dispatch(clearFilteredStudents());
+    // dispatch(clearFilteredStudents());
     setSelectedSections(value);
     if (value.length) {
       const ids = value.map((el) => el.id);
@@ -246,7 +260,7 @@ const CreateClassForm = (props) => {
   };
 
   const handleSubject = (event, value) => {
-    dispatch(clearFilteredStudents());
+    // dispatch(clearFilteredStudents());
     setSelectedSubject(value);
     if (value.length) {
       const subjectIds = value.map((el) => el.subject__id);
@@ -346,24 +360,26 @@ const CreateClassForm = (props) => {
           gradeIds
         )
       );
+    } else {
+      setTutorNotAvailableMessage(null);
     }
   };
 
-  const handleBlur = (e) => {
-    const isValidEmail = e.target.value.match(emailRegExp);
-    if (!isValidEmail || onlineClass.tutorEmail === '') {
-      setAlert('error', 'Invalid email address');
-    } else {
-      const { tutorEmail, selectedDate, selectedTime, duration, branchIds } = onlineClass;
-      const data = {
-        branchId: branchIds.join(','),
-        gradeId: onlineClass.gradeIds.join(','),
-        sectionIds: onlineClass.sectionIds.join(','),
-        subjectId: onlineClass.subject,
-      };
-      verifyTutorEmail(tutorEmail, selectedDate, selectedTime, duration, data);
-    }
-  };
+  // const handleBlur = (e) => {
+  // const isValidEmail = e.target.value.match(emailRegExp);
+  // if (!isValidEmail || onlineClass.tutorEmail === '') {
+  //   setAlert('error', 'Invalid email address');
+  // } else {
+  //   const { tutorEmail, selectedDate, selectedTime, duration, branchIds } = onlineClass;
+  //   const data = {
+  //     branchId: branchIds.join(','),
+  //     gradeId: onlineClass.gradeIds.join(','),
+  //     sectionIds: onlineClass.sectionIds.join(','),
+  //     subjectId: onlineClass.subject,
+  //   };
+  //   verifyTutorEmail(tutorEmail, selectedDate, selectedTime, duration, data);
+  // }
+  // };
 
   const handleDateChange = (event, value) => {
     const isFutureTime = onlineClass.selectedTime > new Date();
@@ -506,7 +522,7 @@ const CreateClassForm = (props) => {
       request['week_days'] = arr.map((ob) => ob);
     } else {
       if (!Array.isArray(days)) request['week_days'] = [days];
-      else request['week_days'] = days.map(ob=>ob);
+      else request['week_days'] = days.map((ob) => ob);
     }
 
     if (selectedClassType?.id === 0) {
@@ -602,15 +618,24 @@ const CreateClassForm = (props) => {
     setSelectedSubject([]);
     setSelectedClassType('');
     setSelectedBranches([]);
+    setSelectedCourse('');
+    setTutorNotAvailableMessage(null);
     setToggle(false);
     setSelectedDays([]);
     setOnlineClass((prevState) => ({
       ...prevState,
       ...initialFormStructure,
+      selectedTime: new Date(),
+      creatingOnlineClass: false,
       coHosts: [],
     }));
     dispatch(resetContext());
-    dispatch(listGradesCreateClass());
+    // dispatch(listGradesCreateClass());
+    dispatch(clearGrades());
+    dispatch(clearSections());
+    dispatch(clearSubjects());
+    dispatch(clearCourses());
+    dispatch(listGradesCreateClass(onlineClass?.branchIds, moduleId));
   };
 
   const fetchTutorEmails = () => {
@@ -634,8 +659,8 @@ const CreateClassForm = (props) => {
       const { data } = await axiosInstance.get(
         `/erp_user/check-tutor-time/?tutor_email=${onlineClass.tutorEmail.email}&start_time=${startTime}&duration=${duration}`
       );
-      if (data.status_code === '200') {
-        if (data.message === 'Tutor is available') {
+      if (data.status_code === 200) {
+        if (data.status === 'success') {
           setTutorNotAvailableMessage('');
         } else {
           setTutorNotAvailableMessage('Selected tutor is not available. Select another');
@@ -707,8 +732,7 @@ const CreateClassForm = (props) => {
     !onlineClass.selectedTime ||
     !onlineClass.tutorEmail ||
     creatingOnlineClass ||
-    tutorNotAvailableMsg ||
-    !selectedClassType;
+    tutorNotAvailableMsg!=='';
 
   useEffect(() => {
     setOnlineClass((prevState) => ({ ...prevState, selectedTime: new Date() }));
@@ -1093,7 +1117,7 @@ const CreateClassForm = (props) => {
               )} */}
             </Grid>
             <Grid item xs={1} sm={4}>
-              {isTutorEmailValid ? (
+              {tutorNotAvailableMsg === '' ? (
                 <CheckCircleIcon style={{ fill: 'green', marginTop: 8 }} />
               ) : (
                 ''
