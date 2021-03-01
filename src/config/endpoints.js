@@ -153,7 +153,7 @@ export default {
     cancelClass: 'erp_user/cancel-online-class/',
     createCoursePrice: '/aol/course-details/',
     updateCoursePrice: '/aol/course_details_update/',
-    updateTeacher:'/aol/update-batch-teacher/'
+    updateTeacher:'/aol/update-batch-teacher/',
   },
 
   attendanceList: {
