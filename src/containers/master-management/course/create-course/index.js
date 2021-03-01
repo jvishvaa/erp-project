@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useMemo } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import Loading from '../../../../components/loader/loader';
 import CommonBreadcrumbs from '../../../../components/common-breadcrumbs/breadcrumbs';
@@ -50,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
 const CreateCourse = () => {
   const classes = useStyles();
   const history = useHistory();
+  const aolHostURL = window.location.host;
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
   const themeContext = useTheme();
@@ -198,44 +199,95 @@ const CreateCourse = () => {
   }, []);
 
   const handleNext = () => {
-    if (
-      filePath?.length === 1 &&
-      Boolean(thumbnailImage) &&
-      Boolean(title) &&
-      noOfPeriods > 0 &&
-      Boolean(filterData.grade.gradeId) &&
-      Boolean(filterData.courseLevel.level) &&
-      Boolean(filterData.category.id) &&
-      Boolean(filterData.branch?.branch_name) &&
-      Boolean(filterData.age.id) &&
-      Boolean(filterData.subject.id)
-    ) {
-      if (noOfPeriods > 0) {
-        if (data.length === 0) {
-          const list = [...data];
-          for (let i = 0; i < noOfPeriods; i++) {
-            list.push({ title: '', description: '', files: [] });
+    // const dataObj = {
+    //   subjectId,
+    // }
+    // const { subject:{ id: sujectId }} = filterData || {}
+    // const isValid = !([
+    //   sujectId,
+    //   aolHostURL ?      title:true,
+    // ].map(Boolean).includes(false))
+
+    // if(isValid)
+    const isAol = aolHostURL === 'localhost:3002';
+    if (isAol) {
+      if (
+        filePath?.length === 1 &&
+        Boolean(thumbnailImage) &&
+        Boolean(title) &&
+        noOfPeriods > 0 &&
+        Boolean(filterData.subject.id) &&
+        Boolean(filterData.grade.gradeId) &&
+        Boolean(filterData.courseLevel.level) &&
+        Boolean(filterData.category.id) &&
+        Boolean(filterData.branch?.branch_name) &&
+        Boolean(filterData.age.id) &&
+        Boolean(filterData.subject.id)
+      ) {
+        if (noOfPeriods > 0) {
+          if (data.length === 0) {
+            const list = [...data];
+            for (let i = 0; i < noOfPeriods; i++) {
+              list.push({ title: '', description: '', files: [] });
+            }
+            setData(list);
           }
-          setData(list);
+          setNextToggle((prev) => !prev);
+        } else {
+          setAlert('warning', 'Periods should be more than or equal to 1');
         }
-        setNextToggle((prev) => !prev);
       } else {
-        setAlert('warning', 'Periods should be more than or equal to 1');
+        if (!Boolean(thumbnailImage))
+          setAlert('warning', 'Thumbnail Image is compulsory!');
+        if (filePath?.length !== 1) setAlert('warning', 'Document is compulsory!');
+        if (!Boolean(title)) setAlert('warning', 'Title is compulsory!');
+        if (noOfPeriods <= 0)
+          setAlert('warning', 'No. of periods should be more than 0!');
+        if (!Boolean(filterData.subject.id))
+          setAlert('warning', 'Subject is compulsory!');
+        if (!Boolean(filterData.age.id)) setAlert('warning', 'Age is compulsory!');
+        if (!Boolean(filterData.grade.gradeId))
+          setAlert('warning', 'Grade is compulsory!');
+        if (!Boolean(filterData.category.id))
+          setAlert('warning', 'Category is compulsory!');
+        if (!Boolean(filterData.branch.branch_name))
+          setAlert('warning', 'Branch is compulsory!');
+        if (!Boolean(filterData.courseLevel.level))
+          setAlert('warning', 'Level is compulsory!');
       }
     } else {
-      if (!Boolean(thumbnailImage)) setAlert('warning', 'Thumbnail Image is compulsory!');
-      if (filePath?.length !== 1) setAlert('warning', 'Document is compulsory!');
-      if (!Boolean(title)) setAlert('warning', 'Title is compulsory!');
-      if (noOfPeriods <= 0) setAlert('warning', 'No. of periods should be more than 0!');
-      if (!Boolean(filterData.subject.id)) setAlert('warning', 'Subject is compulsory!');
-      if (!Boolean(filterData.age.id)) setAlert('warning', 'Age is compulsory!');
-      if (!Boolean(filterData.grade.gradeId)) setAlert('warning', 'Grade is compulsory!');
-      if (!Boolean(filterData.category.id))
-        setAlert('warning', 'Category is compulsory!');
-      if (!Boolean(filterData.branch.branch_name))
-        setAlert('warning', 'Branch is compulsory!');
-      if (!Boolean(filterData.courseLevel.level))
-        setAlert('warning', 'Level is compulsory!');
+      if (
+        filePath?.length === 1 &&
+        Boolean(thumbnailImage) &&
+        Boolean(title) &&
+        noOfPeriods > 0 &&
+        Boolean(filterData.grade.gradeId) &&
+        Boolean(filterData.courseLevel.level)
+      ) {
+        if (noOfPeriods > 0) {
+          if (data.length === 0) {
+            const list = [...data];
+            for (let i = 0; i < noOfPeriods; i++) {
+              list.push({ title: '', description: '', files: [] });
+            }
+            setData(list);
+          }
+          setNextToggle((prev) => !prev);
+        } else {
+          setAlert('warning', 'Periods should be more than or equal to 1');
+        }
+      } else {
+        if (!Boolean(thumbnailImage))
+          setAlert('warning', 'Thumbnail Image is compulsory!');
+        if (filePath?.length !== 1) setAlert('warning', 'Document is compulsory!');
+        if (!Boolean(title)) setAlert('warning', 'Title is compulsory!');
+        if (noOfPeriods <= 0)
+          setAlert('warning', 'No. of periods should be more than 0!');
+        if (!Boolean(filterData.grade.gradeId))
+          setAlert('warning', 'Grade is compulsory!');
+        if (!Boolean(filterData.courseLevel.level))
+          setAlert('warning', 'Level is compulsory!');
+      }
     }
   };
 
@@ -293,6 +345,31 @@ const CreateCourse = () => {
       setFilterData({ ...filterData, age: value });
     }
   };
+
+  useEffect(() => {
+    if (aolHostURL === 'localhost:3003') {
+      setGradeDropdown([]);
+      axiosInstance
+        .get(`${endpoints.academics.grades}?branch_id=5`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            const list = [];
+            result.data.data.forEach((obj) => {
+              list.push({
+                id: obj.id,
+                gradeName: obj?.grade__grade_name,
+                gradeId: obj?.grade_id,
+              });
+            });
+            setGradeDropdown(list);
+          }
+        })
+        .catch((error) => {
+          setGradeDropdown([]);
+          setAlert('error', error.message);
+        });
+    }
+  }, []);
 
   const handleGrade = (event, value) => {
     setFilterData({ ...filterData, grade: [] });
@@ -370,6 +447,7 @@ const CreateCourse = () => {
   };
 
   const handleSubmit = () => {
+    const isAol = aolHostURL === 'localhost:3002';
     axiosInstance
       .post(`${endpoints.onlineCourses.createCourse}`, {
         course_name: title,
@@ -382,7 +460,7 @@ const CreateCourse = () => {
         files: filePath,
         thumbnail: [thumbnailImage],
         period_data: data,
-        tag_id: `${filterData.age.id},${filterData.subject.id}`,
+        tag_id: isAol ? `${filterData.age.id},${filterData.subject.id}` : '',
       })
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -424,6 +502,7 @@ const CreateCourse = () => {
   };
 
   const handleEdit = () => {
+    const isAol= aolHostURL==='localhost:3002';
     axiosInstance
       .put(`${endpoints.onlineCourses.updateCourse}${courseKey}/update-course/`, {
         course_name: title,
@@ -436,7 +515,7 @@ const CreateCourse = () => {
         files: filePath,
         thumbnail: [thumbnailImage],
         period_data: data,
-        tag_id: `${filterData.age.id},${filterData.subject.id}`,
+        tag_id: isAol ? `${filterData.age.id},${filterData.subject.id}` : '',
       })
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -494,33 +573,35 @@ const CreateCourse = () => {
   };
 
   useEffect(() => {
-    axiosInstance
-      .get(`${endpoints.communication.branches}`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setBranchDropdown(result.data.data);
-        } else {
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch((error) => {
-        setBranchDropdown([]);
-        setAlert('error', error.message);
-      });
+    if (aolHostURL === 'localhost:3002') {
+      axiosInstance
+        .get(`${endpoints.communication.branches}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setBranchDropdown(result.data.data);
+          } else {
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
+          setBranchDropdown([]);
+          setAlert('error', error.message);
+        });
 
-    axiosInstance
-      .get(`${endpoints.onlineCourses.categoryList}?tag_type=1`)
-      .then((result) => {
-        if (result.data.status_code === 201) {
-          setCategoryDropdown(result.data.result);
-        } else {
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch((error) => {
-        setCategoryDropdown([]);
-        setAlert('error', error.message);
-      });
+      axiosInstance
+        .get(`${endpoints.onlineCourses.categoryList}?tag_type=1`)
+        .then((result) => {
+          if (result.data.status_code === 201) {
+            setCategoryDropdown(result.data.result);
+          } else {
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
+          setCategoryDropdown([]);
+          setAlert('error', error.message);
+        });
+    }
   }, []);
 
   useEffect(() => {
@@ -574,48 +655,52 @@ const CreateCourse = () => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-                <Autocomplete
-                  style={{ width: '100%' }}
-                  size='small'
-                  onChange={handleBranch}
-                  id='grade'
-                  className='dropdownIcon'
-                  value={filterData?.branch}
-                  options={branchDrop}
-                  getOptionLabel={(option) => option?.branch_name}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Branch'
-                      placeholder='Branch'
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-                <Autocomplete
-                  style={{ width: '100%' }}
-                  size='small'
-                  onChange={handleCategory}
-                  id='volume'
-                  className='dropdownIcon'
-                  value={filterData?.category}
-                  options={categoryDropdown}
-                  getOptionLabel={(option) => option?.tag_name}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Category'
-                      placeholder='Category'
-                    />
-                  )}
-                />
-              </Grid>
+              {aolHostURL === 'localhost:3002' && (
+                <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                  <Autocomplete
+                    style={{ width: '100%' }}
+                    size='small'
+                    onChange={handleBranch}
+                    id='grade'
+                    className='dropdownIcon'
+                    value={filterData?.branch}
+                    options={branchDrop}
+                    getOptionLabel={(option) => option?.branch_name}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='Branch'
+                        placeholder='Branch'
+                      />
+                    )}
+                  />
+                </Grid>
+              )}
+              {aolHostURL === 'localhost:3002' && (
+                <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                  <Autocomplete
+                    style={{ width: '100%' }}
+                    size='small'
+                    onChange={handleCategory}
+                    id='volume'
+                    className='dropdownIcon'
+                    value={filterData?.category}
+                    options={categoryDropdown}
+                    getOptionLabel={(option) => option?.tag_name}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='Category'
+                        placeholder='Category'
+                      />
+                    )}
+                  />
+                </Grid>
+              )}
               <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
                 <Autocomplete
                   style={{ width: '100%' }}
@@ -637,48 +722,52 @@ const CreateCourse = () => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-                <Autocomplete
-                  style={{ width: '100%' }}
-                  size='small'
-                  onChange={handleAge}
-                  id='volume'
-                  className='dropdownIcon'
-                  value={filterData?.age}
-                  options={age}
-                  getOptionLabel={(option) => option?.tag_name}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Age'
-                      placeholder='Age'
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-                <Autocomplete
-                  style={{ width: '100%' }}
-                  size='small'
-                  onChange={handleSubject}
-                  id='volume'
-                  className='dropdownIcon'
-                  value={filterData?.subject}
-                  options={subjectDropdown}
-                  getOptionLabel={(option) => option?.subjectName}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Subject'
-                      placeholder='Subject'
-                    />
-                  )}
-                />
-              </Grid>
+              {aolHostURL === 'localhost:3002' && (
+                <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                  <Autocomplete
+                    style={{ width: '100%' }}
+                    size='small'
+                    onChange={handleAge}
+                    id='volume'
+                    className='dropdownIcon'
+                    value={filterData?.age}
+                    options={age}
+                    getOptionLabel={(option) => option?.tag_name}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='Age'
+                        placeholder='Age'
+                      />
+                    )}
+                  />
+                </Grid>
+              )}
+              {aolHostURL === 'localhost:3002' && (
+                <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                  <Autocomplete
+                    style={{ width: '100%' }}
+                    size='small'
+                    onChange={handleSubject}
+                    id='volume'
+                    className='dropdownIcon'
+                    value={filterData?.subject}
+                    options={subjectDropdown}
+                    getOptionLabel={(option) => option?.subjectName}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='Subject'
+                        placeholder='Subject'
+                      />
+                    )}
+                  />
+                </Grid>
+              )}
               <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
                 <TextField
                   id='noofperiods'
@@ -867,9 +956,13 @@ const CreateCourse = () => {
               </Grid>
               <Grid item xs={12} sm={12} className={isMobile ? '' : 'filterPadding'}>
                 <Button onClick={handleBackToCourseList} className='periodBackButton1'>
-                    Back
+                  Back
                 </Button>
-                <Button className='nextPageButton' onClick={handleNext} style={{ float: 'right'}}>
+                <Button
+                  className='nextPageButton'
+                  onClick={handleNext}
+                  style={{ float: 'right' }}
+                >
                   NEXT
                 </Button>
               </Grid>

@@ -225,9 +225,6 @@ const CourseCard = ({
                      {tabVal == 1  ? 'Inactive' : '' }
                      {tabVal == 2  ? 'Active' : '' }
                     </div>
-                    <div>
-                    {/* {tabVal ==0 || tabVal == undefined ? 'Inactive' : '' } */}
-                    </div>
                   </span>
                   <Popover
                     id={id}
