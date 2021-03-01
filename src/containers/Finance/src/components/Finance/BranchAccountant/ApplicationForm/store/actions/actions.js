@@ -64,9 +64,9 @@ export const fetchApplicationDetails = (payload) => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
         if (error.response && error.response.data && error.response.data.err_msg && (error.response.status === 400 || error.response.status === 404)) {
-          // payload.alert.warning(error.response.data.err_msg)
+          payload.alert.warning(error.response.data.err_msg)
         } else {
-          // payload.alert.warning('Something Went Wrong!')
+          payload.alert.warning('Something Went Wrong!')
         }
       })
   }
@@ -92,9 +92,9 @@ export const fetchGrade = (payload) => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
         if (error.response && error.response.data && error.response.data.err_msg && (error.response.status === 400 || error.response.status === 404)) {
-          // payload.alert.warning(error.response.data.err_msg)
+          payload.alert.warning(error.response.data.err_msg)
         } else {
-          // payload.alert.warning('Something Went Wrong!')
+          payload.alert.warning('Something Went Wrong!')
         }
       })
   }
@@ -109,15 +109,15 @@ export const saveAllFormData = (payload) => {
           Authorization: 'Bearer ' + payload.user
         }
       }).then(response => {
+        console.log('res', response, response.data)
         // if (response.status === 200) {
-          payload.alert.success('Success')
+          // payload.alert.success('Success')
           dispatch({
             type: SAVE_ALL_FORMDATA,
             payload: {
               data: response.data
             }
           })
-          console.log('app+', response)
         // }
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
@@ -153,9 +153,9 @@ export const saveAppPayment = (payload) => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
         if (error.response && error.response.data && error.response.data.err_msg && (error.response.status === 400 || error.response.status === 404)) {
-          // payload.alert.warning(error.response.data.err_msg)
+          payload.alert.warning(error.response.data.err_msg)
         } else {
-          // payload.alert.warning('Something Went Wrong!')
+          payload.alert.warning('Something Went Wrong!')
         }
       })
   }

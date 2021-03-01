@@ -32,7 +32,6 @@ const registrationFormReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.SAVE_ALL_FORMDATA : {
-      console.log('app no', action.payload.data)
       return {
         ...state,
         applicationNum: action.payload.data

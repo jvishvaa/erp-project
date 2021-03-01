@@ -943,7 +943,7 @@ class ApplicationFormAcc extends Component {
             <TableRow>
               {/* <TableCell rowSpan={2} /> */}
               <TableCell>Fee Application </TableCell>
-              <TableCell align='right'>{this.props.appNum && this.props.appNum.application_fee ? this.props.appNum.application_fee.amount : 200}</TableCell>
+              <TableCell align='right'>{this.props.appNum && this.props.appNum.application_fee ? this.props.appNum.application_fee.amount : ''}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
@@ -1239,7 +1239,7 @@ class ApplicationFormAcc extends Component {
         <TableRow>
           {/* <TableCell rowSpan={2} /> */}
           <TableCell>Type<br /><p style={{ fontSize: '14px' }}>Application Fee</p></TableCell>
-          <TableCell align='right'> Amount<br /><p style={{ fontSize: '16px' }}>{this.props.appNum && this.props.appNum.application_fee ? this.props.appNum.application_fee.amount : 200}</p></TableCell>
+          <TableCell align='right'> Amount<br /><p style={{ fontSize: '16px' }}>{this.props.appNum && this.props.appNum.application_fee ? this.props.appNum.application_fee.amount : ''}</p></TableCell>
         </TableRow>
         <Grid container spacing={3} style={{ padding: 15 }}>
           <Grid item xs='2'>
@@ -1609,7 +1609,7 @@ class ApplicationFormAcc extends Component {
         academic_year: this.state.session ? this.state.session : null,
         admission_type: this.state.appTypeData ? this.state.appTypeData.value : null,
         student: this.props.appNum && this.props.appNum.student.id ? this.props.appNum.student.id : null,
-        amount: this.props.appNum && this.props.appNum.application_fee ? this.props.appNum.application_fee.amount : 200,
+        amount: this.props.appNum && this.props.appNum.application_fee ? this.props.appNum.application_fee.amount : '',
         date_of_payment: payment.dateOfPayment ? payment.dateOfPayment : null,
         applicationPaymentAmount: this.props.appNum && this.props.appNum.application_fee ? this.props.appNum.application_fee.id : null,
         payment_in: this.state.selectedPayment === 'a' ? 1 : this.state.selectedPayment === 'b' ? 2 : this.state.selectedPayment === 'c' ? 3 : 4,
@@ -1624,7 +1624,7 @@ class ApplicationFormAcc extends Component {
         academic_year: this.state.session ? this.state.session : null,
         admission_type: this.state.appTypeData ? this.state.appTypeData.value : null,
         student: this.props.appNum && this.props.appNum.student.id ? this.props.appNum.student.id : null,
-        amount: this.props.appNum && this.props.appNum.application_fee ? this.props.appNum.application_fee.amount : 200,
+        amount: this.props.appNum && this.props.appNum.application_fee ? this.props.appNum.application_fee.amount : '',
         date_of_payment: payment.dateOfPayment ? payment.dateOfPayment : null,
         applicationPaymentAmount: this.props.appNum && this.props.appNum.application_fee ? this.props.appNum.application_fee.id : null,
         payment_in: this.state.selectedPayment === 'a' ? 1 : this.state.selectedPayment === 'b' ? 2 : this.state.selectedPayment === 'c' ? 3 : 4,
@@ -1646,7 +1646,7 @@ class ApplicationFormAcc extends Component {
         academic_year: this.state.session ? this.state.session : null,
         admission_type: this.state.appTypeData ? this.state.appTypeData.value : null,
         student: this.props.appNum && this.props.appNum.student.id ? this.props.appNum.student.id : null,
-        amount: this.props.appNum && this.props.appNum.application_fee ? this.props.appNum.application_fee.amount : 200,
+        amount: this.props.appNum && this.props.appNum.application_fee ? this.props.appNum.application_fee.amount : '',
         date_of_payment: payment.dateOfPayment ? payment.dateOfPayment : null,
         applicationPaymentAmount: this.props.appNum && this.props.appNum.application_fee ? this.props.appNum.application_fee.id : null,
         payment_in: this.state.selectedPayment === 'a' ? 1 : this.state.selectedPayment === 'b' ? 2 : this.state.selectedPayment === 'c' ? 3 : 4,
