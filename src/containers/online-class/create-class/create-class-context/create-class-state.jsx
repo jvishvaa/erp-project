@@ -64,13 +64,13 @@ const CreateclassProvider = (props) => {
     isCreated: false,
     tutorEmails: [],
     tutorEmailsLoading: false,
-    classTypeId: -1,
+    classTypeId: null,
   };
 
   const [state, dispatch] = useReducer(createClassReducer, initalState);
 
-  const { role_details: roleDetails } =
-    JSON.parse(localStorage.getItem('userDetails')) || {};
+  // const { role_details: roleDetails } =
+  //   JSON.parse(localStorage.getItem('userDetails')) || {};
 
   // all the actions related
 
@@ -154,22 +154,22 @@ const CreateclassProvider = (props) => {
   };
 
   const listSectionsCreateClass = async (gradeId, moduleId) => {
-    dispatch(request(LIST_SECTION_REQUEST));
-    try {
-      const { data } = await axiosInstance.get(
-        `${endpoints.academics.sections}?branch_id=${roleDetails.branch.join(
-          ','
-        )}&grade_id=${gradeId}&module_id=${moduleId}`
-      );
-      if (data.status === 'success') {
-        dispatch(success(data.data, LIST_SECTION_SUCCESS));
-        return data.data;
-      } else {
-        throw new Error(data.message);
-      }
-    } catch (error) {
-      dispatch(failure(error, LIST_SECTION_FAILURE));
-    }
+    // dispatch(request(LIST_SECTION_REQUEST));
+    // try {
+    //   const { data } = await axiosInstance.get(
+    //     `${endpoints.academics.sections}?branch_id=${branch.join(
+    //       ','
+    //     )}&grade_id=${gradeId}&module_id=${moduleId}`
+    //   );
+    //   if (data.status === 'success') {
+    //     dispatch(success(data.data, LIST_SECTION_SUCCESS));
+    //     return data.data;
+    //   } else {
+    //     throw new Error(data.message);
+    //   }
+    // } catch (error) {
+    //   dispatch(failure(error, LIST_SECTION_FAILURE));
+    // }
   };
 
   const listSectionAndSubjects = async (
@@ -189,7 +189,6 @@ const CreateclassProvider = (props) => {
         const { section, subject } = data.data;
         dispatch(success(section, LIST_SECTION_SUCCESS));
         dispatch(success(subject, LIST_SUBJECT_SUCCESS));
-        console.log('sections subjects ', section, subject);
       }
     } catch (error) {
       dispatch(failure(error, LIST_SECTION_FAILURE));
@@ -257,13 +256,15 @@ const CreateclassProvider = (props) => {
       );
       if (data.status === 'success')
         dispatch(success(initalState, CREATE_NEW_CLASS_SUCCESS));
-      else if (data.status === 'fail')
+      else {
         dispatch(success(initalState, CREATE_NEW_CLASS_FAILURE));
+        setAlert('error', data.message || data.description);
+      }
     } catch (error) {
       const { response } = error || {};
-      if (response?.data && response.data.message)
-        setAlert('error', response.data.message);
-      else setAlert('error', error.message);
+      if (response?.data)
+        setAlert('error', response.data.message || response.data.description);
+      else setAlert('error', response.data.message || response.data.description);
       dispatch(failure(error, CREATE_NEW_CLASS_FAILURE));
     }
   };
@@ -277,13 +278,15 @@ const CreateclassProvider = (props) => {
       );
       if (data.status_code === 200)
         dispatch(success(initalState, CREATE_NEW_CLASS_SUCCESS));
-      else if (data.status_code === 404)
+      else {
         dispatch(success(initalState, CREATE_NEW_CLASS_FAILURE));
+        setAlert('error', data.message || data.description);
+      }
     } catch (error) {
       const { response } = error || {};
-      if (response?.data && response.data.message)
-        setAlert('error', response.data.message);
-      else setAlert('error', error.message);
+      if (response?.data)
+        setAlert('error', response.data.message || response.data.description);
+      else setAlert('error', response.data.message || response.data.description);
       dispatch(failure(error, CREATE_NEW_CLASS_FAILURE));
     }
   };
