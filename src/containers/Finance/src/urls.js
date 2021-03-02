@@ -569,7 +569,7 @@ const urls = {
   FDSReport: BASE + '/finance/reports/fee-day-sheet/',
   AdmissionRecords: BASE + '/finance/fetchalladmissionrecords/',
   SectionWiseSms: BASE + '/accounts/sms_sectionwise/',
-  LISTCLASSGROUPTYPE: BASE + '/accounts/classgroup_type/',
+  LISTCLASSGROUPTYPE: BASE + '/finance/classgroup_type/',
   PointOfContact: BASE + '/accounts/v2/student/extended/pointofcontact/',
   ClassGroup: BASE + '/accounts/class_group/',
   Feedback: BASE + '/assessment/feedback/',
