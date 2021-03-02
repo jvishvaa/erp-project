@@ -630,12 +630,10 @@ const CreateClassForm = (props) => {
     }));
     dispatch(resetContext());
     dispatch(clearFilteredStudents());
-    // dispatch(listGradesCreateClass());
     dispatch(clearGrades());
     dispatch(clearSections());
     dispatch(clearSubjects());
     dispatch(clearCourses());
-    dispatch(listGradesCreateClass(onlineClass?.branchIds, moduleId));
   };
 
   const fetchTutorEmails = () => {
