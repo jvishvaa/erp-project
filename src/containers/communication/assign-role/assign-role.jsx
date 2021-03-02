@@ -352,7 +352,7 @@ const AssignRole = (props) => {
       const response = await axiosInstance.post(
         assignRoleApi,
         {
-          role_id: selectedRole,
+          role_id: selectedRole?.id,
           user_id: selectionArray,
         },
         {
@@ -693,6 +693,31 @@ const AssignRole = (props) => {
           style={{ width: '95%', marginLeft: 'auto', marginRight: 'auto' }}
         >
           <Grid container spacing={2}>
+            <Grid item md={4} xs={12}>
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                //onChange={(e) => setSelectedBranch(e.target.value)}
+                onChange={(event, value) => {
+                  setSelectedRole(value);
+                }}
+                id='branch_id'
+                //className='dropdownIcon'
+                value={selectedRole}
+                options={roles}
+                getOptionLabel={(option) => option?.role_name}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Assign Role'
+                    placeholder='Assign Role'
+                  />
+                )}
+              />
+            </Grid>
+            {/*
             <Grid item xs={12} md={4}>
               <FormControl variant='outlined' fullWidth size='small'>
                 <InputLabel id='demo-simple-select-outlined-label'>
@@ -717,7 +742,8 @@ const AssignRole = (props) => {
                 <FormHelperText style={{ color: 'red' }}>{roleError}</FormHelperText>
               </FormControl>
             </Grid>
-            <Grid item md={4} xs={6}>
+            */}
+            <Grid item md={2} xs={4}>
               <FormControlLabel
                 control={
                   <Checkbox
