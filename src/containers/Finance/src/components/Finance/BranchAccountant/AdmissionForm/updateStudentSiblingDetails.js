@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Select from 'react-select'
-import { withStyles, TextField, Button } from '@material-ui/core/'
+import { withStyles, TextField, Button, Modal } from '@material-ui/core/'
 import { withRouter } from 'react-router-dom'
 import Grid from '@material-ui/core/Grid'
 import { apiActions } from '../../../../_actions'
-import Modal from '../../../../ui/Modal/modal'
+// import Modal from '../../../../ui/Modal/modal'
 import * as actionTypes from '../store/actions'
 
 const styles = theme => ({

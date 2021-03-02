@@ -144,6 +144,7 @@ import OrderStatusUpload from './containers/Finance/src/components/Inventory/Sto
 import ReceiptBook from './containers/Finance/src/components/Finance/AdmissionReports/ReceiptBook/receiptBook.js';
 import EMandate from './containers/Finance/src/components/Finance/E-mandate/e-mandate.js'
 import CreateLink from './containers/Finance/src/components/Finance/E-mandate/createLink.js'
+import NonRTEFormAcc from './containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/nonRTEAdmissionForm.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -389,6 +390,10 @@ function App() {
                 </Route>
                 <Route exact path='/finance/accountant/applicationFrom'>
                   {({ match }) => <ApplicationFormAcc match={match} />}
+                </Route>
+      
+                <Route exact path='/finance/accountant/NonRTEFormAcc'>
+                  {({ match }) => <NonRTEFormAcc match={match} />}
                 </Route>
                 {/* <Route exact path='/finance/accountat/pendingOnlineadmission'>
                   {({ match }) => <OnlineAdmission match={match} />}
