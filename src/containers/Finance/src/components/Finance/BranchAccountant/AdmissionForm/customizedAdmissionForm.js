@@ -1,17 +1,16 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Select from 'react-select'
-import { withStyles, Button, CircularProgress } from '@material-ui/core'
+import { withStyles, Button } from '@material-ui/core'
 import Grid from '@material-ui/core/Grid'
 import { withRouter } from 'react-router-dom'
 import { apiActions } from '../../../../_actions'
 import AutoSuggest from '../../../../ui/AutoSuggest/autoSuggest'
 import NewAdmissionFormAcc from './newAdmissionForm'
 import NonRTEFormAcc from './nonRTEAdmissionForm'
-// import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import * as actionTypes from '../store/actions'
-// import { debounce } from '../../../../utils' // rajeesh due to import issue
-import Layout from '../../../../../../Layout'
+import { debounce } from '../../../../utils'
 
 const styles = theme => ({
   container: {
@@ -61,7 +60,7 @@ class CustomizedAdmissionFormAcc extends Component {
     if (this.state.appStatus || this.state.regStatus || this.state.otherStatus) {
       // this.props.getStudentdetailsbyregNumber(this.state.regNo, this.props.user, this.props.alert)
       if (this.props.studentDetailsForAdmission && this.props.studentDetailsForAdmission.admission_status === true) {
-        // this.props.alert.warning('Admission Already Completed With # ' + this.props.studentDetailsForAdmission.admission_number)
+        this.props.alert.warning('Admission Already Completed With # ' + this.props.studentDetailsForAdmission.admission_number)
       } else if (this.props.studentDetailsForAdmission && this.props.studentDetailsForAdmission.admission_status === false) {
         this.props.history.push({
           pathname: '/finance/accountant/NonRTEFormAcc',
@@ -79,19 +78,7 @@ class CustomizedAdmissionFormAcc extends Component {
     })
   }
 
-  // myRegFunc = debounce(() => {
-  //   this.props.fetchErpSuggestions(
-  //     'erp',
-  //     this.state.session.value,
-  //     this.state.gradeId,
-  //     this.state.sectionId,
-  //     this.state.studentTypeData.value,
-  //     this.state.student,
-  //     this.props.alert,
-  //     this.props.user
-  //   )
-  // }, 500)
-  myRegFunc = () => {
+  myRegFunc = debounce(() => {
     this.props.fetchErpSuggestions(
       'erp',
       this.state.session.value,
@@ -102,10 +89,9 @@ class CustomizedAdmissionFormAcc extends Component {
       this.props.alert,
       this.props.user
     )
-  }
+  }, 500)
 
-  // myFunc = debounce(() => { this.props.searchAdmissionByOthers(this.state.searchByDropdown, this.state.session.value, this.state.otherKey, this.props.user, this.props.alert) }, 500)
-  myFunc = () => { this.props.searchAdmissionByOthers(this.state.searchByDropdown, this.state.session.value, this.state.otherKey, this.props.user, this.props.alert) }
+  myFunc = debounce(() => { this.props.searchAdmissionByOthers(this.state.searchByDropdown, this.state.session.value, this.state.otherKey, this.props.user, this.props.alert) }, 500)
 
   searchByOthers = (event, selected, id) => {
     let regNo = null
@@ -260,7 +246,6 @@ class CustomizedAdmissionFormAcc extends Component {
     }
 
     return (
-      <Layout>
       <React.Fragment>
         <div className={classes.root}>
           <Grid container spacing={3}>
@@ -324,7 +309,6 @@ class CustomizedAdmissionFormAcc extends Component {
           {this.props.dataLoading ? <CircularProgress open /> : null}
         </div>
       </React.Fragment>
-      </Layout>
     )
   }
 }
