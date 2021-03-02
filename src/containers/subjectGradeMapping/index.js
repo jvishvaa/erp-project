@@ -495,9 +495,6 @@ const Subjectgrade = (props) => {
                     </div>
 
                 </div>
-
-
-
             </Layout>
 
         </div>
