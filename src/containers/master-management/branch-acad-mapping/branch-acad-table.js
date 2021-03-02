@@ -346,7 +346,7 @@ const BranchAcadTable = () => {
         )}
 
         <>
-          {!isMobile ? (
+          {/* {!isMobile ? ( */}
             <>
               {tableFlag && !addFlag && !editFlag && (
                 <Paper className={`${classes.root} common-table`}>
@@ -422,7 +422,7 @@ const BranchAcadTable = () => {
                 </Paper>
               )}
             </>
-          ) : (
+          {/* ) : (
               <>
                 <>
                   {tableFlag && !addFlag && !editFlag && (
@@ -449,7 +449,7 @@ const BranchAcadTable = () => {
                   )}
                 </>
               </>
-            )}
+            )} */}
         </>
         <Dialog
           open={openDeleteModal}

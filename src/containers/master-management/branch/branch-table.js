@@ -285,7 +285,7 @@ const BranchTable = () => {
         )}
 
         <>
-          {!isMobile ? (
+          {/* {!isMobile ? ( */}
             <>
               {tableFlag && !addFlag && !editFlag && (
                 <Paper className={`${classes.root} common-table`}>
@@ -358,34 +358,34 @@ const BranchTable = () => {
                 </Paper>
               )}
             </>
-          ) : (
-              <>
-                <>
-                  {tableFlag && !addFlag && !editFlag && (
-                    <>
-                      {branches.map((branch) => (
-                        <BranchCard
-                          data={branch}
-                          handleOpenDeleteModal={handleOpenDeleteModal}
-                          handleEditSubject={handleEditBranch}
-                        />
-                      ))}
-                      <div className='paginateData paginateMobileMargin'>
-                        <TablePagination
-                          component='div'
-                          count={totalCount}
-                          rowsPerPage={limit}
-                          page={page - 1}
-                          onChangePage={handleChangePage}
-                          rowsPerPageOptions={false}
-                          className='table-pagination'
-                        />
-                      </div>
-                    </>
-                  )}
-                </>
-              </>
-            )}
+          {/* // ) : (
+          //     <>
+          //       <>
+          //         {tableFlag && !addFlag && !editFlag && (
+          //           <>
+          //             {branches.map((branch) => (
+          //               <BranchCard
+          //                 data={branch}
+          //                 handleOpenDeleteModal={handleOpenDeleteModal}
+          //                 handleEditSubject={handleEditBranch}
+          //               />
+          //             ))}
+          //             <div className='paginateData paginateMobileMargin'>
+          //               <TablePagination
+          //                 component='div'
+          //                 count={totalCount}
+          //                 rowsPerPage={limit}
+          //                 page={page - 1}
+          //                 onChangePage={handleChangePage}
+          //                 rowsPerPageOptions={false}
+          //                 className='table-pagination'
+          //               />
+          //             </div>
+          //           </>
+          //         )}
+          //       </>
+          //     </>
+          //   )} */}
         </>
         <Dialog
           open={openDeleteModal}

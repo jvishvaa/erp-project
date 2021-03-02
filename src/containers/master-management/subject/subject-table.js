@@ -277,7 +277,7 @@ const SubjectTable = () => {
         )}
 
         <>
-          {!isMobile ? (
+          {/* {!isMobile ? ( */}
             <>
               {tableFlag && !addFlag && !editFlag && (
                 <Paper className={`${classes.root} common-table`}>
@@ -349,7 +349,7 @@ const SubjectTable = () => {
                 </Paper>
               )}
             </>
-          ) : (
+          {/* ) : (
             <>
               <>
                 {tableFlag && !addFlag && !editFlag && (
@@ -376,7 +376,7 @@ const SubjectTable = () => {
                 )}
               </>
             </>
-          )}
+          )} */}
         </>
         <Dialog
           open={openDeleteModal}

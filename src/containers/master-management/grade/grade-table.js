@@ -232,7 +232,7 @@ const GradeTable = () => {
           </Grid>
         )}
 
-        {!isMobile && tableFlag && !addFlag && !editFlag && (
+        {tableFlag && !addFlag && !editFlag && (
           <Paper className={`${classes.root} common-table`}>
             <TableContainer className={classes.container}>
               <Table stickyHeader aria-label='sticky table'>
@@ -306,7 +306,7 @@ const GradeTable = () => {
             </div>
           </Paper>
         )}
-        {isMobile && !addFlag && !editFlag && (
+        {/* {isMobile && !addFlag && !editFlag && (
           <>
             <Container className={classes.cardsContainer}>
               {grades.map((grade, i) => (
@@ -333,7 +333,7 @@ const GradeTable = () => {
             />
             </div>
           </>
-        )}
+        )} */}
         <Dialog
           open={openDeleteModal}
           onClose={handleCloseDeleteModal}

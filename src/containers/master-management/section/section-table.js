@@ -259,7 +259,7 @@ const SectionTable = () => {
           </Grid>
         </Grid>
       )}
-      {!isMobile && tableFlag && !addFlag && !editFlag && (
+      {tableFlag && !addFlag && !editFlag && (
           <Paper className={`${classes.root} common-table`}>
             <TableContainer className={classes.container}>
               <Table stickyHeader aria-label='sticky table'>
@@ -322,7 +322,7 @@ const SectionTable = () => {
             </div>
           </Paper>
         )}
-        {isMobile && tableFlag && !addFlag && !editFlag && (
+        {/* {isMobile && tableFlag && !addFlag && !editFlag && (
           <>
             <Container className={classes.cardsContainer}>
               {sections.map((section, i) => (
@@ -349,7 +349,7 @@ const SectionTable = () => {
             />
             </div>
           </>
-        )}
+        )} */}
         <Dialog
           open={openDeleteModal}
           onClose={handleCloseDeleteModal}
