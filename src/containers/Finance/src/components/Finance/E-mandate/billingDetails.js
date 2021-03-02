@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 
 import {
   TextField,
@@ -22,6 +22,8 @@ import Modal from '../../../ui/Modal/modal'
 import Layout from '../../../../../Layout'
 // import { CircularProgress } from '../../../ui'
 
+import { AlertNotificationContext } from '../../../../../../context-api/alert-context/alert-state'
+
 const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDomainDetails, todayDetail, fetchBranches, user, domainNames, branches, session }) => {
   // const [selectedDomain, setSelectedDomain] = useState(null)
   const [sessionData, setSessionData] = useState({
@@ -43,10 +45,14 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  const { setAlert } = useContext(AlertNotificationContext);
+
   // const selectDomainHandler = (e) => {
   //   setSelectedDomain(e)
   // }
   useEffect(() => {
+    console.log("New alert: ", setAlert)
+    setAlert('error', 'helloo world!')
     let role = ''
     // role = JSON.parse(localStorage.getItem('userDetails')).user_role
     role = JSON.parse(localStorage.getItem('userDetails')).role_details.user_role

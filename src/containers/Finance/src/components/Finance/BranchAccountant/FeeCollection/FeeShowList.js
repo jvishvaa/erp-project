@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useContext } from 'react'
 import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -17,6 +17,8 @@ import AutoSuggest from '../../../../ui/AutoSuggest/autoSuggest'
 // import { debounce } from '../../../../utils'
 import Student from '../../Profiles/studentProfile'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
+import { AlertNotificationContext } from '../../../../../../../context-api/alert-context/alert-state'
 
 const styles = (theme) => ({
   tableWrapper: {
@@ -59,7 +61,7 @@ const styles = (theme) => ({
 })
 
 function getSteps () {
-  return ['1. Fee Details', '2. Reciept Details', '3. Payment mode', '4. Print Receipt']
+  return ['1. Fee Details', '2. Receipt Details', '3. Payment mode', '4. Print Receipt']
 }
 
 function TabContainer ({ children, dir }) {
@@ -101,61 +103,38 @@ class FeeShowList extends Component {
       subType: '',
       amount: '',
       roundedAmount: '',
-      gstPercentage: '',
-      gstAmount: '',
-      roundedGST: '',
-      totalAmount: ''
-    },
-    receiptDetails: {
-      receiptInfo: {
-        // receiptNo: '',
-        dateofPayment: new Date().toISOString().substr(0, 10)
+      amount: '',
+      finalAmt: null,
+      receiptTableInfo: {
+        feeType: '',
+        subType: '',
+        amount: '',
+        roundedAmount: '',
+        gstPercentage: '',
+        gstAmount: '',
+        roundedGST: '',
+        totalAmount: ''
       },
-      outsiderInfo: {
-        studentName: '',
-        parentName: '',
-        parentMobile: '',
-        class: '',
-        schoolName: '',
-        address: '',
-        outsiderDescription: ''
-      },
-      studentNameInsider: '',
-      radioChecked: 'online',
-      boxChecked: true,
-      selectValue: 1,
-      generalDescription: '',
-      receiptNoOnline: ''
-    },
-    selectedPayment: 'a',
-    searchByValue: null,
-    searchByData: null,
-    isChequePaper: false,
-    isInternetPaper: false,
-    isCreditPaper: false,
-    isTrans: false,
-    confirm: false,
-    payment: {
-      cheque: {
-        chequeNo: null,
-        chequeDate: null,
-        ifsc: null,
-        micr: null,
-        // chequeName: null,
-        chequeBankName: null,
-        chequeBankBranch: null
-      },
-      internet: {
-        internetDate: null,
-        remarks: null
-      },
-      credit: {
-        credit: 1,
-        digits: null,
-        creditDate: null,
-        approval: null,
-        bankName: null,
-        creditRemarks: null
+      receiptDetails: {
+        receiptInfo: {
+          // receiptNo: '',
+          dateofPayment: new Date().toISOString().substr(0, 10)
+        },
+        outsiderInfo: {
+          studentName: '',
+          parentName: '',
+          parentMobile: '',
+          class: '',
+          schoolName: '',
+          address: '',
+          outsiderDescription: ''
+        },
+        studentNameInsider: '',
+        radioChecked: 'online',
+        boxChecked: true,
+        selectValue: 1,
+        generalDescription: '',
+        receiptNoOnline: ''
       },
       transid: null,
       dateOfPayment: new Date().toISOString().substr(0, 10)
@@ -192,6 +171,10 @@ class FeeShowList extends Component {
     studentErp: '',
     allSections: true
   }
+
+
+  // let { setAlert } = useContext(AlertNotificationContext);
+  static contextType = AlertNotificationContext
 
   outsiderInfoHandler = (event) => {
     const newReceiptDetails = { ...this.state.receiptDetails }
@@ -346,7 +329,9 @@ class FeeShowList extends Component {
     // this.props.fetchReceiptRange(this.state.session, this.props.branchData && this.props.branchData.branch_name, this.props.alert, this.props.user)
   }
   componentDidUpdate () {
-    console.log('====> newState: ', this.state.receiptDetails)
+    // console.log('====> new alert: ', this.context.setAlert('success', 'updated success'))
+    console.log('====> old alert: ', this.props.alert)
+    console.log('====> old user: ', this.props.user)
   }
   checkBoxHandler = (e, id, misc, amo) => {
     let { checkBox } = this.state
@@ -537,6 +522,7 @@ class FeeShowList extends Component {
         //   gradeDatas: a.shift()
         // })
         // console.log(this.state.gradeDatas)
+        // this.props.AlertNotificationContext.setAlert('error', 'Enter the Amount');
       }
     } else if (this.state.activeStep === 1) {
       if (this.state.receiptDetails.receiptInfo.dateofPayment) {

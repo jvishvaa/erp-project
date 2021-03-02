@@ -9,7 +9,7 @@ import {
   getFormattedDate,
   getFormattedHrsMnts
 } from './timeFunctions'
-import { compression } from './compression/compression'
+// import { compression } from './compression/compression'
 
 export {
   generatePdf,
@@ -20,6 +20,6 @@ export {
   getSparseDate,
   getParsedDate,
   getFormattedDate,
-  getFormattedHrsMnts,
-  compression
+  getFormattedHrsMnts
+  // compression
 }
