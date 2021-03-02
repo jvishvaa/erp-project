@@ -564,105 +564,67 @@ class FeeShowList extends Component {
     }
   }
 
-  renderTable = () => {
-    console.log('-------rendertable called')
-    let dataToShow = []
-    dataToShow = this.props.feeList.map((val, i) => {
-      return {
-        id: val.id,
-        check: <input
-          type='checkbox'
-          name='checking'
-          // value={i + 1}
-          checked={this.state.checkBox[val.id]}
-          onChange={
-            (e) => { this.checkBoxHandler(e, val.id) }
-          } />,
-        feeCollectionType: val.fee_type_name ? val.fee_type_name : '',
-        subType: val.sub_type ? val.sub_type : '',
-        amountGiven: val.amount && val.amount ? val.amount : '',
-        amount: <input
-          name='amount'
-          type='number'
-          // value={i + 1}
-          value={this.state.amountToEnter[val.id]}
-          readOnly={!this.state.checkBox[val.id]}
-          onChange={this.amountHandler(val.id)}
-        />,
-        feeAccount: val.fee_account && val.fee_account.fee_account_name ? val.fee_account.fee_account_name : ''
-      }
-    })
-    return dataToShow
-  }
-
   // renderReceiptTable = () => {
 
   // }
 
   feeListTableHandler = () => {
-  //   let feeListTable = null
-  //   console.log('print:', this.props.feeList)
-  //   if (this.props.feeList && this.props.feeList.length > 0) {
-  //     feeListTable = (<ReactTable
-  //       // pages={Math.ceil(this.props.viewBanksList.count / 20)}
-  //       data={this.renderTable()}
-  //       manual
-  //       columns={[
-  //         {
-  //           Header: 'select',
-  //           accessor: 'check',
-  //           inputFilterable: true,
-  //           exactFilterable: true,
-  //           sortable: true
-  //         },
-  //         {
-  //           Header: 'Fee Collection Type',
-  //           accessor: 'feeCollectionType',
-  //           inputFilterable: true,
-  //           exactFilterable: true,
-  //           sortable: true
-  //         },
-  //         {
-  //           Header: 'Sub Type',
-  //           accessor: 'subType',
-  //           inputFilterable: true,
-  //           exactFilterable: true,
-  //           sortable: true
-  //         },
-  //         {
-  //           Header: 'Amount Given',
-  //           accessor: 'amountGiven',
-  //           inputFilterable: true,
-  //           exactFilterable: true,
-  //           sortable: true
-  //         },
-  //         {
-  //           Header: 'Amount',
-  //           accessor: 'amount',
-  //           inputFilterable: true,
-  //           exactFilterable: true,
-  //           sortable: true
-  //         },
-  //         {
-  //           Header: 'Fee Account',
-  //           accessor: 'feeAccount',
-  //           inputFilterable: true,
-  //           exactFilterable: true,
-  //           sortable: true
-  //         }
-  //       ]}
-  //       filterable
-  //       sortable
-  //       defaultPageSize={10}
-  //       showPageSizeOptions={false}
-  //       className='-striped -highlight'
-  //       // Controlled props
-  //       // page={this.state.page}
-  //       // Callbacks
-  //       // onPageChange={page => this.pageChangeHandler(page)}
-  //     />)
-  //   }
-  //   return feeListTable
+    let feeListTable = null
+    console.log('print fee list table:', this.props.feeList)
+    if (this.props.feeList && this.props.feeList.length > 0) {
+
+      feeListTable = (
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell> select</TableCell>
+              <TableCell> Fee Collection Type</TableCell>
+              <TableCell> Sub Type</TableCell>
+              <TableCell> Amount Given</TableCell>
+              <TableCell> Amount</TableCell>
+              <TableCell> Fee Account</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+          {this.props.feeList.length && this.props.feeList.map((val, i) => { 
+            return (
+              <TableRow>
+                <TableCell>
+                  <input
+                    type='checkbox'
+                    name='checking'
+                    // value={i + 1}
+                    checked={this.state.checkBox[val.id]}
+                    onChange={
+                      (e) => { this.checkBoxHandler(e, val.id) }
+                    } />
+                </TableCell>
+                <TableCell>
+                  {val.fee_type_name ? val.fee_type_name : ''}
+                  </TableCell>
+                  <TableCell>{val.sub_type ? val.sub_type : ''} </TableCell>
+                <TableCell>{ val.amount && val.amount ? val.amount : ''}</TableCell>
+                <TableCell>
+                  <input
+                    name='amount'
+                    type='number'
+                    // value={i + 1}
+                    value={this.state.amountToEnter[val.id]}
+                    readOnly={!this.state.checkBox[val.id]}
+                    onChange={this.amountHandler(val.id)}
+                  />
+                  </TableCell>
+                <TableCell>
+                  {val.fee_account && val.fee_account.fee_account_name ? val.fee_account.fee_account_name : ''}
+                  </TableCell>
+                </TableRow>
+                )})}
+            {/* {this.renderTable()} */}
+            </TableBody>
+          </Table>
+      )
+    }
+    return feeListTable
   }
 
   receiptDetailHandler = (id) => {
