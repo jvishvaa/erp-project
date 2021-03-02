@@ -40,6 +40,7 @@ import CoordinatorHomework from './containers/homework/coordinator-homework';
 import AddHomeworkCoord from './containers/homework/coordinator-homework/add-homework';
 import LessonReport from './containers/lesson-plan/lesson-plan-report';
 import LessonPlan from './containers/lesson-plan/lesson-plan-view';
+import endpoints from '../src/config/endpoints';
 import {
   ViewAssessments,
   AssessmentAttemption,
@@ -106,6 +107,7 @@ import SignatureUpload from './containers/signature-upload';
 import TeacherBatchView from './containers/teacherBatchView';
 import ErpAdminViewClass from './containers/online-class/erp-view-class/admin'
 import AolLogin from './containers/aol-login';
+import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource'
 
 const theme = createMuiTheme({
   palette: {
@@ -141,12 +143,6 @@ const theme = createMuiTheme({
 });
 
 function App() {
-  // const dispatch = useDispatch();
-  // useEffect(() => {
-  //   dispatch(listSubjects());
-  //   // dispatch(fetchLoggedInUserDetails());
-  // }, []);
-
   return (
     <div className='App'>
       <Router>
@@ -450,6 +446,9 @@ function App() {
                         </Route>
                         <Route exact path='/erp-online-class-student-view'>
                           {({ match }) => <ErpAdminViewClass match={match} />}
+                        </Route>
+                        <Route exact path='/erp-online-resources'>
+                          {({ match }) => <OnlineClassResource match={match} />}
                         </Route>
                       </Switch>
                     </DailyDairyStore>

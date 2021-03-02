@@ -22,7 +22,6 @@ const JoinClass = (props) => {
   const handleCloseData = () => {
     setAnchorEl(null);
   };
-
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -118,7 +117,7 @@ const JoinClass = (props) => {
           ) : (
             <>
               <Grid item md={3} xs={6}>
-                {window.location.pathname === '/erp-online-class-student-view' ? (
+                {/* {window.location.pathname === '/erp-online-class-student-view' ? (
                   <Button
                     size='small'
                     color='secondary'
@@ -142,7 +141,44 @@ const JoinClass = (props) => {
                   >
                     Host
                   </Button>
+                )} */}
+                {window.location.pathname === '/erp-online-class' ?
+                <Button
+                size='small'
+                color='secondary'
+                fullWidth
+                variant='contained'
+                onClick={() =>
+                  window.open(fullData && fullData.presenter_url, '_blank'
                 )}
+                className='teacherFullViewSmallButtons'
+              >
+                Audit
+              </Button> :''}
+              {window.location.pathname === '/erp-online-class-teacher-view' ?
+                   <Button
+                    size='small'
+                    color='secondary'
+                    fullWidth
+                    variant='contained'
+                    onClick={() =>
+                      window.open(fullData && fullData.presenter_url, '_blank'
+                    )}
+                    className='teacherFullViewSmallButtons'
+                  >
+                    Host
+                  </Button> : ''}
+                  {window.location.pathname === '/erp-online-class-student-view' ? 
+                    <Button
+                    size='small'
+                    color='secondary'
+                    fullWidth
+                    variant='contained'
+                    onClick={handleIsAccept}
+                    className='teacherFullViewSmallButtons'
+                  >
+                    Accept
+                  </Button> :''}
               </Grid>
               <Grid item md={3} xs={6}>
                 <Popover
@@ -212,7 +248,7 @@ const JoinClass = (props) => {
   )
 }
 
-const DetailCardView = ({ fullData, handleClose }) => {
+const DetailCardView = ({ fullData, handleClose, viewMoreRef, selectedClassType , selectedGrade }) => {
   const [noOfPeriods, setNoOfPeriods] = useState([]);
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
@@ -234,7 +270,7 @@ const DetailCardView = ({ fullData, handleClose }) => {
     }
   }, [fullData]);
   */
-  
+  console.log(selectedClassType,'[[[[[[[[[[[[[[[[')
   useEffect(() => {
     let detailsURL = window.location.pathname === '/erp-online-class-student-view'
     ? `erp_user/${fullData && fullData.id}/student-oc-details/`
@@ -297,14 +333,15 @@ const DetailCardView = ({ fullData, handleClose }) => {
       });
   }
 
+  console.log(fullData.online_class.cource_id,selectedGrade,'=====================')
   const handleAttendance=()=>{
     history.push(`/aol-attendance-list/${fullData.online_class && fullData.id}`)
   }
   const handleCoursePlan=()=>{
     if(window.location.pathname === '/erp-online-class-student-view'){
-      history.push(`/view-period/${fullData.online_class && fullData.online_class.course_id}`)
+      history.push(`/create/course/${fullData.online_class && fullData.online_class.cource_id}/${selectedGrade.id}`)
     }else{
-      history.push(`/view-period/${fullData.online_class && fullData.online_class.cource_id}`)
+      history.push(`/create/course/${fullData.online_class && fullData.online_class.cource_id}/${selectedGrade.id}`)
     }
   }
 
@@ -322,7 +359,7 @@ const DetailCardView = ({ fullData, handleClose }) => {
 
   return (
     <>
-      <Grid container spacing={2}>
+      <Grid container spacing={2} ref={viewMoreRef}>
         <Grid item md={12} xs={12} className='teacherBatchFullViewMainDiv'>
           <Card className='teacherBatchFullViewMainCard'>
             <Grid container spacing={2} className='teacherBatchFullViewHeader'>
@@ -405,9 +442,10 @@ const DetailCardView = ({ fullData, handleClose }) => {
                     Resources
                   </Button>
                 )}
+              {selectedClassType && selectedClassType.id !== 0  && 
                 <Button fullWidth size='small' className='teacherFullViewFullButtons' onClick={handleCoursePlan}>
                   View Course Plan
-                </Button>
+                </Button>}  
               </Grid>
             </Grid>
           </Card>
