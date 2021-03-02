@@ -144,6 +144,11 @@ import OrderStatusUpload from './containers/Finance/src/components/Inventory/Sto
 import ReceiptBook from './containers/Finance/src/components/Finance/AdmissionReports/ReceiptBook/receiptBook.js';
 import EMandate from './containers/Finance/src/components/Finance/E-mandate/e-mandate.js'
 import CreateLink from './containers/Finance/src/components/Finance/E-mandate/createLink.js'
+import Alert from './containers/Finance/src/ui/alert'
+import alertActions from './containers/Finance/src/_actions/alert.actions'
+import userActions from './containers/Finance/src/_actions/user.actions'
+
+import { connect } from 'react-redux'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -177,12 +182,12 @@ const theme = createMuiTheme({
   },
 });
 
-function App() {
+function App({ alert }) {
   // const dispatch = useDispatch();
-  // useEffect(() => {
-  //   dispatch(listSubjects());
-  //   // dispatch(fetchLoggedInUserDetails());
-  // }, []);
+  useEffect(() => {
+    // console.log('main root: ', alert)
+    // dispatch(fetchLoggedInUserDetails());
+  }, []);
 
   return (
     <div className='App'>
@@ -427,10 +432,10 @@ function App() {
                   {({ match }) => <StudentWallet match={match} />}
                 </Route>
                 <Route exact path='/finance/student/FeeCollection'>
-                  {({ match }) => <FeeCollection match={match} />}
+                  {({ match }) => <FeeCollection match={match} alert={alert} />}
                 </Route>
                 <Route exact path= '/finance/feeShowList/'>
-                  {({ match }) => <FeeShowList match={match} />}
+                  {({ match }) => <FeeShowList match={match} alert={alert} />}
                 </Route>
                 <Route exact path= '/finance/student/AssignDeliveryCharge'>
                   {({ match }) => <AssignDelieveryCharge match={match} />}
@@ -513,9 +518,9 @@ function App() {
                 <Route exact path= '/finance/Approval/Requests/PostDateCheque'>
                   {({ match }) => <PostDateCheque match={match} />}
                 </Route>
-                <Route exact path= '/finance/Approval/Requests/PostDateCheque'>
+                {/* <Route exact path= '/finance/Approval/Requests/PostDateCheque'>
                   {({ match }) => <PostDateCheque match={match} />}
-                </Route>
+                </Route> */}
                 <Route exact path= '/finance/student/studentInfo'>
                   {({ match }) => <StudentInfoAdm match={match} />}
                 </Route>
@@ -602,8 +607,25 @@ function App() {
           </OnlineclassViewProvider>
         </AlertNotificationProvider>
       </Router>
+      <Alert />
     </div>
   );
 }
 
-export default App;
+const mapDispatchToProps = dispatch => ({
+  alert: {
+    success: message => dispatch(alertActions.success(message)),
+    warning: message => dispatch(alertActions.warning(message)),
+    error: message => dispatch(alertActions.error(message))
+  }
+})
+const mapStateToProps = state => {
+  return {
+    // isLoggedIn: state.authentication.loggedIn
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App)

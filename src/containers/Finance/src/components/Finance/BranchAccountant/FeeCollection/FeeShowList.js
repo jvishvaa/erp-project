@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useContext } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 // import ReactTable from 'react-table'
@@ -13,6 +13,7 @@ import feeReceipts from '../../Receipts/feeReceipts'
 import * as actionTypes from '../../store/actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import Layout from '../../../../../../Layout'
+import { AlertNotificationContext } from '../../../../../../../context-api/alert-context/alert-state'
 
 const styles = (theme) => ({
   tableWrapper: {
@@ -36,88 +37,95 @@ const styles = (theme) => ({
 })
 
 function getSteps () {
-  return ['1. Fee Details', '2. Reciept Details', '3. Payment mode', '4. Print Receipt']
+  return ['1. Fee Details', '2. Receipt Details', '3. Payment mode', '4. Print Receipt']
 }
 
 class FeeShowList extends Component {
-  state = {
-    checked: true,
-    session: null,
-    disabled: true,
-    checkBox: {},
-    amountToEnter: '',
-    activeStep: 0,
-    disableNext: false,
-    receiptData: [],
-    useId: [],
-    roundedAmount: '',
-    amount: '',
-    finalAmt: null,
-    receiptTableInfo: {
-      feeType: '',
-      subType: '',
-      amount: '',
+  constructor(props) {
+    super(props);
+    this.state = {
+      checked: true,
+      session: null,
+      disabled: true,
+      checkBox: {},
+      amountToEnter: '',
+      activeStep: 0,
+      disableNext: false,
+      receiptData: [],
+      useId: [],
       roundedAmount: '',
-      gstPercentage: '',
-      gstAmount: '',
-      roundedGST: '',
-      totalAmount: ''
-    },
-    receiptDetails: {
-      receiptInfo: {
-        // receiptNo: '',
-        dateofPayment: new Date().toISOString().substr(0, 10)
+      amount: '',
+      finalAmt: null,
+      receiptTableInfo: {
+        feeType: '',
+        subType: '',
+        amount: '',
+        roundedAmount: '',
+        gstPercentage: '',
+        gstAmount: '',
+        roundedGST: '',
+        totalAmount: ''
       },
-      outsiderInfo: {
-        studentName: '',
-        parentName: '',
-        parentMobile: '',
-        class: '',
-        schoolName: '',
-        address: '',
-        outsiderDescription: ''
+      receiptDetails: {
+        receiptInfo: {
+          // receiptNo: '',
+          dateofPayment: new Date().toISOString().substr(0, 10)
+        },
+        outsiderInfo: {
+          studentName: '',
+          parentName: '',
+          parentMobile: '',
+          class: '',
+          schoolName: '',
+          address: '',
+          outsiderDescription: ''
+        },
+        studentNameInsider: '',
+        radioChecked: 'online',
+        boxChecked: true,
+        selectValue: 1,
+        generalDescription: '',
+        receiptNoOnline: ''
       },
-      studentNameInsider: '',
-      radioChecked: 'online',
-      boxChecked: true,
-      selectValue: 1,
-      generalDescription: '',
-      receiptNoOnline: ''
-    },
-    selectedPayment: 'a',
-    searchByValue: null,
-    searchByData: null,
-    isChequePaper: false,
-    isInternetPaper: false,
-    isCreditPaper: false,
-    isTrans: false,
-    confirm: false,
-    payment: {
-      cheque: {
-        chequeNo: null,
-        chequeDate: null,
-        ifsc: null,
-        micr: null,
-        // chequeName: null,
-        chequeBankName: null,
-        chequeBankBranch: null
-      },
-      internet: {
-        internetDate: null,
-        remarks: null
-      },
-      credit: {
-        credit: 1,
-        digits: null,
-        creditDate: null,
-        approval: null,
-        bankName: null,
-        creditRemarks: null
-      },
-      transid: null,
-      dateOfPayment: new Date().toISOString().substr(0, 10)
+      selectedPayment: 'a',
+      searchByValue: null,
+      searchByData: null,
+      isChequePaper: false,
+      isInternetPaper: false,
+      isCreditPaper: false,
+      isTrans: false,
+      confirm: false,
+      payment: {
+        cheque: {
+          chequeNo: null,
+          chequeDate: null,
+          ifsc: null,
+          micr: null,
+          // chequeName: null,
+          chequeBankName: null,
+          chequeBankBranch: null
+        },
+        internet: {
+          internetDate: null,
+          remarks: null
+        },
+        credit: {
+          credit: 1,
+          digits: null,
+          creditDate: null,
+          approval: null,
+          bankName: null,
+          creditRemarks: null
+        },
+        transid: null,
+        dateOfPayment: new Date().toISOString().substr(0, 10)
+      }
     }
   }
+
+
+  // let { setAlert } = useContext(AlertNotificationContext);
+  static contextType = AlertNotificationContext
 
   outsiderInfoHandler = (event) => {
     const newReceiptDetails = { ...this.state.receiptDetails }
@@ -243,8 +251,11 @@ class FeeShowList extends Component {
     })
   }
 
+
   componentDidUpdate () {
-    console.log('====> newState: ', this.state.receiptDetails)
+    // console.log('====> new alert: ', this.context.setAlert('success', 'updated success'))
+    console.log('====> old alert: ', this.props.alert)
+    console.log('====> old user: ', this.props.user)
   }
   checkBoxHandler = (e, id) => {
     let { checkBox } = this.state
@@ -372,6 +383,7 @@ class FeeShowList extends Component {
         })
       } else {
         this.props.alert.warning('Enter Amount')
+        // this.props.AlertNotificationContext.setAlert('error', 'Enter the Amount');
       }
     } else if (this.state.activeStep === 1) {
       const { studentName, parentName, parentMobile } = this.state.receiptDetails.outsiderInfo
