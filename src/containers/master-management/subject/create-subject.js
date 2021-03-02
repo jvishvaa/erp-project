@@ -73,20 +73,22 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
         branch_id:role_details.branch[0],
         description:description,
         is_optional:optional
-      }).then(result=>{
-      if (result.data.status_code === 201) {
-        setSubjectName('')
-        setSelectedGrade('')
-        setSelectedSection('')
-        setDescription('')
-        setLoading(false)
-        setOptional(false)
-        setAlert('success', result.data.message)
-      } else {
-        setLoading(false);
-        setAlert('error',result.data.message)
-      }
-      }).catch((error)=>{
+      })
+      .then(result => {
+        if (result.data.status_code === 201) {
+          setSubjectName('')
+          setSelectedGrade('')
+          setSelectedSection('')
+          setDescription('')
+          setLoading(false)
+          setOptional(false)
+          setAlert('success', result.data.message)
+        } else {
+          setLoading(false);
+          setAlert('error', 'This subject name already exists')
+        }
+      })
+      .catch((error) => {
         setLoading(false);
         setAlert('error', error.message)
       })
@@ -150,7 +152,7 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
               variant='outlined'
               size='small'
               value={subjectName}
-              inputProps={{pattern:'^[a-zA-Z0-9 ]+',maxLength:20}}
+              inputProps={{pattern:'^[a-zA-Z0-9 +_-]+',maxLength:20}}
               name='subname'
               onChange={e=>setSubjectName(e.target.value)}
               required
@@ -191,8 +193,7 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
               />
           </Grid>
         </Grid>
-       
-       
+        
         </div>
         <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '10px'}} >
         <Grid item xs={6} sm={2} className={isMobile?'':'addEditButtonsPadding'}>

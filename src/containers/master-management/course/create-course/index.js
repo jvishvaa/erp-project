@@ -502,7 +502,7 @@ const CreateCourse = () => {
   };
 
   const handleEdit = () => {
-    const isAol = aolHostURL !== endpoints.aolConfirmURL;
+    const isAol = aolHostURL === endpoints.aolConfirmURL;
     axiosInstance
       .put(`${endpoints.onlineCourses.updateCourse}${courseKey}/update-course/`, {
         course_name: title,
@@ -515,7 +515,7 @@ const CreateCourse = () => {
         files: filePath,
         thumbnail: [thumbnailImage],
         period_data: data,
-        tag_id: isAol ? `${filterData.age.id},${filterData.subject.id}` : '',
+        tag_id: isAol ? '' : `${filterData.age.id},${filterData.subject.id}`,
       })
       .then((result) => {
         if (result.data.status_code === 200) {

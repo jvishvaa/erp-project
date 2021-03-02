@@ -41,7 +41,7 @@ const CourseFilter = ({
       // branch: '',
     });
     setGradeIds([]);
-    setCourseData([]);
+    //setCourseData([]);
     setPageFlag(false);
     handleClearFilter();
   };

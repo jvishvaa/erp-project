@@ -17,13 +17,14 @@ const useStyles = makeStyles({
 
 export default function CenteredTabs({handleCourseList,sendGrade,setTabValue,tabValue}) {
   const classes = useStyles();
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(tabValue);
   const handleChange =  (event, newValue) => {
+    //alert(tabValue + "--------"+newValue);
     setTabValue(newValue)
     handleCourseList(sendGrade,newValue)
     setValue(newValue);
-    
   };
+  
   return (
     <Paper className={classes.root}>
       <Tabs value={tabValue} onChange={handleChange} indicatorColor={classes.indicatorColor} textColor={classes.indicatorColor} >

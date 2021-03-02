@@ -126,7 +126,7 @@ const CoursePriceFilters = (props) => {
           filterSelectedOptions
           value={selectedGrade}
           onChange={handleGrade}
-          disabled={gradeKey&&courseKey}
+          disabled={gradeKey && courseKey}
           renderInput={(params) => (
             <TextField
               {...params}
@@ -148,7 +148,7 @@ const CoursePriceFilters = (props) => {
           filterSelectedOptions
           value={selectedCourse}
           onChange={handleCourse}
-          disabled={gradeKey&&courseKey}
+          disabled={gradeKey && courseKey}
           renderInput={(params) => (
             <TextField
               {...params}
@@ -161,44 +161,42 @@ const CoursePriceFilters = (props) => {
         />
       </Grid>
       {!isMobile && <Grid item xs={0} sm={6} />}
-      {timeSlotDisplay?.length > 0
-        ? selectedCourse && (
-            <Grid
-              item
-              xs={12}
-              sm={9}
-              className={isMobile ? 'timeSlotWrapper' : 'timeSlotWrapper filterPadding'}
-            >
-              <div className='timeSlotTag'>Time Slots:</div>
-              {timeSlotDisplay.map((value) => (
-                <div className='timeSlotValue'>{value}</div>
-              ))}
-            </Grid>
-          )
-        : selectedCourse && (
-            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-              <Autocomplete
-                multiple
-                size='small'
-                id='timeSlots'
-                className='dropdownIcon'
-                options={timeSlotList}
-                getOptionLabel={(option) => option?.slot}
-                filterSelectedOptions
-                value={timeSlot}
-                onChange={handleTimeSlot}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    placeholder='Time Slot'
-                    label='Time Slot'
-                  />
-                )}
+      {timeSlotDisplay?.length > 0 ? (
+        <Grid
+          item
+          xs={12}
+          sm={9}
+          className={isMobile ? 'timeSlotWrapper' : 'timeSlotWrapper filterPadding'}
+        >
+          <div className='timeSlotTag'>Time Slots:</div>
+          {timeSlotDisplay.map((value) => (
+            <div className='timeSlotValue'>{value}</div>
+          ))}
+        </Grid>
+      ) : (
+        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+          <Autocomplete
+            multiple
+            size='small'
+            id='timeSlots'
+            className='dropdownIcon'
+            options={timeSlotList}
+            getOptionLabel={(option) => option?.slot}
+            filterSelectedOptions
+            value={timeSlot}
+            onChange={handleTimeSlot}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                placeholder='Time Slot'
+                label='Time Slot'
               />
-            </Grid>
-          )}
+            )}
+          />
+        </Grid>
+      )}
     </Grid>
   );
 };

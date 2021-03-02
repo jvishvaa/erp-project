@@ -30,6 +30,7 @@ import CourseCard from './course-card';
 import ViewMoreCard from './view-more-card';
 import Context from './context/ViewStore';
 import TabPanel from './course-tab';
+import { useCallback } from 'react';
 
 const CourseView = () => {
   const themeContext = useTheme();
@@ -59,10 +60,11 @@ const CourseView = () => {
     setTabVal(tabMenuval);
     setLoading(true);
     setSendGrade(gradeIds);
+    setCourseData([]);
     if (gradeIds.length !== 0 && (tabMenuval === 0 || tabMenuval == undefined)) {
       axiosInstance
         .get(
-          `${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}&all=chacha`
+          `${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -82,7 +84,7 @@ const CourseView = () => {
     if (gradeIds.length !== 0 && tabMenuval === 1) {
       axiosInstance
         .get(
-          `${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}&all&is_active=True`
+          `${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}&is_active=True`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -102,7 +104,7 @@ const CourseView = () => {
     if (gradeIds.length !== 0 && tabMenuval === 2) {
       axiosInstance
         .get(
-          `${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}&all&is_active=False`
+          `${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}&is_active=False`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -122,7 +124,7 @@ const CourseView = () => {
     if (gradeIds.length === 0) {
       setAlert('warning', 'Select Grade');
     }
-  };
+  }
 
   const handleClearFilter = () => {
     setSendGrade([]);
@@ -173,7 +175,7 @@ const CourseView = () => {
           />
         </div>
         <Paper className={classes.root}>
-          {courseData?.length > 0 ? (
+          {courseData && courseData.length > 0 ? (
             <Grid
               container
               style={

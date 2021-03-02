@@ -77,7 +77,9 @@ const ViewMoreCard = ({
           <div className='viewMoreHeader'>
             <div className='leftHeader'>
               <div className='headerTitle'>{periodDataForView?.course_name}</div>
-              <div className='headerContent'> Level - {periodDataForView?.level}</div>
+              <div className='headerContent'> Level - {' '}
+                {periodDataForView?.level === 'Low' ? 'Beginner' : periodDataForView?.level === 'High'? 'Advance' : 'Intermediate'}
+              </div>
             </div>
             <div className='rightHeader'>
               <div className='headerTitle closeIcon'>
@@ -120,6 +122,16 @@ const ViewMoreCard = ({
             <div className='scrollableContent'>
               <div className='bodyContent'>
                 <div>{periodDataForView?.learn}</div>
+              </div>
+            </div>
+          </div>
+          <div className='viewMoreBody'>
+            <div className='bodyTitle'>
+              <div>Prerequisites</div>
+            </div>
+            <div className='scrollableContent'>
+              <div className='bodyContent'>
+                <div>{periodDataForView?.pre_requirement}</div>
               </div>
             </div>
           </div>
@@ -186,7 +198,7 @@ const ViewMoreCard = ({
             <Button className='courseButton' onClick={handleViewCard}>
               View Period Details
             </Button>
-            {window.location.host === 'localhost:3002' && (
+            {window.location.host !== endpoints.aolConfirmURL && (
               <Button className='courseButton' onClick={handleEditCoursePrice}>
                 Edit Course Price
               </Button>

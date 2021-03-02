@@ -313,7 +313,7 @@ const Subjectgrade = (props) => {
             <Layout>
                 <div className="mapping-grade-subject-breadcrum">
                     <div className='mapping-message_log_breadcrumb_wrapper' style={{ backgroundColor: '#F9F9F9' }}>
-                        <CommonBreadcrumbs componentName='Mapping-Subject-Grade' />
+                        <CommonBreadcrumbs componentName='Master Management' childComponentName='Lesson Plan Mapping' childComponentNameNext='Assign Mapping'/>
                     </div>
                 </div>
                 <div className="mapping-grade-subject-dropdown-container">
