@@ -299,8 +299,6 @@ const ViewCourseCard = ({ index, cData, setData }) => {
                   </div>
 
             </div>
-            
-
           ))}
         </Grid>
         <Button className='periodBackButton2' onClick={handleBack}>

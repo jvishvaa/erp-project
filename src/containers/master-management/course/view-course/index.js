@@ -30,6 +30,7 @@ import CourseCard from './course-card';
 import ViewMoreCard from './view-more-card';
 import Context from './context/ViewStore';
 import TabPanel from './course-tab';
+import { useCallback } from 'react';
 
 const CourseView = () => {
   const themeContext = useTheme();
@@ -122,7 +123,7 @@ const CourseView = () => {
     if (gradeIds.length === 0) {
       setAlert('warning', 'Select Grade');
     }
-  };
+  }
 
   const handleClearFilter = () => {
     setSendGrade([]);
@@ -173,7 +174,7 @@ const CourseView = () => {
           />
         </div>
         <Paper className={classes.root}>
-          {courseData?.length > 0 ? (
+          {courseData && courseData.length > 0 ? (
             <Grid
               container
               style={

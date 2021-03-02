@@ -124,6 +124,7 @@ const Subjectcard = (props) => {
                                         </Box> */}
                                     </Grid>
 
+                                    {/*
                                     <Grid item xs={6} className={classes.textRight}>
                                         <Button
                                             variant='contained'
@@ -136,10 +137,9 @@ const Subjectcard = (props) => {
                                             VIEW MORE
                                      </Button>
                                     </Grid>
+                                    */}
                                 </Grid>
                             </Paper>
-
-
                         )
                     })
                 }
