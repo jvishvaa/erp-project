@@ -63,7 +63,7 @@ class CustomizedAdmissionFormAcc extends Component {
         this.props.alert.warning('Admission Already Completed With # ' + this.props.studentDetailsForAdmission.admission_number)
       } else if (this.props.studentDetailsForAdmission && this.props.studentDetailsForAdmission.admission_status === false) {
         this.props.history.push({
-          pathname: '/finance/NonRTEFormAcc',
+          pathname: '/finance/accountant/NonRTEFormAcc',
           regNo: this.state.regNo || this.state.regId
         })
       }

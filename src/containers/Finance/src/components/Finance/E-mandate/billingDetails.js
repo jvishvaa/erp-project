@@ -52,7 +52,7 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
   // }
   useEffect(() => {
     console.log("New alert: ", setAlert)
-    setAlert('error', 'helloo world!')
+    // setAlert('error', 'helloo world!')
     let role = ''
     // role = JSON.parse(localStorage.getItem('userDetails')).user_role
     role = JSON.parse(localStorage.getItem('userDetails')).role_details.user_role
