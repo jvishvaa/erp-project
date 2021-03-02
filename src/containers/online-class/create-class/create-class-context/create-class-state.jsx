@@ -129,7 +129,7 @@ const CreateclassProvider = (props) => {
     dispatch(request(LIST_GRADE_REQUEST));
     try {
       const { data } = await axiosInstance.get(
-        `${endpoints.academics.grades}?branch_id=${branch.join(
+        `${endpoints.masterManagement.gradesDrop}?branch_id=${branch.join(
           ','
         )}&module_id=${moduleId}`
       );

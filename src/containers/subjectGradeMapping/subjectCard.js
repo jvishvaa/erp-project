@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import { Button, IconButton } from '@material-ui/core';
+import { Button, IconButton, withStyles, Popover } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 // import { makeStyles } from '@material-ui/core/styles';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
@@ -17,6 +17,25 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import './subjectgrademapping.scss';
 
 
+const StyledButton = withStyles({
+    root: {
+        color: '#FFFFFF',
+        backgroundColor: '#FF6B6B',
+        '&:hover': {
+            backgroundColor: '#FF6B6B',
+        },
+    }
+})(Button);
+    
+const CancelButton = withStyles({
+    root: {
+        color: '#8C8C8C',
+        backgroundColor: '#e0e0e0',
+        '&:hover': {
+            backgroundColor: '#e0e0e0',
+        },
+    }
+})(Button);
 
 const Subjectcard = (props) => {
     const classes = useStyles();
@@ -24,7 +43,7 @@ const Subjectcard = (props) => {
     const [viewMoreList, setViewMoreList] = React.useState([]);
     const { setAlert } = useContext(AlertNotificationContext);
 
-    const { schoolGsMapping, updateDeletData } = props;
+    const { schoolGsMapping, updateDeletData, setFilters } = props;
 
     const handleViewMore = (view) => {
         setIsSubjectOpen(true);
@@ -34,19 +53,41 @@ const Subjectcard = (props) => {
 
 
     const callDelete = (id, index) => {
-        axiosInstance.delete(`${endpoints.mappingStudentGrade.delete}/${id}/delete-mapping-details/`).then(res => {
+        axiosInstance.delete(`${endpoints.mappingStudentGrade.delete}/${id}/delete-mapping-details/`)
+        .then(res => {
             updateDeletData(schoolGsMapping, index)
-            setAlert('success', res.data.message);
+            setAlert('success', 'Successfully Deleted');
+            handleClose();
         }).catch(err => {
             console.log(err)
         })
 
     }
+
+    // Conform Popover 
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
+
     return (
         <>
             <Grid item xs={10} style={{ display: 'flex', flexWrap: 'wrap', marginTop: 20 }}>
+                {setFilters && schoolGsMapping.length === 0 && (
+                    <div style={{ margin: 'auto'}}>
+                        <Typography>NO DATA FOUND</Typography>
+                    </div>
+                )}
                 {
-                    schoolGsMapping.map((list, index) => {
+                    schoolGsMapping && schoolGsMapping.length > 0 && schoolGsMapping.map((list, index) => {
                         return (
                             <Paper className={classes.root}>
                                 <Grid container spacing={2} style={{ width: 310 }}>
@@ -112,6 +153,28 @@ const Subjectcard = (props) => {
                                                 {list.central_grade_name}
                                             </Typography> */}
                                         </Box>
+                                        <Popover
+                                            id={id}
+                                            open={open}
+                                            anchorEl={anchorEl}
+                                            onClose={handleClose}
+                                            anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'center',
+                                            }}
+                                            transformOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'center',
+                                            }}
+                                        >
+                                            <div style={{ padding: '20px 30px'}}>
+                                            <Typography style={{ fontSize: '20px', marginBottom: '15px'}}>Are you sure to Delete?</Typography>
+                                            <div>
+                                                <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
+                                                <StyledButton onClick={() => callDelete(list.id, index)} style={{float: 'right'}}>Conform</StyledButton>
+                                            </div>
+                                            </div>
+                                        </Popover>
                                         {/* <Box>
                                             <Typography
                                                 className={classes.content}
@@ -142,6 +205,7 @@ const Subjectcard = (props) => {
                             </Paper>
                         )
                     })
+
                 }
             </Grid>
 
@@ -150,10 +214,6 @@ const Subjectcard = (props) => {
             }
 
         </>
-
-
-
-
     )
 }
 

@@ -822,7 +822,7 @@ const CreateClassForm = (props) => {
                 }}
                 id='create__class-grade'
                 options={grades}
-                getOptionLabel={(option) => option?.grade__grade_name}
+                getOptionLabel={(option) => option?.grade_name}
                 filterSelectedOptions
                 value={selectedGrades}
                 renderInput={(params) => (

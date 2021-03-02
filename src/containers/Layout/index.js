@@ -288,6 +288,9 @@ const Layout = ({ children, history }) => {
     </Menu>
   );
 
+
+  
+
   const handleRouting = (name) => {
     switch (name) {
       case 'Take Class': {
@@ -295,7 +298,12 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'View Class': {
-        history.push('/online-class/view-class');
+        if(window.location.host===endpoints?.aolConfirmURL){
+          history.push('/online-class/view-class');
+        }
+        else{
+          history.push('/erp-online-class');
+        }
         break;
       }
       case 'Resources': {
@@ -303,11 +311,23 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Attend Online Class': {
-        history.push('/online-class/attend-class');
+        if(window.location.host===endpoints?.aolConfirmURL){
+          history.push('/online-class/attend-class');
+        }else{
+          history.push('/erp-online-class-student-view');
+        }
         break;
       }
       case 'Teacher View Class': {
+       if(window.location.host===endpoints?.aolConfirmURL){
         history.push('/online-class/teacher-view-class');
+       }else{
+        history.push('/erp-online-class-teacher-view');
+       }
+        break;
+      }
+      case 'Create Class': {
+        history.push('/online-class/create-class');
         break;
       }
       case 'Create Class': {

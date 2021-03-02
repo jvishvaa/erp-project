@@ -157,20 +157,22 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
         </ListItemIcon>
         <ListItemText className='menu-item-text'>Role management</ListItemText>
       </ListItem>
-      <ListItem
-        button
-        className={
-          history.location.pathname === '/discussion-forum' ? 'menu_selection' : null
-        }
-        onClick={() => {
-          onClickMenuItem('discussion-forum');
-        }}
-      >
-        <ListItemIcon className={classes.menuItemIcon}>
-          <AssignmentIndIcon />
-        </ListItemIcon>
-        <ListItemText className='menu-item-text'>Discussion Forum</ListItemText>
-      </ListItem>
+      {/*
+        <ListItem
+          button
+          className={
+            history.location.pathname === '/discussion-forum' ? 'menu_selection' : null
+          }
+          onClick={() => {
+            onClickMenuItem('discussion-forum');
+          }}
+        >
+          <ListItemIcon className={classes.menuItemIcon}>
+            <AssignmentIndIcon />
+          </ListItemIcon>
+          <ListItemText className='menu-item-text'>Discussion Forum</ListItemText>
+        </ListItem>
+      */}
 
       <ListItem
         button
@@ -245,7 +247,7 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
           <ListItem
             button
             className={
-              history.location.pathname === '/master-management/subject-table'
+              history.location.pathname === '/master-management/grade-table'
                 ? 'menu_selection'
                 : null
             }
@@ -299,7 +301,7 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
           <ListItem
             button
             className={
-              history.location.pathname === '/master-management/grade-table'
+              history.location.pathname === '/master-management/subject-table'
                 ? 'menu_selection'
                 : null
             }
