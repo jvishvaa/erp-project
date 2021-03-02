@@ -58,7 +58,7 @@ const CreateclassProvider = (props) => {
     filteredStudents: [],
     errorLoadingStudents: '',
     loadingStudents: false,
-    isTutorEmailValid: null,
+    isTutorEmailValid: false,
     isValidatingTutorEmail: null,
     creatingOnlineClass: false,
     isCreated: false,

@@ -48,103 +48,100 @@ const CourseView = () => {
   const [deleteFlag, setDeleteFlag] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(1);
-  const [pageFlag,setPageFlag]= useState(false)
+  const [pageFlag, setPageFlag] = useState(false);
   const [tabValue, setTabValue] = useState(0);
   const limit = 9;
-  const [tabVal,setTabVal] = useState('')
-
-
-  //context Data
-  //   const [state,setState] = useContext(Context)
+  const [tabVal, setTabVal] = useState('');
 
   const [courseData, setCourseData] = useState([]);
 
-  const handleCourseList = (gradeIds,tabMenuval) => {
-    console.log(tabMenuval,'+++++++++++',gradeIds)
-    setTabVal(tabMenuval)
+  const handleCourseList = (gradeIds, tabMenuval) => {
+    setTabVal(tabMenuval);
     setLoading(true);
     setSendGrade(gradeIds);
-    const tag_val = [16, 20];
-    if(gradeIds.length !== 0 && (tabMenuval === 0 || tabMenuval == undefined)){
+    if (gradeIds.length !== 0 && (tabMenuval === 0 || tabMenuval == undefined)) {
       axiosInstance
-      .get(`${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}&all=chacha`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setTotalCount(result.data.count);
+        .get(
+          `${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}&all=chacha`
+        )
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setTotalCount(result.data.count);
+            setLoading(false);
+            setCourseData(result.data.result);
+          } else {
+            setLoading(false);
+            setAlert('error', result.data.description);
+          }
+        })
+        .catch((error) => {
           setLoading(false);
-          setCourseData(result.data.result);
-          // setState({...state,editData:result.data.result})
-          // setViewMore(false);
-          // setViewMoreData({});
-        } else {
-          setLoading(false);
-          setAlert('error', result.data.description);
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', error.message);
-      });
+          setAlert('error', error.message);
+        });
     }
-    if(gradeIds.length !== 0 && tabMenuval === 1){
+    if (gradeIds.length !== 0 && tabMenuval === 1) {
       axiosInstance
-      .get(`${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}&all&is_active=True`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setTotalCount(result.data.count);
+        .get(
+          `${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}&all&is_active=True`
+        )
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setTotalCount(result.data.count);
+            setLoading(false);
+            setCourseData(result.data.result);
+          } else {
+            setLoading(false);
+            setAlert('error', result.data.description);
+          }
+        })
+        .catch((error) => {
           setLoading(false);
-          setCourseData(result.data.result);
-        } else {
-          setLoading(false);
-          setAlert('error', result.data.description);
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', error.message);
-      });
+          setAlert('error', error.message);
+        });
     }
-    if(gradeIds.length !== 0 && tabMenuval === 2){
+    if (gradeIds.length !== 0 && tabMenuval === 2) {
       axiosInstance
-      .get(`${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}&all&is_active=False`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setTotalCount(result.data.count);
+        .get(
+          `${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}&all&is_active=False`
+        )
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setTotalCount(result.data.count);
+            setLoading(false);
+            setCourseData(result.data.result);
+          } else {
+            setLoading(false);
+            setAlert('error', result.data.description);
+          }
+        })
+        .catch((error) => {
           setLoading(false);
-          setCourseData(result.data.result);
-        } else {
-          setLoading(false);
-          setAlert('error', result.data.description);
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', error.message);
-      });
+          setAlert('error', error.message);
+        });
     }
-    if(gradeIds.length === 0){
+    if (gradeIds.length === 0) {
       setAlert('warning', 'Select Grade');
     }
   };
 
   const handleClearFilter = () => {
     setSendGrade([]);
-  }
+  };
 
   const handlePagination = (event, page) => {
     setPage(page);
-    setPageFlag(true)
+    setPageFlag(true);
   };
   useEffect(() => {
     if (deleteFlag) {
-      handleCourseList(sendGrade,tabVal);
+      handleCourseList(sendGrade, tabVal);
     }
   }, [deleteFlag]);
   useEffect(() => {
-    if(pageFlag === true && page){
+    if (pageFlag === true && page) {
       handleCourseList(sendGrade, tabVal);
     }
-  }, [page])
+  }, [page]);
 
   return (
     <>
@@ -160,7 +157,7 @@ const CourseView = () => {
           </div>
         </div>
         <div>
-          <CourseFilter 
+          <CourseFilter
             handleCourseList={handleCourseList}
             handleClearFilter={handleClearFilter}
             setCourseData={setCourseData}
@@ -261,11 +258,11 @@ const CourseView = () => {
           {courseData?.length > 0 && (
             <div className='paginateData paginateMobileMargin'>
               <Pagination
-              onChange={handlePagination}
-              style={{ marginTop: 25 }}
-              count={Math.ceil(totalCount / limit)}
-              color='primary'
-              page={page}
+                onChange={handlePagination}
+                style={{ marginTop: 25 }}
+                count={Math.ceil(totalCount / limit)}
+                color='primary'
+                page={page}
               />
             </div>
           )}

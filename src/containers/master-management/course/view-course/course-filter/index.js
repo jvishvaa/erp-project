@@ -12,7 +12,12 @@ import { AlertNotificationContext } from '../../../../../context-api/alert-conte
 import Divider from '@material-ui/core/Divider';
 import '../../create-course/style.css';
 
-const CourseFilter = ({ handleCourseList, setCourseData ,setPageFlag, handleClearFilter}) => {
+const CourseFilter = ({
+  handleCourseList,
+  setCourseData,
+  setPageFlag,
+  handleClearFilter,
+}) => {
   const themeContext = useTheme();
   const { gradeKey } = useParams();
   const history = useHistory();
@@ -24,16 +29,16 @@ const CourseFilter = ({ handleCourseList, setCourseData ,setPageFlag, handleClea
   const [gradeIds, setGradeIds] = useState([]);
 
   const [filterData, setFilterData] = useState({
-    branch: '',
+    // branch: '',
     grade: [],
   });
 
-  const branchDrop = [{ branch_name: 'AOL' }];
+  // const branchDrop = [{ branch_name: 'AOL' }];
 
   const handleClear = () => {
     setFilterData({
       grade: [],
-      branch: '',
+      // branch: '',
     });
     setGradeIds([]);
     setCourseData([]);
@@ -45,32 +50,49 @@ const CourseFilter = ({ handleCourseList, setCourseData ,setPageFlag, handleClea
     handleCourseList(gradeIds);
   };
 
-  const handleBranch = (event, value) => {
-    setFilterData({ ...filterData, branch: '' });
-    if (value) {
-      setFilterData({
-        ...filterData,
-        branch: value,
-      });
-      axiosInstance
-        .get(`${endpoints.communication.grades}?branch_id=${5}&module_id=8`)
-        .then((result) => {
-          if (result.data.status_code === 200) {
-            setGradeDropdown(result?.data?.data);
-          } else {
-            setAlert('error', result?.data?.message);
-            setGradeDropdown([]);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error.message);
+  useEffect(() => {
+    axiosInstance
+      .get(`${endpoints.communication.grades}?branch_id=${5}&module_id=8`)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setGradeDropdown(result?.data?.data);
+        } else {
+          setAlert('error', result?.data?.message);
           setGradeDropdown([]);
-        });
-    } else {
-      setGradeDropdown([]);
-    }
-  };
-/*
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+        setGradeDropdown([]);
+      });
+  }, []);
+
+  // const handleBranch = (event, value) => {
+  //   setFilterData({ ...filterData, branch: '' });
+  //   if (value) {
+  //     setFilterData({
+  //       ...filterData,
+  //       branch: value,
+  //     });
+  //     axiosInstance
+  //       .get(`${endpoints.communication.grades}?branch_id=${5}&module_id=8`)
+  //       .then((result) => {
+  //         if (result.data.status_code === 200) {
+  //           setGradeDropdown(result?.data?.data);
+  //         } else {
+  //           setAlert('error', result?.data?.message);
+  //           setGradeDropdown([]);
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         setAlert('error', error.message);
+  //         setGradeDropdown([]);
+  //       });
+  //   } else {
+  //     setGradeDropdown([]);
+  //   }
+  // };
+  
   useEffect(() => {
     if (gradeKey) {
       axiosInstance
@@ -84,7 +106,6 @@ const CourseFilter = ({ handleCourseList, setCourseData ,setPageFlag, handleClea
             if (gradeKey>0) {
               setFilterData({
                 grade: gradeObj,
-                branch: { branch_name: 'AOL' },
               });
               setGradeIds(gradeKey);
               handleCourseList(gradeKey);
@@ -100,7 +121,7 @@ const CourseFilter = ({ handleCourseList, setCourseData ,setPageFlag, handleClea
         });
     }
   }, [gradeKey]);
-*/
+
   const handleGrade = (event, value) => {
     setFilterData({ ...filterData, grade: '' });
     if (value) {
@@ -119,7 +140,7 @@ const CourseFilter = ({ handleCourseList, setCourseData ,setPageFlag, handleClea
         spacing={isMobile ? 3 : 5}
         style={{ width: widerWidth, margin: wider }}
       >
-        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
             style={{ width: '100%' }}
             size='small'
@@ -139,7 +160,7 @@ const CourseFilter = ({ handleCourseList, setCourseData ,setPageFlag, handleClea
               />
             )}
           />
-        </Grid>
+        </Grid> */}
         <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
             style={{ width: '100%' }}

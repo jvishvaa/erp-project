@@ -130,12 +130,12 @@ const CourseCard = ({
   // };
   const handleStatus=(e,index)=>{
     if(tabVal== 1){
-      axiosInstance.put(`${endpoints.onlineCourses.updateCourseStatus}${e.id}/update-course/`,{
+      axiosInstance.put(`${endpoints.onlineCourses.updateCourse}${e.id}/update-course/`,{
         "is_active":0
       }).then(result=>{
         if(result.data.status_code === 200){
           setAlert('success',result.data.message)
-          handleCourseList(sendGrade);
+          handleCourseList(sendGrade,tabVal);
         }
         else{
           setAlert('error','Not Updated, Try After Few Mins.')
@@ -143,12 +143,12 @@ const CourseCard = ({
       })
     }
     if(tabVal == 2){
-      axiosInstance.put(`${endpoints.onlineCourses.updateCourseStatus}${e.id}/update-course/`,{
+      axiosInstance.put(`${endpoints.onlineCourses.updateCourse}${e.id}/update-course/`,{
         "is_active":1
       }).then(result=>{
         if(result.data.status_code === 200){
           setAlert('success',result.data.message)
-          handleCourseList(sendGrade);
+          handleCourseList(sendGrade,tabVal);
         }
         else{
           setAlert('error','Not Updated, Try After Few Mins.')
@@ -224,9 +224,6 @@ const CourseCard = ({
                      {/* {tabVal ==0 || tabVal == undefined ? 'Active' : '' } */}
                      {tabVal == 1  ? 'Inactive' : '' }
                      {tabVal == 2  ? 'Active' : '' }
-                    </div>
-                    <div>
-                    {/* {tabVal ==0 || tabVal == undefined ? 'Inactive' : '' } */}
                     </div>
                   </span>
                   <Popover

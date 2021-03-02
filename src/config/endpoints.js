@@ -153,7 +153,7 @@ export default {
     cancelClass: 'erp_user/cancel-online-class/',
     createCoursePrice: '/aol/course-details/',
     updateCoursePrice: '/aol/course_details_update/',
-    updateTeacher:'/aol/update-batch-teacher/',
+    updateTeacher: '/aol/update-batch-teacher/',
   },
 
   attendanceList: {
@@ -246,4 +246,6 @@ export default {
   },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
+  // aolConfirmURL: 'revamp.aol.letseduvate.com',
+  aolConfirmURL:'localhost:3001',
 };

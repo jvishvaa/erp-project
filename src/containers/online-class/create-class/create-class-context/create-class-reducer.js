@@ -155,7 +155,7 @@ const createClassReducer = (state, action) => {
     case CLEAR_SECTION_DROP:
       return {
         ...state,
-        sections: [],
+        section: [],
       };
     case CLEAR_COURSE_DROP:
       return {
