@@ -554,7 +554,7 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
                  <TableCell>{val.customer_id ? val.customer_id : ''}</TableCell>
                  <TableCell>{ val.razorpay_order_id ? val.razorpay_order_id : ''}</TableCell>
                  <TableCell>{val.is_authentication_payment_done ? <span style={{ color: 'green', fontWeight: 'bold' }}>Done</span> : <span style={{ color: 'red', fontWeight: 'bold' }}>Not Done</span>}</TableCell>
-                 <TableCell>{val.is_authentication_payment_done ? <span style={{ color: 'green', fontWeight: 'bold' }}>Already Done </span> : (role === 'BTM_Admin Venky' || role === 'F_acc') ? <Button variant='contained' color='primary' onClick={() => paymentHandler(val.customer_id, val.razorpay_order_id)} style={{ marginTop: '-5px', marginLeft: '-10px' }}>{(role !== 'BTM_Admin Venky' || role !== 'F_acc') ? 'Create Link' : 'pay first payment'}</Button> : ''}</TableCell>
+                 <TableCell>{val.is_authentication_payment_done ? <span style={{ color: 'green', fontWeight: 'bold' }}>Already Done </span> : (role === 'BTM_Admin Venky' || role === 'F_acc') ? <Button variant='contained' color='primary' onClick={() => paymentHandler(val.customer_id, val.razorpay_order_id)} style={{ marginTop: '-5px', marginLeft: '-10px' }}>{(role === 'BTM_Admin Venky' || role === 'F_acc') ? 'pay first payment' : 'Create Link' }</Button> : ''}</TableCell>
              </TableRow>
                )
              })}
