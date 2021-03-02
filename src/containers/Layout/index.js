@@ -612,6 +612,10 @@ const Layout = ({ children, history }) => {
                 history.push('/finance/E-Mandate/BillingDetails')
                   break;
                 }
+                case 'Generate Subsequent Payment': {
+                  history.push('/finance/E-Mandate/GenerateSubsequentPayment')
+                    break;
+                  }
                 case 'Add Branch': {
                   history.push('/finance/E-Mandate/AddBranch')
                     break;

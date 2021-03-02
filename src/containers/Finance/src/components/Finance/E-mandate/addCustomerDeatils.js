@@ -142,7 +142,7 @@ const CustomerDeatils = ({ setCustomerDetails, user, alert, fetchBranches, domai
   let customerDetModal = null
   if (showModal) {
     customerDetModal = (
-      <Modal open={showModal} onClose={hideDetailsModal} large>
+      <Modal open={showModal} click={hideDetailsModal} large>
         <React.Fragment>
         <h3 style={{ textAlign: 'center' }}>Add Customer Details</h3>
         <hr />

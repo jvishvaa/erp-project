@@ -31,7 +31,7 @@ import MessageTypeTable from './containers/master-management/message-type/messag
 import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
 import HomeworkCard from './containers/homework/homework-card';
 import Profile from './containers/profile/profile';
-import { createFeePlan, fetchLoggedInUserDetails, getOrderDetails, totalBillingDetails } from './redux/actions';
+import { fetchLoggedInUserDetails } from './redux/actions';
 import TeacherHomework from './containers/homework/teacher-homework';
 import HomeworkAdmin from './containers/homework/homework-admin';
 import AddHomework from './containers/homework/teacher-homework/add-homework';
@@ -146,6 +146,7 @@ import EMandate from './containers/Finance/src/components/Finance/E-mandate/e-ma
 import CreateLink from './containers/Finance/src/components/Finance/E-mandate/createLink.js'
 import NonRTEFormAcc from './containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/nonRTEAdmissionForm.js'
 import AssignOtherFees from './containers/Finance/src/components/Finance/BranchAccountant/OtherFees/assignOtherFess.js'
+import GenerateSubsequentPayment from './containers/Finance/src/components/Finance/E-mandate/generateSubsequentPayment.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -530,6 +531,9 @@ function App() {
                 </Route>
                 <Route exact path= '/finance/E-Mandate/BillingDetails'>
                   {({ match }) => <BillingDetails match={match} />}
+                </Route>
+                <Route exact path= '/finance/E-Mandate/GenerateSubsequentPayment'>
+                  {({ match }) => <GenerateSubsequentPayment match={match} />}
                 </Route>
                 <Route exact path= '/finance/E-Mandate/AddBranch'>
                   {({ match }) => <EMandate match={match} />}
