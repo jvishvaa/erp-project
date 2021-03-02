@@ -291,6 +291,33 @@ console.log(selectedClassType,selectedBranch,selectedGrade,selectedSection,selec
             </Grid>
           </Grid>
           <Grid item md={12} xs={12} className='teacherBatchViewFilter'>
+            {window.location.pathname === '/erp-online-class-student-view' ? (
+              <Grid container spacing={2} style={{ marginTop: '10px' }}>
+              <Grid item md={3} xs={12}>
+               <Autocomplete
+                 style={{ width: '100%' }}
+                 size='small'
+                 onChange={(event, value) => {
+                   setSelectedClassType(value)
+                 }}
+                 id='branch_id'
+                 className='dropdownIcon'
+                 value={selectedClassType}
+                 options={classTypes}
+                 getOptionLabel={(option) => option?.type}
+                 filterSelectedOptions
+                 renderInput={(params) => (
+                   <TextField
+                     {...params}
+                     variant='outlined'
+                     label='Class Type'
+                     placeholder='Class Type'
+                   />
+                 )}
+               />
+             </Grid>
+             </Grid>
+            ) : (
               <Grid container spacing={2} style={{ marginTop: '10px' }}>
                  <Grid item md={3} xs={12}>
                   <Autocomplete
@@ -315,7 +342,6 @@ console.log(selectedClassType,selectedBranch,selectedGrade,selectedSection,selec
                     )}
                   />
                 </Grid>
-                {window.location.pathname !== '/erp-online-class-student-view' && (
                  <Grid container spacing={2} style={{ marginTop: '10px' }}>
                 <Grid item md={3} xs={12}>
                   <Autocomplete
@@ -510,8 +536,9 @@ console.log(selectedClassType,selectedBranch,selectedGrade,selectedSection,selec
                   </LocalizationProvider>
                 </Grid>
                 </Grid>
-                )}
               </Grid>
+            )}
+              
             
             {window.location.pathname !== '/erp-online-class-student-view' && (
               <Grid container spacing={2} style={{ marginTop: '5px' }}>
