@@ -209,8 +209,8 @@ const CreateCourse = () => {
     // ].map(Boolean).includes(false))
 
     // if(isValid)
-    const isAol = aolHostURL === 'localhost:3002';
-    if (isAol) {
+
+    if (aolHostURL !== endpoints.aolConfirmURL) {
       if (
         filePath?.length === 1 &&
         Boolean(thumbnailImage) &&
@@ -347,7 +347,7 @@ const CreateCourse = () => {
   };
 
   useEffect(() => {
-    if (aolHostURL === 'localhost:3003') {
+    if (aolHostURL === endpoints.aolConfirmURL) {
       setGradeDropdown([]);
       axiosInstance
         .get(`${endpoints.academics.grades}?branch_id=5`)
@@ -447,7 +447,7 @@ const CreateCourse = () => {
   };
 
   const handleSubmit = () => {
-    const isAol = aolHostURL === 'localhost:3002';
+    const isAol = aolHostURL === endpoints.aolConfirmURL;
     axiosInstance
       .post(`${endpoints.onlineCourses.createCourse}`, {
         course_name: title,
@@ -460,7 +460,7 @@ const CreateCourse = () => {
         files: filePath,
         thumbnail: [thumbnailImage],
         period_data: data,
-        tag_id: isAol ? `${filterData.age.id},${filterData.subject.id}` : '',
+        tag_id: isAol ? '' : `${filterData.age.id},${filterData.subject.id}`,
       })
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -502,7 +502,7 @@ const CreateCourse = () => {
   };
 
   const handleEdit = () => {
-    const isAol= aolHostURL==='localhost:3002';
+    const isAol = aolHostURL !== endpoints.aolConfirmURL;
     axiosInstance
       .put(`${endpoints.onlineCourses.updateCourse}${courseKey}/update-course/`, {
         course_name: title,
@@ -573,7 +573,7 @@ const CreateCourse = () => {
   };
 
   useEffect(() => {
-    if (aolHostURL === 'localhost:3002') {
+    if (aolHostURL !== endpoints.aolConfirmURL) {
       axiosInstance
         .get(`${endpoints.communication.branches}`)
         .then((result) => {
@@ -655,7 +655,7 @@ const CreateCourse = () => {
                   )}
                 />
               </Grid>
-              {aolHostURL === 'localhost:3002' && (
+              {aolHostURL !== endpoints.aolConfirmURL && (
                 <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
                   <Autocomplete
                     style={{ width: '100%' }}
@@ -678,7 +678,7 @@ const CreateCourse = () => {
                   />
                 </Grid>
               )}
-              {aolHostURL === 'localhost:3002' && (
+              {aolHostURL !== endpoints.aolConfirmURL && (
                 <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
                   <Autocomplete
                     style={{ width: '100%' }}
@@ -722,7 +722,7 @@ const CreateCourse = () => {
                   )}
                 />
               </Grid>
-              {aolHostURL === 'localhost:3002' && (
+              {aolHostURL !== endpoints.aolConfirmURL && (
                 <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
                   <Autocomplete
                     style={{ width: '100%' }}
@@ -745,7 +745,7 @@ const CreateCourse = () => {
                   />
                 </Grid>
               )}
-              {aolHostURL === 'localhost:3002' && (
+              {aolHostURL !== endpoints.aolConfirmURL && (
                 <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
                   <Autocomplete
                     style={{ width: '100%' }}

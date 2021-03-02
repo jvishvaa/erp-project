@@ -204,7 +204,6 @@ const CreateClassForm = (props) => {
     setSelectedGrades([]);
     setSelectedSections([]);
     setSelectedSubject([]);
-    dispatch(clearGrades());
     dispatch(clearSections());
     dispatch(clearSubjects());
     dispatch(clearCourses());
@@ -213,6 +212,8 @@ const CreateClassForm = (props) => {
       setSelectedBranches(value);
       dispatch(listGradesCreateClass(ids, moduleId));
       setOnlineClass((prevState) => ({ ...prevState, branchIds: ids }));
+    } else {
+      dispatch(clearGrades());
     }
   };
 
@@ -519,7 +520,7 @@ const CreateClassForm = (props) => {
     if (selectedClassType?.id === 0) {
       const arr = [];
       arr.push(days);
-      request['week_days'] = arr.map((ob) => ob);
+      request['week_days'] = arr[0];
     } else {
       if (!Array.isArray(days)) request['week_days'] = [days];
       else request['week_days'] = days.map((ob) => ob);
@@ -732,7 +733,7 @@ const CreateClassForm = (props) => {
     !onlineClass.selectedTime ||
     !onlineClass.tutorEmail ||
     creatingOnlineClass ||
-    tutorNotAvailableMsg!=='';
+    tutorNotAvailableMsg !== '';
 
   useEffect(() => {
     setOnlineClass((prevState) => ({ ...prevState, selectedTime: new Date() }));
