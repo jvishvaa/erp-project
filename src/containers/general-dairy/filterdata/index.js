@@ -45,6 +45,7 @@ const GeneralDairyFilter = ({
   handleDairyList,
   setPeriodData,
   isTeacher,
+  showSubjectDropDown,
   // setCurrentTab,
   setViewMore,
   setViewMoreData,
@@ -94,6 +95,8 @@ const [sectionIds,setSectionIds] = useState([])
   const [datePopperOpen, setDatePopperOpen] = useState(false);
 
   const [teacherModuleId, setTeacherModuleId] = useState(null);
+  const [subjectDropdown, setSubjectDropdown] = useState([]);
+
   const history=useHistory()
 
   const [filterData, setFilterData] = useState({
@@ -206,8 +209,12 @@ const [sectionIds,setSectionIds] = useState([])
 };
 
   const handleFilter = () => {
+    debugger
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
     // alert(filterData.grade.grade_id,sectionIds,startDateTechPer,endDateTechPer)
+    if (!filterData){
+      setAlert('error','Select filters')
+    }
     handleDairyList(
       filterData.branch.id,
       filterData.grade.grade_id,
@@ -217,6 +224,10 @@ const [sectionIds,setSectionIds] = useState([])
       activeTab
     );
   };
+
+  const handleSubject = (event, value) => {
+    setFilterData({ ...filterData, subject: '', chapter: '' });
+  }
 
     useEffect(() => {
         axiosInstance.get(`${endpoints.communication.branches}`)
@@ -302,6 +313,29 @@ const [sectionIds,setSectionIds] = useState([])
             )}
           />
         </Grid>
+      )}
+      { showSubjectDropDown && (
+        <Grid item xs={12} sm={4} className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+        <Autocomplete
+            style={{ width: '100%' }}
+            size='small'
+            onChange={handleSubject}
+            id='subject'
+            className="dropdownIcon"
+            value={filterData?.subject}
+            options={subjectDropdown}
+            getOptionLabel={(option) => option?.subject_name}
+            filterSelectedOptions
+            renderInput={(params) => (
+                <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Subject'
+                    placeholder='Subject'
+                />
+            )}
+        />
+    </Grid>
       )}
       <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <LocalizationProvider dateAdapter={MomentUtils}>

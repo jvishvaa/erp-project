@@ -168,6 +168,14 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
             >
               Created By - {lesson.created_by.first_name}
               </Typography>
+              <Typography
+              className={classes.title}
+              variant='p'
+              component='p'
+              color='secondary'
+            >
+              Created Onn - {lesson.created_at.substring(0, 10)}
+              </Typography>
           </Box>
           <Box>
           </Box>

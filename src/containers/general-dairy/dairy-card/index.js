@@ -157,6 +157,15 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
             >
               Created By - {lesson.created_by.first_name}
               </Typography>
+              <Typography
+              className={classes.title}
+              style={{fontSize: '15px'}}
+              variant='p'
+              component='p'
+              color='secondary'
+            >
+              Created On - {lesson.created_at.substring(0, 10)}
+              </Typography>
           </Box>
           <div>
             <IconButton style={{fontSize:'1rem',color:'#042955',marginLeft:'.5rem'}}>
