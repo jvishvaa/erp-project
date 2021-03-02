@@ -9,6 +9,7 @@ import endpoints from '../../../../config/endpoints';
 import Loader from '../../../../components/loader/loader';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 // import ResourceDialog from '../online-class/online-class-resources/resourceDialog';
+import ResourceDialog from '../../../online-class/online-class-resources/resourceDialog'
 
 const JoinClass = (props) => {
   const fullData = props.fullData;
@@ -339,7 +340,7 @@ const DetailCardView = ({ fullData, handleClose, viewMoreRef, selectedClassType 
   }
   const handleCoursePlan=()=>{
     if(window.location.pathname === '/erp-online-class-student-view'){
-      history.push(`/create/course/${fullData.online_class && fullData.online_class.cource_id}/${selectedGrade.id}`)
+      history.push(`/create/course/${fullData.online_class && fullData.online_class.course_id}/${selectedGrade.id}`)
     }else{
       history.push(`/create/course/${fullData.online_class && fullData.online_class.cource_id}/${selectedGrade.id}`)
     }
@@ -451,7 +452,7 @@ const DetailCardView = ({ fullData, handleClose, viewMoreRef, selectedClassType 
           </Card>
         </Grid>
       </Grid>
-      {/* <ResourceDialog
+      <ResourceDialog
         selectedValue={selectedValue}
         open={openPopup}
         onClose={handleClosePopup}
@@ -460,7 +461,7 @@ const DetailCardView = ({ fullData, handleClose, viewMoreRef, selectedClassType 
         onlineClassId={fullData.online_class.id}
         startDate={fullData.online_class.start_time}
         endDate={fullData.online_class.end_time}
-      /> */}
+      />
       {loading && <Loader />}
     </>
   );

@@ -120,7 +120,12 @@ const CreateCourse = () => {
     else setNextToggle((prev) => !prev);
   };
   const handleBackToCourseList = () => {
-    history.push(`/course-list/`);
+    if(window.location.host === endpoints?.aolConfirmURL){
+      history.push(`/course-list/`);
+    }else{
+      history.goBack();
+    }
+    
   };
 
   useEffect(() => {
