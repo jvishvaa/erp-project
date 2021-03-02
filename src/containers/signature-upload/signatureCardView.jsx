@@ -53,16 +53,22 @@ const ViewSignatureCards = ({ handleEdit, fullData, close }) => {
               <Grid item md={12} xs={12} className='signatureCardViewHeader'>
                 <Grid container spacing={2}>
                   <Grid item md={4} xs={12}>
-                    Name:&nbsp;
-                    {(fullData && fullData.author_id__name) || ''}
+                    <Typography style={{fontSize: '13px'}}>
+                      Name:&nbsp;
+                      {(fullData && fullData.author_id__name) || ''}
+                    </Typography>
                   </Grid>
                   <Grid item md={4} xs={12} className='signatureCardVideHeaderDivider'>
-                    ERP:&nbsp;
-                    {(fullData && fullData.author_id__erp_id) || ''}
+                    <Typography style={{fontSize: '13px'}}>
+                      ERP:&nbsp;
+                      {(fullData && fullData.author_id__erp_id) || ''}
+                    </Typography>
                   </Grid>
                   <Grid item md={4} xs={12}>
-                    Branch:&nbsp;
-                    {(fullData && fullData.author_id__branch_id__branch_name) || ''}
+                    <Typography style={{fontSize: '13px', marginTop: '2px'}}>
+                      Branch:&nbsp;
+                      {(fullData && fullData.author_id__branch_id__branch_name) || ''}
+                    </Typography>
                   </Grid>
                 </Grid>
               </Grid>

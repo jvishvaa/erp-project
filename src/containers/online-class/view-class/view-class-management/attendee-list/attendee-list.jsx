@@ -140,7 +140,7 @@ const AttendeeList = (props) => {
             startIcon={<ArrowBackIcon />}
             color='primary'
             size='small'
-            onClick={() => history.push('/online-class/view-class')}
+            onClick={() => history.push('/erp-online-class')}
           >
             Back
           </Button>

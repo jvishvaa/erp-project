@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Layout from '../Layout/index';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
@@ -9,6 +9,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import Subjectcard from './subjectCard';
+import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import './subjectgrademapping.scss';
 
 const StyledButton = withStyles({
@@ -23,18 +24,21 @@ const StyledButton = withStyles({
   })(Button);
 
 const ListandFilter = (props) => {
+    const { setAlert } = useContext(AlertNotificationContext);
     const [branch, setBranchRes] = useState([])
     const [gradeRes, setGradeRes] = useState([]);
     const [branchValue, setBranchValue] = useState(null);
     const [gradeValue, setGradeValue] = useState(null);
     const [schoolGsMapping, setSchoolGsMapping] = useState([]);
     const [error, setError] = useState(null);
+    const [filter, setFilter] = useState(false);
 
     const navigateToCreatePage = () => {
         props.history.push('/master-mgmt/subject/grade/mapping')
     }
 
     const handleClearAll = () => {
+        setFilter(false);
         setSchoolGsMapping([]);
         setGradeRes([]);
         setBranchValue(null);
@@ -83,6 +87,7 @@ const ListandFilter = (props) => {
 
     const handleFilter = () => {
         if(branchValue === null && gradeValue === null){
+            setAlert('warning', 'Select Grade');
             return false
         }else{
             let body = {
@@ -91,6 +96,7 @@ const ListandFilter = (props) => {
             }
             const valid = Validation(body);
             if(valid.isValid === true){
+                setFilter(true);
                 axiosInstance.get(`${endpoints.mappingStudentGrade.schoolGsMapping}?branch=${body.branch}&erp_grade=${body.erp_grade}`).then(res => {
                     setSchoolGsMapping(res.data.data.results)
                 }).catch(err => {
@@ -240,7 +246,7 @@ const ListandFilter = (props) => {
                 </div>
                 <div className="mapping-sub-grade-container">
                     <div className="mapping-grade-subject-container">
-                        <Subjectcard schoolGsMapping={schoolGsMapping} updateDeletData={updateDeletData} />
+                        <Subjectcard schoolGsMapping={schoolGsMapping} updateDeletData={updateDeletData} setFilters={filter}/>
                     </div>
                 </div>
             </Layout>
