@@ -394,7 +394,7 @@ const CreateClassForm = (props) => {
       days:
         !toggle && new Date(value).getDay() === 0
           ? ['S']
-          : [daysList[new Date(value).getDay() - 1]['send']]||[],
+          : [daysList[new Date(value).getDay() - 1]?.send]||[],
     }));
   };
 
@@ -629,6 +629,7 @@ const CreateClassForm = (props) => {
       coHosts: [],
     }));
     dispatch(resetContext());
+    dispatch(clearFilteredStudents());
     // dispatch(listGradesCreateClass());
     dispatch(clearGrades());
     dispatch(clearSections());
@@ -680,7 +681,7 @@ const CreateClassForm = (props) => {
         days:
           !toggle && new Date().getDay() === 0
             ? ['S']
-            : [daysList[new Date().getDay() - 1]['send']]||[],
+            : [daysList[new Date().getDay() - 1]?.send]||[],
       }));
     }
   }, [toggle]);
