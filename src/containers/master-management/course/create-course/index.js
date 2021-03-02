@@ -210,7 +210,7 @@ const CreateCourse = () => {
 
     // if(isValid)
 
-    if (aolHostURL !== endpoints.aolConfirmURL) {
+    if (aolHostURL === endpoints.aolConfirmURL) {
       if (
         filePath?.length === 1 &&
         Boolean(thumbnailImage) &&
@@ -347,7 +347,7 @@ const CreateCourse = () => {
   };
 
   useEffect(() => {
-    if (aolHostURL === endpoints.aolConfirmURL) {
+    if (aolHostURL !== endpoints.aolConfirmURL) {
       setGradeDropdown([]);
       axiosInstance
         .get(`${endpoints.academics.grades}?branch_id=5`)
@@ -460,7 +460,7 @@ const CreateCourse = () => {
         files: filePath,
         thumbnail: [thumbnailImage],
         period_data: data,
-        tag_id: isAol ? '' : `${filterData.age.id},${filterData.subject.id}`,
+        tag_id: isAol ? `${filterData.age.id},${filterData.subject.id}` : '',
       })
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -515,7 +515,7 @@ const CreateCourse = () => {
         files: filePath,
         thumbnail: [thumbnailImage],
         period_data: data,
-        tag_id: isAol ? '' : `${filterData.age.id},${filterData.subject.id}`,
+        tag_id: isAol ? `${filterData.age.id},${filterData.subject.id}` : '',
       })
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -573,7 +573,7 @@ const CreateCourse = () => {
   };
 
   useEffect(() => {
-    if (aolHostURL !== endpoints.aolConfirmURL) {
+    if (aolHostURL === endpoints.aolConfirmURL) {
       axiosInstance
         .get(`${endpoints.communication.branches}`)
         .then((result) => {
@@ -655,7 +655,7 @@ const CreateCourse = () => {
                   )}
                 />
               </Grid>
-              {aolHostURL !== endpoints.aolConfirmURL && (
+              {aolHostURL === endpoints.aolConfirmURL && (
                 <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
                   <Autocomplete
                     style={{ width: '100%' }}
@@ -678,7 +678,7 @@ const CreateCourse = () => {
                   />
                 </Grid>
               )}
-              {aolHostURL !== endpoints.aolConfirmURL && (
+              {aolHostURL === endpoints.aolConfirmURL && (
                 <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
                   <Autocomplete
                     style={{ width: '100%' }}
@@ -722,7 +722,7 @@ const CreateCourse = () => {
                   )}
                 />
               </Grid>
-              {aolHostURL !== endpoints.aolConfirmURL && (
+              {aolHostURL === endpoints.aolConfirmURL && (
                 <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
                   <Autocomplete
                     style={{ width: '100%' }}
@@ -745,7 +745,7 @@ const CreateCourse = () => {
                   />
                 </Grid>
               )}
-              {aolHostURL !== endpoints.aolConfirmURL && (
+              {aolHostURL === endpoints.aolConfirmURL && (
                 <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
                   <Autocomplete
                     style={{ width: '100%' }}
