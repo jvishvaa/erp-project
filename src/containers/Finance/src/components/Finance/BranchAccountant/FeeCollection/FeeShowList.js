@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 // import ReactTable from 'react-table'
-import { withStyles, Radio, StepLabel, Step, Stepper, Button, Typography, Grid, Table, TableCell, TableRow, TableHead, TableBody, Paper, TextField, Checkbox } from '@material-ui/core/'
+import { withStyles, Radio, StepLabel, Step, Tab, Tabs, AppBar, Stepper, Button, Typography, Grid, Table, TableCell, TableRow, TableHead, TableBody, Paper, TextField, Checkbox } from '@material-ui/core/'
 import Select from 'react-select'
 import axios from 'axios'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -10,9 +11,12 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 // import feeReceipts from '/home/om/lets_eduvate/oms/src/components/Finance/Receipts/feeReceipts.js'
 import { urls } from '../../../../urls'
 import feeReceipts from '../../Receipts/feeReceipts'
+import { apiActions } from '../../../../_actions'
 import * as actionTypes from '../../store/actions'
+import AutoSuggest from '../../../../ui/AutoSuggest/autoSuggest'
+// import { debounce } from '../../../../utils'
+import Student from '../../Profiles/studentProfile'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
-import Layout from '../../../../../../Layout'
 
 const styles = (theme) => ({
   tableWrapper: {
@@ -32,15 +36,54 @@ const styles = (theme) => ({
   instructions: {
     marginTop: theme.spacing.unit,
     marginBottom: theme.spacing.unit
+  },
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap'
+  },
+  item: {
+    margin: '10px'
+  },
+  formControl: {
+    margin: theme.spacing * 1,
+    minWidth: 120
   }
+  // root: {
+  //   backgroundColor: theme.palette.background.paper,
+  //   width: '100%',
+  //   marginTop: '72px',
+  //   marginLeft: '40px',
+  //   paddingTop: '20px',
+  //   minHeight: '75vh'
+  // }
 })
 
 function getSteps () {
   return ['1. Fee Details', '2. Reciept Details', '3. Payment mode', '4. Print Receipt']
 }
 
+function TabContainer ({ children, dir }) {
+  return (
+    <Typography component='div' dir={dir} style={{ padding: 8 * 3 }}>
+      {children}
+    </Typography>
+  )
+}
+
+TabContainer.propTypes = {
+  children: PropTypes.node.isRequired
+}
+
 class FeeShowList extends Component {
   state = {
+    branchDatas: [],
+    prevAmt: null,
+    totalAmounts: null,
+    miscFee: true,
+    showData: false,
+    erp: '',
+    value: '',
+    student: '',
     checked: true,
     session: null,
     disabled: true,
@@ -116,7 +159,38 @@ class FeeShowList extends Component {
       },
       transid: null,
       dateOfPayment: new Date().toISOString().substr(0, 10)
-    }
+    },
+    sessions: {
+      label: '2020-21',
+      value: '2020-21'
+    },
+    sessionData: null,
+    getDatas: false,
+    showTabs: false,
+    erpNo: null,
+    gradeId: 'all',
+    gradeData: {
+      label: 'All Grades',
+      id: 'all'
+    },
+    sectionId: null,
+    sectionData: null,
+    studentTypeData: {
+      label: 'Active',
+      value: 1
+    },
+    // studentTypeId: null,
+    searchTypeData: {
+      label: 'Student Name',
+      value: 2
+    },
+    searchTypeId: 2,
+    students: '',
+    selectedErpStatus: false,
+    studentName: '',
+    selectedNameStatus: false,
+    studentErp: '',
+    allSections: true
   }
 
   outsiderInfoHandler = (event) => {
@@ -170,7 +244,12 @@ class FeeShowList extends Component {
         break
       }
       case 'dateofPayment': {
-        newreceiptInfo['dateofPayment'] = event.target.value
+        if (event.target.value <= new Date().toISOString().substr(0, 10)) {
+          newreceiptInfo['dateofPayment'] = event.target.value
+        } else {
+          this.props.alert.warning('Date of payment can be todays date or less than todays date')
+          newreceiptInfo['dateofPayment'] = ''
+        }
         break
       }
       default: {
@@ -181,6 +260,23 @@ class FeeShowList extends Component {
     this.setState({
       receiptDetails: newReceiptDetails
     })
+  }
+
+  erpHandler = (e) => {
+    this.setState({
+      erp: e.target.value
+    })
+  }
+
+  getHandler = (e) => {
+    if (this.state.erp && this.state.erp.length >= 10) {
+      this.setState({
+        showData: true
+      })
+      this.props.fetchStudentErpDet(this.state.erp, this.state.session, this.props.user, this.props.alert)
+    } else {
+      this.props.alert.warning('Enter 10 Digit Valid Erp!')
+    }
   }
 
   studentNameInsiderHandler = (e) => {
@@ -223,6 +319,8 @@ class FeeShowList extends Component {
               <h2>Thank You For Recording Payment Details</h2>
               {this.props.ReceiptNo ? <b style={{ fontSize: '20px' }}>Receipt No is {this.props.ReceiptNo}</b> : null}
               <br />
+              {this.props.trnsId ? <b style={{ fontSize: '20px' }}>Transaction Id is {this.props.trnsId}</b> : null}
+              <br />
               <Button variant='contained' onClick={this.generatePdf}>Download PDF</Button>
             </center>
           </React.Fragment>
@@ -241,19 +339,32 @@ class FeeShowList extends Component {
       this.props.fetchFeeCollection(this.state.session, this.props.user, this.props.alert)
       this.props.fetchGrades(this.state.session, this.props.alert, this.props.user)
     })
+    if (this.state.sessions) {
+      this.props.fetchGrades(this.state.sessions.value, this.props.alert, this.props.user)
+    }
+    // this.props.fetchBranchData(this.props.alert, this.props.user)
+    // this.props.fetchReceiptRange(this.state.session, this.props.branchData && this.props.branchData.branch_name, this.props.alert, this.props.user)
   }
-
   componentDidUpdate () {
     console.log('====> newState: ', this.state.receiptDetails)
   }
-  checkBoxHandler = (e, id) => {
+  checkBoxHandler = (e, id, misc, amo) => {
     let { checkBox } = this.state
     let { amountToEnter } = this.state
+    this.setState({ amountToEnter: { ...amountToEnter, [id]: amo } })
     if (e.target.checked) {
-      this.setState({ checkBox: { ...checkBox, [id]: true } })
+      this.setState(
+        { checkBox: { ...checkBox, [id]: true },
+          miscFee: misc,
+          prevAmt: amo
+        })
       // this.setState({ amount: { ...amount, [id]: !this.state.disabled } })
     } else {
-      this.setState({ checkBox: { ...checkBox, [id]: false }, amountToEnter: { ...amountToEnter, [id]: false } })
+      this.setState({ checkBox: { ...checkBox, [id]: false },
+        amountToEnter: { ...amountToEnter, [id]: false },
+        miscFee: misc,
+        prevAmt: amo
+      })
       // this.setState({ amountToEnter: { ...amountToEnter, [id]: null } })
     }
     // console.log(checkBox)
@@ -262,7 +373,7 @@ class FeeShowList extends Component {
     // }
   }
 
-  amountHandler = (id) => e => {
+  amountHandler = (id, amt) => e => {
     // let amountIds = []
     console.log('the value', e.target.value)
     let validAmount = true
@@ -272,7 +383,7 @@ class FeeShowList extends Component {
     const rowData = this.props.feeList.filter(list => (list.id === id))
     rowData.map(validate => {
       if ((validate.amount < e.target.value)) {
-        this.props.alert.warning('Amount cant be greater than given amount!')
+        this.props.alert.warning('Amount canot be greater than given amount!')
         validAmount = false
         return false
       }
@@ -301,9 +412,17 @@ class FeeShowList extends Component {
     // let dataToSend = null
     if (this.state.isChequePaper) {
       if (!this.dataIsSuitableToSend(this.state.payment.cheque)) {
-        this.props.alert.warning('Please Fill all the fields')
-        this.setState({ confirm: false })
-        return
+        if (this.state.payment.cheque.ifsc) {
+          if (!this.state.payment.cheque.chequeBankBranch || !this.state.payment.cheque.chequeBankName || !this.state.payment.cheque.ifsc || !this.state.payment.cheque.chequeNo || !this.state.payment.cheque.chequeDate || !this.state.searchByData) {
+            this.props.alert.warning('Please Fill all the fields')
+            this.setState({ confirm: false })
+            return
+          }
+        } else if (!this.state.payment.cheque.chequeBankBranch || !this.state.payment.cheque.chequeBankName || !this.state.payment.cheque.micr || !this.state.payment.cheque.chequeNo || !this.state.payment.cheque.chequeDate || !this.state.searchByData) {
+          this.props.alert.warning('Please Fill all the fields')
+          this.setState({ confirm: false })
+          return
+        }
       }
     } else if (this.state.isInternetPaper) {
       if (!this.dataIsSuitableToSend(this.state.payment.internet)) {
@@ -332,10 +451,20 @@ class FeeShowList extends Component {
 
   componentWillReceiveProps (nextProps) {
     console.log('===receiceed props', nextProps)
-    if (nextProps.ifsc) {
+    if (nextProps.micr && this.state.searchByValue === 2) {
       const newPayment = { ...this.state.payment }
       const newCheque = { ...newPayment.cheque }
-      newCheque['micr'] = nextProps.ifsc.micr ? nextProps.ifsc.micr : null
+      newCheque['micr'] = nextProps.micr.data[0].MICR ? nextProps.micr.data[0].MICR : null
+      newCheque['chequeBankName'] = nextProps.micr.data[0].Bank ? nextProps.micr.data[0].Bank : null
+      newCheque['chequeBankBranch'] = nextProps.micr.data[0].Branch ? nextProps.micr.data[0].Branch : null
+      newPayment.cheque = newCheque
+      this.setState({
+        payment: newPayment
+      })
+    } else if (nextProps.ifsc && this.state.searchByValue === 1) {
+      const newPayment = { ...this.state.payment }
+      const newCheque = { ...newPayment.cheque }
+      newCheque['ifsc'] = nextProps.ifsc.ifsc ? nextProps.ifsc.ifsc : null
       newCheque['chequeBankName'] = nextProps.ifsc.bank ? nextProps.ifsc.bank : null
       newCheque['chequeBankBranch'] = nextProps.ifsc.branch ? nextProps.ifsc.branch : null
       newPayment.cheque = newCheque
@@ -343,6 +472,36 @@ class FeeShowList extends Component {
         payment: newPayment
       })
     }
+    // console.log('ifsc', nextProps.micr.data)
+    // if (nextProps.micr && nextProps.micr.data && this.state.searchByValue === 2) {
+    //   const newPayment = { ...this.state.payment }
+    //   const newCheque = { ...newPayment.cheque }
+    //   newCheque['ifsc'] = nextProps.micr.data[0].IFSC ? nextProps.micr.data[0].IFSC : null
+    //   newCheque['chequeBankName'] = nextProps.micr.data[0].Bank ? nextProps.micr.data[0].Bank : null
+    //   newCheque['chequeBankBranch'] = nextProps.micr.data[0].Branch ? nextProps.micr.data[0].Branch : null
+    //   newPayment.cheque = newCheque
+    //   this.setState({
+    //     payment: newPayment
+    //   })
+    // } else if (nextProps.ifsc && this.state.searchByValue === 1) {
+    //   const newPayment = { ...this.state.payment }
+    //   const newCheque = { ...newPayment.cheque }
+    //   newCheque['micr'] = nextProps.ifsc.micr ? nextProps.ifsc.micr : null
+    //   newCheque['chequeBankName'] = nextProps.ifsc.bank ? nextProps.ifsc.bank : null
+    //   newCheque['chequeBankBranch'] = nextProps.ifsc.branch ? nextProps.ifsc.branch : null
+    //   newPayment.cheque = newCheque
+    //   this.setState({
+    //     payment: newPayment
+    //   })
+    // }
+    // if (this.props.gradeData && this.props.gradeData.length > 0) {
+    //   let a = []
+    //   a = this.props.gradeData
+    //   this.setState({
+    //     gradeDatas: a && a.shift()
+    //   })
+    //   console.log(this.state.gradeDatas)
+    // }
   }
   handleBack = () => {
     this.setState(state => ({
@@ -363,7 +522,7 @@ class FeeShowList extends Component {
   handleNext = () => {
     console.log('amount state', this.state.activeStep)
     if (this.state.activeStep < 1) {
-      if (this.state.amountToEnter) {
+      if (this.state.amountToEnter || this.state.prevAmt) {
         this.setState(prevState => {
           return {
             activeStep: prevState.activeStep + 1,
@@ -372,136 +531,509 @@ class FeeShowList extends Component {
         })
       } else {
         this.props.alert.warning('Enter Amount')
+        // let a = []
+        // a = this.props.gradeData
+        // this.setState({
+        //   gradeDatas: a.shift()
+        // })
+        // console.log(this.state.gradeDatas)
       }
     } else if (this.state.activeStep === 1) {
-      const { studentName, parentName, parentMobile } = this.state.receiptDetails.outsiderInfo
-      const { generalDescription } = this.state.receiptDetails
-      if ((studentName && parentName && parentMobile) || generalDescription) {
-        this.setState(prevState => {
-          return {
-            activeStep: prevState.activeStep + 1,
-            disableNext: true
+      if (this.state.receiptDetails.receiptInfo.dateofPayment) {
+        const { studentName, parentName, parentMobile } = this.state.receiptDetails.outsiderInfo
+        const { generalDescription } = this.state.receiptDetails
+        if (this.state.value === 'two') {
+          if ((studentName && parentName && parentMobile) || generalDescription) {
+            if ((parentMobile && parentMobile.length === 10) || generalDescription) {
+              this.setState(prevState => {
+                return {
+                  activeStep: prevState.activeStep + 1,
+                  disableNext: true
+                }
+              })
+              this.sendOutsiderInfo()
+            } else {
+              this.props.alert.warning('Please Enter 10 Digit Number!')
+            }
+          } else {
+            this.props.alert.warning('fill all details')
           }
-        })
-        this.sendOutsiderInfo()
+        } else {
+          if (this.state.sessions && this.state.gradeData && this.state.studentTypeData && this.state.searchTypeData && (this.state.students || this.state.studentName)) {
+            this.setState(prevState => {
+              return {
+                activeStep: prevState.activeStep + 1,
+                disableNext: true
+              }
+            })
+            this.sendOutsiderInfo()
+          } else {
+            this.props.alert.warning('Fill all the required Fields and click on Get!')
+          }
+        }
       } else {
-        this.props.alert.warning('fill all details')
+        this.props.alert.warning('Select Date of Payment to continue!')
       }
     } else if (this.state.activeStep === 2) {
-      this.setState(prevState => {
-        return {
-          activeStep: prevState.activeStep + 1
-          // disableNext: true
+      if (this.state.selectedPayment === 'b') {
+        if (this.state.payment.cheque.chequeNo && this.state.payment.cheque.chequeNo.length === 6) {
+          this.setState(prevState => {
+            return {
+              activeStep: prevState.activeStep + 1
+              // disableNext: true
+            }
+          })
+          this.makeFinalPayment()
+        } else {
+          this.props.alert.warning('Enter only 6 digit in Cheque Number!')
         }
-      })
-      this.makeFinalPayment()
+      } else if (this.state.selectedPayment === 'd') {
+        if (this.state.payment.credit.digits && this.state.payment.credit.digits.length === 4) {
+          this.setState(prevState => {
+            return {
+              activeStep: prevState.activeStep + 1
+              // disableNext: true
+            }
+          })
+          this.makeFinalPayment()
+        } else {
+          this.props.alert.warning('Enter only 4 Digits in card last digit!')
+        }
+      } else {
+        this.setState(prevState => {
+          return {
+            activeStep: prevState.activeStep + 1
+            // disableNext: true
+          }
+        })
+        this.makeFinalPayment()
+      }
     } else if (this.state.activeStep > 2) {
       this.setState(prevState => {
+        window.location.replace('/finance/FeeCollection')
         return {
-          activeStep: 0
+          totalAmounts: null,
+          gradeData: {
+            label: 'All Grades',
+            id: 'all'
+          },
+          isChequePaper: false,
+          isInternetPaper: false,
+          isCreditPaper: false,
+          receiptData: [],
+          amountToEnter: '',
+          selectedPayment: 'a',
+          searchByData: null,
+          payment: {
+            cheque: {
+              chequeNo: null,
+              chequeDate: null,
+              ifsc: null,
+              micr: null,
+              // chequeName: null,
+              chequeBankName: null,
+              chequeBankBranch: null
+            },
+            internet: {
+              internetDate: null,
+              remarks: null
+            },
+            credit: {
+              credit: 1,
+              digits: null,
+              creditDate: null,
+              approval: null,
+              bankName: null,
+              creditRemarks: null
+            },
+            transid: null,
+            dateOfPayment: new Date().toISOString().substr(0, 10)
+          },
           // disableNext: true
+          receiptDetails: {
+            receiptInfo: {
+              // receiptNo: '',
+              dateofPayment: new Date().toISOString().substr(0, 10)
+            },
+            outsiderInfo: {
+              studentName: '',
+              parentName: '',
+              parentMobile: '',
+              class: '',
+              schoolName: '',
+              address: '',
+              outsiderDescription: ''
+            },
+            studentNameInsider: '',
+            radioChecked: 'online',
+            boxChecked: true,
+            selectValue: 1,
+            generalDescription: '',
+            receiptNoOnline: ''
+          },
+          // activeStep: 0,
+          sectionId: null,
+          sectionData: null,
+          studentTypeData: {
+            label: 'Active',
+            value: 1
+          },
+          // studentTypeId: null,
+          searchTypeData: {
+            label: 'Student Name',
+            value: 2
+          },
+          searchTypeId: 2,
+          students: '',
+          selectedErpStatus: false,
+          studentName: '',
+          selectedNameStatus: false,
+          studentErp: '',
+          allSections: true,
+          checkBox: {},
+          confirm: false
         }
       })
       // this.makeFinalPayment()
     }
   }
 
-  sendOutsiderInfo = () => {
-    console.log('sendOutsiderInfo')
-    let amountIds = null
-    amountIds = Object.keys(this.state.amountToEnter)
+    sendOutsiderInfo = () => {
+      console.log('sendOutsiderInfo')
+      // let amountIds = null
+      // amountIds = Object.keys(this.state.amountToEnter)
 
-    const { receiptDetails } = this.state
-    let data = {
-      session_year: this.state.session ? this.state.session : null,
-      student_name: receiptDetails.outsiderInfo.studentName ? receiptDetails.outsiderInfo.studentName : '',
-      parent_name: receiptDetails.outsiderInfo.parentName ? receiptDetails.outsiderInfo.parentName : '',
-      parent_mobile: receiptDetails.outsiderInfo.parentMobile ? receiptDetails.outsiderInfo.parentMobile : '',
-      grade: receiptDetails.outsiderInfo.class ? receiptDetails.outsiderInfo.class : '',
-      school_name: receiptDetails.outsiderInfo.schoolName ? receiptDetails.outsiderInfo.schoolName : '',
-      address: receiptDetails.outsiderInfo.schoolName ? receiptDetails.outsiderInfo.schoolName : '',
-      description: receiptDetails.outsiderInfo.outsiderDescription ? receiptDetails.outsiderInfo.outsiderDescription : '',
-      other_fee: amountIds,
-      student_type: 2
+    // const { receiptDetails } = this.state
+    // let data = {
+    //   session_year: this.state.session ? this.state.session : null,
+    //   student_name: receiptDetails.outsiderInfo.studentName ? receiptDetails.outsiderInfo.studentName : '',
+    //   parent_name: receiptDetails.outsiderInfo.parentName ? receiptDetails.outsiderInfo.parentName : '',
+    //   parent_mobile: receiptDetails.outsiderInfo.parentMobile ? receiptDetails.outsiderInfo.parentMobile : '',
+    //   grade: receiptDetails.outsiderInfo.class ? receiptDetails.outsiderInfo.class : '',
+    //   school_name: receiptDetails.outsiderInfo.schoolName ? receiptDetails.outsiderInfo.schoolName : '',
+    //   address: receiptDetails.outsiderInfo.schoolName ? receiptDetails.outsiderInfo.schoolName : '',
+    //   description: receiptDetails.outsiderInfo.outsiderDescription ? receiptDetails.outsiderInfo.outsiderDescription : '',
+    //   other_fee: amountIds,
+    //   student_type: 2
+    // }
+    // this.props.saveOutsiders(data, this.props.user, this.props.alert)
     }
-    this.props.saveOutsiders(data, this.props.user, this.props.alert)
-  }
 
-  makeFinalPayment = () => {
-    const { payment } = this.state
-    if (this.state.selectedPayment === 'a') {
-      let cashData = {
-        session_year: this.state.session ? this.state.session : null,
-        // application_type: this.state.appTypeData ? this.state.appTypeData.value : null,
-        student: this.props.studentId ? this.props.studentId : null,
-        date_of_payment: payment.dateOfPayment ? payment.dateOfPayment : null,
-        total_amount: 200,
-        payment_mode: this.state.selectedPayment === 'a' ? 1 : this.state.selectedPayment === 'b' ? 2 : this.state.selectedPayment === 'c' ? 3 : 4,
-        receipt_type: this.state.receiptDetails.radioChecked === 'online' ? 1 : 2,
-        receipt_number_online: this.state.receiptDetails.receiptNoOnline ? this.state.receiptDetails.receiptNoOnline : null,
-        current_date: new Date().toISOString().substr(0, 10)
+    makeFinalPayment = () => {
+      let amountIds = []
+      let amounts = []
+      amountIds = Object.keys(this.state.amountToEnter)
+      amounts = Object.values(this.state.amountToEnter)
+      var a = null
+      var b = null
+      for (let key in amountIds) {
+        a = amountIds[key]
+        console.log('a++', amountIds[key])
       }
-      this.sendingToServer(cashData)
-    } else if (this.state.selectedPayment === 'b') {
-      let chequeData = {
-        session_year: this.state.session ? this.state.session : null,
-        // application_type: this.state.appTypeData ? this.state.appTypeData.value : null,
-        student: this.props.studentId ? this.props.studentId : null,
-        date_of_payment: payment.dateOfPayment ? payment.dateOfPayment : null,
-        total_amount: 200,
-        payment_mode: this.state.selectedPayment === 'a' ? 1 : this.state.selectedPayment === 'b' ? 2 : this.state.selectedPayment === 'c' ? 3 : 4,
-        receipt_type: this.state.receiptDetails.radioChecked === 'online' ? 1 : 2,
-        receipt_number_online: this.state.receiptDetails.receiptNoOnline ? this.state.receiptDetails.receiptNoOnline : null,
-        cheque_number: payment.cheque.chequeNo ? payment.cheque.chequeNo : null,
-        date_of_cheque: payment.cheque.chequeDate ? payment.cheque.chequeDate : null,
-        micr_code: payment.cheque.micr ? payment.cheque.micr : null,
-        ifsc_code: payment.cheque.ifsc ? payment.cheque.ifsc : null,
-        // name_on_cheque: payment.cheque.chequeName ? payment.cheque.chequeName : null,
-        current_date: new Date().toISOString().substr(0, 10),
-        bank_name: payment.cheque.chequeBankName ? payment.cheque.chequeBankName : null,
-        bank_branch: payment.cheque.chequeBankBranch ? payment.cheque.chequeBankBranch : null
+      for (let key in amounts) {
+        b = amounts[key]
+        console.log('b++', b, a)
       }
-      this.sendingToServer(chequeData)
-    } else if (this.state.selectedPayment === 'c') {
-      let internetData = {
-        session_year: this.state.session ? this.state.session : null,
-        // application_type: this.state.appTypeData ? this.state.appTypeData.value : null,
-        student: this.props.studentId ? this.props.studentId : null,
-        date_of_payment: payment.dateOfPayment ? payment.dateOfPayment : null,
-        total_amount: 200,
-        payment_mode: this.state.selectedPayment === 'a' ? 1 : this.state.selectedPayment === 'b' ? 2 : this.state.selectedPayment === 'c' ? 3 : 4,
-        receipt_type: this.state.receiptDetails.radioChecked === 'online' ? 1 : 2,
-        receipt_number_online: this.state.receiptDetails.receiptNoOnline ? this.state.receiptDetails.receiptNoOnline : null,
-        transaction_id: payment.transid ? payment.transid : null,
-        internet_date: payment.internet.internetDate ? payment.internet.internetDate : null,
-        remarks: payment.internet.remarks ? payment.internet.remarks : null,
-        current_date: new Date().toISOString().substr(0, 10)
+      let c = []
+      for (let key in amountIds) {
+        if (amounts[key]) {
+          c.push({ id: amountIds[key], amount: amounts[key] })
+        }
       }
-      this.sendingToServer(internetData)
-    } else if (this.state.selectedPayment === 'd') {
-      let creditData = {
-        session_year: this.state.session ? this.state.session : null,
-        // application_type: this.state.appTypeData ? this.state.appTypeData.value : null,
-        student: this.props.studentId ? this.props.studentId : null,
-        date_of_payment: payment.dateOfPayment ? payment.dateOfPayment : null,
-        total_amount: 200,
-        payment_mode: this.state.selectedPayment === 'a' ? 1 : this.state.selectedPayment === 'b' ? 2 : this.state.selectedPayment === 'c' ? 3 : 4,
-        receipt_type: this.state.receiptDetails.radioChecked === 'online' ? 1 : 2,
-        receipt_number_online: this.state.receiptDetails.receiptNoOnline ? this.state.receiptDetails.receiptNoOnline : null,
-        remarks: payment.credit.creditRemarks ? payment.credit.creditRemarks : null,
-        approval_code: payment.credit.approval ? payment.credit.approval : null,
-        card_type: payment.credit.credit ? payment.credit.credit : null,
-        card_last_digits: payment.credit.digits ? payment.credit.digits : null,
-        bank_name: payment.credit.bankName ? payment.credit.bankName : null,
-        credit_date: payment.credit.creditDate ? payment.credit.creditDate : null,
-        current_date: new Date().toISOString().substr(0, 10)
+      console.log('c++', c)
+      // let c = amountIds.toString()
+      const { receiptDetails } = this.state
+      // let data = {
+      //   session_year: this.state.session ? this.state.session : null,
+      //   student_name: receiptDetails.outsiderInfo.studentName ? receiptDetails.outsiderInfo.studentName : '',
+      //   parent_name: receiptDetails.outsiderInfo.parentName ? receiptDetails.outsiderInfo.parentName : '',
+      //   parent_mobile: receiptDetails.outsiderInfo.parentMobile ? receiptDetails.outsiderInfo.parentMobile : '',
+      //   grade: receiptDetails.outsiderInfo.class ? receiptDetails.outsiderInfo.class : '',
+      //   school_name: receiptDetails.outsiderInfo.schoolName ? receiptDetails.outsiderInfo.schoolName : '',
+      //   address: receiptDetails.outsiderInfo.schoolName ? receiptDetails.outsiderInfo.schoolName : '',
+      //   description: receiptDetails.outsiderInfo.outsiderDescription ? receiptDetails.outsiderInfo.outsiderDescription : '',
+      //   other_fee: amountIds,
+      //   student_type: 2
+      // }
+      const { payment } = this.state
+      if (this.state.selectedPayment === 'a') {
+      // if (this.state.miscFee === true || this.state.miscFee === null) {
+        if (this.state.value === 'two') {
+          let cashData = {
+            student: {
+              student_name: receiptDetails.outsiderInfo.studentName ? receiptDetails.outsiderInfo.studentName : '',
+              parent_name: receiptDetails.outsiderInfo.parentName ? receiptDetails.outsiderInfo.parentName : '',
+              parent_mobile: receiptDetails.outsiderInfo.parentMobile ? receiptDetails.outsiderInfo.parentMobile : '',
+              grade: receiptDetails.outsiderInfo.class ? receiptDetails.outsiderInfo.class : '',
+              school_name: receiptDetails.outsiderInfo.schoolName ? receiptDetails.outsiderInfo.schoolName : '',
+              address: receiptDetails.outsiderInfo.schoolName ? receiptDetails.outsiderInfo.schoolName : '',
+              description: receiptDetails.outsiderInfo.outsiderDescription ? receiptDetails.outsiderInfo.outsiderDescription : ''
+            },
+            other_fee: [],
+            misc_fee: c,
+            session_year: this.state.session ? this.state.session : null,
+            // application_type: this.state.appTypeData ? this.state.appTypeData.value : null,
+            // student: this.props.studentId ? this.props.studentId : null,
+            date_of_payment: this.state.receiptDetails.receiptInfo && this.state.receiptDetails.receiptInfo.dateofPayment,
+            total_amount: this.state.totalAmounts,
+            payment_mode: this.state.selectedPayment === 'a' ? 1 : this.state.selectedPayment === 'b' ? 2 : this.state.selectedPayment === 'c' ? 3 : 4,
+            receipt_type: this.state.receiptDetails.radioChecked === 'online' ? 1 : 2,
+            receipt_number: this.state.receiptDetails.receiptNoOnline ? this.state.receiptDetails.receiptNoOnline : null,
+            current_date: new Date().toISOString().substr(0, 10)
+          }
+          this.sendingToServer(cashData)
+          // } else {
+          //   let cashData = {
+          //     student: {
+          //       student_name: receiptDetails.outsiderInfo.studentName ? receiptDetails.outsiderInfo.studentName : '',
+          //       parent_name: receiptDetails.outsiderInfo.parentName ? receiptDetails.outsiderInfo.parentName : '',
+          //       parent_mobile: receiptDetails.outsiderInfo.parentMobile ? receiptDetails.outsiderInfo.parentMobile : '',
+          //       grade: receiptDetails.outsiderInfo.class ? receiptDetails.outsiderInfo.class : '',
+          //       school_name: receiptDetails.outsiderInfo.schoolName ? receiptDetails.outsiderInfo.schoolName : '',
+          //       address: receiptDetails.outsiderInfo.schoolName ? receiptDetails.outsiderInfo.schoolName : '',
+          //       description: receiptDetails.outsiderInfo.outsiderDescription ? receiptDetails.outsiderInfo.outsiderDescription : ''
+          //     },
+          //     other_fee: [
+          //       {
+          //         id: amountIds,
+          //         amount: amounts
+          //       }
+          //     ],
+          //     misc_fee: [],
+          //     session_year: this.state.session ? this.state.session : null,
+          //     // application_type: this.state.appTypeData ? this.state.appTypeData.value : null,
+          //     // student: this.props.studentId ? this.props.studentId : null,
+          //     date_of_payment: payment.dateOfPayment ? payment.dateOfPayment : null,
+          //     total_amount: 200,
+          //     payment_mode: this.state.selectedPayment === 'a' ? 1 : this.state.selectedPayment === 'b' ? 2 : this.state.selectedPayment === 'c' ? 3 : 4,
+          //     receipt_type: this.state.receiptDetails.radioChecked === 'online' ? 1 : 2,
+          //     receipt_number_online: this.state.receiptDetails.receiptNoOnline ? this.state.receiptDetails.receiptNoOnline : null,
+          //     current_date: new Date().toISOString().substr(0, 10)
+          //   }
+          //   this.sendingToServer(cashData)
+          // }
+        } else {
+          let cashData = {
+            student: this.state.studentErp ? this.state.studentErp : this.state.students,
+            grade: this.state.gradeId,
+            section: this.state.sectionId,
+            other_fee: [],
+            misc_fee: c,
+            session_year: this.state.session ? this.state.session : null,
+            // application_type: this.state.appTypeData ? this.state.appTypeData.value : null,
+            // student: this.props.studentId ? this.props.studentId : null,
+            date_of_payment: this.state.receiptDetails.receiptInfo && this.state.receiptDetails.receiptInfo.dateofPayment,
+            total_amount: this.state.totalAmounts,
+            payment_mode: this.state.selectedPayment === 'a' ? 1 : this.state.selectedPayment === 'b' ? 2 : this.state.selectedPayment === 'c' ? 3 : 4,
+            receipt_type: this.state.receiptDetails.radioChecked === 'online' ? 1 : 2,
+            receipt_number_online: this.state.receiptDetails.receiptNoOnline ? this.state.receiptDetails.receiptNoOnline : null,
+            current_date: new Date().toISOString().substr(0, 10)
+          }
+          this.sendingToServer(cashData)
+        // } else {
+        //   let cashData = {
+        //     student: {
+        //       student_name: receiptDetails.outsiderInfo.studentName ? receiptDetails.outsiderInfo.studentName : '',
+        //       parent_name: receiptDetails.outsiderInfo.parentName ? receiptDetails.outsiderInfo.parentName : '',
+        //       parent_mobile: receiptDetails.outsiderInfo.parentMobile ? receiptDetails.outsiderInfo.parentMobile : '',
+        //       grade: receiptDetails.outsiderInfo.class ? receiptDetails.outsiderInfo.class : '',
+        //       school_name: receiptDetails.outsiderInfo.schoolName ? receiptDetails.outsiderInfo.schoolName : '',
+        //       address: receiptDetails.outsiderInfo.schoolName ? receiptDetails.outsiderInfo.schoolName : '',
+        //       description: receiptDetails.outsiderInfo.outsiderDescription ? receiptDetails.outsiderInfo.outsiderDescription : ''
+        //     },
+        //     other_fee: [
+        //       {
+        //         id: amountIds,
+        //         amount: amounts
+        //       }
+        //     ],
+        //     misc_fee: [],
+        //     session_year: this.state.session ? this.state.session : null,
+        //     // application_type: this.state.appTypeData ? this.state.appTypeData.value : null,
+        //     // student: this.props.studentId ? this.props.studentId : null,
+        //     date_of_payment: payment.dateOfPayment ? payment.dateOfPayment : null,
+        //     total_amount: 200,
+        //     payment_mode: this.state.selectedPayment === 'a' ? 1 : this.state.selectedPayment === 'b' ? 2 : this.state.selectedPayment === 'c' ? 3 : 4,
+        //     receipt_type: this.state.receiptDetails.radioChecked === 'online' ? 1 : 2,
+        //     receipt_number_online: this.state.receiptDetails.receiptNoOnline ? this.state.receiptDetails.receiptNoOnline : null,
+        //     current_date: new Date().toISOString().substr(0, 10)
+        //   }
+        //   this.sendingToServer(cashData)
+        // }
+        }
+      } else if (this.state.selectedPayment === 'b') {
+        if (this.state.value === 'two') {
+          let chequeData = {
+            student: {
+              student_name: receiptDetails.outsiderInfo.studentName ? receiptDetails.outsiderInfo.studentName : '',
+              parent_name: receiptDetails.outsiderInfo.parentName ? receiptDetails.outsiderInfo.parentName : '',
+              parent_mobile: receiptDetails.outsiderInfo.parentMobile ? receiptDetails.outsiderInfo.parentMobile : '',
+              grade: receiptDetails.outsiderInfo.class ? receiptDetails.outsiderInfo.class : '',
+              school_name: receiptDetails.outsiderInfo.schoolName ? receiptDetails.outsiderInfo.schoolName : '',
+              address: receiptDetails.outsiderInfo.schoolName ? receiptDetails.outsiderInfo.schoolName : '',
+              description: receiptDetails.outsiderInfo.outsiderDescription ? receiptDetails.outsiderInfo.outsiderDescription : ''
+            },
+            other_fee: [],
+            misc_fee: c,
+            session_year: this.state.session ? this.state.session : null,
+            // application_type: this.state.appTypeData ? this.state.appTypeData.value : null,
+            // student: this.props.studentId ? this.props.studentId : null,
+            date_of_payment: this.state.receiptDetails.receiptInfo && this.state.receiptDetails.receiptInfo.dateofPayment,
+            total_amount: this.state.totalAmounts,
+            payment_mode: this.state.selectedPayment === 'a' ? 1 : this.state.selectedPayment === 'b' ? 2 : this.state.selectedPayment === 'c' ? 3 : 4,
+            receipt_type: this.state.receiptDetails.radioChecked === 'online' ? 1 : 2,
+            receipt_number: this.state.receiptDetails.receiptNoOnline ? this.state.receiptDetails.receiptNoOnline : null,
+            cheque_number: payment.cheque.chequeNo ? payment.cheque.chequeNo : null,
+            date_of_cheque: payment.cheque.chequeDate ? payment.cheque.chequeDate : null,
+            micr_code: payment.cheque.micr ? payment.cheque.micr : null,
+            ifsc_code: payment.cheque.ifsc ? payment.cheque.ifsc : null,
+            // name_on_cheque: payment.cheque.chequeName ? payment.cheque.chequeName : null,
+            current_date: new Date().toISOString().substr(0, 10),
+            bank_name: payment.cheque.chequeBankName ? payment.cheque.chequeBankName : null,
+            bank_branch: payment.cheque.chequeBankBranch ? payment.cheque.chequeBankBranch : null
+          }
+          this.sendingToServer(chequeData)
+        } else {
+          let chequeData = {
+            student: this.state.studentErp ? this.state.studentErp : this.state.students,
+            grade: this.state.gradeId,
+            section: this.state.sectionId,
+            other_fee: [],
+            misc_fee: c,
+            session_year: this.state.session ? this.state.session : null,
+            // application_type: this.state.appTypeData ? this.state.appTypeData.value : null,
+            // student: this.props.studentId ? this.props.studentId : null,
+            date_of_payment: this.state.receiptDetails.receiptInfo && this.state.receiptDetails.receiptInfo.dateofPayment,
+            total_amount: this.state.totalAmounts,
+            payment_mode: this.state.selectedPayment === 'a' ? 1 : this.state.selectedPayment === 'b' ? 2 : this.state.selectedPayment === 'c' ? 3 : 4,
+            receipt_type: this.state.receiptDetails.radioChecked === 'online' ? 1 : 2,
+            receipt_number_online: this.state.receiptDetails.receiptNoOnline ? this.state.receiptDetails.receiptNoOnline : null,
+            cheque_number: payment.cheque.chequeNo ? payment.cheque.chequeNo : null,
+            date_of_cheque: payment.cheque.chequeDate ? payment.cheque.chequeDate : null,
+            micr_code: payment.cheque.micr ? payment.cheque.micr : null,
+            ifsc_code: payment.cheque.ifsc ? payment.cheque.ifsc : null,
+            // name_on_cheque: payment.cheque.chequeName ? payment.cheque.chequeName : null,
+            current_date: new Date().toISOString().substr(0, 10),
+            bank_name: payment.cheque.chequeBankName ? payment.cheque.chequeBankName : null,
+            bank_branch: payment.cheque.chequeBankBranch ? payment.cheque.chequeBankBranch : null
+          }
+          this.sendingToServer(chequeData)
+        }
+      } else if (this.state.selectedPayment === 'c') {
+        if (this.state.value === 'two') {
+          let internetData = {
+            student: {
+              student_name: receiptDetails.outsiderInfo.studentName ? receiptDetails.outsiderInfo.studentName : '',
+              parent_name: receiptDetails.outsiderInfo.parentName ? receiptDetails.outsiderInfo.parentName : '',
+              parent_mobile: receiptDetails.outsiderInfo.parentMobile ? receiptDetails.outsiderInfo.parentMobile : '',
+              grade: receiptDetails.outsiderInfo.class ? receiptDetails.outsiderInfo.class : '',
+              school_name: receiptDetails.outsiderInfo.schoolName ? receiptDetails.outsiderInfo.schoolName : '',
+              address: receiptDetails.outsiderInfo.schoolName ? receiptDetails.outsiderInfo.schoolName : '',
+              description: receiptDetails.outsiderInfo.outsiderDescription ? receiptDetails.outsiderInfo.outsiderDescription : ''
+            },
+            other_fee: [],
+            misc_fee: c,
+            session_year: this.state.session ? this.state.session : null,
+            // application_type: this.state.appTypeData ? this.state.appTypeData.value : null,
+            // student: this.props.studentId ? this.props.studentId : null,
+            date_of_payment: this.state.receiptDetails.receiptInfo && this.state.receiptDetails.receiptInfo.dateofPayment,
+            total_amount: this.state.totalAmounts,
+            payment_mode: this.state.selectedPayment === 'a' ? 1 : this.state.selectedPayment === 'b' ? 2 : this.state.selectedPayment === 'c' ? 3 : 4,
+            receipt_type: this.state.receiptDetails.radioChecked === 'online' ? 1 : 2,
+            receipt_number: this.state.receiptDetails.receiptNoOnline ? this.state.receiptDetails.receiptNoOnline : null,
+            transaction_id: payment.transid ? payment.transid : null,
+            internet_date: payment.internet.internetDate ? payment.internet.internetDate : null,
+            remarks: payment.internet.remarks ? payment.internet.remarks : null,
+            current_date: new Date().toISOString().substr(0, 10)
+          }
+          this.sendingToServer(internetData)
+        } else {
+          let internetData = {
+            student: this.state.studentErp ? this.state.studentErp : this.state.students,
+            grade: this.state.gradeId,
+            section: this.state.sectionId,
+            other_fee: [],
+            misc_fee: c,
+            session_year: this.state.session ? this.state.session : null,
+            // application_type: this.state.appTypeData ? this.state.appTypeData.value : null,
+            // student: this.props.studentId ? this.props.studentId : null,
+            date_of_payment: this.state.receiptDetails.receiptInfo && this.state.receiptDetails.receiptInfo.dateofPayment,
+            total_amount: this.state.totalAmounts,
+            payment_mode: this.state.selectedPayment === 'a' ? 1 : this.state.selectedPayment === 'b' ? 2 : this.state.selectedPayment === 'c' ? 3 : 4,
+            receipt_type: this.state.receiptDetails.radioChecked === 'online' ? 1 : 2,
+            receipt_number_online: this.state.receiptDetails.receiptNoOnline ? this.state.receiptDetails.receiptNoOnline : null,
+            transaction_id: payment.transid ? payment.transid : null,
+            internet_date: payment.internet.internetDate ? payment.internet.internetDate : null,
+            remarks: payment.internet.remarks ? payment.internet.remarks : null,
+            current_date: new Date().toISOString().substr(0, 10)
+          }
+          this.sendingToServer(internetData)
+        }
+      } else if (this.state.selectedPayment === 'd') {
+        if (this.state.value === 'two') {
+          let creditData = {
+            student: {
+              student_name: receiptDetails.outsiderInfo.studentName ? receiptDetails.outsiderInfo.studentName : '',
+              parent_name: receiptDetails.outsiderInfo.parentName ? receiptDetails.outsiderInfo.parentName : '',
+              parent_mobile: receiptDetails.outsiderInfo.parentMobile ? receiptDetails.outsiderInfo.parentMobile : '',
+              grade: receiptDetails.outsiderInfo.class ? receiptDetails.outsiderInfo.class : '',
+              school_name: receiptDetails.outsiderInfo.schoolName ? receiptDetails.outsiderInfo.schoolName : '',
+              address: receiptDetails.outsiderInfo.schoolName ? receiptDetails.outsiderInfo.schoolName : '',
+              description: receiptDetails.outsiderInfo.outsiderDescription ? receiptDetails.outsiderInfo.outsiderDescription : ''
+            },
+            other_fee: [],
+            misc_fee: c,
+            session_year: this.state.session ? this.state.session : null,
+            // application_type: this.state.appTypeData ? this.state.appTypeData.value : null,
+            // student: this.props.studentId ? this.props.studentId : null,
+            date_of_payment: this.state.receiptDetails.receiptInfo && this.state.receiptDetails.receiptInfo.dateofPayment,
+            total_amount: this.state.totalAmounts,
+            payment_mode: this.state.selectedPayment === 'a' ? 1 : this.state.selectedPayment === 'b' ? 2 : this.state.selectedPayment === 'c' ? 3 : 4,
+            receipt_type: this.state.receiptDetails.radioChecked === 'online' ? 1 : 2,
+            receipt_number: this.state.receiptDetails.receiptNoOnline ? this.state.receiptDetails.receiptNoOnline : null,
+            remarks: payment.credit.creditRemarks ? payment.credit.creditRemarks : null,
+            approval_code: payment.credit.approval ? payment.credit.approval : null,
+            card_type: payment.credit.credit ? payment.credit.credit : null,
+            card_last_digits: payment.credit.digits ? payment.credit.digits : null,
+            bank_name: payment.credit.bankName ? payment.credit.bankName : null,
+            credit_date: payment.credit.creditDate ? payment.credit.creditDate : null,
+            current_date: new Date().toISOString().substr(0, 10)
+          }
+          this.sendingToServer(creditData)
+        } else {
+          let creditData = {
+            student: this.state.studentErp ? this.state.studentErp : this.state.students,
+            grade: this.state.gradeId,
+            section: this.state.sectionId,
+            other_fee: [],
+            misc_fee: c,
+            session_year: this.state.session ? this.state.session : null,
+            // application_type: this.state.appTypeData ? this.state.appTypeData.value : null,
+            // student: this.props.studentId ? this.props.studentId : null,
+            date_of_payment: this.state.receiptDetails.receiptInfo && this.state.receiptDetails.receiptInfo.dateofPayment,
+            total_amount: this.state.totalAmounts,
+            payment_mode: this.state.selectedPayment === 'a' ? 1 : this.state.selectedPayment === 'b' ? 2 : this.state.selectedPayment === 'c' ? 3 : 4,
+            receipt_type: this.state.receiptDetails.radioChecked === 'online' ? 1 : 2,
+            receipt_number_online: this.state.receiptDetails.receiptNoOnline ? this.state.receiptDetails.receiptNoOnline : null,
+            remarks: payment.credit.creditRemarks ? payment.credit.creditRemarks : null,
+            approval_code: payment.credit.approval ? payment.credit.approval : null,
+            card_type: payment.credit.credit ? payment.credit.credit : null,
+            card_last_digits: payment.credit.digits ? payment.credit.digits : null,
+            bank_name: payment.credit.bankName ? payment.credit.bankName : null,
+            credit_date: payment.credit.creditDate ? payment.credit.creditDate : null,
+            current_date: new Date().toISOString().substr(0, 10)
+          }
+          this.sendingToServer(creditData)
+        }
       }
-      this.sendingToServer(creditData)
     }
-  }
 
   sendingToServer = (paymentObj) => {
-    this.props.paymentAction(paymentObj, this.props.user, this.props.alert)
+    if (this.state.value === 'one') {
+      this.props.orchidsStudentPay(paymentObj, this.props.user, this.props.alert)
+    } else {
+      this.props.paymentAction(paymentObj, this.props.user, this.props.alert)
+    }
   }
 
   radioHandler = e => {
@@ -536,7 +1068,7 @@ class FeeShowList extends Component {
     })
   }
 
-  gradeHandler = (e) => {
+  gradeHandlers = (e) => {
     const newReceiptDetails = { ...this.state.receiptDetails }
     const newOutsiderInfo = { ...newReceiptDetails.outsiderInfo }
     newOutsiderInfo['class'] = e.value
@@ -547,11 +1079,19 @@ class FeeShowList extends Component {
   }
 
   getPdfData = (transactionId) => {
-    return (axios.get(`${urls.FetchPdfData}?transaction_id=${transactionId}&academic_year=${this.state.session}`, {
-      headers: {
-        Authorization: 'Bearer ' + this.props.user
-      }
-    }))
+    if (this.state.value === 'two') {
+      return (axios.get(`${urls.FetchPdfData}?transaction_id=${transactionId}&academic_year=${this.state.session}`, {
+        headers: {
+          Authorization: 'Bearer ' + this.props.user
+        }
+      }))
+    } else {
+      return (axios.get(`${urls.FetchPdfDataNonOrchids}?transaction_id=${transactionId}&academic_year=${this.state.session}`, {
+        headers: {
+          Authorization: 'Bearer ' + this.props.user
+        }
+      }))
+    }
   }
 
   generatePdf = async () => {
@@ -562,6 +1102,206 @@ class FeeShowList extends Component {
       console.log(e)
       this.props.alert.warning('Something Went Wrong')
     }
+  }
+  // NEW
+  handleChange = (event, value) => {
+    this.setState({ value })
+  }
+
+  handleChangeIndex = index => {
+    this.setState({ value: index })
+  }
+
+  handleAcademicyear = (e) => {
+    console.log('current session: ', e)
+    this.setState({
+      sessions: e,
+      getData: false,
+      s: null,
+      showTabs: false
+    }, () => {
+      this.props.fetchGrades(this.state.sessions.value, this.props.alert, this.props.user)
+    })
+  }
+
+  gradeHandler = (e) => {
+    this.setState({ gradeId: e.value, gradeData: e, sectionData: [] }, () => {
+      if (this.state.gradeId === 'all') {
+        this.setState({
+          allSections: true,
+          sectionId: 'all',
+          getData: false
+        })
+      } else {
+        this.props.fetchAllSections(this.state.sessions.value, this.state.gradeId, this.props.alert, this.props.user)
+        this.setState({
+          allSections: false,
+          getData: false
+        })
+      }
+    })
+  }
+
+  sectionHandler = (e) => {
+    let sectionIds = []
+    e.forEach(section => {
+      sectionIds.push(section.value)
+    })
+    this.setState({ sectionId: sectionIds, sectionData: e, getData: false })
+  }
+
+  allSectionHandler = (e) => {
+    this.setState({ sectionId: e.target.value, sectionData: e, getData: false })
+  }
+
+  activeHandler = (e) => {
+    this.setState({
+      // studentTypeId: e.value,
+      studentTypeData: e,
+      getData: false
+    })
+  }
+
+  searchTypeHandler = (e) => {
+    this.setState({
+      searchTypeData: e,
+      searchTypeId: e.value,
+      getData: false,
+      showTabs: false,
+      studentName: ''
+    }, () => {
+      this.props.clearAllProps()
+    })
+  }
+
+  erpHandler = () => {
+    // const erp = document.querySelectorAll('[name=searchBox]')
+    if (this.state.searchTypeData.value === 1 && this.state.selectedErpStatus) {
+      this.props.fetchAllPayment(this.state.sessions.value, this.state.studentLabel, this.props.user, this.props.alert)
+    } else if (this.state.searchTypeData.value === 2 && this.state.selectedNameStatus) {
+      this.props.fetchAllPayment(this.state.sessions.value, this.state.studentErp, this.props.user, this.props.alert)
+    } else {
+      this.props.alert.warning('Select Valid Erp')
+    }
+    // makePayState = this.state
+  }
+
+  myErpFunc = () => {
+    this.props.studentErpSearch(
+      'erp',
+      this.state.sessions.value,
+      this.state.gradeId,
+      this.state.sectionId,
+      this.state.studentTypeData.value,
+      this.state.students,
+      this.props.alert,
+      this.props.user
+    )
+  }
+
+  studentErpChangeHandler = (e, selected) => {
+    this.setState({ students: e.target.value, studentLabel: e.target.label, selectedErpStatus: selected, showTabs: false, getData: false }, () => {
+      if (this.state.students.length >= 3) {
+        this.myErpFunc()
+      }
+    })
+    if (this.state.selectedNameStatus || this.state.selectedErpStatus) {
+      this.setState({
+        showTabs: false,
+        getData: false
+      })
+    }
+  }
+
+  myStudentFun = () => {
+    const { searchTypeId } = this.state
+    this.props.studentErpSearch(
+      searchTypeId === 2 ? 'student' : searchTypeId === 3 ? 'fatherName' : searchTypeId === 4 ? 'fatherNo' : searchTypeId === 5 ? 'motherName' : searchTypeId === 6 ? 'motherNo' : 'na',
+      this.state.sessions.value,
+      this.state.gradeId,
+      this.state.sectionId,
+      this.state.studentTypeData.value,
+      this.state.studentName,
+      this.props.alert,
+      this.props.user
+    )
+  }
+  studentNameChangeHandler = (e, selected) => {
+    this.setState({ studentName: e.target.value, selectedNameStatus: selected, showTabs: false, getData: false }, () => {
+      const student = this.props.studentErp && this.props.studentErp.length > 0 ? this.props.studentErp.filter(item => item.name === this.state.studentName)[0] : ''
+      this.setState({
+        studentErp: student && student.erp ? student.erp : null
+      })
+      if (this.state.studentName.length >= 3) {
+        this.myStudentFun()
+      }
+    })
+  }
+
+  // erpChangeHander = (e) => {
+  //   this.setState({
+  //     erpNo: e.target.value,
+  //     getData: false
+  //   })
+  // }
+
+  showLedgerHandler = () => {
+    if (!this.state.sessions && !this.state.studentErp) {
+      this.props.alert.warning('Please Fill All The Fields')
+      return
+    }
+    if (this.state.selectedNameStatus || this.state.selectedErpStatus) {
+      this.setState({
+        showTabs: true,
+        getData: true
+      })
+    } else {
+      this.props.alert.warning('Select Valid Student')
+    }
+  }
+  callbackFunction = (childData) => {
+    this.setState({
+      sessions: {
+        label: childData,
+        value: childData
+      }
+      // getData: false,
+      // showTabs: false
+    }, () => {
+      console.log('realsession', this.state.session)
+    })
+    console.log('Childdata', childData)
+  }
+  renderTable = () => {
+    console.log('-------rendertable called')
+    let dataToShow = []
+    dataToShow = this.props.feeList.map((val, i) => {
+      return {
+        id: val.id,
+        check: <input
+          type='checkbox'
+          name='checking'
+          // value={i + 1}
+          checked={this.state.checkBox[val.id]}
+          onChange={
+            (e) => { this.checkBoxHandler(e, val.id, val.is_misc, val.amount) }
+          } />,
+        feeCollectionType: val.fee_type_name ? val.fee_type_name : '',
+        // subType: val.sub_type ? val.sub_type : '',
+        amountGiven: val.amount && val.amount ? val.amount : '',
+        amount: <input
+          name='amount'
+          type='number'
+          // value={i + 1}
+          disabled={val.allow_partial_payments === false}
+          value={this.state.amountToEnter[val.id] || val.amount}
+          readOnly={!this.state.checkBox[val.id]}
+          onChange={this.amountHandler(val.id, val.amount)}
+        />,
+        feeAccount: val.fee_account && val.fee_account.fee_account_name ? val.fee_account.fee_account_name : ''
+      }
+    })
+    return dataToShow
   }
 
   // renderReceiptTable = () => {
@@ -675,6 +1415,74 @@ class FeeShowList extends Component {
     // }
     console.log('receiptData', receiptData)
     console.log('the amounttoenter state', this.state.amountToEnter)
+    const handleChange = (event, value) => {
+      this.setState({
+        value: value,
+        totalAmounts: totalAmount
+      })
+      if (this.state.receiptDetails && this.state.receiptDetails.radioChecked === 'manual' && (this.state.receiptDetails.receiptNoOnline < (this.props.receiptRange.manual[0] && this.props.receiptRange.manual[0].range_from) || this.state.receiptDetails.receiptNoOnline > (this.props.receiptRange.manual[0] && this.props.receiptRange.manual[0].range_to))) {
+        this.props.alert.warning('Enter Receipt no between given Range!')
+      }
+      if (!this.state.receiptDetails.receiptInfo.dateofPayment) {
+        this.props.alert.warning('Select Date of Payment to continue!')
+      }
+    }
+    let sectionRow = null
+    if (this.state.allSections) {
+      sectionRow = 'All Sections'
+    } else {
+      sectionRow = (
+        <Select
+          placeholder='Select Section'
+          isMulti
+          disabled={this.state.allSections}
+          value={this.state.sectionData ? this.state.sectionData : ''}
+          options={
+            this.props.sectionData
+              ? this.props.sectionData.map(sec => ({
+                value: sec.section.id,
+                label: sec.section.section_name
+              }))
+              : []
+          }
+          onChange={this.sectionHandler}
+        />
+      )
+    }
+    // auto suggestions dropdown
+    const { searchTypeData, searchTypeId } = this.state
+    let searchBox = null
+    if (searchTypeData.value === 1) {
+      searchBox = (
+        <div style={{ position: 'relative', marginLeft: '33px' }}>
+          <label style={{ display: 'block' }}>Search*</label>
+          <AutoSuggest
+            label='Search ERP'
+            style={{ display: 'absolute', top: '10px', width: '240px' }}
+            value={this.state.students || ''}
+            onChange={this.studentErpChangeHandler}
+            margin='dense'
+            variant='outlined'
+            data={this.props.studentErp && this.props.studentErp.length > 0 ? this.props.studentErp.map(item => ({ value: item.erp ? item.erp : '', label: item.erp ? item.erp : '' })) : []}
+          />
+        </div>
+      )
+    } else {
+      searchBox = (
+        <div style={{ position: 'relative', marginLeft: '33px' }}>
+          <label style={{ display: 'block' }}>Search*</label>
+          <AutoSuggest
+            label={searchTypeId === 2 ? 'Search Student Name' : searchTypeId === 3 ? 'Search Father Name' : searchTypeId === 4 ? 'Search Father Number' : searchTypeId === 5 ? 'Search Mother Name' : searchTypeId === 6 ? 'Search Mother Number' : 'na'}
+            style={{ display: 'absolute', top: '10px', width: '240px' }}
+            value={this.state.studentName || ''}
+            onChange={this.studentNameChangeHandler}
+            margin='dense'
+            variant='outlined'
+            data={this.props.studentErp && this.props.studentErp.length > 0 ? this.props.studentErp.map(item => ({ value: item.name ? item.name : '', label: item.name ? item.name : '' })) : []}
+          />
+        </div>
+      )
+    }
     return (
       <div>
         <Paper>
@@ -682,7 +1490,7 @@ class FeeShowList extends Component {
             <TableHead>
               <TableRow>
                 <TableCell align='right'>Fee Type</TableCell>
-                <TableCell align='right'>Sub Type</TableCell>
+                {/* <TableCell align='right'>Sub Type</TableCell> */}
                 <TableCell align='right'>Amount</TableCell>
                 {/* <TableCell align='right'>Rounded Amount</TableCell> */}
                 <TableCell align='right'>GST %</TableCell>
@@ -696,12 +1504,12 @@ class FeeShowList extends Component {
                 receiptData.map((val, i) => {
                   return (
                     <TableRow>
-                      <TableCell align='right'>{val.fee_type_name ? val.fee_type_name : ''}</TableCell>
-                      <TableCell align='right'>{val.sub_type ? val.sub_type : ''}</TableCell>
+                      <TableCell align='right'>{amountToEnter[val.id] && val.fee_type_name ? val.fee_type_name : ''}</TableCell>
+                      {/* <TableCell align='right'>{val.sub_type ? val.sub_type : ''}</TableCell> */}
                       <TableCell align='right'>{amountToEnter[val.id] ? amountToEnter[val.id] : ''}</TableCell>
                       {/* <TableCell align='right'>{val.amount ? val.amount : ''}</TableCell> */}
-                      <TableCell align='right'>{'0'}</TableCell>
-                      <TableCell align='right'>{'0'}</TableCell>
+                      <TableCell align='right'>{amountToEnter[val.id] && '0'}</TableCell>
+                      <TableCell align='right'>{amountToEnter[val.id] && '0'}</TableCell>
                       {/* <TableCell align='right'>{'0'}</TableCell> */}
                       <TableCell align='right'>{amountToEnter[val.id] ? amountToEnter[val.id] : ''}</TableCell>
                     </TableRow>
@@ -743,11 +1551,15 @@ class FeeShowList extends Component {
           {this.state.receiptDetails.radioChecked === 'manual'
             ? <Grid container spacing={3}>
               <Grid item xs={3}>
+                {this.props.receiptRange && this.props.receiptRange.manual.length > 0
+                  ? <label style={{ color: 'red' }}>Range From: {this.props.receiptRange.manual[0].range_from} - Range To: {this.props.receiptRange.manual[0].range_to}</label>
+                  : '' }
+                <br />
                 <TextField
                   className={this.props.classes.textField}
-                  label='Receipt No Online'
+                  label='Receipt No'
                   type='number'
-                  margin='dense'
+                  // margin='dense'
                   // className='form-control'
                   fullWidth
                   onChange={this.receiptNoOnlineHandler}
@@ -775,13 +1587,13 @@ class FeeShowList extends Component {
               />
             </Grid>
           </Grid>
-          <Grid container spacing={3}>
+          <Grid container spacing={3}style={{ padding: 15 }}>
             <Grid item xs={3}>
               <p style={{ fontSize: '16px' }}>Total Amount: {totalAmount}</p>
             </Grid>
           </Grid>
           <Grid container spacing={3}>
-            <Grid item xs={3}>
+            {/* <Grid item xs={3}>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -791,9 +1603,9 @@ class FeeShowList extends Component {
                     color='primary'
                   />
                 }
-                label='Is Student Related Payement'
-              />
-              {/* <Checkbox
+                label='Is Student Related Payment'
+              /> */}
+            {/* <Checkbox
                 label='Is Student Related Payement'
                 checked={this.state.receiptDetails.boxChecked}
                 onChange={this.boxHandler}
@@ -802,150 +1614,321 @@ class FeeShowList extends Component {
                   'aria-label': 'Is Student Related Payement'
                 }}
               /> */}
-              {/* <input
+            {/* <input
                 type='checkbox'
                 name='isStudentRelatedPayement'
                 // className='form-control'
                 onChange={this.boxHandler}
                 checked={this.state.receiptDetails.boxChecked}
               /><label>Is Student Related Payement </label> */}
-            </Grid>
+            {/* </Grid> */}
           </Grid>
-          { this.state.receiptDetails.boxChecked
-            ? <Grid container spacing={3} style={{ margin: '20px', marginTop: '5px' }}>
+          <React.Fragment>
+            <AppBar position='static' style={{ zIndex: 0 }}>
+              <Tabs value={this.state.value} onChange={handleChange} variant='scrollable' scrollButtons='auto'>
+                <Tab value='one' label='Orchid Students' />
+                <Tab value='two' label='Non Orchid Students' />
+              </Tabs>
+            </AppBar>
+          </React.Fragment>
+          {this.state.value === 'one' && <TabContainer>
+            {/* <Grid container spacing={3} style={{ margin: '20px', marginTop: '5px' }}>
               <Grid item xs={3}>
                 <TextField
                   className={this.props.classes.textField}
-                  // className='form-control'
-                  label='Student name'
-                  type='text'
-                  margin='dense'
-                  name='studentName'
-                  fullWidth
-                  value={this.state.receiptDetails.outsiderInfo.studentName}
-                  onChange={this.outsiderInfoHandler}
-                  required
-                  variant='outlined'
-                  style={{ width: '200px' }}
-                />
-              </Grid>
-              <Grid item xs={3}>
-                <TextField
-                  className={this.props.classes.textField}
-                  // className='form-control'
-                  label='Parent name'
-                  type='text'
-                  margin='dense'
-                  name='parentName'
-                  fullWidth
-                  value={this.state.receiptDetails.outsiderInfo.parentName}
-                  onChange={this.outsiderInfoHandler}
-                  required
-                  variant='outlined'
-                  style={{ width: '200px' }}
-                />
-              </Grid>
-              <Grid item xs={3}>
-                <TextField
-                  className={this.props.classes.textField}
-                  // className='form-control'
-                  label='Parent mobile'
+                  label='Erp'
                   type='number'
+                  name='Enter Erp'
                   margin='dense'
-                  name='parentMobile'
-                  fullWidth
-                  value={this.state.receiptDetails.outsiderInfo.parentMobile}
-                  onChange={this.outsiderInfoHandler}
+                  // fullWidth
+                  onChange={this.erpHandler}
                   required
+                  value={this.state.erp}
                   variant='outlined'
-                  style={{ width: '200px' }}
                 />
               </Grid>
               <Grid item xs={3}>
-                <div style={{ width: '200px', marginTop: '10px', lineHeight: '2.5' }}>
+                <Button variant='contained' onClick={this.getHandler}>GET</Button>
+              </Grid>
+            </Grid>
+            {this.props.studentDet && this.state.showData
+              ? <Grid container spacing={3} style={{ margin: '20px', marginTop: '5px' }}>
+                <Grid item xs={3}>
+              Student Name: {this.props.studentDet && this.props.studentDet.student_name}
+                </Grid>
+                <Grid item xs={3}>
+              Grade: {this.props.studentDet && this.props.studentDet.grade}
+                </Grid>
+                <Grid item xs={3}>
+              Section: {this.props.studentDet && this.props.studentDet.section}
+                </Grid>
+                <Grid item xs={3}>
+              Active: {this.props.studentDet && this.props.studentDet.is_active ? 'yes' : 'No'}
+                </Grid>
+                <Grid item xs={3}>
+              Father Name: {this.props.studentDet && this.props.studentDet.father_name}
+                </Grid>
+                <Grid item xs={3}>
+              Father Mobile No: {this.props.studentDet && this.props.studentDet.father_mobile}
+                </Grid>
+              </Grid>
+              : [] } */}
+
+            <React.Fragment>
+              <Grid container spacing={3} style={{ padding: 15 }}>
+                <Grid item xs={3} className={this.props.classes.item} style={{ zIndex: '1103' }}>
+                  <label>Academic Year*</label>
                   <Select
-                    style={{ marginLeft: '8px', marginRight: '8px' }}
-                    onChange={(e) => { this.gradeHandler(e) }}
-                    name='class'
-                    // className='form-control'
+                    placeholder='Select Year'
+                    value={this.state.sessions ? this.state.sessions : null}
+                    options={
+                      this.props.session
+                        ? this.props.session.session_year.map(session => ({
+                          value: session,
+                          label: session
+                        }))
+                        : []
+                    }
+                    onChange={this.handleAcademicyear}
+                  />
+                </Grid>
+                <Grid item xs={3} className={this.props.classes.item} style={{ zIndex: '1102' }}>
+                  <label>Grade*</label>
+                  <Select
+                    placeholder='Select Grade'
+                    value={this.state.gradeData ? this.state.gradeData : null}
                     options={
                       this.props.gradeData
-                        ? this.props.gradeData.map(grades => ({
+                        ? this.props.gradeData && this.props.gradeData.map(grades => ({
                           value: grades.grade.id,
                           label: grades.grade.grade
                         }))
                         : []
                     }
+                    onChange={this.gradeHandler}
                   />
-                </div>
+                </Grid>
+                <Grid item xs={3} className={this.props.classes.item} style={{ zIndex: '1101' }}>
+                  <label>Section*</label>
+                  {sectionRow}
+                </Grid>
+                <Grid item xs={3} className={this.props.classes.item} style={{ zIndex: '1100' }}>
+                  <label>Active/Inactive*</label>
+                  <Select
+                    placeholder='Select State'
+                    value={this.state.studentTypeData ? this.state.studentTypeData : ''}
+                    options={[
+                      {
+                        label: 'Active',
+                        value: 1
+                      },
+                      {
+                        label: 'InActive',
+                        value: 2
+                      },
+                      {
+                        label: 'Both',
+                        value: 3
+                      }
+                    ]}
+                    onChange={this.activeHandler}
+                  />
+                </Grid>
+                <Grid item xs={3} className={this.props.classes.item} style={{ zIndex: '1000' }}>
+                  <label>Search Type*</label>
+                  <Select
+                    placeholder='Select Type'
+                    value={this.state.searchTypeData ? this.state.searchTypeData : ''}
+                    options={[
+                      {
+                        label: 'ERP',
+                        value: 1
+                      },
+                      {
+                        label: 'Student Name',
+                        value: 2
+                      },
+                      {
+                        label: 'Father Name',
+                        value: 3
+                      },
+                      {
+                        label: 'Father Number',
+                        value: 4
+                      },
+                      {
+                        label: 'Mother Name',
+                        value: 5
+                      },
+                      {
+                        label: 'Mother Number',
+                        value: 6
+                      }
+                    ]}
+                    onChange={this.searchTypeHandler}
+                  />
+                </Grid>
+                <Grid item xs={3}>
+                  {searchBox}
+                </Grid>
+                <Grid item xs={2} className={this.props.classes.item}>
+                  <Button
+                    style={{ marginLeft: '10px', marginTop: '20px' }}
+                    variant='contained'
+                    color='primary'
+                    disabled={!this.state.session}
+                    // onClick={this.erpHandler}
+                    onClick={this.showLedgerHandler}>
+              GET
+                  </Button>
+                </Grid>
               </Grid>
-              <Grid item xs={3}>
-                <TextField
-                  className={this.props.classes.textField}
-                  // className='form-control'
-                  label='School name'
-                  type='text'
-                  name='schoolName'
-                  margin='dense'
-                  fullWidth
-                  value={this.state.receiptDetails.outsiderInfo.schoolName}
-                  onChange={this.outsiderInfoHandler}
-                  required
-                  variant='outlined'
-                  style={{ width: '200px' }}
-                />
-              </Grid>
-              <Grid item xs={3}>
-                <TextField
-                  className={this.props.classes.textField}
-                  //   className='form-control'
-                  label='Address'
-                  type='text'
-                  name='address'
-                  margin='dense'
-                  fullWidth
-                  value={this.state.receiptDetails.outsiderInfo.address}
-                  onChange={this.outsiderInfoHandler}
-                  required
-                  variant='outlined'
-                  style={{ width: '200px' }}
-                />
-              </Grid>
-              <Grid item xs={3}>
-                <TextField
-                  className={this.props.classes.textField}
-                  // className='form-control'
-                  label='Description'
-                  type='multiliner'
-                  name='outsiderDescription'
-                  margin='dense'
-                  fullWidth
-                  value={this.state.receiptDetails.outsiderInfo.outsiderDescription}
-                  onChange={this.outsiderInfoHandler}
-                  required
-                  variant='outlined'
-                  style={{ width: '200px' }}
-                />
-              </Grid>
-            </Grid>
-            : <Grid container spacing={3}>
-              <Grid item xs={3}>
-                <TextField
-                  className={this.props.classes.textField}
-                  // className='form-control'
-                  label='Description'
-                  type='multiline'
-                  margin='dense'
-                  name='generalDescription'
-                  fullWidth
-                  onChange={this.generalDescriptionHandler}
-                  required
-                  value={this.state.receiptDetails.generalDescription}
-                  variant='outlined'
-                />
-              </Grid>
-            </Grid>
+              {this.state.searchTypeData.value === 1
+                ? <Student erp={this.state.studentLabel} session={this.state.sessions.value} user={this.props.user} alert={this.props.alert} />
+                : <Student erp={this.state.studentErp} session={this.state.sessions.value} user={this.props.user} alert={this.props.alert} />}
+              {/* {tabBar} */}
+              {this.props.dataLoading ? <CircularProgress open /> : null}
+            </React.Fragment>
+          </TabContainer>
           }
+          {this.state.value === 'two' && <TabContainer>
+            { this.state.receiptDetails.boxChecked
+              ? <Grid container spacing={3} style={{ margin: '20px', marginTop: '5px' }}>
+                <Grid item xs={3}>
+                  <TextField
+                    className={this.props.classes.textField}
+                    // className='form-control'
+                    label='Student name'
+                    type='text'
+                    margin='dense'
+                    name='studentName'
+                    fullWidth
+                    value={this.state.receiptDetails.outsiderInfo.studentName}
+                    onChange={this.outsiderInfoHandler}
+                    required
+                    variant='outlined'
+                    style={{ width: '200px' }}
+                  />
+                </Grid>
+                <Grid item xs={3}>
+                  <TextField
+                    className={this.props.classes.textField}
+                    // className='form-control'
+                    label='Parent name'
+                    type='text'
+                    margin='dense'
+                    name='parentName'
+                    fullWidth
+                    value={this.state.receiptDetails.outsiderInfo.parentName}
+                    onChange={this.outsiderInfoHandler}
+                    required
+                    variant='outlined'
+                    style={{ width: '200px' }}
+                  />
+                </Grid>
+                <Grid item xs={3}>
+                  <TextField
+                    className={this.props.classes.textField}
+                    // className='form-control'
+                    label='Parent mobile'
+                    type='number'
+                    margin='dense'
+                    name='parentMobile'
+                    fullWidth
+                    value={this.state.receiptDetails.outsiderInfo.parentMobile}
+                    onChange={this.outsiderInfoHandler}
+                    required
+                    variant='outlined'
+                    style={{ width: '200px' }}
+                  />
+                </Grid>
+                <Grid item xs={3} >
+                  <label>Grade*</label>
+                  <div style={{ width: '200px', marginBottom: '30px' }}>
+                    <Select
+                      style={{ marginLeft: '8px', marginRight: '8px' }}
+                      onChange={(e) => { this.gradeHandlers(e) }}
+                      name='class'
+                      // className='form-control'
+                      options={
+                        this.props.gradeDatas
+                          ? this.props.gradeDatas && this.props.gradeDatas.map(grades => ({
+                            value: grades.grade.id,
+                            label: grades.grade.grade
+                          }))
+                          : []
+                      }
+                    />
+                  </div>
+                </Grid>
+                <Grid item xs={3}>
+                  <TextField
+                    className={this.props.classes.textField}
+                    // className='form-control'
+                    label='School name'
+                    type='text'
+                    name='schoolName'
+                    margin='dense'
+                    fullWidth
+                    value={this.state.receiptDetails.outsiderInfo.schoolName}
+                    onChange={this.outsiderInfoHandler}
+                    required
+                    variant='outlined'
+                    style={{ width: '200px' }}
+                  />
+                </Grid>
+                <Grid item xs={3}>
+                  <TextField
+                    className={this.props.classes.textField}
+                    //   className='form-control'
+                    label='Address'
+                    type='text'
+                    name='address'
+                    margin='dense'
+                    fullWidth
+                    value={this.state.receiptDetails.outsiderInfo.address}
+                    onChange={this.outsiderInfoHandler}
+                    required
+                    variant='outlined'
+                    style={{ width: '200px' }}
+                  />
+                </Grid>
+                <Grid item xs={3}>
+                  <TextField
+                    className={this.props.classes.textField}
+                    // className='form-control'
+                    label='Description'
+                    type='multiliner'
+                    name='outsiderDescription'
+                    margin='dense'
+                    fullWidth
+                    value={this.state.receiptDetails.outsiderInfo.outsiderDescription}
+                    onChange={this.outsiderInfoHandler}
+                    required
+                    variant='outlined'
+                    style={{ width: '200px' }}
+                  />
+                </Grid>
+              </Grid>
+              : <Grid container spacing={3}>
+                <Grid item xs={3}>
+                  <TextField
+                    className={this.props.classes.textField}
+                    // className='form-control'
+                    label='Description'
+                    type='multiline'
+                    margin='dense'
+                    name='generalDescription'
+                    fullWidth
+                    onChange={this.generalDescriptionHandler}
+                    required
+                    value={this.state.receiptDetails.generalDescription}
+                    variant='outlined'
+                  />
+                </Grid>
+              </Grid>
+            }
+          </TabContainer>}
         </div>
       </div>
     )
@@ -1260,6 +2243,9 @@ class FeeShowList extends Component {
         break
       }
       case 'micr': {
+        if (this.state.searchByValue === 2 && event.target.value.length === 9) {
+          this.props.fetchMicr(event.target.value, this.props.alert, this.props.user)
+        }
         newCheque['micr'] = event.target.value
         break
       }
@@ -1346,8 +2332,7 @@ class FeeShowList extends Component {
     const { activeStep } = this.state
     console.log('State', this.props.location.state)
     return (
-      <Layout>     
-         <React.Fragment>
+      <React.Fragment>
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map(label => (
             <Step key={label}>
@@ -1369,7 +2354,7 @@ class FeeShowList extends Component {
               <Button variant='contained' color='primary' onClick={this.handleNext}
                 disabled={this.state.disableNext}
               >
-                Next
+                {this.state.activeStep <= 2 ? 'NEXT' : 'FINISH'}
               </Button>
             </div>
           </div>
@@ -1377,29 +2362,51 @@ class FeeShowList extends Component {
         {/* {feeListTable} */}
         {this.props.dataLoading ? <CircularProgress open /> : null}
       </React.Fragment>
-      </Layout>
     )
   }
 }
 const mapStateToProps = state => ({
   user: state.authentication.user,
+  receiptRange: state.finance.makePayAcc.receiptRange,
   dataLoading: state.finance.common.dataLoader,
   feeList: state.finance.accountantReducer.feeCollection.feeCollectionList,
   studentId: state.finance.accountantReducer.feeCollection.studentId,
   gradeData: state.finance.accountantReducer.pdc.gradeData,
+  gradeDatas: state.finance.accountantReducer.pdc.gradeDatas,
   ifsc: state.finance.common.ifscDetails,
   ReceiptNo: state.finance.accountantReducer.feeCollection.ReceiptNo,
   status: state.finance.accountantReducer.feeCollection.status,
-  trnsId: state.finance.accountantReducer.feeCollection.transactionId
+  trnsId: state.finance.accountantReducer.feeCollection.transactionId,
+  studentDet: state.finance.accountantReducer.feeCollection.studentDet,
+  micr: state.finance.common.micrDetails,
+  // NEW
+  session: state.academicSession.items,
+  // ErpSuggestions: state.finance.makePayAcc.erpSuggestions,
+  // gradeData: state.finance.accountantReducer.pdc.gradeData,
+  sectionData: state.finance.accountantReducer.changeFeePlan.sectionData,
+  studentErp: state.finance.accountantReducer.studentErpSearch.studentErpList,
+  branchData: state.finance.accountantReducer.financeAccDashboard.branchData
 })
 
 const mapDispatchToProps = dispatch => ({
+  fetchStudentErpDet: (erp, session, user, alert) => dispatch(actionTypes.fetchStudentErpDet({ erp, session, user, alert })),
   fetchFeeCollection: (session, user, alert) => dispatch(actionTypes.fetchFeeCollectionList({ session, user, alert })),
   saveOutsiders: (data, user, alert) => dispatch(actionTypes.saveOutsiders({ data, user, alert })),
+  orchidsStudentPay: (data, user, alert) => dispatch(actionTypes.orchidsStudentPay({ data, user, alert })),
   fetchGrades: (session, alert, user) => dispatch(actionTypes.fetchGrades({ session, alert, user })),
   paymentAction: (data, user, alert) => dispatch(actionTypes.paymentAction({ data, user, alert })),
-  fetchIfsc: (ifsc, alert, user) => dispatch(actionTypes.fetchIfsc({ ifsc, alert, user }))
+  fetchIfsc: (ifsc, alert, user) => dispatch(actionTypes.fetchIfsc({ ifsc, alert, user })),
   // sendAllPayments: (data, user, alert) => dispatch(actionTypes.sendAllPayments({ data, user, alert }))
+  // NEW
+  loadSession: dispatch(apiActions.listAcademicSessions()),
+  // fetchGrades: (session, alert, user) => dispatch(actionTypes.fetchGrades({ session, alert, user })),
+  // fetchErpSuggestions: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.fetchErpSuggestions({ type, session, grade, section, status, erp, alert, user })),
+  studentErpSearch: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.studentErpSearch({ type, session, grade, section, status, erp, alert, user })),
+  clearAllProps: (alert, user) => dispatch(actionTypes.clearAllProps({ alert, user })),
+  fetchAllSections: (session, gradeId, alert, user) => dispatch(actionTypes.fetchAllSections({ session, gradeId, alert, user })),
+  fetchReceiptRange: (session, erp, alert, user) => dispatch(actionTypes.fetchReceiptRange({ session, erp, alert, user })),
+  fetchBranchData: (alert, user) => dispatch(actionTypes.fetchAccountantBranch({ alert, user })),
+  fetchMicr: (micr, alert, user) => dispatch(actionTypes.fetchMicr({ micr, alert, user }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withRouter(FeeShowList)))

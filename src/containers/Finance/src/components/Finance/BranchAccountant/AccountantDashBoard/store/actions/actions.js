@@ -32,7 +32,7 @@ export const fetchPostDateCount = (payload) => {
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
-        payload.alert.warning('Unable to load dashboard data')
+        // payload.alert.warning('Unable to load dashboard data')
       })
   }
 }
@@ -57,7 +57,7 @@ export const fetchRecentDated = (payload) => {
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
-        payload.alert.warning('Unable to load dashboard data')
+        // payload.alert.warning('Unable to load dashboard data')
       })
   }
 }
@@ -78,7 +78,7 @@ export const fetchBranch = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      payload.alert.warning('Cannot Fetch Applicable Branches')
+      // payload.alert.warning('Cannot Fetch Applicable Branches')
       console.log(err)
       dispatch(actionTypes.dataLoaded())
     })
@@ -102,7 +102,7 @@ export const checkReturn = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      payload.alert.warning('SomeThing Went Wrong!!!')
+      // payload.alert.warning('SomeThing Went Wrong!!!')
       console.log(err)
       dispatch(actionTypes.dataLoaded())
     })
@@ -128,7 +128,7 @@ export const switchBranch = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      payload.alert.warning('Something went wrong.')
+      // payload.alert.warning('Something went wrong.')
       console.log(err)
       dispatch(actionTypes.dataLoaded())
     })
@@ -154,7 +154,7 @@ export const returnAdmin = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      payload.alert.warning('Cannot Fetch Branch')
+      // payload.alert.warning('Cannot Fetch Branch')
       console.error(err)
       dispatch(actionTypes.dataLoaded())
     })
@@ -177,7 +177,7 @@ export const fetchAccountantBranch = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      payload.alert.warning('Cannot Fetch Branch')
+      // payload.alert.warning('Cannot Fetch Branch')
       console.error(err)
       dispatch(actionTypes.dataLoaded())
     })

@@ -183,9 +183,17 @@ export {
   PAY_NON_ORCHIDS,
   paymentAction,
   SAVE_OUTSIDERS,
-  saveOutsiders
+  saveOutsiders,
+  fetchStudentErpDet,
+  STUDENT_DETAILS,
   // SEND_ALL_PAYMENTS,
   // sendAllPayments
+  orchidsStudentPay,
+  ORCHIDS_STUDNET_PAY,
+  MISC_REPORT,
+  miscReport,
+  CANCEL_TRANS,
+  cancelTransaction
 } from '../../FeeCollection/store/action/action'
 
 export {
