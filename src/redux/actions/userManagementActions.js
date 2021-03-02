@@ -100,7 +100,7 @@ export const fetchUser = (id) => (dispatch) => {
           user.mapping_bgs[0].branch.map((branch) => ({
             id: branch.branch_id,
             branch_name: branch.branch__branch_name,
-            branch_code:branch.branch_code,
+            branch_code: branch.branch_code,
           }))[0],
         grade:
           user.mapping_bgs[0].grade &&
@@ -192,9 +192,12 @@ export const fetchBranchesForCreateUser = () => {
   return axios
     .get('/erp_user/branch/')
     .then((response) => {
-      return response.data.data;
+      if (response.data.status_code === 200) return response?.data?.data;
+      else console.log('','xyzxyz');
     })
-    .catch(() => { });
+    .catch((error) => {
+      throw error;
+    });
 };
 
 export const fetchAcademicYears = () => {
@@ -203,7 +206,7 @@ export const fetchAcademicYears = () => {
     .then((response) => {
       return response.data.data;
     })
-    .catch(() => { });
+    .catch(() => {});
 };
 
 export const fetchSubjects = () => {
@@ -212,5 +215,5 @@ export const fetchSubjects = () => {
     .then((response) => {
       return response.data.data;
     })
-    .catch(() => { });
+    .catch(() => {});
 };
