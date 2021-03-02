@@ -1,14 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import {useHistory} from 'react-router-dom'
-import Paper from '@material-ui/core/Paper';
-import {
-  Grid,
-  TextField,
-  Button,
-  useTheme,
-  SvgIcon,
-  Typography,
-} from '@material-ui/core';
+import { useHistory, useParams } from 'react-router-dom';
+import { Grid, TextField, Button, useTheme } from '@material-ui/core';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -16,100 +8,139 @@ import Box from '@material-ui/core/Box';
 // import useStyles from './useStyles';
 import endpoints from '../../../../../config/endpoints';
 import axiosInstance from '../../../../../config/axios';
-import {AlertNotificationContext} from '../../../../../context-api/alert-context/alert-state'
+import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
 import Divider from '@material-ui/core/Divider';
+import '../../create-course/style.css';
 
-const CourseFilter = ({handleCourseList}) => {
-    const themeContext = useTheme();
-    const { setAlert } = useContext(AlertNotificationContext);
-    const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-    // const classes = useStyles();
-    const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
-    const widerWidth = isMobile ? '98%' : '95%';
-    const history =useHistory()
+const CourseFilter = ({
+  handleCourseList,
+  setCourseData,
+  setPageFlag,
+  handleClearFilter,
+}) => {
+  const themeContext = useTheme();
+  const { gradeKey } = useParams();
+  const history = useHistory();
+  const { setAlert } = useContext(AlertNotificationContext);
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+  const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
+  const widerWidth = isMobile ? '98%' : '95%';
+  const [gradeDropdown, setGradeDropdown] = useState([]);
+  const [gradeIds, setGradeIds] = useState([]);
 
+  const [filterData, setFilterData] = useState({
+    // branch: '',
+    grade: [],
+  });
 
-    const [branchDropdown, setBranchDropdown] = useState([]);
-    const [gradeDropdown, setGradeDropdown] = useState([]);
-    const [gradeIds, setGradeIds] = useState([]);
-  
-    const [filterData, setFilterData] = useState({
-      branch: '',
+  // const branchDrop = [{ branch_name: 'AOL' }];
+
+  const handleClear = () => {
+    setFilterData({
       grade: [],
+      // branch: '',
     });
+    setGradeIds([]);
+    //setCourseData([]);
+    setPageFlag(false);
+    handleClearFilter();
+  };
 
-    const branchDrop=[{branch_name:'AOL'}]
+  const handleFilter = () => {
+    handleCourseList(gradeIds);
+  };
 
-    const handleClear = () => {
-        setFilterData({
-            grade: [],
-            branch:'',
-        });
-    }
-
-    const handleFilter=()=>{
-        handleCourseList(gradeIds)
-    }
-  
-    const handleBranch = (event, value) => {
-      setFilterData({ ...filterData, branch: '' });
-      if (value) {
-        setFilterData({
-          ...filterData,
-          branch: value,
-        });
-        axiosInstance
-          .get(`${endpoints.communication.grades}?branch_id=${5}&module_id=8`)
-          .then((result) => {
-            if (result.data.status_code === 200) {
-              setGradeDropdown(result.data.data);
-            } else {
-              setAlert('error', result.data.message);
-              setGradeDropdown([]);
-            }
-          })
-          .catch((error) => {
-            setAlert('error', error.message);
-            setGradeDropdown([]);
-          });
-      } else {
+  useEffect(() => {
+    axiosInstance
+      .get(`${endpoints.communication.grades}?branch_id=${5}&module_id=8`)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setGradeDropdown(result?.data?.data);
+        } else {
+          setAlert('error', result?.data?.message);
+          setGradeDropdown([]);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
         setGradeDropdown([]);
-      }
-    };
+      });
+  }, []);
+
+  // const handleBranch = (event, value) => {
+  //   setFilterData({ ...filterData, branch: '' });
+  //   if (value) {
+  //     setFilterData({
+  //       ...filterData,
+  //       branch: value,
+  //     });
+  //     axiosInstance
+  //       .get(`${endpoints.communication.grades}?branch_id=${5}&module_id=8`)
+  //       .then((result) => {
+  //         if (result.data.status_code === 200) {
+  //           setGradeDropdown(result?.data?.data);
+  //         } else {
+  //           setAlert('error', result?.data?.message);
+  //           setGradeDropdown([]);
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         setAlert('error', error.message);
+  //         setGradeDropdown([]);
+  //       });
+  //   } else {
+  //     setGradeDropdown([]);
+  //   }
+  // };
   
-    const handleGrade = (event, value) => {
-      setFilterData({ ...filterData, grade: [] });
-      if (value?.length > 0) {
-        const ids = value.map((obj) => obj.grade_id);
-        setGradeIds(ids);
-        setFilterData({
-          ...filterData,
-          grade: value,
-        });
-      }
-    };
-    useEffect(() => {
+  useEffect(() => {
+    if (gradeKey) {
       axiosInstance
-        .get(`${endpoints.communication.branches}`)
+        .get(`${endpoints.communication.grades}?branch_id=${5}&module_id=8`)
         .then((result) => {
           if (result.data.status_code === 200) {
-            setBranchDropdown(result.data.data);
+            setGradeDropdown(result?.data?.data);
+            const gradeObj = result.data?.data?.find(
+              ({ grade_id }) => grade_id === Number(gradeKey)
+            );
+            if (gradeKey>0) {
+              setFilterData({
+                grade: gradeObj,
+              });
+              setGradeIds(gradeKey);
+              handleCourseList(gradeKey);
+            } else history.push('/course-list');
           } else {
-            setAlert('error', result.data.message);
+            setAlert('error', result?.data?.message);
+            setGradeDropdown([]);
           }
         })
         .catch((error) => {
-          setBranchDropdown('error', error.message);
+          setAlert('error', error.message);
+          setGradeDropdown([]);
         });
-    }, []);
-    return(
-        <>
-        <Grid
+    }
+  }, [gradeKey]);
+
+  const handleGrade = (event, value) => {
+    setFilterData({ ...filterData, grade: '' });
+    if (value) {
+      setGradeIds(value.grade_id);
+      setFilterData({
+        ...filterData,
+        grade: value,
+      });
+    }
+  };
+
+  return (
+    <>
+      <Grid
         container
         spacing={isMobile ? 3 : 5}
         style={{ width: widerWidth, margin: wider }}
       >
-        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
             style={{ width: '100%' }}
             size='small'
@@ -129,10 +160,9 @@ const CourseFilter = ({handleCourseList}) => {
               />
             )}
           />
-        </Grid>
+        </Grid> */}
         <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
-            multiple
             style={{ width: '100%' }}
             size='small'
             onChange={handleGrade}
@@ -152,57 +182,67 @@ const CourseFilter = ({handleCourseList}) => {
             )}
           />
         </Grid>
-        
       </Grid>
       <Grid
         container
         spacing={isMobile ? 3 : 5}
         style={{ width: widerWidth, margin: wider }}
       >
-
-      <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
-                <Button
-                    variant='contained'
-                    className="custom_button_master labelColor"
-                    size='medium'
-                    onClick={handleClear}
-                >
-                    CLEAR ALL
-                </Button>
-            </Grid>
-            <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
-                <Button
-                    variant='contained'
-                    style={{ color: 'white' }}
-                    color="primary"
-                    className="custom_button_master"
-                    size='medium'
-                    onClick={handleFilter}
-                >
-                    FILTER
-            </Button>
-            </Grid>
-            <div>
-                <Divider orientation="vertical" style={{backgroundColor:'#014e7b',height:'40px',marginTop:'1rem',marginLeft:'2rem',marginRight:'1.25rem'}} />
-            </div>
-            <Grid item xs={6} sm={2} className={isMobile ? 'createButton' : 'createButton addButtonPadding'}>
-                <Button
-                    startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
-                    variant='contained'
-                    style={{ color: 'white' }}
-                    color="primary"
-                    className="custom_button_master"
-                    onClick={()=>history.push("/create/course")}
-                    size='medium'
-                >
-                    CREATE
-                </Button>
-            </Grid>
-           
-            </Grid>
-      </>
-    )
-
+        <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+          <Button
+            variant='contained'
+            className='labelColor buttonModifiedDesign'
+            size='medium'
+            onClick={handleClear}
+          >
+            CLEAR ALL
+          </Button>
+        </Grid>
+        <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+          <Button
+            variant='contained'
+            style={{ color: 'white' }}
+            color='primary'
+            className='buttonModifiedDesign'
+            size='medium'
+            onClick={handleFilter}
+          >
+            FILTER
+          </Button>
+        </Grid>
+        <div>
+          <Divider
+            orientation='vertical'
+            style={{
+              backgroundColor: '#014e7b',
+              height: '40px',
+              marginTop: '1rem',
+              marginLeft: '2rem',
+              marginRight: '1.25rem',
+            }}
+          />
+        </div>
+        <Grid
+          item
+          xs={6}
+          sm={2}
+          className={isMobile ? 'createButton' : 'createButton addButtonPadding'}
+        >
+          <Button
+            startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+            variant='contained'
+            style={{ color: 'white' }}
+            color='primary'
+            className='buttonModifiedDesign'
+            onClick={() => history.push('/create/course')}
+            size='medium'
+          >
+            CREATE
+          </Button>
+        </Grid>
+      </Grid>
+    </>
+  );
 };
 
 export default CourseFilter;

@@ -333,7 +333,7 @@ const AssignRole = (props) => {
         selectionArray.push(ids);
       });
     });
-  
+
     if (!selectionArray.length) {
       setSelectectUserError('Please select some users');
       return;
@@ -685,8 +685,7 @@ const AssignRole = (props) => {
               type='button'
               onClick={handleFilterCheck}
               value='Filter'
-            />
-          </Grid>
+              </Grid>
         </Grid> */}
         </div>
         <div

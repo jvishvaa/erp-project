@@ -88,6 +88,8 @@ export const fetchUser = (id) => (dispatch) => {
         middle_name: user.user_middle_name || '',
         last_name: user.user.last_name || '',
         email: user.user.email || '',
+        // erp_user: user.erp_user || '',
+        // branch_code:user.branch_code || '',
         academic_year: user.academic_year && {
           id: user.academic_year.id,
           session_year: user.academic_year.session_year,
@@ -98,6 +100,7 @@ export const fetchUser = (id) => (dispatch) => {
           user.mapping_bgs[0].branch.map((branch) => ({
             id: branch.branch_id,
             branch_name: branch.branch__branch_name,
+            branch_code:branch.branch_code,
           }))[0],
         grade:
           user.mapping_bgs[0].grade &&
@@ -191,7 +194,7 @@ export const fetchBranchesForCreateUser = () => {
     .then((response) => {
       return response.data.data?.results.map(obj=>obj?.branch);
     })
-    .catch(() => {});
+    .catch(() => { });
 };
 
 export const fetchAcademicYears = () => {
@@ -200,7 +203,7 @@ export const fetchAcademicYears = () => {
     .then((response) => {
       return response.data.data;
     })
-    .catch(() => {});
+    .catch(() => { });
 };
 
 export const fetchSubjects = () => {
@@ -209,5 +212,5 @@ export const fetchSubjects = () => {
     .then((response) => {
       return response.data.data;
     })
-    .catch(() => {});
+    .catch(() => { });
 };

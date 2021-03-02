@@ -91,11 +91,13 @@ class StudentDashboard extends Component {
       tabValue: 0,
       pageNo: 1,
       pageSize: 6,
-      startDate :moment().format('YYYY-MM-DD'),
       status:[8,5],
-      moduleId:112
+      moduleId:112,
+      endDate :moment().format('YYYY-MM-DD'),
+      startDate: this.getDaysBefore(moment(), 6)
 
     };
+
   }
 
   componentDidMount() {
@@ -201,6 +203,7 @@ class StudentDashboard extends Component {
   };
   handleFilter = () => {
     const { pageNo, pageSize ,tabValue,startDate,endDate,status,moduleId} = this.state;
+    console.log(startDate,endDate,"@@@")
     let tabStatus= []
     if(tabValue === 0){
       tabStatus= [8,5]
@@ -274,7 +277,7 @@ this.setState({status:[8,5]}
 
   render() {
     const { classes } = this.props;
-    const { tabValue, data ,totalBlogs ,pageNo,pageSize} = this.state;
+    const { tabValue, data ,totalBlogs ,pageNo,pageSize,startDate,endDate} = this.state;
 
     return (
       <div className='layout-container-div'>
@@ -312,15 +315,17 @@ this.setState({status:[8,5]}
                       />
                     </div>
                   </Grid> */}
-                  <Grid item xs={12} sm={3}  >
+                  <Grid item xs={12} sm={4}  >
                   <div className='blog_input'>
                     {tabValue === 0 ?
                   <Autocomplete
                   style={{ width: '100%' }}
                   size='small'
+                  disableClearable
                   onChange={this.handleStatusOne}
                   id='category'
                   required
+                  disableClearable
                   options={statusTypeChoicesOne}
                   getOptionLabel={(option) => option?.label}
                   filterSelectedOptions
@@ -335,9 +340,10 @@ this.setState({status:[8,5]}
                 /> : tabValue === 1 ? <Autocomplete
                 style={{ width: '100%' }}
                 size='small'
-                onChange={this.handleStatus}
+                onChange={this.handleStatusTwo}
                 id='category'
                 required
+                disableClearable
                 options={statusTypeChoicesTwo}
                 getOptionLabel={(option) => option?.label}
                 filterSelectedOptions
@@ -372,6 +378,7 @@ this.setState({status:[8,5]}
                         color='primary'
                         size='small'
                         variant='contained'
+                        disabled ={!startDate || !endDate}
                         onClick={this.handleFilter}
 
                       >
@@ -434,23 +441,23 @@ this.setState({status:[8,5]}
                         </li>
                         {/* </AppBar> */}
                         <TabPanel value={tabValue} index={0}>
-                          {data && <GridList data={data}  tabValue={tabValue}/>}
+                          {data && <GridList data={data} totalBlogs={totalBlogs} tabValue={tabValue}/>}
                         </TabPanel>
                         <TabPanel value={tabValue} index={1}>
-                        {data && <GridList data={data} tabValue={tabValue}  />}
+                        {data && <GridList data={data} totalBlogs={totalBlogs} tabValue={tabValue}  />}
                         </TabPanel>
                         <TabPanel value={tabValue} index={2}>
-                          {data && <GridList data={data} tabValue={tabValue}  />}
+                          {data && <GridList data={data} totalBlogs={totalBlogs} tabValue={tabValue}  />}
                         </TabPanel>
                         <TabPanel value={tabValue} index={3}>
-                          {data && <GridList data={data} tabValue={tabValue} />}
+                          {data && <GridList data={data}  totalBlogs={totalBlogs} tabValue={tabValue} />}
                         </TabPanel>
                       </div>
                     </Grid>
                     <Grid item xs={12}>
                     <Pagination
                     onChange={this.handlePagination}
-                    style={{ paddingLeft:'390px' }}
+                    style={{ paddingLeft:'500px' }}
                     count={Math.ceil(totalBlogs / pageSize)}
                     color='primary'
                     page={pageNo}

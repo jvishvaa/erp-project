@@ -79,7 +79,6 @@ class TeacherBlog extends Component {
       pageNo: 1,
       pageSize: 6,
       totalPages:0,
-      startDate :moment().format('YYYY-MM-DD'),
       status:[8],
       selectedBranch :'',
       selectedGrade:'',
@@ -88,6 +87,8 @@ class TeacherBlog extends Component {
       gradeList:[],
       sectionList:[],
       moduleId :113,
+      endDate :moment().format('YYYY-MM-DD'),
+      startDate: this.getDaysBefore(moment(), 6)
     };
   }
   componentDidMount() {
@@ -137,7 +138,7 @@ class TeacherBlog extends Component {
   handleEndDateChange = (date) => {
     const startDate = this.getDaysBefore(date.clone(), 6);
     this.setState({ startDate });
-    this.setState({ endData: date.format('YYYY-MM-DD') });
+    this.setState({ endDate: date.format('YYYY-MM-DD') });
   };
 
   handleTabChange = (event, newValue) => {
@@ -171,21 +172,21 @@ class TeacherBlog extends Component {
     
 };
 handleFilter = () => {
-  const { pageNo, pageSize ,tabValue,status,selectedBranch,selectedGrade,selectedSection,moduleId} = this.state
+  const { pageNo, pageSize ,tabValue,status,selectedBranch,selectedGrade,selectedSection,moduleId,startDate,endDate} = this.state
   let urlPath = ''
   if(selectedSection){
     urlPath = `${endpoints.blog.Blog}?page_number=${
             pageNo 
-          }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&section_id=${selectedSection.section_id}`
+          }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&grade_id=${selectedGrade.grade_id}&branch_id=${selectedBranch.id}`
   }else if(selectedGrade){
     urlPath = `${endpoints.blog.Blog}?page_number=${
             pageNo 
-          }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&grade_id=${selectedGrade.grade_id}`
+          }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&grade_id=${selectedGrade.grade_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch.id}`
   }
   else if(selectedBranch){
     urlPath =`${endpoints.blog.Blog}?page_number=${
             pageNo 
-          }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&barnch_id=${selectedBranch.id}`
+          }&page_size=${pageSize}&status=${status}&module_id=${moduleId}&branch_id=${selectedBranch.id}&start_date=${startDate}&end_date=${endDate}`
   }
   axios
     .get(
@@ -203,10 +204,10 @@ handleFilter = () => {
 
 }
 getBranch = () => {
-   
+   let {moduleId} =this.state
   axios
     .get(
-      `${endpoints.communication.branches}`
+      `${endpoints.communication.branches}?module_id=${moduleId}`
     )
     .then((result) => {
       if (result.data.status_code === 200) {
@@ -271,13 +272,13 @@ getSection = () => {
       });
   };
 handleBranch = (event, value) => {
-  this.setState({data:[],selectedBranch:value},()=>{
+  this.setState({data:[],selectedBranch:value,selectedGrade:'',selectedSection:''},()=>{
     this.getGrade()
   })
 };
 
 handleGrade = (event, value) => {
-  this.setState({data:[],selectedGrade:value}, ()=>{
+  this.setState({selectedSection:'',data:[],selectedGrade:value}, ()=>{
     this.getSection()
   })
 };
@@ -285,10 +286,22 @@ handleSection = (event,value) =>{
 
   this.setState({data:[],selectedSection :value})
 }
+clearSelection = () => {
+  let {status}=this.state
+  this.setState({   selectedBranch :'',
+  selectedGrade:'',
+  selectedSection:'',
+}
+  , () => {
+    this.getBlog
+    (status)
+  }
+  )
+}
 
   render() {
     const { classes } = this.props;
-    const { tabValue ,data,pageNo,pageSize,totalBlogs,selectedBranch,selectedGrade,gradeList,sectionList,selectedSection,branchList} = this.state;
+    const {startDate,endDate, tabValue ,data,pageNo,pageSize,totalBlogs,selectedBranch,selectedGrade,gradeList,sectionList,selectedSection,branchList} = this.state;
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -300,15 +313,16 @@ handleSection = (event,value) =>{
               <CommonBreadcrumbs componentName='Blog' />
               <div className='create_group_filter_container'>
               <Grid container spacing={3}>
-
+             
 <Grid xs={12} sm={3} item>
 <div className='blog_input'>
       <Autocomplete
         size='small'
-        // style={{ width: '100%' }}
+        style={{ width: '100%' }}
 
         onChange={this.handleBranch}
         value={selectedBranch}
+        disableClearable
         id='message_log-branch'
         className='create_group_branch'
         options={branchList}
@@ -327,17 +341,18 @@ handleSection = (event,value) =>{
       </div>
       </Grid>
       <Grid xs={12} sm={3} item>
-      {selectedBranch && gradeList.length ? ( 
+      {/* {selectedBranch && gradeList.length ? (  */}
         <div className='blog_input'>
          <Autocomplete
          size='small'
-        //  style={{ width: '100%' }}
+         style={{ width: '100%' }}
 
          onChange={this.handleGrade}
          value={selectedGrade}
          id='message_log-branch'
          className='create_group_branch'
          options={gradeList}
+         disableClearable
          getOptionLabel={(option) => option?.grade__grade_name}
          filterSelectedOptions
          renderInput={(params) => (
@@ -351,17 +366,18 @@ handleSection = (event,value) =>{
          )}
        />
        </div>
-        ) : null }
+        {/* ) : null } */}
       </Grid>
       <Grid xs={12} sm={3} item>
-        {selectedGrade && sectionList.length ? (
+        {/* {selectedGrade && sectionList.length ? ( */}
           <div className='blog_input'>
           <Autocomplete
           size='small'
-          // style={{ width: '100%' }}
+          style={{ width: '100%' }}
 
           onChange={this.handleSection}
           value={selectedSection}
+          disableClearable
           id='message_log-branch'
           className='create_group_branch'
           options={sectionList}
@@ -378,26 +394,43 @@ handleSection = (event,value) =>{
           )}
         />
         </div>
-        ) : null}
+        {/* ) : null} */}
        
       </Grid>
-      <Grid item xs={12} sm={3}>
+      <Grid item xs={12} sm={4}>
+                    <div className='mobile-date-picker'>
+                      <MobileDatepicker
+                        onChange={(date) => this.handleEndDateChange(date)}
+                        handleStartDateChange={this.handleStartDateChange}
+                        handleEndDateChange={this.handleEndDateChange}
+                      />
+                    </div>
+                  </Grid>
+      {/* <Grid item xs={12} sm={3}> */}
         <Button
-          style={{ fontSize: 'small', margin: '20px' }}
+          style={{ fontSize: 'small', margin: '20px',width:'100px',height:'30px',marginTop:'30px' }}
           color='primary'
           size='small'
           variant='contained'
+          disabled={!startDate|| !endDate}
           onClick={this.handleFilter}
 
         >
           Filter
         </Button> 
-      </Grid>
-      
-      </Grid>
-                <div style={{ margin: '20px' }}>
-                  <Grid container spacing={2}>
-                    <Grid item>
+        <Grid>
+                      <Button
+          style={{ fontSize: 'small', margin: '20px',width:'100px',height:'30px',marginTop:'30px' }}
+          onClick={this.clearSelection}
+          variant='contained'
+          color='primary'
+                    size='small'
+                  >
+            Clear
+                  </Button>
+</Grid>
+      {/* </Grid> */}
+      <Grid item xs={12} sm={3}>
                       <Button
                         color='primary'
                         style={{ fontSize: 'small', margin: '20px' }}
@@ -409,18 +442,8 @@ handleSection = (event,value) =>{
                         Published Blogs
                       </Button>
                     </Grid>
-
-                    {/* <Grid item>
-                      <Button
-                        style={{ fontSize: 'small', margin: '20px' }}
-                        color='primary'
-                        size='small'
-                        variant='contained'
-                      >
-                        Blog Dashboard
-                      </Button>
-                    </Grid> */}
-                  </Grid>
+      </Grid>
+                <div style={{ margin: '20px' }}>
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
                       <div className={classes.tabRoot}>
@@ -447,17 +470,17 @@ handleSection = (event,value) =>{
                           </Typography>
                         </li>
                         <TabPanel value={tabValue} index={0}>
-                          <GridList data={data} tabValue={tabValue}/>
+                          <GridList data={data} tabValue={tabValue} totalBlogs={totalBlogs}/>
                         </TabPanel>
-                        <TabPanel value={tabValue}  tabValue={tabValue} index={1}>
-                        <GridList data={data} />
+                        <TabPanel value={tabValue}  index={1}>
+                        <GridList data={data} totalBlogs={totalBlogs}  tabValue={tabValue} />
                         </TabPanel>
                       </div>
                     </Grid>
                     <Grid item xs={12}>
                     <Pagination
                     onChange={this.handlePagination}
-                    style={{ paddingLeft:'390px' }}
+                    style={{ paddingLeft:'500px' }}
                     count={Math.ceil(totalBlogs / pageSize)}
                     color='primary'
                     page={pageNo}

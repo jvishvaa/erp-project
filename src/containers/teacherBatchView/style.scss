@@ -1,0 +1,148 @@
+.teacherBatchViewMainDiv {
+    padding: 10px !important;
+    width: 100% !important;
+    background-color: #F9F9F9 !important;
+    .signatureNavDiv {
+        .SignatureNavigationLinks {
+            color: #014B7E;
+            font-weight: bold;
+            font-size: 20px;
+            margin: 1px 10px !important;
+            outline: none !important;
+            background-color: #F9F9F9 !important;
+            border: none !important;
+            cursor: pointer;
+        }
+        .SignatureUploadNavArrow {
+            color: #ff6b6b;
+            font-weight: bold;
+            font-size: 30px;
+        }
+    }   
+    .teacherBatchViewFilter {
+        padding: 10px 30px !important;
+        .BatchViewfilterButtons {
+         font-size: 12px !important;   
+         font-family: Raleway;
+         color: #fff;
+         font-weight: bold;
+         border-radius: 10px;
+         background-color: #FFAF7A !important;
+        }
+    }
+    .teacherBatchViewLCardList {
+        border : 1px solid lightgray;
+        border-radius: 10px;
+        padding: 20px 20px !important;
+    }
+
+}
+.teacherbatchsCardMain {
+    padding: 1px !important;
+    .teacherBatchCardActive{
+        border-radius: 8px !important;
+        padding: 10px !important;
+        border: 1px solid #F9D474;
+        background-color: #F9D474;
+        cursor: pointer;
+        height: 195px;
+    }
+    .teacherBatchCardInActive{
+        border-radius: 8px !important;
+        padding: 10px !important;
+        border: 1px solid #F9D474;
+        background-color: #FFFADF;
+        height: 195px;
+        cursor: pointer;
+    }
+    .teacherBatchCardLable {
+        color: #001495;
+        font-size: 16px;
+        font-weight: bold;
+        font-family: Poppins;
+    }
+    .teacherBatchCardLable1 {
+        color: #014B7E;
+        font-size: 16px;
+        font-weight: bold;
+        font-family: Poppins;
+    }
+    .TeacherBatchCardViewMoreButton {
+        font-size: 12px !important;
+        font-family: Raleway;
+        font-weight: bold;
+        border-radius: 8px !important;
+        color: #FFFFFF;
+        background-color: #344ADE;
+    }
+}
+.teacherBatchFullViewMainDiv {
+    padding: 10px !important;
+    .teacherBatchFullViewMainCard {
+     background-color: white;
+     border-radius: 8px !important;
+     border: 1px solid #F9D474;
+     padding: 10px !important;   
+    }
+    .teacherBatchFullViewHeader {
+        padding: 0 !important;
+        margin-bottom: 10px !important;
+        border-radius: 8px 8px 0px 0px !important;
+        background-color: #F9D474;
+        .teacherBatchFullCardLable {
+            color: #014B7E;
+            margin: 4px 0px !important;
+            padding: 1px !important;
+            font-size: 16px;
+            font-weight: bold;
+            font-family: Poppins;   
+        }
+        .teacherBatchFullViewClose {
+            font-size: 10px !important;
+            .teacherBatchFullViewCloseIcon{
+                color: #014B7E;;
+            }
+        }
+    }
+    .TeacherFullViewdescreption {
+        font-size: 20px !important;
+        color: #344ADE;
+        font-family: Poppins;
+        font-weight: bold !important;
+    }
+    .TeacherFullViewdescreption1 {
+        font-size: 18px !important;
+        font-family: Poppins;
+        color: #344ADE;
+    }
+    .teacherFullViewSmallButtons {
+        font-size: 15px !important;   
+        font-family: Poppins;
+        color: #FFFFFF;
+        background-color: #344ADE;
+        border-radius: 8px;
+    }
+    .teacherFullViewSmallButtons1 {
+        font-size: 15px !important;   
+        font-family: Raleway;
+        color: #fff;
+        font-weight: bold;
+        border-radius: 8px;
+        background-color: #FFAF7A !important;
+    }
+    .teacherFullViewFullButtons {
+        font-size: 15px !important;
+        font-family: Poppins;
+        margin-top: 10px !important;
+        font-family: Raleway;
+        color: #fff;
+        font-weight: bold;
+        border-radius: 8px;
+        background-color: #FFAF7A !important;
+    }
+    .fullViewDivider{
+        margin: 5px 0px 10px 0px !important;
+        color: lightgray !important;
+    }
+
+}

@@ -9,25 +9,25 @@ import { useHistory } from 'react-router-dom';
 const useStyles = makeStyles({
     card: {
         padding: '8px',
-        border: '1px solid #ff6b6b',
-        borderRadius: '10px',
+        border: '1px solid #F9D474',
+        borderRadius: '5px',
         backgroundColor: '#FFFADF',
-        cursor: 'pointer',
+        //cursor: 'pointer',
         minHeight: '160px',
     },
     activeCard: {
         padding: '8px',
         border: '1px solid #F9D474',
-        borderRadius: '10px',
+        borderRadius: '5px',
         backgroundColor: '#F9D474',
-        height: 'auto',
-        minHeight: '165px',
+        minHeight: '160px',
     },
     classTitle: {
         display: 'inline-block',
         color: '#001495',
         fontSize: '18px',
         fontFamily: 'Poppins',
+        //fontWeight: 'bold',
         lineHeight: '27px',
         overflow: 'hidden',
     },
@@ -72,7 +72,7 @@ export default function ResourceCardComponent(props) {
     //console.log(classData);
     //className={`${props.selectedId === classData.id ? classes.activeCard : classes.card}`}
     return (
-        <Box className={classes.card}>
+        <Box className={`${props.selectedId === props.resourceData.id ? classes.activeCard : classes.card}`}>
             <div>
                 <Typography className={classes.classTitle}>
                     {props.resourceData.online_class.title}
@@ -88,7 +88,7 @@ export default function ResourceCardComponent(props) {
                 */}
             </div>
                 <Typography className={classes.classTitle}>
-                    {props.resourceData.online_class.subject[0].subject_name}
+                    {props.resourceData.online_class.subject && props.resourceData.online_class.subject.reduce((sub) => sub.subject_name.join())}
                 </Typography>
                 {/*
                 <Typography className={classes.classSchedule}>

@@ -306,6 +306,10 @@ const Layout = ({ children, history }) => {
         history.push('/online-class/attend-class');
         break;
       }
+      case 'Teacher View Class': {
+        history.push('/online-class/teacher-view-class');
+        break;
+      }
       case 'Create Class': {
         history.push('/online-class/create-class');
         break;
@@ -418,8 +422,16 @@ const Layout = ({ children, history }) => {
         history.push('/master-management/message-type-table');
         break;
       }
+      case 'signature-upload': {
+        history.push('/master-mgmt/signature-upload');
+        break;
+      }
       case 'course-table': {
         history.push('/course-list');
+        break;
+      }
+      case 'course-price': {
+        history.push('/course-price');
         break;
       }
       case 'school-mapping': {
@@ -454,7 +466,6 @@ const Layout = ({ children, history }) => {
         history.push('/discussion-forum');
         break;
       }
-
       case 'Student Blogs': {
         history.push('/blog/student/dashboard');
         break;
@@ -493,6 +504,18 @@ const Layout = ({ children, history }) => {
       }
       case 'ViewAssessment': {
         history.push('/assessment/view-assessment');
+        break;
+      }
+      case 'ID Cards': {
+        history.push('/student-id-card');
+        break;
+      }
+      case 'Student Strength': {
+        history.push('/student-strength');
+        break;
+      }
+      case 'Signature Upload': {
+        history.push('/master-mgmt/signature-upload');
         break;
       }
       default:

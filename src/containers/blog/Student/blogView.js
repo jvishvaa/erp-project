@@ -85,25 +85,29 @@ class BlogView extends Component {
 blogRatings :this.props.location.state.data && this.props.location.state.data.remark_rating,
       overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark,
     };
+    console.log(this.state.tabValue,"@@@@@")
   }
   static contextType = AlertNotificationContext
 
   componentDidMount() {
     let {blogId} = this.state
-    this.handleView(blogId)
   }
 
-  handleView = (blogId) => {
-    let requestData = {
-      "blog_id": blogId ,
-    }
-  axios.post(`${endpoints.blog.BlogView}`, requestData)
-  .then(result=>{
-  if (result.data.status_code === 200) {
-  } else {        
+
+getRatings = () => {
+  let {blogRatings} =this.state
+  if (!blogRatings) {
+    return []
   }
-  }).catch((error)=>{
-  })
+  const type = typeof blogRatings
+  const parsedRatings = type === 'object' ? blogRatings : JSON.parse(blogRatings)
+  const allRatingParamters = JSON.parse(parsedRatings)
+  return allRatingParamters
+}
+
+getOverAllRemark = () => {
+ let {overallRemark} = this.state
+ return overallRemark
 }
 
 getRatings = () => {
@@ -256,7 +260,7 @@ if (result.data.status_code === 200) {
                   tabValue === 3 ?
                     <IconButton
                     style={{float:'right'}}
-                  title='Delete'
+                  title='Restore'
                   onClick={()=>this.handleRestoreBlog(data && data.id)}
                 >
                   <Restore

@@ -182,7 +182,6 @@ const handleImageChange=  (event)=>{
 const handleFilter= ()=>{
     if(filterData.branch && filterData.role && filterData.grade && filterData.section){
         setFilterEvent(true)
-
     }
 }
 

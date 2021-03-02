@@ -7,30 +7,34 @@ import Loader from '../../../components/loader/loader';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import ResourceCard from './resourceCard';
 import ResourceDetailsCard from './resourceDetailsCard';
-import { Divider, Grid, makeStyles, useTheme, withStyles, Button, TextField } from '@material-ui/core';
+import { Divider, Grid, makeStyles, useTheme, withStyles, Button, TextField, Typography } from '@material-ui/core';
 import Layout from '../../Layout/index';
 import ResourceFilter from './components/resourceFilter';
 import { OnlineclassViewContext } from '../online-class-context/online-class-state';
+import Pagination from '../../../components/Pagination';
+import unfiltered from '../../../assets/images/unfiltered.svg';
+import selectFilter from '../../../assets/images/selectfilter.svg';
+import Filter from './components/filters';
 
 const useStyles = makeStyles((theme) => ({
     root: {
         //margin: '20px 200px 50px 70px',
-        margin: '55px 100px 20px 100px',
-        width: '85%',
+        margin: '55px auto 20px auto',
+        width: '90%',
         border: '1px solid #D8D8D8',
         borderRadius: '5px',
         [theme.breakpoints.down('xs')]: {
-            margin: '55px 30px 20px 30px',
+            margin: '50px 20px 20px 20px',
         },
         [theme.breakpoints.down('sm')]: {
             margin: '55px 40px 20px 40px',
         },
     },
     topFilter: {
-        width: '85%',
-        margin: '30px 100px 0px 100px',
+        width: '90%',
+        margin: '30px auto 0px auto',
         [theme.breakpoints.down('xs')]: {
-            margin: '55px 30px 20px 30px',
+            margin: '55px 20px 20px 20px',
         },
     },
     classDetailsBox: {
@@ -103,8 +107,24 @@ const useStyles = makeStyles((theme) => ({
     cardHover: {
         border: '1px solid #004087',
         borderRadius: '5px',
+    },
+    selectFilterGrid: {
+        height: '400px',
+        justifyContent: 'center',
+        textAlign: 'center',
+    },
+    unfilteredImg: {
+        display: 'block',
+        height: '50%',
+        margin: 'auto',
+        marginTop: '20px',
+    },
+    unfilteredTextImg: {
+        display: 'block',
+        marginTop: '10px',
+        margin: 'auto',
     }
-}))
+}));
 
 
 const StyledButton = withStyles({
@@ -130,181 +150,129 @@ const Resources = () => {
     const [ itemSize, setItemSize ] = React.useState(3);
     const [ size, setSize ] = React.useState(12);
     const [ resourceData, setResourceData ] = React.useState();
-
+    const [filter, setFilter] = React.useState(false);
+    const [resourceOnlineClasses, setResourceOnlineClasses] = React.useState([]);
+    /**
     const {
         resourceView: {
-          resourceOnlineClasses,
-          totalPages,
-          loadingResourceOnlineClasses,
-          currentPage,
-          count,
+            resourceOnlineClasses,
+            totalPages,
+            loadingResourceOnlineClasses,
+            currentPage,
+            count,
         },
         setResourcePage,
-      } = useContext(OnlineclassViewContext);
-
-    console.log(resourceOnlineClasses);
-
-    const handleTypeOfClass = () => {
-    }
-    const handleStartDate = () => {
-    }
-    const handleEndDate = () => {
-    }
-    const handleFilter = () => {
-    }
-    const clearAll = () => {
-
-    }
+    } = useContext(OnlineclassViewContext);
+       */
 
     const handleSelctedClass = (data) => {
-        //console.log(data);
         setItemSize(4);
         setSize(8);
         setResourceData(data);
-        setSelected(0);
+        setSelected(data.id);
     }
 
-    /* 
-    
-    const classCardData = classesData && classesData.slice(pagination.start, pagination.end).filter((data) => {
-        const classData =  data.zoom_meeting ?  data.zoom_meeting :  data;
-        if(startDate === null && endDate === null){
-            return data;
-        }
-        else if (startDate === moment(classData.online_class && classData.online_class.start_time).format('YYYY-MM-DD') && endDate === moment(classData.online_class && classData.online_class.end_time).format('YYYY-MM-DD')) {
-            return data;
-        }
-    }).map((data, id) => {
-        return (
-            <Grid item sm={itemSize} xs={12} key={id}>
-                <ClassCard
-                    classData={data}
-                    selectedId={selected}
-                    handleSelctedClass={handleSelctedClass}
-                />
-            </Grid>
-        )});
+    const hendleCloseDetails = () => {
+        setItemSize(3);
+        setSize(12);
+        setResourceData('');
+        setSelected(0);
+        setFilter(false);
+        //setResourceOnlineClasses([]);
+    }
 
-    */
+    // pagination
+    const [ showPerPage, setShowPerPage ] = React.useState(12);
+    const [ pagination, setPagination ] = React.useState({
+        start: 0,
+        end: showPerPage,
+    });
 
-   const [ classTypeList, setClassTypeList ] = React.useState([
-        { id: 0, type: 'Compulsory Class' },
-        { id: 1, type: 'Optional Class' },
-        { id: 2, type: 'Special Class' },
-        { id: 3, type: 'Parent Class' },
-    ]);
-    const [ classType, setClassType ] = React.useState('');
+    const onPaginationChange = (start, end) => {
+        setPagination({
+            start: start,
+            end: end
+        });
+    }
+
+    const getResourceData = (data) => {
+        setResourceOnlineClasses(data);
+        setFilter(true);
+        hendleCloseDetails();
+        if(data && data.length === 0){
+            //alert("flase");
+            //setFilter(true);
+        }
+    }
+
     return (
         <>
-                <div className='breadcrumb-container-create' style={{ marginLeft: '15px'}}>
-                    <CommonBreadcrumbs
-                        componentName='Online Class'
-                        childComponentName='Resources'
+            <div className='breadcrumb-container-create' style={{ marginLeft: '15px'}}>
+                <CommonBreadcrumbs
+                    componentName='Online Class'
+                    childComponentName='Resources'
+                />
+            </div>
+            <Grid container spacing={4} className={classes.topFilter}>
+                <Grid item xs={12}>
+                    <Filter getResourceData={getResourceData} hendleDetails={hendleCloseDetails}/>
+                </Grid>
+            </Grid>
+            <Divider />
+            <Grid container spacing={3} className={classes.root}>
+                <Grid item sm={size} xs={12}>
+                    <Grid container spacing={3}>
+                        {resourceOnlineClasses.length > 0 && resourceOnlineClasses.slice(pagination.start, pagination.end).map((data, id) => (
+                            <Grid item sm={itemSize} xs={12} key={id}>
+                                <ResourceCard
+                                    resourceData={data}
+                                    selectedId={selected}
+                                    handleSelctedClass={handleSelctedClass}
+                                />
+                            </Grid>
+                        ))}
+                        {!filter && resourceOnlineClasses.length === 0 && (
+                            <Grid item xs={12} className={classes.selectFilterGrid}>
+                                <img
+                                    src={unfiltered}
+                                    alt="unFilter"
+                                    className={classes.unfilteredImg}
+                                />
+                                <img
+                                    src={selectFilter}
+                                    alt="unFilter"
+                                    className={classes.unfilteredTextImg}
+                                />
+                            </Grid>
+                        )}
+                        {filter && resourceOnlineClasses.length === 0 && (
+                            <Grid item xs={12} className={classes.selectFilterGrid}>
+                                <img
+                                    src={unfiltered}
+                                    alt="unFilter"
+                                    className={classes.unfilteredImg}
+                                />
+                                <Typography>Class NOT found</Typography>
+                            </Grid>
+                        )}
+                    </Grid>
+                </Grid>
+
+                {resourceData && resourceOnlineClasses.length !== 0 && (
+                    <Grid item sm={4} xs={12}>
+                        <ResourceDetailsCard resourceData={resourceData} hendleCloseDetails={hendleCloseDetails}/>
+                    </Grid>
+                )}
+            </Grid>
+            {resourceOnlineClasses.length > showPerPage && (
+                <div>
+                    <Pagination
+                        showPerPage={showPerPage}
+                        onPaginationChange={onPaginationChange}
+                        totalCategory={resourceOnlineClasses.length}
                     />
                 </div>
-                <Grid container spacing={4} className={classes.topFilter}>
-                    <Grid item xs={12}>
-                        <ResourceFilter />
-                    </Grid>
-                    {/** 
-                    <Grid item xs={12} sm={4}>
-                        <Autocomplete
-                            style={{ width: '100%' }}
-                            id="tags-outlined"
-                            value={classType}
-                            options={classTypeList}
-                            getOptionLabel={(option) => option?.type}
-                            filterSelectedOptions
-                            size="small"
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    variant="outlined"
-                                    label="Type of Class"
-
-                                />
-                            )}
-                            onChange={handleTypeOfClass}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                        <MuiPickersUtilsProvider utils={MomentUtils}>
-                            <KeyboardDatePicker
-                                size='small'
-                                // disableToolbar
-                                variant='dialog'
-                                format='YYYY-MM-DD'
-                                margin='none'
-                                id='date-picker'
-                                label='Start date'
-                                value={startDate}
-                                //defaultValue={new Date()}
-                                onChange={handleStartDate}
-                                KeyboardButtonProps={{
-                                    'aria-label': 'change date',
-                                }}
-                            />
-                        </MuiPickersUtilsProvider>
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                        <MuiPickersUtilsProvider utils={MomentUtils}>
-                            <KeyboardDatePicker
-                                size='small'
-                                // disableToolbar
-                                variant='dialog'
-                                format='YYYY-MM-DD'
-                                margin='none'
-                                id='date-picker'
-                                label='End date'
-                                value={endDate}
-                                onChange={handleEndDate}
-                                KeyboardButtonProps={{
-                                    'aria-label': 'change date',
-                                }}
-                            />
-                        </MuiPickersUtilsProvider>
-                    </Grid>
-                    <Grid item>
-                        <StyledButton
-                            variant="contained"
-                            color="primary"
-                            onClick={clearAll}
-                        >
-                            Clear All
-                        </StyledButton>
-                        <StyledButton
-                            variant="contained"
-                            color="primary"
-                            onClick={handleFilter}
-                        >
-                            Get Classes
-                        </StyledButton>
-                    </Grid>
-                    */}
-                </Grid>
-                <Divider />
-                <Grid container spacing={3} className={classes.root}>
-                    <Grid item sm={size} xs={12}>
-                        <Grid container spacing={3}>
-                            {/* !isLoding ? ( <Loader /> ) : (classCardData) */}
-                            {resourceOnlineClasses && resourceOnlineClasses.map((data, id) => (
-                                <Grid item sm={itemSize} xs={12} key={id}>
-                                    <ResourceCard
-                                        resourceData={data}
-                                        selectedId={selected}
-                                        handleSelctedClass={handleSelctedClass}
-                                    />
-                                </Grid>
-                            ))}
-                        </Grid>
-                    </Grid>
-
-                    {resourceData && (
-                        <Grid item sm={4} xs={12}>
-                            <ResourceDetailsCard resourceData={resourceData}/>
-                        </Grid>
-                    )}
-                </Grid>
+            )}
         </>
     )
 }

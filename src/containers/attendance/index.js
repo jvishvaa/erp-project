@@ -16,7 +16,9 @@ import {
   FormControlLabel,
   Checkbox,
   Switch,
+  SvgIcon
 } from '@material-ui/core';
+import moment from 'moment';
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
@@ -37,6 +39,9 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import Layout from '../Layout';
 import ShuffleModal from './shuffle-modal';
 import { result } from 'lodash';
+import unfiltered from '../../assets/images/unfiltered.svg';
+import selectfilter from '../../assets/images/selectfilter.svg';
+import './attendance.css' 
 
 const AttendeeListRemake = (props) => {
   const { id } = useParams();
@@ -49,46 +54,34 @@ const AttendeeListRemake = (props) => {
   const [loading, setLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isHidden, setIsHidden] = useState(window.innerWidth < 600);
-  const [dateValue, setDateValue] = useState(new Date());
+  const [dateValue, setDateValue] = useState(moment(new Date()).format('YYYY-MM-DD'));
   const history = useHistory();
   const [openShuffleModal, setOpenShuffleModal] = useState(false);
-
   const pageSize = 10;
-
+  const [excelDate, setExcelDate] = useState('')
   const { setAlert } = useContext(AlertNotificationContext);
 
   const getAttendeeList = async (date) => {
-
-    axiosInstance.get(`${endpoints.attendanceList.list}?zoom_meeting_id=694&class_date=${date}&type=json&page_number=1&page_size=10`)
+    setExcelDate(date)
+    axiosInstance.get(`${endpoints.attendanceList.list}?zoom_meeting_id=${id}&class_date=${date}&type=json&page_number=1&page_size=10`)
       .then((result) => {
-        console.log(result.data.data, '========')
         setTotalPages(result.data.total_pages);
         setAttendeeList(result.data.data);
         setTotalAttended(result.data.attended_count);
         setTotalAbsent(result.data.notattended_count);
         setLoading(false);
-
       }).catch(error => {
-
         setLoading(false);
         setAlert('error', 'Failed to load attendee list');
-
       })
-    //   setTotalPages(data.total_pages);
-    //   setAttendeeList(data.data);
-    //   setTotalAttended(data.attended_count);
-    //   setTotalAbsent(data.notattended_count);
-    //   setLoading(false);
-    // } catch (error) {
-    //   setLoading(false);
-    //   setAlert('error', 'Failed to load attendee list');
-    // }
   };
 
   //   useEffect(() => {
   //     getAttendeeList();
   //   }, [currentPage]);
-
+  useEffect(() => {
+    getAttendeeList(dateValue)
+  }, [])
   const handlePagination = (event, page) => {
     setCurrentPage(page);
   };
@@ -98,31 +91,16 @@ const AttendeeListRemake = (props) => {
   };
 
   const handleCheck = (index, checked, student) => {
-    console.log(student.id, 'index')
+    // console.log(student.id, 'index')
     setIsUpdating(true);
     // checked= !checked
     const { match } = props;
     try {
-      //   const formData = new FormData();
-      //   formData.append('zoom_meeting_id', 641);
-      //   formData.append('student_id', student.user.id);
-      //   formData.append('is_attended', checked);
-      // const data = {
-      //   zoom_meeting_id: match.params.id * 1,
-      //   student_id: student.user.id,
-      //   is_attended: checked,
-      // };
       axiosInstance.put(`${endpoints.attendanceList.updateAttendance}`, {
         'zoom_meeting_id': student.id,
         'class_date': dateValue,
         'is_attended': checked
-        //     "zoom_meeting_id": 5804,
-        // "class_date": "2021-01-29",
-        // "is_attended": true
-
-
       }).then(result => {
-        console.log(result, '==============')
         if (result.data.status_code === 200) {
           getAttendeeList(dateValue);
           setAlert('success', result.data.message)
@@ -143,40 +121,63 @@ const AttendeeListRemake = (props) => {
     }
   };
 
-  const handleExcelDownload = async () => {
-    const { match } = props;
-    try {
-      const { data } = await axiosInstance.get(
-        `${endpoints.onlineClass.attendeeList}?zoom_meeting_id=${641}&type=excel`,
-        {
-          responseType: 'arraybuffer',
-        }
-      );
-      const blob = new Blob([data], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      });
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = 'online_class_attendance_report.xlsx';
-      link.click();
-      link.remove();
-    } catch (error) {
-      setAlert('error', 'Failed to download attendee list');
-    }
-  };
+  const handleExcelDownload = () => {
+    const { data } = axiosInstance.get(`${endpoints.attendanceList.list}?zoom_meeting_id=${id}&class_date=${excelDate}&type=excel&page_number=1&page_size=10`, {
+      responseType: 'arraybuffer',
+    })
+    const blob = new Blob([data])
+    // {
+    // type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    // });
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = 'aol_attendance_report.xlsx';
+    link.click();
+    link.remove();
+  }
+
+
+  // if(isEdit){
+  //  const attendee = attendeeList.map((el,i)=>({[el.user.user.id]:{isChecked: true}}))
+  // }
+
+  // const handleExcelDownload = async () => {
+  //   const { match } = props;
+  //   try {
+  //     const { data } = await axiosInstance.get(
+  //       `${endpoints.onlineClass.attendeeList}?zoom_meeting_id=${694}&type=excel`,
+  //       {
+  //         responseType: 'arraybuffer',
+  //       }
+  //     );
+  //     const blob = new Blob([data], {
+  //       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  //     });
+  //     const link = document.createElement('a');
+  //     link.href = window.URL.createObjectURL(blob);
+  //     link.download = 'online_class_attendance_report.xlsx';
+  //     link.click();
+  //     link.remove();
+  //   } catch (error) {
+  //     setAlert('error', 'Failed to download attendee list');
+  //   }
+  // };
 
   const toggleHide = () => {
     setIsHidden(!isHidden);
   };
 
   const handleDateChange = (event, value) => {
-    console.log(value, 'land')
     setDateValue(value)
     getAttendeeList(value);
   }
 
   const handleShuffle = () => {
     setOpenShuffleModal(true);
+  }
+
+  const handleGoBack = () => {
+    history.goBack()
   }
 
   return (
@@ -206,7 +207,6 @@ const AttendeeListRemake = (props) => {
               />
             </MuiPickersUtilsProvider>
           </Grid>
-
           <Grid item xs={12} sm={2}>
             <Button onClick={handleExcelDownload}>Download Excel</Button>
           </Grid>
@@ -240,6 +240,9 @@ const AttendeeListRemake = (props) => {
               label={<Typography variant='h6'>Edit attendance</Typography>}
             />
           </Grid>
+          <Grid item xs={12} sm={2}>
+            <Button onClick={handleGoBack} style={{ width: '100%', backgroundColor: 'lightgray' }}>BACK</Button>
+          </Grid>
         </Grid>
       </div>
       <div className='attendee__management-table'>
@@ -257,12 +260,10 @@ const AttendeeListRemake = (props) => {
                 </TableCell>
                 <TableCell align='center'>Student name</TableCell>
                 <TableCell align='center'>Erp</TableCell>
-                {/* <TableCell align='center'>Accepted status</TableCell> */}
                 <TableCell align='center'>Attended status</TableCell>
-                <TableCell align='center'>Reshuffle</TableCell>
               </TableRow>
             </TableHead>
-            {!loading ? (
+            {attendeeList && attendeeList.length >0 ? (
               <TableBody className='styled__table-body'>
                 {attendeeList.map((el, index) => {
                   return (
@@ -275,23 +276,11 @@ const AttendeeListRemake = (props) => {
                       </TableCell>
                       <TableCell align='center'>{el.user.user.first_name}</TableCell>
                       <TableCell align='center'>{el.user.user.username}</TableCell>
-                      {/* <TableCell align='center'>
-                        {el.is_accepted ? 'Accepted' : 'Not accepted'}
-                      </TableCell> */}
                       <TableCell align='center'>
-                        {/* <Switch
-                            disabled={isUpdating}
-                            checked={el.is_attended}
-                            onChange={(event, checked) => {
-                              handleCheck(index, checked, el);
-                            }}
-                            name='checked'
-                            inputProps={{ 'aria-label': 'secondary checkbox' }}
-                          /> */}
                         {isEdit ? (
                           <Switch
                             disabled={isUpdating}
-                            checked={ el.attendance_details.is_attended}
+                            checked={el.attendance_details.is_attended}
                             onChange={(event, checked) => {
                               handleCheck(index, checked, el);
                             }}
@@ -305,55 +294,64 @@ const AttendeeListRemake = (props) => {
                             )}
                         { }
                       </TableCell>
-                      <TableCell align='center'>
-                        <ShuffleIcon onClick={handleShuffle} />
-                      </TableCell>
                     </TableRow>
                   );
                 })}
               </TableBody>
             ) : (
-                ''
+              <div className='attendanceDataUnavailable'>
+              <SvgIcon
+                component={() => (
+                  <img
+                    style={
+                      // isMobile
+                      //   ? { height: '100px', width: '200px' }
+                        // :
+                         { height: '160px', width: '290px' }
+                    }
+                    src={unfiltered}
+                  />
+                )}
+              />
+              <SvgIcon
+                component={() => (
+                  <img
+                    style={
+                      // isMobile
+                      //   ? { height: '20px', width: '250px' }
+                      //   : 
+                        { height: '50px', width: '400px', marginLeft: '5%' }
+                    }
+                    src={selectfilter}
+                  />
+                )}
+              />
+            </div>
               )}
           </Table>
         </TableContainer>
-        {/* {loading ? (
-          <Grid
-            container
-            spacing={0}
-            direction='column'
-            alignItems='center'
-            justify='center'
-          >
-            <Grid item xs={3}>
-              <CircularProgress style={{ marginTop: 20 }} />
-            </Grid>
-          </Grid>
-        ) : (
-          ''
-        )} */}
-        <Grid
-          className='pagination__container'
-          container
-          direction='column'
-          alignItems='center'
-          justify='center'
-        >
-          <Grid item xs={12}>
-            {!loading ? (
-              <Pagination
-                onChange={handlePagination}
-                style={{ marginTop: 25 }}
-                count={totalPages}
-                color='primary'
-                page={currentPage}
-              />
-            ) : (
-                ''
-              )}
-          </Grid>
-        </Grid>
       </div>
+      <Grid
+        className='pagination__container'
+        container
+        direction='column'
+        alignItems='center'
+        justify='center'
+      >
+        <Grid item xs={12}>
+          {!loading ? (
+            <Pagination
+              onChange={handlePagination}
+              style={{ marginTop: 25 }}
+              count={totalPages}
+              color='primary'
+              page={currentPage}
+            />
+          ) : (
+              ''
+            )}
+        </Grid>
+      </Grid>
       <ShuffleModal
         openShuffleModal={openShuffleModal}
         setOpenShuffleModal={setOpenShuffleModal}
