@@ -632,6 +632,10 @@ const Layout = ({ children, history }) => {
                   history.push('/finance/E-Mandate/TotalBillingDetails')
                     break;
                   }
+              case 'Create Link': {
+                  history.push('/finance/E-Mandate/CreateLink')
+                    break;
+                  }
               case 'Petty Cash Expense': {
                   history.push('/finance/Expanse Management/PettyExpense')
                     break;

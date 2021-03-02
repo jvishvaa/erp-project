@@ -6,11 +6,13 @@ import {
 } from '@material-ui/core'
 import Select from 'react-select'
 // import ReactTable from 'react-table'
-import 'react-table/react-table.css'
+// import 'react-table/react-table.css'
 import { connect } from 'react-redux'
 // import Modal from '../../../ui/Modal/modal'
 import * as actionTypes from '../store/actions'
 import { apiActions } from '../../../_actions'
+import Layout from '../../../../../Layout'
+
 
 const selectStyles = {
   menuPortal: base => ({ ...base, zIndex: 9999 }),
@@ -267,10 +269,11 @@ const CreateLink = ({ setCustomerDetails, user, alert, domainNames, branches, fe
         setSelectedDomain('')
       }
     } else {
-      alert.warning('Fill all the  required Fields!')
+      // alert.warning('Fill all the  required Fields!')
     }
   }
   return (
+    <Layout>
     <div>
       <h3 style={{ textAlign: 'center' }}>Add Customer Details</h3>
       {/* <hr /> */}
@@ -601,6 +604,7 @@ const CreateLink = ({ setCustomerDetails, user, alert, domainNames, branches, fe
       {/* {editcustomerDetModal}
       {showTable ? studentErpTable : []} */}
     </div>
+    </Layout>
   )
 }
 

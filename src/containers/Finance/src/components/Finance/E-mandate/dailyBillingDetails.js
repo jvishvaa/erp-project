@@ -10,13 +10,14 @@ import {
   TableHead,
   TableBody,
   TablePagination,
-CircularProgress
+CircularProgress,
+Modal
 } from '@material-ui/core'
 import Select from 'react-select'
 // import ReactTable from 'react-table'
 // import 'react-table/react-table.css'
 import { connect } from 'react-redux'
-import Modal from '../../../ui/Modal/modal'
+// import Modal from '../../../ui/Modal/modal'
 import * as actionTypes from '../store/actions'
 import { apiActions } from '../../../_actions'
 // import Modal from '../../../ui/Modal/modal'
@@ -396,11 +397,11 @@ const DailyBillingDetails = ({ dataLoadingStatus, alert, fetchBranches, todayEMa
   let billingDeatilsModal = null
   if (showModal) {
     billingDeatilsModal = (
-      <Modal open={showModal} click={hideBillingDetailsModal} large>
+      <Modal open={showModal} onClose={hideBillingDetailsModal}>
         <React.Fragment>
           <h3 style={{ textAlign: 'center' }}>Generate Daily Billing Details</h3>
           <hr />
-          <Grid container spacing={3} style={{ display: 'flex', justifyContent: 'center' }} >
+          <Grid container spacing={3} style={{ display: 'flex', justifyContent: 'center', background: 'white' }} >
             <Grid item xs={5} />
             <Grid item xs={3}>
               <Button
