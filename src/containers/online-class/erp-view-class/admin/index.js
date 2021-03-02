@@ -304,6 +304,9 @@ const ErpAdminViewClass = ({ history }) => {
                   {window.location.pathname === '/erp-online-class'
                     ? 'Online Class View'
                     : ''}
+                    {window.location.pathname === '/erp-online-class-teacher-view' ? 'Teacher Class View' :''}
+                    {window.location.pathname === '/erp-online-class-student-view' ? 'Student Class View' :''}
+
                 </span>
               </Grid>
             </Grid>
@@ -411,7 +414,7 @@ const ErpAdminViewClass = ({ history }) => {
                         setSelectedSection(value);
                         if (value) {
                           callApi(
-                            `${endpoints.academics.subjects}?branch=${selectedBranch.id}&grade=${selectedGrade.grade_id}&section=${value.section_id}`,
+                            `${endpoints.academics.subjects}?branch=${selectedBranch.id}&grade=${selectedGrade.grade_id}&section=${value.section_id}&module_id=${selectedModule}`,
                             'subject'
                           );
                         }
