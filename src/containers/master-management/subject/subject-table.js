@@ -50,6 +50,8 @@ const useStyles = makeStyles((theme) => ({
   },
   tableCell: {
     color: theme.palette.secondary.main,
+    maxWidth: '200px',
+    wordBreak: 'break-all',
   },
   buttonContainer: {
     width: '95%',

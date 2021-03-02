@@ -212,8 +212,7 @@ const CoursePrice = () => {
       <div style={{ width: '95%', margin: '20px auto' }}>
         <CommonBreadcrumbs
           componentName='Master Management'
-          childComponentName='Course'
-          childComponentNameNext='Course Price'
+          childComponentName='Course Price'
         />
       </div>
       <CoursePriceFilters
