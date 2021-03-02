@@ -145,6 +145,7 @@ import ReceiptBook from './containers/Finance/src/components/Finance/AdmissionRe
 import EMandate from './containers/Finance/src/components/Finance/E-mandate/e-mandate.js'
 import CreateLink from './containers/Finance/src/components/Finance/E-mandate/createLink.js'
 import NonRTEFormAcc from './containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/nonRTEAdmissionForm.js'
+import AssignOtherFees from './containers/Finance/src/components/Finance/BranchAccountant/OtherFees/assignOtherFess.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -288,6 +289,9 @@ function App() {
               </Route>
               <Route exact path='/feeType/add_otherFee'>
                   {({ match }) => <AddOtherFees match={match} />}
+              </Route>
+              <Route exact path='/feeType/assign_other_fees'>
+                  {({ match }) => <AssignOtherFees match={match} />}
               </Route>
                 <Route exact path='/feeType/RegistrationFee'>
                   {({ match }) => <RegistrationFee match={match} />}
