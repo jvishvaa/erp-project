@@ -53,15 +53,15 @@ const styles = theme => ({
     flexWrap: 'wrap'
   },
   textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
     width: '90%'
   },
   item: {
     margin: '10px'
   },
   formControl: {
-    margin: theme.spacing * 1,
+    margin: theme.spacing(1),
     minWidth: 120
   },
   root: {
