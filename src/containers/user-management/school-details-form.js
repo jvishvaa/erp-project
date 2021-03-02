@@ -29,7 +29,7 @@ const BackButton = withStyles({
   }
 })(Button);
 
-const SchoolDetailsForm = ({ details, onSubmit }) => {
+const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
   const [academicYears, setAcademicYears] = useState([]);
   const [branches, setBranches] = useState([]);
   const [grades, setGrades] = useState([]);
@@ -316,14 +316,16 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
       </Grid>
       <Grid item xs={12} style={{ marginTop: '20px' }}>
           <Box className={classes.formActionButtonContainer}>
-            <BackButton
-              className={classes.formActionButton}
-              variant='contained'
-              color='primary'
-              onClick={() => {history.push('/user-management/view-users')}}
-            >
-              Back
-            </BackButton>
+            {isEdit && (
+              <BackButton
+                className={classes.formActionButton}
+                variant='contained'
+                color='primary'
+                onClick={() => {history.push('/user-management/view-users')}}
+              >
+                Back
+              </BackButton>
+            )}
             <Button
               className={classes.formActionButton}
               variant='contained'
