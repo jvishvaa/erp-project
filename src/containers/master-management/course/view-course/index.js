@@ -60,6 +60,7 @@ const CourseView = () => {
     setTabVal(tabMenuval);
     setLoading(true);
     setSendGrade(gradeIds);
+    setCourseData([]);
     if (gradeIds.length !== 0 && (tabMenuval === 0 || tabMenuval == undefined)) {
       axiosInstance
         .get(

@@ -45,7 +45,7 @@ const Filter = (props) => {
     const [branchList] = useState([
         {
             id: 5,
-            branch_name: 'AOL',
+            branch_name: `${window.location.host === endpoints?.aolConfirmURL ? 'AOL' : 'ORCHIDS'}`,
         },
     ]);
     const { setAlert } = useContext(AlertNotificationContext);
@@ -65,6 +65,18 @@ const Filter = (props) => {
     const [selectedModule, setSelectedModule] = useState(4);
     const [selectedViewMore, setSelectedViewMore] = useState('');
     const [page, setPage] = useState(1);
+    const [sectionList, setSectionList] = useState([]);
+  const [selectedSection, setSelectedSection] = useState('');
+  const [subjectList, setSubjectList] = useState([]);
+  const [selectedSubject, setSelectedSubject] = useState('');
+
+    const [classTypes, setClassTypes] = useState([
+        { id: 0, type: 'Compulsory Class' },
+        { id: 1, type: 'Optional Class' },
+        { id: 2, type: 'Special Class' },
+        { id: 3, type: 'Parent Class' },
+      ]);
+    const [selectedClassType, setSelectedClassType] = useState('');
     
     function callApi(api, key) {
         setLoading(true);
@@ -80,6 +92,12 @@ const Filter = (props) => {
                 if (key === 'course') {
                     setCourseList(result.data.result || []);
                 }
+                if (key === 'subject') {
+                    setSubjectList(result?.data?.data);
+                  }
+                if (key === 'section') {
+                    setSectionList(result.data.data);
+                  }
                 if (key === 'filter') {
                     setFilterFullData(result.data || {});
                     setFilterList(result.data.data || {});
@@ -145,25 +163,52 @@ const Filter = (props) => {
             setAlert('warning', 'Select Grade');
             return;
         }
-        if (!selectedCourse) {
-            setAlert('warning', 'Select Course');
-            return;
-        }
-        if (!selectedBatch) {
-            setAlert('warning', 'Select Batch Size');
-            return;
-        }
+        // if (!selectedCourse) {
+        //     setAlert('warning', 'Select Course');
+        //     return;
+        // }
+        // if (!selectedBatch) {
+        //     setAlert('warning', 'Select Batch Size');
+        //     return;
+        // }
         if (!startDate) {
             setAlert('warning', 'Select Start Date');
             return;
         }
         setLoading(true);
         setPage(1);
-        callApi(`${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
+        if(window.location.host === endpoints?.aolConfirmURL){
+            callApi(`${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
                 selectedBatch && selectedBatch.id
             }&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=12&module_id=4&class_type=1&batch_limit=${selectedBatch && selectedBatch.batch_size}&batch_limit=${selectedBatch.batch_size}`,
             'filter'
         );
+        }else if(selectedCourse.id){
+            callApi(
+                `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.id}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&course_id=${selectedCourse.id}&page_number=1&page_size=15`,
+                'filter'
+              );
+        }else {
+            callApi(
+              `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.id}&subject_id=${selectedSubject.subject__id}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=15`,
+              'filter'
+            );
+          }
+
+        // >>>>> 
+    //     if (selectedCourse.id) {
+    //   callApi(
+    //     `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.id}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&course_id=${selectedCourse.id}&page_number=1&page_size=15`,
+    //     'filter'
+    //   );
+    // } else {
+    //   callApi(
+    //     `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.id}&subject_id=${selectedSubject.subject__id}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=15`,
+    //     'filter'
+    //   );
+    // }
+    // >>>>>>>>>>>>>>>
+       
     }
     
     function handleDate(v1) {
@@ -177,6 +222,31 @@ const Filter = (props) => {
     return (
         <>
             <Grid container spacing={2} style={{ marginTop: '10px' }}>
+                {window.location.host !== endpoints?.aolConfirmURL && (
+                   <Grid item md={3} xs={12}>
+                   <Autocomplete
+                       style={{ width: '100%' }}
+                       size='small'
+                       onChange={(event, value) => {
+                           setSelectedClassType(value)
+                       }}
+                       id='branch_id'
+                       className='dropdownIcon'
+                       value={selectedClassType}
+                       options={classTypes}
+                       getOptionLabel={(option) => option?.type}
+                       filterSelectedOptions
+                       renderInput={(params) => (
+                           <TextField
+                               {...params}
+                               variant='outlined'
+                               label='Class Types'
+                               placeholder='Class Types'
+                           />
+                       )}
+                   />
+               </Grid> 
+                )}
                 <Grid item md={3} xs={12}>
                     <Autocomplete
                         style={{ width: '100%' }}
@@ -213,6 +283,14 @@ const Filter = (props) => {
                                 }`,
                                 'course'
                                 );
+                                callApi(
+                                    `${endpoints.academics.sections}?branch_id=${
+                                      selectedBranch.id
+                                    }&grade_id=${
+                                      value && value.grade_id
+                                    }&module_id=${selectedModule}`,
+                                    'section'
+                                  );
                             }
                             setCourseList([]);
                             setBatchList([]);
@@ -237,19 +315,86 @@ const Filter = (props) => {
                 </Grid>
                 <Grid item md={3} xs={12}>
                     <Autocomplete
+                      style={{ width: '100%' }}
+                      size='small'
+                      onChange={(event, value) => {
+                        setSelectedSection(value);
+                        if (value) {
+                          callApi(
+                            `${endpoints.academics.subjects}?branch=${selectedBranch.id}&grade=${selectedGrade.grade_id}&section=${value.section_id}`,
+                            'subject'
+                          );
+                        }
+                        // setSubjectList([]);
+                        // setSelectedSubject('');
+                      }}
+                      id='section_id'
+                      className='dropdownIcon'
+                      value={selectedSection}
+                      options={sectionList}
+                      getOptionLabel={(option) => option?.section__section_name}
+                      filterSelectedOptions
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant='outlined'
+                          label='Section'
+                          placeholder='Section'
+                        />
+                      )}
+                    />
+                  </Grid>
+                  {selectedClassType?.id === 0 && gradeList.length > 0 ? (
+                    <Grid item md={3} xs={12}>
+                      <Autocomplete
                         style={{ width: '100%' }}
                         size='small'
                         onChange={(event, value) => {
-                            setSelectedCourse(value);
-                            if (value) {
-                                callApi(`${endpoints.teacherViewBatches.batchSizeList}?course_id=${
-                                        value && value.id
-                                    }`,
-                                    'batchsize'
-                                );
-                            }
-                            setBatchList([]);
-                            setSelectedBatch('');
+                          setSelectedSubject(value);
+                          // if (value) {
+                          //   callApi(
+                          //     `${endpoints.teacherViewBatches.batchSizeList}?course_id=${
+                          //       value && value.id
+                          //     }`,
+                          //     'batchsize'
+                          //   );
+                          // }
+                          setBatchList([]);
+                          setSelectedBatch('');
+                        }}
+                        id='course_id'
+                        className='dropdownIcon'
+                        value={selectedSubject}
+                        options={subjectList}
+                        getOptionLabel={(option) => option?.subject__subject_name}
+                        filterSelectedOptions
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant='outlined'
+                            label='Subject'
+                            placeholder='Subject'
+                          />
+                        )}
+                      />
+                    </Grid>
+                  ) : (
+                    <Grid item md={3} xs={12}>
+                      <Autocomplete
+                        style={{ width: '100%' }}
+                        size='small'
+                        onChange={(event, value) => {
+                          setSelectedCourse(value);
+                          if (value) {
+                            callApi(
+                              `${endpoints.teacherViewBatches.batchSizeList}?course_id=${
+                                value && value.id
+                              }`,
+                              'batchsize'
+                            );
+                          }
+                          setBatchList([]);
+                          setSelectedBatch('');
                         }}
                         id='course_id'
                         className='dropdownIcon'
@@ -258,39 +403,42 @@ const Filter = (props) => {
                         getOptionLabel={(option) => option?.course_name}
                         filterSelectedOptions
                         renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                variant='outlined'
-                                label='Course'
-                                placeholder='Course'
-                            />
+                          <TextField
+                            {...params}
+                            variant='outlined'
+                            label='Course'
+                            placeholder='Course'
+                          />
                         )}
-                    />
-                </Grid>
-                <Grid item md={3} xs={12}>
-                    <Autocomplete
-                        style={{ width: '100%' }}
-                        size='small'
-                        onChange={(event, value) => {
-                            setSelectedBatch(value);
-                        }}
-                        id='batch_size_id'
-                        className='dropdownIcon'
-                        value={selectedBatch}
-                        options={batchList}
-                        getOptionLabel={(option) =>
-                            option ? `1 : ${JSON.stringify(option.batch_size)}` : ''}
-                        filterSelectedOptions
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                variant='outlined'
-                                label='Batch Limit'
-                                placeholder='Batch Limit'
-                            />
-                        )}
-                    />
-                </Grid>
+                      />
+                    </Grid>
+                  )}
+               {window.location.host === endpoints?.aolConfirmURL && (
+                   <Grid item md={3} xs={12}>
+                   <Autocomplete
+                       style={{ width: '100%' }}
+                       size='small'
+                       onChange={(event, value) => {
+                           setSelectedBatch(value);
+                       }}
+                       id='batch_size_id'
+                       className='dropdownIcon'
+                       value={selectedBatch}
+                       options={batchList}
+                       getOptionLabel={(option) =>
+                           option ? `1 : ${JSON.stringify(option.batch_size)}` : ''}
+                       filterSelectedOptions
+                       renderInput={(params) => (
+                           <TextField
+                               {...params}
+                               variant='outlined'
+                               label='Batch Limit'
+                               placeholder='Batch Limit'
+                           />
+                       )}
+                   />
+               </Grid>
+               )} 
                 <Grid item md={3} xs={12}>
                   <LocalizationProvider dateAdapter={MomentUtils}>
                     <DateRangePicker
