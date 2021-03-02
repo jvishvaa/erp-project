@@ -186,7 +186,7 @@ const ViewMoreCard = ({
             <Button className='courseButton' onClick={handleViewCard}>
               View Period Details
             </Button>
-            {window.location.host === 'localhost:3002' && (
+            {window.location.host === endpoints.aolConfirmURL && (
               <Button className='courseButton' onClick={handleEditCoursePrice}>
                 Edit Course Price
               </Button>

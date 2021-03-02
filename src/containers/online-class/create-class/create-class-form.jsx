@@ -394,7 +394,7 @@ const CreateClassForm = (props) => {
       days:
         !toggle && new Date(value).getDay() === 0
           ? ['S']
-          : daysList[new Date(value).getDay() - 1]['send'],
+          : [daysList[new Date(value).getDay() - 1]['send']],
     }));
   };
 
@@ -518,10 +518,8 @@ const CreateClassForm = (props) => {
     request['section_mapping_ids'] = sectionIds.join(',');
 
     if (selectedClassType?.id === 0) {
-      const arr = [];
-      arr.push(days);
-      request['week_days'] = arr[0];
-    } else {
+      request['week_days'] = days;
+    } else {  
       if (!Array.isArray(days)) request['week_days'] = [days];
       else request['week_days'] = days.map((ob) => ob);
     }
@@ -682,7 +680,7 @@ const CreateClassForm = (props) => {
         days:
           !toggle && new Date().getDay() === 0
             ? ['S']
-            : daysList[new Date().getDay() - 1]['send'],
+            : [daysList[new Date().getDay() - 1]['send']],
       }));
     }
   }, [toggle]);
