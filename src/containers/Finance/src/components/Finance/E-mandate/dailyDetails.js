@@ -30,7 +30,8 @@ const DailyBillingDetailsPage = ({ dataLoadingStatus, totalBillingDetails, domai
   useEffect(() => {
     let role = ''
     // role = JSON.parse(localStorage.getItem('user_profile')).personal_info.role
-    role = JSON.parse(localStorage.getItem('userDetails')).user_role
+    // role = JSON.parse(localStorage.getItem('userDetails')).user_role
+    role = JSON.parse(localStorage.getItem('userDetails')).role_details.user_role
     setRole(role)
   }, [])
 

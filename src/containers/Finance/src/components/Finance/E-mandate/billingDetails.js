@@ -48,11 +48,12 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
   // }
   useEffect(() => {
     let role = ''
-    role = JSON.parse(localStorage.getItem('userDetails')).user_role
+    // role = JSON.parse(localStorage.getItem('userDetails')).user_role
+    role = JSON.parse(localStorage.getItem('userDetails')).role_details.user_role
     setRole(role)
   }, [])
   useEffect(() => {
-    if (role === 'FinanceAdmin' || role === 'FinanceAccountant') {
+    if (role === 'BTM_Admin Venky' || role === 'F_acc') {
       let branch
       todayEMandateDetails(branch, sessionData && sessionData.value, role, user, alert)
       setShowTable(true)
@@ -606,7 +607,7 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
     <Layout>
     <div>
       <Grid container spacing={3} style={{ padding: 15 }}>
-        {role !== 'FinanceAdmin' && role !== 'FinanceAccountant'
+        {role !== 'BTM_Admin Venky' && role !== 'F_acc'
           ? <React.Fragment>
             <Grid item xs={9} />
             <Grid item xs={3}>
@@ -619,7 +620,7 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
             </Grid>
           </React.Fragment>
           : []}
-        {role !== 'FinanceAdmin' && role !== 'FinanceAccountant'
+        {role !== 'BTM_Admin Venky' && role !== 'F_acc'
           ? <React.Fragment>
             <Grid item xs={3}>
               <label>Academic Year*</label>

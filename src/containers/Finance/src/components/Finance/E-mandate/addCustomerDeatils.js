@@ -54,12 +54,13 @@ const CustomerDeatils = ({ setCustomerDetails, user, alert, fetchBranches, domai
     // role = JSON.parse(localStorage.getItem('user_profile')).personal_info.role
     // setRole(role)
     let role = ''
-    role = JSON.parse(localStorage.getItem('userDetails')).user_role
+    // role = JSON.parse(localStorage.getItem('userDetails')).user_role
+    role = JSON.parse(localStorage.getItem('userDetails')).role_details.user_role
     setRole(role)
   }, [user, alert, listDomainName, sessionData, fetchBranches])
 
   useEffect(() => {
-    if (role === 'FinanceAdmin' || role === 'FinanceAccountant') {
+    if (role === 'BTM_Admin Venky' || role === 'F_acc') {
       let branch
       getCustomerDetails(branch, sessionData && sessionData.value, role, user, alert)
       setShowTable(true)
@@ -432,7 +433,7 @@ const CustomerDeatils = ({ setCustomerDetails, user, alert, fetchBranches, domai
     <Layout>
     <div>
       <Grid container spacing={1} style={{ padding: 10 }} >
-        {role !== 'FinanceAdmin' && role !== 'FinanceAccountant'
+        {role !== 'BTM_Admin Venky' && role !== 'F_acc'
           ? <React.Fragment>
             <Grid item xs={9} />
             <Grid item xs={3} >
@@ -445,7 +446,7 @@ const CustomerDeatils = ({ setCustomerDetails, user, alert, fetchBranches, domai
             </Grid>
           </React.Fragment>
           : [] }
-        {role !== 'FinanceAdmin' && role !== 'FinanceAccountant'
+        {role !== 'BTM_Admin Venky' && role !== 'F_acc'
           ? <React.Fragment>
             <Grid item xs={3}>
               <label>Academic Year*</label>

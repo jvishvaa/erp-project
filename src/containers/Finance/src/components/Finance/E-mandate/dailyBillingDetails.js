@@ -53,7 +53,8 @@ const DailyBillingDetails = ({ dataLoadingStatus, alert, fetchBranches, todayEMa
   useEffect(() => {
     let role = ''
     // role = JSON.parse(localStorage.getItem('user_profile')).personal_info.role
-    role = JSON.parse(localStorage.getItem('userDetails')).user_role
+    // role = JSON.parse(localStorage.getItem('userDetails')).user_role
+    role = JSON.parse(localStorage.getItem('userDetails')).role_details.user_role
     setRole(role)
   }, [])
 
@@ -74,7 +75,7 @@ const DailyBillingDetails = ({ dataLoadingStatus, alert, fetchBranches, todayEMa
   }, [domainDailyBillStatus])
 
   useEffect(() => {
-    if (role === 'FinanceAdmin' || role === 'FinanceAccountant') {
+    if (role === 'BTM_Admin Venky' || role === 'F_acc') {
       // listDomainName(sessionData && sessionData.value, user, alert)
       totalBillingDetails(role, '2020-21', 3, user, alert)
       setShowTable(true)
@@ -463,7 +464,7 @@ const DailyBillingDetails = ({ dataLoadingStatus, alert, fetchBranches, todayEMa
         ? <React.Fragment>
           <Grid container spacing={3} style={{ padding: 15 }}>
             <Grid item xs={9} />
-            {role !== 'FinanceAdmin' && role !== 'FinanceAccountant'
+            {role !== 'BTM_Admin Venky' && role !== 'F_acc'
               ? <React.Fragment>
                 <Grid item xs={3}>
                   <Button
@@ -477,7 +478,7 @@ const DailyBillingDetails = ({ dataLoadingStatus, alert, fetchBranches, todayEMa
 
               : [] }
           </Grid>
-          {role !== 'FinanceAdmin' && role !== 'FinanceAccountant'
+          {role !== 'BTM_Admin Venky' && role !== 'F_acc'
             ? <div>
               <Grid container spacing={3} style={{ padding: 15 }}>
                 {/* {role !== 'FinanceAdmin'

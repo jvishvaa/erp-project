@@ -50,7 +50,7 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
   useEffect(() => {
     let role = ''
     // role = JSON.parse(localStorage.getItem('user_profile')).personal_info.role
-    role = JSON.parse(localStorage.getItem('role_details')).user_role
+    role = JSON.parse(localStorage.getItem('userDetails')).role_details.user_role
     console.log('role+', JSON.parse(localStorage.getItem('role_details')))
     setRole(role)
     getDomainNameWithCusId(sessionData && sessionData.value, user, alert)
