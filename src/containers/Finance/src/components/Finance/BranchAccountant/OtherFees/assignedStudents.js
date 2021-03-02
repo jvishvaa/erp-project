@@ -103,26 +103,26 @@ class UnassignedStudents extends Component {
     })
   };
 
-  renderTable = () => {
-    let dataToShow = []
-    dataToShow = this.props.studentLists.map((val, i) => {
-      return {
-        Sr: (
-          <input
-            type='checkbox'
-            style={{ width: '20px', height: '20px' }}
-            checked={this.state.isChecked[val.id]}
-            onChange={(e) => this.handleCheckbox(e, val.id)}
-          />
-        ),
-        erp: val.erp ? val.erp : '',
-        name: val.name ? val.name : '',
-        isPromoted: val.is_promoted ? val.is_promoted : '',
-        reason: val.reason ? val.reason : ''
-      }
-    })
-    return dataToShow
-  }
+  // renderTable = () => {
+  //   let dataToShow = []
+  //   dataToShow = this.props.studentLists.map((val, i) => {
+  //     return {
+  //       Sr: (
+  //         <input
+  //           type='checkbox'
+  //           style={{ width: '20px', height: '20px' }}
+  //           checked={this.state.isChecked[val.id]}
+  //           onChange={(e) => this.handleCheckbox(e, val.id)}
+  //         />
+  //       ),
+  //       erp: val.erp ? val.erp : '',
+  //       name: val.name ? val.name : '',
+  //       isPromoted: val.is_promoted ? val.is_promoted : '',
+  //       reason: val.reason ? val.reason : ''
+  //     }
+  //   })
+  //   return dataToShow
+  // }
 
   dueDateHandler = (e) => {
     this.setState({
@@ -190,62 +190,62 @@ class UnassignedStudents extends Component {
   render () {
     // console.log('------------------is misc--------', this.props.isMisc)
     // console.log(this.state)
-    let viewTable = null
-    if (this.props.studentLists) {
-      viewTable = (<ReactTable
-        // pages={Math.ceil(this.props.viewBanksList.count / 20)}
-        data={this.renderTable()}
-        manual
-        columns={[
-          {
-            Header: 'Sr',
-            accessor: 'Sr',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'ERP Code',
-            accessor: 'erp',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Student Name',
-            accessor: 'name',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'is Promoted',
-            accessor: 'isPromoted',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Reason',
-            accessor: 'reason',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          }
-        ]}
-        filterable
-        sortable
-        defaultPageSize={this.renderTable().length}
-        showPageSizeOptions={false}
-        className='-striped -highlight'
-        // Controlled props
-        // page={this.state.page}
-        // Callbacks
-        // onPageChange={page => this.pageChangeHandler(page)}
-      />)
-    } else {
-      viewTable = 'No Records Found !!!'
-    }
+    // let viewTable = null
+    // if (this.props.studentLists) {
+    //   viewTable = (<ReactTable
+    //     // pages={Math.ceil(this.props.viewBanksList.count / 20)}
+    //     data={this.renderTable()}
+    //     manual
+    //     columns={[
+    //       {
+    //         Header: 'Sr',
+    //         accessor: 'Sr',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'ERP Code',
+    //         accessor: 'erp',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Student Name',
+    //         accessor: 'name',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'is Promoted',
+    //         accessor: 'isPromoted',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Reason',
+    //         accessor: 'reason',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       }
+    //     ]}
+    //     filterable
+    //     sortable
+    //     defaultPageSize={this.renderTable().length}
+    //     showPageSizeOptions={false}
+    //     className='-striped -highlight'
+    //     // Controlled props
+    //     // page={this.state.page}
+    //     // Callbacks
+    //     // onPageChange={page => this.pageChangeHandler(page)}
+    //   />)
+    // } else {
+    //   viewTable = 'No Records Found !!!'
+    // }
     return (
       <React.Fragment>
         { this.props.studentLists
