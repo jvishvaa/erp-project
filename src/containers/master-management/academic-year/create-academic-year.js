@@ -27,7 +27,7 @@ const CreateAcademicYear = ({setLoading,handleGoBack}) => {
       }
     } else {
       setLoading(false);
-      setAlert('error', result.data.message);
+      setAlert('error', 'This Academic year already exists');
     }
     }).catch((error)=>{
       setLoading(false);
