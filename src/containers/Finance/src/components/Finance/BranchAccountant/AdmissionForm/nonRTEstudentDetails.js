@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Select from 'react-select'
-import { withStyles, TextField, Radio, Button } from '@material-ui/core/'
+import { withStyles, TextField, Radio, Button, Modal } from '@material-ui/core/'
 import { withRouter } from 'react-router-dom'
 import Grid from '@material-ui/core/Grid'
-import Modal from '../../../../ui/Modal/modal'
+// import Modal from '../../../../ui/Modal/modal'
 import { apiActions } from '../../../../_actions'
 import * as actionTypes from '../../store/actions'
 
@@ -229,7 +229,7 @@ class NonRTEStudentDetailsFormAcc extends Component {
 
     if (this.state.showModal) {
       regModal = (
-        <Modal open={this.state.showModal} small click={this.hideRegModalHanlder}>
+        <Modal open={this.state.showModal} small onClose={this.hideRegModalHanlder}>
           <Grid container spacing={3} style={{ padding: 15 }}>
             <Grid item xs='12'>
               <p>Message :{this.props.studentDetailsForAdmission.error}</p>

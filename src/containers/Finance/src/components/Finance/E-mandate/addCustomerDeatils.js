@@ -8,14 +8,14 @@ import {
   TableRow,
   TableHead,
   TableBody,
-  TablePagination,
-  Modal
+  TablePagination
+  // Modal
 } from '@material-ui/core'
 import Select from 'react-select'
 // import ReactTable from 'react-table'
 // import 'react-table/react-table.css'
 import { connect } from 'react-redux'
-// import Modal from '../../../ui/Modal/modal'
+import Modal from '../../../ui/Modal/modal'
 import * as actionTypes from '../store/actions'
 import { apiActions } from '../../../_actions'
 import Layout from '../../../../../Layout'
@@ -142,7 +142,7 @@ const CustomerDeatils = ({ setCustomerDetails, user, alert, fetchBranches, domai
   let customerDetModal = null
   if (showModal) {
     customerDetModal = (
-      <Modal open={showModal} onClose={hideDetailsModal} large>
+      <Modal open={showModal} click={hideDetailsModal} large>
         <React.Fragment>
         <h3 style={{ textAlign: 'center' }}>Add Customer Details</h3>
         <hr />

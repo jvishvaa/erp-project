@@ -31,7 +31,7 @@ import MessageTypeTable from './containers/master-management/message-type/messag
 import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
 import HomeworkCard from './containers/homework/homework-card';
 import Profile from './containers/profile/profile';
-import { createFeePlan, fetchLoggedInUserDetails, getOrderDetails, totalBillingDetails } from './redux/actions';
+import { fetchLoggedInUserDetails } from './redux/actions';
 import TeacherHomework from './containers/homework/teacher-homework';
 import HomeworkAdmin from './containers/homework/homework-admin';
 import AddHomework from './containers/homework/teacher-homework/add-homework';
@@ -144,11 +144,17 @@ import OrderStatusUpload from './containers/Finance/src/components/Inventory/Sto
 import ReceiptBook from './containers/Finance/src/components/Finance/AdmissionReports/ReceiptBook/receiptBook.js';
 import EMandate from './containers/Finance/src/components/Finance/E-mandate/e-mandate.js'
 import CreateLink from './containers/Finance/src/components/Finance/E-mandate/createLink.js'
+<<<<<<< HEAD
 import Alert from './containers/Finance/src/ui/alert'
 import alertActions from './containers/Finance/src/_actions/alert.actions'
 import userActions from './containers/Finance/src/_actions/user.actions'
 
 import { connect } from 'react-redux'
+=======
+import NonRTEFormAcc from './containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/nonRTEAdmissionForm.js'
+import AssignOtherFees from './containers/Finance/src/components/Finance/BranchAccountant/OtherFees/assignOtherFess.js'
+import GenerateSubsequentPayment from './containers/Finance/src/components/Finance/E-mandate/generateSubsequentPayment.js'
+>>>>>>> 9379fc0210fdc894c196316c02964022e9317ce1
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -293,6 +299,9 @@ function App({ alert }) {
               <Route exact path='/feeType/add_otherFee'>
                   {({ match }) => <AddOtherFees match={match} />}
               </Route>
+              <Route exact path='/feeType/assign_other_fees'>
+                  {({ match }) => <AssignOtherFees match={match} />}
+              </Route>
                 <Route exact path='/feeType/RegistrationFee'>
                   {({ match }) => <RegistrationFee match={match} />}
                 </Route>
@@ -394,6 +403,10 @@ function App({ alert }) {
                 </Route>
                 <Route exact path='/finance/accountant/applicationFrom'>
                   {({ match }) => <ApplicationFormAcc match={match} />}
+                </Route>
+      
+                <Route exact path='/finance/accountant/NonRTEFormAcc'>
+                  {({ match }) => <NonRTEFormAcc match={match} />}
                 </Route>
                 {/* <Route exact path='/finance/accountat/pendingOnlineadmission'>
                   {({ match }) => <OnlineAdmission match={match} />}
@@ -526,6 +539,9 @@ function App({ alert }) {
                 </Route>
                 <Route exact path= '/finance/E-Mandate/BillingDetails'>
                   {({ match }) => <BillingDetails match={match} />}
+                </Route>
+                <Route exact path= '/finance/E-Mandate/GenerateSubsequentPayment'>
+                  {({ match }) => <GenerateSubsequentPayment match={match} />}
                 </Route>
                 <Route exact path= '/finance/E-Mandate/AddBranch'>
                   {({ match }) => <EMandate match={match} />}

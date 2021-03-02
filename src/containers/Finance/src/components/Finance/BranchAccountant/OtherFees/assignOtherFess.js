@@ -12,6 +12,8 @@ import AssignedStudents from './assignedStudents'
 import UnassignedStudents from './unassignedStudents'
 import { apiActions } from '../../../../_actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import Layout from '../../../../../../Layout'
+
 
 const styles = theme => ({
   tableWrapper: {
@@ -151,6 +153,7 @@ class AssignOtherFees extends Component {
       )
     }
     return (
+      <Layout>
       <React.Fragment>
         <Grid container spacing={3} style={{ padding: 15 }}>
           <Grid item xs='3'>
@@ -231,6 +234,7 @@ class AssignOtherFees extends Component {
         </div>
         {this.props.dataLoading ? <CircularProgress open /> : null}
       </React.Fragment>
+      </Layout>
     )
   }
 }

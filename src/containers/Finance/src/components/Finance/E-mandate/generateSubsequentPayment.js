@@ -1,11 +1,18 @@
 import React, { useState } from 'react'
 import {
   Grid,
-  Button
+  Button,
+  Table,
+  TableCell,
+  TableRow,
+  TableHead,
+  TableBody,
+CircularProgress,
+TablePagination
 } from '@material-ui/core'
 import Select from 'react-select'
-import ReactTable from 'react-table'
-import 'react-table/react-table.css'
+// import ReactTable from 'react-table'
+// import 'react-table/react-table.css'
 import { connect } from 'react-redux'
 import * as actionTypes from '../store/actions'
 import { apiActions } from '../../../_actions'
@@ -16,8 +23,18 @@ const GenerateSubsequentPayment = ({ user, alert, getGenerateSubsequent, generat
     value: '2020-21',
     label: '2020-21'
   })
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [showTable, setShowTable] = useState(false)
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  }
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  }
   const handleClickSessionYear = (e) => {
     setSessionData(e)
     setShowTable(false)
@@ -55,55 +72,55 @@ const GenerateSubsequentPayment = ({ user, alert, getGenerateSubsequent, generat
     return dataToShow
   }
 
-  let studentErpTable = null
-  studentErpTable = <ReactTable
-    style={{ marginTop: 60, textAlign: 'center' }}
-    data={renderStudentErpTable()}
-    // manual
-    columns={[
-      {
-        Header: 'Branch Name',
-        accessor: 'domain',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Customer Name',
-        accessor: 'name',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Customer Email',
-        accessor: 'email',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Contact',
-        accessor: 'contact',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Customer Id',
-        accessor: 'customerId',
-        filterable: false,
-        sortable: true
-      },
-      {
-        Header: 'Make Payment',
-        accessor: 'Payment',
-        filterable: false,
-        sortable: true
-      }
-    ]}
-    filterable
-    sortable
-    defaultPageSize={10}
-    showPageSizeOptions={false}
-    className='-striped -highlight'
-  />
+  // let studentErpTable = null
+  // studentErpTable = <ReactTable
+  //   style={{ marginTop: 60, textAlign: 'center' }}
+  //   data={renderStudentErpTable()}
+  //   // manual
+  //   columns={[
+  //     {
+  //       Header: 'Branch Name',
+  //       accessor: 'domain',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Customer Name',
+  //       accessor: 'name',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Customer Email',
+  //       accessor: 'email',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Contact',
+  //       accessor: 'contact',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Customer Id',
+  //       accessor: 'customerId',
+  //       filterable: false,
+  //       sortable: true
+  //     },
+  //     {
+  //       Header: 'Make Payment',
+  //       accessor: 'Payment',
+  //       filterable: false,
+  //       sortable: true
+  //     }
+  //   ]}
+  //   filterable
+  //   sortable
+  //   defaultPageSize={10}
+  //   showPageSizeOptions={false}
+  //   className='-striped -highlight'
+  // />
 
   return (
     <Layout>
@@ -133,7 +150,45 @@ const GenerateSubsequentPayment = ({ user, alert, getGenerateSubsequent, generat
           >GET</Button>
         </Grid>
       </Grid>
-      {showTable ? studentErpTable : []}
+      {/* {showTable ? studentErpTable : []} */}
+      <React.Fragment>
+               <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Branch Name</TableCell>
+                      <TableCell>Customer Name</TableCell>
+                      <TableCell> Customer Email</TableCell>
+                      <TableCell> Contact</TableCell>
+                      <TableCell> Customer Id</TableCell>
+                      <TableCell>Make Payment</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                  {getGenerateSubsequent && getGenerateSubsequent.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((val, i) => { 
+                    return (
+                  <TableRow>
+                     <TableCell> {  val.branch && val.branch.branch_name ? val.branch.branch_name : ''}</TableCell>
+                      {/* <TableCell>{ val.id} </TableCell> */}
+                      <TableCell>{val.name && val.name ? val.name : ''}</TableCell>
+                      <TableCell>{val.email && val.email ? val.email : ''} </TableCell>
+                      <TableCell>{ val.contact && val.contact ? val.contact : ''} </TableCell>
+                      <TableCell> {val.customer_id && val.customer_id ? val.customer_id : ''} </TableCell>
+                      <TableCell><Button variant='contained' color='primary' style={{ marginTop: '-5px' }} onClick={() => subsequentPaymentHandle(val.branch && val.branch.id)}> Payment </Button></TableCell>
+                  </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={getGenerateSubsequent && getGenerateSubsequent.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onChangePage={handleChangePage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+              />
+        </React.Fragment>
     </div>
     </Layout>
   )

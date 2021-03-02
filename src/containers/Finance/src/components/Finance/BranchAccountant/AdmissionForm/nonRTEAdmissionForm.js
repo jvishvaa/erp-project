@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Select from 'react-select'
-import { withStyles, Button } from '@material-ui/core/'
+import { withStyles, Button, CircularProgress } from '@material-ui/core/'
 import Stepper from '@material-ui/core/Stepper'
 import Step from '@material-ui/core/Step'
 import StepLabel from '@material-ui/core/StepLabel'
@@ -18,10 +18,11 @@ import NonRTEStudentParentDetailsFormAcc from './nonRTEstudentParentDetails'
 import NonRTEAddressDetailsFormAcc from './nonRTEaddressDetails'
 import NonRTEFeeDetailsFormAcc from './nonRTEFeePlan'
 import Receipt from './nonRTEPayment'
-import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+// import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import * as actionTypes from '../store/actions'
 import { urls } from '../../../../urls'
 import feeReceipts from '../../Receipts/feeReceipts'
+import Layout from '../../../../../../Layout'
 
 const styles = theme => ({
   container: {
@@ -181,7 +182,7 @@ class NonRTEFormAcc extends Component {
             }
           })
         } else {
-          this.props.alert.warning('Fill all mandatory fields!')
+          // this.props.alert.warning('Fill all mandatory fields!')
         }
       } else if (this.state.activeStep === 1) {
         if (+studentparentdetails.poc === 1 && studentparentdetails.fatherName && studentparentdetails.fatherphone && studentparentdetails.fatherphone.length === 10) {
@@ -413,6 +414,7 @@ class NonRTEFormAcc extends Component {
     const { classes } = this.props
     const { activeStep } = this.state
     return (
+      <Layout>
       <React.Fragment>
         <Button style={{ width: '40px' }} color='primary' className={classes.btn} onClick={this.props.history.goBack}>
           <ArrowBack /> Back
@@ -452,6 +454,7 @@ class NonRTEFormAcc extends Component {
           </footer>}
         {this.props.dataLoading ? <CircularProgress open /> : null}
       </React.Fragment>
+      </Layout>
     )
   }
 }

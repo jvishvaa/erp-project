@@ -416,6 +416,10 @@ const Layout = ({ children, history }) => {
         history.push('/feeType/OtherFeeType');
         break;
       }
+      case 'Assign Transport Fees': {
+        history.push('/feeType/assign_other_fees');
+        break;
+      }
       case 'App/Reg Fee Type': {
         history.push('/feeType/RegistrationFee');
         break;
@@ -608,6 +612,10 @@ const Layout = ({ children, history }) => {
                 history.push('/finance/E-Mandate/BillingDetails')
                   break;
                 }
+                case 'Generate Subsequent Payment': {
+                  history.push('/finance/E-Mandate/GenerateSubsequentPayment')
+                    break;
+                  }
                 case 'Add Branch': {
                   history.push('/finance/E-Mandate/AddBranch')
                     break;

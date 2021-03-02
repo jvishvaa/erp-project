@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import ReactTable from 'react-table'
 // import { Button } from 'semantic-ui-react'
-import Button from '@material-ui/core/Button'
+import {Button, Table, TableRow, TableCell, TableBody, TableHead, TablePagination  } from '@material-ui/core/'
 
-import 'react-table/react-table.css'
+// import 'react-table/react-table.css'
 
 import * as actionTypes from '../../store/actions'
 // import { apiActions } from '../../../../_actions'
@@ -17,7 +17,9 @@ class UnassignedStudents extends Component {
       isChecked: {},
       due_date: props.dueDate ? props.dueDate : '',
       rowUnchecked: [],
-      selectAll: false
+      selectAll: false,
+      page: 0,
+    rowsPerPage: 10
     }
     console.log(this.state)
   }
@@ -86,27 +88,41 @@ class UnassignedStudents extends Component {
       this.props.fetchStudentList(sessionId, otherFeeId, gradeId, sectionId, 'assigned', alert, user)
     }
   }
-
-  renderTable = () => {
-    let dataToShow = []
-    dataToShow = this.props.studentLists.map((val, i) => {
-      return {
-        Sr: (
-          <input
-            type='checkbox'
-            style={{ width: '20px', height: '20px' }}
-            checked={this.state.isChecked[val.id]}
-            onChange={(e) => this.handleCheckbox(e, val.id)}
-          />
-        ),
-        erp: val.erp ? val.erp : '',
-        name: val.name ? val.name : '',
-        isPromoted: val.is_promoted ? val.is_promoted : '',
-        reason: val.reason ? val.reason : ''
-      }
+  handleChangePage = (event, newPage) => {
+    this.setState({
+      page: newPage
     })
-    return dataToShow
-  }
+  };
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({
+      rowsPerPage:+event.target.value
+    })
+    this.setState({
+      page: 0
+    })
+  };
+
+  // renderTable = () => {
+  //   let dataToShow = []
+  //   dataToShow = this.props.studentLists.map((val, i) => {
+  //     return {
+  //       Sr: (
+  //         <input
+  //           type='checkbox'
+  //           style={{ width: '20px', height: '20px' }}
+  //           checked={this.state.isChecked[val.id]}
+  //           onChange={(e) => this.handleCheckbox(e, val.id)}
+  //         />
+  //       ),
+  //       erp: val.erp ? val.erp : '',
+  //       name: val.name ? val.name : '',
+  //       isPromoted: val.is_promoted ? val.is_promoted : '',
+  //       reason: val.reason ? val.reason : ''
+  //     }
+  //   })
+  //   return dataToShow
+  // }
 
   dueDateHandler = (e) => {
     this.setState({
@@ -174,62 +190,62 @@ class UnassignedStudents extends Component {
   render () {
     // console.log('------------------is misc--------', this.props.isMisc)
     // console.log(this.state)
-    let viewTable = null
-    if (this.props.studentLists) {
-      viewTable = (<ReactTable
-        // pages={Math.ceil(this.props.viewBanksList.count / 20)}
-        data={this.renderTable()}
-        manual
-        columns={[
-          {
-            Header: 'Sr',
-            accessor: 'Sr',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'ERP Code',
-            accessor: 'erp',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Student Name',
-            accessor: 'name',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'is Promoted',
-            accessor: 'isPromoted',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          },
-          {
-            Header: 'Reason',
-            accessor: 'reason',
-            inputFilterable: true,
-            exactFilterable: true,
-            sortable: true
-          }
-        ]}
-        filterable
-        sortable
-        defaultPageSize={this.renderTable().length}
-        showPageSizeOptions={false}
-        className='-striped -highlight'
-        // Controlled props
-        // page={this.state.page}
-        // Callbacks
-        // onPageChange={page => this.pageChangeHandler(page)}
-      />)
-    } else {
-      viewTable = 'No Records Found !!!'
-    }
+    // let viewTable = null
+    // if (this.props.studentLists) {
+    //   viewTable = (<ReactTable
+    //     // pages={Math.ceil(this.props.viewBanksList.count / 20)}
+    //     data={this.renderTable()}
+    //     manual
+    //     columns={[
+    //       {
+    //         Header: 'Sr',
+    //         accessor: 'Sr',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'ERP Code',
+    //         accessor: 'erp',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Student Name',
+    //         accessor: 'name',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'is Promoted',
+    //         accessor: 'isPromoted',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Reason',
+    //         accessor: 'reason',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       }
+    //     ]}
+    //     filterable
+    //     sortable
+    //     defaultPageSize={this.renderTable().length}
+    //     showPageSizeOptions={false}
+    //     className='-striped -highlight'
+    //     // Controlled props
+    //     // page={this.state.page}
+    //     // Callbacks
+    //     // onPageChange={page => this.pageChangeHandler(page)}
+    //   />)
+    // } else {
+    //   viewTable = 'No Records Found !!!'
+    // }
     return (
       <React.Fragment>
         { this.props.studentLists
@@ -243,7 +259,48 @@ class UnassignedStudents extends Component {
             <label style={{ marginLeft: '15px' }}>Select all Students</label>
           </div>
           : null}
-        {viewTable}
+        {/* {viewTable} */}
+        <React.Fragment>
+                          <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell> Sr</TableCell>
+                      <TableCell> ERP Code</TableCell>
+                      <TableCell> Student Name</TableCell>
+                      <TableCell> is Promoted</TableCell>
+                      <TableCell> Reason</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                  {this.props.studentLists && this.props.studentLists.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((val, i) => { 
+                    return (
+                  <TableRow>
+                     <TableCell>  <input
+            type='checkbox'
+            style={{ width: '20px', height: '20px' }}
+            checked={this.state.isChecked[val.id]}
+            onChange={(e) => this.handleCheckbox(e, val.id)}
+          /></TableCell>
+                      {/* <TableCell>{ val.id} </TableCell> */}
+                      <TableCell>{val.erp ? val.erp : ''}</TableCell>
+                      <TableCell>{val.name ? val.name : ''} </TableCell>
+                      <TableCell>{ val.is_promoted ? val.is_promoted : ''} </TableCell>
+                      <TableCell> { val.reason ? val.reason : ''} </TableCell>
+                  </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={this.props.studentLists && this.props.studentLists.length}
+                rowsPerPage={this.state.rowsPerPage}
+                page={this.state.page}
+                onChangePage={this.handleChangePage}
+                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              />
+                          </React.Fragment>
         <div style={{ width: '250px' }}>
           <label>Due Date</label>
           <input

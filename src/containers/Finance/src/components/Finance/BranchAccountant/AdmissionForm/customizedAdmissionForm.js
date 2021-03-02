@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Select from 'react-select'
-import { withStyles, Button } from '@material-ui/core'
+import { withStyles, Button, CircularProgress } from '@material-ui/core'
 import Grid from '@material-ui/core/Grid'
 import { withRouter } from 'react-router-dom'
 import { apiActions } from '../../../../_actions'
 import AutoSuggest from '../../../../ui/AutoSuggest/autoSuggest'
 import NewAdmissionFormAcc from './newAdmissionForm'
 import NonRTEFormAcc from './nonRTEAdmissionForm'
-import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+// import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import * as actionTypes from '../store/actions'
 // import { debounce } from '../../../../utils' // rajeesh due to import issue
 import Layout from '../../../../../../Layout'
@@ -64,7 +64,7 @@ class CustomizedAdmissionFormAcc extends Component {
         // this.props.alert.warning('Admission Already Completed With # ' + this.props.studentDetailsForAdmission.admission_number)
       } else if (this.props.studentDetailsForAdmission && this.props.studentDetailsForAdmission.admission_status === false) {
         this.props.history.push({
-          pathname: '/finance/NonRTEFormAcc',
+          pathname: '/finance/accountant/NonRTEFormAcc',
           regNo: this.state.regNo || this.state.regId
         })
       }

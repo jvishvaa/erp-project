@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import Select from 'react-select'
-import { withStyles, Button } from '@material-ui/core/'
+import { withStyles, Button, CircularProgress } from '@material-ui/core/'
 import Stepper from '@material-ui/core/Stepper'
 import Step from '@material-ui/core/Step'
 import StepLabel from '@material-ui/core/StepLabel'
@@ -15,7 +15,7 @@ import OtherDetailsFormAcc from './otherDetails'
 import StudentParentDetailsFormAcc from './studentParentDetails'
 import AddressDetailsFormAcc from './addressDetails'
 import * as actionTypes from '../store/actions'
-import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+// import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import Layout from '../../../../../../Layout'
 
 const styles = theme => ({
