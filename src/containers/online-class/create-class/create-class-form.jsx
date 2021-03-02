@@ -394,7 +394,7 @@ const CreateClassForm = (props) => {
       days:
         !toggle && new Date(value).getDay() === 0
           ? ['S']
-          : [daysList[new Date(value).getDay() - 1]['send']]||[],
+          : [daysList[new Date(value).getDay() - 1]?.send]||[],
     }));
   };
 
@@ -629,12 +629,11 @@ const CreateClassForm = (props) => {
       coHosts: [],
     }));
     dispatch(resetContext());
-    // dispatch(listGradesCreateClass());
+    dispatch(clearFilteredStudents());
     dispatch(clearGrades());
     dispatch(clearSections());
     dispatch(clearSubjects());
     dispatch(clearCourses());
-    dispatch(listGradesCreateClass(onlineClass?.branchIds, moduleId));
   };
 
   const fetchTutorEmails = () => {
@@ -680,7 +679,7 @@ const CreateClassForm = (props) => {
         days:
           !toggle && new Date().getDay() === 0
             ? ['S']
-            : [daysList[new Date().getDay() - 1]['send']]||[],
+            : [daysList[new Date().getDay() - 1]?.send]||[],
       }));
     }
   }, [toggle]);
