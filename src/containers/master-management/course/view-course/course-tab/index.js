@@ -22,8 +22,8 @@ export default function CenteredTabs({handleCourseList,sendGrade,setTabValue,tab
     setTabValue(newValue)
     handleCourseList(sendGrade,newValue)
     setValue(newValue);
-    
   };
+  
   return (
     <Paper className={classes.root}>
       <Tabs value={tabValue} onChange={handleChange} indicatorColor={classes.indicatorColor} textColor={classes.indicatorColor} >
