@@ -205,7 +205,7 @@ const CreateUpdateSignatureModel = ({
                       value={erpNo}
                       helperText={
                         erpNo && erpNo.length < 11 ? (
-                          <b style={{ color: '#014B7E' }}>Enter Valid Erp Number</b>
+                          <b style={{ color: '#014B7E' }}>Enter Valid ERP Number</b>
                         ) : (
                           ''
                         )

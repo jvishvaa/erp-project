@@ -52,6 +52,7 @@ const CourseCard = ({
   tabVal
 }) => {
   const themeContext = useTheme();
+  console.log(period,'=== Course Card');
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const classes = useStyles();

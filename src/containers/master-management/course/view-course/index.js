@@ -30,6 +30,7 @@ import CourseCard from './course-card';
 import ViewMoreCard from './view-more-card';
 import Context from './context/ViewStore';
 import TabPanel from './course-tab';
+import { useCallback } from 'react';
 
 const CourseView = () => {
   const themeContext = useTheme();
@@ -59,8 +60,9 @@ const CourseView = () => {
 
   const [courseData, setCourseData] = useState([]);
 
-  const handleCourseList = (gradeIds,tabMenuval) => {
+  const handleCourseList = React.useCallback((gradeIds,tabMenuval) => {
     console.log(tabMenuval,'+++++++++++',gradeIds)
+    setCourseData([]);
     setTabVal(tabMenuval)
     setLoading(true);
     setSendGrade(gradeIds);
@@ -70,9 +72,11 @@ const CourseView = () => {
       .get(`${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}&all=chacha`)
       .then((result) => {
         if (result.data.status_code === 200) {
+          console.log(courseData,'=== tab 0');
           setTotalCount(result.data.count);
           setLoading(false);
           setCourseData(result.data.result);
+          console.log(result.data.result, "=== tab 0 -> "+ gradeIds);
           // setState({...state,editData:result.data.result})
           // setViewMore(false);
           // setViewMoreData({});
@@ -91,9 +95,11 @@ const CourseView = () => {
       .get(`${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}&all&is_active=True`)
       .then((result) => {
         if (result.data.status_code === 200) {
+          console.log(courseData,'=== tab 1');
           setTotalCount(result.data.count);
           setLoading(false);
           setCourseData(result.data.result);
+          console.log(result.data.result, '=== 1 -> '+ gradeIds);
         } else {
           setLoading(false);
           setAlert('error', result.data.description);
@@ -109,9 +115,11 @@ const CourseView = () => {
       .get(`${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}&all&is_active=False`)
       .then((result) => {
         if (result.data.status_code === 200) {
+          console.log(courseData,'=== tab 2');
           setTotalCount(result.data.count);
           setLoading(false);
           setCourseData(result.data.result);
+          console.log(result.data.result, '=== 2 -> '+ gradeIds);
         } else {
           setLoading(false);
           setAlert('error', result.data.description);
@@ -125,10 +133,11 @@ const CourseView = () => {
     if(gradeIds.length === 0){
       setAlert('warning', 'Select Grade');
     }
-  };
+  }, []);
 
   const handleClearFilter = () => {
     setSendGrade([]);
+    setCourseData([]);
   }
 
   const handlePagination = (event, page) => {
@@ -176,7 +185,7 @@ const CourseView = () => {
           />
         </div>
         <Paper className={classes.root}>
-          {courseData?.length > 0 ? (
+          {courseData && courseData.length > 0 ? (
             <Grid
               container
               style={
@@ -261,11 +270,11 @@ const CourseView = () => {
           {courseData?.length > 0 && (
             <div className='paginateData paginateMobileMargin'>
               <Pagination
-              onChange={handlePagination}
-              style={{ marginTop: 25 }}
-              count={Math.ceil(totalCount / limit)}
-              color='primary'
-              page={page}
+                onChange={handlePagination}
+                style={{ marginTop: 25 }}
+                count={Math.ceil(totalCount / limit)}
+                color='primary'
+                page={page}
               />
             </div>
           )}

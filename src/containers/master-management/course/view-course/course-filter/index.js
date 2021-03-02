@@ -36,7 +36,7 @@ const CourseFilter = ({ handleCourseList, setCourseData ,setPageFlag, handleClea
       branch: '',
     });
     setGradeIds([]);
-    setCourseData([]);
+    //setCourseData([]);
     setPageFlag(false);
     handleClearFilter();
   };
