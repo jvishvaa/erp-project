@@ -800,7 +800,7 @@ const CreateDailyDairy = (details, onSubmit) => {
         </div>
           <div>
               <Button 
-              style={{ marginLeft:'80%' }}
+              style= {isMobile? {marginLeft:''}:  { marginLeft:'80%' } }
               onClick={state.isEdit? handleEdited : handleSubmit}
                 className='submit_button'>SUBMIT</Button>
           </div>
