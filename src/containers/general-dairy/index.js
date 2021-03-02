@@ -56,6 +56,7 @@ const GeneralDairyList = () => {
     const [ dairyType, setDairyType ] = useState(1);
     const [studentModuleId, setStudentModuleId] = useState();
     const [teacherModuleId, setTeacherModuleId] = useState();
+    const [showSubjectDropDown, setShowSubjectDropDown] = useState();
     const location = useLocation();
 
     const handlePagination = (event, page) => {
@@ -74,6 +75,7 @@ const GeneralDairyList = () => {
               item.child_module.forEach((item) => {
                 if(location.pathname === "/dairy/student" && item.child_name === "Student Dairy") {
                     setStudentModuleId(item?.child_id);
+                    setShowSubjectDropDown(true)
                 } else if(location.pathname === "/dairy/teacher" && item.child_name === "Teacher") {
                     setTeacherModuleId(item?.child_id);
                 } 
@@ -89,6 +91,11 @@ const GeneralDairyList = () => {
         setPeriodData([]);
         const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
         console.log(roleDetails);
+        if(!branchId || !gradeId){
+            setLoading(false)
+            setAlert('error','Fill in required fields')
+            return
+        }
         const diaryUrl =  isTeacher ? `${endpoints.generalDairy.dairyList}?branch=${branchId}&grades=${gradeId}&sections=${sectionIds}&page=${page}&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}${activeTab !== 0? ('&dairy_type='+activeTab) : ''}`
             : `${endpoints.generalDairy.dairyList}?module_id=${studentModuleId}&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}${activeTab !== 0? ('&dairy_type='+activeTab) : ''}`;
         axiosInstance.get(diaryUrl)
@@ -133,6 +140,7 @@ const GeneralDairyList = () => {
                     handleDairyList={handleDairyList}
                     setPeriodData={setPeriodData}
                     isTeacher={isTeacher}
+                    showSubjectDropDown={showSubjectDropDown}
                     //  setCurrentTab={setCurrentTab}
                 />
                 <Paper className={classes.root}>
