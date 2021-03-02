@@ -133,12 +133,12 @@ const CreateClassForm = (props) => {
   ]);
 
   useEffect(() => {
-    if (NavData && NavData.length) {
+    if (NavData && NavData?.length) {
       NavData.forEach((item) => {
         if (
           item.parent_modules === 'Online Class' &&
           item.child_module &&
-          item.child_module.length > 0
+          item.child_module?.length > 0
         ) {
           item.child_module.forEach((item) => {
             if (item.child_name === 'Create Class') {
@@ -244,7 +244,7 @@ const CreateClassForm = (props) => {
   const handleSection = (event, value) => {
     // dispatch(clearFilteredStudents());
     setSelectedSections(value);
-    if (value.length) {
+    if (value?.length) {
       const ids = value.map((el) => el.id);
       const sectionIds = value.map((el) => el.section_id);
       setOnlineClass((prevState) => ({ ...prevState, sectionIds: ids }));
@@ -263,7 +263,7 @@ const CreateClassForm = (props) => {
   const handleSubject = (event, value) => {
     // dispatch(clearFilteredStudents());
     setSelectedSubject(value);
-    if (value.length) {
+    if (value?.length) {
       const subjectIds = value.map((el) => el.subject__id);
       setOnlineClass((prevState) => ({ ...prevState, subject: subjectIds }));
     } else {
@@ -289,7 +289,7 @@ const CreateClassForm = (props) => {
     const { gradeIds, sectionIds, subject, branchIds } = onlineClass;
     let listStudentUrl = `branch_ids=${branchIds.join(',')}`;
     if (selectedClassType?.id === 0) {
-      if (gradeIds.length && sectionIds.length && subject.length) {
+      if (gradeIds?.length && sectionIds?.length && subject?.length) {
         listStudentUrl = `section_mapping_ids=${sectionIds.join(
           ','
         )}&subject_ids=${subject.join(',')}`;
@@ -299,10 +299,10 @@ const CreateClassForm = (props) => {
         clearStudentsList();
       }
     } else if (selectedClassType?.id > 0) {
-      if (gradeIds.length > 0 && sectionIds.length > 0) {
+      if (gradeIds?.length > 0 && sectionIds?.length > 0) {
         listStudentUrl = `section_mapping_ids=${sectionIds.join(',')}`;
         dispatch(listStudents(listStudentUrl));
-      } else if (gradeIds.length > 0 && branchIds.length > 0) {
+      } else if (gradeIds?.length > 0 && branchIds?.length > 0) {
         listStudentUrl = `branch_ids=${branchIds.join(',')}&grade_ids=${gradeIds.join(
           ','
         )}`;
@@ -324,11 +324,11 @@ const CreateClassForm = (props) => {
     console.log({ onlineClass });
     if (
       selectedClassType?.id === 0 &&
-      (!gradeIds.length || !sectionIds.length || !subject.length)
+      (!gradeIds?.length || !sectionIds?.length || !subject?.length)
     ) {
       setAlert('error', 'Please provide values for grades, sections and subjects');
       return;
-    } else if (selectedClassType?.id > 0 && (!gradeIds.length || !courseId)) {
+    } else if (selectedClassType?.id > 0 && (!gradeIds?.length || !courseId)) {
       setAlert('error', 'Please provide value for course');
       return;
     } else {
@@ -342,7 +342,7 @@ const CreateClassForm = (props) => {
 
   const handleTutorEmail = (event, value) => {
     const { gradeIds } = onlineClass;
-    if (onlineClass.coHosts.length > 0) {
+    if (onlineClass.coHosts?.length > 0) {
       const index = onlineClass.coHosts.findIndex((host) => host === value);
       if (index) {
         const coHosts = onlineClass.coHosts.slice();
@@ -408,7 +408,7 @@ const CreateClassForm = (props) => {
   const [selectedDays, setSelectedDays] = useState([]);
   const handleDays = (event, value) => {
     setSelectedDays(value);
-    if (value.length > 0) {
+    if (value?.length > 0) {
       const sendData = value.map((obj) => obj.send);
       setOnlineClass((prevState) => ({ ...prevState, days: sendData }));
     } else {
@@ -525,7 +525,7 @@ const CreateClassForm = (props) => {
     }
 
     if (selectedClassType?.id === 0) {
-      if (filteredStudents.length > 0) request['student_ids'] = filteredStudents;
+      if (filteredStudents?.length > 0) request['student_ids'] = filteredStudents;
       if (joinLimit > 0) {
         request['join_limit'] = joinLimit;
         dispatch(createNewOnlineClass(request));
@@ -535,13 +535,13 @@ const CreateClassForm = (props) => {
     } else if (selectedClassType?.id > 0) {
       request['price'] = 0;
       request['final_price'] = 0;
-      if (joinLimit > 0 && filteredStudents.length > 0) {
+      if (joinLimit > 0 && filteredStudents?.length > 0) {
         request['student_ids'] = filteredStudents;
         request['join_limit'] = joinLimit;
         dispatch(createSpecialOnlineClass(request));
       } else {
         if (joinLimit <= 0) setAlert('warning', 'Batch size should be atleast 1.');
-        if (filteredStudents.length <= 0)
+        if (filteredStudents?.length <= 0)
           setAlert('warning', 'No. of students should be atleast 1.');
       }
     }
@@ -689,7 +689,7 @@ const CreateClassForm = (props) => {
     if (
       onlineClass.duration &&
       onlineClass.subject &&
-      onlineClass.gradeIds.length &&
+      onlineClass.gradeIds?.length &&
       onlineClass.selectedDate &&
       onlineClass.selectedTime &&
       onlineClass.tutorEmail
@@ -700,14 +700,14 @@ const CreateClassForm = (props) => {
   }, [
     onlineClass.duration,
     onlineClass.subject,
-    onlineClass.gradeIds.length,
+    onlineClass.gradeIds?.length,
     onlineClass.selectedDate,
     onlineClass.selectedTime,
     onlineClass.tutorEmail,
   ]);
 
   useEffect(() => {
-    if (onlineClass.branchIds?.length && selectedGrades.length) {
+    if (onlineClass.branchIds?.length && selectedGrades?.length) {
       fetchTutorEmails();
       tutorEmailRef.current.scrollIntoView();
       tutorEmailRef.current.focus();
@@ -726,7 +726,7 @@ const CreateClassForm = (props) => {
   const createBtnDisabled =
     !onlineClass.duration ||
     !onlineClass.subject ||
-    !onlineClass.gradeIds.length ||
+    !onlineClass.gradeIds?.length ||
     !onlineClass.selectedDate ||
     !onlineClass.selectedTime ||
     !onlineClass.tutorEmail ||
