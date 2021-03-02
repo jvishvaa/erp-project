@@ -12,7 +12,7 @@ import AssignRole from './containers/communication/assign-role/assign-role';
 import RoleManagement from './containers/role-management';
 import store from './redux/store';
 import AlertNotificationProvider from './context-api/alert-context/alert-state';
-import './assets/styles/styles.scss';
+// import './assets/styles/styles.scss';
 import UserManagement from './containers/user-management';
 import ViewUsers from './containers/user-management/view-users/view-users';
 import Login from './containers/login';
@@ -143,6 +143,7 @@ import AddGst from './containers/Finance/src/components/Inventory/StoreAdmin/Add
 import OrderStatusUpload from './containers/Finance/src/components/Inventory/StoreAdmin/OrderStatusUpload/orderStatusUpload';
 import ReceiptBook from './containers/Finance/src/components/Finance/AdmissionReports/ReceiptBook/receiptBook.js';
 import EMandate from './containers/Finance/src/components/Finance/E-mandate/e-mandate.js'
+import CreateLink from './containers/Finance/src/components/Finance/E-mandate/createLink.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -523,6 +524,9 @@ function App() {
                 </Route>
                 <Route exact path= '/finance/E-Mandate/AddBranch'>
                   {({ match }) => <EMandate match={match} />}
+                </Route>
+                <Route exact path= '/finance/E-Mandate/CreateLink'>
+                  {({ match }) => <CreateLink match={match} />}
                 </Route>
                 <Route exact path= '/finance/E-Mandate/CustomerDetails'>
                   {({ match }) => <CustomerDeatils match={match} />}
