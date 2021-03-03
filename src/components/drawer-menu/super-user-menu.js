@@ -122,7 +122,6 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
             </ListItemIcon>
             <ListItemText primary={`Bulk Upload Status`} className='menu-item-text' />
           </ListItem>
-
           <ListItem
             button
             className={
