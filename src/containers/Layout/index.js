@@ -522,6 +522,14 @@ const Layout = ({ children, history }) => {
         history.push('/master-mgmt/signature-upload');
         break;
       }
+      case 'Teacher Circular': {
+        history.push('/circular');
+        break;
+      }
+      case 'Student Circular': {
+        history.push('/circular');
+        break;
+      }
       default:
         break;
     }

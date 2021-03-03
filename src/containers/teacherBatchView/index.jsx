@@ -118,12 +118,12 @@ const TeacherBatchView = ({ history }) => {
       setPage(1);
       // ${studentDetails && studentDetails.role_details.erp_user_id}
       callApi(
-        // `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=1362&page_number=1&page_size=15&class_type=1`,
-        `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
-          studentDetails &&
-          studentDetails.role_details &&
-          studentDetails.role_details.erp_user_id
-        }&page_number=1&page_size=15&class_type=1`,
+        `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=1362&page_number=1&page_size=15&class_type=1`,
+        // `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
+        //   studentDetails &&
+        //   studentDetails.role_details &&
+        //   studentDetails.role_details.erp_user_id
+        // }&page_number=1&page_size=15&class_type=1`,
         'filter'
       );
     } else {
