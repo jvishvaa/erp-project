@@ -63,77 +63,53 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
     });
   };
 
-  // const fetchBranches = () => {
-  //   fetchBranchesForCreateUser().then((data) => {
-  //     const transformedData = data?.map((obj) => ({
-  //       id: obj.id,
-  //       branch_name: obj.branch_name,
-  //       branch_code: obj.branch_code,
-  //     }));
-  //     setBranches(transformedData);
-  //   });
-  // };
-
-  // const fetchSubjects = (branch, acadId, grade, section) => {
-  //   if (
-  //     branch &&
-  //     branch.length > 0 &&
-  //     grade &&
-  //     grade.length > 0 &&
-  //     section &&
-  //     section.length > 0
-  //   ) {
-  //     getSubjects(branch, acadId, grade, section).then((data) => {
-  //       const transformedData = data.map((obj) => ({
-  //         id: obj.subject__id,
-  //         subject_name: obj.subject__subject_name,
-  //       }));
-  //       setSubjects(transformedData);
-  //       const filteredSelectedSubjects = formik.values.subjects?.filter(
-  //         (sub) => transformedData.findIndex((data) => data.id === sub.id) > -1
-  //       );
-  //       formik.setFieldValue('subjects', filteredSelectedSubjects);
-  //     });
-  //   } else {
-  //     setSubjects([]);
-  //   }
-  // };
-
-  const handleChangeYear = (event, value) => {
-    setGrades([]);
-    setSections([]);
-    setBranches([]);
-    formik.setFieldValue('academic_year', value);
-    formik.setFieldValue('branch', []);
-    formik.setFieldValue('grade', []);
-    formik.setFieldValue('section', []);
-    formik.setFieldValue('subjects', []);
-    if (value) {
-      fetchBranchesForCreateUser(value?.id).then((data) => {
+  const fetchBranches = (acadId) => {
+    if (acadId) {
+      fetchBranchesForCreateUser(acadId).then((data) => {
         const transformedData = data?.map((obj) => ({
-          id: obj?.id,
-          branch_name: obj?.branch_name,
-          branch_code: obj?.branch_code,
+          id: obj.id,
+          branch_name: obj.branch_name,
+          branch_code: obj.branch_code,
         }));
         setBranches(transformedData);
       });
     }
   };
 
-  const handleChangeBranch = (event, value) => {
+  const fetchSubjects = (branch, grade, section, acadId) => {
+    if (
+      branch &&
+      branch.length > 0 &&
+      grade &&
+      grade.length > 0 &&
+      section &&
+      section.length > 0
+    ) {
+      getSubjects(branch, grade, section).then((data) => {
+        const transformedData = data.map((obj) => ({
+          id: obj.subject__id,
+          subject_name: obj.subject__subject_name,
+        }));
+        setSubjects(transformedData);
+        const filteredSelectedSubjects = formik.values.subjects.filter(
+          (sub) => transformedData.findIndex((data) => data.id === sub.id) > -1
+        );
+        formik.setFieldValue('subjects', filteredSelectedSubjects);
+      });
+    } else {
+      setSubjects([]);
+    }
+  };
+
+  const handleChangeBranch = (values, acadId) => {
     setGrades([]);
     setSections([]);
     setSubjects([]);
-    formik.setFieldValue('branch', value);
-    formik.setFieldValue('grade', []);
-    formik.setFieldValue('section', []);
-    formik.setFieldValue('subjects', []);
-    if (value?.length > 0) {
-      const branchIds = value?.map(({ id }) => id);
-      const acadId = formik.values.academic_year?.id;
-      fetchGrades(branchIds, acadId).then((data) => {
+    if (values?.length > 0) {
+      fetchGrades(acadId, values).then((data) => {
         const transformedData = data
           ? data.map((grade) => ({
+              item_id: grade.id,
               id: grade.grade_id,
               grade_name: grade.grade__grade_name,
             }))
@@ -143,17 +119,11 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
     }
   };
 
-  const handleChangeGrade = (event, value) => {
+  const handleChangeGrade = (values, acadId, branch) => {
     setSections([]);
     setSubjects([]);
-    formik.setFieldValue('grade', value);
-    formik.setFieldValue('section', []);
-    formik.setFieldValue('subjects', []);
-    if (value?.length > 0) {
-      const gradeIds = value?.map(({ id }) => id);
-      const branchIds = formik.values.branch?.map(({ id }) => id);
-      const acadId = formik.values.academic_year?.id;
-      fetchSections(branchIds, acadId, gradeIds).then((data) => {
+    if (values?.length > 0) {
+      fetchSections(acadId, branch, values).then((data) => {
         const transformedData = data
           ? data.map((section) => ({
               item_id: section.id,
@@ -161,8 +131,29 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
               section_name: `${section.section__section_name}`,
             }))
           : [];
-          setSections(transformedData);        
-        // const filteredSelectedSections = formik.values.section?.filter(
+        // const filteredSelectedSections = formik.values.section.filter(
+        //   (sec) => transformedData.findIndex((data) => data.id === sec.id) > -1
+        // );
+        setSections(transformedData);
+        // formik.setFieldValue('section', filteredSelectedSections);
+      });
+      // fetchSubjects(branch, values);
+    }
+  };
+
+  const handleChangeSection = (values, acadId, branch, grade) => {
+    setSubjects([]);
+    formik.setFieldValue('subjects', []);
+    formik.setFieldValue('section', []);
+    if (values?.length > 0) {
+      formik.setFieldValue('section', values);
+      getSubjects(acadId, branch, grade, values).then((data) => {
+        const transformedData = data.map((obj) => ({
+          id: obj.subject__id,
+          subject_name: obj.subject__subject_name,
+        }));
+        setSubjects(transformedData);
+        // const filteredSelectedSections = formik.values.section.filter(
         //   (sec) => transformedData.findIndex((data) => data.id === sec.id) > -1
         // );
         // formik.setFieldValue('section', filteredSelectedSections);
@@ -171,58 +162,49 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
     }
   };
 
-  const handleSection = (e, value) => {
-    setSubjects([]);
-    formik.setFieldValue('section', value);
-    formik.setFieldValue('subjects', []);
-    if (value?.length > 0) {
-      const sectionIds = value?.map(({ id }) => id);
-      const gradeIds = formik.values.grade?.map(({ id }) => id);
-      const branchIds = formik.values.branch?.map(({ id }) => id);
-      const acadId = formik.values.academic_year?.id;
-
-      getSubjects(branchIds, acadId, gradeIds, sectionIds).then((data) => {
-        const transformedData = data.map((obj) => ({
-          item_id: obj.id,
-          id: obj.subject__id,
-          subject_name: obj.subject__subject_name,
-        }));
-        setSubjects(transformedData);
-        // const filteredSelectedSubjects = formik.values.subjects?.filter(
-        //   (sub) => transformedData.findIndex((data) => data.id === sub.id) > -1
-        // );
-        // formik.setFieldValue('subjects', filteredSelectedSubjects);
-      });
-      // fetchSubjects(branch, values);
-    }
-    // const {
-    //   values: { branch = [], grade = [] },
-    // } = formik;
-    // fetchSubjects([branch], grade, value);
-  };
+  // const handleSection = (e, value) => {
+  //   formik.setFieldValue('section', value);
+  //   if (!value.length) {
+  //     formik.setFieldValue('subjects', []);
+  //   }
+  //   const {
+  //     values: { branch = {}, grade = [] },
+  //   } = formik;
+  //   fetchSubjects([branch], grade, value);
+  // };
 
   useEffect(() => {
     fetchAcademicYears();
-    // // fetchBranches();
-    // if (details.branch) {
-    //   handleChangeBranch([details.branch]);
-    //   if (details.grade && details.grade.length > 0) {
-    //     handleChangeGrade(details.grade, [details.branch]);
-    //   }
-    // }
+    // fetchBranches();
+    // console.log('branches ', details.branch, details.grade);
+    if (details.branch) {
+      handleChangeBranch([details.branch]);
+      if (details.grade && details.grade.length > 0) {
+        handleChangeGrade(details.grade, [details.branch]);
+      }
+    }
   }, []);
 
   const classes = useStyles();
 
   return (
     <Grid container spacing={4} className='school-details-form-container'>
+      {/* <Grid container item xs={12}> */}
       <Grid item md={4} xs={12}>
         <FormControl fullWidth className={classes.margin} variant='outlined'>
           <Autocomplete
             id='academic_year'
             name='academic_year'
-            onChange={handleChangeYear}
-            value={formik.values?.academic_year || []}
+            onChange={(e, value) => {
+              formik.setFieldValue('academic_year', value);
+              formik.setFieldValue('branch', []);
+              formik.setFieldValue('grade', []);
+              formik.setFieldValue('section', []);
+              formik.setFieldValue('subjects', []);
+              setBranches([]);
+              fetchBranches(value?.id);
+            }}
+            value={formik.values.academic_year || []}
             options={academicYears}
             filterSelectedOptions
             getOptionLabel={(option) => option?.session_year || ''}
@@ -241,6 +223,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
           </FormHelperText>
         </FormControl>
       </Grid>
+      {/* </Grid> */}
       <Grid item xs={12}>
         <Divider />
       </Grid>
@@ -249,12 +232,19 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
           <Autocomplete
             id='branch'
             name='branch'
-            onChange={handleChangeBranch}
+            onChange={(e, value) => {
+              formik.setFieldValue('branch', value);
+              formik.setFieldValue('grade', []);
+              formik.setFieldValue('section', []);
+              formik.setFieldValue('subjects', []);
+              handleChangeBranch(value, formik.values.academic_year?.id);
+              //   handleChangeBranch(value ? [value] : null);
+            }}
             multiple
-            value={formik.values?.branch || []}
+            value={formik.values.branch}
             options={branches}
-            getOptionLabel={(option) => option?.branch_name || ''}
             filterSelectedOptions
+            getOptionLabel={(option) => option.branch_name || ''}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -275,12 +265,21 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
           <Autocomplete
             id='grade'
             name='grade'
-            onChange={handleChangeGrade}
+            onChange={(e, value) => {
+              formik.setFieldValue('grade', value);
+              formik.setFieldValue('section', []);
+              formik.setFieldValue('subjects', []);
+              handleChangeGrade(
+                value,
+                formik.values.academic_year?.id,
+                formik.values.branch
+              );
+            }}
             multiple
             value={formik.values.grade}
             options={grades}
-            getOptionLabel={(option) => option.grade_name || ''}
             filterSelectedOptions
+            getOptionLabel={(option) => option.grade_name || ''}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -289,7 +288,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
                 placeholder='Grade'
               />
             )}
-            getOptionSelected={(option, value) => option.id == value.id}
+            getOptionSelected={(option, value) => option.item_id == value.item_id}
             size='small'
           />
           <FormHelperText style={{ color: 'red' }}>
@@ -302,12 +301,19 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
           <Autocomplete
             id='section'
             name='section'
-            onChange={handleSection}
+            onChange={(e, value) => {
+              handleChangeSection(
+                value,
+                formik.values.academic_year?.id,
+                formik.values.branch,
+                formik.values.grade
+              );
+            }}
             value={formik.values.section}
             options={sections}
             multiple
-            getOptionLabel={(option) => option.section_name || ''}
             filterSelectedOptions
+            getOptionLabel={(option) => option.section_name || ''}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -316,7 +322,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
                 placeholder='Section'
               />
             )}
-            getOptionSelected={(option, value) => option.item_id == value.item_id}
+            // getOptionSelected={(option, value) => option.item_id == value.item_id}
             size='small'
           />
           <FormHelperText style={{ color: 'red' }}>
@@ -338,11 +344,11 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
               formik.setFieldValue('subjects', value);
             }}
             value={formik.values.subjects}
-            limitTags={2}
+            // limitTags={2}
             multiple
             options={subjects}
-            getOptionLabel={(option) => option.subject_name || ''}
             filterSelectedOptions
+            getOptionLabel={(option) => option.subject_name || ''}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -351,7 +357,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
                 placeholder='Subjects'
               />
             )}
-            getOptionSelected={(option, value) => option.item_id == value.item_id}
+            // getOptionSelected={(option, value) => option.item_id == value.item_id}
             size='small'
           />
           <FormHelperText style={{ color: 'red' }}>

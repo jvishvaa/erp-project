@@ -143,7 +143,7 @@ export const fetchModules = () => (dispatch) => {
 export const fetchBranches = () => (dispatch) => {
   dispatch({ type: FETCH_BRANCHES_REQUEST });
   return axios
-    .get('/erp_user/branch/')
+    .get('/erp_user/list-all-branch/')
     .then((response) => {
       dispatch({
         type: FETCH_BRANCHES_SUCCESS,
@@ -166,68 +166,67 @@ export const setCreateRolePermissionsState = (params) => ({
   data: params,
 });
 
-export const fetchGrades = (branchIds, acadId) => {
-  // console.log('fetching grades for branches ', branches);
-  // const branchIds = branches.map((branch) => branch.id).join(',');
+export const fetchGrades = (acadId, branches) => {
+  const branchIds =
+    branches && branches.length > 0 ? branches.map((branch) => branch.id).join(',') : '';
 
-  // const branchIds = branches && branches.length > 0 ? branches[0].id : '';
-
-  // if (!branchIds) {
-  // return Promise.resolve(null);
-  // }
+  if (!branchIds) {
+    return Promise.resolve(null);
+  }
 
   return axios
-    .get(`/erp_user/grademapping/?branch_id=${branchIds}&session_year=${acadId}`)
+    .get(`/erp_user/grademapping/?session_year=${acadId}&branch_id=${branchIds}`)
     .then((response) => {
-      if (response.data?.status_code === 200) return response.data.data;
-      return [];
+      if(response.data.status_code===200)
+      return response.data.data;
+      else console.log('');
     })
     .catch(() => {
-      return [];
+      console.log('');
     });
   // return Promise.resolve([]);
 };
 
-export const fetchSections = (branchIds, acadId, gradeIds) => {
-  // const branchIds =
-  //   branches && branches.length > 0 ? branches.map((branch) => branch.id).join(',') : '';
-  // //   const branchIds = branches.id;
-  // const gradeIds =
-  //   grades && grades.length > 0 ? grades.map((grade) => grade.id).join(',') : '';
-
+export const fetchSubjects = (acadId, branches, grades, sections) => {
+  const branchIds =
+    branches && branches.length > 0 ? branches.map((branch) => branch.id).join(',') : '';
+  const gradeIds =
+    grades && grades.length > 0 ? grades.map((grade) => grade.id).join(',') : '';
+  const sectionIds =
+    sections && sections.length > 0
+      ? sections.map((section) => section.id).join(',')
+      : '';
   return axios
     .get(
-      `/erp_user/sectionmapping/?branch_id=${branchIds}&session_year=${acadId}&grade_id=${gradeIds}`
+      `/erp_user/subject/?session_year=${acadId}&branch=${branchIds}&grade=${gradeIds}&section=${sectionIds}`
     )
     .then((response) => {
-      if (response.data?.status_code === 200) return response.data.data;
-      return [];
+      if(response.data.status_code===200)
+      return response.data.data;
+      else console.log('');
     })
     .catch(() => {
-      return [];
+      console.log('');
     });
 };
 
-export const fetchSubjects = (branchIds, acadId, gradeIds, sectionIds) => {
-  // const branchIds =
-  //   branches && branches.length > 0 ? branches.map((branch) => branch.id).join(',') : '';
-  // //   const branchIds = branches.id;
-  // const gradeIds =
-  //   grades && grades.length > 0 ? grades.map((grade) => grade.id).join(',') : '';
-  // const sectionIds =
-  //   sections && sections.length > 0
-  //     ? sections.map((section) => section.id).join(',')
-  //     : '';
+export const fetchSections = (acadId, branches, grades) => {
+  const branchIds =
+    branches && branches.length > 0 ? branches.map((branch) => branch.id).join(',') : '';
+  const gradeIds =
+    grades && grades.length > 0 ? grades.map((grade) => grade.id).join(',') : '';
+
   return axios
     .get(
-      `/erp_user/subject/?branch=${branchIds}&session_year=${acadId}&grade=${gradeIds}&section=${sectionIds}`
+      `/erp_user/sectionmapping/?session_year=${acadId}&branch_id=${branchIds}&grade_id=${gradeIds}`
     )
     .then((response) => {
-      if (response.data?.status_code === 200) return response.data.data;
-      return [];
+      if(response.data.status_code===200)
+      return response.data.data;
+      else console.log('');
     })
     .catch(() => {
-      return [];
+      console.log('');
     });
 };
 

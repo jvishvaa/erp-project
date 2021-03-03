@@ -190,13 +190,13 @@ export const editUser = (params) => (dispatch) => {
 
 export const fetchBranchesForCreateUser = (acadId) => {
   return axios
-    .get(`/erp_user/list-all-branch/?session_year=${acadId}`)
+    .get(`/erp_user/list-all-branch/session_year=${acadId}`)
     .then((response) => {
-      if (response.data?.status === 'success') return response.data?.data;
-      else console.log('');
+      if (response.data.status_code === 200) return response?.data?.data;
+      else console.log('','xyzxyz');
     })
     .catch((error) => {
-      console.log('');
+      throw error;
     });
 };
 
@@ -204,22 +204,16 @@ export const fetchAcademicYears = () => {
   return axios
     .get('/erp_user/list-academic_year/')
     .then((response) => {
-      if (response.data?.status_code === 200) return response.data.data;
-      else console.log('');
+      return response.data.data;
     })
-    .catch((error) => {
-      console.log('');
-    });
+    .catch(() => {});
 };
 
 export const fetchSubjects = () => {
   return axios
     .get('/erp_user/subject/')
     .then((response) => {
-      if (response.data?.status_code === 200) return response.data.data;
-      else console.log('');
+      return response.data.data;
     })
-    .catch((error) => {
-      console.log('');
-    });
+    .catch(() => {});
 };
