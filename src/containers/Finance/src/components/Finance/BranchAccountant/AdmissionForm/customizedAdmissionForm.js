@@ -11,6 +11,7 @@ import NonRTEFormAcc from './nonRTEAdmissionForm'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import * as actionTypes from '../store/actions'
 import { debounce } from '../../../../utils'
+import Layout from '../../../../../../Layout'
 
 const styles = theme => ({
   container: {
@@ -246,6 +247,7 @@ class CustomizedAdmissionFormAcc extends Component {
     }
 
     return (
+      <Layout>
       <React.Fragment>
         <div className={classes.root}>
           <Grid container spacing={3}>
@@ -309,6 +311,7 @@ class CustomizedAdmissionFormAcc extends Component {
           {this.props.dataLoading ? <CircularProgress open /> : null}
         </div>
       </React.Fragment>
+      </Layout>
     )
   }
 }
