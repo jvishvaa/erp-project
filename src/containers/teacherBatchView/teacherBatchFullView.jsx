@@ -166,7 +166,7 @@ const JoinClass = (props) => {
                   style={{ textAlign: 'center', padding: '10px' }}
                 >
                   <Grid item md={12} xs={12}>
-                    <Typography>Are you sure to Cancel ?</Typography>
+                    <Typography>Are you sure you want to cancel?</Typography>
                   </Grid>
                   <Grid item md={6} xs={12}>
                     <Button

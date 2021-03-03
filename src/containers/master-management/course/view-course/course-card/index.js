@@ -157,7 +157,7 @@ const CourseCard = ({
     }
     
   }
-  // Conform Popover 
+  // Confirm Popover 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => {
@@ -241,10 +241,10 @@ const CourseCard = ({
                     }}
                   >
                     <div style={{ padding: '20px 30px'}}>
-                      <Typography style={{ fontSize: '20px', marginBottom: '15px'}}>Are you sure to Delete?</Typography>
+                      <Typography style={{ fontSize: '20px', marginBottom: '15px'}}>Are you sure want to delete?</Typography>
                       <div>
                         <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
-                        <StyledButton onClick={(e) => handleDelete(period)} style={{float: 'right'}}>Conform</StyledButton>
+                        <StyledButton onClick={(e) => handleDelete(period)} style={{float: 'right'}}>Confirm</StyledButton>
                       </div>
                     </div>
                   </Popover>
