@@ -50,7 +50,7 @@ export const checkIsMisc = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.warning('Unable to find misc or not')
+        payload.alert.warning('Unable to find misc or not')
         console.log(error)
       })
   }
@@ -72,10 +72,10 @@ export const payOtherFee = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.success('Done Successfully')
+        payload.alert.success('Done Successfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.error('Something Went Wrong')
+        payload.alert.error('Something Went Wrong')
         console.log(error)
       })
   }
@@ -97,10 +97,10 @@ export const uploadBulkFees = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.success('Done Successfully')
+        payload.alert.success('Done Successfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.error('Something Went Wrong')
+        payload.alert.error('Something Went Wrong')
         console.log(error)
       })
   }
@@ -125,7 +125,7 @@ export const receiptMessage = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.warning('Unable to load')
+        payload.alert.warning('Unable to load')
         console.log(error)
       })
   }
@@ -147,10 +147,10 @@ export const assignOtherFee = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.success('Added Successfully')
+        payload.alert.success('Added Successfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.error('Something Went Wrong')
+        payload.alert.error('Something Went Wrong')
         console.log(error)
       })
   }
@@ -174,7 +174,7 @@ export const fetchListtOtherFee = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.warning('Unable to load data')
+        payload.alert.warning('Unable to load data')
         console.log(error)
       })
   }
@@ -198,7 +198,7 @@ export const fetchAccountantOtherFee = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.warning('Unable to load data')
+        payload.alert.warning('Unable to load data')
         console.log(error.response)
       })
   }
@@ -222,7 +222,7 @@ export const fetchAccountantFeeAccount = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.warning('Unable to load data')
+        payload.alert.warning('Unable to load data')
         console.log(error)
       })
   }
@@ -339,7 +339,7 @@ export const assignAccoutantOtherFees = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.warning('Unable to load')
+        payload.alert.warning('Unable to load')
         console.log(error)
       })
   }
@@ -415,7 +415,7 @@ export const fetchAdminFeeAccount = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.warning('Unable to load data')
+        payload.alert.warning('Unable to load data')
         console.log(error)
       })
   }
@@ -440,7 +440,7 @@ export const checkOtherFeesInstallment = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.warning('Unable to load')
+        payload.alert.warning('Unable to load')
         console.log(error)
       })
   }
@@ -462,10 +462,10 @@ export const assignInstallmentOtherFees = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.success('Done Successfully')
+        payload.alert.success('Done Successfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.error('Something Went Wrong')
+        payload.alert.error('Something Went Wrong')
         console.log(error)
       })
   }
@@ -487,10 +487,10 @@ export const saveInstallmentOtherFees = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.success('Done Successfully')
+        payload.alert.success('Done Successfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.error('Something Went Wrong')
+        payload.alert.error('Something Went Wrong')
         console.log(error)
       })
   }
@@ -513,10 +513,10 @@ export const deleteOtherFeesInstallments = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.success('Installments Deleted')
+        payload.alert.success('Installments Deleted')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.error('Something Went Wrong')
+        payload.alert.error('Something Went Wrong')
         console.log(error)
       })
   }
@@ -541,7 +541,7 @@ export const fetchAdminOtherFees = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.warning('Unable to load')
+        payload.alert.warning('Unable to load')
         console.log(error)
       })
   }
@@ -566,7 +566,7 @@ export const fetchInstallmentLists = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.warning('Unable to load')
+        payload.alert.warning('Unable to load')
         console.log(error)
       })
   }
@@ -588,10 +588,10 @@ export const updateOtherFeeInst = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.success('Done Successfully')
+        payload.alert.success('Done Successfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.error('Something Went Wrong')
+        payload.alert.error('Something Went Wrong')
         console.log(error)
       })
   }
@@ -623,10 +623,10 @@ export const updateOtherFeeInstaName = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.success('Updated Successfully')
+        payload.alert.success('Updated Successfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.error('Something Went Wrong')
+        payload.alert.error('Something Went Wrong')
         console.log(error)
       })
   }

@@ -11,8 +11,8 @@ import axios from 'axios'
 
 import * as actionTypes from '../../../store/actions'
 import CircularProgress from '../../../../../ui/CircularProgress/circularProgress'
-import feeReceipts from '../../../Receipts/feeReceipts'
-// import storeReceipts from '../../../../Inventory/Receipts/storePaymentReceipt'
+import feeReceiptss from '../../../Receipts/feeReceiptss'
+import storeReceipts from '../../../../Inventory/Receipts/storePaymentReceipt'
 import { urls } from '../../../../../urls'
 import Modal from '../../../../../ui/Modal/modal'
 import customClasses from './payments.module.css'
@@ -154,18 +154,21 @@ class Payments extends Component {
     }))
   }
 
-  generatePdf = async (transactionId, isCancelled, isKit) => {
+  generatePdf = async (transactionId, isCancelled, isKit, isMisc) => {
     try {
       if (isKit) {
         const response = await this.getKitPdfData(transactionId)
-        // storeReceipts(response.data, isCancelled)
+        storeReceipts(response.data, isCancelled)
+      } else if (isMisc) {
+        const response2 = await this.getPdfData(transactionId, isMisc)
+        feeReceiptss(response2.data, isCancelled)
       } else {
         const response = await this.getPdfData(transactionId)
         let feeType = response.data.feeType
         if (feeType === 'Application Fee' || feeType === 'Registration Fee') {
           appRegReceiptsPdf(response.data, isCancelled)
         } else {
-          feeReceipts(response.data, isCancelled)
+          feeReceiptss(response.data, isCancelled)
         }
       }
     } catch (error) {
