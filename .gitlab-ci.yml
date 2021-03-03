@@ -63,7 +63,7 @@ deploy_prod:
       - grep home package.json || true
       - export CI=false
       - export NODE_OPTIONS=--max_old_space_size=2048
-      - sudo -E bash -c "set \"CI=false\" &&  npm run build"
+      - sudo -E bash -c "set \"CI=false\" &&  npm run build" || true
       - sudo rm -rf /home/ubuntu/build/
       - sudo cp -r build/ /home/ubuntu/
       - forever stopall
