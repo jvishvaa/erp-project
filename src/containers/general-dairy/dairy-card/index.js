@@ -155,7 +155,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               component='p'
               color='secondary'
             >
-              Created By - {lesson.created_by.first_name}
+              Created By -<p>{lesson.created_by.first_name} {lesson.created_at.substring(0, 10)}</p>
               </Typography>
           </Box>
           <div>
@@ -173,7 +173,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
             {/* <label></label> */}
           </div>
         </Grid>
-       
+       <Grid></Grid>
         <Grid item xs={6} className={classes.textRight}> 
           {/* {!viewMore && */}
 
