@@ -165,9 +165,9 @@ const AssignRole = (props) => {
       if (result.status === 200) {
         setHeaders([
           { field: 'fullName', headerName: 'Name', width: 250 },
-          { field: 'email', headerName: 'Email Id', width: 200 },
-          { field: 'erp_id', headerName: 'Erp Id', width: 150 },
-          { field: 'gender', headerName: 'Gender', width: 100 },
+          { field: 'email', headerName: 'Email Id', width: 250 },
+          { field: 'erp_id', headerName: 'ERP Id', width: 150 },
+          { field: 'gender', headerName: 'Gender', width: 150 },
           { field: 'contact', headerName: 'Contact', width: 150 },
           {
             field: 'role',
@@ -743,6 +743,7 @@ const AssignRole = (props) => {
               </FormControl>
             </Grid>
             */}
+            
             <Grid item md={2} xs={4}>
               <FormControlLabel
                 control={
@@ -754,6 +755,16 @@ const AssignRole = (props) => {
                 }
                 label='Select all'
               />
+            </Grid>
+            <Grid item md={2} xs={4}>
+              <Button
+                onClick={assignRole}
+                variant='contained'
+                color='primary'
+                disabled={!selectedRole}
+              >
+                ASSIGN ROLE
+              </Button>
             </Grid>
             {isMobile && (
               <Grid item md={4} xs={6}>
@@ -846,6 +857,7 @@ const AssignRole = (props) => {
               </div>
             </Grid>
           </Grid> */}
+          {/*
             <Grid
               container
               className={`${classes.assignRoleBtnContainer} ${classes.spacer}`}
@@ -862,6 +874,7 @@ const AssignRole = (props) => {
                 </Button>
               </Grid>
             </Grid>
+            */}
           </>
         )}
       </div>
