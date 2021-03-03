@@ -23,16 +23,16 @@ export const fetchAssignedDelieveryErp = (payload) => {
           }
         })
         if (response.status === 200) {
-          // payload.alert.success('Data Loaded Successfully!')
+          payload.alert.success('Data Loaded Successfully!')
         }
         dispatch(actionTypes.dataLoaded())
       }).catch(err => {
         dispatch(actionTypes.dataLoaded())
         console.log(err)
         if (err.response && err.response.status === 400) {
-          // payload.alert.warning(err.response.data.err_msg)
+          payload.alert.warning(err.response.data.err_msg)
         } else {
-          // payload.alert.warning('Something Went Wrong!')
+          payload.alert.warning('Something Went Wrong!')
         }
       })
   }
@@ -57,9 +57,9 @@ export const fetchAllDelieverycharge = (payload) => {
         dispatch(actionTypes.dataLoaded())
         console.log(err)
         if (err.response && err.response.status === 400) {
-          // payload.alert.warning(err.response.data.err_msg)
+          payload.alert.warning(err.response.data.err_msg)
         } else {
-          // payload.alert.warning('Something Went Wrong!')
+          payload.alert.warning('Something Went Wrong!')
         }
       })
   }
@@ -81,16 +81,16 @@ export const assignDelieveryChargeStudent = (payload) => {
           }
         })
         if (response.status === 200) {
-          // payload.alert.success('Delivery Charge Kit Assigned Successfully!')
+          payload.alert.success('Delivery Charge Kit Assigned Successfully!')
         }
         dispatch(actionTypes.dataLoaded())
       }).catch(err => {
         dispatch(actionTypes.dataLoaded())
         console.log(err)
         if (err.response && err.response.status === 400) {
-          // payload.alert.warning(err.response.data.err_msg)
+          payload.alert.warning(err.response.data.err_msg)
         } else {
-          // payload.alert.warning('Unable To get Status')
+          payload.alert.warning('Unable To get Status')
         }
       })
   }

@@ -43,9 +43,9 @@ export const fetchWalletInfo = (payload) => {
       }).catch(err => {
         dispatch(actionTypes.dataLoaded())
         if (err.response && err.response.data && err.response.data.err_msg && (err.response.status === 400 || err.response.status === 404)) {
-          // payload.alert.warning(err.response.data.err_msg)
+          payload.alert.warning(err.response.data.err_msg)
         } else {
-          // payload.alert.warning('Something Went Wrong!')
+          payload.alert.warning('Something Went Wrong!')
         }
         console.log(err)
       })
@@ -71,7 +71,7 @@ export const fetchSubCategoryStore = (payload) => {
         dispatch(actionTypes.dataLoaded())
       })
       .catch((error) => {
-        // payload.alert.error('Something Went Wrong')
+        payload.alert.error('Something Went Wrong')
         console.log(error)
         dispatch(actionTypes.dataLoaded())
       })
@@ -99,7 +99,7 @@ export const subjectChoosen = (payload) => {
             }
           }).then(res => {
             if (res.data.length === 0) {
-              // payload.alert.warning('Kit Not Found!')
+              payload.alert.warning('Kit Not Found!')
             }
             console.log(res)
             dispatch({
@@ -140,7 +140,7 @@ export const submitLanguage = (payload) => {
       axios.get(`${urls.CheckKit}?erp=${payload.erp}`, header)
     ]).then(axios.spread((kits, bought) => {
       if (kits.data.length === 0) {
-        // payload.alert.warning('Kit Not Found!')
+        payload.alert.warning('Kit Not Found!')
       }
       dispatch({
         type: LIST_STORE,
@@ -154,7 +154,7 @@ export const submitLanguage = (payload) => {
       dispatch(actionTypes.dataLoaded())
     })).catch(err => {
       console.log(err)
-      // payload.alert.warning('Something Went Wrong')
+      payload.alert.warning('Something Went Wrong')
       dispatch(actionTypes.dataLoaded())
     })
   }
@@ -179,7 +179,7 @@ export const listStoreItemsAccountant = (payload) => {
         dispatch(actionTypes.dataLoaded())
       })
       .catch((error) => {
-        // payload.alert.error('Something Went Wrong')
+        payload.alert.error('Something Went Wrong')
         console.log("Error: Couldn't fetch data from " + urls.FeeStructureDefault + error)
         dispatch(actionTypes.dataLoaded())
       })
@@ -205,7 +205,7 @@ export const storePayment = (payload) => {
       .then(res => {
         console.log('--------RES------', res)
         if (+res.status === 201) {
-          // payload.alert.success('Payment Successful')
+          payload.alert.success('Payment Successful')
           dispatch({
             type: STORE_PAYMENT,
             payload: {
@@ -244,7 +244,7 @@ export const storeReceiptNumbers = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      // payload.alert.warning('Unable To Load Receipt No.')
+      payload.alert.warning('Unable To Load Receipt No.')
       dispatch(actionTypes.dataLoaded())
       console.log(err)
     })
@@ -270,7 +270,7 @@ export const fetchKitSubjects = (payload) => {
         dispatch(actionTypes.dataLoaded())
       })
       .catch((error) => {
-        // payload.alert.error('Something Went Wrong')
+        payload.alert.error('Something Went Wrong')
         console.log(error)
         dispatch(actionTypes.dataLoaded())
       })
@@ -357,7 +357,7 @@ export const fetchDeliveryDetails = (payload) => {
       })
       // dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      // payload.alert.error('Unable To Load delivery details!')
+      payload.alert.error('Unable To Load delivery details!')
       dispatch(actionTypes.dataLoaded())
       console.log(err)
     })
@@ -381,7 +381,7 @@ export const sendDeliveryDetails = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      // payload.alert.error('Unable To save delivery details!')
+      payload.alert.error('Unable To save delivery details!')
       dispatch(actionTypes.dataLoaded())
       console.log(err)
     })
@@ -404,7 +404,7 @@ export const fetchDeliveryAmount = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      // payload.alert.error('Unable To delivery details!')
+      payload.alert.error('Unable To delivery details!')
       dispatch(actionTypes.dataLoaded())
       console.log(err)
     })
@@ -427,7 +427,7 @@ export const fetchShippingTransaction = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      // payload.alert.error('Unable To delivery details!')
+      payload.alert.error('Unable To delivery details!')
       dispatch(actionTypes.dataLoaded())
       console.log(err)
     })
@@ -450,7 +450,7 @@ export const fetchCouponDiscount = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      // payload.alert.error('Unable fetch discount details!')
+      payload.alert.error('Unable fetch discount details!')
       dispatch(actionTypes.dataLoaded())
       console.log(err)
     })
