@@ -76,7 +76,9 @@ deploy_prod:
     only:
       - master
  
- 
+stages:
+  - deploy
+
 deploy_finance-integration2:
     before_script:
       - sleep 10
