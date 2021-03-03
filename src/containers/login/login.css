@@ -1,3 +1,4 @@
 .passwordField>.MuiInputBase-root {
-    background: #E8F0FE;
+    /* background: #E8F0FE; */
+    visibility: visible;
 }
