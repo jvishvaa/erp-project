@@ -87,7 +87,7 @@ deploy_finance-integration2:
       - whoami
       - pwd
       - sudo chmod 777 -R /home/gitlab-runner/ 
-      - sudo npm cache clean --force
+#      - sudo npm cache clean --force
       - sudo npm install -g serve
       - sudo npm install -g forever
     variables:
