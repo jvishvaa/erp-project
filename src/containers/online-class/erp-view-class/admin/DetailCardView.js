@@ -20,6 +20,29 @@ const JoinClass = (props) => {
   const [isAccept, setIsAccept] = useState(props.data? props.data.is_accepted : false);
   const [isRejected, setIsRejected] = useState(props.data? props.data.is_restricted : false);
   const history =useHistory()
+
+  const [cTime,setCTime] = useState('')
+  const [joinPermission,setJoinPermission] = useState(false)
+
+  //time constants
+  const countDownDate=new Date(props.fullData.online_class.start_time).getTime()
+  var x = setInterval(function() {
+    var now = new Date().getTime(); 
+    var distance = countDownDate - now; 
+    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    setCTime(`${days}Days:${hours}Hours:${minutes}Minutes:${seconds}Seconds`)
+    if (distance < 0) {
+      clearInterval(x);
+      setJoinPermission(true)
+      // document.getElementById("demo").innerHTML = "EXPIRED";
+    }
+  }, 1000);
+
+useEffect(()=>{},[setJoinPermission])
+
   const handleCloseData = () => {
     setAnchorEl(null);
   };
@@ -44,7 +67,6 @@ const JoinClass = (props) => {
         setAlert('error', error.message);
       });
   }
-
   function handleCancel() {
     setLoading(true);
     const params1 = {
@@ -98,7 +120,7 @@ const JoinClass = (props) => {
       </Grid>
       {isAccept ? (
         <Grid item xs={6}>
-          <Button
+          {joinPermission ?<Button
             size='small'
             color='secondary'
             fullWidth
@@ -107,7 +129,8 @@ const JoinClass = (props) => {
             className='teacherFullViewSmallButtons'
           >
             Join
-          </Button>
+          </Button> :''}
+          <Typography>{cTime}</Typography>
         </Grid>
       ) : (
         <>
@@ -255,6 +278,8 @@ const DetailCardView = ({ fullData, handleClose, viewMoreRef, selectedClassType 
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const history =useHistory()
+  const { role_details } = JSON.parse(localStorage.getItem('userDetails'))
+  // console.log(role_details.grades,'SSSSSSSSSSSSSSSSSSSSSS')
   /*
   useEffect(() => {
     if (fullData) {
@@ -340,7 +365,7 @@ const DetailCardView = ({ fullData, handleClose, viewMoreRef, selectedClassType 
   }
   const handleCoursePlan=()=>{
     if(window.location.pathname === '/erp-online-class-student-view'){
-      history.push(`/create/course/${fullData.online_class && fullData.online_class.course_id}/${selectedGrade.id}`)
+      history.push(`/create/course/${fullData.online_class && fullData.online_class.course_id}/${role_details && role_details.grades}/4`)
     }else{
       history.push(`/create/course/${fullData.online_class && fullData.online_class.cource_id}/${selectedGrade.id}`)
     }
