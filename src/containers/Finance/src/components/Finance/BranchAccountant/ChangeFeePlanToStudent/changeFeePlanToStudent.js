@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 // import { Grid } from 'semantic-ui-react'
 // import { withStyles, Table, TableBody, TableCell, TableHead, TableRow, Button, Divider } from '@material-ui/core/'
-import { withStyles, Button, Grid, Fab, Tab, Tabs, AppBar, Typography } from '@material-ui/core/'
+import { withStyles, Button, Grid, Fab, Tab, Tabs, AppBar, Typography, Table, TableHead, TableCell, TableBody, TableRow } from '@material-ui/core/'
 // import { Edit } from '@material-ui/icons'
 import { Edit } from '@material-ui/icons'
 // import ReactTable from 'react-table'
@@ -272,6 +272,100 @@ class ChangeFeePlanToStudent extends Component {
     this.props.editStudentFeePlan(data, this.state.studentEditId, this.props.alert, this.props.user)
   }
 
+  feePlanTable = () => {
+    let feeListTable = null
+    if (this.props.studentList && this.props.studentList.length > 0) {
+      feeListTable = (
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell> select</TableCell>
+              <TableCell> Student Name</TableCell>
+              <TableCell> ERP Code</TableCell>
+              <TableCell> Current Fee Plan</TableCell>
+              <TableCell> Total</TableCell>
+              <TableCell> Change Fee Plan</TableCell>
+              <TableCell> Status</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+          {this.props.studentList.length && this.props.studentList.map((val, i) => { 
+            return (
+              <TableRow>
+                <TableCell>
+                  <input
+                    type='checkbox'
+                    name='checking'
+                    value={i + 1}
+                    checked={this.state.isChecked[val.id]}
+                    onChange={
+                      (e) => { this.checkBoxHandler(e, val.id) }
+                    } />
+                </TableCell>
+                <TableCell>
+                  {val.student.name ? val.student.name : ''}
+                  </TableCell>
+                  <TableCell>{val.student.erp ? val.student.erp : ''} </TableCell>
+                <TableCell>{val.fee_plan_name && val.fee_plan_name.fee_plan_name ? val.fee_plan_name.fee_plan_name : 'No Fee Plan'}</TableCell>
+                <TableCell>
+                    {val.total ? val.total : ''}
+                  </TableCell>
+                <TableCell>
+                  {<p style={{ overflowX: 'scroll' }}>{val.fee_plan_name && val.fee_plan_name.status}</p>}
+                  </TableCell>
+                </TableRow>
+                )})}
+            </TableBody>
+          </Table>
+      )
+    }
+    return feeListTable
+  }
+
+  installmentTable = () => {
+    let instaTable = null
+    if (this.props.instaDetails) {
+      instaTable = (
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell> Installment Name</TableCell>
+              <TableCell> Installment Amount</TableCell>
+              <TableCell> Due Date</TableCell>
+              <TableCell> Fee Account</TableCell>
+              <TableCell> Fee Type</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+          {this.props.instaDetails.length && this.props.instaDetails.map((val, i) => { 
+            return (
+              <TableRow>
+                <TableCell>
+                  {val.installment_name ? val.installment_name : 'N/A'}
+                  </TableCell>
+                <TableCell>
+                {val.installment_amount ? val.installment_amount : 'N/A'}
+                  </TableCell>
+                <TableCell>
+                {val.due_date ? val.due_date : ''}
+                  </TableCell>
+                <TableCell>
+                {val.fee_account && val.fee_account.fee_account_name ? val.fee_account.fee_account_name : 'N/A'}
+                  </TableCell>
+                <TableCell>
+                {val.fee_type && val.fee_type.fee_type_name ? val.fee_type.fee_type_name : 'N/A'}
+                </TableCell>
+
+              </TableRow>
+
+                )})}
+            </TableBody>
+          </Table>
+      )
+    }
+    return instaTable
+  }
+
   render () {
     // console.log('Usman: ', this.props.instaDetails)
     let { classes } = this.props
@@ -348,6 +442,7 @@ class ChangeFeePlanToStudent extends Component {
         <Modal open={this.state.showInstaDetails} click={this.hideInstaDetailsHandler}>
           <h3 className={classes.modal__heading}>Installment Details</h3>
           <hr />
+          {this.installmentTable()}
           {/* <ReactTable
             // pages={Math.ceil(this.props.viewBanksList.count / 20)}
             data={this.renderInstaTable()}
@@ -620,7 +715,7 @@ class ChangeFeePlanToStudent extends Component {
         {tabBar}
         {showTabs && value === 'one' && <TabContainer>
           {checkedAll}
-          {feePlanTable}
+          {this.feePlanTable()}
           {multiChange}
           {changeModal}
           {installInfo}
