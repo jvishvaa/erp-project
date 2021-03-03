@@ -91,7 +91,7 @@ class Certificate extends Component {
       generateCertificate(data)
     } catch (error) {
       console.log(error)
-      // this.props.alert.warning('Something Went Wrong')
+      this.props.alert.warning('Something Went Wrong')
     }
   }
 

@@ -1,0 +1,228 @@
+@media screen and (max-width:70pc)
+{
+  pageheadder{
+       width: 1pc
+   }
+   selectbr{
+       margin-left: 50pc
+   }
+   mdw{
+       margin-left: 10pc
+   }
+
+}
+@media screen and (min-width:250px)
+{
+  pageheadder{
+       margin-Top:50pc
+   }
+  selectbr{
+      margin-left: 100%
+  }
+  mdv{
+      margin-left: 10px
+      
+  }
+
+}
+.mainContainer{
+    display: flex;
+}
+.magazineBtn{
+    width: 50%;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    padding: 1%;
+    color: #833057;
+    font-size: 15px;
+    cursor: pointer;
+}
+.newspaperBtn{
+    width: 50%;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    padding: 1%;
+    color: #00000070;
+    font-size: 15px;
+    background: #cfcbca;
+    cursor: pointer;
+}
+.pubLine{
+    border-left: 3px solid #833057;
+    /* height: 40px; */
+}
+.magImg{
+    background: aqua;
+    width: 18%;
+    height: 185px;
+    position: absolute;
+    margin-left: 1%;
+    margin-top: -3%;
+}
+.pubSection{
+    margin: 5%;
+    margin-bottom: 2%;
+
+}
+.pubSection1{
+    background: #fee7b5;
+    height: 30px;
+    padding-left: 24%;
+    padding-top: .5%;
+    display: flex;
+}
+.pubSection1Text1{
+    width: 13%;
+    font-size: 18px;
+    color: #833057;
+}
+.pubSection1Text2{
+    font-size: 12px;
+    width: 13%;
+    text-align: center;
+    padding: .5%;
+    color: #833057a8;
+}
+
+.pubSection2{
+    /* background: #ccbebe; */
+    background: linear-gradient(0deg, rgba(252,227,196,1) 0%, rgba(253,238,215,1) 92%, rgba(253,227,194,1) 100%);
+    height: 140px;
+    padding-left: 24%;
+    padding-top: 1%;
+    color: #833057bf;
+}
+.pubSectionLine{
+    border-left: 1px solid #833057;
+    height: 17px;
+    margin-top: .5%;
+    margin-right: 1%;
+    margin-left: 1%;
+}
+.pubSectionList{
+    margin-left: 3%;
+    color: #833057bf;
+}
+.readBtn{
+    position: absolute;
+    right: 6%;
+    margin-top: 4%;
+    background: #833057;
+    color: #ffffff;
+    padding: .5%;
+    border-radius: 5px;
+    font-size: 11px;
+    width: 10%;
+    text-align: center;
+}
+.listCon{
+    margin: 5%;
+    margin-top: 0;
+    width: 100%;
+}
+.listMaga{
+    /* background: #e2c789; */
+    background: linear-gradient(0deg, rgba(252,227,196,1) 0%, rgba(253,238,215,1) 92%, rgba(253,227,194,1) 100%);
+    /* width: 20%; */
+    margin-left: 10%;
+}
+.listImg{
+    height: 120px;
+    width: 85%;
+    /* background: aqua; */
+}
+.listDate{
+    font-size: 8px;
+    margin: 6%;
+    margin-top: 3%;
+    color: #8330579e;
+}
+.listTitle{
+    font-size: 8px;
+    margin: 6%;
+    margin-bottom: 0;
+    margin-top: 3%;
+    color: #833057;
+}
+.listHead{
+    margin: 3%;
+    font-size: 11px;
+    color: #833057;
+    padding-top: 3%;
+    padding-left: 3%;
+
+}
+
+.borderDesign{
+    /* border-left: 1px dashed #833057; */
+    /* padding-left: 3%; */
+}
+.borderDesign1{
+    border-top: 1px dashed #833057;
+    width: 12px;
+}
+.listHead1{
+    margin-top: -8px;
+
+}
+.listHeadCont{
+    display: flex;
+}
+.viewBtn{
+        /* position: absolute; */
+    /* margin-top: 7%; */
+    /* margin-left: 15%; */
+    color: #833057;
+    margin-top: 6%;
+    cursor: pointer;
+    font-size: 14px;
+}
+.btnCont{
+    width: 75%;
+    height: 50px;
+}
+.downloadBtn{
+    text-align: end;
+    margin-top: -20px;
+    padding-right: 4%;
+    padding-bottom: 1%;
+    cursor: pointer;
+}
+
+.pdf-toolbar {
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    background: whitesmoke ;
+    position: sticky;
+    top: 64px;
+    z-index:1000;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.07), 
+                0 2px 4px rgba(0,0,0,0.07), 
+                0 4px 8px rgba(0,0,0,0.07), 
+                0 8px 16px rgba(0,0,0,0.07),
+                0 16px 32px rgba(0,0,0,0.07), 
+                0 32px 64px rgba(0,0,0,0.07);
+}
+#editor-pdf-container {
+    position: relative;
+    top: 0px;
+}
+.canvas-pdf{
+    width: 100%;
+    height: 100%;
+}
+
+.pdf-top-app-box{
+    display: flex;
+   justify-content: space-between;
+
+}
+.pdf-bottom-app-box{
+   display: flex;
+   justify-content: center;
+
+}

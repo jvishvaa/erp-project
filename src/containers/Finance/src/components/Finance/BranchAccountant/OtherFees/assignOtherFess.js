@@ -132,6 +132,7 @@ class AssignOtherFees extends Component {
               gradeId={this.state.gradeId}
               sectionId={this.state.sectionId}
               isMisc={this.props.isMisc && this.props.isMisc.key}
+              amounts={this.props.isMisc && this.props.isMisc.amount}
               alert={this.props.alert}
               user={this.props.user}
               getState={this.state.getList}
@@ -144,6 +145,7 @@ class AssignOtherFees extends Component {
               gradeId={this.state.gradeId}
               sectionId={this.state.sectionId}
               isMisc={this.props.isMisc && this.props.isMisc.key}
+              amounts={this.props.isMisc && this.props.isMisc.amount}
               alert={this.props.alert}
               getState={this.state.getList}
               user={this.props.user}
