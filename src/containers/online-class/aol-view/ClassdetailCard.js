@@ -302,8 +302,8 @@ export default function ClassdetailsCardComponent(props) {
             openReassignModal={openReassignModal}
             setOpenReassignModal={setOpenReassignModal}
             teacherDropdown={teacherDropdown}
-            selectedTeacher={props.classData.online_class.teacher}
-            allData={props.classData}
+            selectedTeacher={props.toggle ? props?.classData?.teacher : props?.classData?.online_class?.teacher}
+            allData={props?.classData}
             getClasses={props.getClasses}
             />
         </>

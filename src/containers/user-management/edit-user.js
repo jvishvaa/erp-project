@@ -250,6 +250,7 @@ class EditUser extends Component {
                   <SchoolDetailsForm
                     onSubmit={this.onSubmitSchoolDetails}
                     details={user}
+                    isEdit={true}
                   />
                 )}
                 {activeStep === 1 && (

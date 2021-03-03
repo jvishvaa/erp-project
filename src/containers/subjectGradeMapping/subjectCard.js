@@ -64,7 +64,7 @@ const Subjectcard = (props) => {
 
     }
 
-    // Conform Popover 
+    // Confirm Popover 
     const [anchorEl, setAnchorEl] = React.useState(null);
 
     const handleClick = (event) => {
@@ -173,10 +173,10 @@ const Subjectcard = (props) => {
                                             }}
                                         >
                                             <div style={{ padding: '20px 30px'}}>
-                                            <Typography style={{ fontSize: '20px', marginBottom: '15px'}}>Are you sure to Delete?</Typography>
+                                            <Typography style={{ fontSize: '20px', marginBottom: '15px'}}>Are you sure want to delete?</Typography>
                                             <div>
                                                 <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
-                                                <StyledButton onClick={() => callDelete(list.id, index)} style={{float: 'right'}}>Conform</StyledButton>
+                                                <StyledButton onClick={() => callDelete(list.id, index)} style={{float: 'right'}}>Confirm</StyledButton>
                                             </div>
                                             </div>
                                         </Popover>
