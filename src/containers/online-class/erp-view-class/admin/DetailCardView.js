@@ -37,7 +37,6 @@ const JoinClass = (props) => {
     if (distance < 0) {
       clearInterval(x);
       setJoinPermission(true)
-      // document.getElementById("demo").innerHTML = "EXPIRED";
     }
   }, 1000);
 
