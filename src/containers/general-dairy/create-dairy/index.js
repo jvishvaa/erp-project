@@ -250,7 +250,7 @@ const handleBranch = (event, value) => {
 };
 
   const handleGrade = (event, value) => {
-    setFilterData({ ...filterData, grade: [], subject: '', chapter: '' });
+    setFilterData({ ...filterData, ...filterData.grade=[], subject: '', chapter: '' });
     setOverviewSynopsis([]);
     if (value && filterData.branch) {
         setFilterData({ ...filterData, grade:[...filterData.grade,value], subject: '', chapter: '' });
@@ -284,7 +284,8 @@ const handleBranch = (event, value) => {
 //   }
 // };
 const handleSection = (event, value) => {
-  setFilterData({ ...filterData, section: [] });
+  setFilterData({ ...filterData, ...filterData.section= [] });
+  console.log(filterData)
   if (value) {
       setFilterData({ ...filterData, section: [...filterData.section,value] });
   }
@@ -919,13 +920,13 @@ const handleEdited =()=>{
               onChange={handleTabChange}
               aria-label='styled tabs example'
             >
-              <StyledTab label={<Typography variant='h8'>Active Studnets</Typography>} />
+              <StyledTab label={<Typography variant='h8'>Active Students</Typography>} />
               {/* <StyledTab label={<Typography variant='h8'>In-Active Students</Typography>} /> */}
               <input
                     type='checkbox'
                     className='create_group_select_all_checkbox'
                     style={{marginTop:'18px', marginLeft: '39px'}}
-                    checked={selectAll}
+                    checked={!!selectAll}
                     onChange={handleSelectAll}
                   />
                   <span style={{marginTop:'15px', marginLeft: '7px'}}>Select All</span>
