@@ -163,7 +163,7 @@ class ConcessionLastDate extends Component {
     let actionModal = null
     if (this.state.showActionModal) {
       actionModal = (
-        <Modal open={this.state.showActionModal} click={this.hideActionModalHandler} small>
+        <Modal open={this.state.showActionModal} click={this.hideActionModalHandler} medium>
           <h3 className={classes.modal__heading}>Change Date</h3>
           <hr />
           <div>
@@ -175,7 +175,7 @@ class ConcessionLastDate extends Component {
               value={this.state.concessionLastDate ? this.state.concessionLastDate : ''}
               onChange={(e) => { this.lastDateHandler(e) }} />
           </div>
-          <div className={classes.modal__deletebutton}>
+          <div  className={classes.modal__deletebutton}>
             <Button
               color='primary'
               variant='contained'
@@ -187,7 +187,7 @@ class ConcessionLastDate extends Component {
           <div className={classes.modal__remainbutton}>
             <Button
               color='primary'
-              variant='outlined'
+              variant='contained'
               onClick={this.hideActionModalHandler}
             >
               Go Back

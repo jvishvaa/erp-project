@@ -10,8 +10,8 @@ import {
   TableHead,
   TableBody,
   TablePagination,
-CircularProgress,
-Modal
+CircularProgress
+// Modal
 } from '@material-ui/core'
 import Select from 'react-select'
 // import ReactTable from 'react-table'
@@ -20,7 +20,7 @@ import { connect } from 'react-redux'
 // import Modal from '../../../ui/Modal/modal'
 import * as actionTypes from '../store/actions'
 import { apiActions } from '../../../_actions'
-// import Modal from '../../../ui/Modal/modal'
+import Modal from '../../../ui/Modal/modal'
 // import { CircularProgress } from '../../../ui'
 import DailyBillingDetailsPage from './dailyDetails'
 import Layout from '../../../../../Layout'
@@ -397,7 +397,7 @@ const DailyBillingDetails = ({ dataLoadingStatus, alert, fetchBranches, todayEMa
   let billingDeatilsModal = null
   if (showModal) {
     billingDeatilsModal = (
-      <Modal open={showModal} onClose={hideBillingDetailsModal}>
+      <Modal open={showModal} click={hideBillingDetailsModal} large>
         <React.Fragment>
           <h3 style={{ textAlign: 'center' }}>Generate Daily Billing Details</h3>
           <hr />

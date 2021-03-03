@@ -212,7 +212,7 @@ class BackDateSelection extends Component {
           <div className={classes.modal__remainbutton}>
             <Button
               color='primary'
-              variant='outlined'
+              variant='contained'
               onClick={this.hideActionModalHandler}
             >
               Go Back

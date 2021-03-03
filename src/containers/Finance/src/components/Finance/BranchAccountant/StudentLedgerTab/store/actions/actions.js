@@ -47,7 +47,7 @@ export const studentErpSearch = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      // payload.alert.warning('Unable To Load')
+      payload.alert.warning('Unable To Load')
       dispatch(actionTypes.dataLoaded())
       console.log(err)
     })

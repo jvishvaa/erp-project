@@ -93,9 +93,9 @@ export const sendAllPayment = (payload) => {
         })
       }
       dispatch(actionTypes.dataLoaded())
-      // payload.alert.success('Payment Successful')
+      payload.alert.success('Payment Successful')
     }).catch(err => {
-      // payload.alert.error('Payment Failed')
+      payload.alert.error('Payment Failed')
       dispatch(actionTypes.dataLoaded())
       console.log(err)
     })

@@ -208,7 +208,7 @@ class CurrFeeType extends Component {
   addHandler = () => {
     const { id, isEditModal, startDate, endDate, dueDate, branch, session, feeTypeName, feeTypeAmount, feeAccount, isEditable } = this.state
     console.log(this.state)
-    if (dueDate && startDate && endDate && feeAccount && feeTypeName && feeTypeAmount && isEditable) {
+    if (dueDate && startDate && endDate && feeAccount && feeTypeName && feeTypeAmount) {
       let data = {
         session_year: session.value,
         branch: branch.value,

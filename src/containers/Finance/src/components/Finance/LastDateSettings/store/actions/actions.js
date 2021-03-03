@@ -28,7 +28,7 @@ export const fetchConcessionLastDate = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      // payload.alert.warning('Unable To Load')
+      payload.alert.warning('Unable To Load')
       dispatch(actionTypes.dataLoaded())
       console.log(err)
     })
@@ -45,7 +45,7 @@ export const saveConcessionLastDate = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        // payload.alert.success('Updated successfully!')
+        payload.alert.success('Updated successfully!')
         dispatch({
           type: SAVE_CONCESSION_LASTDATE,
           payload: {
@@ -55,7 +55,7 @@ export const saveConcessionLastDate = (payload) => {
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      // payload.alert.warning('Unable To Load')
+      payload.alert.warning('Unable To Load')
       dispatch(actionTypes.dataLoaded())
       console.log(err)
     })
@@ -78,7 +78,7 @@ export const fetchBackDate = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      // payload.alert.warning('Unable To Load')
+      payload.alert.warning('Unable To Load')
       dispatch(actionTypes.dataLoaded())
       console.log(err)
     })
@@ -95,7 +95,7 @@ export const saveBackDate = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        // payload.alert.success('Updated successfully!')
+        payload.alert.success('Updated successfully!')
         dispatch({
           type: SAVE_BACK_DATE,
           payload: {
@@ -105,7 +105,7 @@ export const saveBackDate = (payload) => {
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      // payload.alert.warning('Something Went Wrong!')
+      payload.alert.warning('Something Went Wrong!')
       dispatch(actionTypes.dataLoaded())
       console.log(err)
     })
@@ -121,7 +121,7 @@ export const partialPaymentList = (payload) => {
     }).then(response => {
       if (response.status === 200) {
         if (response && response.data.length <= 0) {
-          // payload.alert.warning('Please Create Back Date to View BackDate!')
+          payload.alert.warning('Please Create Back Date to View BackDate!')
         }
       }
       dispatch({
@@ -133,9 +133,9 @@ export const partialPaymentList = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       if (err.response && (err.response.status === 400 || err.response.status === 404)) {
-        // payload.alert.warning(err.response.data.err_msg)
+        payload.alert.warning(err.response.data.err_msg)
       } else {
-        // payload.alert.warning('Something Went Wrong!')
+        payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
       console.log(err)
@@ -152,7 +152,7 @@ export const savePartialPaymentLastDate = (payload) => {
       }
     }).then(response => {
       if (response.status === 200) {
-        // payload.alert.success('Updated successfully!')
+        payload.alert.success('Updated successfully!')
         dispatch({
           type: SAVE_PARTIAL_PAYMENT_LASTDATE,
           payload: {
@@ -160,7 +160,7 @@ export const savePartialPaymentLastDate = (payload) => {
           }
         })
       } else if (response.status === 201) {
-        // payload.alert.success('Created successfully!')
+        payload.alert.success('Created successfully!')
         dispatch({
           type: SAVE_PARTIAL_PAYMENT_LASTDATE,
           payload: {
@@ -171,9 +171,9 @@ export const savePartialPaymentLastDate = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       if (err.response && (err.response.status === 400 || err.response.status === 404)) {
-        // payload.alert.warning(err.response.data.err_msg)
+        payload.alert.warning(err.response.data.err_msg)
       } else {
-        // payload.alert.warning('Something Went Wrong!')
+        payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
       console.log(err)
