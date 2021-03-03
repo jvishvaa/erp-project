@@ -451,8 +451,8 @@ const AssignRole = (props) => {
           </Grid>
 
         </Grid> */}
-          <Grid container spacing={4} className={classes.spacer}>
-            <Grid item xs={12} md={4}>
+          <Grid container spacing={2} className={classes.spacer}>
+            <Grid item xs={12} md={3}>
               <Autocomplete
                 multiple
                 size='small'
@@ -473,7 +473,7 @@ const AssignRole = (props) => {
                 )}
               />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={3}>
               <Autocomplete
                 size='small'
                 onChange={handleBranch}
@@ -495,7 +495,7 @@ const AssignRole = (props) => {
               />
             </Grid>
             {selectedBranch && (
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={3}>
                 <Autocomplete
                   multiple
                   size='small'
@@ -518,7 +518,7 @@ const AssignRole = (props) => {
               </Grid>
             )}
             {selectedGrades.length > 0 && (
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={3}>
                 <Autocomplete
                   multiple
                   size='small'
@@ -693,7 +693,7 @@ const AssignRole = (props) => {
           style={{ width: '95%', marginLeft: 'auto', marginRight: 'auto' }}
         >
           <Grid container spacing={2}>
-            <Grid item md={4} xs={12}>
+            <Grid item md={3} xs={12}>
               <Autocomplete
                 style={{ width: '100%' }}
                 size='small'
