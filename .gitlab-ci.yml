@@ -109,7 +109,7 @@ deploy_finance-integration2:
       - sudo rm -rf /home/ubuntu/finance-integration2/
       - sudo cp -r build/ /home/ubuntu/finance-integration2
       - forever stop finance-integration2 || true
-      - forever start --uid "finance-integration2" -a -l forever.log -o out.log -e err.log $(which serve) -s /home/ubuntu/build_finance-integration2 -l 9005
+      - forever start --uid "finance-integration2" -a -l forever.log -o out.log -e err.log $(which serve) -s /home/gitlab-runner/builds/hwUysH8D/0/k12devs1/erp-revamp-frontend/build -l 9005
 #      - sonar-scanner   -Dsonar.projectKey=ERP-Revamp-User-Frontend   -Dsonar.sources=.   -Dsonar.host.url=http://3.6.23.199:9000   -Dsonar.login=40cf8e68959fee394596fa649b681f0f5875aef9 > sonar.log
 #      - cat sonar.log | grep -i browse
     environment:
