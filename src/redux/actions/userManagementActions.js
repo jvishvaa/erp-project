@@ -188,15 +188,15 @@ export const editUser = (params) => (dispatch) => {
     });
 };
 
-export const fetchBranchesForCreateUser = () => {
+export const fetchBranchesForCreateUser = (acadId) => {
   return axios
-    .get('/erp_user/branch/')
+    .get(`/erp_user/list-all-branch/?session_year=${acadId}`)
     .then((response) => {
-      if (response.data.status_code === 200) return response?.data?.data;
-      else console.log('','xyzxyz');
+      if (response.data?.status === 'success') return response.data?.data;
+      else console.log('');
     })
     .catch((error) => {
-      throw error;
+      console.log('');
     });
 };
 
@@ -204,16 +204,22 @@ export const fetchAcademicYears = () => {
   return axios
     .get('/erp_user/list-academic_year/')
     .then((response) => {
-      return response.data.data;
+      if (response.data?.status_code === 200) return response.data.data;
+      else console.log('');
     })
-    .catch(() => {});
+    .catch((error) => {
+      console.log('');
+    });
 };
 
 export const fetchSubjects = () => {
   return axios
     .get('/erp_user/subject/')
     .then((response) => {
-      return response.data.data;
+      if (response.data?.status_code === 200) return response.data.data;
+      else console.log('');
     })
-    .catch(() => {});
+    .catch((error) => {
+      console.log('');
+    });
 };

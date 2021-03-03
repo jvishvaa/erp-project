@@ -157,8 +157,11 @@ const BulkUpload = ({ onUploadSuccess }) => {
 
   const getBranches = async () => {
     try {
-      const data = await axios.get('erp_user/branch/');
-      setBranchList(data.data.data);
+      const data = await axios.get('erp_user/list-all-branch/');
+      if(data.data?.status_code===200)
+      setBranchList(data.data?.data);
+      else
+      console.log('');
     } catch (error) {
       console.log('failed to load branches');
     }
