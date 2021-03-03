@@ -296,7 +296,7 @@ const LessonPlanGraphReport = ({
 
   useEffect(() => {
     axios
-      .get(`http://13.232.30.169/qbox/lesson_plan/list-session/`, {
+      .get(`https://dev.mgmt.letseduvate.com/qbox/lesson_plan/list-session/`, {
         headers: {
           'x-api-key': 'vikash@12345#1231',
         },
@@ -312,7 +312,7 @@ const LessonPlanGraphReport = ({
         setAlert('error', error.message);
       });
     axios
-      .get('http://13.232.30.169/qbox/lesson_plan/list-volume/', {
+      .get('https://dev.mgmt.letseduvate.com/qbox/lesson_plan/list-volume/', {
         headers: {
           'x-api-key': 'vikash@12345#1231',
         },

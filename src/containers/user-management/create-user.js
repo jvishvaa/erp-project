@@ -296,6 +296,7 @@ class CreateUser extends Component {
                   <SchoolDetailsForm
                     onSubmit={this.onSubmitSchoolDetails}
                     details={user}
+                    isEdit={false}
                   />
                 )}
                 {activeStep === 1 && (

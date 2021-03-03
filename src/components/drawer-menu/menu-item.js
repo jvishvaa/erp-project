@@ -18,9 +18,12 @@ const MenuItem = withRouter(({ history, ...props }) => {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const menuSelectionArray = [
     { name: 'Take Class', Path: '/take-class' },
-    { name: 'View Class', Path: '/online-class/view-class' },
-    { name: 'Attend Online Class', Path: '/online-class/attend-class' },
-    { name: 'Teacher View Class', Path: '/online-class/teacher-view-class' },
+    // { name: 'View Class', Path: '/online-class/view-class' },
+    // { name: 'Attend Online Class', Path: '/online-class/attend-class' },
+    // { name: 'Teacher View Class', Path: '/online-class/teacher-view-class' },
+    { name: 'View Class', Path: '/erp-online-class' },
+    { name: 'Attend Online Class', Path: '/erp-online-class-student-view' },
+    { name: 'Teacher View Class', Path: '/erp-online-class-teacher-view' },
     { name: 'Create Class', Path: '/online-class/create-class' },
     { name: 'Online Class', Path: '/create-class' },
     { name: 'Management View', Path: '/homework/coordinator' },

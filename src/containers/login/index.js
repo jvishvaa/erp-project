@@ -280,10 +280,10 @@ function SignIn({ onLogin, history, aolOnLogin }) {
   const handleLogin = () => {
     if (erpSearch !== null) {
       aolOnLogin(erpSearch).then((response) => {
-        if (response.isLogin) {
+        if (response?.isLogin) {
           history.push('/online-class/attend-class');
         } else {
-          setAlert('error', response.message);
+          setAlert('error', response?.message);
         }
       });
     } else if (username && password) {
@@ -292,10 +292,10 @@ function SignIn({ onLogin, history, aolOnLogin }) {
         password,
       };
       onLogin(params).then((response) => {
-        if (response.isLogin) {
+        if (response?.isLogin) {
           history.push('/dashboard');
         } else {
-          setAlert('error', response.message);
+          setAlert('error', response?.message);
         }
       });
     }

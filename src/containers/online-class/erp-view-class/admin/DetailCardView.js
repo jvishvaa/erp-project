@@ -9,6 +9,7 @@ import endpoints from '../../../../config/endpoints';
 import Loader from '../../../../components/loader/loader';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 // import ResourceDialog from '../online-class/online-class-resources/resourceDialog';
+import ResourceDialog from '../../../online-class/online-class-resources/resourceDialog'
 
 const JoinClass = (props) => {
   const fullData = props.fullData;
@@ -22,7 +23,6 @@ const JoinClass = (props) => {
   const handleCloseData = () => {
     setAnchorEl(null);
   };
-
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -58,7 +58,7 @@ const JoinClass = (props) => {
       is_restricted: true
     };
 
-    if (window.location.pathname === '/online-class/attend-class') {
+    if (window.location.pathname === '/erp-online-class-student-view') {
       //url = endpoints.studentViewBatchesApi.rejetBatchApi;
       axiosInstance
       .put(endpoints.studentViewBatchesApi.rejetBatchApi, params2)
@@ -118,7 +118,7 @@ const JoinClass = (props) => {
           ) : (
             <>
               <Grid item md={3} xs={6}>
-                {window.location.pathname === '/online-class/attend-class' ? (
+                {/* {window.location.pathname === '/erp-online-class-student-view' ? (
                   <Button
                     size='small'
                     color='secondary'
@@ -142,7 +142,44 @@ const JoinClass = (props) => {
                   >
                     Host
                   </Button>
+                )} */}
+                {window.location.pathname === '/erp-online-class' ?
+                <Button
+                size='small'
+                color='secondary'
+                fullWidth
+                variant='contained'
+                onClick={() =>
+                  window.open(fullData && fullData.presenter_url, '_blank'
                 )}
+                className='teacherFullViewSmallButtons'
+              >
+                Audit
+              </Button> :''}
+              {window.location.pathname === '/erp-online-class-teacher-view' ?
+                   <Button
+                    size='small'
+                    color='secondary'
+                    fullWidth
+                    variant='contained'
+                    onClick={() =>
+                      window.open(fullData && fullData.presenter_url, '_blank'
+                    )}
+                    className='teacherFullViewSmallButtons'
+                  >
+                    Host
+                  </Button> : ''}
+                  {window.location.pathname === '/erp-online-class-student-view' ? 
+                    <Button
+                    size='small'
+                    color='secondary'
+                    fullWidth
+                    variant='contained'
+                    onClick={handleIsAccept}
+                    className='teacherFullViewSmallButtons'
+                  >
+                    Accept
+                  </Button> :''}
               </Grid>
               <Grid item md={3} xs={6}>
                 <Popover
@@ -198,7 +235,7 @@ const JoinClass = (props) => {
                   onClick={(e) => handleClick(e)}
                   className='teacherFullViewSmallButtons1'
                 >
-                  {window.location.pathname === '/online-class/attend-class'
+                  {window.location.pathname === '/erp-online-class-student-view'
                     ? 'Reject'
                     : 'Cancel'}
                 </Button>
@@ -212,7 +249,7 @@ const JoinClass = (props) => {
   )
 }
 
-const DetailCardView = ({ fullData, handleClose }) => {
+const DetailCardView = ({ fullData, handleClose, viewMoreRef, selectedClassType , selectedGrade }) => {
   const [noOfPeriods, setNoOfPeriods] = useState([]);
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
@@ -234,9 +271,9 @@ const DetailCardView = ({ fullData, handleClose }) => {
     }
   }, [fullData]);
   */
-  
+  console.log(selectedClassType,'[[[[[[[[[[[[[[[[')
   useEffect(() => {
-    let detailsURL = window.location.pathname === '/online-class/attend-class'
+    let detailsURL = window.location.pathname === '/erp-online-class-student-view'
     ? `erp_user/${fullData && fullData.id}/student-oc-details/`
     : `erp_user/${fullData && fullData.id}/online-class-details/`;
 
@@ -279,7 +316,7 @@ const DetailCardView = ({ fullData, handleClose }) => {
       class_date: fullData && fullData?.online_class?.start_time.split('T')[0],
     };
     let url = '';
-    if (window.location.pathname === '/online-class/attend-class') {
+    if (window.location.pathname === '/erp-online-class-student-view') {
       url = endpoints.studentViewBatchesApi.rejetBatchApi;
     } else {
       url = endpoints.teacherViewBatches.cancelBatchApi;
@@ -297,14 +334,15 @@ const DetailCardView = ({ fullData, handleClose }) => {
       });
   }
 
+  console.log(fullData.online_class.cource_id,selectedGrade,'=====================')
   const handleAttendance=()=>{
     history.push(`/aol-attendance-list/${fullData.online_class && fullData.id}`)
   }
   const handleCoursePlan=()=>{
-    if(window.location.pathname === '/online-class/attend-class'){
-      history.push(`/view-period/${fullData.online_class && fullData.online_class.course_id}`)
+    if(window.location.pathname === '/erp-online-class-student-view'){
+      history.push(`/create/course/${fullData.online_class && fullData.online_class.course_id}/${selectedGrade.id}`)
     }else{
-      history.push(`/view-period/${fullData.online_class && fullData.online_class.cource_id}`)
+      history.push(`/create/course/${fullData.online_class && fullData.online_class.cource_id}/${selectedGrade.id}`)
     }
   }
 
@@ -322,7 +360,7 @@ const DetailCardView = ({ fullData, handleClose }) => {
 
   return (
     <>
-      <Grid container spacing={2}>
+      <Grid container spacing={2} ref={viewMoreRef}>
         <Grid item md={12} xs={12} className='teacherBatchFullViewMainDiv'>
           <Card className='teacherBatchFullViewMainCard'>
             <Grid container spacing={2} className='teacherBatchFullViewHeader'>
@@ -396,7 +434,7 @@ const DetailCardView = ({ fullData, handleClose }) => {
                 <Divider className='fullViewDivider' />
               </Grid>
               <Grid item md={12} xs={12}>
-                {window.location.pathname !== '/online-class/attend-class' ? (
+                {window.location.pathname !== '/erp-online-class-student-view' ? (
                   <Button fullWidth size='small' className='teacherFullViewFullButtons' onClick={handleAttendance}>
                     Attendance
                   </Button>
@@ -405,15 +443,16 @@ const DetailCardView = ({ fullData, handleClose }) => {
                     Resources
                   </Button>
                 )}
-                {/* <Button fullWidth size='small' className='teacherFullViewFullButtons' onClick={handleCoursePlan}>
+              {selectedClassType && selectedClassType.id !== 0  && 
+                <Button fullWidth size='small' className='teacherFullViewFullButtons' onClick={handleCoursePlan}>
                   View Course Plan
-                </Button> */}
+                </Button>}  
               </Grid>
             </Grid>
           </Card>
         </Grid>
       </Grid>
-      {/* <ResourceDialog
+      <ResourceDialog
         selectedValue={selectedValue}
         open={openPopup}
         onClose={handleClosePopup}
@@ -422,7 +461,7 @@ const DetailCardView = ({ fullData, handleClose }) => {
         onlineClassId={fullData.online_class.id}
         startDate={fullData.online_class.start_time}
         endDate={fullData.online_class.end_time}
-      /> */}
+      />
       {loading && <Loader />}
     </>
   );
