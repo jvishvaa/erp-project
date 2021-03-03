@@ -41,7 +41,7 @@ export const fetchRefundValue = (payload) => {
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
-        // payload.alert.warning('Unable to fetch refund')
+        payload.alert.warning('Unable to fetch refund')
       })
   }
 }
@@ -67,7 +67,7 @@ export const fetchFeeStructureList = (payload) => {
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
-        // payload.alert.warning('Unable to load data')
+        payload.alert.warning('Unable to load data')
       })
   }
 }
@@ -90,7 +90,7 @@ export const ListConcessionTypes = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.warning('Unable to load data')
+        payload.alert.warning('Unable to load data')
         console.log(error)
       })
   }
@@ -117,7 +117,7 @@ export const saveConcessionRequest = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.warning('Unable to load data')
+        payload.alert.warning('Unable to load data')
         console.log(error)
       })
   }
@@ -145,7 +145,7 @@ export const fetchFeeTypeListFeeStru = (payload) => {
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
-        // payload.alert.warning('Unable to load data')
+        payload.alert.warning('Unable to load data')
       })
   }
 }
@@ -166,10 +166,10 @@ export const unassignFeeStructure = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.success('Unassigned Successfully')
+        payload.alert.success('Unassigned Successfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.error('Something Went Wrong')
+        payload.alert.error('Something Went Wrong')
         console.log(error)
       })
   }
@@ -195,7 +195,7 @@ export const fetchOtherFeeTypeList = (payload) => {
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
-        // payload.alert.warning('Unable to load data')
+        payload.alert.warning('Unable to load data')
       })
   }
 }
@@ -220,7 +220,7 @@ export const fetchOtherInstTypeList = (payload) => {
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
-        // payload.alert.warning('Unable to load data')
+        payload.alert.warning('Unable to load data')
       })
   }
 }
@@ -246,7 +246,7 @@ export const saveOtherConcessionRequest = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.error('Something Went Wrong')
+        payload.alert.error('Something Went Wrong')
         console.log(error)
       })
   }
@@ -273,7 +273,7 @@ export const fetchListConcessionsTypes = (payload) => {
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
         console.log(error)
-        // payload.alert.warning('Unable to load data')
+        payload.alert.warning('Unable to load data')
       })
   }
 }
@@ -288,7 +288,7 @@ export const updateInstFineAmount = (payload) => {
         }
       }).then(response => {
         if (response.status === 200) {
-          // payload.alert.success('Successfully Fine Updated')
+          payload.alert.success('Successfully Fine Updated')
           dispatch({
             type: UPDATE_INST_FINE_AMOUNT,
             payload: {
@@ -299,7 +299,7 @@ export const updateInstFineAmount = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.error('Something Went Wrong')
+        payload.alert.error('Something Went Wrong')
         console.log(error)
       })
   }
@@ -315,7 +315,7 @@ export const updateOthrInstFineAmount = (payload) => {
         }
       }).then(response => {
         if (response.status === 200) {
-          // payload.alert.success('Successfully Fine Updated')
+          payload.alert.success('Successfully Fine Updated')
           dispatch({
             type: UPDATE_OTHR_FINE_AMT,
             payload: {
@@ -326,7 +326,7 @@ export const updateOthrInstFineAmount = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.error('Something Went Wrong')
+        payload.alert.error('Something Went Wrong')
         console.log(error)
       })
   }
@@ -352,7 +352,7 @@ export const fetchStudentDues = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      // payload.alert.warning('Unable To Load Receipt No.')
+      payload.alert.warning('Unable To Load Receipt No.')
       dispatch(actionTypes.dataLoaded())
       console.log(err)
     })
@@ -376,9 +376,9 @@ export const fetchBackDatConcession = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       if (err.response && (err.response.status === 400 || err.response.status === 404)) {
-        // payload.alert.warning(err.response.data.err_msg)
+        payload.alert.warning(err.response.data.err_msg)
       } else {
-        // payload.alert.warning('Something Went Wrong!')
+        payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
       console.log(err)
