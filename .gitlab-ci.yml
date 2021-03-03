@@ -99,6 +99,7 @@ deploy_finance-integration2:
       - sudo systemctl restart nginx
       - echo "Deploy to finance server"
       - sleep 10 
+      - sudo npm install
       - sudo npm ci
       - grep home package.json || true
       - export CI=false
