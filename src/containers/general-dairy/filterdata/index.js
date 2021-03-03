@@ -46,6 +46,7 @@ const GeneralDairyFilter = ({
   setPeriodData,
   isTeacher,
   showSubjectDropDown,
+  page,
   // setCurrentTab,
   setViewMore,
   setViewMoreData,
@@ -62,7 +63,7 @@ const GeneralDairyFilter = ({
   const [sectionDropdown,setSectionDropdown] = useState([])
   const [branchDropdown, setBranchDropdown] = useState([]);
 //   const [subjectIds, setSubjectIds] = useState([]);
-const [sectionIds,setSectionIds] = useState([])
+  const [sectionIds,setSectionIds] = useState([])
   const [branchId, setBranchId] = useState('');
   const [currentTab, setCurrentTab] = useState(0);
   const [isEmail, setIsEmail] = useState(false);
@@ -150,6 +151,7 @@ const [sectionIds,setSectionIds] = useState([])
           if (result.data.status_code === 200) {
             //console.log(result.data)
             setSectionDropdown(result.data.data);
+            setSectionIds([])
           }
           else {
             setAlert('error', result.data.message);
@@ -221,7 +223,7 @@ const [sectionIds,setSectionIds] = useState([])
       sectionIds,
       startDateTechPer,
       endDateTechPer,
-      activeTab
+      activeTab,
     );
   };
 
