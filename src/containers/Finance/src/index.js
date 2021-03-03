@@ -7,7 +7,7 @@ import { store } from './_helpers'
 import App from './App'
 import CircularProgress from './ui/CircularProgress/circularProgress'
 import ErrorBoundary from './_helpers/errorBoundary'
-import { registerServiceWorker } from './components/Firebase/register-sw'
+import { registerServiceWorker } from '../../../components/Firebase/register-sw'
 
 window.isMobileFunc = function () {
   const toMatch = [
