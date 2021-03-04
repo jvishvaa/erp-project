@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 // import ReactTable from 'react-table'
-import { withStyles, Radio, StepLabel, CircularProgress,  Step, Tab, Tabs, AppBar, Stepper, Button, Typography, Grid, Table, TableCell, TableRow, TableHead, TableBody, Paper, TextField, Checkbox } from '@material-ui/core/'
+import { withStyles, Radio, StepLabel, CircularProgress, TablePagination, Step, Tab, Tabs, AppBar, Stepper, Button, Typography, Grid, Table, TableCell, TableRow, TableHead, TableBody, Paper, TextField, Checkbox } from '@material-ui/core/'
 import Select from 'react-select'
 import axios from 'axios'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -76,6 +76,8 @@ TabContainer.propTypes = {
 
 class FeeShowList extends Component {
   state = {
+      page: 0,
+      rowsPerPage: 10,
     branchDatas: [],
     prevAmt: null,
     totalAmounts: null,
@@ -261,6 +263,21 @@ class FeeShowList extends Component {
       receiptDetails: newReceiptDetails
     })
   }
+
+  handleChangePage = (event, newPage) => {
+    this.setState({
+      page: newPage
+    })
+  };
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({
+      rowsPerPage:+event.target.value
+    })
+    this.setState({
+      page: 0
+    })
+  };
 
   erpHandler = (e) => {
     this.setState({
@@ -610,7 +627,7 @@ class FeeShowList extends Component {
       }
     } else if (this.state.activeStep > 2) {
       this.setState(prevState => {
-        window.location.replace('/finance/FeeCollection')
+        window.location.replace('/finance/student/FeeCollection')
         return {
           totalAmounts: null,
           gradeData: {
@@ -1373,6 +1390,67 @@ class FeeShowList extends Component {
     //   />)
     // }
     // return feeListTable
+
+    let feeListTable = null
+    console.log('print:', this.props.feeList)
+    if (this.props.feeList && this.props.feeList.length > 0) {
+      feeListTable = (
+        <React.Fragment>
+        <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell> select</TableCell>
+            <TableCell> Fee Collection Type</TableCell>
+            {/* <TableCell> Sub Type</TableCell> */}
+            <TableCell> Amount Given</TableCell>
+            <TableCell> Amount</TableCell>
+            <TableCell> Fee Account</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+        {this.props.feeList && this.props.feeList.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((val, i) => { 
+          return (
+        <TableRow>
+           <TableCell> <input
+          type='checkbox'
+          name='checking'
+          // value={i + 1}
+          checked={this.state.checkBox[val.id]}
+          onChange={
+            (e) => { this.checkBoxHandler(e, val.id, val.is_misc, val.amount) }
+          } /></TableCell>
+            {/* <TableCell>{ val.id} </TableCell> */}
+            <TableCell>{val.fee_type_name ? val.fee_type_name : ''}</TableCell>
+            <TableCell>{val.amount && val.amount ? val.amount : ''}</TableCell>
+            <TableCell>{ <input
+          name='amount'
+          type='number'
+          // value={i + 1}
+          disabled={val.allow_partial_payments === false}
+          value={this.state.amountToEnter[val.id] || val.amount}
+          readOnly={!this.state.checkBox[val.id]}
+          onChange={this.amountHandler(val.id, val.amount)}
+        />} </TableCell>
+            <TableCell>{val.fee_account && val.fee_account.fee_account_name ? val.fee_account.fee_account_name : ''} </TableCell>
+        </TableRow>
+          )
+        })}
+      </TableBody>
+    </Table>
+    <TablePagination
+      rowsPerPageOptions={[10, 25, 100]}
+      component="div"
+      count={this.props.feeList && this.props.feeList.length}
+      rowsPerPage={this.state.rowsPerPage}
+      page={this.state.page}
+      onChangePage={this.handleChangePage}
+      onChangeRowsPerPage={this.handleChangeRowsPerPage}
+    />
+    </React.Fragment>
+
+      )
+      }
+      return feeListTable
   }
 
   receiptDetailHandler = (id) => {
