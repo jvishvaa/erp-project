@@ -46,7 +46,6 @@ const GeneralDairyFilter = ({
   setPeriodData,
   isTeacher,
   showSubjectDropDown,
-  page,
   // setCurrentTab,
   setViewMore,
   setViewMoreData,
@@ -97,7 +96,7 @@ const GeneralDairyFilter = ({
 
   const [teacherModuleId, setTeacherModuleId] = useState(null);
   const [subjectDropdown, setSubjectDropdown] = useState([]);
-
+  const [page,setPage] = useState(1)
   const history=useHistory()
 
   const [filterData, setFilterData] = useState({
@@ -219,7 +218,6 @@ const GeneralDairyFilter = ({
     // alert(filterData.grade.grade_id,sectionIds,startDateTechPer,endDateTechPer)
     if (e === undefined && activeTab === 0){
       return
-      setAlert('error','Select filters')
     }
     handleDairyList(
       filterData.branch.id,

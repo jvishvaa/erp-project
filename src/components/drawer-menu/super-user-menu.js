@@ -231,7 +231,7 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
             <ListItemText primary='Section' className='menu-item-text' />
           </ListItem>
 
-          {window.location.host !== endpoints.aolConfirmURL && (
+          {/* {window.location.host !== endpoints.aolConfirmURL && ( */}
             <ListItem
               button
               className={
@@ -249,9 +249,9 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
               </ListItemIcon>
               <ListItemText primary={`Subject`} className='menu-item-text' />
             </ListItem>
-          )}
+          {/* )} */}
 
-          {window.location.host !== endpoints.aolConfirmURL && (
+          {/* {window.location.host !== endpoints.aolConfirmURL && ( */}
             <ListItem
               button
               className={
@@ -269,7 +269,7 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
               </ListItemIcon>
               <ListItemText primary='Academic Year' className='menu-item-text' />
             </ListItem>
-          )}
+          {/* )} */}
 
           {window.location.host !== endpoints.aolConfirmURL && (
             <ListItem
