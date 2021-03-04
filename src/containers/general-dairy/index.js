@@ -64,8 +64,8 @@ const GeneralDairyList = () => {
     const [endDate, setEDate] = useState([])
 
     const handlePagination = (event, page) => {
-        handleDairyList(branch,grade,sections,startDate,endDate,activeTab,page)
         setPage(page);
+        handleDairyList(branch,grade,sections,startDate,endDate,activeTab,page)
     };
 
     const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -103,6 +103,7 @@ const GeneralDairyList = () => {
         setSDate(startDate)
         setEDate(endDate)
         setPage(page)
+        setActiveTab(activeTab)
         const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
         console.log(roleDetails);
         if(!branchId || !gradeId){
