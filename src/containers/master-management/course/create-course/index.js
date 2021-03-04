@@ -78,7 +78,7 @@ const CreateCourse = () => {
   const branchDrop = [{ branch_name: 'AOL' }];
   const [filterData, setFilterData] = useState({
     branch: '',
-    grade: [],
+    grade: '',
     courseLevel: '',
     category: '',
     age: '',
@@ -713,9 +713,9 @@ const CreateCourse = () => {
                   onChange={handleGrade}
                   id='volume'
                   className='dropdownIcon'
-                  value={filterData?.grade}
-                  options={gradeDropdown}
-                  getOptionLabel={(option) => option?.gradeName}
+                  value={filterData?.grade||''}
+                  options={gradeDropdown||[]}
+                  getOptionLabel={(option) => option?.gradeName||''}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField

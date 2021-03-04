@@ -26,20 +26,19 @@ const JoinClass = (props) => {
 
   //time constants
   const countDownDate=new Date(props.fullData.online_class.start_time).getTime()
-  var x = setInterval(function() {
-    var now = new Date().getTime(); 
-    var distance = countDownDate - now; 
-    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-    setCTime(`${days}Days:${hours}Hours:${minutes}Minutes:${seconds}Seconds`)
-    if (distance < 0) {
-      clearInterval(x);
-      setJoinPermission(true)
-      // document.getElementById("demo").innerHTML = "EXPIRED";
-    }
-  }, 1000);
+  // var x = setInterval(function() {
+  //   var now = new Date().getTime(); 
+  //   var distance = countDownDate - now; 
+  //   var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  //   var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  //   var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  //   var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  //   setCTime(`${days}Days:${hours}Hours:${minutes}Minutes:${seconds}Seconds`)
+  //   if (distance < 0) {
+  //     clearInterval(x);
+  //     setJoinPermission(true)
+  //   }
+  // }, 1000);
 
 useEffect(()=>{},[setJoinPermission])
 
