@@ -155,7 +155,6 @@ const Subjectcard = (props) => {
                                                                 >
                                                                     <p style={{color: '#ff6b6b', marginBottom: '5px'}}>
                                                                         Edit
-                                                                        <EditIcon style={{ fontSize: '16px', marginLeft: '3px'}} />
                                                                     </p>
                                                                 </Link>
                                                             </div>
