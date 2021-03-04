@@ -199,6 +199,23 @@
   margin-left: 0px;
 }
 
+  .icon {
+    margin: 5px;
+    color: #327ddf;
+    margin-top: 0px;
+  }
+  .editIcon {
+    color: rgb(61, 61, 61);
+  }
+  .deleteIcon {
+    color: rgb(61, 61, 61);
+    margin-left: 5px !important;
+  }
+
+  .icon:hover, .editIcon:hover, .deleteIcon:hover {
+    cursor: pointer;
+  }
+
 @media(min-width: 950px){
   .ledger__bodyLedgerListItemEmpty{
     height: 68.03px

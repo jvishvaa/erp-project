@@ -4,6 +4,7 @@ import Icon from '@material-ui/core/Icon'
 import Select from 'react-select'
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
+import AddIcon from '@material-ui/icons/Add'
 
 import {
   TextField,
@@ -25,7 +26,7 @@ const styles = theme => ({
     overflowX: 'auto'
   },
   icon: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(2),
     color: '#327ddf',
     marginTop: '0px',
     '&:hover': {
@@ -79,8 +80,8 @@ const styles = theme => ({
     fontWeight: 'lighter'
   },
   divider: {
-    marginTop: theme.spacing.unit * 2,
-    marginBottom: theme.spacing.unit * 2
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2)
 
   }
 })
@@ -115,6 +116,10 @@ class Ledger extends Component {
     if (this.props.ledgerList.length === 0) {
       this.props.fetchLedgerList(this.props.user, this.props.alert)
     }
+  }
+
+  componentDidUpdate() {
+    console.log("===> expense main list: ", this.props.ledgerList)
   }
 
   showLedgerTypeModal = () => {
@@ -613,14 +618,14 @@ class Ledger extends Component {
               <div>{item.account_head_name}</div>
               <div className={classes.ledger__bodyAccountHeadType}><p style={{ display: 'inline-block' }}>{item.ledger_type && item.ledger_type.ledger_type_name}</p></div>
             </div>
-            <div className={classes.ledger__bodyAccountHeadIcon}><Icon className={this.props.classes.icon} color='secondary'
-              onClick={() => this.showLedgerAddModal(item.id)} ></Icon>
+            <div className={classes.ledger__bodyAccountHeadIcon}><AddIcon className={classes.icon} color='secondary'
+              onClick={() => this.showLedgerAddModal(item.id)} ></AddIcon>
             </div>
-            <div className={classes.ledger__bodyAccountHeadEdtIcon}><EditIcon color='secondary'
+            <div className={classes.ledger__bodyAccountHeadEdtIcon}><EditIcon color='secondary' className={classes.editIcon}
               onClick={() => this.showEditHeadModalHandler(item.account_head_name, item.ledger_type && item.ledger_type.id, item.id)} ></EditIcon>
             </div>
-            <div className={classes.ledger__bodyAccountHeadDltIcon}><DeleteForeverIcon color='secondary'
-              onClick={() => this.deleteModalShowHandler('accountHead', item.id)} >delete</DeleteForeverIcon>
+            <div className={classes.ledger__bodyAccountHeadDltIcon}><DeleteForeverIcon color='secondary' className={classes.deleteIcon}
+              onClick={() => this.deleteModalShowHandler('accountHead', item.id)}>delete</DeleteForeverIcon>
             </div>
           </div>
           <div className={classes.ledger__bodyLedgerList}>
@@ -638,10 +643,10 @@ class Ledger extends Component {
                       {mapping.action ? 'Active' : 'InActive'}
                     </div> */}
                     <div>
-                      <EditIcon className={this.props.classes.editIcon} color='secondary'
+                      <EditIcon className={classes.editIcon} color='secondary'
                         onClick={() => this.showEntryUpdateModalHandler(item.id, subItem.id, subItem.ledger_account, subItem.remarks, subItem.ledger_status)}
                       ></EditIcon>
-                      <DeleteForeverIcon color='secondary'
+                      <DeleteForeverIcon color='secondary' className={classes.deleteIcon}
                         onClick={() => this.deleteModalShowHandler('ledger', item.id, subItem.id)} ></DeleteForeverIcon>
                     </div>
                   </div>
