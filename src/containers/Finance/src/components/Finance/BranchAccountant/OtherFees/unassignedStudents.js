@@ -168,7 +168,7 @@ class UnassignedStudents extends Component {
       // due_date: this.state.due_date,
       student: checkedRowId,
       other_fee: this.props.otherFeeId,
-      amount: +this.state.amount,
+      amount: +this.state.amount || this.props.amounts,
       academic_year: this.props.sessionId,
       grade: this.props.gradeId,
       section: this.props.sectionId
@@ -266,7 +266,7 @@ class UnassignedStudents extends Component {
             name='amount'
             className='form-control'
             placeholder='Enter Amount'
-            value={this.state.amount || ''}
+            value={this.state.amount}
             onChange={(e) => { this.amountHandler(e) }}
           />
         </div>

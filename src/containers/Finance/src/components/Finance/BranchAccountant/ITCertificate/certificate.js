@@ -26,7 +26,7 @@ class Certificate extends Component {
   }
 
   componentDidMount () {
-    // console.log('NUmber------------', Number.toNumericString(12000, 'only'))
+    console.log('NUmber------------', Number.toNumericString(12000, 'only'))
     const d = new Date()
     // console.log('///////////DATE', d && d.withMonthName())
   }
@@ -91,7 +91,7 @@ class Certificate extends Component {
       generateCertificate(data)
     } catch (error) {
       console.log(error)
-      // this.props.alert.warning('Something Went Wrong')
+      this.props.alert.warning('Something Went Wrong')
     }
   }
 

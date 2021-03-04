@@ -1,9 +1,9 @@
-import React, { Component, useContext } from 'react'
+import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 // import ReactTable from 'react-table'
-import { withStyles, Radio, StepLabel, Step, Tab, Tabs, AppBar, Stepper, Button, Typography, Grid, Table, TableCell, TableRow, TableHead, TableBody, Paper, TextField, Checkbox } from '@material-ui/core/'
+import { withStyles, Radio, StepLabel, CircularProgress, TablePagination, Step, Tab, Tabs, AppBar, Stepper, Button, Typography, Grid, Table, TableCell, TableRow, TableHead, TableBody, Paper, TextField, Checkbox } from '@material-ui/core/'
 import Select from 'react-select'
 import axios from 'axios'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -16,9 +16,7 @@ import * as actionTypes from '../../store/actions'
 import AutoSuggest from '../../../../ui/AutoSuggest/autoSuggest'
 // import { debounce } from '../../../../utils'
 import Student from '../../Profiles/studentProfile'
-import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
-import Layout from '../../../../../../Layout'
-import { AlertNotificationContext } from '../../../../../../../context-api/alert-context/alert-state'
+// import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 
 const styles = (theme) => ({
   tableWrapper: {
@@ -61,7 +59,7 @@ const styles = (theme) => ({
 })
 
 function getSteps () {
-  return ['1. Fee Details', '2. Receipt Details', '3. Payment mode', '4. Print Receipt']
+  return ['1. Fee Details', '2. Reciept Details', '3. Payment mode', '4. Print Receipt']
 }
 
 function TabContainer ({ children, dir }) {
@@ -78,6 +76,8 @@ TabContainer.propTypes = {
 
 class FeeShowList extends Component {
   state = {
+      page: 0,
+      rowsPerPage: 10,
     branchDatas: [],
     prevAmt: null,
     totalAmounts: null,
@@ -103,38 +103,61 @@ class FeeShowList extends Component {
       subType: '',
       amount: '',
       roundedAmount: '',
-      amount: '',
-      finalAmt: null,
-      receiptTableInfo: {
-        feeType: '',
-        subType: '',
-        amount: '',
-        roundedAmount: '',
-        gstPercentage: '',
-        gstAmount: '',
-        roundedGST: '',
-        totalAmount: ''
+      gstPercentage: '',
+      gstAmount: '',
+      roundedGST: '',
+      totalAmount: ''
+    },
+    receiptDetails: {
+      receiptInfo: {
+        // receiptNo: '',
+        dateofPayment: new Date().toISOString().substr(0, 10)
       },
-      receiptDetails: {
-        receiptInfo: {
-          // receiptNo: '',
-          dateofPayment: new Date().toISOString().substr(0, 10)
-        },
-        outsiderInfo: {
-          studentName: '',
-          parentName: '',
-          parentMobile: '',
-          class: '',
-          schoolName: '',
-          address: '',
-          outsiderDescription: ''
-        },
-        studentNameInsider: '',
-        radioChecked: 'online',
-        boxChecked: true,
-        selectValue: 1,
-        generalDescription: '',
-        receiptNoOnline: ''
+      outsiderInfo: {
+        studentName: '',
+        parentName: '',
+        parentMobile: '',
+        class: '',
+        schoolName: '',
+        address: '',
+        outsiderDescription: ''
+      },
+      studentNameInsider: '',
+      radioChecked: 'online',
+      boxChecked: true,
+      selectValue: 1,
+      generalDescription: '',
+      receiptNoOnline: ''
+    },
+    selectedPayment: 'a',
+    searchByValue: null,
+    searchByData: null,
+    isChequePaper: false,
+    isInternetPaper: false,
+    isCreditPaper: false,
+    isTrans: false,
+    confirm: false,
+    payment: {
+      cheque: {
+        chequeNo: null,
+        chequeDate: null,
+        ifsc: null,
+        micr: null,
+        // chequeName: null,
+        chequeBankName: null,
+        chequeBankBranch: null
+      },
+      internet: {
+        internetDate: null,
+        remarks: null
+      },
+      credit: {
+        credit: 1,
+        digits: null,
+        creditDate: null,
+        approval: null,
+        bankName: null,
+        creditRemarks: null
       },
       transid: null,
       dateOfPayment: new Date().toISOString().substr(0, 10)
@@ -171,10 +194,6 @@ class FeeShowList extends Component {
     studentErp: '',
     allSections: true
   }
-
-
-  // let { setAlert } = useContext(AlertNotificationContext);
-  static contextType = AlertNotificationContext
 
   outsiderInfoHandler = (event) => {
     const newReceiptDetails = { ...this.state.receiptDetails }
@@ -244,6 +263,21 @@ class FeeShowList extends Component {
       receiptDetails: newReceiptDetails
     })
   }
+
+  handleChangePage = (event, newPage) => {
+    this.setState({
+      page: newPage
+    })
+  };
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({
+      rowsPerPage:+event.target.value
+    })
+    this.setState({
+      page: 0
+    })
+  };
 
   erpHandler = (e) => {
     this.setState({
@@ -329,9 +363,7 @@ class FeeShowList extends Component {
     // this.props.fetchReceiptRange(this.state.session, this.props.branchData && this.props.branchData.branch_name, this.props.alert, this.props.user)
   }
   componentDidUpdate () {
-    // console.log('====> new alert: ', this.context.setAlert('success', 'updated success'))
-    console.log('====> old alert: ', this.props.alert)
-    console.log('====> old user: ', this.props.user)
+    console.log('====> newState: ', this.state.receiptDetails)
   }
   checkBoxHandler = (e, id, misc, amo) => {
     let { checkBox } = this.state
@@ -522,7 +554,6 @@ class FeeShowList extends Component {
         //   gradeDatas: a.shift()
         // })
         // console.log(this.state.gradeDatas)
-        // this.props.AlertNotificationContext.setAlert('error', 'Enter the Amount');
       }
     } else if (this.state.activeStep === 1) {
       if (this.state.receiptDetails.receiptInfo.dateofPayment) {
@@ -596,7 +627,7 @@ class FeeShowList extends Component {
       }
     } else if (this.state.activeStep > 2) {
       this.setState(prevState => {
-        window.location.replace('/finance/FeeCollection')
+        window.location.replace('/finance/student/FeeCollection')
         return {
           totalAmounts: null,
           gradeData: {
@@ -1212,6 +1243,7 @@ class FeeShowList extends Component {
       this.props.user
     )
   }
+
   studentNameChangeHandler = (e, selected) => {
     this.setState({ studentName: e.target.value, selectedNameStatus: selected, showTabs: false, getData: false }, () => {
       const student = this.props.studentErp && this.props.studentErp.length > 0 ? this.props.studentErp.filter(item => item.name === this.state.studentName)[0] : ''
@@ -1295,62 +1327,130 @@ class FeeShowList extends Component {
   // }
 
   feeListTableHandler = () => {
-    let feeListTable = null
-    console.log('print fee list table:', this.props.feeList)
-    if (this.props.feeList && this.props.feeList.length > 0) {
+    // let feeListTable = null
+    // console.log('print:', this.props.feeList)
+    // if (this.props.feeList && this.props.feeList.length > 0) {
+    //   feeListTable = (<ReactTable
+    //     // pages={Math.ceil(this.props.viewBanksList.count / 20)}
+    //     data={this.renderTable()}
+    //     manual
+    //     columns={[
+    //       {
+    //         Header: 'select',
+    //         accessor: 'check',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Fee Collection Type',
+    //         accessor: 'feeCollectionType',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       // {
+    //       //   Header: 'Sub Type',
+    //       //   accessor: 'subType',
+    //       //   inputFilterable: true,
+    //       //   exactFilterable: true,
+    //       //   sortable: true
+    //       // },
+    //       {
+    //         Header: 'Amount Given',
+    //         accessor: 'amountGiven',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Amount',
+    //         accessor: 'amount',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Fee Account',
+    //         accessor: 'feeAccount',
+    //         inputFilterable: true,
+    //         exactFilterable: true,
+    //         sortable: true
+    //       }
+    //     ]}
+    //     filterable
+    //     sortable
+    //     defaultPageSize={10}
+    //     showPageSizeOptions={false}
+    //     className='-striped -highlight'
+    //     // Controlled props
+    //     // page={this.state.page}
+    //     // Callbacks
+    //     // onPageChange={page => this.pageChangeHandler(page)}
+    //   />)
+    // }
+    // return feeListTable
 
+    let feeListTable = null
+    console.log('print:', this.props.feeList)
+    if (this.props.feeList && this.props.feeList.length > 0) {
       feeListTable = (
+        <React.Fragment>
         <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell> select</TableCell>
-              <TableCell> Fee Collection Type</TableCell>
-              <TableCell> Sub Type</TableCell>
-              <TableCell> Amount Given</TableCell>
-              <TableCell> Amount</TableCell>
-              <TableCell> Fee Account</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-          {this.props.feeList.length && this.props.feeList.map((val, i) => { 
-            return (
-              <TableRow>
-                <TableCell>
-                  <input
-                    type='checkbox'
-                    name='checking'
-                    // value={i + 1}
-                    checked={this.state.checkBox[val.id]}
-                    onChange={
-                      (e) => { this.checkBoxHandler(e, val.id) }
-                    } />
-                </TableCell>
-                <TableCell>
-                  {val.fee_type_name ? val.fee_type_name : ''}
-                  </TableCell>
-                  <TableCell>{val.sub_type ? val.sub_type : ''} </TableCell>
-                <TableCell>{ val.amount && val.amount ? val.amount : ''}</TableCell>
-                <TableCell>
-                  <input
-                    name='amount'
-                    type='number'
-                    // value={i + 1}
-                    value={this.state.amountToEnter[val.id]}
-                    readOnly={!this.state.checkBox[val.id]}
-                    onChange={this.amountHandler(val.id)}
-                  />
-                  </TableCell>
-                <TableCell>
-                  {val.fee_account && val.fee_account.fee_account_name ? val.fee_account.fee_account_name : ''}
-                  </TableCell>
-                </TableRow>
-                )})}
-            {/* {this.renderTable()} */}
-            </TableBody>
-          </Table>
+        <TableHead>
+          <TableRow>
+            <TableCell> select</TableCell>
+            <TableCell> Fee Collection Type</TableCell>
+            {/* <TableCell> Sub Type</TableCell> */}
+            <TableCell> Amount Given</TableCell>
+            <TableCell> Amount</TableCell>
+            <TableCell> Fee Account</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+        {this.props.feeList && this.props.feeList.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((val, i) => { 
+          return (
+        <TableRow>
+           <TableCell> <input
+          type='checkbox'
+          name='checking'
+          // value={i + 1}
+          checked={this.state.checkBox[val.id]}
+          onChange={
+            (e) => { this.checkBoxHandler(e, val.id, val.is_misc, val.amount) }
+          } /></TableCell>
+            {/* <TableCell>{ val.id} </TableCell> */}
+            <TableCell>{val.fee_type_name ? val.fee_type_name : ''}</TableCell>
+            <TableCell>{val.amount && val.amount ? val.amount : ''}</TableCell>
+            <TableCell>{ <input
+          name='amount'
+          type='number'
+          // value={i + 1}
+          disabled={val.allow_partial_payments === false}
+          value={this.state.amountToEnter[val.id] || val.amount}
+          readOnly={!this.state.checkBox[val.id]}
+          onChange={this.amountHandler(val.id, val.amount)}
+        />} </TableCell>
+            <TableCell>{val.fee_account && val.fee_account.fee_account_name ? val.fee_account.fee_account_name : ''} </TableCell>
+        </TableRow>
+          )
+        })}
+      </TableBody>
+    </Table>
+    <TablePagination
+      rowsPerPageOptions={[10, 25, 100]}
+      component="div"
+      count={this.props.feeList && this.props.feeList.length}
+      rowsPerPage={this.state.rowsPerPage}
+      page={this.state.page}
+      onChangePage={this.handleChangePage}
+      onChangeRowsPerPage={this.handleChangeRowsPerPage}
+    />
+    </React.Fragment>
+
       )
-    }
-    return feeListTable
+      }
+      return feeListTable
   }
 
   receiptDetailHandler = (id) => {
