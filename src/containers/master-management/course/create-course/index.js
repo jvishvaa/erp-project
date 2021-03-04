@@ -120,12 +120,11 @@ const CreateCourse = () => {
     else setNextToggle((prev) => !prev);
   };
   const handleBackToCourseList = () => {
-    if(window.location.host === endpoints?.aolConfirmURL){
+    if (window.location.host === endpoints?.aolConfirmURL) {
       history.push(`/course-list/`);
-    }else{
+    } else {
       history.goBack();
     }
-    
   };
 
   useEffect(() => {
@@ -354,8 +353,11 @@ const CreateCourse = () => {
   useEffect(() => {
     if (aolHostURL !== endpoints.aolConfirmURL) {
       setGradeDropdown([]);
+      let url = `${endpoints.communication.grades}`;
+      if (aolHostURL === endpoints.aolConfirmURL) url += `?branch_id=1`;
+      else url += `?branch_id=5`;
       axiosInstance
-        .get(`${endpoints.academics.grades}?branch_id=5`)
+        .get(url)
         .then((result) => {
           if (result.data.status_code === 200) {
             const list = [];
@@ -377,7 +379,7 @@ const CreateCourse = () => {
   }, []);
 
   const handleGrade = (event, value) => {
-    setFilterData({ ...filterData, grade: [] });
+    setFilterData({ ...filterData, grade: '' });
     if (value) {
       setFilterData({
         ...filterData,
@@ -481,7 +483,7 @@ const CreateCourse = () => {
           setEditFlag(false);
           setFilterData({
             branch: '',
-            grade: [],
+            grade: '',
             courseLevel: '',
             category: '',
             age: '',
@@ -536,7 +538,7 @@ const CreateCourse = () => {
           setEditFlag(false);
           setFilterData({
             branch: '',
-            grade: [],
+            grade: '',
             courseLevel: '',
             category: '',
             age: '',
@@ -646,9 +648,9 @@ const CreateCourse = () => {
                   onChange={handleCourseLevel}
                   id='academic-year'
                   className='dropdownIcon'
-                  value={filterData?.courseLevel}
-                  options={courseLevelDrop}
-                  getOptionLabel={(option) => option?.value}
+                  value={filterData?.courseLevel || ''}
+                  options={courseLevelDrop || []}
+                  getOptionLabel={(option) => option?.value || ''}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
@@ -668,9 +670,9 @@ const CreateCourse = () => {
                     onChange={handleBranch}
                     id='grade'
                     className='dropdownIcon'
-                    value={filterData?.branch}
-                    options={branchDrop}
-                    getOptionLabel={(option) => option?.branch_name}
+                    value={filterData?.branch || ''}
+                    options={branchDrop || []}
+                    getOptionLabel={(option) => option?.branch_name || ''}
                     filterSelectedOptions
                     renderInput={(params) => (
                       <TextField
@@ -691,9 +693,9 @@ const CreateCourse = () => {
                     onChange={handleCategory}
                     id='volume'
                     className='dropdownIcon'
-                    value={filterData?.category}
-                    options={categoryDropdown}
-                    getOptionLabel={(option) => option?.tag_name}
+                    value={filterData?.category || ''}
+                    options={categoryDropdown || []}
+                    getOptionLabel={(option) => option?.tag_name || ''}
                     filterSelectedOptions
                     renderInput={(params) => (
                       <TextField
@@ -713,9 +715,9 @@ const CreateCourse = () => {
                   onChange={handleGrade}
                   id='volume'
                   className='dropdownIcon'
-                  value={filterData?.grade||''}
-                  options={gradeDropdown||[]}
-                  getOptionLabel={(option) => option?.gradeName||''}
+                  value={filterData?.grade || ''}
+                  options={gradeDropdown || []}
+                  getOptionLabel={(option) => option?.gradeName || ''}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
@@ -735,9 +737,9 @@ const CreateCourse = () => {
                     onChange={handleAge}
                     id='volume'
                     className='dropdownIcon'
-                    value={filterData?.age}
-                    options={age}
-                    getOptionLabel={(option) => option?.tag_name}
+                    value={filterData?.age||''}
+                    options={age||[]}
+                    getOptionLabel={(option) => option?.tag_name||''}
                     filterSelectedOptions
                     renderInput={(params) => (
                       <TextField
@@ -758,9 +760,9 @@ const CreateCourse = () => {
                     onChange={handleSubject}
                     id='volume'
                     className='dropdownIcon'
-                    value={filterData?.subject}
-                    options={subjectDropdown}
-                    getOptionLabel={(option) => option?.subjectName}
+                    value={filterData?.subject||''}
+                    options={subjectDropdown||[]}
+                    getOptionLabel={(option) => option?.subjectName||''}
                     filterSelectedOptions
                     renderInput={(params) => (
                       <TextField
