@@ -42,7 +42,7 @@ const ledgerReducer = (state = initialState, action) => {
       }
     }
     case actionTypes.ADD_LEDGER_ENTRY: {
-      const index = state.ledgerList.findIndex(item => item.id === action.payload.headId)
+      const index = state.ledgerList.findIndex(item => +item.id === +action.payload.headId)
       const newLedgerList = [...state.ledgerList]
       const ledgerEntry = {
         id: action.payload.data.id,
@@ -52,7 +52,8 @@ const ledgerReducer = (state = initialState, action) => {
       }
       const subHeader = [ledgerEntry, ...newLedgerList[index].sub_header]
       console.log('subHead: ', subHeader)
-      newLedgerList[index].sub_header = subHeader
+      const newSubHeader = subHeader.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i)
+      newLedgerList[index].sub_header = newSubHeader
       return {
         ...state,
         ledgerList: newLedgerList
