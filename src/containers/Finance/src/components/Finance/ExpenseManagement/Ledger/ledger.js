@@ -118,6 +118,10 @@ class Ledger extends Component {
     }
   }
 
+  componentDidUpdate() {
+    console.log("===> expense main list: ", this.props.ledgerList)
+  }
+
   showLedgerTypeModal = () => {
     this.setState({
       ledgerTypeModal: true

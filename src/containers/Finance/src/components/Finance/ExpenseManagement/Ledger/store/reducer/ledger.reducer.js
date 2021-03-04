@@ -51,6 +51,7 @@ const ledgerReducer = (state = initialState, action) => {
         remarks: action.payload.data.remarks
       }
       const subHeader = [ledgerEntry, ...newLedgerList[index].sub_header]
+      console.log('subHead: ', subHeader)
       newLedgerList[index].sub_header = subHeader
       return {
         ...state,

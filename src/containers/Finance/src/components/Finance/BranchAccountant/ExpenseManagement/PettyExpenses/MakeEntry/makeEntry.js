@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 // import { Grid } from 'semantic-ui-react'
 
-import { withStyles, Radio, Button, CircularProgress, Grid } from '@material-ui/core/'
+import { withStyles, Button, CircularProgress, Grid } from '@material-ui/core/'
+import Radio from '@material-ui/core/Radio'
 import Select from 'react-select'
 import {
   DeleteForeverOutlined as DeleteForeverOutlinedIcon
@@ -301,31 +302,11 @@ class MakeEntry extends Component {
     if (paymentOption === 'cheque') {
       view = (
         <React.Fragment>
-          <Grid.Row>
-            <Grid.Column
-              floated='left'
-              computer={2}
-              mobile={2}
-              tablet={2}
-              className={classes.selectLabel}
-            >
-              Bank Name
-            </Grid.Column>
-            <Grid.Column
-              floated='left'
-              computer={1}
-              mobile={1}
-              tablet={1}
-              className={classes.selectLabel}
-            >
-              :
-            </Grid.Column>
-            <Grid.Column
-              floated='left'
-              computer={12}
-              mobile={12}
-              tablet={12}
-            >
+          <Grid container spacing={1}>
+            <Grid item xs={4}>
+              Bank Name :
+            </Grid>
+            <Grid item xs={8}>
               <Select
                 placeholder='Select Bank'
                 value={this.state.selectedBank ? ({
@@ -338,66 +319,24 @@ class MakeEntry extends Component {
                     ) : []}
                 onChange={this.changeSelectedBankHandler}
               />
-            </Grid.Column>
-          </Grid.Row>
-          <Grid.Row>
-            <Grid.Column
-              floated='left'
-              computer={2}
-              mobile={2}
-              tablet={2}
-              className={classes.selectLabel}
-            >
-              Cheque / DD No
-            </Grid.Column>
-            <Grid.Column
-              floated='left'
-              computer={1}
-              mobile={1}
-              tablet={1}
-              className={classes.selectLabel}
-            >
-              :
-            </Grid.Column>
-            <Grid.Column
-              floated='left'
-              computer={12}
-              mobile={12}
-              tablet={12}
-            >
+            </Grid>
+
+            <Grid item xs={4}>
+              Cheque / DD No :
+            </Grid>
+            <Grid item xs={8}>
               <input type='text'
                 className={classes.table__input}
                 name='chequeNo'
                 value={this.state.chequeNo || ''}
                 onChange={this.changeDataHandler}
               />
-            </Grid.Column>
-          </Grid.Row>
-          <Grid.Row>
-            <Grid.Column
-              floated='left'
-              computer={2}
-              mobile={2}
-              tablet={2}
-              className={classes.selectLabel}
-            >
-              Cheque Date
-            </Grid.Column>
-            <Grid.Column
-              floated='left'
-              computer={1}
-              mobile={1}
-              tablet={1}
-              className={classes.selectLabel}
-            >
-              :
-            </Grid.Column>
-            <Grid.Column
-              floated='left'
-              computer={12}
-              mobile={12}
-              tablet={12}
-            >
+            </Grid>
+
+            <Grid item xs={4}>
+              Cheque Date :
+            </Grid>
+            <Grid item xs={8}>
               <input type='date'
                 className={classes.table__input}
                 name='chequeDate'
@@ -405,39 +344,19 @@ class MakeEntry extends Component {
                 value={this.state.chequeDate || ''}
                 onChange={this.changeDataHandler}
               />
-            </Grid.Column>
-          </Grid.Row>
+            </Grid>
+          </Grid>
         </React.Fragment>
       )
     }
     if (paymentOption === 'online') {
       view = (
         <React.Fragment>
-          <Grid.Row>
-            <Grid.Column
-              floated='left'
-              computer={2}
-              mobile={2}
-              tablet={2}
-              className={classes.selectLabel}
-            >
-              Bank Name
-            </Grid.Column>
-            <Grid.Column
-              floated='left'
-              computer={1}
-              mobile={1}
-              tablet={1}
-              className={classes.selectLabel}
-            >
-              :
-            </Grid.Column>
-            <Grid.Column
-              floated='left'
-              computer={12}
-              mobile={12}
-              tablet={12}
-            >
+          <Grid container spacing={1}>
+            <Grid item xs={4}>
+              Bank Name :
+            </Grid>
+            <Grid item xs={8}>
               <Select
                 placeholder='Select Bank'
                 value={this.state.selectedBank ? ({
@@ -450,8 +369,9 @@ class MakeEntry extends Component {
                     ) : []}
                 onChange={this.changeSelectedBankHandler}
               />
-            </Grid.Column>
-          </Grid.Row>
+            </Grid>
+
+          </Grid>
         </React.Fragment>
       )
     }
