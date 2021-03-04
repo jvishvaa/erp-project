@@ -168,6 +168,7 @@ const DurationContainer = (props) => {
       if (isEdit) {
         if (list[i]['toggle']) {
           for (let k = 0; k < list[i]['data'].length; k++) {
+            if(list[i]['data'][k]['weeks'])
             coursePriceArray.push({
               no_of_week: parseInt(list[i]['data'][k]['weeks']),
               price: parseFloat(list[i]['data'][k]['price']),
@@ -227,6 +228,13 @@ const DurationContainer = (props) => {
       };
     }
 
+    // const hasData = true;
+    // for(let k=0;k<batchData.length;k++) {
+    //   console.log(batchData[k],`batchData${k}`);
+    //   const {course_price} = batchData[k];
+    //   if(course_price[0]?.no_of_week>0 || course_price[0]?.price>0)
+    // }
+
     if (courseId) {
       if (isEdit) {
         axiosInstance
@@ -234,9 +242,9 @@ const DurationContainer = (props) => {
           .then((result) => {
             if (result.data.status_code === 200) {
               setAlert('success', result.data.message);
-              resetContent();
-              setCourseId('');
-              setSelectedCourse('');
+              // resetContent();
+              // setCourseId('');
+              // setSelectedCourse('');
               if (gradeKey && courseKey) history.push(`/course-list/${gradeKey}`);
             } else {
               setAlert('error', result.data.message);
@@ -252,9 +260,9 @@ const DurationContainer = (props) => {
             .then((result) => {
               if (result.data.status_code === 200) {
                 setAlert('success', result.data.message);
-                resetContent();
-                setCourseId('');
-                setSelectedCourse('');
+                // resetContent();
+                // setCourseId('');
+                // setSelectedCourse('');
                 if (gradeKey && courseKey) history.push(`/course-list/${gradeKey}`);
               } else {
                 setAlert('error', result.data.message);
@@ -309,14 +317,14 @@ const DurationContainer = (props) => {
             {recursiveContent?.map((row, index) => (
               <div className='recursiveRow'>
                 <div className='addRemoveIconContainer'>
-                  {index === recursiveContent?.length - 1 && (
-                    <Add className='addRecIcon' onClick={handleAdd} />
-                  )}
-                  {index !== recursiveContent?.length - 1 && (
+                  {recursiveContent?.length !== 1 && (
                     <Remove
                       className='removeRecIcon'
                       onClick={() => handleRemove(index)}
                     />
+                  )}
+                  {index === recursiveContent?.length - 1 && (
+                    <Add className='addRecIcon' onClick={handleAdd} />
                   )}
                 </div>
                 <div className='weekContainer'>

@@ -115,7 +115,7 @@ const CreateclassProvider = (props) => {
       );
       if (data.status === 'success')
         dispatch(success(data.data, LIST_TUTOR_EMAILS_SUCCESS));
-      else throw new Error(data.message);
+      else throw new Error(data?.message);
     } catch (error) {
       dispatch(failure(error, LIST_TUTOR_EMAILS_FAILURE));
     }

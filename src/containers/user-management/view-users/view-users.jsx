@@ -40,6 +40,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
@@ -102,6 +103,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const [selectedRoles, setSelectedRoles] = useState(null);
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [selectedGrades, setSelectedGrades] = useState([]);
+  const [gradeIds, setGradeIds] = useState([]);
   const [usersData, setUsersData] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [deleteId, setDeleteId] = useState(null);
@@ -156,8 +158,9 @@ const ViewUsers = withRouter(({ history, ...props }) => {
 
   const getGradeApi = async () => {
     try {
+      console.log(selectedBranch, ' branch id ====');
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?branch_id=${selectedBranch}`,
+        `${endpoints.communication.grades}?branch_id=${selectedBranch?.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -166,7 +169,8 @@ const ViewUsers = withRouter(({ history, ...props }) => {
       );
       const resultOptions = [];
       if (result.status === 200) {
-        result.data.data.map((items) => resultOptions.push(items.grade_name));
+        result.data.data.map((items) => resultOptions.push(items.grade__grade_name));
+        console.log(result.data.data);
         if (selectedBranch) {
           setGrade([...resultOptions]);
         }
@@ -183,8 +187,9 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     const rolesId = [];
     const gradesId = [];
     if (selectedRoles && selectedRoles !== 'All') {
-      rolesId.push(selectedRoles);
+      rolesId.push(selectedRoles.id);
     }
+    /*
     if (selectedGrades.length && !selectedGrades.includes('All')) {
       gradeList
         .filter((item) => selectedGrades.includes(item['grade__grade_name']))
@@ -192,12 +197,18 @@ const ViewUsers = withRouter(({ history, ...props }) => {
           gradesId.push(items.grade_id);
         });
     }
+    */
     let getUserListUrl = `${endpoints.communication.userList}?page=${currentPage}&page_size=${limit}`;
     if (rolesId.length && selectedRoles !== 'All') {
       getUserListUrl += `&role=${rolesId.toString()}`;
     }
+    /*
     if (gradesId.length && !selectedGrades.includes('All')) {
       getUserListUrl += `&grade=${gradesId.toString()}`;
+    }
+    */
+    if (gradeIds.length && !selectedGrades.includes('All')) {
+      getUserListUrl += `&grade=${gradeIds.toString()}`;
     }
     if (searchText) {
       getUserListUrl += `&search=${searchText}`;
@@ -340,6 +351,20 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     }
   }, [isNewSeach]);
 
+  const handleGrade = (event, value) => {
+    setSelectedGrades(value);
+    console.log(value);
+    
+    if (value.length) {
+      const ids = value.map((el) => el.grade_id);
+      setGradeIds(ids);
+      // listSubjects(ids)
+    } else {
+      setGradeIds([]);
+      setSelectedGrades([]);
+    }
+  };
+
   return (
     <Layout>
       <div className='view-users-page'>
@@ -368,6 +393,31 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                 />
               </FormControl>
             </Grid>
+            <Grid item md={3} xs={12}>
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                //onChange={(e) => setSelectedRoles(e.target.value)}
+                onChange={(event, value) => {
+                  setSelectedRoles(value);
+                }}
+                id='role_id'
+                //className='dropdownIcon'
+                value={selectedRoles?.role_name}
+                options={roleList}
+                getOptionLabel={(option) => option?.role_name}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Role'
+                    placeholder='Select Role'
+                  />
+                )}
+              />
+            </Grid>
+            {/*
             <Grid item xs={12} md={3}>
               <FormControl
                 variant='outlined'
@@ -394,6 +444,33 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                 </Select>
               </FormControl>
             </Grid>
+            */}
+            <Grid item md={3} xs={12}>
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                //onChange={(e) => setSelectedBranch(e.target.value)}
+                onChange={(event, value) => {
+                  setSelectedBranch(value);
+                }}
+                id='branch_id'
+                //className='dropdownIcon'
+                value={selectedBranch}
+                options={branchList}
+                getOptionLabel={(option) => option?.branch_name}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Branch'
+                    placeholder='Select Branch'
+                  />
+                )}
+              />
+            </Grid>
+
+            {/*
             <Grid item xs={12} md={3}>
               <FormControl
                 variant='outlined'
@@ -410,25 +487,48 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                   label='Branch'
                   color='primary'
                 >
-                  <MenuItem value=''>
+                  <MenuItem value='' style={{position: 'relative'}}>
                     <em>None</em>
                   </MenuItem>
+<<<<<<< HEAD
                   {branchList?.map((items, index) => (
                     <MenuItem key={`branch_user_details_${index}`} value={items.id}>
+=======
+                  {branchList.map((items, index) => (
+                    <MenuItem key={`branch_user_details_${index}`} value={items.id} style={{position: 'relative'}}>
+>>>>>>> develop
                       {items.branch_name}
                     </MenuItem>
                   ))}
                 </Select>
               </FormControl>
             </Grid>
-            {selectedBranch && (
+            */}
+            <Grid item xs={12} sm={3}>
+              <Autocomplete
+                //key={clearKey}
+                multiple
+                size='small'
+                onChange={handleGrade}
+                id='create__class-branch'
+                options={gradeList}
+                getOptionLabel={(option) => option?.grade__grade_name}
+                filterSelectedOptions
+                value={selectedGrades}
+                renderInput={(params) => (
+                  <TextField
+                    className='create__class-textfield'
+                    {...params}
+                    variant='outlined'
+                    label='Grades'
+                    placeholder='Select Grades'
+                  />
+                )}
+              />
+            </Grid>
+
+            {/* selectedBranch && selectedBranch.id && (
               <Grid item xs={12} md={3}>
-                {/* <CustomMultiSelect
-              selections={selectedGrades}
-              setSelections={setSelectedGrades}
-              nameOfDropdown='Grade'
-              optionNames={grade}
-            /> */}
                 <FormControl
                   variant='outlined'
                   className={classes.formControl}
@@ -483,7 +583,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                   </Select>
                 </FormControl>
               </Grid>
-            )}
+                    ) */}
           </Grid>
           <Grid container className='spacer'>
             <Grid item xs={12} md={2}>

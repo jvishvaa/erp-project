@@ -401,10 +401,13 @@ const BulkUpload = ({ onUploadSuccess }) => {
           />
         </Grid>
         <Grid item md={3} xs={12}>
-          <Box display='flex' flexDirection='column'>
-            <Input type='file' inputRef={fileRef} 
-            inputProps={{accept:".xlsx,.xls"}} 
-            onChange={handleFileChange} />
+          <Box display='flex' flexDirection='column'>  
+            <Input
+              type='file'
+              inputRef={fileRef}
+              inputProps={{accept:".xlsx,.xls"}} 
+              onChange={handleFileChange}
+            />
             <Box display='flex' flexDirection='row' style={{ color: 'gray' }}>
               <Box p={1}>
                 {`Download Format: `}

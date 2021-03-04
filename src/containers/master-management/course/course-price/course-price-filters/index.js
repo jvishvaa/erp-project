@@ -28,10 +28,14 @@ const CoursePriceFilters = (props) => {
   const widerWidth = isMobile ? '98%' : '95%';
   const [gradeList, setGradeList] = useState([]);
   const [courseList, setCourseList] = useState([]);
+  const aolHostURL = window.location.host;
 
   useEffect(() => {
+    let url = `${endpoints.communication.grades}`;
+    if (aolHostURL === endpoints.aolConfirmURL) url += `?branch_id=1`;
+    else url += `?branch_id=5`;
     axiosInstance
-      .get(`${endpoints.academics.grades}?branch_id=5`)
+      .get(url)
       .then((result) => {
         setGradeList([]);
         if (result.data.status_code === 200) {
@@ -121,10 +125,10 @@ const CoursePriceFilters = (props) => {
           size='small'
           id='grades'
           className='dropdownIcon'
-          options={gradeList}
-          getOptionLabel={(option) => option?.grade__grade_name}
+          options={gradeList||[]}
+          getOptionLabel={(option) => option?.grade__grade_name||''}
           filterSelectedOptions
-          value={selectedGrade}
+          value={selectedGrade||''}
           onChange={handleGrade}
           disabled={gradeKey && courseKey}
           renderInput={(params) => (
@@ -143,10 +147,10 @@ const CoursePriceFilters = (props) => {
           size='small'
           id='courseName'
           className='dropdownIcon'
-          options={courseList}
-          getOptionLabel={(option) => option?.course_name}
+          options={courseList||[]}
+          getOptionLabel={(option) => option?.course_name||''}
           filterSelectedOptions
-          value={selectedCourse}
+          value={selectedCourse||''}
           onChange={handleCourse}
           disabled={gradeKey && courseKey}
           renderInput={(params) => (
@@ -180,10 +184,10 @@ const CoursePriceFilters = (props) => {
             size='small'
             id='timeSlots'
             className='dropdownIcon'
-            options={timeSlotList}
-            getOptionLabel={(option) => option?.slot}
+            options={timeSlotList||[]}
+            getOptionLabel={(option) => option?.slot||''}
             filterSelectedOptions
-            value={timeSlot}
+            value={timeSlot||''}
             onChange={handleTimeSlot}
             filterSelectedOptions
             renderInput={(params) => (

@@ -19,7 +19,7 @@ const CardView = ({ fullData, handleViewMore, selectedViewMore ,viewMoreRef }) =
               <Grid item md={9} xs={9} style={{ padding: '5px' }}>
                 {fullData && fullData.online_class && fullData.online_class.course_name && (
                   <span className='teacherBatchCardLable'>{fullData.online_class.course_name}</span>
-                )}
+                )} <br/>
                 {fullData && fullData.online_class && fullData.online_class.title && (
                   <span className='teacherBatchCardLable'>{fullData.online_class.title}</span>
                 )}

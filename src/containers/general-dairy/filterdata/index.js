@@ -45,6 +45,8 @@ const GeneralDairyFilter = ({
   handleDairyList,
   setPeriodData,
   isTeacher,
+  showSubjectDropDown,
+  page,
   // setCurrentTab,
   setViewMore,
   setViewMoreData,
@@ -61,7 +63,7 @@ const GeneralDairyFilter = ({
   const [sectionDropdown,setSectionDropdown] = useState([])
   const [branchDropdown, setBranchDropdown] = useState([]);
 //   const [subjectIds, setSubjectIds] = useState([]);
-const [sectionIds,setSectionIds] = useState([])
+  const [sectionIds,setSectionIds] = useState([])
   const [branchId, setBranchId] = useState('');
   const [currentTab, setCurrentTab] = useState(0);
   const [isEmail, setIsEmail] = useState(false);
@@ -94,6 +96,8 @@ const [sectionIds,setSectionIds] = useState([])
   const [datePopperOpen, setDatePopperOpen] = useState(false);
 
   const [teacherModuleId, setTeacherModuleId] = useState(null);
+  const [subjectDropdown, setSubjectDropdown] = useState([]);
+
   const history=useHistory()
 
   const [filterData, setFilterData] = useState({
@@ -132,6 +136,7 @@ const [sectionIds,setSectionIds] = useState([])
     setActiveTab(tab);
   }
   useEffect(() => {
+
     handleFilter();
   }, [activeTab])
 
@@ -147,6 +152,7 @@ const [sectionIds,setSectionIds] = useState([])
           if (result.data.status_code === 200) {
             //console.log(result.data)
             setSectionDropdown(result.data.data);
+            setSectionIds([])
           }
           else {
             setAlert('error', result.data.message);
@@ -205,18 +211,30 @@ const [sectionIds,setSectionIds] = useState([])
     }
 };
 
-  const handleFilter = () => {
+  const handleFilter = (e) => {
+    // debugger
+    // setFilterStatus()
+    console.log(e)
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
     // alert(filterData.grade.grade_id,sectionIds,startDateTechPer,endDateTechPer)
+    if (e === undefined && activeTab === 0){
+      return
+      setAlert('error','Select filters')
+    }
     handleDairyList(
       filterData.branch.id,
       filterData.grade.grade_id,
       sectionIds,
       startDateTechPer,
       endDateTechPer,
-      activeTab
+      activeTab,
+      page,
     );
   };
+
+  const handleSubject = (event, value) => {
+    setFilterData({ ...filterData, subject: '', chapter: '' });
+  }
 
     useEffect(() => {
         axiosInstance.get(`${endpoints.communication.branches}`)
@@ -303,6 +321,29 @@ const [sectionIds,setSectionIds] = useState([])
           />
         </Grid>
       )}
+      { showSubjectDropDown && (
+        <Grid item xs={12} sm={4} className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+        <Autocomplete
+            style={{ width: '100%' }}
+            size='small'
+            onChange={handleSubject}
+            id='subject'
+            className="dropdownIcon"
+            value={filterData?.subject}
+            options={subjectDropdown}
+            getOptionLabel={(option) => option?.subject_name}
+            filterSelectedOptions
+            renderInput={(params) => (
+                <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Subject'
+                    placeholder='Subject'
+                />
+            )}
+        />
+    </Grid>
+      )}
       <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <LocalizationProvider dateAdapter={MomentUtils}>
           <DateRangePicker
@@ -354,7 +395,7 @@ const [sectionIds,setSectionIds] = useState([])
           className='custom_button_master'
           size='medium'
           type='submit'
-          onClick={handleFilter}
+          onClick={(event) => handleFilter(event)}
         >
           FILTER
         </Button>
