@@ -320,7 +320,7 @@ const Subjectgrade = (props) => {
                     <Grid container className={classes.root} spacing={2}>
                         <Grid item xs={10} style={{ display: 'flex', justifyContent: 'space-around' }}>
                             <div className="branch-dropdown">
-                                <Grid item xs={4} sm={2}>
+                                <Grid item xs={12} sm={4}>
                                     <FormControl className={`select-form`}>
                                         <Autocomplete
                                             // {...defaultProps}
@@ -351,7 +351,7 @@ const Subjectgrade = (props) => {
                                 </Grid>
                             </div>
                             <div className="grade-dropdown">
-                                <Grid item xs={4} sm={2}>
+                                <Grid item xs={12} sm={4}>
                                     <FormControl className={`grade-form`}>
                                         <Autocomplete
                                             // {...defaultProps}
@@ -383,7 +383,7 @@ const Subjectgrade = (props) => {
                                 </Grid>
                             </div>
                             <div className="subject-dropdown">
-                                <Grid item xs={4} sm={2}>
+                                <Grid item xs={12} sm={4}>
                                     <FormControl className={`subject-form`}>
                                         <Autocomplete
                                             {...defaultProps}
@@ -422,7 +422,7 @@ const Subjectgrade = (props) => {
                         <Grid item xs={10} style={{ display: 'flex', }}>
                        
                             <div className="central-grade-dropdown">
-                                <Grid item xs={6} sm={2}>
+                                <Grid item xs={12} sm={4}>
                                     <FormControl className={`select-form`}>
                                         <Autocomplete
                                             // {...defaultProps}
@@ -453,7 +453,7 @@ const Subjectgrade = (props) => {
                                 </Grid>
                             </div>
                             <div className="central-subject-dropdown">
-                                <Grid item xs={4} sm={2}>
+                                <Grid item xs={12} sm={4}>
                                     <FormControl className={`select-form`}>
                                         <Autocomplete
                                             // {...defaultProps}

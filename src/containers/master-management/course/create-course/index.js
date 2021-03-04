@@ -78,7 +78,7 @@ const CreateCourse = () => {
   const branchDrop = [{ branch_name: 'AOL' }];
   const [filterData, setFilterData] = useState({
     branch: '',
-    grade: [],
+    grade: '',
     courseLevel: '',
     category: '',
     age: '',

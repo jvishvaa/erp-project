@@ -14,7 +14,7 @@ import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import {Context} from '../context/CircularStore'
 
-const CircularCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex,   setEditData}) => {
+const CircularCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex,   setEditData,deleteFlag,setDeleteFlag}) => {
 
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -80,6 +80,7 @@ const CircularCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, se
 
       if(result.data.status_code===200){
         setAlert('success',result.data.message)
+        setDeleteFlag(!deleteFlag)
       }else{
         setAlert('errpr', 'ERROR!')
       }

@@ -122,7 +122,6 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
             </ListItemIcon>
             <ListItemText primary={`Bulk Upload Status`} className='menu-item-text' />
           </ListItem>
-
           <ListItem
             button
             className={
@@ -346,7 +345,7 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
               {/* <MenuIcon name={child.child_name} /> */}
               {/* {menuIcon(child.child_name)} */}
             </ListItemIcon>
-            <ListItemText primary='School Mapping' className='menu-item-text' />
+            <ListItemText primary='Lesson Plan Mapping' className='menu-item-text' />
           </ListItem>
         </List>
       </Collapse>
