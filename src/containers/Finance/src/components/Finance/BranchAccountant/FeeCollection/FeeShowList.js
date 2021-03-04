@@ -26,16 +26,16 @@ const styles = (theme) => ({
     width: '90%'
   },
   backButton: {
-    marginRight: theme.spacing.unit
+    marginRight: theme.spacing(1)
   },
   textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
     width: 200
   },
   instructions: {
-    marginTop: theme.spacing.unit,
-    marginBottom: theme.spacing.unit
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1)
   },
   container: {
     display: 'flex',
@@ -45,7 +45,7 @@ const styles = (theme) => ({
     margin: '10px'
   },
   formControl: {
-    margin: theme.spacing * 1,
+    margin: theme.spacing(1),
     minWidth: 120
   }
   // root: {
