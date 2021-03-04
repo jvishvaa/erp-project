@@ -17,6 +17,7 @@ const CourseFilter = ({
   setCourseData,
   setPageFlag,
   handleClearFilter,
+  tabValue,
 }) => {
   const themeContext = useTheme();
   const { gradeKey } = useParams();
@@ -48,7 +49,7 @@ const CourseFilter = ({
   };
 
   const handleFilter = () => {
-    handleCourseList(gradeIds);
+    handleCourseList(gradeIds, tabValue);
   };
 
   useEffect(() => {

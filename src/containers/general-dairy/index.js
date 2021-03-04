@@ -17,8 +17,6 @@ import PeriodCard from './dairy-card';
 import ViewMoreCard from './view-more-card';
 import {Context} from './context/context';
 import {useLocation} from 'react-router-dom';
-
-// component import from DailyDairy
 import DailyDairy from '../daily-dairy/dairy-card/index';
 import ViewMoreDailyDairyCard from '../daily-dairy/view-more-card/index';
 
@@ -66,18 +64,14 @@ const GeneralDairyList = () => {
     const [endDate, setEDate] = useState([])
 
     const handlePagination = (event, page) => {
-        debugger
         setPage(page);
-        loadData()
-        // handleDairyList()
-        // handleDairyList(branchId, gradeId, sectionIds, startDate, endDate, activeTab)
+        handleDairyList(branch,grade,sections,startDate,endDate,activeTab,page)
     };
 
     const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
     
     useEffect(() => {
-        debugger
-        if(page && branch && grade && sections && startDate && endDate && activeTab)
+        if(page !== 1 && branch && grade && sections && startDate && endDate && activeTab)
           handleDairyList(branch,grade,sections,startDate,endDate,activeTab)
         if (NavData && NavData.length) {
           NavData.forEach((item) => {
@@ -98,13 +92,9 @@ const GeneralDairyList = () => {
           });
         }
       }, [location.pathname]);
-    
-    const loadData= () => {
-        handleDairyList(...handleDairyList)
-    }
-    const handleDairyList = (branchId, gradeId, sectionIds, startDate, endDate, activeTab) => {
-        //console.log(branchId, gradeId, sectionIds, startDate, endDate, '===');
-        debugger
+
+    const handleDairyList = (branchId, gradeId, sectionIds, startDate, endDate, activeTab,page) => {
+        console.log(page,'inside')
         setLoading(true);
         setPeriodData([]);
         setBranch(branchId)
@@ -112,6 +102,8 @@ const GeneralDairyList = () => {
         setSection(sectionIds)
         setSDate(startDate)
         setEDate(endDate)
+        setPage(page)
+        setActiveTab(activeTab)
         const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
         console.log(roleDetails);
         if(!branchId || !gradeId){
@@ -122,10 +114,7 @@ const GeneralDairyList = () => {
         const diaryUrl =  isTeacher ? `${endpoints.generalDairy.dairyList}?branch=${branchId}&grades=${gradeId}&sections=${sectionIds}&page=${page}&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}${activeTab !== 0? ('&dairy_type='+activeTab) : ''}`
             : `${endpoints.generalDairy.dairyList}?module_id=${studentModuleId}&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}${activeTab !== 0? ('&dairy_type='+activeTab) : ''}`;
         axiosInstance.get(diaryUrl)
-            // axiosInstance.get(`${endpoints.generalDairy.dairyList}?start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}`)
-            // axiosInstance.get(`${endpoints.generalDairy.dairyList}?grades=${gradeId}&sections=${sectionIds}`)
             .then((result) => {
-                //console.log(result);
                 if (result.data.status_code === 200) {
                     setTotalCount(result.data.result.count);
                     setLoading(false);
@@ -165,6 +154,7 @@ const GeneralDairyList = () => {
                     setPeriodData={setPeriodData}
                     isTeacher={isTeacher}
                     showSubjectDropDown={showSubjectDropDown}
+                    // pageup={page}
                     //  setCurrentTab={setCurrentTab}
                 />
                 <Paper className={classes.root}>
