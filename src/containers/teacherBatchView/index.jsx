@@ -130,7 +130,7 @@ const TeacherBatchView = ({ history }) => {
       );
     } else {
       callApi(
-        `${endpoints.academics.grades}?branch_id=${selectedBranch.id}&module_id=4`,
+        `${endpoints.academics.grades}?branch_id=${selectedBranch.id}&module_id=178`,
         'gradeList'
       );
     }

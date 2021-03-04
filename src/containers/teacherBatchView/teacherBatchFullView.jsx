@@ -218,6 +218,8 @@ const TeacherBatchFullView = ({ fullData, handleClose, selectedGrade }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const history = useHistory()
+  const {role_details}= JSON.parse(localStorage.getItem('userDetails'))
+  console.log(role_details.grades[0].id,'=========================')
   /*
   useEffect(() => {
     if (fullData) {
@@ -305,7 +307,7 @@ const TeacherBatchFullView = ({ fullData, handleClose, selectedGrade }) => {
   // sessionStorage.setItem('isAol','isAol');
   const handleCoursePlan = () => {
     if (window.location.pathname === '/online-class/attend-class') {
-      history.push(`/create/course/${fullData.online_class && fullData.online_class.course_id}/${selectedGrade && selectedGrade.id}`)
+      history.push(`/create/course/${fullData.online_class && fullData.online_class.course_id}/${role_details.grades[0].id}`)
       sessionStorage.setItem('isAol', 2);
     } else {
       history.push(`/create/course/${fullData.online_class && fullData.online_class.cource_id}/${selectedGrade && selectedGrade.id}`)
