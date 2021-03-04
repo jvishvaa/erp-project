@@ -247,6 +247,6 @@ export default {
   },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
-  // aolConfirmURL:'aol.letseduvate.com',
-  aolConfirmURL:'localhost:3000',
+  aolConfirmURL:'aol.letseduvate.com',
+  // aolConfirmURL:'localhost:3000',
 };
