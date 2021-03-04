@@ -372,7 +372,7 @@ function SignIn({ onLogin, history, aolOnLogin }) {
                   maxLength: 20,
                   endAdornment: (
                     <IconButton onClick={handleToggler}>
-                      {passwordFlag ? <Visibility /> : <VisibilityOff />}
+                      {passwordFlag ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   ),
                 }}    
