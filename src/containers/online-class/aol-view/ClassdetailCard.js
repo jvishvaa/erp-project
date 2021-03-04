@@ -183,7 +183,7 @@ export default function ClassdetailsCardComponent(props) {
     }
 
     useEffect(() => {
-        axiosInstance.get(`${endpoints.aol.teacherList}?branch_id=${props?.filterData?.branch?.id}&grade_id=${props?.filterData?.grade?.grade_id}`)
+        axiosInstance.get(`${endpoints.aol.teacherList}?branch_id=${props?.filterData?.branch?.id}&grade_id=${props?.filterData?.grade?.grade_id}&is_aol=1`)
             .then(result => {
                 if (result.data.status_code === 200) {
                     setTeacherDropdown(result.data.data)

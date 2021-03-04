@@ -23,6 +23,7 @@ import TeacherBatchViewCard from './teacherbatchViewCard';
 import TeacherBatchFullView from './teacherBatchFullView';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import Layout from '../Layout';
+import UserDetails from 'containers/Layout/userDetails/user-details';
 
 const TeacherBatchView = ({ history }) => {
   //   const NavData = JSON.parse(localStorage.getItem('navigationData')) || [];
@@ -87,6 +88,7 @@ const TeacherBatchView = ({ history }) => {
         setLoading(false);
       });
   }
+  console.log(UserDetails,'uuuuuuuuuuuuuuuuuu')
 
   function handleClose(data) {
     setSelectedViewMore('');
@@ -118,7 +120,7 @@ const TeacherBatchView = ({ history }) => {
       setPage(1);
       // ${studentDetails && studentDetails.role_details.erp_user_id}
       callApi(
-        `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=1362&page_number=1&page_size=15&class_type=1`,
+        `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${studentDetails.role_details.erp_user_id}&page_number=1&page_size=15&class_type=1`,
         // `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
         //   studentDetails &&
         //   studentDetails.role_details &&
