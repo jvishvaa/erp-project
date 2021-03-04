@@ -210,11 +210,14 @@ const GeneralDairyFilter = ({
     }
 };
 
-  const handleFilter = () => {
+  const handleFilter = (e) => {
     debugger
+    // setFilterStatus()
+    console.log(e)
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
     // alert(filterData.grade.grade_id,sectionIds,startDateTechPer,endDateTechPer)
-    if (!filterData){
+    if (e === undefined){
+      return
       setAlert('error','Select filters')
     }
     handleDairyList(
@@ -224,6 +227,7 @@ const GeneralDairyFilter = ({
       startDateTechPer,
       endDateTechPer,
       activeTab,
+      page,
     );
   };
 
@@ -390,7 +394,7 @@ const GeneralDairyFilter = ({
           className='custom_button_master'
           size='medium'
           type='submit'
-          onClick={handleFilter}
+          onClick={(event) => handleFilter(event)}
         >
           FILTER
         </Button>
