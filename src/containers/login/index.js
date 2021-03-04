@@ -293,7 +293,7 @@ function SignIn({ onLogin, history, aolOnLogin }) {
       };
       onLogin(params).then((response) => {
         if (response?.isLogin) {
-          history.push('/dashboard');
+          history.push('/profile');
         } else {
           setAlert('error', response?.message);
         }
@@ -345,6 +345,7 @@ function SignIn({ onLogin, history, aolOnLogin }) {
                 name='email'
                 autoComplete='email'
                 autoFocus
+                className='passwordField'
                 value={username}
                 inputProps={{ maxLength: 40 }}
                 onChange={(e) => {
@@ -371,7 +372,7 @@ function SignIn({ onLogin, history, aolOnLogin }) {
                   maxLength: 20,
                   endAdornment: (
                     <IconButton onClick={handleToggler}>
-                      {passwordFlag ? <Visibility /> : <VisibilityOff />}
+                      {passwordFlag ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   ),
                 }}    

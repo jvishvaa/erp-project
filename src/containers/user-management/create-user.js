@@ -65,6 +65,7 @@ class CreateUser extends Component {
           guardian_last_name: '',
           guardian_email: '',
           guardian_mobile: '',
+          guardian_photo: '',
         },
       },
     };
@@ -166,6 +167,7 @@ class CreateUser extends Component {
       guardian_last_name,
       guardian_email,
       guardian_mobile,
+      guardian_photo,
     } = parent;
 
     requestObj = {
@@ -188,6 +190,7 @@ class CreateUser extends Component {
       profile,
       father_photo,
       mother_photo,
+      guardian_photo,
       parent: {
         father_first_name,
         father_middle_name,
@@ -212,6 +215,7 @@ class CreateUser extends Component {
       delete requestObj.parent;
       delete requestObj.father_photo;
       delete requestObj.mother_photo;
+      delete requestObj.guardian_photo
     }
     const { setAlert } = this.context;
     const requestObjFormData = jsonToFormData(requestObj);
@@ -220,7 +224,7 @@ class CreateUser extends Component {
     createUser(requestObjFormData)
       .then(() => {
         history.push('/user-management/view-users');
-        setAlert('success', 'User created');
+        setAlert('success', 'User created Successfully');
       })
       .catch(() => {
         setAlert('error', 'User creation failed');

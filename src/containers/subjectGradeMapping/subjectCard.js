@@ -66,6 +66,8 @@ const Subjectcard = (props) => {
 
     // Confirm Popover 
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [showMenu, setShowMenu] = React.useState(false);
+    const [showPeriodIndex, setShowPeriodIndex] = React.useState();
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -77,6 +79,16 @@ const Subjectcard = (props) => {
 
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
+
+    const handlePeriodMenuOpen = (index, id) => {
+        setShowMenu(true);
+        setShowPeriodIndex(index);
+    };
+    
+    const handlePeriodMenuClose = (index) => {
+        setShowMenu(false);
+        setShowPeriodIndex();
+    };
 
     return (
         <>
@@ -120,8 +132,8 @@ const Subjectcard = (props) => {
                                         <Box>
                                             <span
                                                 className='period_card_menu'
-                                            // onClick={() => handlePeriodMenuOpen(index)}
-                                            // onMouseLeave={handlePeriodMenuClose}
+                                                onClick={() => handlePeriodMenuOpen(index)}
+                                                onMouseLeave={handlePeriodMenuClose}
                                             >
                                                 <IconButton
                                                     className="moreHorizIcon"
@@ -130,6 +142,50 @@ const Subjectcard = (props) => {
                                                 >
                                                     <MoreHorizIcon />
                                                 </IconButton>
+                                                {showPeriodIndex === index && showMenu ? (
+                                                    <div
+                                                        className='tooltip'
+                                                        style={{ display: 'flex', justifyContent: 'space-between' }}
+                                                    >
+                                                        <span className='tooltiptext'>
+                                                            <div  >
+                                                                <Link to={{ pathname: `/master-mgmt/subject/grade/mapping`, query: { list }, edit: true }}
+                                                                    activeClassName="active"
+                                                                    className="link-grade"
+                                                                >
+                                                                    <p style={{color: '#ff6b6b', marginBottom: '5px'}}>
+                                                                        Edit
+                                                                    </p>
+                                                                </Link>
+                                                            </div>
+                                                            <div className='tooltip' onClick={(e) => handleClick(e)}>
+                                                                Delete
+                                                            </div>
+                                                        </span>
+                                                        <Popover
+                                                            id={id}
+                                                            open={open}
+                                                            anchorEl={anchorEl}
+                                                            onClose={handleClose}
+                                                            anchorOrigin={{
+                                                            vertical: 'bottom',
+                                                            horizontal: 'center',
+                                                            }}
+                                                            transformOrigin={{
+                                                            vertical: 'top',
+                                                            horizontal: 'center',
+                                                            }}
+                                                        >
+                                                            <div style={{ padding: '20px 30px'}}>
+                                                            <Typography style={{ fontSize: '20px', marginBottom: '15px'}}>Are you sure you want to delete?</Typography>
+                                                            <div>
+                                                                <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
+                                                                <StyledButton onClick={() => callDelete(list.id, index)} style={{float: 'right'}}>Confirm</StyledButton>
+                                                            </div>
+                                                            </div>
+                                                        </Popover>
+                                                    </div>
+                                                ) : null}
                                             </span>
                                         </Box>
                                     </Grid>
@@ -141,7 +197,8 @@ const Subjectcard = (props) => {
                                     </Grid> */}
                                     <Grid item xs={12} sm={12} />
                                     <Grid item xs={6}>
-                                        <Box style={{ display: 'flex' }}>
+                                        {/*
+                                            <Box style={{ display: 'flex' }}>
                                             <Link to={{ pathname: `/master-mgmt/subject/grade/mapping`, query: { list }, edit: true }} activeClassName="active" className="link-grade">
                                                 <p> Edit <EditIcon style={{ fontSize: '16px' }} /></p>
                                             </Link>
@@ -149,14 +206,6 @@ const Subjectcard = (props) => {
                                                 Delete
                                                 <DeleteIcon style={{ fontSize: '16px', color: '#014B7E' }} />
                                             </p>
-                                            {/* <Typography
-                                                className={classes.title}
-                                                variant='p'
-                                                component='p'
-                                                color='secondary'
-                                            >
-                                                {list.central_grade_name}
-                                            </Typography> */}
                                         </Box>
                                         <Popover
                                             id={id}
@@ -173,13 +222,15 @@ const Subjectcard = (props) => {
                                             }}
                                         >
                                             <div style={{ padding: '20px 30px'}}>
-                                            <Typography style={{ fontSize: '20px', marginBottom: '15px'}}>Are you sure want to delete?</Typography>
+                                            <Typography style={{ fontSize: '20px', marginBottom: '15px'}}>Are you sure you want to delete?</Typography>
                                             <div>
                                                 <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
                                                 <StyledButton onClick={() => callDelete(list.id, index)} style={{float: 'right'}}>Confirm</StyledButton>
                                             </div>
                                             </div>
                                         </Popover>
+                                        
+                                        */}
                                         {/* <Box>
                                             <Typography
                                                 className={classes.content}
