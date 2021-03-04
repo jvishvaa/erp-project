@@ -393,6 +393,7 @@ const urls = {
   ApplicantAdmit: BASE + '/accounts/applicantAdmit/',
   NormalFeeType: BASE + '/finance/listnormalfee/',
   createFeeType: BASE + '/finance/createnormalfee/',
+  FetchNonOrchids: BASE + '/finance/fetch_orchids_pdf_details/',
   // NormalFeeTypeDelete: BASE + '/finance/deletenormalfee',
   MiscFeeType: BASE + '/finance/listmiscellaneousfee/',
   createMiscFeeType: BASE + '/finance/createmiscellaneousfee/',

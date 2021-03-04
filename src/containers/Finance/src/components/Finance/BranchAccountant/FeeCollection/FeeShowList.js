@@ -1104,7 +1104,7 @@ class FeeShowList extends Component {
         }
       }))
     } else {
-      return (axios.get(`${urls.FetchPdfDataNonOrchids}?transaction_id=${transactionId}&academic_year=${this.state.session}`, {
+      return (axios.get(`${urls.FetchNonOrchids}?transaction_id=${transactionId}&academic_year=${this.state.session}`, {
         headers: {
           Authorization: 'Bearer ' + this.props.user
         }
