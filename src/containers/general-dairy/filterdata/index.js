@@ -136,6 +136,7 @@ const GeneralDairyFilter = ({
     setActiveTab(tab);
   }
   useEffect(() => {
+
     handleFilter();
   }, [activeTab])
 
@@ -216,7 +217,7 @@ const GeneralDairyFilter = ({
     console.log(e)
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
     // alert(filterData.grade.grade_id,sectionIds,startDateTechPer,endDateTechPer)
-    if (e === undefined){
+    if (e === undefined && activeTab === 0){
       return
       setAlert('error','Select filters')
     }

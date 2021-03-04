@@ -47,7 +47,7 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
     },
     validationSchema,
     onSubmit: (values) => {
-      console.log(values,'===========================')
+      //console.log(values,'===========================')
       onSubmit(values);
     },
     validateOnChange: false,
@@ -56,7 +56,12 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
 
   const fetchAcademicYears = () => {
     getAcademicYears().then((data) => {
-      const transformedData = data?.map((obj) => ({
+      let transformedData = '';
+      /* let transformedData = {
+        id: '',
+        session_year: ''
+      }; */
+      transformedData = data?.map((obj) => ({
         id: obj.id,
         session_year: obj.session_year,
       }));
@@ -149,7 +154,7 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
   useEffect(() => {
     fetchAcademicYears();
     fetchBranches();
-    console.log('branches ', details.branch, details.grade);
+    //console.log('branches ', details.branch, details.grade);
     if (details.branch) {
       handleChangeBranch([details.branch]);
       if (details.grade && details.grade.length > 0) {
