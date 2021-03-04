@@ -25,7 +25,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Attend Online Class', Path: '/erp-online-class-student-view' },
     { name: 'Teacher View Class', Path: '/erp-online-class-teacher-view' },
     { name: 'Create Class', Path: '/online-class/create-class' },
-    { name: 'Online Class', Path: '/create-class' },
+    { name: 'Online Class', Path: '/online-class/attend-class' },
     { name: 'Management View', Path: '/homework/coordinator' },
     { name: 'Configuration', Path: '/homework/admin' },
     { name: 'Student Homework', Path: '/homework/student' },

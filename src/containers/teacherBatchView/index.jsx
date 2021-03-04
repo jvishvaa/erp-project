@@ -471,6 +471,7 @@ const TeacherBatchView = ({ history }) => {
                           <TeacherBatchFullView
                             fullData={selectedViewMore}
                             handleClose={handleClose}
+                            selectedGrade={selectedGrade}
                           />
                         </Grid>
                       )}
