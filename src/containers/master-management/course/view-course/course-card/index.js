@@ -241,7 +241,7 @@ const CourseCard = ({
                     }}
                   >
                     <div style={{ padding: '20px 30px'}}>
-                      <Typography style={{ fontSize: '20px', marginBottom: '15px'}}>Are you sure want to delete?</Typography>
+                      <Typography style={{ fontSize: '20px', marginBottom: '15px'}}>Are you sure you want to delete??</Typography>
                       <div>
                         <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
                         <StyledButton onClick={(e) => handleDelete(period)} style={{float: 'right'}}>Confirm</StyledButton>
