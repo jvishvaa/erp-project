@@ -114,7 +114,7 @@ const PendingRequests = ({ classes, history, dataLoading, fetchBranchTransaction
                   <TableCell>{row.student && row.student.erp ? row.student.erp : ''}</TableCell>
                   <TableCell>123456</TableCell>
                   <TableCell>{row.student && row.student.name ? row.student.name : ''}</TableCell>
-                  <TableCell>class 4th >> sec A</TableCell>
+                  <TableCell>class 4th  sec A</TableCell>
                   <TableCell>{row.request_by && row.request_by.first_name ? row.request_by.first_name : ''}</TableCell>
                   <TableCell>{row.request_reason ? row.request_reason : ''}</TableCell>
                   <TableCell>
