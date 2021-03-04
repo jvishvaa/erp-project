@@ -168,8 +168,9 @@ class CreateUser extends Component {
     requestObj = {
       academic_year: academic_year.id,
       academic_year_value: academic_year.session_year,
-      branch: branch.id,
-      branch_code: branch.branch_code,
+      // branch: branch.id,
+      branch: branch.map(({id}) => id).join(),
+      branch_code: branch.map(branch => branch.branch_code).join(),
       grade: grade.map((grade) => grade.id).join(),
       section: section.map((section) => section.id).join(),
       subjects: subjects.map((sub) => sub.id).join(),

@@ -149,7 +149,10 @@ export const fetchUser = (id) => (dispatch) => {
 
       console.log('user detail ', response);
     })
-    .catch(() => {
+
+    .catch((e) => {
+      console.log(e)
+      debugger
       dispatch({ type: FETCH_USER_DETAIL_FAILURE });
     });
 };
