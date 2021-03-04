@@ -157,7 +157,7 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
         <ListItemIcon className={classes.menuItemIcon}>
           <AssignmentIndIcon />
         </ListItemIcon>
-        <ListItemText className='menu-item-text'>Role management</ListItemText>
+        <ListItemText className='menu-item-text'>Role Management</ListItemText>
       </ListItem>
       {/*
         <ListItem
