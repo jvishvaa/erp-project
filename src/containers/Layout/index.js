@@ -386,23 +386,43 @@ const Layout = ({ children, history }) => {
         history.push('/dashboard');
         break;
       }
-      case 'user-management': {
+      // case 'user-management': {
+      //   history.push('/user-management');
+      //   break;
+      // }
+      // case 'create-user': {
+      //   history.push('/user-management/create-user');
+      //   break;
+      // }
+      // case 'bulk-upload': {
+      //   history.push('/user-management/bulk-upload');
+      //   break;
+      // }
+      // case 'view-users': {
+      //   history.push('/user-management/view-users');
+      //   break;
+      // }
+      // case 'assign-role': {
+      //   history.push('/user-management/assign-role');
+      //   break;
+      // }
+      case 'User Management': {
         history.push('/user-management');
         break;
       }
-      case 'create-user': {
+      case 'Create User': {
         history.push('/user-management/create-user');
         break;
       }
-      case 'bulk-upload': {
+      case 'Bulk Upload Status': {
         history.push('/user-management/bulk-upload');
         break;
       }
-      case 'view-users': {
+      case 'View User': {
         history.push('/user-management/view-users');
         break;
       }
-      case 'assign-role': {
+      case 'Assign Role': {
         history.push('/user-management/assign-role');
         break;
       }

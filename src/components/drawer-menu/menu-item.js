@@ -21,6 +21,12 @@ const MenuItem = withRouter(({ history, ...props }) => {
     // { name: 'View Class', Path: '/online-class/view-class' },
     // { name: 'Attend Online Class', Path: '/online-class/attend-class' },
     // { name: 'Teacher View Class', Path: '/online-class/teacher-view-class' },
+    { name: 'Role Management', Path: '/role-management' },
+    { name: 'Create User', Path: '/user-management/create-user' },
+    { name: 'View User', Path: '/user-management/view-users' },
+    { name: 'Bulk Upload Status', Path: '/user-management/bulk-upload' },
+    { name: 'Assign Role', Path: '/user-management/assign-role' },
+
     { name: 'View Class', Path: '/erp-online-class' },
     { name: 'Attend Online Class', Path: '/erp-online-class-student-view' },
     { name: 'Teacher View Class', Path: '/erp-online-class-teacher-view' },
@@ -49,8 +55,8 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Word Count Cofiguration', Path: '/blog/wordcount-config' },
     { name: 'ID Cards', Path: '/student-id-card' },
     { name: 'Student Strength', Path: '/student-strength' },
-    { name: 'Teacher Circular', Path: '/circular'},
-    { name: 'Student Circular', Path: '/circular'},
+    { name: 'Teacher Circular', Path: '/circular' },
+    { name: 'Student Circular', Path: '/circular' },
   ];
   // const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
