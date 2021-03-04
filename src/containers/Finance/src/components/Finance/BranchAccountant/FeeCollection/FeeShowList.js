@@ -1046,6 +1046,7 @@ class FeeShowList extends Component {
     }
 
   sendingToServer = (paymentObj) => {
+    console.log('tab', this.state.value)
     if (this.state.value === 'one') {
       this.props.orchidsStudentPay(paymentObj, this.props.user, this.props.alert)
     } else {

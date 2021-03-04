@@ -607,6 +607,7 @@ const urls = {
   GetBranchAtAcc: BASE + '/finance/getbranch/',
   ApplicationPayment: BASE + '/finance/applicationpayment/',
   PayNonOrchids: BASE + '/finance/payotherfeenonorchids/',
+  OrchidsStudentPay: BASE + '/finance/orchid_student_miscfee_payment/',
   SaveOutsiders: BASE + '/finance/createotherfeenonorchids/',
   FetchPdfData: BASE + '/finance/fetchnonorchidspdfdetails/',
   FetchBankIfsc: BASE + '/finance/fetchbankdetails/',
