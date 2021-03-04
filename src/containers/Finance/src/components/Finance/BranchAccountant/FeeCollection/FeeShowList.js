@@ -1421,6 +1421,7 @@ class FeeShowList extends Component {
           } /></TableCell>
             {/* <TableCell>{ val.id} </TableCell> */}
             <TableCell>{val.fee_type_name ? val.fee_type_name : ''}</TableCell>
+            <TableCell>{val.amount && val.amount ? val.amount : ''}</TableCell>
             <TableCell>{ <input
           name='amount'
           type='number'
