@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useState, useEffect } from 'react';
 import { Grid, Card, Divider, Button, Popover, Typography } from '@material-ui/core';
-import {useHistory} from 'react-router-dom'
+import { useHistory } from 'react-router-dom';
 import CloseIcon from '@material-ui/icons/Close';
 import moment from 'moment';
 import axiosInstance from '../../../../config/axios';
@@ -9,7 +9,8 @@ import endpoints from '../../../../config/endpoints';
 import Loader from '../../../../components/loader/loader';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 // import ResourceDialog from '../online-class/online-class-resources/resourceDialog';
-import ResourceDialog from '../../../online-class/online-class-resources/resourceDialog'
+import ResourceDialog from '../../../online-class/online-class-resources/resourceDialog';
+import CountdownTimer from './CountdownTimer';
 
 const JoinClass = (props) => {
   const fullData = props.fullData;
@@ -17,18 +18,20 @@ const JoinClass = (props) => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [isAccept, setIsAccept] = useState(props.data? props.data.is_accepted : false);
-  const [isRejected, setIsRejected] = useState(props.data? props.data.is_restricted : false);
-  const history =useHistory()
+  const [isAccept, setIsAccept] = useState(props.data ? props.data.is_accepted : false);
+  const [isRejected, setIsRejected] = useState(
+    props.data ? props.data.is_restricted : false
+  );
+  const history = useHistory();
 
-  const [cTime,setCTime] = useState('')
-  const [joinPermission,setJoinPermission] = useState(false)
+  const [cTime, setCTime] = useState('');
+  const [joinPermission, setJoinPermission] = useState(false);
 
   //time constants
-  const countDownDate=new Date(props.fullData.online_class.start_time).getTime()
+  const countDownDate = new Date(props.fullData.online_class.start_time).getTime();
   // var x = setInterval(function() {
-  //   var now = new Date().getTime(); 
-  //   var distance = countDownDate - now; 
+  //   var now = new Date().getTime();
+  //   var distance = countDownDate - now;
   //   var days = Math.floor(distance / (1000 * 60 * 60 * 24));
   //   var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   //   var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
@@ -40,7 +43,7 @@ const JoinClass = (props) => {
   //   }
   // }, 1000);
 
-useEffect(()=>{},[setJoinPermission])
+  useEffect(() => {}, [setJoinPermission]);
 
   const handleCloseData = () => {
     setAnchorEl(null);
@@ -53,7 +56,7 @@ useEffect(()=>{},[setJoinPermission])
     const params = {
       zoom_meeting_id: fullData && fullData.id,
       class_date: props.data && props.data.date,
-      is_accepted: true
+      is_accepted: true,
     };
     axiosInstance
       .put(endpoints.studentViewBatchesApi.rejetBatchApi, params)
@@ -65,46 +68,46 @@ useEffect(()=>{},[setJoinPermission])
         setLoading(false);
         setAlert('error', error.message);
       });
-  }
+  };
   function handleCancel() {
     setLoading(true);
     const params1 = {
       zoom_meeting_id: fullData && fullData.id,
-      class_date: props.data && props.data.date
+      class_date: props.data && props.data.date,
     };
 
     const params2 = {
       zoom_meeting_id: fullData && fullData.id,
       class_date: props.data && props.data.date,
-      is_restricted: true
+      is_restricted: true,
     };
 
     if (window.location.pathname === '/erp-online-class-student-view') {
       //url = endpoints.studentViewBatchesApi.rejetBatchApi;
       axiosInstance
-      .put(endpoints.studentViewBatchesApi.rejetBatchApi, params2)
-      .then((res) => {
-        setLoading(false);
-        setAlert('success', 'Class Rejected');
-        handleClose('success');
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', error.message);
-      });
+        .put(endpoints.studentViewBatchesApi.rejetBatchApi, params2)
+        .then((res) => {
+          setLoading(false);
+          setAlert('success', 'Class Rejected');
+          handleClose('success');
+        })
+        .catch((error) => {
+          setLoading(false);
+          setAlert('error', error.message);
+        });
     } else {
       //url = endpoints.teacherViewBatches.cancelBatchApi;
       axiosInstance
-      .put(endpoints.teacherViewBatches.cancelBatchApi, params1)
-      .then((res) => {
-        setLoading(false);
-        setAlert('success', res.data.message);
-        handleClose('success');
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', error.message);
-      });
+        .put(endpoints.teacherViewBatches.cancelBatchApi, params1)
+        .then((res) => {
+          setLoading(false);
+          setAlert('success', res.data.message);
+          handleClose('success');
+        })
+        .catch((error) => {
+          setLoading(false);
+          setAlert('error', error.message);
+        });
     }
   }
 
@@ -114,28 +117,35 @@ useEffect(()=>{},[setJoinPermission])
     <Grid container spacing={2} direction='row' alignItems='center'>
       <Grid item md={6} xs={12}>
         <span className='TeacherFullViewdescreption1'>
-          {moment(props.data? props.data.date : '').format('DD-MM-YYYY')}
+          {moment(props.data ? props.data.date : '').format('DD-MM-YYYY')}
         </span>
+        <CountdownTimer />
       </Grid>
+      
       {isAccept ? (
         <Grid item xs={6}>
-          {joinPermission ?<Button
-            size='small'
-            color='secondary'
-            fullWidth
-            variant='contained'
-            onClick={() => window.open(fullData && fullData.join_url)}
-            className='teacherFullViewSmallButtons'
-          >
-            Join
-          </Button> :''}
-          <Typography>{cTime}</Typography>
+          {joinPermission ? (
+            <Button
+              size='small'
+              color='secondary'
+              fullWidth
+              variant='contained'
+              onClick={() => window.open(fullData && fullData.join_url)}
+              className='teacherFullViewSmallButtons'
+            >
+              Join
+            </Button>
+          ) : (
+           null
+          )}
+          {/* <Typography>{cTime}</Typography> */}
+
         </Grid>
       ) : (
         <>
           {isRejected ? (
             <Grid item xs={6}>
-              <Typography style={{color: '#ff6b6b'}}>Rejected</Typography>
+              <Typography style={{ color: '#ff6b6b' }}>Rejected</Typography>
             </Grid>
           ) : (
             <>
@@ -165,34 +175,40 @@ useEffect(()=>{},[setJoinPermission])
                     Host
                   </Button>
                 )} */}
-                {window.location.pathname === '/erp-online-class' ?
-                <Button
-                size='small'
-                color='secondary'
-                fullWidth
-                variant='contained'
-                onClick={() =>
-                  window.open(fullData && fullData.presenter_url, '_blank'
-                )}
-                className='teacherFullViewSmallButtons'
-              >
-                Audit
-              </Button> :''}
-              {window.location.pathname === '/erp-online-class-teacher-view' ?
-                   <Button
+                {window.location.pathname === '/erp-online-class' ? (
+                  <Button
                     size='small'
                     color='secondary'
                     fullWidth
                     variant='contained'
                     onClick={() =>
-                      window.open(fullData && fullData.presenter_url, '_blank'
-                    )}
+                      window.open(fullData && fullData.presenter_url, '_blank')
+                    }
+                    className='teacherFullViewSmallButtons'
+                  >
+                    Audit
+                  </Button>
+                ) : (
+                  ''
+                )}
+                {window.location.pathname === '/erp-online-class-teacher-view' ? (
+                  <Button
+                    size='small'
+                    color='secondary'
+                    fullWidth
+                    variant='contained'
+                    onClick={() =>
+                      window.open(fullData && fullData.presenter_url, '_blank')
+                    }
                     className='teacherFullViewSmallButtons'
                   >
                     Host
-                  </Button> : ''}
-                  {window.location.pathname === '/erp-online-class-student-view' ? 
-                    <Button
+                  </Button>
+                ) : (
+                  ''
+                )}
+                {window.location.pathname === '/erp-online-class-student-view' ? (
+                  <Button
                     size='small'
                     color='secondary'
                     fullWidth
@@ -201,7 +217,10 @@ useEffect(()=>{},[setJoinPermission])
                     className='teacherFullViewSmallButtons'
                   >
                     Accept
-                  </Button> :''}
+                  </Button>
+                ) : (
+                  ''
+                )}
               </Grid>
               <Grid item md={3} xs={6}>
                 <Popover
@@ -219,37 +238,37 @@ useEffect(()=>{},[setJoinPermission])
                     horizontal: 'center',
                   }}
                 >
-                <Grid
-                  container
-                  spacing={2}
-                  style={{ textAlign: 'center', padding: '10px' }}
-                >
-                  <Grid item md={12} xs={12}>
-                    <Typography>Are you sure to Cancel ?</Typography>
+                  <Grid
+                    container
+                    spacing={2}
+                    style={{ textAlign: 'center', padding: '10px' }}
+                  >
+                    <Grid item md={12} xs={12}>
+                      <Typography>Are you sure to Cancel ?</Typography>
+                    </Grid>
+                    <Grid item md={6} xs={12}>
+                      <Button
+                        variant='contained'
+                        size='small'
+                        style={{ fontSize: '11px' }}
+                        onClick={() => handleCloseData()}
+                      >
+                        Cancel
+                      </Button>
+                    </Grid>
+                    <Grid item md={6} xs={12}>
+                      <Button
+                        variant='contained'
+                        color='primary'
+                        style={{ fontSize: '11px' }}
+                        size='small'
+                        onClick={() => handleCancel()}
+                      >
+                        Confirm
+                      </Button>
+                    </Grid>
                   </Grid>
-                  <Grid item md={6} xs={12}>
-                    <Button
-                      variant='contained'
-                      size='small'
-                      style={{ fontSize: '11px' }}
-                      onClick={() => handleCloseData()}
-                    >
-                      Cancel
-                    </Button>
-                  </Grid>
-                  <Grid item md={6} xs={12}>
-                    <Button
-                      variant='contained'
-                      color='primary'
-                      style={{ fontSize: '11px' }}
-                      size='small'
-                      onClick={() => handleCancel()}
-                    >
-                      Confirm
-                    </Button>
-                  </Grid>
-                </Grid>
-              </Popover>
+                </Popover>
                 <Button
                   size='small'
                   fullWidth
@@ -264,20 +283,25 @@ useEffect(()=>{},[setJoinPermission])
               </Grid>
             </>
           )}
-          
         </>
       )}
     </Grid>
-  )
-}
+  );
+};
 
-const DetailCardView = ({ fullData, handleClose, viewMoreRef, selectedClassType , selectedGrade }) => {
+const DetailCardView = ({
+  fullData,
+  handleClose,
+  viewMoreRef,
+  selectedClassType,
+  selectedGrade,
+}) => {
   const [noOfPeriods, setNoOfPeriods] = useState([]);
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
-  const history =useHistory()
-  const { role_details } = JSON.parse(localStorage.getItem('userDetails'))
+  const history = useHistory();
+  const { role_details } = JSON.parse(localStorage.getItem('userDetails'));
   // console.log(role_details.grades,'SSSSSSSSSSSSSSSSSSSSSS')
   /*
   useEffect(() => {
@@ -295,11 +319,12 @@ const DetailCardView = ({ fullData, handleClose, viewMoreRef, selectedClassType 
     }
   }, [fullData]);
   */
-  console.log(selectedClassType,'[[[[[[[[[[[[[[[[')
+  console.log(selectedClassType, '[[[[[[[[[[[[[[[[');
   useEffect(() => {
-    let detailsURL = window.location.pathname === '/erp-online-class-student-view'
-    ? `erp_user/${fullData && fullData.id}/student-oc-details/`
-    : `erp_user/${fullData && fullData.id}/online-class-details/`;
+    let detailsURL =
+      window.location.pathname === '/erp-online-class-student-view'
+        ? `erp_user/${fullData && fullData.id}/student-oc-details/`
+        : `erp_user/${fullData && fullData.id}/online-class-details/`;
 
     if (fullData) {
       axiosInstance
@@ -336,7 +361,7 @@ const DetailCardView = ({ fullData, handleClose, viewMoreRef, selectedClassType 
   function handleCancel() {
     setLoading(true);
     const params = {
-      zoom_meeting_id: fullData  && fullData.id,
+      zoom_meeting_id: fullData && fullData.id,
       class_date: fullData && fullData?.online_class?.start_time.split('T')[0],
     };
     let url = '';
@@ -358,25 +383,33 @@ const DetailCardView = ({ fullData, handleClose, viewMoreRef, selectedClassType 
       });
   }
 
-  console.log(fullData.online_class.cource_id,selectedGrade,'=====================')
-  const handleAttendance=()=>{
-    history.push(`/aol-attendance-list/${fullData.online_class && fullData.id}`)
-  }
-  const handleCoursePlan=()=>{
-    if(window.location.pathname === '/erp-online-class-student-view'){
-      history.push(`/create/course/${fullData.online_class && fullData.online_class.course_id}/${role_details && role_details.grades}/4`)
-    }else{
-      history.push(`/create/course/${fullData.online_class && fullData.online_class.cource_id}/${selectedGrade.id}`)
+  console.log(fullData.online_class.cource_id, selectedGrade, '=====================');
+  const handleAttendance = () => {
+    history.push(`/aol-attendance-list/${fullData.online_class && fullData.id}`);
+  };
+  const handleCoursePlan = () => {
+    if (window.location.pathname === '/erp-online-class-student-view') {
+      history.push(
+        `/create/course/${fullData.online_class && fullData.online_class.course_id}/${
+          role_details && role_details.grades
+        }/4`
+      );
+    } else {
+      history.push(
+        `/create/course/${fullData.online_class && fullData.online_class.cource_id}/${
+          selectedGrade.id
+        }`
+      );
     }
-  }
+  };
 
   const [openPopup, setOpenPopup] = React.useState(false);
-  const [selectedValue, setSelectedValue] = React.useState("");
+  const [selectedValue, setSelectedValue] = React.useState('');
 
   const handleClickOpen = () => {
     setOpenPopup(true);
   };
-    
+
   const handleClosePopup = (value) => {
     setOpenPopup(false);
     setSelectedValue(value);
@@ -389,10 +422,7 @@ const DetailCardView = ({ fullData, handleClose, viewMoreRef, selectedClassType 
           <Card className='teacherBatchFullViewMainCard'>
             <Grid container spacing={2} className='teacherBatchFullViewHeader'>
               <Grid item xs={12} style={{ textAlign: 'right' }}>
-                <CloseIcon
-                  style={{color: '#014B7E'}}
-                  onClick={() => handleClose()}
-                />
+                <CloseIcon style={{ color: '#014B7E' }} onClick={() => handleClose()} />
               </Grid>
               <Grid item xs={12}>
                 <Grid container spacing={2}>
@@ -431,7 +461,7 @@ const DetailCardView = ({ fullData, handleClose, viewMoreRef, selectedClassType 
                   </Grid>
                 </Grid>
               </Grid>
-                  {/* 
+              {/* 
                     <IconButton
                       size='small'
                       className='teacherBatchFullViewClose'
@@ -440,7 +470,6 @@ const DetailCardView = ({ fullData, handleClose, viewMoreRef, selectedClassType 
                       <CloseIcon className='teacherBatchFullViewCloseIcon' />
                     </IconButton>
                   </Grid> */}
-              
             </Grid>
             <Grid container spacing={2}>
               <Grid item md={12} xs={12}>
@@ -449,28 +478,52 @@ const DetailCardView = ({ fullData, handleClose, viewMoreRef, selectedClassType 
               <Grid item md={12} xs={12}>
                 <Divider className='fullViewDivider' />
                 {noOfPeriods && noOfPeriods.length === 0 && (
-                  <Typography style={{color: '#ff6b6b', margin: '10px'}}>
+                  <Typography style={{ color: '#ff6b6b', margin: '10px' }}>
                     No Record found
                   </Typography>
                 )}
-                {noOfPeriods && noOfPeriods.length > 0 && noOfPeriods.map((data) => <JoinClass  data={data} fullData={fullData} handleClose={handleClose}/>)}
-                
+                {noOfPeriods &&
+                  noOfPeriods.length > 0 &&
+                  noOfPeriods.map((data) => (
+                    <JoinClass
+                      data={data}
+                      fullData={fullData}
+                      handleClose={handleClose}
+                    />
+                  ))}
+
                 <Divider className='fullViewDivider' />
               </Grid>
               <Grid item md={12} xs={12}>
                 {window.location.pathname !== '/erp-online-class-student-view' ? (
-                  <Button fullWidth size='small' className='teacherFullViewFullButtons' onClick={handleAttendance}>
+                  <Button
+                    fullWidth
+                    size='small'
+                    className='teacherFullViewFullButtons'
+                    onClick={handleAttendance}
+                  >
                     Attendance
                   </Button>
                 ) : (
-                  <Button fullWidth size='small' className='teacherFullViewFullButtons' onClick={handleClickOpen}>
+                  <Button
+                    fullWidth
+                    size='small'
+                    className='teacherFullViewFullButtons'
+                    onClick={handleClickOpen}
+                  >
                     Resources
                   </Button>
                 )}
-              {selectedClassType && selectedClassType.id !== 0  && 
-                <Button fullWidth size='small' className='teacherFullViewFullButtons' onClick={handleCoursePlan}>
-                  View Course Plan
-                </Button>}  
+                {selectedClassType && selectedClassType.id !== 0 && (
+                  <Button
+                    fullWidth
+                    size='small'
+                    className='teacherFullViewFullButtons'
+                    onClick={handleCoursePlan}
+                  >
+                    View Course Plan
+                  </Button>
+                )}
               </Grid>
             </Grid>
           </Card>

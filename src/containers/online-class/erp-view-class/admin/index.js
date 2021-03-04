@@ -8,6 +8,7 @@ import {
   Typography,
   TablePagination,
 } from '@material-ui/core';
+import CountdownTimer from './CountdownTimer';
 import { withRouter } from 'react-router-dom';
 // import './style.scss';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -283,6 +284,13 @@ const ErpAdminViewClass = ({ history }) => {
     selectedSubject,
     '========================================='
   );
+  if(handleDate){
+    return (
+      <Layout>
+      <CountdownTimer />
+      </Layout>
+    )
+  }
   return (
     <>
       <Layout>
