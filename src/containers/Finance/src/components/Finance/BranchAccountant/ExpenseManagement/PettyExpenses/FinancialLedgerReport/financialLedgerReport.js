@@ -21,7 +21,7 @@ import { connect } from 'react-redux'
 
 import styles from './financialLedgerReport.styles'
 import * as actionTypes from '../../../../store/actions'
-// import { generateExcel } from '../../../../../../utils' // rajneesh
+import generateExcel from '../../../../../../utils/generateExcel'
 import Layout from '../../../../../../../../Layout'
 
 const FinancialLedgerReport = ({ classes, session, alert, user, ...props }) => {
@@ -36,6 +36,7 @@ const FinancialLedgerReport = ({ classes, session, alert, user, ...props }) => {
   }
 
   const createExcel = () => {
+
     if (!props.ledgerReport || !props.ledgerReport.ledger_report.length) {
       alert.warning('No Data To generate Excel')
       return
@@ -71,8 +72,8 @@ const FinancialLedgerReport = ({ classes, session, alert, user, ...props }) => {
       excelData,
       columns
     }
-
-    // generateExcel(data)
+    console.log('qaz', data)
+    generateExcel(data)
   }
 
   let table = null
