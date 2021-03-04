@@ -211,7 +211,7 @@ const GeneralDairyFilter = ({
 };
 
   const handleFilter = (e) => {
-    debugger
+    // debugger
     // setFilterStatus()
     console.log(e)
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
