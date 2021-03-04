@@ -61,10 +61,10 @@ const CourseView = () => {
     setLoading(true);
     setSendGrade(gradeIds);
     setCourseData([]);
-    if (gradeIds.length !== 0 && (tabMenuval === 0 || tabMenuval == undefined)) {
+    if (gradeIds.length !== 0 && (tabMenuval === 0 || tabMenuval === undefined || tabMenuval === null)) {
       axiosInstance
         .get(
-          `${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}`
+          `${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}&all&is_delete=false`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -128,6 +128,8 @@ const CourseView = () => {
 
   const handleClearFilter = () => {
     setSendGrade([]);
+    setTabValue(0);
+    setTabVal('');
   };
 
   const handlePagination = (event, page) => {
@@ -164,6 +166,7 @@ const CourseView = () => {
             handleClearFilter={handleClearFilter}
             setCourseData={setCourseData}
             setPageFlag={setPageFlag}
+            tabValue={tabValue}
           />
         </div>
         <div>
