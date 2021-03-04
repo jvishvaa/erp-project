@@ -234,9 +234,9 @@ const DurationContainer = (props) => {
           .then((result) => {
             if (result.data.status_code === 200) {
               setAlert('success', result.data.message);
-              resetContent();
-              setCourseId('');
-              setSelectedCourse('');
+              // resetContent();
+              // setCourseId('');
+              // setSelectedCourse('');
               if (gradeKey && courseKey) history.push(`/course-list/${gradeKey}`);
             } else {
               setAlert('error', result.data.message);
@@ -252,9 +252,9 @@ const DurationContainer = (props) => {
             .then((result) => {
               if (result.data.status_code === 200) {
                 setAlert('success', result.data.message);
-                resetContent();
-                setCourseId('');
-                setSelectedCourse('');
+                // resetContent();
+                // setCourseId('');
+                // setSelectedCourse('');
                 if (gradeKey && courseKey) history.push(`/course-list/${gradeKey}`);
               } else {
                 setAlert('error', result.data.message);
