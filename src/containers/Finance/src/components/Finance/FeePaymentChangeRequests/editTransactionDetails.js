@@ -4,7 +4,7 @@ import React, {
 } from 'react'
 import { withStyles,
   Grid, label, Paper, TableHead, Table, TableBody, TableCell, TableRow,
-  TextField, Button
+  TextField, Button, CircularProgress
 } from '@material-ui/core/'
 // import { Edit } from '@material-ui/icons/'
 import { withRouter } from 'react-router-dom'
@@ -13,9 +13,10 @@ import PropTypes from 'prop-types'
 // import RequestShuffle from './requestShuffle'
 // import '../../../css/staff.css'
 import * as actionTypes from '../store/actions'
+import Layout from '../../../../../Layout'
 // import classes from './feeStructure.module.css'
 // import Modal from '../../../../ui/Modal/modal'
-import CircularProgress from '../../../ui/CircularProgress/circularProgress'
+// import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 
 const styles = theme => ({
   tableWrapper: {
@@ -45,7 +46,7 @@ const styles = theme => ({
     minWidth: 650
   },
   margin: {
-    margin: theme.spacing * 1
+    margin: theme.spacing(1)
   },
   approve: {
     backgroundColor: '#008000',
@@ -100,7 +101,7 @@ const EditTransactionDetails = ({ classes, history, dataLoading, fetchEditDetail
     // console.log('the details', editDetails)
     if (redirect) {
       history.push({
-        pathname: '/finance/Approval/Requests/FeePaymentRequests'
+        pathname: '/finance/changeFeePaymentRequests'
       })
     }
   }, [redirect, history])
@@ -371,7 +372,9 @@ const EditTransactionDetails = ({ classes, history, dataLoading, fetchEditDetail
 
   return (
     <React.Fragment>
-      {editDetailsHandler()}
+      <Layout>
+        {editDetailsHandler()}
+      </Layout>
       {dataLoading ? <CircularProgress open /> : null}
     </React.Fragment>
   )

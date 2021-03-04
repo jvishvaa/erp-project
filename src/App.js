@@ -152,6 +152,7 @@ import { connect } from 'react-redux'
 import NonRTEFormAcc from './containers/Finance/src/components/Finance/BranchAccountant/AdmissionForm/nonRTEAdmissionForm.js'
 import AssignOtherFees from './containers/Finance/src/components/Finance/BranchAccountant/OtherFees/assignOtherFess.js'
 import GenerateSubsequentPayment from './containers/Finance/src/components/Finance/E-mandate/generateSubsequentPayment.js'
+import EditTransactionDetails from './containers/Finance/src/components/Finance/FeePaymentChangeRequests/editTransactionDetails';
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -364,6 +365,9 @@ function App({ alert }) {
                 </Route>
                 <Route exact path='/finance/pending_request'>
                   {({ match }) => <PendingRequest match={match} alert={alert} />}
+                </Route>
+                <Route exact path='/finance/editTransactionDetails'>
+                  {({ match }) => <EditTransactionDetails match={match} alert={alert} />}
                 </Route>
                 <Route exact path='/finance/rejected_request'>
                   {({ match }) => <rejectedRequest match={match} alert={alert} />}
