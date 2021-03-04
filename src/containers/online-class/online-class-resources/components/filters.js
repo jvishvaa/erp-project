@@ -44,7 +44,7 @@ const Filter = (props) => {
     const [endDate, setEndDate] = useState('');
     const [branchList] = useState([
         {
-            id: 5,
+            id: `${window.location.host === endpoints?.aolConfirmURL ? 1 : 5}`,
             branch_name: `${window.location.host === endpoints?.aolConfirmURL ? 'AOL' : 'ORCHIDS'}`,
         },
     ]);
