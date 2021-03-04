@@ -369,21 +369,23 @@ const CreateDailyDairy = (details, onSubmit) => {
               );
               const { message, status_code: statusCode } = response.data;
               if (statusCode === 200) {
-                // props.history.push('/user-management/assign-role')
-                // displayUsersList()
                 setAlert('success', message);
-                // setSelectedUsers([]);
-                // setRoleError('');
-                // setSelectedRole('');
-                // setSelectAllObj([]);
-                // setSelectedBranch();
-                // setSelectedGrades([]);
-                // setSelectedMultipleRoles([]);
-                // setSelectedSections([]);
-                // setSelectAllObj([]);
-                // setSelectectUserError('');
-                // setAssigenedRole();
-                // clearSelectAll();
+                setBranches([])
+                setGrades([])
+                setSections([])
+                setAcademicYear([])
+                // formik.setFieldValue('branch', []);
+                // formik.setFieldValue('section', []);
+                // formik.setFieldValue('grade', []);
+                // formik.setFieldValue('subjects', []);
+                setRecap('')
+                setSummary('')
+                setHomework('')
+                setTools('')
+                setDetails([])
+                setFilePath([])
+                setSearchAcademicYear('')
+                setSubjectIds('')
               } else {
                 setAlert('error', response.data.message);
               }
