@@ -17,7 +17,6 @@ import {
   Switch,
   Checkbox,
   CircularProgress,
-  Modal
 } from '@material-ui/core'
 
 import {
@@ -25,7 +24,7 @@ import {
 } from '@material-ui/icons'
 
 import styles from './ledgerReport.styles'
-// import { CircularProgress, Modal } from '../../../../../../ui' //rajneesh
+import Modal from '../../../../../../ui/Modal/modal'
 import * as actionTypes from '../../../../store/actions'
 // import { TablePaginationAction } from '../../../../../../utils' // rajneesh
 import { urls } from '../../../../../../urls'
@@ -574,7 +573,7 @@ const LedgerReport = ({ classes,
             {reportList}
             <TableFooter>
               <TableRow classes={{ root: classes.footerRow }}>
-                <TablePagination
+                {/* <TablePagination
                   rowsPerPageOptions={[50]}
                   classes={{ root: classes.paginationRoot }}
                   colSpan={3}
@@ -584,10 +583,10 @@ const LedgerReport = ({ classes,
                   SelectProps={{
                     native: true
                   }}
-                  onChangePage={handleChangePage}
+                  onChangePage={() => handleChangePage(page)}
                   // onChangeRowsPerPage={this.handleChangeRowsPerPage}
                   // ActionsComponent={TablePaginationAction}
-                />
+                /> */}
               </TableRow>
             </TableFooter>
           </Table>

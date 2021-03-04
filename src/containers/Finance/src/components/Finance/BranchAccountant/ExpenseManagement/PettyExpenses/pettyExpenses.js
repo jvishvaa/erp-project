@@ -162,7 +162,7 @@ class PettyExpenses extends Component {
         total += acc.balance ? acc.balance : 0
         return (
           <div className={classes.pettyExp__tableBody} key={acc.id} >
-              <Link to={{ 
+              {/* <Link to={{ 
       pathname: '/finance/Expanse Management/BankReport', 
       state: acc.id
       }}>
@@ -170,7 +170,7 @@ class PettyExpenses extends Component {
         <div className={classes.pettyExp__tableBodySmall}>{acc.balance ? acc.balance : 0}</div> */}
         {acc.bank_name}
         {/* {acc.balance ? acc.balance : 0} */}
-      </Link>
+      {/* </Link> */}
             {/* <div className={classes.pettyExp__tableBodyBig}>{acc.bank_name}</div>  */}
             {/* <div className={classes.pettyExp__tableBodySmall}>{acc.balance ? acc.balance : 0}</div> */}
           </div>
@@ -343,7 +343,8 @@ class PettyExpenses extends Component {
               <div className={classes.pettyExp__tableBodySmall} style={{ color: 'blue', fontWeight: 'bolder' }}>{this.props.cashInHand}</div>
             </div>
             <div className={classes.pettyExp__tableBody}>
-              <div className={classes.pettyExp__tableBodyBig} onClick={this.cashClickHandler}>
+              {/* <div className={classes.pettyExp__tableBodyBig} onClick={this.cashClickHandler}> */}
+              <div className={classes.pettyExp__tableBodyBig}>
                 <div><span style={{ display: 'inline-block', verticalAlign: 'top' }}>Cash</span>
                   <AddBox color='primary' className={classes.addIcon} onClick={this.addMoneyHandler} /></div>
               </div>
