@@ -64,7 +64,7 @@ const CourseView = () => {
     if (gradeIds.length !== 0 && (tabMenuval === 0 || tabMenuval === undefined || tabMenuval === null)) {
       axiosInstance
         .get(
-          `${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}&all&is_delete=false`
+          `${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
