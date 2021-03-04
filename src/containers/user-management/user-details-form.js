@@ -227,10 +227,11 @@ const UserDetailsForm = ({
               formik.setFieldValue('date_of_birth', moment(value).format('YYYY-MM-DD'));
             }}
             format='YYYY-MM-DD'
+            maxDate={new Date()}
             size='small'
             inputVariant='outlined'
             fullWidth
-            label='Date of birth'
+            label='Date of Birth'
           />
         </MuiPickersUtilsProvider>
         <FormHelperText style={{ color: 'red' }}>

@@ -369,7 +369,7 @@ const AssignRole = (props) => {
       if (statusCode === 200) {
         // props.history.push('/user-management/assign-role')
         // displayUsersList()
-        setAlert('success', message);
+        setAlert('success', 'Role successfully assigned to user');
         setSelectedUsers([]);
         setRoleError('');
         setSelectedRole('');
@@ -378,7 +378,7 @@ const AssignRole = (props) => {
         setSelectedGrades([]);
         setSelectedMultipleRoles([]);
         setSelectedSections([]);
-        setSelectAllObj([]);
+        //setSelectAllObj([]);
         setSelectectUserError('');
         setAssigenedRole();
         clearSelectAll();
