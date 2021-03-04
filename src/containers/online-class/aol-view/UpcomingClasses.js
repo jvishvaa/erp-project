@@ -172,7 +172,7 @@ const UpcomingClasses = () => {
     const isTabDivice = useMediaQuery(themeContext.breakpoints.down('sm'));
 
     //batches view <<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    const branchDrop = [{ id: 5, branch_name: 'AOL' }]
+    const branchDrop = [{ id: 1, branch_name: 'AOL' }]
 
 
 

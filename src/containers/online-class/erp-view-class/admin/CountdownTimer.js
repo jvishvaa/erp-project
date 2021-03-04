@@ -3,7 +3,7 @@ import Timer from 'react-compound-timer';
 import React from 'react';
 import { Tune } from '@material-ui/icons';
 
-function CountdownTimer() {
+function CountdownTimer(props) {
   const classStartMin = 1;
   const countStartWithInMIn = 1*(30/100);
   const defaultStartTime=new Date(new Date().getTime() + classStartMin * 60 * 1000).getTime()
@@ -22,6 +22,7 @@ function CountdownTimer() {
 //       return null;
 //     }
 //   }
+console.log(props,'=================')
   const getTimerStartsOn =()=>{
     const timeNow = new Date().getTime();
     return ((classStartsAt||defaultStartTime) - countStartWithInMIn*60*1000)-timeNow
@@ -30,7 +31,6 @@ function CountdownTimer() {
     const timeNow = new Date().getTime();
     return ((classStartsAt||defaultStartTime))-timeNow
   }
-//   const [canStartTimer, startTimer] = React.useState(timeChecker());
   const [canStartTimer, startTimer] = React.useState(null);
   const checKkUpdate =()=>{
     const timeNow = new Date().getTime();
@@ -51,18 +51,14 @@ function CountdownTimer() {
   React.useEffect(() => {
     checKkUpdate()
   });
-
-//   const timeDiffInMilliSec = classStartsAt - new Date().getTime();
   return (
       <div key='timer'>
           {/* { */}
             {/* //   canStartTimer ? ( */}
             <p>Class starts at : {new Date(classStartsAt).toString()}</p>
                       <hr />
-                      {/* <p>Time diff to start timer {getTimerStartsOn()/1000}</p> */}
                       <p key={timerWillStartOn}>Time diff to start timer {timerWillStartOn/1000}</p>
                       <hr />
-                      {/* <p>Time diff to start class {getClassStartsOn()/1000}</p> */}
                       <p key={classWillStartOn}>Time diff to start timer {classWillStartOn/1000}</p>
                       <hr />
                       <button type='button' 
@@ -73,10 +69,7 @@ function CountdownTimer() {
                           canStartTimer &&(
                             <Timer
                             key='timer-comppound'
-                            //   initialTime={classStartsAt-new Date().getTime()-countStartWithInMIn*60*1000}
                               initialTime={countStartWithInMIn*60*1000}
-                            // initialTime={400000}
-                            //   startImmediately={canStartTimer}
                               direction='backward'
                               checkpoints={[
                                 {
@@ -93,24 +86,11 @@ function CountdownTimer() {
                                     <Timer.Minutes /> minutes
                                     <Timer.Seconds /> seconds
                                   </div>
-                                  <div>
-                                    {/* <button onClick={start}>Start</button>
-                                    <button onClick={pause}>Pause</button>
-                                    <button onClick={resume}>Resume</button>
-                                    <button onClick={stop}>Stop</button>
-                                <button onClick={reset}>Reset</button> */}
-                                  </div>
-                                  
                                 </React.Fragment>
                               )}
                             </Timer>
                           )
                       }
-                
-            {/* //   ) : (
-                <p>Class starts at {new Date(classStartsAt)}</p>
-            //   ) */}
-        {/* //   } */}
       </div>
   );
 }

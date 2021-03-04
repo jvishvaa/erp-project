@@ -119,7 +119,7 @@ const JoinClass = (props) => {
         <span className='TeacherFullViewdescreption1'>
           {moment(props.data ? props.data.date : '').format('DD-MM-YYYY')}
         </span>
-        <CountdownTimer />
+        {/* <CountdownTimer /> */}
       </Grid>
       
       {isAccept ? (
@@ -136,7 +136,9 @@ const JoinClass = (props) => {
               Join
             </Button>
           ) : (
-           null
+            <CountdownTimer
+              classData={props.fullData}
+             />
           )}
           {/* <Typography>{cTime}</Typography> */}
 

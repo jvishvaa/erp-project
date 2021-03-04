@@ -74,7 +74,7 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
       <DataGrid
         pageSize={pageSize || 15}
         rowCount={totalRows}
-        checkboxSelection
+        checkboxSelection={true}
         onPageChange={pageChange}
         hideFooterSelectedRowCount
         hideFooterRowCount
@@ -83,7 +83,7 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
         {...data}
         onRowSelected={selectRow}
         selectRows={() => {
-          console.log('selectRows');
+          console.log('selectRows ????');
         }}
         components={{
           noRowsOverlay: (params) => {

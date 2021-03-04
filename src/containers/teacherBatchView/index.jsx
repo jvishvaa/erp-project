@@ -34,7 +34,7 @@ const TeacherBatchView = ({ history }) => {
   const [endDate, setEndDate] = useState('');
   const [branchList] = useState([
     {
-      id: 5,
+      id: 1,
       branch_name: 'AOL',
     },
   ]);

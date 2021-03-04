@@ -51,6 +51,7 @@ const GuardianDetailsForm = ({
       guardian_last_name: details.guardian_last_name,
       guardian_email: details.guardian_email,
       guardian_mobile: details.guardian_mobile,
+      guardian_photo: details.guardian_photo,
     },
     validationSchema,
     onSubmit: (values) => {
@@ -361,6 +362,15 @@ const GuardianDetailsForm = ({
               Guardian Details
             </Typography>
             <Grid container spacing={4}>
+              <Grid item md={12} xs={12} className='profile-img-container'>
+                <ImageUpload
+                  id='mother-image'
+                  value={formik.values.guardian_photo}
+                  onChange={(value) => {
+                    formik.setFieldValue('guardian_photo', value);
+                  }}
+                />
+              </Grid>
               <Grid item md={4} xs={12}>
                 <FormControl variant='outlined' fullWidth size='small'>
                   <InputLabel htmlFor='component-outlined'>First name</InputLabel>
