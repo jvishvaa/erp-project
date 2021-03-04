@@ -311,6 +311,7 @@ class Ledger extends Component {
       ledgerName
     } = this.state
     this.props.addLedgerEntry(updatedHeadId, ledgerName, ledgerRemark, this.props.user, this.props.alert)
+    console.log('addinggggg')
     this.setState({
       updatedHeadId: null,
       ledgerName: null,
