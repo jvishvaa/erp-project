@@ -249,4 +249,4 @@ export const onlinePaymentUpload = (payload) => {
     })
   }
 }
- payload.alert.warning(err.response.data.err_msg)
+//  payload.alert.warning(err.response.data.err_msg)
