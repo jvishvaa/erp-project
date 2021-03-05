@@ -2,6 +2,7 @@ import * as actionTypes from '../../../../store/actions/index'
 
 const initialState = {
   gradeData: null,
+  gradeDatas: null,
   pdcList: []
 }
 
@@ -20,7 +21,8 @@ const pdcReducer = (state = initialState, action) => {
       })
       return {
         ...state,
-        gradeData: gradelist
+        gradeData: gradelist,
+        gradeDatas: action.payload.data
       }
     }
     case actionTypes.FETCH_ALL_PDC : {
