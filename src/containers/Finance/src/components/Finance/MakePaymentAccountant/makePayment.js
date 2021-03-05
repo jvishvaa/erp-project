@@ -11,7 +11,7 @@ import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 // import { debounce } from '../../../utils'
 // import AutoSuggest from '../../../ui/AutoSuggest/autoSuggest'
 import * as actionTypes from '../store/actions/index'
-import feeReceipts from '../Receipts/feeReceipts'
+import feeReceiptss from '../Receipts/feeReceiptss'
 import makPayReceipts from '../Receipts/makePaymentReceipts'
 import '../../css/staff.css'
 import ReceiptDetails from './receiptDetails'
@@ -228,7 +228,7 @@ class MakePayment extends Component {
   generatePdf = async () => {
     try {
       const response = await this.getPdfData(this.props.trnsId)
-      feeReceipts(response.data)
+      feeReceiptss(response.data)
     } catch (e) {
       console.log(e)
       this.props.alert.warning('Something Went Wrong')
