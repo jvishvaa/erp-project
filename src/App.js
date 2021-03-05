@@ -155,6 +155,7 @@ import GenerateSubsequentPayment from './containers/Finance/src/components/Finan
 import EditTransactionDetails from './containers/Finance/src/components/Finance/FeePaymentChangeRequests/editTransactionDetails';
 import AppFormList from './containers/Finance/src/components/Finance/BranchAccountant/TotalFormCount/appFormList.js'
 import RegFormList from './containers/Finance/src/components/Finance/BranchAccountant/TotalFormCount/regFormList.js'
+import TransactionStatus from './containers/Finance/src/components/Finance/TransactionStatus/transactionStatus.js'
 import AdmFormList from './containers/Finance/src/components/Finance/BranchAccountant/TotalFormCount/admFormList.js'
 const theme = createMuiTheme({
   palette: {
@@ -329,6 +330,9 @@ function App({ alert }) {
                 </Route>
                 <Route exact path='/finance/WalletReport'>
                   {({ match }) => <WalletReport match={match} alert={alert} />}
+                </Route>
+                <Route exact path='/finance/TransactionStatus'>
+                  {({ match }) => <TransactionStatus  match={match} alert={alert} />}
                 </Route>
                 <Route exact path='/finance/ConcessionReport'>
                   {({ match }) => <ConcessionReport match={match} alert={alert} />}
@@ -628,7 +632,7 @@ function App({ alert }) {
                 <Route exact path= '/finance/regformlist'>
                   {({ match }) => <RegFormList match={match} alert={alert} />}
                 </Route>
-                <Route exact path= '/finance/admformlist'>
+              <Route exact path= '/finance/admformlist'>
                   {({ match }) => <AdmFormList match={match} alert={alert} />}
                 </Route>
               </Switch>

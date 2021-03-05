@@ -4,8 +4,8 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import Select from 'react-select'
 import Icon from '@material-ui/core/Icon'
-import ReactTable from 'react-table'
-import 'react-table/react-table.css'
+// import ReactTable from 'react-table'
+// import 'react-table/react-table.css'
 
 import { apiActions } from '../../../_actions'
 import * as actionTypes from '../store/actions/index'
@@ -13,6 +13,7 @@ import { FilterInnerComponent, filterMethod } from '../FilterInnerComponent/filt
 import Modal from '../../../ui/Modal/modal'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 import { urls } from '../../../urls'
+import Layout from '../../../../../Layout'
 
 import classes from './transactionStatus.module.css'
 
@@ -73,7 +74,7 @@ class TransactionStatus extends Component {
     // if (transactionState !== null) {
     //   this.setState(transactionState)
     // }
-    const userProfile = JSON.parse(localStorage.getItem('user_profile'))
+    const userProfile = JSON.parse(localStorage.getItem('userDetails'))
     const isAccountant = userProfile.personal_info.role.toLowerCase() === 'financeaccountant'
     this.setState({
       isAccountant
@@ -497,155 +498,155 @@ class TransactionStatus extends Component {
   }
 
   render () {
-    let transactionTable = null
-    if (this.props.transactionDetails &&
-      this.props.transactionDetails.results.length &&
-      !this.state.isAccountant) {
-      transactionTable = (<ReactTable
-        pages={Math.ceil(this.props.transactionDetails.count / 20)}
-        data={this.createData()}
-        manual
-        columns={[
-          // {
-          //     Header: "S.No",
-          //     accessor: "sNo",
-          //     width: 50,
-          //     sortable:true,
-          // },
-          {
-            Header: 'Transaction ID',
-            accessor: 'transaction_id',
-            sortable: true,
-            Cell: e => (
-              <div className={classes.table__transactionid}
-                onClick={() => this.showViewModalHandler(e.original.id)}>
-                {e.row.transaction_id}
-              </div>),
-            style: {
-              paddingLeft: '20px'
-            }
-          },
-          {
-            Header: 'Student Name',
-            accessor: 'student_name',
-            sortable: true,
-            style: {
-              paddingLeft: '20px'
-            }
-          },
-          {
-            Header: 'ERP Code',
-            accessor: 'student_erp',
-            sortable: true
-          },
-          {
-            Header: 'Grade (Section)',
-            accessor: 'student_grade',
-            sortable: true
-          },
-          {
-            Header: 'Paid Date',
-            accessor: 'paid_date',
-            sortable: true
-          },
-          {
-            Header: 'Status',
-            accessor: 'status',
-            Filter: props => <FilterInnerComponent {...props} />,
-            filterMethod: filterMethod,
-            sortable: false
-          },
-          {
-            Header: this.state.isAccountant ? ' ' : 'Edit',
-            accessor: 'icon',
-            filterable: false,
-            width: 70,
-            style: {
-              paddingLeft: '10px',
-              display: this.state.isAccountant ? 'none' : 'inline-block'
-            },
-            sortable: false
-          }
-        ]}
-        filterable
-        sortable
-        defaultPageSize={20}
-        showPageSizeOptions={false}
-        className='-striped -highlight'
-        // Controlled props
-        page={this.state.page}
-        // Callbacks
-        onPageChange={page => this.pageChangeHandler(page)}
-      />)
-    } else if (this.props.transactionDetails &&
-      this.props.transactionDetails.results.length &&
-      this.state.isAccountant) {
-      transactionTable = (<ReactTable
-        pages={Math.ceil(this.props.transactionDetails.count / 20)}
-        data={this.createData()}
-        manual
-        columns={[
-          // {
-          //     Header: "S.No",
-          //     accessor: "sNo",
-          //     width: 50,
-          //     sortable:true,
-          // },
-          {
-            Header: 'Transaction ID',
-            accessor: 'transaction_id',
-            sortable: true,
-            Cell: e => (
-              <div className={classes.table__transactionid}
-                onClick={() => this.showViewModalHandler(e.original.id)}>
-                {e.row.transaction_id}
-              </div>),
-            style: {
-              paddingLeft: '20px'
-            }
-          },
-          {
-            Header: 'Student Name',
-            accessor: 'student_name',
-            sortable: true,
-            style: {
-              paddingLeft: '20px'
-            }
-          },
-          {
-            Header: 'ERP Code',
-            accessor: 'student_erp',
-            sortable: true
-          },
-          {
-            Header: 'Grade (Section)',
-            accessor: 'student_grade',
-            sortable: true
-          },
-          {
-            Header: 'Paid Date',
-            accessor: 'paid_date',
-            sortable: true
-          },
-          {
-            Header: 'Status',
-            accessor: 'status',
-            Filter: props => <FilterInnerComponent {...props} />,
-            filterMethod: filterMethod,
-            sortable: false
-          }
-        ]}
-        filterable
-        sortable
-        defaultPageSize={20}
-        showPageSizeOptions={false}
-        className='-striped -highlight'
-        // Controlled props
-        page={this.state.page}
-        // Callbacks
-        onPageChange={page => this.pageChangeHandler(page)}
-      />)
-    }
+    // let transactionTable = null
+    // if (this.props.transactionDetails &&
+    //   this.props.transactionDetails.results.length &&
+    //   !this.state.isAccountant) {
+    //   transactionTable = (<ReactTable
+    //     pages={Math.ceil(this.props.transactionDetails.count / 20)}
+    //     data={this.createData()}
+    //     manual
+    //     columns={[
+    //       // {
+    //       //     Header: "S.No",
+    //       //     accessor: "sNo",
+    //       //     width: 50,
+    //       //     sortable:true,
+    //       // },
+    //       {
+    //         Header: 'Transaction ID',
+    //         accessor: 'transaction_id',
+    //         sortable: true,
+    //         Cell: e => (
+    //           <div className={classes.table__transactionid}
+    //             onClick={() => this.showViewModalHandler(e.original.id)}>
+    //             {e.row.transaction_id}
+    //           </div>),
+    //         style: {
+    //           paddingLeft: '20px'
+    //         }
+    //       },
+    //       {
+    //         Header: 'Student Name',
+    //         accessor: 'student_name',
+    //         sortable: true,
+    //         style: {
+    //           paddingLeft: '20px'
+    //         }
+    //       },
+    //       {
+    //         Header: 'ERP Code',
+    //         accessor: 'student_erp',
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Grade (Section)',
+    //         accessor: 'student_grade',
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Paid Date',
+    //         accessor: 'paid_date',
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Status',
+    //         accessor: 'status',
+    //         Filter: props => <FilterInnerComponent {...props} />,
+    //         filterMethod: filterMethod,
+    //         sortable: false
+    //       },
+    //       {
+    //         Header: this.state.isAccountant ? ' ' : 'Edit',
+    //         accessor: 'icon',
+    //         filterable: false,
+    //         width: 70,
+    //         style: {
+    //           paddingLeft: '10px',
+    //           display: this.state.isAccountant ? 'none' : 'inline-block'
+    //         },
+    //         sortable: false
+    //       }
+    //     ]}
+    //     filterable
+    //     sortable
+    //     defaultPageSize={20}
+    //     showPageSizeOptions={false}
+    //     className='-striped -highlight'
+    //     // Controlled props
+    //     page={this.state.page}
+    //     // Callbacks
+    //     onPageChange={page => this.pageChangeHandler(page)}
+    //   />)
+    // } else if (this.props.transactionDetails &&
+    //   this.props.transactionDetails.results.length &&
+    //   this.state.isAccountant) {
+    //   transactionTable = (<ReactTable
+    //     pages={Math.ceil(this.props.transactionDetails.count / 20)}
+    //     data={this.createData()}
+    //     manual
+    //     columns={[
+    //       // {
+    //       //     Header: "S.No",
+    //       //     accessor: "sNo",
+    //       //     width: 50,
+    //       //     sortable:true,
+    //       // },
+    //       {
+    //         Header: 'Transaction ID',
+    //         accessor: 'transaction_id',
+    //         sortable: true,
+    //         Cell: e => (
+    //           <div className={classes.table__transactionid}
+    //             onClick={() => this.showViewModalHandler(e.original.id)}>
+    //             {e.row.transaction_id}
+    //           </div>),
+    //         style: {
+    //           paddingLeft: '20px'
+    //         }
+    //       },
+    //       {
+    //         Header: 'Student Name',
+    //         accessor: 'student_name',
+    //         sortable: true,
+    //         style: {
+    //           paddingLeft: '20px'
+    //         }
+    //       },
+    //       {
+    //         Header: 'ERP Code',
+    //         accessor: 'student_erp',
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Grade (Section)',
+    //         accessor: 'student_grade',
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Paid Date',
+    //         accessor: 'paid_date',
+    //         sortable: true
+    //       },
+    //       {
+    //         Header: 'Status',
+    //         accessor: 'status',
+    //         Filter: props => <FilterInnerComponent {...props} />,
+    //         filterMethod: filterMethod,
+    //         sortable: false
+    //       }
+    //     ]}
+    //     filterable
+    //     sortable
+    //     defaultPageSize={20}
+    //     showPageSizeOptions={false}
+    //     className='-striped -highlight'
+    //     // Controlled props
+    //     page={this.state.page}
+    //     // Callbacks
+    //     onPageChange={page => this.pageChangeHandler(page)}
+    //   />)
+    // }
 
     let viewModal = null
     if (this.state.showViewModal) {
@@ -697,7 +698,8 @@ class TransactionStatus extends Component {
     }
 
     return (
-      <React.Fragment>
+      <Layout>      
+        <React.Fragment>
         <Grid container spacing={3} style={{ padding: 15 }}>
           <Grid item xs='9' />
           <Grid item xs='3'>
@@ -833,11 +835,12 @@ class TransactionStatus extends Component {
             >Get</Button>
           </Grid>
         </Grid>
-        {transactionTable}
+        {/* {transactionTable} */}
         {this.props.dataLoading ? <CircularProgress open /> : null}
         {viewModal}
         {editModal}
       </React.Fragment>
+      </Layout>
     )
   }
 }
