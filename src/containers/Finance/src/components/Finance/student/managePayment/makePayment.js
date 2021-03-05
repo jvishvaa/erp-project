@@ -70,7 +70,7 @@ class MakePayment extends Component {
       studentId: null
     }
     this.currBrnch = JSON.parse(localStorage.getItem('user_profile')).branch_id
-    this.erp = JSON.parse(localStorage.getItem('user_profile')).erp
+    this.erp = JSON.parse(localStorage.getItem('userDetails')).erp
   }
   componentDidMount () {
     console.log(this.props.sessionYear, this.props.getList)

@@ -101,7 +101,7 @@ const EditTransactionDetails = ({ classes, history, dataLoading, fetchEditDetail
     // console.log('the details', editDetails)
     if (redirect) {
       history.push({
-        pathname: '/finance/changeFeePaymentRequests'
+        pathname: '/finance/Approval/Requests/FeePaymentRequests'
       })
     }
   }, [redirect, history])

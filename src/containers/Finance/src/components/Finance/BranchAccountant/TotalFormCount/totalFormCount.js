@@ -95,7 +95,9 @@ const TotalFormCount = ({ classes,
   const [displayDateRange, setDisplayDateRange] = useState(false)
 
   useLayoutEffect(() => {
-    const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
+    // const role = (JSON.parse(localStorage.getItem('userDetails'))).personal_info.role
+    const userProfile = JSON.parse(localStorage.getItem('userDetails'))
+      const role = userProfile.personal_info.role.toLowerCase()
     if (role === 'FinanceAdmin') {
       setIsAdmin(true)
       // if (branchStored && role === 'FinanceAdmin') {
@@ -109,7 +111,9 @@ const TotalFormCount = ({ classes,
   }, [alert, sessionYear.value, fetchBranchList, user])
 
   useEffect(() => {
-    const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
+    // const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
+    const userProfile = JSON.parse(localStorage.getItem('userDetails'))
+      const role = userProfile.personal_info.role.toLowerCase()
     if (branchStored && role === 'FinanceAdmin') {
       setSelectedBranch(branchStored)
     }

@@ -56,7 +56,9 @@ const StoreReports = ({ classes, session, history, dataLoading, fetchBranchLists
   const [isAccountant, setIsAccountant] = useState(false)
 
   useLayoutEffect(() => {
-    const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
+    // const role = (JSON.parse(localStorage.getItem('userDetails'))).personal_info.role
+    const userProfile = JSON.parse(localStorage.getItem('userDetails'))
+      const role = userProfile.personal_info.role.toLowerCase()
     if (role === 'FinanceAccountant') {
       setIsAccountant(true)
     }

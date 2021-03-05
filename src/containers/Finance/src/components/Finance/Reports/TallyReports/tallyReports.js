@@ -44,14 +44,14 @@ class TallyReports extends Component {
         dd = '0' + dd
       }
       today = yyyy + '-' + mm + '-' + dd
-      // const userProfile = JSON.parse(localStorage.getItem('user_profile'))
-      // const role = userProfile.personal_info.role.toLowerCase()
-      const role = JSON.parse(localStorage.getItem('userDetails')).role_details.user_role
+      const userProfile = JSON.parse(localStorage.getItem('userDetails'))
+      const role = userProfile.personal_info.role.toLowerCase()
+      // const role = JSON.parse(localStorage.getItem('userDetails')).role_details.user_role
       this.setState({
         todayDate: today,
         role
       }, () => {
-        if (this.state.role === 'F_acc') {
+        if (this.state.role === 'financeaccountant') {
           this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
         }
       })
@@ -82,7 +82,7 @@ class TallyReports extends Component {
       })
       console.log(e)
       this.setState({ session: sessions, selectedBranches: [], sessionData: e }, () => {
-        if (this.state.role === 'F_acc') {
+        if (this.state.role === 'financeaccountant') {
           // console.log('====>result<====', this.props.branchAtAcc.branch)
           // this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
           let data = {
@@ -236,7 +236,7 @@ class TallyReports extends Component {
         return
       }
       let data = {}
-      if (this.state.role === 'F_acc') {
+      if (this.state.role === 'financeaccountant') {
         data = {
           session_year: this.state.session,
           branch: [this.props.branchAtAcc.branch],

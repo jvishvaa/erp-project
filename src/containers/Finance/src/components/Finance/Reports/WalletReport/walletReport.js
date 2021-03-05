@@ -18,7 +18,7 @@ const WalletReport = ({ session, fetchGrades, fetchBranchAtAcc, fetchBranches, b
   const [role, setRole] = useState(null)
 
   useEffect(() => {
-    const userProfile = JSON.parse(localStorage.getItem('user_profile'))
+    const userProfile = JSON.parse(localStorage.getItem('userDetails'))
     const role = userProfile.personal_info.role.toLowerCase()
     setRole(role)
     if (role === 'financeaccountant') {

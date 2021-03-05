@@ -6,7 +6,7 @@ const StoreAtStudent = (props) => {
   const [erp, setErp] = useState(null)
 
   useEffect(() => {
-    const erp = (JSON.parse(localStorage.getItem('user_profile'))).erp
+    const erp = (JSON.parse(localStorage.getItem('userDetails'))).erp
     setErp(erp)
   }, [])
   return (

@@ -59,7 +59,7 @@ const ChequeBounceReports = ({ classes, session, branches, fetchBranches, downlo
   // const [accReasonToApprove, setAccReason] = useState({})
 
   useEffect(() => {
-    const userProfile = JSON.parse(localStorage.getItem('user_profile'))
+    const userProfile = JSON.parse(localStorage.getItem('userDetails'))
     const role = userProfile.personal_info.role.toLowerCase()
     setRole(role)
   }, [])

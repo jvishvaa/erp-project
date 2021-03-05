@@ -45,7 +45,7 @@ class TotalPaidReports extends Component {
   }
   componentDidMount () {
     // this.todayDate()
-    const userProfile = JSON.parse(localStorage.getItem('user_profile'))
+    const userProfile = JSON.parse(localStorage.getItem('userDetails'))
     const role = userProfile.personal_info.role.toLowerCase()
     this.setState({
       role

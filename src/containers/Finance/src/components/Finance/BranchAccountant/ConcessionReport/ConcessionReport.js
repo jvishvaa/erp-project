@@ -29,7 +29,7 @@ class ConcessionReport extends Component {
     typesId: 2
   }
   componentDidMount () {
-    const userProfile = JSON.parse(localStorage.getItem('user_profile'))
+    const userProfile = JSON.parse(localStorage.getItem('userDetails'))
     const role = userProfile.personal_info.role.toLowerCase()
     this.setState({
       role
