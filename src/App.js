@@ -141,7 +141,7 @@ import UpdateAdmissionForm from './containers/Finance/src/components/Finance/Bra
 import AccountantLogin from './containers/Finance/src/components/Finance/BulkOperations/AccountantLogin/AccountantLogin';
 import AddGst from './containers/Finance/src/components/Inventory/StoreAdmin/AddGst/addGst';
 import OrderStatusUpload from './containers/Finance/src/components/Inventory/StoreAdmin/OrderStatusUpload/orderStatusUpload';
-import ReceiptBook from './containers/Finance/src/components/Finance/AdmissionReports/ReceiptBook/receiptBook.js';
+import ReceiptBook from './containers/Finance/src/components/Finance/Reports/ReceiptBook/receiptBook.js';
 import EMandate from './containers/Finance/src/components/Finance/E-mandate/e-mandate.js'
 import CreateLink from './containers/Finance/src/components/Finance/E-mandate/createLink.js'
 import Alert from './containers/Finance/src/ui/alert'
