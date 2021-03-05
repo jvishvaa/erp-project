@@ -97,13 +97,15 @@ const AdmFormList = ({ session,
   useEffect(() => {
     console.log('Mounted All Form List', history.location.state)
     const { session, fromDate, toDate, branch, isAdmin, selectedDates, selectedReport } = history.location.state
-    setIsAdmin(isAdmin)
-    const userProfile = JSON.parse(localStorage.getItem('user_profile'))
-    const userId = userProfile.personal_info.user_id
-    const userIndex = accessList.indexOf(+userId)
-    if (userIndex !== -1) {
-      setShowDelete(true)
-    }
+    const userProfile = JSON.parse(localStorage.getItem('userDetails'))
+    const role = userProfile.personal_info.role.toLowerCase()
+    // setIsAdmin(isAdmin)
+    // const userProfile = JSON.parse(localStorage.getItem('user_profile'))
+    // const userId = userProfile.personal_info.user_id
+    // const userIndex = accessList.indexOf(+userId)
+    // if (userIndex !== -1) {
+    //   setShowDelete(true)
+    // }
     fetchAllAppFormList(session, branch, fromDate, toDate, selectedDates, selectedReport, rowsPerPage || 10, page + 1, 'admission', alert, user)
   }, [history, fetchAllAppFormList, rowsPerPage, page, alert, user])
 
