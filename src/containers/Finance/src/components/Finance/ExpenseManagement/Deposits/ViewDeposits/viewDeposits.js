@@ -500,8 +500,8 @@ class ViewDiposits extends Component {
                       <TableCell> Remark</TableCell>
                       {/* <TableCell> Type</TableCell> */}
                       <TableCell> Mode Of Deposite </TableCell>
-                      <TableCell> Is Cancelled</TableCell>
-                      <TableCell> Edit</TableCell>
+                      {/* <TableCell> Is Cancelled</TableCell>
+                      <TableCell> Edit</TableCell> */} 
                       {/* <TableCell> Delete</TableCell> */}
                     </TableRow>
                   </TableHead>
@@ -520,8 +520,8 @@ class ViewDiposits extends Component {
           <TableCell>{txn.remarks ? txn.remarks : ''}</TableCell>
           {/* <TableCell>{transaction.deposit_type ? transaction.deposit_type.deposit_type : ''}</TableCell> */}
           <TableCell>{txn.deposit_mode ? txn.deposit_mode : ''} </TableCell>
-          <TableCell>{txn.is_cancelled ? 'Yes' : 'No'}</TableCell>
-          <TableCell>{<div style={{ 'padding-left': '10px' }} onClick={() => this.showEditModalHandler(txn.id, txn.transaction_id, txn.deposit_mode, txn.date, txn.amount, txn.remarks, txn.is_cancelled)}><EditIcon className={classes.icon} /></div>}</TableCell>
+          {/* <TableCell>{txn.is_cancelled ? 'Yes' : 'No'}</TableCell>
+          <TableCell>{<div style={{ 'padding-left': '10px' }} onClick={() => this.showEditModalHandler(txn.id, txn.transaction_id, txn.deposit_mode, txn.date, txn.amount, txn.remarks, txn.is_cancelled)}><EditIcon className={classes.icon} /></div>}</TableCell> */}
                   </TableRow>
                     )
                   })}
