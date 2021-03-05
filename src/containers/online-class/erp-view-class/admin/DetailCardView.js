@@ -136,9 +136,10 @@ const JoinClass = (props) => {
               Join
             </Button>
           ) : (
-            <CountdownTimer
-              classData={props.fullData}
-             />
+            null
+            // <CountdownTimer
+            //   classData={props.fullData}
+            //  />
           )}
           {/* <Typography>{cTime}</Typography> */}
 
@@ -170,7 +171,7 @@ const JoinClass = (props) => {
                     fullWidth
                     variant='contained'
                     onClick={() =>
-                      window.open(fullData && fullData.presenter_url, '_blank'
+                      window.open(fullData && fux llData.presenter_url, '_blank'
                     )}
                     className='teacherFullViewSmallButtons'
                   >
