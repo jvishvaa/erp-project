@@ -1269,7 +1269,7 @@ class StudentUniform extends Component {
                 inputProps={{ 'aria-label': 'primary checkbox' }}
               /></Grid>
               <Grid item xs='2'>
-                <Button variant='outlined' color='primary' onClick={this.sportTshirtImageHandeler}>
+                <Button variant='contained' color='primary' onClick={this.sportTshirtImageHandeler}>
               Image
                 </Button>
               </Grid>
@@ -1482,7 +1482,7 @@ class StudentUniform extends Component {
                 inputProps={{ 'aria-label': 'primary checkbox' }}
               /></Grid>
               <Grid item xs='2'>
-                <Button variant='outlined' color='primary' onClick={this.sportTrackPantImageHandeler}>
+                <Button variant='contained' color='primary' onClick={this.sportTrackPantImageHandeler}>
               Image
                 </Button>
               </Grid>

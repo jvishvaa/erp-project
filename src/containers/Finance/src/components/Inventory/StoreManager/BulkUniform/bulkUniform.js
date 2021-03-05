@@ -340,10 +340,10 @@ const BulkUniform = ({ classes, session, fetchAllSections, alert, user, fetchGra
                     <TableCell align='center' />
                     <TableCell align='center' />
                     <TableCell align='center' colSpan={2} className={classes.shirt} style={{ fontSize: 14 }}>
-                    Shirt <Button variant='outlined' color='secondary' onClick={showShirtChartHandler}> Size Chart</Button>
+                    Shirt <Button variant='contained' color='secondary' onClick={showShirtChartHandler}> Size Chart</Button>
                     </TableCell>
                     <TableCell align='center' colSpan={1} className={classes.pant} style={{ fontSize: 14 }}>
-                    Pant <Button variant='outlined' color='primary' onClick={showPantChartHandler}> Size Chart</Button>
+                    Pant <Button variant='contained' color='primary' onClick={showPantChartHandler}> Size Chart</Button>
                     </TableCell>
                   </TableRow>
                   <TableRow>

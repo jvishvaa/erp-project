@@ -144,7 +144,7 @@ class AddFeePlanType extends Component {
               </Button>
               <Button
                 color='primary'
-                variant='outlined'
+                variant='contained'
                 onClick={this.props.history.goBack}
                 type='button'
               >

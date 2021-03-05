@@ -232,7 +232,7 @@ class AccToBranch extends Component {
             <Button color='secondary' variant='contained' onClick={this.deleteFeeAccountHandler}>Delete</Button>
           </div>
           <div className={classes.modal__remainbutton}>
-            <Button color='primary' variant='outlined' onClick={this.deleteModalCloseHandler}>Go Back</Button>
+            <Button color='primary' variant='contained' onClick={this.deleteModalCloseHandler}>Go Back</Button>
           </div>
         </Modal>
       )

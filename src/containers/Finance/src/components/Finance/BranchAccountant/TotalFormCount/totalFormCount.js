@@ -320,7 +320,7 @@ const TotalFormCount = ({ classes,
     <React.Fragment>
       <Grid container direction='row' justify='flex-end' spacing={8}>
         <Grid item style={{ marginTop: 15 }} xs={3}>
-          <Button variant='outlined' disabled={!sessionYear || !selectedReport || !selectedDates} onClick={() => { downloadTotalExcel() }} className={classes.btn}>Download Excel Reports</Button>
+          <Button variant='contained' disabled={!sessionYear || !selectedReport || !selectedDates} onClick={() => { downloadTotalExcel() }} className={classes.btn}>Download Excel Reports</Button>
         </Grid>
       </Grid>
       <Grid container spacing={3} style={{ padding: 15 }}>

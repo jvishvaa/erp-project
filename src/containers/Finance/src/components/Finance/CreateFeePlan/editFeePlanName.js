@@ -238,7 +238,7 @@ class EditFeePlanName extends Component {
         </Grid>
         <Grid container direction='row' spacing={3} style={{ padding: 15 }}>
           <Grid item xs='8'>
-            <Button onClick={(e) => { this.handlevalue(e) }} color='primary' variant='outlined'>
+            <Button onClick={(e) => { this.handlevalue(e) }} color='primary' variant='contained'>
                     Update
             </Button>
             <Button color='primary' variant='contained' onClick={this.props.close} type='button'>Return</Button>

@@ -351,7 +351,7 @@ const AppFormList = ({ session,
       </Button>
       <Grid container direction='row' justify='flex-end' spacing={8}>
         <Grid item style={{ marginTop: 10 }} xs={3}>
-          <Button variant='outlined' onClick={() => { downloadTotalExcel() }} className={classes.btn}>Download Application Excel</Button>
+          <Button variant='contained' onClick={() => { downloadTotalExcel() }} className={classes.btn}>Download Application Excel</Button>
         </Grid>
       </Grid>
       {formList && formList.results && formList.results.length > 0 ? formListTableHandler() : ''}

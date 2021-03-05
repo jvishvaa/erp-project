@@ -235,7 +235,7 @@ class EditFeeInstallment extends Component {
               </Button>
               <Button
                 color='primary'
-                variant='outlined'
+                variant='contained'
                 onClick={this.props.close}
                 type='space-between'
               >

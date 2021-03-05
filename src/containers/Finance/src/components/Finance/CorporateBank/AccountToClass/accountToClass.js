@@ -232,7 +232,7 @@ class AccountToClass extends Component {
             <Button color='primary' variant='contained' onClick={this.deleteAccHandler}>Delete</Button>
           </div>
           <div className={classes.modal__remainbutton}>
-            <Button color='secondary' variant='outlined' onClick={this.deleteModalCloseHandler}>Go Back</Button>
+            <Button color='secondary' variant='contained' onClick={this.deleteModalCloseHandler}>Go Back</Button>
           </div>
         </Modal>
       )
