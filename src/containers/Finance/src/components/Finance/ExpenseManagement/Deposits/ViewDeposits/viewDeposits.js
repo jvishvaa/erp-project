@@ -15,7 +15,6 @@ import {
   Button as MatButton,
   Grid,
   CircularProgress,
-  Modal,
   TableCell,
   TableRow,
   Table,
@@ -26,7 +25,7 @@ import {
 import { FilterInnerComponent, filterMethod } from '../../../FilterInnerComponent/filterInnerComponent'
 
 import * as actionTypes from '../../../store/actions'
-// import { CircularProgress, Modal } from '../../../../../ui' // rajneesh
+import Modal from '../../../../../ui/Modal/modal'
 import classes from './viewDeposits.module.css'
 // import { generateExcel } from '../../../../../utils'
 
