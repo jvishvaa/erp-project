@@ -704,6 +704,10 @@ const Layout = ({ children, history }) => {
                   history.push('/finance/ReceiptBook')
                       break;
                   }
+                  case 'Transactions Report' : {
+                    history.push('/finance/TransactionStatus')
+                        break;
+                    }
       default:
         break;
     }
