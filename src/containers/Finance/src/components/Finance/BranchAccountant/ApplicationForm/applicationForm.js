@@ -46,7 +46,7 @@ const styles = theme => ({
   },
   cardBoard: {
     width: '100%',
-    marginTop: theme.spacing * 3,
+    marginTop: theme.spacing(3),
     overflowX: 'auto'
   },
   table: {

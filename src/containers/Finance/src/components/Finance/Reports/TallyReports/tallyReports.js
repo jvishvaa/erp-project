@@ -77,7 +77,7 @@ class TallyReports extends Component {
 
     handleAcademicyear = (e) => {
       const sessions = []
-      e.forEach((val) => {
+      e && e.forEach((val) => {
         sessions.push(val.value)
       })
       console.log(e)
