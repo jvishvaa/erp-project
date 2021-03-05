@@ -313,10 +313,6 @@ const CreateDailyDairy = (details, onSubmit) => {
     if(!formik.values.section || !formik.values.grade || !formik.values.subjects || !formik.values.branch.id || !subjectIds){
       return setAlert('error','Please select all fields')
     }
-    if(filePath.length === 0){
-      debugger
-      return setAlert('error','Select a file to upload')
-    }
     else{
       console.log("===============");
       console.log(subjectId);
@@ -427,15 +423,21 @@ const CreateDailyDairy = (details, onSubmit) => {
         <div className='file_name_container'>
           File {index + 1}
         </div>
-        <Divider orientation="vertical"  className='divider_color' flexItem />
-        <div className='file_close'>
+        {/* <Divider orientation="vertical"  className='divider_color' flexItem /> */}
+        <div>
           <span
             onClick={onClose}
           >
             <SvgIcon
               component={() => (
                 <img
-                  style={{
+                  style={isMobile?{
+                    marginLeft:'',
+                    width: '20px',
+                    height:'20px',
+                    // padding: '5px',
+                    cursor: 'pointer',
+                  }:{
                     width: '20px',
                     height:'20px',
                     // padding: '5px',
@@ -785,7 +787,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                             />
                         )) : null }
             </div>
-            <div className="attachmentButtonContainer" style={{ marginTop:'10%' }}>
+            <div style={isMobile?{ marginTop:'1%' }: {marginTop:'10%'}}>
 
             <Button
                         startIcon={<SvgIcon
