@@ -209,7 +209,9 @@ const TotalFormCount = ({ classes,
         fetchFormCount(sessionYear.value, selectedBranch.value, fromDate, toDate, selectedReport.value, selectedDates.value, alert, user)
       }
     } else {
-      const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
+      // const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
+      const userProfile = JSON.parse(localStorage.getItem('userDetails'))
+      const role = userProfile.personal_info.role.toLowerCase()
       if (sessionYear && selectedReport && selectedDates && role !== 'financeadmin') {
         console.log('Wihout admin +++++++')
         fetchFormCount(sessionYear.value, null, fromDate, toDate, selectedReport.value, selectedDates.value, alert, user)
