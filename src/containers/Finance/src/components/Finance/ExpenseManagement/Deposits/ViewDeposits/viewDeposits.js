@@ -477,7 +477,7 @@ class ViewDiposits extends Component {
         </Grid>
         <Divider className={classes.divider} />
         <div>
-          <MatButton variant='outlined'
+          <MatButton variant='contained'
             color='primary'
             onClick={this.createExcel}
           >
