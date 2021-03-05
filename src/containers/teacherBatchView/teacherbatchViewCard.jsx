@@ -77,8 +77,8 @@ const TeacherBatchViewCard = ({ fullData, handleViewMore, selectedViewMore }) =>
                   className='TeacherBatchCardViewMoreButton'
                   style={{
                     display:
-                      (fullData && fullData.id) ===
-                      (selectedViewMore && selectedViewMore.id)
+                      (fullData && fullData?.id) ===
+                      (selectedViewMore && selectedViewMore?.id)
                         ? 'none'
                         : '',
                   }}
