@@ -108,7 +108,7 @@ class ReceiptBookAdm extends Component {
       }
     }
     changeFeeAccountHandler = (e) => {
-      const allLabel = e.filter(event => {
+      const allLabel = e && e.filter(event => {
         return event.label === 'All Fee Account'
       })
       if (allLabel.length === 1) {
