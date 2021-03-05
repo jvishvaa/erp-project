@@ -161,7 +161,7 @@ class ViewDiposits extends Component {
 
   createExcel = () => {
     if (!this.props.pettyCashDeposit.length) {
-      // this.props.alert.warning('No Data To Generate Excel')
+      this.props.alert.warning('No Data To Generate Excel')
       return
     }
     const columns = [

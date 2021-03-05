@@ -113,10 +113,10 @@ const BulkActiveInactive = ({
     if (statusFile && reason) {
       props.bulkActiveInactive(form, props.user, props.alert)
     } else {
-      // props.alert.warning('Please Select File to Upload!')
+      props.alert.warning('Please Select File to Upload!')
     }
     if (!reason) {
-      // props.alert.warning('Please Select the remark!')
+      props.alert.warning('Please Select the remark!')
     }
   }
   return (

@@ -27,9 +27,9 @@ export const bulkActiveInactive = (payload) => {
     }).catch(err => {
       console.log(err)
       if (err.response && err.response.status === 400) {
-        // payload.alert.warning(err.response.data.err_msg)
+        payload.alert.warning(err.response.data.err_msg)
       } else {
-        // payload.alert.warning('Something Went Wrong!')
+        payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
     })
@@ -45,15 +45,15 @@ export const bulkActiveInactiveParent = (payload) => {
       }
     }).then(res => {
       if (+res.status === 200) {
-        // payload.alert.success('Successfully Done')
+        payload.alert.success('Successfully Done')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.log(err)
       if (err.response && err.response.status === 400) {
-        // payload.alert.warning(err.response.data.err_msg)
+        payload.alert.warning(err.response.data.err_msg)
       } else {
-        // payload.alert.warning('Something Went Wrong!')
+        payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
     })
@@ -76,9 +76,9 @@ export const bulkAccountantLogin = (payload) => {
     }).catch(err => {
       dispatch(actionTypes.dataLoaded())
       if (err.response && err.response.status === 400) {
-        // payload.alert.warning(err.response.data.err_msg)
+        payload.alert.warning(err.response.data.err_msg)
       } else {
-        // payload.alert.warning('Unable To get Status')
+        payload.alert.warning('Unable To get Status')
       }
     })
   }
@@ -101,7 +101,7 @@ export const branchListing = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.error(err)
-      // payload.alert.warning('Something Went Wrong')
+      payload.alert.warning('Something Went Wrong')
       dispatch(actionTypes.dataLoaded())
     })
   }
@@ -133,16 +133,16 @@ export const bulkReportUpload = (payload) => {
     }).then(res => {
       console.log('responseeeee', res)
       if (+res.status === 201) {
-        // payload.alert.success('Successfully Done')
+        payload.alert.success('Successfully Done')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.log('error response...', JSON.stringify(err))
       // console.log('reponse+++', err.response.data.err_msg)
       if (err.response && err.response.status === 400) {
-        // payload.alert.warning(err.response.data.err_msg)
+        payload.alert.warning(err.response.data.err_msg)
       } else {
-        // payload.alert.warning('Unable To get Status')
+        payload.alert.warning('Unable To get Status')
       }
 
       dispatch(actionTypes.dataLoaded())
@@ -195,7 +195,7 @@ export const fetchBulkReportStatus = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.error(err)
-      // payload.alert.warning('Unable To get Status')
+      payload.alert.warning('Unable To get Status')
       dispatch(actionTypes.dataLoaded())
     })
   }
@@ -220,9 +220,9 @@ export const bulkFeeUpload = (payload) => {
       console.log('error response...', JSON.stringify(err))
       // console.log('reponse+++', err.response.data.err_msg)
       if (err.response && err.response.status === 400) {
-        // payload.alert.warning(err.response.data.err_msg)
+        payload.alert.warning(err.response.data.err_msg)
       } else {
-        // payload.alert.warning('Unable To get Status')
+        payload.alert.warning('Unable To get Status')
       }
 
       dispatch(actionTypes.dataLoaded())
@@ -239,14 +239,14 @@ export const onlinePaymentUpload = (payload) => {
       }
     }).then(res => {
       if (+res.status === 200) {
-        // payload.alert.success('Successfully Done')
+        payload.alert.success('Successfully Done')
       }
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.log(err)
-      // payload.alert.warning('Failed To Perform')
+      payload.alert.warning('Failed To Perform')
       dispatch(actionTypes.dataLoaded())
     })
   }
 }
- // payload.alert.warning(err.response.data.err_msg)
+ payload.alert.warning(err.response.data.err_msg)

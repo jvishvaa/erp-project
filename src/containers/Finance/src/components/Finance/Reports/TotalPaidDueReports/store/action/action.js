@@ -134,7 +134,7 @@ export const fetchFeePlanNames = (payload) => {
       dispatch(actionTypes.dataLoaded())
     })).catch(error => {
       dispatch(actionTypes.dataLoaded())
-      // payload.alert.warning('Unable to load fee plans')
+      payload.alert.warning('Unable to load fee plans')
       console.log(error)
     })
   }

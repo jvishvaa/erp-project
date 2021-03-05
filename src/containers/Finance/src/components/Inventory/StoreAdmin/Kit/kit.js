@@ -171,7 +171,7 @@ class Kit extends Component {
     } = this.state
 
     if (!currentBranch || !currentGrade || !currentSession) {
-      // this.props.alert.warning('Please Fill All Madatory Fields')
+      this.props.alert.warning('Please Fill All Madatory Fields')
       return
     }
     this.props.fetchItems(currentSession, currentBranch, currentGrade, this.props.alert, this.props.user)
@@ -293,7 +293,7 @@ class Kit extends Component {
   createColorHandler = () => {
     const color = this.colorRef.current.value
     if (color.length === 0) {
-      // this.props.alert.warning('Please Give Some Color Value')
+      this.props.alert.warning('Please Give Some Color Value')
       return
     }
     this.props.createColor(color, this.props.alert, this.props.user)
@@ -337,7 +337,7 @@ class Kit extends Component {
     const items = e.map(ele => +ele.value)
     const found = kitItems.some(r => items.indexOf(r) >= 0)
     if (found) {
-      // this.props.alert.warning('Duplicate Item Found')
+      this.props.alert.warning('Duplicate Item Found')
       return
     }
 
@@ -358,7 +358,7 @@ class Kit extends Component {
       kitItems = [...kitItems, ...ids]
     })
     if (error) {
-      // this.props.alert.warning('Duplicate Items in Two Kits')
+      this.props.alert.warning('Duplicate Items in Two Kits')
       return
     }
     const {
@@ -367,7 +367,7 @@ class Kit extends Component {
     const items = itemArr.map(ele => +ele.value)
     const found = kitItems.some(r => items.indexOf(r) >= 0)
     if (found) {
-      // this.props.alert.warning('Duplicate Item Found')
+      this.props.alert.warning('Duplicate Item Found')
       return
     }
     this.setState({
@@ -525,7 +525,7 @@ class Kit extends Component {
     const itemsId = itemArr.map(item => item.value)
     const commonKitIds = commonKitArr.map(item => item.value)
     if (isError) {
-      // alert.warning('Every Item should have some quantity')
+      alert.warning('Every Item should have some quantity')
       return
     }
 
@@ -553,12 +553,12 @@ class Kit extends Component {
     }
 
     if (!kitName || !kitDesc || !kitAmount || (!isNewStudent && !isOldStudent)) {
-      // this.props.alert.warning('Please Fill Select all Mandatory Fields')
+      this.props.alert.warning('Please Fill Select all Mandatory Fields')
       return
     }
 
     if (!itemsId.length && !commonKitIds.length) {
-      // this.props.alert.warning('Please Select at least an item or a kit')
+      this.props.alert.warning('Please Select at least an item or a kit')
       return
     }
 
@@ -586,7 +586,7 @@ class Kit extends Component {
             kitAmount: event.target.value
           })
         } else {
-          // this.props.alert.warning('Amount cant be 0')
+          this.props.alert.warning('Amount cant be 0')
         }
         break
       }
@@ -638,7 +638,7 @@ class Kit extends Component {
     const itemsId = itemArr.map(item => item.value)
     const commonKitIds = commonKitArr.map(item => item.value)
     if (isError) {
-      // alert.warning('Every Item should have some quantity')
+      alert.warning('Every Item should have some quantity')
       return
     }
 
@@ -667,12 +667,12 @@ class Kit extends Component {
     }
 
     if (!kitName || !kitDesp || !kitAmount || (!isNewStudent && !isOldStudent)) {
-      // this.props.alert.warning('Please Fill Select all Mandatory Fields')
+      this.props.alert.warning('Please Fill Select all Mandatory Fields')
       return
     }
 
     if (!itemsId.length && !commonKitIds.length) {
-      // this.props.alert.warning('Please Select at least an item or a kit')
+      this.props.alert.warning('Please Select at least an item or a kit')
       return
     }
 
@@ -692,7 +692,7 @@ class Kit extends Component {
         this.calculateKitPrice()
       })
     } else {
-      // this.props.alert.warning('Quantity Cant be less than 1')
+      this.props.alert.warning('Quantity Cant be less than 1')
     }
   }
   createData = () => {

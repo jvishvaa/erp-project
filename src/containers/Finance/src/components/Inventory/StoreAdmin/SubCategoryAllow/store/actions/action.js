@@ -15,7 +15,7 @@ export const fetchSubCategory = (payload) => {
     }).then(response => {
       if (response.status === 200) {
         if (response && response.data.length <= 0) {
-          // payload.alert.warning('Please Create Sub-Category to View Sub-Category!')
+          payload.alert.warning('Please Create Sub-Category to View Sub-Category!')
         }
       }
       dispatch({
@@ -27,9 +27,9 @@ export const fetchSubCategory = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       if (err.response && (err.response.status === 400 || err.response.status === 404)) {
-        // payload.alert.warning(err.response.data.err_msg)
+        payload.alert.warning(err.response.data.err_msg)
       } else {
-        // payload.alert.warning('Something Went Wrong!')
+        payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
       console.log(err)
@@ -46,7 +46,7 @@ export const createSubCategory = (payload) => {
       }
     }).then(response => {
       if (+response.status === 200) {
-        // payload.alert.success('Updated successfully!')
+        payload.alert.success('Updated successfully!')
         dispatch({
           type: CREATE_SUB_CATEGORY,
           payload: {
@@ -54,7 +54,7 @@ export const createSubCategory = (payload) => {
           }
         })
       } else if (+response.status === 201) {
-        // payload.alert.success('Created successfully!')
+        payload.alert.success('Created successfully!')
         dispatch({
           type: CREATE_SUB_CATEGORY,
           payload: {
@@ -65,9 +65,9 @@ export const createSubCategory = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       if (err.response && (err.response.status === 400 || err.response.status === 404)) {
-        // payload.alert.warning(err.response.data.err_msg)
+        payload.alert.warning(err.response.data.err_msg)
       } else {
-        // payload.alert.warning('Something Went Wrong!')
+        payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
       console.log(err)

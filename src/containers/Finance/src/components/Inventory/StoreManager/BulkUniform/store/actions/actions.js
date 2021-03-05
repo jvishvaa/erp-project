@@ -26,7 +26,7 @@ export const fetchBulkUniform = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.log(err)
-      // payload.alert.warning('Something Went Wrong')
+      payload.alert.warning('Something Went Wrong')
       dispatch(actionTypes.dataLoaded())
     })
   }
@@ -50,7 +50,7 @@ export const sendEachUni = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.log(err)
-      // payload.alert.warning('Something Went Wrong')
+      payload.alert.warning('Something Went Wrong')
       dispatch(actionTypes.dataLoaded())
     })
   }
@@ -74,7 +74,7 @@ export const sendBulkUniform = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.log(err)
-      // payload.alert.warning('Something Went Wrong')
+      payload.alert.warning('Something Went Wrong')
       dispatch(actionTypes.dataLoaded())
     })
   }

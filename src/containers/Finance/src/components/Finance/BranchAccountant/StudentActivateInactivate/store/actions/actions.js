@@ -27,7 +27,7 @@ export const getActiveStudentDetails = (payload) => {
     }).catch(error => {
       dispatch(actionTypes.dataLoaded())
       console.log(error)
-      // payload.alert.warning('Unable to load data')
+      payload.alert.warning('Unable to load data')
     })
   }
 }
@@ -52,7 +52,7 @@ export const getInActiveStudentDetails = (payload) => {
     }).catch(error => {
       dispatch(actionTypes.dataLoaded())
       console.log(error)
-      // payload.alert.warning('Unable to load data')
+      payload.alert.warning('Unable to load data')
     })
   }
 }
@@ -74,7 +74,7 @@ export const fetchAllPayment = (payload) => {
       })
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
-      // payload.alert.warning('Unable To Load')
+      payload.alert.warning('Unable To Load')
       dispatch(actionTypes.dataLoaded())
       console.log(err)
     })
@@ -101,7 +101,7 @@ export const postStudentActivateInactivate = (payload) => {
     }).catch(error => {
       dispatch(actionTypes.dataLoaded())
       console.log(error)
-      // payload.alert.warning('Unable to load data')
+      payload.alert.warning('Unable to load data')
     })
   }
 }
