@@ -28,10 +28,12 @@ const DailyBillingDetailsPage = ({ dataLoadingStatus, totalBillingDetails, domai
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
-    let role = ''
+    // let role = ''
     // role = JSON.parse(localStorage.getItem('user_profile')).personal_info.role
     // role = JSON.parse(localStorage.getItem('userDetails')).user_role
-    role = JSON.parse(localStorage.getItem('userDetails')).role_details.user_role
+    // role = JSON.parse(localStorage.getItem('userDetails')).role_details.user_role
+    const userProfile = JSON.parse(localStorage.getItem('userDetails'))
+    const role = userProfile.personal_info.role.toLowerCase()
     setRole(role)
   }, [])
 

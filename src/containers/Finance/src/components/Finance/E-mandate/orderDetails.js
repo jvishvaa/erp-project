@@ -48,17 +48,19 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
   // const [allNetbankingData, setAllNetbankingData] = useState({})
 
   useEffect(() => {
-    let role = ''
+    // let role = ''
     // role = JSON.parse(localStorage.getItem('user_profile')).personal_info.role
-    role = JSON.parse(localStorage.getItem('userDetails')).role_details.user_role
-    console.log('role+', JSON.parse(localStorage.getItem('role_details')))
+    // role = JSON.parse(localStorage.getItem('userDetails')).role_details.user_role
+    // console.log('role+', JSON.parse(localStorage.getItem('role_details')))
+    const userProfile = JSON.parse(localStorage.getItem('userDetails'))
+    const role = userProfile.personal_info.role.toLowerCase()
     setRole(role)
     getDomainNameWithCusId(sessionData && sessionData.value, user, alert)
     fetchBranches(sessionData && sessionData.value, alert, user)
   }, [alert, fetchBranches, getDomainNameWithCusId, session, sessionData, user])
 
   useEffect(() => {
-    if (role === 'BTM_Admin Venky' || role === 'F_acc') {
+    if (role === 'financeadmin' || role === 'financeaccountant') {
       let branch
       getOrderDetails(branch, sessionData && sessionData.value, role, user, alert)
       setShowTable(true)
@@ -331,7 +333,7 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
         customer_id: val.customer_id ? val.customer_id : '',
         order_id: val.razorpay_order_id ? val.razorpay_order_id : '',
         status: val.is_authentication_payment_done ? <span style={{ color: 'green', fontWeight: 'bold' }}>Done</span> : <span style={{ color: 'red', fontWeight: 'bold' }}>Not Done</span>,
-        CreateLink: val.is_authentication_payment_done ? <span style={{ color: 'green', fontWeight: 'bold' }}>Already Done </span> : (role === 'FinanceAdm' || role === 'F_acc') ? <Button variant='contained' color='primary' onClick={() => paymentHandler(val.customer_id, val.razorpay_order_id)} style={{ marginTop: '-5px', marginLeft: '-10px' }}>{(role !== 'BTM_Admin Venky' || role !== 'F_acc') ? 'Create Link' : 'pay first payment'}</Button> : ''
+        CreateLink: val.is_authentication_payment_done ? <span style={{ color: 'green', fontWeight: 'bold' }}>Already Done </span> : (role === 'FinanceAdm' || role === 'financeaccountant') ? <Button variant='contained' color='primary' onClick={() => paymentHandler(val.customer_id, val.razorpay_order_id)} style={{ marginTop: '-5px', marginLeft: '-10px' }}>{(role !== 'financeadmin' || role !== 'financeaccountant') ? 'Create Link' : 'pay first payment'}</Button> : ''
         // Update: <Button variant='contained' color='primary' style={{ marginTop: '-5px' }}> Update </Button>
       }
     })
@@ -480,7 +482,7 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
     <Layout>
     <div>
       <Grid container spacing={1} style={{ padding: 10 }} >
-        {(role !== 'BTM_Admin Venky' && role !== 'F_acc')
+        {(role !== 'financeadmin' && role !== 'financeaccountant')
           ? <React.Fragment>
             <Grid item xs={9} />
             <Grid item xs={3}>
@@ -494,7 +496,7 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
           </React.Fragment>
 
           : []}
-        {(role !== 'BTM_Admin Venky' && role !== 'F_acc')
+        {(role !== 'financeadmin' && role !== 'financeaccountant')
           ? <React.Fragment>
             <Grid item xm={4} md={4}>
               <label>Academic Year*</label>
@@ -538,7 +540,7 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
                  <TableCell>Customer Id</TableCell>
                  <TableCell>Order Id</TableCell>
                  <TableCell>Authentication Payment Status</TableCell>
-                 <TableCell>{(role !== 'BTM_Admin Venky' && role !== 'F_acc') ? 'Create Order Link' : 'Authentication payment'}</TableCell>
+                 <TableCell>{(role !== 'financeadmin' && role !== 'financeaccountant') ? 'Create Order Link' : 'Authentication payment'}</TableCell>
                </TableRow>
              </TableHead>
              <TableBody>
@@ -554,7 +556,7 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
                  <TableCell>{val.customer_id ? val.customer_id : ''}</TableCell>
                  <TableCell>{ val.razorpay_order_id ? val.razorpay_order_id : ''}</TableCell>
                  <TableCell>{val.is_authentication_payment_done ? <span style={{ color: 'green', fontWeight: 'bold' }}>Done</span> : <span style={{ color: 'red', fontWeight: 'bold' }}>Not Done</span>}</TableCell>
-                 <TableCell>{val.is_authentication_payment_done ? <span style={{ color: 'green', fontWeight: 'bold' }}>Already Done </span> : (role === 'BTM_Admin Venky' || role === 'F_acc') ? <Button variant='contained' color='primary' onClick={() => paymentHandler(val.customer_id, val.razorpay_order_id)} style={{ marginTop: '-5px', marginLeft: '-10px' }}>{(role === 'BTM_Admin Venky' || role === 'F_acc') ? 'pay first payment' : 'Create Link' }</Button> : ''}</TableCell>
+                 <TableCell>{val.is_authentication_payment_done ? <span style={{ color: 'green', fontWeight: 'bold' }}>Already Done </span> : (role === 'financeadmin' || role === 'financeaccountant') ? <Button variant='contained' color='primary' onClick={() => paymentHandler(val.customer_id, val.razorpay_order_id)} style={{ marginTop: '-5px', marginLeft: '-10px' }}>{(role === 'financeadmin' || role === 'F_acc') ? 'pay first payment' : 'Create Link' }</Button> : ''}</TableCell>
              </TableRow>
                )
              })}

@@ -53,13 +53,15 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
   useEffect(() => {
     console.log("New alert: ", setAlert)
     // setAlert('error', 'helloo world!')
-    let role = ''
+    // let role = ''
     // role = JSON.parse(localStorage.getItem('userDetails')).user_role
-    role = JSON.parse(localStorage.getItem('userDetails')).role_details.user_role
-    setRole(role)
+    // role = JSON.parse(localStorage.getItem('userDetails')).role_details.user_role
+    // setRole(role)
+    const userProfile = JSON.parse(localStorage.getItem('userDetails'))
+    const role = userProfile.personal_info.role.toLowerCase()
   }, [])
   useEffect(() => {
-    if (role === 'BTM_Admin Venky' || role === 'F_acc') {
+    if (role === 'financeadmin' || role === 'financeaccountant') {
       let branch
       todayEMandateDetails(branch, sessionData && sessionData.value, role, user, alert)
       setShowTable(true)
@@ -613,7 +615,7 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
     <Layout>
     <div>
       <Grid container spacing={3} style={{ padding: 15 }}>
-        {role !== 'BTM_Admin Venky' && role !== 'F_acc'
+        {role !== 'financeadmin' && role !== 'financeaccountant'
           ? <React.Fragment>
             <Grid item xs={9} />
             <Grid item xs={3}>
@@ -626,7 +628,7 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
             </Grid>
           </React.Fragment>
           : []}
-        {role !== 'BTM_Admin Venky' && role !== 'F_acc'
+        {role !== 'financeadmin' && role !== 'financeaccountant'
           ? <React.Fragment>
             <Grid item xs={3}>
               <label>Academic Year*</label>

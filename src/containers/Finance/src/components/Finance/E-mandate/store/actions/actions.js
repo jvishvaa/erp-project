@@ -449,7 +449,7 @@ export const updateCustDetails = (payload) => {
 
 export const totalBillingDetails = (payload) => {
   let url = null
-  if (payload.role !== 'FinanceAdmin' && payload.role !== 'FinanceAccountant') {
+  if (payload.role !== 'financeadmin' && payload.role !== 'financeaccountant') {
     url = urls.TotalBillingDetails + '?academic_year=' + payload.session + '&branch=' + payload.domain + '&month=' + payload.month
   } else {
     url = urls.TotalBillingDetails + '?month=' + payload.month
