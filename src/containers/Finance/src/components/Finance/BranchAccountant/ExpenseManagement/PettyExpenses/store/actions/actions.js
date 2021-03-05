@@ -213,7 +213,7 @@ export const fetchLedgerReport = (payload) => {
 export const downloadLedgerAttachment = (payload) => {
   return (dispatch) => {
     const options = payload.urls.map(atUrl => ({
-      url: urls.BASE + atUrl.file,
+      url: atUrl.file,
       method: 'get',
       responseType: 'blob',
       headers: {
