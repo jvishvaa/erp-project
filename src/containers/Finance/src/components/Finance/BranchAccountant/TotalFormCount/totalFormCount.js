@@ -98,7 +98,7 @@ const TotalFormCount = ({ classes,
     // const role = (JSON.parse(localStorage.getItem('userDetails'))).personal_info.role
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
       const role = userProfile.personal_info.role.toLowerCase()
-    if (role === 'FinanceAdmin') {
+    if (role === 'financeadmin') {
       setIsAdmin(true)
       // if (branchStored && role === 'FinanceAdmin') {
       //   setSelectedBranch(branchStored)
@@ -114,7 +114,7 @@ const TotalFormCount = ({ classes,
     // const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
       const role = userProfile.personal_info.role.toLowerCase()
-    if (branchStored && role === 'FinanceAdmin') {
+    if (branchStored && role === 'financeadmin') {
       setSelectedBranch(branchStored)
     }
     if (fromDateStored) {
@@ -200,18 +200,18 @@ const TotalFormCount = ({ classes,
     setShowTable(true)
     if (displayDateRange) {
       const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
-      if (sessionYear && fromDate && toDate && selectedReport && selectedDates && role !== 'FinanceAdmin') {
+      if (sessionYear && fromDate && toDate && selectedReport && selectedDates && role !== 'financeadmin') {
         console.log('Wihout admin +++++++')
         fetchFormCount(sessionYear.value, null, fromDate, toDate, selectedReport.value, selectedDates.value, alert, user)
-      } else if (sessionYear && fromDate && toDate && (role === 'FinanceAdmin') && selectedBranch && selectedReport && selectedDates) {
+      } else if (sessionYear && fromDate && toDate && (role === 'financeadmin') && selectedBranch && selectedReport && selectedDates) {
         fetchFormCount(sessionYear.value, selectedBranch.value, fromDate, toDate, selectedReport.value, selectedDates.value, alert, user)
       }
     } else {
       const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
-      if (sessionYear && selectedReport && selectedDates && role !== 'FinanceAdmin') {
+      if (sessionYear && selectedReport && selectedDates && role !== 'financeadmin') {
         console.log('Wihout admin +++++++')
         fetchFormCount(sessionYear.value, null, fromDate, toDate, selectedReport.value, selectedDates.value, alert, user)
-      } else if (sessionYear && (role === 'FinanceAdmin') && selectedBranch && selectedReport && selectedDates) {
+      } else if (sessionYear && (role === 'financeadmin') && selectedBranch && selectedReport && selectedDates) {
         fetchFormCount(sessionYear.value, selectedBranch.value, fromDate, toDate, selectedReport.value, selectedDates.value, alert, user)
       }
     }
