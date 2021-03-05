@@ -179,11 +179,12 @@ export default function ClassdetailsCardComponent(props) {
         }
     }
     const handleCoursePlan = () => {
-        history.push(`/view-period/${props.filterData && props?.filterData?.course?.id}`)
+        history.push(`/create/course/${props.filterData && props?.filterData?.course?.id}/${props.filterData && props?.filterData?.grade?.id}`)
+        sessionStorage.setItem('isAol',1);
     }
 
     useEffect(() => {
-        axiosInstance.get(`${endpoints.aol.teacherList}?branch_id=${props?.filterData?.branch?.id}&grade_id=${props?.filterData?.grade?.grade_id}`)
+        axiosInstance.get(`${endpoints.aol.teacherList}?branch_id=${props?.filterData?.branch?.id}&grade_id=${props?.filterData?.grade?.grade_id}&is_aol=1`)
             .then(result => {
                 if (result.data.status_code === 200) {
                     setTeacherDropdown(result.data.data)

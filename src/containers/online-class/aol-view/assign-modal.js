@@ -74,7 +74,9 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
     }
 
     const handleDurations = (e) => {
-        setDurations(e.target.value);
+        let val =e.target.value;
+        if(val<=180)setDurations(e.target.value);
+        else setAlert ('warning','Max Duration is 180')
     }
 
     useEffect(() => {
@@ -112,6 +114,7 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                     "start_date_time": selectedDate.format(`${ye}-${mo}-${da} hh:mm:ss`),
                     "teacher": filterData.teacher.tutor_id,
                     "durations": durations,
+                    // "is_aol":1
                 }).then(result => {
                     if (result.data.status_code === 200) {
                         setAlert('success', result.data.message)
@@ -133,6 +136,7 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                         "start_date_time": selectedDate.format(`${ye}-${mo}-${da} hh:mm:ss`),
                         "teacher": filterData.teacher.tutor_id,
                         "durations": durations,
+                        // "is_aol":1
                     }).then(result => {
                         if (result.data.status_code === 200) {
                             setAlert('success', result.data.message)
@@ -246,7 +250,10 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
                                         placeholder='Enter Durations in minutes'
                                         value={durations}
                                         onChange={(e) => handleDuration(e)}
-                                        size='small'
+                                        inputProps={{
+                                            min: 0,
+                                            max: 180
+                                        }}
                                     />
                                 </Grid>
                             </Grid>
