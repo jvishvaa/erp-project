@@ -335,11 +335,11 @@ const LedgerReport = ({ classes,
               </TableCell>
               <TableCell>{item.paid_to && item.paid_to.party_name}</TableCell>
               <TableCell>{item.approved_by}</TableCell>
-              <TableCell>
+              <TableCell style={{ textAlign: 'center'}}>
                 {item.attachments && item.attachments.length > 0 && item.attachments.map((val) => {
                   return (
-                    <div>
-                      <TableCell><a href={val.file}>{val.file && val.file.split('/')[8]}</a></TableCell>
+                    <div style={{ textAlign: 'center'}}>
+                      <TableCell style={{ textAlign: 'center'}}>{<a href={val.file}>{val.file && val.file.split('/')[7]}</a>}</TableCell>
                     </div>
                   )
                 })}

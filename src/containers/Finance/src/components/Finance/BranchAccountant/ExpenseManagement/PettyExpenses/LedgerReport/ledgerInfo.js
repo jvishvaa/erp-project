@@ -100,10 +100,10 @@ const LedgerInfo = ({ data, classes, ...props }) => {
         data.attachments && data.attachments.length && (
           <Grid container>
             <Grid item xs={3}>
-              <div
+              {/* <div
                 className={classes.downloadLink}
                 onClick={() => props.download(data.attachments, data.user, data.alert)}
-              >Download Attachments</div>
+              >Download Attachments</div> */}
             </Grid>
           </Grid>
         )
