@@ -9,7 +9,7 @@ import endpoints from '../../config/endpoints';
 import Loader from '../../components/loader/loader';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import ResourceDialog from '../online-class/online-class-resources/resourceDialog';
-import './style.scss'
+import './styles.css'
 
 const JoinClass = (props) => {
   const fullData = props.fullData;

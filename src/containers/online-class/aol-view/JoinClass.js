@@ -1,6 +1,6 @@
-import React,{useContext,useEffect} from 'react';
+import React,{useContext,useEffect,useState} from 'react';
 import moment from 'moment';
-import { makeStyles, withStyles, Typography, Button } from '@material-ui/core';
+import { makeStyles, withStyles, Typography, Button,Popover,Grid } from '@material-ui/core';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints'
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -81,13 +81,25 @@ export default function JoinClassComponent(props) {
     const [ isCancel, setIsCancel] = React.useState(false);
     const { setAlert } = useContext(AlertNotificationContext);
 
+      const [anchorEl, setAnchorEl] = useState(null);
+
     // const date=props?.data?.online_class?.start_time.split('T')
     //console.log(props.data.is_cancelled + " ==="+ isCancel );
     const params ={
         zoom_meeting_id: props?.data?.zoom_id,
         class_date: props?.data?.date
     }
-    const handleCancel = () => {
+
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
+    function handleCancel(event){
+        setAnchorEl(event.currentTarget)
+    }
+    function handleCloseData() {
+        setAnchorEl(null);
+      };
+
+    const handleCancelConfirm = () => {
         axiosInstance.put(`${endpoints.aol.cancelClass}`,params)
         .then((res) => {
             setAlert('success',res.data.message)
@@ -157,10 +169,57 @@ export default function JoinClassComponent(props) {
                         <StyledRejectButton
                             variant="contained"
                             color="primary"
-                            onClick={handleCancel}
+                            onClick={(e)=>handleCancel(e)}
                         >
                             Cancel
                         </StyledRejectButton>
+                        <Popover
+                      className='deletePopover'
+                      id={id}
+                      open={open}
+                      anchorEl={anchorEl}
+                    //   onClose={handleClose}
+                      style={{ overflow: 'hidden' }}
+                      anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                      }}
+                      transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                      }}
+                    >
+                      <Grid
+                        container
+                        spacing={2}
+                        style={{ textAlign: 'center', padding: '10px' }}
+                      >
+                        <Grid item md={12} xs={12}>
+                          <Typography>Are you sure you want to cancel?</Typography>
+                        </Grid>
+                        <Grid item md={6} xs={12}>
+                          <Button
+                            variant='contained'
+                            size='small'
+                            style={{ fontSize: '11px' }}
+                            onClick={() => handleCloseData()}
+                          >
+                            Cancel
+                    </Button>
+                        </Grid>
+                        <Grid item md={6} xs={12}>
+                          <Button
+                            variant='contained'
+                            color='primary'
+                            style={{ fontSize: '11px' }}
+                            size='small'
+                            onClick={()=>handleCancelConfirm()}
+                          >
+                            Confirm
+                    </Button>
+                        </Grid>
+                      </Grid>
+                    </Popover>
                     </div>
              {/* }   */}
             {/* )} */}
