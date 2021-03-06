@@ -178,9 +178,7 @@ const Filter = (props) => {
         setLoading(true);
         setPage(1);
         if(window.location.host === endpoints?.aolConfirmURL){
-            callApi(`${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
-                selectedBatch && selectedBatch.id
-            }&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=12&module_id=15&class_type=1&batch_limit=${selectedBatch && selectedBatch.batch_size}&batch_limit=${selectedBatch.batch_size}`,
+            callApi(`${endpoints.teacherViewBatches.getBatchList}?is_aol=1&course=${selectedCourse.id}&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=12&module_id=15&class_type=1&batch_limit=${selectedBatch && selectedBatch.batch_size}`,
             'filter'
         );
         }else if(selectedCourse.id){
