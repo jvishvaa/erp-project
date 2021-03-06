@@ -46,6 +46,26 @@ const JoinClass = (props) => {
       });
   }
 
+  const handleJoin = async()=>{
+    const params = {
+      zoom_meeting_id: fullData && fullData.id,
+      class_date: props.data && props.data.date,
+      is_attended: true
+    };
+  await  axiosInstance
+      .put(endpoints.studentViewBatchesApi.rejetBatchApi, params)
+      .then((res) => {
+        setLoading(false);
+        setIsAccept(true);
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', error.message);
+      });
+    window.open(fullData && fullData.join_url)
+
+  }
+
   function handleCancel() {
     setLoading(true);
     const params1 = {
@@ -104,7 +124,7 @@ const JoinClass = (props) => {
             color='secondary'
             fullWidth
             variant='contained'
-            onClick={() => window.open(fullData && fullData.join_url)}
+            onClick={handleJoin}
             className='teacherFullViewSmallButtons'
           >
             Join
