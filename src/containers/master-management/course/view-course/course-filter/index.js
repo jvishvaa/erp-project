@@ -248,7 +248,9 @@ const CourseFilter = ({
               sessionStorage.removeItem('isAol');
               sessionStorage.removeItem('gradeKey');
               sessionStorage.setItem('createCourse',1);
-              history.push('/create/course')
+              sessionStorage.removeItem('periodDetails');
+              sessionStorage.removeItem('isErpClass');
+              history.push('/create/course');
             }}
             size='medium'
           >

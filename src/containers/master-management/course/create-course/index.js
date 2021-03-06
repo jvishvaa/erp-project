@@ -128,31 +128,46 @@ const CreateCourse = () => {
         history.push('/online-class/attend-class');
       } else if (isAolValue === 3) {
         history.push('/online-class/teacher-view-class');
-      } else if (isCreate !== 1) {
+      } else {
         const gKey = Number(sessionStorage.getItem('gradeKey')) || '';
         if (isCreate !== 1) {
-          history.push(`/course-list/${gKey}||${gradeKey}`);
-        }
+          history.push(`/course-list`);
+        } else history.push(`/course-list`);
         sessionStorage.removeItem('gradeKey');
       }
     } else {
-      const gKey = Number(sessionStorage.getItem('gradeKey')) || '';
-      if (isCreate !== 1) {
-        history.push(`/course-list/${gKey}||${gradeKey}`);
+      const isErpValue = Number(sessionStorage.getItem('isErpClass')) || '';
+      if (isErpValue === 1) {
+        history.push(`/online-class/view-class`);
+      } else if (isErpValue === 2) {
+        history.push('/erp-online-class-student-view');
+      } else if (isErpValue === 3) {
+        history.push('/erp-online-class-teacher-view');
+      } else {
+        const gKey = Number(sessionStorage.getItem('gradeKey')) || '';
+        if (isCreate !== 1) {
+          history.push(`/course-list/${gKey}`);
+        } else history.push(`/course-list`);
+        sessionStorage.removeItem('gradeKey');
       }
-      sessionStorage.removeItem('gradeKey');
     }
   };
 
   const handleBack = () => {
-    if (Number(gradeKey)) {
-      goBackHandler();
+    const isNext = Number(sessionStorage.getItem('nextFlag')) || '';
+    if (isNext !== 1) {
+      if (Number(gradeKey)) {
+        goBackHandler();
+      } else {
+        const isCreate = Number(sessionStorage.getItem('createCourse')) || '';
+        const periodView = Number(sessionStorage.getItem('periodDetails')) || '';
+        const isGrade = Number(sessionStorage.getItem('gradeKey')) || '';
+        if (isCreate === 1 || periodView === 1 || Number(isGrade) > 0)
+          setNextToggle((prev) => !prev);
+      }
     } else {
-      const isCreate = Number(sessionStorage.getItem('createCourse')) || '';
-      const periodView = Number(sessionStorage.getItem('periodDetails')) || '';
-      const isGrade = Number(sessionStorage.getItem('gradeKey')) || '';
-      if(isCreate===1 || periodView===1 || Number(isGrade))
       setNextToggle((prev) => !prev);
+      sessionStorage.removeItem('nextFlag');
     }
   };
 
@@ -206,6 +221,15 @@ const CreateCourse = () => {
                     history.push('/online-class/attend-class');
                   } else if (isAolValue === 3) {
                     history.push('/online-class/teacher-view-class');
+                  }
+                } else {
+                  const isErpValue = Number(sessionStorage.getItem('isErpClass')) || '';
+                  if (isErpValue === 1) {
+                    history.push(`/online-class/view-class`);
+                  } else if (isErpValue === 2) {
+                    history.push('/erp-online-class-student-view');
+                  } else if (isErpValue === 3) {
+                    history.push('/erp-online-class-teacher-view');
                   }
                 }
               }
@@ -274,6 +298,7 @@ const CreateCourse = () => {
             }
             setData(list);
           }
+          sessionStorage.setItem('nextFlag', 1);
           setNextToggle((prev) => !prev);
         } else {
           setAlert('warning', 'Periods should be more than or equal to 1');

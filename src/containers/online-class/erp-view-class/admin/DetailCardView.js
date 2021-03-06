@@ -121,7 +121,7 @@ const JoinClass = (props) => {
         </span>
         {/* <CountdownTimer /> */}
       </Grid>
-      
+
       {isAccept ? (
         <Grid item xs={6}>
           {joinPermission ? (
@@ -135,14 +135,12 @@ const JoinClass = (props) => {
             >
               Join
             </Button>
-          ) : (
-            null
-            // <CountdownTimer
-            //   classData={props.fullData}
-            //  />
-          )}
+          ) : null
+          // <CountdownTimer
+          //   classData={props.fullData}
+          //  />
+          }
           {/* <Typography>{cTime}</Typography> */}
-
         </Grid>
       ) : (
         <>
@@ -392,12 +390,12 @@ const DetailCardView = ({
   };
   const handleCoursePlan = () => {
     if (window.location.pathname === '/erp-online-class-student-view') {
+      sessionStorage.setItem('isErpClass', 2);
       history.push(
-        `/create/course/${fullData.online_class && fullData.online_class.course_id}/${
-          role_details && role_details.grades
-        }/4`
+        `/create/course/${fullData.online_class && fullData.online_class.course_id}/1`
       );
     } else {
+      sessionStorage.setItem('isErpClass', 3);
       history.push(
         `/create/course/${fullData.online_class && fullData.online_class.cource_id}/${
           selectedGrade.id
