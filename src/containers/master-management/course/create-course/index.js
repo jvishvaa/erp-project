@@ -120,6 +120,7 @@ const CreateCourse = () => {
 
   const goBackHandler = () => {
     const isCreate = Number(sessionStorage.getItem('createCourse')) || '';
+    const isPeriod = Number(sessionStorage.getItem('periodDetails')) || '';
     if (window.location.host === endpoints.aolConfirmURL) {
       const isAolValue = Number(sessionStorage.getItem('isAol')) || '';
       if (isAolValue === 1) {
@@ -130,9 +131,9 @@ const CreateCourse = () => {
         history.push('/online-class/teacher-view-class');
       } else {
         const gKey = Number(sessionStorage.getItem('gradeKey')) || '';
-        if (isCreate !== 1) {
-          history.push(`/course-list`);
-        } else history.push(`/course-list`);
+        if (isCreate !== 1 || isPeriod === 1) {
+          history.push(`/course-list/${gKey}`);
+        }
         sessionStorage.removeItem('gradeKey');
       }
     } else {
@@ -145,9 +146,9 @@ const CreateCourse = () => {
         history.push('/erp-online-class-teacher-view');
       } else {
         const gKey = Number(sessionStorage.getItem('gradeKey')) || '';
-        if (isCreate !== 1) {
+        if (isCreate !== 1 || isPeriod === 1) {
           history.push(`/course-list/${gKey}`);
-        } else history.push(`/course-list`);
+        }
         sessionStorage.removeItem('gradeKey');
       }
     }
