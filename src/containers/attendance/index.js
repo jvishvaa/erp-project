@@ -207,8 +207,8 @@ const AttendeeListRemake = (props) => {
               />
             </MuiPickersUtilsProvider>
           </Grid>
-          <Grid item xs={12} sm={2} style={{backgroundColor:'#ff6b6b'}}>
-            <Button onClick={handleExcelDownload} className='downloadButton'>Download Excel</Button>
+          <Grid item xs={12} sm={2}>
+            <Button onClick={handleExcelDownload} style={{backgroundColor:'#ff6b6b'}}>Download Excel</Button>
           </Grid>
           <Grid item xs={12} sm={3}>
             <Typography variant='h5' style={{ color: 'green' }}>
