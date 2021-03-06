@@ -45,7 +45,7 @@ class ManagePayment extends Component {
       getList: false,
       erp: null
     }
-    this.currBrnch = JSON.parse(localStorage.getItem('user_profile')).branch_id
+    // this.currBrnch = JSON.parse(localStorage.getItem('user_profile')).branch_id
     // console.log(BranchId.includes(this.currBrnch))
   }
   componentDidMount () {
