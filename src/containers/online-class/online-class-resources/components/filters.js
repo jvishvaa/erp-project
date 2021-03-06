@@ -478,7 +478,7 @@ const Filter = (props) => {
                                 Clear All
                             </Button>
                             </Grid>
-                            <Grid item md={2} xs={12}>
+                            <Grid item md={3} xs={12}>
                             <Button
                                 variant='contained'
                                 size='large'
