@@ -5,16 +5,16 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
-function LinearProgressBar(props) {
+export function LinearProgressBar(props) {
   return (
     <Box display="flex" alignItems="center">
       <Box width="100%" mr={1}>
         <LinearProgress variant="determinate" {...props} color="primary"/>
       </Box>
       <Box minWidth={35}>
-        <Typography variant="body2" color="textSecondary">{`${Math.round(
-          props.value,
-        )}%`}</Typography>
+        <Typography variant="body2" color="textSecondary">
+          {`${Math.round(props.value)}%`}
+        </Typography>
       </Box>
     </Box>
   );
@@ -27,3 +27,5 @@ LinearProgressBar.propTypes = {
    */
   value: PropTypes.number.isRequired,
 };
+
+export default LinearProgressBar;

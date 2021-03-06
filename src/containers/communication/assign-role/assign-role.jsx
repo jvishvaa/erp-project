@@ -4,6 +4,7 @@
 /* eslint-disable no-debugger */
 /* eslint-disable no-console */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
+import { DataGrid } from '@material-ui/data-grid';
 import React, { useContext, useEffect, useState } from 'react';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -56,6 +57,7 @@ const AssignRole = (props) => {
   const [filterCheck, setFilterCheck] = useState(false);
   const [selectAllObj, setSelectAllObj] = useState([]);
   const [viewMore, setViewMore] = useState(false);
+  const [isSelected, setISselected] = useState(false);
 
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('xs'));
@@ -821,7 +823,45 @@ const AssignRole = (props) => {
               setSelectedUsers={setSelectedUsers}
               pageSize={15}
             />
-            {/* <Grid container className='message_log_container' spacing={5}>
+            {/*
+            
+                  import { DataGrid } from '@material-ui/data-grid';
+
+                  const columns = [
+                    { field: 'fullName', headerName: 'Name', width: 250 },
+                    { field: 'email', headerName: 'Email Id', width: 250 },
+                    { field: 'erp_id', headerName: 'ERP Id', width: 150 },
+                    { field: 'gender', headerName: 'Gender', width: 150 },
+                    { field: 'contact', headerName: 'Contact', width: 150 },
+                    {
+                      field: 'role',
+                      headerName: 'Role',
+                      width: 150,
+                    },
+                  ];
+
+                  const rows = [
+                    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
+                    { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
+                    { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
+                    { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
+                    { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
+                    { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
+                    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
+                    { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
+                    { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+                  ];
+
+                  export default function DataGridDemo() {
+                    return (
+                      <div style={{ height: 400, width: '100%' }}>
+                        <DataGrid rows={rows} columns={columns} pageSize={5} checkboxSelection />
+                      </div>
+                    );
+                  }
+
+            
+            <Grid container className='message_log_container' spacing={5}>
             <Grid lg={3} item>
               <input
                 className='assign_role_button'
