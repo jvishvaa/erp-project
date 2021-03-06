@@ -9,6 +9,7 @@ import endpoints from '../../config/endpoints';
 import Loader from '../../components/loader/loader';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import ResourceDialog from '../online-class/online-class-resources/resourceDialog';
+import './style.scss'
 
 const JoinClass = (props) => {
   const fullData = props.fullData;
@@ -144,8 +145,9 @@ const JoinClass = (props) => {
                         </Button>
                       )}
                   </Grid>
-                  <Grid item md={3} xs={6}>
+                  <Grid item md={3} xs={6} className='xxx'>
                     <Popover
+                      className='deletePopover'
                       id={id}
                       open={open}
                       anchorEl={anchorEl}
@@ -306,10 +308,10 @@ const TeacherBatchFullView = ({ fullData, handleClose, selectedGrade }) => {
   // sessionStorage.setItem('isAol','isAol');
   const handleCoursePlan = () => {
     if (window.location.pathname === '/online-class/attend-class') {
-      history.push(`/create/course/${fullData.online_class && fullData?.online_class?.course_id}/${role_details?.grades[0]?.id}`)
+      history.push(`/create/course/${fullData.online_class && fullData?.online_class?.course_id}/${1}`)
       sessionStorage.setItem('isAol', 2);
     } else {
-      history.push(`/create/course/${fullData.online_class && fullData?.online_class?.cource_id}/${selectedGrade && selectedGrade?.id}`)
+      history.push(`/create/course/${fullData.online_class && fullData?.online_class?.cource_id}/${1}`)
       sessionStorage.setItem('isAol', 3);
     }
   }

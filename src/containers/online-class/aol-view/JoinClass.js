@@ -4,10 +4,11 @@ import { makeStyles, withStyles, Typography, Button } from '@material-ui/core';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints'
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-
+import './style.css'
 const useStyles = makeStyles({
     classDetailsDescription: {
-        display: 'inline-block',
+        display: 'flex',
+        // justifyContent:'space-between',
         height: '50px',
         color: '#014B7E',
         fontSize: '16px',
@@ -96,7 +97,7 @@ export default function JoinClassComponent(props) {
         .catch((error) => console.log(error))
     }
     return (
-        <div>
+        <div className='descriptionContainer'>
         {props.data && props?.data?.online_class?.is_canceled ? '' :
             <Typography className={classes.classDetailsDescription}>
                 {moment(props.data && props?.data?.date).format('DD-MM-YYYY')}
@@ -151,7 +152,7 @@ export default function JoinClassComponent(props) {
                             href={props.joinUrl}
                             target="_blank"
                         >
-                            Host
+                         {window.location.pathname === '/online-class/view-class' ? 'Audit' : 'Host'}   
                         </StyledAcceptButton>
                         <StyledRejectButton
                             variant="contained"

@@ -121,47 +121,47 @@ const AttendeeListRemake = (props) => {
     }
   };
 
-  const handleExcelDownload = () => {
-    const { data } = axiosInstance.get(`${endpoints.attendanceList.list}?zoom_meeting_id=${id}&class_date=${excelDate}&type=excel&page_number=1&page_size=10`, {
-      responseType: 'arraybuffer',
-    })
-    const blob = new Blob([data])
-    // {
-    // type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    // });
-    const link = document.createElement('a');
-    link.href = window.URL.createObjectURL(blob);
-    link.download = 'aol_attendance_report.xlsx';
-    link.click();
-    link.remove();
-  }
+  // const handleExcelDownload = () => {
+  //   const { data } = axiosInstance.get(`${endpoints.attendanceList.list}?zoom_meeting_id=${id}&class_date=${excelDate}&type=excel&page_number=1&page_size=10`, {
+  //     responseType: 'arraybuffer',
+  //   })
+  //   const blob = new Blob([data],
+  //   {
+  //   type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  //   });
+  //   const link = document.createElement('a');
+  //   link.href = window.URL.createObjectURL(blob);
+  //   // link.download = 'aol_attendance_report.xlsx';
+  //   link.click();
+  //   link.remove();
+  // }
 
 
   // if(isEdit){
   //  const attendee = attendeeList.map((el,i)=>({[el.user.user.id]:{isChecked: true}}))
   // }
 
-  // const handleExcelDownload = async () => {
-  //   const { match } = props;
-  //   try {
-  //     const { data } = await axiosInstance.get(
-  //       `${endpoints.onlineClass.attendeeList}?zoom_meeting_id=${694}&type=excel`,
-  //       {
-  //         responseType: 'arraybuffer',
-  //       }
-  //     );
-  //     const blob = new Blob([data], {
-  //       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  //     });
-  //     const link = document.createElement('a');
-  //     link.href = window.URL.createObjectURL(blob);
-  //     link.download = 'online_class_attendance_report.xlsx';
-  //     link.click();
-  //     link.remove();
-  //   } catch (error) {
-  //     setAlert('error', 'Failed to download attendee list');
-  //   }
-  // };
+  const handleExcelDownload = async () => {
+    const { match } = props;
+    try {
+      const { data } = await axiosInstance.get(
+        `${endpoints.attendanceList.list}?zoom_meeting_id=${id}&class_date=${excelDate}&type=excel&page_number=1&page_size=10`,
+        {
+          responseType: 'arraybuffer',
+        }
+      );
+      const blob = new Blob([data], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = `aol_attendance_report_${excelDate}.xlsx`;
+      link.click();
+      link.remove();
+    } catch (error) {
+      setAlert('error', 'Failed to download attendee list');
+    }
+  };
 
   const toggleHide = () => {
     setIsHidden(!isHidden);
@@ -207,8 +207,8 @@ const AttendeeListRemake = (props) => {
               />
             </MuiPickersUtilsProvider>
           </Grid>
-          <Grid item xs={12} sm={2}>
-            <Button onClick={handleExcelDownload}>Download Excel</Button>
+          <Grid item xs={12} sm={2} style={{backgroundColor:'#ff6b6b'}}>
+            <Button onClick={handleExcelDownload} className='downloadButton'>Download Excel</Button>
           </Grid>
           <Grid item xs={12} sm={3}>
             <Typography variant='h5' style={{ color: 'green' }}>
