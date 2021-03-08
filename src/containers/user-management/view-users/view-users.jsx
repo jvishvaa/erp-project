@@ -490,8 +490,18 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                   <MenuItem value='' style={{position: 'relative'}}>
                     <em>None</em>
                   </MenuItem>
+<<<<<<< HEAD
                   {branchList.map((items, index) => (
                     <MenuItem key={`branch_user_details_${index}`} value={items.id} style={{position: 'relative'}}>
+=======
+<<<<<<< HEAD
+                  {branchList?.map((items, index) => (
+                    <MenuItem key={`branch_user_details_${index}`} value={items.id}>
+=======
+                  {branchList.map((items, index) => (
+                    <MenuItem key={`branch_user_details_${index}`} value={items.id} style={{position: 'relative'}}>
+>>>>>>> develop
+>>>>>>> dd73581248eaccccae2e5476c720dfe72c22c21b
                       {items.branch_name}
                     </MenuItem>
                   ))}

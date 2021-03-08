@@ -293,7 +293,7 @@ function SignIn({ onLogin, history, aolOnLogin }) {
       };
       onLogin(params).then((response) => {
         if (response?.isLogin) {
-          history.push('/dashboard');
+          history.push('/profile');
         } else {
           setAlert('error', response?.message);
         }
