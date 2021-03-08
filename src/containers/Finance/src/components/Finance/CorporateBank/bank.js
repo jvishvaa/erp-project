@@ -226,53 +226,53 @@ class Bank extends Component {
       )
     }
 
-    // let assignBank = null
-    // if (this.state.assignBankModal) {
-    //   assignBank = (<Modal open={this.state.assignBankModal} click={this.assignBankModalHideHandler}>
-    //     <h3 className={classes.modal__heading}>Assign Bank Accounts</h3>
-    //     <hr />
-    //     <Select
-    //       placeholder='Select Fee Account'
-    //       isMulti
-    //       options={
-    //         (this.props.remainingBanks.length)
-    //           ? this.props.remainingBanks.map(bank => ({
-    //             value: bank.id,
-    //             label: bank.bank_name,
-    //             accNumber: bank.AccountNumber
-    //           }))
-    //           : []
-    //       }
-    //       onChange={this.selectBankChangeHandler}
-    //     />
-    //     <div className={classes.modal__button}>
-    //       <Button color='primary' variant='contained' onClick={this.assignBankHandler}>Assign</Button>
-    //     </div>
-    //   </Modal>)
-    // }
+    let assignBank = null
+    if (this.state.assignBankModal) {
+      assignBank = (<Modal open={this.state.assignBankModal} click={this.assignBankModalHideHandler}>
+        <h3 className={classes.modal__heading}>Assign Bank Accounts</h3>
+        <hr />
+        <Select
+          placeholder='Select Fee Account'
+          isMulti
+          options={
+            (this.props.remainingBanks.length)
+              ? this.props.remainingBanks.map(bank => ({
+                value: bank.id,
+                label: bank.bank_name,
+                accNumber: bank.AccountNumber
+              }))
+              : []
+          }
+          onChange={this.selectBankChangeHandler}
+        />
+        <div className={classes.modal__button}>
+          <Button color='primary' variant='contained' onClick={this.assignBankHandler}>Assign</Button>
+        </div>
+      </Modal>)
+    }
 
-    // let assignFeeAccounts = null
-    // if (this.state.assignFeeModal) {
-    //   assignFeeAccounts = (<Modal open={this.state.assignFeeModal} click={this.assignFeeModalHideHandler}>
-    //     <h3 className={classes.modal__heading}>Assign Fee Accounts</h3>
-    //     <hr />
-    //     <Select
-    //       placeholder='Select Fee Account'
-    //       options={
-    //         (this.props.feeAccounts.length && this.props.feeAccounts[0].fee_account_name)
-    //           ? this.props.feeAccounts[0].fee_account_name.map(acc => ({
-    //             value: acc.id,
-    //             label: acc.fee_account_name
-    //           }))
-    //           : []
-    //       }
-    //       onChange={this.selectFeeAccountChangeHandler}
-    //     />
-    //     <div className={classes.modal__button}>
-    //       <Button color='primary' variant='contained' onClick={this.assignFeeAccountHandler}>Assign</Button>
-    //     </div>
-    //   </Modal>)
-    // }
+    let assignFeeAccounts = null
+    if (this.state.assignFeeModal) {
+      assignFeeAccounts = (<Modal open={this.state.assignFeeModal} click={this.assignFeeModalHideHandler}>
+        <h3 className={classes.modal__heading}>Assign Fee Accounts</h3>
+        <hr />
+        <Select
+          placeholder='Select Fee Account'
+          options={
+            (this.props.feeAccounts.length && this.props.feeAccounts[0].fee_account_name)
+              ? this.props.feeAccounts[0].fee_account_name.map(acc => ({
+                value: acc.id,
+                label: acc.fee_account_name
+              }))
+              : []
+          }
+          onChange={this.selectFeeAccountChangeHandler}
+        />
+        <div className={classes.modal__button}>
+          <Button color='primary' variant='contained' onClick={this.assignFeeAccountHandler}>Assign</Button>
+        </div>
+      </Modal>)
+    }
     return (
       <div className={classes.bankContainer}>
         <div>
@@ -280,9 +280,9 @@ class Bank extends Component {
           {this.props.dataLoading ? <CircularProgress open /> : null}
         </div>
         <div >
-          {/* {assignBank} */}
+          {assignBank}
         </div>
-        {/* {assignFeeAccounts} */}
+        {assignFeeAccounts}
       </div>
     )
   }
