@@ -300,9 +300,9 @@ const CreateSubjectMapping = ({ setLoading, handleGoBack }) => {
               style={{ width: '100%' }}
               id='branch'
               name='branch'
-              options={dropDown?.branchDrop}
-              value={filterData?.branch}
-              getOptionLabel={(option) => option?.branch_name}
+              options={dropDown?.branchDrop||[]}
+              value={filterData?.branch||''}
+              getOptionLabel={(option) => option?.branch_name||''}
               filterSelectedOptions
               renderInput={(params) => (
                 <TextField
@@ -324,9 +324,9 @@ const CreateSubjectMapping = ({ setLoading, handleGoBack }) => {
               style={{ width: '100%' }}
               id='grade'
               name='grade'
-              options={dropDown?.gradeDrop}
-              value={filterData?.grade}
-              getOptionLabel={(option) => option?.grade_name}
+              options={dropDown?.gradeDrop||[]}
+              value={filterData?.grade||''}
+              getOptionLabel={(option) => option?.grade_name||''}
               filterSelectedOptions
               renderInput={(params) => (
                 <TextField
@@ -348,9 +348,9 @@ const CreateSubjectMapping = ({ setLoading, handleGoBack }) => {
               style={{ width: '100%' }}
               id='section'
               name='section'
-              options={dropDown?.sectionDrop}
-              value={filterData?.section}
-              getOptionLabel={(option) => option?.section_name}
+              options={dropDown?.sectionDrop||[]}
+              value={filterData?.section||''}
+              getOptionLabel={(option) => option?.section_name||''}
               filterSelectedOptions
               renderInput={(params) => (
                 <TextField
@@ -372,9 +372,9 @@ const CreateSubjectMapping = ({ setLoading, handleGoBack }) => {
               style={{ width: '100%' }}
               id='subject'
               name='subject'
-              options={dropDown?.subjectDrop}
-              value={filterData?.subject}
-              getOptionLabel={(option) => option?.subject_name}
+              options={dropDown?.subjectDrop||[]}
+              value={filterData?.subject||''}
+              getOptionLabel={(option) => option?.subject_name||''}
               filterSelectedOptions
               renderInput={(params) => (
                 <TextField

@@ -290,9 +290,9 @@ const SectionTable = () => {
                 onChange={handleAcademicYear}
                 style={{ width: '100%' }}
                 id='session-year'
-                options={academicYearList}
-                value={yearDisplay}
-                getOptionLabel={(option) => option?.session_year}
+                options={academicYearList||[]}
+                value={yearDisplay||''}
+                getOptionLabel={(option) => option?.session_year||''}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField

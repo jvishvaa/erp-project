@@ -220,9 +220,9 @@ const CreateSectionMapping = ({ setLoading, handleGoBack }) => {
               style={{ width: '100%' }}
               id='session-year'
               name='session-year'
-              options={dropDown?.sessionDrop}
-              value={filterData?.session}
-              getOptionLabel={(option) => option?.session_year}
+              options={dropDown?.sessionDrop||[]}
+              value={filterData?.session||''}
+              getOptionLabel={(option) => option?.session_year||''}
               filterSelectedOptions
               renderInput={(params) => (
                 <TextField
@@ -244,9 +244,9 @@ const CreateSectionMapping = ({ setLoading, handleGoBack }) => {
               style={{ width: '100%' }}
               id='branch'
               name='branch'
-              options={dropDown?.branchDrop}
-              value={filterData?.branch}
-              getOptionLabel={(option) => option?.branch_name}
+              options={dropDown?.branchDrop||[]}
+              value={filterData?.branch||''}
+              getOptionLabel={(option) => option?.branch_name||''}
               filterSelectedOptions
               renderInput={(params) => (
                 <TextField
@@ -268,9 +268,9 @@ const CreateSectionMapping = ({ setLoading, handleGoBack }) => {
               style={{ width: '100%' }}
               id='grade'
               name='grade'
-              options={dropDown?.gradeDrop}
-              value={filterData?.grade}
-              getOptionLabel={(option) => option?.grade_name}
+              options={dropDown?.gradeDrop||[]}
+              value={filterData?.grade||''}
+              getOptionLabel={(option) => option?.grade_name||''}
               filterSelectedOptions
               renderInput={(params) => (
                 <TextField
@@ -292,9 +292,9 @@ const CreateSectionMapping = ({ setLoading, handleGoBack }) => {
               style={{ width: '100%' }}
               id='section'
               name='section'
-              options={dropDown?.sectionDrop}
-              value={filterData?.section}
-              getOptionLabel={(option) => option?.section_name}
+              options={dropDown?.sectionDrop||[]}
+              value={filterData?.section||''}
+              getOptionLabel={(option) => option?.section_name||''}
               filterSelectedOptions
               renderInput={(params) => (
                 <TextField
