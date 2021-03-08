@@ -119,15 +119,22 @@ const CreateCourse = () => {
   };
 
   const handleBack = () => {
-    if (Boolean(gradeKey)) history.push(`/course-list/${gradeKey}`);
-    else setNextToggle((prev) => !prev);
+    if (Boolean(gradeKey)) {
+      const isAolValue = Number(sessionStorage.getItem('isAol'))||'';
+      if (isAolValue === 1) {
+        history.push(`/online-class/view-class`);
+      } else if (isAolValue === 2) {
+        history.push('/online-class/attend-class');
+      }else if (isAolValue === 3) {
+        history.push('/online-class/teacher-view-class');
+      } else {
+        history.push(`/course-list/${gradeKey}`);
+      }
+      sessionStorage.removeItem('isAol');
+    } else setNextToggle((prev) => !prev);
   };
   const handleBackToCourseList = () => {
-    if (window.location.host === endpoints?.aolConfirmURL) {
-      history.push(`/course-list/`);
-    } else {
-      history.goBack();
-    }
+    history.push(`/course-list/`);
   };
 
   useEffect(() => {
@@ -427,16 +434,17 @@ const CreateCourse = () => {
           const fileList = [...filePath];
           fileList.push(result.data?.result?.get_file_path);
           setFilePath(fileList);
-          
+
           const timer = setInterval(() => {
-            setProgress((prevProgress) => (prevProgress >= 100 ? 100 : prevProgress + 10));
+            setProgress((prevProgress) =>
+              prevProgress >= 100 ? 100 : prevProgress + 10
+            );
           }, 700);
           setAlert('success', result.data.message);
           return () => {
             setIsLodding(0);
             clearInterval(timer);
           };
-
         } else {
           setAlert('error', result.data?.message);
         }
@@ -462,7 +470,9 @@ const CreateCourse = () => {
           //setAlert('success', result.data.message);
           //setProgress(100);
           const timer = setInterval(() => {
-            setProgress((prevProgress) => (prevProgress >= 100 ? 100 : prevProgress + 10));
+            setProgress((prevProgress) =>
+              prevProgress >= 100 ? 100 : prevProgress + 10
+            );
           }, 700);
           setAlert('success', result.data.message);
           return () => {
@@ -470,7 +480,6 @@ const CreateCourse = () => {
             //setAlert('success', result.data.message);
             clearInterval(timer);
           };
-          
         } else {
           setAlert('error', result.data.message);
           setIsLodding(0);
@@ -765,9 +774,9 @@ const CreateCourse = () => {
                     onChange={handleAge}
                     id='volume'
                     className='dropdownIcon'
-                    value={filterData?.age||''}
-                    options={age||[]}
-                    getOptionLabel={(option) => option?.tag_name||''}
+                    value={filterData?.age || ''}
+                    options={age || []}
+                    getOptionLabel={(option) => option?.tag_name || ''}
                     filterSelectedOptions
                     renderInput={(params) => (
                       <TextField
@@ -788,9 +797,9 @@ const CreateCourse = () => {
                     onChange={handleSubject}
                     id='volume'
                     className='dropdownIcon'
-                    value={filterData?.subject||''}
-                    options={subjectDropdown||[]}
-                    getOptionLabel={(option) => option?.subjectName||''}
+                    value={filterData?.subject || ''}
+                    options={subjectDropdown || []}
+                    getOptionLabel={(option) => option?.subjectName || ''}
                     filterSelectedOptions
                     renderInput={(params) => (
                       <TextField
@@ -939,9 +948,11 @@ const CreateCourse = () => {
                         Add Document
                       </Button>
                     </div>
-                    {isLodding === 1 && (<div style={{width: '200px', margin: '10px'}}>
-                      <LinearProgressBar value={progress} color="secondary" />
-                    </div>)}
+                    {isLodding === 1 && (
+                      <div style={{ width: '200px', margin: '10px' }}>
+                        <LinearProgressBar value={progress} color='secondary' />
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -989,9 +1000,11 @@ const CreateCourse = () => {
                         Add Thumbnail
                       </Button>
                     </div>
-                    {isLodding === 2 && (<div style={{width: '200px', margin: '10px'}}>
-                      <LinearProgressBar value={progress} color="secondary" />
-                    </div>)}
+                    {isLodding === 2 && (
+                      <div style={{ width: '200px', margin: '10px' }}>
+                        <LinearProgressBar value={progress} color='secondary' />
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

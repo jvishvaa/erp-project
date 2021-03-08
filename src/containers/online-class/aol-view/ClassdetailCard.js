@@ -179,7 +179,8 @@ export default function ClassdetailsCardComponent(props) {
         }
     }
     const handleCoursePlan = () => {
-        history.push(`/view-period/${props.filterData && props?.filterData?.course?.id}`)
+        history.push(`/create/course/${props.filterData && props?.filterData?.course?.id}/${props.filterData && props?.filterData?.grade?.id}`)
+        sessionStorage.setItem('isAol',1);
     }
 
     useEffect(() => {

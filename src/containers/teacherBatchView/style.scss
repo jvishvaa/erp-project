@@ -146,3 +146,11 @@
     }
 
 }
+.deletePopover.MuiPopover-paper {
+        outline: 0;
+        position: absolute;
+        max-width: calc(100% - 32px);
+        min-width: 16px;
+        max-height: calc(100% - 32px);
+        min-height: 16px;
+}

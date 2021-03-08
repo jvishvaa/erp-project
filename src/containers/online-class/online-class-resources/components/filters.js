@@ -44,7 +44,7 @@ const Filter = (props) => {
     const [endDate, setEndDate] = useState('');
     const [branchList] = useState([
         {
-            id: 5,
+            id: `${window.location.host === endpoints?.aolConfirmURL ? 1 : 5}`,
             branch_name: `${window.location.host === endpoints?.aolConfirmURL ? 'AOL' : 'ORCHIDS'}`,
         },
     ]);
@@ -62,7 +62,7 @@ const Filter = (props) => {
     const [selectedBatch, setSelectedBatch] = useState('');
     const [filterList, setFilterList] = useState('');
     const [filterFullData, setFilterFullData] = useState('');
-    const [selectedModule, setSelectedModule] = useState(4);
+    const [selectedModule, setSelectedModule] = useState(15);
     const [selectedViewMore, setSelectedViewMore] = useState('');
     const [page, setPage] = useState(1);
     const [sectionList, setSectionList] = useState([]);
@@ -93,7 +93,7 @@ const Filter = (props) => {
                     setCourseList(result.data.result || []);
                 }
                 if (key === 'subject') {
-                    setSubjectList(result?.data?.data);
+                    setSubjectList(result?.data?.data || []);
                   }
                 if (key === 'section') {
                     setSectionList(result.data.data);
@@ -130,7 +130,7 @@ const Filter = (props) => {
     
     useEffect(() => {
         callApi(
-            `${endpoints.academics.grades}?branch_id=${selectedBranch.id}&module_id=4`,
+            `${endpoints.academics.grades}?branch_id=${selectedBranch.id}&module_id=15`,
             'gradeList'
         );
     }, []);
@@ -178,9 +178,7 @@ const Filter = (props) => {
         setLoading(true);
         setPage(1);
         if(window.location.host === endpoints?.aolConfirmURL){
-            callApi(`${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
-                selectedBatch && selectedBatch.id
-            }&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=12&module_id=4&class_type=1&batch_limit=${selectedBatch && selectedBatch.batch_size}&batch_limit=${selectedBatch.batch_size}`,
+            callApi(`${endpoints.teacherViewBatches.getBatchList}?is_aol=1&course=${selectedCourse.id}&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=12&module_id=15&class_type=1&batch_limit=${selectedBatch && selectedBatch.batch_size}`,
             'filter'
         );
         }else if(selectedCourse.id){
@@ -321,7 +319,7 @@ const Filter = (props) => {
                         setSelectedSection(value);
                         if (value) {
                           callApi(
-                            `${endpoints.academics.subjects}?branch=${selectedBranch.id}&grade=${selectedGrade.grade_id}&section=${value.section_id}`,
+                            `${endpoints.academics.subjects}?branch=${selectedBranch.id}&grade=${selectedGrade.grade_id}&section=${value.section_id}&module_id=${selectedModule}`,
                             'subject'
                           );
                         }
@@ -478,7 +476,7 @@ const Filter = (props) => {
                                 Clear All
                             </Button>
                             </Grid>
-                            <Grid item md={2} xs={12}>
+                            <Grid item md={3} xs={12}>
                             <Button
                                 variant='contained'
                                 size='large'
