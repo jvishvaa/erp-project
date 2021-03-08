@@ -16,7 +16,7 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import {Context} from '../context/context'
 
 
-const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex, setEditData, handleDairyType}) => {
+const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex, setEditData, handleDairyType,deleteFlag,setDeleteFlag}) => {
 
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -77,6 +77,7 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
 
       if(result.data.status_code===200){
         setAlert('success',result.data.message)
+        setDeleteFlag(!deleteFlag)
       }else{
         setAlert('errpr', 'ERROR!')
       }
