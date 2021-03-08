@@ -143,8 +143,8 @@ class AllTransactions extends Component {
             <div className={customClasses.table__bodyActn}>
               <div>
                 <Button variant='extended' color='primary' className={classes.buttonGreen} onClick={() => this.generatePdf(transaction.transaction_id, transaction.is_cancelled, transaction.kit_payment)}>
-                  <span style={{ color: 'white', marginRight: '5px', fontSize: '1rem', fontWeight: 'normal' }}>Print</span>
-                  <Icon className={classes.rightIcon} style={{ color: 'white', fontSize: '1.2rem' }}>print</Icon>
+                  <span style={{ color: 'white', fontSize: '1rem', fontWeight: 'normal', textAlign: 'center' }}>Print</span>
+                  <Icon className={classes.rightIcon} style={{ color: 'white', fontSize: '1.2rem' }}></Icon>
                 </Button>
               </div>
             </div>
