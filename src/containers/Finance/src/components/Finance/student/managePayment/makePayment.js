@@ -69,7 +69,7 @@ class MakePayment extends Component {
       upiId: '',
       studentId: null
     }
-    this.currBrnch = JSON.parse(localStorage.getItem('user_profile')).branch_id
+    this.currBrnch = JSON.parse(localStorage.getItem('userDetails')).branch_id
     this.erp = JSON.parse(localStorage.getItem('userDetails')).erp
   }
   componentDidMount () {
