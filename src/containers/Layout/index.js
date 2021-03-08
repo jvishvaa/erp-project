@@ -484,7 +484,7 @@ const Layout = ({ children, history }) => {
         history.push('/finance/DepositTab')
         break;
       }
-      case 'total Forms & Report': {
+      case 'Total Forms & Report': {
         history.push('/finance/TotalFormReport')
         break;
       }
@@ -592,7 +592,7 @@ const Layout = ({ children, history }) => {
                 history.push('/finance/Student/IncomeTaxCertificate')
                   break;
                 }
-              case 'Fee Pay Request': {
+              case 'Fee Pay Requests': {
                 history.push('/finance/Approval/Requests/FeePaymentRequests')
                   break;
                 }
