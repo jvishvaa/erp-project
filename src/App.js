@@ -157,6 +157,8 @@ import AppFormList from './containers/Finance/src/components/Finance/BranchAccou
 import RegFormList from './containers/Finance/src/components/Finance/BranchAccountant/TotalFormCount/regFormList.js'
 import TransactionStatus from './containers/Finance/src/components/Finance/TransactionStatus/transactionStatus.js'
 import AdmFormList from './containers/Finance/src/components/Finance/BranchAccountant/TotalFormCount/admFormList.js'
+import Airpay from './containers/Finance/src/components/Finance/PaymentGateways/Airpay/airpayIntegration.js'
+import UploadPaymentFile from './containers/Finance/src/components/Finance/student/managePayment/UploadPaymentFile.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -634,6 +636,12 @@ function App({ alert }) {
                 </Route>
               <Route exact path= '/finance/admformlist'>
                   {({ match }) => <AdmFormList match={match} alert={alert} />}
+                </Route>
+                <Route exact path= '/fee_payment/'>
+                  {({ match }) => <Airpay match={match} alert={alert} />}
+                </Route>
+                <Route exact path= '/finance/upload_file'>
+                  {({ match }) => <UploadPaymentFile match={match} alert={alert} />}
                 </Route>
               </Switch>
             </ThemeProvider>

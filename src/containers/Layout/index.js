@@ -484,7 +484,7 @@ const Layout = ({ children, history }) => {
         history.push('/finance/DepositTab')
         break;
       }
-      case 'total Forms & Report': {
+      case 'Total Forms & Report': {
         history.push('/finance/TotalFormReport')
         break;
       }
