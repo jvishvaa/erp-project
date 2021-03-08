@@ -19,7 +19,7 @@ import * as actionTypes from '../../store/actions'
 // import { urls } from '../../../../urls'
 import EditFeeAccount from './editFeeAccounts'
 import AddFeeAccount from './addFeeAccounts'
-import Layout from '../../../../../../Layout'
+// import Layout from '../../../../../../Layout'
 import classes from '../ViewBanks/viewBanks.module.css'
 
 // const ViewAccounts = {
@@ -352,7 +352,7 @@ class ViewFeeAccounts extends Component {
         //   />)
         // }
         return (
-          <Layout>
+          // <Layout>
           <React.Fragment>
             <div>
               <Grid container spacing={3} style={{ padding: 15 }}>
@@ -479,7 +479,7 @@ class ViewFeeAccounts extends Component {
             {editModal}
             {addModal}
           </React.Fragment>
-          </Layout>
+          // </Layout>
         )
       }
 }
