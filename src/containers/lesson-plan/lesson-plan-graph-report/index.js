@@ -106,6 +106,10 @@ const LessonPlanGraphReport = ({
       section: '',
       teacher: '',
     });
+    setDateRangeTechPer([
+      moment().subtract(6, 'days'),
+      moment(),
+    ]);
   };
 
   const handleAcademicYear = (event, value) => {
