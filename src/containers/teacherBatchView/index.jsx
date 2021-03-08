@@ -23,6 +23,7 @@ import TeacherBatchViewCard from './teacherbatchViewCard';
 import TeacherBatchFullView from './teacherBatchFullView';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import Layout from '../Layout';
+import UserDetails from 'containers/Layout/userDetails/user-details';
 
 const TeacherBatchView = ({ history }) => {
   //   const NavData = JSON.parse(localStorage.getItem('navigationData')) || [];
@@ -34,7 +35,7 @@ const TeacherBatchView = ({ history }) => {
   const [endDate, setEndDate] = useState('');
   const [branchList] = useState([
     {
-      id: 5,
+      id: 1,
       branch_name: 'AOL',
     },
   ]);
@@ -52,7 +53,7 @@ const TeacherBatchView = ({ history }) => {
   const [selectedBatch, setSelectedBatch] = useState('');
   const [filterList, setFilterList] = useState('');
   const [filterFullData, setFilterFullData] = useState('');
-  const [selectedModule] = useState(4);
+  const [selectedModule] = useState(178);
   const [selectedViewMore, setSelectedViewMore] = useState('');
   const [page, setPage] = useState(1);
 
@@ -87,6 +88,7 @@ const TeacherBatchView = ({ history }) => {
         setLoading(false);
       });
   }
+  console.log(UserDetails,'uuuuuuuuuuuuuuuuuu')
 
   function handleClose(data) {
     setSelectedViewMore('');
@@ -99,7 +101,7 @@ const TeacherBatchView = ({ history }) => {
             studentDetails &&
             studentDetails.role_details &&
             studentDetails.role_details.erp_user_id
-          }&page_number=1&page_size=19`,
+          }&page_number=1&page_size=19&class_type=1`,
           'filter'
         );
       } else {
@@ -118,17 +120,17 @@ const TeacherBatchView = ({ history }) => {
       setPage(1);
       // ${studentDetails && studentDetails.role_details.erp_user_id}
       callApi(
-        // `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=1362&page_number=1&page_size=15&class_type=1`,
-        `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
-          studentDetails &&
-          studentDetails.role_details &&
-          studentDetails.role_details.erp_user_id
-        }&page_number=1&page_size=15&class_type=1`,
+        `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${studentDetails.role_details.erp_user_id}&page_number=1&page_size=15&class_type=1`,
+        // `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
+        //   studentDetails &&
+        //   studentDetails.role_details &&
+        //   studentDetails.role_details.erp_user_id
+        // }&page_number=1&page_size=15&class_type=1`,
         'filter'
       );
     } else {
       callApi(
-        `${endpoints.academics.grades}?branch_id=${selectedBranch.id}&module_id=4`,
+        `${endpoints.academics.grades}?branch_id=${selectedBranch.id}&module_id=${selectedModule}`,
         'gradeList'
       );
     }
@@ -142,7 +144,7 @@ const TeacherBatchView = ({ history }) => {
           studentDetails &&
           studentDetails.role_details &&
           studentDetails.role_details.erp_user_id
-        }&page_number=${page}&page_size=15`,
+        }&page_number=${page}&page_size=15&class_type=1`,
         'filter'
       );
     } else {
@@ -191,7 +193,7 @@ const TeacherBatchView = ({ history }) => {
     callApi(
       `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
         selectedBatch && selectedBatch.id
-      }&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=12&module_id=4&class_type=1&batch_limit=${
+      }&course=${selectedCourse.id}&is_aol=1&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=12&module_id=${selectedModule}&class_type=1&batch_limit=${
         selectedBatch && selectedBatch.batch_size
       }`,
       'filter'
@@ -469,6 +471,7 @@ const TeacherBatchView = ({ history }) => {
                           <TeacherBatchFullView
                             fullData={selectedViewMore}
                             handleClose={handleClose}
+                            selectedGrade={selectedGrade}
                           />
                         </Grid>
                       )}

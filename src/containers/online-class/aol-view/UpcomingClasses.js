@@ -18,6 +18,7 @@ import axiosInstance from '../../../config/axios'
 import endpoints from '../../../config/endpoints'
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import filterImage from '../../../assets/images/unfiltered.svg'
+import './style.css';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -172,7 +173,7 @@ const UpcomingClasses = () => {
     const isTabDivice = useMediaQuery(themeContext.breakpoints.down('sm'));
 
     //batches view <<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    const branchDrop = [{ id: 5, branch_name: 'AOL' }]
+    const branchDrop = [{ id: 1, branch_name: 'AOL' }]
 
 
 
@@ -668,7 +669,7 @@ const UpcomingClasses = () => {
                 </Grid>
 
                 {classData && (
-                    <Grid item sm={3} xs={12}>
+                    <Grid item sm={3} xs={12} className='viewMoreContainer' style={{padding:'1px'}}>
                         <ClassdetailsCard
                             classData={classData}
                             filterData={filterData}

@@ -29,7 +29,7 @@ const BackButton = withStyles({
   },
 })(Button);
 
-const SchoolDetailsForm = ({ details, onSubmit }) => {
+const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
   const [academicYears, setAcademicYears] = useState([]);
   const [branches, setBranches] = useState([]);
   const [grades, setGrades] = useState([]);
@@ -55,7 +55,12 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
 
   const fetchAcademicYears = () => {
     getAcademicYears().then((data) => {
-      const transformedData = data?.map((obj) => ({
+      let transformedData = '';
+      /* let transformedData = {
+        id: '',
+        session_year: ''
+      }; */
+      transformedData = data?.map((obj) => ({
         id: obj.id,
         session_year: obj.session_year,
       }));

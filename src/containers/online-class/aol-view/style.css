@@ -29,3 +29,10 @@
     width: calc(100% + 32px);
     margin: -16px 10px;
   }
+  .descriptionContainer{
+      display: flex;
+      justify-content: space-between;
+  }
+  .viewMoreContainer{
+      padding: 0px;
+  }

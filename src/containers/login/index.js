@@ -345,6 +345,7 @@ function SignIn({ onLogin, history, aolOnLogin }) {
                 name='email'
                 autoComplete='email'
                 autoFocus
+                className='passwordField'
                 value={username}
                 inputProps={{ maxLength: 40 }}
                 onChange={(e) => {
@@ -371,7 +372,7 @@ function SignIn({ onLogin, history, aolOnLogin }) {
                   maxLength: 20,
                   endAdornment: (
                     <IconButton onClick={handleToggler}>
-                      {passwordFlag ? <Visibility /> : <VisibilityOff />}
+                      {passwordFlag ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   ),
                 }}    

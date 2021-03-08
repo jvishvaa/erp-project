@@ -51,6 +51,7 @@ const GuardianDetailsForm = ({
       guardian_last_name: details.guardian_last_name,
       guardian_email: details.guardian_email,
       guardian_mobile: details.guardian_mobile,
+      guardian_photo: details.guardian_photo,
     },
     validationSchema,
     onSubmit: (values) => {
@@ -73,6 +74,15 @@ const GuardianDetailsForm = ({
               Father's Details
             </Typography>
             <Grid container spacing={4} className='form-grid'>
+              <Grid item md={12} xs={12} className='profile-img-container'>
+                <ImageUpload
+                  id='father-image'
+                  value={formik.values.father_photo}
+                  onChange={(value) => {
+                    formik.setFieldValue('father_photo', value);
+                  }}
+                />
+              </Grid>
               <Grid item md={4} xs={12}>
                 <FormControl variant='outlined' fullWidth color='secondary' size='small'>
                   <InputLabel htmlFor='component-outlined'>First name</InputLabel>
@@ -201,15 +211,6 @@ const GuardianDetailsForm = ({
                   />
                 </FormControl> 
                     </Grid> */}
-              <Grid item md={4} xs={12} className='profile-img-container'>
-                <ImageUpload
-                  id='father-image'
-                  value={formik.values.father_photo}
-                  onChange={(value) => {
-                    formik.setFieldValue('father_photo', value);
-                  }}
-                />
-              </Grid>
             </Grid>
           </div>
           <Divider className={classes.divider} />
@@ -223,6 +224,15 @@ const GuardianDetailsForm = ({
               direction={isMobile ? 'column' : 'row'}
               className='form-grid'
             >
+              <Grid item md={12} xs={12} className='profile-img-container'>
+                <ImageUpload
+                  id='mother-image'
+                  value={formik.values.mother_photo}
+                  onChange={(value) => {
+                    formik.setFieldValue('mother_photo', value);
+                  }}
+                />
+              </Grid>
               <Grid item md={4} xs={12}>
                 <FormControl variant='outlined' fullWidth size='small'>
                   <InputLabel htmlFor='component-outlined'>First name</InputLabel>
@@ -339,16 +349,6 @@ const GuardianDetailsForm = ({
                   />
                 </FormControl>
               </Grid> */}
-
-              <Grid item md={4} xs={12} className='profile-img-container'>
-                <ImageUpload
-                  id='mother-image'
-                  value={formik.values.mother_photo}
-                  onChange={(value) => {
-                    formik.setFieldValue('mother_photo', value);
-                  }}
-                />
-              </Grid>
             </Grid>
           </div>
         </>
@@ -362,6 +362,15 @@ const GuardianDetailsForm = ({
               Guardian Details
             </Typography>
             <Grid container spacing={4}>
+              <Grid item md={12} xs={12} className='profile-img-container'>
+                <ImageUpload
+                  id='mother-image'
+                  value={formik.values.guardian_photo}
+                  onChange={(value) => {
+                    formik.setFieldValue('guardian_photo', value);
+                  }}
+                />
+              </Grid>
               <Grid item md={4} xs={12}>
                 <FormControl variant='outlined' fullWidth size='small'>
                   <InputLabel htmlFor='component-outlined'>First name</InputLabel>

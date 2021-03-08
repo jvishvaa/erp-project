@@ -143,6 +143,7 @@ export const fetchUser = (id) => (dispatch) => {
           guardian_last_name: user.parent_details.guardian_last_name || '',
           guardian_email: user.parent_details.guardian_email || '',
           guardian_mobile: user.parent_details.guardian_mobile || '',
+          guardian_photo: user.parent_details.guardian_photo || '',
         },
       };
       dispatch({ type: FETCH_USER_DETAIL_SUCCESS, data: transformedUser });

@@ -1,4 +1,5 @@
-const baseURLCentral = 'http://13.232.30.169/qbox';
+// const baseURLCentral = 'http://13.232.30.169/qbox';
+const baseURLCentral ='https://dev.mgmt.letseduvate.com/qbox';
 export default {
   auth: {
     login: '/auth/login/',
@@ -260,6 +261,6 @@ export default {
   },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
-  // aolConfirmURL: 'revamp.aol.letseduvate.com',
-  aolConfirmURL:'localhost:3001',
+  aolConfirmURL:'aol.letseduvate.com', //WARNING: Uncomment this code before pushing  
+  // aolConfirmURL:'localhost:3001', //WARNING: Comment this code before pushing
 };

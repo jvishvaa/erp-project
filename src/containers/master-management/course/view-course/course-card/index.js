@@ -105,6 +105,9 @@ const CourseCard = ({
   };
 
   const handleDelete = (e, index) => {
+    //https://erpnew.letseduvate.com/qbox/aol/160/update-course/
+    //https://erpnew.letseduvate.com/qbox/aol/132/update-course/
+    alert(e.id);
     axiosInstance
       .delete(`${endpoints.onlineCourses.deleteCourse}${e.id}/update-course/`)
       .then((result) => {
@@ -128,8 +131,8 @@ const CourseCard = ({
   //   history.push(`/create/course/${sendGrade}`);
   //   sessionStora ge.setItem('selectedIndex', selectedIndex);
   // };
-  const handleStatus=(e,index)=>{
-    if(tabVal== 1){
+  const handleStatus = (e,index)=>{
+    if(tabVal === 1){
       axiosInstance.put(`${endpoints.onlineCourses.updateCourse}${e.id}/update-course/`,{
         "is_active":0
       }).then(result=>{
@@ -142,7 +145,7 @@ const CourseCard = ({
         }
       })
     }
-    if(tabVal == 2){
+    if(tabVal === 2){
       axiosInstance.put(`${endpoints.onlineCourses.updateCourse}${e.id}/update-course/`,{
         "is_active":1
       }).then(result=>{
@@ -157,7 +160,7 @@ const CourseCard = ({
     }
     
   }
-  // Conform Popover 
+  // Confirm Popover 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => {
@@ -220,7 +223,7 @@ const CourseCard = ({
                     <div className='tooltip' onClick={(e) => handleClick(e)}>
                       Delete
                     </div>
-                    <div onClick={() => handleStatus(period)} >
+                    <div onClick={() => handleStatus(period)} style={{marginTop: '5px'}}>
                      {/* {tabVal ==0 || tabVal == undefined ? 'Active' : '' } */}
                      {tabVal == 1  ? 'Inactive' : '' }
                      {tabVal == 2  ? 'Active' : '' }
@@ -241,10 +244,10 @@ const CourseCard = ({
                     }}
                   >
                     <div style={{ padding: '20px 30px'}}>
-                      <Typography style={{ fontSize: '20px', marginBottom: '15px'}}>Are you sure to Delete?</Typography>
+                      <Typography style={{ fontSize: '20px', marginBottom: '15px'}}>Are you sure you want to delete??</Typography>
                       <div>
                         <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
-                        <StyledButton onClick={(e) => handleDelete(period)} style={{float: 'right'}}>Conform</StyledButton>
+                        <StyledButton onClick={() => handleDelete(period)} style={{float: 'right'}}>Confirm</StyledButton>
                       </div>
                     </div>
                   </Popover>

@@ -25,7 +25,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Attend Online Class', Path: '/erp-online-class-student-view' },
     { name: 'Teacher View Class', Path: '/erp-online-class-teacher-view' },
     { name: 'Create Class', Path: '/online-class/create-class' },
-    { name: 'Online Class', Path: '/create-class' },
+    { name: 'Online Class', Path: '/online-class/attend-class' },
     { name: 'Management View', Path: '/homework/coordinator' },
     { name: 'Configuration', Path: '/homework/admin' },
     { name: 'Student Homework', Path: '/homework/student' },
@@ -49,6 +49,8 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Word Count Cofiguration', Path: '/blog/wordcount-config' },
     { name: 'ID Cards', Path: '/student-id-card' },
     { name: 'Student Strength', Path: '/student-strength' },
+    { name: 'Teacher Circular', Path: '/circular'},
+    { name: 'Student Circular', Path: '/circular'},
   ];
   // const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {

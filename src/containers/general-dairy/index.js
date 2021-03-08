@@ -17,8 +17,6 @@ import PeriodCard from './dairy-card';
 import ViewMoreCard from './view-more-card';
 import {Context} from './context/context';
 import {useLocation} from 'react-router-dom';
-
-// component import from DailyDairy
 import DailyDairy from '../daily-dairy/dairy-card/index';
 import ViewMoreDailyDairyCard from '../daily-dairy/view-more-card/index';
 
@@ -42,11 +40,12 @@ const GeneralDairyList = () => {
     const [page, setPage] = useState(1);
     const [periodData, setPeriodData] = useState([]);
     const [totalCount, setTotalCount] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
     const [loading, setLoading] = useState(false);
     const [viewMore, setViewMore] = useState(false);
     const [viewMoreData, setViewMoreData] = useState({});
     const [periodDataForView, setPeriodDataForView] = useState({});
-    const limit = 9;
+    const limit = 5;
     const themeContext = useTheme();
     const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
     const [periodColor, setPeriodColor] = useState(false);
@@ -56,14 +55,24 @@ const GeneralDairyList = () => {
     const [ dairyType, setDairyType ] = useState(1);
     const [studentModuleId, setStudentModuleId] = useState();
     const [teacherModuleId, setTeacherModuleId] = useState();
+    const [showSubjectDropDown, setShowSubjectDropDown] = useState();
     const location = useLocation();
+    const [branch, setBranch] = useState([])
+    const [grade, setGrade] = useState([])
+    const [sections, setSection] = useState([])
+    const [startDate, setSDate] = useState([])
+    const [endDate, setEDate] = useState([])
 
     const handlePagination = (event, page) => {
         setPage(page);
+        handleDairyList(branch,grade,sections,startDate,endDate,activeTab,page)
     };
 
     const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+    
     useEffect(() => {
+        if(page !== 1 && branch && grade && sections && startDate && endDate && activeTab)
+          handleDairyList(branch,grade,sections,startDate,endDate,activeTab)
         if (NavData && NavData.length) {
           NavData.forEach((item) => {
             if (
@@ -74,6 +83,7 @@ const GeneralDairyList = () => {
               item.child_module.forEach((item) => {
                 if(location.pathname === "/dairy/student" && item.child_name === "Student Dairy") {
                     setStudentModuleId(item?.child_id);
+                    setShowSubjectDropDown(true)
                 } else if(location.pathname === "/dairy/teacher" && item.child_name === "Teacher") {
                     setTeacherModuleId(item?.child_id);
                 } 
@@ -83,23 +93,33 @@ const GeneralDairyList = () => {
         }
       }, [location.pathname]);
 
-    const handleDairyList = (branchId, gradeId, sectionIds, startDate, endDate, activeTab) => {
-        //console.log(branchId, gradeId, sectionIds, startDate, endDate, '===');
+    const handleDairyList = (branchId, gradeId, sectionIds, startDate, endDate, activeTab,page) => {
+        console.log(page,'inside')
         setLoading(true);
         setPeriodData([]);
+        setBranch(branchId)
+        setGrade(gradeId)
+        setSection(sectionIds)
+        setSDate(startDate)
+        setEDate(endDate)
+        setPage(page)
+        setActiveTab(activeTab)
         const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
         console.log(roleDetails);
+        if(!branchId || !gradeId){
+            setLoading(false)
+            setAlert('error','Fill in required fields')
+            return
+        }
         const diaryUrl =  isTeacher ? `${endpoints.generalDairy.dairyList}?branch=${branchId}&grades=${gradeId}&sections=${sectionIds}&page=${page}&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}${activeTab !== 0? ('&dairy_type='+activeTab) : ''}`
             : `${endpoints.generalDairy.dairyList}?module_id=${studentModuleId}&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}${activeTab !== 0? ('&dairy_type='+activeTab) : ''}`;
         axiosInstance.get(diaryUrl)
-            // axiosInstance.get(`${endpoints.generalDairy.dairyList}?start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}`)
-            // axiosInstance.get(`${endpoints.generalDairy.dairyList}?grades=${gradeId}&sections=${sectionIds}`)
             .then((result) => {
-                //console.log(result);
                 if (result.data.status_code === 200) {
                     setTotalCount(result.data.result.count);
                     setLoading(false);
                     setPeriodData(result.data.result.results);
+                    setTotalPages(result.data.result.total_pages)
                 } else {
                     setLoading(false);
                     setAlert('error', result.data.description);
@@ -133,6 +153,8 @@ const GeneralDairyList = () => {
                     handleDairyList={handleDairyList}
                     setPeriodData={setPeriodData}
                     isTeacher={isTeacher}
+                    showSubjectDropDown={showSubjectDropDown}
+                    // pageup={page}
                     //  setCurrentTab={setCurrentTab}
                 />
                 <Paper className={classes.root}>
@@ -171,7 +193,7 @@ const GeneralDairyList = () => {
                                                     handleDairyType={handleDairyType}
                                                 />
                                             )}
-                                            {period.dairy_type === "2" && (
+                                            {period.dairy_type === "2" && isTeacher ?(
                                                 <DailyDairy
                                                     index={i}
                                                     lesson={period}
@@ -186,7 +208,7 @@ const GeneralDairyList = () => {
                                                     setPeriodColor={setPeriodColor}
                                                     handleDairyType={handleDairyType}
                                                 />
-                                            )}
+                                            ):''}
                                         </Grid>
                                     ))}
                                 </Grid>
@@ -243,16 +265,17 @@ const GeneralDairyList = () => {
                                 />
                             </div>
                         )}
-
-                    <div className='paginateData paginateMobileMargin'>
-                        <Pagination
-                            onChange={handlePagination}
-                            style={{ marginTop: 25 }}
-                            count={Math.ceil(totalCount / limit)}
-                            color='primary'
-                            page={page}
-                        />
-                    </div>
+{periodData?.length > 0 &&
+                        <div className="paginateData paginateMobileMargin">
+                            <Pagination
+                                onChange={handlePagination}
+                                style={{ marginTop: 25 }}
+                                count={Math.ceil(totalCount / limit)}
+                                color='primary'
+                                page={page}
+                            />
+                        </div>
+                    }
                 </Paper>
             </Layout>
         </>

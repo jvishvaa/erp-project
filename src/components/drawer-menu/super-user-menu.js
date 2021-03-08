@@ -14,6 +14,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import HomeWorkIcon from '@material-ui/icons/HomeWork';
 import { useHistory } from 'react-router-dom';
 import useStyles from './useStyles';
+import endpoints from '../../config/endpoints';
 
 const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
   const history = useHistory();
@@ -23,19 +24,21 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
 
   return (
     <>
-      <ListItem
-        button
-        className={history.location.pathname === '/dashboard' ? 'menu_selection' : null}
-        onClick={() => {
-          onClickMenuItem('Dashboard');
-        }}
-      >
-        {' '}
-        <ListItemIcon className={classes.menuItemIcon}>
-          <AssignmentIndIcon />
-        </ListItemIcon>
-        <ListItemText className='menu-item-text'>Dashboard</ListItemText>
-      </ListItem>
+      {window.location.host !== endpoints.aolConfirmURL && (
+        <ListItem
+          button
+          className={history.location.pathname === '/dashboard' ? 'menu_selection' : null}
+          onClick={() => {
+            onClickMenuItem('Dashboard');
+          }}
+        >
+          {' '}
+          <ListItemIcon className={classes.menuItemIcon}>
+            <AssignmentIndIcon />
+          </ListItemIcon>
+          <ListItemText className='menu-item-text'>Dashboard</ListItemText>
+        </ListItem>
+      )}
       {/* <ListItem
         button
         className={
@@ -122,7 +125,6 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
             </ListItemIcon>
             <ListItemText primary={`Bulk Upload Status`} className='menu-item-text' />
           </ListItem>
-
           <ListItem
             button
             className={
@@ -155,7 +157,7 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
         <ListItemIcon className={classes.menuItemIcon}>
           <AssignmentIndIcon />
         </ListItemIcon>
-        <ListItemText className='menu-item-text'>Role management</ListItemText>
+        <ListItemText className='menu-item-text'>Role Management</ListItemText>
       </ListItem>
       {/*
         <ListItem
@@ -298,77 +300,85 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
             <ListItemText primary='Section' className='menu-item-text' />
           </ListItem>
 
-          <ListItem
-            button
-            className={
-              history.location.pathname === '/master-management/subject-table'
-                ? 'menu_selection'
-                : null
-            }
-            onClick={() => {
-              onClickMenuItem('subject-table');
-            }}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              {/* <MenuIcon name={child.child_name} /> */}
-              {/* {menuIcon(child.child_name)} */}
-            </ListItemIcon>
-            <ListItemText primary={`Subject`} className='menu-item-text' />
-          </ListItem>
+          {/* {window.location.host !== endpoints.aolConfirmURL && ( */}
+            <ListItem
+              button
+              className={
+                history.location.pathname === '/master-mgmt/subject-table'
+                  ? 'menu_selection'
+                  : null
+              }
+              onClick={() => {
+                onClickMenuItem('subject-table');
+              }}
+            >
+              <ListItemIcon className={classes.menuItemIcon}>
+                {/* <MenuIcon name={child.child_name} /> */}
+                {/* {menuIcon(child.child_name)} */}
+              </ListItemIcon>
+              <ListItemText primary={`Subject`} className='menu-item-text' />
+            </ListItem>
+          {/* )} */}
 
-          <ListItem
-            button
-            className={
-              history.location.pathname === '/master-management/academic-year-table'
-                ? 'menu_selection'
-                : null
-            }
-            onClick={() => {
-              onClickMenuItem('academic-year-table');
-            }}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              {/* <MenuIcon name={child.child_name} /> */}
-              {/* {menuIcon(child.child_name)} */}
-            </ListItemIcon>
-            <ListItemText primary='Academic Year' className='menu-item-text' />
-          </ListItem>
+          {/* {window.location.host !== endpoints.aolConfirmURL && ( */}
+            <ListItem
+              button
+              className={
+                history.location.pathname === '/master-mgmt/academic-year-table'
+                  ? 'menu_selection'
+                  : null
+              }
+              onClick={() => {
+                onClickMenuItem('academic-year-table');
+              }}
+            >
+              <ListItemIcon className={classes.menuItemIcon}>
+                {/* <MenuIcon name={child.child_name} /> */}
+                {/* {menuIcon(child.child_name)} */}
+              </ListItemIcon>
+              <ListItemText primary='Academic Year' className='menu-item-text' />
+            </ListItem>
+          {/* )} */}
 
-          <ListItem
-            button
-            className={
-              history.location.pathname === '/master-management/message-type-table'
-                ? 'menu_selection'
-                : null
-            }
-            onClick={() => {
-              onClickMenuItem('message-type-table');
-            }}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              {/* <MenuIcon name={child.child_name} /> */}
-              {/* {menuIcon(child.child_name)} */}
-            </ListItemIcon>
-            <ListItemText primary='Message Type' className='menu-item-text' />
-          </ListItem>
+          {window.location.host !== endpoints.aolConfirmURL && (
+            <ListItem
+              button
+              className={
+                history.location.pathname === '/master-mgmt/message-type-table'
+                  ? 'menu_selection'
+                  : null
+              }
+              onClick={() => {
+                onClickMenuItem('message-type-table');
+              }}
+            >
+              <ListItemIcon className={classes.menuItemIcon}>
+                {/* <MenuIcon name={child.child_name} /> */}
+                {/* {menuIcon(child.child_name)} */}
+              </ListItemIcon>
+              <ListItemText primary='Message Type' className='menu-item-text' />
+            </ListItem>
+          )}
 
-          <ListItem
-            button
-            className={
-              history.location.pathname === '/master-mgmt/signature-upload'
-                ? 'menu_selection'
-                : null
-            }
-            onClick={() => {
-              onClickMenuItem('signature-upload');
-            }}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              {/* <MenuIcon name={child.child_name} /> */}
-              {/* {menuIcon(child.child_name)} */}
-            </ListItemIcon>
-            <ListItemText primary='Signature Upload' className='menu-item-text' />
-          </ListItem>
+          {window.location.host !== endpoints.aolConfirmURL && (
+            <ListItem
+              button
+              className={
+                history.location.pathname === '/master-mgmt/signature-upload'
+                  ? 'menu_selection'
+                  : null
+              }
+              onClick={() => {
+                onClickMenuItem('signature-upload');
+              }}
+            >
+              <ListItemIcon className={classes.menuItemIcon}>
+                {/* <MenuIcon name={child.child_name} /> */}
+                {/* {menuIcon(child.child_name)} */}
+              </ListItemIcon>
+              <ListItemText primary='Signature Upload' className='menu-item-text' />
+            </ListItem>
+          )}
 
           <ListItem
             button
@@ -402,21 +412,23 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
             <ListItemText primary='Course Price' className='menu-item-text' />
           </ListItem>
 
-          <ListItem
-            button
-            className={
-              history.location.pathname === '/subject/grade' ? 'menu_selection' : null
-            }
-            onClick={() => {
-              onClickMenuItem('school-mapping');
-            }}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              {/* <MenuIcon name={child.child_name} /> */}
-              {/* {menuIcon(child.child_name)} */}
-            </ListItemIcon>
-            <ListItemText primary='School Mapping' className='menu-item-text' />
-          </ListItem>
+          {window.location.host !== endpoints.aolConfirmURL && (
+            <ListItem
+              button
+              className={
+                history.location.pathname === '/subject/grade' ? 'menu_selection' : null
+              }
+              onClick={() => {
+                onClickMenuItem('school-mapping');
+              }}
+            >
+              <ListItemIcon className={classes.menuItemIcon}>
+                {/* <MenuIcon name={child.child_name} /> */}
+                {/* {menuIcon(child.child_name)} */}
+              </ListItemIcon>
+              <ListItemText primary='Lesson Plan Mapping' className='menu-item-text' />
+            </ListItem>
+          )}
         </List>
       </Collapse>
     </>

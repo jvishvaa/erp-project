@@ -59,6 +59,9 @@ const CreateDailyDairy = (details, onSubmit) => {
   const [gradeSel,setSelGrade] = useState([]);
   const [sectionSel,setSelSection] = useState([]);
   const [subjectSel,setSelSubject] = useState([]);
+  const [errors, setErrors] = useState({ branches: '', grades: '' });
+  const [loading, setLoading] = useState(false);
+
 
   //context
     const [state,setState] = useContext(Context)
@@ -267,7 +270,12 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleImageChange = (event) =>{
+
     if(filePath.length<10) {
+      if(!formik.values.section || !formik.values.grade || !formik.values.subjects || !formik.values.branch.id || !subjectIds){
+        return setAlert('error','Please select all fields')
+      }
+      setLoading(true);
       const data  = event.target.files[0];
       console.log(formik.values.branch);
       const fd = new FormData();
@@ -279,11 +287,15 @@ const CreateDailyDairy = (details, onSubmit) => {
       .then((result)=>{
             console.log(fd);
             if (result.data.status_code === 200) {
+            setLoading(false)
+
                 console.log(result.data,'resp')
                 setAlert('success',result.data.message)
                 setFilePath([ ...filePath,result.data.result])
             }
             else {
+            setLoading(false)
+
                 setAlert('error',result.data.message)
             }
       })
@@ -294,84 +306,91 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   const handleSubmit = async () => {
     const createDairyEntry = endpoints.dailyDairy.createDailyDairy;
-    const ids = formik.values.section.map((el) => el.id);
-    const grade = formik.values.grade.map((el) => el.id);
-    const subjectId = formik.values.subjects.map((el) => el.id);
-    console.log("===============");
-    console.log(subjectId);
-    console.log(formik.values.subjects);
-    const teacherReport=[] 
-    //debugger
-    try {
-      const response = await axiosInstance.post(
-        createDairyEntry,
-        {
-          // title:title,
-              // description:description,
-              // module_name:filterData.role.value,
-              branch: formik.values.branch.id,
-              grade: grade,
-              section: ids,
-              subject: subjectIds.join(),
-              // teacher_report:
-              documents:filePath,
-              teacher_report:{
-                "previous_class":recap,
-                "summary":summary,
-                "class_work":detail,
-                "tools_used":tools,
-                "homework":homework
-              },
-              dairy_type:2
-
-              // teacher_report:[
-                // previous_class:recap,
-                              // 
+    
+    const ids = formik.values.section ? formik.values.section.map((el) => el.id) : setAlert('error','Fill all the required fields')
+    const grade = formik.values.grade ? formik.values.grade.map((el) => el.id) : ''
+    const subjectId = formik.values.subjects ? formik.values.subjects.map((el) => el.id) : setAlert('error','check')
+    if(!formik.values.section || !formik.values.grade || !formik.values.subjects || !formik.values.branch.id || !subjectIds){
+      return setAlert('error','Please select all fields')
+    }
+    else{
+      console.log("===============");
+      console.log(subjectId);
+      console.log(formik.values.subjects);
+      const teacherReport=[] 
+      try {
+        const response = await axiosInstance.post(
+          createDairyEntry,
+          {
+            // title:title,
+            // description:description,
+            // module_name:filterData.role.value,
+            branch: formik.values.branch.id,
+            grade: grade,
+            section: ids,
+            subject: subjectIds.join(),
+            // teacher_report:
+            documents:filePath,
+            teacher_report:{
+              "previous_class":recap,
+              "summary":summary,
+              "class_work":detail,
+              "tools_used":tools,
+              "homework":homework
+            },
+            dairy_type:2
+            
+            // teacher_report:[
+              // previous_class:recap,
+              // 
               // ]
               
               // Branch:filterData.branch.map(function (b) {
-              //     return b.id
-              //   }),
-              // grades:[54],
-          //     grade:filterData.grade.map((g)=>g.grade_id),
-          //     mapping_bgs:filterData.section.map((s)=>s.id),
-          // user_id: selectionArray,
-        },
-        {
-          headers: {
-            // 'application/json' is the modern content-type for JSON, but some
-            // older servers may use 'text/json'.
-            // See: http://bit.ly/text-json
-            'content-type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const { message, status_code: statusCode } = response.data;
-      if (statusCode === 200) {
-        // props.history.push('/user-management/assign-role')
-        // displayUsersList()
-        setAlert('success', message);
-        // setSelectedUsers([]);
-        // setRoleError('');
-        // setSelectedRole('');
-        // setSelectAllObj([]);
-        // setSelectedBranch();
-        // setSelectedGrades([]);
-        // setSelectedMultipleRoles([]);
-        // setSelectedSections([]);
-        // setSelectAllObj([]);
-        // setSelectectUserError('');
-        // setAssigenedRole();
-        // clearSelectAll();
-      } else {
-        setAlert('error', response.data.message);
-      }
-    } catch (error) {
-      setAlert('error', error.message);
-    }
-  };
-
+                //     return b.id
+                //   }),
+                // grades:[54],
+                //     grade:filterData.grade.map((g)=>g.grade_id),
+                //     mapping_bgs:filterData.section.map((s)=>s.id),
+                // user_id: selectionArray,
+              },
+              {
+                headers: {
+                  // 'application/json' is the modern content-type for JSON, but some
+                  // older servers may use 'text/json'.
+                  // See: http://bit.ly/text-json
+                  'content-type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+              );
+              const { message, status_code: statusCode } = response.data;
+              if (statusCode === 200) {
+                setAlert('success', message);
+                setBranches([])
+                setGrades([])
+                setSections([])
+                setAcademicYear([])
+                // formik.setFieldValue('branch', []);
+                // formik.setFieldValue('section', []);
+                // formik.setFieldValue('grade', []);
+                // formik.setFieldValue('subjects', []);
+                setRecap('')
+                setSummary('')
+                setHomework('')
+                setTools('')
+                setDetails([])
+                setFilePath([])
+                setSearchAcademicYear('')
+                setSubjectIds('')
+              } else {
+                setAlert('error', response.data.message);
+              }
+            } catch (error) {
+              setAlert('error', error.message);
+            }
+          }
+          };
+          
   const handleEdited =()=>{
    //debugger
    console.log(editData)
@@ -404,15 +423,21 @@ const CreateDailyDairy = (details, onSubmit) => {
         <div className='file_name_container'>
           File {index + 1}
         </div>
-        <Divider orientation="vertical"  className='divider_color' flexItem />
-        <div className='file_close'>
+        {/* <Divider orientation="vertical"  className='divider_color' flexItem /> */}
+        <div>
           <span
             onClick={onClose}
           >
             <SvgIcon
               component={() => (
                 <img
-                  style={{
+                  style={isMobile?{
+                    marginLeft:'',
+                    width: '20px',
+                    height:'20px',
+                    // padding: '5px',
+                    cursor: 'pointer',
+                  }:{
                     width: '20px',
                     height:'20px',
                     // padding: '5px',
@@ -462,6 +487,8 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   return (
     <>
+    {loading ? <Loading message='Loading...' /> : null}
+
       <Layout>
         <div className={isMobile ? 'breadCrumbFilterRow' : null}>
           <div style={{ width: '95%', margin: '20px auto' }}>
@@ -544,7 +571,7 @@ const CreateDailyDairy = (details, onSubmit) => {
             size='small'
           />
           <FormHelperText style={{ color: 'red' }}>
-            {formik.errors.branch ? formik.errors.branch : ''}
+            {errors.branches ? errors.branches : ''}
           </FormHelperText>
           </Grid>
           <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
@@ -760,7 +787,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                             />
                         )) : null }
             </div>
-            <div className="attachmentButtonContainer" style={{ marginTop:'10%' }}>
+            <div style={isMobile?{ marginTop:'1%' }: {marginTop:'10%'}}>
 
             <Button
                         startIcon={<SvgIcon
@@ -800,7 +827,7 @@ const CreateDailyDairy = (details, onSubmit) => {
         </div>
           <div>
               <Button 
-              style={{ marginLeft:'80%' }}
+              style= {isMobile? {marginLeft:''}:  { marginLeft:'80%' } }
               onClick={state.isEdit? handleEdited : handleSubmit}
                 className='submit_button'>SUBMIT</Button>
           </div>

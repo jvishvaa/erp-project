@@ -17,12 +17,14 @@ const CourseFilter = ({
   setCourseData,
   setPageFlag,
   handleClearFilter,
+  tabValue,
 }) => {
   const themeContext = useTheme();
   const { gradeKey } = useParams();
   const history = useHistory();
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+  const aolHostURL = window.location.host;
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
   const [gradeDropdown, setGradeDropdown] = useState([]);
@@ -47,12 +49,16 @@ const CourseFilter = ({
   };
 
   const handleFilter = () => {
-    handleCourseList(gradeIds);
+    handleCourseList(gradeIds, tabValue);
   };
 
   useEffect(() => {
+    let url = `${endpoints.communication.grades}`;
+    if (aolHostURL === endpoints.aolConfirmURL) url += `?branch_id=1`;
+    else url += `?branch_id=5`;
+
     axiosInstance
-      .get(`${endpoints.communication.grades}?branch_id=${5}&module_id=8`)
+      .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
           setGradeDropdown(result?.data?.data);
@@ -92,18 +98,22 @@ const CourseFilter = ({
   //     setGradeDropdown([]);
   //   }
   // };
-  
+
   useEffect(() => {
     if (gradeKey) {
+      let url = `${endpoints.communication.grades}`;
+      if (aolHostURL === endpoints.aolConfirmURL) url += `?branch_id=1`;
+      else url += `?branch_id=5`;
+
       axiosInstance
-        .get(`${endpoints.communication.grades}?branch_id=${5}&module_id=8`)
+        .get(url)
         .then((result) => {
           if (result.data.status_code === 200) {
             setGradeDropdown(result?.data?.data);
             const gradeObj = result.data?.data?.find(
               ({ grade_id }) => grade_id === Number(gradeKey)
             );
-            if (gradeKey>0) {
+            if (gradeKey > 0) {
               setFilterData({
                 grade: gradeObj,
               });

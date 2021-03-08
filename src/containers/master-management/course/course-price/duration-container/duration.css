@@ -38,6 +38,7 @@
 .addRemoveIconContainer {
   align-self: center;
   margin-right: 5%;
+  display: flex;
 }
 
 .recursiveRow {

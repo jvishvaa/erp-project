@@ -19,6 +19,7 @@ import deleteIcon from '../../../../assets/images/delete.svg';
 import attachmenticon from '../../../../assets/images/attachmenticon.svg';
 import { Context } from '../view-course/context/ViewStore';
 import { filter } from 'lodash';
+import LinearProgressBar from '../../../../components/progress-bar';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -78,7 +79,7 @@ const CreateCourse = () => {
   const branchDrop = [{ branch_name: 'AOL' }];
   const [filterData, setFilterData] = useState({
     branch: '',
-    grade: [],
+    grade: '',
     courseLevel: '',
     category: '',
     age: '',
@@ -90,6 +91,8 @@ const CreateCourse = () => {
     { value: 'Intermediate', level: 'Mid' },
     { value: 'Advance', level: 'High' },
   ]);
+  const [progress, setProgress] = React.useState(10);
+  const [isLodding, setIsLodding] = React.useState(0);
 
   const handleCourseLevel = (event, value) => {
     setFilterData({ ...filterData, courseLevel: '' });
@@ -116,16 +119,22 @@ const CreateCourse = () => {
   };
 
   const handleBack = () => {
-    if (Boolean(gradeKey)) history.push(`/course-list/${gradeKey}`);
-    else setNextToggle((prev) => !prev);
+    if (Boolean(gradeKey)) {
+      const isAolValue = Number(sessionStorage.getItem('isAol'))||'';
+      if (isAolValue === 1) {
+        history.push(`/online-class/view-class`);
+      } else if (isAolValue === 2) {
+        history.push('/online-class/attend-class');
+      }else if (isAolValue === 3) {
+        history.push('/online-class/teacher-view-class');
+      } else {
+        history.push(`/course-list/${gradeKey}`);
+      }
+      sessionStorage.removeItem('isAol');
+    } else setNextToggle((prev) => !prev);
   };
   const handleBackToCourseList = () => {
-    if(window.location.host === endpoints?.aolConfirmURL){
-      history.push(`/course-list/`);
-    }else{
-      history.goBack();
-    }
-    
+    history.push(`/course-list/`);
   };
 
   useEffect(() => {
@@ -354,8 +363,11 @@ const CreateCourse = () => {
   useEffect(() => {
     if (aolHostURL !== endpoints.aolConfirmURL) {
       setGradeDropdown([]);
+      let url = `${endpoints.communication.grades}`;
+      if (aolHostURL === endpoints.aolConfirmURL) url += `?branch_id=1`;
+      else url += `?branch_id=5`;
       axiosInstance
-        .get(`${endpoints.academics.grades}?branch_id=5`)
+        .get(url)
         .then((result) => {
           if (result.data.status_code === 200) {
             const list = [];
@@ -377,7 +389,7 @@ const CreateCourse = () => {
   }, []);
 
   const handleGrade = (event, value) => {
-    setFilterData({ ...filterData, grade: [] });
+    setFilterData({ ...filterData, grade: '' });
     if (value) {
       setFilterData({
         ...filterData,
@@ -403,13 +415,16 @@ const CreateCourse = () => {
   const removeFileHandler = (i, fileType) => {
     if (fileType === 'thumbnail') {
       setThumbnailImage('');
+      setIsLodding(0);
     } else if (fileType === 'doc') {
+      setIsLodding(0);
       filePath.splice(i, 1);
     }
     setAlert('success', 'File deleted successfully');
   };
 
   const handleImageChange = (event) => {
+    setIsLodding(1);
     if (filePath.length < 10) {
       const data = event.target.files[0];
       const fd = new FormData();
@@ -419,7 +434,17 @@ const CreateCourse = () => {
           const fileList = [...filePath];
           fileList.push(result.data?.result?.get_file_path);
           setFilePath(fileList);
-          setAlert('success', result.data?.message);
+
+          const timer = setInterval(() => {
+            setProgress((prevProgress) =>
+              prevProgress >= 100 ? 100 : prevProgress + 10
+            );
+          }, 700);
+          setAlert('success', result.data.message);
+          return () => {
+            setIsLodding(0);
+            clearInterval(timer);
+          };
         } else {
           setAlert('error', result.data?.message);
         }
@@ -430,6 +455,7 @@ const CreateCourse = () => {
   };
 
   const handleThumbnail = (event) => {
+    setIsLodding(2);
     const fd = new FormData();
     fd.append('file', event.target.files[0]);
     const fileName = event.target.files[0]?.name;
@@ -441,9 +467,22 @@ const CreateCourse = () => {
       axiosInstance.post(`${endpoints.onlineCourses.fileUpload}`, fd).then((result) => {
         if (result.data.status_code === 200) {
           setThumbnailImage(result.data?.result?.get_file_path);
+          //setAlert('success', result.data.message);
+          //setProgress(100);
+          const timer = setInterval(() => {
+            setProgress((prevProgress) =>
+              prevProgress >= 100 ? 100 : prevProgress + 10
+            );
+          }, 700);
           setAlert('success', result.data.message);
+          return () => {
+            setIsLodding(0);
+            //setAlert('success', result.data.message);
+            clearInterval(timer);
+          };
         } else {
           setAlert('error', result.data.message);
+          setIsLodding(0);
         }
       });
     } else {
@@ -481,7 +520,7 @@ const CreateCourse = () => {
           setEditFlag(false);
           setFilterData({
             branch: '',
-            grade: [],
+            grade: '',
             courseLevel: '',
             category: '',
             age: '',
@@ -536,7 +575,7 @@ const CreateCourse = () => {
           setEditFlag(false);
           setFilterData({
             branch: '',
-            grade: [],
+            grade: '',
             courseLevel: '',
             category: '',
             age: '',
@@ -646,9 +685,9 @@ const CreateCourse = () => {
                   onChange={handleCourseLevel}
                   id='academic-year'
                   className='dropdownIcon'
-                  value={filterData?.courseLevel}
-                  options={courseLevelDrop}
-                  getOptionLabel={(option) => option?.value}
+                  value={filterData?.courseLevel || ''}
+                  options={courseLevelDrop || []}
+                  getOptionLabel={(option) => option?.value || ''}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
@@ -668,9 +707,9 @@ const CreateCourse = () => {
                     onChange={handleBranch}
                     id='grade'
                     className='dropdownIcon'
-                    value={filterData?.branch}
-                    options={branchDrop}
-                    getOptionLabel={(option) => option?.branch_name}
+                    value={filterData?.branch || ''}
+                    options={branchDrop || []}
+                    getOptionLabel={(option) => option?.branch_name || ''}
                     filterSelectedOptions
                     renderInput={(params) => (
                       <TextField
@@ -691,9 +730,9 @@ const CreateCourse = () => {
                     onChange={handleCategory}
                     id='volume'
                     className='dropdownIcon'
-                    value={filterData?.category}
-                    options={categoryDropdown}
-                    getOptionLabel={(option) => option?.tag_name}
+                    value={filterData?.category || ''}
+                    options={categoryDropdown || []}
+                    getOptionLabel={(option) => option?.tag_name || ''}
                     filterSelectedOptions
                     renderInput={(params) => (
                       <TextField
@@ -713,9 +752,9 @@ const CreateCourse = () => {
                   onChange={handleGrade}
                   id='volume'
                   className='dropdownIcon'
-                  value={filterData?.grade}
-                  options={gradeDropdown}
-                  getOptionLabel={(option) => option?.gradeName}
+                  value={filterData?.grade || ''}
+                  options={gradeDropdown || []}
+                  getOptionLabel={(option) => option?.gradeName || ''}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
@@ -735,9 +774,9 @@ const CreateCourse = () => {
                     onChange={handleAge}
                     id='volume'
                     className='dropdownIcon'
-                    value={filterData?.age}
-                    options={age}
-                    getOptionLabel={(option) => option?.tag_name}
+                    value={filterData?.age || ''}
+                    options={age || []}
+                    getOptionLabel={(option) => option?.tag_name || ''}
                     filterSelectedOptions
                     renderInput={(params) => (
                       <TextField
@@ -758,9 +797,9 @@ const CreateCourse = () => {
                     onChange={handleSubject}
                     id='volume'
                     className='dropdownIcon'
-                    value={filterData?.subject}
-                    options={subjectDropdown}
-                    getOptionLabel={(option) => option?.subjectName}
+                    value={filterData?.subject || ''}
+                    options={subjectDropdown || []}
+                    getOptionLabel={(option) => option?.subjectName || ''}
                     filterSelectedOptions
                     renderInput={(params) => (
                       <TextField
@@ -876,37 +915,44 @@ const CreateCourse = () => {
 
                 {filePath?.length < 1 && (
                   <div className='attachmentButtonContainer'>
-                    <Button
-                      startIcon={
-                        <SvgIcon
-                          component={() => (
-                            <img
-                              style={{ height: '20px', width: '20px' }}
-                              src={attachmenticon}
-                            />
-                          )}
+                    <div>
+                      <Button
+                        startIcon={
+                          <SvgIcon
+                            component={() => (
+                              <img
+                                style={{ height: '20px', width: '20px' }}
+                                src={attachmenticon}
+                              />
+                            )}
+                          />
+                        }
+                        className='attachment_button_doc'
+                        title='Attach Supporting File'
+                        variant='contained'
+                        size='small'
+                        disableRipple
+                        disableElevation
+                        disableFocusRipple
+                        disableTouchRipple
+                        component='label'
+                        style={{ textTransform: 'none' }}
+                      >
+                        <input
+                          type='file'
+                          style={{ display: 'none' }}
+                          id='raised-button-file'
+                          accept='image/*'
+                          onChange={handleImageChange}
                         />
-                      }
-                      className='attachment_button_doc'
-                      title='Attach Supporting File'
-                      variant='contained'
-                      size='small'
-                      disableRipple
-                      disableElevation
-                      disableFocusRipple
-                      disableTouchRipple
-                      component='label'
-                      style={{ textTransform: 'none' }}
-                    >
-                      <input
-                        type='file'
-                        style={{ display: 'none' }}
-                        id='raised-button-file'
-                        accept='image/*'
-                        onChange={handleImageChange}
-                      />
-                      Add Document
-                    </Button>
+                        Add Document
+                      </Button>
+                    </div>
+                    {isLodding === 1 && (
+                      <div style={{ width: '200px', margin: '10px' }}>
+                        <LinearProgressBar value={progress} color='secondary' />
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -921,37 +967,44 @@ const CreateCourse = () => {
 
                 {thumbnailImage === '' && (
                   <div className='attachmentButtonContainer'>
-                    <Button
-                      startIcon={
-                        <SvgIcon
-                          component={() => (
-                            <img
-                              style={{ height: '20px', width: '20px' }}
-                              src={attachmenticon}
-                            />
-                          )}
+                    <div>
+                      <Button
+                        startIcon={
+                          <SvgIcon
+                            component={() => (
+                              <img
+                                style={{ height: '20px', width: '20px' }}
+                                src={attachmenticon}
+                              />
+                            )}
+                          />
+                        }
+                        className='attachment_button_doc'
+                        title='Attach Supporting File'
+                        variant='contained'
+                        size='small'
+                        disableRipple
+                        disableElevation
+                        disableFocusRipple
+                        disableTouchRipple
+                        component='label'
+                        style={{ textTransform: 'none' }}
+                      >
+                        <input
+                          type='file'
+                          style={{ display: 'none' }}
+                          id='raised-button-file'
+                          accept='image/*'
+                          onChange={handleThumbnail}
                         />
-                      }
-                      className='attachment_button_doc'
-                      title='Attach Supporting File'
-                      variant='contained'
-                      size='small'
-                      disableRipple
-                      disableElevation
-                      disableFocusRipple
-                      disableTouchRipple
-                      component='label'
-                      style={{ textTransform: 'none' }}
-                    >
-                      <input
-                        type='file'
-                        style={{ display: 'none' }}
-                        id='raised-button-file'
-                        accept='image/*'
-                        onChange={handleThumbnail}
-                      />
-                      Add Thumbnail
-                    </Button>
+                        Add Thumbnail
+                      </Button>
+                    </div>
+                    {isLodding === 2 && (
+                      <div style={{ width: '200px', margin: '10px' }}>
+                        <LinearProgressBar value={progress} color='secondary' />
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
