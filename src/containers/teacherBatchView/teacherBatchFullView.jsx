@@ -9,6 +9,7 @@ import endpoints from '../../config/endpoints';
 import Loader from '../../components/loader/loader';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import ResourceDialog from '../online-class/online-class-resources/resourceDialog';
+import './styles.css'
 
 const JoinClass = (props) => {
   const fullData = props.fullData;
@@ -43,6 +44,26 @@ const JoinClass = (props) => {
         setLoading(false);
         setAlert('error', error.message);
       });
+  }
+
+  const handleJoin = async()=>{
+    const params = {
+      zoom_meeting_id: fullData && fullData.id,
+      class_date: props.data && props.data.date,
+      is_attended: true
+    };
+  await  axiosInstance
+      .put(endpoints.studentViewBatchesApi.rejetBatchApi, params)
+      .then((res) => {
+        setLoading(false);
+        setIsAccept(true);
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', error.message);
+      });
+    window.open(fullData && fullData.join_url)
+
   }
 
   function handleCancel() {
@@ -103,7 +124,7 @@ const JoinClass = (props) => {
             color='secondary'
             fullWidth
             variant='contained'
-            onClick={() => window.open(fullData && fullData.join_url)}
+            onClick={handleJoin}
             className='teacherFullViewSmallButtons'
           >
             Join
@@ -144,8 +165,9 @@ const JoinClass = (props) => {
                         </Button>
                       )}
                   </Grid>
-                  <Grid item md={3} xs={6}>
+                  <Grid item md={3} xs={6} className='xxx'>
                     <Popover
+                      className='deletePopover'
                       id={id}
                       open={open}
                       anchorEl={anchorEl}
@@ -219,7 +241,6 @@ const TeacherBatchFullView = ({ fullData, handleClose, selectedGrade }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const history = useHistory()
   const {role_details}= JSON.parse(localStorage.getItem('userDetails'))
-  console.log(role_details.grades[0].id,'=========================')
   /*
   useEffect(() => {
     if (fullData) {
@@ -239,8 +260,8 @@ const TeacherBatchFullView = ({ fullData, handleClose, selectedGrade }) => {
 
   useEffect(() => {
     let detailsURL = window.location.pathname === '/online-class/attend-class'
-      ? `erp_user/${fullData && fullData.id}/student-oc-details/`
-      : `erp_user/${fullData && fullData.id}/online-class-details/`;
+      ? `erp_user/${fullData && fullData?.id}/student-oc-details/`
+      : `erp_user/${fullData && fullData?.id}/online-class-details/`;
 
     if (fullData) {
       axiosInstance
@@ -277,7 +298,7 @@ const TeacherBatchFullView = ({ fullData, handleClose, selectedGrade }) => {
   function handleCancel() {
     setLoading(true);
     const params = {
-      zoom_meeting_id: fullData && fullData.id,
+      zoom_meeting_id: fullData && fullData?.id,
       class_date: fullData && fullData?.online_class?.start_time.split('T')[0],
     };
     let url = '';
@@ -300,17 +321,17 @@ const TeacherBatchFullView = ({ fullData, handleClose, selectedGrade }) => {
   }
 
   const handleAttendance = () => {
-    history.push(`/aol-attendance-list/${fullData.online_class && fullData.id}`)
+    history.push(`/aol-attendance-list/${fullData?.online_class && fullData?.id}`)
   }
   // console.log(selectedGrade,'FFFFFFFFFFFFFFFFFFFFFFF')
   // history.push(`/create/course/${props.filterData && props?.filterData?.course?.id}/${props.filterData && props?.filterData?.grade?.id}`)
   // sessionStorage.setItem('isAol','isAol');
   const handleCoursePlan = () => {
     if (window.location.pathname === '/online-class/attend-class') {
-      history.push(`/create/course/${fullData.online_class && fullData.online_class.course_id}/${role_details.grades[0].id}`)
+      history.push(`/create/course/${fullData.online_class && fullData?.online_class?.course_id}/${1}`)
       sessionStorage.setItem('isAol', 2);
     } else {
-      history.push(`/create/course/${fullData.online_class && fullData.online_class.cource_id}/${selectedGrade && selectedGrade.id}`)
+      history.push(`/create/course/${fullData.online_class && fullData?.online_class?.cource_id}/${1}`)
       sessionStorage.setItem('isAol', 3);
     }
   }
@@ -345,7 +366,7 @@ const TeacherBatchFullView = ({ fullData, handleClose, selectedGrade }) => {
                     <h4 className='teacherBatchFullCardLable'>
                       {(fullData &&
                         fullData.online_class &&
-                        fullData.online_class.title) ||
+                        fullData?.online_class?.title) ||
                         ''}
                     </h4>
                     <h4 className='teacherBatchFullCardLable'>
@@ -353,9 +374,9 @@ const TeacherBatchFullView = ({ fullData, handleClose, selectedGrade }) => {
                         fullData.online_class &&
                         fullData.online_class.subject &&
                         fullData.online_class.subject.length !== 0 &&
-                        fullData.online_class.subject.map((item) => (
+                        fullData?.online_class?.subject.map((item) => (
                           <span>
-                            {item.subject_name || ''}
+                            {item?.subject_name || ''}
                             &nbsp;
                           </span>
                         ))) ||
@@ -365,12 +386,12 @@ const TeacherBatchFullView = ({ fullData, handleClose, selectedGrade }) => {
                   <Grid item md={4} xs={4}>
                     <h4 className='teacherBatchFullCardLable'>
                       {(fullData &&
-                        fullData.join_time &&
-                        converTime(fullData.join_time.split(' ')[1])) ||
+                        fullData?.join_time &&
+                        converTime(fullData?.join_time.split(' ')[1])) ||
                         ''}
                     </h4>
                     <h4 className='teacherBatchFullCardLable'>
-                      {noOfPeriods && noOfPeriods.length}
+                      {noOfPeriods && noOfPeriods?.length}
                       &nbsp;Periods
                     </h4>
                   </Grid>
@@ -425,8 +446,8 @@ const TeacherBatchFullView = ({ fullData, handleClose, selectedGrade }) => {
         open={openPopup}
         onClose={handleClosePopup}
         title={fullData.online_class.title}
-        resourceId={fullData.id}
-        onlineClassId={fullData.online_class.id}
+        resourceId={fullData?.id}
+        onlineClassId={fullData.online_class?.id}
         startDate={fullData.online_class.start_time}
         endDate={fullData.online_class.end_time}
       />

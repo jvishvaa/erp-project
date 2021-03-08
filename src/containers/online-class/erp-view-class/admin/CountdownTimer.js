@@ -3,7 +3,7 @@ import Timer from 'react-compound-timer';
 import React from 'react';
 import { Tune } from '@material-ui/icons';
 
-function CountdownTimer(props) {
+function CountdownTimer({timer}) {
   const classStartMin = 1;
   const countStartWithInMIn = 1*(30/100);
   const defaultStartTime=new Date(new Date().getTime() + classStartMin * 60 * 1000).getTime()
@@ -22,7 +22,7 @@ function CountdownTimer(props) {
 //       return null;
 //     }
 //   }
-console.log(props,'=================')
+console.log(timer,'=================')
   const getTimerStartsOn =()=>{
     const timeNow = new Date().getTime();
     return ((classStartsAt||defaultStartTime) - countStartWithInMIn*60*1000)-timeNow

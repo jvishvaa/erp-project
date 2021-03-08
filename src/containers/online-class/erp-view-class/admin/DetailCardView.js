@@ -119,12 +119,11 @@ const JoinClass = (props) => {
         <span className='TeacherFullViewdescreption1'>
           {moment(props.data ? props.data.date : '').format('DD-MM-YYYY')}
         </span>
-        {/* <CountdownTimer /> */}
       </Grid>
       
       {isAccept ? (
         <Grid item xs={6}>
-          {joinPermission ? (
+          {/* {joinPermission ? ( */}
             <Button
               size='small'
               color='secondary'
@@ -135,12 +134,13 @@ const JoinClass = (props) => {
             >
               Join
             </Button>
-          ) : (
-            <CountdownTimer
-              classData={props.fullData}
-             />
-          )}
-          {/* <Typography>{cTime}</Typography> */}
+          {/* ) : ( */}
+          
+            {/* <CountdownTimer
+              timer={props.fullData.online_class}
+            /> */}
+            
+          {/* )} */}
 
         </Grid>
       ) : (
@@ -170,7 +170,7 @@ const JoinClass = (props) => {
                     fullWidth
                     variant='contained'
                     onClick={() =>
-                      window.open(fullData && fullData.presenter_url, '_blank'
+                      window.open(fullData && fux llData.presenter_url, '_blank'
                     )}
                     className='teacherFullViewSmallButtons'
                   >
