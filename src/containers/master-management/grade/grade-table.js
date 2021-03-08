@@ -262,7 +262,7 @@ const GradeTable = () => {
                           {grade.grade_type}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
-                          {grade.created_by}
+                          {grade.created_by ? grade.created_by.first_name : ''}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
 

@@ -272,188 +272,181 @@ export default function DiscussionComponent(props) {
   };
 
   React.useEffect(() => {
-    props.rowData &&
-      props.rowData.awards.map((award) => {
-        setAwardsCount(awardsCount + award.gold + award.silver + award.bronze);
-        award.gold && setGoldCount(award.gold);
-        award.silver && setSilverCount(award.silver);
-        award.bronze && setBronzeCount(award.bronze);
-      });
+    props.rowData && props.rowData.awards.map((award) => {
+      setAwardsCount(awardsCount + award.gold + award.silver + award.bronze);
+      award.gold && setGoldCount(award.gold);
+      award.silver && setSilverCount(award.silver);
+      award.bronze && setBronzeCount(award.bronze);
+    })
   }, [props.rowData]);
 
   return (
-      <Grid container className={classes.discussionContainer}>
-          <Grid item xs={12}>
-              <div className={classes.discussionTitleBox}>
-                  <span className={classes.discussionTitle}>
-                    {props.rowData && props.rowData.categories.category_name}
-                    {' '}/
-                  </span>
-                  <span className={classes.discussionTitle}>
-                    {props.rowData && props.rowData.categories.sub_category_name}
-                    {' '}/ 
-                  </span>
-                  <span className={classes.discussionTitle}>
-                    {props.rowData && props.rowData.categories.sub_sub_category_name}
-                  </span>
-                  <span>
-                    <FiberManualRecordIcon className={classes.dotSeparator} />
-                    <span className={classes.postByText}>post by</span>
-                    <ProfileIcon
-                      firstname={props.rowData.post_by.first_name}
-                      lastname={props.rowData.post_by.last_name}
-                      bgColor='#14B800'
-                    />
-                    <span className={classes.username}>
-                      {props.rowData.post_by.first_name+' '+props.rowData.post_by.last_name} /
-                    </span>
-                    <span className={classes.discussionTime}>
-                      {moment(props.rowData.post_at).format('hh : mm ')} /
-                    </span>
-                    <span className={classes.discussionTime}>{moment(props.rowData.post_at).format('DD.MM.YYYY')}</span>
-                  </span>
-                  <span className={classes.discussionIconRow}>
-                    <span>
-                      <LikeButton
-                        id={props.rowData.id}
-                        isLike={props.rowData.is_like}
-                        likeCounts={props.rowData.like_count}
-                      />
-                    </span>
-                    <span style={{ marginLeft: '10px'}}>
-                      <ChatIcon />
-                      <span className={classes.discussionIcon}>
-                        {props.rowData.comment_count}
-                      </span>
-                    </span>
-                    <span
-                      aria-describedby={id}
-                      onMouseEnter={handlePopoverOpen}
-                      //onMouseLeave={handlePopoverClose}
-                      //onClick={handlePopoverOpen}
-                    >
-                      <StarAwardIcon />
-                      <span className={classes.discussionIcon}>
-                        {awardsCount}
-                      </span>
-                    </span>
-                      <ClickAwayListener onClickAway={handlePopoverClose}>
-                        <Popover
-                          id={id}
-                          open={open}
-                          anchorEl={anchorEl}
-                          onClose={handlePopoverClose}
-                          anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'right',
-                          }}
-                          transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                          }}
-                        >
-                          <div style={{ padding: '10px 20px', textAlign: 'center'}}>
-                            {/* <SilverAwards /> */}
-                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                              {goldCount !== 0 && (<img src={GoldAwards} alt="Silver Awards" />)}
-                              {silverCount !== 0 && (<img src={SilverAwards} alt="Silver Awards" />)}
-                              {bronzeCount !== 0 && (<img src={BronzeAwards} alt="Silver Awards" />)}
-                              {goldCount === 0 && silverCount === 0 && bronzeCount === 0 && (
-                                <span className={classes.noAwardsText}>No Awards Found</span>
-                              )}
-                            </div>
-                            <Divider />
-                            <OutlinedButton
-                              variant="outlined"
-                              color="secondary"
-                              onClick={(e) => handleClickOpen(props.rowData.id)}
-                            >
-                              GIVE AWARD
-                            </OutlinedButton>
-                          </div>
-                        </Popover>
-                      </ClickAwayListener>
-                      {props.rowData.attachments !== undefined && props.rowData.attachments !== 0 && (
-                        <span>
-                          <AttachmentIcon />
-                            <span className={classes.discussionIcon}>
-                              {props.rowData.attachments}
-                          </span>
-                        </span>
-                      )}
-                      <MoreVertIcon className={classes.discussionDotIcon} />
-                    </span>
+    <Grid container className={classes.discussionContainer}>
+      <Grid item xs={12}>
+        <div className={classes.discussionTitleBox}>
+          <span className={classes.discussionTitle}>
+            {`${props.rowData && props.rowData.categories.category_name} /`}
+          </span>
+          <span className={classes.discussionTitle}>
+            {`${props.rowData && props.rowData.categories.sub_category_name} /`}
+          </span>
+          <span className={classes.discussionTitle}>
+            {props.rowData && props.rowData.categories.sub_sub_category_name}
+          </span>
+          <span>
+            <FiberManualRecordIcon className={classes.dotSeparator} />
+            <span className={classes.postByText}>post by</span>
+            <ProfileIcon
+              firstname={props.rowData.post_by.first_name}
+              lastname={props.rowData.post_by.last_name}
+              bgColor='#14B800'
+            />
+            <span className={classes.username}>
+              {`${props.rowData.post_by.first_name} ${props.rowData.post_by.last_name} /`}
+            </span>
+            <span className={classes.discussionTime}>
+              {`${moment(props.rowData.post_at).format('hh : mm ')} /`}
+            </span>
+            <span className={classes.discussionTime}>
+              {moment(props.rowData.post_at).format('DD.MM.YYYY')}
+            </span>
+          </span>
+          <span className={classes.discussionIconRow}>
+            <span>
+              <LikeButton
+                id={props.rowData.id}
+                isLike={props.rowData.is_like}
+                likeCounts={props.rowData.like_count}
+              />
+            </span>
+            <span style={{ marginLeft: '10px'}}>
+              <ChatIcon />
+              <span className={classes.discussionIcon}>
+                {props.rowData.comment_count}
+              </span>
+            </span>
+            <span
+              aria-describedby={id}
+              onMouseEnter={handlePopoverOpen}
+              //onMouseLeave={handlePopoverClose}
+              //onClick={handlePopoverOpen}
+            >
+              <StarAwardIcon />
+              <span className={classes.discussionIcon}>{awardsCount}</span>
+            </span>
+            <ClickAwayListener onClickAway={handlePopoverClose}>
+              <Popover
+                id={id}
+                open={open}
+                anchorEl={anchorEl}
+                onClose={handlePopoverClose}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+              >
+                <div style={{ padding: '10px 20px', textAlign: 'center'}}>
+                  {/* <SilverAwards /> */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    {goldCount !== 0 && (<img src={GoldAwards} alt="Silver Awards" />)}
+                    {silverCount !== 0 && (<img src={SilverAwards} alt="Silver Awards" />)}
+                    {bronzeCount !== 0 && (<img src={BronzeAwards} alt="Silver Awards" />)}
+                    {goldCount === 0 && silverCount === 0 && bronzeCount === 0 && (<span className={classes.noAwardsText}>No Awards Found</span>)}
                   </div>
-                  <Box className={classes.discussionDetailsBox}>
-                    <Typography className={classes.discussionTitle}>
-                      {props.rowData.title ?? ''}
-                    </Typography>
-                    {props.rowData && props.rowData.description && (
-                      <Typography className={classes.discussionParagraph}>
-                        <div dangerouslySetInnerHTML={{__html: props.rowData.description}} />
-                      </Typography>
-                    )}
-                    <Typography className={classes.answersText}>
-                      Top answers
-                    </Typography>
-                    <Grid container spacing={2}>
-                      <Grid item sm={10} sx={12}>
-                        {commentList && (
-                          <Box className={classes.commentReplyBox}>
-                            {commentList.slice(0, 2).map((commentRow) => (
-                              <DiscussionReplies key={commentRow.id} commentRow={commentRow} />
-                             ))}
-                          </Box>
-                        )}
-                        <StyledInput
-                          placeholder="Have your say"
-                          value={reply}
-                          onChange={handleChange}
-                          fullWidth
-                        />
-                      </Grid>
-                      <Grid item sm={2} xs={12} style={{ position: 'relative'}}>
-                        <Grid container spacing={2}>
-                          <Grid item sm={12} xs={6}>
-                            <StyledButton
-                              color="secondary"
-                              variant="contained"
-                              fullWidth
-                              onClick={handlePost}
-                            >
-                              Read post
-                            </StyledButton>
-                          </Grid>
-                          <Grid item sm={12} xs={6} style={{marginTop: 'auto',}}>
-                            <StyledOutlinedButton
-                              fullWidth
-                              onClick={handleReply}
-                            >
-                              Reply
-                            </StyledOutlinedButton>
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                      {/*
-                        <Grid item sm={10} xs={12}>
-                            <StyledInput
-                                placeholder="Have your say"
-                                value={reply}
-                                onChange={handleChange}
-                                fullWidth={true}
-                            />
-                        </Grid>
-                        <Grid item xs={2}>
-                            <StyledOutlinedButton
-                                onClick={handleReply}
-                            >
-                                Reply
-                            </StyledOutlinedButton>
-                        </Grid>
-                        */}
+                  <Divider />
+                  <OutlinedButton
+                    variant="outlined"
+                    color="secondary"
+                    onClick={(e) => handleClickOpen(props.rowData.id)}
+                  >
+                    GIVE AWARD
+                  </OutlinedButton>
+                </div>
+              </Popover>
+            </ClickAwayListener>
+            {props.rowData.attachments !== undefined && props.rowData.attachments !== 0 && (
+              <span>
+                <AttachmentIcon />
+                <span className={classes.discussionIcon}>
+                  {props.rowData.attachments}
+                </span>
+              </span>
+            )}
+            <MoreVertIcon className={classes.discussionDotIcon} />
+          </span>
+        </div>
+        <Box className={classes.discussionDetailsBox}>
+          <Typography className={classes.discussionTitle}>
+            {props.rowData.title ?? ''}
+          </Typography>
+          {props.rowData && props.rowData.description && (
+            <Typography className={classes.discussionParagraph}>
+              <div dangerouslySetInnerHTML={{__html: props.rowData.description}} />
+            </Typography>
+          )}
+          <Typography className={classes.answersText}>Top answers</Typography>
+          <Grid container spacing={2}>
+            <Grid item sm={10} sx={12}>
+              {commentList && (
+                <Box className={classes.commentReplyBox}>
+                  {commentList.slice(0, 2).map((commentRow) => (
+                    <DiscussionReplies key={commentRow.id} commentRow={commentRow} />
+                  ))}
+                </Box>
+              )}
+              <StyledInput
+                placeholder="Have your say"
+                value={reply}
+                onChange={handleChange}
+                fullWidth
+              />
+            </Grid>
+            <Grid item sm={2} xs={12} style={{ position: 'relative'}}>
+              <Grid container spacing={2}>
+                <Grid item sm={12} xs={6}>
+                  <StyledButton
+                    color="secondary"
+                    variant="contained"
+                    fullWidth
+                    onClick={handlePost}
+                  >
+                    Read post
+                  </StyledButton>
+                </Grid>
+                <Grid item sm={12} xs={6} style={{marginTop: 'auto',}}>
+                  <StyledOutlinedButton fullWidth onClick={handleReply}>
+                    Reply
+                  </StyledOutlinedButton>
+                </Grid>
+              </Grid>
+            </Grid>
+            {/*
+            <Grid item sm={10} xs={12}>
+              <StyledInput
+                placeholder="Have your say"
+                value={reply}
+                onChange={handleChange}
+                fullWidth={true}
+              />
+            </Grid>
+            <Grid item xs={2}>
+              <StyledOutlinedButton onClick={handleReply}>
+                Reply
+              </StyledOutlinedButton>
+            </Grid>
+            */}
           </Grid>
         </Box>
-        <GiveAwardDialog selectedValue={selectedValue} postId={postId} open={openGiveAward} onClose={handleClose} />
+        <GiveAwardDialog
+          selectedValue={selectedValue}
+          postId={postId}
+          open={openGiveAward}
+          onClose={handleClose}
+        />
       </Grid>
     </Grid>
   );

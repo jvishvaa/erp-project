@@ -333,7 +333,7 @@ const SectionTable = () => {
                           {section.section.section_name}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
-                          {section.section.created_by}
+                          {section.section ? section.section.created_by.first_name : ''}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
                         <IconButton
