@@ -211,38 +211,39 @@ export const fetchLedgerReport = (payload) => {
 }
 
 export const downloadLedgerAttachment = (payload) => {
+  window.location.replace(payload.urls[0].file)
   return (dispatch) => {
-    const options = payload.urls.map(atUrl => ({
-      url: atUrl.file,
-      method: 'get',
-      responseType: 'blob',
-      headers: {
-        Authorization: 'Bearer ' + payload.user
-      }
-    }))
-    dispatch(actionTypes.dataLoading())
-    axios.all(
-      options.map(optn => (
-        axios.request(optn)
-      ))
-    ).then(axios.spread((...args) => {
-      args.forEach((response, i) => {
-        const splitArr = payload.urls[i].file.split('.')
-        const ext = splitArr[splitArr.length - 1]
-        const url = window.URL.createObjectURL(new Blob([response.data]))
-        const link = document.createElement('a')
-        link.href = url
-        link.target = '_blank'
-        link.setAttribute('download', `attachment-${i + 1}.${ext}`)
-        document.body.appendChild(link)
-        link.click()
-      })
-      dispatch(actionTypes.dataLoaded())
-    })).catch(err => {
-      console.log(err)
-      payload.alert.warning('Unable To Download Some Files')
-      dispatch(actionTypes.dataLoaded())
-    })
+    // const options = payload.urls.map(atUrl => ({
+    //   url: atUrl.file,
+    //   method: 'get',
+    //   responseType: 'blob',
+    //   headers: {
+    //     Authorization: 'Bearer ' + payload.user
+    //   }
+    // }))
+    // dispatch(actionTypes.dataLoading())
+    // axios.all(
+    //   options.map(optn => (
+    //     axios.request(optn)
+    //   ))
+    // ).then(axios.spread((...args) => {
+    //   args.forEach((response, i) => {
+    //     const splitArr = payload.urls[i].file.split('.')
+    //     const ext = splitArr[splitArr.length - 1]
+    //     const url = window.URL.createObjectURL(new Blob([response.data]))
+    //     const link = document.createElement('a')
+    //     link.href = url
+    //     link.target = '_blank'
+    //     link.setAttribute('download', `attachment-${i + 1}.${ext}`)
+    //     document.body.appendChild(link)
+    //     link.click()
+    //   })
+    //   dispatch(actionTypes.dataLoaded())
+    // })).catch(err => {
+    //   console.log(err)
+    //   payload.alert.warning('Unable To Download Some Files')
+    //   dispatch(actionTypes.dataLoaded())
+    // })
     // axios.get(payload.url, {
     //   headers: {
     //     Authorization: 'Bearer ' + payload.user

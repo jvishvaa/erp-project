@@ -45,12 +45,12 @@ class ManagePayment extends Component {
       getList: false,
       erp: null
     }
-    this.currBrnch = JSON.parse(localStorage.getItem('user_profile')).branch_id
+    this.currBrnch = JSON.parse(localStorage.getItem('userDetails')).branch_id
     // console.log(BranchId.includes(this.currBrnch))
   }
   componentDidMount () {
     // for disabling the terminal
-    // console.log('manage Pay: ', JSON.parse(localStorage.getItem('user_profile')).erp)
+    console.log('manage Pay: ', JSON.parse(localStorage.getItem('userDetails')).erp)
     document.onkeydown = function (e) {
       if (e.keyCode === 123) {
         return false
@@ -116,8 +116,8 @@ class ManagePayment extends Component {
               user={this.props.user}
               alert={this.props.alert}
               getList={this.state.getList}
-              erp={JSON.parse(localStorage.getItem('user_profile')).erp}
-              gradeId={JSON.parse(localStorage.getItem('user_profile')).grade_id}
+              erp={JSON.parse(localStorage.getItem('userDetails')).erp}
+              gradeId={JSON.parse(localStorage.getItem('userDetails')).grade_id}
             />
           </TabContainer>}
           {/* {this.state.value === 'three' && <TabContainer>

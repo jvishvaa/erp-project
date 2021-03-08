@@ -375,7 +375,7 @@ class ManageFeeType extends Component {
     for (let i = 0; i < installFeeAcc.length; i++) {
       if (installFeeAcc[i].value === '') {
         isValid = false
-        // this.props.alert.warning(' please Select Fee Account!')
+        this.props.alert.warning(' please Select Fee Account!')
         return false
       } else {
         isValid = true

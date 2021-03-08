@@ -29,9 +29,9 @@ export const fetchEditRequests = (payload) => {
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       if (err.response && (err.response.status === 400 || err.response.status === 404)) {
-        // payload.alert.warning(err.response.data.err_msg)
+        payload.alert.warning(err.response.data.err_msg)
       } else {
-        // payload.alert.warning('Something Went Wrong!')
+        payload.alert.warning('Something Went Wrong!')
       }
       dispatch(actionTypes.dataLoaded())
       console.log(err)

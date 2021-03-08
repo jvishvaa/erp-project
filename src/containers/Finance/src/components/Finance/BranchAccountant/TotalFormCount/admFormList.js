@@ -24,7 +24,7 @@ import FirstPageIcon from '@material-ui/icons/FirstPage'
 // import appRegReceiptsPdf from '../../Receipts/appRegReceipts'
 // import PropTypes from 'prop-types'
 // import Select from 'react-select'
-import feeReceipts from '../../Receipts/feeReceipts'
+import feeReceiptss from '../../Receipts/feeReceiptss'
 // import { apiActions } from '../../../../_actions'
 import { urls } from '../../../../urls'
 // import RequestShuffle from './requestShuffle'
@@ -122,7 +122,7 @@ const AdmFormList = ({ session,
     try {
       const response = await getPdfData(transid)
       console.log('App reg Response: ', response)
-      feeReceipts(response.data)
+      feeReceiptss(response.data)
     } catch (e) {
       console.log(e)
       alert.warning('Unable to generate PDF!')

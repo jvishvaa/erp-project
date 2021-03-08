@@ -26,7 +26,7 @@ class FeeDetails extends Component {
   componentDidMount () {
     if (this.props.getList && this.props.sessionYear) {
       // console.log('stuu: ', )
-      let erpValue = JSON.parse(localStorage.getItem('user_profile')).erp
+      let erpValue = JSON.parse(localStorage.getItem('userDetails')).erp
       this.props.fetchRefundValue(erpValue, this.props.sessionYear, this.props.alert, this.props.user)
       this.props.fetchListFeeDetails(this.props.sessionYear, this.props.alert, this.props.user)
     } else {

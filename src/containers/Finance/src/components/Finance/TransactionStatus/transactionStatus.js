@@ -288,8 +288,8 @@ class TransactionStatus extends Component {
       return
     }
 
-    var userData = JSON.parse(localStorage.getItem('user_profile'))
-    let role = userData.personal_info.role
+    const userProfile = JSON.parse(localStorage.getItem('userDetails'))
+    const role = userProfile.personal_info.role.toLowerCase()
     const data = {
       fee_accounts: feeAccId,
       academic_year: currentSession,
@@ -301,7 +301,7 @@ class TransactionStatus extends Component {
       is_issued_date: true
     }
 
-    if (role === 'FinanceAdmin') {
+    if (role === 'financeadmin') {
       data.branch_id = [currentBranch.id]
     }
     const url = urls.FDSReport

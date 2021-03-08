@@ -78,7 +78,7 @@ class AddOtherFees extends Component {
       // console.log('Redirect', this.props.location.state.currentYear.value, this.props.location.state.currentBranch.value)
       this.props.alert.warning('Select Academic Year & Branch')
       this.props.history.push({
-        pathname: '/finance/other_fee'
+        pathname: '/feeType/OtherFeeType'
       })
     } else {
       // console.log('Inside Add Other fee')
@@ -101,7 +101,7 @@ class AddOtherFees extends Component {
   componentWillReceiveProps (nextProps) {
     if (nextProps.installmentResponse) {
       this.props.history.push({
-        pathname: '/finance/other_fee'
+        pathname: '/feeType/OtherFeeType'
       })
     }
   }
@@ -672,7 +672,7 @@ class AddOtherFees extends Component {
           onClick={this.checkInstallmenthandler}
           color='primary'
           size='small'
-          variant='outlined'
+          variant='contained'
         >Check For Installments</Button>
       )
     }

@@ -27,7 +27,7 @@ data = {
 }
 */
 async function generateExcel (data) {
-  console.log('datas', data)
+  console.log('the datas from generate Excel', data)
   const headers = data.columns.map(item => ({ value: item.Header, type: 'string' }))
   const accessors = data.columns.map(item => item.accessor)
   const makeData = data.excelData.map((item, index) => {
@@ -49,7 +49,7 @@ async function generateExcel (data) {
       ]
     }
   }
-  console.log('config', config)
+  console.log('the config', config)
   zipcelx(config)
   return Promise.resolve(true)
 }

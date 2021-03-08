@@ -31,7 +31,7 @@ export const fetchListConcessionSettings = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.warning('Unable to load data')
+        payload.alert.warning('Unable to load data')
         console.log(error)
       })
   }
@@ -52,11 +52,11 @@ export const updateListConcessionSettings = (payload) => {
             data: response.data
           }
         })
-        // payload.alert.success('Updated Successfully')
+        payload.alert.success('Updated Successfully')
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.error('Something Went Wrong')
+        payload.alert.error('Something Went Wrong')
         console.log(error)
       })
   }
@@ -78,10 +78,10 @@ export const addConcessionTypes = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.success('Added Successfully')
+        payload.alert.success('Added Successfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.error('Something Went Wrong')
+        payload.alert.error('Something Went Wrong')
         console.log(error)
       })
   }
@@ -103,10 +103,10 @@ export const addListConcessionSettings = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.success('Added Successfully')
+        payload.alert.success('Added Successfully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.error('Something Went Wrong')
+        payload.alert.error('Something Went Wrong')
         console.log(error)
       })
   }
@@ -130,7 +130,7 @@ export const fetchListConcessionTypes = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.warning('Unable to load data')
+        payload.alert.warning('Unable to load data')
         console.log(error)
       })
   }
@@ -154,7 +154,7 @@ export const fetchListFeeType = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.warning('Unable to load data')
+        payload.alert.warning('Unable to load data')
         console.log(error)
       })
   }
@@ -176,10 +176,10 @@ export const addListFeeType = (payload) => {
           }
         })
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.success('Added SuccessFully')
+        payload.alert.success('Added SuccessFully')
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.error('Something went wrong')
+        payload.alert.error('Something went wrong')
         console.log(error)
       })
   }
@@ -203,7 +203,7 @@ export const fetchConcessionFeeType = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.warning('Unable to load data')
+        payload.alert.warning('Unable to load data')
         console.log(error)
       })
   }
