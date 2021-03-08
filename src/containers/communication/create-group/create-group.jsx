@@ -258,11 +258,11 @@ const CreateGroup = withRouter(({ history, ...props }) => {
         const rows = [];
         const selectionRows = [];
         setHeaders([
-          { field: 'id', headerName: 'ID', width: 70 },
+          { field: 'id', headerName: 'ID', width: 100 },
           { field: 'fullName', headerName: 'Name', width: 190 },
           { field: 'email', headerName: 'Email Id', width: 250 },
           { field: 'erp_id', headerName: 'Erp Id', width: 150 },
-          { field: 'gender', headerName: 'Gender', width: 100 },
+          { field: 'gender', headerName: 'Gender', width: 150 },
           { field: 'contact', headerName: 'Contact', width: 150 },
         ]);
         result.data.data.results.forEach((items) => {

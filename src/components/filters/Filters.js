@@ -491,64 +491,64 @@ const Filters = (props) => {
                 </AccordionDetails>
               </Accordion>
               <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
-                      <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
-                          <Typography>Grade</Typography>
-              </AccordionSummary>
-                      <AccordionDetails style={{ backgroundColor: '#FFD9D9'}}>
-                          <div className={classes.contentDiv}>
-                              <List component="nav" aria-label="secondary mailbox folder" className={classes.listItems}>
-                                  {grade.length > 0 && grade.map((el,id) => (
-                                      <ListItem
-                                          key={id}
-                                          button
-                                          selected={gradeId === el?.grade_id}
-                                          onClick={(event) => handleGradeList(event, el?.grade_id, el?.grade__grade_name)}
-                                          className={classes.listItem}
+                <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
+                  <Typography>Grade</Typography>
+                </AccordionSummary>
+                <AccordionDetails style={{ backgroundColor: '#FFD9D9'}}>
+                  <div className={classes.contentDiv}>
+                    <List component="nav" aria-label="secondary mailbox folder" className={classes.listItems}>
+                      {grade.length > 0 && grade.map((el,id) => (
+                        <ListItem
+                          key={id}
+                          button
+                          selected={gradeId === el?.grade_id}
+                          onClick={(event) => handleGradeList(event, el?.grade_id, el?.grade__grade_name)}
+                          className={classes.listItem}
                         >
-                                          <ListItemText primary={`${el?.grade__grade_name}`} />
+                          <ListItemText primary={`${el?.grade__grade_name}`} />
                         </ListItem>
                       ))}
-                                  {grade.length === 0 && (
-                                    <ListItem
-                                          button
-                                          selected={selectedIndex === 0}
-                                          className={classes.listItem}
-                      >
-                                          <ListItemText primary="Please select Branch"/>
-                      </ListItem>
-                    )}
-                  </List>
+                      {grade.length === 0 && (
+                        <ListItem
+                          button
+                          selected={selectedIndex === 0}
+                          className={classes.listItem}
+                        >
+                          <ListItemText primary="Please select Branch"/>
+                        </ListItem>
+                      )}
+                    </List>
                 </div>
               </AccordionDetails>
             </Accordion>
-                  <Accordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
-                      <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
-                          <Typography>Section</Typography>
+            <Accordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
+              <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
+                <Typography>Section</Typography>
               </AccordionSummary>
-                      <AccordionDetails style={{ backgroundColor: '#FFD9D9'}}>
-                          <div className={classes.contentDiv}>
-                              <List component="nav" aria-label="secondary mailbox folder" className={classes.listItems}>
-                                  {sections.length > 0 && sections.map((el,id) => (
-                                      <ListItem
-                                          key={id}
-                                          button
-                                          selected={sectionId === el?.section_id}
-                                          onClick={(event) => handleSectionList(event, el?.section_id, el?.section__section_name)}
-                                          className={classes.listItem}
-                                      >
-                                          <ListItemText primary={`${el?.section__section_name}`} />
-                                      </ListItem>
-                                  ))}
-                                  {sections.length === 0 && (
-                                    <ListItem
-                                          button
-                                          selected={selectedIndex === 0}
-                                          className={classes.listItem}
-                                    >
-                                          <ListItemText primary="Please select Grade"/>
-                                    </ListItem>
-                                  )}
-                                </List>
+              <AccordionDetails style={{ backgroundColor: '#FFD9D9'}}>
+                <div className={classes.contentDiv}>
+                  <List component="nav" aria-label="secondary mailbox folder" className={classes.listItems}>
+                    {sections.length > 0 && sections.map((el,id) => (
+                      <ListItem
+                        key={id}
+                        button
+                        selected={sectionId === el?.section_id}
+                        onClick={(event) => handleSectionList(event, el?.section_id, el?.section__section_name)}
+                        className={classes.listItem}
+                      >
+                        <ListItemText primary={`${el?.section__section_name}`} />
+                      </ListItem>
+                    ))}
+                    {sections.length === 0 && (
+                      <ListItem
+                        button
+                        selected={selectedIndex === 0}
+                        className={classes.listItem}
+                      >
+                        <ListItemText primary="Please select Grade"/>
+                      </ListItem>
+                    )}
+                  </List>
                 </div>
               </AccordionDetails>
             </Accordion>
@@ -801,7 +801,7 @@ const Filters = (props) => {
                       startIcon={<FilterFilledIcon className={classes.filterIcon} />}
                       className={classes.filterButton}
                       onClick={handleFilters}
-            >
+              >
               filter
             </StyledFilterButton>
           </Grid>
