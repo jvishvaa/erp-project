@@ -27,7 +27,7 @@ import { FilterInnerComponent, filterMethod } from '../../../FilterInnerComponen
 import * as actionTypes from '../../../store/actions'
 import Modal from '../../../../../ui/Modal/modal'
 import classes from './viewDeposits.module.css'
-// import { generateExcel } from '../../../../../utils'
+import generateExcel from '../../../../../utils/generateExcel'
 
 const DEPOSIT = [
   { value: 'petty', label: 'Petty Deposit' },
@@ -164,6 +164,9 @@ class ViewDiposits extends Component {
       this.props.alert.warning('No Data To Generate Excel')
       return
     }
+
+    console.log("the props:: ", this.props.pettyCashDeposit)
+
     const columns = [
       {
         Header: 'Date',
@@ -229,7 +232,7 @@ class ViewDiposits extends Component {
       columns,
       excelData
     }
-    // generateExcel(data)
+    generateExcel(data)
   }
 
   // createData = () => {
