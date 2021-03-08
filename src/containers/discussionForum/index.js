@@ -14,7 +14,7 @@ import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import FilterIcon from '../../components/icon/FilterIcon';
-import store from '../../redux/store';
+import store from '../../redux/store'
 
 const useStyles = makeStyles({
   root: {
@@ -142,74 +142,71 @@ const Discussionforum = () => {
     */
 
   return (
-        <>
-            <Layout>
-                <Provider store={store}>
-                      <div className='breadcrumb-container-create' style={{ padding: '10px 20px'}}>
-                        <CommonBreadcrumbs
-                            componentName='Discussion forum'
-                      />
-                        {!showFilter && (
-                            <span>
-                                {selectedFilter && (
-                                    <span className={classes.filterCategorySpan}>
-                                        {filters.year && (
-                                            <>
-                                                <span className={classes.filterCategoryText}>{filters.year? filters.year.year : ''}</span>
-                                                <FiberManualRecordIcon className={classes.dotSeparator} />
-                                            </>
-                                        )}
-                                        {filters.branch && (
-                                            <>
-                                                <span className={classes.filterCategoryText}>{filters.branch? filters.branch.branchs : ''}</span>
-                                                <FiberManualRecordIcon className={classes.dotSeparator} />
-                                            </>
-                                        )}
-                                        {filters.grade && (
-                                            <>
-                                                <span className={classes.filterCategoryText}>{filters.grade? filters.grade.grades : ''}</span>
-                                                <FiberManualRecordIcon className={classes.dotSeparator} />
-                                            </>
-                                        )}
-                                        {filters.section && (
-                                            <span className={classes.filterCategoryText}>{filters.section? filters.section.section : ''}</span>
-                                        )}
-                                    </span>
-                                )}
-                                <span className={classes.topLeft}>
-                                    {selectedFilter && (
-                                        <span className={classes.dashboardText}>
-                                            Number of discussion :{filterData.length}
-                                        </span>
-                                    )}
-                                    <StyledButton
-                                        variant="text"
-                                        size="small"
-                                        endIcon={<FilterIcon />}
-                                        onClick={handleFilter}
-                                    >
-                                        Show filters
-                                    </StyledButton>
-                                </span>
-                            </span>
-                        )}
-                        <Collapse in={showFilter}>
-                          <Filters url={postURL} handleFilterData={handleFilterData} />
-                        </Collapse>
-                    </div>
-                    <Category
-                        handleFilter={handleFilter}
-                        showFilter={showFilter}
-                        categoryList={filterData}
-                        url={postURL}
-                        filters={filters}
-                    />
-                  {/*
-                        <CategoryPage />
-                    */}
-                </Provider>
-            </Layout>
-        </>
-  );
-};
+    <>
+      <Layout>
+        <Provider store={store}>
+          <div className='breadcrumb-container-create' style={{ padding: '10px 20px'}}>
+            <CommonBreadcrumbs componentName='Discussion forum' />
+            {!showFilter && (
+              <span>
+                {selectedFilter && (
+                  <span className={classes.filterCategorySpan}>
+                    {filters.year && (
+                      <>
+                        <span className={classes.filterCategoryText}>{filters.year? filters.year.year : ''}</span>
+                        <FiberManualRecordIcon className={classes.dotSeparator} />
+                      </>
+                    )}
+                    {filters.branch && (
+                      <>
+                        <span className={classes.filterCategoryText}>{filters.branch? filters.branch.branchs : ''}</span>
+                        <FiberManualRecordIcon className={classes.dotSeparator} />
+                      </>
+                    )}
+                    {filters.grade && (
+                      <>
+                        <span className={classes.filterCategoryText}>{filters.grade? filters.grade.grades : ''}</span>
+                        <FiberManualRecordIcon className={classes.dotSeparator} />
+                      </>
+                    )}
+                    {filters.section && (
+                      <span className={classes.filterCategoryText}>{filters.section? filters.section.section : ''}</span>
+                    )}
+                  </span>
+                )}
+                <span className={classes.topLeft}>
+                  {selectedFilter && (
+                    <span className={classes.dashboardText}>
+                      Number of discussion :{filterData.length}
+                    </span>
+                  )}
+                  <StyledButton
+                    variant='text'
+                    size='small'
+                    endIcon={<FilterIcon />}
+                    onClick={handleFilter}
+                  >
+                    Show filters
+                  </StyledButton>
+                </span>
+              </span>
+            )}
+            <Collapse in={showFilter}>
+              <Filters url={postURL} handleFilterData={handleFilterData} />
+            </Collapse>
+          </div>
+          <Category
+            handleFilter={handleFilter}
+            showFilter={showFilter}
+            categoryList={filterData}
+            url={postURL}
+            filters={filters}
+          />
+          {/* <CategoryPage /> */}
+        </Provider>
+      </Layout>
+    </>
+  )
+}
+
 export default Discussionforum;
