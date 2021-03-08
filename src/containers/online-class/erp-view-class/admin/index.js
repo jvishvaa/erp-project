@@ -125,7 +125,7 @@ const ErpAdminViewClass = ({ history }) => {
             studentDetails &&
             studentDetails.role_details &&
             studentDetails.role_details.erp_user_id
-          }&page_number=1&page_size=15`,
+          }&page_number=1&page_size=15&class_type=${selectedClassType?.id}`,
           'filter'
         );
       } else {
@@ -284,13 +284,7 @@ const ErpAdminViewClass = ({ history }) => {
     selectedSubject,
     '========================================='
   );
-  // if(handleDate){
-  //   return (
-  //     <Layout>
-  //     <CountdownTimer />
-  //     </Layout>
-  //   )
-  // }
+
   return (
     <>
       <Layout>

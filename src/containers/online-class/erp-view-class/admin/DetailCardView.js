@@ -4,13 +4,14 @@ import { Grid, Card, Divider, Button, Popover, Typography } from '@material-ui/c
 import { useHistory } from 'react-router-dom';
 import CloseIcon from '@material-ui/icons/Close';
 import moment from 'moment';
+import Timer from 'react-compound-timer';
 import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
 import Loader from '../../../../components/loader/loader';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
-// import ResourceDialog from '../online-class/online-class-resources/resourceDialog';
 import ResourceDialog from '../../../online-class/online-class-resources/resourceDialog';
 import CountdownTimer from './CountdownTimer';
+import './index.css';
 
 const JoinClass = (props) => {
   const fullData = props.fullData;
@@ -30,12 +31,18 @@ const JoinClass = (props) => {
   );
   const currDate = moment(new Date()).format('DD-MM-YYYY');
 
-  const startTime  = props && props?.data?.start_time;
-  const currTime =moment(new Date()).format('x')
-  const classTimeMilli = new Date(`${props.data.date}T${startTime}`).getTime()
-  const diffTime = classTimeMilli - 5*60*1000
+  const startTime = props && props?.data?.start_time;
+  const currTime = moment(new Date()).format('x');
+  const classTimeMilli = new Date(`${props.data.date}T${startTime}`).getTime();
+  const diffTime = classTimeMilli - 5 * 60 * 1000;
 
-  console.log(classTimeMilli,parseInt(currTime),diffTime,'TTTTTTTTTTT',new Date(`${props.data.date}T${startTime}`).getTime())
+  console.log(
+    classTimeMilli,
+    parseInt(currTime),
+    diffTime,
+    'TTTTTTTTTTT',
+    new Date(`${props.data.date}T${startTime}`).getTime()
+  );
 
   const handleCloseData = () => {
     setAnchorEl(null);
@@ -50,12 +57,11 @@ const JoinClass = (props) => {
   };
 
   const handleClickAccept = (event) => {
-   if (diffTime > parseInt(currTime)){
-    setJoinAnchor(event.currentTarget);
-   }
-   else if(parseInt(currTime) > diffTime || parseInt(currTime) === diffTime){
-      handleIsAccept()
-   }
+    if (diffTime > parseInt(currTime)) {
+      setJoinAnchor(event.currentTarget);
+    } else if (parseInt(currTime) > diffTime || parseInt(currTime) === diffTime) {
+      handleIsAccept();
+    }
   };
 
   const handleIsAccept = () => {
@@ -128,6 +134,19 @@ const JoinClass = (props) => {
           {moment(props.data ? props.data.date : '').format('DD-MM-YYYY')}
         </span>
       </Grid>
+      {/* <Grid item xs={3}>
+        <Timer initialTime={5 * 60 * 1000} direction='backward'>
+          {() => (
+            <React.Fragment>
+              <Timer.Days /> days
+              <Timer.Hours /> hours
+              <Timer.Minutes /> minutes
+              <Timer.Seconds /> seconds
+              <Timer.Milliseconds /> milliseconds
+            </React.Fragment>
+          )}
+        </Timer>
+      </Grid> */}
 
       {isAccept ? (
         <Grid item xs={6}>
@@ -190,9 +209,10 @@ const JoinClass = (props) => {
                       open={openJoin}
                       joinAnchor={joinAnchor}
                       onClose={handleClose}
-                      style={{ overflow: 'hidden' }}
+                      style={{ overflow: 'hidden', margin: '19% 0 0 30%' }}
+                      className='xyz'
                       anchorOrigin={{
-                        vertical: 'bottom',
+                        vertical: 'top',
                         horizontal: 'center',
                       }}
                       transformOrigin={{
@@ -212,7 +232,12 @@ const JoinClass = (props) => {
                           />
                         </Grid>
                         <Grid item md={12} xs={12}>
-                          <Typography>You Can Join %mins Before : {startTime}</Typography>
+                          <Typography>
+                            You Can Join 5mins Before :{' '}
+                            {moment(`${props?.data?.date}T${startTime}`).format(
+                              'hh:mm:ss A'
+                            )}
+                          </Typography>
                         </Grid>
                       </Grid>
                     </Popover>
@@ -313,7 +338,6 @@ const DetailCardView = ({
   const [anchorEl, setAnchorEl] = useState(null);
   const history = useHistory();
   const { role_details } = JSON.parse(localStorage.getItem('userDetails'));
-  // console.log(role_details.grades,'SSSSSSSSSSSSSSSSSSSSSS')
   /*
   useEffect(() => {
     if (fullData) {
