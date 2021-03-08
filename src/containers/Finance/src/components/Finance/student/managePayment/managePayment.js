@@ -116,8 +116,8 @@ class ManagePayment extends Component {
               user={this.props.user}
               alert={this.props.alert}
               getList={this.state.getList}
-              erp={JSON.parse(localStorage.getItem('user_profile')).erp}
-              gradeId={JSON.parse(localStorage.getItem('user_profile')).grade_id}
+              erp={JSON.parse(localStorage.getItem('userDetails')).erp}
+              gradeId={JSON.parse(localStorage.getItem('userDetails')).grade_id}
             />
           </TabContainer>}
           {/* {this.state.value === 'three' && <TabContainer>
