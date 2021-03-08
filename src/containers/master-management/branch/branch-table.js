@@ -113,7 +113,7 @@ const BranchTable = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [searchBranch, setSearchBranch] = useState('');
   const [loading, setLoading] = useState(false);
-  const limit =15;
+  const limit = 15;
   const [goBackFlag, setGoBackFlag] = useState(false);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -136,7 +136,7 @@ const BranchTable = () => {
     setAddFlag(false);
     setEditFlag(true);
     setBranchData(branch);
-    console.log({branch})
+    console.log({ branch });
   };
 
   const handleGoBack = () => {
@@ -161,15 +161,15 @@ const BranchTable = () => {
           setBranchName('');
           setBranchId('');
           setLoading(false);
-          setAlert('success', result.data.msg||result.data.message);
+          setAlert('success', result.data.msg || result.data.message);
         } else {
           setLoading(false);
-          setAlert('error', result.data.msg||result.data.message);
+          setAlert('error', result.data.msg || result.data.message);
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.response.data.message||error.response.data.msg);
+        setAlert('error', error.response.data.message || error.response.data.msg);
       });
     setOpenDeleteModal(false);
   };
@@ -192,21 +192,20 @@ const BranchTable = () => {
   }, [goBackFlag, page, delFlag]);
 
   useEffect(() => {
-
-    let url=`${endpoints.masterManagement.branchList}?page=${page}&page_size=${limit}`;
-    if(searchBranch) url+=`&branch_name=${searchBranch}`;
+    let url = `${endpoints.masterManagement.branchList}?page=${page}&page_size=${limit}`;
+    if (searchBranch) url += `&branch_name=${searchBranch}`;
     axiosInstance
       .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
-          setTotalCount(result.data?.data?.count);
-          setBranches(result.data?.data?.results);
+          // setTotalCount(result.data?.data?.count);
+          setBranches(result.data?.data);
         } else {
-          setAlert('error', result.data.msg||result.data.message);
+          setAlert('error', result.data?.msg || result.data?.message);
         }
       })
       .catch((error) => {
-        setAlert('error', error.response.data.message||error.response.data.msg);
+        setAlert('error', error.response?.data?.message || error.response?.data?.msg);
       });
   }, [goBackFlag, delFlag, searchBranch, page]);
 
@@ -223,18 +222,15 @@ const BranchTable = () => {
                 addFlag && !tableFlag
                   ? 'Add Branch'
                   : editFlag && !tableFlag
-                    ? 'Edit Branch'
-                    : null
+                  ? 'Edit Branch'
+                  : null
               }
             />
           </div>
         </div>
 
         {!tableFlag && addFlag && !editFlag && (
-          <CreateBranch
-            setLoading={setLoading}
-            handleGoBack={handleGoBack}
-          />
+          <CreateBranch setLoading={setLoading} handleGoBack={handleGoBack} />
         )}
         {!tableFlag && !addFlag && editFlag && (
           <EditBranch
@@ -286,78 +282,78 @@ const BranchTable = () => {
 
         <>
           {/* {!isMobile ? ( */}
-            <>
-              {tableFlag && !addFlag && !editFlag && (
-                <Paper className={`${classes.root} common-table`}>
-                  <TableContainer className={classes.container}>
-                    <Table stickyHeader aria-label='sticky table'>
-                      <TableHead className='table-header-row'>
-                        <TableRow>
-                          {columns.map((column) => (
-                            <TableCell
-                              key={column.id}
-                              align={column.align}
-                              style={{ minWidth: column.minWidth }}
-                              className={classes.columnHeader}
-                            >
-                              {column.label}
+          <>
+            {tableFlag && !addFlag && !editFlag && (
+              <Paper className={`${classes.root} common-table`}>
+                <TableContainer className={classes.container}>
+                  <Table stickyHeader aria-label='sticky table'>
+                    <TableHead className='table-header-row'>
+                      <TableRow>
+                        {columns.map((column) => (
+                          <TableCell
+                            key={column.id}
+                            align={column.align}
+                            style={{ minWidth: column.minWidth }}
+                            className={classes.columnHeader}
+                          >
+                            {column.label}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {branches?.map((branch, index) => {
+                        return (
+                          <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
+                            <TableCell className={classes.tableCell}>
+                              {branch?.branch_name}
                             </TableCell>
-                          ))}
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {branches.map((branch, index) => {
-                          return (
-                            <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
-                              <TableCell className={classes.tableCell}>
-                                {branch?.branch_name}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {branch?.created_by}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {branch?.branch_code}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {branch?.address}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                <IconButton
-                                  onClick={(e) => {
-                                    handleOpenDeleteModal(branch);
-                                  }}
-                                  title='Delete Branch'
-                                >
-                                  <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
-                                </IconButton>
+                            <TableCell className={classes.tableCell}>
+                              {branch?.created_by}
+                            </TableCell>
+                            <TableCell className={classes.tableCell}>
+                              {branch?.branch_code}
+                            </TableCell>
+                            <TableCell className={classes.tableCell}>
+                              {branch?.address}
+                            </TableCell>
+                            <TableCell className={classes.tableCell}>
+                              <IconButton
+                                onClick={(e) => {
+                                  handleOpenDeleteModal(branch);
+                                }}
+                                title='Delete Branch'
+                              >
+                                <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
+                              </IconButton>
 
-                                <IconButton
-                                  onClick={e=>handleEditBranch(branch)}
-                                  title='Edit Branch'
-                                >
-                                  <EditOutlinedIcon style={{ color: '#fe6b6b' }} />
-                                </IconButton>
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                  <div className='paginateData'>
-                    <TablePagination
-                      component='div'
-                      count={totalCount}
-                      className='customPagination'
-                      rowsPerPage={limit}
-                      page={page - 1}
-                      onChangePage={handleChangePage}
-                      rowsPerPageOptions={false}
-                    />
-                  </div>
-                </Paper>
-              )}
-            </>
+                              <IconButton
+                                onClick={(e) => handleEditBranch(branch)}
+                                title='Edit Branch'
+                              >
+                                <EditOutlinedIcon style={{ color: '#fe6b6b' }} />
+                              </IconButton>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <div className='paginateData'>
+                  <TablePagination
+                    component='div'
+                    count={totalCount}
+                    className='customPagination'
+                    rowsPerPage={limit}
+                    page={page - 1}
+                    onChangePage={handleChangePage}
+                    rowsPerPageOptions={false}
+                  />
+                </div>
+              </Paper>
+            )}
+          </>
           {/* // ) : (
           //     <>
           //       <>
@@ -399,9 +395,7 @@ const BranchTable = () => {
             Delete Branch
           </DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              {`Confirm Delete Branch ${branchName}`}
-            </DialogContentText>
+            <DialogContentText>{`Confirm Delete Branch ${branchName}`}</DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDeleteModal} className='labelColor cancelButton'>

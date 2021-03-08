@@ -173,26 +173,17 @@ const BulkUpload = ({ onUploadSuccess }) => {
     // 'parent_address'
   ];
 
-  const getBranches = async () => {
-    try {
-      const data = await axios.get('erp_user/list-all-branch/');
-      setBranchList(data.data.data);
-    } catch (error) {
-      console.log('failed to load branches');
-    }
-  };
-
   const getYears = async () => {
     try {
       const data = await axios.get('erp_user/list-academic_year/');
-      setYearList(data.data.data);
+      if (data.data.status_code === 200) setYearList(data.data.data);
+      else setYearList([]);
     } catch (error) {
       console.log('failed to load years');
     }
   };
 
   useEffect(() => {
-    getBranches();
     getYears();
   }, []);
 
@@ -263,6 +254,20 @@ const BulkUpload = ({ onUploadSuccess }) => {
     setYear(data?.id);
     setAcademicYearVal(data?.session_year);
     setYearDisplay(data);
+    setBranchList([]);
+    setBranchDisplay('');
+    setBranch(null);
+    if (data?.id) {
+      axiosInstance
+        .get(`erp_user/list-all-branch/?session_year=${data?.id}`)
+        .then((result) => {
+          if (result.data.status_code === 200) setBranchList(result.data.data);
+          else console.log('');
+        })
+        .catch((error) => {
+          console.log('');
+        });
+    }
   };
 
   const handleBranchChange = (event, data) => {
@@ -301,7 +306,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
       setSectionDisp('');
       axiosInstance
         .get(
-          `${endpoints.academics.sections}?branch_id=${branch}&grade_id=${value.grade_id}`
+          `${endpoints.academics.sections}?session_year=${year}&branch_id=${branch}&grade_id=${value.grade_id}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -339,7 +344,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
       setSubjects([]);
       axiosInstance
         .get(
-          `${endpoints.academics.subjects}?branch=${branch}&grade=${searchGradeId}&section=${value.section_id}`
+          `${endpoints.academics.subjects}?session_year=${year}&branch=${branch}&grade=${searchGradeId}&section=${value.section_id}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -369,32 +374,9 @@ const BulkUpload = ({ onUploadSuccess }) => {
           <Autocomplete
             size='small'
             id='create__class-subject'
-            options={branchList}
-            value={branchDisplay}
-            getOptionLabel={(option) => option.branch_name}
-            filterSelectedOptions
-            onChange={handleBranchChange}
-            required
-            renderInput={(params) => (
-              <TextField
-                size='small'
-                className='create__class-textfield'
-                {...params}
-                variant='outlined'
-                label='Branch'
-                placeholder='Branch'
-                required
-              />
-            )}
-          />
-        </Grid>
-        <Grid item md={3} xs={12}>
-          <Autocomplete
-            size='small'
-            id='create__class-subject'
-            options={yearList}
-            value={yearDisplay}
-            getOptionLabel={(option) => option.session_year}
+            options={yearList || []}
+            value={yearDisplay || ''}
+            getOptionLabel={(option) => option.session_year || ''}
             filterSelectedOptions
             onChange={handleYearChange}
             required
@@ -406,6 +388,29 @@ const BulkUpload = ({ onUploadSuccess }) => {
                 variant='outlined'
                 label='Academic year'
                 placeholder='Academic year'
+                required
+              />
+            )}
+          />
+        </Grid>
+        <Grid item md={3} xs={12}>
+          <Autocomplete
+            size='small'
+            id='create__class-subject'
+            options={branchList || []}
+            value={branchDisplay || ''}
+            getOptionLabel={(option) => option.branch_name || ''}
+            filterSelectedOptions
+            onChange={handleBranchChange}
+            required
+            renderInput={(params) => (
+              <TextField
+                size='small'
+                className='create__class-textfield'
+                {...params}
+                variant='outlined'
+                label='Branch'
+                placeholder='Branch'
                 required
               />
             )}
@@ -503,8 +508,8 @@ const BulkUpload = ({ onUploadSuccess }) => {
                 onChange={handleGrade}
                 style={{ width: '100%' }}
                 id='grade'
-                options={grades}
-                getOptionLabel={(option) => option?.grade__grade_name}
+                options={grades || []}
+                getOptionLabel={(option) => option?.grade__grade_name || ''}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
@@ -563,9 +568,9 @@ const BulkUpload = ({ onUploadSuccess }) => {
                   size='small'
                   onChange={handleSection}
                   id='section'
-                  options={sections}
-                  value={sectionDisp}
-                  getOptionLabel={(option) => option?.section__section_name}
+                  options={sections || []}
+                  value={sectionDisp || ''}
+                  getOptionLabel={(option) => option?.section__section_name || ''}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
