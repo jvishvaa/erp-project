@@ -200,6 +200,7 @@ export default {
     createDailyDairy: '/academic/create-dairy/',
     branches: '/academic/chapters/',
     updateDelete: '/academic/',
+    chapterList: '/academic/logged-in-users-subjects/'
   },
   onlineCourses: {
     createCourse: '/aol/courses/',
