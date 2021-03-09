@@ -162,7 +162,7 @@ class Certificate extends Component {
             <Button
               color='primary'
               variant='contained'
-              style={{ marginTop: 20 }}
+              style={{ marginTop: '25px' }}
               onClick={this.generatePdf}
             >Generate</Button>
           </Grid>

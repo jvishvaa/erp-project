@@ -578,10 +578,10 @@ class FeeDetailsAccountant extends Component {
             </Grid>
           </div>
           <div className={classess.modal__deletebutton}>
-            <Button style={{ color: '#fff' }} onClick={this.saveRequest}>Save</Button>
+            <Button style={{ color: '#fff'}} onClick={this.saveRequest}>Save</Button>
           </div>
           <div className={classess.modal__remainbutton}>
-            <Button style={{ color: '#fff' }} onClick={this.hideConcesionModalHandler}>Go Back</Button>
+            <Button style={{ color: '#fff'}} onClick={this.hideConcesionModalHandler}>Go Back</Button>
           </div>
         </Modal>
       )

@@ -416,7 +416,7 @@ class NonRTEFormAcc extends Component {
     return (
       <Layout>
       <React.Fragment>
-        <Button style={{ width: '40px' }} color='primary' className={classes.btn} onClick={this.props.history.goBack}>
+        <Button style={{ marginLeft: '20px'}} color='primary' className={classes.btn} onClick={this.props.history.goBack}>
           <ArrowBack /> Back
         </Button>
         <Stepper activeStep={activeStep} alternativeLabel>

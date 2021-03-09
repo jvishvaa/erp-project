@@ -170,7 +170,7 @@ class ChequeBounce extends Component {
                 />
               </Grid.Column>
               <Grid.Column computer={4}>
-                <div style={{ marginBottom: '20px' }}>
+                <div style={{ marginTop: '20px' }}>
                   <Button
                     primary
                     className={classes.button}
