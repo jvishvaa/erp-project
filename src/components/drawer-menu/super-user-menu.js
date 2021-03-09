@@ -55,7 +55,7 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
         <ListItemText className='menu-item-text'>Homework</ListItemText>
       </ListItem> */}
 
-      {/* <ListItem
+      <ListItem
         button
         className={
           history.location.pathname === '/role-management' ? 'menu_selection' : null
@@ -68,7 +68,7 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
           <AssignmentIndIcon />
         </ListItemIcon>
         <ListItemText className='menu-item-text'>Role Management</ListItemText>
-      </ListItem> */}
+      </ListItem>
       {/*
         <ListItem
           button

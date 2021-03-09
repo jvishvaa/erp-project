@@ -200,6 +200,7 @@ export default {
     createDailyDairy: '/academic/create-dairy/',
     branches: '/academic/chapters/',
     updateDelete: '/academic/',
+    chapterList: '/academic/logged-in-users-subjects/'
   },
   onlineCourses: {
     createCourse: '/aol/courses/',
@@ -248,5 +249,5 @@ export default {
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
   aolConfirmURL:'aol.letseduvate.com', //WARNING: Uncomment this code before pushing  
-  // aolConfirmURL:'localhost:3001', //WARNING: Comment this code before pushing
+  // aolConfirmURL:'localhost:3000', //WARNING: Comment this code before pushing
 };

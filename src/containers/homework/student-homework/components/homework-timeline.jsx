@@ -54,9 +54,9 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
         let res = result.data.data;
         if (Object.keys(res).length > 0) {
           if (res.subject_rating.length > 0) {
-            setTotalHomework(res.hw_given);
-            setSubmittedHomework(res.hw_submitted);
-            setRating(res.subject_rating);
+            setTotalHomework(res?.hw_given);
+            setSubmittedHomework(res?.hw_submitted);
+            setRating(res?.subject_rating);
             setHomeworkTimelineDisplay(true);
           }
         } else {

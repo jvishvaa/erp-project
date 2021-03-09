@@ -129,7 +129,7 @@
   border-radius: 10px;
   font-size: 18px;
 }
-.file_row {
+.file_row_hw {
   border: 1px solid #dfdfdf;
   display: flex;
   flex-direction: row;
@@ -137,15 +137,17 @@
   width: 10%;
   opacity: 1;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   margin: 5px;
-  font: normal normal normal 14px/16px Raleway;
+  font: normal normal normal 16px/18px Raleway;
 }
-.file_name_container {
+.file_name_container_hw {
   color: #014b7e;
+  font-weight: 600;
   align-self: center;
+  margin-left: 10%;
 }
-.file_close {
+.file_close_hw {
   align-self: end;
 }
 .overallContainer {
@@ -291,7 +293,7 @@
     // height: 55px;
     margin-left: 20px;
   }
-  .file_row {
+  .file_row_hw {
     border: 1px solid #dfdfdf;
     display: flex;
     flex-direction: row;
@@ -303,13 +305,13 @@
     margin: 5px;
     font: normal normal normal 14px/16px Raleway;
     margin-bottom: 20px;
-    // margin-left: 63px;
+    margin-left: 0%;
     float: left;
   }
-  .file_close span img {
+  .file_close_hw span img {
     margin-left: 50px;
   }
-  .file_name_container {
+  .file_name_container_hw {
     font-size: 14px;
   }
   .commentBoxStyle {
@@ -364,7 +366,7 @@
   .attachments-container {
     margin-top: 60px !important;
   }
-  .file_row:after {
+  .file_row_hw:after {
     width: 70%;
   }
   .MuiIconButton-label:after {
