@@ -28,6 +28,7 @@ import SectionTable from './containers/master-management/section/section-table';
 import GradeTable from './containers/master-management/grade/grade-table';
 import AcademicYearTable from './containers/master-management/academic-year/academic-year-table';
 import MessageTypeTable from './containers/master-management/message-type/message-type-table';
+import ChapterTypeTable from './containers/master-management/chapter-type/chapter-type-table'
 // import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
 import HomeworkCard from './containers/homework/homework-card';
 import Profile from './containers/profile/profile';
@@ -90,6 +91,7 @@ import ViewCourseCard from './containers/master-management/course/view-course/vi
 import ViewStore from './containers/master-management/course/view-course/context/ViewStore';
 import DailyDairyStore from'./containers/daily-dairy/context/context';
 import AttendeeListRemake from './containers/attendance'
+// import ViewPdfFile from './containers/lesson-plan/lesson-plan-view/view-more-card/readPdfFile';
 
 const theme = createMuiTheme({
   palette: {
@@ -289,6 +291,9 @@ function App() {
                     <Route exact path='/master-mgmt/message-type-table'>
                       {({ match }) => <MessageTypeTable match={match} />}
                     </Route>
+                    <Route exact path='/master-mgmt/chapter-type-table'>
+                      {({ match }) => <ChapterTypeTable match={match} />}
+                    </Route>
                     <Route exact path='/master-mgmt/subject/grade/mapping'>
                       {({ match }) => <Subjectgrade match={match} />}
                     </Route>
@@ -356,6 +361,9 @@ function App() {
                     <Route exact path='/create/general-dairy'>
                       {({ match }) => <CreateGeneralDairy match={match} />}
                     </Route>
+                    {/* <Route exact path='/read/more'>
+                      {({ match }) => <ViewPdfFile match={match} />}
+                    </Route> */}
                     <Route exact path='/daily-dairy'>
                       {({ match }) => <DailyDairyList match={match} />}
                     </Route>
