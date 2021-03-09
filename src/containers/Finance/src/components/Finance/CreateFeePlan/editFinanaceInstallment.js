@@ -227,6 +227,7 @@ class EditFeeInstallment extends Component {
             </Grid>
             <Grid item xs='8'>
               <Button
+              style={{ marginRight: '10px'}}
                 type='submit'
                 color='primary'
                 variant='contained'
