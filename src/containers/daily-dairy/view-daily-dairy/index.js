@@ -314,9 +314,9 @@ const history=useHistory()
           className='custom_button_master'
           size='medium'
           type='submit'
-          onClick={()=>history.push("/create/daily-dairy")}
+          onClick={()=>history.push("/create/daily-diary")}
         >
-          CREATE DAILY DAIRY
+          CREATE DAILY DIARY
         </Button>
       </Grid>
     </Grid>

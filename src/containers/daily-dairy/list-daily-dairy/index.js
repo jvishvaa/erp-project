@@ -98,7 +98,7 @@ console.log("BBBBB",editData)
             <Layout>
                 <div>
                     <div style={{ width: '95%', margin: '20px auto' }}>
-                        <CommonBreadcrumbs componentName='Daily Dairy' />
+                        <CommonBreadcrumbs componentName='Daily Diary' />
                     </div>
                 </div>
                 <DailyDairyFilter

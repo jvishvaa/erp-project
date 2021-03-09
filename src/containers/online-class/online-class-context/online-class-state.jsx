@@ -170,7 +170,7 @@ const OnlineclassViewProvider = (props) => {
     dispatch(request(LIST_GRADE_REQUEST));
     try {
       const { data } = await axiosInstance.get(
-        `${endpoints.academics.grades}?branch_id=5&module_id=${moduleId}`
+        `${endpoints.academics.grades}?branch_id=1&module_id=${moduleId}`
       );
       if (data.status === 'success') dispatch(success(data.data, LIST_GRADE_SUCCESS));
       else throw new Error(data.message);
@@ -183,7 +183,7 @@ const OnlineclassViewProvider = (props) => {
     dispatch(request(LIST_SECTION_REQUEST));
     try {
       const { data } = await axiosInstance.get(
-        `${endpoints.academics.sections}?branch_id=5&grade_id=${gradeId}&module_id=${moduleId}`
+        `${endpoints.academics.sections}?branch_id=1&grade_id=${gradeId}&module_id=${moduleId}`
       );
       if (data.status === 'success') {
         dispatch(success(data.data, LIST_SECTION_SUCCESS));

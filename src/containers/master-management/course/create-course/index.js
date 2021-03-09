@@ -419,7 +419,7 @@ const CreateCourse = () => {
       setGradeDropdown([]);
       let url = `${endpoints.communication.grades}`;
       if (aolHostURL === endpoints.aolConfirmURL) url += `?branch_id=1`;
-      else url += `?branch_id=5`;
+      else url += `?branch_id=1`;
       axiosInstance
         .get(url)
         .then((result) => {
