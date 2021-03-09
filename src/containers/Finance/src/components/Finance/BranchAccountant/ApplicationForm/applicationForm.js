@@ -1971,7 +1971,7 @@ class ApplicationFormAcc extends Component {
                     >
                       Back
                     </Button>
-                    <Button variant='contained' color='primary' onClick={this.handleNext}
+                    <Button variant='contained' color='primary' style={{ marginLeft: '10px'}} onClick={this.handleNext}
                       disabled={(this.props.leadNumberCheck && this.props.leadNumberCheck.status) || (this.state.activeStep === 2 && this.state.disableNext)}>
                       {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                     </Button>

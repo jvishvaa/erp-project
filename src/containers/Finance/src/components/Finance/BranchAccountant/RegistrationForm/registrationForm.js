@@ -198,7 +198,7 @@ class RegistrationForm extends Component {
               }}
             />
           </Grid>
-          <Grid item xs={3} style={{ padding: '20px' }}>
+          <Grid item xs={3} style={{ padding: '20px', marginTop: '18px' }}>
             <Button variant='contained' disabled={!this.state.session || !this.state.fromDate || !this.state.toDate} color='primary' onClick={this.fetchRegListHandler}>
                 Get
             </Button>

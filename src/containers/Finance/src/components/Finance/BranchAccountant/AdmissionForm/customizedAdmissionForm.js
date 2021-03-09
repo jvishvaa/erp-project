@@ -301,7 +301,7 @@ class CustomizedAdmissionFormAcc extends Component {
                 { searchBox }
               </Grid>
               <Grid item xs={4}>
-                <div style={{ marginTop: '39px', marginLeft: '15px' }}>
+                <div style={{ marginTop: '30px', marginLeft: '15px' }}>
                   <Button variant='contained' color='primary' open={<NonRTEFormAcc regNo={this.state.regNo} />} onClick={this.rteButtonHandler}>GET
                   </Button>
                 </div>
