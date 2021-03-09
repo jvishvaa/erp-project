@@ -299,7 +299,7 @@ class NewRegistration extends Component {
             }
           />
         </Grid>
-        <Grid item xs={2} style={{ padding: '20px' }}>
+        <Grid item xs={2} style={{ padding: '15px' }}>
           <Button variant='contained' color='primary' disabled={!this.state.academicYearValue.value} onClick={this.onSubmit}>
               Get
           </Button>
