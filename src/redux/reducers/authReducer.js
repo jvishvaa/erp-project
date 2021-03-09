@@ -10,6 +10,7 @@ const INITIAL_STATE = {
 export default function reducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case authActions.LOGIN_REQUEST:
+      sessionStorage.clear();
       return { ...state, loginInProgress: true };
     case authActions.LOGIN_SUCCESS:
       return {
@@ -19,6 +20,7 @@ export default function reducer(state = INITIAL_STATE, action) {
         // navigationData: action.navigationData,
       };
     case authActions.LOGOUT_REQUEST:
+      sessionStorage.clear();
       return {
         ...state,
         loginInProgress: false,

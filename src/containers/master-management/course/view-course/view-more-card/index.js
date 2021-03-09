@@ -47,7 +47,9 @@ const ViewMoreCard = ({
   };
 
   const handleViewCard = () => {
+    sessionStorage.removeItem('isAol');
     history.push(`/create/course/${viewMoreData[0]?.course}/${sendGrade}`);
+    sessionStorage.setItem('periodDetails', 1);
   };
 
   const handleEditCoursePrice = () => {
@@ -55,6 +57,7 @@ const ViewMoreCard = ({
   };
 
   const handleEdit = () => {
+    sessionStorage.removeItem('isAol');
     history.push(`/create/course/${viewMoreData[0]?.course}`);
     sessionStorage.setItem('gradeKey', sendGrade);
   };
