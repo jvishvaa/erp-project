@@ -109,7 +109,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               Topic / {lesson.title}
             </Typography>
           </Box>
-        <Typography style={{fontSize: '15px',marginTop: '10px'}}> GeneralDairy</Typography>
+        <Typography style={{fontSize: '15px',marginTop: '10px'}}> GeneralDiary</Typography>
           <Divider className='divider'/>
           <Box mt={2}>
             <Typography

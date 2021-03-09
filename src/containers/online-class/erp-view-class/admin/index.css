@@ -1,0 +1,8 @@
+.xyz .MuiPopover-paper {
+  outline: 0;
+  overflow: hidden;
+  position: absolute;
+  max-width: calc(100% - 32px);
+  min-width: 16px;
+  max-height: calc(100% - 32px);
+}
