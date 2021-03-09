@@ -233,7 +233,7 @@ const JoinClass = (props) => {
                         </Grid>
                         <Grid item md={12} xs={12}>
                           <Typography>
-                            You Can Join 5mins Before :{' '}
+                            You Can Join 5mins Before :
                             {moment(`${props?.data?.date}T${startTime}`).format(
                               'hh:mm:ss A'
                             )}
