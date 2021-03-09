@@ -369,6 +369,8 @@ const MessageLog = withRouter(({ history, ...props }) => {
                   size='small'
                   onChange={handleSmsType}
                   value={selectedSmsType}
+                  required
+                disableClearable
                   id='message_log-smsType'
                   className='message_log_branch'
                   options={smsTypeList}
@@ -396,7 +398,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
                     id='date-picker-dialog'
                     label='From'
                     className='message_log_date_piker'
-                    format='YYYY-MM-DD'
+                    format='DD-MM-YYYY'
                     value={selectedFromDate}
                     onChange={handleFromDateChange}
                     maxDate={new Date()}
@@ -411,7 +413,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
                     id='date-picker-dialog'
                     label='To'
                     className='message_log_date_piker'
-                    format='YYYY-MM-DD'
+                    format='DD-MM-YYYY'
                     value={selectedToDate}
                     onChange={handleToDateChange}
                     maxDate={new Date()}
