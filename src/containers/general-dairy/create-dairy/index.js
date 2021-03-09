@@ -792,7 +792,7 @@ const handleEdited =()=>{
         <div className={isMobile ? 'breadCrumbFilterRow' : null}>
           <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
-              componentName='General Dairy'
+              componentName='General Diary'
               childComponentName='Create New'
             />
           </div>

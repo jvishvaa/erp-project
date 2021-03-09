@@ -33,7 +33,7 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
     setShowMenu(true);
     setShowPeriodIndex(index);
   };
-  const isTeacher = location.pathname === '/dairy/teacher' ? true : false;
+  const isTeacher = location.pathname === '/diary/teacher' ? true : false;
  
   const handlePeriodMenuClose = (index) => {
     setShowMenu(false);
@@ -95,7 +95,7 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
     console.log(data,'PPP')
     // // setEditData(e)
     setState({editData:data,isEdit:true});
-    history.push('/create/daily-dairy')
+    history.push('/create/daily-diary')
   }
 
   console.log("DailyDairy");

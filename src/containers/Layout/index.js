@@ -494,12 +494,12 @@ const Layout = ({ children, history }) => {
         history.push('/blog/wordcount-config');
         break;
       }
-      case 'Student Dairy': {
-        history.push('/dairy/student');
+      case 'Student Diary': {
+        history.push('/diary/student');
         break;
       }
-      case 'Teacher Dairy': {
-        history.push('/dairy/teacher');
+      case 'Teacher Diary': {
+        history.push('/diary/teacher');
         break;
       }
       case 'Assessment': {

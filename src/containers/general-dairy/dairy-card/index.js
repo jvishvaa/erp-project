@@ -28,7 +28,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
   const history=useHistory()
   const [state, setState] = useContext(Context)
   const location = useLocation();
-  const isTeacher = location.pathname === '/dairy/teacher' ? true : false;
+  const isTeacher = location.pathname === '/diary/teacher' ? true : false;
 
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
@@ -92,7 +92,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
     // // setEditData(e)
     debugger
     setState({isEdit:true,editData:data});
-    history.push('/create/general-dairy')
+    history.push('/create/general-diary')
   }
 
   return (

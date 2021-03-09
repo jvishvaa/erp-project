@@ -388,22 +388,22 @@ function App() {
                         <Route exact path='/general-dairy'>
                           {({ match }) => <GeneralDairyList match={match} />}
                         </Route>
-                        <Route exact path='/dairy/student'>
+                        <Route exact path='/diary/student'>
                           {({ match }) => <GeneralDairyList match={match} />}
                         </Route>
-                        <Route exact path='/dairy/teacher'>
+                        <Route exact path='/diary/teacher'>
                           {({ match }) => <GeneralDairyList match={match} />}
                         </Route>
                         <Route exact path='/general-dairy/student-view'>
                           {({ match }) => <GeneralDairyStudentList match={match} />}
                         </Route>
-                        <Route exact path='/create/general-dairy'>
+                        <Route exact path='/create/general-diary'>
                           {({ match }) => <CreateGeneralDairy match={match} />}
                         </Route>
                         <Route exact path='/daily-dairy'>
                           {({ match }) => <DailyDairyList match={match} />}
                         </Route>
-                        <Route exact path='/create/daily-dairy'>
+                        <Route exact path='/create/daily-diary'>
                           {({ match }) => <CreateDailyDairy match={match} />}
                         </Route>
                         <Route exact path='/course-price/:courseKey?/:gradeKey?'>

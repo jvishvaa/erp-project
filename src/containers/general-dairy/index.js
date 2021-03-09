@@ -77,15 +77,15 @@ const GeneralDairyList = () => {
         if (NavData && NavData.length) {
           NavData.forEach((item) => {
             if (
-              item.parent_modules === 'Dairy' &&
+              item.parent_modules === 'Diary' &&
               item.child_module &&
               item.child_module.length > 0
             ) {
               item.child_module.forEach((item) => {
-                if(location.pathname === "/dairy/student" && item.child_name === "Student Dairy") {
+                if(location.pathname === "/diary/student" && item.child_name === "Student Diary") {
                     setStudentModuleId(item?.child_id);
                     setShowSubjectDropDown(true)
-                } else if(location.pathname === "/dairy/teacher" && item.child_name === "Teacher") {
+                } else if(location.pathname === "/diary/teacher" && item.child_name === "Teacher") {
                     setTeacherModuleId(item?.child_id);
                 } 
               });
@@ -139,7 +139,7 @@ const GeneralDairyList = () => {
     const handleDairyType = (type) => {
         setDairyType(type);
     }
-    const isTeacher = location.pathname === '/dairy/teacher' ? true : false;
+    const isTeacher = location.pathname === '/diary/teacher' ? true : false;
     const path = isTeacher ? 'Teacher Diary' : 'Student Diary';
 
     return (
@@ -149,7 +149,7 @@ const GeneralDairyList = () => {
                 <div>
                     <div style={{ width: '95%', margin: '20px auto' }}>
                         <CommonBreadcrumbs
-                            componentName='Dairy'
+                            componentName='Diary'
                             childComponentName={path}
                         />
                     </div>
