@@ -247,10 +247,10 @@ class AdminOtherFees extends Component {
             // InputLabelProps={{ classes: { outlined: 'zIndex: 0' } }}
           />
           <div className={classess.modal__deletebutton}>
-            <Button variant='outlined' color='secondary' disabled={this.state.instaName.length === 0} onClick={this.editInstalNameHandler}>Update</Button>
+            <Button variant='contained' color='secondary' disabled={this.state.instaName.length === 0} onClick={this.editInstalNameHandler}>Update</Button>
           </div>
           <div className={classess.modal__remainbutton}>
-            <Button variant='outlined' color='primary' onClick={this.hideEditInstaModalHandler}>Go Back</Button>
+            <Button variant='contained' color='primary' onClick={this.hideEditInstaModalHandler}>Go Back</Button>
           </div>
         </Modal>
       )
