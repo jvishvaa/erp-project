@@ -215,7 +215,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
         });
         setUserLogs(tempLogArray);
         setTempUserLogs(tempLogArray)
-        setUsersTotalPage(result.data.data.count);
+        setUsersTotalPage(result.data.data.total_pages);
         setLoading(false);
       } else {
         setAlert('error', result.data.message);
@@ -625,6 +625,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
                               rowsPerPageOptions={false}
                               className='table-pagination-users-log-message'
                             />
+                            
                           </div>
                         </Paper>
                       </div>
