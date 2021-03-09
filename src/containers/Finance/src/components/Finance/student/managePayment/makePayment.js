@@ -421,7 +421,7 @@ class MakePayment extends Component {
                   />
                   : 'No'}
               </TableCell>
-              <TableCell style={{ color: 'blue' }}>
+              {/* <TableCell style={{ color: 'blue' }}>
                 {inst.upload_status === 2 ? 'Pending' : 'N/A'}
               </TableCell>
               <TableCell>
@@ -430,7 +430,7 @@ class MakePayment extends Component {
                   onClick={() => this.handleClickViewDetails(inst.installments_id)}>
                      View
                 </Button>
-              </TableCell>
+              </TableCell> */}
             </TableRow>
           </React.Fragment>
         )
@@ -721,8 +721,8 @@ class MakePayment extends Component {
                       <TableCell>Fine Amount</TableCell>
                       <TableCell>Due Date</TableCell>
                       <TableCell>Partial Payment</TableCell>
-                      <TableCell>Status</TableCell>
-                      <TableCell>Uploaded Details</TableCell>
+                      {/* <TableCell>Status</TableCell>
+                      <TableCell>Uploaded Details</TableCell> */}
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -836,12 +836,12 @@ class MakePayment extends Component {
             </Button>
           </Grid.Column>
           <Grid.Column computer={6}>
-            <Button color='primary'
+            {/* <Button color='primary'
               variant='contained'
               disabled={!this.state.agreeTerms}
               onClick={this.handleUploadPayment}>
               Already Transfered To Orchids Account
-            </Button>
+            </Button> */}
           </Grid.Column>
         </Grid.Row>
         <div>
