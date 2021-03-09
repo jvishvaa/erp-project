@@ -7,7 +7,7 @@ import axios from 'axios'
 
 import CircularProgress from '../../../../../ui/CircularProgress/circularProgress'
 import * as actionTypes from '../../../store/actions/index'
-import feeReceipts from '../../../Receipts/feeReceipts'
+import feeReceiptss from '../../../Receipts/feeReceiptss'
 import { urls } from '../../../../../urls'
 import customClasses from './chequePayments.module.css'
 import Modal from '../../../../../ui/Modal/modal'
@@ -130,7 +130,7 @@ class ChequePayment extends Component {
   generatePdf = async (transactionId, isCancelled) => {
     try {
       const response = await this.getPdfData(transactionId)
-      feeReceipts(response.data, isCancelled)
+      feeReceiptss(response.data, isCancelled)
     } catch (e) {
       console.log(e)
       this.props.alert.warning('Something Went Wrong')
@@ -194,10 +194,10 @@ class ChequePayment extends Component {
             <div className={customClasses.table__bodyTotal}>{feeTotal}</div>
             <div className={customClasses.table__bodyActn}>
               <div>
-                <Button disabled={transaction.is_bounced || transaction.is_cancelled} variant='extended' color='primary' className={classes.button}>
+                {/* <Button disabled={transaction.is_bounced || transaction.is_cancelled} variant='extended' color='primary' className={classes.button}>
                   <span style={{ color: 'white', marginRight: '5px', fontSize: '1rem', fontWeight: 'normal' }}>Edit</span>
                   <Icon className={classes.rightIcon} style={{ color: 'white', fontSize: '1.2rem' }}></Icon>
-                </Button>
+                </Button> */}
                 <Button variant='extended' color='primary' className={classes.buttonGreen} onClick={() => this.generatePdf(transaction.transaction_id, (transaction.is_bounced || transaction.is_cancelled))}>
                   <span style={{ color: 'white', marginRight: '5px', fontSize: '1rem', fontWeight: 'normal' }}>Print</span>
                   <Icon className={classes.rightIcon} style={{ color: 'white', fontSize: '1.2rem' }}></Icon>
