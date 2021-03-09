@@ -17,9 +17,21 @@ const JoinClass = (props) => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [joinAnchor, setJoinAnchor] = useState(null);
   const [isAccept, setIsAccept] = useState(props.data ? props.data.is_accepted : false);
   const [isRejected, setIsRejected] = useState(props.data ? props.data.is_restricted : false);
   const history = useHistory()
+
+  const classStartTime = moment(props && props?.data && props?.data?.date).format(
+    'DD-MM-YYYY'
+  );
+  const currDate = moment(new Date()).format('DD-MM-YYYY');
+
+  const startTime = props && props?.data?.start_time;
+  const currTime = moment(new Date()).format('x');
+  const classTimeMilli = new Date(`${props.data.date}T${startTime}`).getTime();
+  const diffTime = classTimeMilli - 5 * 60 * 1000;
+
   const handleCloseData = () => {
     setAnchorEl(null);
   };
@@ -27,6 +39,17 @@ const JoinClass = (props) => {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  const handleCloseAccept = () => {
+    setJoinAnchor(null);
+  };
+  const handleClickAccept = (event) => {
+    if (diffTime > parseInt(currTime)) {
+      setJoinAnchor(event.currentTarget);
+    } else if (parseInt(currTime) > diffTime || parseInt(currTime) === diffTime) {
+      handleIsAccept();
+    }
+  };
+
 
   const handleIsAccept = () => {
     const params = {
@@ -46,13 +69,13 @@ const JoinClass = (props) => {
       });
   }
 
-  const handleJoin = async()=>{
+  const handleJoin = async () => {
     const params = {
       zoom_meeting_id: fullData && fullData.id,
       class_date: props.data && props.data.date,
       is_attended: true
     };
-  await  axiosInstance
+    await axiosInstance
       .put(endpoints.studentViewBatchesApi.rejetBatchApi, params)
       .then((res) => {
         setLoading(false);
@@ -110,6 +133,9 @@ const JoinClass = (props) => {
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
+  const openJoin = Boolean(joinAnchor);
+  const ids = open ? 'accept-popover' : undefined;
+
   return (
     <Grid container spacing={2} direction='row' alignItems='center'>
       <Grid item md={6} xs={12}>
@@ -131,48 +157,23 @@ const JoinClass = (props) => {
           </Button>
         </Grid>
       ) : (
-          <>
-            {isRejected ? (
-              <Grid item xs={6}>
-                <Typography style={{ color: '#ff6b6b' }}>Rejected</Typography>
-              </Grid>
-            ) : (
-                <>
-                  <Grid item md={3} xs={6}>
-                    {window.location.pathname === '/online-class/attend-class' ? (
-                      <Button
-                        size='small'
-                        color='secondary'
-                        fullWidth
-                        variant='contained'
-                        onClick={handleIsAccept}
-                        className='teacherFullViewSmallButtons'
-                      >
-                        Accept
-                      </Button>
-                    ) : (
-                        <Button
-                          size='small'
-                          color='secondary'
-                          fullWidth
-                          variant='contained'
-                          onClick={() =>
-                            window.open(fullData && fullData.presenter_url, '_blank'
-                            )}
-                          className='teacherFullViewSmallButtons'
-                        >
-                          Host
-                        </Button>
-                      )}
-                  </Grid>
-                  <Grid item md={3} xs={6} className='xxx'>
+        <>
+          {isRejected ? (
+            <Grid item xs={6}>
+              <Typography style={{ color: '#ff6b6b' }}>Rejected</Typography>
+            </Grid>
+          ) : (
+            <>
+              <Grid item md={3} xs={6}>
+                {window.location.pathname === '/online-class/attend-class' ? (
+                  <>
                     <Popover
-                      className='deletePopover'
-                      id={id}
-                      open={open}
-                      anchorEl={anchorEl}
+                      id={ids}
+                      open={openJoin}
+                      joinAnchor={joinAnchor}
                       onClose={handleClose}
-                      style={{ overflow: 'hidden' }}
+                      style={{ overflow: 'hidden', margin: '19% 0 0 30%' }}
+                      className='xyz'
                       anchorOrigin={{
                         vertical: 'top',
                         horizontal: 'center',
@@ -187,49 +188,124 @@ const JoinClass = (props) => {
                         spacing={2}
                         style={{ textAlign: 'center', padding: '10px' }}
                       >
+                        <Grid item xs={12} style={{ textAlign: 'right' }}>
+                          <CloseIcon
+                            style={{ color: '#014B7E' }}
+                            onClick={() => handleCloseAccept()}
+                          />
+                        </Grid>
                         <Grid item md={12} xs={12}>
-                          <Typography>Are you sure you want to cancel?</Typography>
-                        </Grid>
-                        <Grid item md={6} xs={12}>
-                          <Button
-                            variant='contained'
-                            size='small'
-                            style={{ fontSize: '11px' }}
-                            onClick={() => handleCloseData()}
-                          >
-                            Cancel
-                    </Button>
-                        </Grid>
-                        <Grid item md={6} xs={12}>
-                          <Button
-                            variant='contained'
-                            color='primary'
-                            style={{ fontSize: '11px' }}
-                            size='small'
-                            onClick={() => handleCancel()}
-                          >
-                            Confirm
-                    </Button>
+                          <Typography>
+                            You Can Join 5mins Before :
+                            {moment(`${props?.data?.date}T${startTime}`).format(
+                            'hh:mm:ss A'
+                          )}
+                          </Typography>
                         </Grid>
                       </Grid>
                     </Popover>
                     <Button
                       size='small'
+                      color='secondary'
                       fullWidth
                       variant='contained'
-                      onClick={(e) => handleClick(e)}
-                      className='teacherFullViewSmallButtons1'
+                      onClick={(e) => handleClickAccept(e)}
+                      disabled={classStartTime === currDate ? false : true}
+                      className='teacherFullViewSmallButtons'
                     >
-                      {window.location.pathname === '/online-class/attend-class'
-                        ? 'Reject'
-                        : 'Cancel'}
+                      Accept
                     </Button>
+                  </>
+                  // <Button
+                  //   size='small'
+                  //   color='secondary'
+                  //   fullWidth
+                  //   variant='contained'
+                  //   onClick={handleIsAccept}
+                  //   className='teacherFullViewSmallButtons'
+                  // >
+                  //   Accept
+                  // </Button>
+                ) : (
+                  <Button
+                    size='small'
+                    color='secondary'
+                    fullWidth
+                    variant='contained'
+                    onClick={() =>
+                      window.open(fullData && fullData.presenter_url, '_blank'
+                      )}
+                    className='teacherFullViewSmallButtons'
+                  >
+                    Host
+                  </Button>
+                )}
+              </Grid>
+              <Grid item md={3} xs={6} className='xxx'>
+                <Popover
+                  className='deletePopover'
+                  id={id}
+                  open={open}
+                  anchorEl={anchorEl}
+                  onClose={handleClose}
+                  style={{ overflow: 'hidden' }}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                  }}
+                >
+                  <Grid
+                    container
+                    spacing={2}
+                    style={{ textAlign: 'center', padding: '10px' }}
+                  >
+                    <Grid item md={12} xs={12}>
+                      <Typography>Are you sure you want to cancel?</Typography>
+                    </Grid>
+                    <Grid item md={6} xs={12}>
+                      <Button
+                        variant='contained'
+                        size='small'
+                        style={{ fontSize: '11px' }}
+                        onClick={() => handleCloseData()}
+                      >
+                        Cancel
+                    </Button>
+                    </Grid>
+                    <Grid item md={6} xs={12}>
+                      <Button
+                        variant='contained'
+                        color='primary'
+                        style={{ fontSize: '11px' }}
+                        size='small'
+                        onClick={() => handleCancel()}
+                      >
+                        Confirm
+                    </Button>
+                    </Grid>
                   </Grid>
-                </>
-              )}
+                </Popover>
+                <Button
+                  size='small'
+                  fullWidth
+                  variant='contained'
+                  onClick={(e) => handleClick(e)}
+                  className='teacherFullViewSmallButtons1'
+                >
+                  {window.location.pathname === '/online-class/attend-class'
+                    ? 'Reject'
+                    : 'Cancel'}
+                </Button>
+              </Grid>
+            </>
+          )}
 
-          </>
-        )}
+        </>
+      )}
     </Grid>
   )
 }
@@ -240,7 +316,7 @@ const TeacherBatchFullView = ({ fullData, handleClose, selectedGrade }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const history = useHistory()
-  const {role_details}= JSON.parse(localStorage.getItem('userDetails'))
+  const { role_details } = JSON.parse(localStorage.getItem('userDetails'))
   /*
   useEffect(() => {
     if (fullData) {
@@ -429,10 +505,10 @@ const TeacherBatchFullView = ({ fullData, handleClose, selectedGrade }) => {
                     Attendance
                   </Button>
                 ) : (
-                    <Button fullWidth size='small' className='teacherFullViewFullButtons' onClick={handleClickOpen}>
-                      Resources
-                    </Button>
-                  )}
+                  <Button fullWidth size='small' className='teacherFullViewFullButtons' onClick={handleClickOpen}>
+                    Resources
+                  </Button>
+                )}
                 <Button fullWidth size='small' className='teacherFullViewFullButtons' onClick={handleCoursePlan}>
                   View Course Plan
                 </Button>

@@ -35,19 +35,23 @@ const ErpAdminViewClass = ({ history }) => {
   ]);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [branchList] = useState([
-    {
-      id: 5,
-      branch_name: 'ORCHIDS',
-    },
-  ]);
+  // const [branchList] = useState([
+  //   {
+  //     // id: 5,
+  //     id:1,
+  //     // branch_name: 'ORCHIDS',
+  //     branch_name:'Bangalore'
+  //   },
+  // ]);
+  const [branchList,setBranchList] = useState([])
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
   const [studentDetails] = useState(
     JSON.parse(window.localStorage.getItem('userDetails'))
   );
 
-  const [selectedBranch, setSelectedBranch] = useState(branchList[0]);
+  // const [selectedBranch, setSelectedBranch] = useState(branchList[0]);
+  const [selectedBranch, setSelectedBranch] = useState('');
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState('');
   const [sectionList, setSectionList] = useState([]);
@@ -78,6 +82,9 @@ const ErpAdminViewClass = ({ history }) => {
       .get(api)
       .then((result) => {
         if (result.status === 200) {
+          if (key === 'branchList') {
+            setBranchList(result?.data?.data || []);
+          }
           if (key === 'gradeList') {
             setGradeList(result?.data?.data || []);
           }
@@ -85,7 +92,7 @@ const ErpAdminViewClass = ({ history }) => {
             setBatchList(result?.data?.result || []);
           }
           if (key === 'section') {
-            setSectionList(result.data.data);
+            setSectionList(result?.data?.data);
           }
           if (key === 'course') {
             setCourseList(result?.data?.result || []);
@@ -140,18 +147,9 @@ const ErpAdminViewClass = ({ history }) => {
   }
 
   useEffect(() => {
-    if (window.location.pathname === '/erp-online-class') {
-      callApi(
-        `${endpoints.academics.grades}?branch_id=${selectedBranch.id}&module_id=8`,
-        'gradeList'
-      );
-    }
-    if (window.location.pathname === '/erp-online-class-teacher-view') {
-      callApi(
-        `${endpoints.academics.grades}?branch_id=${selectedBranch.id}&module_id=4`,
-        'gradeList'
-      );
-    }
+    // <<<<<<<<<<<<<<<<BRANCH API START>>>>>>>>>>>
+      callApi(`${endpoints.academics.branches}`,'branchList');
+    // <<<<<<<<<<<<<<<<BRANCH API END>>>>>>>>>>>
     if (window.location.pathname === '/erp-online-class-student-view') {
       callApi(
         `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
@@ -162,6 +160,7 @@ const ErpAdminViewClass = ({ history }) => {
         'filter'
       );
     }
+
 
     // if (window.location.pathname === '/online-class/attend-class') {
     //   setPage(1);
@@ -254,7 +253,6 @@ const ErpAdminViewClass = ({ history }) => {
     setPage(1);
 
     // `https://erpnew.letseduvate.com/qbox/erp_user/teacher_online_class/?page_number=1&page_size=15&class_type=1&is_aol=1&course=97&start_date=2021-02-21&end_date=2021-02-27`
-    console.log(selectedCourse.id, '||||||||||||||||');
     if (selectedCourse.id) {
       callApi(
         `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.id}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&course_id=${selectedCourse.id}&page_number=1&page_size=15`,
@@ -346,6 +344,18 @@ const ErpAdminViewClass = ({ history }) => {
                       size='small'
                       onChange={(event, value) => {
                         setSelectedBranch(value);
+                        if(value){
+                          callApi(
+                            `${endpoints.academics.grades}?branch_id=${value?.id}&module_id=8`,
+                            'gradeList'
+                          );
+                        }
+                        if(value && window.location.pathname === '/erp-online-class-teacher-view'){
+                          callApi(
+                                `${endpoints.academics.grades}?branch_id=${value?.id}&module_id=4`,
+                                'gradeList'
+                              );
+                        }
                       }}
                       id='branch_id'
                       className='dropdownIcon'
