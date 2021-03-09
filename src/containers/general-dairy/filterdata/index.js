@@ -319,7 +319,7 @@ const GeneralDairyFilter = ({
           />
         </Grid>
       )}
-      { showSubjectDropDown && (
+      {/* { showSubjectDropDown && (
         <Grid item xs={12} sm={4} className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
         <Autocomplete
             style={{ width: '100%' }}
@@ -341,7 +341,7 @@ const GeneralDairyFilter = ({
             )}
         />
     </Grid>
-      )}
+      )} */}
       <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <LocalizationProvider dateAdapter={MomentUtils}>
           <DateRangePicker
