@@ -572,7 +572,7 @@ const CreateDailyDairy = (details, onSubmit) => {
               handleChangeGrade(value || null, [formik.values.branch]);
             }}
             multiple
-            value={state.isEdit ? editData.grade :formik.values.grade}
+            value={state.isEdit ? editData.grade || editData.grade.grade_name :formik.values.grade}
             options={grades}
             getOptionLabel={(option) => option.grade_name || ''}
             renderInput={(params) => (
@@ -637,7 +637,7 @@ const CreateDailyDairy = (details, onSubmit) => {
               onChange={handleSubject}
               id='subj'
               // className='dropdownIcon'
-              value={state.isEdit?editData.subject.subject_name : formik.values.subjects}
+              value={state.isEdit?editData.subject : formik.values.subjects}
               options={subjectDropdown}
               getOptionLabel={(option) => option?.subject_name}
               filterSelectedOptions
@@ -763,15 +763,26 @@ const CreateDailyDairy = (details, onSubmit) => {
             
             <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
             <div style={{display:'flex'}} className='scrollable'>
-            {filePath?.length>0  ?    
-                    filePath?.map((file, i) => (
-                            <FileRow
-                            key={`homework_student_question_attachment_${i}`}
-                            file={file}
-                            index={i}
-                            onClose={() => removeFileHandler(i)}
-                            />
-                        )) : null }
+              {state.isEdit ? 
+                  editData.documents.map((file, i) => (
+                    <FileRow
+                    key={`homework_student_question_attachment_${i}`}
+                    file={file}
+                    index={i}
+                    onClose={() => removeFileHandler(i)}
+                    />
+                  ))
+              :
+
+                filePath?.length>0  ?    
+                  filePath?.map((file, i) => (
+                    <FileRow
+                    key={`homework_student_question_attachment_${i}`}
+                    file={file}
+                    index={i}
+                    onClose={() => removeFileHandler(i)}
+                    />
+                    )) : null }
             </div>
             <div style={isMobile?{ marginTop:'1%' }: {marginTop:'10%'}}>
 
