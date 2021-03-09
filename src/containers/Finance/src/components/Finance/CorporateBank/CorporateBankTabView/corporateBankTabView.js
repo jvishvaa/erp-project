@@ -66,9 +66,9 @@ class TabView extends Component {
               <Tab value='one' label='Banks' />
               <Tab value='two' label='View Banks' />
               <Tab value='three' label='View Fee Accounts' />
-              <Tab value='four' label='Fee Accounts To Class' />
+              {/* <Tab value='four' label='Fee Accounts To Class' /> */}
               <Tab value='five' label='Fee Accounts To Branch' />
-              <Tab value='six' label='Store Fee Accounts' />
+              {/* <Tab value='six' label='Store Fee Accounts' /> */}
               {/* <Tab value='six' label='AirPay Fee Account' /> */}
             </Tabs>
           </AppBar>
