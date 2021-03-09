@@ -378,7 +378,7 @@ const Layout = ({ children, history }) => {
         history.push('/communication/smscredit');
         break;
       }
-      case 'SMS&Email Log': {
+      case 'SMS & Email Log': {
         history.push('/communication/messageLog');
         break;
       }

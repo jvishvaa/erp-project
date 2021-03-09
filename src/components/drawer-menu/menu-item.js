@@ -36,7 +36,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'View & Edit Group', Path: '/communication/viewgroup' },
     { name: 'Send Message', Path: '/communication/sendmessage' },
     { name: 'Add SMS Credit', Path: '/communication/smscredit' },
-    { name: 'SMS&Email Log', Path: '/communication/messageLog' },
+    { name: 'SMS & Email Log', Path: '/communication/messageLog' },
     { name: 'Teacher View', Path: '/lesson-plan/teacher-view' },
     { name: 'Student View', Path: '/lesson-plan/student-view' },
     { name: 'Management Report', Path: '/lesson-plan/report' },
