@@ -106,6 +106,10 @@ const LessonPlanGraphReport = ({
       section: '',
       teacher: '',
     });
+    setDateRangeTechPer([
+      moment().subtract(6, 'days'),
+      moment(),
+    ]);
   };
 
   const handleAcademicYear = (event, value) => {
@@ -430,6 +434,17 @@ const LessonPlanGraphReport = ({
       },
     ],
   };
+  const canFilter = () => {
+    const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
+    const {
+      volume:{id:volumeId}={}, 
+      year:{id:yeadId}={}, 
+      teacher:{user_id: teacherId }={},
+      startDateTechPer: startDateTechPerTempVar,
+      endDateTechPer: endDateTechPerPerTempVar
+    }={...(filterData||{}),startDateTechPer,endDateTechPer}
+    return ![mapId, volumeId, yeadId, teacherId, startDateTechPerTempVar, endDateTechPerPerTempVar].map(Boolean).includes(false)
+  }
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
@@ -646,6 +661,7 @@ const LessonPlanGraphReport = ({
               className='custom_button_master'
               size='medium'
               type='submit'
+              disabled={!canFilter()}
               onClick={handleFilter}
             >
               FILTER
