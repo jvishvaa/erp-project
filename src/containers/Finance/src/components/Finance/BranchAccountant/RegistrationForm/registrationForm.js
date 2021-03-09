@@ -29,14 +29,14 @@ const styles = theme => ({
   },
   root: {
     width: '100%',
-    marginTop: theme.spacing * 3,
+    marginTop: theme.spacing(3),
     overflowX: 'auto'
   },
   table: {
     minWidth: 650
   },
   margin: {
-    margin: theme.spacing * 1
+    margin: theme.spacing(1)
   }
 })
 
