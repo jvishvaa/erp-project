@@ -35,7 +35,7 @@ const LessonReport = () => {
     const classes = useStyles();
     const { setAlert } = useContext(AlertNotificationContext);
     const [page, setPage] = useState(1);
-    const [periodData, setPeriodData] = useState([]);
+    const [periodData, setPeriodData] = useState();
     const [totalCount, setTotalCount] = useState(0);
     const [loading, setLoading] = useState(false);
     const [viewMore, setViewMore] = useState(false);
@@ -66,7 +66,7 @@ const LessonReport = () => {
                     setPeriodData(result.data.result.results);
                 } else {
                     setLoading(false);
-                    setAlert('error', result.data.description);
+                    setAlert('error', result.data.description || result.data.message);
                 }
             })
             .catch((error) => {
@@ -94,7 +94,8 @@ const LessonReport = () => {
                 />
 
                 <Paper className={classes.root}>
-                    {periodData?.length > 0 ?
+                    {
+                        Array.isArray(periodData) && periodData?.length > 0 ?
                         (
                         <Grid container style={isMobile ? { width: '95%', margin: '20px auto' } : { width: '100%', margin: '20px auto' }} spacing={5}>
                           <Grid item xs={12} sm={(viewMore && viewMoreData?.length > 0) ? 7 : 12}>
@@ -142,14 +143,17 @@ const LessonReport = () => {
                                         />
                                     )}
                                 />
-                                <SvgIcon
+                                {
+                                    Array.isArray(periodData) ? null :
+                                    <SvgIcon
                                     component={() => (
                                         <img
-                                            style={isMobile ? { height: '20px', width: '250px' } : { height: '50px', width: '400px', marginLeft: '5%' }}
-                                            src={selectfilter}
+                                        style={isMobile ? { height: '20px', width: '250px' } : { height: '50px', width: '400px', marginLeft: '5%' }}
+                                        src={selectfilter}
                                         />
-                                    )}
-                                />
+                                        )}
+                                        />
+                                    }
                             </div>
                         )}
 

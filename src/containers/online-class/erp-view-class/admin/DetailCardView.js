@@ -134,19 +134,6 @@ const JoinClass = (props) => {
           {moment(props.data ? props.data.date : '').format('DD-MM-YYYY')}
         </span>
       </Grid>
-      {/* <Grid item xs={3}>
-        <Timer initialTime={5 * 60 * 1000} direction='backward'>
-          {() => (
-            <React.Fragment>
-              <Timer.Days /> days
-              <Timer.Hours /> hours
-              <Timer.Minutes /> minutes
-              <Timer.Seconds /> seconds
-              <Timer.Milliseconds /> milliseconds
-            </React.Fragment>
-          )}
-        </Timer>
-      </Grid> */}
 
       {isAccept ? (
         <Grid item xs={6}>
@@ -424,12 +411,12 @@ const DetailCardView = ({
   };
   const handleCoursePlan = () => {
     if (window.location.pathname === '/erp-online-class-student-view') {
+      sessionStorage.setItem('isErpClass', 2);
       history.push(
-        `/create/course/${fullData.online_class && fullData.online_class.course_id}/${
-          role_details && role_details.grades
-        }/4`
+        `/create/course/${fullData.online_class && fullData.online_class.course_id}/1`
       );
     } else {
+      sessionStorage.setItem('isErpClass', 3);
       history.push(
         `/create/course/${fullData.online_class && fullData.online_class.cource_id}/${
           selectedGrade.id

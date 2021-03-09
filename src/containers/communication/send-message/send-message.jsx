@@ -490,7 +490,11 @@ const SendMessage = withRouter(({ history, ...props }) => {
         });
       }
       if (selectAll) {
-        selectionArray.push(0);
+        completeData
+        .forEach((items) => {
+          selectionArray.push(items.id);
+        });
+        // selectionArray.push(0);
       }
       if (!selectionArray.length) {
         setSelectUsersError('Please select a user');
@@ -603,7 +607,11 @@ const SendMessage = withRouter(({ history, ...props }) => {
           });
         }
         if (selectAll) {
-          selectionArray.push(0);
+          completeData
+          .forEach((items) => {
+            selectionArray.push(items.id);
+          });
+          // selectionArray.push(0);
         }
         const formData = new FormData();
         if (!customSelect) {

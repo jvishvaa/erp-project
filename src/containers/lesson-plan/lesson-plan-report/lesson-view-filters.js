@@ -47,6 +47,7 @@ const LessonViewFilters = ({
     moment().subtract(6, 'days'),
     moment(),
   ]);
+  // const [dateRangeTechPer, setDateRangeTechPer] = useState([]);
   const [selectedCoTeacherOptValue, setselectedCoTeacherOptValue] = useState([]);
   const [selectedCoTeacherOpt, setSelectedCoTeacherOpt] = useState([]);
   const [selectedTeacherUser_id, setSelectedTeacherUser_id] = useState();
@@ -85,6 +86,7 @@ const LessonViewFilters = ({
     setSubjectDropdown([]);
     setViewMoreData({});
     setViewMore(false);
+    setDateRangeTechPer([])
   };
 
   const handleAcademicYear = (event, value) => {
