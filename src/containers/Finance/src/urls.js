@@ -87,7 +87,7 @@ if (process.env.REACT_APP_UI_ENV === 'dev_aol') {
 } else if (process.env.REACT_APP_UI_ENV === 'dev_container') {
   HOSTNAME = '13.235.179.64'
   PORT = '91'
-  BASE = PROTO + '://' + HOSTNAME + ':' + PORT + '/qbox'
+  BASE = 'http://erp.finance.letseduvate.com' + '/qbox'
 
   // MEDIA_BASE = BASE
   FRONTENT_BASE = PROTO + '://' + HOSTNAME
