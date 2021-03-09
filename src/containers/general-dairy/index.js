@@ -82,7 +82,7 @@ const GeneralDairyList = () => {
               item.child_module.length > 0
             ) {
               item.child_module.forEach((item) => {
-                if(location.pathname === "/diary/student" && item.child_name === "Student Diary") {
+                if(location.pathname === "/dairy/student" && item.child_name === "Student Diary") {
                     setStudentModuleId(item?.child_id);
                     setShowSubjectDropDown(true)
                 } else if(location.pathname === "/diary/teacher" && item.child_name === "Teacher") {

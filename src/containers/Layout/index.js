@@ -515,7 +515,7 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Student Diary': {
-        history.push('/diary/student');
+        history.push('/dairy/student');
         break;
       }
       case 'Teacher Diary': {
