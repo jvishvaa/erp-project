@@ -215,7 +215,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
         });
         setUserLogs(tempLogArray);
         setTempUserLogs(tempLogArray)
-        setUsersTotalPage(result.data.data.total_pages);
+        setUsersTotalPage(result.data.data.count);
         setLoading(false);
       } else {
         setAlert('error', result.data.message);
@@ -228,7 +228,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
   };
 
   const handleUsersPagination = (event, page) => {
-    setUsersCurrentPageno(page);
+    setUsersCurrentPageno(page+1);
   };
 
   const handleClearAll = () => {
