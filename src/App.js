@@ -143,6 +143,19 @@ const theme = createMuiTheme({
 });
 
 function App() {
+  React.useEffect(() => {
+    const {
+      repoName = 'Revamp',
+      first_name: firstName,
+      user_id: userId,
+      is_superuser: isSuperuser,
+    } = JSON.parse(localStorage.getItem('userDetails') || '{}') || {};
+    if (window.location.hostname.includes('localhost')) {
+      document.title = [repoName, firstName, userId, isSuperuser ? 'Spr' : 'Nrml'].join(
+        ' - '
+      );
+    }
+  }, []);
   return (
     <div className='App'>
       <Router>

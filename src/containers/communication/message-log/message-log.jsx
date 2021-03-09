@@ -14,7 +14,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import CloseIcon from '@material-ui/icons/Close';
 import Paper from '@material-ui/core/Paper';
-import { Grid, TextField, Button } from '@material-ui/core';
+import { Grid, TextField, Button,SvgIcon } from '@material-ui/core';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import MomentUtils from '@date-io/moment';
@@ -23,6 +23,7 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/picker
 import TablePagination from '@material-ui/core/TablePagination';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
+import unfiltered from '../../../assets/images/unfiltered.svg'
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import Loading from '../../../components/loader/loader';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
@@ -44,7 +45,14 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     maxHeight: 440,
-  },
+  }, periodDataUnavailable:{
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: '5%',
+    marginLeft:'30px'
+  }
 }));
 
 const MessageLog = withRouter(({ history, ...props }) => {
@@ -55,6 +63,8 @@ const MessageLog = withRouter(({ history, ...props }) => {
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [messageRows, setMessageRows] = useState([]);
   const [userLogs, setUserLogs] = useState([]);
+  const [tempUserLogs, setTempUserLogs] = useState([0,1]);
+
   const [branchList, setBranchList] = useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [selectedBranches, setSelectedBranches] = useState([]);
@@ -201,10 +211,12 @@ const MessageLog = withRouter(({ history, ...props }) => {
             number: isEmail ? items.email : items.contact_no,
             sent: 'Yes',
           });
-          setUserLogs(tempLogArray);
-          setUsersTotalPage(result.data.data.count);
-          setLoading(false);
+         
         });
+        setUserLogs(tempLogArray);
+        setTempUserLogs(tempLogArray)
+        setUsersTotalPage(result.data.data.count);
+        setLoading(false);
       } else {
         setAlert('error', result.data.message);
         setLoading(false);
@@ -216,7 +228,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
   };
 
   const handleUsersPagination = (event, page) => {
-    setUsersCurrentPageno(page);
+    setUsersCurrentPageno(page+1);
   };
 
   const handleClearAll = () => {
@@ -279,7 +291,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'SMS&Email Log') {
+            if (item.child_name === 'SMS & Email Log') {
               setModuleId(item.child_id);
               setModulePermision(true);
             } else {
@@ -549,20 +561,21 @@ const MessageLog = withRouter(({ history, ...props }) => {
                   </Paper>
                 </Grid>
                 <Grid xs={12} lg={3} item>
-                  {userLogs.length ? (
+                  { userLogs && userLogs.length >= 1
+                   ? (
                     <div
-                      className={
-                        isMobile ? 'add_credit_mobile_form_outside_wrapper' : 'none'
-                      }
+                    className={
+                      isMobile ? 'add_credit_mobile_form_outside_wrapper' : 'none'
+                    }
                     >
                       <div className={isMobile ? 'view_details_mobile' : 'desktop'}>
                         {isMobile ? (
                           <span
-                            className='close_icon_view_details_mobile'
-                            onClick={() => {
-                              setSelectedRow();
-                              setUserLogs([]);
-                            }}
+                          className='close_icon_view_details_mobile'
+                          onClick={() => {
+                            setSelectedRow();
+                            setUserLogs([]);
+                          }}
                           >
                             <CloseIcon />
                           </span>
@@ -570,7 +583,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
                         <Paper className={`message_log_table_wrapper ${classes.root}`}>
                           <TableContainer
                             className={`table table-shadow message_log_table ${classes.container}`}
-                          >
+                            >
                             <Table stickyHeader aria-label='sticky table'>
                               <TableHead className='view_groups_header'>
                                 <TableRow>
@@ -579,9 +592,11 @@ const MessageLog = withRouter(({ history, ...props }) => {
                                   <TableCell>Sent</TableCell>
                                 </TableRow>
                               </TableHead>
+                              {userLogs.length ?
                               <TableBody>
-                                {userLogs.map((row, i) => (
-                                  <TableRow key={`message_details${i}`}>
+                                { userLogs.length && userLogs.map((row, i) =>{ 
+                                   return (
+                                  <TableRow key={i}>
                                     <TableCell align='right'>{row.name}</TableCell>
                                     <TableCell align='right'>{row.number}</TableCell>
                                     <TableCell align='right'>
@@ -596,8 +611,8 @@ const MessageLog = withRouter(({ history, ...props }) => {
                                       )}
                                     </TableCell>
                                   </TableRow>
-                                ))}
-                              </TableBody>
+                                )})}
+                              </TableBody> : 'NO DATA'}
                             </Table>
                           </TableContainer>
                           <div className={`${classes.root} pagenation_view_groups`}>
@@ -610,11 +625,26 @@ const MessageLog = withRouter(({ history, ...props }) => {
                               rowsPerPageOptions={false}
                               className='table-pagination-users-log-message'
                             />
+                            
                           </div>
                         </Paper>
                       </div>
                     </div>
-                  ) : null}
+                  ) : 
+                  tempUserLogs.length === 0 ? <div className={classes.periodDataUnavailable}>
+                  <SvgIcon
+                    component={() => (
+                      <img
+                        style={
+                          isMobile
+                            ? { height: '100px', width: '200px' }
+                            : { height: '160px', width: '290px' }
+                        }
+                        src={unfiltered}
+                      />
+                    )}
+                  /> NO DATA FOUND
+                  </div> :''}
                 </Grid>
               </Grid>
             </div>

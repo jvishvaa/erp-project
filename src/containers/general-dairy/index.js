@@ -62,6 +62,8 @@ const GeneralDairyList = () => {
     const [sections, setSection] = useState([])
     const [startDate, setSDate] = useState([])
     const [endDate, setEDate] = useState([])
+    const [deleteFlag,setDeleteFlag] =useState(false)
+
 
     const handlePagination = (event, page) => {
         setPage(page);
@@ -71,8 +73,8 @@ const GeneralDairyList = () => {
     const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
     
     useEffect(() => {
-        if(page !== 1 && branch && grade && sections && startDate && endDate && activeTab)
-          handleDairyList(branch,grade,sections,startDate,endDate,activeTab)
+        // if(page !== 1 && branch && grade && sections && startDate && endDate && activeTab)
+        //   handleDairyList(branch,grade,sections,startDate,endDate,activeTab)
         if (NavData && NavData.length) {
           NavData.forEach((item) => {
             if (
@@ -91,7 +93,8 @@ const GeneralDairyList = () => {
             }
           });
         }
-      }, [location.pathname]);
+        if(deleteFlag)handleDairyList(branch,grade,sections,startDate,endDate,activeTab,page)
+      }, [location.pathname,page,deleteFlag]);
 
     const handleDairyList = (branchId, gradeId, sectionIds, startDate, endDate, activeTab,page) => {
         console.log(page,'inside')
@@ -207,6 +210,8 @@ const GeneralDairyList = () => {
                                                     periodColor={selectedIndex === i ? true : false}
                                                     setPeriodColor={setPeriodColor}
                                                     handleDairyType={handleDairyType}
+                                                    deleteFlag={deleteFlag}
+                                                    setDeleteFlag={setDeleteFlag} 
                                                 />
                                             ):''}
                                         </Grid>
