@@ -480,9 +480,9 @@ const TeacherHomework = withRouter(
                                   />
                                 )}
                               />
-                              <span style={{ fontSize: '16px' }}>Students submitted</span>
+                              <span style={{ fontSize: '16px' }}>Students Submitted</span>
                             </div>
-                            <div className='icon-desc-container'>
+                            {/* <div className='icon-desc-container'>
                               <SvgIcon
                                 component={() => (
                                   <img
@@ -493,12 +493,12 @@ const TeacherHomework = withRouter(
                                 )}
                               />
                               <span>Evaluated</span>
-                            </div>
+                            </div> */}
                             <div className='icon-desc-container'>
                               <SvgIcon
                                 component={() => (
                                   <img
-                                    style={{ width: '20px', marginRight: '5px' }}
+                                    style={{ width: '25px', marginRight: '5px' }}
                                     src={expiredIcon}
                                     alt='evaluated'
                                   />
@@ -515,6 +515,7 @@ const TeacherHomework = withRouter(
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
+                            margin: 'auto',
                           }}
                         >
                           <CircularProgress color='primary' />

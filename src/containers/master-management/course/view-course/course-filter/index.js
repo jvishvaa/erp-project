@@ -244,7 +244,14 @@ const CourseFilter = ({
             style={{ color: 'white' }}
             color='primary'
             className='buttonModifiedDesign'
-            onClick={() => history.push('/create/course')}
+            onClick={() => {
+              sessionStorage.removeItem('isAol');
+              sessionStorage.removeItem('gradeKey');
+              sessionStorage.setItem('createCourse',1);
+              sessionStorage.removeItem('periodDetails');
+              sessionStorage.removeItem('isErpClass');
+              history.push('/create/course');
+            }}
             size='medium'
           >
             CREATE

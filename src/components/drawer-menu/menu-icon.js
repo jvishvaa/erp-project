@@ -7,8 +7,10 @@ import MessageIcon from '@material-ui/icons/Message';
 import SmsIcon from '@material-ui/icons/Sms';
 import EmailIcon from '@material-ui/icons/Email';
 import HomeWorkIcon from '@material-ui/icons/HomeWork';
-import WebAsset from '@material-ui/icons/WebAsset'
+import WebAsset from '@material-ui/icons/WebAsset';
 import ImportContactsIcon from '@material-ui/icons/ImportContacts';
+import PeopleIcon from '@material-ui/icons/People';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 
 const menuIcon = (name) => {
   let icon = '';
@@ -61,8 +63,16 @@ const menuIcon = (name) => {
       icon = <ImportContactsIcon />;
       break;
     }
-    case 'Blogs':{
-      icon = <WebAsset/>;
+    case 'Blogs': {
+      icon = <WebAsset />;
+      break;
+    }
+    case 'User Management': {
+      icon = <PeopleIcon />;
+      break;
+    }
+    case 'Role Management': {
+      icon = <AssignmentIndIcon />;
       break;
     }
     default:
