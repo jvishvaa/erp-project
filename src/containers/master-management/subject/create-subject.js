@@ -93,6 +93,9 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
         setAlert('error', error.message)
       })
     };
+  function capitalize(str){
+    return str.toLowerCase().replace( /\b./g, function(a){ return a.toUpperCase(); } );
+  };
 
   return (
       <form autoComplete='off' onSubmit={handleSubmit}>
@@ -154,7 +157,7 @@ const CreateSubject = ({grades,setLoading,handleGoBack}) => {
               value={subjectName}
               inputProps={{pattern:'^[a-zA-Z0-9 +_-]+',maxLength:20}}
               name='subname'
-              onChange={e=>setSubjectName(e.target.value)}
+              onChange={e=>setSubjectName(capitalize(e.target.value))}
               required
             />
           </Grid>

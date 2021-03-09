@@ -153,12 +153,12 @@ const Subjectcard = (props) => {
                                                                     activeClassName="active"
                                                                     className="link-grade"
                                                                 >
-                                                                    <p style={{color: '#ff6b6b', marginBottom: '5px'}}>
+                                                                    <p style={{color: '#ff6b6b', marginBottom: '5px'}} title='Edit'>
                                                                         Edit
                                                                     </p>
                                                                 </Link>
                                                             </div>
-                                                            <div className='tooltip' onClick={(e) => handleClick(e)}>
+                                                            <div className='tooltip' title='Delete' onClick={(e) => handleClick(e)}>
                                                                 Delete
                                                             </div>
                                                         </span>
