@@ -22,7 +22,7 @@ const CreateBranchAcad = ({ setLoading, handleGoBack, academicYearList }) => {
       .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
-          setBranchList(result.data?.data?.results);
+          setBranchList(result.data?.data);
         } else {
           setBranchList([]);
           setAlert('error', result.data.msg||result.data.message);
