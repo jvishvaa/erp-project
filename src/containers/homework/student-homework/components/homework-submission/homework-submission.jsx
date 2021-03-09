@@ -346,11 +346,11 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const FileRow = (props) => {
     const { file, onClose, index } = props;
     return (
-      <div className='file_row'>
-        <div className='file_name_container'>
+      <div className='file_row_hw'>
+        <div className='file_name_container_hw'>
           File {index + 1}
         </div>
-        <div className='file_close'>
+        <div className='file_close_hw'>
           <span
             onClick={onClose}
           >
