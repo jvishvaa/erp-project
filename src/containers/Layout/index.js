@@ -518,8 +518,8 @@ const Layout = ({ children, history }) => {
         history.push('/dairy/student');
         break;
       }
-      case 'Teacher Dairy': {
-        history.push('/dairy/teacher');
+      case 'Teacher Diary': {
+        history.push('/diary/teacher');
         break;
       }
       case 'Assessment': {

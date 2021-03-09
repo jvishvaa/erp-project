@@ -64,7 +64,6 @@ const GeneralDairyList = () => {
     const [endDate, setEDate] = useState([])
     const [deleteFlag,setDeleteFlag] =useState(false)
 
-
     const handlePagination = (event, page) => {
         setPage(page);
         handleDairyList(branch,grade,sections,startDate,endDate,activeTab,page)
@@ -78,7 +77,7 @@ const GeneralDairyList = () => {
         if (NavData && NavData.length) {
           NavData.forEach((item) => {
             if (
-              item.parent_modules === 'Dairy' &&
+              item.parent_modules === 'Diary' &&
               item.child_module &&
               item.child_module.length > 0
             ) {
@@ -86,7 +85,7 @@ const GeneralDairyList = () => {
                 if(location.pathname === "/dairy/student" && item.child_name === "Student Diary") {
                     setStudentModuleId(item?.child_id);
                     setShowSubjectDropDown(true)
-                } else if(location.pathname === "/dairy/teacher" && item.child_name === "Teacher") {
+                } else if(location.pathname === "/diary/teacher" && item.child_name === "Teacher") {
                     setTeacherModuleId(item?.child_id);
                 } 
               });
@@ -109,13 +108,16 @@ const GeneralDairyList = () => {
         setActiveTab(activeTab)
         const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
         console.log(roleDetails);
-        if(!branchId || !gradeId){
-            setLoading(false)
-            setAlert('error','Fill in required fields')
-            return
+        if (isTeacher){
+
+            if(!branchId || !gradeId){
+                setLoading(false)
+                setAlert('error','Fill in required fields')
+                return
+            }
         }
         const diaryUrl =  isTeacher ? `${endpoints.generalDairy.dairyList}?branch=${branchId}&grades=${gradeId}&sections=${sectionIds}&page=${page}&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}${activeTab !== 0? ('&dairy_type='+activeTab) : ''}`
-            : `${endpoints.generalDairy.dairyList}?module_id=${studentModuleId}&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}${activeTab !== 0? ('&dairy_type='+activeTab) : ''}`;
+            : `${endpoints.generalDairy.dairyList}?module_id=164&page=${page}&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}${activeTab !== 0? ('&dairy_type='+activeTab) : ''}`;
         axiosInstance.get(diaryUrl)
             .then((result) => {
                 if (result.data.status_code === 200) {
@@ -137,7 +139,7 @@ const GeneralDairyList = () => {
     const handleDairyType = (type) => {
         setDairyType(type);
     }
-    const isTeacher = location.pathname === '/dairy/teacher' ? true : false;
+    const isTeacher = location.pathname === '/diary/teacher' ? true : false;
     const path = isTeacher ? 'Teacher Diary' : 'Student Diary';
 
     return (
@@ -147,7 +149,7 @@ const GeneralDairyList = () => {
                 <div>
                     <div style={{ width: '95%', margin: '20px auto' }}>
                         <CommonBreadcrumbs
-                            componentName='Dairy'
+                            componentName='Diary'
                             childComponentName={path}
                         />
                     </div>
@@ -196,7 +198,7 @@ const GeneralDairyList = () => {
                                                     handleDairyType={handleDairyType}
                                                 />
                                             )}
-                                            {period.dairy_type === "2" && isTeacher ?(
+                                            {period.dairy_type === "2" ?(
                                                 <DailyDairy
                                                     index={i}
                                                     lesson={period}

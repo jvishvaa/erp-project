@@ -68,8 +68,8 @@ const GeneralDairyFilter = ({
   const [isEmail, setIsEmail] = useState(false);
   const [selectAll, setSelectAll] = useState([
     {id: 0, value: 'All'},
-    {id: 2, value: 'Daily Dairy'},
-    {id: 1, value: 'General Dairy'}
+    {id: 2, value: 'Daily Diary'},
+    {id: 1, value: 'General Diary'}
   ]);
   const [ activeTab, setActiveTab ] = useState(0);
 
@@ -319,7 +319,7 @@ const GeneralDairyFilter = ({
           />
         </Grid>
       )}
-      { showSubjectDropDown && (
+      {/* { showSubjectDropDown && (
         <Grid item xs={12} sm={4} className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
         <Autocomplete
             style={{ width: '100%' }}
@@ -341,7 +341,7 @@ const GeneralDairyFilter = ({
             )}
         />
     </Grid>
-      )}
+      )} */}
       <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <LocalizationProvider dateAdapter={MomentUtils}>
           <DateRangePicker
@@ -407,9 +407,9 @@ const GeneralDairyFilter = ({
             className='custom_button_master'
             size='medium'
             type='submit'
-            onClick={()=>history.push("/create/general-dairy")}
+            onClick={()=>history.push("/create/general-diary")}
           >
-            CREATE GENERAL DAIRY
+            CREATE GENERAL DIARY
           </Button>
         </Grid>
       )}
@@ -422,7 +422,7 @@ const GeneralDairyFilter = ({
             className='custom_button_master'
             size='medium'
             type='submit'
-            onClick={()=>history.push("/create/daily-dairy")}
+            onClick={()=>history.push("/create/daily-diary")}
           >
             CREATE DAILY DIARY
           </Button>

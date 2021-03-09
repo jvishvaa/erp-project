@@ -1,5 +1,6 @@
 import React, {useContext,useState} from 'react';
 import Paper from '@material-ui/core/Paper';
+import {useLocation} from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -26,12 +27,14 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
   const [showPeriodIndex, setShowPeriodIndex] = useState();
     const history=useHistory()
     const [state,setState] = useContext(Context)
+    const location = useLocation();
 
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
     setShowPeriodIndex(index);
   };
-
+  const isTeacher = location.pathname === '/diary/teacher' ? true : false;
+ 
   const handlePeriodMenuClose = (index) => {
     setShowMenu(false);
     setShowPeriodIndex();
@@ -92,7 +95,7 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
     console.log(data,'PPP')
     // // setEditData(e)
     setState({editData:data,isEdit:true});
-    history.push('/create/daily-dairy')
+    history.push('/create/daily-diary')
   }
 
   console.log("DailyDairy");
@@ -140,12 +143,15 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
               onClick={() => handlePeriodMenuOpen(index)}
               onMouseLeave={handlePeriodMenuClose}
             >
-              <IconButton
+              {isTeacher?
+
+                <IconButton
                 className="moreHorizIcon"
                 color='primary'
-              >
+                >
                 <MoreHorizIcon />
-              </IconButton>
+              </IconButton>:''
+              }
               {(showPeriodIndex === index &&
                 showMenu) ? (
                   <div className="tooltip" style={{display:'flex',justifyContent:'space-between'}}>

@@ -14,6 +14,7 @@ import axiosInstance from '../../../config/axios';
 import cardAttachment from '../../../assets/images/cardAttachment.svg'
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import {Context} from '../context/context'
+import {useLocation} from 'react-router-dom';
 
 
 const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex, handleDairyType}) => {
@@ -26,6 +27,8 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
   const [showPeriodIndex, setShowPeriodIndex] = useState();
   const history=useHistory()
   const [state, setState] = useContext(Context)
+  const location = useLocation();
+  const isTeacher = location.pathname === '/diary/teacher' ? true : false;
 
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
@@ -89,7 +92,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
     // // setEditData(e)
     debugger
     setState({isEdit:true,editData:data});
-    history.push('/create/general-dairy')
+    history.push('/create/general-diary')
   }
 
   return (
@@ -127,16 +130,18 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               onClick={() => handlePeriodMenuOpen(index)}
               onMouseLeave={handlePeriodMenuClose}
             >
+              {isTeacher?
               <IconButton
-                className="moreHorizIcon"
-                color='primary'
+              className="moreHorizIcon"
+              color='primary'
               >
                 <MoreHorizIcon />
-              </IconButton>
+              </IconButton> : ''
+              }
               {(showPeriodIndex === index &&
                 showMenu) ? (
                   <div className="tooltip" style={{display:'flex',justifyContent:'space-between'}}>
-                    <span className='tooltiptext' >
+                  <span className='tooltiptext' >
                         <Button className='tooltip' onClick={e=> handleDelete(lesson)}>Delete</Button>
                         <Button className='tooltip' onClick={e=> handleEdit(lesson)}> Edit</Button>
                     </span>
