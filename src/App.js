@@ -108,6 +108,7 @@ import TeacherBatchView from './containers/teacherBatchView';
 import ErpAdminViewClass from './containers/online-class/erp-view-class/admin'
 import AolLogin from './containers/aol-login';
 import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource'
+import AttachmentPreviewer from './components/attachment-previewer';
 
 const theme = createMuiTheme({
   palette: {
@@ -162,6 +163,7 @@ function App() {
         <AlertNotificationProvider>
           <OnlineclassViewProvider>
             <ThemeProvider theme={theme}>
+            <AttachmentPreviewer>
               <CircularStore>
                 <GeneralDairyStore>
                   <ViewStore>
@@ -468,6 +470,7 @@ function App() {
                   </ViewStore>
                 </GeneralDairyStore>
               </CircularStore>
+              </AttachmentPreviewer>
             </ThemeProvider>
           </OnlineclassViewProvider>
         </AlertNotificationProvider>
