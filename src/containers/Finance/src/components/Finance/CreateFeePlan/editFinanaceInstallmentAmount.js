@@ -68,6 +68,7 @@ const EditFeeInstallmentAmount = ({
           </Grid>
           <Grid item xs='8'>
             <Button
+            style={{ marginRight: '10px' }}
               type='submit'
               color='primary'
               variant='contained'
@@ -76,7 +77,7 @@ const EditFeeInstallmentAmount = ({
             </Button>
             <Button
               color='primary'
-              variant='outlined'
+              variant='contained'
               onClick={close}
               style={{ marginLeft: '20px' }}
               type='button'

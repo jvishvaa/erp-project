@@ -232,7 +232,7 @@ class CurrFeeTypeAcc extends Component {
             />
           </Grid>
           <Grid item xs={4} style={{ marginTop: 20 }}>
-            <Button color='primary' disabled={!feeType || !feeTypeAmount || !dueDate} variant='contained' onClick={this.saveHandler}>Save</Button>
+            <Button style={{ marginTop: '10px' }} color='primary' disabled={!feeType || !feeTypeAmount || !dueDate} variant='contained' onClick={this.saveHandler}>Save</Button>
           </Grid>
         </Grid>
         {studentMiscTable}

@@ -824,7 +824,7 @@ class TotalPaidReports extends Component {
             </Grid>
           </Grid>
         </div>
-        <div style={{ margin: '0 auto', marginTop: '60px', paddingBottom: '60px' }}>
+        <div style={{ margin: '0 auto', marginTop: '60px', marginLeft: '20px', paddingBottom: '60px' }}>
           <Button
             variant='contained'
             color='primary'

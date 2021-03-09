@@ -2434,6 +2434,7 @@ class FeeShowList extends Component {
             <Typography>{this.getStepContent(activeStep)}</Typography>
             <div>
               <Button
+              style={{ marginLeft: '20px' }}
                 disabled={activeStep === 0 || activeStep > 1}
                 onClick={this.handleBack}
                 className={this.props.classes.backButton}

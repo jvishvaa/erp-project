@@ -697,7 +697,7 @@ class Receipt extends Component {
             aria-label='Cash'
           /> Internet Payment
         </Grid>
-        <Grid xs={2}>
+        <Grid xs={3}>
           <Radio
             checked={this.state.selectedPayment === 'd'}
             onChange={this.handlePayment}

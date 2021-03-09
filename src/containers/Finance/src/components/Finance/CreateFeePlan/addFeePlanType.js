@@ -135,6 +135,7 @@ class AddFeePlanType extends Component {
             </Grid>
             <Grid item xs='8'>
               <Button
+                style={{ marginRight: '10px'}}
                 onClick={this.handlevalue}
                 color='primary'
                 variant='contained'

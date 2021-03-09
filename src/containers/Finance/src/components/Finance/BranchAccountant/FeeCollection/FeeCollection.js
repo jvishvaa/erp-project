@@ -61,7 +61,7 @@ class FeeCollection extends Component {
             this.state.sessionData
               ? <Grid item xs={3}>
                 <Button variant='contained' color='primary' onClick={this.ButtonHandler}
-                  style={{ marginTop: '25px', marginLeft: '20px' }}
+                  style={{ marginTop: '20px', marginLeft: '20px' }}
                 >
                 Add Entry
                   {/* {this.state.clicked

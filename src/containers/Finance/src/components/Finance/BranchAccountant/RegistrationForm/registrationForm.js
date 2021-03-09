@@ -29,14 +29,14 @@ const styles = theme => ({
   },
   root: {
     width: '100%',
-    marginTop: theme.spacing * 3,
+    marginTop: theme.spacing(3),
     overflowX: 'auto'
   },
   table: {
     minWidth: 650
   },
   margin: {
-    margin: theme.spacing * 1
+    margin: theme.spacing(1)
   }
 })
 
@@ -198,7 +198,7 @@ class RegistrationForm extends Component {
               }}
             />
           </Grid>
-          <Grid item xs={3} style={{ padding: '20px' }}>
+          <Grid item xs={3} style={{ padding: '20px', marginTop: '18px' }}>
             <Button variant='contained' disabled={!this.state.session || !this.state.fromDate || !this.state.toDate} color='primary' onClick={this.fetchRegListHandler}>
                 Get
             </Button>

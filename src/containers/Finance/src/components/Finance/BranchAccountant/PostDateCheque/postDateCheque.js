@@ -130,7 +130,7 @@ class PostDateCheque extends Component {
                 <React.Fragment>
                   <Student erp={row.student.erp} user={this.props.user} alert={this.props.alert} />
                   <Grid container spacing={3} style={{ padding: '20px' }}>
-                    <Grid itemxs='3'>
+                    <Grid item xs='3'>
                         Transaction ID : {row.transaction_id}
                     </Grid>
                     <Grid item xs='3'>
@@ -268,12 +268,12 @@ class PostDateCheque extends Component {
                     return (
                       <React.Fragment>
                         <TableRow hover >
-                          <TableCell><div style={{ width: '100px' }}>{row.student.name}</div></TableCell>
+                          <TableCell><div style={{ width: '100px'}}>{row.student.name}</div></TableCell>
                           <TableCell>{row.amount}</TableCell>
-                          <TableCell><div style={{ width: '80px' }}>{row.date_of_receipt}</div></TableCell>
-                          <TableCell><div style={{ width: '80px' }}>{row.date_of_cheque}</div></TableCell>
-                          <TableCell>{row.cheque_number}</TableCell>
-                          <TableCell><Info style={{ cursor: 'pointer' }} onClick={() => this.showInfoModalHandler(row.id)} /></TableCell>
+                          <TableCell style={{textAlign: 'center'}}>{row.date_of_receipt}</TableCell>
+                          <TableCell>{row.date_of_cheque}</TableCell>
+                          <TableCell style={{ textAlign: 'center' }}>{row.cheque_number}</TableCell>
+                          <TableCell><Info style={{ cursor: 'pointer'}} onClick={() => this.showInfoModalHandler(row.id)} /></TableCell>
                         </TableRow>
                       </React.Fragment>
                     )

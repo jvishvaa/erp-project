@@ -604,7 +604,7 @@ const Layout = ({ children, history }) => {
                 history.push('/finance/Approval/Requests/AcceptRejectPayment')
                   break;
                 }
-              case 'Post Dated cheque': {
+              case 'Post Dated Cheque': {
                 history.push('/finance/Approval/Requests/PostDateCheque')
                   break;
                 }

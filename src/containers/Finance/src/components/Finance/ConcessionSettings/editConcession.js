@@ -307,7 +307,7 @@ class EditConcessionSettings extends Component {
             </Button>
             <Button
               color='primary'
-              variant='outlined'
+              variant='contained'
               style={{ marginLeft: '20px' }}
               onClick={this.props.close}
               type='button'
