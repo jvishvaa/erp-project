@@ -228,7 +228,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
   };
 
   const handleUsersPagination = (event, page) => {
-    setUsersCurrentPageno(page);
+    setUsersCurrentPageno(page+1);
   };
 
   const handleClearAll = () => {
@@ -625,6 +625,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
                               rowsPerPageOptions={false}
                               className='table-pagination-users-log-message'
                             />
+                            
                           </div>
                         </Paper>
                       </div>
