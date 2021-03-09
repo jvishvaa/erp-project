@@ -514,7 +514,7 @@ const Layout = ({ children, history }) => {
         history.push('/blog/wordcount-config');
         break;
       }
-      case 'Student Dairy': {
+      case 'Student Diary': {
         history.push('/dairy/student');
         break;
       }

@@ -424,7 +424,7 @@ const GeneralDairyFilter = ({
             type='submit'
             onClick={()=>history.push("/create/daily-dairy")}
           >
-            CREATE DAILY DAIRY
+            CREATE DAILY DIARY
           </Button>
         </Grid>
       )}
@@ -436,8 +436,8 @@ const GeneralDairyFilter = ({
               aria-label='styled tabs example'
             >
               <StyledTab label={<Typography variant='h8'>All</Typography>} onClick={(e) => handleActiveTab(0)} />
-              <StyledTab label={<Typography variant='h8'>Daily Dairy</Typography>} onClick={(e) => handleActiveTab(2)}/>
-              <StyledTab label={<Typography variant='h8'>General Dairy</Typography>} onClick={(e) => handleActiveTab(1)}/>
+              <StyledTab label={<Typography variant='h8'>Daily Diary</Typography>} onClick={(e) => handleActiveTab(2)}/>
+              <StyledTab label={<Typography variant='h8'>General Diary</Typography>} onClick={(e) => handleActiveTab(1)}/>
             </StyledTabs>
           </Grid>
     </Grid>

@@ -316,7 +316,7 @@ const history=useHistory()
           type='submit'
           onClick={()=>history.push("/create/daily-dairy")}
         >
-          CREATE DAILY DAIRY
+          CREATE DAILY DIARY
         </Button>
       </Grid>
     </Grid>
