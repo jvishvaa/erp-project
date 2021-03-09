@@ -11,8 +11,8 @@ import '../../../css/staff.css'
 import { urls } from '../../../../urls'
 import * as actionTypes from '../../store/actions'
 // import { apiActions } from '../../../../_actions'
-import feeReceipts from '../../Receipts/feeReceipts'
-// import storeReceipts from '../../../Inventory/Receipts/storePaymentReceipt' // rajneesh
+import feeReceiptss from '../../Receipts/feeReceiptss'
+import storeReceipts from '../../../Inventory/Receipts/storePaymentReceipt'
 import customClasses from './managePayment.module.css'
 
 const styles = theme => ({
@@ -103,10 +103,10 @@ class AllTransactions extends Component {
     try {
       if (isKit) {
         const response = await this.getKitPdfData(transactionId)
-        // storeReceipts(response.data) // rajneesh
+        storeReceipts(response.data)
       } else {
         const response = await this.getPdfData(transactionId)
-        feeReceipts(response.data, isCancelled)
+        feeReceiptss(response.data, isCancelled)
       }
     } catch (e) {
       console.log(e)
@@ -143,8 +143,8 @@ class AllTransactions extends Component {
             <div className={customClasses.table__bodyActn}>
               <div>
                 <Button variant='extended' color='primary' className={classes.buttonGreen} onClick={() => this.generatePdf(transaction.transaction_id, transaction.is_cancelled, transaction.kit_payment)}>
-                  <span style={{ color: 'white', marginRight: '5px', fontSize: '1rem', fontWeight: 'normal' }}>Print</span>
-                  <Icon className={classes.rightIcon} style={{ color: 'white', fontSize: '1.2rem' }}>print</Icon>
+                  <span style={{ color: 'white', fontSize: '1rem', fontWeight: 'normal', textAlign: 'center' }}>Print</span>
+                  <Icon className={classes.rightIcon} style={{ color: 'white', fontSize: '1.2rem' }}></Icon>
                 </Button>
               </div>
             </div>

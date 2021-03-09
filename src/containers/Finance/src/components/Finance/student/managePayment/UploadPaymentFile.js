@@ -73,7 +73,7 @@ function UploadPaymentFile (props) {
           props.alert.success(res.data)
           if (res.data === 'Sucesssfully Uploaded') {
             setTimeout(function () {
-              props.history.push('/finance/manage_payment')
+              props.history.push('/finance/ManagePayments')
             }, 1000)
           }
           clearState()

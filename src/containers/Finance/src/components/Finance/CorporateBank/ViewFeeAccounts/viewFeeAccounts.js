@@ -19,8 +19,8 @@ import * as actionTypes from '../../store/actions'
 // import { urls } from '../../../../urls'
 import EditFeeAccount from './editFeeAccounts'
 import AddFeeAccount from './addFeeAccounts'
-import Layout from '../../../../../../Layout'
-// import classes from '../ViewBanks/viewBanks.module.css'
+// import Layout from '../../../../../../Layout'
+import classes from '../ViewBanks/viewBanks.module.css'
 
 // const ViewAccounts = {
 //   namespace: 'View Fee Accounts'
@@ -220,7 +220,7 @@ class ViewFeeAccounts extends Component {
 
       render () {
         let editModal = null; let addModal = null; let feeAccTable = null
-        // let deleteModal = null;
+        let deleteModal = null;
         if (this.state.showEditModal) {
           editModal = (
             <Modal open={this.state.showEditModal} click={this.hideModalHandler}>
@@ -236,20 +236,20 @@ class ViewFeeAccounts extends Component {
             </Modal>
           )
         }
-        // if (this.state.showDeleteModal) {
-        //   deleteModal = (
-        //     <Modal open={this.state.showDeleteModal} click={this.hideDeleteModalHandler} small>
-        //       <h3 className={classes.modal__heading}>Are You Sure?</h3>
-        //       <hr />
-        //       <div className={classes.modal__deletebutton}>
-        //         <Button negative onClick={this.deleteHandler}>Delete</Button>
-        //       </div>
-        //       <div className={classes.modal__remainbutton}>
-        //         <Button primary onClick={this.hideDeleteModalHandler}>Go Back</Button>
-        //       </div>
-        //     </Modal>
-        //   )
-        // }
+        if (this.state.showDeleteModal) {
+          deleteModal = (
+            <Modal open={this.state.showDeleteModal} click={this.hideDeleteModalHandler} small>
+              <h3 className={classes.modal__heading}>Are You Sure?</h3>
+              <hr />
+              <div className={classes.modal__deletebutton}>
+                <Button negative onClick={this.deleteHandler}>Delete</Button>
+              </div>
+              <div className={classes.modal__remainbutton}>
+                <Button primary onClick={this.hideDeleteModalHandler}>Go Back</Button>
+              </div>
+            </Modal>
+          )
+        }
         // if (this.props.viewFeeAccList.length > 0) {
         //   feeAccTable = (<ReactTable
         //     // pages={Math.ceil(this.props.viewBanksList.count / 20)}
@@ -352,7 +352,7 @@ class ViewFeeAccounts extends Component {
         //   />)
         // }
         return (
-          <Layout>
+          // <Layout>
           <React.Fragment>
             <div>
               <Grid container spacing={3} style={{ padding: 15 }}>
@@ -475,11 +475,11 @@ class ViewFeeAccounts extends Component {
               </Grid>
             </div>
             {this.props.dataLoading ? <CircularProgress open /> : null}
-            {/* {deleteModal} */}
+            {deleteModal}
             {editModal}
             {addModal}
           </React.Fragment>
-          </Layout>
+          // </Layout>
         )
       }
 }

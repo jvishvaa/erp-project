@@ -153,6 +153,12 @@ import NonRTEFormAcc from './containers/Finance/src/components/Finance/BranchAcc
 import AssignOtherFees from './containers/Finance/src/components/Finance/BranchAccountant/OtherFees/assignOtherFess.js'
 import GenerateSubsequentPayment from './containers/Finance/src/components/Finance/E-mandate/generateSubsequentPayment.js'
 import EditTransactionDetails from './containers/Finance/src/components/Finance/FeePaymentChangeRequests/editTransactionDetails';
+import AppFormList from './containers/Finance/src/components/Finance/BranchAccountant/TotalFormCount/appFormList.js'
+import RegFormList from './containers/Finance/src/components/Finance/BranchAccountant/TotalFormCount/regFormList.js'
+import TransactionStatus from './containers/Finance/src/components/Finance/TransactionStatus/transactionStatus.js'
+import AdmFormList from './containers/Finance/src/components/Finance/BranchAccountant/TotalFormCount/admFormList.js'
+import Airpay from './containers/Finance/src/components/Finance/PaymentGateways/Airpay/airpayIntegration.js'
+import UploadPaymentFile from './containers/Finance/src/components/Finance/student/managePayment/UploadPaymentFile.js'
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -326,6 +332,9 @@ function App({ alert }) {
                 </Route>
                 <Route exact path='/finance/WalletReport'>
                   {({ match }) => <WalletReport match={match} alert={alert} />}
+                </Route>
+                <Route exact path='/finance/TransactionStatus'>
+                  {({ match }) => <TransactionStatus  match={match} alert={alert} />}
                 </Route>
                 <Route exact path='/finance/ConcessionReport'>
                   {({ match }) => <ConcessionReport match={match} alert={alert} />}
@@ -618,6 +627,21 @@ function App({ alert }) {
                 </Route>
                 <Route exact path= '/finance/ReceiptBook'>
                   {({ match }) => <ReceiptBook match={match} alert={alert} />}
+                </Route>
+                <Route exact path= '/finance/appformlist'>
+                  {({ match }) => <AppFormList match={match} alert={alert} />}
+                </Route>
+                <Route exact path= '/finance/regformlist'>
+                  {({ match }) => <RegFormList match={match} alert={alert} />}
+                </Route>
+              <Route exact path= '/finance/admformlist'>
+                  {({ match }) => <AdmFormList match={match} alert={alert} />}
+                </Route>
+                <Route exact path= '/fee_payment/'>
+                  {({ match }) => <Airpay match={match} alert={alert} />}
+                </Route>
+                <Route exact path= '/finance/upload_file'>
+                  {({ match }) => <UploadPaymentFile match={match} alert={alert} />}
                 </Route>
               </Switch>
             </ThemeProvider>

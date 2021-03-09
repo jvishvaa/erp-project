@@ -26,7 +26,7 @@ export const fetchFeeTypesPerType = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.warning('Unable to fetch fee types for this branch')
+        payload.alert.warning('Unable to fetch fee types for this branch')
         console.log(error)
       })
   }
@@ -51,7 +51,7 @@ export const fetchFeeAccountsReceiptBook = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.warning('Unable to load data')
+        payload.alert.warning('Unable to load data')
         console.log(error)
       })
   }

@@ -116,7 +116,7 @@ export const editLedgerHead = (payload) => {
     }).catch(err => {
       console.log(err)
       dispatch(actionTypes.dataLoaded())
-      // payload.alert.warning('Something Went Wrong')
+      payload.alert.warning('Something Went Wrong')
     })
   }
 }

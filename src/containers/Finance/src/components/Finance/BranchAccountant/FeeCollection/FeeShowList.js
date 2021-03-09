@@ -16,6 +16,7 @@ import * as actionTypes from '../../store/actions'
 import AutoSuggest from '../../../../ui/AutoSuggest/autoSuggest'
 // import { debounce } from '../../../../utils'
 import Student from '../../Profiles/studentProfile'
+import Layout from '../../../../../../Layout'
 // import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 
 const styles = (theme) => ({
@@ -2419,6 +2420,7 @@ class FeeShowList extends Component {
     const { activeStep } = this.state
     console.log('State', this.props.location.state)
     return (
+      <Layout>
       <React.Fragment>
         <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map(label => (
@@ -2449,6 +2451,7 @@ class FeeShowList extends Component {
         {/* {feeListTable} */}
         {this.props.dataLoading ? <CircularProgress open /> : null}
       </React.Fragment>
+      </Layout>
     )
   }
 }

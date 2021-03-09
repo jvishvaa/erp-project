@@ -24,7 +24,7 @@ import FirstPageIcon from '@material-ui/icons/FirstPage'
 // import appRegReceiptsPdf from '../../Receipts/appRegReceipts'
 // import PropTypes from 'prop-types'
 // import Select from 'react-select'
-import feeReceipts from '../../Receipts/feeReceipts'
+import feeReceiptss from '../../Receipts/feeReceiptss'
 // import { apiActions } from '../../../../_actions'
 import { urls } from '../../../../urls'
 // import RequestShuffle from './requestShuffle'
@@ -97,13 +97,15 @@ const AdmFormList = ({ session,
   useEffect(() => {
     console.log('Mounted All Form List', history.location.state)
     const { session, fromDate, toDate, branch, isAdmin, selectedDates, selectedReport } = history.location.state
-    setIsAdmin(isAdmin)
-    const userProfile = JSON.parse(localStorage.getItem('user_profile'))
-    const userId = userProfile.personal_info.user_id
-    const userIndex = accessList.indexOf(+userId)
-    if (userIndex !== -1) {
-      setShowDelete(true)
-    }
+    const userProfile = JSON.parse(localStorage.getItem('userDetails'))
+    const role = userProfile.personal_info.role.toLowerCase()
+    // setIsAdmin(isAdmin)
+    // const userProfile = JSON.parse(localStorage.getItem('user_profile'))
+    // const userId = userProfile.personal_info.user_id
+    // const userIndex = accessList.indexOf(+userId)
+    // if (userIndex !== -1) {
+    //   setShowDelete(true)
+    // }
     fetchAllAppFormList(session, branch, fromDate, toDate, selectedDates, selectedReport, rowsPerPage || 10, page + 1, 'admission', alert, user)
   }, [history, fetchAllAppFormList, rowsPerPage, page, alert, user])
 
@@ -120,7 +122,7 @@ const AdmFormList = ({ session,
     try {
       const response = await getPdfData(transid)
       console.log('App reg Response: ', response)
-      feeReceipts(response.data)
+      feeReceiptss(response.data)
     } catch (e) {
       console.log(e)
       alert.warning('Unable to generate PDF!')

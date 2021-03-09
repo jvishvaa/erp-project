@@ -21,7 +21,7 @@ import Receipt from './nonRTEPayment'
 // import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import * as actionTypes from '../store/actions'
 import { urls } from '../../../../urls'
-import feeReceipts from '../../Receipts/feeReceipts'
+import feeReceiptss from '../../Receipts/feeReceiptss'
 import Layout from '../../../../../../Layout'
 
 const styles = theme => ({
@@ -403,7 +403,7 @@ class NonRTEFormAcc extends Component {
   generatePdf = async () => {
     try {
       const response = await this.getPdfData(this.props.receiptGen.transaction_id)
-      feeReceipts(response.data)
+      feeReceiptss(response.data)
     } catch (e) {
       console.log(e)
       this.props.alert.warning('Something Went Wrong')

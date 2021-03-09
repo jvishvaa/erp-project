@@ -24,7 +24,7 @@ export const fetchStudentFeeStructureList = (payload) => {
         dispatch(actionTypes.dataLoaded())
       }).catch(error => {
         dispatch(actionTypes.dataLoaded())
-        // payload.alert.warning('Unable to load data')
+        payload.alert.warning('Unable to load data')
         console.log(error)
       })
   }

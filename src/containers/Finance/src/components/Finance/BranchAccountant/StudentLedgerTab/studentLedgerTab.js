@@ -313,9 +313,9 @@ class StudentLedgerTab extends Component {
               <Tab value='six' label='Concession Details' />
               {/* <Tab value='seven' label='Fee Management' /> */}
               <Tab value='eight' label='Curr Fee Type' />
-              <Tab value='nine' label='STORE' />
+              {/* <Tab value='nine' label='STORE' />
               <Tab value='ele' label='Shipping Amount' />
-              <Tab value='ten' label='Order Status' />
+              <Tab value='ten' label='Order Status' /> */}
             </Tabs>
           </AppBar>
           {value === 'one' && <TabContainer>
