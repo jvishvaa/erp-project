@@ -908,7 +908,7 @@ class AddOtherFees extends Component {
               onChange={this.feeAccountChangeHandler}
             />
           </Grid>
-          <Grid item sm={3} md={3} xs={12} style={{ padding: '17px 10px' }}>
+          {/* <Grid item sm={3} md={3} xs={12} style={{ padding: '17px 10px' }}>
             <FormControlLabel
               style={{ marginTop: '10px' }}
               control={
@@ -920,7 +920,7 @@ class AddOtherFees extends Component {
               }
               label='Bulk Upload Excel'
             />
-          </Grid>
+          </Grid> */}
           {this.state.isBulkUpload
             ? <React.Fragment>
               <Grid item sm={3} md={3} xs={12} style={{ padding: '10px' }}>
@@ -1070,7 +1070,7 @@ class AddOtherFees extends Component {
         >
           <Button
             primary
-            style={{ padding: '10px 20px' }}
+            style={{ padding: '10px 20px', marginLeft: '10px' }}
             onClick={this.handleSubmitOtherFees}
             color='primary'
             size='small'

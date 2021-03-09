@@ -394,7 +394,7 @@ class AddConcessionSettings extends Component {
             </Button>
             <Button
               color='primary'
-              variant='outlined'
+              variant='contained'
               onClick={this.props.close}
               type='button'
             >

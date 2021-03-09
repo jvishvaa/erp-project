@@ -326,7 +326,7 @@ class ConcessionSettings extends Component {
                             <TableCell>
                               <Button
                                 color='primary'
-                                variant='outlined'
+                                variant='contained'
                                 style={{ width: '200px' }}
                                 onClick={() => { this.showManageFeeModalHandler(row.id, row.concession_type.type_name, row.concession_type.id) }}
                               >Manage Fee Type</Button>
