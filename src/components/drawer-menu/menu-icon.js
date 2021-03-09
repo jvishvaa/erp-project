@@ -37,7 +37,7 @@ const menuIcon = (name) => {
       icon = <AddCircleIcon />;
       break;
     }
-    case 'View&Edit Group': {
+    case 'View & Edit Group': {
       icon = <EditIcon />;
       break;
     }
