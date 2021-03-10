@@ -118,12 +118,12 @@ function listGrades () {
   return fetch(urls.GRADE, requestOptions).then(handleResponse)
 }
 
-function listAcademicSessions () {
+function listAcademicSessions (moduleId) {
   const requestOptions = {
     method: 'GET',
     headers: authHeader()
   }
-  return fetch(urls.UTILACADEMICSESSION, requestOptions).then(handleResponse)
+  return fetch(urls.UTILACADEMICSESSION + '?module_id=' + moduleId, requestOptions).then(handleResponse)
 }
 
 function listStaffs (branchId, pageId, departmentId = -1) {

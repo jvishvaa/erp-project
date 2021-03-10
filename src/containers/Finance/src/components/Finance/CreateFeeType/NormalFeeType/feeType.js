@@ -23,8 +23,8 @@ import Modal from '../../../../ui/Modal/modal'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 
 let feeTypeState = null
-
-class FeeType extends Component {
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};class FeeType extends Component {
+  
   constructor (props) {
     super(props)
     this.state = {
@@ -32,22 +32,12 @@ class FeeType extends Component {
       showModal: false,
       showAddFeeModal: false,
       showDeleteModal: false,
-      deleteId: null,
-      id: null,
-      data: [],
-      feeDetails: [],
-      branch: null,
-      session: null,
-      sessionData: null,
-      showAddButton: false,
-      page: 0,
-      rowsPerPage: 10
+      moduleId: ''
     }
     this.handleClickFeeData.bind(this)
     this.handleAcademicyear.bind(this)
     // this.deleteHandler = this.deleteHandler.bind(this)
   }
-
 
   handleChangePage = (event, newPage) => {
     this.setState({
@@ -99,7 +89,7 @@ class FeeType extends Component {
 
   handleAcademicyear = (e) => {
     this.setState({ session: e.value, branchData: [], sessionData: e }, () => {
-      this.props.fetchBranches(this.state.session, this.props.alert, this.props.user)
+      this.props.fetchBranches(this.state.session, this.props.alert, this.props.user, this.state.moduleId)
     })
   }
 
@@ -175,6 +165,32 @@ class FeeType extends Component {
   componentDidMount () {
     if (feeTypeState) {
       this.setState(feeTypeState)
+    }
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Fee Type' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Normal Fee Type') {
+              // setModuleId(item.child_id);
+              // setModulePermision(true);
+              this.setState({
+                moduleId: item.child_id
+              })
+              console.log('id+', item.child_id)
+            } else {
+              // setModulePermision(false);
+            }
+          });
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
     }
   }
 
@@ -483,7 +499,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchNormalFeeList: (session, branch, alert, user) => dispatch(actionTypes.fetchListNormalFee({ session, alert, branch, user })),
   deleteNormalFeeList: (id, alert, user) => dispatch(actionTypes.deleteNormalFeeList({ id, alert, user }))
 })
