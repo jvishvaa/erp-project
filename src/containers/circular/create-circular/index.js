@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Divider from '@material-ui/core/Divider';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import {
   Grid,
   TextField,
@@ -34,6 +34,7 @@ import Loading from '../../../components/loader/loader';
 const CraeteCircular = () => {
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
+  const {circularKey} = useParams();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [loading, setLoading] = useState(false);
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
@@ -51,6 +52,7 @@ const CraeteCircular = () => {
   const [centralGsMappingId, setCentralGsMappingId] = useState();
   const [sectionDropdown, setSectionDropdown] = useState([]);
 
+  // alert(circularKey,'k')
   //context
   const [state, setState] = useContext(Context);
   const { isEdit, editData } = state;

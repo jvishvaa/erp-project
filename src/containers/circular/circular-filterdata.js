@@ -165,6 +165,7 @@ const CircularFilters = ({
   };
 
   const handleFilter = () => {
+    if(window.location.pathname === '/teacher-circular'){
     if (!filterData.year) {
       return setAlert('warning', 'Select Academic Year');
     }
@@ -181,6 +182,10 @@ const CircularFilters = ({
       setSelectedIndex(-1);
       handlePeriodList(filterData.grade, filterData.branch, filterData.section);
     }
+  }else{
+    //student view
+  }
+
   };
 
   useEffect(() => {
@@ -220,7 +225,7 @@ const CircularFilters = ({
       spacing={isMobile ? 3 : 5}
       style={{ width: widerWidth, margin: wider }}
     >
-      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+      {window.location.pathname === '/teacher-circular' && <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <Autocomplete
           style={{ width: '100%' }}
           size='small'
@@ -240,12 +245,14 @@ const CircularFilters = ({
             />
           )}
         />
-      </Grid>
+      </Grid>}
       {/* <<<<<<<DATE>>>>>>>> */}
-      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-        <LocalizationProvider dateAdapter={MomentUtils}>
+      {/* {window.location.pathname === '/teacher-circular' && */}
+      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}> 
+        <LocalizationProvider dateAdapter={MomentUtils} className='dropdownIcon'>
           <DateRangePicker
             startText='Select-Date-Range'
+            size='small'
             value={dateRangeTechPer}
             onChange={(newValue) => {
               setDateRangeTechPer(newValue);
@@ -255,6 +262,7 @@ const CircularFilters = ({
                 <>
                   <TextField
                     {...startProps}
+                    format={(date) => moment(date).format('DD-MM-YYYY')}
                     inputProps={{
                       ...inputProps,
                       value: `${inputProps.value} - ${endProps.inputProps.value}`,
@@ -269,7 +277,8 @@ const CircularFilters = ({
           />
         </LocalizationProvider>
       </Grid>
-      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+
+      {window.location.pathname === '/teacher-circular' && <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <Autocomplete
           style={{ width: '100%' }}
           size='small'
@@ -289,8 +298,8 @@ const CircularFilters = ({
             />
           )}
         />
-      </Grid>
-      <Grid
+      </Grid>}
+      {window.location.pathname === '/teacher-circular' && <Grid
         item
         xs={12}
         sm={3}
@@ -310,8 +319,9 @@ const CircularFilters = ({
             <TextField {...params} variant='outlined' label='Grade' placeholder='Grade' />
           )}
         />
-      </Grid>
-      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+      </Grid>}
+
+     {window.location.pathname ==='/teacher-circular' && <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <Autocomplete
           style={{ width: '100%' }}
           size='small'
@@ -331,7 +341,7 @@ const CircularFilters = ({
             />
           )}
         />
-      </Grid>
+      </Grid>}
 
       {!isMobile && (
         <Grid item xs={12} sm={12}>
@@ -363,6 +373,8 @@ const CircularFilters = ({
           FILTER
         </Button>
       </Grid>
+      {window.location.pathname ==='/teacher-circular' && (
+      <>
       <div>
         <Divider
           orientation='vertical'
@@ -395,6 +407,8 @@ const CircularFilters = ({
           CREATE
         </Button>
       </Grid>
+      </>
+      )}
       {isMobile && <Grid item xs={3} sm={0} />}
     </Grid>
   );
