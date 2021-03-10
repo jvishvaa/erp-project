@@ -13,6 +13,8 @@ import Layout from '../../../../../../Layout'
 //   'July', 'August', 'September', 'October', 'November', 'December'
 // ]
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
 class OtherFeeTotalPaidReports extends Component {
   state = {
     session: '',
@@ -54,6 +56,33 @@ class OtherFeeTotalPaidReports extends Component {
         this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
       }
     })
+
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Reports' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Other Fee Total Paid and Due Report') {
+              // setModuleId(item.child_id);
+              // setModulePermision(true);
+              this.setState({
+                moduleId: item.child_id
+              })
+              console.log('id+', item.child_id)
+            } else {
+              // setModulePermision(false);
+            }
+          });
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
   }
   componentWillReceiveProps (nextProps) {
     // console.log('------nextprops----------', nextProps)
@@ -77,7 +106,7 @@ class OtherFeeTotalPaidReports extends Component {
     this.setState({ session: e.value, selectedBranches: [], sessionData: e }, () => {
       if (this.state.role === 'financeaccountant') {
         // this.props.fetchFeeAccounts(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user)
-        this.props.fetchGrades(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user)
+        this.props.fetchGrades(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user, this.state.moduleId)
         // this.props.fetchFeeTypes(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user)
       }
     })
@@ -98,7 +127,7 @@ class OtherFeeTotalPaidReports extends Component {
         selectedFeeTypes: []
       }, () => {
         console.log('branchHandler: ', this.state.selectedBranches, this.state.branchId)
-        this.props.fetchGrades(this.state.session, this.state.branchId, this.props.alert, this.props.user)
+        this.props.fetchGrades(this.state.session, this.state.branchId, this.props.alert, this.props.user, this.state.moduleId)
         // this.props.fetchFeeTypes(this.state.session, this.state.branchId, this.props.alert, this.props.user)
       })
     } else {
@@ -109,7 +138,7 @@ class OtherFeeTotalPaidReports extends Component {
         selectedFeeTypes: []
       }, () => {
         console.log('branchHandler: ', this.state.selectedBranches, this.state.branchId)
-        this.props.fetchGrades(this.state.session, this.state.branchId, this.props.alert, this.props.user)
+        this.props.fetchGrades(this.state.session, this.state.branchId, this.props.alert, this.props.user, this.state.moduleId)
       // this.props.fetchFeeTypes(this.state.session, this.state.branchId, this.props.alert, this.props.user)
       })
     }
@@ -853,7 +882,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions()),
   fetchBranches: (session, branchType, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, branchType, alert, user })),
-  fetchGrades: (session, branch, alert, user) => dispatch(actionTypes.fetchGradesPerBranch({ session, branch, alert, user })),
+  fetchGrades: (session, branch, alert, user, moduleId) => dispatch(actionTypes.fetchGradesPerBranch({ session, branch, alert, user, moduleId })),
   fetchInstallments: (data, alert, user) => dispatch(actionTypes.fetchInstallmentListPerFeeType({ data, alert, user })),
   fetchFeeTypes: (session, branch, grade, feePlanId, alert, user) => dispatch(actionTypes.fetchFeeTypesPaidReportsPerBranch({ session, branch, grade, feePlanId, alert, user })),
   downloadReports: (reportName, url, data, alert, user) => dispatch(actionTypes.downloadReports({ reportName, url, data, alert, user })),
