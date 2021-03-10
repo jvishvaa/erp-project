@@ -82,6 +82,8 @@ const CircularFilters = ({
     setOverviewSynopsis([]);
     setSelectedIndex(-1);
     setCentralGsMappingId();
+    setDateRangeTechPer([ moment().subtract(6, 'days'),
+    moment(),])
   };
 
   const handleAcademicYear = (event, value) => {
@@ -243,7 +245,7 @@ const CircularFilters = ({
       <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <LocalizationProvider dateAdapter={MomentUtils}>
           <DateRangePicker
-            startText='Select-date-range'
+            startText='Select-Date-Range'
             value={dateRangeTechPer}
             onChange={(newValue) => {
               setDateRangeTechPer(newValue);

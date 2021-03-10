@@ -113,8 +113,7 @@ const CircularList = () => {
         <div className={isMobile ? 'breadCrumbFilterRow' : null}>
           <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
-              componentName='Circulars'
-              // childComponentName='View'
+              componentName={window.location.pathname === '/teacher-circular' ? 'Teacher Circular': 'Student Circular'}
             />
           </div>
           {isMobile ? (

@@ -129,7 +129,7 @@
   border-radius: 10px;
   font-size: 18px;
 }
-.file_row_hw {
+.file_row_hw,.file_row {
   border: 1px solid #dfdfdf;
   display: flex;
   flex-direction: row;
@@ -141,13 +141,14 @@
   margin: 5px;
   font: normal normal normal 16px/18px Raleway;
 }
-.file_name_container_hw {
+
+.file_name_container_hw,.file_name_container {
   color: #014b7e;
   font-weight: 600;
   align-self: center;
   margin-left: 10%;
 }
-.file_close_hw {
+.file_close_hw,.file_close {
   align-self: end;
 }
 .overallContainer {
@@ -293,7 +294,7 @@
     // height: 55px;
     margin-left: 20px;
   }
-  .file_row_hw {
+  .file_row_hw,.file_row {
     border: 1px solid #dfdfdf;
     display: flex;
     flex-direction: row;
@@ -311,7 +312,10 @@
   .file_close_hw span img {
     margin-left: 50px;
   }
-  .file_name_container_hw {
+  .file_close span img {
+    margin-left: 50px;
+  }
+  .file_name_container_hw,.file_name_container {
     font-size: 14px;
   }
   .commentBoxStyle {
@@ -367,6 +371,9 @@
     margin-top: 60px !important;
   }
   .file_row_hw:after {
+    width: 70%;
+  }
+  .file_row:after {
     width: 70%;
   }
   .MuiIconButton-label:after {

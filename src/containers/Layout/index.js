@@ -543,11 +543,11 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Teacher Circular': {
-        history.push('/circular');
+        history.push('/teacher-circular');
         break;
       }
       case 'Student Circular': {
-        history.push('/circular');
+        history.push('/student-circular');
         break;
       }
       default:
