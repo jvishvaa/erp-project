@@ -6,7 +6,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { useFormik } from 'formik';
-import { FormHelperText } from '@material-ui/core';
+import { FormHelperText, withStyles } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import { useStyles } from './useStyles';
 import validationSchema from './schemas/school-details';
@@ -17,13 +17,25 @@ import {
   fetchAcademicYears as getAcademicYears,
   fetchSubjects as getSubjects,
 } from '../../redux/actions';
+import {useHistory} from 'react-router-dom';
 
-const SchoolDetailsForm = ({ details, onSubmit }) => {
+const BackButton = withStyles({
+  root: {
+    color: 'rgb(140, 140, 140)',
+    backgroundColor: '#e0e0e0',
+    '&:hover': {
+      backgroundColor: '#e0e0e0',
+    },
+  }
+})(Button);
+
+const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
   const [academicYears, setAcademicYears] = useState([]);
   const [branches, setBranches] = useState([]);
   const [grades, setGrades] = useState([]);
   const [sections, setSections] = useState([]);
   const [subjects, setSubjects] = useState([]);
+  const history = useHistory();
 
   const formik = useFormik({
     initialValues: {
@@ -35,6 +47,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
     },
     validationSchema,
     onSubmit: (values) => {
+      //console.log(values,'===========================')
       onSubmit(values);
     },
     validateOnChange: false,
@@ -43,7 +56,12 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
 
   const fetchAcademicYears = () => {
     getAcademicYears().then((data) => {
-      const transformedData = data?.map((obj) => ({
+      let transformedData = '';
+      /* let transformedData = {
+        id: '',
+        session_year: ''
+      }; */
+      transformedData = data?.map((obj) => ({
         id: obj.id,
         session_year: obj.session_year,
       }));
@@ -56,6 +74,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
       const transformedData = data?.map((obj) => ({
         id: obj.id,
         branch_name: obj.branch_name,
+        branch_code: obj.branch_code,
       }));
       setBranches(transformedData);
     });
@@ -135,7 +154,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
   useEffect(() => {
     fetchAcademicYears();
     fetchBranches();
-    console.log('branches ', details.branch, details.grade);
+    //console.log('branches ', details.branch, details.grade);
     if (details.branch) {
       handleChangeBranch([details.branch]);
       if (details.grade && details.grade.length > 0) {
@@ -300,9 +319,18 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
           </FormHelperText>
         </FormControl>
       </Grid>
-      <Grid container item xs={12} style={{ marginTop: '20px' }}>
-        <Grid md='4' xs={12}>
+      <Grid item xs={12} style={{ marginTop: '20px' }}>
           <Box className={classes.formActionButtonContainer}>
+            {isEdit && (
+              <BackButton
+                className={classes.formActionButton}
+                variant='contained'
+                color='primary'
+                onClick={() => {history.push('/user-management/view-users')}}
+              >
+                Back
+              </BackButton>
+            )}
             <Button
               className={classes.formActionButton}
               variant='contained'
@@ -310,11 +338,11 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
               onClick={() => {
                 formik.handleSubmit();
               }}
+              style={{float: 'right'}}
             >
               Next
             </Button>
           </Box>
-        </Grid>
       </Grid>
     </Grid>
   );

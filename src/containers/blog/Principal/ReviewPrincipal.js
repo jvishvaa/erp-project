@@ -33,7 +33,6 @@ class ReviewPrincipal extends Component {
     if (this.props.ratingParameters().length) {
       this.setState({ ratingParameters: this.props.ratingParameters(), overallRemark: this.props.overallRemark() })
     } else {
-        console.log("hiii@2")
       this.setState({ ratingParameters: this.getStaticParamters() })
     }
   }

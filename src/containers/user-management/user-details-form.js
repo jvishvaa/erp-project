@@ -53,9 +53,11 @@ const UserDetailsForm = ({
       email: details.email,
       date_of_birth: details.date_of_birth,
       address: details.address,
+      // erp_user:details.erp_user,
     },
     validationSchema,
     onSubmit: (values) => {
+      console.log('submit',values)
       onSubmit(values);
     },
     validateOnChange: false,
@@ -149,6 +151,23 @@ const UserDetailsForm = ({
           </FormHelperText>
         </FormControl>
       </Grid>
+      {/* ERP_ID input filed   */}
+      {/* <Grid item md={4} xs={12}>
+      <FormControl variant='outlined' fullWidth size='small'>
+          <InputLabel htmlFor='component-outlined'>ERP ID</InputLabel>
+          <OutlinedInput
+            id='erp_user'
+            name='erp_user'
+            onChange={formik.handleChange}
+            value={formik.values.erp_user || null}
+            inputProps={{ maxLength: 15 }}
+            label='ERP ID'
+          />
+          <FormHelperText style={{ color: 'red' }}>
+            {formik.errors.erp_user ? formik.errors.erp_user: ''}
+          </FormHelperText>
+        </FormControl>
+      </Grid> */}
       {/* <Grid container item xs={12} spacing={8}> */}
       <Grid item md={4} xs={12}>
         <FormControl component='fieldset' fullWidth size='small'>
@@ -208,10 +227,11 @@ const UserDetailsForm = ({
               formik.setFieldValue('date_of_birth', moment(value).format('YYYY-MM-DD'));
             }}
             format='YYYY-MM-DD'
+            maxDate={new Date()}
             size='small'
             inputVariant='outlined'
             fullWidth
-            label='Date of birth'
+            label='Date of Birth'
           />
         </MuiPickersUtilsProvider>
         <FormHelperText style={{ color: 'red' }}>

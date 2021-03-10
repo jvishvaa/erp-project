@@ -19,6 +19,10 @@ import {
   VERIFY_TUTOREMAIL_FAILURE,
   CLEAR_VALIDATION,
   CLEAR_FILERED_STUDENTS,
+  CLEAR_GRADE_DROP,
+  CLEAR_SECTION_DROP,
+  CLEAR_SUBJECT_DROP,
+  CLEAR_COURSE_DROP,
   LIST_FILTERED_STUDENTS,
   CREATE_NEW_CLASS_REQUEST,
   CREATE_NEW_CLASS_SUCCESS,
@@ -54,7 +58,7 @@ const CreateclassProvider = (props) => {
     filteredStudents: [],
     errorLoadingStudents: '',
     loadingStudents: false,
-    isTutorEmailValid: null,
+    isTutorEmailValid: false,
     isValidatingTutorEmail: null,
     creatingOnlineClass: false,
     isCreated: false,
@@ -65,8 +69,8 @@ const CreateclassProvider = (props) => {
 
   const [state, dispatch] = useReducer(createClassReducer, initalState);
 
-  const { role_details: roleDetails } =
-    JSON.parse(localStorage.getItem('userDetails')) || {};
+  // const { role_details: roleDetails } =
+  //   JSON.parse(localStorage.getItem('userDetails')) || {};
 
   // all the actions related
 
@@ -111,7 +115,7 @@ const CreateclassProvider = (props) => {
       );
       if (data.status === 'success')
         dispatch(success(data.data, LIST_TUTOR_EMAILS_SUCCESS));
-      else throw new Error(data.message);
+      else throw new Error(data?.message);
     } catch (error) {
       dispatch(failure(error, LIST_TUTOR_EMAILS_FAILURE));
     }
@@ -121,11 +125,11 @@ const CreateclassProvider = (props) => {
     dispatch(success([], LIST_TUTOR_EMAILS_SUCCESS));
   };
 
-  const listGradesCreateClass = async (moduleId) => {
+  const listGradesCreateClass = async (branch, moduleId) => {
     dispatch(request(LIST_GRADE_REQUEST));
     try {
       const { data } = await axiosInstance.get(
-        `${endpoints.academics.grades}?branch_id=${roleDetails.branch.join(
+        `${endpoints.academics.grades}?branch_id=${branch.join(
           ','
         )}&module_id=${moduleId}`
       );
@@ -142,8 +146,7 @@ const CreateclassProvider = (props) => {
       const { data } = await axiosInstance.get(
         `${endpoints.academics.courses}?grade=${gradeIds.join(',')}`
       );
-      if (data.status_code === 200)
-        dispatch(success(data.result, LIST_COURSE_SUCCESS));
+      if (data.status_code === 200) dispatch(success(data.result, LIST_COURSE_SUCCESS));
       else throw new Error(data.message);
     } catch (error) {
       dispatch(failure(error, LIST_COURSE_FAILURE));
@@ -151,34 +154,41 @@ const CreateclassProvider = (props) => {
   };
 
   const listSectionsCreateClass = async (gradeId, moduleId) => {
-    dispatch(request(LIST_SECTION_REQUEST));
-    try {
-      const { data } = await axiosInstance.get(
-        `${endpoints.academics.sections}?branch_id=${roleDetails.branch.join(
-          ','
-        )}&grade_id=${gradeId}&module_id=${moduleId}`
-      );
-      if (data.status === 'success') {
-        dispatch(success(data.data, LIST_SECTION_SUCCESS));
-        return data.data;
-      } else {
-        throw new Error(data.message);
-      }
-    } catch (error) {
-      dispatch(failure(error, LIST_SECTION_FAILURE));
-    }
+    // dispatch(request(LIST_SECTION_REQUEST));
+    // try {
+    //   const { data } = await axiosInstance.get(
+    //     `${endpoints.academics.sections}?branch_id=${branch.join(
+    //       ','
+    //     )}&grade_id=${gradeId}&module_id=${moduleId}`
+    //   );
+    //   if (data.status === 'success') {
+    //     dispatch(success(data.data, LIST_SECTION_SUCCESS));
+    //     return data.data;
+    //   } else {
+    //     throw new Error(data.message);
+    //   }
+    // } catch (error) {
+    //   dispatch(failure(error, LIST_SECTION_FAILURE));
+    // }
   };
 
-  const listSectionAndSubjects = async (roleId, moduleId, erpId, isSuperUser, gradeIds) => {
+  const listSectionAndSubjects = async (
+    roleId,
+    moduleId,
+    erpId,
+    isSuperUser,
+    gradeIds
+  ) => {
     try {
       const { data } = await axiosInstance.get(
-        `/erp_user/sub-sec-list/?role=${roleId}&module_id=${moduleId}&erp_id=${erpId}&is_super=${isSuperUser}&grade_id=${gradeIds.join(',')}`
+        `/erp_user/sub-sec-list/?role=${roleId}&module_id=${moduleId}&erp_id=${erpId}&is_super=${isSuperUser}&grade_id=${gradeIds.join(
+          ','
+        )}`
       );
       if (data.status === 'success') {
         const { section, subject } = data.data;
         dispatch(success(section, LIST_SECTION_SUCCESS));
         dispatch(success(subject, LIST_SUBJECT_SUCCESS));
-        console.log('sections subjects ', section, subject);
       }
     } catch (error) {
       dispatch(failure(error, LIST_SECTION_FAILURE));
@@ -246,13 +256,15 @@ const CreateclassProvider = (props) => {
       );
       if (data.status === 'success')
         dispatch(success(initalState, CREATE_NEW_CLASS_SUCCESS));
-      else if (data.status === 'fail')
+      else {
         dispatch(success(initalState, CREATE_NEW_CLASS_FAILURE));
+        setAlert('error', data.message || data.description);
+      }
     } catch (error) {
       const { response } = error || {};
-      if (response?.data && response.data.message)
-        setAlert('error', response.data.message);
-      else setAlert('error', error.message);
+      if (response?.data)
+        setAlert('error', response.data.message || response.data.description);
+      else setAlert('error', response.data.message || response.data.description);
       dispatch(failure(error, CREATE_NEW_CLASS_FAILURE));
     }
   };
@@ -266,13 +278,15 @@ const CreateclassProvider = (props) => {
       );
       if (data.status_code === 200)
         dispatch(success(initalState, CREATE_NEW_CLASS_SUCCESS));
-      else if (data.status_code===404)
+      else {
         dispatch(success(initalState, CREATE_NEW_CLASS_FAILURE));
+        setAlert('error', data.message || data.description);
+      }
     } catch (error) {
       const { response } = error || {};
-      if (response?.data && response.data.message)
-        setAlert('error', response.data.message);
-      else setAlert('error', error.message);
+      if (response?.data)
+        setAlert('error', response.data.message || response.data.description);
+      else setAlert('error', response.data.message || response.data.description);
       dispatch(failure(error, CREATE_NEW_CLASS_FAILURE));
     }
   };
@@ -285,6 +299,22 @@ const CreateclassProvider = (props) => {
     return { type: CLEAR_FILERED_STUDENTS };
   };
 
+  const clearGrades = () => {
+    return { type: CLEAR_GRADE_DROP };
+  };
+
+  const clearSections = () => {
+    return { type: CLEAR_SECTION_DROP };
+  };
+
+  const clearSubjects = () => {
+    return { type: CLEAR_SUBJECT_DROP };
+  };
+
+  const clearCourses = () => {
+    return { type: CLEAR_COURSE_DROP };
+  };
+
   const listFilteredStudents = (students) => {
     return { type: LIST_FILTERED_STUDENTS, payload: students };
   };
@@ -294,11 +324,11 @@ const CreateclassProvider = (props) => {
   };
 
   const setEditData = (data) => {
-    return {type: SET_EDIT_DATA, payload:data};
+    return { type: SET_EDIT_DATA, payload: data };
   };
 
   const setEditDataFalse = (editData) => {
-    return {type: SET_EDIT_DATA_FALSE, payload:[]};
+    return { type: SET_EDIT_DATA_FALSE, payload: [] };
   };
 
   return (
@@ -322,8 +352,12 @@ const CreateclassProvider = (props) => {
         listSectionAndSubjects,
         clearTutorEmailsList,
         clearStudentsList,
+        clearGrades,
+        clearSections,
+        clearSubjects,
+        clearCourses,
         setEditData,
-        setEditDataFalse
+        setEditDataFalse,
       }}
     >
       {children}

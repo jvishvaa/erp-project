@@ -1,0 +1,14 @@
+.attendanceDataUnavailable{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 5%;
+    margin-left: 85%;
+    margin-top: 21%;
+  }
+
+  /* .downloadButton.MuiButton-root{
+    background-color: #ff6b6b;
+    
+  } */

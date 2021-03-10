@@ -22,9 +22,11 @@ import Layout from '../../Layout';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
+import Restore from '@material-ui/icons/Restore'
 import IconButton from '@material-ui/core/IconButton';
 import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
 import ReviewPrincipal from '../Principal/ReviewPrincipal';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 const styles = (theme) => ({
   root: {
@@ -83,23 +85,29 @@ class BlogView extends Component {
 blogRatings :this.props.location.state.data && this.props.location.state.data.remark_rating,
       overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark,
     };
+    console.log(this.state.tabValue,"@@@@@")
   }
+  static contextType = AlertNotificationContext
+
   componentDidMount() {
     let {blogId} = this.state
-    this.handleView(blogId)
   }
 
-  handleView = (blogId) => {
-    let requestData = {
-      "blog_id": blogId ,
-    }
-  axios.post(`${endpoints.blog.BlogView}`, requestData)
-  .then(result=>{
-  if (result.data.status_code === 200) {
-  } else {        
+
+getRatings = () => {
+  let {blogRatings} =this.state
+  if (!blogRatings) {
+    return []
   }
-  }).catch((error)=>{
-  })
+  const type = typeof blogRatings
+  const parsedRatings = type === 'object' ? blogRatings : JSON.parse(blogRatings)
+  const allRatingParamters = JSON.parse(parsedRatings)
+  return allRatingParamters
+}
+
+getOverAllRemark = () => {
+ let {overallRemark} = this.state
+ return overallRemark
 }
 
 getRatings = () => {
@@ -131,12 +139,13 @@ getOverAllRemark = () => {
     let title=data && data.title
     let thumbnail = data && data.thumbnail
     let genreObj =data.genre
+    let parsedTextEditorContentLen = data.word_count
     let genreId =data && data.genre && data.genre.id
     let genreName =data && data.genre && data.genre.genre
     let blogId=data&&data.id
     this.props.history.push({
       pathname: '/blog/student/edit-blog',
-      state: { content, title, thumbnail,genreId,genreName,blogId,genreObj },
+      state: { content, title, thumbnail,genreId,genreName,blogId,genreObj ,parsedTextEditorContentLen},
     });
   };
   handleDeleteBlog = (blogId) => {
@@ -150,6 +159,8 @@ getOverAllRemark = () => {
 
   .then(result=>{
   if (result.data.status_code === 200) {
+    this.context.setAlert('success',"Blog delete sucessfully")
+
     this.props.history.push({
       pathname: '/blog/student/dashboard',
     });
@@ -163,6 +174,33 @@ getOverAllRemark = () => {
     // setLoading(false);        
     // setAlert('error', error.message);
   })
+};
+handleRestoreBlog = (blogId) => {
+
+  let requestData = {
+    "blog_id": blogId ,
+    "status": "9"
+
+  }
+axios.put(`${endpoints.blog.Blog}`, requestData)
+
+.then(result=>{
+if (result.data.status_code === 200) {
+  this.context.setAlert('success',"Blog restored to drafted tab")
+
+  this.props.history.push({
+    pathname: '/blog/student/dashboard',
+  });
+  // setLoading(false);
+  // setAlert('success', result.data.message);
+} else {        
+  // setLoading(false);
+  // setAlert('error', result.data.message);
+}
+}).catch((error)=>{
+  // setLoading(false);        
+  // setAlert('error', error.message);
+})
 };
 
 
@@ -205,7 +243,7 @@ getOverAllRemark = () => {
                           style={{ marginBottom: 10 }}
                         >
                           {data.title}
-                          {
+                          { tabValue === 0 ||
                   tabValue === 2 ?
                     <IconButton
                     style={{float:'right'}}
@@ -213,6 +251,19 @@ getOverAllRemark = () => {
                   onClick={()=>this.handleDeleteBlog(data && data.id)}
                 >
                   <DeleteOutlinedIcon
+                    style={{ color: '#ff6b6b' }}
+                  />
+                </IconButton>
+      : '' 
+              }
+               {
+                  tabValue === 3 ?
+                    <IconButton
+                    style={{float:'right'}}
+                  title='Restore'
+                  onClick={()=>this.handleRestoreBlog(data && data.id)}
+                >
+                  <Restore
                     style={{ color: '#ff6b6b' }}
                   />
                 </IconButton>

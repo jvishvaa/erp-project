@@ -116,7 +116,7 @@ const history=useHistory()
     if (value.length) {
       const ids = value.map((el) => el.id);
     //   setSubjectIds(ids);
-    setSectionIds(ids)
+      setSectionIds(ids)
     }
   };
 
@@ -150,9 +150,9 @@ const history=useHistory()
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
     // alert(filterData.grade.grade_id,sectionIds,startDateTechPer,endDateTechPer)
     handleDairyList(
-        filterData.branch.id,
+      filterData.branch.id,
       filterData.grade.grade_id,
-        sectionIds,
+      sectionIds,
       startDateTechPer,
       endDateTechPer
     );

@@ -14,6 +14,7 @@ import axiosInstance from '../../../config/axios';
 import cardAttachment from '../../../assets/images/cardAttachment.svg'
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import {Context} from '../context/context'
+import {useLocation} from 'react-router-dom';
 
 
 const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex, handleDairyType}) => {
@@ -26,6 +27,8 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
   const [showPeriodIndex, setShowPeriodIndex] = useState();
   const history=useHistory()
   const [state, setState] = useContext(Context)
+  const location = useLocation();
+  const isTeacher = location.pathname === '/diary/teacher' ? true : false;
 
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
@@ -89,7 +92,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
     // // setEditData(e)
     debugger
     setState({isEdit:true,editData:data});
-    history.push('/create/general-dairy')
+    history.push('/create/general-diary')
   }
 
   return (
@@ -106,7 +109,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               Topic / {lesson.title}
             </Typography>
           </Box>
-        <Typography style={{fontSize: '15px',marginTop: '10px'}}> GeneralDairy</Typography>
+        <Typography style={{fontSize: '15px',marginTop: '10px'}}> GeneralDiary</Typography>
           <Divider className='divider'/>
           <Box mt={2}>
             <Typography
@@ -127,16 +130,18 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               onClick={() => handlePeriodMenuOpen(index)}
               onMouseLeave={handlePeriodMenuClose}
             >
+              {isTeacher?
               <IconButton
-                className="moreHorizIcon"
-                color='primary'
+              className="moreHorizIcon"
+              color='primary'
               >
                 <MoreHorizIcon />
-              </IconButton>
+              </IconButton> : ''
+              }
               {(showPeriodIndex === index &&
                 showMenu) ? (
                   <div className="tooltip" style={{display:'flex',justifyContent:'space-between'}}>
-                    <span className='tooltiptext' >
+                  <span className='tooltiptext' >
                         <Button className='tooltip' onClick={e=> handleDelete(lesson)}>Delete</Button>
                         <Button className='tooltip' onClick={e=> handleEdit(lesson)}> Edit</Button>
                     </span>
@@ -155,7 +160,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               component='p'
               color='secondary'
             >
-              Created By - {lesson.created_by.first_name}
+              Created By -<p>{lesson.created_by.first_name} {lesson.created_at.substring(0, 10)}</p>
               </Typography>
           </Box>
           <div>
@@ -173,7 +178,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
             {/* <label></label> */}
           </div>
         </Grid>
-       
+       <Grid></Grid>
         <Grid item xs={6} className={classes.textRight}> 
           {/* {!viewMore && */}
 

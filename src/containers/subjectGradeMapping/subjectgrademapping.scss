@@ -14,7 +14,7 @@
     
 }
 .central-subject-dropdown{
-    margin-left: 41px;
+    margin-left: 30px;
 
 }
 .btn-container{
@@ -63,3 +63,8 @@
 // .MuiGrid-spacing-xs-2 > .MuiGrid-item {
 //      padding: 0px !important; 
 // }
+.tooltip {
+    :hover {
+        box-shadow: 0px 2px blanchedalmond;
+    } 
+}

@@ -233,7 +233,7 @@ export default function FilterStudents() {
       newSelected = newSelected.concat(selected, name);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
+    } else if (selectedIndex === selected?.length - 1) {
       newSelected = newSelected.concat(selected.slice(0, -1));
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
@@ -259,7 +259,7 @@ export default function FilterStudents() {
     selected.indexOf(name) !== -1 || filteredStudents.indexOf(name) !== -1;
 
   const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, students.length - page * rowsPerPage);
+    rowsPerPage - Math.min(rowsPerPage, students?.length - page * rowsPerPage);
 
   const addIndex = () => {
     return students.map((student, index) => ({ ...student, sl: index + 1 }));
@@ -268,7 +268,7 @@ export default function FilterStudents() {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar numSelected={selected?.length} />
         <div style={{color:'#014b7e',fontWeight:'600',fontSize:'16px',margin:'10px'}}><span
         style={{color:'#fe6b6b',fontSize:'18px'}} >**</span>Note:&nbsp;<span style={{fontWeight:'500'}}>Select from the following list of students to <span>{classTypeId===0?'not permit':'permit'}</span> them to attend the class.</span></div>
         <TableContainer>
@@ -279,12 +279,12 @@ export default function FilterStudents() {
           >
             <EnhancedTableHead
               classes={classes}
-              numSelected={selected.length}
+              numSelected={selected?.length}
               order={order}
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={students.length}
+              rowCount={students?.length}
             />
             <TableBody className='styled__table-body'>
               {stableSort(addIndex(students), getComparator(order, orderBy))
@@ -304,7 +304,7 @@ export default function FilterStudents() {
                       selected={isItemSelected}
                     >
                       <TableCell align='center'>{row.sl}</TableCell>
-                      <TableCell align='center'>{row.erp_id}</TableCell>
+                      <TableCell align='center'>{row.username}</TableCell>
                       <TableCell align='center'>{row.user.first_name}</TableCell>
                       <TableCell padding='checkbox'>
                         <Checkbox
@@ -326,7 +326,7 @@ export default function FilterStudents() {
         <TablePagination
           rowsPerPageOptions={[]}
           component='div'
-          count={students.length}
+          count={students?.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}

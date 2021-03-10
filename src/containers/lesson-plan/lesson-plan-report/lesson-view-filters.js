@@ -47,6 +47,7 @@ const LessonViewFilters = ({
     moment().subtract(6, 'days'),
     moment(),
   ]);
+  // const [dateRangeTechPer, setDateRangeTechPer] = useState([]);
   const [selectedCoTeacherOptValue, setselectedCoTeacherOptValue] = useState([]);
   const [selectedCoTeacherOpt, setSelectedCoTeacherOpt] = useState([]);
   const [selectedTeacherUser_id, setSelectedTeacherUser_id] = useState();
@@ -85,6 +86,7 @@ const LessonViewFilters = ({
     setSubjectDropdown([]);
     setViewMoreData({});
     setViewMore(false);
+    setDateRangeTechPer([])
   };
 
   const handleAcademicYear = (event, value) => {
@@ -107,7 +109,7 @@ const LessonViewFilters = ({
       setFilterData({ ...filterData, grade: value });
       axiosInstance
         .get(
-          `${endpoints.lessonReport.subjects}?branch=${branchId}&grade=${value.grade_id}`
+          `${endpoints.lessonReport.subjects}?branch=${filterData.branch.id}&grade=${value.grade_id}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -140,6 +142,20 @@ const LessonViewFilters = ({
     setFilterData({ ...filterData, branch: '' });
     if (value) {
       setFilterData({ ...filterData, branch: value });
+      
+      axiosInstance
+        .get(`${endpoints.academics.grades}?branch_id=${value.id}&module_id=8`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setGradeDropdown(result.data.data);
+          } else {
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+    
     }
   };
 
@@ -193,7 +209,7 @@ const LessonViewFilters = ({
       .then((result) => {
         if (result.data.status_code === 200) {
           setBranchDropdown(result.data.data);
-          setBranchId(result.data.data[0].id);
+          // setBranchId(result.data.data[1].id);
           // a = result.data.data[0].id
         } else {
           setAlert('error', result.data.message);
@@ -204,22 +220,7 @@ const LessonViewFilters = ({
       });
   }, []);
 
-  useEffect(() => {
-    if (branchId) {
-      axiosInstance
-        .get(`${endpoints.academics.grades}?branch_id=${branchId}&module_id=8`)
-        .then((result) => {
-          if (result.data.status_code === 200) {
-            setGradeDropdown(result.data.data);
-          } else {
-            setAlert('error', result.data.message);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error.message);
-        });
-    }
-  }, [branchId]);
+
 
   return (
     <Grid

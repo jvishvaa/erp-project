@@ -59,6 +59,10 @@ const CreateDailyDairy = (details, onSubmit) => {
   const [gradeSel,setSelGrade] = useState([]);
   const [sectionSel,setSelSection] = useState([]);
   const [subjectSel,setSelSubject] = useState([]);
+  const [errors, setErrors] = useState({ branches: '', grades: '' });
+  const [loading, setLoading] = useState(false);
+  const history = useHistory()
+
 
   //context
     const [state,setState] = useContext(Context)
@@ -66,7 +70,6 @@ const CreateDailyDairy = (details, onSubmit) => {
         const{setIsEdit,setEditData}=setState;
         const [title,setTitle] = useState(editData.circular_name || '')
         const [description,setDescription] = useState(editData.description || '')
-        console.log(state,'CCCCC',editData.circular_name)
 
   const [filterData, setFilterData] = useState({
     year: '',
@@ -186,7 +189,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const fetchChapters = () => {
-    debugger
+    //debugger
         axios.get(`/qbox/academic/chapters/?academic_year=${searchAcademicYear}&subject=${subjectIds}`)
         .then((result => {
             if (result.data.status_code === 200) {
@@ -247,11 +250,12 @@ const CreateDailyDairy = (details, onSubmit) => {
     // if (value) {
     //     setFilterData({ ...filterData });
     // }
+    console.log(value);
     if (value.length > 0) {
       const ids = value.map((el) => el.id);
+      console.log(ids);
       setSubjectIds(ids);
-    axiosInstance.get(`${endpoints.dailyDairy.branches}?academic_year=${searchAcademicYear}&subject=${ids}`)
-
+      axiosInstance.get(`${endpoints.dailyDairy.branches}?academic_year=${searchAcademicYear}&subject=${ids}`)
         .then((result => {
             if (result.data.status_code === 200) {
                 setChapterDropdown(result.data.result)
@@ -267,110 +271,113 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleImageChange = (event) =>{
-    if(filePath.length<10){
+
+    if(filePath.length<10) {
+      if(!formik.values.section || !formik.values.grade || !formik.values.subjects || !formik.values.branch.id || !subjectIds){
+        return setAlert('error','Please select all fields')
+      }
+      setLoading(true);
       const data  = event.target.files[0];
-      console.log(formik.values.grade);
+      console.log(formik.values.branch);
       const fd = new FormData();
-      fd.append('file',data)
-      fd.append('branch_name',formik.values.branch.branch_name)
-      fd.append('grades',formik.values.grade[0].id)
-      fd.append('section',formik.values.section[0].id)
+      fd.append('file', data)
+      fd.append('branch_name', formik.values.branch.branch_name)
+      fd.append('grades', formik.values.grade[0].id)
+      fd.append('section', formik.values.section[0].id)
       axiosInstance.post(`academic/dairy-upload/`, fd)
-        .then((result)=>{
+      .then((result)=>{
             console.log(fd);
-            if(result.data.status_code === 200){
+            if (result.data.status_code === 200) {
+            setLoading(false)
+
                 console.log(result.data,'resp')
                 setAlert('success',result.data.message)
                 setFilePath([ ...filePath,result.data.result])
             }
-            else{
+            else {
+            setLoading(false)
+
                 setAlert('error',result.data.message)
             }
-  
-        })
-    }else{
+      })
+    } else {
         setAlert('warning','Exceed Maximum Number Attachment')
     }
-    
-  
   }
 
   const handleSubmit = async () => {
     const createDairyEntry = endpoints.dailyDairy.createDailyDairy;
-    const teacherReport=[] 
-    debugger
-    try {
-      const response = await axiosInstance.post(
-        createDairyEntry,
-        {
-          // title:title,
-              // description:description,
-              // module_name:filterData.role.value,
-              branch:5,
-              grade:[54],
-              mapping_bgs:[75],
-              subject:162,
-              // teacher_report:
-              documents:filePath,
-              teacher_report:{
-                "previous_class":recap,
-                "summary":summary,
-                "class_work":detail,
-                "tools_used":tools,
-                "homework":homework
-              },
-              dairy_type:2
-
-              // teacher_report:[
-                // previous_class:recap,
-                              // 
-              // ]
-              
-              // Branch:filterData.branch.map(function (b) {
-              //     return b.id
-              //   }),
-              // grades:[54],
-          //     grade:filterData.grade.map((g)=>g.grade_id),
-          //     mapping_bgs:filterData.section.map((s)=>s.id),
-          // user_id: selectionArray,
-        },
-        {
-          headers: {
-            // 'application/json' is the modern content-type for JSON, but some
-            // older servers may use 'text/json'.
-            // See: http://bit.ly/text-json
-            'content-type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const { message, status_code: statusCode } = response.data;
-      if (statusCode === 200) {
-        // props.history.push('/user-management/assign-role')
-        // displayUsersList()
-        setAlert('success', message);
-        // setSelectedUsers([]);
-        // setRoleError('');
-        // setSelectedRole('');
-        // setSelectAllObj([]);
-        // setSelectedBranch();
-        // setSelectedGrades([]);
-        // setSelectedMultipleRoles([]);
-        // setSelectedSections([]);
-        // setSelectAllObj([]);
-        // setSelectectUserError('');
-        // setAssigenedRole();
-        // clearSelectAll();
-      } else {
-        setAlert('error', response.data.message);
-      }
-    } catch (error) {
-      setAlert('error', error.message);
+    
+    const ids = formik.values.section ? formik.values.section.map((el) => el.id) : setAlert('error','Fill all the required fields')
+    const grade = formik.values.grade ? formik.values.grade.map((el) => el.id) : ''
+    const subjectId = formik.values.subjects ? formik.values.subjects.map((el) => el.id) : setAlert('error','check')
+    if(!formik.values.section || !formik.values.grade || !formik.values.subjects || !formik.values.branch.id || !subjectIds){
+      return setAlert('error','Please select all fields')
     }
-  };
-
+    else{
+      console.log("===============");
+      console.log(subjectId);
+      console.log(formik.values.subjects);
+      const teacherReport=[] 
+      try {
+        const response = await axiosInstance.post(
+          createDairyEntry,
+          filePath && filePath.length > 0 ?
+          {
+            branch: formik.values.branch.id,
+            grade: grade,
+            section: ids,
+            subject: subjectIds.join(),
+            documents: filePath,
+            teacher_report:{
+              "previous_class":recap,
+              "summary":summary,
+              "class_work":detail,
+              "tools_used":tools,
+              "homework":homework
+            },
+            dairy_type:2
+              }
+              :
+              {
+                branch: formik.values.branch.id,
+                grade: grade,
+                section: ids,
+                subject: subjectIds.join(),
+                teacher_report:{
+                  "previous_class":recap,
+                  "summary":summary,
+                  "class_work":detail,
+                  "tools_used":tools,
+                  "homework":homework
+                },
+                dairy_type:2
+                  },
+              {
+                headers: {
+                  // 'application/json' is the modern content-type for JSON, but some
+                  // older servers may use 'text/json'.
+                  // See: http://bit.ly/text-json
+                  'content-type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+              );
+              const { message, status_code: statusCode } = response.data;
+              if (statusCode === 200) {
+                setAlert('success', message);
+                window.location.reload()
+              } else {
+                setAlert('error', response.data.message);
+              }
+            } catch (error) {
+              setAlert('error', error.message);
+            }
+          }
+          };
+          
   const handleEdited =()=>{
-   debugger
+   //debugger
    console.log(editData)
     axiosInstance.put(`${endpoints.dailyDairy.updateDelete}`,{
         'circular_id':editData.id,
@@ -401,15 +408,21 @@ const CreateDailyDairy = (details, onSubmit) => {
         <div className='file_name_container'>
           File {index + 1}
         </div>
-        <Divider orientation="vertical"  className='divider_color' flexItem />
-        <div className='file_close'>
+        {/* <Divider orientation="vertical"  className='divider_color' flexItem /> */}
+        <div>
           <span
             onClick={onClose}
           >
             <SvgIcon
               component={() => (
                 <img
-                  style={{
+                  style={isMobile?{
+                    marginLeft:'',
+                    width: '20px',
+                    height:'20px',
+                    // padding: '5px',
+                    cursor: 'pointer',
+                  }:{
                     width: '20px',
                     height:'20px',
                     // padding: '5px',
@@ -459,11 +472,13 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   return (
     <>
+    {loading ? <Loading message='Loading...' /> : null}
+
       <Layout>
         <div className={isMobile ? 'breadCrumbFilterRow' : null}>
           <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
-              componentName='Daily Dairy'
+              componentName='Daily Diary'
               childComponentName='Create New'
             />
           </div>
@@ -501,6 +516,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                 id='year'
                 options={academicYear}
                 getOptionLabel={(option) => option?.session_year}
+                // value={ state.isEdit ? editData.academic_year : formik.values.academic_year }
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
@@ -527,9 +543,9 @@ const CreateDailyDairy = (details, onSubmit) => {
               formik.setFieldValue('subjects', []);
               handleChangeBranch(value ? [value] : null);
             }}
-            value={state.isEdit?editData.branch :formik.values.branch}
-            options={branches}
-            getOptionLabel={(option) => option?.branch_name || ''}
+            value={ state.isEdit ? editData.branch : formik.values.branch }
+            options={ branches }
+            getOptionLabel={ (option) => option ?.branch_name || ''}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -541,7 +557,7 @@ const CreateDailyDairy = (details, onSubmit) => {
             size='small'
           />
           <FormHelperText style={{ color: 'red' }}>
-            {formik.errors.branch ? formik.errors.branch : ''}
+            {errors.branches ? errors.branches : ''}
           </FormHelperText>
           </Grid>
           <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
@@ -556,7 +572,7 @@ const CreateDailyDairy = (details, onSubmit) => {
               handleChangeGrade(value || null, [formik.values.branch]);
             }}
             multiple
-            value={formik.values.grade}
+            value={state.isEdit ? editData.grade || editData.grade.grade_name :formik.values.grade}
             options={grades}
             getOptionLabel={(option) => option.grade_name || ''}
             renderInput={(params) => (
@@ -574,9 +590,9 @@ const CreateDailyDairy = (details, onSubmit) => {
             {formik.errors.grade ? formik.errors.grade : ''}
           </FormHelperText>
         </FormControl>
-          </Grid>
-          </Grid>
-          <Grid
+        </Grid>
+        </Grid>
+        <Grid
           container
           spacing={isMobile ? 3 : 5}
           style={{ width: widerWidth, margin: wider }}
@@ -587,7 +603,7 @@ const CreateDailyDairy = (details, onSubmit) => {
             id='section'
             name='section'
             onChange={handleSection}
-            value={formik.values.section}
+            value={state.isEdit? editData.section : formik.values.section}
             options={sections}
             multiple
             getOptionLabel={(option) => option.section_name || ''}
@@ -648,7 +664,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     onChange={(e, value) => {
                         formik.setFieldValue('chapters', value);
                       }}
-                    value={formik.values.chapters}
+                    value={state.isEdit? editData.section :formik.values.chapters}
                     options={chapterDropdown}
                     getOptionLabel={(option) => option?.chapter_name}
                     filterSelectedOptions
@@ -672,7 +688,7 @@ const CreateDailyDairy = (details, onSubmit) => {
         <div>
         <div className='descriptionBorder'>
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
-        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
                 <TextField
                     id="outlined-multiline-static"
                     label="Recap of previous class"
@@ -686,7 +702,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     onChange={e=> setRecap(e.target.value)}
                 />
             </Grid>
-                <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
                 <TextField
                     id="outlined-multiline-static"
                     label="Details of classwork"
@@ -700,7 +716,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     onChange={e=> setDetails(e.target.value)}
                 />
             </Grid>
-            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+            <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
                 <TextField
                     id="outlined-multiline-static"
                     label="Summary"
@@ -716,7 +732,7 @@ const CreateDailyDairy = (details, onSubmit) => {
             </Grid>
             </Grid>
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
-        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
                 <TextField
                     id="outlined-multiline-static"
                     label="Tools Used"
@@ -730,7 +746,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     onChange={e=> setTools(e.target.value)}
                 />
             </Grid>
-                <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
                 <TextField
                     id="outlined-multiline-static"
                     label="Homework"
@@ -745,19 +761,30 @@ const CreateDailyDairy = (details, onSubmit) => {
                 />
             </Grid>
             
-            <Grid item xs={12} sm={5} className={isMobile ? '' : 'filterPadding'}>
+            <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
             <div style={{display:'flex'}} className='scrollable'>
-            {filePath?.length>0  ?    
-                    filePath?.map((file, i) => (
-                            <FileRow
-                            key={`homework_student_question_attachment_${i}`}
-                            file={file}
-                            index={i}
-                            onClose={() => removeFileHandler(i)}
-                            />
-                        )) : null }
+              {state.isEdit ? 
+                  editData.documents.map((file, i) => (
+                    <FileRow
+                    key={`homework_student_question_attachment_${i}`}
+                    file={file}
+                    index={i}
+                    onClose={() => removeFileHandler(i)}
+                    />
+                  ))
+              :
+
+                filePath?.length>0  ?    
+                  filePath?.map((file, i) => (
+                    <FileRow
+                    key={`homework_student_question_attachment_${i}`}
+                    file={file}
+                    index={i}
+                    onClose={() => removeFileHandler(i)}
+                    />
+                    )) : null }
             </div>
-            <div className="attachmentButtonContainer" style={{ marginTop:'10%' }}>
+            <div style={isMobile?{ marginTop:'1%' }: {marginTop:'10%'}}>
 
             <Button
                         startIcon={<SvgIcon
@@ -795,12 +822,12 @@ const CreateDailyDairy = (details, onSubmit) => {
             </Grid>
             </Grid>
         </div>
-        <div>
-            <Button 
-            style={{ marginLeft:'80%' }}
-             onClick={state.isEdit? handleEdited : handleSubmit}
-              className='submit_button'>SUBMIT</Button>
-        </div>
+          <div>
+              <Button 
+              style= {isMobile? {marginLeft:''}:  { marginLeft:'80%' } }
+              onClick={state.isEdit? handleEdited : handleSubmit}
+                className='submit_button'>SUBMIT</Button>
+          </div>
         </div>
       </Layout>
     </>

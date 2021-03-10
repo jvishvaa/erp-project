@@ -50,6 +50,8 @@ const useStyles = makeStyles((theme) => ({
   },
   tableCell: {
     color: theme.palette.secondary.main,
+    maxWidth: '200px',
+    wordBreak: 'break-all',
   },
   buttonContainer: {
     width: '95%',
@@ -396,7 +398,7 @@ const SubjectTable = () => {
                       {subject.subject.subject_name}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
-                      {subject.subject.created_by}
+                      {subject.subject.created_by ? subject.subject.created_by.first_name : ''}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       {subject.subject.subject_description}

@@ -1,0 +1,58 @@
+@import '../../../../../assets/styles/variables';
+.mmk {
+  background-color: $primary-color;
+}
+.test-comparision-table {
+  width: 100%;
+  
+  
+  .table-header-row {
+    tr {
+      th {
+        background-color: #fbe6e6 !important;
+        position: sticky;
+        top: 0;
+        margin: '10px 0';
+        color: $secondary-color !important;
+        // &:not(:last-child) {
+        //   &:after {
+        //     content: '';
+        //     width: 2px;
+        //     background-color: #cecece;
+        //     height: 60%;
+        //     position: absolute;
+        //     border-radius: 5px;
+        //     right: 0;
+        //     transform: translateY(-10%);
+        //   }
+        // }
+      }
+    } 
+  }
+  .table-body-row{
+    tr {
+      // &:nth-child(odd) {
+      //   background: #f6f6f6;
+      // }
+      td {
+        position: relative;
+        &:not(:last-child) {
+          &:after {
+            content: '';
+            width: 2px;
+            background-color: #cecece;
+            height: 40%;
+            position: absolute;
+            border-radius: 5px;
+            right: 0;
+            transform: translateY(-10%);
+          }
+        }
+      }
+    }
+  }
+  .table-pagination {
+    color: $secondary-color;
+  }
+}
+

@@ -1,0 +1,38 @@
+.reshuffle-header.MuiDialogTitle-root {
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 16px 24px;
+    background: #ff6b6b;
+}
+.helperText.MuiFormHelperText-root {
+    color: red;
+}
+.reshuffleDataUnavailable{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 5%;
+    margin-left: 85%;
+    margin-top: 21%;
+  }
+  .reAssignModal .MuiDialog-paperWidthSm {
+      width: 65%;
+      height: auto;
+      border-radius: 10px;
+  }
+  .reAssignDisplay.MuiDialogContentText-root {
+      display: flex;
+      margin-bottom: 12px;
+  }
+  .margin.MuiGrid-spacing-xs-4{
+    width: calc(100% + 32px);
+    margin: -16px 10px;
+  }
+  .descriptionContainer{
+      display: flex;
+      justify-content: space-between;
+  }
+  .viewMoreContainer{
+      padding: 0px;
+  }

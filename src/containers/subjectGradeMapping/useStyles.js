@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '1.1rem',
   },
   content: {
+    marginTop: '15px',
     fontSize: '0.9rem',
   },
   textRight: {

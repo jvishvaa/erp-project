@@ -5,7 +5,7 @@
 /* eslint-disable react/prop-types */
 import React, { useContext, useState, useEffect, useRef, createContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {useParams} from "react-router-dom";
+import { useParams, withRouter } from 'react-router-dom';
 import { throttle, debounce } from 'throttle-debounce';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -38,13 +38,16 @@ import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import clsx from 'clsx';
-import { withRouter } from 'react-router-dom';
+
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Grow from '@material-ui/core/Grow';
+import Box from '@material-ui/core/Box';
+import Container from '@material-ui/core/Container';
 import { logout } from '../../redux/actions';
 import DrawerMenu from '../../components/drawer-menu';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
@@ -52,9 +55,6 @@ import UserDetails from './userDetails/user-details';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import useStyles from './useStyles';
-import Grow from '@material-ui/core/Grow';
-import Box from '@material-ui/core/Box';
-import Container from '@material-ui/core/Container';
 import './styles.scss';
 import logoMobile from '../../assets/images/logo_mobile.png';
 
@@ -185,7 +185,7 @@ const Layout = ({ children, history }) => {
   //   }, [currentPage]);
 
   const isMenuOpen = Boolean(anchorEl);
-  let isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -274,7 +274,7 @@ const Layout = ({ children, history }) => {
     >
       <MenuItem onClick={(e) => history.push('/profile')}>
         <IconButton aria-label='my profile' color='inherit'>
-          <PermIdentityIcon color='primary' style={{ fontSize: '2rem'}} />
+          <PermIdentityIcon color='primary' style={{ fontSize: '2rem' }} />
         </IconButton>
         <p style={{ color: '#014B7E' }}>My Profile</p>
       </MenuItem>
@@ -288,6 +288,9 @@ const Layout = ({ children, history }) => {
     </Menu>
   );
 
+
+  
+
   const handleRouting = (name) => {
     switch (name) {
       case 'Take Class': {
@@ -295,7 +298,12 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'View Class': {
-        history.push('/online-class/view-class');
+        if(window.location.host===endpoints?.aolConfirmURL){
+          history.push('/online-class/view-class');
+        }
+        else{
+          history.push('/erp-online-class');
+        }
         break;
       }
       case 'Resources': {
@@ -303,7 +311,23 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Attend Online Class': {
-        history.push('/online-class/attend-class');
+        if(window.location.host===endpoints?.aolConfirmURL){
+          history.push('/online-class/attend-class');
+        }else{
+          history.push('/erp-online-class-student-view');
+        }
+        break;
+      }
+      case 'Teacher View Class': {
+       if(window.location.host===endpoints?.aolConfirmURL){
+        history.push('/online-class/teacher-view-class');
+       }else{
+        history.push('/erp-online-class-teacher-view');
+       }
+        break;
+      }
+      case 'Create Class': {
+        history.push('/online-class/create-class');
         break;
       }
       case 'Create Class': {
@@ -342,7 +366,7 @@ const Layout = ({ children, history }) => {
         history.push('/communication/addgroup');
         break;
       }
-      case 'View&Edit Group': {
+      case 'View & Edit Group': {
         history.push('/communication/viewgroup');
         break;
       }
@@ -354,7 +378,7 @@ const Layout = ({ children, history }) => {
         history.push('/communication/smscredit');
         break;
       }
-      case 'SMS&Email Log': {
+      case 'SMS & Email Log': {
         history.push('/communication/messageLog');
         break;
       }
@@ -362,23 +386,43 @@ const Layout = ({ children, history }) => {
         history.push('/dashboard');
         break;
       }
-      case 'user-management': {
+      // case 'user-management': {
+      //   history.push('/user-management');
+      //   break;
+      // }
+      // case 'create-user': {
+      //   history.push('/user-management/create-user');
+      //   break;
+      // }
+      // case 'bulk-upload': {
+      //   history.push('/user-management/bulk-upload');
+      //   break;
+      // }
+      // case 'view-users': {
+      //   history.push('/user-management/view-users');
+      //   break;
+      // }
+      // case 'assign-role': {
+      //   history.push('/user-management/assign-role');
+      //   break;
+      // }
+      case 'User Management': {
         history.push('/user-management');
         break;
       }
-      case 'create-user': {
+      case 'Create User': {
         history.push('/user-management/create-user');
         break;
       }
-      case 'bulk-upload': {
+      case 'Bulk Upload Status': {
         history.push('/user-management/bulk-upload');
         break;
       }
-      case 'view-users': {
+      case 'View User': {
         history.push('/user-management/view-users');
         break;
       }
-      case 'assign-role': {
+      case 'Assign Role': {
         history.push('/user-management/assign-role');
         break;
       }
@@ -402,8 +446,16 @@ const Layout = ({ children, history }) => {
         history.push('/master-mgmt/message-type-table');
         break;
       }
-      case 'course-table':{
-        history.push('/course-list')
+      case 'signature-upload': {
+        history.push('/master-mgmt/signature-upload');
+        break;
+      }
+      case 'course-table': {
+        history.push('/course-list');
+        break;
+      }
+      case 'course-price': {
+        history.push('/course-price');
         break;
       }
       case 'school-mapping': {
@@ -438,7 +490,6 @@ const Layout = ({ children, history }) => {
         history.push('/discussion-forum');
         break;
       }
-
       case 'Student Blogs': {
         history.push('/blog/student/dashboard');
         break;
@@ -460,7 +511,43 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Word Count Cofiguration': {
-        history.push('/blog/create/wordcount-config');
+        history.push('/blog/wordcount-config');
+        break;
+      }
+      case 'Student Diary': {
+        history.push('/diary/student');
+        break;
+      }
+      case 'Teacher Diary': {
+        history.push('/diary/teacher');
+        break;
+      }
+      case 'Assessment': {
+        history.push('/assessment');
+        break;
+      }
+      case 'ViewAssessment': {
+        history.push('/assessment/view-assessment');
+        break;
+      }
+      case 'ID Cards': {
+        history.push('/student-id-card');
+        break;
+      }
+      case 'Student Strength': {
+        history.push('/student-strength');
+        break;
+      }
+      case 'Signature Upload': {
+        history.push('/master-mgmt/signature-upload');
+        break;
+      }
+      case 'Teacher Circular': {
+        history.push('/circular');
+        break;
+      }
+      case 'Student Circular': {
+        history.push('/circular');
         break;
       }
       default:

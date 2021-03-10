@@ -97,9 +97,11 @@ const columnsSubject = [
 
 const BulkUpload = ({ onUploadSuccess }) => {
   const [branch, setBranch] = useState(null);
+  const [branchCode,setBranchCode] = useState('')
   const [branchList, setBranchList] = useState([]);
   const [branchDisplay,setBranchDisplay]=useState({})
   const [yearDisplay,setYearDisplay]=useState({})
+  const [academicYearVal,setAcademicYearVal] = useState('')
   const [year, setYear] = useState(null);
   const [yearList, setYearList] = useState([]);
   const [file, setFile] = useState(null);
@@ -222,6 +224,8 @@ const BulkUpload = ({ onUploadSuccess }) => {
   const handleFileUpload = () => {
     const formData = new FormData();
     formData.append('branch', branch);
+    formData.append('branch_code',branchCode);
+    formData.append('academic_year_value',academicYearVal);
     formData.append('academic_year', year);
     formData.append('file', file);
       if (branch && year && file) {
@@ -242,7 +246,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
             }
           })
           .catch(error => {
-            setAlert('error', error.response.data.description);
+            // setAlert('error', error.response.data.description);
             setUploadFlag(false)
           })
       }
@@ -261,6 +265,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
 
   const handleBranchChange = (event, data) => {
     setBranch(data?.id);
+    setBranchCode(data?.branch_code)
     setBranchDisplay(data)
     setSearchGrade([])
     setSearchSection([])
@@ -269,6 +274,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
 
   const handleYearChange = (event, data) => {
     setYear(data?.id);
+    setAcademicYearVal(data?.session_year)
     setYearDisplay(data)
   };
 
@@ -392,10 +398,13 @@ const BulkUpload = ({ onUploadSuccess }) => {
           />
         </Grid>
         <Grid item md={3} xs={12}>
-          <Box display='flex' flexDirection='column'>
-            <Input type='file' inputRef={fileRef} 
-            inputProps={{accept:".xlsx,.xls"}} 
-            onChange={handleFileChange} />
+          <Box display='flex' flexDirection='column'>  
+            <Input
+              type='file'
+              inputRef={fileRef}
+              inputProps={{accept:".xlsx,.xls"}} 
+              onChange={handleFileChange}
+            />
             <Box display='flex' flexDirection='row' style={{ color: 'gray' }}>
               <Box p={1}>
                 {`Download Format: `}

@@ -157,12 +157,12 @@ const StudentClasses = () => {
         setClassesdata([]);
         setIsLoding(false);
         //if (location.pathname === "/online-class/attend-class") {
-            axiosInstance.get('erp_user/student_online_class/?user_id=78&page_number=1&page_size=15')
-                .then((res) => {
-                    setClassesdata(res.data.data);
-                    setIsLoding(true);
-                })
-                .catch((error) => console.log(error))
+            // axiosInstance.get('erp_user/student_online_class/?user_id=78&page_number=1&page_size=15')
+                // .then((res) => {
+                //     setClassesdata(res.data.data);
+                //     setIsLoding(true);
+                // })
+                // .catch((error) => console.log(error))
         //}
         // teacher view api
         /*

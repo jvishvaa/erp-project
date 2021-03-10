@@ -1,0 +1,145 @@
+.durationWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.durationTag {
+  color: #014b7e;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.durationContainer {
+  margin: 20px 0 30px 0;
+  border-radius: 10px;
+  min-height: 49vh;
+  max-height: 49vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 10px 0px rgba(1, 75, 126, 0.2);
+}
+
+.weeksContainer {
+  padding: 20px;
+}
+
+.weeksContainer > .MuiFormControl-root {
+  width: 100%;
+}
+
+.isRecursiveSwitch {
+  padding: 0 20px 10px 20px;
+}
+
+.recursiveContainer {
+  padding: 0 20px 20px 10px;
+}
+
+.addRemoveIconContainer {
+  align-self: center;
+  margin-right: 5%;
+  display: flex;
+}
+
+.recursiveRow {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 20px;
+}
+
+.weekContainer {
+  width: 47.5%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.recursiveWeekContainer {
+  width: 100%;
+}
+
+.recursiveWeekContainer > .MuiFormControl-root {
+  background: #f2f2f2;
+  border-radius: 10px;
+}
+
+.recursiveContainer .MuiOutlinedInput-notchedOutline {
+  border: none;
+}
+
+.recursivePriceContainer {
+  width: 47.5%;
+  margin-left: 5%;
+}
+
+.recursivePriceContainer > .MuiFormControl-root {
+  background: #f2f2f2;
+  border-radius: 10px;
+}
+
+.addRecIcon.MuiSvgIcon-root {
+  fill: #ff6b6b;
+}
+
+.removeRecIcon.MuiSvgIcon-root {
+  fill: #014b7e;
+}
+
+.singleButtonContainer {
+  width: 40%;
+  display: flex;
+  justify-content: space-between;
+  align-self: flex-end; 
+}
+
+.multiButtonContainer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-self: flex-end;
+}
+
+.backCoursePriceButton.MuiButtonBase-root {
+  width: 100%;
+  border-radius: 10px;
+  background: #e0e0e0;
+  color: rgb(140, 140, 140);
+  margin-right: 10%;
+}
+
+.backCoursePriceButton.MuiButtonBase-root:hover {
+  background:  #e0e0e0;
+}
+
+.submitCoursePriceButton.MuiButtonBase-root {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.submitCoursePriceButton.MuiButtonBase-root:hover {
+  background: #ff6b6b;
+}
+
+.saveCoursePriceButton.MuiButtonBase-root {
+  width: 45%;
+  background: none;
+  border: 1px solid #ff6b6b;
+  border-radius: 10px;
+  color: #ff6b6b;
+}
+
+@media screen and (max-width: 768px) {
+  .weekContainer {
+    width: 50%;
+  }
+  .recursiveWeekContainer {
+    width: 70%;
+    margin-right: 5%;
+  }
+  .weekTag {
+    width: 30%;
+  }
+  .recursivePriceContainer {
+    width: 40%;
+    margin-left: 10%;
+  }
+}

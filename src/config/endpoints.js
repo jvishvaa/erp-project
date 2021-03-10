@@ -1,9 +1,9 @@
-const baseURLCentral = 'http://13.232.30.169/qbox';
+// const baseURLCentral = 'http://13.232.30.169/qbox';
+const baseURLCentral ='https://dev.mgmt.letseduvate.com/qbox';
 export default {
   auth: {
     login: '/auth/login/',
   },
-
   academics: {
     subjects: '/erp_user/subject/',
     branches: '/erp_user/branch/',
@@ -105,6 +105,17 @@ export default {
     downloadExcelAllstudents: '/academic/all_branch_strength_excel_data/',
   },
 
+  idCards: {
+    getIdCardsApi: '/erp_user/get-user-details/',
+  },
+  signature: {
+    createSignatureApi: '/erp_user/principle-signature/',
+    updateSignatureApi: '/erp_user/update-destroy-signature/',
+    deleteSignatureApi: '/erp_user/update-destroy-signature/',
+    getSignatureList: '/erp_user/principle-signature/',
+    s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+  },
+
   coordinatorTeacherHomeworkApi: {
     getAllTeacherList: '/academic/teachers-list/',
     getTecherPerformance: '/academic/hw-teacher-performance/',
@@ -132,6 +143,34 @@ export default {
     overviewSynopsis: `${baseURLCentral}/lesson_plan/list-lesson-overview/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },
+  aol: {
+    cardData: '/erp_user/teacher_online_class/',
+    courseList: '/aol/courses/',
+    batchLimitList: '/aol/aol-course-batch/',
+    classes: '/erp_user/teacher_online_class/',
+    teacherList: '/erp_user/teacher-list/',
+    draftBatch: '/aol/mixed-batch-details/',
+    assignTeacher: '/aol/teacher-assign/',
+    reshuffleBatchList: '/aol/batch_shuffle/',
+    studentReshuffle: '/aol/student-shuffle/',
+    cancelClass: 'erp_user/cancel-online-class/',
+    createCoursePrice: '/aol/course-details/',
+    updateCoursePrice: '/aol/course_details_update/',
+    updateTeacher: '/aol/update-batch-teacher/',
+  },
+
+  attendanceList: {
+    list: '/erp_user/onlineclass_attendeelist/',
+    updateAttendance: '/erp_user/mark_attendance/',
+  },
+  blog: {
+    genreList: '/academic/genre/',
+    Blog: '/academic/blog/',
+    BlogLike: '/academic/like_blog/',
+    BlogView: '/academic/view_blog/',
+    WordCountConfig: '/academic/word_count_config/',
+  },
+
   discussionForum: {
     categoryList: '/academic/categories/',
     branch: '/erp_user/branch/',
@@ -163,15 +202,18 @@ export default {
     createDailyDairy: '/academic/create-dairy/',
     branches: '/academic/chapters/',
     updateDelete: '/academic/',
+    chapterList: '/academic/logged-in-users-subjects/'
   },
   onlineCourses: {
     createCourse: '/aol/courses/',
+    fetchCourseDetails: '/aol/coursetag/',
     fileUpload: '/aol/file-upload/',
     courseList: '/aol/courses/',
     deleteCourse: '/aol/',
     courseDetails: '/aol/courses/',
     categoryList: '/aol/tagging-list/',
     updateCourse: '/aol/',
+    studentList: '/erp_user/batch-student-list/',
   },
   attendanceList: {
     list: '/erp_user/onlineclass_attendeelist/',
@@ -184,7 +226,30 @@ export default {
     BlogView: '/academic/view_blog/',
     WordCountConfig: '/academic/word_count_config/',
   },
-
+  teacherViewBatches: {
+    courseListApi: '/aol/courses/',
+    batchSizeList: 'aol/aol-course-batch/',
+    getBatchList: '/erp_user/teacher_online_class/',
+    cancelBatchApi: '/erp_user/cancel-online-class/',
+  },
+  studentViewBatchesApi: {
+    getBatchesApi: '/erp_user/student_online_class/',
+    rejetBatchApi: '/erp_user/mark_attendance/',
+  },
+  assessment: {
+    questionPaperList: `/academic/assessment-list/`,
+    viewQuestionList: `${baseURLCentral}/assessment/3/qp-questions-list/`,
+    userTests: `${baseURLCentral}/assessment/user-tests/`, // ?user=20&subject=1,
+    userTestComparisions: `${baseURLCentral}/assessment/student-test-comparison/`, // ?test_1=7&user=20&test_2=10
+    userSpecificSubjects: `/academic/users-subjects/`, // ?module_id=112
+    userAssessmentQuestionAnalysis: `${baseURLCentral}/assessment/category_analysis_report/`, // ?user=3446&assessment_id=3
+    assessmentAnalysisTeacherExcel: `${baseURLCentral}/assessment/teacher-report/`, // ?type=1
+    userAssessmentSubmission: `${baseURLCentral}/assessment/user_response/`,
+    fetchAssessmentQuestionPapersQuestions: `${baseURLCentral}/assessment/<question-paper-id>/qp-questions-list/`,
+    s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
+  },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
+  aolConfirmURL:'aol.letseduvate.com', //WARNING: Uncomment this code before pushing  
+  // aolConfirmURL:'localhost:3000', //WARNING: Comment this code before pushing
 };

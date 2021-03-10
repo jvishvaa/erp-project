@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, { useContext } from 'react';
 import { IconButton, Modal, Typography, Box, makeStyles, Button, withStyles, Grid } from '@material-ui/core';
 import Backdrop from '@material-ui/core/Backdrop';
 import EditIcon from '@material-ui/icons/Edit';
@@ -9,16 +9,14 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { useHistory, useLocation } from 'react-router-dom';
 import { CreateclassContext } from '../create-class/create-class-context/create-class-state';
 
-
-
-const useStyles = makeStyles((theme)=>({
+const useStyles = makeStyles((theme) => ({
     card: {
         padding: '8px',
         border: '1px solid #F9D474',
         borderRadius: '10px',
         backgroundColor: '#FFFADF',
         cursor: 'pointer',
-        minHeight: '165px',
+        minHeight: '200px',
     },
     activeCard: {
         padding: '8px',
@@ -26,7 +24,7 @@ const useStyles = makeStyles((theme)=>({
         borderRadius: '10px',
         backgroundColor: '#F9D474',
         height: 'auto',
-        minHeight: '165px',
+        minHeight: '200px',
     },
     classTitle: {
         display: 'inline-block',
@@ -78,31 +76,26 @@ const StyledButton = withStyles({
     }
 })(Button);
 
-
-
 export default function ClassCardComponent(props) {
     const history = useHistory();
     const classes = useStyles({});
-    const location=useLocation();
-    const [enableEdit, setEnabelEdit]= React.useState(false)
+    const location = useLocation();
+    const [enableEdit, setEnabelEdit] = React.useState(false)
     const classData = props.classData.zoom_meeting ? props.classData.zoom_meeting : props.classData;
-    
+
     const { dispatch, setEditData } = useContext(CreateclassContext);
     const handleEditClass = () => {
-        // dispatch(setEditData(classData));
-        // history.push('/online-class/create-class');
         handleOpen()
     }
-    //console.log(classData);
-    
-    const handleOpen = ()=>{ setEnabelEdit(true) }
-    const handleClose = ()=>{ setEnabelEdit(false) }
-    const updateClasses = ()=>{
-        if(props.updateClasses){
+
+    const handleOpen = () => { setEnabelEdit(true) }
+    const handleClose = () => { setEnabelEdit(false) }
+    const updateClasses = () => {
+        if (props.updateClasses) {
             props.updateClasses()
         }
     }
-    const updateClassesAndHandleClose = ()=>{
+    const updateClassesAndHandleClose = () => {
         handleClose()
         updateClasses()
 
@@ -114,65 +107,97 @@ export default function ClassCardComponent(props) {
             float: 'right',
         }
     })(IconButton);
-    const editClassJsx = (
-        <>
-            <Modal
-                open={enableEdit}
-                onClose={handleClose}
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
-                className={classes.modal}
-                closeAfterTransition
-                BackdropComponent={Backdrop}
-                BackdropProps={{timeout: 500}}
-            >
-                <Fade in={enableEdit}>
-                    <div className={classes.paper}>
-                        <ClassUpdation handleClose={updateClassesAndHandleClose} classData={classData} />  
-                    </div>
-                </Fade>
-            </Modal>
-            </>
-    )
+    // const editClassJsx = (
+    //     <>
+    //         <Modal
+    //             open={enableEdit}
+    //             onClose={handleClose}
+    //             aria-labelledby="transition-modal-title"
+    //             aria-describedby="transition-modal-description"
+    //             className={classes.modal}
+    //             closeAfterTransition
+    //             BackdropComponent={Backdrop}
+    //             BackdropProps={{ timeout: 500 }}
+    //         >
+    //             <Fade in={enableEdit}>
+    //                 <div className={classes.paper}>
+    //                     <ClassUpdation handleClose={updateClassesAndHandleClose} classData={classData} />
+    //                 </div>
+    //             </Fade>
+    //         </Modal>
+    //     </>
+    // )
     return (
-        <Box className={`${props.selectedId === classData.id ? classes.activeCard : classes.card}`}>
-            <div>
-                <Typography className={classes.classTitle}>
-                    {classData.online_class.title}
-                </Typography>
-                {location.pathname==='/online-class/view-class' &&
-                <IconButton
-                    onClick={handleEditClass}
-                    title='Edit Subject'
-                    style={{float: 'right', verticalAlign: 'top', display: 'inline-block', padding: '7px'}}
-                >
-                    <EditOutlinedIcon style={{color:'#fe6b6b', fontSize: '18px'}} />
-                    {editClassJsx}
-                </IconButton>}
-            </div>
-                <Typography className={classes.classTitle}>
-                    {classData.online_class.subject[0].subject_name}
-                </Typography>
-                <Typography className={classes.classSchedule}>
-                    Start Date: {moment(classData.online_class.start_time).format('Do MMM YYYY')}
-                </Typography>
+        <>
+            {(props && props.toggle) ?
+                (<div>
+                    <Box className={`${props.selectedId === classData.id ? classes.activeCard : classes.card}`}>
+                        <Typography className={classes.classSchedule}>
+                            Batch Name:{classData && classData.batch_name}
+                        </Typography>
+                        <Typography className={classes.classSchedule}>
+                            Batch Size: {classData && `1 : ${classData.batch_size}`}
+                        </Typography>
+                        <div style={{ marginTop: '15px', width: '100%' }}>
+                            {props.selectedId !== props.classData.id && (
+                                <StyledButton
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={(e) => props.handleSelctedClass(classData)}
+                                >
+                                    VIEW
+                                </StyledButton>
+                            )}
+                        </div>
+                    </Box>
+                </div>
+                ) : (
+                    <Box className={`${props.selectedId === classData.id ? classes.activeCard : classes.card}`}>
+                        <div>
+                            <Typography className={classes.classTitle}>
+                                {classData.online_class ? classData.online_class.title : ''}
+                            </Typography>
+                            {/* <IconButton
+                                onClick={handleEditClass}
+                                title='Edit Teacher'
+                                style={{ float: 'right', verticalAlign: 'top', display: 'inline-block', padding: '7px' }}
+                            >
+                                <EditOutlinedIcon style={{ color: '#fe6b6b', fontSize: '22px' }} />
+                            </IconButton>
+                            {editClassJsx} */}
 
-                <Typography className={classes.classSchedule}>
-                    End Date: {moment(classData.online_class.end_time).format('Do MMM YYYY')}
-                </Typography>
+                        </div>
+                        <div>
+                            <Typography className={classes.classTitle}>
+                                {classData.online_class ? `No. Seat Left : ${classData.online_class && classData.online_class.seat_left}` : ''}
+                            </Typography>
+                        </div>
 
-            <div style={{ marginTop: '15px', width: '100%'}}>
-                {props.selectedId !== props.classData.id && (
-                    <StyledButton
-                        variant="contained"
-                        color="secondary"
-                        onClick={(e) => props.handleSelctedClass(classData)}
-                    >
-                        VIEW
-                    </StyledButton>
+                        <Typography className={classes.classSchedule}>
+                            Start Date: {classData.online_class ? moment(classData.online_class.start_time).format('DD-MM-YYYY') : ''}
+                        </Typography>
+
+                        <Typography className={classes.classSchedule}>
+                            End Date: {classData.online_class ? moment(classData.online_class.end_time).format('DD-MM-YYYY') : ''}
+                        </Typography>
+                        <Typography className={classes.classSchedule}>
+                            Assigned To: {classData.online_class && classData.online_class.teacher.email.split('@')[0]}
+                        </Typography>
+
+                        <div style={{ marginTop: '-2px', width: '100%' }}>
+                            {props.selectedId !== props.classData.id && (
+                                <StyledButton
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={(e) => props.handleSelctedClass(classData)}
+                                >
+                                    VIEW
+                                </StyledButton>
+                            )}
+                        </div>
+                    </Box>
                 )}
-            </div>
-        </Box>
+        </>
     )
 }
 

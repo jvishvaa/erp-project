@@ -106,6 +106,10 @@ const LessonPlanGraphReport = ({
       section: '',
       teacher: '',
     });
+    setDateRangeTechPer([
+      moment().subtract(6, 'days'),
+      moment(),
+    ]);
   };
 
   const handleAcademicYear = (event, value) => {
@@ -126,7 +130,6 @@ const LessonPlanGraphReport = ({
     setDateRangeTechPer(e);
     const startDate = e[0].format('YYYY-MM-DD');
     const endDate = e[1]?.format('YYYY-MM-DD');
-    // console.log(filterData.grade.grade_id,filterData.volume.id,subjectIds,'ggggg')
 
     // ><<<<<>>>>>>>>>>>NEED DISCUSSION WITH BACKEND<<<<<<<<<>>>>>>>>><<<
     // axiosInstance.get(
@@ -151,7 +154,7 @@ const LessonPlanGraphReport = ({
       setFilterData({ ...filterData, grade: value });
       axiosInstance
         .get(
-          `${endpoints.lessonReport.subjects}?branch=${branchId}&grade=${value.grade_id}`
+          `${endpoints.lessonReport.subjects}?branch=${filterData.branch.id}&grade=${value.grade_id}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -168,7 +171,7 @@ const LessonPlanGraphReport = ({
 
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?branch_id=${branchId}&grade_id=${value.grade_id}`
+          `${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -189,9 +192,7 @@ const LessonPlanGraphReport = ({
       setSectionDropdown([]);
     }
   };
-  console.log(filterData.grade, 'HHHHH');
   const handleSection = (event, value) => {
-    // console.log(value);
     setFilterData({ ...filterData, section: '' });
     if (value) {
       setFilterData({ ...filterData, section: value });
@@ -209,12 +210,11 @@ const LessonPlanGraphReport = ({
       setSubjectList(value);
       axiosInstance
         .get(
-          `${endpoints.lessonReport.teacherList}?branch=${branchId}&grade=${filterData.grade?.grade_id}&section=${filterData.section?.section_id}&subject=${ids}&academic_year=${filterData.year?.id}`
+          `${endpoints.lessonReport.teacherList}?branch=${filterData?.branch?.id}&grade=${filterData?.grade?.grade_id}&section=${filterData.section?.section_id}&subject=${ids}&academic_year=${filterData?.year?.id}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
             setTeacherDropdown(result.data.result);
-            // console.log(result.data.result, 'RRRRRR');
           } else {
             setAlert('error', result.data.message);
             setTeacherDropdown([]);
@@ -245,14 +245,26 @@ const LessonPlanGraphReport = ({
 
   const handleBranch = (event, value) => {
     setFilterData({ ...filterData, branch: '' });
+    console.log(value, '=======')
     if (value) {
       setFilterData({ ...filterData, branch: value });
+      axiosInstance
+        .get(`${endpoints.academics.grades}?branch_id=${value.id}&module_id=8`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setGradeDropdown(result.data.data);
+          } else {
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
     }
   };
   const handleTeacher = (event, value) => {
     setFilterData({ ...filterData, teacher: '' });
     if (value) {
-      // console.log(value,'vvvvvvv')
       setFilterData({ ...filterData, teacher: value });
     }
   };
@@ -263,12 +275,9 @@ const LessonPlanGraphReport = ({
     setNoFilterLogo(false);
     axiosInstance
       .get(
-        `${
-          endpoints.lessonReport.lessonViewMoreData
-        }?central_gs_mapping_id=${mapId}&volume_id=${
-          filterData.volume.id
-        }&academic_year_id=${filterData.year.id}&completed_by=${
-          filterData.teacher.user_id
+        `${endpoints.lessonReport.lessonViewMoreData
+        }?central_gs_mapping_id=${mapId}&volume_id=${filterData.volume.id
+        }&academic_year_id=${filterData.year.id}&completed_by=${filterData.teacher.user_id
         }&start_date=${startDateTechPer.format(
           'YYYY-MM-DD'
         )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}`
@@ -291,7 +300,7 @@ const LessonPlanGraphReport = ({
 
   useEffect(() => {
     axios
-      .get(`http://13.232.30.169/qbox/lesson_plan/list-session/`, {
+      .get(`https://dev.mgmt.letseduvate.com/qbox/lesson_plan/list-session/`, {
         headers: {
           'x-api-key': 'vikash@12345#1231',
         },
@@ -307,7 +316,7 @@ const LessonPlanGraphReport = ({
         setAlert('error', error.message);
       });
     axios
-      .get('http://13.232.30.169/qbox/lesson_plan/list-volume/', {
+      .get('https://dev.mgmt.letseduvate.com/qbox/lesson_plan/list-volume/', {
         headers: {
           'x-api-key': 'vikash@12345#1231',
         },
@@ -328,7 +337,7 @@ const LessonPlanGraphReport = ({
       .then((result) => {
         if (result.data.status_code === 200) {
           setBranchDropdown(result.data.data);
-          setBranchId(result.data.data[0].id);
+          // setBranchId(result.data.data[1].id);
           // a = result.data.data[0].id
         } else {
           setAlert('error', result.data.message);
@@ -340,20 +349,20 @@ const LessonPlanGraphReport = ({
   }, []);
 
   useEffect(() => {
-    if (branchId) {
-      axiosInstance
-        .get(`${endpoints.academics.grades}?branch_id=${branchId}&module_id=8`)
-        .then((result) => {
-          if (result.data.status_code === 200) {
-            setGradeDropdown(result.data.data);
-          } else {
-            setAlert('error', result.data.message);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error.message);
-        });
-    }
+    // if (branchId) {
+    //   axiosInstance
+    //     .get(`${endpoints.academics.grades}?branch_id=${branchId}&module_id=8`)
+    //     .then((result) => {
+    //       if (result.data.status_code === 200) {
+    //         setGradeDropdown(result.data.data);
+    //       } else {
+    //         setAlert('error', result.data.message);
+    //       }
+    //     })
+    //     .catch((error) => {
+    //       setAlert('error', error.message);
+    //     });
+    // }
   }, [branchId]);
 
   // DATA FOR GRAPH
@@ -425,7 +434,17 @@ const LessonPlanGraphReport = ({
       },
     ],
   };
-  console.log(graphData, 'GGGG');
+  const canFilter = () => {
+    const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
+    const {
+      volume:{id:volumeId}={}, 
+      year:{id:yeadId}={}, 
+      teacher:{user_id: teacherId }={},
+      startDateTechPer: startDateTechPerTempVar,
+      endDateTechPer: endDateTechPerPerTempVar
+    }={...(filterData||{}),startDateTechPer,endDateTechPer}
+    return ![mapId, volumeId, yeadId, teacherId, startDateTechPerTempVar, endDateTechPerPerTempVar].map(Boolean).includes(false)
+  }
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
@@ -642,6 +661,7 @@ const LessonPlanGraphReport = ({
               className='custom_button_master'
               size='medium'
               type='submit'
+              disabled={!canFilter()}
               onClick={handleFilter}
             >
               FILTER
@@ -676,8 +696,8 @@ const LessonPlanGraphReport = ({
             />
           </div>
         ) : (
-          <HighchartsReact highcharts={Highcharts} options={configObj} />
-        )}
+            <HighchartsReact highcharts={Highcharts} options={configObj} />
+          )}
       </Layout>
     </>
   );

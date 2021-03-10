@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 
 function GridList(props) {
   const classes = useStyles();
-  const { data, tabValue } = props;
+  const { data, tabValue ,totalBlogs} = props;
 
   return (
     <div className={classes.root}>
@@ -475,7 +475,19 @@ function GridList(props) {
           </Grid>
         </Grid>
       </Grid>
-       ) : 
+       )  : totalBlogs === 0 ?  
+      
+       <div className={classes.periodDataUnavailable}>
+       <SvgIcon
+         component={() => (
+           <img
+             style={{paddingLeft:'380px'}}
+             src={unfiltered}
+           />
+         )}
+       /> 
+       <p  style={{paddingLeft:'440px'}} >NO DATA FOUND </p>
+       </div> : 
       //  (
       //   <Typography align='center'>Oops... No blogs Posted</Typography>
       //       )

@@ -4,6 +4,7 @@
 /* eslint-disable no-debugger */
 /* eslint-disable no-console */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
+import { DataGrid } from '@material-ui/data-grid';
 import React, { useContext, useEffect, useState } from 'react';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -56,6 +57,7 @@ const AssignRole = (props) => {
   const [filterCheck, setFilterCheck] = useState(false);
   const [selectAllObj, setSelectAllObj] = useState([]);
   const [viewMore, setViewMore] = useState(false);
+  const [isSelected, setISselected] = useState(false);
 
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('xs'));
@@ -165,9 +167,9 @@ const AssignRole = (props) => {
       if (result.status === 200) {
         setHeaders([
           { field: 'fullName', headerName: 'Name', width: 250 },
-          { field: 'email', headerName: 'Email Id', width: 200 },
-          { field: 'erp_id', headerName: 'Erp Id', width: 150 },
-          { field: 'gender', headerName: 'Gender', width: 100 },
+          { field: 'email', headerName: 'Email Id', width: 250 },
+          { field: 'erp_id', headerName: 'ERP Id', width: 150 },
+          { field: 'gender', headerName: 'Gender', width: 150 },
           { field: 'contact', headerName: 'Contact', width: 150 },
           {
             field: 'role',
@@ -333,7 +335,7 @@ const AssignRole = (props) => {
         selectionArray.push(ids);
       });
     });
-  
+
     if (!selectionArray.length) {
       setSelectectUserError('Please select some users');
       return;
@@ -352,7 +354,7 @@ const AssignRole = (props) => {
       const response = await axiosInstance.post(
         assignRoleApi,
         {
-          role_id: selectedRole,
+          role_id: selectedRole?.id,
           user_id: selectionArray,
         },
         {
@@ -369,7 +371,7 @@ const AssignRole = (props) => {
       if (statusCode === 200) {
         // props.history.push('/user-management/assign-role')
         // displayUsersList()
-        setAlert('success', message);
+        setAlert('success', 'Role successfully assigned to user');
         setSelectedUsers([]);
         setRoleError('');
         setSelectedRole('');
@@ -378,7 +380,7 @@ const AssignRole = (props) => {
         setSelectedGrades([]);
         setSelectedMultipleRoles([]);
         setSelectedSections([]);
-        setSelectAllObj([]);
+        //setSelectAllObj([]);
         setSelectectUserError('');
         setAssigenedRole();
         clearSelectAll();
@@ -451,8 +453,8 @@ const AssignRole = (props) => {
           </Grid>
 
         </Grid> */}
-          <Grid container spacing={4} className={classes.spacer}>
-            <Grid item xs={12} md={4}>
+          <Grid container spacing={2} className={classes.spacer}>
+            <Grid item xs={12} md={3}>
               <Autocomplete
                 multiple
                 size='small'
@@ -473,7 +475,7 @@ const AssignRole = (props) => {
                 )}
               />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={3}>
               <Autocomplete
                 size='small'
                 onChange={handleBranch}
@@ -495,7 +497,7 @@ const AssignRole = (props) => {
               />
             </Grid>
             {selectedBranch && (
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={3}>
                 <Autocomplete
                   multiple
                   size='small'
@@ -518,7 +520,7 @@ const AssignRole = (props) => {
               </Grid>
             )}
             {selectedGrades.length > 0 && (
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={3}>
                 <Autocomplete
                   multiple
                   size='small'
@@ -685,8 +687,7 @@ const AssignRole = (props) => {
               type='button'
               onClick={handleFilterCheck}
               value='Filter'
-            />
-          </Grid>
+              </Grid>
         </Grid> */}
         </div>
         <div
@@ -694,6 +695,31 @@ const AssignRole = (props) => {
           style={{ width: '95%', marginLeft: 'auto', marginRight: 'auto' }}
         >
           <Grid container spacing={2}>
+            <Grid item md={3} xs={12}>
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                //onChange={(e) => setSelectedBranch(e.target.value)}
+                onChange={(event, value) => {
+                  setSelectedRole(value);
+                }}
+                id='branch_id'
+                //className='dropdownIcon'
+                value={selectedRole}
+                options={roles}
+                getOptionLabel={(option) => option?.role_name}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Assign Role'
+                    placeholder='Assign Role'
+                  />
+                )}
+              />
+            </Grid>
+            {/*
             <Grid item xs={12} md={4}>
               <FormControl variant='outlined' fullWidth size='small'>
                 <InputLabel id='demo-simple-select-outlined-label'>
@@ -718,7 +744,9 @@ const AssignRole = (props) => {
                 <FormHelperText style={{ color: 'red' }}>{roleError}</FormHelperText>
               </FormControl>
             </Grid>
-            <Grid item md={4} xs={6}>
+            */}
+            
+            <Grid item md={2} xs={4}>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -729,6 +757,16 @@ const AssignRole = (props) => {
                 }
                 label='Select all'
               />
+            </Grid>
+            <Grid item md={2} xs={4}>
+              <Button
+                onClick={assignRole}
+                variant='contained'
+                color='primary'
+                disabled={!selectedRole}
+              >
+                ASSIGN ROLE
+              </Button>
             </Grid>
             {isMobile && (
               <Grid item md={4} xs={6}>
@@ -785,7 +823,45 @@ const AssignRole = (props) => {
               setSelectedUsers={setSelectedUsers}
               pageSize={15}
             />
-            {/* <Grid container className='message_log_container' spacing={5}>
+            {/*
+            
+                  import { DataGrid } from '@material-ui/data-grid';
+
+                  const columns = [
+                    { field: 'fullName', headerName: 'Name', width: 250 },
+                    { field: 'email', headerName: 'Email Id', width: 250 },
+                    { field: 'erp_id', headerName: 'ERP Id', width: 150 },
+                    { field: 'gender', headerName: 'Gender', width: 150 },
+                    { field: 'contact', headerName: 'Contact', width: 150 },
+                    {
+                      field: 'role',
+                      headerName: 'Role',
+                      width: 150,
+                    },
+                  ];
+
+                  const rows = [
+                    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
+                    { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
+                    { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
+                    { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
+                    { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
+                    { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
+                    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
+                    { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
+                    { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+                  ];
+
+                  export default function DataGridDemo() {
+                    return (
+                      <div style={{ height: 400, width: '100%' }}>
+                        <DataGrid rows={rows} columns={columns} pageSize={5} checkboxSelection />
+                      </div>
+                    );
+                  }
+
+            
+            <Grid container className='message_log_container' spacing={5}>
             <Grid lg={3} item>
               <input
                 className='assign_role_button'
@@ -821,6 +897,7 @@ const AssignRole = (props) => {
               </div>
             </Grid>
           </Grid> */}
+          {/*
             <Grid
               container
               className={`${classes.assignRoleBtnContainer} ${classes.spacer}`}
@@ -837,6 +914,7 @@ const AssignRole = (props) => {
                 </Button>
               </Grid>
             </Grid>
+            */}
           </>
         )}
       </div>

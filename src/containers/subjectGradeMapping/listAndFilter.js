@@ -1,30 +1,50 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Layout from '../Layout/index';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import { withRouter } from 'react-router-dom';
-import { SvgIcon, Button, Grid, FormControl, TextField } from '@material-ui/core';
+import { SvgIcon, Button, Grid, FormControl, TextField, withStyles } from '@material-ui/core';
 import Addicon from '../../assets/images/Add.svg'
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import Subjectcard from './subjectCard';
+import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import './subjectgrademapping.scss';
 
-
-
+const StyledButton = withStyles({
+    root: {
+      color: '#FFFFFF',
+      backgroundColor: '#FF6B6B',
+      '&:hover': {
+        backgroundColor: '#FF6B6B',
+      },
+    },
+    startIcon: {},
+  })(Button);
 
 const ListandFilter = (props) => {
+    const { setAlert } = useContext(AlertNotificationContext);
     const [branch, setBranchRes] = useState([])
     const [gradeRes, setGradeRes] = useState([]);
     const [branchValue, setBranchValue] = useState(null);
     const [gradeValue, setGradeValue] = useState(null);
     const [schoolGsMapping, setSchoolGsMapping] = useState([]);
     const [error, setError] = useState(null);
+    const [filter, setFilter] = useState(false);
 
     const navigateToCreatePage = () => {
         props.history.push('/master-mgmt/subject/grade/mapping')
     }
+
+    const handleClearAll = () => {
+        setFilter(false);
+        setSchoolGsMapping([]);
+        setGradeRes([]);
+        setBranchValue(null);
+        setGradeValue(null);
+    }
+
     useEffect(() => {
         const getBranch = () => {
             axiosInstance.get(endpoints.mappingStudentGrade.branch).then(res => {
@@ -57,18 +77,17 @@ const ListandFilter = (props) => {
     }
 
     const handleGradeChange = (value) => {
-        setGradeValue(value);
+        //setGradeValue(value);
         if (value) {
             setGradeValue(value);
         } else {
             setGradeValue(null);
         }
-
-
     }
 
-    const filter = () => {
+    const handleFilter = () => {
         if(branchValue === null && gradeValue === null){
+            setAlert('warning', 'Select Grade');
             return false
         }else{
             let body = {
@@ -77,6 +96,7 @@ const ListandFilter = (props) => {
             }
             const valid = Validation(body);
             if(valid.isValid === true){
+                setFilter(true);
                 axiosInstance.get(`${endpoints.mappingStudentGrade.schoolGsMapping}?branch=${body.branch}&erp_grade=${body.erp_grade}`).then(res => {
                     setSchoolGsMapping(res.data.data.results)
                 }).catch(err => {
@@ -126,7 +146,7 @@ const ListandFilter = (props) => {
         <div className="list-and-filter">
             <Layout>
                 <div className='mapping-message_log_breadcrumb_wrapper' style={{ backgroundColor: '#F9F9F9' }}>
-                    <CommonBreadcrumbs componentName='Subject-Grade' />
+                    <CommonBreadcrumbs componentName='Master Management' childComponentName='Lesson Plan Mapping'/>
                 </div>
                 <div className="mapping-grade-subject-dropdown-container">
                     <Grid container spacing={2}>
@@ -172,7 +192,7 @@ const ListandFilter = (props) => {
                                             style={{ width: 350, marginLeft: 20 }}
                                             // multiple
                                             required={true}
-                                            // value={subjectValue}
+                                            value={gradeValue}
                                             id="tags-outlined"
                                             options={gradeRes}
                                             getOptionLabel={(option) => option.grade__grade_name}
@@ -195,22 +215,23 @@ const ListandFilter = (props) => {
                                     </FormControl>
                                 </Grid>
                             </div>
-                          
-
                         </Grid>
-
                     </Grid>
-
-
                 </div>
                 <div className="btn-list">
-                    <Button variant="contained" className="clear-all">Cancel</Button>
-                    <Button variant="contained" color="secondary" className="filter-btn"
+                    <Button variant="contained" className="clear-all" onClick={handleClearAll}>Clear All</Button>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        className="filter-btn"
                         style={{ background: '#FF6B6B', marginLeft: 15 }}
-                        onClick={filter}>Filter</Button>
+                        onClick={handleFilter}
+                    >
+                        Filter
+                    </Button>
                 </div>
                 <div className="button-container-map">
-                    <Button variant="outlined" color="primary" style={{ color: 'white' }} onClick={navigateToCreatePage}>
+                    <StyledButton variant="outlined" color="primary" style={{ color: 'white' }} onClick={navigateToCreatePage}>
                         <SvgIcon
                             component={() => (
                                 <img
@@ -220,12 +241,12 @@ const ListandFilter = (props) => {
                                 />
                             )}
                         />
-                        Assign Role
-                </Button>
+                        Assign Mapping
+                    </StyledButton>
                 </div>
                 <div className="mapping-sub-grade-container">
                     <div className="mapping-grade-subject-container">
-                        <Subjectcard schoolGsMapping={schoolGsMapping} updateDeletData={updateDeletData} />
+                        <Subjectcard schoolGsMapping={schoolGsMapping} updateDeletData={updateDeletData} setFilters={filter}/>
                     </div>
                 </div>
             </Layout>

@@ -86,13 +86,13 @@ const GeneralDairyStudentList = () => {
             <Layout>
                 <div>
                     <div style={{ width: '95%', margin: '20px auto' }}>
-                        <CommonBreadcrumbs componentName='General Dairy' />
+                        <CommonBreadcrumbs componentName='General Diary' />
                     </div>
                 </div>
                 <GeneralDairyStudentView
-                 handleDairyList={handleDairyList}
-                 setPeriodData={setPeriodData}
-                  />
+                    handleDairyList={handleDairyList}
+                    setPeriodData={setPeriodData}
+                />
                 <Paper className={classes.root}>
                     {periodData?.length > 0 ? (
                         <Grid

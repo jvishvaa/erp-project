@@ -86,11 +86,11 @@ class ContentViewPublishStudent extends Component {
       overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark,
 
     };
+    console.log(this.props,"@@@@@")
 
   }
   componentDidMount() {
     let {blogId} = this.state
-    this.handleView(blogId)
   }
   getLikeStatus = (isLiked) => {
     let { likeStatus,likes }=this.state
@@ -129,19 +129,7 @@ class ContentViewPublishStudent extends Component {
   })
     }
 
-  handleView = (blogId) => {
-    let requestData = {
-      "blog_id": blogId ,
-    }
-  axios.post(`${endpoints.blog.BlogView}`, requestData)
-  .then(result=>{
-  if (result.data.status_code === 200) {
-  } else {        
-  }
-  }).catch((error)=>{
-  })
-}
-  
+ 
 
 getRatings = () => {
   let {blogRatings} =this.state
@@ -151,7 +139,6 @@ getRatings = () => {
   const type = typeof blogRatings
   const parsedRatings = type === 'object' ? blogRatings : JSON.parse(blogRatings)
   const allRatingParamters = JSON.parse(parsedRatings)
-  console.log(allRatingParamters)
   return allRatingParamters
 }
 

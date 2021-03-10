@@ -88,6 +88,8 @@ export const fetchUser = (id) => (dispatch) => {
         middle_name: user.user_middle_name || '',
         last_name: user.user.last_name || '',
         email: user.user.email || '',
+        // erp_user: user.erp_user || '',
+        // branch_code:user.branch_code || '',
         academic_year: user.academic_year && {
           id: user.academic_year.id,
           session_year: user.academic_year.session_year,
@@ -98,6 +100,7 @@ export const fetchUser = (id) => (dispatch) => {
           user.mapping_bgs[0].branch.map((branch) => ({
             id: branch.branch_id,
             branch_name: branch.branch__branch_name,
+            branch_code: branch.branch_code,
           }))[0],
         grade:
           user.mapping_bgs[0].grade &&
@@ -140,6 +143,7 @@ export const fetchUser = (id) => (dispatch) => {
           guardian_last_name: user.parent_details.guardian_last_name || '',
           guardian_email: user.parent_details.guardian_email || '',
           guardian_mobile: user.parent_details.guardian_mobile || '',
+          guardian_photo: user.parent_details.guardian_photo || '',
         },
       };
       dispatch({ type: FETCH_USER_DETAIL_SUCCESS, data: transformedUser });
@@ -189,9 +193,12 @@ export const fetchBranchesForCreateUser = () => {
   return axios
     .get('/erp_user/branch/')
     .then((response) => {
-      return response.data.data;
+      if (response.data.status_code === 200) return response?.data?.data;
+      else console.log('','xyzxyz');
     })
-    .catch(() => {});
+    .catch((error) => {
+      throw error;
+    });
 };
 
 export const fetchAcademicYears = () => {

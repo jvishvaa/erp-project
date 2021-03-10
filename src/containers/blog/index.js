@@ -27,3 +27,4 @@ export { default as ContentViewPublishAdmin } from './Admin/ContentViewPublishAd
 export { default as ContentViewPublishPrincipal } from './Principal/ContentViewPublishPrincipal';
 
 export {default as CreateWordCountConfig} from './Teacher/CreateWordCountConfig'
+export {default as EditWordCountConfig} from './Teacher/EditWordCountConfig'

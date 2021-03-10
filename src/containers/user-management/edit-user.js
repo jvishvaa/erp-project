@@ -114,6 +114,7 @@ class EditUser extends Component {
       email,
       profile,
       parent,
+      erp_user,
     } = requestObj;
     const {
       father_first_name,
@@ -150,6 +151,7 @@ class EditUser extends Component {
       address,
       contact,
       email,
+      erp_user,
       profile,
       father_photo,
       mother_photo,
@@ -248,6 +250,7 @@ class EditUser extends Component {
                   <SchoolDetailsForm
                     onSubmit={this.onSubmitSchoolDetails}
                     details={user}
+                    isEdit={true}
                   />
                 )}
                 {activeStep === 1 && (

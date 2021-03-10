@@ -21,10 +21,10 @@ const CreateSection = ({grades,setLoading,handleGoBack}) => {
     else
       setSelectedGrade([])
   };
-  
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    console.log(sectionName, '=====');
     setLoading(true);
     axiosInstance.post(endpoints.masterManagement.createSection,{
       section_name:sectionName,
@@ -47,6 +47,9 @@ const CreateSection = ({grades,setLoading,handleGoBack}) => {
     })
     };
 
+  function capitalize(str){
+    return str.toLowerCase().replace( /\b./g, function(a){ return a.toUpperCase(); } );
+  };
 
   return (
     
@@ -62,9 +65,9 @@ const CreateSection = ({grades,setLoading,handleGoBack}) => {
               size='small'
               value={sectionName}
               style={{ width: '100%' }}
-              inputProps={{pattern:'^[a-zA-Z0-9 ]+',maxLength:20}}
+              inputProps={{pattern:'^[a-zA-Z0-9 +_-]+',maxLength:20}}
               name='secname'
-              onChange={e=>setSectionName(e.target.value)}
+              onChange={e=>setSectionName(capitalize(e.target.value))}
               required
             />
           </Grid>
