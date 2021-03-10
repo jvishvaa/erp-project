@@ -119,6 +119,7 @@ function listGrades () {
 }
 
 function listAcademicSessions (moduleId) {
+  console.log('module id in services: ', moduleId)
   const requestOptions = {
     method: 'GET',
     headers: authHeader()

@@ -24,6 +24,31 @@ import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 
 let feeTypeState = null
 const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Fee Type' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Normal Fee Type') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 class FeeType extends Component {
   
   constructor (props) {
@@ -32,8 +57,8 @@ class FeeType extends Component {
       showTable: false,
       showModal: false,
       showAddFeeModal: false,
-      showDeleteModal: false,
-      moduleId: ''
+      showDeleteModal: false
+      // moduleId: ''
     }
     this.handleClickFeeData.bind(this)
     this.handleAcademicyear.bind(this)
@@ -90,7 +115,7 @@ class FeeType extends Component {
 
   handleAcademicyear = (e) => {
     this.setState({ session: e.value, branchData: [], sessionData: e }, () => {
-      this.props.fetchBranches(this.state.session, this.props.alert, this.props.user, this.state.moduleId)
+      this.props.fetchBranches(this.state.session, this.props.alert, this.props.user, moduleId)
     })
   }
 
@@ -167,32 +192,32 @@ class FeeType extends Component {
     if (feeTypeState) {
       this.setState(feeTypeState)
     }
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'Fee Type' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Normal Fee Type') {
-              // setModuleId(item.child_id);
-              // setModulePermision(true);
-              this.setState({
-                moduleId: item.child_id
-              })
-              console.log('id+', item.child_id)
-            } else {
-              // setModulePermision(false);
-            }
-          });
-        } else {
-          // setModulePermision(false);
-        }
-      });
-    } else {
-      // setModulePermision(false);
-    }
+    // if (NavData && NavData.length) {
+    //   NavData.forEach((item) => {
+    //     if (
+    //       item.parent_modules === 'Fee Type' &&
+    //       item.child_module &&
+    //       item.child_module.length > 0
+    //     ) {
+    //       item.child_module.forEach((item) => {
+    //         if (item.child_name === 'Normal Fee Type') {
+    //           // setModuleId(item.child_id);
+    //           // setModulePermision(true);
+    //           this.setState({
+    //             moduleId: item.child_id
+    //           })
+    //           console.log('id+', item.child_id)
+    //         } else {
+    //           // setModulePermision(false);
+    //         }
+    //       });
+    //     } else {
+    //       // setModulePermision(false);
+    //     }
+    //   });
+    // } else {
+    //   // setModulePermision(false);
+    // }
   }
 
   render () {
@@ -499,7 +524,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchNormalFeeList: (session, branch, alert, user) => dispatch(actionTypes.fetchListNormalFee({ session, alert, branch, user })),
   deleteNormalFeeList: (id, alert, user) => dispatch(actionTypes.deleteNormalFeeList({ id, alert, user }))
