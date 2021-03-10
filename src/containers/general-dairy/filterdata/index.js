@@ -148,6 +148,9 @@ const GeneralDairyFilter = ({
         setAlert('error',error.message)
       })
     }
+    else if(tab === 0){
+      handleFilter(tab)
+    }
   }
   useEffect(() => {
 
