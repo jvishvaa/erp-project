@@ -1,63 +1,153 @@
-import React, { useContext, useState } from 'react';
-import {
-  Grid,
-  TextField,
-  Button,
-  useTheme,
-  Switch,
-  FormControlLabel,
-} from '@material-ui/core';
+import React , { useContext, useState } from 'react';
+import { Grid, TextField, Button, useTheme, Switch, FormControlLabel } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
-const CreateSubject = ({ setLoading, handleGoBack }) => {
+const CreateSubject = ({grades,setLoading,handleGoBack}) => {
+
   const { setAlert } = useContext(AlertNotificationContext);
-  const [subjectName, setSubjectName] = useState('');
-  const [description, setDescription] = useState('');
+  const [subjectName,setSubjectName]=useState('')
+  const [description,setDescription]=useState('')
+  const [selectedGrade,setSelectedGrade]=useState([])
+  const [selectedSection,setSelectedSection]=useState([])
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const [optional, setOptional] = useState(false);
+  const [sections,setSections]=useState([])
+  const [optional,setOptional] = useState(false)
+
+  const {role_details}=JSON.parse(localStorage.getItem('userDetails'))
 
   const handleChange = (event) => {
-    setOptional(event.target.checked);
+    setOptional(event.target.checked)
+  }
+
+  const handleGrade = (event, value) => {
+    if(value)
+      {
+        setSelectedGrade(value)
+        axiosInstance.get(`${endpoints.masterManagement.sections}?branch_id=${role_details.branch[0]}&grade_id=${value.id}`)
+        .then(result=>{
+          if(result.data.status_code===200)
+          {
+            setSections(result.data.data)
+          }
+          else
+          {
+            setAlert('error',result.data.message)
+            setSections([])
+            setSelectedSection([])
+          }
+        })
+        .catch(error=>{
+          setAlert('error', error.message);
+          setSelectedSection([])
+          setSections([])
+        })
+      }
+    else
+      {
+        setSelectedGrade([])
+        setSelectedSection([])
+        setSections([])
+      }
+  };
+
+  const handleSection = (event, value) => {
+    if(value)
+      setSelectedSection(value)
+    else
+      setSelectedSection([])
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     setLoading(true);
-    axiosInstance
-      .post(endpoints.masterManagement.createSubject, {
-        subject_name: subjectName,
-        description: description,
-        is_optional: optional,
+      axiosInstance.post(endpoints.masterManagement.createSubject,{
+        subject_name:subjectName,
+        grade_id:selectedGrade.id,
+        section_name:selectedSection.section__section_name,
+        section_id:selectedSection.section_id,
+        branch_id:role_details.branch[0],
+        description:description,
+        is_optional:optional
       })
-      .then((result) => {
+      .then(result => {
         if (result.data.status_code === 201) {
-          setSubjectName('');
-          setDescription('');
-          setLoading(false);
-          setOptional(false);
-          handleGoBack();
-          setAlert('success', result.data?.message||result.data?.msg);
+          setSubjectName('')
+          setSelectedGrade('')
+          setSelectedSection('')
+          setDescription('')
+          setLoading(false)
+          setOptional(false)
+          setAlert('success', result.data.message)
         } else {
           setLoading(false);
-          setAlert('error', result.data?.message||result.data?.msg);
+          setAlert('error', 'This subject name already exists')
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.response.data.message||error.response.data.msg);
-      });
+        setAlert('error', error.message)
+      })
+    };
+  function capitalize(str){
+    return str.toLowerCase().replace( /\b./g, function(a){ return a.toUpperCase(); } );
   };
 
   return (
-    <form autoComplete='off' onSubmit={handleSubmit}>
-      <div style={{ width: '95%', margin: '20px auto' }}>
+      <form autoComplete='off' onSubmit={handleSubmit}>
+      <div style={{ width: '95%', margin: '20px auto'}}>
         <Grid container spacing={5}>
-          <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
+          <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
+            <Autocomplete
+              size='small'
+              onChange={handleGrade}
+              style={{ width: '100%' }}
+              id='grade'
+              options={grades}
+              value={selectedGrade}
+              getOptionLabel={(option) => option?.grade_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Grades'
+                  placeholder='Grades'
+                  required
+                />
+              )}
+            />
+          </Grid>
+        </Grid>
+        <Grid container spacing={5}>
+          <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
+            <Autocomplete
+              size='small'
+              onChange={handleSection}
+              style={{ width: '100%' }}
+              id='section'
+              options={sections}
+              value={selectedSection}
+              getOptionLabel={(option) => option?.section__section_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Section'
+                  placeholder='Sections'
+                  required
+                />
+              )}
+            />
+          </Grid>
+        </Grid>
+        <Grid container spacing={5}>
+          <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
             <TextField
               id='subname'
               style={{ width: '100%' }}
@@ -65,15 +155,15 @@ const CreateSubject = ({ setLoading, handleGoBack }) => {
               variant='outlined'
               size='small'
               value={subjectName}
-              inputProps={{ pattern: '^[a-zA-Z0-9 ]+', maxLength: 20 }}
+              inputProps={{pattern:'^[a-zA-Z0-9 +_-]+',maxLength:20}}
               name='subname'
-              onChange={(e) => setSubjectName(e.target.value)}
+              onChange={e=>setSubjectName(capitalize(e.target.value))}
               required
             />
           </Grid>
         </Grid>
         <Grid container spacing={5}>
-          <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
+          <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
             <TextField
               id='description'
               label='Description'
@@ -83,10 +173,10 @@ const CreateSubject = ({ setLoading, handleGoBack }) => {
               multiline
               rows={4}
               rowsMax={6}
-              inputProps={{ maxLength: 100 }}
+              inputProps={{maxLength:100}}
               value={description}
               name='description'
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={e=>setDescription(e.target.value)}
               required
             />
           </Grid>
@@ -96,43 +186,31 @@ const CreateSubject = ({ setLoading, handleGoBack }) => {
             <FormControlLabel
               className='switchLabel'
               control={
-                <Switch
-                  checked={optional}
-                  onChange={handleChange}
-                  name='optional'
-                  color='primary'
-                />
-              }
-              label={optional ? 'Optional' : 'Not-Optional'}
-            />
+                <Switch 
+                checked={optional} 
+                onChange={handleChange} 
+                name="optional" 
+                color="primary"
+                />}
+                label={optional?'Optional':'Not-Optional'}
+              />
           </Grid>
         </Grid>
-      </div>
-      <Grid container spacing={isMobile ? 1 : 5} style={{ width: '95%', margin: '10px' }}>
-        <Grid item xs={6} sm={2} className={isMobile ? '' : 'addEditButtonsPadding'}>
-          <Button
-            variant='contained'
-            className='custom_button_master labelColor'
-            size='medium'
-            onClick={handleGoBack}
-          >
-            Back
-          </Button>
+        
+        </div>
+        <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '10px'}} >
+        <Grid item xs={6} sm={2} className={isMobile?'':'addEditButtonsPadding'}>
+            <Button variant='contained' className="custom_button_master labelColor" size='medium' onClick={handleGoBack}>
+              Back
+            </Button>
+          </Grid>
+          <Grid item xs={6} sm={2} className={isMobile?'':'addEditButtonsPadding'}> 
+            <Button variant='contained' style={{color:'white'}} color ="primary" className="custom_button_master" size='medium' type='submit'>
+              Submit
+            </Button>
+          </Grid>
         </Grid>
-        <Grid item xs={6} sm={2} className={isMobile ? '' : 'addEditButtonsPadding'}>
-          <Button
-            variant='contained'
-            style={{ color: 'white' }}
-            color='primary'
-            className='custom_button_master'
-            size='medium'
-            type='submit'
-          >
-            Submit
-          </Button>
-        </Grid>
-      </Grid>
-    </form>
+      </form>
   );
 };
 
