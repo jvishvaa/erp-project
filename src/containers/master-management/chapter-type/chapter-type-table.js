@@ -219,7 +219,7 @@ const ChapterTypeTable = (setCentralSubjectName) => {
       setFilterData({ ...filterData, grade: value });
       axiosInstance
         .get(
-          `${endpoints.lessonReport.subjects}?branch=${value.id}&grade=${value.grade_id}`
+          `${endpoints.lessonReport.subjects}?branch=${filterData.branch.id}&grade=${value.grade_id}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -236,7 +236,7 @@ const ChapterTypeTable = (setCentralSubjectName) => {
 
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?branch_id=${value.id}&grade_id=${value.grade_id}`
+          `${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -298,7 +298,7 @@ const ChapterTypeTable = (setCentralSubjectName) => {
     const handleFilter = () => {
         axiosInstance
         .get(
-          `${endpoints.masterManagement.ViewChapter}?page=${page}&page_size=${limit}&academic_year=${1}&subject=${162}`
+          `${endpoints.masterManagement.ViewChapter}?page=${page}&page_size=${limit}&academic_year=${1}&subject=${166}`
           // `${endpoints.masterManagement.ViewChapter}?page=${page}&page_size=${limit}&academic_year=${filterData?.year.id}&subject=${filterData?.subject.subject_id}`
         )
         .then((result) => {

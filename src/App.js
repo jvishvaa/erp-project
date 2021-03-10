@@ -324,6 +324,9 @@ function App() {
                         <Route exact path='/master-mgmt/academic-year-table'>
                           {({ match }) => <AcademicYearTable match={match} />}
                         </Route>
+                        <Route exact path='/master-mgmt/chapter-type-table'>
+                      {({ match }) => <ChapterTypeTable match={match} />}
+                    </Route>
                         <Route exact path='/master-mgmt/message-type-table'>
                           {({ match }) => <MessageTypeTable match={match} />}
                         </Route>

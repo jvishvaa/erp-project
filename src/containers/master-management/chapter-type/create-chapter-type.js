@@ -189,7 +189,7 @@ const CreateChapterType = ({setLoading,handleGoBack, details, onSubmit,setCentra
         setOverviewSynopsis([]);
         if (value) {
             setFilterData({ ...filterData, branch: value, grade: '', subject: '', chapter: '' });
-            axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}`)
+            axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=8`)
                 .then(result => {
                     if (result.data.status_code === 200) {
                         setGradeDropdown(result.data.data);
@@ -220,7 +220,7 @@ const CreateChapterType = ({setLoading,handleGoBack, details, onSubmit,setCentra
           setFilterData({ ...filterData, grade: value });
           axiosInstance
             .get(
-              `${endpoints.lessonReport.subjects}?branch=${value.id}&grade=${value.grade_id}`
+              `${endpoints.lessonReport.subjects}?branch=${filterData.branch.id}&grade=${value.grade_id}`
             )
             .then((result) => {
               if (result.data.status_code === 200) {
@@ -237,7 +237,7 @@ const CreateChapterType = ({setLoading,handleGoBack, details, onSubmit,setCentra
     
           axiosInstance
             .get(
-              `${endpoints.masterManagement.sections}?branch_id=${value.id}&grade_id=${value.grade_id}`
+              `${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}`
             )
             .then((result) => {
               if (result.data.status_code === 200) {
@@ -341,7 +341,7 @@ const CreateChapterType = ({setLoading,handleGoBack, details, onSubmit,setCentra
             subject:filterData?.subject.subject_id,
             chapter_name: categoryName,
         }).then(result=>{
-        if (result.data.status_code === 201) {
+        if (result.data.status_code === 200) {
             setCategoryName('')
             setLoading(false);
             setAlert('success',result.data.message);
@@ -376,6 +376,7 @@ const CreateChapterType = ({setLoading,handleGoBack, details, onSubmit,setCentra
 
 
         <div style={{ width: '95%', margin: '20px auto'}}>
+          <Grid container>
         <Grid item xs={12} sm={4} className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
                 <Autocomplete
                     style={{ width: '100%' }}
@@ -482,12 +483,12 @@ const CreateChapterType = ({setLoading,handleGoBack, details, onSubmit,setCentra
                 />
             </Grid>
 
-        <Grid container spacing={5}>
+        {/* <Grid container spacing={5}> */}
           <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
             <TextField
               id='categoryname'
               label='Chapter Name'
-              style={{ width: '100%' }}
+              style={{ width: '100%', marginTop: '-10px' }}
               variant='outlined'
               size='small'
               placeholder='Ex: Attendance List'
@@ -498,7 +499,7 @@ const CreateChapterType = ({setLoading,handleGoBack, details, onSubmit,setCentra
               required
             />
           </Grid>
-          <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
+          {/* <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
             <TextField
               id='topicname'
               label='Topic Name'
@@ -512,10 +513,11 @@ const CreateChapterType = ({setLoading,handleGoBack, details, onSubmit,setCentra
               onChange={e=>setTopicName(e.target.value)}
               required
             />
+          </Grid> */}
           </Grid>
-          </Grid>
+          {/* </Grid> */}
         </div>
-             <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '10px'}} >
+             <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '10px', marginLeft: '38px'}} >
              <Grid item xs={6} sm={2} className={isMobile?'':'addEditButtonsPadding'}>
                  <Button variant='contained' className="custom_button_master labelColor" size='medium' onClick={handleGoBack}>
                    Back
