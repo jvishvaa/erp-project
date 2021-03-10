@@ -51,7 +51,7 @@ const columns = [
 const BulkUpload = () => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
-  const [page, setPage] = React.useState(1);
+  const [page, setPage] = useState(1);
   const [academicYear, setAcademicYear] = useState([])
   const [branches, setBranches] = useState([])
   const [searchAcademicYear, setSearchAcademicYear] = useState('');
