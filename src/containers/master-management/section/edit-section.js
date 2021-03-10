@@ -6,11 +6,11 @@ import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 
-const EditSection = ({sectionData,handleGoBack,setLoading}) => {
+const EditSection = ({id,name,handleGoBack,setLoading}) => {
 
-  const {id, section_name} =sectionData;
+  const secName=name.split("_").pop()
   const { setAlert } = useContext(AlertNotificationContext);
-  const [sectionName,setSectionName]=useState(section_name || '')
+  const [sectionName,setSectionName]=useState(secName || '')
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
@@ -19,24 +19,24 @@ const EditSection = ({sectionData,handleGoBack,setLoading}) => {
     e.preventDefault()
     setLoading(true);
     let request={}
-    if(sectionName!==section_name && sectionName!=="")
+    if(sectionName!==secName && sectionName!=="")
     {
-      request['section_name']=sectionName;
-      axiosInstance.put(`${endpoints.masterManagement.updateSection}${id}`,request)
+      request['section_name']=sectionName
+      request['section_id']=id
+      axiosInstance.put(endpoints.masterManagement.updateSection,request)
       .then(result=>{
-        if (result.data.status_code === 201) {
-          handleGoBack();
+        if (result.data.status_code === 200) {
+          handleGoBack()
           setSectionName('')
           setLoading(false);
-          setAlert('success', result.data?.msg||result.data?.message);
+          setAlert('success', result.data.message);
         } else {
-          debugger
           setLoading(false);
-          setAlert('error', result.data?.msg||result.data?.message);
+          setAlert('error', result.data.message);
         }
       }).catch((error)=>{
         setLoading(false);
-        setAlert('error', error.response.data.msg);
+        setAlert('error', error.message);
       })
     }
     else

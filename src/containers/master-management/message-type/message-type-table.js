@@ -228,7 +228,7 @@ const MessageTypeTable = () => {
           </Grid>
         )}
 
-        {tableFlag && !addFlag && !editFlag && (
+        {!isMobile && tableFlag && !addFlag && !editFlag && (
           <Paper className={`${classes.root} common-table`}>
             <TableContainer className={classes.container}>
               <Table stickyHeader aria-label='sticky table'>
@@ -291,7 +291,7 @@ const MessageTypeTable = () => {
             </div>
           </Paper>
         )}
-        {/* {isMobile && !addFlag && !editFlag && (
+        {isMobile && !addFlag && !editFlag && (
           <>
              {
               messageType.map(msgtype => (
@@ -312,7 +312,7 @@ const MessageTypeTable = () => {
             />
             </div>
           </>
-        )} */}
+        )}
         <Dialog
           open={openDeleteModal}
           onClose={handleCloseDeleteModal}

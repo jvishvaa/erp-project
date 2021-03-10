@@ -26,15 +26,15 @@ const CreateGrade = ({setLoading,handleGoBack}) => {
         setGradeName('')
         setGradeType('')
         setLoading(false);
-        setAlert('success', result.data?.message||result.data?.msg);
+        setAlert('success', result.data.message);
       }
     } else {
       setLoading(false);
-      setAlert('error', result.data?.message||result.data?.msg);
+      setAlert('error', result.data.message);
     }
     }).catch((error)=>{
       setLoading(false);
-      setAlert('error', error.response.data.message||error.response.data.msg);
+      setAlert('error', error.message);
     })
     };
 
