@@ -147,7 +147,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         },
       });
       if (result.status === 200) {
-        setBranchList(result.data?.data?.results?.map(obj=>obj?.branch));
+        setBranchList(result.data.data);
       } else {
         setAlert('error', result.data.message);
       }
@@ -490,18 +490,8 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                   <MenuItem value='' style={{position: 'relative'}}>
                     <em>None</em>
                   </MenuItem>
-<<<<<<< HEAD
                   {branchList.map((items, index) => (
                     <MenuItem key={`branch_user_details_${index}`} value={items.id} style={{position: 'relative'}}>
-=======
-<<<<<<< HEAD
-                  {branchList?.map((items, index) => (
-                    <MenuItem key={`branch_user_details_${index}`} value={items.id}>
-=======
-                  {branchList.map((items, index) => (
-                    <MenuItem key={`branch_user_details_${index}`} value={items.id} style={{position: 'relative'}}>
->>>>>>> develop
->>>>>>> dd73581248eaccccae2e5476c720dfe72c22c21b
                       {items.branch_name}
                     </MenuItem>
                   ))}

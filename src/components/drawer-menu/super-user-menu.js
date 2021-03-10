@@ -105,61 +105,10 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
       <Collapse in={masterMenuOpen}>
         <Divider />
         <List>
-        <ListItem
-            button
-            className={
-              history.location.pathname === '/master-management/branch-acad-table'
-                ? 'menu_selection'
-                : null
-            }
-            onClick={() => {
-              onClickMenuItem('branch-acad-table');
-            }}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              {/* <MenuIcon name={child.child_name} /> */}
-              {/* {menuIcon(child.child_name)} */}
-            </ListItemIcon>
-            <ListItemText primary={`Branch Acad Mapping`} className='menu-item-text' />
-          </ListItem>
           <ListItem
             button
             className={
-              history.location.pathname === '/master-management/branch-table'
-                ? 'menu_selection'
-                : null
-            }
-            onClick={() => {
-              onClickMenuItem('branch-table');
-            }}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              {/* <MenuIcon name={child.child_name} /> */}
-              {/* {menuIcon(child.child_name)} */}
-            </ListItemIcon>
-            <ListItemText primary={`Branch`} className='menu-item-text' />
-          </ListItem>
-          <ListItem
-            button
-            className={
-              history.location.pathname === '/master-management/subject-mapping-table'
-                ? 'menu_selection'
-                : null
-            }
-            onClick={() => {
-              onClickMenuItem('subject-mapping-table');
-            }}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              {/* <MenuIcon name={child.child_name} /> */}
-              {/* {menuIcon(child.child_name)} */}
-            </ListItemIcon>
-            <ListItemText primary={`Subject Mapping`} className='menu-item-text' />
-          </ListItem>
-          <ListItem
-            button
-            className={
-              history.location.pathname === '/master-management/grade-table'
+              history.location.pathname === '/master-mgmt/grade-table'
                 ? 'menu_selection'
                 : null
             }
@@ -177,25 +126,7 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
           <ListItem
             button
             className={
-              history.location.pathname === '/master-management/section-mapping-table'
-                ? 'menu_selection'
-                : null
-            }
-            onClick={() => {
-              onClickMenuItem('section-mapping-table');
-            }}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              {/* <MenuIcon name={child.child_name} /> */}
-              {/* {menuIcon(child.child_name)} */}
-            </ListItemIcon>
-            <ListItemText primary='Section Mapping' className='menu-item-text' />
-          </ListItem>
-
-          <ListItem
-            button
-            className={
-              history.location.pathname === '/master-management/section-table'
+              history.location.pathname === '/master-mgmt/section-table'
                 ? 'menu_selection'
                 : null
             }
