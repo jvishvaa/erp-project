@@ -34,6 +34,7 @@ const styles = theme => ({
   }
 })
 
+
 let concessionSettingsState = null
 
 class ConcessionSettings extends Component {

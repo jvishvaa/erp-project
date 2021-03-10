@@ -30,10 +30,10 @@ export const FETCH_INSTA_DETAILS = 'FETCH_INSTA_DETAILS'
 export const FETCH_DEVICE_ID = 'FETCH_DEVICE_ID'
 
 // action-creators
-export const fetchFinancialYear = () => {
+export const fetchFinancialYear = (moduleId) => {
   return (dispatch, getState) => {
     const { authentication } = getState()
-    axios.get(urls.GetFinancialYear, {
+    axios.get(urls.GetFinancialYear + '?module_id=' + moduleId, {
       headers: {
         'Authorization': 'Bearer ' + authentication.user
       }

@@ -34,7 +34,35 @@ const styles = theme => ({
     minHeight: '75vh'
   }
 })
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
 
+let moduleId = null
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Banks & Fee Accounts' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Manage Bank & Fee Accounts') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+          // this.setState({
+            moduleId= item.child_id
+          // })
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 class TabView extends Component {
   state = {
     value: 'one',
@@ -115,7 +143,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  loadSession: dispatch(apiActions.listAcademicSessions())
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId))
 })
 
 export default connect(
