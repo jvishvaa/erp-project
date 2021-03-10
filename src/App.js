@@ -32,7 +32,6 @@ import SectionTable from './containers/master-management/section/section-table';
 import GradeTable from './containers/master-management/grade/grade-table';
 import AcademicYearTable from './containers/master-management/academic-year/academic-year-table';
 import MessageTypeTable from './containers/master-management/message-type/message-type-table';
-import ChapterTypeTable from './containers/master-management/chapter-type/chapter-type-table'
 // import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource';
 import HomeworkCard from './containers/homework/homework-card';
 import Profile from './containers/profile/profile';
@@ -340,10 +339,7 @@ function App() {
                         <Route exact path='/master-management/academic-year-table'>
                           {({ match }) => <AcademicYearTable match={match} />}
                         </Route>
-                        <Route exact path='/master-mgmt/chapter-type-table'>
-                      {({ match }) => <ChapterTypeTable match={match} />}
-                    </Route>
-                        <Route exact path='/master-mgmt/message-type-table'>
+                        <Route exact path='/master-management/message-type-table'>
                           {({ match }) => <MessageTypeTable match={match} />}
                         </Route>
                         <Route exact path='/master-management/subject/grade/mapping'>
