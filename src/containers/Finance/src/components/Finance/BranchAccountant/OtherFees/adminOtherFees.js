@@ -64,12 +64,12 @@ class AdminOtherFees extends Component {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Fee Type' &&
+          item.parent_modules === 'Transport Fees' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Curricular Fee Type') {
+            if (item.child_name === 'Add Transport Fees') {
               // setModuleId(item.child_id);
               // setModulePermision(true);
               this.setState({
@@ -96,7 +96,7 @@ class AdminOtherFees extends Component {
   handleAcademicyear = (e) => {
     // console.log(e)
     this.setState({ session: e.value, branchData: [], sessionData: e })
-    this.props.fetchBranches(e.value, this.props.alert, this.props.user)
+    this.props.fetchBranches(e.value, this.props.alert, this.props.user, this.state.moduleId)
   }
 
   changehandlerbranch = (e) => {
