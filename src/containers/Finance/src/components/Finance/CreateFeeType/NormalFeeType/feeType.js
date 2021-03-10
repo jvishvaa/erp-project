@@ -23,7 +23,8 @@ import Modal from '../../../../ui/Modal/modal'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 
 let feeTypeState = null
-const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};class FeeType extends Component {
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
+class FeeType extends Component {
   
   constructor (props) {
     super(props)

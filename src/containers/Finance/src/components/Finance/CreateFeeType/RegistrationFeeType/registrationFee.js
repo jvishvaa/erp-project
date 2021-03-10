@@ -23,7 +23,7 @@ import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import Layout from '../../../../../../Layout'
 
 // let feeTypeState = null
-
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
 class RegistrationFee extends Component {
   constructor (props) {
     super(props)
@@ -43,12 +43,42 @@ class RegistrationFee extends Component {
       showAddButton: false,
       currentFeetype: '',
       page: 0,
-      rowsPerPage: 10
+      rowsPerPage: 10,
+      moduleId: null
 
     }
     this.handleClickFeeData.bind(this)
     this.handleAcademicyear.bind(this)
     // this.deleteHandler = this.deleteHandler.bind(this)
+  }
+
+  componentDidMount () {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Fee Type' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'App/Reg Fee Type') {
+              // setModuleId(item.child_id);
+              // setModulePermision(true);
+              this.setState({
+                moduleId: item.child_id
+              })
+              console.log('id+', item.child_id)
+            } else {
+              // setModulePermision(false);
+            }
+          });
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
   }
 
   handleChangePage = (event, newPage) => {
@@ -101,7 +131,7 @@ class RegistrationFee extends Component {
   handleAcademicyear = (e) => {
     console.log(e)
     this.setState({ session: e.value, branchData: [], sessionData: e }, () => {
-      this.props.fetchBranches(this.state.session, this.props.alert, this.props.user)
+      this.props.fetchBranches(this.state.session, this.props.alert, this.props.user, this.state.moduleId)
     })
   }
 
@@ -481,7 +511,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchFeeTypes: (session, branch, type, alert, user) => dispatch(actionTypes.fetchListRegistrationFeeType({ session, branch, type, alert, user })),
   deleteRegistrationFeeType: (id, alert, user) => dispatch(actionTypes.deleteRegistrationFeeType({ id, alert, user }))
 
