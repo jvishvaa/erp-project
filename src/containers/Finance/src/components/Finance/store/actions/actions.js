@@ -352,7 +352,7 @@ export const fetchGradeList = (payload) => {
   return (dispatch) => {
     dispatch(dataLoaded())
     axios
-      .get(urls.GradeList, {
+      .get(urls.GradeList + '?module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }

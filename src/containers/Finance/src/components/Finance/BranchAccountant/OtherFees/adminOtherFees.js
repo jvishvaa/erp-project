@@ -31,6 +31,7 @@ const styles = theme => ({
   }
 })
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
 // let feeState = null
 
 class AdminOtherFees extends Component {
@@ -49,7 +50,8 @@ class AdminOtherFees extends Component {
       otherFeeId: '',
       showEditInstaModal: false,
       instaId: null,
-      instaName: ''
+      instaName: '',
+      moduleId: null
     }
   }
 
@@ -58,6 +60,34 @@ class AdminOtherFees extends Component {
   //     this.setState(feeState)
   //   }
   // }
+  componentDidMount () {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Fee Type' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Curricular Fee Type') {
+              // setModuleId(item.child_id);
+              // setModulePermision(true);
+              this.setState({
+                moduleId: item.child_id
+              })
+              console.log('id+', item.child_id)
+            } else {
+              // setModulePermision(false);
+            }
+          });
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  }
 
   componentWillUnmount () {
     this.props.clearProps()
@@ -453,7 +483,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchOtherFees: (session, branch, alert, user) => dispatch(actionTypes.fetchAdminOtherFees({ session, branch, alert, user })),
   deleteInstallments: (session, branch, feeName, alert, user) => dispatch(actionTypes.deleteOtherFeesInstallments({ session, branch, feeName, alert, user })),
   instLists: (session, branch, otherFee, alert, user) => dispatch(actionTypes.fetchInstallmentLists({ session, branch, otherFee, alert, user })),
