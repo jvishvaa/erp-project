@@ -38,6 +38,8 @@ function TabContainer ({ children, dir }) {
 TabContainer.propTypes = {
   children: PropTypes.node.isRequired
 }
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
 class ChangeFeePlanToStudent extends Component {
   constructor (props) {
     super(props)
@@ -61,13 +63,40 @@ class ChangeFeePlanToStudent extends Component {
       showFeeModal: false,
       filterValue: '',
       showTabs: false,
-      value: 'one'
+      value: 'one',
+      moduleId: null
     }
   }
 
   componentDidMount () {
     if (feePlanState) {
       this.setState(feePlanState)
+    }
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Student' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Assign / Change fee plan') {
+              // setModuleId(item.child_id);
+              // setModulePermision(true);
+              this.setState({
+                moduleId: item.child_id
+              })
+              console.log('id+', item.child_id)
+            } else {
+              // setModulePermision(false);
+            }
+          });
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
     }
   }
 
@@ -78,14 +107,14 @@ class ChangeFeePlanToStudent extends Component {
   handleAcademicyear = (e) => {
     console.log('acad years', this.props.session)
     this.setState({ session: e.value, gradeData: null, gradeId: null, sessionData: e, showTabs: false }, () => {
-      this.props.fetchAllGrades(this.state.session, this.props.alert, this.props.user)
+      this.props.fetchAllGrades(this.state.session, this.props.alert, this.props.user, this.state.moduleId)
     })
   }
 
   gradeHandler = (e) => {
     console.log(e.value)
     this.setState({ gradeId: e.value, gradeData: e, showTabs: false }, () => {
-      this.props.fetchAllSections(this.state.session, this.state.gradeId, this.props.alert, this.props.user)
+      this.props.fetchAllSections(this.state.session, this.state.gradeId, this.props.alert, this.props.user, this.state.moduleId)
     })
   }
 
@@ -753,8 +782,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchAllGrades: (session, alert, user) => dispatch(actionTypes.fetchAllGrades({ session, alert, user })),
-  fetchAllSections: (session, gradeId, alert, user) => dispatch(actionTypes.fetchAllSections({ session, gradeId, alert, user })),
+  fetchAllGrades: (session, alert, user, moduleId) => dispatch(actionTypes.fetchAllGrades({ session, alert, user, moduleId })),
+  fetchAllSections: (session, gradeId, alert, user, moduleId) => dispatch(actionTypes.fetchAllSections({ session, gradeId, alert, user, moduleId })),
   fetchAllPlans: (session, gradeId, sectionId, studentType, alert, user) => dispatch(actionTypes.fetchAllPlans({ session, gradeId, sectionId, studentType, alert, user })),
   fetchAllFeePlans: (session, gradeId, alert, user) => dispatch(actionTypes.fetchAllFeePlans({ session, gradeId, alert, user })),
   editStudentFeePlan: (data, studentId, alert, user) => dispatch(actionTypes.editStudentFeePlan({ data, studentId, alert, user })),

@@ -19,6 +19,7 @@ import ViewDeposits  from './ViewDeposits/viewDeposits';
 import ExpenseDeposit  from './ExpenseDeposit/expenseDeposit';
 import CollectionDeposit from './CollectionDeposit/collectionDeposit'
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
 function TabContainer ({ children, dir }) {
   return (
     <Typography component='div' dir={dir} style={{ padding: 8 * 3 }}>
@@ -46,9 +47,37 @@ class DepositTab extends Component {
   state = {
     value: 'one',
     currentSession: null,
-    currentBranch: null
+    currentBranch: null,
+    moduleId: null
   };
-
+  componentDidMount () {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Expense Management' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Deposit') {
+              // setModuleId(item.child_id);
+              // setModulePermision(true);
+              this.setState({
+                moduleId: item.child_id
+              })
+              console.log('id+', item.child_id)
+            } else {
+              // setModulePermision(false);
+            }
+          });
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  }
   handleChange = (event, value) => {
     this.setState({ value })
   };
@@ -58,7 +87,7 @@ class DepositTab extends Component {
   };
 
   fetchBranchHandler = (e) => {
-    this.props.fetchBranches(e.value, this.props.alert, this.props.user)
+    this.props.fetchBranches(e.value, this.props.alert, this.props.user, this.state.moduleId)
     this.setState({
       currentSession: e.value
     })
@@ -168,7 +197,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId})),
   loadFinancialYear: dispatch(actionTypes.fetchFinancialYear())
 })
 

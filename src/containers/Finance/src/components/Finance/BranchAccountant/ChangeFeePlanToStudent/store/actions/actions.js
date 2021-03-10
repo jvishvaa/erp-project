@@ -19,7 +19,7 @@ export const fetchAllGrades = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.StudentGradeAcc + '?academic_year=' + payload.session, {
+      .get(urls.StudentGradeAcc + '?academic_year=' + payload.session + '&module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
@@ -66,9 +66,9 @@ export const fetchAdjustFee = (payload) => {
 export const fetchAllSections = (payload) => {
   let url = null
   if (payload.branch) {
-    url = urls.StudentGradeSectionAcc + '?academic_year=' + payload.session + '&grade=' + payload.gradeId + '&branch_id=' + payload.branch
+    url = urls.StudentGradeSectionAcc + '?academic_year=' + payload.session + '&grade=' + payload.gradeId + '&branch_id=' + payload.branch + '&module_id=' + payload.moduleId
   } else {
-    url = urls.StudentGradeSectionAcc + '?academic_year=' + payload.session + '&grade=' + payload.gradeId
+    url = urls.StudentGradeSectionAcc + '?academic_year=' + payload.session + '&grade=' + payload.gradeId + '&module_id=' + payload.moduleId
   }
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())

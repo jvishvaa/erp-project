@@ -4,9 +4,7 @@ import roleManagement from './roleManagementReducer';
 import userManagement from './userManagementReducer';
 import academicMappingReducer from './academic-mapping-reducer';
 import teacherHomework from './teacherHomeworkReducer';
-<<<<<<< HEAD
 import postReducer from './discussionForumReducer';
-=======
 // /home/rana/ErpRevamp/erp-revamp-frontend/src/containers/Finance/src/_reducers/academicSession.reducer.js
 import commonReducer from '../../../src/containers/Finance/src/components/Finance/store/reducer/common.reducer'
 import { academicSession } from '../../../src/containers/Finance/src/_reducers/academicSession.reducer'
@@ -24,7 +22,6 @@ import { gradeMap } from '../../../src/containers/Finance/src/_reducers/gradeMap
 import { sectionMap } from '../../../src/containers/Finance/src/_reducers/sectionMap.reducer.js'
 import { subjects } from '../../../src/containers/Finance/src/_reducers/subject.reducer.js'
 
->>>>>>> 59d95ac192c5b3eb6f593b165f2ca81da027f78d
 
 export default combineReducers({
   auth,
@@ -32,9 +29,7 @@ export default combineReducers({
   userManagement,
   academic: academicMappingReducer,
   teacherHomework,
-<<<<<<< HEAD
   postReducers: postReducer,
-=======
   common: commonReducer,
   academicSession,
   authentication,
@@ -47,5 +42,4 @@ export default combineReducers({
   gradeMap,
   sectionMap,
   subjects 
->>>>>>> 59d95ac192c5b3eb6f593b165f2ca81da027f78d
 });

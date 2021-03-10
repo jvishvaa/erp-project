@@ -93,15 +93,8 @@ const Layout = ({ children, history }) => {
   const [mobileSeach, setMobileSeach] = useState(false);
   const [displayUserDetails, setDisplayUserDetails] = useState(false);
   const [userId, setUserId] = useState();
-<<<<<<< HEAD
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-
-  // let { key } = useParams();
-=======
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
->>>>>>> 59d95ac192c5b3eb6f593b165f2ca81da027f78d
   const getGlobalUserRecords = async (text) => {
     try {
       const result = await axiosInstance.get(
@@ -495,17 +488,15 @@ const Layout = ({ children, history }) => {
         history.push('/lesson-plan/teacher-view');
         break;
       }
-<<<<<<< HEAD
       case 'Student View': {
         history.push('/lesson-plan/student-view');
-=======
+      }
       case 'Assign Transport Fees': {
         history.push('/feeType/assign_other_fees');
         break;
       }
       case 'App/Reg Fee Type': {
         history.push('/feeType/RegistrationFee');
->>>>>>> 59d95ac192c5b3eb6f593b165f2ca81da027f78d
         break;
       }
       case 'Management Report': {
@@ -532,13 +523,11 @@ const Layout = ({ children, history }) => {
         history.push('/blog/admin');
         break;
       }
-<<<<<<< HEAD
       case 'Principal Blogs': {
         history.push('/blog/principal');
-=======
+      }
       case 'Application/registration Receipt Book': {
         history.push('/finance/Application/registration/ReceiptBook')
->>>>>>> 59d95ac192c5b3eb6f593b165f2ca81da027f78d
         break;
       }
       case 'Genre': {
@@ -553,13 +542,11 @@ const Layout = ({ children, history }) => {
         history.push('/diary/student');
         break;
       }
-<<<<<<< HEAD
       case 'Teacher Diary': {
         history.push('/diary/teacher');
-=======
+      }
       case 'Student Shuffle': {
         history.push('/finance/StudentShuffleRequest')
->>>>>>> 59d95ac192c5b3eb6f593b165f2ca81da027f78d
         break;
       }
       case 'Assessment': {
@@ -574,21 +561,19 @@ const Layout = ({ children, history }) => {
         history.push('/student-id-card');
         break;
       }
-<<<<<<< HEAD
       case 'Student Strength': {
         history.push('/student-strength');
         break;
       }
       case 'Signature Upload': {
         history.push('/master-mgmt/signature-upload');
-=======
+      }
       case 'Deposit': {
         history.push('/finance/DepositTab')
         break;
       }
       case 'Total Forms & Report': {
         history.push('/finance/TotalFormReport')
->>>>>>> 59d95ac192c5b3eb6f593b165f2ca81da027f78d
         break;
       }
       case 'Teacher Circular': {
@@ -599,8 +584,6 @@ const Layout = ({ children, history }) => {
         history.push('/circular');
         break;
       }
-<<<<<<< HEAD
-=======
       case 'Store Report': {
         history.push('/finance/StoreReport')
           break;
@@ -813,7 +796,6 @@ const Layout = ({ children, history }) => {
                     history.push('/finance/TransactionStatus')
                         break;
                     }
->>>>>>> 59d95ac192c5b3eb6f593b165f2ca81da027f78d
       default:
         break;
     }
