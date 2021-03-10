@@ -210,7 +210,7 @@ const EditGroup = withRouter(({ history, ...props }) => {
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'View&Edit Group') {
+            if (item.child_name === 'View & Edit Group') {
               setModuleId(item.child_id);
               setModulePermision(true);
             } else {

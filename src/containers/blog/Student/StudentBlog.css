@@ -25,7 +25,7 @@
 	top: 231px !important;
 	left: 751px !important;
 	min-width: 147px !important;
-
+    
   } */
   .message_log_white_wrapper{
 	margin-top: 40px;
@@ -186,8 +186,6 @@
   margin-left: 37px;
   /* width: 1006px; */
   height: 76px;
-
-
 }
 .not_selected{
 	position: relative;

@@ -4,7 +4,9 @@ import { Grid, TextField, Button, useTheme, SvgIcon } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-import download from '../../../assets/images/downloadAll.svg';
+import { AttachmentPreviewerContext } from '../../../components/attachment-previewer/attachment-previewer-contexts';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+// import download from '../../../assets/images/downloadAll.svg';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import axios from 'axios';
@@ -24,6 +26,8 @@ const LessonViewFilters = ({
     centralGradeName,
     centralSubjectName,
     }) => {
+
+    const { openPreview, closePreview } = React.useContext(AttachmentPreviewerContext) || {};
 
     const { setAlert } = useContext(AlertNotificationContext);
     const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -434,17 +438,35 @@ const LessonViewFilters = ({
             </Grid>
             {overviewSynopsis?.map(obj => (
                 <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
-                    <a className="underlineRemove" href={`${endpoints.lessonPlan.s3}dev/${obj.lesson_type === '1' ? 'synopsis_file' : 'overview_file'}/${filterData?.year?.session_year}/${filterData?.volume?.volume_name}/${centralGradeName}/${centralSubjectName}/pdf/${obj?.media_file[0]}`} >
+                    <a className="underlineRemove" 
+                    // href={`${endpoints.lessonPlan.s3}dev/${obj.lesson_type === '1' ? 'synopsis_file' : 'overview_file'}/${filterData?.year?.session_year}/${filterData?.volume?.volume_name}/${centralGradeName}/${centralSubjectName}/pdf/${obj?.media_file[0]}`}
+                    onClick={()=>{
+                        const fileSrc = `${endpoints.lessonPlan.s3}dev/${obj.lesson_type === '1' ? 'synopsis_file' : 'overview_file'}/${filterData?.year?.session_year}/${filterData?.volume?.volume_name}/${centralGradeName}/${centralSubjectName}/pdf/${obj?.media_file[0]}`
+                        openPreview({
+                            currentAttachmentIndex:0,
+                            attachmentsArray: [
+                                {
+                                    src: fileSrc,
+                                    // name: `${obj.lesson_type === '1'?'Synopsis':'Overview'}`,
+                                    name: `${obj.lesson_type === '1'?'Portion Document':'Yearly Curriculum on the ERP (new)'}`,
+                                    extension: '.' + fileSrc.split('.')[fileSrc.split('.').length-1],
+                                }
+                            ]
+                        })
+                    }}
+                    >
                         <div className="overviewSynopsisContainer">
-                            <div className="overviewSynopsisTag">{obj.lesson_type === '1' ? 'Synopsis' : 'Overview'}</div>
+                            {/* <div className="overviewSynopsisTag">{obj.lesson_type === '1' ? 'Synopsis' : 'Overview'}</div> */}
+                            <div className="overviewSynopsisTag">{obj.lesson_type === '1' ? 'Portion Document' : 'Yearly Curriculum on the ERP (new)'}</div>
                             <div className="overviewSynopsisIcon">
                                 <SvgIcon
                                     component={() => (
-                                        <img
-                                            style={{ height: '25px', width: '25px' }}
-                                            src={download}
-                                            title={`Download ${obj.lesson_type === '1' ? 'Synopsis' : 'Overview'}`}
-                                        />
+                                        // <img
+                                        //     style={{ height: '25px', width: '25px' }}
+                                        //     src={download}
+                                        //     title={`Download ${obj.lesson_type === '1' ? 'Synopsis' : 'Overview'}`}
+                                        // />
+                                        <VisibilityIcon color='primary' />
                                     )}
                                 />
                             </div>

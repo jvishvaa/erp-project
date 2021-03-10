@@ -73,14 +73,15 @@ const TeacherBatchView = ({ history }) => {
             setCourseList(result.data.result || []);
           }
           if (key === 'filter') {
-            setFilterFullData(result.data || {});
-            setFilterList(result.data.data || {});
+            setFilterFullData(result.data || []);
+            setFilterList(result.data.data || []);
             setSelectedViewMore('');
           }
           setLoading(false);
         } else {
           setAlert('error', result.data.message);
           setLoading(false);
+          setSelectedViewMore('');
         }
       })
       .catch((error) => {

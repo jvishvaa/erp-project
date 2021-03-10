@@ -299,7 +299,6 @@ const QuestionCard = ({
                   <IconButton>
                     <CloudUploadIcon color='primary' />
                   </IconButton>
-
                   <FormControlLabel
                     className='question-ctrl'
                     control={

@@ -1,7 +1,17 @@
-import React, { useState, useEffect, useContext } from 'react'
-import Layout from '../../Layout'
-import './homework-admin.css'
-import { Checkbox, IconButton, TextField, Grid, Button, useTheme, Divider, Switch, FormControlLabel } from '@material-ui/core'
+import React, { useState, useEffect, useContext } from 'react';
+import Layout from '../../Layout';
+import './homework-admin.css';
+import {
+  Checkbox,
+  IconButton,
+  TextField,
+  Grid,
+  Button,
+  useTheme,
+  Divider,
+  Switch,
+  FormControlLabel,
+} from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -19,18 +29,17 @@ import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import Loading from '../../../components/loader/loader';
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '85%',
     margin: '1.25rem 3%',
-    boxShadow: 'none'
+    boxShadow: 'none',
   },
   container: {
     maxHeight: '70vh',
     width: '100%',
     boxShadow: '0px 0px 10px -5px #fe6b6b',
-    borderRadius: '.5rem'
+    borderRadius: '.5rem',
   },
   columnHeader: {
     color: `${theme.palette.secondary.main} !important`,
@@ -72,7 +81,7 @@ const sscolumns = [
     align: 'center',
     labelAlign: 'center',
   },
-]
+];
 const columns = [
   {
     id: 'low_range',
@@ -112,29 +121,33 @@ const columns = [
 ];
 
 const HomeworkAdmin = () => {
-  const classes = useStyles()
+  const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
-  const [rowData, setRowData] = useState({ hw_ration: [], subject_data: [], prior_data: [] })
-  const [loading, setLoading] = useState(false)
+  const [rowData, setRowData] = useState({
+    hw_ration: [],
+    subject_data: [],
+    prior_data: [],
+  });
+  const [loading, setLoading] = useState(false);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const wider = isMobile ? '-10px 0px' : '0 0 -1rem 1.5%'
-  const widerWidth = isMobile ? '90%' : '85%'
-  const [searchGrade, setSearchGrade] = useState('')
-  const [searchSection, setSearchSection] = useState('')
-  const [sectionDisplay, setSectionDisplay] = useState([])
-  const [gradeDisplay, setGradeDisplay] = useState([])
-  const { role_details } = JSON.parse(localStorage.getItem('userDetails'))
-  const [grades, setGrades] = useState([])
-  const [sections, setSections] = useState([])
-  const [prior, setPrior] = useState()
-  const [post, setPost] = useState()
-  const [hwratio, setHwratio] = useState(false)
-  const [topPerformers, setTopPerformers] = useState(false)
-  const [ratingData, setRatingData] = useState([])
-  const [mandatorySubjects, setMandatorySubjects] = useState([])
-  const [optionalSubjects, setOptionalSubjects] = useState([])
-  const [otherSubjects, setOtherSubjects] = useState([])
+  const wider = isMobile ? '-10px 0px' : '0 0 -1rem 1.5%';
+  const widerWidth = isMobile ? '90%' : '85%';
+  const [searchGrade, setSearchGrade] = useState('');
+  const [searchSection, setSearchSection] = useState('');
+  const [sectionDisplay, setSectionDisplay] = useState([]);
+  const [gradeDisplay, setGradeDisplay] = useState([]);
+  const { role_details } = JSON.parse(localStorage.getItem('userDetails'));
+  const [grades, setGrades] = useState([]);
+  const [sections, setSections] = useState([]);
+  const [prior, setPrior] = useState();
+  const [post, setPost] = useState();
+  const [hwratio, setHwratio] = useState(false);
+  const [topPerformers, setTopPerformers] = useState(false);
+  const [ratingData, setRatingData] = useState([]);
+  const [mandatorySubjects, setMandatorySubjects] = useState([]);
+  const [optionalSubjects, setOptionalSubjects] = useState([]);
+  const [otherSubjects, setOtherSubjects] = useState([]);
   const [required, setRequired] = useState({ lower: '', upper: '', star: '', index: '' });
   // else if((mandatorySubjects.length+optionalSubjects.length+otherSubjects.length)!==(rowData.subject_data.length)){
   //   setAlert('error','A subject should be either mandatory, optional or other but can\'t be empty')
@@ -147,29 +160,43 @@ const HomeworkAdmin = () => {
   // }
 
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     let clear = true;
     for (let i = 0; i < ratingData.length; i++) {
-      if (ratingData[i]['low_range'] && ratingData[i]['upper_range'] && ratingData[i]['star']) {
+      if (
+        ratingData[i]['low_range'] &&
+        ratingData[i]['upper_range'] &&
+        ratingData[i]['star']
+      ) {
         if (ratingData[i]['low_range'] < 0.1) {
           clear = false;
-          setAlert('warning', 'Lower Range can\'t be less than 0.1 for rating number '+(i+1));
+          setAlert(
+            'warning',
+            "Lower Range can't be less than 0.1 for rating number " + (i + 1)
+          );
           break;
-        }
-        else if (ratingData[i]['upper_range'] > 1.0) {
+        } else if (ratingData[i]['upper_range'] > 1.0) {
           clear = false;
-          setAlert('warning', 'Upper Range can\'t be more than 1.0 for rating number '+(i+1));
+          setAlert(
+            'warning',
+            "Upper Range can't be more than 1.0 for rating number " + (i + 1)
+          );
           break;
-        }
-        else if (ratingData[i]['low_range'] >= ratingData[i]['upper_range']) {
+        } else if (ratingData[i]['low_range'] >= ratingData[i]['upper_range']) {
           clear = false;
-          setAlert('warning', 'Lower Range can\'t be greater than or equal to Upper Range for rating number '+(i+1));
+          setAlert(
+            'warning',
+            "Lower Range can't be greater than or equal to Upper Range for rating number " +
+              (i + 1)
+          );
           break;
-        }
-        else if (ratingData[i]['star'] < 1 || ratingData[i]['star'] > 5) {
+        } else if (ratingData[i]['star'] < 1 || ratingData[i]['star'] > 5) {
           clear = false;
-          setAlert('warning', 'Stars must lie between 1 and 5 for rating number '+(i+1));
+          setAlert(
+            'warning',
+            'Stars must lie between 1 and 5 for rating number ' + (i + 1)
+          );
           break;
         }
       }
@@ -178,19 +205,19 @@ const HomeworkAdmin = () => {
     for (let i = 0; i < ratingData.length; i++) {
       if (ratingData[i]['low_range'] === '') {
         clear = false;
-        setAlert('warning', 'Lower range can\'t be empty for rating ' + (i + 1));
+        setAlert('warning', "Lower range can't be empty for rating " + (i + 1));
         break;
         // setRequired(prevState => ({ ...prevState, lower: true, index: i }));
       }
       if (ratingData[i]['upper_range'] === '') {
         clear = false;
-        setAlert('warning', 'Upper range can\'t be empty for rating ' + (i + 1));
+        setAlert('warning', "Upper range can't be empty for rating " + (i + 1));
         break;
         // setRequired(prevState => ({ ...prevState, upper: true, index: i }));
       }
       if (ratingData[i]['star'] === '') {
         clear = false;
-        setAlert('warning', 'Stars can\'t be empty for rating ' + (i + 1));
+        setAlert('warning', "Stars can't be empty for rating " + (i + 1));
         break;
         // setRequired(prevState => ({ ...prevState, star: true, index: i }));
       }
@@ -207,37 +234,39 @@ const HomeworkAdmin = () => {
     } else if (mandatorySubjects.length > 5 || mandatorySubjects.length === 0) {
       setAlert('error', 'Number of mandatory subjects must lie between 1 and 5');
     } else if (clear) {
-      debugger
-      setLoading(true)
-      axiosInstance.post(endpoints.homework.createConfig, {
-        "branch": role_details.branch[0],
-        "grade": searchGrade,
-        "section": searchSection,
-        "subject_config":
-        {
-          "mandatory_subjects": mandatorySubjects,
-          "optional_subjects": optionalSubjects,
-          "others_subjects": otherSubjects,
-          "prior_class": prior,
-          "post_class": post,
-          "is_hw_ration": hwratio,
-          "is_top_performers": topPerformers
-        },
-        "hw_ration": ratingData
-      }).then(result => {
-        if (result.data.status_code === 200) {
-          setLoading(false)
-          setAlert('success', result.data.message)
-        } else {
-          setLoading(false)
-          setAlert('error', result.data.description)
-        }
-      }).catch((error) => {
-        setLoading(false)
-        setAlert('error', error.response.data.description);
-      })
+      debugger;
+      setLoading(true);
+      axiosInstance
+        .post(endpoints.homework.createConfig, {
+          branch: role_details.branch[0],
+          grade: searchGrade,
+          section: searchSection,
+          subject_config: {
+            mandatory_subjects: mandatorySubjects,
+            optional_subjects: optionalSubjects,
+            others_subjects: otherSubjects,
+            prior_class: prior,
+            post_class: post,
+            is_hw_ration: hwratio,
+            is_top_performers: topPerformers,
+          },
+          hw_ration: ratingData,
+        })
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setLoading(false);
+            setAlert('success', result.data.message);
+          } else {
+            setLoading(false);
+            setAlert('error', result.data.description);
+          }
+        })
+        .catch((error) => {
+          setLoading(false);
+          setAlert('error', error.response.data.description);
+        });
     }
-  }
+  };
 
   /*Validation for Edit*/
   // else if(searchGrade
@@ -249,15 +278,14 @@ const HomeworkAdmin = () => {
   // }
 
   const handleHwratio = (event) => {
-    setHwratio(event.target.checked)
-  }
+    setHwratio(event.target.checked);
+  };
 
   const handleTopPerformers = (event) => {
-    setTopPerformers(event.target.checked)
-  }
+    setTopPerformers(event.target.checked);
+  };
 
   const handleCheckSubject = (event, id, index) => {
-
     let value = event.target.checked;
     const list = [...rowData.subject_data];
     let name = event.target.name;
@@ -272,12 +300,11 @@ const HomeworkAdmin = () => {
       }
       list[index]['is_optional'] = false;
       list[index]['is_other'] = false;
-      let filtered = optionalSubjects.filter(value => value !== id);
+      let filtered = optionalSubjects.filter((value) => value !== id);
       setOptionalSubjects(filtered);
-      filtered = otherSubjects.filter(value => value !== id);
+      filtered = otherSubjects.filter((value) => value !== id);
       setOtherSubjects(filtered);
-    }
-    else if (name === 'is_optional') {
+    } else if (name === 'is_optional') {
       if (value) {
         list[index]['is_optional'] = true;
         optionalSubjects.push(id);
@@ -287,12 +314,11 @@ const HomeworkAdmin = () => {
       }
       list[index]['is_mandatory'] = false;
       list[index]['is_other'] = false;
-      let filtered = mandatorySubjects.filter(value => value !== id);
+      let filtered = mandatorySubjects.filter((value) => value !== id);
       setMandatorySubjects(filtered);
-      filtered = otherSubjects.filter(value => value !== id);
+      filtered = otherSubjects.filter((value) => value !== id);
       setOtherSubjects(filtered);
-    }
-    else if (name === 'is_other') {
+    } else if (name === 'is_other') {
       if (value) {
         list[index]['is_other'] = true;
         otherSubjects.push(id);
@@ -302,180 +328,170 @@ const HomeworkAdmin = () => {
       }
       list[index]['is_mandatory'] = false;
       list[index]['is_optional'] = false;
-      let filtered = mandatorySubjects.filter(value => value !== id);
+      let filtered = mandatorySubjects.filter((value) => value !== id);
       setMandatorySubjects(filtered);
-      filtered = optionalSubjects.filter(value => value !== id);
+      filtered = optionalSubjects.filter((value) => value !== id);
       setOptionalSubjects(filtered);
     }
     setRowData({ ...rowData, subject_data: list });
-  }
+  };
 
   const handleAddRating = () => {
-    setRatingData([...ratingData, { 'low_range': '', 'upper_range': '', 'star': '', 'is_display': false }])
-  }
+    setRatingData([
+      ...ratingData,
+      { low_range: '', upper_range: '', star: '', is_display: false },
+    ]);
+  };
 
-  const handleRemoveRating = index => {
-    const list = [...ratingData]
-    list.splice(index, 1)
-    setRatingData(list)
-  }
+  const handleRemoveRating = (index) => {
+    const list = [...ratingData];
+    list.splice(index, 1);
+    setRatingData(list);
+  };
 
   const handleRatingData = (event, index) => {
-    let name = event.target.name
-    let value
-    const list = [...ratingData]
-    if (name === 'is_display')
-      value = event.target.checked
-    else
-      value = event.target.value
-    list[index][name] = value
-    setRowData({ ...rowData, hw_ration: list })
-  }
+    let name = event.target.name;
+    let value;
+    const list = [...ratingData];
+    if (name === 'is_display') value = event.target.checked;
+    else value = event.target.value;
+    list[index][name] = value;
+    setRowData({ ...rowData, hw_ration: list });
+  };
 
   const handleGrade = (event, value) => {
+    setSectionDisplay([]);
+    setSections([]);
+    setOtherSubjects([]);
+    setMandatorySubjects([]);
+    setOptionalSubjects([]);
+    setPrior('');
+    setPost('');
+    setRatingData([]);
+    setGradeDisplay([]);
+    setSearchGrade('');
+    setSearchSection('');
     if (value) {
-      setSearchGrade(value.id)
-      setSectionDisplay([])
-      setSections([])
-      setGradeDisplay(value)
-      setOtherSubjects([])
-      setMandatorySubjects([])
-      setOptionalSubjects([])
-      axiosInstance.get(`${endpoints.masterManagement.sections}?branch_id=${role_details.branch[0]}&grade_id=${value.id}`)
-        .then(result => {
+      setSearchGrade(value?.id);
+      setGradeDisplay(value);
+      axiosInstance
+        .get(
+          `${endpoints.masterManagement.sections}?branch_id=${role_details.branch[0]}&grade_id=${value.id}`
+        )
+        .then((result) => {
           if (result.data.status_code === 200) {
-            setSections(result.data.data)
-          }
-          else {
-            setAlert('error', result.data.message)
-            setSections([])
-            setSectionDisplay([])
-            setRowData({ hw_ration: [], subject_data: [], prior_data: [] })
-            setPrior('')
-            setPost('')
-            setRatingData([])
-            setGradeDisplay([])
+            setSections(result.data?.data);
+          } else {
+            setAlert('error', result.data.message);
+            setRowData({ hw_ration: [], subject_data: [], prior_data: [] });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           setAlert('error', error.message);
-          setSections([])
-          setSectionDisplay([])
-          setRowData({ hw_ration: [], subject_data: [], prior_data: [] })
-          setPrior('')
-          setPost('')
-          setRatingData([])
-          setGradeDisplay([])
-        })
+          setRowData({ hw_ration: [], subject_data: [], prior_data: [] });
+        });
+    } else {
+      setRowData({ hw_ration: [], subject_data: [], prior_data: [] });
     }
-    else {
-      setSearchGrade('')
-      setSearchSection('')
-      setSections([])
-      setSectionDisplay([])
-      setGradeDisplay([])
-      setRowData({ hw_ration: [], subject_data: [], prior_data: [] })
-      setPrior('')
-      setPost('')
-      setRatingData([])
-    }
-  }
+  };
 
   const handleSection = (event, value) => {
+    setSearchSection('');
+    setSectionDisplay([]);
     if (value) {
-      setOtherSubjects([])
-      setMandatorySubjects([])
-      setOptionalSubjects([])
-      setSearchSection(value.section_id)
-      setSectionDisplay(value)
+      setOtherSubjects([]);
+      setMandatorySubjects([]);
+      setOptionalSubjects([]);
+      setSearchSection(value?.section_id);
+      setSectionDisplay(value);
+    } else {
+      setRowData({ hw_ration: [], subject_data: [], prior_data: [] });
+      setPrior('');
+      setPost('');
+      setRatingData([]);
+      setSearchSection('');
+      setSectionDisplay([]);
     }
-    else {
-      setRowData({ hw_ration: [], subject_data: [], prior_data: [] })
-      setPrior('')
-      setPost('')
-      setRatingData([])
-      setSearchSection('')
-      setSectionDisplay([])
-    }
-  }
+  };
 
   useEffect(() => {
-    axiosInstance.get(endpoints.masterManagement.gradesDrop)
-      .then(result => {
+    axiosInstance
+      .get(endpoints.masterManagement.gradesDrop)
+      .then((result) => {
         if (result.status === 200) {
           setGrades(result.data.data);
         } else {
           setAlert('error', result.data.message);
-          setGrades([])
+          setGrades([]);
         }
       })
       .catch((error) => {
         setAlert('error', error.message);
-        setGrades([])
-      })
-  }, [])
+        setGrades([]);
+      });
+  }, []);
 
   useEffect(() => {
-    if (searchGrade & searchSection) {
-      let request = `${endpoints.homework.completeData}?branch=${role_details.branch[0]}&grade=${searchGrade}&section=${searchSection}`
-      axiosInstance.get(request)
-        .then(result => {
+    if (searchGrade && searchSection) {
+      let request = `${endpoints.homework.completeData}?branch=${role_details.branch[0]}&grade=${searchGrade}&section=${searchSection}`;
+      axiosInstance
+        .get(request)
+        .then((result) => {
           if (result.data.status_code === 200) {
-            let len = result.data.result[0].subject_data.length
+            let len = result.data.result[0].subject_data.length;
             if (len > 0) {
-              let lenhw = result.data.result[0].hw_ration.length
-              if (lenhw > 0)
-                setRatingData(result.data.result[0].hw_ration)
+              let lenhw = result.data.result[0].hw_ration.length;
+              if (lenhw > 0) setRatingData(result.data.result[0].hw_ration);
               else
-                setRatingData([{ 'low_range': '', 'upper_range': '', 'star': '', 'is_display': false }])
-            }
-            else {
-              setRatingData([])
+                setRatingData([
+                  { low_range: '', upper_range: '', star: '', is_display: false },
+                ]);
+            } else {
+              setRatingData([]);
             }
             let arr = [...result.data.result[0].subject_data];
             for (let i = 0; i < len; i++) {
               if (arr[i]['is_mandatory'] === true) {
                 mandatorySubjects.push(arr[i]['subject_id']);
-              }
-              else if (arr[i]['is_optional'] === true) {
+              } else if (arr[i]['is_optional'] === true) {
                 optionalSubjects.push(arr[i]['subject_id']);
-              }
-              else if (arr[i]['is_other'] === true) {
+              } else if (arr[i]['is_other'] === true) {
                 otherSubjects.push(arr[i]['subject_id']);
               }
             }
-            setRowData(result.data.result[0])
-            setPrior(result.data.result[0].prior_data[0].prior_class)
-            setPost(result.data.result[0].prior_data[0].post_class)
-            setHwratio(result.data.result[0].prior_data[0].is_hw_ration)
-            setTopPerformers(result.data.result[0].prior_data[0].is_top_performers)
+            setRowData(result.data.result[0]);
+            setPrior(result.data.result[0].prior_data[0].prior_class);
+            setPost(result.data.result[0].prior_data[0].post_class);
+            setHwratio(result.data.result[0].prior_data[0].is_hw_ration);
+            setTopPerformers(result.data.result[0].prior_data[0].is_top_performers);
           } else {
-            setRowData({ hw_ration: [], subject_data: [], prior_data: [] })
-            setPrior('')
-            setPost('')
-            setRatingData([])
-            setHwratio(false)
-            setTopPerformers(false)
-            setAlert('error', result.data.description)
+            setRowData({ hw_ration: [], subject_data: [], prior_data: [] });
+            setPrior('');
+            setPost('');
+            setRatingData([]);
+            setHwratio(false);
+            setTopPerformers(false);
+            setAlert('error', result.data.description);
           }
         })
         .catch((error) => {
-          setPrior('')
-          setPost('')
-          setHwratio(false)
-          setTopPerformers(false)
-        })
+          setPrior('');
+          setPost('');
+          setHwratio(false);
+          setTopPerformers(false);
+        });
     }
-  }, [searchGrade, searchSection])
-
-
+  }, [searchGrade, searchSection]);
 
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-
-        <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
+        <Grid
+          container
+          spacing={isMobile ? 3 : 5}
+          style={{ width: widerWidth, margin: wider }}
+        >
           <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
             <Autocomplete
               style={{ width: '100%' }}
@@ -520,39 +536,44 @@ const HomeworkAdmin = () => {
           </Grid>
         </Grid>
 
-        <div className="containerClass">
-          <div className="labelTag">
+        <div className='containerClass'>
+          <div className='labelTag'>
             No. of days prior to class date when Homework can be uploaded by teacher
-            </div>
+          </div>
           <input
-            type="text"
-            className="inputText"
+            type='text'
+            className='inputText'
             value={prior}
             required
-            placeholder="No. of Days"
-            maxLength="2"
-            pattern="^[0-9]{1,2}"
-            onChange={e => setPrior(e.target.value)}
+            placeholder='No. of Days'
+            maxLength='2'
+            pattern='^[0-9]{1,2}'
+            onChange={(e) => setPrior(e.target.value)}
           />
         </div>
 
-        <div className="containerClass" style={{ marginBottom: '-1.25rem' }}>
-          <div className="labelTag">
+        <div className='containerClass' style={{ marginBottom: '-1.25rem' }}>
+          <div className='labelTag'>
             No. of days post class date when Homework can be uploaded by teacher
-            </div>
+          </div>
           <input
-            type="text"
-            className="inputText"
+            type='text'
+            className='inputText'
             value={post}
             required
-            placeholder="No. of Days"
-            maxLength="2"
-            pattern="^[0-9]{1,2}"
-            onChange={e => setPost(e.target.value)}
+            placeholder='No. of Days'
+            maxLength='2'
+            pattern='^[0-9]{1,2}'
+            onChange={(e) => setPost(e.target.value)}
           />
         </div>
 
-        <Grid container spacing={5} spacing={isMobile ? 1 : 5} style={{ width: '85%', margin: '1.25rem 0 0 3%' }}>
+        <Grid
+          container
+          spacing={5}
+          spacing={isMobile ? 1 : 5}
+          style={{ width: '85%', margin: '1.25rem 0 0 3%' }}
+        >
           <Grid item xs={6} sm={3}>
             <FormControlLabel
               className='switchLabel'
@@ -560,9 +581,10 @@ const HomeworkAdmin = () => {
                 <Switch
                   checked={hwratio}
                   onChange={handleHwratio}
-                  name="hwratio"
-                  color="primary"
-                />}
+                  name='hwratio'
+                  color='primary'
+                />
+              }
               label={'Star Conversion'}
             />
           </Grid>
@@ -574,9 +596,10 @@ const HomeworkAdmin = () => {
                 <Switch
                   checked={topPerformers}
                   onChange={handleTopPerformers}
-                  name="topperformers"
-                  color="primary"
-                />}
+                  name='topperformers'
+                  color='primary'
+                />
+              }
               label={'Top-Performers'}
             />
           </Grid>
@@ -601,8 +624,8 @@ const HomeworkAdmin = () => {
                   ))}
                 </TableRow>
               </TableHead>
-              {rowData.subject_data.length ?
-                (<TableBody>
+              {rowData.subject_data.length ? (
+                <TableBody>
                   {ratingData.map((row, index) => {
                     return (
                       <TableRow ratio='checkbox' tabIndex={-1} key={index}>
@@ -614,10 +637,10 @@ const HomeworkAdmin = () => {
                             variant='outlined'
                             required
                             value={row.low_range}
-                            inputProps={{ maxLength: 3 ,accept:'^[01]?(\.)[0-9]{1}$'}}
+                            inputProps={{ maxLength: 3, accept: '^[01]?(.)[0-9]{1}$' }}
                             size='small'
                             name='low_range'
-                            autoComplete="off"
+                            autoComplete='off'
                             onChange={(e) => handleRatingData(e, index)}
                           />
                           {/* <div style={(required.lower && required?.index === index) ? { visibility: 'visible', color: 'red' } : { visibility: 'hidden' }}>Required</div> */}
@@ -631,9 +654,9 @@ const HomeworkAdmin = () => {
                             size='small'
                             required
                             value={row.upper_range}
-                            inputProps={{ maxLength: 3 ,accept:'^[01]?(\.)[0-9]{1}$'}}
+                            inputProps={{ maxLength: 3, accept: '^[01]?(.)[0-9]{1}$' }}
                             name='upper_range'
-                            autoComplete="off"
+                            autoComplete='off'
                             onChange={(e) => handleRatingData(e, index)}
                           />
                           {/* <div style={(required.upper && required?.index === index) ? { visibility: 'visible', color: 'red' } : { visibility: 'hidden' }}>Required</div> */}
@@ -646,10 +669,10 @@ const HomeworkAdmin = () => {
                             variant='outlined'
                             size='small'
                             required
-                            inputProps={{ maxLength: 1}}
+                            inputProps={{ maxLength: 1 }}
                             value={row.star}
                             name='star'
-                            autoComplete="off"
+                            autoComplete='off'
                             onChange={(e) => handleRatingData(e, index)}
                           />
                           {/* <div style={(required.star && required?.index === index) ? { visibility: 'visible', color: 'red' } : { visibility: 'hidden' }}>Required</div> */}
@@ -665,32 +688,35 @@ const HomeworkAdmin = () => {
                         </TableCell>
 
                         <TableCell className={classes.tableCell}>
-                          {ratingData.length !== 1 &&
-                            (<IconButton onClick={() => handleRemoveRating(index)}>
+                          {ratingData.length !== 1 && (
+                            <IconButton onClick={() => handleRemoveRating(index)}>
                               <HighlightOffOutlined color='secondary' />
-                            </IconButton>)}
-                          {ratingData.length === (index + 1) &&
-                            (<IconButton onClick={handleAddRating}>
+                            </IconButton>
+                          )}
+                          {ratingData.length === index + 1 && (
+                            <IconButton onClick={handleAddRating}>
                               <AddCircleOutline color='primary' />
-                            </IconButton>)}
-                        </TableCell >
+                            </IconButton>
+                          )}
+                        </TableCell>
                       </TableRow>
                     );
                   })}
-                </TableBody>)
-                :
-                (<TableBody style={
-                  {
+                </TableBody>
+              ) : (
+                <TableBody
+                  style={{
                     display: 'flex',
                     justifyContent: 'center',
                     margin: '25% 120%',
                     fontSize: '16px',
                     color: '#fe6b6b',
                     width: '100%',
-                  }}>
+                  }}
+                >
                   Sorry! No Data Available.
-                </TableBody>)
-              }
+                </TableBody>
+              )}
             </Table>
           </TableContainer>
         </Paper>
@@ -714,8 +740,8 @@ const HomeworkAdmin = () => {
                   ))}
                 </TableRow>
               </TableHead>
-              {rowData.subject_data.length ?
-                (<TableBody>
+              {rowData.subject_data.length ? (
+                <TableBody>
                   {rowData.subject_data.map((row, index) => {
                     return (
                       <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
@@ -725,7 +751,7 @@ const HomeworkAdmin = () => {
                         <TableCell className={classes.tableCell}>
                           <Checkbox
                             checked={row.is_mandatory}
-                            onChange={e => handleCheckSubject(e, row.subject_id, index)}
+                            onChange={(e) => handleCheckSubject(e, row.subject_id, index)}
                             inputProps={{ 'aria-label': 'primary checkbox' }}
                             color='primary'
                             name='is_mandatory'
@@ -734,7 +760,7 @@ const HomeworkAdmin = () => {
                         <TableCell className={classes.tableCell}>
                           <Checkbox
                             checked={row.is_optional}
-                            onChange={e => handleCheckSubject(e, row.subject_id, index)}
+                            onChange={(e) => handleCheckSubject(e, row.subject_id, index)}
                             inputProps={{ 'aria-label': 'primary checkbox' }}
                             color='primary'
                             name='is_optional'
@@ -743,53 +769,58 @@ const HomeworkAdmin = () => {
                         <TableCell className={classes.tableCell}>
                           <Checkbox
                             checked={row.is_other}
-                            onChange={e => handleCheckSubject(e, row.subject_id, index)}
+                            onChange={(e) => handleCheckSubject(e, row.subject_id, index)}
                             inputProps={{ 'aria-label': 'primary checkbox' }}
                             color='primary'
                             name='is_other'
                           />
                         </TableCell>
                       </TableRow>
-                    )
+                    );
                   })}
-                </TableBody>)
-                :
-                (<TableBody>
-                  <div style={
-                    {
+                </TableBody>
+              ) : (
+                <TableBody>
+                  <div
+                    style={{
                       display: 'flex',
                       justifyContent: 'center',
                       margin: '25% 80%',
                       fontSize: '16px',
                       color: '#fe6b6b',
                       width: '100%',
-                    }}>
+                    }}
+                  >
                     Sorry! No Data Available
-              </div>
-                </TableBody>)
-              }
+                  </div>
+                </TableBody>
+              )}
             </Table>
           </TableContainer>
         </Paper>
 
-        <Grid container spacing={isMobile ? 1 : 5} style={{ width: '95%', margin: '-1.25rem 1.5% 0 1.5%' }}>
+        <Grid
+          container
+          spacing={isMobile ? 1 : 5}
+          style={{ width: '95%', margin: '-1.25rem 1.5% 0 1.5%' }}
+        >
           <Grid item xs={6} sm={2}>
             <Button
               variant='contained'
               style={{ color: 'white' }}
-              color="primary"
-              className="custom_button_master"
+              color='primary'
+              className='custom_button_master'
               size='medium'
               type='submit'
               onClick={handleSubmit}
             >
               Submit
-        </Button>
+            </Button>
           </Grid>
         </Grid>
       </Layout>
     </>
-  )
-}
+  );
+};
 
-export default HomeworkAdmin
+export default HomeworkAdmin;

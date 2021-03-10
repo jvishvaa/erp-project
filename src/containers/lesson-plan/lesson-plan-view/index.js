@@ -94,6 +94,15 @@ const LessonPlan = () => {
     if (page && chapterSearch) handlePeriodList(chapterSearch);
   }, [page]);
 
+  const sortPeriodsAsPerNumber =(periodArray=[])=>{
+    try{
+        const sortFunc = function({period_name:periodName1='-'}, {period_name:periodName2='-'}){return periodName1.split('-')[1] - periodName2.split('-')[1]}
+        return periodArray.sort(sortFunc)
+    }catch(er){
+        return periodArray
+    }
+}
+
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
@@ -148,7 +157,8 @@ const LessonPlan = () => {
             >
               <Grid item xs={12} sm={viewMore && viewMoreData?.length > 0 ? 7 : 12}>
                 <Grid container spacing={isMobile ? 3 : 5}>
-                  {periodData.map((period, i) => (
+                  {/* {periodData.map((period, i) => ( */}
+                  {sortPeriodsAsPerNumber(periodData).map((period, i) => (
                     <Grid
                       item
                       xs={12}

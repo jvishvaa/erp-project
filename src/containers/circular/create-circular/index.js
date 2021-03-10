@@ -74,18 +74,18 @@ const CraeteCircular = () => {
   ];
 
   const [filterData, setFilterData] = useState({
-    branch: [],
-    grade: [],
-    section: [],
+    branch: '',
+    grade: '',
+    section: '',
     role: '',
   });
 
   const handleClear = () => {
     setFilterData((filterData.branch = []));
     setFilterData({
-      branch: [],
-      grade: [],
-      section: [],
+      branch: '',
+      grade: '',
+      section: '',
       role: '',
     });
   };
@@ -98,19 +98,19 @@ const CraeteCircular = () => {
   };
 
   const handleSection = (event, value) => {
-    setFilterData({ ...filterData, section: [] });
+    setFilterData({ ...filterData, section: '' });
     if (value) {
-      setFilterData({ ...filterData, section: [...filterData.section, value] });
+      setFilterData({ ...filterData, section: value });
     }
   };
 
   const handleBranch = (event, value) => {
-    setFilterData({ ...filterData, branch: [], grade: [], subject: '', chapter: '' });
+    setFilterData({ ...filterData, branch: '', grade: '', subject: '', chapter: '' });
     setOverviewSynopsis([]);
     if (value) {
       setFilterData({
         ...filterData,
-        branch: [...filterData.branch, value],
+        branch: value,
         grade: '',
         subject: '',
         chapter: '',
@@ -141,18 +141,18 @@ const CraeteCircular = () => {
   };
 
   const handleGrade = (event, value) => {
-    setFilterData({ ...filterData, grade: [], subject: '', chapter: '' });
+    setFilterData({ ...filterData, grade: '', subject: '', chapter: '' });
     setOverviewSynopsis([]);
     if (value && filterData.branch) {
       setFilterData({
         ...filterData,
-        grade: [...filterData.grade, value],
+        grade: value,
         subject: '',
         chapter: '',
       });
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?branch_id=${filterData.branch[0].id}&grade_id=${value.grade_id}`
+          `${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -177,7 +177,7 @@ const CraeteCircular = () => {
       const data = event.target.files[0];
       const fd = new FormData();
       fd.append('file', event.target.files[0]);
-      fd.append('branch', filterData.branch[0].branch_name);
+      fd.append('branch', filterData.branch.branch_name);
       // fd.append('grade',filterData.grade[0].id)
       // fd.append('section',filterData.section.id)
 
@@ -269,12 +269,15 @@ const CraeteCircular = () => {
         description: description,
         module_name: filterData.role.value,
         media: filePath,
-        Branch: filterData.branch.map(function (b) {
-          return b.id;
-        }),
+        // Branch: filterData.branch.map(function (b) {
+        //   return b.id;
+        // }),
+        Branch:[filterData.branch.id],
         // grades:[54],
-        grades: filterData.grade.map((g) => g.grade_id),
-        sections: filterData.section.map((s) => s.id),
+        // grades: filterData.grade.map((g) => g.grade_id),
+        grades:[filterData.grade.id],
+        // sections: filterData.section.map((s) => s.id),
+        sections:[filterData.section.id]
         // sections:[75]
       })
       .then((result) => {
@@ -282,13 +285,14 @@ const CraeteCircular = () => {
           setTitle('');
           setDescription('');
           setAlert('success', result.data.message);
-          setFilterData(filterData.branch=[])
           setFilterData({
-              branch: [],
-              grade: [],
-              section:[],
+              branch: '',
+              grade: '',
+              section:'',
               role:''
           });
+          setFilePath([])
+          setFilterEvent(false)
         } else {
           setAlert('error', result.data.message);
         }
@@ -354,7 +358,7 @@ const CraeteCircular = () => {
               onChange={handleBranch}
               id='grade'
               className='dropdownIcon'
-              value={filterData?.branch[0] || ''}
+              value={filterData?.branch}
               options={branchDropdown}
               getOptionLabel={(option) => option?.branch_name}
               filterSelectedOptions
@@ -375,7 +379,7 @@ const CraeteCircular = () => {
               onChange={handleRole}
               id='role'
               className='dropdownIcon'
-              value={filterData?.role || ''}
+              value={filterData?.role}
               // value={circularRole}
               options={circularRole}
               getOptionLabel={(option) => option?.name}
@@ -402,7 +406,7 @@ const CraeteCircular = () => {
               onChange={handleGrade}
               id='grade'
               className='dropdownIcon'
-              value={filterData?.grade[0] || ''}
+              value={filterData?.grade || ''}
               options={gradeDropdown}
               getOptionLabel={(option) => option?.grade__grade_name}
               filterSelectedOptions
@@ -423,7 +427,7 @@ const CraeteCircular = () => {
               onChange={handleSection}
               id='grade'
               className='dropdownIcon'
-              value={filterData?.section[0] || ''}
+              value={filterData?.section || ''}
               options={sectionDropdown}
               getOptionLabel={(option) => option?.section__section_name}
               filterSelectedOptions

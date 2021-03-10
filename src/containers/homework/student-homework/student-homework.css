@@ -21,12 +21,12 @@
   /* .message_log_breadcrumb_wrapper  .create_group_filter_container{
 	background: #F9F9F9;
   } */
-  #menu .MuiPaper-rounded{
+  /* #menu .MuiPaper-rounded{
 	top: 231px !important;
 	left: 751px !important;
 	min-width: 147px !important;
     
-  }
+  } */
   .message_log_white_wrapper{
 	margin-top: 40px;
 	/* padding: 0px; */
@@ -37,7 +37,6 @@
   }
   .message_log_white_wrapper .for-mobile table thead tr .MuiTableCell-stickyHeader .MuiInput-underline .MuiInput-input{
 	color: #FF6B6B;
-
   }
 .MuiSelect-icon{
 	color: #FF6B6B !important;
@@ -170,6 +169,7 @@
 }
  .message_log_white_wrapper .homework_block_wrapper {
   display: flex;
+  flex-wrap:wrap;
   width: 95%;
   padding-bottom: 1%;
   margin: 20px auto;
@@ -177,10 +177,7 @@
   border-radius: 15px;
   margin-top: 20px;
   margin-left: 37px;
-  /* width: 1006px; */
-  height: 76px;
-
-
+  height: auto;
 }
 .not_selected{
 	position: relative;

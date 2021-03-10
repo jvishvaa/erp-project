@@ -68,8 +68,8 @@ const GeneralDairyFilter = ({
   const [isEmail, setIsEmail] = useState(false);
   const [selectAll, setSelectAll] = useState([
     {id: 0, value: 'All'},
-    {id: 2, value: 'Daily Dairy'},
-    {id: 1, value: 'General Dairy'}
+    {id: 2, value: 'Daily Diary'},
+    {id: 1, value: 'General Diary'}
   ]);
   const [ activeTab, setActiveTab ] = useState(0);
 
@@ -102,6 +102,7 @@ const GeneralDairyFilter = ({
   const [filterData, setFilterData] = useState({
     grade: '',
     branch: '',
+    subject: '',
   });
 
   function getDaysAfter(date, amount) {
@@ -211,9 +212,9 @@ const GeneralDairyFilter = ({
 };
 
   const handleFilter = (e) => {
-    // debugger
     // setFilterStatus()
     console.log(e)
+    console.log(filterData)
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
     // alert(filterData.grade.grade_id,sectionIds,startDateTechPer,endDateTechPer)
     if (e === undefined && activeTab === 0){
@@ -227,11 +228,12 @@ const GeneralDairyFilter = ({
       endDateTechPer,
       activeTab,
       page,
+      filterData.subject,
     );
   };
 
   const handleSubject = (event, value) => {
-    setFilterData({ ...filterData, subject: '', chapter: '' });
+    setFilterData({ ...filterData, subject: value, chapter: '' });
   }
 
     useEffect(() => {
@@ -246,6 +248,20 @@ const GeneralDairyFilter = ({
                 setBranchDropdown('error', error.message);
             })
   }, []);
+
+  useEffect(() => {
+    axiosInstance.get(`${endpoints.dailyDairy.chapterList}?module_id=164`)
+    .then(res => {
+      if (res.data.status_code === 200){
+        setSubjectDropdown(res.data.result)
+      }
+      else {
+        setAlert('error', res.data.message)
+      }
+    }).catch(error => {
+      setAlert('error',error.message)
+    })
+  },[]);
 
   return (
     <Grid
@@ -319,7 +335,7 @@ const GeneralDairyFilter = ({
           />
         </Grid>
       )}
-      { showSubjectDropDown && (
+      { (showSubjectDropDown && activeTab === 2)?(
         <Grid item xs={12} sm={4} className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
         <Autocomplete
             style={{ width: '100%' }}
@@ -327,7 +343,7 @@ const GeneralDairyFilter = ({
             onChange={handleSubject}
             id='subject'
             className="dropdownIcon"
-            value={filterData?.subject}
+            // value={filterData?.subject}
             options={subjectDropdown}
             getOptionLabel={(option) => option?.subject_name}
             filterSelectedOptions
@@ -341,7 +357,7 @@ const GeneralDairyFilter = ({
             )}
         />
     </Grid>
-      )}
+      ):''}
       <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <LocalizationProvider dateAdapter={MomentUtils}>
           <DateRangePicker
@@ -407,9 +423,9 @@ const GeneralDairyFilter = ({
             className='custom_button_master'
             size='medium'
             type='submit'
-            onClick={()=>history.push("/create/general-dairy")}
+            onClick={()=>history.push("/create/general-diary")}
           >
-            CREATE GENERAL DAIRY
+            CREATE GENERAL DIARY
           </Button>
         </Grid>
       )}
@@ -422,9 +438,9 @@ const GeneralDairyFilter = ({
             className='custom_button_master'
             size='medium'
             type='submit'
-            onClick={()=>history.push("/create/daily-dairy")}
+            onClick={()=>history.push("/create/daily-diary")}
           >
-            CREATE DAILY DAIRY
+            CREATE DAILY DIARY
           </Button>
         </Grid>
       )}
@@ -436,8 +452,8 @@ const GeneralDairyFilter = ({
               aria-label='styled tabs example'
             >
               <StyledTab label={<Typography variant='h8'>All</Typography>} onClick={(e) => handleActiveTab(0)} />
-              <StyledTab label={<Typography variant='h8'>Daily Dairy</Typography>} onClick={(e) => handleActiveTab(2)}/>
-              <StyledTab label={<Typography variant='h8'>General Dairy</Typography>} onClick={(e) => handleActiveTab(1)}/>
+              <StyledTab label={<Typography variant='h8'>Daily Diary</Typography>} onClick={(e) => handleActiveTab(2)}/>
+              <StyledTab label={<Typography variant='h8'>General Diary</Typography>} onClick={(e) => handleActiveTab(1)}/>
             </StyledTabs>
           </Grid>
     </Grid>

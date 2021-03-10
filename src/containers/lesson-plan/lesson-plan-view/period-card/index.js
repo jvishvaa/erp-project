@@ -143,7 +143,7 @@ const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore
             </Typography>
           </Box>
         </Grid>
-        <Grid item xs={4} className={classes.textRight}>
+        {/* <Grid item xs={4} className={classes.textRight}>
           <Box>
             <span
               className='period_card_menu'
@@ -177,7 +177,7 @@ const PeriodCard = ({ period, setPeriodDataForView, setViewMoreData, setViewMore
                 ) : null}
             </span>
           </Box>
-        </Grid>
+        </Grid> */}
         <Grid item xs={12} sm={12} />
         <Grid item xs={6}>
           <Box>

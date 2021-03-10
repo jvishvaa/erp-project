@@ -118,27 +118,66 @@ const CreateCourse = () => {
     setData(list);
   };
 
-  const handleBack = () => {
-    if (Boolean(gradeKey)) {
-      const isAolValue = Number(sessionStorage.getItem('isAol'))||'';
+  const goBackHandler = () => {
+    const isCreate = Number(sessionStorage.getItem('createCourse')) || '';
+    const isPeriod = Number(sessionStorage.getItem('periodDetails')) || '';
+    if (window.location.host === endpoints.aolConfirmURL) {
+      const isAolValue = Number(sessionStorage.getItem('isAol')) || '';
       if (isAolValue === 1) {
         history.push(`/online-class/view-class`);
       } else if (isAolValue === 2) {
         history.push('/online-class/attend-class');
-      }else if (isAolValue === 3) {
+      } else if (isAolValue === 3) {
         history.push('/online-class/teacher-view-class');
       } else {
-        history.push(`/course-list/${gradeKey}`);
+        const gKey = Number(sessionStorage.getItem('gradeKey')) || '';
+        if (isCreate !== 1 || isPeriod === 1) {
+          history.push(`/course-list/${gKey}`);
+        }
+        sessionStorage.removeItem('gradeKey');
       }
-      sessionStorage.removeItem('isAol');
-    } else setNextToggle((prev) => !prev);
+    } else {
+      const isErpValue = Number(sessionStorage.getItem('isErpClass')) || '';
+      if (isErpValue === 1) {
+        history.push(`/online-class/view-class`);
+      } else if (isErpValue === 2) {
+        history.push('/erp-online-class-student-view');
+      } else if (isErpValue === 3) {
+        history.push('/erp-online-class-teacher-view');
+      } else {
+        const gKey = Number(sessionStorage.getItem('gradeKey')) || '';
+        if (isCreate !== 1 || isPeriod === 1) {
+          history.push(`/course-list/${gKey}`);
+        }
+        sessionStorage.removeItem('gradeKey');
+      }
+    }
   };
+
+  const handleBack = () => {
+    const isNext = Number(sessionStorage.getItem('nextFlag')) || '';
+    if (isNext !== 1) {
+      if (Number(gradeKey)) {
+        goBackHandler();
+      } else {
+        const isCreate = Number(sessionStorage.getItem('createCourse')) || '';
+        const periodView = Number(sessionStorage.getItem('periodDetails')) || '';
+        const isGrade = Number(sessionStorage.getItem('gradeKey')) || '';
+        if (isCreate === 1 || periodView === 1 || Number(isGrade) > 0)
+          setNextToggle((prev) => !prev);
+      }
+    } else {
+      setNextToggle((prev) => !prev);
+      sessionStorage.removeItem('nextFlag');
+    }
+  };
+
   const handleBackToCourseList = () => {
     history.push(`/course-list/`);
   };
 
   useEffect(() => {
-    if (courseKey) {
+    if (Number(courseKey)) {
       axiosInstance
         .get(`${endpoints.onlineCourses.fetchCourseDetails}?course_id=${courseKey}`)
         .then((result) => {
@@ -172,7 +211,29 @@ const CreateCourse = () => {
               setTitle(course_name);
               setFilePath(doc_file);
               setThumbnailImage(thumbnail_file[0]);
-              if (gradeKey > 0) setNextToggle((prev) => !prev);
+
+              if (Number(gradeKey)) setNextToggle((prev) => !prev);
+              else {
+                if (window.location.host === endpoints.aolConfirmURL) {
+                  const isAolValue = Number(sessionStorage.getItem('isAol')) || '';
+                  if (isAolValue === 1) {
+                    history.push(`/online-class/view-class`);
+                  } else if (isAolValue === 2) {
+                    history.push('/online-class/attend-class');
+                  } else if (isAolValue === 3) {
+                    history.push('/online-class/teacher-view-class');
+                  }
+                } else {
+                  const isErpValue = Number(sessionStorage.getItem('isErpClass')) || '';
+                  if (isErpValue === 1) {
+                    history.push(`/online-class/view-class`);
+                  } else if (isErpValue === 2) {
+                    history.push('/erp-online-class-student-view');
+                  } else if (isErpValue === 3) {
+                    history.push('/erp-online-class-teacher-view');
+                  }
+                }
+              }
               setFilterData({
                 branch: { branch_name: 'AOL' },
                 courseLevel: courseLevelDrop?.find((obj) => obj?.level === level_name),
@@ -190,27 +251,19 @@ const CreateCourse = () => {
               });
             } else {
               setEditFlag(false);
-              // setAlert('error','')
             }
           } else {
             setEditFlag(false);
-            if (courseKey && gradeKey) {
-              setAlert('error', 'No period details available.');
-              history.push(`/course-list/${gradeKey}`);
-            } else if (courseKey && !gradeKey) {
-              const gkey = JSON.parse(sessionStorage.getItem('gradeKey'));
-              sessionStorage.removeItem('gradeKey');
-              setAlert('error', "Can't edit following course.");
-              history.push(`/course-list/${gkey}`);
-            }
+            goBackHandler();
           }
         })
         .catch((error) => {
           setEditFlag(false);
-          // setAlert('error','')
         });
+    } else {
+      goBackHandler();
     }
-  }, []);
+  }, [courseKey]);
 
   const handleNext = () => {
     // const dataObj = {
@@ -246,6 +299,7 @@ const CreateCourse = () => {
             }
             setData(list);
           }
+          sessionStorage.setItem('nextFlag', 1);
           setNextToggle((prev) => !prev);
         } else {
           setAlert('warning', 'Periods should be more than or equal to 1');
@@ -365,7 +419,7 @@ const CreateCourse = () => {
       setGradeDropdown([]);
       let url = `${endpoints.communication.grades}`;
       if (aolHostURL === endpoints.aolConfirmURL) url += `?branch_id=1`;
-      else url += `?branch_id=5`;
+      else url += `?branch_id=1`;
       axiosInstance
         .get(url)
         .then((result) => {

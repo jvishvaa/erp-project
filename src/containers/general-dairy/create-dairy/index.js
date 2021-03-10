@@ -21,6 +21,8 @@ import {
   Tabs,
   Tab,
   Typography,
+  FormControlLabel,
+  Checkbox
 } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -158,7 +160,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const [searchAcademicYear, setSearchAcademicYear] = useState('');
   const [academicYear, setAcademicYear] = useState([])
   const [totalCount, setTotalCount] = useState(0);
-  const limit = 5;
+  const limit = 15;
   const [page, setPage] = React.useState(1);
   const [currentTab, setCurrentTab] = useState(0);
   const [isEmail, setIsEmail] = useState(false);
@@ -291,25 +293,29 @@ const handleSection = (event, value) => {
   }
 };
 
-const handleImageChange=  (event)=>{
+const handleImageChange=(event)=>{
+  // setLoading(true)
   if(filePath.length<10){
+    setLoading(true)
       const data =event.target.files[0]
   const fd = new FormData();
   fd.append('file',event.target.files[0])
   // fd.append('branch',filterData.branch[0].branch_name)
   // fd.append('grade',filterData.grade[0].id)
   // fd.append('section',filterData.section.id)
-  
   axiosInstance.post(`${endpoints.circular.fileUpload}`, fd)
       .then((result)=>{
       
           if(result.data.status_code === 200){
+            setLoading(false)
               console.log(result.data,'resp')
               setAlert('success',result.data.message)
               setFilePath([ ...filePath,result.data.result])
           }
           else{
+            setLoading(false)
               setAlert('error',result.data.message)
+             
           }
 
       })
@@ -319,11 +325,7 @@ const handleImageChange=  (event)=>{
   
 
 }
-const removeFileHandler = (i) => {
-  // const list = [...filePath];
-      filePath.splice(i, 1);
-      setAlert('success','File successfully deleted');
-}
+
 const handleAcademicYear = (event, value) => {
   setSearchAcademicYear('')
   if (value) {
@@ -398,7 +400,7 @@ const displayUsersList = async () => {
   //   sectionArray.push(item);
   // });
   let getUserListUrl;
-    getUserListUrl = `${endpoints.generalDairy.studentList}?academic_year=${searchAcademicYear}&active=${!isEmail ? '0' : '1'}&page=${pageno}&page_size=5&bgs_mapping=${filterData.section.map((s)=>s.id)}`;
+    getUserListUrl = `${endpoints.generalDairy.studentList}?academic_year=${searchAcademicYear}&active=${!isEmail ? '0' : '1'}&page=${pageno}&page_size=15&bgs_mapping=${filterData.section.map((s)=>s.id)}`;
 
   
   if (selectedSections.length && !selectedSections.includes('All')) {
@@ -459,7 +461,12 @@ const displayUsersList = async () => {
           //   : edit
           //   ? items.is_assigned
           //   : false,
-          selected: selectedUsers.length
+          // selected: selectedUsers.length
+          // ? selectedUsers[pageno - 1].selected.includes(items.id)
+          // : false,
+          selected: selectAll
+          ? true
+          : selectedUsers.length
           ? selectedUsers[pageno - 1].selected.includes(items.id)
           : false,
         });
@@ -602,6 +609,7 @@ const handleSelectAll = () => {
 };
 
 
+
 // const handleSubmit =()=>{
 //   const selectionArray = [];
 //   if (selectAll) {
@@ -657,12 +665,13 @@ const handleSelectAll = () => {
 
 const handleSubmit = async () => {
   const assignRoleApi = endpoints.generalDairy.SubmitDairy;
-  const selectionArray = [];
-  selectedUsers.forEach((item) => {
-    item.selected.forEach((ids) => {
-      selectionArray.push(ids);
-    });
-  });
+
+  // selectedUsers.forEach((item) => {
+  //   item.selected.forEach((ids) => {
+  //     selectionArray.push(ids);
+  //   });
+  // });
+
 
   // if (!selectionArray.length) {
   //   setSelectectUserError('Please select some users');
@@ -679,6 +688,18 @@ const handleSubmit = async () => {
 
   setSelectectUserError('');
   try {
+    const selectionArray = [];
+
+    if (!selectAll) {
+      selectedUsers.forEach((item) => {
+        item.selected.forEach((ids) => {
+          selectionArray.push(ids);
+        });
+      });
+    }
+    if (selectAll) {
+      selectionArray.push(0);
+    }
     const response = await axiosInstance.post(
       assignRoleApi,
       {
@@ -711,6 +732,8 @@ const handleSubmit = async () => {
       // props.history.push('/user-management/assign-role')
       // displayUsersList()
       setAlert('success', message);
+      // window.location.history()
+      history.push('/dairy/teacher')
       setSelectedUsers([]);
       // setRoleError('');
       // setSelectedRole('');
@@ -737,15 +760,21 @@ const FileRow = (props) => {
       <div className='file_name_container'>
         File {index + 1}
       </div>
-      <Divider orientation="vertical"  className='divider_color' flexItem />
-      <div className='file_close'>
+      {/* <Divider orientation="vertical"  className='divider_color' flexItem /> */}
+      <div>
         <span
           onClick={onClose}
         >
           <SvgIcon
             component={() => (
               <img
-                style={{
+                style={isMobile?{
+                  marginLeft:'',
+                  width: '20px',
+                  height:'20px',
+                  // padding: '5px',
+                  cursor: 'pointer',
+                }:{
                   width: '20px',
                   height:'20px',
                   // padding: '5px',
@@ -761,6 +790,11 @@ const FileRow = (props) => {
     </div>
   );
 };
+const removeFileHandler = (i) => {
+  // const list = [...filePath];
+      filePath.splice(i, 1);
+      setAlert('success','File successfully deleted');
+}
 const handleEdited =()=>{
    
   axiosInstance.put(`${endpoints.circular.updateCircular}`,{
@@ -784,6 +818,7 @@ const handleEdited =()=>{
   
 
 }
+const checkAll = selectAllObj[pageno - 1]?.selectAll || false;
 
   return (
     // console.log(editData,"editData")
@@ -792,7 +827,7 @@ const handleEdited =()=>{
         <div className={isMobile ? 'breadCrumbFilterRow' : null}>
           <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
-              componentName='General Dairy'
+              componentName='General Diary'
               childComponentName='Create New'
             />
           </div>
@@ -922,17 +957,17 @@ const handleEdited =()=>{
             >
               <StyledTab label={<Typography variant='h8'>Active Students</Typography>} />
               {/* <StyledTab label={<Typography variant='h8'>In-Active Students</Typography>} /> */}
-              <input
-                    type='checkbox'
-                    className='create_group_select_all_checkbox'
-                    style={{marginTop:'18px', marginLeft: '39px'}}
-                    checked={!!selectAll}
-                    onChange={handleSelectAll}
-                  />
-                  <span style={{marginTop:'15px', marginLeft: '7px'}}>Select All</span>
+            
             </StyledTabs>
           </Grid>
-        
+          <input
+                      type='checkbox'
+                      className='send_message_select_all_checkbox'
+                      checked={selectAll}
+                      onChange={handleSelectAll}
+                    />
+                    <span style={{ marginLeft: '1%' }}>Select All</span>
+                  
         </Grid>
 
         {/* <div className='create_group_select_all_wrapper'>
@@ -940,19 +975,30 @@ const handleEdited =()=>{
                 </div> */}
         <span className='create_group_error_span'>{selectectUserError}</span>
               <CustomSelectionTable
+                // header={headers}
+                // rows={usersRow}
+                // checkAll={checkAll}
+                // completeData={completeData}
+                // totalRows={totalPage}
+                // pageno={pageno}
+                // setSelectAll={setSelectAll}
+                // selectedUsers={selectedUsers}
+                // changePage={setPageno}
+                // setSelectedUsers={setSelectedUsers}
+                // onChangePage={handleChangePage}
+                // page={pageno-1}
+                // count={totalPage}
+                // pageSize={5}
                 header={headers}
                 rows={usersRow}
                 completeData={completeData}
                 totalRows={totalPage}
-                pageno={pageno}
                 setSelectAll={setSelectAll}
+                pageno={pageno}
                 selectedUsers={selectedUsers}
                 changePage={setPageno}
                 setSelectedUsers={setSelectedUsers}
-                onChangePage={handleChangePage}
-                page={pageno-1}
-                count={totalPage}
-                pageSize={5}
+
               />
 
 
@@ -990,7 +1036,7 @@ const handleEdited =()=>{
             </Grid>
         </Grid>
         <div className="attachmentContainer">
-            <div style={{display:'flex'}} className='scrollable'>
+        <div style={{display:'flex'}} className='scrollable'>
             {filePath?.length>0  ?    
                     filePath?.map((file, i) => (
                             <FileRow
@@ -1021,7 +1067,7 @@ const handleEdited =()=>{
                         disableFocusRipple
                         disableTouchRipple
                         component="label"
-                        style={{ textTransform: 'none' }}
+                        style={{ textTransform: 'none', marginLeft: '-100px' }}
                     >
                         <input
                             type='file'

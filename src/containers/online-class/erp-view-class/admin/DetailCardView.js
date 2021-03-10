@@ -4,13 +4,14 @@ import { Grid, Card, Divider, Button, Popover, Typography } from '@material-ui/c
 import { useHistory } from 'react-router-dom';
 import CloseIcon from '@material-ui/icons/Close';
 import moment from 'moment';
+import Timer from 'react-compound-timer';
 import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
 import Loader from '../../../../components/loader/loader';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
-// import ResourceDialog from '../online-class/online-class-resources/resourceDialog';
 import ResourceDialog from '../../../online-class/online-class-resources/resourceDialog';
 import CountdownTimer from './CountdownTimer';
+import './index.css';
 
 const JoinClass = (props) => {
   const fullData = props.fullData;
@@ -18,38 +19,49 @@ const JoinClass = (props) => {
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [joinAnchor, setJoinAnchor] = useState(null);
   const [isAccept, setIsAccept] = useState(props.data ? props.data.is_accepted : false);
   const [isRejected, setIsRejected] = useState(
     props.data ? props.data.is_restricted : false
   );
   const history = useHistory();
 
-  const [cTime, setCTime] = useState('');
-  const [joinPermission, setJoinPermission] = useState(false);
+  const classStartTime = moment(props && props?.data && props?.data?.date).format(
+    'DD-MM-YYYY'
+  );
+  const currDate = moment(new Date()).format('DD-MM-YYYY');
 
-  //time constants
-  const countDownDate = new Date(props.fullData.online_class.start_time).getTime();
-  // var x = setInterval(function() {
-  //   var now = new Date().getTime();
-  //   var distance = countDownDate - now;
-  //   var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-  //   var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  //   var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  //   var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-  //   setCTime(`${days}Days:${hours}Hours:${minutes}Minutes:${seconds}Seconds`)
-  //   if (distance < 0) {
-  //     clearInterval(x);
-  //     setJoinPermission(true)
-  //   }
-  // }, 1000);
+  const startTime = props && props?.data?.start_time;
+  const currTime = moment(new Date()).format('x');
+  const classTimeMilli = new Date(`${props.data.date}T${startTime}`).getTime();
+  const diffTime = classTimeMilli - 5 * 60 * 1000;
 
-  useEffect(() => {}, [setJoinPermission]);
+  console.log(
+    classTimeMilli,
+    parseInt(currTime),
+    diffTime,
+    'TTTTTTTTTTT',
+    new Date(`${props.data.date}T${startTime}`).getTime()
+  );
 
   const handleCloseData = () => {
     setAnchorEl(null);
+    // setJoinAnchor(null)
   };
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
+    // setJoinAnchor(event.currentTarget);
+  };
+  const handleCloseAccept = () => {
+    setJoinAnchor(null);
+  };
+
+  const handleClickAccept = (event) => {
+    if (diffTime > parseInt(currTime)) {
+      setJoinAnchor(event.currentTarget);
+    } else if (parseInt(currTime) > diffTime || parseInt(currTime) === diffTime) {
+      handleIsAccept();
+    }
   };
 
   const handleIsAccept = () => {
@@ -113,6 +125,8 @@ const JoinClass = (props) => {
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
+  const openJoin = Boolean(joinAnchor);
+  const ids = open ? 'accept-popover' : undefined;
   return (
     <Grid container spacing={2} direction='row' alignItems='center'>
       <Grid item md={6} xs={12}>
@@ -120,28 +134,19 @@ const JoinClass = (props) => {
           {moment(props.data ? props.data.date : '').format('DD-MM-YYYY')}
         </span>
       </Grid>
-      
+
       {isAccept ? (
         <Grid item xs={6}>
-          {/* {joinPermission ? ( */}
-            <Button
-              size='small'
-              color='secondary'
-              fullWidth
-              variant='contained'
-              onClick={() => window.open(fullData && fullData.join_url)}
-              className='teacherFullViewSmallButtons'
-            >
-              Join
-            </Button>
-          {/* ) : ( */}
-          
-            {/* <CountdownTimer
-              timer={props.fullData.online_class}
-            /> */}
-            
-          {/* )} */}
-
+          <Button
+            size='small'
+            color='secondary'
+            fullWidth
+            variant='contained'
+            onClick={() => window.open(fullData && fullData.join_url)}
+            className='teacherFullViewSmallButtons'
+          >
+            Join
+          </Button>
         </Grid>
       ) : (
         <>
@@ -152,31 +157,6 @@ const JoinClass = (props) => {
           ) : (
             <>
               <Grid item md={3} xs={6}>
-                {/* {window.location.pathname === '/erp-online-class-student-view' ? (
-                  <Button
-                    size='small'
-                    color='secondary'
-                    fullWidth
-                    variant='contained'
-                    onClick={handleIsAccept}
-                    className='teacherFullViewSmallButtons'
-                  >
-                    Accept
-                  </Button>
-                ) : (
-                  <Button
-                    size='small'
-                    color='secondary'
-                    fullWidth
-                    variant='contained'
-                    onClick={() =>
-                      window.open(fullData && fux llData.presenter_url, '_blank'
-                    )}
-                    className='teacherFullViewSmallButtons'
-                  >
-                    Host
-                  </Button>
-                )} */}
                 {window.location.pathname === '/erp-online-class' ? (
                   <Button
                     size='small'
@@ -210,16 +190,57 @@ const JoinClass = (props) => {
                   ''
                 )}
                 {window.location.pathname === '/erp-online-class-student-view' ? (
-                  <Button
-                    size='small'
-                    color='secondary'
-                    fullWidth
-                    variant='contained'
-                    onClick={handleIsAccept}
-                    className='teacherFullViewSmallButtons'
-                  >
-                    Accept
-                  </Button>
+                  <>
+                    <Popover
+                      id={ids}
+                      open={openJoin}
+                      joinAnchor={joinAnchor}
+                      onClose={handleClose}
+                      style={{ overflow: 'hidden', margin: '19% 0 0 30%' }}
+                      className='xyz'
+                      anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                      }}
+                      transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                      }}
+                    >
+                      <Grid
+                        container
+                        spacing={2}
+                        style={{ textAlign: 'center', padding: '10px' }}
+                      >
+                        <Grid item xs={12} style={{ textAlign: 'right' }}>
+                          <CloseIcon
+                            style={{ color: '#014B7E' }}
+                            onClick={() => handleCloseAccept()}
+                          />
+                        </Grid>
+                        <Grid item md={12} xs={12}>
+                          <Typography>
+                            You Can Join 5mins Before :{' '}
+                            {moment(`${props?.data?.date}T${startTime}`).format(
+                              'hh:mm:ss A'
+                            )}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </Popover>
+                    <Button
+                      size='small'
+                      color='secondary'
+                      fullWidth
+                      variant='contained'
+                      // onClick={handleIsAccept}
+                      onClick={(e) => handleClickAccept(e)}
+                      disabled={classStartTime === currDate ? false : true}
+                      className='teacherFullViewSmallButtons'
+                    >
+                      Accept
+                    </Button>
+                  </>
                 ) : (
                   ''
                 )}
@@ -304,7 +325,6 @@ const DetailCardView = ({
   const [anchorEl, setAnchorEl] = useState(null);
   const history = useHistory();
   const { role_details } = JSON.parse(localStorage.getItem('userDetails'));
-  // console.log(role_details.grades,'SSSSSSSSSSSSSSSSSSSSSS')
   /*
   useEffect(() => {
     if (fullData) {
@@ -391,12 +411,12 @@ const DetailCardView = ({
   };
   const handleCoursePlan = () => {
     if (window.location.pathname === '/erp-online-class-student-view') {
+      sessionStorage.setItem('isErpClass', 2);
       history.push(
-        `/create/course/${fullData.online_class && fullData.online_class.course_id}/${
-          role_details && role_details.grades
-        }/4`
+        `/create/course/${fullData.online_class && fullData.online_class.course_id}/1`
       );
     } else {
+      sessionStorage.setItem('isErpClass', 3);
       history.push(
         `/create/course/${fullData.online_class && fullData.online_class.cource_id}/${
           selectedGrade.id

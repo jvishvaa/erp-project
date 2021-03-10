@@ -366,7 +366,7 @@ const Layout = ({ children, history }) => {
         history.push('/communication/addgroup');
         break;
       }
-      case 'View&Edit Group': {
+      case 'View & Edit Group': {
         history.push('/communication/viewgroup');
         break;
       }
@@ -378,7 +378,7 @@ const Layout = ({ children, history }) => {
         history.push('/communication/smscredit');
         break;
       }
-      case 'SMS&Email Log': {
+      case 'SMS & Email Log': {
         history.push('/communication/messageLog');
         break;
       }
@@ -386,23 +386,43 @@ const Layout = ({ children, history }) => {
         history.push('/dashboard');
         break;
       }
-      case 'user-management': {
+      // case 'user-management': {
+      //   history.push('/user-management');
+      //   break;
+      // }
+      // case 'create-user': {
+      //   history.push('/user-management/create-user');
+      //   break;
+      // }
+      // case 'bulk-upload': {
+      //   history.push('/user-management/bulk-upload');
+      //   break;
+      // }
+      // case 'view-users': {
+      //   history.push('/user-management/view-users');
+      //   break;
+      // }
+      // case 'assign-role': {
+      //   history.push('/user-management/assign-role');
+      //   break;
+      // }
+      case 'User Management': {
         history.push('/user-management');
         break;
       }
-      case 'create-user': {
+      case 'Create User': {
         history.push('/user-management/create-user');
         break;
       }
-      case 'bulk-upload': {
+      case 'Bulk Upload Status': {
         history.push('/user-management/bulk-upload');
         break;
       }
-      case 'view-users': {
+      case 'View User': {
         history.push('/user-management/view-users');
         break;
       }
-      case 'assign-role': {
+      case 'Assign Role': {
         history.push('/user-management/assign-role');
         break;
       }
@@ -510,12 +530,12 @@ const Layout = ({ children, history }) => {
         history.push('/blog/wordcount-config');
         break;
       }
-      case 'Student Dairy': {
-        history.push('/dairy/student');
+      case 'Student Diary': {
+        history.push('/diary/student');
         break;
       }
-      case 'Teacher Dairy': {
-        history.push('/dairy/teacher');
+      case 'Teacher Diary': {
+        history.push('/diary/teacher');
         break;
       }
       case 'Assessment': {

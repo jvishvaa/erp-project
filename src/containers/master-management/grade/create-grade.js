@@ -38,6 +38,9 @@ const CreateGrade = ({setLoading,handleGoBack}) => {
     })
     };
 
+  function capitalize(str){
+    return str.toLowerCase().replace( /\b./g, function(a){ return a.toUpperCase(); } );
+  };
 
   return (
       <form autoComplete='off' onSubmit={handleSubmit}>
@@ -51,9 +54,9 @@ const CreateGrade = ({setLoading,handleGoBack}) => {
               variant='outlined'
               size='small'
               value={gradeName}
-              inputProps={{maxLength:20}}
+              inputProps={{pattern:'^[a-zA-Z0-9 +_-]+',maxLength:20}}
               name='gradename'
-              onChange={e=>setGradeName(e.target.value)}
+              onChange={e=>setGradeName(capitalize(e.target.value))}
               required
             />
           </Grid>

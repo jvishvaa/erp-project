@@ -44,8 +44,8 @@ const Filter = (props) => {
     const [endDate, setEndDate] = useState('');
     const [branchList] = useState([
         {
-            id: `${window.location.host === endpoints?.aolConfirmURL ? 1 : 5}`,
-            branch_name: `${window.location.host === endpoints?.aolConfirmURL ? 'AOL' : 'ORCHIDS'}`,
+            id: `${window.location.host === endpoints?.aolConfirmURL ? 1 : 1}`,
+            branch_name: `${window.location.host === endpoints?.aolConfirmURL ? 'AOL' : 'Bangalore'}`,
         },
     ]);
     const { setAlert } = useContext(AlertNotificationContext);
@@ -129,6 +129,7 @@ const Filter = (props) => {
     }
     
     useEffect(() => {
+      callApi(`${endpoints.academics.branches}`,'branchList');
         callApi(
             `${endpoints.academics.grades}?branch_id=${selectedBranch.id}&module_id=15`,
             'gradeList'

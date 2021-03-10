@@ -55,7 +55,7 @@ const CourseFilter = ({
   useEffect(() => {
     let url = `${endpoints.communication.grades}`;
     if (aolHostURL === endpoints.aolConfirmURL) url += `?branch_id=1`;
-    else url += `?branch_id=5`;
+    else url += `?branch_id=1`;
 
     axiosInstance
       .get(url)
@@ -103,7 +103,7 @@ const CourseFilter = ({
     if (gradeKey) {
       let url = `${endpoints.communication.grades}`;
       if (aolHostURL === endpoints.aolConfirmURL) url += `?branch_id=1`;
-      else url += `?branch_id=5`;
+      else url += `?branch_id=1`;
 
       axiosInstance
         .get(url)
@@ -244,7 +244,14 @@ const CourseFilter = ({
             style={{ color: 'white' }}
             color='primary'
             className='buttonModifiedDesign'
-            onClick={() => history.push('/create/course')}
+            onClick={() => {
+              sessionStorage.removeItem('isAol');
+              sessionStorage.removeItem('gradeKey');
+              sessionStorage.setItem('createCourse',1);
+              sessionStorage.removeItem('periodDetails');
+              sessionStorage.removeItem('isErpClass');
+              history.push('/create/course');
+            }}
             size='medium'
           >
             CREATE

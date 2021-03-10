@@ -112,6 +112,7 @@ import TeacherBatchView from './containers/teacherBatchView';
 import ErpAdminViewClass from './containers/online-class/erp-view-class/admin';
 import AolLogin from './containers/aol-login';
 import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource'
+import AttachmentPreviewer from './components/attachment-previewer';
 
 const theme = createMuiTheme({
   palette: {
@@ -147,12 +148,26 @@ const theme = createMuiTheme({
 });
 
 function App() {
+  React.useEffect(() => {
+    const {
+      repoName = 'Revamp',
+      first_name: firstName,
+      user_id: userId,
+      is_superuser: isSuperuser,
+    } = JSON.parse(localStorage.getItem('userDetails') || '{}') || {};
+    if (window.location.hostname.includes('localhost')) {
+      document.title = [repoName, firstName, userId, isSuperuser ? 'Spr' : 'Nrml'].join(
+        ' - '
+      );
+    }
+  }, []);
   return (
     <div className='App'>
       <Router>
         <AlertNotificationProvider>
           <OnlineclassViewProvider>
             <ThemeProvider theme={theme}>
+            <AttachmentPreviewer>
               <CircularStore>
                 <GeneralDairyStore>
                   <ViewStore>
@@ -388,22 +403,22 @@ function App() {
                         <Route exact path='/general-dairy'>
                           {({ match }) => <GeneralDairyList match={match} />}
                         </Route>
-                        <Route exact path='/dairy/student'>
+                        <Route exact path='/diary/student'>
                           {({ match }) => <GeneralDairyList match={match} />}
                         </Route>
-                        <Route exact path='/dairy/teacher'>
+                        <Route exact path='/diary/teacher'>
                           {({ match }) => <GeneralDairyList match={match} />}
                         </Route>
                         <Route exact path='/general-dairy/student-view'>
                           {({ match }) => <GeneralDairyStudentList match={match} />}
                         </Route>
-                        <Route exact path='/create/general-dairy'>
+                        <Route exact path='/create/general-diary'>
                           {({ match }) => <CreateGeneralDairy match={match} />}
                         </Route>
                         <Route exact path='/daily-dairy'>
                           {({ match }) => <DailyDairyList match={match} />}
                         </Route>
-                        <Route exact path='/create/daily-dairy'>
+                        <Route exact path='/create/daily-diary'>
                           {({ match }) => <CreateDailyDairy match={match} />}
                         </Route>
                         <Route exact path='/create/course'>
@@ -471,6 +486,7 @@ function App() {
                   </ViewStore>
                 </GeneralDairyStore>
               </CircularStore>
+              </AttachmentPreviewer>
             </ThemeProvider>
           </OnlineclassViewProvider>
         </AlertNotificationProvider>
