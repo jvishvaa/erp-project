@@ -376,7 +376,7 @@ export const fetchAllSectionsPerGrade = (payload) => {
   return (dispatch) => {
     dispatch(dataLoading())
     axios
-      .get(urls.StudentGradeSectionAcc + '?grade=' + payload.gradeId + '&academic_year=' + payload.session, {
+      .get(urls.StudentGradeSectionAcc + '?grade=' + payload.gradeId + '&academic_year=' + payload.session + '&module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
