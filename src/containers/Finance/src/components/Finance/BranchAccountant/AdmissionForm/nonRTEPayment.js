@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Grid } from 'semantic-ui-react'
-import { Radio, withStyles, Typography, CircularProgress } from '@material-ui/core/'
+// import { Grid } from 'semantic-ui-react'
+import { Radio, Grid, withStyles, Typography, CircularProgress } from '@material-ui/core/'
 import Select from 'react-select'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
@@ -554,18 +554,15 @@ class Receipt extends Component {
       )
     }
     return (
-      <Grid style={{ padding: '25px' }}>
-        <Grid.Row>
-          <Grid.Column computer={16} className='student-addStudent-StudentSection'>
-            <Typography variant='h5'>Normal Fees</Typography>
-            {paymentTable}
-          </Grid.Column>
-        </Grid.Row>
-        <Grid.Row>
-          <Grid.Column computer={2}>
+      <Grid container style={{ padding: '25px' }}>
+        <Grid item xs={16} className='student-addStudent-StudentSection'>
+          <Typography variant='h5'>Normal Fees</Typography>
+          {paymentTable}
+        </Grid>
+          <Grid xs={2}>
             <strong>Payment Mode:</strong>
-          </Grid.Column>
-          <Grid.Column computer={3}>
+          </Grid>
+          <Grid item xs={3}>
             <Radio
               checked={this.state.selectedPayment === 'a'}
               onChange={this.handlePayment}
@@ -573,8 +570,8 @@ class Receipt extends Component {
               name='radio-button-demo'
               aria-label='Cash'
             /> Cash
-          </Grid.Column>
-          <Grid.Column computer={3}>
+          </Grid>
+          <Grid item xs={3}>
             <Radio
               checked={this.state.selectedPayment === 'b'}
               onChange={this.handlePayment}
@@ -582,8 +579,8 @@ class Receipt extends Component {
               name='radio-button-demo'
               aria-label='Cash'
             /> Cheque
-          </Grid.Column>
-          <Grid.Column computer={4}>
+          </Grid>
+          <Grid item xs={4}>
             <Radio
               checked={this.state.selectedPayment === 'c'}
               onChange={this.handlePayment}
@@ -591,8 +588,8 @@ class Receipt extends Component {
               name='radio-button-demo'
               aria-label='Cash'
             /> Internet Payment
-          </Grid.Column>
-          <Grid.Column computer={4}>
+          </Grid>
+          <Grid item xs={4}>
             <Radio
               checked={this.state.selectedPayment === 'd'}
               onChange={this.handlePayment}
@@ -600,8 +597,8 @@ class Receipt extends Component {
               name='radio-button-demo'
               aria-label='Cash'
             /> Credit / Debit Card
-          </Grid.Column>
-          <Grid.Column computer={4}>
+          </Grid>
+          <Grid item xs={4}>
             <Radio
               checked={this.state.selectedPayment === 'e'}
               onChange={this.handlePayment}
@@ -609,12 +606,10 @@ class Receipt extends Component {
               name='radio-button-demo'
               aria-label='Online'
             /> Online
-          </Grid.Column>
-        </Grid.Row>
+          </Grid>
         {this.state.isChequePaper === true
-          ? <Grid.Row>
-            <div style={{ display: 'flex', flexWrap: 'wrap', marginLeft: '20px' }}>
-              <Grid.Column computer={4} style={{ flexGrow: 2, marginBottom: 10 }}>
+          ? <div style={{ display: 'flex', flexWrap: 'wrap', marginLeft: '20px' }}>
+              <Grid item xs={4} style={{ flexGrow: 2, marginBottom: 10 }}>
                 <label>Cheque No.</label>
                 <input
                   name='chequeNo'
@@ -623,8 +618,8 @@ class Receipt extends Component {
                   style={{ width: '200px' }}
                   value={this.state.payment.cheque.chequeNo ? this.state.payment.cheque.chequeNo : ''}
                   onChange={this.chequeDataHandler} />
-              </Grid.Column>
-              <Grid.Column computer={4} style={{ flexGrow: 1, marginBottom: 10 }}>
+              </Grid>
+              <Grid item xs={4} style={{ flexGrow: 1, marginBottom: 10 }}>
                 <label>Cheque Date.</label>
                 <input
                   name='chequeDate'
@@ -633,8 +628,8 @@ class Receipt extends Component {
                   style={{ width: '200px' }}
                   value={this.state.payment.cheque.chequeDate ? this.state.payment.cheque.chequeDate : ''}
                   onChange={this.chequeDataHandler} />
-              </Grid.Column>
-              <Grid.Column computer={4} style={{ flexGrow: 2, marginRight: 15, marginBottom: 10 }}>
+              </Grid>
+              <Grid item xs={4} style={{ flexGrow: 2, marginRight: 15, marginBottom: 10 }}>
                 <label>SearchBy*</label>
                 <Select
                   onChange={this.searchBy}
@@ -655,9 +650,9 @@ class Receipt extends Component {
                     }
                   ]}
                 />
-              </Grid.Column>
+              </Grid>
               {this.state.searchByValue === 1 || this.state.searchByValue === 3
-                ? <Grid.Column computer={4} style={{ flexGrow: 1, marginBottom: 10 }}>
+                ? <Grid item xs={4} style={{ flexGrow: 1, marginBottom: 10 }}>
                   <label>IFSC</label>
                   <input
                     name='ifsc'
@@ -666,10 +661,10 @@ class Receipt extends Component {
                     style={{ width: '200px' }}
                     value={this.state.payment.cheque.ifsc ? this.state.payment.cheque.ifsc : ''}
                     onChange={this.chequeDataHandler} />
-                </Grid.Column>
+                </Grid>
                 : null}
               {this.state.searchByValue === 2 || this.state.searchByValue === 3
-                ? <Grid.Column computer={4} style={{ flexGrow: 1, marginBottom: 10 }}>
+                ? <Grid item xs={4} style={{ flexGrow: 1, marginBottom: 10 }}>
                   <label>MICR Code</label>
                   <input
                     name='micr'
@@ -678,9 +673,9 @@ class Receipt extends Component {
                     style={{ width: '200px' }}
                     value={this.state.payment.cheque.micr ? this.state.payment.cheque.micr : ''}
                     onChange={this.chequeDataHandler} />
-                </Grid.Column>
+                </Grid>
                 : null}
-              <Grid.Column computer={4} style={{ flexGrow: 1, marginBottom: 10 }}>
+              <Grid item xs={4} style={{ flexGrow: 1, marginBottom: 10 }}>
                 <label>Bank Name</label>
                 <input
                   name='chequeBankName'
@@ -689,8 +684,8 @@ class Receipt extends Component {
                   style={{ width: '200px' }}
                   value={this.state.payment.cheque.chequeBankName ? this.state.payment.cheque.chequeBankName : ''}
                   onChange={this.chequeDataHandler} />
-              </Grid.Column>
-              <Grid.Column computer={4} style={{ flexGrow: 1, marginBottom: 10 }}>
+              </Grid>
+              <Grid item xs={4} style={{ flexGrow: 1, marginBottom: 10 }}>
                 <label>Bank Branch</label>
                 <input
                   name='chequeBankBranch'
@@ -699,15 +694,14 @@ class Receipt extends Component {
                   style={{ width: '200px' }}
                   value={this.state.payment.cheque.chequeBankBranch ? this.state.payment.cheque.chequeBankBranch : ''}
                   onChange={this.chequeDataHandler} />
-              </Grid.Column>
+              </Grid>
               {this.props.micr.is_multiple ? <div style={{ color: '#CC0000' }}>*This micr has multiple bank details, please verify once</div> : null}
             </div>
-          </Grid.Row>
           : null
         }
         {this.state.isInternetPaper === true
-          ? <Grid.Row>
-            <Grid.Column computer={4}>
+          ? <>
+            <Grid item xs={4}>
               <label>Date: </label>
               <input
                 name='internetDate'
@@ -716,8 +710,8 @@ class Receipt extends Component {
                 style={{ width: '200px' }}
                 value={this.state.payment.internet.internetDate ? this.state.payment.internet.internetDate : ''}
                 onChange={this.internetDataHandler} />
-            </Grid.Column>
-            <Grid.Column computer={4}>
+            </Grid>
+            <Grid item xs={4}>
               <label>Remarks.</label>
               <input
                 name='remarks'
@@ -726,13 +720,13 @@ class Receipt extends Component {
                 value={this.state.payment.internet.remarks ? this.state.payment.internet.remarks : ''}
                 style={{ width: '200px' }}
                 onChange={this.internetDataHandler} />
-            </Grid.Column>
-          </Grid.Row>
+            </Grid>
+          </>
           : null}
         {this.state.isCreditPaper === true
-          ? <Grid.Row>
+          ? <>
             <div style={{ display: 'flex', flexWrap: 'wrap', marginLeft: '20px' }}>
-              <Grid.Column computer={4} style={{ flexGrow: 2, marginRight: '15px', marginBottom: 10 }}>
+              <Grid item xs={4} style={{ flexGrow: 2, marginRight: '15px', marginBottom: 10 }}>
                 <label>Card Type*</label>
                 <Select
                   onChange={this.creditTypeHandler}
@@ -748,8 +742,8 @@ class Receipt extends Component {
                     }
                   ]}
                 />
-              </Grid.Column>
-              <Grid.Column computer={4} style={{ flexGrow: 1, marginBottom: 10 }}>
+              </Grid>
+              <Grid item xs={4} style={{ flexGrow: 1, marginBottom: 10 }}>
                 <label>Credit Date</label>
                 <input
                   name='creditDate'
@@ -758,8 +752,8 @@ class Receipt extends Component {
                   value={this.state.payment.credit.creditDate ? this.state.payment.credit.creditDate : ''}
                   onChange={this.creditDataHandler}
                   style={{ width: '200px' }} />
-              </Grid.Column>
-              <Grid.Column computer={4} style={{ flexGrow: 1, marginBottom: 10 }}>
+              </Grid>
+              <Grid item xs={4} style={{ flexGrow: 1, marginBottom: 10 }}>
                 <label>Card Last 4 Digits*</label>
                 <input
                   name='digits'
@@ -768,8 +762,8 @@ class Receipt extends Component {
                   value={this.state.payment.credit.digits ? this.state.payment.credit.digits : ''}
                   onChange={this.creditDataHandler}
                   style={{ width: '200px' }} />
-              </Grid.Column>
-              <Grid.Column computer={4} style={{ flexGrow: 1, marginBottom: 10 }}>
+              </Grid>
+              <Grid item xs={4} style={{ flexGrow: 1, marginBottom: 10 }}>
                 <label>Approval Code.</label>
                 <input
                   name='approval'
@@ -778,8 +772,8 @@ class Receipt extends Component {
                   value={this.state.payment.credit.approval ? this.state.payment.credit.approval : ''}
                   onChange={this.creditDataHandler}
                   style={{ width: '200px' }} />
-              </Grid.Column>
-              <Grid.Column computer={4} style={{ flexGrow: 1, marginBottom: 10 }}>
+              </Grid>
+              <Grid item xs={4} style={{ flexGrow: 1, marginBottom: 10 }}>
                 <label>Bank Name.</label>
                 <input
                   name='bankName'
@@ -788,8 +782,8 @@ class Receipt extends Component {
                   value={this.state.payment.credit.bankName ? this.state.payment.credit.bankName : ''}
                   onChange={this.creditDataHandler}
                   style={{ width: '200px' }} />
-              </Grid.Column>
-              <Grid.Column computer={4} style={{ flexGrow: 1, marginBottom: 10 }}>
+              </Grid>
+              <Grid item xs={4} style={{ flexGrow: 1, marginBottom: 10 }}>
                 <label>Remarks.</label>
                 <input
                   name='creditRemarks'
@@ -798,15 +792,15 @@ class Receipt extends Component {
                   value={this.state.payment.credit.creditRemarks ? this.state.payment.credit.creditRemarks : ''}
                   onChange={this.creditDataHandler}
                   style={{ width: '200px' }} />
-              </Grid.Column>
+              </Grid>
             </div>
-          </Grid.Row>
+          </>
           : null}
-        <Grid.Row>
-          <Grid.Column computer={2}>
+        
+          <Grid item xs={2}>
             <strong>Receipt Type:</strong>
-          </Grid.Column>
-          <Grid.Column computer={4}>
+          </Grid>
+          <Grid item xs={4}>
             <Radio
               checked={this.state.selectedReceipt === 'online'}
               onChange={this.handleReceipt}
@@ -814,8 +808,8 @@ class Receipt extends Component {
               name='online'
               aria-label='Cash'
             /> Online
-          </Grid.Column>
-          <Grid.Column computer={3}>
+          </Grid>
+          <Grid item xs={3}>
             <Radio
               checked={this.state.selectedReceipt === 'manual'}
               onChange={this.handleReceipt}
@@ -823,30 +817,13 @@ class Receipt extends Component {
               name='manual'
               aria-label='Cash'
             /> Manual
-          </Grid.Column>
-        </Grid.Row>
-        {/* {this.state.isTrans === true
-          ? <Grid.Row>
-            <Grid.Column computer={2}>
-              <strong>Transaction ID*:</strong>
-            </Grid.Column>
-            <Grid.Column computer={4}>
-              <input
-                name='transid'
-                type='text'
-                className='form-control'
-                value={this.state.payment.transid ? this.state.payment.transid : ''}
-                onChange={this.handleReceiptData}
-                style={{ width: '200px' }} />
-            </Grid.Column>
-          </Grid.Row>
-          : null
-        } */}
-        {this.state.isOnlineReceipt ? <Grid.Row>
-          <Grid.Column computer={2}>
+          </Grid>
+        
+        {this.state.isOnlineReceipt ? <>
+          <Grid item xs={2}>
             <strong>Receipt Number:</strong>
-          </Grid.Column>
-          <Grid.Column computer={4}>
+          </Grid>
+          <Grid item xs={4}>
             <input
               name='receiptNo'
               type='number'
@@ -855,15 +832,15 @@ class Receipt extends Component {
               onChange={this.handleReceiptData}
               style={{ width: '200px' }} />
             {receiptData}
-          </Grid.Column>
-        </Grid.Row> : null}
+          </Grid>
+        </> : null}
         {/* displayed only if opted manual */}
         {/* {this.state.isOnlineReceipt === true
           ? <Grid.Row>
-            <Grid.Column computer={2}>
+            <Grid.Column xs={2}>
               <strong>Receipt Number online:</strong>
             </Grid.Column>
-            <Grid.Column computer={4}>
+            <Grid.Column xs={4}>
               <input
                 name='receiptOnline'
                 type='number'
@@ -875,11 +852,10 @@ class Receipt extends Component {
           </Grid.Row>
           : null
         } */}
-        <Grid.Row>
-          <Grid.Column computer={2}>
+          <Grid item xs={2}>
             <strong>Date of Payment:</strong>
-          </Grid.Column>
-          <Grid.Column computer={4}>
+          </Grid>
+          <Grid item xs={4}>
             <input
               name='dateOfPayment'
               type='date'
@@ -889,26 +865,21 @@ class Receipt extends Component {
               value={this.state.payment.dateOfPayment}
               onChange={this.handleReceiptData} />
             {/* <p style={{ fontSize: '16px' }}>{this.state.todayDate}</p> */}
-          </Grid.Column>
-        </Grid.Row>
-        <Grid.Row>
-          <Grid.Column computer={2}>
+          </Grid>
+          <Grid item xs={2}>
             <strong>Current Date:</strong>
-          </Grid.Column>
-          <Grid.Column computer={4}>
+          </Grid>
+          <Grid item xs={4}>
             {/* <input type="text" value= readonly /> */}
             <p style={{ fontSize: '16px' }}>{this.state.todayDate}</p>
-          </Grid.Column>
-        </Grid.Row>
-        <Grid.Row>
-          <Grid.Column>
+          </Grid>
+          <Grid>
             <input type='checkbox'
               name='confirm'
               onChange={this.handleConfirm}
               checked={this.state.confirm} />
                       Confirm Payment Details
-          </Grid.Column>
-        </Grid.Row>
+          </Grid>
         {this.props.dataLoading ? <CircularProgress open /> : null}
       </Grid>
     )
