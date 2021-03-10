@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,iBAAiB,CAAC;EAChB,OAAO,EAAE,gBAAgB;EACzB,QAAQ,EAAE,KAAK;EACf,IAAI,EAAE,GAAG;EACT,GAAG,EAAE,GAAG;EACR,SAAS,EAAE,gBAAgB;EAC3B,WAAW,EAAE,eAAe;CAC7B",
+    "sources": [
+        "alert-notification.scss"
+    ],
+    "names": [],
+    "file": "alert-notification.css"
+}

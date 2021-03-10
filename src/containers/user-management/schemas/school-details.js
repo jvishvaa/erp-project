@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 
 const validationSchema = Yup.object({
   academic_year: Yup.object('').required('Required').nullable(),
-  branch: Yup.object('').required('Required').nullable(),
+  // branch: Yup.object('').required('Required').nullable(),
   // grade: Yup.array()
   //   .of(
   //     Yup.object().shape({

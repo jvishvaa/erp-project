@@ -1,0 +1,59 @@
+.viewclass__management-container .filters__container .managementview-tabs {
+  margin-top: 20px;
+}
+
+.viewclass__management-container .filters__container .viewclass__management-btn {
+  width: 100%;
+}
+
+.viewclass__management-container .filters__container .cancelled-class-check {
+  margin-top: 20px;
+}
+
+.viewclass__management-container .filters__container svg {
+  fill: #ff6b6b;
+}
+
+.viewclass__management-container .filters__container .MuiTextField-root {
+  width: 100%;
+}
+
+.viewclass__management-container .viewclass__management-table {
+  margin-top: 20px;
+}
+
+.viewclass__management-container .viewclass__management-table .progress-center {
+  position: absolute;
+  left: 50%;
+  margin-top: 100px;
+}
+
+.viewclass__management-container .viewclass__management-table .viewclass__table-head th {
+  font-weight: bold;
+  color: #014b7e;
+}
+
+.viewclass__management-container .viewclass__management-table .viewclass__table-head th:not(:last-child) {
+  position: relative;
+}
+
+.viewclass__management-container .viewclass__management-table .viewclass__table-head th:not(:last-child)::after {
+  content: '';
+  height: 50%;
+  width: 2px;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  background-color: #ff6b6b;
+}
+
+.viewclass__management-container .viewclass__management-table .viewclass__table-body td {
+  color: #014b7e;
+}
+
+.viewclass__management-container .viewclass__management-table .pagination__container {
+  margin-top: 20px;
+}
+/*# sourceMappingURL=online-class-resource.css.map */

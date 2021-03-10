@@ -1,0 +1,490 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Raleway&display=swap");
+.homework_submit_wrapper .homework-question {
+  border-bottom: 1px solid #ff6b6b;
+}
+
+.homework_type_item {
+  border: 1px solid #ff6b6b;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  text-align: center;
+  padding: 10% 15%;
+  color: #014b7e;
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.homework_block_questionwise_check {
+  color: #014b7e;
+  font-size: 1rem;
+}
+
+.homework_submit_questions_wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin: 20px auto;
+  width: 95%;
+}
+
+.homework_block_wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.homework_block_wrapper_submit {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  width: 95%;
+  padding-bottom: 1%;
+  margin: 20px auto;
+  border-bottom: 1px solid #cfcfcf;
+}
+
+.homework_submit_questions {
+  border-bottom: 1px solid #ff6b6b;
+  width: 80%;
+  color: #014b7e;
+  position: relative;
+}
+
+.homework_submit_tag {
+  font-size: 1rem;
+}
+
+.homework_question {
+  position: absolute;
+  font-size: 1rem;
+  bottom: 0;
+  left: 0;
+}
+
+.homework_submit_questions_attachment {
+  width: 30% !important;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.non_selected_homework_type_item {
+  cursor: pointer;
+}
+
+.homework_block {
+  text-transform: capitalize;
+}
+
+.homework_type_wrapper {
+  width: 185px;
+  margin-top: 25px;
+}
+
+.homework_submit_wrapper {
+  border: 1px solid #ff6b6b;
+  border-radius: 10px;
+}
+
+.homework_submit_button_wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 30%;
+  margin: 2%;
+  margin-left: 65%;
+}
+
+.homework_submit_button_cancel {
+  margin-right: 20px !important;
+}
+
+.checkWrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.bulkContainer {
+  margin: 20px auto;
+  width: 95%;
+}
+
+.bulk_upload_attachments {
+  margin-top: 1%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+
+.questionWiseAttachmentsContainer {
+  margin-top: 1%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+
+.descBox {
+  margin-top: 15px;
+  background-color: #bcf1ff;
+  color: #014b7e;
+  border: 1px solid #ff6b6b;
+  border-radius: 10px;
+  font-size: 16px;
+  width: 70%;
+  padding: 11px 18px;
+}
+
+.descBox::before {
+  content: 'Instruction : ';
+  font-weight: 600;
+}
+
+.commentBoxStyle > .MuiOutlinedInput-root {
+  border-radius: 10px;
+}
+
+.instructionBox > .MuiOutlinedInput-root {
+  background-color: #bcf1ff;
+  color: #014b7e;
+  border: 1px solid red;
+  border-radius: 10px;
+  font-size: 18px;
+}
+
+.file_row {
+  border: 1px solid #dfdfdf;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  border-radius: 5px;
+  width: 10%;
+  opacity: 1;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  margin: 5px;
+  font: normal normal normal 14px/16px Raleway;
+}
+
+.file_name_container {
+  color: #014b7e;
+  -ms-flex-item-align: center;
+      -ms-grid-row-align: center;
+      align-self: center;
+}
+
+.file_close {
+  -ms-flex-item-align: end;
+      -ms-grid-row-align: end;
+      align-self: end;
+}
+
+.overallContainer {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  margin: 20px;
+  margin-bottom: -60px;
+}
+
+.scoreBox {
+  margin-right: 1.25rem;
+  bottom: 0 !important;
+}
+
+.scoreBox,
+.remarkBox {
+  padding: 12px;
+  width: 20%;
+  border-radius: 10px;
+  opacity: 1;
+  font-weight: 600;
+  font-size: 16px;
+  color: #014b7e;
+  border: 1px solid #ff6b6b;
+}
+
+.homework-question-container.student-view {
+  margin: 20px auto;
+  width: 95%;
+}
+
+.homework-question-container.student-view:nth-child(1) {
+  margin-top: 2rem;
+}
+
+.homework-question-container.student-view .homework-question {
+  width: 100%;
+  color: #014b7e;
+  position: relative;
+  padding-bottom: 8px;
+  font-size: 18px;
+}
+
+.homework-question-container.student-view .attachments-container .header {
+  margin: 1rem 0;
+}
+
+.homework-question-container.student-view .attachments-container .attachments-list-outer-container {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.homework-question-container.student-view .attachments-container .attachments-list-outer-container .prev-btn,
+.homework-question-container.student-view .attachments-container .attachments-list-outer-container .next-btn {
+  width: 45px;
+}
+
+.homework-question-container.student-view .attachments-container .attachments-list-outer-container .attachments-list {
+  scroll-behavior: smooth;
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  overflow-x: auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin: 1rem 0;
+  width: calc(100% - 90px);
+}
+
+.homework-question-container.student-view .attachments-container .attachments-list-outer-container .attachments-list::-webkit-scrollbar {
+  display: none;
+}
+
+.homework-question-container.student-view .attachments-container .attachments-list-outer-container .attachments-list .attachment {
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+  width: 150px;
+}
+
+.homework-question-container.student-view .file-card-container {
+  position: relative;
+  height: 100%;
+}
+
+.homework-question-container.student-view .file-card-container:hover .overlay-container {
+  opacity: 1;
+}
+
+.homework-question-container.student-view .file-card-container .overlay-container {
+  padding: 0.5rem;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  -webkit-transition: 0.3s ease;
+  transition: 0.3s ease;
+}
+
+.homework-question-container.student-view .file-card-container .overlay-container .overlay {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.homework-question-container.student-view .file-card-container .overlay-container .overlay .action-buttons {
+  margin: auto 0;
+}
+
+.homework-question-container.student-view .file-card-container .video-file {
+  padding: 0.5rem;
+  width: 100%;
+}
+
+.homework-question-container.student-view .file-card-container .audio-file {
+  padding: 0.5rem;
+  width: 100%;
+}
+
+@media only screen and (max-width: 768px) {
+  html, body {
+    overflow-x: hidden;
+    width: 100% !important;
+  }
+  body {
+    position: relative;
+  }
+  .homework_type {
+    display: -webkit-box !important;
+    display: -ms-flexbox !important;
+    display: flex !important;
+  }
+  .checkWrapper {
+    margin-left: 54px;
+  }
+  .homework_block_wrapper_submit {
+    display: block;
+  }
+  .homework_type_item {
+    width: 100%;
+    border: 1px solid #ff6b6b;
+    border-radius: 10px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    margin-left: 20px;
+  }
+  .file_row {
+    border: 1px solid #dfdfdf;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    border-radius: 5px;
+    width: 42%;
+    opacity: 1;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    margin: 5px;
+    font: normal normal normal 14px/16px Raleway;
+    margin-bottom: 20px;
+    float: left;
+  }
+  .file_close span img {
+    margin-left: 50px;
+  }
+  .file_name_container {
+    font-size: 14px;
+  }
+  .commentBoxStyle {
+    width: 100% !important;
+  }
+  .descBox {
+    width: 100%;
+  }
+  .homework_submit_button_wrapper {
+    display: block;
+    margin: 0 auto;
+    width: 166px;
+  }
+  .homework_submit_wrapper {
+    height: 100% !important;
+    width: 325px;
+  }
+  .custom_button_master {
+    margin-top: 10px !important;
+    height: 42px;
+    margin-bottom: 10px !important;
+  }
+  .homework_submit_button_cancel {
+    height: 34px;
+  }
+  .homework-question {
+    margin-left: 15px !important;
+    text-align: left !important;
+  }
+}
+
+@media only screen and (max-width: 768px) and (max-width: 768px) {
+  .homework-question {
+    margin-left: 0;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .homework-question .questionWiseAttachmentsContainer {
+    display: block !important;
+  }
+  .homework-question-container.student-view .homework-question {
+    top: 42px;
+  }
+  .homework-question-container.student-view .homework-question {
+    width: 92%;
+  }
+  .attachments-container {
+    margin-top: 60px !important;
+  }
+  .file_row:after {
+    width: 70%;
+  }
+  .MuiIconButton-label:after {
+    margin-left: 244px !important;
+  }
+  .create_group_filter_container .MuiGrid-grid-lg-10 {
+    padding: 20px !important;
+  }
+  .homework-question {
+    border-bottom: 1px solid #ff6b6b;
+  }
+  .upload-wise {
+    border-bottom: none !important;
+  }
+  .MuiSvgIcon-colorPrimary {
+    color: none;
+  }
+  #file-icon {
+    margin-left: 275px;
+  }
+  .questionWiseAttachmentsContainer {
+    border-bottom: 1px solid #ff6b6b;
+    margin-left: 7px;
+    margin-right: 0px;
+  }
+  .MuiGrid-spacing-xs-2 > .MuiGrid-item {
+    padding: 0px;
+  }
+  .home-sub {
+    margin-left: 72px !important;
+  }
+  .homework_submit_wrapper .commentBoxStyle {
+    margin-top: 50px;
+  }
+}
+/*# sourceMappingURL=homework-submission.css.map */
