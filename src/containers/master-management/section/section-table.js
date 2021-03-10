@@ -98,10 +98,9 @@ const SectionTable = () => {
   const [addFlag, setAddFlag] = useState(false);
   const [editFlag, setEditFlag] = useState(false);
   const [tableFlag, setTableFlag] = useState(true);
-  const [grades, setGrades] = useState([]);
   const [delFlag, setDelFlag] = useState(false);
-  const [searchGrade, setSearchGrade] = useState('');
   const [searchSection, setSearchSection] = useState('');
+  const [sectionData, setSectionData] = useState({});
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const limit = 15;
@@ -118,68 +117,56 @@ const SectionTable = () => {
     setPage(newPage+1)
   }
 
-  const handleGrade = (event, value) => {
-    if (value) 
-    {
-      setPage(1)
-      setSearchGrade(value.id);
-    }
-    else setSearchGrade('');
-  };
-
   const handleAddSection = () => {
     setTableFlag(false);
     setAddFlag(true);
     setEditFlag(false);
-    setSearchGrade('');
     setSearchSection('');
   };
 
-  const handleEditSection = (id, name) => {
+  const handleEditSection = (sec) => {
     setTableFlag(false);
     setAddFlag(false);
     setEditFlag(true);
-    setSectionId(id);
-    setSectionName(name);
+    setSectionData(sec);
+    console.log({sec});
   };
 
   const handleGoBack = () => {
-    setPage(1)
+    setPage(1);
     setTableFlag(true);
     setAddFlag(false);
     setEditFlag(false);
-    setGoBackFlag(!goBackFlag)
-    setSearchGrade('');
+    setGoBackFlag(!goBackFlag);
     setSearchSection('');
+    setSectionData({});
   };
 
   const handleDeleteSection = (e) => {
     e.preventDefault();
     setLoading(true);
     axiosInstance
-      .put(endpoints.masterManagement.updateSection, {
-        section_id: sectionId,
-        is_delete: true,
-      })
+      .delete(`${endpoints.masterManagement.updateSection}${sectionId}`)
       .then((result) => {
-        if (result.data.status_code === 200) {
+        if (result.data.status_code === 204) {
             setDelFlag(!delFlag);
             setLoading(false);
-            setAlert('success', result.data.message);
+            setAlert('success', result.data?.message||result.data?.msg);
         } else {
           setLoading(false);
-          setAlert('error', result.data.message);
+          setAlert('error', result.data?.message||result.data?.msg);
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.message);
+        setAlert('error', error.response.data.msg);
       });
     setOpenDeleteModal(false);
   };
 
-  const handleOpenDeleteModal = (id) => {
-    setSectionId(id);
+  const handleOpenDeleteModal = (sec) => {
+    setSectionId(sec?.id);
+    setSectionName(sec?.section_name);
     setOpenDeleteModal(true);
   };
 
@@ -192,41 +179,28 @@ const SectionTable = () => {
     setTimeout(() => {
       setLoading(false);
     }, 450);
-  }, [page, delFlag, goBackFlag, searchGrade]);
-
-  useEffect(()=>{
-    axiosInstance
-    .get(endpoints.masterManagement.gradesDrop)
-    .then((result) => {
-      if (result.status === 200) {
-        setGrades(result.data.data);
-      } else {
-        setAlert('error', result.data.message);
-      }
-    })
-    .catch((error) => {
-      setAlert('error', error.message);
-    });
-  },[])
+  }, [page, delFlag, goBackFlag]);
 
   useEffect(() => {
+
+    let url = `${endpoints.masterManagement.sectionsTable}?page=${page}&page_size=${limit}`;
+    if (searchSection) url += `&section_name=${searchSection}`;
+
     axiosInstance
-      .get(
-        `${endpoints.masterManagement.sectionsTable}?page=${page}&page_size=${limit}&section=${searchSection}&grade=${searchGrade}`
-      )
+      .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
-          setTotalCount(result.data.result.count);
-          setSections(result.data.result.results);
+          setTotalCount(result.data?.data?.count);
+          setSections(result.data?.data?.results);
         } else {
-          setAlert('error', result.data.error_message);
+          setAlert('error', result.data?.message||result.data?.msg);
         }
       })
       .catch((error) => {
         setAlert('error', error.message);
       });
 
-  }, [delFlag, goBackFlag, page, searchGrade, searchSection]);
+  }, [delFlag, goBackFlag, page, searchSection]);
 
   return (
     <>
@@ -243,13 +217,12 @@ const SectionTable = () => {
       </div>
 
       {!tableFlag && addFlag && !editFlag && (
-        <CreateSection grades={grades} setLoading={setLoading} handleGoBack={handleGoBack}/>
+        <CreateSection setLoading={setLoading} handleGoBack={handleGoBack}/>
       )}
 
       {!tableFlag && !addFlag && editFlag && (
         <EditSection
-          id={sectionId}
-          name={sectionName}
+          sectionData={sectionData}
           handleGoBack={handleGoBack}
           setLoading={setLoading}
         />
@@ -271,28 +244,7 @@ const SectionTable = () => {
               />
             </Box>
           </Grid>
-          <Grid item xs={12} sm={3}>
-            <Box className={classes.centerInMobile}>
-              <Autocomplete
-                size='small'
-                style={{ width: '100%' }}
-                onChange={handleGrade}
-                id='grade'
-                options={grades}
-                getOptionLabel={(option) => option.grade_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Grades'
-                    placeholder='Grades'
-                  />
-                )}
-              />
-            </Box>
-          </Grid>
-          <Grid item xs sm={6} className={isMobile?'hideGridItem':''}/>
+          <Grid item xs sm={9} className={isMobile?'hideGridItem':''}/>
           <Grid item xs={12} sm={3} className={isMobile?'':'addButtonPadding'}>
              <Button 
              startIcon={<AddOutlinedIcon style={{fontSize:'30px'}}/>}
@@ -307,7 +259,7 @@ const SectionTable = () => {
           </Grid>
         </Grid>
       )}
-      {!isMobile && tableFlag && !addFlag && !editFlag && (
+      {tableFlag && !addFlag && !editFlag && (
           <Paper className={`${classes.root} common-table`}>
             <TableContainer className={classes.container}>
               <Table stickyHeader aria-label='sticky table'>
@@ -330,28 +282,22 @@ const SectionTable = () => {
                     return (
                       <TableRow hover section='checkbox' tabIndex={-1} key={index}>
                         <TableCell className={classes.tableCell}>
-                          {section.section.section_name}
+                          {section?.section_name}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
-                          {section.section ? section.section.created_by.first_name : ''}
+                          {section?.created_by}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
                         <IconButton
-                            onClick={(e) => {
-                              setSectionName(section.section.section_name);
-                              handleOpenDeleteModal(section.section.id);
-                            }}
+                            onClick={() => handleOpenDeleteModal(section)}
                             title='Delete Section'
                           >
                             <DeleteOutlinedIcon style={{color:'#fe6b6b'}} />
                           </IconButton>
 
                           <IconButton
-                            onClick={(e) =>
-                              handleEditSection(
-                                section.section.id,
-                                section.section.section_name
-                              )
+                            onClick={() =>
+                              handleEditSection(section)
                             }
                             title='Edit Section'
                           >
@@ -376,7 +322,7 @@ const SectionTable = () => {
             </div>
           </Paper>
         )}
-        {isMobile && tableFlag && !addFlag && !editFlag && (
+        {/* {isMobile && tableFlag && !addFlag && !editFlag && (
           <>
             <Container className={classes.cardsContainer}>
               {sections.map((section, i) => (
@@ -403,7 +349,7 @@ const SectionTable = () => {
             />
             </div>
           </>
-        )}
+        )} */}
         <Dialog
           open={openDeleteModal}
           onClose={handleCloseDeleteModal}

@@ -95,12 +95,12 @@ const BulkUpload = () => {
 
   useEffect(() => {
     axiosInstance
-      .get(endpoints.academics.branches)
+      .get(endpoints.masterManagement.branchList)
       .then((result) => {
-        if (result.status === 200) {
-          setBranches(result.data.data)
+        if (result.data?.status_code === 200) {
+          setBranches(result.data?.data)
         } else {
-          setAlert('error', result.data.message)
+          setAlert('error', result.data?.message)
         }
       })
       .catch((error) => {

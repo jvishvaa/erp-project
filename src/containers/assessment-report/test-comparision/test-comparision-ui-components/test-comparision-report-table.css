@@ -1,0 +1,37 @@
+.mmk {
+  background-color: #ff6b6b;
+}
+
+.test-comparision-table {
+  width: 100%;
+}
+
+.test-comparision-table .table-header-row tr th {
+  background-color: #fbe6e6 !important;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  margin: '10px 0';
+  color: #014b7e !important;
+}
+
+.test-comparision-table .table-body-row tr td {
+  position: relative;
+}
+
+.test-comparision-table .table-body-row tr td:not(:last-child):after {
+  content: '';
+  width: 2px;
+  background-color: #cecece;
+  height: 40%;
+  position: absolute;
+  border-radius: 5px;
+  right: 0;
+  -webkit-transform: translateY(-10%);
+          transform: translateY(-10%);
+}
+
+.test-comparision-table .table-pagination {
+  color: #014b7e;
+}
+/*# sourceMappingURL=test-comparision-report-table.css.map */
