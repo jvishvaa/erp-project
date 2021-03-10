@@ -117,7 +117,7 @@ export const fetchGradesPerBranch = (payload) => {
   return (dispatch) => {
     dispatch(dataLoading())
     axios
-      .get(urls.GradesPerBranch + '?session_year=' + payload.session + '&branch_id=' + payload.branch, {
+      .get(urls.GradesPerBranch + '?session_year=' + payload.session + '&branch_id=' + payload.branch + '&module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
