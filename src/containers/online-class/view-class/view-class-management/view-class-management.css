@@ -1,0 +1,110 @@
+.viewclass__management-container {
+  min-height: 600px;
+  background-color: #fff;
+}
+
+.viewclass__management-container h6,
+.viewclass__management-container h5 {
+  font-size: 18px !important;
+}
+
+.viewclass__management-container .filters__container {
+  background-color: #fafafa !important;
+  padding: 20px 2.5%;
+  margin: 0 auto;
+}
+
+.viewclass__management-container .filters__container .viewmanagement-tabs-container {
+  margin-left: -30px;
+}
+
+.viewclass__management-container .filters__container .viewclass__management-btn {
+  color: white;
+  width: 100%;
+}
+
+.viewclass__management-container .filters__container .cancelled-class-check {
+  margin-top: 0px !important;
+}
+
+.viewclass__management-container .filters__container svg {
+  fill: #ff6b6b;
+}
+
+.viewclass__management-container .filters__container .MuiTextField-root {
+  width: 100%;
+}
+
+.viewclass__management-container .viewclass__management-table {
+  width: 98%;
+  margin: 10px auto 0px auto !important;
+}
+
+.viewclass__management-container .viewclass__management-table .progress-center {
+  position: absolute;
+  left: 50%;
+  margin-top: 100px;
+}
+
+.viewclass__management-container .viewclass__management-table .viewclass__table-head th {
+  font-weight: bold;
+  color: #014b7e;
+}
+
+.viewclass__management-container .viewclass__management-table .viewclass__table-head th:not(:last-child) {
+  position: relative;
+}
+
+.viewclass__management-container .viewclass__management-table .viewclass__table-head th:not(:last-child)::after {
+  content: '';
+  height: 50%;
+  width: 2px;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  background-color: #ff6b6b;
+}
+
+.viewclass__management-container .viewclass__management-table .viewclass__table-body td {
+  color: #014b7e;
+}
+
+.viewclass__management-container .viewclass__management-table .pagination__container {
+  margin-top: 20px;
+}
+
+.viewclass__management-container .viewclass__management-table .pagination__container .view-class-pagination p {
+  color: #014b7e;
+  font-weight: bold !important;
+}
+
+.viewclass__management-container .viewclass__management-table .pagination__container .view-class-pagination .MuiTablePagination-actions {
+  color: #014b7e;
+}
+
+.viewclass__management-container .viewclass__management-table .expand-management {
+  display: none;
+  cursor: pointer;
+  color: #ff6b6b;
+}
+
+@media only screen and (max-width: 600px) {
+  .viewclass__management-table .hide {
+    display: none;
+  }
+  .viewclass__management-table .show {
+    display: table-cell;
+  }
+  .filters__container .viewmanagement-tabs-container {
+    margin-left: 0px !important;
+  }
+  .viewclass__management-table .expand-management {
+    float: right;
+    margin: 0px 20px 0px 0px;
+    margin-right: 20px;
+    display: block !important;
+  }
+}
+/*# sourceMappingURL=view-class-management.css.map */

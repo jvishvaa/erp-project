@@ -150,7 +150,10 @@ export const fetchUser = (id) => (dispatch) => {
 
       console.log('user detail ', response);
     })
-    .catch(() => {
+
+    .catch((e) => {
+      console.log(e)
+      debugger
       dispatch({ type: FETCH_USER_DETAIL_FAILURE });
     });
 };
@@ -189,9 +192,9 @@ export const editUser = (params) => (dispatch) => {
     });
 };
 
-export const fetchBranchesForCreateUser = () => {
+export const fetchBranchesForCreateUser = (acadId) => {
   return axios
-    .get('/erp_user/branch/')
+    .get(`/erp_user/list-all-branch/session_year=${acadId}`)
     .then((response) => {
       if (response.data.status_code === 200) return response?.data?.data;
       else console.log('','xyzxyz');
