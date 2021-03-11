@@ -158,7 +158,7 @@ class TransactionStatus extends Component {
 
   fetchBranchHandler = (e) => {
     if (!this.state.isAccountant) {
-      this.props.fetchBranches(e.value, this.props.alert, this.props.user)
+      this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
     }
     this.setState({
       currentSession: e.value
@@ -884,7 +884,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchAllTransaction: (session, branchId, isAccountant, mode, fees, feePlanIds, fromDate, toDate, page, user, alert) => dispatch(actionTypes.fetchAllTransaction({ session, branchId, isAccountant, mode, fees, feePlanIds, fromDate, toDate, page, user, alert })),
   updateTransaction: (session, id, currentPaid, currentCollected, currentCancelled, currentBankClearance, user, alert) => dispatch(actionTypes.updateTransactionStatus({ session, id, currentPaid, currentCollected, currentCancelled, currentBankClearance, user, alert })),
   fetchFeePlans: (session, branchId, user, alert) => dispatch(actionTypes.fetchMultiFeeTypeTransaction({ session, branchId, user, alert })),

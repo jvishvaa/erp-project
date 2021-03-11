@@ -94,7 +94,7 @@ class ReceiptBookAdm extends Component {
           // this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
           this.props.fetchFeeAccounts(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user)
         } else {
-          this.props.fetchBranches(e.value, this.props.alert, this.props.user)
+          this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
         }
       })
     }
@@ -374,7 +374,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchFeeTypes: (session, branch, feeId, alert, user) => dispatch(actionTypes.fetchFeeTypesPerType({ session, branch, feeId, alert, user })),
   fetchFeeAccounts: (session, branch, alert, user) => dispatch(actionTypes.fetchFeeAccountsReceiptBook({ session, branch, alert, user })),
   downloadReports: (reportName, url, data, alert, user) => dispatch(actionTypes.downloadReports({ reportName, url, data, alert, user })),

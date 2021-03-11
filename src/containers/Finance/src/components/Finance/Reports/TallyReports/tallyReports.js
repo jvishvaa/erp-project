@@ -119,7 +119,7 @@ class TallyReports extends Component {
           }
           this.props.fetchFeeAccounts(data, this.props.alert, this.props.user)
         } else {
-          this.props.fetchBranches(sessions, this.props.alert, this.props.user)
+          this.props.fetchBranches(sessions, this.props.alert, this.props.user, moduleId)
         }
       })
     }
@@ -544,7 +544,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchFeeAccounts: (data, alert, user) => dispatch(actionTypes.fetchFeeAccPerBranchAndAcad({ data, alert, user })),
   downloadReports: (reportName, url, data, alert, user) => dispatch(actionTypes.downloadReports({ reportName, url, data, alert, user })),
   fetchBranchAtAcc: (alert, user) => dispatch(actionTypes.fetchBranchAtAcc({ alert, user }))

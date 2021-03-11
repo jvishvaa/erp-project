@@ -134,7 +134,7 @@ const TotalFormCount = ({ classes,
       //   setToDate(toDateStored)
       // }
       // fetchBranches(sessionYear.value, alert, user)
-      fetchBranchList(sessionYear.value, alert, user)
+      fetchBranchList(sessionYear.value, alert, user, moduleId)
     }
   }, [alert, sessionYear.value, fetchBranchList, user])
 
@@ -503,10 +503,10 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchFormCount: (session, branch, fromDate, toDate, report, dates, alert, user) => dispatch(actionTypes.fetchFormCount({ session, branch, fromDate, toDate, report, dates, alert, user })),
   downloadReports: (reportName, url, alert, user) => dispatch(actionTypes.downloadReports({ reportName, url, alert, user })),
-  fetchBranchList: (branch, alert, user) => dispatch(actionTypes.fetchBranchList({ branch, alert, user }))
+  fetchBranchList: (branch, alert, user, moduleId) => dispatch(actionTypes.fetchBranchList({ branch, alert, user, moduleId }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withRouter(TotalFormCount)))

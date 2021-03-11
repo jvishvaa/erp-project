@@ -140,7 +140,7 @@ class OtherFeeTotalPaidReports extends Component {
     this.setState({
       branchType: e
     })
-    this.props.fetchBranches(this.state.sessionData && this.state.sessionData.value, e.value, this.props.alert, this.props.user)
+    this.props.fetchBranches(this.state.sessionData && this.state.sessionData.value, e.value, this.props.alert, this.props.user, moduleId)
   }
   changehandlerbranch = (e) => {
     if (e.value === 'all') {
@@ -906,7 +906,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  fetchBranches: (session, branchType, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, branchType, alert, user })),
+  fetchBranches: (session, branchType, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, branchType, alert, user, moduleId })),
   fetchGrades: (session, branch, alert, user, moduleId) => dispatch(actionTypes.fetchGradesPerBranch({ session, branch, alert, user, moduleId })),
   fetchInstallments: (data, alert, user) => dispatch(actionTypes.fetchInstallmentListPerFeeType({ data, alert, user })),
   fetchFeeTypes: (session, branch, grade, feePlanId, alert, user) => dispatch(actionTypes.fetchFeeTypesPaidReportsPerBranch({ session, branch, grade, feePlanId, alert, user })),

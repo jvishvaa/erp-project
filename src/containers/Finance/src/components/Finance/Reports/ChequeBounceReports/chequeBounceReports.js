@@ -95,7 +95,7 @@ const ChequeBounceReports = ({ classes, session, branches, fetchBranches, downlo
     // console.log('acad years', e)
     setSession(e)
     if (roleState === 'financeadmin') {
-      fetchBranches(e.value, alert, user)
+      fetchBranches(e.value, alert, user, moduleId)
       // fetch banks
     }
   }
@@ -300,7 +300,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   chequeBounceList: (role, session, branchId, fromDate, toDate, alert, user) => dispatch(actionTypes.chequeBounceList({ role, session, branchId, fromDate, toDate, alert, user })),
   downloadBounceReports: (role, reportName, session, branchId, fromDate, toDate, alert, user) => dispatch(actionTypes.downloadChequeBounceReports({ role, reportName, session, branchId, fromDate, toDate, alert, user })),
   downloadReportsBounce: (reportName, url, data, alert, user) => dispatch(actionTypes.downloadReports({ reportName, url, data, alert, user }))

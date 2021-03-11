@@ -173,7 +173,7 @@ class ConcessionReport extends Component {
       if (this.state.role === 'financeaccountant') {
         this.props.fetchFeeTypes(this.state.session, this.props.branchAtAcc.branch, 1, this.props.alert, this.props.user)
       } else {
-        this.props.fetchBranches(sessions, this.props.alert, this.props.user)
+        this.props.fetchBranches(sessions, this.props.alert, this.props.user, moduleId)
       }
     })
     // this.setState({
@@ -323,8 +323,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  // loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  loadSession: dispatch(apiActions.listAcademicSessions()),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   fetchFeeTypes: (session, branch, feeId, alert, user) => dispatch(actionTypes.fetchFeeTypesPerType({ session, branch, feeId, alert, user })),
   fetchBranchAtAcc: (alert, user) => dispatch(actionTypes.fetchBranchAtAcc({ alert, user }))
