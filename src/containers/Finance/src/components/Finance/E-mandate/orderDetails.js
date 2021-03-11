@@ -330,7 +330,7 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
         customer_id: val.customer_id ? val.customer_id : '',
         order_id: val.razorpay_order_id ? val.razorpay_order_id : '',
         status: val.is_authentication_payment_done ? <span style={{ color: 'green', fontWeight: 'bold' }}>Done</span> : <span style={{ color: 'red', fontWeight: 'bold' }}>Not Done</span>,
-        CreateLink: val.is_authentication_payment_done ? <span style={{ color: 'green', fontWeight: 'bold' }}>Already Done </span> : (role === 'FinanceAdm' || role === 'financeaccountant') ? <Button variant='contained' color='primary' onClick={() => paymentHandler(val.customer_id, val.razorpay_order_id)} style={{ marginTop: '-5px', marginLeft: '-10px' }}>{(role !== 'financeadmin' || role !== 'financeaccountant') ? 'Create Link' : 'pay first payment'}</Button> : ''
+        CreateLink: val.is_authentication_payment_done ? <span style={{ color: 'green', fontWeight: 'bold' }}>Already Done </span> : (role === 'FinanceAdm' || role === 'financeaccountant') ? <Button variant='contained' color='primary' onClick={() => paymentHandler(val.customer_id, val.razorpay_order_id)} style={{ marginTop: '-5px', marginLeft: '-10px' }}>{(role !== 'financeadmin' || role !== 'financeaccountant') ? 'pay first payment' : 'Create Link'}</Button> : ''
         // Update: <Button variant='contained' color='primary' style={{ marginTop: '-5px' }}> Update </Button>
       }
     })
