@@ -96,6 +96,7 @@ const GeneralDairyList = () => {
       }, [location.pathname,page,deleteFlag]);
 
     const handleDairyList = (branchId, gradeId, sectionIds, startDate, endDate, activeTab,page, subjects) => {
+        debugger
         console.log(page,'inside')
         setLoading(true);
         setPeriodData([]);
@@ -106,6 +107,7 @@ const GeneralDairyList = () => {
         setEDate(endDate)
         setPage(page)
         setActiveTab(activeTab)
+        setViewMore(false)
         const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
         console.log(roleDetails);
         if (isTeacher){
