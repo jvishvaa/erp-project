@@ -46,6 +46,7 @@ const GeneralDairyFilter = ({
   setPeriodData,
   isTeacher,
   showSubjectDropDown,
+  studentModuleId,
   // setCurrentTab,
   setViewMore,
   setViewMoreData,
@@ -134,6 +135,22 @@ const GeneralDairyFilter = ({
   };
   const handleActiveTab = (tab) => {
     setActiveTab(tab);
+    if (tab === 2 && !isTeacher){
+      axiosInstance.get(`${endpoints.dailyDairy.chapterList}?module_id=${studentModuleId}`)
+      .then(res => {
+        if (res.data.status_code === 200){
+          setSubjectDropdown(res.data.result)
+        }
+        else {
+          setAlert('error', res.data.message)
+        }
+      }).catch(error => {
+        setAlert('error',error.message)
+      })
+    }
+    else if(tab === 0){
+      handleFilter(tab)
+    }
   }
   useEffect(() => {
 
@@ -248,20 +265,6 @@ const GeneralDairyFilter = ({
                 setBranchDropdown('error', error.message);
             })
   }, []);
-
-  useEffect(() => {
-    axiosInstance.get(`${endpoints.dailyDairy.chapterList}?module_id=164`)
-    .then(res => {
-      if (res.data.status_code === 200){
-        setSubjectDropdown(res.data.result)
-      }
-      else {
-        setAlert('error', res.data.message)
-      }
-    }).catch(error => {
-      setAlert('error',error.message)
-    })
-  },[]);
 
   return (
     <Grid

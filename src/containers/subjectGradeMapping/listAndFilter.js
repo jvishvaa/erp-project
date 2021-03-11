@@ -34,7 +34,7 @@ const ListandFilter = (props) => {
     const [filter, setFilter] = useState(false);
 
     const navigateToCreatePage = () => {
-        props.history.push('/master-management/subject/grade/mapping')
+        props.history.push('/master-mgmt/subject/grade/mapping')
     }
 
     const handleClearAll = () => {
