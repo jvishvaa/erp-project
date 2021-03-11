@@ -30,10 +30,10 @@ export const FETCH_INSTA_DETAILS = 'FETCH_INSTA_DETAILS'
 export const FETCH_DEVICE_ID = 'FETCH_DEVICE_ID'
 
 // action-creators
-export const fetchFinancialYear = () => {
+export const fetchFinancialYear = (moduleId) => {
   return (dispatch, getState) => {
     const { authentication } = getState()
-    axios.get(urls.GetFinancialYear, {
+    axios.get(urls.GetFinancialYear + '?module_id=' + moduleId, {
       headers: {
         'Authorization': 'Bearer ' + authentication.user
       }
@@ -53,9 +53,17 @@ export const fetchFinancialYear = () => {
 export const fetchBranchPerSession = (payload) => {
   let url = null
   if (payload.branchType) {
+    if (payload.moduleId) {
     url = urls.MiscFeeClass + '?session_year=' + payload.session + '&branch_type=' + payload.branchType + '&module_id=' + payload.moduleId
+    } else {
+      url = urls.MiscFeeClass + '?session_year=' + payload.session + '&branch_type=' + payload.branchType
+    }
   } else {
+    if (payload.moduleId) {
     url = urls.MiscFeeClass + '?session_year=' + payload.session + '&module_id=' + payload.moduleId
+    } else {
+      url = urls.MiscFeeClass + '?session_year=' + payload.session 
+    }
   }
   return (dispatch) => {
     dispatch(dataLoading())
@@ -117,7 +125,7 @@ export const fetchGradesPerBranch = (payload) => {
   return (dispatch) => {
     dispatch(dataLoading())
     axios
-      .get(urls.GradesPerBranch + '?session_year=' + payload.session + '&branch_id=' + payload.branch, {
+      .get(urls.GradesPerBranch + '?session_year=' + payload.session + '&branch_id=' + payload.branch + '&module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
@@ -352,7 +360,7 @@ export const fetchGradeList = (payload) => {
   return (dispatch) => {
     dispatch(dataLoaded())
     axios
-      .get(urls.GradeList, {
+      .get(urls.GradeList + '?module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
@@ -376,7 +384,7 @@ export const fetchAllSectionsPerGrade = (payload) => {
   return (dispatch) => {
     dispatch(dataLoading())
     axios
-      .get(urls.StudentGradeSectionAcc + '?grade=' + payload.gradeId + '&academic_year=' + payload.session, {
+      .get(urls.StudentGradeSectionAcc + '?grade=' + payload.gradeId + '&academic_year=' + payload.session + '&module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }

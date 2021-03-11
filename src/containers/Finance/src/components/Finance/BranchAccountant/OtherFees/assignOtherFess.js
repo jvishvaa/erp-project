@@ -36,6 +36,33 @@ TabContainer.propTypes = {
   dir: PropTypes.string.isRequired
 }
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Transport Fees' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Assign Transport Fees') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 class AssignOtherFees extends Component {
   constructor (props) {
     super(props)
@@ -50,18 +77,19 @@ class AssignOtherFees extends Component {
       otherFeeData: [],
       due_date: '',
       value: 'one',
-      getList: false
+      getList: false,
+      moduleId:null
     }
   }
 
-  // componentDidMount () {
-  //   this.props.fetchOtherFees(this.props.alert, this.props.user)
-  // }
+  componentDidMount () {
+    // this.props.fetchOtherFees(this.props.alert, this.props.user)
+  }
 
   gradeHandler = (e) => {
     console.log(e.value)
     this.setState({ gradeId: e.value, gradeData: e }, () => {
-      this.props.fetchAllSections(this.state.session, this.state.gradeId, this.props.alert, this.props.user)
+      this.props.fetchAllSections(this.state.session, this.state.gradeId, this.props.alert, this.props.user, moduleId)
     })
   }
 
@@ -110,7 +138,7 @@ class AssignOtherFees extends Component {
   handleAcademicyear = (e) => {
     console.log(e)
     this.setState({ session: e.value, branchData: [], sessionData: e })
-    this.props.fetchAllGrades(e.value, this.props.alert, this.props.user)
+    this.props.fetchAllGrades(e.value, this.props.alert, this.props.user, moduleId)
     this.props.fetchOtherFees(e.value, this.props.alert, this.props.user)
   }
 
@@ -252,9 +280,9 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  fetchAllGrades: (session, alert, user) => dispatch(actionTypes.fetchAllGrades({ session, alert, user })),
-  fetchAllSections: (session, gradeId, alert, user) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, gradeId, alert, user })),
-  loadSession: dispatch(apiActions.listAcademicSessions()),
+  fetchAllGrades: (session, alert, user, moduleId) => dispatch(actionTypes.fetchAllGrades({ session, alert, user, moduleId })),
+  fetchAllSections: (session, gradeId, alert, user, moduleId) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, gradeId, alert, user, moduleId })),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   fetchOtherFees: (session, alert, user) => dispatch(actionTypes.fetchListtOtherFee({ session, alert, user })),
   checkIsMisc: (session, otherFeeId, alert, user) => dispatch(actionTypes.checkIsMisc({ session, otherFeeId, alert, user })),
   clearProps: () => dispatch(actionTypes.clearingAllProps())

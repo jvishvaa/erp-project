@@ -76,6 +76,33 @@ const validate = (email) => {
   return result
 }
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Admissions' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Application Form') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
 class ApplicationFormAcc extends Component {
   constructor (props) {
     super(props)
@@ -2004,7 +2031,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   fetchGrade: (session, alert, user) => dispatch(actionTypes.fetchGrade({ session, alert, user })),
   fetchApplicationDetails: (session, key, user, alert) => dispatch(actionTypes.fetchApplicationDetails({ session, key, user, alert })),
   saveAllFormData: (data, user, alert) => dispatch(actionTypes.saveAllFormData({ data, user, alert })),

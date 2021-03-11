@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Select from 'react-select'
-import { withStyles, Button } from '@material-ui/core'
+import { withStyles, Button, CircularProgress } from '@material-ui/core'
 import Grid from '@material-ui/core/Grid'
 import { withRouter } from 'react-router-dom'
 import { apiActions } from '../../../../_actions'
 import AutoSuggest from '../../../../ui/AutoSuggest/autoSuggest'
 import NewAdmissionFormAcc from './newAdmissionForm'
 import NonRTEFormAcc from './nonRTEAdmissionForm'
-import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+// import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import * as actionTypes from '../store/actions'
 import { debounce } from '../../../../utils'
 import Layout from '../../../../../../Layout'
@@ -25,6 +25,33 @@ const styles = theme => ({
     textAlign: 'center'
   }
 })
+
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Admissions' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Admission Form') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 
 class CustomizedAdmissionFormAcc extends Component {
   constructor (props) {
@@ -325,7 +352,7 @@ const mapStateToProps = state => ({
   dataLoading: state.finance.common.dataLoader
 })
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   getStudentdetailsbyregNumber: (session, regno, user, alert) => dispatch(actionTypes.getStudentdetailsbyregNumber({ session, regno, user, alert })),
   getStudentdetailsbyappNumber: (session, appno, user, alert) => dispatch(actionTypes.getStudentdetailsbyappNumber({ session, appno, user, alert })),
   searchStudentdetailsbyregNumber: (session, regno, user, alert) => dispatch(actionTypes.searchStudentdetailsbyregNumber({ session, regno, user, alert })),

@@ -29,6 +29,33 @@ const styles = theme => ({
   }
 })
 const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
+let moduleId = null
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Fee Type' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Curricular Fee Type') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+          // this.setState({
+            moduleId = item.child_id
+          // })
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 class CurrFeeType extends Component {
   constructor (props) {
     super(props)
@@ -54,32 +81,7 @@ class CurrFeeType extends Component {
   }
 
   componentDidMount () {
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'Fee Type' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Curricular Fee Type') {
-              // setModuleId(item.child_id);
-              // setModulePermision(true);
-              this.setState({
-                moduleId: item.child_id
-              })
-              console.log('id+', item.child_id)
-            } else {
-              // setModulePermision(false);
-            }
-          });
-        } else {
-          // setModulePermision(false);
-        }
-      });
-    } else {
-      // setModulePermision(false);
-    }
+  
   }
   handleChangePage = (event, newPage) => {
     this.setState({
@@ -101,7 +103,7 @@ class CurrFeeType extends Component {
       session: e,
       branch: null
     }, () => {
-      this.props.fetchBranches(this.state.session.value, this.props.alert, this.props.user, this.state.moduleId)
+      this.props.fetchBranches(this.state.session.value, this.props.alert, this.props.user, moduleId)
     })
   }
 
@@ -612,7 +614,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId})),
   fetchCurrFeeList: (session, branch, alert, user) => dispatch(actionTypes.fetchCurrFeeList({ session, branch, alert, user })),
   fetchAllFeeAccounts: (session, branchId, alert, user) => dispatch(actionTypes.fetchAllFeeAccounts({ session, branchId, alert, user })),

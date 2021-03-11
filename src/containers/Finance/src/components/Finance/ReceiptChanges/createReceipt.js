@@ -26,6 +26,34 @@ import Layout from '../../../../../Layout'
 // const ReceiptRange = {
 //   namespace: 'Misc Fee'
 // }
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
+let moduleId = null 
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Settings' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Create Receipt Ranges') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+          // this.setState({
+            moduleId= item.child_id
+          // })
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 
 class CreateReceipt extends Component {
   constructor (props) {
@@ -44,7 +72,8 @@ class CreateReceipt extends Component {
       showDeleteModal: false,
       deleteId: null,
       page: 0,
-      rowsPerPage: 10
+      rowsPerPage: 10,
+      moduleId: null
     }
   }
 
@@ -101,7 +130,7 @@ class CreateReceipt extends Component {
 
   handleClickSessionYear = (e) => {
     this.setState({ session: e.value, branchData: [], sessionData: e })
-    this.props.fetchBranches(e.value, this.props.alert, this.props.user)
+    this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
   }
 
   changeReceiptType = (e) => {
@@ -484,8 +513,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchListReceipt: (session, branch, receiptType, alert, user) => dispatch(actionTypes.fetchReceiptRanges({ session, branch, receiptType, alert, user })),
   deleteReceipts: (id, alert, user) => dispatch(actionTypes.deleteReceiptFeeList({ id, alert, user }))
 })

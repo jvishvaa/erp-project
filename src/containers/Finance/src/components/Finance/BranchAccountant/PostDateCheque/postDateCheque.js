@@ -27,6 +27,31 @@ const styles = theme => ({
 })
 const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Student' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Post Dated Cheque') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 class PostDateCheque extends Component {
   constructor (props) {
     super(props)
@@ -91,7 +116,7 @@ class PostDateCheque extends Component {
   handleAcademicyear = (e) => {
     // console.log('acad years', this.props.session)
     this.setState({ session: e.value, sessionData: e }, () => {
-      this.props.fetchGrades(this.state.session, this.props.alert, this.props.user, this.state.moduleId)
+      this.props.fetchGrades(this.state.session, this.props.alert, this.props.user, moduleId)
     })
   }
 
@@ -327,7 +352,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   fetchGrades: (session, alert, user, moduleId) => dispatch(actionTypes.fetchGrades({ session, alert, user, moduleId })),
   fetchPdc: (session, grade, fromDate, toDate, alert, user) => dispatch(actionTypes.fetchPdc({ session, grade, fromDate, toDate, alert, user }))
 })
