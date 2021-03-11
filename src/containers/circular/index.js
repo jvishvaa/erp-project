@@ -68,7 +68,6 @@ const CircularList = () => {
 
   const [state, setState] = useContext(Context);
 
-
   const handlePagination = (event, page) => {
     setPage(page);
   };
@@ -144,20 +143,37 @@ const CircularList = () => {
   };
 
   useEffect(() => {
-    if (
-      page &&
-      grade &&
-      branch &&
-      section &&
-      acadYear &&
-      startDateFilter &&
-      endDateFilter
-    )
-      handlePeriodList(grade, branch, section, acadYear, startDateFilter, endDateFilter);
-    if (deleteFlag)
-      handlePeriodList(grade, branch, section, acadYear, startDateFilter, endDateFilter);
+    if (window.location.pathname === '/teacher-circular') {
+      if (
+        page &&
+        grade &&
+        branch &&
+        section &&
+        acadYear &&
+        startDateFilter &&
+        endDateFilter
+      )
+        handlePeriodList(
+          grade,
+          branch,
+          section,
+          acadYear,
+          startDateFilter,
+          endDateFilter
+        );
+      if (deleteFlag)
+        handlePeriodList(
+          grade,
+          branch,
+          section,
+          acadYear,
+          startDateFilter,
+          endDateFilter
+        );
+    }else if(page && grade && branch){
+      handlePeriodList(grade,branch)
+    }
   }, [page, deleteFlag]);
-  // console.log('BBBBB', editData);
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
