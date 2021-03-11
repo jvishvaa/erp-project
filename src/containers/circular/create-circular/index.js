@@ -65,14 +65,16 @@ const CraeteCircular = () => {
 
   console.log(state,'eeeeeeeeee')
   const circularRole = [
-    { name: editData.module_name || 'Student Circular', value: 'Student Circular' },
-    {
-      name:
-        editData.module_name === 'Student Circular'
-          ? 'Teacher Circular'
-          : null || 'Teacher Circular',
-      value: 'Teacher Circular',
-    },
+    // { name: editData.module_name || 'Student Circular', value: 'Student Circular' },
+    // {
+    //   name:
+    //     editData.module_name === 'Student Circular'
+    //       ? 'Teacher Circular'
+    //       : null || 'Teacher Circular',
+    //   value: 'Teacher Circular',
+    // },
+    {name: 'Student Circular', value: 'Student Circular'},
+    {name:'Teacher Circular',value:'Student Circular'}
   ];
 
   const [filterData, setFilterData] = useState({
@@ -338,6 +340,22 @@ const CraeteCircular = () => {
   };
 
   const handleEdited = () => {
+    if(!filterData.year){
+      return setAlert('warning', 'Select Academic Year');
+    }
+    if(!filterData.branch){
+      return setAlert('warning', 'Select Branch');
+    }
+    if(!filterData.role){
+      return setAlert('warning', 'Select Role');
+    }
+    if(!filterData.grade){
+      return setAlert('warning', 'Select Grade');
+    }
+    if(!filterData.section){
+      return setAlert('warning', 'Select Section');
+    }
+   
     axiosInstance
       .put(`${endpoints.circular.updateCircular}`, {
         circular_id: editData.id,
@@ -379,7 +397,9 @@ const CraeteCircular = () => {
        setFilterData({
          ...filterData,
          year:result?.data?.result?.academic_year,
-         branch:result?.data?.result?.branches,
+         branch:result?.data?.result?.branches[0],
+         grade:result?.data?.result?.grades[0],
+         section:result?.data?.result?.sections[0],
        })
        setTitle(result?.data?.result?.circular_name)
        setDescription(result?.data?.result?.description)
@@ -497,7 +517,7 @@ const CraeteCircular = () => {
                 className='dropdownIcon'
                 value={filterData?.grade || ''}
                 options={gradeDropdown}
-                getOptionLabel={(option) => option?.grade__grade_name}
+                getOptionLabel={(option) => option?.grade__grade_name || option?.grade_name}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
@@ -518,7 +538,7 @@ const CraeteCircular = () => {
                 className='dropdownIcon'
                 value={filterData?.section || ''}
                 options={sectionDropdown}
-                getOptionLabel={(option) => option?.section__section_name}
+                getOptionLabel={(option) => option?.section__section_name || option?.section_name}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
