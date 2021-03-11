@@ -18,7 +18,7 @@ if (NavData && NavData.length) {
       item.child_module.length > 0
     ) {
       item.child_module.forEach((item) => {
-        if (item.child_name === 'Normal Fee Type') {
+        if (item.child_name === 'Misc. Fee Type') {
           // setModuleId(item.child_id);
           // setModulePermision(true);
             moduleId = item.child_id
