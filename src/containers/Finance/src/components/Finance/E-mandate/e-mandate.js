@@ -83,10 +83,7 @@ const EMandate = ({ session, dataLoadingStatus, fetchBranches, branches, todayDe
       const data = {
         academic_year: sessionData && sessionData.value,
         // branch_name: domainName
-        branch:{
-          id:currentBranch && currentBranch.value,
           branch_name: currentBranch && currentBranch.label
-        }
       }
       createDomainName(data, user, alert)
       setDomainModel(false)
@@ -160,10 +157,7 @@ const EMandate = ({ session, dataLoadingStatus, fetchBranches, branches, todayDe
     if (currentBranchUpdate) {
       const data = {
         id: domId,
-        branch: {
-          id: currentBranchUpdate && currentBranchUpdate.value,
-          branch_name: currentBranchUpdate && currentBranchUpdate.label
-        }
+        branch_name: currentBranchUpdate && currentBranchUpdate.label
       }
       updateDomainName(data, user, alert)
     } else {
