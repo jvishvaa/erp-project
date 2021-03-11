@@ -15,6 +15,31 @@ import Layout from '../../../../../../Layout'
 
 const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Reports' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Other Fee Total Paid and Due Report') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 class OtherFeeTotalPaidReports extends Component {
   state = {
     session: '',
@@ -106,7 +131,7 @@ class OtherFeeTotalPaidReports extends Component {
     this.setState({ session: e.value, selectedBranches: [], sessionData: e }, () => {
       if (this.state.role === 'financeaccountant') {
         // this.props.fetchFeeAccounts(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user)
-        this.props.fetchGrades(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user, this.state.moduleId)
+        this.props.fetchGrades(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user, moduleId)
         // this.props.fetchFeeTypes(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user)
       }
     })
@@ -127,7 +152,7 @@ class OtherFeeTotalPaidReports extends Component {
         selectedFeeTypes: []
       }, () => {
         console.log('branchHandler: ', this.state.selectedBranches, this.state.branchId)
-        this.props.fetchGrades(this.state.session, this.state.branchId, this.props.alert, this.props.user, this.state.moduleId)
+        this.props.fetchGrades(this.state.session, this.state.branchId, this.props.alert, this.props.user, moduleId)
         // this.props.fetchFeeTypes(this.state.session, this.state.branchId, this.props.alert, this.props.user)
       })
     } else {
@@ -138,7 +163,7 @@ class OtherFeeTotalPaidReports extends Component {
         selectedFeeTypes: []
       }, () => {
         console.log('branchHandler: ', this.state.selectedBranches, this.state.branchId)
-        this.props.fetchGrades(this.state.session, this.state.branchId, this.props.alert, this.props.user, this.state.moduleId)
+        this.props.fetchGrades(this.state.session, this.state.branchId, this.props.alert, this.props.user, moduleId)
       // this.props.fetchFeeTypes(this.state.session, this.state.branchId, this.props.alert, this.props.user)
       })
     }
@@ -880,7 +905,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   fetchBranches: (session, branchType, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, branchType, alert, user })),
   fetchGrades: (session, branch, alert, user, moduleId) => dispatch(actionTypes.fetchGradesPerBranch({ session, branch, alert, user, moduleId })),
   fetchInstallments: (data, alert, user) => dispatch(actionTypes.fetchInstallmentListPerFeeType({ data, alert, user })),

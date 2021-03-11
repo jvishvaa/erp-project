@@ -9,6 +9,34 @@ import { apiActions } from '../../../../_actions'
 import Layout from '../../../../../../Layout'
 // import * as actionTypes from '../store/action'
 
+
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Student' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Fee Collection') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 class FeeCollection extends Component {
   state = {
     FeeCollecyionType: '',
@@ -88,7 +116,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   fetchReceiptRange: (session, branch, alert, user) => dispatch(actionTypes.fetchReceiptRange({ session, branch, alert, user })),
   fetchBranchData: (alert, user) => dispatch(actionTypes.fetchAccountantBranch({ alert, user })),
-  loadSession: dispatch(apiActions.listAcademicSessions())
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId))
   // fetchFeeCollection: (session, user, alert) => dispatch(actionTypes.fetchFeeCollectionList({ session, user, alert }))
 })
 
