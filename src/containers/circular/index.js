@@ -58,121 +58,142 @@ const CircularList = () => {
   const [grade, setGrade] = useState();
   const [branch, setBranch] = useState();
   const [section, setSection] = useState();
-  const [acadYear,setAcadYear] = useState();
-  const [startDateFilter,setStartDateFilter] = useState()
-  const [endDateFilter,setEndDateFilter] = useState()
-  const [deleteFlag,setDeleteFlag] =useState(false)
+  const [acadYear, setAcadYear] = useState();
+  const [startDateFilter, setStartDateFilter] = useState();
+  const [endDateFilter, setEndDateFilter] = useState();
+  const [deleteFlag, setDeleteFlag] = useState(false);
 
   //for edit circular data
   const [editData, setEditData] = useState([]);
 
   const [state, setState] = useContext(Context);
 
-  // setState(editData)
-  // console.log(state, '@@@@');
 
   const handlePagination = (event, page) => {
     setPage(page);
   };
 
-  const handlePeriodList = (grade, branch, section,year,startDate,endDate) => {
-    console.log(grade, branch, section,year,startDate,endDate,']]]]]]]]]]]]]]]]]]')
+  const handlePeriodList = (grade, branch, section, year, startDate, endDate) => {
+    // console.log(grade, branch, section, year, startDate, endDate, ']]]]]]]]]]]]]]]]]]');
     setLoading(true);
-   if(window.location.pathname === '/teacher-circular') {
-    setPeriodData([]);
-    setGrade(grade);
-    setBranch(branch);
-    setSection(section);
-    setAcadYear(year);
-    setStartDateFilter(startDate);
-    setEndDateFilter(endDate);
-    setFilterDataDown(grade, branch, section,year,startDate,endDate);
-    axiosInstance
-      .get(
-        `${endpoints.circular.circularList}?is_superuser=True&branch=${branch.id}&grade=${grade.grade_id}&section=${section.id}&academic_year=${year.id}&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}&page=${page}&page_size=${limit}`
-      )
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setTotalCount(result.data.count);
+    if (window.location.pathname === '/teacher-circular') {
+      setPeriodData([]);
+      setGrade(grade);
+      setBranch(branch);
+      setSection(section);
+      setAcadYear(year);
+      setStartDateFilter(startDate);
+      setEndDateFilter(endDate);
+      setFilterDataDown(grade, branch, section, year, startDate, endDate);
+      axiosInstance
+        .get(
+          `${endpoints.circular.circularList}?is_superuser=True&branch=${
+            branch.id
+          }&grade=${grade.grade_id}&section=${section.id}&academic_year=${
+            year.id
+          }&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format(
+            'YYYY-MM-DD'
+          )}&page=${page}&page_size=${limit}`
+        )
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setTotalCount(result.data.count);
+            setLoading(false);
+            setPeriodData(result.data.result);
+            setViewMore(false);
+            setViewMoreData({});
+          } else {
+            setLoading(false);
+            setAlert('error', result.data.description);
+          }
+        })
+        .catch((error) => {
           setLoading(false);
-          setPeriodData(result.data.result);
-          setViewMore(false);
-          setViewMoreData({});
-        } else {
-          setLoading(false);
-          setAlert('error', result.data.description);
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', error.message);
-      });
-    }
-    else{
-      // alert('',grade,branch)
-      // console.log(grade,branch,'|||||||||||||||||||')
+          setAlert('error', error.message);
+        });
+    } else {
       setPeriodData([]);
       setStartDateFilter(grade);
       setEndDateFilter(branch);
-      setFilterDataDown(grade,branch);
+      setFilterDataDown(grade, branch);
       axiosInstance
-      .get(
-        `${endpoints.circular.circularList}?start_date=${grade.format('YYYY-MM-DD')}&end_date=${branch.format('YYYY-MM-DD')}&page=${page}&page_size=${limit}&module_id=168&role_id=2`
-      )
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setTotalCount(result.data.count);
+        .get(
+          `${endpoints.circular.circularList}?user_id=9&&start_date=${grade.format(
+            'YYYY-MM-DD'
+          )}&end_date=${branch.format(
+            'YYYY-MM-DD'
+          )}&page=${page}&page_size=${limit}&role_id=2&module_id=168`
+        )
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setTotalCount(result.data.count);
+            setLoading(false);
+            setPeriodData(result.data.result);
+            setViewMore(false);
+            setViewMoreData({});
+          } else {
+            setLoading(false);
+            setAlert('error', result.data.description);
+          }
+        })
+        .catch((error) => {
           setLoading(false);
-          setPeriodData(result.data.result);
-          setViewMore(false);
-          setViewMoreData({});
-        } else {
-          setLoading(false);
-          setAlert('error', result.data.description);
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', error.message);
-      });
-
+          setAlert('error', error.message);
+        });
     }
   };
- 
 
   useEffect(() => {
-    if (page && grade && branch && section && acadYear && startDateFilter && endDateFilter) handlePeriodList(grade, branch, section, acadYear, startDateFilter,endDateFilter);
-    if(deleteFlag)handlePeriodList(grade, branch, section,acadYear, startDateFilter,endDateFilter);
-  }, [page,deleteFlag]);
+    if (
+      page &&
+      grade &&
+      branch &&
+      section &&
+      acadYear &&
+      startDateFilter &&
+      endDateFilter
+    )
+      handlePeriodList(grade, branch, section, acadYear, startDateFilter, endDateFilter);
+    if (deleteFlag)
+      handlePeriodList(grade, branch, section, acadYear, startDateFilter, endDateFilter);
+  }, [page, deleteFlag]);
   // console.log('BBBBB', editData);
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div className={isMobile ? 'breadCrumbFilterRow' : null} style={{display:'flex'}}>
-          <div style={{ width: '95%', margin: '20px auto',marginLeft:'30px' }}>
+        <div
+          className={isMobile ? 'breadCrumbFilterRow' : null}
+          style={{ display: 'flex' }}
+        >
+          <div style={{ width: '95%', margin: '20px auto', marginLeft: '30px' }}>
             <CommonBreadcrumbs
-              componentName={window.location.pathname === '/teacher-circular' ? 'Teacher Circular': 'Student Circular'}
+              componentName={
+                window.location.pathname === '/teacher-circular'
+                  ? 'Teacher Circular'
+                  : 'Student Circular'
+              }
             />
           </div>
           {/* {isMobile ? ( */}
-            <div className='hideShowFilterIcon'>
-              <IconButton onClick={() => setIsFilter(!isFilter)} style={{marginRight:'36px'}}>
-                <SvgIcon
-                  component={() => (
-                    <img
-                      style={{ height: '20px', width: '25px' }}
-                      src={isFilter ? hidefilter : showfilter}
-                    />
-                  )}
-                />
-              </IconButton>
-            </div>
+          <div className='hideShowFilterIcon'>
+            <IconButton
+              onClick={() => setIsFilter(!isFilter)}
+              style={{ marginRight: '36px' }}
+            >
+              <SvgIcon
+                component={() => (
+                  <img
+                    style={{ height: '20px', width: '25px' }}
+                    src={isFilter ? hidefilter : showfilter}
+                  />
+                )}
+              />
+            </IconButton>
+          </div>
           {/* ) : null} */}
         </div>
-        <div
-          className={isFilter ? 'showFilters' : 'hideFilters'}
-        >
+        <div className={isFilter ? 'showFilters' : 'hideFilters'}>
           <CircularFilters
             handlePeriodList={handlePeriodList}
             setPeriodData={setPeriodData}
@@ -218,7 +239,7 @@ const CircularList = () => {
                         setCompletedStatus={setCompletedStatus}
                         setEditData={setEditData}
                         deleteFlag={deleteFlag}
-                        setDeleteFlag={setDeleteFlag}    
+                        setDeleteFlag={setDeleteFlag}
                       />
                     </Grid>
                   ))}

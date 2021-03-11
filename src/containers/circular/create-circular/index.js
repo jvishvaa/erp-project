@@ -358,7 +358,7 @@ const CraeteCircular = () => {
    
     axiosInstance
       .put(`${endpoints.circular.updateCircular}`, {
-        circular_id: editData.id,
+        circular_id: circularKey,
         circular_name: title,
         description: description,
         module_name: filterData.role.value,
@@ -684,7 +684,7 @@ const CraeteCircular = () => {
             </div>
             <div>
               <Button
-                onClick={state.isEdit ? handleEdited : handleSubmit}
+                onClick={circularKey ? handleEdited : handleSubmit}
                 className='submit_button'
               >
                 SUBMIT
