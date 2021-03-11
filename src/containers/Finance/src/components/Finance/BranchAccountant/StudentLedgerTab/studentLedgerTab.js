@@ -74,6 +74,32 @@ const styles = theme => ({
   }
 })
 const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Student' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Ledger Tab') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 class StudentLedgerTab extends Component {
   constructor (props) {
     super(props)
@@ -114,35 +140,10 @@ class StudentLedgerTab extends Component {
   }
 
   componentDidMount () {
-    if (this.state.session && this.state.moduleId) {
-      this.props.fetchGrades(this.state.session.value, this.props.alert, this.props.user, this.state.moduleId)
+    if (this.state.session && moduleId) {
+      this.props.fetchGrades(this.state.session.value, this.props.alert, this.props.user, moduleId)
     }
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'Student' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Ledger Tab') {
-              // setModuleId(item.child_id);
-              // setModulePermision(true);
-              this.setState({
-                moduleId: item.child_id
-              })
-              console.log('id+', item.child_id)
-            } else {
-              // setModulePermision(false);
-            }
-          });
-        } else {
-          // setModulePermision(false);
-        }
-      });
-    } else {
-      // setModulePermision(false);
-    }
+ 
   }
 
   handleChange = (event, value) => {
@@ -161,7 +162,7 @@ class StudentLedgerTab extends Component {
       student: null,
       showTabs: false
     }, () => {
-      this.props.fetchGrades(this.state.session.value, this.props.alert, this.props.user, this.state.moduleId)
+      this.props.fetchGrades(this.state.session.value, this.props.alert, this.props.user, moduleId)
     })
   }
 
@@ -174,7 +175,7 @@ class StudentLedgerTab extends Component {
           getData: false
         })
       } else {
-        this.props.fetchAllSections(this.state.session.value, this.state.gradeId, this.props.alert, this.props.user, this.state.moduleId)
+        this.props.fetchAllSections(this.state.session.value, this.state.gradeId, this.props.alert, this.props.user, moduleId)
         this.setState({
           allSections: false,
           getData: false
@@ -629,7 +630,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   fetchGrades: (session, alert, user, moduleId) => dispatch(actionTypes.fetchGrades({ session, alert, user, moduleId })),
   // fetchErpSuggestions: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.fetchErpSuggestions({ type, session, grade, section, status, erp, alert, user })),
   studentErpSearch: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.studentErpSearch({ type, session, grade, section, status, erp, alert, user })),
