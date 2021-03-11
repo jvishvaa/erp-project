@@ -54,8 +54,8 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Word Count Cofiguration', Path: '/blog/wordcount-config' },
     { name: 'ID Cards', Path: '/student-id-card' },
     { name: 'Student Strength', Path: '/student-strength' },
-    { name: 'Teacher Circular', Path: '/circular' },
-    { name: 'Student Circular', Path: '/circular' },
+    { name: 'Teacher Circular', Path: '/teacher-circular' },
+    { name: 'Student Circular', Path: '/studnet-circular' },
   ];
   // const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {

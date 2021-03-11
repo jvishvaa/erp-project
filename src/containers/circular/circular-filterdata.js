@@ -82,6 +82,8 @@ const CircularFilters = ({
     setOverviewSynopsis([]);
     setSelectedIndex(-1);
     setCentralGsMappingId();
+    setDateRangeTechPer([ moment().subtract(6, 'days'),
+    moment(),])
   };
 
   const handleAcademicYear = (event, value) => {
@@ -110,7 +112,9 @@ const CircularFilters = ({
         chapter: '',
       });
       axiosInstance
-        .get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=8`)
+      //for teacher_module_id=167 ><<<admin=8
+      
+        .get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=167`)
         .then((result) => {
           if (result.data.status_code === 200) {
             setGradeDropdown(result.data.data);
@@ -141,7 +145,7 @@ const CircularFilters = ({
       setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}`
+          `${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}&module_id=167`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -163,6 +167,7 @@ const CircularFilters = ({
   };
 
   const handleFilter = () => {
+    if(window.location.pathname === '/teacher-circular'){
     if (!filterData.year) {
       return setAlert('warning', 'Select Academic Year');
     }
@@ -177,8 +182,16 @@ const CircularFilters = ({
     }
     if (filterData.year && filterData.branch && filterData.grade && filterData.section) {
       setSelectedIndex(-1);
-      handlePeriodList(filterData.grade, filterData.branch, filterData.section);
+      const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
+      handlePeriodList(filterData.grade, filterData.branch, filterData.section,filterData.year,startDateTechPer,endDateTechPer);
     }
+  }else{
+
+    setSelectedIndex(-1);
+    const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
+    handlePeriodList(startDateTechPer,endDateTechPer);
+  }
+
   };
 
   useEffect(() => {
@@ -195,15 +208,10 @@ const CircularFilters = ({
         setBranchDropdown('error', error.message);
       });
 
-    axios
-      .get(`${endpoints.lessonPlan.academicYearList}`, {
-        headers: {
-          'x-api-key': 'vikash@12345#1231',
-        },
-      })
+    axiosInstance.get(`${endpoints.userManagement.academicYear}`)
       .then((result) => {
         if (result.data.status_code === 200) {
-          setAcademicYearDropdown(result.data.result.results);
+          setAcademicYearDropdown(result?.data?.data);
         } else {
           setAlert('error', result.data.message);
         }
@@ -218,7 +226,7 @@ const CircularFilters = ({
       spacing={isMobile ? 3 : 5}
       style={{ width: widerWidth, margin: wider }}
     >
-      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+      {window.location.pathname === '/teacher-circular' && <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <Autocomplete
           style={{ width: '100%' }}
           size='small'
@@ -238,12 +246,14 @@ const CircularFilters = ({
             />
           )}
         />
-      </Grid>
+      </Grid>}
       {/* <<<<<<<DATE>>>>>>>> */}
-      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-        <LocalizationProvider dateAdapter={MomentUtils}>
+      {/* {window.location.pathname === '/teacher-circular' && */}
+      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}> 
+        <LocalizationProvider dateAdapter={MomentUtils} className='dropdownIcon'>
           <DateRangePicker
-            startText='Select-date-range'
+            startText='Select-Date-Range'
+            size='small'
             value={dateRangeTechPer}
             onChange={(newValue) => {
               setDateRangeTechPer(newValue);
@@ -253,6 +263,7 @@ const CircularFilters = ({
                 <>
                   <TextField
                     {...startProps}
+                    format={(date) => moment(date).format('DD-MM-YYYY')}
                     inputProps={{
                       ...inputProps,
                       value: `${inputProps.value} - ${endProps.inputProps.value}`,
@@ -267,7 +278,8 @@ const CircularFilters = ({
           />
         </LocalizationProvider>
       </Grid>
-      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+
+      {window.location.pathname === '/teacher-circular' && <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <Autocomplete
           style={{ width: '100%' }}
           size='small'
@@ -287,8 +299,8 @@ const CircularFilters = ({
             />
           )}
         />
-      </Grid>
-      <Grid
+      </Grid>}
+      {window.location.pathname === '/teacher-circular' && <Grid
         item
         xs={12}
         sm={3}
@@ -308,8 +320,9 @@ const CircularFilters = ({
             <TextField {...params} variant='outlined' label='Grade' placeholder='Grade' />
           )}
         />
-      </Grid>
-      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+      </Grid>}
+
+     {window.location.pathname ==='/teacher-circular' && <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
         <Autocomplete
           style={{ width: '100%' }}
           size='small'
@@ -329,7 +342,7 @@ const CircularFilters = ({
             />
           )}
         />
-      </Grid>
+      </Grid>}
 
       {!isMobile && (
         <Grid item xs={12} sm={12}>
@@ -361,6 +374,8 @@ const CircularFilters = ({
           FILTER
         </Button>
       </Grid>
+      {window.location.pathname ==='/teacher-circular' && (
+      <>
       <div>
         <Divider
           orientation='vertical'
@@ -373,7 +388,6 @@ const CircularFilters = ({
           }}
         />
       </div>
-      {isMobile && <Grid item xs={3} sm={0} />}
       {isMobile && <Grid item xs={3} sm={0} />}
       <Grid
         item
@@ -393,6 +407,8 @@ const CircularFilters = ({
           CREATE
         </Button>
       </Grid>
+      </>
+      )}
       {isMobile && <Grid item xs={3} sm={0} />}
     </Grid>
   );
