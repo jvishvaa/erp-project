@@ -63,6 +63,7 @@ export const scopes = {
   my_grade: false,
   my_section: false,
   my_subject: false,
+  custom_year: [],
   custom_branch: [],
   custom_grade: [],
   custom_section: [],
@@ -140,18 +141,21 @@ export const fetchModules = () => (dispatch) => {
     });
 };
 
-export const fetchBranches = () => (dispatch) => {
+export const fetchBranches = (acadId) => (dispatch) => {
+  debugger
   dispatch({ type: FETCH_BRANCHES_REQUEST });
   return axios
-    .get('/erp_user/list-all-branch/')
+    .get(`/erp_user/list-all-branch/?session_year=${acadId}`)
     .then((response) => {
+      if (response.data.status_code === 200) {
       dispatch({
         type: FETCH_BRANCHES_SUCCESS,
-        data: response.data.data,
+        data: response?.data?.data,
       });
-      return response.data.data;
+      return response?.data?.data;
+    } else console.log('');
     })
-    .catch(() => {
+    .catch((error) => {
       dispatch({ type: FETCH_BRANCHES_FAILURE });
     });
 };

@@ -101,6 +101,7 @@ class EditRole extends Component {
             my_grade: currentSubModule.my_grade,
             my_section: currentSubModule.my_section,
             my_subject: currentSubModule.my_subject,
+            custom_year: currentSubModule.custom_year.map((year) => year.id),
             custom_grade: currentSubModule.custom_grade.map((grade) => grade.id),
             custom_section: currentSubModule.custom_section.map((section) => section.id),
             custom_branch: currentSubModule.custom_branch.map((branch) => branch.id),
