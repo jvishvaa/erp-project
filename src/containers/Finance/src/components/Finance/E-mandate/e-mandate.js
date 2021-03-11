@@ -78,11 +78,14 @@ const EMandate = ({ session, dataLoadingStatus, fetchBranches, branches, todayDe
     if (!sessionData) {
       alert.warning('Select Year!')
     }
-    if (sessionData && domainName) {
+    if (sessionData && currentBranch) {
       const data = {
         academic_year: sessionData && sessionData.value,
         // branch_name: domainName
-        branch_name: currentBranch
+        branch:{
+          id:currentBranch && currentBranch.value,
+          branch_name: currentBranch && currentBranch.label
+        }
       }
       createDomainName(data, user, alert)
       setDomainModel(false)
@@ -124,7 +127,7 @@ const EMandate = ({ session, dataLoadingStatus, fetchBranches, branches, todayDe
                 value={currentBranch ? currentBranch : ''}
                 options={
                   branches.length
-                    ? this.props.branches.map(branch => ({
+                    ? branches.map(branch => ({
                       value: branch.branch.id,
                       label: branch.branch.branch_name
                     }))
