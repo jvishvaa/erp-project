@@ -27,10 +27,7 @@ const selectStyles = {
 
 const CustomerDeatils = ({ setCustomerDetails, user, alert, fetchBranches, domainNames, branches, customerDetails, updateCustDetails, custDetails, getCustomerDetails, listDomainName, session }) => {
   const [selectedDomain, setSelectedDomain] = useState(null)
-  const [sessionData, setSessionData] = useState({
-    value: '2020-21',
-    label: '2020-21'
-  })
+  const [sessionData, setSessionData] = useState('')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [number, setNumber] = useState('')

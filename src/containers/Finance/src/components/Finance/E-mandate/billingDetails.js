@@ -26,10 +26,7 @@ import { AlertNotificationContext } from '../../../../../../context-api/alert-co
 
 const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDomainDetails, todayDetail, fetchBranches, user, domainNames, branches, session }) => {
   // const [selectedDomain, setSelectedDomain] = useState(null)
-  const [sessionData, setSessionData] = useState({
-    value: '2020-21',
-    label: '2020-21'
-  })
+  const [sessionData, setSessionData] = useState()
   const [todayDetails, setTodayDetails] = useState(false)
   const [editModal, setEditModal] = useState(false)
   const [amount, setAmount] = useState('')

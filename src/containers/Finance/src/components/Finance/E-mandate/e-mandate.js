@@ -37,7 +37,7 @@ const EMandate = ({ session, dataLoadingStatus, fetchBranches, branches, todayDe
   // const [endDate, setEndDate] = useState('')
   // const [selectedDomain, setSelectedDomain] = useState(null)
   const [showDomainDetail, setShowDomainDetail] = useState(false)
-  const [editDomainModal, setEditDomainModal] = useState(false)
+  // const [editDomainModal, setEditDomainModal] = useState(false)
   // const [todayDetails, setTodayDetails] = useState(false)
   // const [dailyDetails, setDailyDetails] = useState(false)
   const [updateDomName, setUpdateDomName] = useState('')
@@ -45,6 +45,7 @@ const EMandate = ({ session, dataLoadingStatus, fetchBranches, branches, todayDe
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentBranch, setCurrentBranch] = useState('');
+  const [currentBranchUpdate, setCurrentBranchUpdate] = useState('');
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -151,14 +152,18 @@ const EMandate = ({ session, dataLoadingStatus, fetchBranches, branches, todayDe
   }
 
   const editDomainNameHandler = (e) => {
-    setUpdateDomName(e.target.value)
+    // setUpdateDomName(e.target.value)
+    setCurrentBranchUpdate(e.target.value)
   }
   const editDomainHandler = () => {
     setEditDomainModal(false)
-    if (updateDomName) {
+    if (currentBranchUpdate) {
       const data = {
         id: domId,
-        branch_name: updateDomName
+        branch: {
+          id: currentBranchUpdate && currentBranchUpdate.value,
+          branch_name: currentBranchUpdate && currentBranchUpdate.label
+        }
       }
       updateDomainName(data, user, alert)
     } else {
@@ -172,13 +177,13 @@ const EMandate = ({ session, dataLoadingStatus, fetchBranches, branches, todayDe
   }
 
   let editDomainModals = null
-  if (editDomainModal) {
+  if (currentBranchUpdate) {
     editDomainModals = (
-      <Modal open={editDomainModal} click={hideEditDetailsModal} medium>
+      <Modal open={currentBranchUpdate} click={hideEditDetailsModal} medium>
         <h3 style={{ textAlign: 'center' }}>Update Branch Name</h3>
         <hr />
         <Grid container spacing={3} style={{ padding: 10 }} >
-          <Grid item xs={6}>
+          {/* <Grid item xs={6}>
             <TextField
               id='branch_name'
               type='text'
@@ -190,7 +195,24 @@ const EMandate = ({ session, dataLoadingStatus, fetchBranches, branches, todayDe
               variant='outlined'
               label='Branch Name'
             />
-          </Grid>
+          </Grid> */}
+           <Grid item xs={6}>
+              <label>Branch*</label>
+              <Select
+                placeholder='Select Branch'
+                // isMulti
+                value={currentBranchUpdate ? currentBranchUpdate : ''}
+                options={
+                  branches.length
+                    ? branches.map(branch => ({
+                      value: branch.branch.id,
+                      label: branch.branch.branch_name
+                    }))
+                    : []
+                }
+                onChange={editDomainNameHandler}
+              />
+              </Grid>
           <Grid item xs={6}>
             <Button
               variant='contained'
