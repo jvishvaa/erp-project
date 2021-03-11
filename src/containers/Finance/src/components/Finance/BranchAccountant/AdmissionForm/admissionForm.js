@@ -34,6 +34,33 @@ const styles = theme => ({
     color: theme.palette.text.secondary
   }
 })
+
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Admissions' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Admission Form') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 class AdmissionFormAcc extends Component {
   constructor (props) {
     super(props)
@@ -248,7 +275,7 @@ const mapStateToProps = state => ({
   admissionrecords: state.finance.accountantReducer.admissionForm.admissionrecords
 })
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   getAdmissionRecords: (user, alert, session, fromDate, toDate) => dispatch(actionTypes.getAdmissionRecords({ user, alert, session, fromDate, toDate }))
 })
 

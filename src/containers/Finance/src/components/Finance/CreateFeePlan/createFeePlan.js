@@ -21,6 +21,35 @@ import classess from './deleteModal.module.css'
 import Layout from '../../../../../Layout'
 import ManageFeeType from './manageFeeType'
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
+let moduleId = null
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Fee Plan' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'View Fee Plan') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+          // this.setState({
+            moduleId= item.child_id
+          // })
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
 // const CreatePlan = {
 //   label: 'Create Fee Plan',
 //   color: 'blue',
@@ -53,7 +82,8 @@ class CreateFeePlan extends Component {
       typeid: null,
       addGradeModal: false,
       gradeList: [],
-      feePlanId: null
+      feePlanId: null,
+      moduleId: null
     }
   }
 
@@ -119,7 +149,7 @@ class CreateFeePlan extends Component {
 
   handleClickSessionYear = (e) => {
     this.setState({ session: e.value, branchData: [], sessionData: e })
-    this.props.fetchBranches(e.value, this.props.alert, this.props.user)
+    this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
   }
 
   handlevalue = e => {
@@ -158,7 +188,7 @@ class CreateFeePlan extends Component {
       this.setState(feePlanState)
       return
     }
-    this.props.fetchGrades(this.props.alert, this.props.user)
+    this.props.fetchGrades(this.props.alert, this.props.user, moduleId)
   }
 
   getBackTheUpdatedDataHandler = (status, data) => {
@@ -459,8 +489,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchListFeePlan: (session, branch, alert, user) => dispatch(actionTypes.fetchFeePlanList({ session, branch, alert, user })),
   fetchGrades: (alert, user) => dispatch(actionTypes.fetchGradeList({ alert, user })),
   deleteGrades: (gradeId, typeId, alert, user) => dispatch(actionTypes.deleteFeePlanGrades({ gradeId, typeId, alert, user })),

@@ -46,6 +46,34 @@ const FEE_TYPE = [
 ]
 // let transactionState = null
 
+
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Reports' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Transactions Report') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 class TransactionStatus extends Component {
   state = {
     currentSession: null,
@@ -130,7 +158,7 @@ class TransactionStatus extends Component {
 
   fetchBranchHandler = (e) => {
     if (!this.state.isAccountant) {
-      this.props.fetchBranches(e.value, this.props.alert, this.props.user)
+      this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
     }
     this.setState({
       currentSession: e.value
@@ -855,8 +883,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchAllTransaction: (session, branchId, isAccountant, mode, fees, feePlanIds, fromDate, toDate, page, user, alert) => dispatch(actionTypes.fetchAllTransaction({ session, branchId, isAccountant, mode, fees, feePlanIds, fromDate, toDate, page, user, alert })),
   updateTransaction: (session, id, currentPaid, currentCollected, currentCancelled, currentBankClearance, user, alert) => dispatch(actionTypes.updateTransactionStatus({ session, id, currentPaid, currentCollected, currentCancelled, currentBankClearance, user, alert })),
   fetchFeePlans: (session, branchId, user, alert) => dispatch(actionTypes.fetchMultiFeeTypeTransaction({ session, branchId, user, alert })),

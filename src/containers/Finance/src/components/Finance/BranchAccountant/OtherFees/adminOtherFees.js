@@ -31,7 +31,36 @@ const styles = theme => ({
   }
 })
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
 // let feeState = null
+let moduleId = null
+
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Transport Fees' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Add Transport Fees') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+          // this.setState({
+            moduleId= item.child_id
+          // })
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 
 class AdminOtherFees extends Component {
   constructor (props) {
@@ -49,7 +78,8 @@ class AdminOtherFees extends Component {
       otherFeeId: '',
       showEditInstaModal: false,
       instaId: null,
-      instaName: ''
+      instaName: '',
+      // moduleId: null
     }
   }
 
@@ -58,6 +88,9 @@ class AdminOtherFees extends Component {
   //     this.setState(feeState)
   //   }
   // }
+  componentDidMount () {
+
+  }
 
   componentWillUnmount () {
     this.props.clearProps()
@@ -66,7 +99,7 @@ class AdminOtherFees extends Component {
   handleAcademicyear = (e) => {
     // console.log(e)
     this.setState({ session: e.value, branchData: [], sessionData: e })
-    this.props.fetchBranches(e.value, this.props.alert, this.props.user)
+    this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
   }
 
   changehandlerbranch = (e) => {
@@ -452,8 +485,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchOtherFees: (session, branch, alert, user) => dispatch(actionTypes.fetchAdminOtherFees({ session, branch, alert, user })),
   deleteInstallments: (session, branch, feeName, alert, user) => dispatch(actionTypes.deleteOtherFeesInstallments({ session, branch, feeName, alert, user })),
   instLists: (session, branch, otherFee, alert, user) => dispatch(actionTypes.fetchInstallmentLists({ session, branch, otherFee, alert, user })),

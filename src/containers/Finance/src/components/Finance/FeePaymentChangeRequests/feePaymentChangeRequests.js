@@ -25,6 +25,36 @@ import RejectedRequestView from './rejectedRequestView'
 import CancelledRequestView from './cancelledRequestView'
 import Layout from '../../../../../Layout'
 
+
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
+let moduleId = null
+
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Approval/Requests' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Fee Pay Requests') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+          // this.setState({
+            moduleId= item.child_id
+          // })
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 const styles = theme => ({
   tableWrapper: {
     overflowX: 'auto',
@@ -243,7 +273,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   fetchEditRequests: (session, alert, user) => dispatch(actionTypes.fetchEditRequests({ session, alert, user }))
 })
 

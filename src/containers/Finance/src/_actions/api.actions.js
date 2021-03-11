@@ -145,10 +145,11 @@ function listSections () {
   function failure (error) { return { type: apiConstants.SECTION_FAILURE, error } }
 }
 
-function listAcademicSessions () {
+function listAcademicSessions (moduleId) {
+  console.log('in api actions: ', moduleId)
   return dispatch => {
     dispatch(request())
-    apiService.listAcademicSessions()
+    apiService.listAcademicSessions(moduleId)
       .then(
         data => dispatch(success(data)),
         error => dispatch(failure(error))

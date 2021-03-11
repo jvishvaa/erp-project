@@ -25,7 +25,35 @@ import Layout from '../../../../../../Layout'
 import TablePagination from '@material-ui/core/TablePagination'
 
 let feeTypeState = null
+let moduleId = null 
 const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Fee Type' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Misc. Fee Type') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+          // this.setState({
+            moduleId = item.child_id
+          // })
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
 class MiscFeeType extends Component {
   constructor (props) {
     super(props)
@@ -51,6 +79,8 @@ class MiscFeeType extends Component {
     this.handleClickFeeData.bind(this)
     // this.deleteHandler = this.deleteHandler.bind(this)
   }
+
+  
   handleChangePage = (event, newPage) => {
     this.setState({
       page: newPage
@@ -112,7 +142,7 @@ class MiscFeeType extends Component {
     this.setState({ session: e.value, branchData: [], sessionData: e }, () => {
       console.log(this.state.sessionData)
     })
-    this.props.fetchBranches(e.value, this.props.alert, this.props.user, this.state.moduleId)
+    this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
   }
 
   handleClickFeeData = (e) => {
@@ -140,32 +170,32 @@ class MiscFeeType extends Component {
     if (feeTypeState) {
       this.setState(feeTypeState)
     }
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'Fee Type' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Misc. Fee Type') {
-              // setModuleId(item.child_id);
-              // setModulePermision(true);
-              this.setState({
-                moduleId: item.child_id
-              })
-              console.log('id+', item.child_id)
-            } else {
-              // setModulePermision(false);
-            }
-          });
-        } else {
-          // setModulePermision(false);
-        }
-      });
-    } else {
-      // setModulePermision(false);
-    }
+    // if (NavData && NavData.length) {
+    //   NavData.forEach((item) => {
+    //     if (
+    //       item.parent_modules === 'Fee Type' &&
+    //       item.child_module &&
+    //       item.child_module.length > 0
+    //     ) {
+    //       item.child_module.forEach((item) => {
+    //         if (item.child_name === 'Misc. Fee Type') {
+    //           // setModuleId(item.child_id);
+    //           // setModulePermision(true);
+    //           this.setState({
+    //             moduleId: item.child_id
+    //           })
+    //           console.log('id+', item.child_id)
+    //         } else {
+    //           // setModulePermision(false);
+    //         }
+    //       });
+    //     } else {
+    //       // setModulePermision(false);
+    //     }
+    //   });
+    // } else {
+    //   // setModulePermision(false);
+    // }
   }
 
   // renderTable = () => {
@@ -507,7 +537,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchMiscFeeList: (session, branch, alert, user) => dispatch(actionTypes.fetchListMiscFee({ session, branch, alert, user })),
   deleteMiscFee: (id, alert, user) => dispatch(actionTypes.deleteMiscFeeList({ id, alert, user }))

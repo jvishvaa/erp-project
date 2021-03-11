@@ -13,6 +13,33 @@ import Layout from '../../../../../../Layout'
 //   'July', 'August', 'September', 'October', 'November', 'December'
 // ]
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Reports' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Application/registration Receipt Book') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 class ReceiptBookAdm extends Component {
     state ={
       session: '',
@@ -67,7 +94,7 @@ class ReceiptBookAdm extends Component {
           // this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
           this.props.fetchFeeAccounts(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user)
         } else {
-          this.props.fetchBranches(e.value, this.props.alert, this.props.user)
+          this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
         }
       })
     }
@@ -346,8 +373,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchFeeTypes: (session, branch, feeId, alert, user) => dispatch(actionTypes.fetchFeeTypesPerType({ session, branch, feeId, alert, user })),
   fetchFeeAccounts: (session, branch, alert, user) => dispatch(actionTypes.fetchFeeAccountsReceiptBook({ session, branch, alert, user })),
   downloadReports: (reportName, url, data, alert, user) => dispatch(actionTypes.downloadReports({ reportName, url, data, alert, user })),

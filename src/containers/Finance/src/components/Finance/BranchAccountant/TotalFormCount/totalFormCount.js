@@ -71,6 +71,34 @@ let toDateStored = null
 let acadStored = null
 let reportStored = null
 let storedDates = null
+
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Reports' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Total Forms & Report') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 const TotalFormCount = ({ classes,
   session,
   history,
@@ -106,7 +134,7 @@ const TotalFormCount = ({ classes,
       //   setToDate(toDateStored)
       // }
       // fetchBranches(sessionYear.value, alert, user)
-      fetchBranchList(sessionYear.value, alert, user)
+      fetchBranchList(sessionYear.value, alert, user, moduleId)
     }
   }, [alert, sessionYear.value, fetchBranchList, user])
 
@@ -474,11 +502,11 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchFormCount: (session, branch, fromDate, toDate, report, dates, alert, user) => dispatch(actionTypes.fetchFormCount({ session, branch, fromDate, toDate, report, dates, alert, user })),
   downloadReports: (reportName, url, alert, user) => dispatch(actionTypes.downloadReports({ reportName, url, alert, user })),
-  fetchBranchList: (branch, alert, user) => dispatch(actionTypes.fetchBranchList({ branch, alert, user }))
+  fetchBranchList: (branch, alert, user, moduleId) => dispatch(actionTypes.fetchBranchList({ branch, alert, user, moduleId }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withRouter(TotalFormCount)))

@@ -119,11 +119,16 @@ function listGrades () {
 }
 
 function listAcademicSessions (moduleId) {
+  console.log('module id in services: ', moduleId)
   const requestOptions = {
     method: 'GET',
     headers: authHeader()
   }
+  if (moduleId) {
   return fetch(urls.UTILACADEMICSESSION + '?module_id=' + moduleId, requestOptions).then(handleResponse)
+  } else {
+    return fetch(urls.UTILACADEMICSESSION, requestOptions).then(handleResponse)
+  }
 }
 
 function listStaffs (branchId, pageId, departmentId = -1) {

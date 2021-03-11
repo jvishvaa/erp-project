@@ -50,6 +50,33 @@ const styles = theme => ({
   }
 })
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Reports' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Bounce Report') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 const ChequeBounceReports = ({ classes, session, branches, fetchBranches, downloadBounceReports, downloadReportsBounce, showBounce, history, dataLoading, bounceReportList, alert, user, chequeBounceList }) => {
   const [sessionYear, setSession] = useState(null)
   const [roleState, setRole] = useState(null)
@@ -68,7 +95,7 @@ const ChequeBounceReports = ({ classes, session, branches, fetchBranches, downlo
     // console.log('acad years', e)
     setSession(e)
     if (roleState === 'financeadmin') {
-      fetchBranches(e.value, alert, user)
+      fetchBranches(e.value, alert, user, moduleId)
       // fetch banks
     }
   }
@@ -272,8 +299,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   chequeBounceList: (role, session, branchId, fromDate, toDate, alert, user) => dispatch(actionTypes.chequeBounceList({ role, session, branchId, fromDate, toDate, alert, user })),
   downloadBounceReports: (role, reportName, session, branchId, fromDate, toDate, alert, user) => dispatch(actionTypes.downloadChequeBounceReports({ role, reportName, session, branchId, fromDate, toDate, alert, user })),
   downloadReportsBounce: (reportName, url, data, alert, user) => dispatch(actionTypes.downloadReports({ reportName, url, data, alert, user }))

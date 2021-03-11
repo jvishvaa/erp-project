@@ -27,11 +27,9 @@ import Modal from '../../../ui/Modal/modal'
 // import { CircularProgress } from '../../../ui'
 import Layout from '../../../../../Layout'
 
-const EMandate = ({ session, dataLoadingStatus, todayDetail, updateDomainName, dailyDetail, dailyEMandateDetails, todayEMandateDetails, alert, setDomainDetails, listDomainName, user, domainNames, createDomainName }) => {
-  const [sessionData, setSessionData] = useState({
-    value: '2020-21',
-    label: '2020-21'
-  })
+
+const EMandate = ({ session, dataLoadingStatus, fetchBranches, branches, todayDetail, updateDomainName, dailyDetail, dailyEMandateDetails, todayEMandateDetails, alert, setDomainDetails, listDomainName, user, domainNames, createDomainName }) => {
+  const [sessionData, setSessionData] = useState('')
   const [domainModel, setDomainModel] = useState(false)
   const [domainName, setDomainName] = useState('')
   // const [amount, setAmount] = useState('')
@@ -46,6 +44,8 @@ const EMandate = ({ session, dataLoadingStatus, todayDetail, updateDomainName, d
   const [domId, setDomId] = useState(null)
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [currentBranch, setCurrentBranch] = useState('');
+  const [currentBranchUpdate, setCurrentBranchUpdate] = useState('');
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -59,6 +59,7 @@ const EMandate = ({ session, dataLoadingStatus, todayDetail, updateDomainName, d
   const handleClickSessionYear = (e) => {
     setSessionData(e)
     setShowDomainDetail(false)
+    fetchBranches(e && e.value, alert, user)
   }
 
   const getHandler = (e) => {
@@ -78,10 +79,11 @@ const EMandate = ({ session, dataLoadingStatus, todayDetail, updateDomainName, d
     if (!sessionData) {
       alert.warning('Select Year!')
     }
-    if (sessionData && domainName) {
+    if (sessionData && currentBranch) {
       const data = {
         academic_year: sessionData && sessionData.value,
-        branch_name: domainName
+        // branch_name: domainName
+          branch_name: currentBranch && currentBranch.label
       }
       createDomainName(data, user, alert)
       setDomainModel(false)
@@ -92,6 +94,9 @@ const EMandate = ({ session, dataLoadingStatus, todayDetail, updateDomainName, d
     }
   }
 
+  const changehandlerbranch = (e) => {
+    setCurrentBranch(e)
+  }
   let addDomainModal = null
   if (domainModel) {
     addDomainModal = (
@@ -99,7 +104,7 @@ const EMandate = ({ session, dataLoadingStatus, todayDetail, updateDomainName, d
         <h3 style={{ textAlign: 'center' }}>Add Branch</h3>
         <hr />
         <Grid container spacing={3} style={{ padding: 10 }} >
-          <Grid item xs={6}>
+          {/* <Grid item xs={6}>
             <TextField
               id='branch_name'
               type='text'
@@ -111,7 +116,24 @@ const EMandate = ({ session, dataLoadingStatus, todayDetail, updateDomainName, d
               variant='outlined'
               label='Branch Name'
             />
-          </Grid>
+          </Grid> */}
+          <Grid item xs={6}>
+              <label>Branch*</label>
+              <Select
+                placeholder='Select Branch'
+                // isMulti
+                value={currentBranch ? currentBranch : ''}
+                options={
+                  branches.length
+                    ? branches.map(branch => ({
+                      value: branch.branch.id,
+                      label: branch.branch.branch_name
+                    }))
+                    : []
+                }
+                onChange={changehandlerbranch}
+              />
+            </Grid>
           <Grid item xs={6}>
             <Button
               variant='contained'
@@ -127,14 +149,15 @@ const EMandate = ({ session, dataLoadingStatus, todayDetail, updateDomainName, d
   }
 
   const editDomainNameHandler = (e) => {
-    setUpdateDomName(e.target.value)
+    // setUpdateDomName(e.target.value)
+    setCurrentBranchUpdate(e.target.value)
   }
   const editDomainHandler = () => {
     setEditDomainModal(false)
-    if (updateDomName) {
+    if (currentBranchUpdate) {
       const data = {
         id: domId,
-        branch_name: updateDomName
+        branch_name: currentBranchUpdate && currentBranchUpdate.label
       }
       updateDomainName(data, user, alert)
     } else {
@@ -148,13 +171,13 @@ const EMandate = ({ session, dataLoadingStatus, todayDetail, updateDomainName, d
   }
 
   let editDomainModals = null
-  if (editDomainModal) {
+  if (currentBranchUpdate) {
     editDomainModals = (
-      <Modal open={editDomainModal} click={hideEditDetailsModal} medium>
+      <Modal open={currentBranchUpdate} click={hideEditDetailsModal} medium>
         <h3 style={{ textAlign: 'center' }}>Update Branch Name</h3>
         <hr />
         <Grid container spacing={3} style={{ padding: 10 }} >
-          <Grid item xs={6}>
+          {/* <Grid item xs={6}>
             <TextField
               id='branch_name'
               type='text'
@@ -166,7 +189,24 @@ const EMandate = ({ session, dataLoadingStatus, todayDetail, updateDomainName, d
               variant='outlined'
               label='Branch Name'
             />
-          </Grid>
+          </Grid> */}
+           <Grid item xs={6}>
+              <label>Branch*</label>
+              <Select
+                placeholder='Select Branch'
+                // isMulti
+                value={currentBranchUpdate ? currentBranchUpdate : ''}
+                options={
+                  branches.length
+                    ? branches.map(branch => ({
+                      value: branch.branch.id,
+                      label: branch.branch.branch_name
+                    }))
+                    : []
+                }
+                onChange={editDomainNameHandler}
+              />
+              </Grid>
           <Grid item xs={6}>
             <Button
               variant='contained'
@@ -587,10 +627,12 @@ const mapStateToProps = (state) => ({
   domainNames: state.finance.eMandateReducer.domainNames,
   dailyDetail: state.finance.eMandateReducer.dailyDetails,
   todayDetail: state.finance.eMandateReducer.todayDetails,
+  branches: state.finance.common.branchPerSession,
   updatedDomainName: state.finance.eMandateReducer.updatedDomainName
 })
 
 const mapDispatchToProps = (dispatch) => ({
+  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
   updateDomainName: (data, user, alert) => dispatch(actionTypes.updateDomainName({ data, user, alert })),
   dailyEMandateDetails: (session, user, alert) => dispatch(actionTypes.dailyEMandateDetails({ session, user, alert })),
   todayEMandateDetails: (session, user, alert) => dispatch(actionTypes.todayEMandateDetails({ session, user, alert })),
