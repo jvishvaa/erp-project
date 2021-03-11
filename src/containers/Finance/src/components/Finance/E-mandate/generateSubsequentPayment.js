@@ -19,10 +19,7 @@ import { apiActions } from '../../../_actions'
 import Layout from '../../../../../Layout'
 
 const GenerateSubsequentPayment = ({ user, alert, getGenerateSubsequent, generateSubsequentPayment, getGenerateSubsequents, session }) => {
-  const [sessionData, setSessionData] = useState({
-    value: '2020-21',
-    label: '2020-21'
-  })
+  const [sessionData, setSessionData] = useState()
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [showTable, setShowTable] = useState(false)

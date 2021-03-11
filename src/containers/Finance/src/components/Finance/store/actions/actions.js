@@ -53,9 +53,17 @@ export const fetchFinancialYear = (moduleId) => {
 export const fetchBranchPerSession = (payload) => {
   let url = null
   if (payload.branchType) {
+    if (payload.moduleId) {
     url = urls.MiscFeeClass + '?session_year=' + payload.session + '&branch_type=' + payload.branchType + '&module_id=' + payload.moduleId
+    } else {
+      url = urls.MiscFeeClass + '?session_year=' + payload.session + '&branch_type=' + payload.branchType
+    }
   } else {
+    if (payload.moduleId) {
     url = urls.MiscFeeClass + '?session_year=' + payload.session + '&module_id=' + payload.moduleId
+    } else {
+      url = urls.MiscFeeClass + '?session_year=' + payload.session 
+    }
   }
   return (dispatch) => {
     dispatch(dataLoading())

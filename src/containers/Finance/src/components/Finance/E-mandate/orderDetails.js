@@ -27,10 +27,7 @@ const selectStyles = {
 }
 const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, branches, payment, history, orderPayment, user, alert, createOrderDetails, listCustomerDetails, listCustomerDetailsId, session, orderDetails, getOrderDetails }) => {
   const [domainName, setDomainName] = useState('')
-  const [sessionData, setSessionData] = useState({
-    value: '2020-21',
-    label: '2020-21'
-  })
+  const [sessionData, setSessionData] = useState()
   const [paymnetMethod, setPaymnetMethod] = useState('')
   // const [isNetbankingMethod, setIsNetbankingMethod] = useState(false)
   const [isCreateOrderModel, setIsCreateOrderModel] = useState(false)

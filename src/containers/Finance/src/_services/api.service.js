@@ -124,7 +124,11 @@ function listAcademicSessions (moduleId) {
     method: 'GET',
     headers: authHeader()
   }
+  if (moduleId) {
   return fetch(urls.UTILACADEMICSESSION + '?module_id=' + moduleId, requestOptions).then(handleResponse)
+  } else {
+    return fetch(urls.UTILACADEMICSESSION, requestOptions).then(handleResponse)
+  }
 }
 
 function listStaffs (branchId, pageId, departmentId = -1) {
