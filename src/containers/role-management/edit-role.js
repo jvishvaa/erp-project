@@ -16,6 +16,7 @@ import {
   editRole,
   setModulePermissionsRequestData,
   setRoleName,
+  fetchAcademicYears,
 } from '../../redux/actions';
 import styles from './useStyles';
 
@@ -41,8 +42,16 @@ class EditRole extends Component {
     if (id) {
       fetchRoleDataById(id);
     }
+    // fetchBranches();
 
-    fetchBranches();
+    fetchAcademicYears().then((data) => {
+      let transformedData = '';
+      transformedData = data?.map((obj) => ({
+        id: obj.id,
+        session_year: obj.session_year,
+      }));
+      this.setState({ academicYearList: transformedData });
+    });
   }
 
   alterEditRolePermissions = (module) => {
@@ -223,6 +232,7 @@ class EditRole extends Component {
                   module={module}
                   alterCreateRolePermissions={this.alterEditRolePermissions}
                   branches={branches}
+                  academicYear={this.state.academicYearList}
                   modulePermissionsRequestData={modulePermissionsRequestData}
                   setModulePermissionsRequestData={setModulePermissionsRequestData}
                 />
@@ -250,6 +260,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   fetchBranches: () => {
     dispatch(fetchBranches());
+  },
+  fetchAcademicYears: () => {
+    dispatch(fetchAcademicYears());
   },
   alterEditRolePermissionsState: (params) => {
     dispatch(setEditRolePermissionsState(params));

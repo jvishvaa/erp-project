@@ -15,7 +15,7 @@ import {
   setCreateRolePermissionsState,
   createRole,
   setModulePermissionsRequestData,
-  fetchAcademicYears as getAcademicYears,
+  fetchAcademicYears,
 } from '../../redux/actions';
 
 import styles from './useStyles';
@@ -41,7 +41,7 @@ class CreateRole extends Component {
     fetchModules();
     // fetchBranches();
 
-    getAcademicYears().then((data) => {
+    fetchAcademicYears().then((data) => {
       let transformedData = '';
       transformedData = data?.map((obj) => ({
         id: obj.id,
@@ -267,6 +267,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   fetchBranches: () => {
     dispatch(fetchBranches());
+  },
+  fetchAcademicYears: () => {
+    dispatch(fetchAcademicYears());
   },
   alterCreateRolePermissionsState: (params) => {
     dispatch(setCreateRolePermissionsState(params));

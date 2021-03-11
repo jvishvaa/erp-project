@@ -402,6 +402,7 @@ const CustomScopeModal = ({
             <FormControl className={classes.formControl} disabled>
               <Autocomplete
                 multiple
+                limitTags={2}
                 options={branches || []}
                 style={{ width: 400 }}
                 value={customScope.custom_branch || ''}

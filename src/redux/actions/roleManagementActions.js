@@ -141,11 +141,10 @@ export const fetchModules = () => (dispatch) => {
     });
 };
 
-export const fetchBranches = (acadId) => (dispatch) => {
-  debugger
+export const fetchBranches = () => (dispatch) => {
   dispatch({ type: FETCH_BRANCHES_REQUEST });
   return axios
-    .get(`/erp_user/list-all-branch/?session_year=${acadId}`)
+    .get(`/erp_user/list-all-branch/`)
     .then((response) => {
       if (response.data.status_code === 200) {
       dispatch({
