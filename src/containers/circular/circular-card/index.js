@@ -13,6 +13,7 @@ import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import {Context} from '../context/CircularStore'
+import moment from 'moment';
 
 const CircularCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex,   setEditData,deleteFlag,setDeleteFlag}) => {
 
@@ -45,7 +46,7 @@ const CircularCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, se
         if (result.data.status_code === 200) {
           setLoading(false);
           setViewMore(true);
-          setViewMoreData(result.data.result.data);
+          setViewMoreData(result?.data?.result);
           setPeriodDataForView(lesson);
           setSelectedIndex(index);
           setPeriodColor(true);
@@ -53,7 +54,7 @@ const CircularCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, se
           setLoading(false);
           setViewMore(false);
           setViewMoreData({});
-          setAlert('error', result.data.message);
+          setAlert('error', result?.data?.message);
           setPeriodDataForView();
           setSelectedIndex(-1);
           setPeriodColor(true);
@@ -92,8 +93,8 @@ const CircularCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, se
   const handleEdit=(data)=>{
     // console.log(data,'PPP')
     // setEditData(e)
-    setState({isEdit:true,editData:data});
-    history.push('/create-circular')
+    // setState({isEdit:true,editData:data});
+    history.push(`/create-circular/${data?.id}`)
   }
 
   return (
@@ -107,7 +108,7 @@ const CircularCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, se
               component='p'
               color='primary'
             >
-              {period.circular_name}
+              {period?.circular_name}
             </Typography>
           </Box>
           <Box>
@@ -118,11 +119,11 @@ const CircularCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, se
               color='secondary'
               noWrap
             >
-             Description - {period.description}
+             Description - {period?.description}
             </Typography>
           </Box>
         </Grid>
-        <Grid item xs={4} className={classes.textRight}>
+        {window.location.pathname === '/teacher-circular' &&<Grid item xs={4} className={classes.textRight}>
           <Box>
             <span
               className='period_card_menu'
@@ -146,7 +147,7 @@ const CircularCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, se
                 ) : null}
             </span>
           </Box>
-        </Grid>
+        </Grid>}
         <Grid item xs={12} sm={12} />
         <Grid item xs={6}>
           <Box>
@@ -156,8 +157,14 @@ const CircularCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, se
               component='p'
               color='secondary'
             >
-              Created By - {period.uploaded_by}
-              {/* Create At - {period.} */}
+              Created By - {period?.uploaded_by?.first_name}
+              </Typography>
+              <Typography
+                className={classes.title}
+                variant='p'
+                component='p'
+                color='secondary'>
+              Created At - {moment(period?.time_stamp).format('DD-MM-YYYY')}
               </Typography>
           </Box>
           <Box>

@@ -63,6 +63,7 @@ const CraeteCircular = () => {
   const [filePath, setFilePath] = useState([]);
   const [filterEvent, setFilterEvent] = useState(false);
 
+  console.log(state,'eeeeeeeeee')
   const circularRole = [
     { name: editData.module_name || 'Student Circular', value: 'Student Circular' },
     {
@@ -79,11 +80,11 @@ const CraeteCircular = () => {
     grade: '',
     section: '',
     role: '',
-    yaer:'',
+    year:'',
   });
 
   const handleClear = () => {
-    setFilterData((filterData.branch = []));
+    // setFilterData((filterData.branch = []));
     setFilterData({
       branch: '',
       grade: '',
@@ -125,7 +126,7 @@ const CraeteCircular = () => {
         chapter: '',
       });
       axiosInstance
-        .get(`${endpoints.communication.grades}?branch_id=${value?.id}&module_id=8`)
+        .get(`${endpoints.communication.grades}?branch_id=${value?.id}&module_id=167`)
         .then((result) => {
           if (result.data.status_code === 200) {
             setGradeDropdown(result?.data?.data);
@@ -161,7 +162,7 @@ const CraeteCircular = () => {
       });
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?branch_id=${filterData?.branch?.id}&grade_id=${value?.grade_id}`
+          `${endpoints.masterManagement.sections}?branch_id=${filterData?.branch?.id}&grade_id=${value?.grade_id}&module_id=167`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -277,15 +278,10 @@ const CraeteCircular = () => {
       .catch((error) => {
         setBranchDropdown('error', error?.message);
       });
-    axios
-      .get(`${endpoints.lessonPlan.academicYearList}`, {
-        headers: {
-          'x-api-key': 'vikash@12345#1231',
-        },
-      })
+      axiosInstance.get(`${endpoints.userManagement.academicYear}`)
       .then((result) => {
         if (result.data.status_code === 200) {
-          setAcademicYearDropdown(result.data.result.results);
+          setAcademicYearDropdown(result?.data?.data);
         } else {
           setAlert('error', result.data.message);
         }
@@ -302,7 +298,6 @@ const CraeteCircular = () => {
     if (!description) {
       return setAlert('warning', 'Description Cannot Be Empty');
     }
-    setLoading(true);
     axiosInstance
       .post(`${endpoints.circular.createCircular}`, {
         circular_name: title,
@@ -319,6 +314,7 @@ const CraeteCircular = () => {
         // sections: filterData.section.map((s) => s.id),
         sections: [filterData?.section?.id],
         // sections:[75]
+        academic_year:filterData.year.id,
       })
       .then((result) => {
         if (result?.data?.status_code === 200) {
@@ -334,6 +330,7 @@ const CraeteCircular = () => {
           setFilePath([]);
           setFilterEvent(false);
           setAlert('success', result?.data?.message);
+          history.goBack();
         } else {
           setAlert('error', result?.data?.message || `${result?.data?.description}`);
         }
@@ -350,10 +347,19 @@ const CraeteCircular = () => {
       })
       .then((result) => {
         if (result.data.status_code === 200) {
-          setState({ ...state, isEdit: false });
+          // setState({ ...state, isEdit: false });
           setTitle('');
           setDescription('');
+          setFilterData({
+            branch: '',
+            grade: '',
+            section: '',
+            role: '',
+          });
+          setFilePath([]);
+          setFilterEvent(false);
           setAlert('success', result?.data?.message);
+          history.push('/teacher-circular')
         } else {
           setAlert('error', result?.data?.message);
         }
@@ -362,6 +368,27 @@ const CraeteCircular = () => {
         setAlert('error', error?.data?.message);
       });
   };
+
+  //////EDIT USE-EFFECT
+  useEffect(()=>{
+    if(Number(circularKey)){
+   axiosInstance.get(`${endpoints.circular.viewMoreCircularData}?circular_id=${circularKey}`)
+   .then(result=>{
+     console.log(result?.data,'RRRRRRRR')
+     if(result?.data?.status_code === 200){
+       setFilterData({
+         ...filterData,
+         year:result?.data?.result?.academic_year,
+         branch:result?.data?.result?.branches,
+       })
+       setTitle(result?.data?.result?.circular_name)
+       setDescription(result?.data?.result?.description)
+       setFilePath(result?.data?.result.media)
+       setFilterEvent(true)
+     }
+   })
+    }
+  },[])
 
   return (
     <>

@@ -58,6 +58,9 @@ const CircularList = () => {
   const [grade, setGrade] = useState();
   const [branch, setBranch] = useState();
   const [section, setSection] = useState();
+  const [acadYear,setAcadYear] = useState();
+  const [startDateFilter,setStartDateFilter] = useState()
+  const [endDateFilter,setEndDateFilter] = useState()
   const [deleteFlag,setDeleteFlag] =useState(false)
 
   //for edit circular data
@@ -66,22 +69,27 @@ const CircularList = () => {
   const [state, setState] = useContext(Context);
 
   // setState(editData)
-  console.log(state, '@@@@');
+  // console.log(state, '@@@@');
 
   const handlePagination = (event, page) => {
     setPage(page);
   };
 
-  const handlePeriodList = (grade, branch, section) => {
+  const handlePeriodList = (grade, branch, section,year,startDate,endDate) => {
+    console.log(grade, branch, section,year,startDate,endDate,']]]]]]]]]]]]]]]]]]')
     setLoading(true);
+   if(window.location.pathname === '/teacher-circular') {
     setPeriodData([]);
     setGrade(grade);
     setBranch(branch);
     setSection(section);
-    setFilterDataDown(grade, branch, section);
+    setAcadYear(year);
+    setStartDateFilter(startDate);
+    setEndDateFilter(endDate);
+    setFilterDataDown(grade, branch, section,year,startDate,endDate);
     axiosInstance
       .get(
-        `${endpoints.circular.circularList}?is_superuser=True&branch=${branch.id}&grade=${grade.grade_id}&section=${section.id}&page=${page}&page_size=${limit}`
+        `${endpoints.circular.circularList}?is_superuser=True&branch=${branch.id}&grade=${grade.grade_id}&section=${section.id}&academic_year=${year.id}&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}&page=${page}&page_size=${limit}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -99,26 +107,57 @@ const CircularList = () => {
         setLoading(false);
         setAlert('error', error.message);
       });
+    }
+    else{
+      // alert('',grade,branch)
+      // console.log(grade,branch,'|||||||||||||||||||')
+      setPeriodData([]);
+      setStartDateFilter(grade);
+      setEndDateFilter(branch);
+      setFilterDataDown(grade,branch);
+      axiosInstance
+      .get(
+        `${endpoints.circular.circularList}?start_date=${grade.format('YYYY-MM-DD')}&end_date=${branch.format('YYYY-MM-DD')}&page=${page}&page_size=${limit}&module_id=168&role_id=2`
+      )
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setTotalCount(result.data.count);
+          setLoading(false);
+          setPeriodData(result.data.result);
+          setViewMore(false);
+          setViewMoreData({});
+        } else {
+          setLoading(false);
+          setAlert('error', result.data.description);
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', error.message);
+      });
+
+    }
   };
+ 
 
   useEffect(() => {
-    if (page && grade && branch && section) handlePeriodList(grade, branch, section);
-    if(deleteFlag)handlePeriodList(grade, branch, section);
+    if (page && grade && branch && section && acadYear && startDateFilter && endDateFilter) handlePeriodList(grade, branch, section, acadYear, startDateFilter,endDateFilter);
+    if(deleteFlag)handlePeriodList(grade, branch, section,acadYear, startDateFilter,endDateFilter);
   }, [page,deleteFlag]);
-  console.log('BBBBB', editData);
+  // console.log('BBBBB', editData);
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div className={isMobile ? 'breadCrumbFilterRow' : null}>
-          <div style={{ width: '95%', margin: '20px auto' }}>
+        <div className={isMobile ? 'breadCrumbFilterRow' : null} style={{display:'flex'}}>
+          <div style={{ width: '95%', margin: '20px auto',marginLeft:'30px' }}>
             <CommonBreadcrumbs
               componentName={window.location.pathname === '/teacher-circular' ? 'Teacher Circular': 'Student Circular'}
             />
           </div>
-          {isMobile ? (
+          {/* {isMobile ? ( */}
             <div className='hideShowFilterIcon'>
-              <IconButton onClick={() => setIsFilter(!isFilter)}>
+              <IconButton onClick={() => setIsFilter(!isFilter)} style={{marginRight:'36px'}}>
                 <SvgIcon
                   component={() => (
                     <img
@@ -129,10 +168,10 @@ const CircularList = () => {
                 />
               </IconButton>
             </div>
-          ) : null}
+          {/* ) : null} */}
         </div>
         <div
-          className={!isMobile ? 'showFilters' : isFilter ? 'showFilters' : 'hideFilters'}
+          className={isFilter ? 'showFilters' : 'hideFilters'}
         >
           <CircularFilters
             handlePeriodList={handlePeriodList}
