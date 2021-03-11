@@ -127,6 +127,7 @@ function union(arra1, arra2) {
 function findAndApplyCustomScope(subModules, id, customScopeObj, applyUnion) {
   const clonedArray = JSON.parse(JSON.stringify(subModules));
   const index = clonedArray.findIndex((obj) => obj.module_child_id == id);
+  const customYear = clonedArray[index].custom_year;
   const customBranch = clonedArray[index].custom_branch;
   const customGrade = clonedArray[index].custom_grade;
   const customSection = clonedArray[index].custom_section;
@@ -134,6 +135,7 @@ function findAndApplyCustomScope(subModules, id, customScopeObj, applyUnion) {
   let scopeObj = { ...customScopeObj };
   if (applyUnion) {
     scopeObj = {
+      custom_year: union(customYear, customScopeObj.custom_year),
       custom_branch: union(customBranch, customScopeObj.custom_branch),
       custom_grade: union(customGrade, customScopeObj.custom_grade),
       custom_section: union(customSection, customScopeObj.custom_section),
@@ -151,6 +153,7 @@ export default function ModuleCard({
   module,
   alterCreateRolePermissions,
   branches,
+  academicYear,
   modulePermissionsRequestData,
   setModulePermissionsRequestData,
 }) {
@@ -308,6 +311,7 @@ export default function ModuleCard({
         my_grade: subModule.my_grade,
         my_section: subModule.my_section,
         my_subject: subModule.my_subject,
+        custom_year: subModule.custom_year.map((year) => year.id),
         custom_grade: subModule.custom_grade.map((grade) => grade.id),
         custom_section: subModule.custom_section.map((section) => section.id),
         custom_branch: subModule.custom_branch.map((branch) => branch.id),
@@ -423,6 +427,7 @@ export default function ModuleCard({
         my_grade: obj.my_grade,
         my_section: obj.my_section,
         my_subject: obj.my_subject,
+        custom_year: obj.custom_year.map((year) => year.id),
         custom_grade: obj.custom_grade.map((grade) => grade.id),
         custom_section: obj.custom_section.map((section) => section.id),
         custom_branch: obj.custom_branch.map((branch) => branch.id),
@@ -575,6 +580,7 @@ export default function ModuleCard({
                   <SubModule
                     subModule={subModule}
                     columns={columns}
+                    academicYear={academicYear}
                     onCheckPermission={onCheckPermission}
                     onChangeCustomScope={onChangeCustomScope}
                     branches={branches}

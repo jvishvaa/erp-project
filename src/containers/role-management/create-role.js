@@ -15,7 +15,9 @@ import {
   setCreateRolePermissionsState,
   createRole,
   setModulePermissionsRequestData,
+  fetchAcademicYears,
 } from '../../redux/actions';
+
 import styles from './useStyles';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import ModuleCard from '../../components/module-card';
@@ -30,13 +32,23 @@ class CreateRole extends Component {
       roleName: '',
       roleNameError: '',
       selectionError: '',
+      academicYearList: [],
     };
   }
 
   componentDidMount() {
     const { fetchModules, fetchBranches } = this.props;
     fetchModules();
-    fetchBranches();
+    // fetchBranches();
+
+    fetchAcademicYears().then((data) => {
+      let transformedData = '';
+      transformedData = data?.map((obj) => ({
+        id: obj.id,
+        session_year: obj.session_year,
+      }));
+      this.setState({ academicYearList: transformedData });
+    });
   }
 
   handleRoleNameChange = (e) => {
@@ -108,6 +120,7 @@ class CreateRole extends Component {
             my_grade: currentSubModule.my_grade,
             my_section: currentSubModule.my_section,
             my_subject: currentSubModule.my_subject,
+            custom_year: currentSubModule.custom_year.map((year) => year.id),
             custom_grade: currentSubModule.custom_grade.map((grade) => grade.id),
             custom_section: currentSubModule.custom_section.map((section) => section.id),
             custom_branch: currentSubModule.custom_branch.map((branch) => branch.id),
@@ -171,6 +184,7 @@ class CreateRole extends Component {
           <Grid item xs={12} sm={6} lg={12}>
             <ModuleCard
               module={module}
+              academicYear={this.state.academicYearList}
               alterCreateRolePermissions={this.alterCreateRolePermissions}
               branches={branches}
               modulePermissionsRequestData={modulePermissionsRequestData}
@@ -253,6 +267,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   fetchBranches: () => {
     dispatch(fetchBranches());
+  },
+  fetchAcademicYears: () => {
+    dispatch(fetchAcademicYears());
   },
   alterCreateRolePermissionsState: (params) => {
     dispatch(setCreateRolePermissionsState(params));
