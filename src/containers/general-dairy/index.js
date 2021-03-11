@@ -108,6 +108,9 @@ const GeneralDairyList = () => {
         setPage(page)
         setActiveTab(activeTab)
         setViewMore(false)
+        setPeriodDataForView('')
+        setSelectedIndex(-1)
+        // setPeriodColor(false)
         const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
         console.log(roleDetails);
         if (isTeacher){
