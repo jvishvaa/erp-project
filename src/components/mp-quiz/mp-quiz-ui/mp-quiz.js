@@ -1,7 +1,14 @@
 import React from 'react';
+import { SocketProvider, useSocket, GlobalSocket } from '../mp-quiz-providers';
 
 function MpQuiz() {
-  return <p>s</p>;
+  const ws = useSocket();
+  React.useEffect(() => {
+    ws.bind('open', (a, b, c, d) => {
+      console.log(a, b, c, d);
+    });
+  }, []);
+  return <SocketProvider>.</SocketProvider>;
 }
 export default MpQuiz;
 /*
