@@ -28,6 +28,33 @@ import Modal from '../../../ui/Modal/modal'
 import Layout from '../../../../../Layout'
 
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'E-Mandate' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Add Branch') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
 const EMandate = ({ session, dataLoadingStatus, fetchBranches, branches, todayDetail, updateDomainName, dailyDetail, dailyEMandateDetails, todayEMandateDetails, alert, setDomainDetails, listDomainName, user, domainNames, createDomainName }) => {
   const [sessionData, setSessionData] = useState('')
   const [domainModel, setDomainModel] = useState(false)
@@ -59,12 +86,12 @@ const EMandate = ({ session, dataLoadingStatus, fetchBranches, branches, todayDe
   const handleClickSessionYear = (e) => {
     setSessionData(e)
     setShowDomainDetail(false)
-    fetchBranches(e && e.value, alert, user)
+    fetchBranches(e && e.value, alert, user, moduleId)
   }
 
   const getHandler = (e) => {
     setShowDomainDetail(true)
-    listDomainName(sessionData && sessionData.value, user, alert)
+    listDomainName(sessionData && sessionData.value, user, alert, moduleId)
   }
 
   const hideDetailsModal = (e) => {
@@ -632,14 +659,14 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   updateDomainName: (data, user, alert) => dispatch(actionTypes.updateDomainName({ data, user, alert })),
   dailyEMandateDetails: (session, user, alert) => dispatch(actionTypes.dailyEMandateDetails({ session, user, alert })),
   todayEMandateDetails: (session, user, alert) => dispatch(actionTypes.todayEMandateDetails({ session, user, alert })),
   createDomainName: (data, user, alert) => dispatch(actionTypes.createDomainName({ data, user, alert })),
-  listDomainName: (session, user, alert) => dispatch(actionTypes.listDomainName({ session, user, alert })),
+  listDomainName: (session, user, alert, moduleId) => dispatch(actionTypes.listDomainName({ session, user, alert, moduleId })),
   setDomainDetails: (data, user, alert) => dispatch(actionTypes.setDomainDetails({ data, user, alert })),
-  loadSession: dispatch(apiActions.listAcademicSessions())
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)((EMandate))

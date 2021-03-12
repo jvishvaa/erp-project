@@ -18,6 +18,34 @@ import * as actionTypes from '../store/actions'
 import { apiActions } from '../../../_actions'
 import Layout from '../../../../../Layout'
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'E-Mandate' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Generate Subsequent Payment') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
+
 const GenerateSubsequentPayment = ({ user, alert, getGenerateSubsequent, generateSubsequentPayment, getGenerateSubsequents, session }) => {
   const [sessionData, setSessionData] = useState()
   const [page, setPage] = useState(0);
@@ -200,7 +228,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   generateSubsequentPayment: (data, user, alert) => dispatch(actionTypes.generateSubsequentPayment({ data, user, alert })),
   getGenerateSubsequents: (session, user, alert) => dispatch(actionTypes.getGenerateSubsequents({ session, user, alert })),
-  loadSession: dispatch(apiActions.listAcademicSessions())
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)((GenerateSubsequentPayment))

@@ -19,6 +19,34 @@ import { apiActions } from '../../../_actions'
 import BillingReceipts from '../Receipts/billingDetailsReceipts'
 import Layout from '../../../../../Layout'
 
+
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'E-Mandate' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Total Billing Details') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
 const DailyBillingDetailsPage = ({ dataLoadingStatus, totalBillingDetails, domain, sessionData, qwerty, alert, todayEMandateDetails, totalBillingDetai, totalBillingDetail, listDomainName, user, domainNames, session }) => {
   const [data, setData] = useState([])
   const [dataDateWsie, setDataDateWsie] = useState([])
@@ -353,7 +381,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   totalBillingDetails: (role, session, domain, month, user, alert) => dispatch(actionTypes.totalBillingDetails({ role, session, domain, month, user, alert }))
 })
 

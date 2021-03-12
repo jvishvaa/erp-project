@@ -13,6 +13,32 @@ import * as actionTypes from '../store/actions'
 import { apiActions } from '../../../_actions'
 import Layout from '../../../../../Layout'
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'E-Mandate' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Create Link') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 
 const selectStyles = {
   menuPortal: base => ({ ...base, zIndex: 9999 }),
@@ -53,7 +79,7 @@ const CreateLink = ({ setCustomerDetails, user, alert, domainNames, branches, fe
 
   useEffect(() => {
     // listDomainName(sessionData && sessionData.value, user, alert)
-    fetchBranches(sessionData && sessionData.value, alert, user)
+    fetchBranches(sessionData && sessionData.value, alert, user, moduleId)
     //   let role = ''
     //   role = JSON.parse(localStorage.getItem('user_profile')).personal_info.role
     //   setRole(role)
@@ -624,8 +650,8 @@ const mapDispatchToProps = (dispatch) => ({
   getCustomerDetails: (session, user, alert) => dispatch(actionTypes.getCustomerDetails({ session, user, alert })),
   setCustomerDetails: (data, user, alert) => dispatch(actionTypes.setCustomerDetails({ data, user, alert })),
   // listDomainName: (session, user, alert) => dispatch(actionTypes.listDomainName({ session, user, alert })),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
-  loadSession: dispatch(apiActions.listAcademicSessions())
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)((CreateLink))

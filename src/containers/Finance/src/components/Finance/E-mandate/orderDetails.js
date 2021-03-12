@@ -25,6 +25,35 @@ const selectStyles = {
   menuPortal: base => ({ ...base, zIndex: 9999 }),
   menu: provided => ({ ...provided, zIndex: '9999 !important' })
 }
+
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'E-Mandate' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Add Order Details') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
+
 const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, branches, payment, history, orderPayment, user, alert, createOrderDetails, listCustomerDetails, listCustomerDetailsId, session, orderDetails, getOrderDetails }) => {
   const [domainName, setDomainName] = useState('')
   const [sessionData, setSessionData] = useState()
@@ -53,7 +82,7 @@ const OrderDetails = ({ getDomainNameWithCusId, domainNames, fetchBranches, bran
     const role = userProfile.personal_info.role.toLowerCase()
     setRole(role)
     getDomainNameWithCusId(sessionData && sessionData.value, user, alert)
-    fetchBranches(sessionData && sessionData.value, alert, user)
+    fetchBranches(sessionData && sessionData.value, alert, user, moduleId)
   }, [alert, fetchBranches, getDomainNameWithCusId, session, sessionData, user])
 
   useEffect(() => {
@@ -599,9 +628,9 @@ const mapDispatchToProps = (dispatch) => ({
   listCustomerDetails: (id, user, alert) => dispatch(actionTypes.listCustomerDetails({ id, user, alert })),
   createOrderDetails: (data, user, alert) => dispatch(actionTypes.createOrderDetails({ data, user, alert })),
   getDomainNameWithCusId: (session, user, alert) => dispatch(actionTypes.getDomainNameWithCusId({ session, user, alert })),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   getOrderDetails: (branch, session, role, user, alert) => dispatch(actionTypes.getOrderDetails({ branch, session, role, user, alert })),
-  loadSession: dispatch(apiActions.listAcademicSessions())
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)((OrderDetails))

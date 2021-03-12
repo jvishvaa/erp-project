@@ -25,6 +25,34 @@ import Modal from '../../../ui/Modal/modal'
 import DailyBillingDetailsPage from './dailyDetails'
 import Layout from '../../../../../Layout'
 
+
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'E-Mandate' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Total Billing Details') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
 const DailyBillingDetails = ({ dataLoadingStatus, alert, fetchBranches, todayEMandateDetails, branches, domainDailyBillStatus, domainDailyBillGenerateStatus, totalBillingDetail, totalBillingDetails, listDomainName, user, domainNames, session }) => {
   // const [selectedDomain, setSelectedDomain] = useState(null)
   const [sessionData, setSessionData] = useState('')
@@ -98,7 +126,7 @@ const DailyBillingDetails = ({ dataLoadingStatus, alert, fetchBranches, todayEMa
     setSessionData(e)
     setShowTable(false)
     // listDomainName(e.value, user, alert)
-    fetchBranches(e && e.value, alert, user)
+    fetchBranches(e && e.value, alert, user, moduleId)
   }
 
   const getHandler = (e) => {
@@ -612,8 +640,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   domainDailyBillGenerateStatus: (data, user, alert) => dispatch(actionTypes.domainDailyBillGenerateStatus({ data, user, alert })),
   // listDomainName: (session, user, alert) => dispatch(actionTypes.listDomainName({ session, user, alert })),
   totalBillingDetails: (role, session, domain, user, alert) => dispatch(actionTypes.totalBillingDetails({ role, session, domain, user, alert }))
