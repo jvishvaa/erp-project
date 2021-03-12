@@ -23,6 +23,34 @@ import * as actionTypes from '../../../store/actions'
 // import {  Modal } from '../../../../../ui'
 import Layout from '../../../../../../../Layout'
 
+
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Expense Management' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Petty Cash Expense') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 class PettyExpenses extends Component {
   state = {
     addMoneyModal: false,
@@ -375,7 +403,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   fetchPettyCashAcc: (user) => dispatch(actionTypes.fetchPettyCashAcc({ user })),
-  loadFinancialYear: dispatch(actionTypes.fetchFinancialYear()),
+  loadFinancialYear: dispatch(actionTypes.fetchFinancialYear(moduleId)),
   listCashOpeningBalance: (user, alert) => dispatch(actionTypes.listCashOpeningBalance({ user, alert })),
   saveCashWithdraw: (session, bank, amount, narration, chequeNo, approvedBy, date, user, alert) => dispatch(actionTypes.cashWithdraw({ session, bank, amount, narration, chequeNo, approvedBy, date, user, alert }))
 })

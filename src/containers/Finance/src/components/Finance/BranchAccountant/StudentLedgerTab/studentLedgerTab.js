@@ -74,7 +74,6 @@ const styles = theme => ({
   }
 })
 const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-
 let moduleId
 if (NavData && NavData.length) {
   NavData.forEach((item) => {
@@ -100,6 +99,8 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+
+
 class StudentLedgerTab extends Component {
   constructor (props) {
     super(props)
