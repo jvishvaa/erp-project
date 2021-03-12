@@ -72,6 +72,9 @@ export default {
     createAcademicYear: '/erp_user/create-academic-year/',
     messageTypeTable: '/communication/communicate-type/',
     updateMessageType: '/communication/',
+    chapter: '/academic/chapters/',
+    ViewChapter: '/academic/chapters/'
+
   },
   gloabSearch: {
     getUsers: '/erp_user/global-search/',

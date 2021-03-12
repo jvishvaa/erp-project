@@ -298,8 +298,9 @@ const ChapterTypeTable = (setCentralSubjectName) => {
     const handleFilter = () => {
         axiosInstance
         .get(
-          // `${endpoints.masterManagement.ViewChapter}?page=${page}&page_size=${limit}&academic_year=${1}&subject=${166}`
-          `${endpoints.masterManagement.ViewChapter}?page=${page}&page_size=${limit}&academic_year=${filterData?.year.id}&subject=${filterData?.subject.subject_id}`
+        //   `${endpoints.masterManagement.ViewChapter}?page=${page}&page_size=${limit}&academic_year=${1}&subject=${166}`
+        `${endpoints.masterManagement.ViewChapter}?page=${page}&page_size=${limit}&academic_year=${filterData?.year.id}&subject=${filterData?.subject.subject_id}`
+
         )
         .then((result) => {
           if (result.data.status_code === 200) {
