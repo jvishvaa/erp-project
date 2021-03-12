@@ -794,12 +794,11 @@ class Receipt extends Component {
               </Grid>
           </Grid>
           : null}
-        <Grid container spacing={3} style={{ padding: '15px'}}>
-          <React.Fragment>
-          <Grid xs={2}>
-            <strong style={{ paddingLeft: '5px'}}>Receipt Type:</strong>
+        <Grid container spacing={3} style={{ padding: '20px'}}>
+          <Grid style={{ paddingLeft: '5px'}} xs={2}>
+            <strong>Receipt Type:</strong>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={2}>
             <Radio
               checked={this.state.selectedReceipt === 'online'}
               onChange={this.handleReceipt}
@@ -808,7 +807,7 @@ class Receipt extends Component {
               aria-label='Cash'
             /> Online
           </Grid>
-          <Grid item xs computer={3}>
+          <Grid item xs computer={2}>
             <Radio
               checked={this.state.selectedReceipt === 'manual'}
               onChange={this.handleReceipt}
@@ -817,7 +816,6 @@ class Receipt extends Component {
               aria-label='Cash'
             /> Manual
           </Grid>
-          </React.Fragment>
         </Grid>
         {/* {this.state.isTrans === true
           ? <Grid.Row>
@@ -870,7 +868,7 @@ class Receipt extends Component {
           </Grid.Row>
           : null
         } */}
-        <Grid container  spacing={3} style={{ padding: '20px', display:'flex'}}>
+        <Grid container  spacing={3} style={{ padding: '15px', display:'flex'}}>
           <Grid item xs={2}>
             <strong>Date of Payment:</strong>
           </Grid>
@@ -895,7 +893,7 @@ class Receipt extends Component {
             <p style={{ fontSize: '16px' }}>{this.state.todayDate}</p>
           </Grid>
         </Grid>
-        <Grid container spacing={3} padding={{ padding: '15px'}}>
+        <Grid container spacing={3} style={{ padding: '20px'}}>
           <Grid item xs='4'>
             <input type='checkbox'
               name='confirm'
