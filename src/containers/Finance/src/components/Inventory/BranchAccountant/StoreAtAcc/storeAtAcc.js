@@ -18,6 +18,34 @@ const styles = theme => ({
   }
 })
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Student' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Ledger Tab') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
+
 // let storeAtAccStore = null
 
 class StoreAtAcc extends Component {
@@ -866,9 +894,9 @@ const mapDispatchToProps = dispatch => ({
   subjectChoosen: (session, role, erp, user, alert) => dispatch(actionTypes.subjectChoosen({ session, role, erp, user, alert })),
   submitLanguage: (secondLangId, thirdLangId, erp, role, sessionYear, user, alert) => dispatch(actionTypes.submitLanguage({ secondLangId, thirdLangId, erp, role, sessionYear, user, alert })),
   fetchStoreItems: (data, user, alert) => dispatch(actionTypes.listStoreItemsAccountant({ data, user, alert })),
-  fetchGrades: (session, alert, user) => dispatch(actionTypes.fetchGrades({ session, alert, user })),
+  fetchGrades: (session, alert, user, moduleId) => dispatch(actionTypes.fetchGrades({ session, alert, user, moduleId })),
   fetchErpSuggestions: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.fetchErpSuggestions({ type, session, grade, section, status, erp, alert, user })),
-  fetchAllSections: (session, gradeId, alert, user) => dispatch(actionTypes.fetchAllSections({ session, gradeId, alert, user })),
+  fetchAllSections: (session, gradeId, alert, user, moduleId) => dispatch(actionTypes.fetchAllSections({ session, gradeId, alert, user, moduleId })),
   fetchKitSubjects: (session, role, erp, alert, user) => dispatch(actionTypes.fetchKitSubjects({ session, role, erp, alert, user })),
   fetchDeliveryDetails: (erp, alert, user) => dispatch(actionTypes.fetchDeliveryDetails({ erp, alert, user })),
   sendDeliveryDetails: (data, alert, user) => dispatch(actionTypes.sendDeliveryDetails({ data, alert, user })),

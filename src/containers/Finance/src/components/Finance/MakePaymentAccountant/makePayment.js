@@ -41,6 +41,32 @@ function getSteps () {
 
 let makePayState = null
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Student' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Ledger Tab') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 class MakePayment extends Component {
   constructor (props) {
     super(props)
@@ -857,9 +883,9 @@ const mapDispatchToProps = dispatch => ({
   listOtherFees: (session, erp, alert, user) => dispatch(actionTypes.fetchAccountantOtherFee({ session, erp, alert, user })),
   sendAllPayment: (data, user, alert) => dispatch(actionTypes.sendAllPayment({ data, user, alert })),
   clearAllProps: () => dispatch(actionTypes.clearAllProps()),
-  fetchGrades: (session, alert, user) => dispatch(actionTypes.fetchGrades({ session, alert, user })),
+  fetchGrades: (session, alert, user, moduleId) => dispatch(actionTypes.fetchGrades({ session, alert, user, moduleId })),
   fetchErpSuggestions: (type, session, grade, section, status, erp, alert, user) => dispatch(actionTypes.fetchErpSuggestions({ type, session, grade, section, status, erp, alert, user })),
-  fetchAllSections: (session, gradeId, alert, user) => dispatch(actionTypes.fetchAllSections({ session, gradeId, alert, user })),
+  fetchAllSections: (session, gradeId, alert, user, moduleId ) => dispatch(actionTypes.fetchAllSections({ session, gradeId, alert, user, moduleId })),
   fetchDate: (alert, user) => dispatch(actionTypes.fetchDateFromServer({ alert, user })),
   fetchStudentDues: (erp, session, alert, user) => dispatch(actionTypes.fetchStudentDues({ erp, session, alert, user })),
   fetchNormalWallet: (session, erp, alert, user) => dispatch(actionTypes.fetchNormalWallet({ session, erp, alert, user }))
