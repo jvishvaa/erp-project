@@ -25,6 +25,33 @@ const selectStyles = {
   menu: provided => ({ ...provided, zIndex: '9999 !important' })
 }
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'E-Mandate' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Add Customer Details') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
 const CustomerDeatils = ({ setCustomerDetails, user, alert, fetchBranches, domainNames, branches, customerDetails, updateCustDetails, custDetails, getCustomerDetails, listDomainName, session }) => {
   const [selectedDomain, setSelectedDomain] = useState(null)
   const [sessionData, setSessionData] = useState('')
@@ -539,8 +566,8 @@ const mapDispatchToProps = (dispatch) => ({
   getCustomerDetails: (branch, session, role, user, alert) => dispatch(actionTypes.getCustomerDetails({ branch, session, role, user, alert })),
   setCustomerDetails: (data, user, alert) => dispatch(actionTypes.setCustomerDetails({ data, user, alert })),
   // listDomainName: (session, user, alert) => dispatch(actionTypes.listDomainName({ session, user, alert })),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
-  loadSession: dispatch(apiActions.listAcademicSessions())
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)((CustomerDeatils))

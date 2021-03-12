@@ -23,6 +23,32 @@ import Layout from '../../../../../Layout'
 // import { CircularProgress } from '../../../ui'
 
 import { AlertNotificationContext } from '../../../../../../context-api/alert-context/alert-state'
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'E-Mandate' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Billing Details') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 
 const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDomainDetails, todayDetail, fetchBranches, user, domainNames, branches, session }) => {
   // const [selectedDomain, setSelectedDomain] = useState(null)
@@ -84,7 +110,7 @@ const BillingDetails = ({ dataLoadingStatus, alert, todayEMandateDetails, setDom
     let branch
     todayEMandateDetails(branch, sessionData && sessionData.value, role, user, alert)
     // listDomainName(sessionData && sessionData.value, user, alert)
-    fetchBranches(sessionData && sessionData.value, alert, user)
+    fetchBranches(sessionData && sessionData.value, alert, user, moduleId)
     setShowTable(true)
   }
 
@@ -715,9 +741,9 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   // listDomainName: (session, user, alert) => dispatch(actionTypes.listDomainName({ session, user, alert })),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   todayEMandateDetails: (branch, session, role, user, alert) => dispatch(actionTypes.todayEMandateDetails({ branch, session, role, user, alert })),
   setDomainDetails: (data, user, alert) => dispatch(actionTypes.setDomainDetails({ data, user, alert }))
 })
