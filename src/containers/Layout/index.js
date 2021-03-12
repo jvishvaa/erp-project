@@ -426,50 +426,95 @@ const Layout = ({ children, history }) => {
         history.push('/user-management/assign-role');
         break;
       }
-      case 'subject-table': {
+      case 'Add Role': {
+        history.push('/role-management/create-role');
+        break;
+      }
+      // case 'subject-table': {
+        // history.push('/master-mgmt/subject-table');
+        // break;
+      // }
+      // case 'section-table': {
+        // history.push('/master-mgmt/section-table');
+        // break;
+      // }
+      // case 'grade-table': {
+        // history.push('/master-mgmt/grade-table');
+        // break;
+      // }
+      // case 'academic-year-table': {
+        // history.push('/master-mgmt/academic-year-table');
+        // break;
+      // }
+      // case 'chapter-type-table': {
+        // history.push('/master-mgmt/chapter-type-table');
+        // break;
+      // }
+      // case 'message-type-table': {
+        // history.push('/master-mgmt/message-type-table');
+        // break;
+      // }
+      // case 'signature-upload': {
+        // history.push('/master-mgmt/signature-upload');
+        // break;
+      // }
+      // case 'course-table': {
+        // history.push('/course-list');
+        // break;
+      // }
+      // case 'course-price': {
+        // history.push('/course-price');
+        // break;
+      // }
+      // case 'school-mapping': {
+        // history.push('/subject/grade');
+        // break;
+      // }
+      case 'Subject': {
         history.push('/master-mgmt/subject-table');
         break;
       }
-      case 'section-table': {
+      case 'Section': {
         history.push('/master-mgmt/section-table');
         break;
       }
-      case 'grade-table': {
+      case 'Grade': {
         history.push('/master-mgmt/grade-table');
         break;
       }
-      case 'academic-year-table': {
+      case 'Academic Year': {
         history.push('/master-mgmt/academic-year-table');
         break;
       }
-      case 'chapter-type-table': {
+      case 'Chapter Creation': {
         history.push('/master-mgmt/chapter-type-table');
         break;
       }
-      case 'message-type-table': {
+      case 'Message Type': {
         history.push('/master-mgmt/message-type-table');
         break;
       }
-      case 'signature-upload': {
+      case 'Signature Upload': {
         history.push('/master-mgmt/signature-upload');
         break;
       }
-      case 'course-table': {
+      case 'Course': {
         history.push('/course-list');
         break;
       }
-      case 'course-price': {
+       case 'Course Price': {
         history.push('/course-price');
         break;
       }
-      case 'school-mapping': {
+      case 'Lesson Plan Mapping': {
         history.push('/subject/grade');
         break;
       }
-      case 'role-management': {
-        history.push('/role-management');
-        break;
-      }
+
+      // case 'role-management': {
+      //   history.push('/role-management');
+      //   break;
+      // }
       case 'homework-teacher': {
         history.push('/homework/teacher');
         break;
