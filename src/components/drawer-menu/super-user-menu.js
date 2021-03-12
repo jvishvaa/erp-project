@@ -181,6 +181,27 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
           </ListItem>
           {/* )} */}
 
+          {/* {window.location.host !== endpoints.aolConfirmURL && ( */}
+            <ListItem
+              button
+              className={
+                history.location.pathname === '/master-mgmt/chapter-type-table'
+                  ? 'menu_selection'
+                  : null
+              }
+              onClick={() => {
+                onClickMenuItem('chapter-type-table');
+              }}
+            >
+              <ListItemIcon className={classes.menuItemIcon}>
+                {/* <MenuIcon name={child.child_name} /> */}
+                {/* {menuIcon(child.child_name)} */}
+              </ListItemIcon>
+              <ListItemText primary='Chapter Creation' className='menu-item-text' />
+            </ListItem>
+          {/* )} */}
+          
+
           {window.location.host !== endpoints.aolConfirmURL && (
             <ListItem
               button
