@@ -74,7 +74,7 @@ const CraeteCircular = () => {
     //   value: 'Teacher Circular',
     // },
     {name: 'Student Circular', value: 'Student Circular'},
-    {name:'Teacher Circular',value:'Student Circular'}
+    // {name:'Teacher Circular',value:'Student Circular'}
   ];
 
   const [filterData, setFilterData] = useState({
@@ -186,9 +186,6 @@ const CraeteCircular = () => {
 
   const handleImageChange = (event) => {
     if (
-      event.target.files[0].name.split('.')[1] === 'pdf' ||
-      event.target.files[0].name.split('.')[1] === 'mp3' ||
-      event.target.files[0].name.split('.')[1] === 'mp4' ||
       event.target.files[0].name.split('.')[1] === 'csv'
     ) {
       return setAlert('warning', 'Unaccepted File Type');
@@ -217,7 +214,10 @@ const CraeteCircular = () => {
   };
 
   const handleFilter = () => {
-    if (filterData.branch.length <= 0) {
+    if (!filterData.year) {
+      return setAlert('warning', 'Select Academic Year');
+    }
+    if (!filterData.branch) {
       return setAlert('warning', 'Select Branch');
     }
     if (!filterData.role) {
@@ -316,7 +316,7 @@ const CraeteCircular = () => {
         // sections: filterData.section.map((s) => s.id),
         sections: [filterData?.section?.id],
         // sections:[75]
-        academic_year:filterData.year.id,
+        academic_year:filterData?.year?.id,
       })
       .then((result) => {
         if (result?.data?.status_code === 200) {
@@ -386,6 +386,7 @@ const CraeteCircular = () => {
         setAlert('error', error?.data?.message);
       });
   };
+  console.log(circularRole[0],'===================')
 
   //////EDIT USE-EFFECT
   useEffect(()=>{
@@ -400,6 +401,7 @@ const CraeteCircular = () => {
          branch:result?.data?.result?.branches[0],
          grade:result?.data?.result?.grades[0],
          section:result?.data?.result?.sections[0],
+         role:circularRole[0]
        })
        setTitle(result?.data?.result?.circular_name)
        setDescription(result?.data?.result?.description)
@@ -663,7 +665,7 @@ const CraeteCircular = () => {
                   >
                     <input
                       type='file'
-                      accept='.png, .jpg, .jpeg'
+                      accept='.png, .jpg, .jpeg,.mp3,.mp4,.pdf'
                       style={{ display: 'none' }}
                       id='raised-button-file'
                       accept='image/*'
@@ -671,14 +673,20 @@ const CraeteCircular = () => {
                     />
                     Add Document
                   </Button>
+                  <small
+                    style={{ color: '#014b7e', fontSize: '16px', marginLeft: '28px',marginTop:'8px' }}
+                  >
+                    {' '}
+                    Accepted files: [jpeg,jpg,png,mp3,mp4,pdf]
+                  </small>
                 </div>
                 <div>
-                  <small
+                  {/* <small
                     style={{ color: '#014b7e', fontSize: '16px', marginLeft: '28px' }}
                   >
                     {' '}
                     Accepted files: [jpeg,jpg,mp3,mp4,pdf,png]
-                  </small>
+                  </small> */}
                 </div>
               </div>
             </div>
