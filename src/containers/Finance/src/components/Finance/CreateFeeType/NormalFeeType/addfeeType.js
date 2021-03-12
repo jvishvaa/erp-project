@@ -6,6 +6,32 @@ import { connect } from 'react-redux'
 import * as actionTypes from '../../store/actions'
 import '../../../css/staff.css'
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Fee Type' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Normal Fee Type') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 class AddFeeType extends Component {
   constructor (props) {
     super(props)
@@ -30,7 +56,7 @@ class AddFeeType extends Component {
   }
 
   componentDidMount () {
-    this.props.fetchBranches(this.props.acadId, this.props.alert, this.props.user)
+    this.props.fetchBranches(this.props.acadId, this.props.alert, this.props.user, moduleId)
   }
 
   changehandlerbranch = (e) => {
@@ -242,7 +268,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   addedNormalFeeList: (data, alert, user) => dispatch(actionTypes.addNormalFeeList({ data, alert, user })),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user }))
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)((withRouter(AddFeeType)))

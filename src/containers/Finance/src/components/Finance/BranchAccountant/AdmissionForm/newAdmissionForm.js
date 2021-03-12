@@ -47,6 +47,33 @@ const styles = theme => ({
   }
 })
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Admissions' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Admission Form') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
 // const [activeStep, setActiveStep] = React.useState(0)
 // const [skipped, setSkipped] = React.useState(new Set())
 
@@ -264,7 +291,7 @@ const mapStateToProps = state => ({
   redirect: state.finance.accountantReducer.admissionForm.redirect
 })
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   postAdmission: (data, user, alert) => dispatch(actionTypes.postAdmission({ data, user, alert }))
 })
 export default connect(

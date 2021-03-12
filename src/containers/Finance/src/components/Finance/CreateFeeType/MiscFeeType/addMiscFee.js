@@ -7,6 +7,34 @@ import { connect } from 'react-redux'
 import '../../../css/staff.css'
 import * as actionTypes from '../../store/actions'
 
+let moduleId = null 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Fee Type' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Misc. Fee Type') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+          // this.setState({
+            moduleId = item.child_id
+          // })
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 class AddMiscFeeType extends Component {
   constructor (props) {
     super(props)
@@ -42,7 +70,7 @@ class AddMiscFeeType extends Component {
 
   componentDidMount () {
     if (this.props.acadId) {
-      this.props.fetchBranches(this.props.acadId, this.props.alert, this.props.user)
+      this.props.fetchBranches(this.props.acadId, this.props.alert, this.props.user, moduleId)
     } else {
       this.props.alert.warning('Select Academic Year')
     }
@@ -427,7 +455,7 @@ const mapDispatchToProps = dispatch => ({
   fetchFeeAccounts: (data, alert, user) => dispatch(actionTypes.fetchFeeAccPerBranchAndAcad({ data, alert, user })),
   // fetchAllFeeAccounts: (session, branchId, alert, user) => dispatch(actionTypes.fetchAllFeeAccounts({ session, branchId, alert, user })),
   addedMiscFeeList: (data, alert, user) => dispatch(actionTypes.addMiscFeeList({ data, alert, user })),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user }))
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)((withRouter(AddMiscFeeType)))
