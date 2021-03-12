@@ -121,7 +121,7 @@ const CircularList = () => {
             'YYYY-MM-DD'
           )}&end_date=${branch.format(
             'YYYY-MM-DD'
-          )}&page=${page}&page_size=${limit}&role_id=2&module_id=168`
+          )}&page=${page}&page_size=${limit}&role_id=2&module_id=168&module_name=Student Circular`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -141,7 +141,6 @@ const CircularList = () => {
         });
     }
   };
-
   useEffect(() => {
     if (window.location.pathname === '/teacher-circular') {
       if (
@@ -170,10 +169,14 @@ const CircularList = () => {
           startDateFilter,
           endDateFilter
         );
-    }else if(page && grade && branch){
-      handlePeriodList(grade,branch)
     }
   }, [page, deleteFlag]);
+  useEffect(()=>{
+    if(window.location.pathname === '/student-circular'){
+      if(startDateFilter && endDateFilter)
+    handlePeriodList(startDateFilter,endDateFilter)
+  }
+  },[page])
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
