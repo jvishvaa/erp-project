@@ -21,6 +21,7 @@ const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol, handleViewHomewo
             key={col.id}
             data={data[col.subject_name]}
             isSelected={isSelected}
+            canUpload={data.canUpload}
             handleClick={(view) => {
               setSelectedCol({
                 date: data.date,
