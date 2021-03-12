@@ -8,60 +8,81 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import useStyles from './useStyles';
 
-const ChapterTypeCard = (props) => {
-  const {
-    msgtype,
-    handleDelete,
-    handleEditMessageType,
-  } = props;
+const SectionMappingCard = ({ section, onEdit, onDelete }) => {
   const classes = useStyles();
   return (
     <Paper className={classes.root}>
-      <Grid container spacing={2}>
-          <Grid item xs={8}>
+      <Grid container spacing={3}>
+        <Grid container item>
+          <Grid item xs={6}>
+            <Box>
               <Typography
                 className={classes.title}
                 variant='p'
                 component='p'
                 color='secondary'
               >
-                Message Type
+                Name
               </Typography>
+            </Box>
+            <Box>
               <Typography
                 className={classes.content}
                 variant='p'
                 component='p'
                 color='secondary'
-                title={msgtype?.category_name}
+                title={section.section_name}
                 noWrap
               >
-                {msgtype.category_name}
+                {section.section_name}
               </Typography>
+            </Box>
           </Grid>
+          <Grid item xs={6} className={classes.textRight}>
+            <Box>
+              <Typography
+                className={classes.title}
+                variant='p'
+                component='p'
+                color='secondary'
+              >
+                Created by
+              </Typography>
+            </Box>
+            <Box>
+              <Typography
+                className={classes.content}
+                variant='p'
+                component='p'
+                color='secondary'
+                align='right'
+                noWrap
+              >
+                {section.created_by || '--'}
+              </Typography>
+            </Box>
+          </Grid>
+        </Grid>
+
         <Grid item xs={12}>
           <Divider />
         </Grid>
         <Grid item container>
           <Grid item xs={6}>
-            <Box style={{ width: '100%', display: 'flex', justifyContent: 'left' }}>
-              <IconButton
-                className='removePadding'
-                onClick={() => {
-                  handleEditMessageType(
-                    msgtype.id,
-                    msgtype.category_name,
-                  );
-                }}
-              >
-                <EditOutlinedIcon color='primary' />
-              </IconButton>
-            </Box>
+            <IconButton
+              className='removePadding'
+              onClick={() => {
+                onEdit(section);
+              }}
+            >
+              <EditOutlinedIcon color='primary' />
+            </IconButton>
           </Grid>
           <Grid item xs={6} className={classes.textRight}>
             <IconButton
               className='removePadding'
               onClick={() => {
-                handleDelete(msgtype);
+                onDelete(section);
               }}
             >
               <DeleteOutlineIcon color='primary' />
@@ -73,4 +94,4 @@ const ChapterTypeCard = (props) => {
   );
 };
 
-export default ChapterTypeCard;
+export default SectionMappingCard;

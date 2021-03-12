@@ -14,6 +14,8 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     fontSize: '0.9rem',
+    // overflow: 'hidden',
+    // textOverflow: 'ellipsis',
   },
   textRight: {
     textAlign: 'right',

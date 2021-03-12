@@ -26,11 +26,11 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
-import CreateSubject from './create-subject';
-import EditSubject from './edit-subject';
+import CreateSubjectMapping from './create-subject-mapping';
+import EditSubjectMapping from './edit-subject-mapping';
 import Loading from '../../../components/loader/loader';
 import '../master-management.css';
-import SubjectCard from './subjects-card';
+import SubjectMappingCard from './subject-mapping-card';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,8 +50,6 @@ const useStyles = makeStyles((theme) => ({
   },
   tableCell: {
     color: theme.palette.secondary.main,
-    maxWidth: '200px',
-    wordBreak: 'break-all',
   },
   buttonContainer: {
     width: '95%',
@@ -62,6 +60,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const columns = [
+  { id: 'session_year', label: 'Session Year', minWidth: 100 },
+  { id: 'branch_name', label: 'Branch', minWidth: 100 },
+  { id: 'grade_name', label: 'Grade', minWidth: 100 },
+  { id: 'section_name', label: 'Section', minWidth: 100 },
   {
     id: 'subject_name',
     label: 'Subject',
@@ -99,7 +101,7 @@ const columns = [
   },
 ];
 
-const SubjectTable = () => {
+const SubjectMappingTable = () => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const [page, setPage] = useState(1);
@@ -110,11 +112,12 @@ const SubjectTable = () => {
   const [addFlag, setAddFlag] = useState(false);
   const [editFlag, setEditFlag] = useState(false);
   const [tableFlag, setTableFlag] = useState(true);
+  const [desc, setDesc] = useState('');
   const [delFlag, setDelFlag] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [searchSubject, setSearchSubject] = useState('');
   const [loading, setLoading] = useState(false);
-  const [subjectData, setSubjectData] = useState({});
+  const [opt, setOpt] = useState(false);
   const limit = 15;
   const [goBackFlag, setGoBackFlag] = useState(false);
   const themeContext = useTheme();
@@ -127,17 +130,20 @@ const SubjectTable = () => {
     setPage(newPage + 1);
   };
 
-  const handleAddSubject = () => {
+  const handleAddSubjectMapping = () => {
     setTableFlag(false);
     setAddFlag(true);
     setEditFlag(false);
   };
 
-  const handleEditSubject = (subj) => {
+  const handleEditSubjectMapping = (id, name, desc, optional) => {
     setTableFlag(false);
     setAddFlag(false);
     setEditFlag(true);
-    setSubjectData(subj);
+    setSubjectId(id);
+    setSubjectName(name);
+    setDesc(desc);
+    setOpt(optional);
   };
 
   const handleGoBack = () => {
@@ -146,7 +152,6 @@ const SubjectTable = () => {
     setAddFlag(false);
     setEditFlag(false);
     setSearchSubject('');
-    setSubjectData({});
     setGoBackFlag(!goBackFlag);
   };
 
@@ -154,9 +159,9 @@ const SubjectTable = () => {
     e.preventDefault();
     setLoading(true);
     axiosInstance
-      .delete(`${endpoints.masterManagement.updateSubject}${subjectId}`)
+      .delete(`${endpoints.masterManagement.deleteSubjectMapping}${subjectId}`)
       .then((result) => {
-        if (result.data.status_code === 204) {
+        if (result.data.status_code === 200) {
           setDelFlag(!delFlag);
           setLoading(false);
           setAlert('success', result.data.msg || result.data.message);
@@ -167,14 +172,14 @@ const SubjectTable = () => {
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.response.data.message||error.response.data.msg);
+        setAlert('error', error.response?.data?.message || error.response?.data?.msg);
       });
     setOpenDeleteModal(false);
   };
 
-  const handleOpenDeleteModal = (subject) => {
-    setSubjectId(subject?.id);
-    setSubjectName(subject?.subject_name);
+  const handleOpenDeleteModal = (id,name) => {
+    setSubjectId(id);
+    setSubjectName(name);
     setOpenDeleteModal(true);
   };
 
@@ -190,20 +195,20 @@ const SubjectTable = () => {
   }, [goBackFlag, page, delFlag]);
 
   useEffect(() => {
-    let url = `${endpoints.masterManagement.subjects}?page=${page}&page_size=${limit}`;
-    if (searchSubject) url += `&subject_name=${searchSubject}`;
+    let url = `${endpoints.masterManagement.subjectMappingTable}?page=${page}&page_size=${limit}`;
+    if (searchSubject) url += `&subject=${searchSubject}`;
     axiosInstance
       .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
-          setTotalCount(result.data?.data?.count);
+          setTotalCount(result.data?.data?.count)
           setSubjects(result.data?.data?.results);
         } else {
           setAlert('error', result.data?.msg || result.data?.message);
         }
       })
       .catch((error) => {
-        setAlert('error', error.response.data.message||error.response.data.msg);
+        setAlert('error', error.response?.data?.message || error.response?.data?.msg);
       });
   }, [goBackFlag, delFlag, page, searchSubject]);
 
@@ -215,12 +220,12 @@ const SubjectTable = () => {
           <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
               componentName='Master Management'
-              childComponentName='Subject List'
+              childComponentName='Subject Mapping List'
               childComponentNameNext={
                 addFlag && !tableFlag
-                  ? 'Add Subject'
+                  ? 'Add Subject Mapping'
                   : editFlag && !tableFlag
-                  ? 'Edit Subject'
+                  ? 'Edit Mapping Subject'
                   : null
               }
             />
@@ -228,13 +233,16 @@ const SubjectTable = () => {
         </div>
 
         {!tableFlag && addFlag && !editFlag && (
-          <CreateSubject setLoading={setLoading} handleGoBack={handleGoBack} />
+          <CreateSubjectMapping setLoading={setLoading} handleGoBack={handleGoBack} />
         )}
         {!tableFlag && !addFlag && editFlag && (
-          <EditSubject
+          <EditSubjectMapping
+            id={subjectId}
+            desc={desc}
+            name={subjectName}
             setLoading={setLoading}
             handleGoBack={handleGoBack}
-            subjectData={subjectData}
+            opt={opt}
           />
         )}
 
@@ -268,10 +276,10 @@ const SubjectTable = () => {
                   color='primary'
                   size='small'
                   style={{ color: 'white' }}
-                  title='Add Subject'
-                  onClick={handleAddSubject}
+                  title='Add Subject Mapping'
+                  onClick={handleAddSubjectMapping}
                 >
-                  Add Subject
+                  Add Subject Mapping
                 </Button>
               </Grid>
             </Grid>
@@ -301,35 +309,61 @@ const SubjectTable = () => {
                       </TableHead>
                       <TableBody>
                         {subjects.map((subject, index) => {
+                          const {
+                            created_by,
+                            id,
+                            subject: { subject_name, subject_description, is_optional },
+                            section_mapping: {
+                              grade: { grade_name },
+                              section: {section_name},
+                              acad_session: {
+                                branch: { branch_name },
+                                session_year: { session_year },
+                              },
+                            },
+                          } = subject;
                           return (
                             <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
                               <TableCell className={classes.tableCell}>
-                                {subject?.subject_name}
+                                {session_year}
                               </TableCell>
                               <TableCell className={classes.tableCell}>
-                                {subject?.created_by}
+                                {branch_name}
                               </TableCell>
                               <TableCell className={classes.tableCell}>
-                                {subject?.subject_description}
+                                {grade_name}
                               </TableCell>
                               <TableCell className={classes.tableCell}>
-                                {subject?.is_optional ? 'Yes' : 'No'}
+                                {section_name}
+                              </TableCell>
+                              <TableCell className={classes.tableCell}>
+                                {subject_name}
+                              </TableCell>
+                              <TableCell className={classes.tableCell}>
+                                {created_by}
+                              </TableCell>
+                              <TableCell className={classes.tableCell}>
+                                {subject_description}
+                              </TableCell>
+                              <TableCell className={classes.tableCell}>
+                                {is_optional ? 'Yes' : 'No'}
                               </TableCell>
                               <TableCell className={classes.tableCell}>
                                 <IconButton
                                   onClick={(e) => {
-                                    handleOpenDeleteModal(subject);
+                                    handleOpenDeleteModal(id, subject_name);
                                   }}
-                                  title='Delete Subject'
+                                  title='Delete Subject Mapping'
                                 >
                                   <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
                                 </IconButton>
-                                <IconButton
-                                  onClick={(e) => handleEditSubject(subject)}
+
+                                {/* <IconButton
+                                  onClick={e => handleEditSubjectMapping(subject.subject.id, subject.subject.subject_name, subject.subject.subject_description, subject.subject.is_optional)}
                                   title='Edit Subject'
                                 >
                                   <EditOutlinedIcon style={{ color: '#fe6b6b' }} />
-                                </IconButton>
+                                </IconButton> */}
                               </TableCell>
                             </TableRow>
                           );
@@ -356,11 +390,11 @@ const SubjectTable = () => {
               <>
                 {tableFlag && !addFlag && !editFlag && (
                   <>
-                    {subjects?.map((subject) => (
-                      <SubjectCard
+                    {subjects.map((subject) => (
+                      <SubjectMappingCard
                         data={subject}
                         handleOpenDeleteModal={handleOpenDeleteModal}
-                        handleEditSubject={handleEditSubject}
+                        handleEditSubjectMapping={handleEditSubjectMapping}
                       />
                     ))}
                     <div className='paginateData paginateMobileMargin'>
@@ -393,7 +427,7 @@ const SubjectTable = () => {
           </DialogTitle>
           <DialogContent>
             <DialogContentText>
-              {`Confirm Delete Subject ${subjectName}`}
+              {`Confirm Delete Subject Mapping`}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -410,4 +444,4 @@ const SubjectTable = () => {
   );
 };
 
-export default SubjectTable;
+export default SubjectMappingTable;

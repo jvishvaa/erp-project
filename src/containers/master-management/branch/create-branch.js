@@ -1,50 +1,39 @@
-import React, { useContext, useState } from 'react';
-import {
-  Grid,
-  TextField,
-  Button,
-  useTheme,
-  Switch,
-  FormControlLabel,
-} from '@material-ui/core';
+import React, { useContext, useState, useEffect } from 'react';
+import { Grid, TextField, Button, useTheme } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
-const CreateSubject = ({ setLoading, handleGoBack }) => {
+const CreateBranch = ({ setLoading, handleGoBack }) => {
   const { setAlert } = useContext(AlertNotificationContext);
-  const [subjectName, setSubjectName] = useState('');
-  const [description, setDescription] = useState('');
+  const [branchName, setBranchName] = useState('');
+  const [branchCode, setBranchCode] = useState('');
+  const [address, setAddress] = useState('');
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const [optional, setOptional] = useState(false);
-
-  const handleChange = (event) => {
-    setOptional(event.target.checked);
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
     axiosInstance
-      .post(endpoints.masterManagement.createSubject, {
-        subject_name: subjectName,
-        description: description,
-        is_optional: optional,
+      .post(endpoints.masterManagement.createBranch, {
+        branch_name: branchName,
+        branch_code: branchCode,
+        address: address,
       })
       .then((result) => {
-        if (result.data.status_code === 201) {
-          setSubjectName('');
-          setDescription('');
+        if (result.data.status_code >= 200 && result.data.status_code <= 299) {
+          setBranchName('');
+          setBranchCode('');
+          setAddress('');
           setLoading(false);
-          setOptional(false);
+          setAlert('success', result.data.msg||result.data.message);
           handleGoBack();
-          setAlert('success', result.data?.message||result.data?.msg);
         } else {
           setLoading(false);
-          setAlert('error', result.data?.message||result.data?.msg);
+          setAlert('error', result.data.msg||result.data.message);
         }
       })
       .catch((error) => {
@@ -61,13 +50,13 @@ const CreateSubject = ({ setLoading, handleGoBack }) => {
             <TextField
               id='subname'
               style={{ width: '100%' }}
-              label='Subject Name'
+              label='Branch Name'
               variant='outlined'
               size='small'
-              value={subjectName}
+              value={branchName}
               inputProps={{ pattern: '^[a-zA-Z0-9 ]+', maxLength: 20 }}
-              name='subname'
-              onChange={(e) => setSubjectName(e.target.value)}
+              name='branchname'
+              onChange={(e) => setBranchName(e.target.value)}
               required
             />
           </Grid>
@@ -75,8 +64,24 @@ const CreateSubject = ({ setLoading, handleGoBack }) => {
         <Grid container spacing={5}>
           <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
             <TextField
-              id='description'
-              label='Description'
+              id='branchcode'
+              style={{ width: '100%' }}
+              label='Branch Code'
+              variant='outlined'
+              size='small'
+              value={branchCode}
+              inputProps={{ pattern: '^[0-9]+$', maxLength: 5 }}
+              name='branchcode'
+              onChange={(e) => setBranchCode(e.target.value)}
+              required
+            />
+          </Grid>
+        </Grid>
+        <Grid container spacing={5}>
+          <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
+            <TextField
+              id='address'
+              label='Address'
               variant='outlined'
               size='small'
               style={{ width: '100%' }}
@@ -84,26 +89,10 @@ const CreateSubject = ({ setLoading, handleGoBack }) => {
               rows={4}
               rowsMax={6}
               inputProps={{ maxLength: 100 }}
-              value={description}
-              name='description'
-              onChange={(e) => setDescription(e.target.value)}
+              value={address}
+              name='address'
+              onChange={(e) => setAddress(e.target.value)}
               required
-            />
-          </Grid>
-        </Grid>
-        <Grid container spacing={5}>
-          <Grid item xs={12} sm={4}>
-            <FormControlLabel
-              className='switchLabel'
-              control={
-                <Switch
-                  checked={optional}
-                  onChange={handleChange}
-                  name='optional'
-                  color='primary'
-                />
-              }
-              label={optional ? 'Optional' : 'Not-Optional'}
             />
           </Grid>
         </Grid>
@@ -136,4 +125,4 @@ const CreateSubject = ({ setLoading, handleGoBack }) => {
   );
 };
 
-export default CreateSubject;
+export default CreateBranch;
