@@ -24,7 +24,7 @@ const ViewMoreCard = ({
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const { setAlert } = useContext(AlertNotificationContext);
 
-  const handleBulkDownload = () => {
+  const handleBulkDownloads = () => {
     const formData = new FormData();
     // formData.append('branch',[5]);
     // formData.append('grade',[54]);
@@ -55,7 +55,13 @@ const ViewMoreCard = ({
         setAlert('error', error.message);
       });
   };
+  const handleBulkDownload = (files) => {
+    for (let i = 0; i < files?.length; i++) {
+      window.open(`${endpoints.s3}/${files[i]}`);
+    }
+  };
   const pic=viewMoreData?.documents?.map(a=>a)
+  const gradeName= viewMoreData?.grade?.map(a=>a.grade_name)
   console.log(viewMoreData, '=====', branch);
   return (
     <>
@@ -117,16 +123,17 @@ const ViewMoreCard = ({
                 setSelectedIndex(-1);
               }}
             >
-              <CloseIcon color='primary' />
+              {/* <CloseIcon color='primary' /> */}
             </IconButton>
           </div>
           <div className='headerContent'>
-          <IconButton
+          {/* <IconButton
           //  onClick={handleBulkDownload}
-           style={{fontSize:'1.1rem',color:'#ff6b6b'}}
+           style={{fontSize:'1.1rem',color:'#ff6b6b', marginLeft: '-344px', marginTop: '-31px'}}
             className="bulkDownloadIconViewMore">
-              <a  target='_blank' href={`${endpoints.s3}/dev/circular_files/${pic}`}>
-                            <SvgIcon
+              <a  target='_blank' href={`${endpoints.s3}/${pic}`}> */}
+              {/* <a  target='_blank' href={`${endpoints.s3}/dev/circular_files/${branch && branch.branch_name}/${gradeName}/${pic}`}> */}
+                            {/* <SvgIcon
                                 component={() => (
                                     <img
                                         style={{ height: '21px', width: '21px' }}
@@ -135,7 +142,27 @@ const ViewMoreCard = ({
                                     />
                                 )}
                             /></a>Download
-                        </IconButton>
+                        </IconButton> */}
+                           {viewMoreData && viewMoreData?.documents?.length > 0 && (
+              <div className='headerContent'>
+                <IconButton
+                  onClick={() => handleBulkDownload(viewMoreData?.documents)}
+                  style={{ fontSize: '1.1rem', color: '#ff6b6b' }}
+                  className='bulkDownloadIconViewMore'
+                >
+                  <SvgIcon
+                    component={() => (
+                      <img
+                        style={{ height: '21px', width: '21px', marginLeft: '-343px' }}
+                        src={downloadAll}
+                        alt='downloadAll'
+                      />
+                    )}
+                  />
+                  Download
+                </IconButton>
+              </div>
+            )}
           </div>
         </div>
         </div>

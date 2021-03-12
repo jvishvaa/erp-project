@@ -412,6 +412,7 @@ const GeneralDairyFilter = ({
           className='custom_button_master'
           size='medium'
           type='submit'
+          // disabled={!filterData?.grade}
           onClick={(event) => handleFilter(event)}
         >
           FILTER
