@@ -124,7 +124,7 @@ class ReceiptSettingAdd extends Component {
               </Button>
               <Button
                 color='primary'
-                variant='outlined'
+                variant='contained'
                 type='button'
                 onClick={this.props.close}
               >
