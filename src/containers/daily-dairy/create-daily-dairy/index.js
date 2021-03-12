@@ -328,6 +328,7 @@ const CreateDailyDairy = (details, onSubmit) => {
             grade: grade,
             section: ids,
             subject: subjectIds.join(),
+            chapter: formik.values.chapters.id,
             documents: filePath,
             teacher_report:{
               "previous_class":recap,
@@ -344,6 +345,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                 grade: grade,
                 section: ids,
                 subject: subjectIds.join(),
+            chapter: formik.values.chapters.id,
                 teacher_report:{
                   "previous_class":recap,
                   "summary":summary,
@@ -380,10 +382,24 @@ const CreateDailyDairy = (details, onSubmit) => {
    //debugger
    console.log(editData)
     axiosInstance.put(`${endpoints.dailyDairy.updateDelete}`,{
-        'circular_id':editData.id,
-        'circular_name':title,
-        'description':description,
-        'module_name':filterData.role.value
+        // 'circular_id':editData.id,
+        // 'circular_name':title,
+        // 'description':description,
+        // 'module_name':filterData.role.value
+            branch: formik.values.branch.id,
+            // grade: grade,
+            // section: ids,
+            subject: subjectIds.join(),
+            chapter: formik.values.chapters.id,
+            documents: filePath,
+            teacher_report:{
+              "previous_class":recap,
+              "summary":summary,
+              "class_work":detail,
+              "tools_used":tools,
+              "homework":homework
+            },
+            dairy_type:2
     }).then(result=>{
         if(result.data.status_code===200){
             setState({...state,isEdit:false});
@@ -572,7 +588,7 @@ const CreateDailyDairy = (details, onSubmit) => {
               handleChangeGrade(value || null, [formik.values.branch]);
             }}
             multiple
-            value={state.isEdit ? editData.grade || editData.grade.grade_name :formik.values.grade}
+            value={state.isEdit ? editData.grade :formik.values.grade}
             options={grades}
             getOptionLabel={(option) => option.grade_name || ''}
             renderInput={(params) => (
@@ -664,7 +680,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     onChange={(e, value) => {
                         formik.setFieldValue('chapters', value);
                       }}
-                    value={state.isEdit? editData.section :formik.values.chapters}
+                    value={state.isEdit? editData.chapter :formik.values.chapters}
                     options={chapterDropdown}
                     getOptionLabel={(option) => option?.chapter_name}
                     filterSelectedOptions
