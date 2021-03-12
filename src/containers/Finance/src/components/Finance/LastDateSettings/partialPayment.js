@@ -13,6 +13,37 @@ import Modal from '../../../ui/Modal/modal'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 // import { student } from '../../../masters'
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
+let moduleId = null
+
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Settings' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Last Date Settings') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+          // this.setState({
+            moduleId= item.child_id
+          // })
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
+
 const PartialPayment = ({ classes, session, branches, fetchBranches, partialPaymentList, savePartialPaymentLastDate, partialPayments, fetchGradesPerBranch, fetchAllSection, alert, user, dataLoading, gradesPerBranch, sections }) => {
   // const [sessionData, setSessionData] = useState([])
   const [branchData, setBranchData] = useState(null)
@@ -33,12 +64,12 @@ const PartialPayment = ({ classes, session, branches, fetchBranches, partialPaym
   // }
 
   useEffect(() => {
-    fetchBranches(session, alert, user)
+    fetchBranches(session, alert, user, moduleId)
   }, [alert, fetchBranches, session, user])
 
   const changehandlerbranch = (e) => {
     setBranchData(e)
-    fetchGradesPerBranch(alert, user, session, e.value)
+    fetchGradesPerBranch(alert, user, session, e.value, moduleId)
     setShowTable(false)
   }
   const gradeHandler = (e) => {
@@ -282,11 +313,11 @@ const mapStateToProps = state => ({
   partialPayments: state.finance.lastDateSettings.partialPayment
 })
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
-  fetchGradesPerBranch: (alert, user, session, branch) => dispatch(actionTypes.fetchGradesPerBranch({ alert, user, session, branch })),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
+  fetchGradesPerBranch: (alert, user, session, branch, moduleId) => dispatch(actionTypes.fetchGradesPerBranch({ alert, user, session, branch, moduleId })),
   // fetchAllSectionsPerGradeAsAdmin: (session, alert, user, gradeId, branchId) => dispatch(actionTypes.fetchAllSectionsPerGradeAsAdmin({ session, alert, user, gradeId, branchId }))
-  fetchAllSection: (session, alert, user, gradeId, branchId) => dispatch(actionTypes.fetchAllSection({ session, alert, user, gradeId, branchId })),
+  fetchAllSection: (session, alert, user, gradeId, branchId, moduleId) => dispatch(actionTypes.fetchAllSection({ session, alert, user, gradeId, branchId, moduleId })),
   partialPaymentList: (session, branch, grade, alert, user) => dispatch(actionTypes.partialPaymentList({ session, branch, grade, alert, user })),
   savePartialPaymentLastDate: (data, alert, user) => dispatch(actionTypes.savePartialPaymentLastDate({ data, alert, user }))
 })

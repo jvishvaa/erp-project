@@ -22,6 +22,35 @@ import classes from './viewBanks.module.css'
 // const ViewBanks = {
 //   namespace: 'View Banks'
 // }
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
+
+let moduleId = null
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Banks & Fee Accounts' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Manage Bank & Fee Accounts') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+          // this.setState({
+            moduleId= item.child_id
+          // })
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 let viewBanksState = null
 
 export class ViewBanks extends Component {
@@ -80,7 +109,7 @@ export class ViewBanks extends Component {
   }
 
   fetchBranchHandler = () => {
-    this.props.fetchBranches(this.props.currentSession, this.props.alert, this.props.user)
+    this.props.fetchBranches(this.props.currentSession, this.props.alert, this.props.user, moduleId)
   }
 
   changehandlerbranch = (e) => {
@@ -451,7 +480,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchViewBanks: (session, branchId, alert, user) => dispatch(actionTypes.fetchViewBanks({ session, branchId, alert, user })),
   deletedBank: (row, alert, user) => dispatch(actionTypes.deleteBank({ row, alert, user }))
   // loadSession: dispatch(apiActions.listAcademicSessions())
