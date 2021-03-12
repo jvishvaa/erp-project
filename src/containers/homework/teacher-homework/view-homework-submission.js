@@ -404,9 +404,11 @@ const ViewHomework = withRouter(
                       </Typography>
                       <div className='attachments-list-outer-container'>
                         <div className='prev-btn'>
-                          <IconButton onClick={() => handleScroll('left')}>
-                            <ArrowBackIosIcon />
-                          </IconButton>
+                          {collatedSubmissionFiles?.length > 2 && (
+                            <IconButton onClick={() => handleScroll('left')}>
+                              <ArrowBackIosIcon />
+                            </IconButton>
+                          )}
                         </div>
                         <SimpleReactLightbox>
                           <div
@@ -461,9 +463,11 @@ const ViewHomework = withRouter(
                           </div>
                         </SimpleReactLightbox>
                         <div className='next-btn'>
-                          <IconButton onClick={() => handleScroll('right')}>
-                            <ArrowForwardIosIcon color='primary' />
-                          </IconButton>
+                          {collatedSubmissionFiles?.length > 2 && (
+                            <IconButton onClick={() => handleScroll('right')}>
+                              <ArrowForwardIosIcon color='primary' />
+                            </IconButton>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -475,9 +479,11 @@ const ViewHomework = withRouter(
                       </Typography>
                       <div className='attachments-list-outer-container'>
                         <div className='prev-btn'>
-                          <IconButton onClick={() => handleScroll('left')}>
-                            <ArrowBackIosIcon />
-                          </IconButton>
+                          {collatedQuestionState.corrected_submission?.length > 2 && (
+                            <IconButton onClick={() => handleScroll('left')}>
+                              <ArrowBackIosIcon />
+                            </IconButton>
+                          )}
                         </div>
                         <SimpleReactLightbox>
                           <div
@@ -529,9 +535,11 @@ const ViewHomework = withRouter(
                           </div>
                         </SimpleReactLightbox>
                         <div className='next-btn'>
-                          <IconButton onClick={() => handleScroll('right')}>
-                            <ArrowForwardIosIcon color='primary' />
-                          </IconButton>
+                          {collatedQuestionState.corrected_submission?.length > 2 && (
+                            <IconButton onClick={() => handleScroll('right')}>
+                              <ArrowForwardIosIcon color='primary' />
+                            </IconButton>
+                          )}
                         </div>
                       </div>
                     </div>

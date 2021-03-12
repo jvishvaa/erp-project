@@ -487,7 +487,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     Bulk Upload
                   <input
                       type='file'
-                      accept=".png, .jpg, .jpeg, .mp3, mp4, .pdf"
+                      accept=".png, .jpg, .jpeg, .mp3, .mp4, .pdf"
                       style={{ display: 'none' }}
                       id='raised-button-file'
                       onChange={e => handleBulkUpload(e)}
@@ -542,7 +542,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                         <AttachmentIcon fontSize='small' />
                         <input
                           type='file'
-                          accept=".png, .jpg, .jpeg, .mp3, mp4, .pdf"
+                          accept=".png, .jpg, .jpeg, .mp3, .mp4, .pdf"
                           onChange={(e) => uploadFileHandler(e, index, question.max_attachment)}
                           className={classes.fileInput}
                         />
@@ -566,9 +566,11 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     </Typography>
                       <div className='attachments-list-outer-container'>
                         <div className='prev-btn'>
-                          <IconButton onClick={() => handleScroll('left')}>
-                            <ArrowBackIosIcon />
-                          </IconButton>
+                          {question.question_files.length > 1 && (
+                            <IconButton onClick={() => handleScroll('left')}>
+                              <ArrowBackIosIcon />
+                            </IconButton>
+                          )}
                         </div>
                         <SimpleReactLightbox>
                           <div
@@ -610,9 +612,11 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                           </div>
                         </SimpleReactLightbox>
                         <div className='next-btn'>
-                          <IconButton onClick={() => handleScroll('right')}>
-                            <ArrowForwardIosIcon color='primary' />
-                          </IconButton>
+                          {question.question_files.length > 1 && (
+                            <IconButton onClick={() => handleScroll('right')}>
+                              <ArrowForwardIosIcon color='primary' />
+                            </IconButton>
+                          )}
                         </div>
                       </div>
                     </div>
