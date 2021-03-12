@@ -44,6 +44,33 @@ const styles = theme => ({
   }
 })
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Transport Fees' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Assign Transport Fees') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 class AddOtherFees extends Component {
   constructor (props) {
     super(props)
@@ -207,7 +234,7 @@ class AddOtherFees extends Component {
   handleAcademicyear = (e) => {
     console.log(e)
     this.setState({ session: e.value, branchData: [], sessionData: e })
-    this.props.fetchBranches(e.value, this.props.alert, this.props.user)
+    this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
   }
 
   changehandlerbranch = (e) => {
@@ -1107,8 +1134,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   fetchFeeAccount: (session, branch, alert, user) => dispatch(actionTypes.fetchAdminFeeAccount({ session, branch, alert, user })),
-  loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   addOtherFees: (data, alert, user) => dispatch(actionTypes.addAccountantOtherFee({ data, alert, user })),
   checkInstallments: (session, branch, feeName, alert, user) => dispatch(actionTypes.checkOtherFeesInstallment({ session, branch, feeName, alert, user })),
   assignInstallment: (data, alert, user) => dispatch(actionTypes.assignInstallmentOtherFees({ data, alert, user })),
