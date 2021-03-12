@@ -35,6 +35,7 @@ import {
   fetchSubjects as getSubjects,
 } from '../../../../src/redux/actions/index';
 import {Context} from '../context/context'
+import { HomeWork } from '@material-ui/icons';
 
 const CreateDailyDairy = (details, onSubmit) => {
   const [academicYears, setAcademicYears] = useState([]);
@@ -224,8 +225,7 @@ const CreateDailyDairy = (details, onSubmit) => {
       });
     } else {
       setSubjectDropdown([]);
-    }
-}
+    }}
 
   const handleSection = (e, value) => {
     formik.setFieldValue('section', value);
@@ -238,24 +238,12 @@ const CreateDailyDairy = (details, onSubmit) => {
     fetchSubjects([branch], grade, value);
   };
    
-  // const handleSubject = (e, value) => {
-  //     formik.setFieldValue('subjects', value)
-  //     if (subjects && subjects.length > 0){
-  //         fetchChapters()
-  //     }
-  // }
   const handleSubject = (event, value) => {
-    //debugger
+
     setFilterData({ ...filterData });
-    // if (value) {
-    //     setFilterData({ ...filterData });
-    // }
     console.log(value);
-    if (value.length > 0) {
-      const ids = value.map((el) => el.id);
-      console.log(ids);
-      setSubjectIds(ids);
-      axiosInstance.get(`${endpoints.dailyDairy.branches}?academic_year=${searchAcademicYear}&subject=${ids}`)
+      setSubjectIds(value.id);
+      axiosInstance.get(`${endpoints.dailyDairy.branches}?academic_year=${searchAcademicYear}&subject=${value.id}`)
         .then((result => {
             if (result.data.status_code === 200) {
                 setChapterDropdown(result.data.result)
@@ -265,25 +253,26 @@ const CreateDailyDairy = (details, onSubmit) => {
         })).catch(error => {
             setAlert('error')
         })
-      // fetchChapters()
-    }
-    // fetchChapters()
   };
 
   const handleImageChange = (event) =>{
-
     if(filePath.length<10) {
-      if(!formik.values.section || !formik.values.grade || !formik.values.subjects || !formik.values.branch.id || !subjectIds){
-        return setAlert('error','Please select all fields')
+      if(isEdit){
+        console.log('Continue')
+      }
+      else{
+        if(!formik.values.section || !formik.values.grade || !formik.values.subjects || !formik.values.branch.id || !subjectIds){
+          return setAlert('error','Please select all fields')
+        }
       }
       setLoading(true);
       const data  = event.target.files[0];
       console.log(formik.values.branch);
       const fd = new FormData();
       fd.append('file', data)
-      fd.append('branch_name', formik.values.branch.branch_name)
-      fd.append('grades', formik.values.grade[0].id)
-      fd.append('section', formik.values.section[0].id)
+      fd.append('branch_name', isEdit? editData.branch.branch_name:formik.values.branch.branch_name)
+      fd.append('grades', isEdit? editData.grade.id : formik.values.grade[0].id)
+      fd.append('section', isEdit? editData.section[0].id :formik.values.section[0].id)
       axiosInstance.post(`academic/dairy-upload/`, fd)
       .then((result)=>{
             console.log(fd);
@@ -311,7 +300,7 @@ const CreateDailyDairy = (details, onSubmit) => {
     const ids = formik.values.section ? formik.values.section.map((el) => el.id) : setAlert('error','Fill all the required fields')
     const grade = formik.values.grade ? formik.values.grade.map((el) => el.id) : ''
     const subjectId = formik.values.subjects ? formik.values.subjects.map((el) => el.id) : setAlert('error','check')
-    if(!formik.values.section || !formik.values.grade || !formik.values.subjects || !formik.values.branch.id || !subjectIds){
+    if(!formik.values.section || !formik.values.grade || !formik.values.subjects || !formik.values.branch.id){
       return setAlert('error','Please select all fields')
     }
     else{
@@ -324,10 +313,12 @@ const CreateDailyDairy = (details, onSubmit) => {
           createDairyEntry,
           filePath && filePath.length > 0 ?
           {
+            academic_year: searchAcademicYear,
             branch: formik.values.branch.id,
             grade: grade,
             section: ids,
-            subject: subjectIds.join(),
+            subject: subjectIds,
+            chapter: formik.values.chapters.id,
             documents: filePath,
             teacher_report:{
               "previous_class":recap,
@@ -340,10 +331,12 @@ const CreateDailyDairy = (details, onSubmit) => {
               }
               :
               {
+            academic_year: searchAcademicYear,
                 branch: formik.values.branch.id,
                 grade: grade,
                 section: ids,
-                subject: subjectIds.join(),
+                subject: subjectIds,
+            chapter: formik.values.chapters.id,
                 teacher_report:{
                   "previous_class":recap,
                   "summary":summary,
@@ -377,24 +370,50 @@ const CreateDailyDairy = (details, onSubmit) => {
           };
           
   const handleEdited =()=>{
-   //debugger
    console.log(editData)
-    axiosInstance.put(`${endpoints.dailyDairy.updateDelete}`,{
-        'circular_id':editData.id,
-        'circular_name':title,
-        'description':description,
-        'module_name':filterData.role.value
+    axiosInstance.put(`${endpoints.dailyDairy.updateDelete}${editData.id}/update-delete-dairy/`,
+    filePath && filePath.length > 0 ?
+    {
+      academic_year: editData.academic_year.id,      
+      branch: editData.branch.id,
+            grade: editData.grade.id,
+            section: [editData.section[0].id],
+            subject: editData.subject.id,
+            chapter: editData.chapter.id,
+            documents: filePath,
+            teacher_report:{
+              "previous_class":recap && recap.length>0 ? recap : editData.teacher_report.recap,
+              "summary":summary && summary.length >0 ? summary : editData.teacher_report.summary,
+              "class_work":detail && detail.length>0 ? detail : editData.teacher_report.class_work,
+              "tools_used":tools && tools.length>0 ? tools : editData.teacher_report.tools_used,
+              "homework":homework && homework.length>0 ?homework : editData.teacher_report.homework
+            },
+            dairy_type:2
+    }
+    :
+    {
+      academic_year: editData.academic_year.id,      
+      branch: editData.branch.id,
+            grade: editData.grade.id,
+            section: [editData.section[0].id],
+            subject: editData.subject.id,
+            chapter: editData.chapter.id,
+            teacher_report:{
+              "previous_class":recap && recap.length>0 ? recap : editData.teacher_report.recap,
+              "summary":summary && summary.length >0 ? summary : editData.teacher_report.summary,
+              "class_work":detail && detail.length>0 ? detail : editData.teacher_report.class_work,
+              "tools_used":tools && tools.length>0 ? tools : editData.teacher_report.tools_used,
+              "homework":homework && homework.length>0 ?homework : editData.teacher_report.homework
+            },
+            dairy_type:2
     }).then(result=>{
         if(result.data.status_code===200){
-            setState({...state,isEdit:false});
-            setTitle('')
-            setDescription('')
-            setAlert('success',result.data.message)
+          setAlert('success',result.data.message)
         }else {
-            setAlert('error', result.data.message);
+            setAlert('error', 'Something went wrong');
         }
     }).catch((error) => {
-        setAlert('error', error.data.message);
+        setAlert('error','Something went wrong');
     })
 
     
@@ -516,7 +535,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                 id='year'
                 options={academicYear}
                 getOptionLabel={(option) => option?.session_year}
-                // value={ state.isEdit ? editData.academic_year : formik.values.academic_year }
+                value={ state.isEdit ? editData.academic_year : formik.values.academic_year }
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
@@ -536,7 +555,7 @@ const CreateDailyDairy = (details, onSubmit) => {
           <Autocomplete
             id='branch'
             name='branch'
-            onChange={(e, value) => {
+            onChange={(e, value) => {state.isEdit?setAlert('error') :
               formik.setFieldValue('branch', value);
               formik.setFieldValue('grade', []);
               formik.setFieldValue('section', []);
@@ -572,7 +591,7 @@ const CreateDailyDairy = (details, onSubmit) => {
               handleChangeGrade(value || null, [formik.values.branch]);
             }}
             multiple
-            value={state.isEdit ? editData.grade || editData.grade.grade_name :formik.values.grade}
+            value={state.isEdit ? editData.grade :formik.values.grade}
             options={grades}
             getOptionLabel={(option) => option.grade_name || ''}
             renderInput={(params) => (
@@ -630,8 +649,10 @@ const CreateDailyDairy = (details, onSubmit) => {
             className={classes.margin}
             variant='outlined'
           >
+            {console.log(editData.subject, 'editData.subject')}
             <Autocomplete
-              multiple
+            // {...state.isEdit ? {}:{multiple:true}}
+            
               style={{ width: '100%' }}
               size='small'
               onChange={handleSubject}
@@ -664,7 +685,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     onChange={(e, value) => {
                         formik.setFieldValue('chapters', value);
                       }}
-                    value={state.isEdit? editData.section :formik.values.chapters}
+                    value={state.isEdit? editData.chapter :formik.values.chapters}
                     options={chapterDropdown}
                     getOptionLabel={(option) => option?.chapter_name}
                     filterSelectedOptions
