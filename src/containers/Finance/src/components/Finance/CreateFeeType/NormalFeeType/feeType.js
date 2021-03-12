@@ -57,7 +57,9 @@ class FeeType extends Component {
       showTable: false,
       showModal: false,
       showAddFeeModal: false,
-      showDeleteModal: false
+      showDeleteModal: false,
+      page: 0,
+      rowsPerPage: 10,
       // moduleId: ''
     }
     this.handleClickFeeData.bind(this)
