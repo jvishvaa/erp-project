@@ -74,18 +74,23 @@ const SubmittedQuestion = ({
           component='h5'
           style={{ marginRight: '1rem' }}
         >{`${activeQuestion}/${totalQuestions}`}</Typography>
-        <Button
-          variant='contained'
-          color='primary'
-          onClick={onPrev}
-          style={{ marginRight: '0.5rem' }}
-          size='small'
-        >
-          Previous
-        </Button>
-        <Button variant='contained' size='small' color='primary' onClick={onNext}>
-          Next
-        </Button>
+        {totalQuestions > 1 && (
+          <>
+            <Button
+              variant='contained'
+              color='primary'
+              onClick={onPrev}
+              style={{ marginRight: '0.5rem' }}
+              size='small'
+            >
+              Previous
+            </Button>
+            <Button variant='contained' size='small' color='primary' onClick={onNext}>
+              Next
+            </Button>
+          </>
+        )}
+
       </div>
       <div className='homework-question'>
         <div className='question'>{question.question}</div>

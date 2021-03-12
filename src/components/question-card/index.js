@@ -177,13 +177,13 @@ const QuestionCard = ({
                     </FormHelperText>
                   </FormControl>
                 </Grid>
-                <Grid item md={4}>
+                <Grid item md={6}>
                   <div>
                     <input
                       className='file-upload-input'
                       type='file'
                       name='attachments'
-                      accept='.png, .jpg, .jpeg, .mp3, mp4, .pdf'
+                      accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf'
                       onChange={(e) => {
                         handleFileUpload(e.target.files[0]);
                         // onChange('attachments', Array.from(e.target.files)[]);

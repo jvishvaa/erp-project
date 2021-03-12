@@ -154,9 +154,11 @@ const ViewHomework = withRouter(
                     </Typography>
                     <div className='attachments-list-outer-container'>
                       <div className='prev-btn'>
-                        <IconButton onClick={() => handleScroll('left')}>
-                          <ArrowBackIosIcon />
-                        </IconButton>
+                        {question.question_files.length > 1 && (
+                          <IconButton onClick={() => handleScroll('left')}>
+                            <ArrowBackIosIcon />
+                          </IconButton>
+                        )}
                       </div>
                       <SimpleReactLightbox>
                         <div
@@ -167,6 +169,10 @@ const ViewHomework = withRouter(
                             console.log('scrolled');
                           }}
                         >
+                          {question.question_files.length === 0 && (
+                            <Typography style={{margin: 'auto'}}>Attachment NOT Found</Typography>
+                          )}
+
                           {question.question_files.map((url, i) => (
                             <>
                               <div className='attachment'>
@@ -205,9 +211,11 @@ const ViewHomework = withRouter(
                         </div>
                       </SimpleReactLightbox>
                       <div className='next-btn'>
-                        <IconButton onClick={() => handleScroll('right')}>
-                          <ArrowForwardIosIcon color='primary' />
-                        </IconButton>
+                        {question.question_files.length > 1 && (
+                          <IconButton onClick={() => handleScroll('right')}>
+                            <ArrowForwardIosIcon color='primary' />
+                          </IconButton>
+                        )}
                       </div>
                     </div>
                   </div>
