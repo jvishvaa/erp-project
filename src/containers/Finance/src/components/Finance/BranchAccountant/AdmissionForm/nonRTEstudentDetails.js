@@ -32,6 +32,33 @@ const styles = theme => ({
   }
 })
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Admissions' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Admission Form') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
 class NonRTEStudentDetailsFormAcc extends Component {
   constructor (props) {
     super(props)
@@ -96,13 +123,13 @@ class NonRTEStudentDetailsFormAcc extends Component {
     this.props.getStudentDetail(this.state.studentDetails)
     console.log('prev prop and next: ', prevProps, prevState)
     if (prevProps.studentDetailsForAdmission && prevProps.studentDetailsForAdmission.opting_class && !this.props.sectionList.length) {
-      this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, this.props.user, this.state.studentDetails.class.value)
+      this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, this.props.user, this.state.studentDetails.class.value, moduleId)
     }
   }
 
   componentDidMount () {
     console.log('alertttt', this.props.alert)
-    this.props.fetchGradeList(this.props.alert, this.props.user)
+    this.props.fetchGradeList(this.props.alert, this.props.user, moduleId)
     this.props.fetchClassGroup(this.props.alert, this.props.user)
   }
 
@@ -165,7 +192,7 @@ class NonRTEStudentDetailsFormAcc extends Component {
     }, () => {
       if (name === 'class') {
         // console.log('This is api call', this.state.studentDetails.academicyear, this.props.alert, this.props.user, event.value)
-        this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, this.props.user, event.value)
+        this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, this.props.user, event.value, moduleId)
       }
     })
   }
@@ -500,10 +527,10 @@ const mapStateToProps = state => ({
   studentDetailsForAdmission: state.finance.accountantReducer.admissionForm.studentDetailsforAdmisssion
 })
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchGradeList: (alert, user) => dispatch(actionTypes.fetchGradeList({ alert, user })),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  fetchGradeList: (alert, user, moduleId) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId })),
   fetchClassGroup: (alert, user) => dispatch(actionTypes.fetchClassGroup({ alert, user })),
-  fetchAllSectionsPerGrade: (session, alert, user, gradeId) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, alert, user, gradeId }))
+  fetchAllSectionsPerGrade: (session, alert, user, gradeId, moduleId) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, alert, user, gradeId, moduleId }))
 
 })
 export default connect(

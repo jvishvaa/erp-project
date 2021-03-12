@@ -49,6 +49,34 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Student' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Assign / Change fee plan') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
+
 const AdjustFeeType = ({
   history,
   dataLoading,
@@ -442,7 +470,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchAdjustFee: (currentFeePlanId, targetFeePlanId, alert, user) => dispatch(actionTypes.fetchAdjustFee({ currentFeePlanId, targetFeePlanId, alert, user })),
   saveAdjustFeeTypes: (data, alert, user) => dispatch(actionTypes.saveAdjustFeeTypes({ data, alert, user }))
 })
