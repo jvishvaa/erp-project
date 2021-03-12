@@ -426,28 +426,40 @@ const Layout = ({ children, history }) => {
         history.push('/user-management/assign-role');
         break;
       }
+      case 'branch-table': {
+        history.push('/master-management/branch-table');
+        break;
+      }
+      case 'branch-acad-table': {
+        history.push('/master-management/branch-acad-table');
+        break;
+      }
+      case 'subject-mapping-table': {
+        history.push('/master-management/subject-mapping-table');
+        break;
+      }
       case 'subject-table': {
-        history.push('/master-mgmt/subject-table');
+        history.push('/master-management/subject-table');
+        break;
+      }
+      case 'section-mapping-table': {
+        history.push('/master-management/section-mapping-table');
         break;
       }
       case 'section-table': {
-        history.push('/master-mgmt/section-table');
+        history.push('/master-management/section-table');
         break;
       }
       case 'grade-table': {
-        history.push('/master-mgmt/grade-table');
+        history.push('/master-management/grade-table');
         break;
       }
       case 'academic-year-table': {
-        history.push('/master-mgmt/academic-year-table');
-        break;
-      }
-      case 'chapter-type-table': {
-        history.push('/master-mgmt/chapter-type-table');
+        history.push('/master-management/academic-year-table');
         break;
       }
       case 'message-type-table': {
-        history.push('/master-mgmt/message-type-table');
+        history.push('/master-management/message-type-table');
         break;
       }
       case 'signature-upload': {
@@ -547,11 +559,11 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Teacher Circular': {
-        history.push('/teacher-circular');
+        history.push('/circular');
         break;
       }
       case 'Student Circular': {
-        history.push('/student-circular');
+        history.push('/circular');
         break;
       }
       default:
