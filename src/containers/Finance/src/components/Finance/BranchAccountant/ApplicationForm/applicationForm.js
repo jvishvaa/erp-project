@@ -204,7 +204,7 @@ class ApplicationFormAcc extends Component {
 
   componentDidMount () {
     if (this.state.session) {
-      this.props.fetchGrade(this.state.session, this.props.alert, this.props.user)
+      this.props.fetchGrade(this.state.session, this.props.alert, this.props.user, moduleId)
       this.props.fetchReceiptRange(this.state.session, this.props.alert, this.props.user)
     }
   }
@@ -226,7 +226,7 @@ class ApplicationFormAcc extends Component {
 
   handleAcademicyear = (e) => {
     this.setState({ session: e.value, sessionData: e }, () => {
-      this.props.fetchGrade(this.state.session, this.props.alert, this.props.user)
+      this.props.fetchGrade(this.state.session, this.props.alert, this.props.user, moduleId)
     })
   }
 
@@ -2032,7 +2032,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  fetchGrade: (session, alert, user) => dispatch(actionTypes.fetchGrade({ session, alert, user })),
+  fetchGrade: (session, alert, user, moduleId) => dispatch(actionTypes.fetchGrade({ session, alert, user, moduleId })),
   fetchApplicationDetails: (session, key, user, alert) => dispatch(actionTypes.fetchApplicationDetails({ session, key, user, alert })),
   saveAllFormData: (data, user, alert) => dispatch(actionTypes.saveAllFormData({ data, user, alert })),
   saveAppPayment: (data, user, alert) => dispatch(actionTypes.saveAppPayment({ data, user, alert })),

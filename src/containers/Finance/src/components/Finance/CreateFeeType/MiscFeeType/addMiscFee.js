@@ -7,9 +7,8 @@ import { connect } from 'react-redux'
 import '../../../css/staff.css'
 import * as actionTypes from '../../store/actions'
 
-let feeTypeState = null
+let moduleId = null 
 const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
-let moduleId
 if (NavData && NavData.length) {
   NavData.forEach((item) => {
     if (
@@ -21,7 +20,9 @@ if (NavData && NavData.length) {
         if (item.child_name === 'Misc. Fee Type') {
           // setModuleId(item.child_id);
           // setModulePermision(true);
+          // this.setState({
             moduleId = item.child_id
+          // })
           console.log('id+', item.child_id)
         } else {
           // setModulePermision(false);

@@ -33,7 +33,6 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
-
 class AddFeeType extends Component {
   constructor (props) {
     super(props)
