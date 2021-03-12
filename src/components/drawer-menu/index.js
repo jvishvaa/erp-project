@@ -40,7 +40,7 @@ const DrawerMenu = ({ navigationItems, superUser, onClick }) => {
       )}
       {navigationItems &&
         navigationItems
-          .filter((item) => item.child_module && item.child_module.length >= 0)
+          .filter((item) => item.child_module && item.child_module.length > 0)
           .map((item) => (
             <MenuItem
               item={item}

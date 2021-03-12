@@ -24,7 +24,7 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
 
   return (
     <>
-      {window.location.host !== endpoints.aolConfirmURL && (
+      {/* {window.location.host !== endpoints.aolConfirmURL && (
         <ListItem
           button
           className={history.location.pathname === '/dashboard' ? 'menu_selection' : null}
@@ -38,7 +38,7 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
           </ListItemIcon>
           <ListItemText className='menu-item-text'>Dashboard</ListItemText>
         </ListItem>
-      )}
+      )} */}
       {/* <ListItem
         button
         className={
