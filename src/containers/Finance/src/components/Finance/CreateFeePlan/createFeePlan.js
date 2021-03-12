@@ -492,7 +492,7 @@ const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchListFeePlan: (session, branch, alert, user) => dispatch(actionTypes.fetchFeePlanList({ session, branch, alert, user })),
-  fetchGrades: (alert, user) => dispatch(actionTypes.fetchGradeList({ alert, user })),
+  fetchGrades: (alert, user, moduleId) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId })),
   deleteGrades: (gradeId, typeId, alert, user) => dispatch(actionTypes.deleteFeePlanGrades({ gradeId, typeId, alert, user })),
   updateGrades: (gradeId, typeId, alert, user) => dispatch(actionTypes.updateFeePlanGrades({ gradeId, typeId, alert, user }))
 })
