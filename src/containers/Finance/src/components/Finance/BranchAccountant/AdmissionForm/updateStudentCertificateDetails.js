@@ -34,6 +34,33 @@ const styles = theme => ({
     color: theme.palette.text.secondary
   }
 })
+
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Admissions' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Admission Form') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 class UpdateStudentCertiDetailsAcc extends Component {
   constructor (props) {
     super(props)
@@ -161,7 +188,7 @@ const mapStateToProps = state => ({
   studentAdmissionCertificates: state.finance.accountantReducer.admissionForm.studentAdmissionCertificates
 })
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   getAdmissionRecords: (user, alert) => dispatch(actionTypes.getAdmissionRecords({ user, alert })),
   fetchStudentAdmissionCertificates: (user, alert) => dispatch(actionTypes.fetchStudentAdmissionCertificates({ user, alert }))
 })

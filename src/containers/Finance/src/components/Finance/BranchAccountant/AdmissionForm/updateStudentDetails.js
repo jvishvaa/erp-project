@@ -105,7 +105,7 @@ class UpdateStudentDetailsFormAcc extends Component {
 
   componentDidMount () {
     console.log('alertttt', this.props.alert)
-    this.props.fetchGradeList(this.props.alert, this.props.user)
+    this.props.fetchGradeList(this.props.alert, this.props.user, moduleId)
     this.props.fetchClassGroup(this.props.alert, this.props.user)
   }
 
@@ -169,7 +169,7 @@ class UpdateStudentDetailsFormAcc extends Component {
     }, () => {
       if (name === 'class') {
         console.log('This is api call', this.state.studentDetails.academicyear, this.props.alert, this.props.user, event.value)
-        this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, this.props.user, event.value)
+        this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, this.props.user, event.value, moduleId)
       }
     })
   }
@@ -409,10 +409,10 @@ const mapStateToProps = state => ({
   admissionrecordbyerp: state.finance.accountantReducer.admissionForm.admissionrecordbyerp
 })
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchGradeList: (alert, user) => dispatch(actionTypes.fetchGradeList({ alert, user })),
+  loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  fetchGradeList: (alert, user, moduleId) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId })),
   fetchClassGroup: (alert, user) => dispatch(actionTypes.fetchClassGroup({ alert, user })),
-  fetchAllSectionsPerGrade: (session, alert, user, gradeId) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, alert, user, gradeId }))
+  fetchAllSectionsPerGrade: (session, alert, user, gradeId, moduleId) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, alert, user, gradeId, moduleId }))
 
 })
 export default connect(

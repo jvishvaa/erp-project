@@ -38,6 +38,33 @@ const styles = theme => ({
     zIndex: 0
   }
 })
+
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
+let moduleId
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Admissions' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Admission Form') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 class NonRTEFeeDetailsFormAcc extends Component {
   constructor (props) {
     super(props)
@@ -302,9 +329,9 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch => ({
   // loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchGradeList: (alert, user) => dispatch(actionTypes.fetchGradeList({ alert, user })),
+  fetchGradeList: (alert, user, moduleId) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId })),
   fetchClassGroup: (alert, user) => dispatch(actionTypes.fetchClassGroup({ alert, user })),
-  fetchAllSectionsPerGrade: (session, alert, user, gradeId) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, alert, user, gradeId })),
+  fetchAllSectionsPerGrade: (session, alert, user, gradeId, moduleId) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, alert, user, gradeId, moduleId })),
   fetchFeePlan: (alert, user, session, gradeValue) => dispatch(actionTypes.fetchFeePlan({ alert, user, session, gradeValue })),
   fetchInstallment: (alert, user, feePlanId) => dispatch(actionTypes.fetchInstallment({ alert, user, feePlanId }))
 })
