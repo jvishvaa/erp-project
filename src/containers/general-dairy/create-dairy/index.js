@@ -39,6 +39,8 @@ import deleteIcon from '../../../assets/images/delete.svg';
 import Loading from '../../../components/loader/loader';
 import CustomMultiSelect from '../../../../src/containers/communication/custom-multiselect/custom-multiselect'
 import {Context} from '../context/context'
+import unfiltered from '../../../assets/images/unfiltered.svg'
+import selectfilter from '../../../assets/images/selectfilter.svg';
 
 import CustomSelectionTable from '../../../../src/containers/communication/custom-selection-table/custom-selection-table';
 
@@ -197,7 +199,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
 
   const [overviewSynopsis, setOverviewSynopsis] = useState([]);
 
-
+  console.log(selectedUsers, 'selectedUsers')
 
   const handleClear = () => {
     setFilterData({
@@ -300,10 +302,11 @@ const handleImageChange=(event)=>{
       const data =event.target.files[0]
   const fd = new FormData();
   fd.append('file',event.target.files[0])
-  // fd.append('branch',filterData.branch[0].branch_name)
+  fd.append('branch',filterData.branch[0].branch_name)
   // fd.append('grade',filterData.grade[0].id)
-  // fd.append('section',filterData.section.id)
-  axiosInstance.post(`${endpoints.circular.fileUpload}`, fd)
+  fd.append('grade',filterData.grade.map((g)=>g.grade_id))
+  fd.append('section',filterData.section.map((s)=>s.id))
+  axiosInstance.post(`${endpoints.generalDairy.uploadFile}`, fd)
       .then((result)=>{
       
           if(result.data.status_code === 200){
@@ -427,9 +430,9 @@ const displayUsersList = async () => {
       const selectionRows = [];
       setHeaders([
         // { field: 'id', headerName: 'ID', width: 70 },
-        { field: 'name', headerName: 'Name', width: 500,  marginLeft:'131px' },
+        { field: 'name', headerName: 'Name', width: 500},
         // { field: 'email', headerName: 'Email Id', width: 250 },
-        { field: 'erp_id', headerName: 'Erp Id', width: 500, marginLeft:'131px' },
+        { field: 'erp_id', headerName: 'Erp Id', width: 500 }
         // { field: 'gender', headerName: 'Gender', width: 100 },
         // { field: 'contact', headerName: 'Contact', width: 150 },
       
@@ -475,11 +478,14 @@ const displayUsersList = async () => {
       setCompleteData(selectionRows);
       setTotalPage(result.data.result && result.data.result.count);
       setLoading(false);
+      // debugger
       if (!selectedUsers.length) {
         const tempSelectedUser = [];
-        for (let page = 1; page <= result.data && result.data.result.total_pages; page += 1) {
+        for (let page = 1; page <= (result.data&& result.data.result && result.data.result.total_pages); page += 1) {
+          // debugger
           tempSelectedUser.push({ pageNo: page, first: true, selected: [] });
         }
+        // debugger
         setSelectedUsers(tempSelectedUser);
       }
       if (result.data.total_pages !== selectAllObj.length) {
@@ -702,6 +708,8 @@ const handleSubmit = async () => {
     }
     const response = await axiosInstance.post(
       assignRoleApi,
+      filePath && filePath.length > 0 ?
+      
       {
         title:title,
         message:description,
@@ -716,6 +724,21 @@ const handleSubmit = async () => {
             mapping_bgs:filterData.section.map((s)=>s.id),
         user_id: selectionArray,
         dairy_type:1
+      }:
+      {
+        title:title,
+        message:description,
+            // module_name:filterData.role.value,
+            // branch:filterData.branch.map(function (b) {
+            //     return b.id
+            //   }),
+            branch:filterData.branch[0].id,
+            // grades:[54],
+            grade:filterData.grade.map((g)=>g.grade_id),
+            mapping_bgs:filterData.section.map((s)=>s.id),
+        user_id: selectionArray,
+        dairy_type:1
+   
       },
       {
         headers: {
@@ -733,7 +756,7 @@ const handleSubmit = async () => {
       // displayUsersList()
       setAlert('success', message);
       // window.location.history()
-      history.push('/dairy/teacher')
+      history.push('/diary/teacher')
       setSelectedUsers([]);
       // setRoleError('');
       // setSelectedRole('');
@@ -940,6 +963,7 @@ const checkAll = selectAllObj[pageno - 1]?.selectAll || false;
           className='custom_button_master'
           size='medium'
           type='submit'
+          disabled={!filterData?.section[0]}
           onClick={displayUsersList}
         >
           FILTER
@@ -964,16 +988,32 @@ const checkAll = selectAllObj[pageno - 1]?.selectAll || false;
                       type='checkbox'
                       className='send_message_select_all_checkbox'
                       checked={selectAll}
+                      style={
+                        isMobile
+                            ? {marginLeft: '252px', marginTop: '-22px' }
+                            : {marginLeft: '521px', marginTop: '19px' }
+                    }
+                      // style={{marginLeft: '-344px', marginTop: '19px'}}
                       onChange={handleSelectAll}
                     />
-                    <span style={{ marginLeft: '1%' }}>Select All</span>
+                <span               
+                        style={
+                        isMobile
+                            ? { marginLeft: '1%', marginTop: '-25px', fontSize: '16px' }
+                            : { marginLeft: '1%', marginTop: '14px', fontSize: '16px' }
+                    }>Select All</span>
+
+                    {/* <span style={{ marginLeft: '1%', marginTop: '14px', fontSize: '16px'}}>Select All</span> */}
                   
         </Grid>
 
         {/* <div className='create_group_select_all_wrapper'>
                 
                 </div> */}
-        <span className='create_group_error_span'>{selectectUserError}</span>
+    {totalPage ?
+       (
+         <div>
+          <span className='create_group_error_span'>{selectectUserError}</span>
               <CustomSelectionTable
                 // header={headers}
                 // rows={usersRow}
@@ -997,9 +1037,40 @@ const checkAll = selectAllObj[pageno - 1]?.selectAll || false;
                 pageno={pageno}
                 selectedUsers={selectedUsers}
                 changePage={setPageno}
-                setSelectedUsers={setSelectedUsers}
+                setSelectedUsers={(data)=>{
+                  console.log(data,'selectedUsers data')
+                  setSelectedUsers(data)
+                }}
 
               />
+              </div>):
+              <div className='periodDataUnavailable'>
+              <SvgIcon
+                  component={() => (
+                      <img
+                          style={
+                              isMobile
+                                  ? { height: '100px', width: '200px' }
+                                  : { height: '160px', width: '290px' }
+                          }
+                          src={unfiltered}
+                      />
+                  )}
+              />
+              <SvgIcon
+                  component={() => (
+                      <img
+                          style={
+                              isMobile
+                                  ? { height: '20px', width: '250px' }
+                                  : { height: '50px', width: '400px', marginLeft: '5%' }
+                          }
+                          src={selectfilter}
+                      />
+                  )}
+              />
+          </div>
+}
 
 
         {/* <<<<<<<<<< EDITOR PART  >>>>>>>>>> */}
@@ -1036,7 +1107,7 @@ const checkAll = selectAllObj[pageno - 1]?.selectAll || false;
             </Grid>
         </Grid>
         <div className="attachmentContainer">
-        <div style={{display:'flex'}} className='scrollable'>
+        <div style={{display:'flex'}} className='scrollsable'>
             {filePath?.length>0  ?    
                     filePath?.map((file, i) => (
                             <FileRow
@@ -1048,7 +1119,13 @@ const checkAll = selectAllObj[pageno - 1]?.selectAll || false;
                         )) : null }
             </div>
         
-                <div className="attachmentButtonContainer">
+                <div
+                   style={
+                    isMobile
+                        ? {  marginLeft: '114px' }
+                        : {  }
+                }
+                 className="attachmentButtonContainer">
                     <Button
                         startIcon={<SvgIcon
                             component={() => (
@@ -1071,7 +1148,12 @@ const checkAll = selectAllObj[pageno - 1]?.selectAll || false;
                     >
                         <input
                             type='file'
-                            style={{ display: 'none' }}
+                            // style={{ display: 'none' }}
+                            style={
+                              isMobile
+                                  ? { display: 'none', marginLeft: '10px' }
+                                  : {  display: 'none' }
+                          }
                             id='raised-button-file'
                             accept="image/*"
                             onChange={handleImageChange}
@@ -1083,7 +1165,7 @@ const checkAll = selectAllObj[pageno - 1]?.selectAll || false;
 
         </div>
         <div >
-        <Button onClick={state.isEdit? handleEdited : handleSubmit} className='submit_button'>SUBMIT</Button>
+        <Button style={{marginLeft: '37px'}} onClick={state.isEdit? handleEdited : handleSubmit} className='submit_button'>SUBMIT</Button>
         </div>
         </div>
       </Layout>

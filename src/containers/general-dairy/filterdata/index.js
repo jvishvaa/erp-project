@@ -11,6 +11,7 @@ import axios from 'axios';
 import moment from 'moment';
 import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
+import { isClass } from 'highcharts';
 // import './lesson-report.css';
 
 const StyledTabs = withStyles({
@@ -98,6 +99,7 @@ const GeneralDairyFilter = ({
   const [teacherModuleId, setTeacherModuleId] = useState(null);
   const [subjectDropdown, setSubjectDropdown] = useState([]);
   const [page,setPage] = useState(1)
+  const [clicked,setClicked] = useState(false)
   const history=useHistory()
 
   const [filterData, setFilterData] = useState({
@@ -148,13 +150,14 @@ const GeneralDairyFilter = ({
         setAlert('error',error.message)
       })
     }
-    else if(tab === 0){
-      handleFilter(tab)
-    }
+    // else if(tab === 0){
+    //   handleFilter(tab)
+    // }
   }
   useEffect(() => {
-
-    handleFilter();
+if(clicked){
+  handleFilter(activeTab)
+}
   }, [activeTab])
 
   let sectionId = [];
@@ -230,6 +233,7 @@ const GeneralDairyFilter = ({
 
   const handleFilter = (e) => {
     // setFilterStatus()
+    setClicked(true)
     console.log(e)
     console.log(filterData)
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
@@ -412,6 +416,7 @@ const GeneralDairyFilter = ({
           className='custom_button_master'
           size='medium'
           type='submit'
+          // disabled={!filterData?.grade}
           onClick={(event) => handleFilter(event)}
         >
           FILTER

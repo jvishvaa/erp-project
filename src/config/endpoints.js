@@ -198,6 +198,8 @@ export default {
     studentList: '/academic/general-dairy-users/',
     updateDelete: '/academic/',
     SubmitDairy: '/academic/create-dairy/',
+    uploadFile: '/academic/dairy-upload/',
+
   },
   dailyDairy: {
     createDailyDairy: '/academic/create-dairy/',

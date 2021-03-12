@@ -96,6 +96,7 @@ const GeneralDairyList = () => {
       }, [location.pathname,page,deleteFlag]);
 
     const handleDairyList = (branchId, gradeId, sectionIds, startDate, endDate, activeTab,page, subjects) => {
+        // debugger
         console.log(page,'inside')
         setLoading(true);
         setPeriodData([]);
@@ -106,6 +107,10 @@ const GeneralDairyList = () => {
         setEDate(endDate)
         setPage(page)
         setActiveTab(activeTab)
+        setViewMore(false)
+        setPeriodDataForView('')
+        setSelectedIndex(-1)
+        // setPeriodColor(false)
         const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
         console.log(roleDetails);
         if (isTeacher){
@@ -197,6 +202,8 @@ const GeneralDairyList = () => {
                                                     periodColor={selectedIndex === i ? true : false}
                                                     setPeriodColor={setPeriodColor}
                                                     handleDairyType={handleDairyType}
+                                                    deleteFlag={deleteFlag}
+                                                    setDeleteFlag={setDeleteFlag} 
                                                 />
                                             )}
                                             {period.dairy_type === "2" ?(
