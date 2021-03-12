@@ -91,7 +91,7 @@ const EMandate = ({ session, dataLoadingStatus, fetchBranches, branches, todayDe
 
   const getHandler = (e) => {
     setShowDomainDetail(true)
-    listDomainName(sessionData && sessionData.value, user, alert)
+    listDomainName(sessionData && sessionData.value, user, alert, moduleId)
   }
 
   const hideDetailsModal = (e) => {
@@ -664,7 +664,7 @@ const mapDispatchToProps = (dispatch) => ({
   dailyEMandateDetails: (session, user, alert) => dispatch(actionTypes.dailyEMandateDetails({ session, user, alert })),
   todayEMandateDetails: (session, user, alert) => dispatch(actionTypes.todayEMandateDetails({ session, user, alert })),
   createDomainName: (data, user, alert) => dispatch(actionTypes.createDomainName({ data, user, alert })),
-  listDomainName: (session, user, alert) => dispatch(actionTypes.listDomainName({ session, user, alert })),
+  listDomainName: (session, user, alert, moduleId) => dispatch(actionTypes.listDomainName({ session, user, alert, moduleId })),
   setDomainDetails: (data, user, alert) => dispatch(actionTypes.setDomainDetails({ data, user, alert })),
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId))
 })
