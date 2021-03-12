@@ -35,6 +35,7 @@ import {
   fetchSubjects as getSubjects,
 } from '../../../../src/redux/actions/index';
 import {Context} from '../context/context'
+import { HomeWork } from '@material-ui/icons';
 
 const CreateDailyDairy = (details, onSubmit) => {
   const [academicYears, setAcademicYears] = useState([]);
@@ -224,8 +225,7 @@ const CreateDailyDairy = (details, onSubmit) => {
       });
     } else {
       setSubjectDropdown([]);
-    }
-}
+    }}
 
   const handleSection = (e, value) => {
     formik.setFieldValue('section', value);
@@ -238,24 +238,12 @@ const CreateDailyDairy = (details, onSubmit) => {
     fetchSubjects([branch], grade, value);
   };
    
-  // const handleSubject = (e, value) => {
-  //     formik.setFieldValue('subjects', value)
-  //     if (subjects && subjects.length > 0){
-  //         fetchChapters()
-  //     }
-  // }
   const handleSubject = (event, value) => {
-    //debugger
+
     setFilterData({ ...filterData });
-    // if (value) {
-    //     setFilterData({ ...filterData });
-    // }
     console.log(value);
-    if (value.length > 0) {
-      const ids = value.map((el) => el.id);
-      console.log(ids);
-      setSubjectIds(ids);
-      axiosInstance.get(`${endpoints.dailyDairy.branches}?academic_year=${searchAcademicYear}&subject=${ids}`)
+      setSubjectIds(value.id);
+      axiosInstance.get(`${endpoints.dailyDairy.branches}?academic_year=${searchAcademicYear}&subject=${value.id}`)
         .then((result => {
             if (result.data.status_code === 200) {
                 setChapterDropdown(result.data.result)
@@ -265,13 +253,9 @@ const CreateDailyDairy = (details, onSubmit) => {
         })).catch(error => {
             setAlert('error')
         })
-      // fetchChapters()
-    }
-    // fetchChapters()
   };
 
   const handleImageChange = (event) =>{
-    debugger
     if(filePath.length<10) {
       if(isEdit){
         console.log('Continue')
@@ -316,7 +300,7 @@ const CreateDailyDairy = (details, onSubmit) => {
     const ids = formik.values.section ? formik.values.section.map((el) => el.id) : setAlert('error','Fill all the required fields')
     const grade = formik.values.grade ? formik.values.grade.map((el) => el.id) : ''
     const subjectId = formik.values.subjects ? formik.values.subjects.map((el) => el.id) : setAlert('error','check')
-    if(!formik.values.section || !formik.values.grade || !formik.values.subjects || !formik.values.branch.id || !subjectIds){
+    if(!formik.values.section || !formik.values.grade || !formik.values.subjects || !formik.values.branch.id){
       return setAlert('error','Please select all fields')
     }
     else{
@@ -333,7 +317,7 @@ const CreateDailyDairy = (details, onSubmit) => {
             branch: formik.values.branch.id,
             grade: grade,
             section: ids,
-            subject: subjectIds.join(),
+            subject: subjectIds,
             chapter: formik.values.chapters.id,
             documents: filePath,
             teacher_report:{
@@ -351,7 +335,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                 branch: formik.values.branch.id,
                 grade: grade,
                 section: ids,
-                subject: subjectIds.join(),
+                subject: subjectIds,
             chapter: formik.values.chapters.id,
                 teacher_report:{
                   "previous_class":recap,
@@ -398,11 +382,11 @@ const CreateDailyDairy = (details, onSubmit) => {
             chapter: editData.chapter.id,
             documents: filePath,
             teacher_report:{
-              "previous_class":recap,
-              "summary":summary,
-              "class_work":detail,
-              "tools_used":tools,
-              "homework":homework
+              "previous_class":recap && recap.length>0 ? recap : editData.teacher_report.recap,
+              "summary":summary && summary.length >0 ? summary : editData.teacher_report.summary,
+              "class_work":detail && detail.length>0 ? detail : editData.teacher_report.class_work,
+              "tools_used":tools && tools.length>0 ? tools : editData.teacher_report.tools_used,
+              "homework":homework && homework.length>0 ?homework : editData.teacher_report.homework
             },
             dairy_type:2
     }
@@ -415,24 +399,21 @@ const CreateDailyDairy = (details, onSubmit) => {
             subject: editData.subject.id,
             chapter: editData.chapter.id,
             teacher_report:{
-              "previous_class":recap,
-              "summary":summary,
-              "class_work":detail,
-              "tools_used":tools,
-              "homework":homework
+              "previous_class":recap && recap.length>0 ? recap : editData.teacher_report.recap,
+              "summary":summary && summary.length >0 ? summary : editData.teacher_report.summary,
+              "class_work":detail && detail.length>0 ? detail : editData.teacher_report.class_work,
+              "tools_used":tools && tools.length>0 ? tools : editData.teacher_report.tools_used,
+              "homework":homework && homework.length>0 ?homework : editData.teacher_report.homework
             },
             dairy_type:2
     }).then(result=>{
         if(result.data.status_code===200){
-            setState({...state,isEdit:false});
-            setTitle('')
-            setDescription('')
-            setAlert('success',result.data.message)
+          setAlert('success',result.data.message)
         }else {
-            setAlert('error', result.data.message);
+            setAlert('error', 'Something went wrong');
         }
     }).catch((error) => {
-        setAlert('error', error.data.message);
+        setAlert('error','Something went wrong');
     })
 
     
@@ -668,7 +649,10 @@ const CreateDailyDairy = (details, onSubmit) => {
             className={classes.margin}
             variant='outlined'
           >
+            {console.log(editData.subject, 'editData.subject')}
             <Autocomplete
+            // {...state.isEdit ? {}:{multiple:true}}
+            
               style={{ width: '100%' }}
               size='small'
               onChange={handleSubject}
