@@ -7,7 +7,7 @@ import { useHistory } from 'react-router-dom';
 import hwGiven from '../../../assets/images/hw-given.svg';
 import hwEvaluatedIcon from '../../../assets/images/hw-evaluated.svg';
 import submitted from '../../../assets/images/student-submitted.svg';
-import { Badge } from '@material-ui/core';
+import { Badge, Typography } from '@material-ui/core';
 import AddHomework from '../../../assets/images/AddHomework.svg';
 
 const HomeworkCol = ({
@@ -16,6 +16,7 @@ const HomeworkCol = ({
   handleClick,
   handleNavigationToAddScreen,
   handleViewHomework,
+  canUpload,
 }) => {
   const history = useHistory();
   const { student_submitted: studentSubmitted, hw_evaluated: hwEvaluated } = data;
@@ -24,17 +25,23 @@ const HomeworkCol = ({
     <TableCell className={isSelected ? 'selected-col' : ''}>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         {!data.hasOwnProperty('student_submitted') ? (
-          <IconButton onClick={handleNavigationToAddScreen}>
-          <SvgIcon
-              component={() => (
-                <img
-                  style={{ width: '25px', marginRight: '5px' }}
-                  src={AddHomework}
-                  alt='submitted'
-                />
-              )}
-            />
-          </IconButton>
+          <>
+          {canUpload ? (
+            <IconButton onClick={handleNavigationToAddScreen}>
+              <SvgIcon
+                component={() => (
+                  <img
+                    style={{ width: '25px', marginRight: '5px' }}
+                    src={AddHomework}
+                    alt='submitted'
+                  />
+                )}
+              />
+            </IconButton>
+          ) : (
+            <Typography style={{ fontSize: '12px', fontWeight: 'bold'}}>{''}</Typography>
+          )}
+          </>
         ) : (
           <>
             <IconButton onClick={handleViewHomework}>
