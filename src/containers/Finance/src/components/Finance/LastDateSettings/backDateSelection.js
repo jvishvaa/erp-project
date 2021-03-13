@@ -72,14 +72,14 @@ class BackDateSelection extends Component {
 
   componentDidMount () {
     if (this.props.session) {
-      this.props.fetchBackDate(this.props.session, this.props.alert, this.props.user)
+      this.props.fetchBackDate(this.props.session, this.props.alert, this.props.user, moduleId)
     }
   }
 
   componentDidUpdate (prevProps, prevState) {
     if (this.props.session !== prevProps.session) {
       // I will make a fetch request
-      this.props.fetchBackDate(this.props.session, this.props.alert, this.props.user)
+      this.props.fetchBackDate(this.props.session, this.props.alert, this.props.user, moduleId)
     }
   }
 
@@ -306,7 +306,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  fetchBackDate: (session, alert, user) => dispatch(actionTypes.fetchBackDate({ session, alert, user })),
+  fetchBackDate: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBackDate({ session, alert, user, moduleId })),
   saveBackDate: (data, id, alert, user) => dispatch(actionTypes.saveBackDate({ data, id, alert, user }))
 
 })

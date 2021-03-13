@@ -15,7 +15,7 @@ export const SAVE_PARTIAL_PAYMENT_LASTDATE = 'SAVE_PARTIAL_PAYMENT_LASTDATE'
 export const fetchConcessionLastDate = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.ConcessionLastDateList + '?academic_year=' + payload.session, {
+    axios.get(urls.ConcessionLastDateList + '?academic_year=' + payload.session + '&module_id=' + payload.moduleId, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }
@@ -65,7 +65,7 @@ export const saveConcessionLastDate = (payload) => {
 export const fetchBackDate = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.ListBackDate + '?academic_year=' + payload.session, {
+    axios.get(urls.ListBackDate + '?academic_year=' + payload.session + '&module_id=' + payload.moduleId, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }

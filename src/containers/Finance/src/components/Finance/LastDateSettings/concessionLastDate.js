@@ -70,7 +70,7 @@ class ConcessionLastDate extends Component {
     // this.fetchConcessionLastDate(this.props.session, this.props.alert, this.props.user)
     console.log('did mount from concession last date')
     if (this.props.session) {
-      this.props.fetchConcessionLastDate(this.props.session, this.props.alert, this.props.user)
+      this.props.fetchConcessionLastDate(this.props.session, this.props.alert, this.props.user, moduleId)
     }
   }
 
@@ -78,7 +78,7 @@ class ConcessionLastDate extends Component {
     if (this.props.session !== prevProps.session) {
       // I will make a fetch request
       console.log('inside did update', this.props.session)
-      this.props.fetchConcessionLastDate(this.props.session, this.props.alert, this.props.user)
+      this.props.fetchConcessionLastDate(this.props.session, this.props.alert, this.props.user, moduleId)
     }
   }
   handleChangePage = (event, newPage) => {
@@ -277,7 +277,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  fetchConcessionLastDate: (session, alert, user) => dispatch(actionTypes.fetchConcessionLastDate({ session, alert, user })),
+  fetchConcessionLastDate: (session, alert, user, moduleId) => dispatch(actionTypes.fetchConcessionLastDate({ session, alert, user, moduleId })),
   saveConcessionLastDate: (data, id, alert, user) => dispatch(actionTypes.saveConcessionLastDate({ data, id, alert, user }))
 
 })
