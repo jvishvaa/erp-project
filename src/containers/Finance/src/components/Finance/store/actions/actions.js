@@ -304,7 +304,7 @@ export const assignFeeAccount = (payload) => {
       'fee_account_id': payload.feeAccId
     }
     dispatch(dataLoading())
-    axios.put(urls.CorporateBanks + '?academic_year=' + payload.session, body, {
+    axios.put(urls.CorporateBanks + '?academic_year=' + payload.session + '&module_id=' + payload.moduleId, body, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }

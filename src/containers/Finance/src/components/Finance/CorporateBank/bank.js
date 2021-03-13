@@ -176,7 +176,7 @@ class Bank extends Component {
       return
     }
 
-    this.props.assignFeeAccount(currentSession, selectedMappingId, selectedBankMapId, selectedFeeAccount.value, user, alert)
+    this.props.assignFeeAccount(currentSession, selectedMappingId, selectedBankMapId, selectedFeeAccount.value, user, alert, moduleId)
     this.setState({
       assignFeeModal: false
     })
@@ -330,7 +330,7 @@ const mapDispatchToProps = (dispatch) => ({
   fetchBankDetails: (session, user, alert, moduleId) => dispatch(actionTypes.fetchBankDetails({ session, user, alert, moduleId })),
   fetchRemainingBanks: (session, branchId, user, alert) => dispatch(actionTypes.fetchRemainingBanks({ session, branchId, user, alert })),
   assignBank: (session, branchId, banks, user, alert) => dispatch(actionTypes.assignBanks({ session, branchId, banks, user, alert })),
-  assignFeeAccount: (session, mappingId, bankMapId, feeAccId, user, alert) => dispatch(actionTypes.assignFeeAccount({ session, mappingId, bankMapId, feeAccId, user, alert })),
+  assignFeeAccount: (session, mappingId, bankMapId, feeAccId, user, alert, moduleId) => dispatch(actionTypes.assignFeeAccount({ session, mappingId, bankMapId, feeAccId, user, alert, moduleId })),
   setActiveInactie: (session, mappingId, bankMapId, status, user, alert) => dispatch(actionTypes.setActiveInactive({ session, mappingId, bankMapId, status, user, alert }))
 })
 
