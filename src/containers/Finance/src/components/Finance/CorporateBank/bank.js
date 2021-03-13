@@ -102,7 +102,7 @@ class Bank extends Component {
       assignBankModal: true,
       selectedBranch: branchId
     }, () => {
-      this.props.fetchRemainingBanks(this.props.currentSession, branchId, this.props.user, this.props.alert, moduleId)
+      this.props.fetchRemainingBanks(this.props.currentSession, branchId, this.props.user, this.props.alert)
     })
   }
 
@@ -120,7 +120,7 @@ class Bank extends Component {
       selectedBankMapId: bankMapId,
       selectedMappingId: mappingId
     }, () => {
-      this.props.fetchFeeAccounts(branchId, this.props.user, this.props.alert, this.props.currentSession, moduleId)
+      this.props.fetchFeeAccounts(branchId, this.props.user, this.props.alert, this.props.currentSession)
     })
   }
 
@@ -152,7 +152,7 @@ class Bank extends Component {
       this.props.alert.warning('Please Select Banks')
     return
     }
-    this.props.assignBank(this.props.currentSession, selectedBranch, selectedBanks, this.props.user, this.props.alert, moduleId)
+    this.props.assignBank(this.props.currentSession, selectedBranch, selectedBanks, this.props.user, this.props.alert)
     this.setState({
       assignBankModal: false
     })
@@ -176,14 +176,14 @@ class Bank extends Component {
       return
     }
 
-    this.props.assignFeeAccount(currentSession, selectedMappingId, selectedBankMapId, selectedFeeAccount.value, user, alert, moduleId)
+    this.props.assignFeeAccount(currentSession, selectedMappingId, selectedBankMapId, selectedFeeAccount.value, user, alert)
     this.setState({
       assignFeeModal: false
     })
   }
 
   activeToggleHandler = (mapId, bankMapId, status) => {
-    this.props.setActiveInactie(this.props.currentSession, mapId, bankMapId, status, this.props.user, this.props.alert, moduleId)
+    this.props.setActiveInactie(this.props.currentSession, mapId, bankMapId, status, this.props.user, this.props.alert)
   }
 
   render () {
@@ -326,12 +326,12 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchFeeAccounts: (branchId, user, alert, session, moduleId) => dispatch(actionTypes.fetchFeeAccounts({ branchId, session, user, alert, moduleId })),
+  fetchFeeAccounts: (branchId, user, alert, session) => dispatch(actionTypes.fetchFeeAccounts({ branchId, session, user, alert })),
   fetchBankDetails: (session, user, alert, moduleId) => dispatch(actionTypes.fetchBankDetails({ session, user, alert, moduleId })),
-  fetchRemainingBanks: (session, branchId, user, alert, moduleId) => dispatch(actionTypes.fetchRemainingBanks({ session, branchId, user, alert, moduleId })),
-  assignBank: (session, branchId, banks, user, alert, moduleId) => dispatch(actionTypes.assignBanks({ session, branchId, banks, user, alert, moduleId })),
-  assignFeeAccount: (session, mappingId, bankMapId, feeAccId, user, alert, moduleId) => dispatch(actionTypes.assignFeeAccount({ session, mappingId, bankMapId, feeAccId, user, alert, moduleId })),
-  setActiveInactie: (session, mappingId, bankMapId, status, user, alert, moduleId) => dispatch(actionTypes.setActiveInactive({ session, mappingId, bankMapId, status, user, alert, moduleId }))
+  fetchRemainingBanks: (session, branchId, user, alert) => dispatch(actionTypes.fetchRemainingBanks({ session, branchId, user, alert })),
+  assignBank: (session, branchId, banks, user, alert) => dispatch(actionTypes.assignBanks({ session, branchId, banks, user, alert })),
+  assignFeeAccount: (session, mappingId, bankMapId, feeAccId, user, alert) => dispatch(actionTypes.assignFeeAccount({ session, mappingId, bankMapId, feeAccId, user, alert })),
+  setActiveInactie: (session, mappingId, bankMapId, status, user, alert) => dispatch(actionTypes.setActiveInactive({ session, mappingId, bankMapId, status, user, alert }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withRouter(Bank)))

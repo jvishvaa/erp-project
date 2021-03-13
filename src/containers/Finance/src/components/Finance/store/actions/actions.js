@@ -102,7 +102,7 @@ export const dataLoaded = () => {
 export const fetchBankDetails = (payload) => {
   return dispatch => {
     dispatch(dataLoading())
-    axios.get(urls.CorporateBanks + '?academic_year=' + payload.session, {
+    axios.get(urls.CorporateBanks + '?academic_year=' + payload.session + '&module_id=' + payload.moduleId, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }
