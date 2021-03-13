@@ -114,11 +114,11 @@ export const fetchUser = (id) => (dispatch) => {
             id: section.section_id,
             section_name: section.section__section_name,
           })),
-        subjects: user.subjects.map((subject) => ({
+        subjects: user?.subjects.map((subject) => ({
           id: subject.id,
           subject_name: subject.subject_name,
         })),
-        contact: user.contact || '',
+        contact: user?.contact || '',
         date_of_birth: user.date_of_birth,
         gender,
         profile: user.profile || '',

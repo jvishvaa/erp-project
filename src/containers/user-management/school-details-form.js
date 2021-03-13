@@ -179,13 +179,17 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
   // };
 
   useEffect(() => {
+    // console.log(details,"==========")
     fetchAcademicYears();
     // fetchBranches();
     // console.log('branches ', details.branch, details.grade);
-    if (details.branch) {
-      handleChangeBranch([details.branch]);
-      if (details.grade && details.grade.length > 0) {
-        handleChangeGrade(details.grade, [details.branch]);
+    if (details.academic_year.id) {
+      fetchBranches(details.academic_year.id);
+      if (details.branch) {
+        handleChangeBranch([details.branch]);
+        if (details.grade && details.grade.length > 0) {
+          handleChangeGrade(details.grade, [details.branch]);
+        }
       }
     }
   }, []);

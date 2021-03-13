@@ -463,7 +463,7 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Signature Upload': {
-        history.push('/master-mgmt/signature-upload');
+        history.push('/master-management/signature-upload');
         break;
       }
       case 'Course': {
@@ -556,7 +556,7 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Signature Upload': {
-        history.push('/master-mgmt/signature-upload');
+        history.push('/master-management/signature-upload');
         break;
       }
       case 'Teacher Circular': {
