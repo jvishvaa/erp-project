@@ -462,26 +462,27 @@ const Layout = ({ children, history }) => {
         history.push('/master-management/message-type-table');
         break;
       }
-      case 'signature-upload': {
+      case 'Signature Upload': {
         history.push('/master-mgmt/signature-upload');
         break;
       }
-      case 'course-table': {
+      case 'Course': {
         history.push('/course-list');
         break;
       }
-      case 'course-price': {
+       case 'Course Price': {
         history.push('/course-price');
         break;
       }
-      case 'school-mapping': {
+      case 'Lesson Plan Mapping': {
         history.push('/subject/grade');
         break;
       }
-      case 'role-management': {
-        history.push('/role-management');
-        break;
-      }
+
+      // case 'role-management': {
+      //   history.push('/role-management');
+      //   break;
+      // }
       case 'homework-teacher': {
         history.push('/homework/teacher');
         break;

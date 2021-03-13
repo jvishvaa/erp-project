@@ -342,10 +342,10 @@
     margin-right: auto;
     .input-container {
       // display: flex;
-      width: 70% !important;
+      width: 60% !important;
       // flex-wrap: wrap;
       .remark {
-        width: 70% !important;
+        width: 60% !important;
         margin-right: 1rem;
         @media screen and (max-width: 768px) {
           width: 100% !important;
@@ -353,6 +353,7 @@
         }
       }
       .score {
+        width: 60% !important;
         @media screen and (max-width: 768px) {
           width: 100% !important;
           margin: 0 0 1rem;
@@ -364,8 +365,9 @@
       }
     }
     .button-container {
-      display: flex !important;
-      flex-wrap: wrap;
+      //display: flex !important;
+      //flex-wrap: wrap;
+      width: 100% !important;
 
       @media screen and (max-width: 768px) {
         flex-direction: column-reverse;
@@ -373,16 +375,18 @@
     }
     .button-container .cancel-btn {
       align-items: right !important;
+      //margin-right: 1px;
     }
     .done-btn {
-      align-items: right !important;
+      //align-items: right !important;
+      margin-right: 10px;
     }
     .score {
       // width: 30% !important;
       margin-right: 8px !important;
     }
     .btn-container {
-      width: 30% !important;
+      width: 40% !important;
       // margin-top: 10px;
       display: flex !important;
       // justify-content: flex-end;

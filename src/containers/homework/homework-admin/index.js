@@ -256,6 +256,25 @@ const HomeworkAdmin = () => {
           if (result.data.status_code === 200) {
             setLoading(false);
             setAlert('success', result.data.message);
+            setSectionDisplay([]);
+            setSections([]);
+            setOtherSubjects([]);
+            setMandatorySubjects([]);
+            setOptionalSubjects([]);
+            setPrior('');
+            setPost('');
+            setRatingData([]);
+            setGradeDisplay([]);
+            setSearchGrade('');
+            setSearchSection('');
+            setHwratio(false);
+            setTopPerformers(false);
+            setRatingData([]);
+            setRowData({
+              hw_ration: [],
+              subject_data: [],
+              prior_data: [],
+            });
           } else {
             setLoading(false);
             setAlert('error', result.data.description);
