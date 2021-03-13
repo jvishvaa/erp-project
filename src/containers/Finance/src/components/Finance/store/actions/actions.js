@@ -334,7 +334,7 @@ export const setActiveInactive = (payload) => {
       'status_code': !payload.status
     }
     dispatch(dataLoading())
-    axios.put(urls.CorporateBanks + '?academic_year=' + payload.session, body, {
+    axios.put(urls.CorporateBanks + '?academic_year=' + payload.session + '&module_id=' + payload.moduleId, body, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }

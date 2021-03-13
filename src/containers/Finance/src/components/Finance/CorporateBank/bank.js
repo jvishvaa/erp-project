@@ -183,7 +183,7 @@ class Bank extends Component {
   }
 
   activeToggleHandler = (mapId, bankMapId, status) => {
-    this.props.setActiveInactie(this.props.currentSession, mapId, bankMapId, status, this.props.user, this.props.alert)
+    this.props.setActiveInactie(this.props.currentSession, mapId, bankMapId, status, this.props.user, this.props.alert, moduleId)
   }
 
   render () {
@@ -331,7 +331,7 @@ const mapDispatchToProps = (dispatch) => ({
   fetchRemainingBanks: (session, branchId, user, alert) => dispatch(actionTypes.fetchRemainingBanks({ session, branchId, user, alert })),
   assignBank: (session, branchId, banks, user, alert) => dispatch(actionTypes.assignBanks({ session, branchId, banks, user, alert })),
   assignFeeAccount: (session, mappingId, bankMapId, feeAccId, user, alert, moduleId) => dispatch(actionTypes.assignFeeAccount({ session, mappingId, bankMapId, feeAccId, user, alert, moduleId })),
-  setActiveInactie: (session, mappingId, bankMapId, status, user, alert) => dispatch(actionTypes.setActiveInactive({ session, mappingId, bankMapId, status, user, alert }))
+  setActiveInactie: (session, mappingId, bankMapId, status, user, alert, moduleId) => dispatch(actionTypes.setActiveInactive({ session, mappingId, bankMapId, status, user, alert, moduleId }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withRouter(Bank)))
