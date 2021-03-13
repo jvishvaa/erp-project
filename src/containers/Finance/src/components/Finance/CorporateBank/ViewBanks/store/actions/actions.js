@@ -12,7 +12,7 @@ export const DELETE_VIEW_BANK = 'DELETE_VIEW_BANK'
 export const fetchViewBanks = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.ViewBanks + '?academic_year=' + payload.session + '&branch_id=' + payload.branchId, {
+    axios.get(urls.ViewBanks + '?academic_year=' + payload.session + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }

@@ -148,7 +148,7 @@ class ViewFeeAccounts extends Component {
       }
 
       if (this.props.currentSession && this.state.currentBranch) {
-        this.props.fetchAllFeeAccounts(this.props.currentSession, this.state.currentBranch.id, this.props.alert, this.props.user)
+        this.props.fetchAllFeeAccounts(this.props.currentSession, this.state.currentBranch.id, this.props.alert, this.props.user, moduleId)
         this.setState({ showTable: true, showAddButton: true }, () => { viewFeeAccState = this.state })
       }
       // this.renderTable()
@@ -523,7 +523,7 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch => ({
   fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
-  fetchAllFeeAccounts: (session, branchId, alert, user) => dispatch(actionTypes.fetchAllFeeAccounts({ session, branchId, alert, user })),
+  fetchAllFeeAccounts: (session, branchId, alert, user, moduleId) => dispatch(actionTypes.fetchAllFeeAccounts({ session, branchId, alert, user, moduleId })),
   deleteFeeAccounts: (deleteData, deleteId, alert, user) => dispatch(actionTypes.deleteFeeAccounts({ deleteData, deleteId, alert, user }))
   // loadSession: dispatch(apiActions.listAcademicSessions())
 })

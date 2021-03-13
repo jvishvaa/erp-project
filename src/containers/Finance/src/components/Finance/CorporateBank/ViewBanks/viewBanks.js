@@ -130,7 +130,7 @@ export class ViewBanks extends Component {
     }
 
     if (this.props.currentSession && this.state.currentBranch) {
-      this.props.fetchViewBanks(this.props.currentSession, this.state.currentBranch.id, this.props.alert, this.props.user)
+      this.props.fetchViewBanks(this.props.currentSession, this.state.currentBranch.id, this.props.alert, this.props.user, moduleId)
       this.setState({ showTable: true, showAddButton: true }, () => { viewBanksState = this.state })
       // this.renderTable()
     }
@@ -481,7 +481,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
-  fetchViewBanks: (session, branchId, alert, user) => dispatch(actionTypes.fetchViewBanks({ session, branchId, alert, user })),
+  fetchViewBanks: (session, branchId, alert, user, moduleId) => dispatch(actionTypes.fetchViewBanks({ session, branchId, alert, user, moduleId })),
   deletedBank: (row, alert, user) => dispatch(actionTypes.deleteBank({ row, alert, user }))
   // loadSession: dispatch(apiActions.listAcademicSessions())
 })

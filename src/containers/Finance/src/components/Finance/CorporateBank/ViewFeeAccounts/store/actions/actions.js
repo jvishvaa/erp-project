@@ -11,7 +11,7 @@ export const DELETE_FEE_ACCOUNTS = 'DELETE_FEE_ACCOUNTS'
 export const fetchAllFeeAccounts = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.ListStoreFeeAccount + '?academic_year=' + payload.session + '&branch_id=' + payload.branchId, {
+    axios.get(urls.ListStoreFeeAccount + '?academic_year=' + payload.session + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }
