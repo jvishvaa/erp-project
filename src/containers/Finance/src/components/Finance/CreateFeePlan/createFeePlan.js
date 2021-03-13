@@ -145,6 +145,7 @@ class CreateFeePlan extends Component {
 
   changehandlerbranch = (e) => {
     this.setState({ branchId: e.value, branchData: e })
+    this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value)
   }
 
   handleClickSessionYear = (e) => {
@@ -188,7 +189,6 @@ class CreateFeePlan extends Component {
       this.setState(feePlanState)
       return
     }
-    this.props.fetchGrades(this.props.alert, this.props.user, moduleId)
   }
 
   getBackTheUpdatedDataHandler = (status, data) => {
@@ -492,7 +492,7 @@ const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
   fetchListFeePlan: (session, branch, alert, user) => dispatch(actionTypes.fetchFeePlanList({ session, branch, alert, user })),
-  fetchGrades: (alert, user, moduleId) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId })),
+  fetchGrades: (alert, user, moduleId, branch) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, branch })),
   deleteGrades: (gradeId, typeId, alert, user) => dispatch(actionTypes.deleteFeePlanGrades({ gradeId, typeId, alert, user })),
   updateGrades: (gradeId, typeId, alert, user) => dispatch(actionTypes.updateFeePlanGrades({ gradeId, typeId, alert, user }))
 })

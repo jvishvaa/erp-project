@@ -357,10 +357,16 @@ export const setActiveInactive = (payload) => {
 }
 
 export const fetchGradeList = (payload) => {
+  let url = null
+  if (payload.branch) {
+    url = urls.GradeList + '?module_id=' + payload.moduleId + '&branch_id=' + payload.branch
+  } else {
+    url = urls.GradeList + '?module_id=' + payload.moduleId
+  }
   return (dispatch) => {
     dispatch(dataLoaded())
     axios
-      .get(urls.GradeList + '?module_id=' + payload.moduleId, {
+      .get(url, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }
