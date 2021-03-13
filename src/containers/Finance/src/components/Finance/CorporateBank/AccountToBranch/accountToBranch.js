@@ -98,7 +98,7 @@ class AccToBranch extends Component {
       return
     }
     accToBranchState = this.state
-    this.props.fetchFeeAccToBrnch(this.props.currentSession, this.props.alert, this.props.user)
+    this.props.fetchFeeAccToBrnch(this.props.currentSession, this.props.alert, this.props.user, moduleId)
   }
 
   // sessionChangeHandler = (e) => {
@@ -289,7 +289,7 @@ const mapStateToProps = (state) => ({
 })
 const mapDispatchToProps = (dispatch) => ({
   fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
-  fetchFeeAccToBrnch: (session, alert, user) => dispatch(actionTypes.fetchFeeAccountBranchMapping({ session, alert, user })),
+  fetchFeeAccToBrnch: (session, alert, user, moduleId) => dispatch(actionTypes.fetchFeeAccountBranchMapping({ session, alert, user, moduleId })),
   fetchRemainingFeeAccToBranch: (session, mapId, alert, user) => dispatch(actionTypes.fetchRemainingFeeAcc({ session, mapId, alert, user })),
   deleteFeeAccount: (mapId, accId, alert, user) => dispatch(actionTypes.deleteFeeAccountBranchMapping({ mapId, accId, alert, user })),
   addFeeAccounts: (mapId, feeAccounts, branch, alert, user) => dispatch(actionTypes.addFeeAccountsToBranch({ mapId, feeAccounts, branch, alert, user })),

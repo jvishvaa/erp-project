@@ -12,7 +12,7 @@ export const ADD_FEE_ACCOUNTS_TO_BRANCH = 'ADD_FEE_ACCOUNTS_TO_BRANCH'
 export const fetchFeeAccountBranchMapping = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.FinanceFeeAccToBranch + '?academic_year=' + payload.session, {
+    axios.get(urls.FinanceFeeAccToBranch + '?academic_year=' + payload.session + '&module_id=' + payload.moduleId, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       } }).then(response => {
