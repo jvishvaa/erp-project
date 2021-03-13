@@ -17,7 +17,7 @@ export const fetchListConcessionSettings = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
-      .get(urls.ConcessionDetails, {
+      .get(urls.ConcessionDetails + '?module_id=' + payload.moduleId, {
         headers: {
           Authorization: 'Bearer ' + payload.user
         }

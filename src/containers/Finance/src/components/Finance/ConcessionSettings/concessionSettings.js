@@ -37,6 +37,35 @@ const styles = theme => ({
 
 let concessionSettingsState = null
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
+let moduleId = null
+
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Concession' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Concession Settings') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+          // this.setState({
+            moduleId= item.child_id
+          // })
+          console.log('id+', item.child_id)
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
 class ConcessionSettings extends Component {
   constructor (props) {
     super(props)
@@ -101,7 +130,7 @@ class ConcessionSettings extends Component {
     }
 
     if (!this.props.listConcessions.length && !this.props.listConcessionTypes) {
-      this.props.fetchConcessions(this.props.alert, this.props.user)
+      this.props.fetchConcessions(this.props.alert, this.props.user, moduleId)
       this.props.fetchConcessionTypes(this.props.alert, this.props.user)
       concessionSettingsState = this.state
     }
@@ -361,7 +390,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  fetchConcessions: (alert, user) => dispatch(actionTypes.fetchListConcessionSettings({ alert, user })),
+  fetchConcessions: (alert, user, moduleId) => dispatch(actionTypes.fetchListConcessionSettings({ alert, user, moduleId })),
   fetchConcessionTypes: (alert, user) => dispatch(actionTypes.fetchListConcessionTypes({ alert, user })),
   addedConcessionTypes: (data, alert, user) => dispatch(actionTypes.addConcessionTypes({ data, alert, user }))
 })
