@@ -72,6 +72,9 @@ export default {
     createAcademicYear: '/erp_user/create-academic-year/',
     messageTypeTable: '/communication/communicate-type/',
     updateMessageType: '/communication/',
+    chapter: '/academic/chapters/',
+    ViewChapter: '/academic/chapters/'
+
   },
   gloabSearch: {
     getUsers: '/erp_user/global-search/',
@@ -195,6 +198,8 @@ export default {
     studentList: '/academic/general-dairy-users/',
     updateDelete: '/academic/',
     SubmitDairy: '/academic/create-dairy/',
+    uploadFile: '/academic/dairy-upload/',
+
   },
   dailyDairy: {
     createDailyDairy: '/academic/create-dairy/',

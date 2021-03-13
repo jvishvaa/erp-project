@@ -111,20 +111,21 @@ const HomeworkCol = ({
                   )}
                 />
               </IconButton>
-            ) : (
-              <IconButton onClick={handleNavigationToAddScreen}>
-                <SvgIcon
-                  component={() => (
-                    <img
-                      style={{ width: '25px', marginRight: '5px' }}
-                      src={AddHomework}
-                      alt='submitted'
-                    />
-                  )}
-                />
-                {/* <AddCircleOutlineIcon color='primary' /> */}
-              </IconButton>
-            )}
+            ) : 
+              null
+              // <IconButton onClick={handleNavigationToAddScreen}>
+              //   <SvgIcon
+              //     component={() => (
+              //       <img
+              //         style={{ width: '25px', marginRight: '5px' }}
+              //         src={AddHomework}
+              //         alt='submitted'
+              //       />
+              //     )}
+              //   />
+              //   {/* <AddCircleOutlineIcon color='primary' /> */}
+              // </IconButton>
+            }
           </>
         )}
       </div>

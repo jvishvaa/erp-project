@@ -17,7 +17,7 @@ import {Context} from '../context/context'
 import {useLocation} from 'react-router-dom';
 
 
-const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex, handleDairyType}) => {
+const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex, handleDairyType, deleteFlag,setDeleteFlag}) => {
 
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -79,6 +79,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
 
       if(result.data.status_code===200){
         setAlert('success',result.data.message)
+        setDeleteFlag(!deleteFlag)
       }else{
         setAlert('errpr', 'ERROR!')
       }
@@ -143,7 +144,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
                   <div className="tooltip" style={{display:'flex',justifyContent:'space-between'}}>
                   <span className='tooltiptext' >
                         <Button className='tooltip' onClick={e=> handleDelete(lesson)}>Delete</Button>
-                        <Button className='tooltip' onClick={e=> handleEdit(lesson)}> Edit</Button>
+                        {/* <Button className='tooltip' onClick={e=> handleEdit(lesson)}> Edit</Button> */}
                     </span>
                   </div>
                 ) : null}
