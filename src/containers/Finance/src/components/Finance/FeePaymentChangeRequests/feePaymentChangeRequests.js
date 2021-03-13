@@ -101,7 +101,7 @@ const FeePaymentChangeRequests = ({ classes, session, history, dataLoading, requ
 
   useEffect(() => {
     if (sessionYear) {
-      fetchEditRequests(sessionYear, alert, user)
+      fetchEditRequests(sessionYear, alert, user, moduleId)
     }
   }, [fetchEditRequests, sessionYear, alert, user])
 
@@ -274,7 +274,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  fetchEditRequests: (session, alert, user) => dispatch(actionTypes.fetchEditRequests({ session, alert, user }))
+  fetchEditRequests: (session, alert, user, moduleId) => dispatch(actionTypes.fetchEditRequests({ session, alert, user, moduleId }))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withRouter(FeePaymentChangeRequests)))

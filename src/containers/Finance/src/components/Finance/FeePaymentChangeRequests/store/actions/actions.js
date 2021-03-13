@@ -14,7 +14,7 @@ export const CLEARING_ALL = 'CLEARING_ALL'
 export const fetchEditRequests = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.RequestTransactionChange + '?session_year=' + payload.session.value, {
+    axios.get(urls.RequestTransactionChange + '?session_year=' + payload.session.value + '&module_id=' + payload.moduleId, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }
