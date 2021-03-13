@@ -11,6 +11,7 @@ import WebAsset from '@material-ui/icons/WebAsset';
 import ImportContactsIcon from '@material-ui/icons/ImportContacts';
 import PeopleIcon from '@material-ui/icons/People';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import SupervisorAccountOutlinedIcon from '@material-ui/icons/SupervisorAccountOutlined';
 
 const menuIcon = (name) => {
   let icon = '';
@@ -65,6 +66,10 @@ const menuIcon = (name) => {
     }
     case 'Blogs': {
       icon = <WebAsset />;
+      break;
+    }
+    case 'Master Management': {
+      icon = <SupervisorAccountOutlinedIcon />;
       break;
     }
     case 'User Management': {
