@@ -39,8 +39,8 @@ const ShippingAmount = ({ fetchShipping, shippingDetails, deliveryList, trnsId, 
   const [tranId, setTranId] = useState('')
 
   useEffect(() => {
-    const erp = (JSON.parse(localStorage.getItem('user_profile'))).erp
-    const userProfile = JSON.parse(localStorage.getItem('user_profile'))
+    const erp = (JSON.parse(localStorage.getItem('userDetails'))).erp
+    const userProfile = JSON.parse(localStorage.getItem('userDetails'))
     const roleLogin = userProfile.personal_info.role.toLowerCase()
     setRole(roleLogin)
     if (roleLogin === 'financeaccountant') {
