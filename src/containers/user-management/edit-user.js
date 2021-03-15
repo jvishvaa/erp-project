@@ -136,10 +136,11 @@ class EditUser extends Component {
       guardian_email,
       guardian_mobile,
     } = parent;
+
     requestObj = {
       erp_id: selectedUser.erp_id,
       academic_year: academic_year.id,
-      branch: branch.id,
+      branch: branch.map(({ id }) => id).join(),
       grade: grade.map((grade) => grade.id).join(),
       section: section.map((section) => section.id).join(),
       subjects: subjects.map((sub) => sub.id).join(),

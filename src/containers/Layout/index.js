@@ -426,44 +426,44 @@ const Layout = ({ children, history }) => {
         history.push('/user-management/assign-role');
         break;
       }
-      case 'branch-table': {
+      case 'Branch': {
         history.push('/master-management/branch-table');
         break;
       }
-      case 'branch-acad-table': {
+      case 'Branch Acad': {
         history.push('/master-management/branch-acad-table');
         break;
       }
-      case 'subject-mapping-table': {
+      case 'Subject Mapping': {
         history.push('/master-management/subject-mapping-table');
         break;
       }
-      case 'subject-table': {
+      case 'Subject': {
         history.push('/master-management/subject-table');
         break;
       }
-      case 'section-mapping-table': {
+      case 'Section Mapping': {
         history.push('/master-management/section-mapping-table');
         break;
       }
-      case 'section-table': {
+      case 'Section': {
         history.push('/master-management/section-table');
         break;
       }
-      case 'grade-table': {
+      case 'Grade': {
         history.push('/master-management/grade-table');
         break;
       }
-      case 'academic-year-table': {
+      case 'Academic Year': {
         history.push('/master-management/academic-year-table');
         break;
       }
-      case 'message-type-table': {
+      case 'Message Type': {
         history.push('/master-management/message-type-table');
         break;
       }
       case 'Signature Upload': {
-        history.push('/master-mgmt/signature-upload');
+        history.push('/master-management/signature-upload');
         break;
       }
       case 'Course': {
@@ -556,7 +556,7 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Signature Upload': {
-        history.push('/master-mgmt/signature-upload');
+        history.push('/master-management/signature-upload');
         break;
       }
       case 'Teacher Circular': {
