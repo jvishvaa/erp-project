@@ -99,9 +99,9 @@ const AssignRole = (props) => {
   const getBranchApi = async () => {
     try {
       const result = await axiosInstance.get(
-        `/erp_user/list-all-branch/?session_year=${selectedYear.id}`
+        `${endpoints.masterManagement.branchList}?session_year=${selectedYear.id}`
       );
-      if (result.status === 200) {
+      if (result.data.status_code === 200) {
         setBranchList(result.data.data);
       } else {
         setAlert('error', result.data.message);
@@ -114,14 +114,8 @@ const AssignRole = (props) => {
   const getGradeApi = async () => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?session_year=${selectedYear.id}&branch_id=${selectedBranch.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (result.status === 200) {
+        `${endpoints.communication.grades}?session_year=${selectedYear.id}&branch_id=${selectedBranch.id}`);
+      if (result.data.status_code === 200) {
         setGradeList(result.data.data);
       } else {
         setAlert('error', result.data.message);

@@ -35,7 +35,7 @@ class CreateUser extends Component {
         email: '',
         academic_year: '',
         academic_year_value: '',
-        branch: '',
+        branch: [],
         grade: [],
         section: [],
         subjects: [],

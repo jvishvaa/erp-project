@@ -100,8 +100,8 @@ export const fetchUser = (id) => (dispatch) => {
           user.mapping_bgs[0].branch.map((branch) => ({
             id: branch.branch_id,
             branch_name: branch.branch__branch_name,
-            branch_code: branch.branch_code,
-          }))[0],
+            branch_code: branch?.branch_code,
+          })),
         grade:
           user.mapping_bgs[0].grade &&
           user.mapping_bgs[0].grade.map((grade) => ({
