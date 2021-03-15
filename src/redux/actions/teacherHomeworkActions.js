@@ -156,12 +156,14 @@ export const fetchStudentsListForTeacherHomework = (id, subjectId) => async (dis
     const {
       evaluated_list: evaluatedStudents,
       submitted_list: submittedStudents,
+      un_submitted_list: unSubmittedStudents,
       unevaluated_list: unevaluatedStudents,
     } = response.data;
     dispatch({
       type: FETCH_STUDENT_LIST_FOR_TEACHER_HOMEWORK_SUCCESS,
       evaluatedStudents,
       submittedStudents,
+      unSubmittedStudents,
       unevaluatedStudents,
     });
   } catch (error) {

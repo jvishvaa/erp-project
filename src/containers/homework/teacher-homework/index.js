@@ -104,6 +104,7 @@ const TeacherHomework = withRouter(
     evaluatedStudents,
     unevaluatedStudents,
     submittedStudents,
+    unSubmittedStudents,
     fetchingStudentLists,
     fetchStudentLists,
     history,
@@ -579,6 +580,7 @@ const TeacherHomework = withRouter(
                         evaluatedStudents={evaluatedStudents}
                         unevaluatedStudents={unevaluatedStudents}
                         submittedStudents={submittedStudents}
+                        unSubmittedStudents={unSubmittedStudents}
                         loading={fetchingStudentLists}
                         onClick={handleViewReceivedHomework}
                         onClose={() => {
@@ -772,6 +774,7 @@ const mapStateToProps = (state) => ({
   fetchingTeacherHomework: state.teacherHomework.fetchingTeacherHomework,
   evaluatedStudents: state.teacherHomework.evaluatedStudents,
   submittedStudents: state.teacherHomework.submittedStudents,
+  unSubmittedStudents: state.teacherHomework.unSubmittedStudents,
   unevaluatedStudents: state.teacherHomework.unevaluatedStudents,
   fetchingStudentLists: state.teacherHomework.fetchingStudentLists,
 });

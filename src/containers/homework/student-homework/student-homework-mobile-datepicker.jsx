@@ -52,7 +52,7 @@ const MobileDatepicker = (props) => {
             { inputProps, ...startProps },
             endProps
           ) => {
-            console.log('startProps ', startProps, 'endProps', endProps);
+
             return (
               <>
                 <TextField
