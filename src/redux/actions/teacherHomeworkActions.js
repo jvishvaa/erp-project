@@ -149,10 +149,10 @@ export const setSelectedHomework = (data) => ({
   data,
 });
 
-export const fetchStudentsListForTeacherHomework = (id) => async (dispatch) => {
+export const fetchStudentsListForTeacherHomework = (id, subjectId) => async (dispatch) => {
   dispatch({ type: FETCH_STUDENT_LIST_FOR_TEACHER_HOMEWORK_REQUEST });
   try {
-    const response = await axios.get(`/academic/homework-submitted-data/?homework=${id}`);
+    const response = await axios.get(`/academic/homework-submitted-data/?homework=${id}&subject=${subjectId}`);
     const {
       evaluated_list: evaluatedStudents,
       submitted_list: submittedStudents,

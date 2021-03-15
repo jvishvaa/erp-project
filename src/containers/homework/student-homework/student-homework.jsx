@@ -663,7 +663,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                     headers.subject_slag === 'date' ? (
                                       <TableCell>
                                         <div className='table-date'>
-                                          <div className='day-icon'>
+                                          <div className='day-icon' style={{ marginRight: '5px'}}>
                                             {moment(row.date).format('dddd').split('')[0]}
                                           </div>
                                           <div className='date-web'>

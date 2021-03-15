@@ -177,9 +177,9 @@ const TeacherHomework = withRouter(
 
     const handleSelectCol = (col, view) => {
       //  setClassNameForcontainer("home-wrapper")
-      const { homeworkId } = col;
+      const { homeworkId, subjectId } = col;
       console.log('homework id', homeworkId);
-      fetchStudentLists(homeworkId);
+      fetchStudentLists(homeworkId, subjectId);
       setSelectedCol(col);
       if (isMobile) {
         setActiveView('card-view');
@@ -285,7 +285,7 @@ const TeacherHomework = withRouter(
             </div>
             <div className='message_log_white_wrapper'>
               {activeView !== 'view-homework' && activeView !== 'view-received-homework' && (
-                <div className='date-container' style={{ backgroundColor: '#F9F9F9' }}>
+                <div className='date-container' >
                   <LocalizationProvider
                     dateAdapter={MomentUtils}
                     style={{ backgroundColor: '#F9F9F9' }}
@@ -783,8 +783,8 @@ const mapDispatchToProps = (dispatch) => ({
   onSetSelectedHomework: (data) => {
     dispatch(setSelectedHomework(data));
   },
-  fetchStudentLists: (id) => {
-    dispatch(fetchStudentsListForTeacherHomework(id));
+  fetchStudentLists: (id, subjectId) => {
+    dispatch(fetchStudentsListForTeacherHomework(id, subjectId));
   },
 });
 
