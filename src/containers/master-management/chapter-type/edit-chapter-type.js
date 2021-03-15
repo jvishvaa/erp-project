@@ -19,8 +19,8 @@ const EditChapterType = ({id,category,handleGoBack,setLoading}) => {
     let request={}
     if(categoryName!=="" && categoryName!==category)
     {
-      request['category_name']=categoryName
-      axiosInstance.put(`${endpoints.masterManagement.updateMessageType}${id}/communicate-type/`,request)
+      request['chapter_name']=categoryName
+      axiosInstance.put(`${endpoints.masterManagement.editChapter}${id}/edit-chapter/`,request)
       .then(result=>{
       if (result.data.status_code === 200) {
           handleGoBack()

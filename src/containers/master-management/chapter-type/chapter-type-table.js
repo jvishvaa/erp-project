@@ -13,6 +13,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import EditChapterType from './edit-chapter-type';
 
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../Layout';
@@ -349,6 +350,14 @@ const ChapterTypeTable = (setCentralSubjectName) => {
         handleGoBack={handleGoBack}
         />
         )}
+             {!tableFlag && !addFlag && editFlag && (
+          <EditChapterType
+            id={messageTypeId}
+            category={categoryName}
+            handleGoBack={handleGoBack}
+            setLoading={setLoading}
+          />
+        )}
 
         {tableFlag && !addFlag && !editFlag && (
             <div>
@@ -529,7 +538,7 @@ const ChapterTypeTable = (setCentralSubjectName) => {
                             onClick={(e) =>
                               handleEditMessageType(
                                 msgtype.id,
-                                msgtype.category_name,
+                                msgtype.chapter_name,
                               )
                             }
                             title='Edit Message Type'

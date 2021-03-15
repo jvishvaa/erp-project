@@ -73,7 +73,8 @@ export default {
     messageTypeTable: '/communication/communicate-type/',
     updateMessageType: '/communication/',
     chapter: '/academic/chapters/',
-    ViewChapter: '/academic/chapters/'
+    ViewChapter: '/academic/chapters/',
+    editChapter: '/academic/'
 
   },
   gloabSearch: {
