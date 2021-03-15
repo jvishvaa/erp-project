@@ -92,7 +92,7 @@ const HomeworkCard = ({
             </div>
           </div>
         )}
-        {view === 'submissionStats' && (
+        {view === 'submissionStats' && (unSubmittedStudents && unSubmittedStudents.length !== 0) && (
           <div className='list' style={{ flexGrow: 1 }}>
             <div className='cardHeaderSub'>Not submitted students :</div>
             <div className='innerBox'>

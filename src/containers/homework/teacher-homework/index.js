@@ -546,11 +546,11 @@ const TeacherHomework = withRouter(
                             ))} */}
                                     {homeworkCols.map((col) => {
                                       return typeof col === 'object' ? (
-                                        <TableCell>
+                                        <TableCell style={{width: '250px !important'}}>
                                           {col.subject_name.split('_').join('/')}
                                         </TableCell>
                                       ) : (
-                                        <TableCell>{col}</TableCell>
+                                        <TableCell style={{width: '250px !important'}}>{col}</TableCell>
                                       );
                                     })}
                                   </TableRow>
