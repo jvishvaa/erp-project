@@ -100,8 +100,8 @@ export const fetchUser = (id) => (dispatch) => {
           user.mapping_bgs[0].branch.map((branch) => ({
             id: branch.branch_id,
             branch_name: branch.branch__branch_name,
-            branch_code: branch.branch_code,
-          }))[0],
+            branch_code: branch?.branch_code,
+          })),
         grade:
           user.mapping_bgs[0].grade &&
           user.mapping_bgs[0].grade.map((grade) => ({
@@ -114,11 +114,11 @@ export const fetchUser = (id) => (dispatch) => {
             id: section.section_id,
             section_name: section.section__section_name,
           })),
-        subjects: user.subjects.map((subject) => ({
+        subjects: user?.subjects.map((subject) => ({
           id: subject.id,
           subject_name: subject.subject_name,
         })),
-        contact: user.contact || '',
+        contact: user?.contact || '',
         date_of_birth: user.date_of_birth,
         gender,
         profile: user.profile || '',
@@ -150,7 +150,10 @@ export const fetchUser = (id) => (dispatch) => {
 
       console.log('user detail ', response);
     })
-    .catch(() => {
+
+    .catch((e) => {
+      console.log(e)
+      debugger
       dispatch({ type: FETCH_USER_DETAIL_FAILURE });
     });
 };
@@ -189,9 +192,9 @@ export const editUser = (params) => (dispatch) => {
     });
 };
 
-export const fetchBranchesForCreateUser = () => {
+export const fetchBranchesForCreateUser = (acadId) => {
   return axios
-    .get('/erp_user/branch/')
+    .get(`/erp_user/list-all-branch/session_year=${acadId}`)
     .then((response) => {
       if (response.data.status_code === 200) return response?.data?.data;
       else console.log('','xyzxyz');

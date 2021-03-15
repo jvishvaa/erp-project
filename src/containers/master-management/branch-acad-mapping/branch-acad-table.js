@@ -26,11 +26,11 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
-import CreateSubject from './create-subject';
-import EditSubject from './edit-subject';
+import CreateBranchAcad from './create-branch-acad';
+import EditBranchAcad from './edit-branch-acad';
 import Loading from '../../../components/loader/loader';
 import '../master-management.css';
-import SubjectCard from './subjects-card';
+import BranchAcadCard from './branch-acad-card';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,8 +50,6 @@ const useStyles = makeStyles((theme) => ({
   },
   tableCell: {
     color: theme.palette.secondary.main,
-    maxWidth: '200px',
-    wordBreak: 'break-all',
   },
   buttonContainer: {
     width: '95%',
@@ -63,8 +61,15 @@ const useStyles = makeStyles((theme) => ({
 
 const columns = [
   {
-    id: 'subject_name',
-    label: 'Subject',
+    id: 'session_year',
+    label: 'Session Year',
+    minWidth: 100,
+    align: 'center',
+    labelAlign: 'center',
+  },
+  {
+    id: 'branch_name',
+    label: 'Branch',
     minWidth: 100,
     align: 'center',
     labelAlign: 'center',
@@ -77,16 +82,16 @@ const columns = [
     labelAlign: 'center',
   },
   {
-    id: 'desc',
-    label: 'Description',
+    id: 'branch_code',
+    label: 'Branch Code',
     minWidth: 100,
     align: 'center',
     labelAlign: 'center',
   },
   {
-    id: 'optional',
-    label: 'Optional',
-    minWidth: 50,
+    id: 'address',
+    label: 'Address',
+    minWidth: 100,
     align: 'center',
     labelAlign: 'center',
   },
@@ -99,22 +104,25 @@ const columns = [
   },
 ];
 
-const SubjectTable = () => {
+const BranchAcadTable = () => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const [page, setPage] = useState(1);
-  const [subjects, setSubjects] = useState([]);
+  const [branches, setBranches] = useState([]);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
-  const [subjectId, setSubjectId] = useState();
-  const [subjectName, setSubjectName] = useState('');
+  const [branchId, setBranchId] = useState();
+  const [branchName, setBranchName] = useState('');
   const [addFlag, setAddFlag] = useState(false);
   const [editFlag, setEditFlag] = useState(false);
   const [tableFlag, setTableFlag] = useState(true);
+  const [desc, setDesc] = useState('');
   const [delFlag, setDelFlag] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
-  const [searchSubject, setSearchSubject] = useState('');
+  const [searchYear, setSearchYear] = useState('');
+  const [yearDisplay, setYearDisplay] = useState([]);
+  const [academicYearList, setAcademicYearList] = useState([]);
+  const [searchBranch, setSearchBranch] = useState('');
   const [loading, setLoading] = useState(false);
-  const [subjectData, setSubjectData] = useState({});
   const limit = 15;
   const [goBackFlag, setGoBackFlag] = useState(false);
   const themeContext = useTheme();
@@ -127,17 +135,28 @@ const SubjectTable = () => {
     setPage(newPage + 1);
   };
 
-  const handleAddSubject = () => {
+  const handleAcademicYear = (event, value) => {
+    setSearchYear('')
+    setYearDisplay(value)
+    if (value) {
+      setPage(1);
+      setSearchYear(value.id);
+    }
+  };
+
+  const handleAddBranchMapping = () => {
     setTableFlag(false);
     setAddFlag(true);
     setEditFlag(false);
   };
 
-  const handleEditSubject = (subj) => {
+  const handleEditBranchMapping = (id, name, desc) => {
     setTableFlag(false);
     setAddFlag(false);
     setEditFlag(true);
-    setSubjectData(subj);
+    setBranchId(id);
+    setBranchName(name);
+    setDesc(desc);
   };
 
   const handleGoBack = () => {
@@ -145,24 +164,27 @@ const SubjectTable = () => {
     setTableFlag(true);
     setAddFlag(false);
     setEditFlag(false);
-    setSearchSubject('');
-    setSubjectData({});
+    setBranchName('');
+    setSearchYear('');
+    setSearchBranch('');
     setGoBackFlag(!goBackFlag);
   };
 
-  const handleDeleteSubject = (e) => {
+  const handleDeleteBranch = (e) => {
     e.preventDefault();
     setLoading(true);
     axiosInstance
-      .delete(`${endpoints.masterManagement.updateSubject}${subjectId}`)
+      .delete(`${endpoints.masterManagement.deleteBranch}${branchId}`)
       .then((result) => {
         if (result.data.status_code === 204) {
           setDelFlag(!delFlag);
+          setBranchName('');
+          setBranchId('');
           setLoading(false);
-          setAlert('success', result.data.msg || result.data.message);
+          setAlert('success', result.data.msg||result.data.message);
         } else {
           setLoading(false);
-          setAlert('error', result.data.msg || result.data.message);
+          setAlert('error', result.data.msg||result.data.message);
         }
       })
       .catch((error) => {
@@ -172,9 +194,9 @@ const SubjectTable = () => {
     setOpenDeleteModal(false);
   };
 
-  const handleOpenDeleteModal = (subject) => {
-    setSubjectId(subject?.id);
-    setSubjectName(subject?.subject_name);
+  const handleOpenDeleteModal = (branch) => {
+    setBranchName(branch?.branch?.branch_name);
+    setBranchId(branch?.id);
     setOpenDeleteModal(true);
   };
 
@@ -190,22 +212,41 @@ const SubjectTable = () => {
   }, [goBackFlag, page, delFlag]);
 
   useEffect(() => {
-    let url = `${endpoints.masterManagement.subjects}?page=${page}&page_size=${limit}`;
-    if (searchSubject) url += `&subject_name=${searchSubject}`;
     axiosInstance
-      .get(url)
+      .get(
+        `${endpoints.masterManagement.academicYear}`
+      )
       .then((result) => {
         if (result.data.status_code === 200) {
-          setTotalCount(result.data?.data?.count);
-          setSubjects(result.data?.data?.results);
+          setAcademicYearList(result.data?.result?.results);
         } else {
-          setAlert('error', result.data?.msg || result.data?.message);
+          setAlert('error', result.data.message||result.data.msg);
         }
       })
       .catch((error) => {
         setAlert('error', error.response.data.message||error.response.data.msg);
       });
-  }, [goBackFlag, delFlag, page, searchSubject]);
+  }, []);
+
+  useEffect(() => {
+
+    let url = `${endpoints.masterManagement.branchMappingTable}?page=${page}&page_size=${limit}`;
+    if (searchYear) url += `&session_year=${searchYear}`;
+    if (searchBranch) url += `&branch_name=${searchBranch}`;
+    axiosInstance
+      .get(url)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setTotalCount(result.data.data?.count);
+          setBranches(result.data.data?.results);
+        } else {
+          setAlert('error', result.data.message||result.data.msg);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.response.data.message||error.response.data.msg);
+      });
+  }, [goBackFlag, delFlag, searchYear, searchBranch, page]);
 
   return (
     <>
@@ -215,26 +256,32 @@ const SubjectTable = () => {
           <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
               componentName='Master Management'
-              childComponentName='Subject List'
+              childComponentName='Branch Acad Mapping List'
               childComponentNameNext={
                 addFlag && !tableFlag
-                  ? 'Add Subject'
+                  ? 'Add Mapping'
                   : editFlag && !tableFlag
-                  ? 'Edit Subject'
-                  : null
+                    ? 'Edit Mapping'
+                    : null
               }
             />
           </div>
         </div>
 
         {!tableFlag && addFlag && !editFlag && (
-          <CreateSubject setLoading={setLoading} handleGoBack={handleGoBack} />
-        )}
-        {!tableFlag && !addFlag && editFlag && (
-          <EditSubject
+          <CreateBranchAcad
+            academicYearList={academicYearList}
             setLoading={setLoading}
             handleGoBack={handleGoBack}
-            subjectData={subjectData}
+          />
+        )}
+        {!tableFlag && !addFlag && editFlag && (
+          <EditBranchAcad
+            id={branchId}
+            desc={desc}
+            name={branchName}
+            setLoading={setLoading}
+            handleGoBack={handleGoBack}
           />
         )}
 
@@ -248,19 +295,39 @@ const SubjectTable = () => {
               <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
                 <TextField
                   style={{ width: '100%' }}
-                  id='subname'
-                  label='Subject Name'
+                  id='branchname'
+                  label='Branch Name'
                   variant='outlined'
                   size='small'
-                  name='subname'
+                  name='branchname'
                   autoComplete='off'
                   onChange={(e) => {
                     setPage(1);
-                    setSearchSubject(e.target.value);
+                    setSearchBranch(e.target.value);
                   }}
                 />
               </Grid>
-              <Grid item xs sm={9} className={isMobile ? 'hideGridItem' : ''} />
+              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <Autocomplete
+                  size='small'
+                  onChange={handleAcademicYear}
+                  style={{ width: '100%' }}
+                  id='session-year'
+                  options={academicYearList}
+                  value={yearDisplay}
+                  getOptionLabel={(option) => option?.session_year}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Session Year'
+                      placeholder='Session Year'
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs sm={6} className={isMobile ? 'hideGridItem' : ''} />
               <Grid item xs={12} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
                 <Button
                   startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
@@ -268,10 +335,10 @@ const SubjectTable = () => {
                   color='primary'
                   size='small'
                   style={{ color: 'white' }}
-                  title='Add Subject'
-                  onClick={handleAddSubject}
+                  title='Add Branch Mapping'
+                  onClick={handleAddBranchMapping}
                 >
-                  Add Subject
+                  Add Branch Mapping
                 </Button>
               </Grid>
             </Grid>
@@ -300,36 +367,40 @@ const SubjectTable = () => {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {subjects.map((subject, index) => {
+                        {branches.map((branch, index) => {
                           return (
                             <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
                               <TableCell className={classes.tableCell}>
-                                {subject?.subject_name}
+                                {branch?.session_year?.session_year}
                               </TableCell>
                               <TableCell className={classes.tableCell}>
-                                {subject?.created_by}
+                                {branch?.branch?.branch_name}
                               </TableCell>
                               <TableCell className={classes.tableCell}>
-                                {subject?.subject_description}
+                                {branch?.branch?.created_by}
                               </TableCell>
                               <TableCell className={classes.tableCell}>
-                                {subject?.is_optional ? 'Yes' : 'No'}
+                                {branch?.branch?.branch_code}
+                              </TableCell>
+                              <TableCell className={classes.tableCell}>
+                                {branch?.branch?.address}
                               </TableCell>
                               <TableCell className={classes.tableCell}>
                                 <IconButton
                                   onClick={(e) => {
-                                    handleOpenDeleteModal(subject);
+                                    handleOpenDeleteModal(branch);
                                   }}
-                                  title='Delete Subject'
+                                  title='Delete Branch'
                                 >
                                   <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
                                 </IconButton>
-                                <IconButton
-                                  onClick={(e) => handleEditSubject(subject)}
-                                  title='Edit Subject'
+
+                                {/* <IconButton
+                                  // onClick={e=>handleEditBranchMapping(subject.subject.id,subject.subject.subject_name,subject.subject.subject_description,subject.subject.is_optional)}
+                                  title='Edit Branch'
                                 >
                                   <EditOutlinedIcon style={{ color: '#fe6b6b' }} />
-                                </IconButton>
+                                </IconButton> */}
                               </TableCell>
                             </TableRow>
                           );
@@ -352,33 +423,33 @@ const SubjectTable = () => {
               )}
             </>
           {/* ) : (
-            <>
               <>
-                {tableFlag && !addFlag && !editFlag && (
-                  <>
-                    {subjects?.map((subject) => (
-                      <SubjectCard
-                        data={subject}
-                        handleOpenDeleteModal={handleOpenDeleteModal}
-                        handleEditSubject={handleEditSubject}
-                      />
-                    ))}
-                    <div className='paginateData paginateMobileMargin'>
-                      <TablePagination
-                        component='div'
-                        count={totalCount}
-                        rowsPerPage={limit}
-                        page={page - 1}
-                        onChangePage={handleChangePage}
-                        rowsPerPageOptions={false}
-                        className='table-pagination'
-                      />
-                    </div>
-                  </>
-                )}
+                <>
+                  {tableFlag && !addFlag && !editFlag && (
+                    <>
+                      {branches.map((branch) => (
+                        <BranchAcadCard
+                          data={branch}
+                          handleOpenDeleteModal={handleOpenDeleteModal}
+                          handleEditBranchMapping={handleEditBranchMapping}
+                        />
+                      ))}
+                      <div className='paginateData paginateMobileMargin'>
+                        <TablePagination
+                          component='div'
+                          count={totalCount}
+                          rowsPerPage={limit}
+                          page={page - 1}
+                          onChangePage={handleChangePage}
+                          rowsPerPageOptions={false}
+                          className='table-pagination'
+                        />
+                      </div>
+                    </>
+                  )}
+                </>
               </>
-            </>
-          )} */}
+            )} */}
         </>
         <Dialog
           open={openDeleteModal}
@@ -389,18 +460,18 @@ const SubjectTable = () => {
             style={{ cursor: 'move', color: '#014b7e' }}
             id='draggable-dialog-title'
           >
-            Delete Subject
+            Delete Branch
           </DialogTitle>
           <DialogContent>
             <DialogContentText>
-              {`Confirm Delete Subject ${subjectName}`}
+              {`Confirm Delete Branch Acad Mapping ${branchName}`}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDeleteModal} className='labelColor cancelButton'>
               Cancel
             </Button>
-            <Button color='primary' onClick={handleDeleteSubject}>
+            <Button color='primary' onClick={handleDeleteBranch}>
               Confirm
             </Button>
           </DialogActions>
@@ -410,4 +481,4 @@ const SubjectTable = () => {
   );
 };
 
-export default SubjectTable;
+export default BranchAcadTable;

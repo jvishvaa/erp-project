@@ -24,7 +24,7 @@ import Loading from '../../../components/loader/loader';
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
-    boxShadow: 'none'
+    boxShadow: 'none',
   },
   container: {
     maxHeight: '70vh',
@@ -40,7 +40,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 const columns = [
   { id: 'data', label: 'Date - Time', minWidth: 100 },
   { id: 'success_count', label: 'Success Count', minWidth: 100 },
@@ -51,83 +50,47 @@ const columns = [
 const BulkUpload = () => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
-  const [page, setPage] = useState(1);
-  const [academicYear, setAcademicYear] = useState([])
-  const [branches, setBranches] = useState([])
+  const [page, setPage] = React.useState(1);
+  const [academicYear, setAcademicYear] = useState([]);
+  const [branches, setBranches] = useState([]);
   const [searchAcademicYear, setSearchAcademicYear] = useState('');
-  const [searchBranch, setSearchBranch] = useState('')
+  const [searchBranch, setSearchBranch] = useState('');
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [limit, setLimit] = useState(15);
-  const [bulkData,setBulkData]=useState([])
+  const [bulkData, setBulkData] = useState([]);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
-  const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px'
-  const widerWidth = isMobile ? '98%' : '95%'
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage + 1)
-  }
-
-  const handleBranch = (event, value) => {
-    setSearchBranch('')
-    if (value) {
-      setPage(1)
-      setSearchBranch(value.id)
-    }
-  }
-
-  const handleAcademicYear = (event, value) => {
-    setSearchAcademicYear('')
-    if (value) {
-      setPage(1)
-      setSearchAcademicYear(value.id)
-    }
-  }
+  const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
+  const widerWidth = isMobile ? '98%' : '95%';
 
   useEffect(() => {
     setLoading(true);
     setTimeout(() => {
-      setLoading(false)
-    }, 450)
-  }, [page])
+      setLoading(false);
+    }, 450);
+  }, [page]);
 
   useEffect(() => {
-    axiosInstance
-      .get(endpoints.academics.branches)
-      .then((result) => {
-        if (result.status === 200) {
-          setBranches(result.data.data)
-        } else {
-          setAlert('error', result.data.message)
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message)
-      })
-
     axiosInstance
       .get(endpoints.userManagement.academicYear)
       .then((result) => {
-        if (result.status === 200) {
-          setAcademicYear(result.data.data)
+        if (result.data.status_code === 200) {
+          setAcademicYear(result.data.data);
         } else {
-          setAlert('error', result.data.message)
+          setAlert('error', result.data.message);
         }
       })
       .catch((error) => {
-        setAlert('error', error.message)
-      })
-  }, [])
+        setAlert('error', error.message);
+      });
+  }, []);
 
   useEffect(() => {
-
-    let request= `${endpoints.userManagement.bulkUpload}?page=${page}&page_size=${limit}`
-    if(searchAcademicYear)
-    request+=`&academic_year=${searchAcademicYear}`
-    if(searchBranch)
-    request+=`&branch=${searchBranch}`
+    let request = `${endpoints.userManagement.bulkUpload}?page=${page}&page_size=${limit}`;
+    if (searchAcademicYear) request += `&academic_year=${searchAcademicYear}`;
+    if (searchBranch) request += `&branch=${searchBranch}`;
 
     axiosInstance
       .get(request)
@@ -142,8 +105,41 @@ const BulkUpload = () => {
       .catch((error) => {
         setAlert('error', error.message);
       });
-
   }, [page, searchAcademicYear, searchBranch]);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage + 1);
+  };
+
+  const handleBranch = (event, value) => {
+    setSearchBranch('');
+    if (value) {
+      setPage(1);
+      setSearchBranch(value.id);
+    }
+  };
+
+  const handleAcademicYear = (event, value) => {
+    setSearchAcademicYear('');
+    setSearchBranch('');
+    setBranches([]);
+    if (value) {
+      setPage(1);
+      setSearchAcademicYear(value.id);
+      axiosInstance
+        .get(`${endpoints.masterManagement.branchList}?session_year=${value?.id}`)
+        .then((result) => {
+          if (result.data?.status_code === 200) {
+            setBranches(result.data?.data);
+          } else {
+            setAlert('error', result.data?.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+    }
+  };
 
   return (
     <>
@@ -158,37 +154,20 @@ const BulkUpload = () => {
           </div>
         </div>
 
-        <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
-          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-            <Box className={classes.centerInMobile}>
-              <Autocomplete
-                size='small'
-                style={{ width: '100%' }}
-                onChange={handleBranch}
-                id='branch'
-                options={branches}
-                getOptionLabel={(option) => option?.branch_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Branch'
-                    placeholder='Branch'
-                  />
-                )}
-              />
-            </Box>
-          </Grid>
-          <Grid item xs={12} sm={3} style={isMobile?{margin:'0 0 20px 0'}:{}}>
+        <Grid
+          container
+          spacing={isMobile ? 3 : 5}
+          style={{ width: widerWidth, margin: wider }}
+        >
+          <Grid item xs={12} sm={3} style={isMobile ? { margin: '0 0 20px 0' } : {}}>
             <Box className={classes.centerInMobile}>
               <Autocomplete
                 size='small'
                 style={{ width: '100%' }}
                 onChange={handleAcademicYear}
                 id='year'
-                options={academicYear}
-                getOptionLabel={(option) => option?.session_year}
+                options={academicYear || []}
+                getOptionLabel={(option) => option?.session_year || ''}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
@@ -201,32 +180,60 @@ const BulkUpload = () => {
               />
             </Box>
           </Grid>
+          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+            <Box className={classes.centerInMobile}>
+              <Autocomplete
+                size='small'
+                style={{ width: '100%' }}
+                onChange={handleBranch}
+                id='branch'
+                options={branches || []}
+                getOptionLabel={(option) => option?.branch_name || ''}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Branch'
+                    placeholder='Branch'
+                  />
+                )}
+              />
+            </Box>
+          </Grid>
         </Grid>
-      {/* {!isMobile && ( */}
-          <Paper className={`${classes.root} common-table`}>
-            <TableContainer className={classes.container}>
-              <Table stickyHeader aria-label='sticky table'>
-                <TableHead className='table-header-row'>
-                  <TableRow>
-                    {columns.map((column) => (
-                      <TableCell
-                        key={column.id}
-                        align={column.align}
-                        style={{ minWidth: column.minWidth }}
-                        className={classes.columnHeader}
-                      >
-                        {column.label}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {bulkData && bulkData.map((data, index) => {
+        {/* {!isMobile && ( */}
+        <Paper className={`${classes.root} common-table`}>
+          <TableContainer className={classes.container}>
+            <Table stickyHeader aria-label='sticky table'>
+              <TableHead className='table-header-row'>
+                <TableRow>
+                  {columns.map((column) => (
+                    <TableCell
+                      key={column.id}
+                      align={column.align}
+                      style={{ minWidth: column.minWidth }}
+                      className={classes.columnHeader}
+                    >
+                      {column.label}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {bulkData &&
+                  bulkData.map((data, index) => {
                     return (
                       <TableRow hover bulkdata='checkbox' tabIndex={-1} key={index}>
                         <TableCell className={classes.tableCell}>
-                          {data.created_at?.substring(0,data.created_at.indexOf('T'))}&nbsp;<span style={{color:'#fe6b6b',fontWeight:'600'}}>-</span>&nbsp;
-                          {data.created_at?.substring(data.created_at.indexOf('T')+1,data.created_at.indexOf('T')+6)}
+                          {data.created_at?.substring(0, data.created_at.indexOf('T'))}
+                          &nbsp;
+                          <span style={{ color: '#fe6b6b', fontWeight: '600' }}>-</span>
+                          &nbsp;
+                          {data.created_at?.substring(
+                            data.created_at.indexOf('T') + 1,
+                            data.created_at.indexOf('T') + 6
+                          )}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
                           {data.success_count}
@@ -234,26 +241,33 @@ const BulkUpload = () => {
                         <TableCell className={classes.tableCell}>
                           {data.failure_count}
                         </TableCell>
-                        <TableCell className={classes.tableCell}> 
-                          <a href={`${data.user_file}`} target='_blank' title='Download Excel Sheet'> <GetAppIcon color='primary'/></a>
+                        <TableCell className={classes.tableCell}>
+                          <a
+                            href={`${data.user_file}`}
+                            target='_blank'
+                            title='Download Excel Sheet'
+                          >
+                            {' '}
+                            <GetAppIcon color='primary' />
+                          </a>
                         </TableCell>
                       </TableRow>
                     );
                   })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <div className="paginateData">
-              <TablePagination
-                component='div'
-                count={totalCount}
-                rowsPerPage={limit}
-                page={page - 1}
-                onChangePage={handleChangePage}
-                rowsPerPageOptions={false}
-              />
-            </div>
-          </Paper>
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <div className='paginateData'>
+            <TablePagination
+              component='div'
+              count={totalCount}
+              rowsPerPage={limit}
+              page={page - 1}
+              onChangePage={handleChangePage}
+              rowsPerPageOptions={false}
+            />
+          </div>
+        </Paper>
         {/* )} */}
         {/* {isMobile && tableFlag && !addFlag && !editFlag && (
           <>

@@ -5,37 +5,38 @@ import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
-const EditChapterType = ({id,category,handleGoBack,setLoading}) => {
 
+const EditSectionMapping = ({sectionData,handleGoBack,setLoading}) => {
+
+  const {id, section_name} =sectionData;
   const { setAlert } = useContext(AlertNotificationContext);
-  const [categoryName,setCategoryName]=useState(category||'')
+  const [sectionName,setSectionName]=useState(section_name || '')
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
   
   const handleSubmit = (e) => {
     e.preventDefault()
-    setLoading(true)
+    setLoading(true);
     let request={}
-    if(categoryName!=="" && categoryName!==category)
+    if(sectionName!==section_name && sectionName!=="")
     {
-      request['category_name']=categoryName
-      axiosInstance.put(`${endpoints.masterManagement.updateMessageType}${id}/communicate-type/`,request)
+      request['section_name']=sectionName;
+      axiosInstance.put(`${endpoints.masterManagement.updateSection}${id}`,request)
       .then(result=>{
-      if (result.data.status_code === 200) {
-          handleGoBack()
-          setCategoryName('')
+        if (result.data.status_code === 201) {
+          handleGoBack();
+          setSectionName('')
           setLoading(false);
-          setAlert('success', result.data.message);
-      }
-      else
-      {
-        setLoading(false);
-        setAlert('warning', result.data.message);
-      } 
+          setAlert('success', result.data?.msg||result.data?.message);
+        } else {
+          debugger
+          setLoading(false);
+          setAlert('error', result.data?.msg||result.data?.message);
+        }
       }).catch((error)=>{
         setLoading(false);
-        setAlert('error', error.message);
+        setAlert('error', error.response.data.msg);
       })
     }
     else
@@ -47,25 +48,26 @@ const EditChapterType = ({id,category,handleGoBack,setLoading}) => {
 
 
   return (
-    <form autoComplete='off' onSubmit={handleSubmit}>
-        <div style={{ width: '95%', margin: '20px auto' }}>
+      <form autoComplete='off' onSubmit={handleSubmit}>
+      <div style={{ width: '95%', margin: '20px auto' }}>
         <Grid container spacing={5}>
           <Grid item xs={12} sm={4} className={isMobile?'':'addEditPadding'}>
             <TextField
-              id='categoryname'
-              label='Category Name'
-              style={{ width: '100%'}}
+              id='secname'
+              label='Section Name'
               variant='outlined'
               size='small'
-              value={categoryName}
-              inputProps={{maxLength:40}}
-              name='categoryname'
-              onChange={e=>setCategoryName(e.target.value)}
+              style={{ width: '100%' }}
+              value={sectionName}
+              inputProps={{pattern:'^[a-zA-Z0-9 ]+',maxLength:20}}
+              name='secname'
+              onChange={e=>setSectionName(e.target.value)}
             />
           </Grid>
           </Grid>
-        </div>
-        <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '10px'}} >
+          </div>
+
+          <Grid container spacing={isMobile?1:5} style={{ width: '95%', margin: '10px'}} >
           <Grid item xs={6} sm={2} className={isMobile?'':'addEditButtonsPadding'}>
             <Button variant='contained' className="custom_button_master labelColor" size='medium' onClick={handleGoBack}>
               Back
@@ -81,4 +83,4 @@ const EditChapterType = ({id,category,handleGoBack,setLoading}) => {
   );
 };
 
-export default EditChapterType;
+export default EditSectionMapping;

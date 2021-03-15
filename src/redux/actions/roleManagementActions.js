@@ -169,31 +169,30 @@ export const setCreateRolePermissionsState = (params) => ({
   data: params,
 });
 
-export const fetchGrades = (branches) => {
-  console.log('fetching grades for branches ', branches);
-  // const branchIds = branches.map((branch) => branch.id).join(',');
-
-  const branchIds = branches && branches.length > 0 ? branches[0].id : '';
+export const fetchGrades = (acadId, branches) => {
+  const branchIds =
+    branches && branches.length > 0 ? branches.map((branch) => branch.id).join(',') : '';
 
   if (!branchIds) {
     return Promise.resolve(null);
   }
 
   return axios
-    .get(`/erp_user/grademapping/?branch_id=${branchIds}`)
+    .get(`/erp_user/grademapping/?session_year=${acadId}&branch_id=${branchIds}`)
     .then((response) => {
+      if(response.data.status_code===200)
       return response.data.data;
+      else console.log('');
     })
     .catch(() => {
-      return [];
+      console.log('');
     });
   // return Promise.resolve([]);
 };
 
-export const fetchSubjects = (branches, grades, sections) => {
+export const fetchSubjects = (acadId, branches, grades, sections) => {
   const branchIds =
     branches && branches.length > 0 ? branches.map((branch) => branch.id).join(',') : '';
-  //   const branchIds = branches.id;
   const gradeIds =
     grades && grades.length > 0 ? grades.map((grade) => grade.id).join(',') : '';
   const sectionIds =
@@ -201,26 +200,37 @@ export const fetchSubjects = (branches, grades, sections) => {
       ? sections.map((section) => section.id).join(',')
       : '';
   return axios
-    .get(`/erp_user/subject/?branch=${branchIds}&grade=${gradeIds}&section=${sectionIds}`)
+    .get(
+      `/erp_user/subject/?session_year=${acadId}&branch=${branchIds}&grade=${gradeIds}&section=${sectionIds}`
+    )
     .then((response) => {
+      if(response.data.status_code===200)
       return response.data.data;
+      else console.log('');
     })
-    .catch(() => {});
+    .catch(() => {
+      console.log('');
+    });
 };
 
-export const fetchSections = (branches, grades) => {
+export const fetchSections = (acadId, branches, grades) => {
   const branchIds =
     branches && branches.length > 0 ? branches.map((branch) => branch.id).join(',') : '';
-  //   const branchIds = branches.id;
   const gradeIds =
     grades && grades.length > 0 ? grades.map((grade) => grade.id).join(',') : '';
 
   return axios
-    .get(`/erp_user/sectionmapping/?branch_id=${branchIds}&grade_id=${gradeIds}`)
+    .get(
+      `/erp_user/sectionmapping/?session_year=${acadId}&branch_id=${branchIds}&grade_id=${gradeIds}`
+    )
     .then((response) => {
+      if(response.data.status_code===200)
       return response.data.data;
+      else console.log('');
     })
-    .catch(() => {});
+    .catch(() => {
+      console.log('');
+    });
 };
 
 export const createRole = (params) => (dispatch) => {

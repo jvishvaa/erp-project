@@ -424,76 +424,44 @@ const Layout = ({ children, history }) => {
         history.push('/user-management/assign-role');
         break;
       }
-      case 'Add Role': {
-        history.push('/role-management/create-role');
+      case 'Branch': {
+        history.push('/master-management/branch-table');
         break;
       }
-      // case 'subject-table': {
-        // history.push('/master-mgmt/subject-table');
-        // break;
-      // }
-      // case 'section-table': {
-        // history.push('/master-mgmt/section-table');
-        // break;
-      // }
-      // case 'grade-table': {
-        // history.push('/master-mgmt/grade-table');
-        // break;
-      // }
-      // case 'academic-year-table': {
-        // history.push('/master-mgmt/academic-year-table');
-        // break;
-      // }
-      // case 'chapter-type-table': {
-        // history.push('/master-mgmt/chapter-type-table');
-        // break;
-      // }
-      // case 'message-type-table': {
-        // history.push('/master-mgmt/message-type-table');
-        // break;
-      // }
-      // case 'signature-upload': {
-        // history.push('/master-mgmt/signature-upload');
-        // break;
-      // }
-      // case 'course-table': {
-        // history.push('/course-list');
-        // break;
-      // }
-      // case 'course-price': {
-        // history.push('/course-price');
-        // break;
-      // }
-      // case 'school-mapping': {
-        // history.push('/subject/grade');
-        // break;
-      // }
+      case 'Branch Acad': {
+        history.push('/master-management/branch-acad-table');
+        break;
+      }
+      case 'Subject Mapping': {
+        history.push('/master-management/subject-mapping-table');
+        break;
+      }
       case 'Subject': {
-        history.push('/master-mgmt/subject-table');
+        history.push('/master-management/subject-table');
+        break;
+      }
+      case 'Section Mapping': {
+        history.push('/master-management/section-mapping-table');
         break;
       }
       case 'Section': {
-        history.push('/master-mgmt/section-table');
+        history.push('/master-management/section-table');
         break;
       }
       case 'Grade': {
-        history.push('/master-mgmt/grade-table');
+        history.push('/master-management/grade-table');
         break;
       }
       case 'Academic Year': {
-        history.push('/master-mgmt/academic-year-table');
-        break;
-      }
-      case 'Chapter Creation': {
-        history.push('/master-mgmt/chapter-type-table');
+        history.push('/master-management/academic-year-table');
         break;
       }
       case 'Message Type': {
-        history.push('/master-mgmt/message-type-table');
+        history.push('/master-management/message-type-table');
         break;
       }
       case 'Signature Upload': {
-        history.push('/master-mgmt/signature-upload');
+        history.push('/master-management/signature-upload');
         break;
       }
       case 'Course': {
@@ -599,22 +567,15 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Signature Upload': {
-        history.push('/master-mgmt/signature-upload');
-      }
-      case 'Deposit': {
-        history.push('/finance/DepositTab')
-        break;
-      }
-      case 'Total Forms & Report': {
-        history.push('/finance/TotalFormReport')
+        history.push('/master-management/signature-upload');
         break;
       }
       case 'Teacher Circular': {
-        history.push('/teacher-circular');
+        history.push('/circular');
         break;
       }
       case 'Student Circular': {
-        history.push('/student-circular');
+        history.push('/circular');
         break;
       }
       case 'Normal Fee Type': {

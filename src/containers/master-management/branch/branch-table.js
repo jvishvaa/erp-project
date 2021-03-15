@@ -26,11 +26,11 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
-import CreateSubject from './create-subject';
-import EditSubject from './edit-subject';
+import CreateBranch from './create-branch';
+import EditBranch from './edit-branch';
 import Loading from '../../../components/loader/loader';
 import '../master-management.css';
-import SubjectCard from './subjects-card';
+import BranchCard from './branch-card';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,8 +50,6 @@ const useStyles = makeStyles((theme) => ({
   },
   tableCell: {
     color: theme.palette.secondary.main,
-    maxWidth: '200px',
-    wordBreak: 'break-all',
   },
   buttonContainer: {
     width: '95%',
@@ -63,8 +61,8 @@ const useStyles = makeStyles((theme) => ({
 
 const columns = [
   {
-    id: 'subject_name',
-    label: 'Subject',
+    id: 'branch_name',
+    label: 'Branch',
     minWidth: 100,
     align: 'center',
     labelAlign: 'center',
@@ -77,16 +75,16 @@ const columns = [
     labelAlign: 'center',
   },
   {
-    id: 'desc',
-    label: 'Description',
+    id: 'branch_code',
+    label: 'Branch Code',
     minWidth: 100,
     align: 'center',
     labelAlign: 'center',
   },
   {
-    id: 'optional',
-    label: 'Optional',
-    minWidth: 50,
+    id: 'address',
+    label: 'Address',
+    minWidth: 100,
     align: 'center',
     labelAlign: 'center',
   },
@@ -99,22 +97,22 @@ const columns = [
   },
 ];
 
-const SubjectTable = () => {
+const BranchTable = () => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const [page, setPage] = useState(1);
-  const [subjects, setSubjects] = useState([]);
+  const [branches, setBranches] = useState([]);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
-  const [subjectId, setSubjectId] = useState();
-  const [subjectName, setSubjectName] = useState('');
+  const [branchId, setBranchId] = useState();
+  const [branchName, setBranchName] = useState('');
   const [addFlag, setAddFlag] = useState(false);
   const [editFlag, setEditFlag] = useState(false);
   const [tableFlag, setTableFlag] = useState(true);
+  const [branchData, setBranchData] = useState({});
   const [delFlag, setDelFlag] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
-  const [searchSubject, setSearchSubject] = useState('');
+  const [searchBranch, setSearchBranch] = useState('');
   const [loading, setLoading] = useState(false);
-  const [subjectData, setSubjectData] = useState({});
   const limit = 15;
   const [goBackFlag, setGoBackFlag] = useState(false);
   const themeContext = useTheme();
@@ -127,17 +125,18 @@ const SubjectTable = () => {
     setPage(newPage + 1);
   };
 
-  const handleAddSubject = () => {
+  const handleAddBranch = () => {
     setTableFlag(false);
     setAddFlag(true);
     setEditFlag(false);
   };
 
-  const handleEditSubject = (subj) => {
+  const handleEditBranch = (branch) => {
     setTableFlag(false);
     setAddFlag(false);
     setEditFlag(true);
-    setSubjectData(subj);
+    setBranchData(branch);
+    console.log({ branch });
   };
 
   const handleGoBack = () => {
@@ -145,19 +144,22 @@ const SubjectTable = () => {
     setTableFlag(true);
     setAddFlag(false);
     setEditFlag(false);
-    setSearchSubject('');
-    setSubjectData({});
+    setBranchName('');
+    setBranchData({});
+    setSearchBranch('');
     setGoBackFlag(!goBackFlag);
   };
 
-  const handleDeleteSubject = (e) => {
+  const handleDeleteBranch = (e) => {
     e.preventDefault();
     setLoading(true);
     axiosInstance
-      .delete(`${endpoints.masterManagement.updateSubject}${subjectId}`)
+      .delete(`${endpoints.masterManagement.updateBranch}${branchId}`)
       .then((result) => {
-        if (result.data.status_code === 204) {
+        if (result.data.status_code === 200) {
           setDelFlag(!delFlag);
+          setBranchName('');
+          setBranchId('');
           setLoading(false);
           setAlert('success', result.data.msg || result.data.message);
         } else {
@@ -167,14 +169,14 @@ const SubjectTable = () => {
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.response.data.message||error.response.data.msg);
+        setAlert('error', error.response.data.message || error.response.data.msg);
       });
     setOpenDeleteModal(false);
   };
 
-  const handleOpenDeleteModal = (subject) => {
-    setSubjectId(subject?.id);
-    setSubjectName(subject?.subject_name);
+  const handleOpenDeleteModal = (branch) => {
+    setBranchName(branch?.branch_name);
+    setBranchId(branch?.id);
     setOpenDeleteModal(true);
   };
 
@@ -190,22 +192,22 @@ const SubjectTable = () => {
   }, [goBackFlag, page, delFlag]);
 
   useEffect(() => {
-    let url = `${endpoints.masterManagement.subjects}?page=${page}&page_size=${limit}`;
-    if (searchSubject) url += `&subject_name=${searchSubject}`;
+    let url = `${endpoints.masterManagement.branchList}?page=${page}&page_size=${limit}`;
+    if (searchBranch) url += `&branch_name=${searchBranch}`;
     axiosInstance
       .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
-          setTotalCount(result.data?.data?.count);
-          setSubjects(result.data?.data?.results);
+          // setTotalCount(result.data?.data?.count);
+          setBranches(result.data?.data);
         } else {
           setAlert('error', result.data?.msg || result.data?.message);
         }
       })
       .catch((error) => {
-        setAlert('error', error.response.data.message||error.response.data.msg);
+        setAlert('error', error.response?.data?.message || error.response?.data?.msg);
       });
-  }, [goBackFlag, delFlag, page, searchSubject]);
+  }, [goBackFlag, delFlag, searchBranch, page]);
 
   return (
     <>
@@ -215,12 +217,12 @@ const SubjectTable = () => {
           <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
               componentName='Master Management'
-              childComponentName='Subject List'
+              childComponentName='Branch List'
               childComponentNameNext={
                 addFlag && !tableFlag
-                  ? 'Add Subject'
+                  ? 'Add Branch'
                   : editFlag && !tableFlag
-                  ? 'Edit Subject'
+                  ? 'Edit Branch'
                   : null
               }
             />
@@ -228,13 +230,13 @@ const SubjectTable = () => {
         </div>
 
         {!tableFlag && addFlag && !editFlag && (
-          <CreateSubject setLoading={setLoading} handleGoBack={handleGoBack} />
+          <CreateBranch setLoading={setLoading} handleGoBack={handleGoBack} />
         )}
         {!tableFlag && !addFlag && editFlag && (
-          <EditSubject
+          <EditBranch
+            branchData={branchData}
             setLoading={setLoading}
             handleGoBack={handleGoBack}
-            subjectData={subjectData}
           />
         )}
 
@@ -248,30 +250,30 @@ const SubjectTable = () => {
               <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
                 <TextField
                   style={{ width: '100%' }}
-                  id='subname'
-                  label='Subject Name'
+                  id='branchname'
+                  label='Branch Name'
                   variant='outlined'
                   size='small'
-                  name='subname'
+                  name='branchname'
                   autoComplete='off'
                   onChange={(e) => {
                     setPage(1);
-                    setSearchSubject(e.target.value);
+                    setSearchBranch(e.target.value);
                   }}
                 />
               </Grid>
               <Grid item xs sm={9} className={isMobile ? 'hideGridItem' : ''} />
-              <Grid item xs={12} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
+              <Grid item xs={12} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                 <Button
                   startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
                   variant='contained'
                   color='primary'
                   size='small'
                   style={{ color: 'white' }}
-                  title='Add Subject'
-                  onClick={handleAddSubject}
+                  title='Add Branch'
+                  onClick={handleAddBranch}
                 >
-                  Add Subject
+                  Add Branch
                 </Button>
               </Grid>
             </Grid>
@@ -280,105 +282,106 @@ const SubjectTable = () => {
 
         <>
           {/* {!isMobile ? ( */}
-            <>
-              {tableFlag && !addFlag && !editFlag && (
-                <Paper className={`${classes.root} common-table`}>
-                  <TableContainer className={classes.container}>
-                    <Table stickyHeader aria-label='sticky table'>
-                      <TableHead className='table-header-row'>
-                        <TableRow>
-                          {columns.map((column) => (
-                            <TableCell
-                              key={column.id}
-                              align={column.align}
-                              style={{ minWidth: column.minWidth }}
-                              className={classes.columnHeader}
-                            >
-                              {column.label}
+          <>
+            {tableFlag && !addFlag && !editFlag && (
+              <Paper className={`${classes.root} common-table`}>
+                <TableContainer className={classes.container}>
+                  <Table stickyHeader aria-label='sticky table'>
+                    <TableHead className='table-header-row'>
+                      <TableRow>
+                        {columns.map((column) => (
+                          <TableCell
+                            key={column.id}
+                            align={column.align}
+                            style={{ minWidth: column.minWidth }}
+                            className={classes.columnHeader}
+                          >
+                            {column.label}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {branches?.map((branch, index) => {
+                        return (
+                          <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
+                            <TableCell className={classes.tableCell}>
+                              {branch?.branch_name}
                             </TableCell>
-                          ))}
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {subjects.map((subject, index) => {
-                          return (
-                            <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
-                              <TableCell className={classes.tableCell}>
-                                {subject?.subject_name}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {subject?.created_by}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {subject?.subject_description}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {subject?.is_optional ? 'Yes' : 'No'}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                <IconButton
-                                  onClick={(e) => {
-                                    handleOpenDeleteModal(subject);
-                                  }}
-                                  title='Delete Subject'
-                                >
-                                  <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
-                                </IconButton>
-                                <IconButton
-                                  onClick={(e) => handleEditSubject(subject)}
-                                  title='Edit Subject'
-                                >
-                                  <EditOutlinedIcon style={{ color: '#fe6b6b' }} />
-                                </IconButton>
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                  <div className='paginateData'>
-                    <TablePagination
-                      component='div'
-                      count={totalCount}
-                      className='customPagination'
-                      rowsPerPage={limit}
-                      page={page - 1}
-                      onChangePage={handleChangePage}
-                      rowsPerPageOptions={false}
-                    />
-                  </div>
-                </Paper>
-              )}
-            </>
-          {/* ) : (
-            <>
-              <>
-                {tableFlag && !addFlag && !editFlag && (
-                  <>
-                    {subjects?.map((subject) => (
-                      <SubjectCard
-                        data={subject}
-                        handleOpenDeleteModal={handleOpenDeleteModal}
-                        handleEditSubject={handleEditSubject}
-                      />
-                    ))}
-                    <div className='paginateData paginateMobileMargin'>
-                      <TablePagination
-                        component='div'
-                        count={totalCount}
-                        rowsPerPage={limit}
-                        page={page - 1}
-                        onChangePage={handleChangePage}
-                        rowsPerPageOptions={false}
-                        className='table-pagination'
-                      />
-                    </div>
-                  </>
-                )}
-              </>
-            </>
-          )} */}
+                            <TableCell className={classes.tableCell}>
+                              {branch?.created_by}
+                            </TableCell>
+                            <TableCell className={classes.tableCell}>
+                              {branch?.branch_code}
+                            </TableCell>
+                            <TableCell className={classes.tableCell}>
+                              {branch?.address}
+                            </TableCell>
+                            <TableCell className={classes.tableCell}>
+                              <IconButton
+                                onClick={(e) => {
+                                  handleOpenDeleteModal(branch);
+                                }}
+                                title='Delete Branch'
+                              >
+                                <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
+                              </IconButton>
+
+                              <IconButton
+                                onClick={(e) => handleEditBranch(branch)}
+                                title='Edit Branch'
+                              >
+                                <EditOutlinedIcon style={{ color: '#fe6b6b' }} />
+                              </IconButton>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <div className='paginateData'>
+                  <TablePagination
+                    component='div'
+                    count={totalCount}
+                    className='customPagination'
+                    rowsPerPage={limit}
+                    page={page - 1}
+                    onChangePage={handleChangePage}
+                    rowsPerPageOptions={false}
+                  />
+                </div>
+              </Paper>
+            )}
+          </>
+          {/* // ) : (
+          //     <>
+          //       <>
+          //         {tableFlag && !addFlag && !editFlag && (
+          //           <>
+          //             {branches.map((branch) => (
+          //               <BranchCard
+          //                 data={branch}
+          //                 handleOpenDeleteModal={handleOpenDeleteModal}
+          //                 handleEditSubject={handleEditBranch}
+          //               />
+          //             ))}
+          //             <div className='paginateData paginateMobileMargin'>
+          //               <TablePagination
+          //                 component='div'
+          //                 count={totalCount}
+          //                 rowsPerPage={limit}
+          //                 page={page - 1}
+          //                 onChangePage={handleChangePage}
+          //                 rowsPerPageOptions={false}
+          //                 className='table-pagination'
+          //               />
+          //             </div>
+          //           </>
+          //         )}
+          //       </>
+          //     </>
+          //   )} */}
         </>
         <Dialog
           open={openDeleteModal}
@@ -389,18 +392,16 @@ const SubjectTable = () => {
             style={{ cursor: 'move', color: '#014b7e' }}
             id='draggable-dialog-title'
           >
-            Delete Subject
+            Delete Branch
           </DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              {`Confirm Delete Subject ${subjectName}`}
-            </DialogContentText>
+            <DialogContentText>{`Confirm Delete Branch ${branchName}`}</DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDeleteModal} className='labelColor cancelButton'>
               Cancel
             </Button>
-            <Button color='primary' onClick={handleDeleteSubject}>
+            <Button color='primary' onClick={handleDeleteBranch}>
               Confirm
             </Button>
           </DialogActions>
@@ -410,4 +411,4 @@ const SubjectTable = () => {
   );
 };
 
-export default SubjectTable;
+export default BranchTable;

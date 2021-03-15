@@ -144,6 +144,10 @@ const CustomScopeModal = ({
   };
 
   const fetchBranches = (acadId) => {
+    setBranches([]);
+    setGrades([]);
+    setSections([]);
+    setSubjects([]);
     if (acadId > 0) {
       getBranches(acadId).then((data) => {
         const transformedData = data?.map((obj) => ({
@@ -157,6 +161,9 @@ const CustomScopeModal = ({
   };
 
   const fetchGrades = (acadId, branches) => {
+    setGrades([]);
+    setSections([]);
+    setSubjects([]);
     getGrades(acadId, branches).then((data) => {
       const transformedData = data
         ? data.map((grade) => ({
@@ -170,6 +177,8 @@ const CustomScopeModal = ({
   };
 
   const fetchSections = (acadId, grades, setFilteredResults) => {
+    setSections([]);
+    setSubjects([]);
     const customScopeObj = {
       custom_year: customScope.custom_year,
       custom_branch: customScope.custom_branch,
@@ -188,24 +197,24 @@ const CustomScopeModal = ({
 
       setSections(transformedData);
 
-      if (setFilteredResults) {
-        const filteredSelectedSections = customScopeObj.custom_section.filter(
-          (section) => transformedData.findIndex((sec) => sec.id === section.id) > -1
-        );
-        customScopeObj.custom_section = filteredSelectedSections;
-        if (filteredSelectedSections && filteredSelectedSections.length > 0) {
-          fetchSubjects(
-            customScope.custom_year[0]?.id,
-            customScope.custom_branch,
-            grades,
-            customScopeObj,
-            setFilteredResults
-          );
-        } else {
-          customScopeObj.custom_subject = [];
-          onCustomScopeChange('custom_section', customScopeObj);
-        }
-      }
+      // if (setFilteredResults) {
+      //   const filteredSelectedSections = customScopeObj.custom_section.filter(
+      //     (section) => transformedData.findIndex((sec) => sec.id === section.id) > -1
+      //   );
+      //   customScopeObj.custom_section = filteredSelectedSections;
+      //   if (filteredSelectedSections && filteredSelectedSections.length > 0) {
+      //     fetchSubjects(
+      //       customScope.custom_year[0]?.id,
+      //       customScope.custom_branch,
+      //       grades,
+      //       customScopeObj,
+      //       setFilteredResults
+      //     );
+      //   } else {
+      //     customScopeObj.custom_subject = [];
+      //     onCustomScopeChange('custom_section', customScopeObj);
+      //   }
+      // }
     });
   };
 
@@ -216,6 +225,7 @@ const CustomScopeModal = ({
     customScopeObj,
     setFilteredResults
   ) => {
+    setSubjects([]);
     const customScopeObject = JSON.parse(JSON.stringify(customScopeObj));
     if (branches && branches.length > 0 && grades && grades.length > 0) {
       getSubjects(acadId, branches, grades, customScopeObj.custom_section).then(
@@ -227,13 +237,13 @@ const CustomScopeModal = ({
               }))
             : [];
           setSubjects(transformedData);
-          if (setFilteredResults) {
-            const filteredSelectedSubjects = customScopeObject.custom_subject.filter(
-              (subject) => transformedData.findIndex((sub) => sub.id == subject.id) > -1
-            );
-            customScopeObject.custom_subject = filteredSelectedSubjects;
-            onCustomScopeChange('custom_subject', customScopeObject);
-          }
+          // if (setFilteredResults) {
+          //   const filteredSelectedSubjects = customScopeObject.custom_subject.filter(
+          //     (subject) => transformedData.findIndex((sub) => sub.id == subject.id) > -1
+          //   );
+          //   customScopeObject.custom_subject = filteredSelectedSubjects;
+          //   onCustomScopeChange('custom_subject', customScopeObject);
+          // }
         }
       );
     } else {

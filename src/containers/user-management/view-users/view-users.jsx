@@ -101,6 +101,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [selectedRoles, setSelectedRoles] = useState(null);
+  const [selectedYear, setSelectedYear] = useState('');
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [selectedGrades, setSelectedGrades] = useState([]);
   const [gradeIds, setGradeIds] = useState([]);
@@ -112,6 +113,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [grade, setGrade] = useState([]);
   const [roleList, setRoleList] = useState([]);
+  const [academicYearList, setAcademicYearList] = useState([]);
   const [branchList, setBranchList] = useState([]);
   const [gradeList, setGradeList] = useState([]);
   const [isNewSeach, setIsNewSearch] = useState(true);
@@ -139,14 +141,26 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     }
   };
 
+  const getYearApi = async () => {
+    try {
+      const result = await axiosInstance.get('/erp_user/list-academic_year/');
+      if (result.status === 200) {
+        setAcademicYearList(result.data.data);
+      } else {
+        setAlert('error', result.data.message);
+      }
+    } catch (error) {
+      setAlert('error', error.message);
+    }
+  };
+
+
   const getBranchApi = async () => {
     try {
-      const result = await axiosInstance.get(endpoints.communication.branches, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (result.status === 200) {
+      const result = await axiosInstance.get(
+        `${endpoints.masterManagement.branchList}?session_year=${selectedYear.id}`
+      );
+      if (result.data.status_code === 200) {
         setBranchList(result.data.data);
       } else {
         setAlert('error', result.data.message);
@@ -158,22 +172,9 @@ const ViewUsers = withRouter(({ history, ...props }) => {
 
   const getGradeApi = async () => {
     try {
-      console.log(selectedBranch, ' branch id ====');
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?branch_id=${selectedBranch?.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const resultOptions = [];
-      if (result.status === 200) {
-        result.data.data.map((items) => resultOptions.push(items.grade__grade_name));
-        console.log(result.data.data);
-        if (selectedBranch) {
-          setGrade([...resultOptions]);
-        }
+        `${endpoints.communication.grades}?session_year=${selectedYear.id}&branch_id=${selectedBranch.id}`);
+      if (result.data.status_code === 200) {
         setGradeList(result.data.data);
       } else {
         setAlert('error', result.data.message);
@@ -246,6 +247,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
 
   const handleResetFilters = () => {
     setSearchText('');
+    setSelectedYear('');
     setSelectedBranch(null);
     setSelectedGrades([]);
     setSelectedRoles(null);
@@ -329,13 +331,23 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   useEffect(() => {
     setIsNewSearch(true);
   }, [selectedRoles, selectedGrades]);
+
   useEffect(() => {
     getRoleApi();
-    getBranchApi();
+    // getBranchApi();
+    getYearApi();
   }, []);
+
   useEffect(() => {
     getUsersData();
   }, [currentPage]);
+
+  useEffect(() => {
+    if (selectedYear) {
+      getBranchApi();
+    }
+  }, [selectedYear]);
+
   useEffect(() => {
     if (selectedBranch) {
       setGrade(['All']);
@@ -343,6 +355,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
       getGradeApi();
     }
   }, [selectedBranch]);
+
   useEffect(() => {
     if (isNewSeach) {
       setIsNewSearch(false);
@@ -351,10 +364,29 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     }
   }, [isNewSeach]);
 
+  const handleYear = (event, value) => {
+    setSelectedYear('');
+    setSelectedBranch('');
+    setBranchList([]);
+    setGradeList([]);
+    setSelectedGrades([]);
+    if (value) {
+      setSelectedYear(value);
+    }
+  };
+
+  const handleBranch = (event, value) => {
+    setSelectedBranch('');
+    setGradeList([]);
+    if (value) {
+      setSelectedBranch(value);
+    }
+  };
+
   const handleGrade = (event, value) => {
     setSelectedGrades(value);
     console.log(value);
-    
+
     if (value.length) {
       const ids = value.map((el) => el.grade_id);
       setGradeIds(ids);
@@ -450,9 +482,29 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                 style={{ width: '100%' }}
                 size='small'
                 //onChange={(e) => setSelectedBranch(e.target.value)}
-                onChange={(event, value) => {
-                  setSelectedBranch(value);
-                }}
+                onChange={handleYear}
+                id='branch_id'
+                //className='dropdownIcon'
+                value={selectedYear || ''}
+                options={academicYearList || []}
+                getOptionLabel={(option) => option?.session_year || ''}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Academic Year'
+                    placeholder='Select Year'
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item md={3} xs={12}>
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                //onChange={(e) => setSelectedBranch(e.target.value)}
+                onChange={handleBranch}
                 id='branch_id'
                 //className='dropdownIcon'
                 value={selectedBranch}
@@ -490,8 +542,18 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                   <MenuItem value='' style={{position: 'relative'}}>
                     <em>None</em>
                   </MenuItem>
+<<<<<<< HEAD
                   {branchList.map((items, index) => (
                     <MenuItem key={`branch_user_details_${index}`} value={items.id} style={{position: 'relative'}}>
+=======
+<<<<<<< HEAD
+                  {branchList?.map((items, index) => (
+                    <MenuItem key={`branch_user_details_${index}`} value={items.id}>
+=======
+                  {branchList.map((items, index) => (
+                    <MenuItem key={`branch_user_details_${index}`} value={items.id} style={{position: 'relative'}}>
+>>>>>>> develop
+>>>>>>> dd73581248eaccccae2e5476c720dfe72c22c21b
                       {items.branch_name}
                     </MenuItem>
                   ))}
