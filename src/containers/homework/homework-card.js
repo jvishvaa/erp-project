@@ -100,7 +100,7 @@ const HomeworkCard = ({
                 <CircularProgress color='primary' />
               ) : (
                 <div>
-                  {unSubmittedStudents.length ? (
+                  {unSubmittedStudents && unSubmittedStudents.length ? (
                     unSubmittedStudents.map((student) => (
                       <div
                         className='cardRow'

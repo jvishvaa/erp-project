@@ -162,7 +162,7 @@
 }
 .homework_header {
   text-transform: capitalize;
-  
+  width: 250px !important;
 }
 .homework_block {
   color: #014b7e;
