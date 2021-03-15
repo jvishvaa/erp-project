@@ -621,7 +621,7 @@ const ViewHomework = withRouter(
                       onChange={(e) => {
                         setScore(e.target.value);
                       }}
-                      value={score || 0}
+                      value={score || ''}
                     />
                   </FormControl>
                 </div>
@@ -634,7 +634,7 @@ const ViewHomework = withRouter(
                       className='disabled-btn'
                       onClick={onClose}
                     >
-                      Cancel
+                      Back
                     </Button>
                     <Button
                       variant='contained'

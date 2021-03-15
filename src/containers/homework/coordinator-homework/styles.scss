@@ -94,16 +94,17 @@
     }
     .homework_block_wrapper {
       display: flex;
-      width: 100% !important;
+      width: 97% !important;
       padding-bottom: 1%;
-      margin: 20px 0;
+      margin: 20px;
       border: 1px solid #dbdbdb;
       align-items: center;
       padding: 1rem;
       border-radius: 5px;
-      @media screen and (min-width: 768px) {
-        margin: 20px !important;
-      }
+      //@media screen and (min-width: 768px) {
+        //margin: 20px !important;
+        //padding: 20px;
+      //}
 
       @media screen and (max-width: 768px) {
         margin-bottom: 0 !important;
@@ -338,6 +339,7 @@
   .homework_submit_wrapper {
     border: 1px solid #ff6b6b;
     border-radius: 10px;
+    padding: 20px;
   }
   .homework_submit_button_wrapper {
     display: flex;
@@ -433,7 +435,7 @@
         width: calc(100% - 90px);
         .attachment {
           flex-shrink: 0;
-          width: 150px;
+          width: 250px;
         }
       }
     }
