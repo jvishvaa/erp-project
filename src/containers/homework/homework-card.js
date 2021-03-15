@@ -17,6 +17,7 @@ const HomeworkCard = ({
   evaluatedStudents,
   unevaluatedStudents,
   submittedStudents,
+  unSubmittedStudents,
   loading,
   onClick,
   onClose,
@@ -79,6 +80,31 @@ const HomeworkCard = ({
                       <div
                         className='cardRow'
                         onClick={() => onClick(student.student_homework_id)}
+                      >
+                        <div className='studentName'>{`${student.first_name} ${student.last_name}`}</div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className='no-students-text'>No students</p>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+        {view === 'submissionStats' && (unSubmittedStudents && unSubmittedStudents.length !== 0) && (
+          <div className='list' style={{ flexGrow: 1 }}>
+            <div className='cardHeaderSub'>Not submitted students :</div>
+            <div className='innerBox'>
+              {loading ? (
+                <CircularProgress color='primary' />
+              ) : (
+                <div>
+                  {unSubmittedStudents && unSubmittedStudents.length ? (
+                    unSubmittedStudents.map((student) => (
+                      <div
+                        className='cardRow'
+                        //onClick={() => onClick(student.student_homework_id)}
                       >
                         <div className='studentName'>{`${student.first_name} ${student.last_name}`}</div>
                       </div>

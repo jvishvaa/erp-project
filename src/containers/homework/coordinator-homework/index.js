@@ -106,6 +106,7 @@ const CoordinatorTeacherHomework = withRouter(
     evaluatedStudents,
     unevaluatedStudents,
     submittedStudents,
+    unSubmittedStudents,
     fetchingStudentLists,
     fetchStudentLists,
     history,
@@ -113,7 +114,11 @@ const CoordinatorTeacherHomework = withRouter(
     setFirstTeacherUserIdOnloadCordinatorHomewok,
     ...props
   }) => {
-    const [dateRange, setDateRange] = useState([moment().subtract(6, 'days'), moment()]);
+    //const [dateRange, setDateRange] = useState([moment().subtract(6, 'days'), moment()]);
+    const [dateRange, setDateRange] = useState([
+      moment().startOf('isoWeek'),
+      moment().endOf('week'),
+    ]);
     const [dateRangeTechPer, setDateRangeTechPer] = useState([
       moment().subtract(6, 'days'),
       moment(),
@@ -207,9 +212,9 @@ const CoordinatorTeacherHomework = withRouter(
     // };
 
     const handleSelectCol = (col, view) => {
-      const { homeworkId } = col;
+      const { homeworkId, subjectId } = col;
       console.log('homework id', homeworkId);
-      fetchStudentLists(homeworkId);
+      fetchStudentLists(homeworkId, subjectId);
       setSelectedCol(col);
       if (isMobile) {
         setActiveView('card-view');
@@ -860,6 +865,7 @@ const CoordinatorTeacherHomework = withRouter(
                         evaluatedStudents={evaluatedStudents}
                         unevaluatedStudents={unevaluatedStudents}
                         submittedStudents={submittedStudents}
+                        unSubmittedStudents={unSubmittedStudents}
                         loading={fetchingStudentLists}
                         onClick={handleViewReceivedHomework}
                         onClose={() => {
@@ -909,8 +915,8 @@ const mapDispatchToProps = (dispatch) => ({
   onSetSelectedHomework: (data) => {
     dispatch(setSelectedHomework(data));
   },
-  fetchStudentLists: (id) => {
-    dispatch(fetchStudentsListForTeacherHomework(id));
+  fetchStudentLists: (id, subjectId) => {
+    dispatch(fetchStudentsListForTeacherHomework(id, subjectId));
   },
   setFirstTeacherUserIdOnloadCordinatorHomewok: (selectedTeacherUser_id) => {
     return dispatch(setTeacherUserIDCoord(selectedTeacherUser_id));
