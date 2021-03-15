@@ -34,9 +34,11 @@
     }
     .homework_table_wrapper .MuiTableRow-root:not(:last-child) .MuiTableCell-root {
       border-bottom: 1px solid #ff6b6b !important;
+      width: 250px;
     }
     .homework_table_wrapper .MuiTableHead-root .MuiTableCell-root {
       border-bottom: 1px solid #ff6b6b !important;
+      width: 250px;
     }
     .selected {
       background-color: antiquewhite;
@@ -214,7 +216,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-right: 1rem;
+      margin-right: 5px;
       font-weight: 600;
       border: 1px solid $secondary-color;
     }
@@ -443,7 +445,7 @@
         width: calc(100% - 90px);
         .attachment {
           flex-shrink: 0;
-          width: 150px;
+          width: 250px;
         }
       }
     }
@@ -561,7 +563,7 @@
     height: 40px;
     border: 1px solid $secondary-color;
     border-radius: 25px;
-    margin-right: 1rem;
+    margin-right: 5px;
     font-weight: 600;
     display: flex;
     justify-content: center;
