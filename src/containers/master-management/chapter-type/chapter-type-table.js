@@ -8,7 +8,12 @@ import { Grid, Button, Paper, TableContainer, Table, TableHead, TableRow, TableC
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import TablePagination from '@material-ui/core/TablePagination';
-
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import endpoints from '../../../config/endpoints';
@@ -85,6 +90,8 @@ const ChapterTypeTable = (setCentralSubjectName) => {
     const [sectionDropdown,setSectionDropdown] = useState([])
     const [messageTypeId, setMessageTypeId] = useState();
     const [categoryName,setCategoryName] = useState('');
+    const [openDeleteModal, setOpenDeleteModal] = useState(false);
+
 
 
     const themeContext = useTheme();
@@ -330,6 +337,41 @@ const ChapterTypeTable = (setCentralSubjectName) => {
       setCategoryName(name);
     };
   
+    const handleDeleteMessageType = (e) => {
+      e.preventDefault();
+      setLoading(true);
+      axiosInstance
+        .delete(`${endpoints.masterManagement.editChapter}${messageTypeId}/delete-chapter/`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+              setDelFlag(!delFlag);
+              setLoading(false);
+              setAlert('success', result.data.message);
+          }
+          else {
+            setLoading(false);
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
+          setLoading(false);
+          setAlert('error', error.message);
+        });
+      setOpenDeleteModal(false);
+    };
+    const handleDelete = (msgtype) => {
+      setCategoryName(msgtype.chapter_name);
+      handleOpenDeleteModal(msgtype.id);
+    }
+  
+    const handleOpenDeleteModal = (id) => {
+      setMessageTypeId(id);
+      setOpenDeleteModal(true);
+    };
+  
+    const handleCloseDeleteModal = () => {
+      setOpenDeleteModal(false);
+    };
     return(
      
         <>
@@ -527,12 +569,12 @@ const ChapterTypeTable = (setCentralSubjectName) => {
                           {msgtype.chapter_name}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
-                          {/* <IconButton
+                          <IconButton
                             onClick={e=>{ handleDelete(msgtype) }}
                             title='Delete Message Type'
                           >
                             <DeleteOutlinedIcon style={{color:'#fe6b6b'}} />
-                          </IconButton> */}
+                          </IconButton>
 
                           <IconButton
                             onClick={(e) =>
@@ -570,7 +612,7 @@ const ChapterTypeTable = (setCentralSubjectName) => {
               messageType.map(msgtype => (
                 <ChapterTypeCard
                 msgtype={msgtype} 
-                // handleDelete={handleDelete} 
+                handleDelete={handleDelete} 
                 handleEditMessageType={handleEditMessageType} />
               ))
             }
@@ -586,6 +628,24 @@ const ChapterTypeTable = (setCentralSubjectName) => {
             </div>
           </>
         )}
+           <Dialog
+          open={openDeleteModal}
+          onClose={handleCloseDeleteModal}
+          aria-labelledby='draggable-dialog-title'
+        >
+          <DialogTitle style={{ cursor: 'move',color: '#014b7e' }} id='draggable-dialog-title'>
+            Delete Message Type
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>{`Confirm Delete Message Type ${categoryName}`}</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button  onClick={handleCloseDeleteModal} className="labelColor cancelButton">
+              Cancel
+            </Button>
+            <Button color="primary" onClick={handleDeleteMessageType}>Confirm</Button>
+          </DialogActions>
+        </Dialog>
         </Layout>
         </>
     )
