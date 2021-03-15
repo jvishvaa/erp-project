@@ -4,8 +4,11 @@ import MpQuiz from './mp-quiz';
 
 function MpQuizHome() {
   return (
-    <SocketProvider>
-      <MpQuiz />
+    <SocketProvider lobbyId={80}>
+      <>
+        <p>MpQuizHome</p>
+        <MpQuiz />
+      </>
     </SocketProvider>
   );
 }
