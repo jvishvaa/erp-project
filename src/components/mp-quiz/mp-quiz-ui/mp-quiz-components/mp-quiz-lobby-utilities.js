@@ -12,6 +12,7 @@ import {
   useQuizEventTriggers,
   constants,
   useQuizUitilityContext,
+  useSocket,
 } from '../../mp-quiz-providers';
 
 import CurrentScore, {
@@ -62,6 +63,7 @@ export function GetErrorMsgC({ label }) {
 }
 
 export function ClearOrPauseBtn(props) {
+  const socket = useSocket();
   return (
     <IconButton
       className='topbar-btn btn__close--websocket'
@@ -72,8 +74,7 @@ export function ClearOrPauseBtn(props) {
         // eslint-disable-next-line no-alert
         const confirmed = window.confirm('Are you sure you want to exit from this quiz?');
         if (confirmed) {
-          props.quitQuiz();
-          // this.props.history.p
+          socket.close();
         }
       }}
     >
@@ -227,7 +228,8 @@ export function getDurationCounter(props) {
 
 function GetAvatar({ url = '', firstName = '' }) {
   const { openSettingsModal } = useQuizUitilityContext || {};
-
+  url =
+    'https://omrsheet.s3.ap-south-1.amazonaws.com/media/user_profile/download_wchd7Wo.png'; // Please handle
   if (url) {
     return (
       <Avatar
@@ -371,6 +373,7 @@ export function LobbyParticipantsContainer() {
   } = useQuizContext() || {};
   const [currentUserId, currentPlayerObj] = getCurrentPlayerInfo();
   const { firstName = 'mp-quiz-lobby-utilities.js line:217' } = currentPlayerObj || {};
+  debugger;
   const participantsArray = participants.map((item) => ({
     ...item,
     name: item.first_name,
@@ -403,7 +406,7 @@ export function LobbyParticipantsContainer() {
 
       <div className='lobby__participants'>
         {participants.length
-          ? participants.map((participant) => {
+          ? participantsArray.map((participant) => {
               const removeUserFunc = () => {
                 // eslint-disable-next-line no-alert
                 const confirmed = window.confirm('Remove user?');
@@ -417,6 +420,7 @@ export function LobbyParticipantsContainer() {
                     isHost={isHost}
                     currentUserId={currentUserId}
                     {...participant}
+                    name={participant.first_name}
                     removeUser={isHost ? removeUserFunc : false}
                   />
                 </div>

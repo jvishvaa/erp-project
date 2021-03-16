@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import IconButton from '@material-ui/core/IconButton'
 import DeleteIcon from '@material-ui/icons/Delete'
-import Emoji from './assets/smile.svg'
+// import Emoji from './assets/smile.svg'
 import './StudentRankingDetails.css'
 
 class StudentDetails extends Component {
@@ -15,6 +15,7 @@ class StudentDetails extends Component {
 
   render () {
     const { currentUserId, name = 'Unknown', user_id: userId, isHost, removeUser, avatar = '' } = this.props
+    const Emoji = 'https://omrsheet.s3.ap-south-1.amazonaws.com/media/user_profile/download_wchd7Wo.png'; // Please handle
     const me = String(currentUserId) === String(userId)
     const { mouseOnMe } = this.state || {}
     if (isHost) {

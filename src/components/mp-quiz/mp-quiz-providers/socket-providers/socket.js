@@ -7,6 +7,7 @@ class Socket {
     this.callbacks = {};
     this.bind = this.bind.bind(this);
     this.trigger = this.trigger.bind(this);
+    this.close = this.close.bind(this);
     this.dispatch = this.dispatch.bind(this);
     this.doNotReConnectOnFailure = false;
 
@@ -100,6 +101,7 @@ class Socket {
   }
 
   close() {
+    this.doNotReConnectOnFailure = true;
     this.connection.close();
   }
 
