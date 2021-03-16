@@ -263,12 +263,12 @@ const ErpAdminViewClass = ({ history }) => {
     // `https://erpnew.letseduvate.com/qbox/erp_user/teacher_online_class/?page_number=1&page_size=15&class_type=1&is_aol=1&course=97&start_date=2021-02-21&end_date=2021-02-27`
     if (selectedCourse.id) {
       callApi(
-        `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.map((el)=>el.id)}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&course_id=${selectedCourse.id}&page_number=1&page_size=15`,
+        `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear.id}&section_mapping_ids=${selectedSection.map((el)=>el.id)}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&course_id=${selectedCourse.id}&page_number=1&page_size=15`,
         'filter'
       );
     } else {
       callApi(
-        `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.map((el)=>el.id)}&subject_id=${selectedSubject.map((el)=>el.subject__id)}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=15`,
+        `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear.id}&section_mapping_ids=${selectedSection.map((el)=>el.id)}&subject_id=${selectedSubject.map((el)=>el.subject__id)}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=15`,
         'filter'
       );
     }
