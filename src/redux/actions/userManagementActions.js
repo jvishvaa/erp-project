@@ -153,7 +153,6 @@ export const fetchUser = (id) => (dispatch) => {
 
     .catch((e) => {
       console.log(e)
-      debugger
       dispatch({ type: FETCH_USER_DETAIL_FAILURE });
     });
 };
