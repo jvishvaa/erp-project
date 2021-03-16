@@ -679,15 +679,7 @@ const CraeteCircular = () => {
                     {' '}
                     Accepted files: [jpeg,jpg,png,mp3,mp4,pdf]
                   </small>
-                </div>
-                <div>
-                  {/* <small
-                    style={{ color: '#014b7e', fontSize: '16px', marginLeft: '28px' }}
-                  >
-                    {' '}
-                    Accepted files: [jpeg,jpg,mp3,mp4,pdf,png]
-                  </small> */}
-                </div>
+                </div>                
               </div>
             </div>
             <div>
