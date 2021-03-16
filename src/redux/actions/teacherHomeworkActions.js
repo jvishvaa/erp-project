@@ -149,19 +149,23 @@ export const setSelectedHomework = (data) => ({
   data,
 });
 
-export const fetchStudentsListForTeacherHomework = (id) => async (dispatch) => {
+export const fetchStudentsListForTeacherHomework = (id, subjectId, selectedTeacherUser_id) => async (dispatch) => {
   dispatch({ type: FETCH_STUDENT_LIST_FOR_TEACHER_HOMEWORK_REQUEST });
   try {
-    const response = await axios.get(`/academic/homework-submitted-data/?homework=${id}`);
+    const response = await axios.get(selectedTeacherUser_id ?
+      `/academic/homework-submitted-data/?homework=${id}&user=${selectedTeacherUser_id}&subject=${subjectId}`
+      : `/academic/homework-submitted-data/?homework=${id}&subject=${subjectId}`);
     const {
       evaluated_list: evaluatedStudents,
       submitted_list: submittedStudents,
+      un_submitted_list: unSubmittedStudents,
       unevaluated_list: unevaluatedStudents,
     } = response.data;
     dispatch({
       type: FETCH_STUDENT_LIST_FOR_TEACHER_HOMEWORK_SUCCESS,
       evaluatedStudents,
       submittedStudents,
+      unSubmittedStudents,
       unevaluatedStudents,
     });
   } catch (error) {

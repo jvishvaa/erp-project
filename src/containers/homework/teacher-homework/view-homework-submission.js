@@ -621,23 +621,32 @@ const ViewHomework = withRouter(
                       onChange={(e) => {
                         setScore(e.target.value);
                       }}
-                      value={score || 0}
+                      value={score || ''}
                     />
                   </FormControl>
                 </div>
               </div>
               <div className='btn-container'>
                 <div className='button-container'>
-                  <div className='cancel-btn'>
+                  <span className='cancel-btn'>
                     <Button
                       variant='contained'
                       className='disabled-btn'
                       onClick={onClose}
                     >
-                      Cancel
+                      Back
                     </Button>
-                  </div>
-                  <div className='done-btn'>
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      onClick={handleFinalEvaluationForHomework}
+                      style={{ marginLeft: '10px'}}
+                    >
+                      EVALUATION DONE
+                    </Button>
+                  </span>
+                  {/*
+                  <span className='done-btn'>
                     <Button
                       variant='contained'
                       color='primary'
@@ -645,7 +654,8 @@ const ViewHomework = withRouter(
                     >
                       EVALUATION DONE
                     </Button>
-                  </div>
+                  </span>
+                  */}
                 </div>
               </div>
             </div>

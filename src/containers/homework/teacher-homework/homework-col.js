@@ -23,21 +23,28 @@ const HomeworkCol = ({
   const { student_submitted: studentSubmitted, hw_evaluated: hwEvaluated } = data;
 
   return (
-    <TableCell className={isSelected ? 'selected-col' : ''}>
+    <TableCell className={isSelected ? 'selected-col' : ''} style={{width: '250px !important'}}>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         {!data.hasOwnProperty('student_submitted') ? (
-          <IconButton onClick={handleNavigationToAddScreen}>
-            <SvgIcon
-              component={() => (
-                <img
-                  style={{ width: '25px', marginRight: '5px' }}
-                  src={AddHomework}
-                  alt='submitted'
-                />
-              )}
-            />
-            {/* <AddCircleOutlineIcon color='primary' /> */}
-          </IconButton>
+          <>
+          {isExpired ? (
+            <>
+            </>
+          ) : (
+            <IconButton onClick={handleNavigationToAddScreen}>
+              <SvgIcon
+                component={() => (
+                  <img
+                    style={{ width: '25px', marginRight: '5px' }}
+                    src={AddHomework}
+                    alt='submitted'
+                  />
+                )}
+              />
+              {/* <AddCircleOutlineIcon color='primary' /> */}
+            </IconButton>
+            )}
+          </>
         ) : (
           <>
             <IconButton onClick={handleViewHomework}>
@@ -104,20 +111,21 @@ const HomeworkCol = ({
                   )}
                 />
               </IconButton>
-            ) : (
-              <IconButton onClick={handleNavigationToAddScreen}>
-                <SvgIcon
-                  component={() => (
-                    <img
-                      style={{ width: '25px', marginRight: '5px' }}
-                      src={AddHomework}
-                      alt='submitted'
-                    />
-                  )}
-                />
-                {/* <AddCircleOutlineIcon color='primary' /> */}
-              </IconButton>
-            )}
+            ) : 
+              null
+              // <IconButton onClick={handleNavigationToAddScreen}>
+              //   <SvgIcon
+              //     component={() => (
+              //       <img
+              //         style={{ width: '25px', marginRight: '5px' }}
+              //         src={AddHomework}
+              //         alt='submitted'
+              //       />
+              //     )}
+              //   />
+              //   {/* <AddCircleOutlineIcon color='primary' /> */}
+              // </IconButton>
+            }
           </>
         )}
       </div>

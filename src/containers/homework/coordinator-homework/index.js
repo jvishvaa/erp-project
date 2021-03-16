@@ -106,6 +106,7 @@ const CoordinatorTeacherHomework = withRouter(
     evaluatedStudents,
     unevaluatedStudents,
     submittedStudents,
+    unSubmittedStudents,
     fetchingStudentLists,
     fetchStudentLists,
     history,
@@ -113,7 +114,11 @@ const CoordinatorTeacherHomework = withRouter(
     setFirstTeacherUserIdOnloadCordinatorHomewok,
     ...props
   }) => {
-    const [dateRange, setDateRange] = useState([moment().subtract(6, 'days'), moment()]);
+    //const [dateRange, setDateRange] = useState([moment().subtract(6, 'days'), moment()]);
+    const [dateRange, setDateRange] = useState([
+      moment().startOf('isoWeek'),
+      moment().endOf('week'),
+    ]);
     const [dateRangeTechPer, setDateRangeTechPer] = useState([
       moment().subtract(6, 'days'),
       moment(),
@@ -207,9 +212,10 @@ const CoordinatorTeacherHomework = withRouter(
     // };
 
     const handleSelectCol = (col, view) => {
-      const { homeworkId } = col;
+      console.log(col, 'teacher_id');
+      const { homeworkId, subjectId, coord_selected_teacher_id } = col;
       console.log('homework id', homeworkId);
-      fetchStudentLists(homeworkId);
+      fetchStudentLists(homeworkId, subjectId, coord_selected_teacher_id);
       setSelectedCol(col);
       if (isMobile) {
         setActiveView('card-view');
@@ -452,7 +458,7 @@ const CoordinatorTeacherHomework = withRouter(
                             // startProps,
                             endProps
                           ) => {
-                            console.log('startProps ', startProps, 'endProps', endProps);
+                            //console.log('startProps ', startProps, 'endProps', endProps);
                             return (
                               <>
                                 <TextField
@@ -860,6 +866,8 @@ const CoordinatorTeacherHomework = withRouter(
                         evaluatedStudents={evaluatedStudents}
                         unevaluatedStudents={unevaluatedStudents}
                         submittedStudents={submittedStudents}
+                        unSubmittedStudents={unSubmittedStudents}
+                        unSubmittedStudents={unSubmittedStudents}
                         loading={fetchingStudentLists}
                         onClick={handleViewReceivedHomework}
                         onClose={() => {
@@ -884,6 +892,7 @@ const mapStateToProps = (state) => ({
   fetchingTeacherHomework: state.teacherHomework.fetchingTeacherHomework,
   evaluatedStudents: state.teacherHomework.evaluatedStudents,
   submittedStudents: state.teacherHomework.submittedStudents,
+  unSubmittedStudents: state.teacherHomework.unSubmittedStudents,
   unevaluatedStudents: state.teacherHomework.unevaluatedStudents,
   fetchingStudentLists: state.teacherHomework.fetchingStudentLists,
   selectedTeacherByCoordinatorToCreateHw:
@@ -909,8 +918,8 @@ const mapDispatchToProps = (dispatch) => ({
   onSetSelectedHomework: (data) => {
     dispatch(setSelectedHomework(data));
   },
-  fetchStudentLists: (id) => {
-    dispatch(fetchStudentsListForTeacherHomework(id));
+  fetchStudentLists: (id, subjectId,selectedTeacherUser_id) => {
+    dispatch(fetchStudentsListForTeacherHomework(id, subjectId, selectedTeacherUser_id));
   },
   setFirstTeacherUserIdOnloadCordinatorHomewok: (selectedTeacherUser_id) => {
     return dispatch(setTeacherUserIDCoord(selectedTeacherUser_id));
