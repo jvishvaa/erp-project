@@ -1,27 +1,34 @@
 import React from 'react';
-import { SocketProvider, useSocket, GlobalSocket } from '../mp-quiz-providers';
+import { useSocket } from '../mp-quiz-providers';
 import MpQuizPlay from './mp-quiz-play';
 import MpQuizSocketStatus from './mp-quiz-socket-status';
 
 function MpQuiz() {
-  const ws = useSocket();
-  const { readyState } = ws || {};
-  const [temp, setTemp] = React.useState();
-  // console.log(ws, 'ws');
-  // const { connection } = ws || {};
-  // if (connection) {
-  // debugger;
-  // }
-  // const { OPEN = null, readyState } = { ...(connection || {}) };
-
+  const socket = useSocket();
+  const { readyState } = socket || {};
   return (
     <>
       <p>MpQuiz</p>
-      <button
+
+      <MpQuizSocketStatus key={readyState} />
+      {readyState === window.WebSocket.OPEN ? (
+        <>
+          <MpQuizPlay key={readyState} />
+        </>
+      ) : null}
+    </>
+  );
+}
+export default MpQuiz;
+/*
+    Socket context undali.
+    quiz events context - trigger and receive - save message data.
+    questions context - fetch quesions - controls - attempt - track
+*/
+
+/* <button
         type='button'
         onClick={() => {
-          // setTemp(new Date().getTime());
-          // debugger;
           ws.trigger('respond_to_question', {
             event: 'respond_to_question',
             response: {
@@ -40,25 +47,4 @@ function MpQuiz() {
         }}
       >
         Click
-      </button>
-      {/* {console.log('ws.connection', ws?.connection)} */}
-      {readyState === 1 ? (
-        <>
-          {/* {console.log('ws.connection - MpQuizPlay', ws?.connection)} */}
-          <MpQuizPlay key={readyState} />
-        </>
-      ) : (
-        <>
-          {/* {console.log('ws.connection - MpQuizSocketStatus', ws?.connection)} */}
-          <MpQuizSocketStatus key={readyState} />
-        </>
-      )}
-    </>
-  );
-}
-export default MpQuiz;
-/*
-    Socket context undali.
-    quiz events context - trigger and receive - save message data.
-    questions context - fetch quesions - controls - attempt - track
-*/
+      </button> */

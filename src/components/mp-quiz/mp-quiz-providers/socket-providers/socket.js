@@ -30,7 +30,6 @@ class Socket {
    * utilited by the @function connect to check if the connection is close, if so attempts to reconnect
    */
   check = () => {
-    // debugger;
     if (!this.connection || this.connection.readyState === window.WebSocket.CLOSED) {
       this.connect(); // check if websocket instance is closed, if so call `connect` function.
     } else {
@@ -50,9 +49,7 @@ class Socket {
     let connectInterval;
     this.connection = new WebSocket(this.url);
     // websocket onopen event listener
-    // debugger;
     this.connection.onopen = () => {
-      // debugger;
       console.log('connected websocket main component');
       this.doNotReConnectOnFailure = false;
       this.dispatch('open', null);
@@ -60,13 +57,11 @@ class Socket {
       clearTimeout(connectInterval); // clear Interval on on open of websocket connection
     };
     this.connection.onmessage = (evt) => {
-      // debugger;
       const json = JSON.parse(evt.data);
       this.dispatch(json.event, json.data);
     };
 
     this.connection.onclose = (data) => {
-      // debugger;
       this.dispatch('close', data);
       const { doNotReConnectOnFailure } = this;
       if (!doNotReConnectOnFailure) {
@@ -82,7 +77,6 @@ class Socket {
       }
     };
     this.connection.onerror = (data) => {
-      // debugger;
       this.doNotReConnectOnFailure = false;
       this.dispatch('error', data);
       this.connection.close();

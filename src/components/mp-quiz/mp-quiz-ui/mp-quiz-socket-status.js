@@ -1,15 +1,9 @@
 import React from 'react';
-import { useSocket, GlobalSocket } from '../mp-quiz-providers';
+import { useSocket } from '../mp-quiz-providers';
 
 function MpQuizSocketStatus() {
   const ws = useSocket() || {};
-  const { OPEN = null, readyState } = ws || {};
-  // const { connection } = ws || {};
-  // const { OPEN = null, readyState } = { ...(connection || {}) };
-  // if(connection){
-  //   debugger
-  // }
-  // console.log(connection, 'connection');
+  const { readyState } = ws || {};
   const statusObj = {
     [window.WebSocket.CLOSED]: 'Closed',
     [window.WebSocket.OPEN]: 'Open',
@@ -17,18 +11,8 @@ function MpQuizSocketStatus() {
   };
   return (
     <div>
-      MpQuizSocketStatus
-      {/* {console.log('ws.connection', ws.connection)} */}
-      <p>
-        {`${readyState}`}
-        {statusObj[readyState]}
-      </p>
+      <p>{`MpQuizSocketStatus - ${statusObj[readyState || 0]} - (${readyState})`}</p>
     </div>
   );
 }
 export default MpQuizSocketStatus;
-/*
-    Socket context undali.
-    quiz events context - trigger and receive - save message data.
-    questions context - fetch quesions - controls - attempt - track
-*/

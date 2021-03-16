@@ -1,22 +1,31 @@
 import React from 'react';
-import { useSocket, GlobalSocket } from '../mp-quiz-providers';
+import { useQuizContext, constants } from '../mp-quiz-providers';
 
+const {
+  socketContants: {
+    eventLabels: {
+      joinLobby: joinLobbyLabel,
+      fetchParticipants: fetchParticipantsLabel,
+      fetchLeaderboard: fetchLeaderboardLabel,
+      respondToQuestion: respondToQuestionLabel,
+      startQuiz: startQuizLabel,
+      endQuiz: endQuizLabel,
+      removeUser: removeUserLabel,
+    },
+  },
+} = constants;
 function MpQuizPlay() {
-  const socket = useSocket();
-  React.useEffect(() => {
-    // debugger;
-    if (socket) {
-      // debugger;
-      socket.bind('fetch_participants', (a, b, c, d) => {
-        console.log(a, b, c, d);
-      });
-    }
-  }, [socket]);
-  return <p>Quiz Lobby</p>;
+  const quizEventsData = useQuizContext() || {};
+  const { data: { data: participants = [], status: { success, message } = {} } = {} } =
+    quizEventsData[fetchParticipantsLabel] || {};
+  return (
+    <>
+      <p>Quiz Lobby</p>
+      {message}
+      {participants.map((participant) => (
+        <p>{participant.lobby_user__first_name}</p>
+      ))}
+    </>
+  );
 }
 export default MpQuizPlay;
-/*
-    Socket context undali.
-    quiz events context - trigger and receive - save message data.
-    questions context - fetch quesions - controls - attempt - track
-*/
