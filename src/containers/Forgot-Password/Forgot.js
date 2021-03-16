@@ -164,17 +164,19 @@ function Forgot({ onLogin, history, aolOnLogin }) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  loginInProgress: state.auth.loginInProgress,
-});
+// const mapStateToProps = (state) => ({
+//   loginInProgress: state.auth.loginInProgress,
+// });
 
-const mapDisptachToProps = (dispatch) => ({
-  onLogin: (params) => {
-    return dispatch(login(params));
-  },
-  aolOnLogin: (params) => {
-    return dispatch(aolLogin(params));
-  },
-});
+// const mapDisptachToProps = (dispatch) => ({
+//   onLogin: (params) => {
+//     return dispatch(login(params));
+//   },
+//   aolOnLogin: (params) => {
+//     return dispatch(aolLogin(params));
+//   },
+// });
 
-export default connect(mapStateToProps, mapDisptachToProps)(Forgot);
+// export default connect(mapStateToProps, mapDisptachToProps)(Forgot);
+
+export default Forgot;
