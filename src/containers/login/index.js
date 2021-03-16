@@ -310,6 +310,12 @@ function SignIn({ onLogin, history, aolOnLogin }) {
     }
   };
 
+  const handleForgot = () => {
+ 
+    history.push('/forgot');
+
+  };
+
   useEffect(() => {
     if (erpSearch !== null) {
       setLoading(true);
@@ -401,6 +407,13 @@ function SignIn({ onLogin, history, aolOnLogin }) {
               >
                 Sign In
               </Button>
+
+              <div 
+                onClick={() =>{
+                  handleForgot();
+                }}
+                className='forgot'
+              >Forgot Password ?</div>
             </form>
           </div>
           <Box mt={8}>
