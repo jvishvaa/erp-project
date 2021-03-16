@@ -101,8 +101,17 @@ export function QuizContextProvider({ children }) {
   }, [removeUser]);
 
   console.log(eventDataSetConfig, 'eventDataSetConfig');
+  const { is_started: isQuizStarted, is_ended: isQuizEnded } = quizDetails || {};
   return (
-    <QuizContext.Provider value={eventDataSetConfig}>{children}</QuizContext.Provider>
+    <QuizContext.Provider
+      value={{
+        ...eventDataSetConfig,
+        isQuizStarted,
+        isQuizEnded,
+      }}
+    >
+      {children}
+    </QuizContext.Provider>
   );
 }
 

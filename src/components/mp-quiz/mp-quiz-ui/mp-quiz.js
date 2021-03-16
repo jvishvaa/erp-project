@@ -9,13 +9,8 @@ function MpQuiz() {
   return (
     <>
       <p>MpQuiz</p>
-
       <MpQuizSocketStatus key={readyState} />
-      {readyState === window.WebSocket.OPEN ? (
-        <>
-          <MpQuizPlay key={readyState} />
-        </>
-      ) : null}
+      {readyState === window.WebSocket.OPEN ? <MpQuizPlay key={readyState} /> : null}
     </>
   );
 }
