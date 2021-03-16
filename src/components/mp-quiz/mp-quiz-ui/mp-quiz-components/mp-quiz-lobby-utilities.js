@@ -1,5 +1,5 @@
 import React from 'react';
-import { Slide, Modal, Avatar } from '@material-ui/core';
+import { Modal, Avatar } from '@material-ui/core';
 import LinkTag from '@material-ui/core/Link';
 import IconButton from '@material-ui/core/IconButton';
 import ClearIcon from '@material-ui/icons/Clear';
@@ -9,12 +9,14 @@ import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 
 import {
   useQuizContext,
+  useQuizEventTriggers,
   constants,
   useQuizUitilityContext,
 } from '../../mp-quiz-providers';
+
 import CurrentScore, {
   ParticipantCount,
-  //   QuizTimer,
+  QuizTimer,
   QuestionCount,
   CurrentRank,
 } from './leaderboard/LeaderBoardUtility';
@@ -118,6 +120,7 @@ export function FullScreenBtn() {
 }
 
 export function HostQuizTopBarContent() {
+  const { endQuizTrigger } = useQuizEventTriggers();
   // return <p>Host quiz topbar cnt</p>
   return (
     <>
@@ -128,7 +131,7 @@ export function HostQuizTopBarContent() {
           // eslint-disable-next-line no-alert
           const ifYes = window.confirm('Are you sure on your action?');
           if (ifYes) {
-            // endQuizTrigger(this.props.websocket);
+            endQuizTrigger();
           }
         }}
       >
@@ -138,85 +141,89 @@ export function HostQuizTopBarContent() {
   );
 }
 
-// export function getDurationCounter() {
-//   const counterDuration = 3;
-//   const questionAnimDuration = 1;
-//   const lbDuration = 5;
-//   const questionOptionduration = 2.5;
-//   const memeDuration = 5;
-//   /*
-//    * This duration module to be refactored.
-//    */
-//   // let { wb_quiz_details: quizDetails = {} } = this.props
+export function getDurationCounter(props) {
+  const counterDuration = 3;
+  const questionAnimDuration = 1;
+  const lbDuration = 5;
+  const questionOptionduration = 2.5;
+  const memeDuration = 5;
+  /*
+   * This duration module to be refactored.
+   */
+  // let { wb_quiz_details: quizDetails = {} } = this.props
 
-//   const {
-//     quiz_details: { data: { data: quizDetails = {} } = {} } = {},
-//     isHost,
-//     getCurrentPlayerInfo,
-//   } = useQuizContext();
+  // const {
+  //   quiz_details: { data: { data: quizDetails = {} } = {} } = {},
+  //   isHost,
+  //   getCurrentPlayerInfo,
+  // } = useQuizContext();
+  const { quizDetails, getCurrentPlayerInfo } = props;
 
-//   const {
-//     duration: durationInMin = 0,
-//     started_at: startedAt,
-//     total_no_of_questions: totalNoOfQuestions = 0,
-//   } = quizDetails || {};
-//   const durationInSec = durationInMin * 60;
-//   const [currentUserId, currentPlayerObj] = getCurrentPlayerInfo();
-//   const { joined_at: joinedAt } = currentPlayerObj;
-//   // let { isHost } = this.props
-//   const { __questionData } = this.state;
-//   let {
-//     // activeStep: currentQuesionIndex = 0,
-//     timeToRender,
-//   } = __questionData || {};
-//   let passedDuration = 0;
-//   const sagDuration =
-//     questionAnimDuration + questionOptionduration + lbDuration + memeDuration;
-//   let quizDuration;
-//   let quizStartedAt;
-//   let startImmediately;
-//   const onZerothChckP = () => {};
+  const {
+    duration: durationInMin = 0,
+    started_at: startedAt,
+    total_no_of_questions: totalNoOfQuestions = 0,
+  } = quizDetails || {};
+  const durationInSec = durationInMin * 60;
+  const [currentUserId, currentPlayerObj] = getCurrentPlayerInfo();
+  const { joined_at: joinedAt } = currentPlayerObj;
+  // let { isHost } = this.props
+  // const { __questionData } = this.state;
+  // use questions context here
+  const { __questionData } = props;
+  let {
+    // activeStep: currentQuesionIndex = 0,
+    timeToRender,
+  } = __questionData || {};
+  let passedDuration = 0;
+  const sagDuration =
+    questionAnimDuration + questionOptionduration + lbDuration + memeDuration;
+  let quizDuration;
+  let quizStartedAt;
+  let startImmediately;
+  const onZerothChckP = () => {};
 
-//   // remove below statement to handle indepdent times in next release.
-//   isHost = true;
-//   // logic to run counter equally
-//   if (isHost === true) {
-//     quizDuration = durationInSec + totalNoOfQuestions * sagDuration + counterDuration;
-//     quizStartedAt = startedAt;
-//     startImmediately = !!(startedAt && startedAt !== 'None');
-//     timeToRender = startImmediately ? 'render_question' : undefined;
-//   } else if (isHost === false) {
-//     quizDuration = durationInSec;
-//     quizStartedAt = joinedAt;
-//     startImmediately = false;
-//   }
-//   console.log(quizDuration, startedAt, currentUserId);
-//   if (quizStartedAt !== 'None') {
-//     try {
-//       quizStartedAt = new Date(quizStartedAt);
-//       const epochStartedAt = quizStartedAt.getTime();
-//       if (isNaN(epochStartedAt)) {
-//         // eslint-disable-next-line no-throw-literal
-//         throw 'Invalid time fomat';
-//       }
-//       const epochNow = new Date().getTime();
-//       passedDuration = epochNow - epochStartedAt;
-//       passedDuration /= 1000;
-//     } catch (e) {
-//       passedDuration = 0;
-//     }
-//   }
-//   const timeLeft = quizDuration - passedDuration;
-//   const { timerAction } = this.state;
-//   return {
-//     onZerothChckP,
-//     startImmediately,
-//     duration: timeLeft,
-//     timerAction,
-//     startedAt,
-//     timeToRender,
-//   };
-// }
+  // remove below statement to handle indepdent times in next release.
+  const isHost = true;
+  // logic to run counter equally
+  if (isHost === true) {
+    quizDuration = durationInSec + totalNoOfQuestions * sagDuration + counterDuration;
+    quizStartedAt = startedAt;
+    startImmediately = !!(startedAt && startedAt !== 'None');
+    timeToRender = startImmediately ? 'render_question' : undefined;
+  } else if (isHost === false) {
+    quizDuration = durationInSec;
+    quizStartedAt = joinedAt;
+    startImmediately = false;
+  }
+  console.log(quizDuration, startedAt, currentUserId);
+  if (quizStartedAt !== 'None') {
+    try {
+      quizStartedAt = new Date(quizStartedAt);
+      const epochStartedAt = quizStartedAt.getTime();
+      if (isNaN(epochStartedAt)) {
+        // eslint-disable-next-line no-throw-literal
+        throw 'Invalid time fomat';
+      }
+      const epochNow = new Date().getTime();
+      passedDuration = epochNow - epochStartedAt;
+      passedDuration /= 1000;
+    } catch (e) {
+      passedDuration = 0;
+    }
+  }
+  const timeLeft = quizDuration - passedDuration;
+  // const { timerAction } = this.state; Please handle this
+  let timerAction;
+  return {
+    onZerothChckP,
+    startImmediately,
+    duration: timeLeft,
+    timerAction,
+    startedAt,
+    timeToRender,
+  };
+}
 
 function GetAvatar({ url = '', firstName = '' }) {
   const { openSettingsModal } = useQuizUitilityContext || {};
@@ -264,6 +271,7 @@ export function RenderUtilityContent({ showUtilities }) {
     getCurrentPlayerInfo,
     [fetchParticipantsLabel]: { data: { data: participants = [] } = {} } = {},
     [fetchLeaderboardLabel]: { data: { data: leaderboardData = [] } = {} } = {},
+    quiz_details: { data: { data: quizDetails = {} } = {} } = {},
   } = useQuizContext() || {};
   const [currentUserId, currentPlayerObj] = getCurrentPlayerInfo();
   const { total_score: totalScore, rank } = currentPlayerObj || {};
@@ -289,8 +297,14 @@ export function RenderUtilityContent({ showUtilities }) {
             )}
           </span>
           <span className='quiz__topbar--timer'>
-            {/* <QuizTimer {...this.getDurationCounter()} /> */}
-            QuizTimer
+            <QuizTimer
+              {...getDurationCounter({
+                quizDetails,
+                isHost,
+                getCurrentPlayerInfo,
+              })}
+              // timeToRender='render_question' // Please handle: please remove this once question context is set
+            />
           </span>
           <span className='quiz__topbar--participantcount'>
             <ParticipantCount participantsCount={participants.length} />
@@ -346,6 +360,7 @@ export function LobbyParticipantsContainer() {
   // participants = participants.map(item => ({ ...item, name: item.first_name }))
   // const { avatar = '' } = participants.find(participant => participant.user_id === userId) || {}
 
+  const { removeUserTrigger, startQuizTrigger } = useQuizEventTriggers();
   const {
     // isQuizStarted,
     // isQuizEnded,
@@ -362,17 +377,7 @@ export function LobbyParticipantsContainer() {
   }));
   const { avatar = '' } =
     participantsArray.find((participant) => participant.user_id === currentUserId) || {};
-  const removeUser = isHost
-    ? {
-        removeUser: () => {
-          // eslint-disable-next-line no-alert
-          const confirmed = window.confirm('Remove user?');
-          if (confirmed) {
-            // removeUserTrigger(this.props.websocket, participant.user_id);
-          }
-        },
-      }
-    : { removeUser: false };
+
   return (
     <div className='lobby__participants--container'>
       <h2 className='lobby__header--title' style={{ textAlign: 'center' }}>
@@ -386,7 +391,9 @@ export function LobbyParticipantsContainer() {
           size='large'
           style={{ backgroundColor: '#27a936' }}
           disabled={!isHost}
-          // onClick={() => { startQuizTrigger(this.props.websocket) }}
+          onClick={() => {
+            startQuizTrigger();
+          }}
         >
           Start Quiz
         </button>
@@ -396,16 +403,25 @@ export function LobbyParticipantsContainer() {
 
       <div className='lobby__participants'>
         {participants.length
-          ? participants.map((participant) => (
-            <div>
-                <StudentDetails
-                isHost={isHost}
-                currentUserId={currentUserId}
-                removeUser={removeUser}
-                {...participant}
-              />
-              </div>
-            ))
+          ? participants.map((participant) => {
+              const removeUserFunc = () => {
+                // eslint-disable-next-line no-alert
+                const confirmed = window.confirm('Remove user?');
+                if (confirmed) {
+                  removeUserTrigger(participant.user_id);
+                }
+              };
+              return (
+                <div>
+                  <StudentDetails
+                    isHost={isHost}
+                    currentUserId={currentUserId}
+                    {...participant}
+                    removeUser={isHost ? removeUserFunc : false}
+                  />
+                </div>
+              );
+            })
           : null}
       </div>
     </div>

@@ -114,8 +114,6 @@ export function QuizContextProvider({ children }) {
     }
   }, [removeUser]);
 
-  console.log(eventDataSetConfig, 'eventDataSetConfig');
-
   function getUserAndQuizInfoStatus() {
     const { is_started: isQuizStarted, is_ended: isQuizEnded } = quizDetails || {};
     const {
