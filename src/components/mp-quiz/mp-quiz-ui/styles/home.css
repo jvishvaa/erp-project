@@ -13,7 +13,7 @@
     bottom: 0px; 
     top: 0px; 
     left: 0px;  */
-    /* background-image: url('../leaderboard/assets/quiz_background.svg'); */
+    /* background-image: url('../mp-quiz-components/leaderboard/assets/quiz_background.svg'); */
     background-size: cover;
     /* background-color: var(--quiz-bg-color); */
     color: var(--quiz-color);
@@ -52,20 +52,20 @@
 }
 
 .quiz__volume--mute {
-    content: url('../leaderboard/assets/Sound_on.svg');
+    content: url('../mp-quiz-components/leaderboard/assets/Sound_on.svg');
 
 }
 
 .quiz__volume--unmute {
-    content: url('../leaderboard/assets/Sound_off.svg');
+    content: url('../mp-quiz-components/leaderboard/assets/Sound_off.svg');
 }
 
 .quiz__background--started {
-    content: url('../leaderboard/assets/bg.png');
+    content: url('../mp-quiz-components/leaderboard/assets/bg.png');
 }
 
 .quiz__background--ended {
-    content: url('../leaderboard/assets//post_quiz_bg_desktop.png');
+    content: url('../mp-quiz-components/leaderboard/assets//post_quiz_bg_desktop.png');
 }
 
 .Quiz-home *{ 
@@ -539,11 +539,11 @@ background-color: #27a936;
 @media only screen and (max-width: 900px) {
 
     .quiz__background--started {
-        content: url('../leaderboard/assets/Tablet_BG_Lines_and_score_holder.png');
+        content: url('../mp-quiz-components/leaderboard/assets/Tablet_BG_Lines_and_score_holder.png');
     }
 
     .quiz__background--ended {
-        content: url('../leaderboard/assets/post_quiz_bg_tablet.png');
+        content: url('../mp-quiz-components/leaderboard/assets/post_quiz_bg_tablet.png');
     }
 
 
@@ -613,11 +613,11 @@ background-color: #27a936;
 @media only screen and (max-width: 500px) {
     
     .quiz__background--started {
-        content: url('../leaderboard/assets/BG_Lines_Pr_mobile_.png');
+        content: url('../mp-quiz-components/leaderboard/assets/BG_Lines_Pr_mobile_.png');
     }
 
     .quiz__background--ended {
-        content: url('../leaderboard/assets/post_quiz_bg_mobile.png');
+        content: url('../mp-quiz-components/leaderboard/assets/post_quiz_bg_mobile.png');
     }
 
     .quiz__topbar--questioncount {

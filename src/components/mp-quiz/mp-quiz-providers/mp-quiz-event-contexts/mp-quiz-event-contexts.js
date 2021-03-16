@@ -93,6 +93,20 @@ export function QuizContextProvider({ children }) {
     setQuizDetails(quizDetailsData);
   }
 
+  function getCurrentPlayerInfo() {
+    const { currentUserId } = getUserAndQuizInfoStatus();
+    const { data: leaderBoardArray = [] } = leaderboard || {};
+    const tempArray = leaderBoardArray.filter(
+      (playerObj) => String(playerObj.user_id) === String(currentUserId)
+    );
+    let playerObj = {};
+    if (tempArray.length === 1) {
+      playerObj = tempArray[0];
+    } else {
+      playerObj = { first_name: 'Un identified user' };
+    }
+    return [currentUserId, playerObj];
+  }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (removeUser) {
@@ -101,13 +115,43 @@ export function QuizContextProvider({ children }) {
   }, [removeUser]);
 
   console.log(eventDataSetConfig, 'eventDataSetConfig');
-  const { is_started: isQuizStarted, is_ended: isQuizEnded } = quizDetails || {};
+
+  function getUserAndQuizInfoStatus() {
+    const { is_started: isQuizStarted, is_ended: isQuizEnded } = quizDetails || {};
+    const {
+      data: {
+        is_host: isHost,
+        is_participant: isParticipant,
+        user_id: currentUserId,
+      } = {},
+    } = joinLobby || {};
+    const userType = isHost ? 'HOST' : 'JOINEE';
+    const quizStatus = isQuizStarted ? 'QUIZ' : 'LOBBY';
+    return {
+      isQuizStarted,
+      isQuizEnded,
+      currentUserId,
+      isHost,
+      isParticipant,
+      userType,
+      quizStatus,
+      userQuizStatus: `${userType}_${quizStatus}`,
+    };
+  }
   return (
     <QuizContext.Provider
       value={{
         ...eventDataSetConfig,
-        isQuizStarted,
-        isQuizEnded,
+        // isQuizStarted,
+        // isQuizEnded,
+        // currentUserId,
+        // isHost,
+        // isParticipant,
+        // userType,
+        // quizStatus,
+        // userQuizStatus: `${userType}_${quizStatus}`,
+        ...getUserAndQuizInfoStatus(),
+        getCurrentPlayerInfo,
       }}
     >
       {children}
@@ -120,7 +164,7 @@ QuizContextProvider.propTypes = {
 };
 
 QuizContextProvider.defaultProps = {
-  children: '',
+  children: 'No child element passed to QuizContextProvider',
 };
 
 export function useQuizContext() {
