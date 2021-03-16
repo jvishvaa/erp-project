@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useState, useEffect } from 'react';
-import { Grid, Card, Divider, Button, Popover, Typography } from '@material-ui/core';
+import { Grid, Card, Divider, Button, Popover, Typography,Tooltip,IconButton } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import CloseIcon from '@material-ui/icons/Close';
 import moment from 'moment';
@@ -12,7 +12,36 @@ import { AlertNotificationContext } from '../../../../context-api/alert-context/
 import ResourceDialog from '../../../online-class/online-class-resources/resourceDialog';
 import CountdownTimer from './CountdownTimer';
 import './index.css';
+import {
+  AttachFile as AttachFileIcon,
+} from '@material-ui/icons'
+import Modal from '@material-ui/core/Modal';
 
+import { makeStyles } from '@material-ui/core/styles';
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+}));
+function rand() {
+  return Math.round(Math.random() * 20) - 10;
+}
+
+function getModalStyle() {
+  const top = 50 + rand();
+  const left = 50 + rand();
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
 const JoinClass = (props) => {
   const fullData = props.fullData;
   const handleClose = props.handleClose;
@@ -25,6 +54,8 @@ const JoinClass = (props) => {
     props.data ? props.data.is_restricted : false
   );
   const history = useHistory();
+  const [QpList,setQpList]=([])
+  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const classStartTime = moment(props && props?.data && props?.data?.date).format(
     'DD-MM-YYYY'
@@ -35,6 +66,48 @@ const JoinClass = (props) => {
   const currTime = moment(new Date()).format('x');
   const classTimeMilli = new Date(`${props.data.date}T${startTime}`).getTime();
   const diffTime = classTimeMilli - 5 * 60 * 1000;
+  const [openQP, setOpenQP] = React.useState(false);
+  const classes = useStyles();
+  // getModalStyle is not a pure function, we roll the style only on the first render
+  const [modalStyle] = React.useState(getModalStyle);
+  const handleOpenQP = () => {
+    setOpenQP(true);
+    
+    
+  };
+  useEffect(() => {
+  getQP();
+ }, [fullData, handleClose]);
+  const getQP =  () => {
+   
+    axiosInstance
+    .get(
+      `${endpoints.questionPaper.FETCHQP}`,
+      {
+        headers: {
+          'x-api-key': 'vikash@12345#1231',
+        },
+      }
+    )
+    .then((result) => {
+      if (result.data.status_code === 200) {
+        setLoading(false);
+        setQpList(result.data.result);
+        console.log(result.data,"@@@@@@@@2")
+      } else {
+        setLoading(false);
+        setAlert('error', result.data.description);
+      }
+    })
+    .catch((error) => {
+      setLoading(false);
+      setAlert('error', error.message);
+    });
+  };
+
+  const handleCloseQP = () => {
+    setOpenQP(false);
+  };
 
   console.log(
     classTimeMilli,
@@ -122,6 +195,14 @@ const JoinClass = (props) => {
         });
     }
   }
+  const body = (
+    <div style={modalStyle} className={classes.paper}
+   
+    >
+     hiiiiiiiiiiiiiiii
+     <Button>Assign Question Paper</Button>
+    </div>
+  );
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
@@ -133,6 +214,27 @@ const JoinClass = (props) => {
         <span className='TeacherFullViewdescreption1'>
           {moment(props.data ? props.data.date : '').format('DD-MM-YYYY')}
         </span>
+        {
+          
+          <Tooltip title='Attach Question Paper'>
+            <IconButton
+            onClick={handleOpenQP}
+          
+            >
+              <AttachFileIcon />
+            </IconButton>
+          </Tooltip>
+  
+  
+          }
+           <Modal
+        open={openQP}
+        onClose={()=> handleCloseQP}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        {body}
+      </Modal>
       </Grid>
 
       {isAccept ? (
@@ -324,7 +426,7 @@ const DetailCardView = ({
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const history = useHistory();
-  const { role_details } = JSON.parse(localStorage.getItem('userDetails'));
+  // const { role_details } = JSON.parse(localStorage.getItem('userDetails'));
   /*
   useEffect(() => {
     if (fullData) {

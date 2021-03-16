@@ -1,4 +1,4 @@
-// const baseURLCentral = 'http://13.232.30.169/qbox';
+
 const baseURLCentral ='https://dev.mgmt.letseduvate.com/qbox';
 export default {
   auth: {
@@ -251,6 +251,9 @@ export default {
     userAssessmentSubmission: `${baseURLCentral}/assessment/user_response/`,
     fetchAssessmentQuestionPapersQuestions: `${baseURLCentral}/assessment/<question-paper-id>/qp-questions-list/`,
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
+  },
+  questionPaper:{
+    FETCHQP:`${baseURLCentral}/assessment/list-question-paper/`,
   },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
