@@ -426,8 +426,8 @@ const Layout = ({ children, history }) => {
         history.push('/user-management/assign-role');
         break;
       }
-      case 'Add Role': {
-        history.push('/role-management/create-role');
+      case 'View Role': {
+        history.push('/role-management');
         break;
       }
       // case 'subject-table': {

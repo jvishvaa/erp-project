@@ -25,17 +25,17 @@ const ChapterTypeCard = (props) => {
                 component='p'
                 color='secondary'
               >
-                Message Type
+                Chapter Type
               </Typography>
               <Typography
                 className={classes.content}
                 variant='p'
                 component='p'
                 color='secondary'
-                title={msgtype?.category_name}
+                title={msgtype?.chapter_name}
                 noWrap
               >
-                {msgtype.category_name}
+                {msgtype.chapter_name}
               </Typography>
           </Grid>
         <Grid item xs={12}>
@@ -49,7 +49,7 @@ const ChapterTypeCard = (props) => {
                 onClick={() => {
                   handleEditMessageType(
                     msgtype.id,
-                    msgtype.category_name,
+                    msgtype.chapter_name,
                   );
                 }}
               >

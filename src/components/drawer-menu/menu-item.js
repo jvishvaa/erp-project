@@ -22,7 +22,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     // { name: 'Attend Online Class', Path: '/online-class/attend-class' },
     // { name: 'Teacher View Class', Path: '/online-class/teacher-view-class' },
     { name: 'Role Management', Path: '/role-management' },
-    { name: 'Add Role', Path: '/role-management/create-role' },
+    { name: 'View Role', Path: '/role-management' },
     { name: 'Master Management', Path: '/master-mgmt' },
     { name: 'Subject', Path: '/master-mgmt/subject-table' },
     { name: 'Section', Path: '/master-mgmt/section-table' },
