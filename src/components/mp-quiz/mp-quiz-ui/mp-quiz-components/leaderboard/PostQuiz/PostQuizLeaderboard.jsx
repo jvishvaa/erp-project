@@ -33,6 +33,7 @@ class PostQuizLeaderboard extends Component {
     const { leaderboardData = [],
       quizDetails: { total_possible_score: possibleScore = 0, total_no_of_questions: totalQuestions },
       currentPlayerObj = {},
+      currentUserId,
       isQuizEnded,
       isHost,
       onlineClassId
@@ -96,7 +97,7 @@ class PostQuizLeaderboard extends Component {
               : null}
             <div className='postquiz__participants--container'>
               <div>
-                <OrderedList leaders={leaderboardData} showTopFive={showTopFive} showWithProgress possibleScore={possibleScore} totalQuestions={totalQuestions} isHost={isHost} />
+                <OrderedList currentUserId={currentUserId} leaders={leaderboardData} showTopFive={showTopFive} showWithProgress possibleScore={possibleScore} totalQuestions={totalQuestions} isHost={isHost} />
               </div>
             </div>
           </div>

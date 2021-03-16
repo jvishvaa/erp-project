@@ -2,8 +2,12 @@ import React, { Component } from 'react'
 import { Grid } from '@material-ui/core'
 import axios from 'axios'
 import ReactHTMLParser from 'react-html-parser'
-import { urls } from '../../../../../urls'
-import { InternalPageStatus } from '../../../../../ui'
+// import { urls } from '../../../../../urls'
+// import { InternalPageStatus } from '../../../../../ui'
+import InternalPageStatus  from '../../internal-page-status'
+import { constants } from '../../../../mp-quiz-providers'
+
+const {urls}=constants||{}
 
 export class ReviewAnswers extends Component {
   constructor () {

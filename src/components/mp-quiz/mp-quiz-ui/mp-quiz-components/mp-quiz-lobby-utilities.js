@@ -1,5 +1,6 @@
 import React from 'react';
 import { Slide, Modal, Avatar } from '@material-ui/core';
+import LinkTag from '@material-ui/core/Link';
 import IconButton from '@material-ui/core/IconButton';
 import ClearIcon from '@material-ui/icons/Clear';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -20,6 +21,8 @@ import CurrentScore, {
 
 import StudentDetails from './leaderboard/StudentDetails';
 import PostQuizLeaderboard from './leaderboard/PostQuiz/PostQuizLeaderboard';
+import HostPostQuizReport from './leaderboard/HostPostQuizReport/HostPostQuizReport';
+
 import { FullScreenConstructor } from '../../mp-quiz-utils';
 
 const {
@@ -30,6 +33,31 @@ const {
     },
   },
 } = constants;
+
+export function GetErrorMsgC({ label }) {
+  return (
+    <div style={{ textAlign: 'center' }}>
+      <h5>Please wait...The connection was interrupted</h5>
+
+      <h6>
+        If you see this error for long, please&nbsp;
+        <LinkTag
+          component='button'
+          // Include a function to auto report
+          // with compoent ws_ state vars route and user.
+          onClick={() => {
+            window.location.reload();
+          }}
+        >
+          <b>Click here to reload_</b>
+        </LinkTag>
+      </h6>
+      <p>
+        <small>{label}</small>
+      </p>
+    </div>
+  );
+}
 
 export function ClearOrPauseBtn(props) {
   return (
@@ -372,6 +400,7 @@ export function LobbyParticipantsContainer() {
             <div>
                 <StudentDetails
                 isHost={isHost}
+                currentUserId={currentUserId}
                 removeUser={removeUser}
                 {...participant}
               />
@@ -419,6 +448,83 @@ export function HostQuizContainerContent() {
           // onlineClassId={this.props.onlineClassId}
         />
       </div>
+    </>
+  );
+}
+
+export function JoineeQuizContainerContent() {
+  // const { isMuted } = this.state
+  // const wbData = {}
+  // Object.keys(this.props).filter(key => key.includes('wb_')).forEach(keyName => {
+  //   wbData[keyName] = this.props[keyName]
+  // })
+  return (
+    <>
+      <RenderUtilityContent showUtilities />
+      {/* <QuestionHandler
+        onlineClassId={this.props.onlineClassId}
+        websocket={this.props.websocket}
+        {...wbData}
+        updateStateToParent={(data = {}) => {
+          this.updateChildParamToState('__questionData', data)
+        }}
+        bgms={this.props.bgms}
+        isMuted={isMuted}
+      /> */}
+      <div>
+        <p>Question handler comp comes here</p>
+      </div>
+    </>
+  );
+}
+export function HostAndQuizEnded(props) {
+  const {
+    // isQuizStarted,
+    // isQuizEnded,
+    // isHost,
+    // getCurrentPlayerInfo,
+    // [fetchParticipantsLabel]: { data: { data: participants = [] } = {} } = {},
+    [fetchLeaderboardLabel]: {
+      data: { data: leaderboardData = [], quiz_summary: quizSummary = {} } = {},
+    } = {},
+  } = useQuizContext() || {};
+  return (
+    <>
+      <RenderUtilityContent showUtilities={false} />
+      <div className='studentpostquiz__leaderboard--container'>
+        <h2 className='leaderboard__title--host'>Quiz Ended..</h2>
+        <div className='quiz__results--container'>
+          <HostPostQuizReport
+            onlineClassId={props.onlineClassId}
+            leaders={leaderboardData}
+            quizSummary={quizSummary}
+          />
+        </div>
+      </div>
+    </>
+  );
+}
+export function JoineeAndQuizHasFinishedOrEnded(props) {
+  const {
+    // isQuizStarted,
+    isQuizEnded,
+    // isHost,
+    getCurrentPlayerInfo,
+    // [fetchParticipantsLabel]: { data: { data: participants = [] } = {} } = {},
+    [fetchLeaderboardLabel]: { data: { data: leaderboardData = [] } = {} } = {},
+    quiz_details: { data: { data: quizDetails = {} } = {} } = {},
+  } = useQuizContext() || {};
+  const [currentUserId, currentPlayerObj] = getCurrentPlayerInfo();
+  return (
+    <>
+      <RenderUtilityContent showUtilities={false} />
+      <PostQuizLeaderboard
+        leaderboardData={leaderboardData}
+        quizDetails={quizDetails}
+        currentPlayerObj={currentPlayerObj}
+        isQuizEnded={isQuizEnded}
+        onlineClassId={props.onlineClassId}
+      />
     </>
   );
 }

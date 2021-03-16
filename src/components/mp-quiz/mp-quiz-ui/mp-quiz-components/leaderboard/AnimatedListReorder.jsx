@@ -7,7 +7,6 @@ class AnimatedListReorder extends React.Component {
   state={}
   constructor (props) {
     super(props)
-    const { personal_info: personalInfo } = JSON.parse(localStorage.getItem('user_profile')) || {}
     this.state = {
       personalInfo,
       applyAnimEffect: false
@@ -34,13 +33,13 @@ class AnimatedListReorder extends React.Component {
   //   this.setState({ previousData: this.props.data, data: nextProps.data })
   // }
   render () {
-    const { personalInfo, applyAnimEffect } = this.state
-    const { data = [], previousData = [] } = this.props
+    const { applyAnimEffect } = this.state
+    const { currentUserId, data = [], previousData = [] } = this.props
     return (
       <div className='list__ordering--container'>
         <div className='list__ordering--itemscontainer'>
           {data.map((item, key) => {
-            const me = String(personalInfo.user_id) === String(item.user_id)
+            const me = String(currentUserId) === String(item.user_id)
             return <div
               key={key}
               className='list__ordering--item'

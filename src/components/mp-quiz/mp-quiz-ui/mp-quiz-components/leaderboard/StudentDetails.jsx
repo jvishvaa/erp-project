@@ -14,12 +14,12 @@ class StudentDetails extends Component {
   }
 
   render () {
-    const { personal_info: personalInfo } = JSON.parse(localStorage.getItem('user_profile')) || {}
-    const { name = 'Unknown', user_id: userId, isHost, removeUser, avatar = '' } = this.props
-    const me = String(personalInfo.user_id) === String(userId)
+    const { currentUserId, name = 'Unknown', user_id: userId, isHost, removeUser, avatar = '' } = this.props
+    const me = String(currentUserId) === String(userId)
     const { mouseOnMe } = this.state || {}
     if (isHost) {
-      return (<div
+      return (
+      <div
         onMouseEnter={() => { this.setState({ mouseOnMe: true }) }}
         onMouseLeave={() => { this.setState({ mouseOnMe: false }) }}
         className={`quiz__rank--container ${mouseOnMe ? 'quiz__rank--bg-white' : 'quiz__rank--bg-blue'}`}

@@ -8,9 +8,7 @@ import PostQuizStudentRankingDetails from './PostQuiz/PostQuizStudentRankingDeta
 export class OrderedList extends Component {
   constructor () {
     super()
-    this.state = {
-      personalInfo: JSON.parse(localStorage.getItem('user_profile')).personal_info
-    }
+    this.state = {}
   }
 
   myRef = React.createRef()
@@ -65,13 +63,14 @@ export class OrderedList extends Component {
   }
 
   render () {
-    const { showWithProgress, leaders, possibleScore, totalQuestions, isHost, showTopFive } = this.props
+    const {currentUserId, showWithProgress, leaders, possibleScore, totalQuestions, isHost, showTopFive } = this.props
     return (
       <div>
         {leaders.map(({ user_id: userId, ...otherProps }, index) => {
           return showWithProgress
             ? <PostQuizStudentRankingDetails
               key={userId}
+              currentUserId={currentUserId}
               {...otherProps}
               possibleScore={possibleScore}
               ref={userId}
@@ -80,6 +79,7 @@ export class OrderedList extends Component {
               visibility={showTopFive && index > 4 ? 'hidden' : 'visible'}
             />
             : <StudentRankingDetails
+              currentUserId={currentUserId}
               key={userId}
               studentDetails={{ ...otherProps, user_id: userId, childRef: this.myRef }}
               ref={userId}

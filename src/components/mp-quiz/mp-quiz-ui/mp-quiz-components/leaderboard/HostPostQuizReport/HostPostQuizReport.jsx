@@ -6,11 +6,12 @@ import ToughestQuestion from './ToughestQuestion'
 import LongestQuestion from './LongestQuestion'
 import ClassAccuracy from './ClassAccuracy'
 import HostPostStudentRankingDetails from './HostPostStudentRankingDetails'
-import { urls } from '../../../../../urls'
 import './HostPostQuiz.css'
-import { InternalPageStatus } from '../../../../../ui'
+import InternalPageStatus  from '../../internal-page-status'
+import { constants } from '../../../../mp-quiz-providers'
 
-export class HostPostQuizReport extends Component {
+const {urls}=constants||{}
+class HostPostQuizReport extends Component {
   constructor () {
     super()
 

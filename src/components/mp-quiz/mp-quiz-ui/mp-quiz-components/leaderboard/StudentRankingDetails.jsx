@@ -13,9 +13,8 @@ class StudentRankingDetails extends Component {
   }
 
   render () {
-    const personalInfo = JSON.parse(localStorage.getItem('user_profile')).personal_info
-    const { rank, total_score: totalScore, user_id: userId, first_name: name, childRef, avatar = '' } = this.props.studentDetails
-    const me = String(personalInfo.user_id) === String(userId)
+    const { currentUserId, rank, total_score: totalScore, user_id: userId, first_name: name, childRef, avatar = '' } = this.props.studentDetails
+    const me = String(currentUserId) === String(userId)
     return (
       <div
         ref={me ? childRef : ''}
