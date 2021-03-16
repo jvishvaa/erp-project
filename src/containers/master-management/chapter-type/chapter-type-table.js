@@ -76,11 +76,12 @@ const ChapterTypeTable = (setCentralSubjectName) => {
     const [loading, setLoading] = useState(false);
     const [page, setPage] = React.useState(1);
     const [goBackFlag,setGoBackFlag]=useState(false)
-    const limit = 2;
+    const limit = 15;
     const [delFlag, setDelFlag] = useState(false);
     const [totalCount, setTotalCount] = useState(0);
     const [messageType, setMessageType] = useState([]);
     const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
+    const [academicYear, setAcademicYear] = useState([])
     const [branchDropdown, setBranchDropdown] = useState([]);
     const [overviewSynopsis, setOverviewSynopsis] = useState([]);
     const [gradeDropdown, setGradeDropdown] = useState([]);
@@ -130,20 +131,32 @@ const ChapterTypeTable = (setCentralSubjectName) => {
             }).catch(error => {
                 setAlert('error', error.message);
             })
+            axiosInstance
+            .get(endpoints.userManagement.academicYear)
+            .then((result) => {
+              if (result.status === 200) {
+                setAcademicYear(result.data.data)
+              } else {
+                setAlert('error', result.data.message)
+              }
+            })
+            .catch((error) => {
+              setAlert('error', error.message)
+            })
 
-        axios.get(`${endpoints.lessonPlan.academicYearList}`, {
-            headers: {
-                'x-api-key': 'vikash@12345#1231',
-            }
-        }).then(result => {
-            if (result.data.status_code === 200) {
-                setAcademicYearDropdown(result.data.result.results);
-            } else {
-                setAlert('error', result.data.message);
-            }
-        }).catch(error => {
-            setAlert('error', error.message);
-        })
+        // axios.get(`${endpoints.lessonPlan.academicYearList}`, {
+        //     headers: {
+        //         'x-api-key': 'vikash@12345#1231',
+        //     }
+        // }).then(result => {
+        //     if (result.data.status_code === 200) {
+        //         setAcademicYearDropdown(result.data.result.results);
+        //     } else {
+        //         setAlert('error', result.data.message);
+        //     }
+        // }).catch(error => {
+        //     setAlert('error', error.message);
+        // })
 
         axios.get(`${endpoints.lessonPlan.volumeList}`, {
             headers: {
@@ -420,7 +433,7 @@ const ChapterTypeTable = (setCentralSubjectName) => {
            <Grid container spacing={isMobile?3:5} style={{ width: widerWidth, margin: wider}}>
 
            <Grid item xs={12} sm={4} className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-                <Autocomplete
+                {/* <Autocomplete
                     style={{ width: '100%' }}
                     size='small'
                     onChange={handleAcademicYear}
@@ -438,7 +451,24 @@ const ChapterTypeTable = (setCentralSubjectName) => {
                             placeholder='Academic Year'
                         />
                     )}
-                />
+                /> */}
+                    <Autocomplete
+                size='small'
+                style={{ width: '100%' }}
+                onChange={handleAcademicYear}
+                id='year'
+                options={academicYear}
+                getOptionLabel={(option) => option?.session_year}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Academic Year'
+                    placeholder='Academic Year'
+                  />
+                )}
+              />
             </Grid>
             <Grid item xs={12} sm={4} className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
                 <Autocomplete
