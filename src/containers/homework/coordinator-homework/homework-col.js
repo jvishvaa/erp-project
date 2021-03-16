@@ -19,7 +19,7 @@ const HomeworkCol = ({
   canUpload,
 }) => {
   const history = useHistory();
-  const { student_submitted: studentSubmitted, hw_evaluated: hwEvaluated } = data;
+  const { student_submitted: studentSubmitted, hw_evaluated: hwEvaluated, } = data;
 
   return (
     <TableCell className={isSelected ? 'selected-col' : ''}>

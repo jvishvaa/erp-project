@@ -286,9 +286,6 @@ const Layout = ({ children, history }) => {
     </Menu>
   );
 
-
-  
-
   const handleRouting = (name) => {
     switch (name) {
       case 'Take Class': {
@@ -296,10 +293,9 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'View Class': {
-        if(window.location.host===endpoints?.aolConfirmURL){
+        if (window.location.host === endpoints?.aolConfirmURL) {
           history.push('/online-class/view-class');
-        }
-        else{
+        } else {
           history.push('/erp-online-class');
         }
         break;
@@ -309,19 +305,19 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Attend Online Class': {
-        if(window.location.host===endpoints?.aolConfirmURL){
+        if (window.location.host === endpoints?.aolConfirmURL) {
           history.push('/online-class/attend-class');
-        }else{
+        } else {
           history.push('/erp-online-class-student-view');
         }
         break;
       }
       case 'Teacher View Class': {
-       if(window.location.host===endpoints?.aolConfirmURL){
-        history.push('/online-class/teacher-view-class');
-       }else{
-        history.push('/erp-online-class-teacher-view');
-       }
+        if (window.location.host === endpoints?.aolConfirmURL) {
+          history.push('/online-class/teacher-view-class');
+        } else {
+          history.push('/erp-online-class-teacher-view');
+        }
         break;
       }
       case 'Create Class': {
@@ -362,6 +358,10 @@ const Layout = ({ children, history }) => {
       }
       case 'Add Group': {
         history.push('/communication/addgroup');
+        break;
+      }
+      case 'View Role': {
+        history.push('/role-management');
         break;
       }
       case 'View & Edit Group': {
@@ -468,7 +468,7 @@ const Layout = ({ children, history }) => {
         history.push('/course-list');
         break;
       }
-       case 'Course Price': {
+      case 'Course Price': {
         history.push('/course-price');
         break;
       }
