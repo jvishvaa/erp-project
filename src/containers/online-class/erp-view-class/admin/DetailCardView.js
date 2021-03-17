@@ -54,8 +54,6 @@ const JoinClass = (props) => {
     props.data ? props.data.is_restricted : false
   );
   const history = useHistory();
-  const [QpList,setQpList]=([])
-  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const classStartTime = moment(props && props?.data && props?.data?.date).format(
     'DD-MM-YYYY'
@@ -67,10 +65,7 @@ const JoinClass = (props) => {
   const classTimeMilli = new Date(`${props.data.date}T${startTime}`).getTime();
   const diffTime = classTimeMilli - 5 * 60 * 1000;
 
-  const handleCloseQP = () => {
-    setOpenQP(false);
-  };
-
+  
   console.log(
     classTimeMilli,
     parseInt(currTime),
