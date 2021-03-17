@@ -671,7 +671,7 @@ const CoordinatorTeacherHomework = withRouter(
                             ))} */}
                                     {homeworkCols.map((col) => {
                                       return typeof col === 'object' ? (
-                                        <TableCell>{col.subject_name}</TableCell>
+                                        <TableCell style={{minWidth: '260px'}}>{col.subject_name}</TableCell>
                                       ) : (
                                         <TableCell>{col}</TableCell>
                                       );

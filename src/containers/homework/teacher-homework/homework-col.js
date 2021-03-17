@@ -23,7 +23,7 @@ const HomeworkCol = ({
   const { student_submitted: studentSubmitted, hw_evaluated: hwEvaluated } = data;
 
   return (
-    <TableCell className={isSelected ? 'selected-col' : ''} style={{width: '250px !important'}}>
+    <TableCell className={isSelected ? 'selected-col' : ''}>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         {!data.hasOwnProperty('student_submitted') ? (
           <>

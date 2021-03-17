@@ -234,7 +234,7 @@ const HomeworkAdmin = () => {
     } else if (mandatorySubjects.length > 5 || mandatorySubjects.length === 0) {
       setAlert('error', 'Number of mandatory subjects must lie between 1 and 5');
     } else if (clear) {
-      debugger;
+      //debugger;
       setLoading(true);
       axiosInstance
         .post(endpoints.homework.createConfig, {
