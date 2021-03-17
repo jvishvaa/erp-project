@@ -90,6 +90,9 @@ export function QuizContextProvider({ children }) {
 
     const { quiz_details: quizDetailsData = {} } = eventMessageData || {};
     // const { is_started: isQuizStarted, is_ended: isQuizEnded } = quizDetailsData;
+    // quizDetailsData.started_at = new Date(new Date().getTime() - 1000);
+    // quizDetailsData.is_started = true;
+    // quizDetailsData.duration = 20; // please handle
     setQuizDetails(quizDetailsData);
   }
 

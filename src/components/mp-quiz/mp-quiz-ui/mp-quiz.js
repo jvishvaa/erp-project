@@ -9,7 +9,7 @@ function MpQuiz() {
   const { readyState } = socket || {};
   return (
     <>
-      <p>MpQuiz</p>
+      {/* <p>MpQuiz</p>
       <button
         type='button'
         onClick={() => {
@@ -31,7 +31,7 @@ function MpQuiz() {
         }}
       >
         Click
-      </button>
+      </button> */}
       <MpQuizSocketStatus key={readyState} />
       {readyState === window.WebSocket.OPEN ? <MpQuizPlay key={readyState} /> : null}
       {/* <QuestionHandlerHome /> */}

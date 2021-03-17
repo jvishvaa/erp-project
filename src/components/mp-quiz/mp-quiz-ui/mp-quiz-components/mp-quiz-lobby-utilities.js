@@ -168,13 +168,11 @@ export function getDurationCounter(props) {
   const durationInSec = durationInMin * 60;
   const [currentUserId, currentPlayerObj] = getCurrentPlayerInfo();
   const { joined_at: joinedAt } = currentPlayerObj;
-  // let { isHost } = this.props
-  // const { __questionData } = this.state;
-  // use questions context here
+  // use questions context here // please handle
   const { __questionData } = props;
   let {
     // activeStep: currentQuesionIndex = 0,
-    timeToRender,
+    timeToRender, // please handle
   } = __questionData || {};
   let passedDuration = 0;
   const sagDuration =
@@ -182,7 +180,11 @@ export function getDurationCounter(props) {
   let quizDuration;
   let quizStartedAt;
   let startImmediately;
-  const onZerothChckP = () => {};
+  const onZerothChckP = () => {
+    if (props.isHost) {
+      props.endQuizTrigger();
+    }
+  };
 
   // remove below statement to handle indepdent times in next release.
   const isHost = true;
@@ -202,7 +204,7 @@ export function getDurationCounter(props) {
     try {
       quizStartedAt = new Date(quizStartedAt);
       const epochStartedAt = quizStartedAt.getTime();
-      if (isNaN(epochStartedAt)) {
+      if (Number.isNaN(epochStartedAt)) {
         // eslint-disable-next-line no-throw-literal
         throw 'Invalid time fomat';
       }
@@ -266,6 +268,7 @@ export function RenderUtilityContent({ showUtilities }) {
   // const { data: { data: participants = [], status: { success, message } = {} } = {} } =
   //   quizEventsData[fetchParticipantsLabel] || {};
 
+  const { endQuizTrigger } = useQuizEventTriggers();
   const {
     // isQuizStarted,
     // isQuizEnded,
@@ -279,9 +282,13 @@ export function RenderUtilityContent({ showUtilities }) {
   const { total_score: totalScore, rank } = currentPlayerObj || {};
   const { __questionData } = {};
   const {
-    activeStep: currentQuesionIndex = 0,
-    questionData: { questionCount: totQestionCount = 0 } = {},
-  } = __questionData || {};
+    activeStep: currentQuesionIndex = 0, // please handle
+    total_no_of_questions: totQestionCount = 0,
+  } = quizDetails || {};
+  // const {
+  //   activeStep: currentQuesionIndex = 0,
+  //   questionData: { questionCount: totQestionCount = 0 } = {},
+  // } = __questionData || {};
   return (
     <div className='quiz__topbar--container'>
       <ClearOrPauseBtn />
@@ -304,6 +311,7 @@ export function RenderUtilityContent({ showUtilities }) {
                 quizDetails,
                 isHost,
                 getCurrentPlayerInfo,
+                endQuizTrigger,
               })}
               // timeToRender='render_question' // Please handle: please remove this once question context is set
             />
@@ -373,7 +381,6 @@ export function LobbyParticipantsContainer() {
   } = useQuizContext() || {};
   const [currentUserId, currentPlayerObj] = getCurrentPlayerInfo();
   const { firstName = 'mp-quiz-lobby-utilities.js line:217' } = currentPlayerObj || {};
-  debugger;
   const participantsArray = participants.map((item) => ({
     ...item,
     name: item.first_name,

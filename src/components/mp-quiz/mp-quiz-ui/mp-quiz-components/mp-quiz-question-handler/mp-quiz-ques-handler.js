@@ -2,6 +2,10 @@ import React from 'react';
 import { useQuizQuesContext } from '../../../mp-quiz-providers';
 import PreQuestionAnim from './pre-question-anim';
 import QuestionContent from './question-content';
+import Meme from './meme';
+import Leaderboard from './leader-board';
+
+import InternalPageStatus from '../internal-page-status';
 
 import '../../styles/question_view.css';
 import '../../styles/anim.css';
@@ -31,24 +35,16 @@ function QuestionHandler() {
         return <PreQuestionAnim />;
       }
       case renderQues: {
-        // return getQuestionContent();
-        // <p
-        //     onClick={() => {
-        //       onAttemptionCurrentQuesAttemption();
-        //     }}
-        //   >
-        //     getQuestionContent()
-        //   </p>
         return <QuestionContent />;
       }
       case renderMeme: {
-        return <p>getMeme()</p>;
+        return <Meme />;
       }
       case renderLB: {
-        return <p>getLb()</p>;
+        return <Leaderboard />;
       }
       default: {
-        return <p>Not avaliable</p>;
+        return <InternalPageStatus loader label='Loading...' />;
       }
     }
   }

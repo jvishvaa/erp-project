@@ -60,56 +60,53 @@ function MpQuizPlay() {
   };
   return (
     <>
-      <p>MpQuizPlay</p>
-      <div>
-        {isMuted ? null : (
-          <audio
-            // ref={this.myRef}
-            // style={{ visibility: 'hidden' }}
-            id={bgmUrl}
-            autoPlay
-            loop
-            src={bgmUrl || defaultBgmUrl}
-            controls
-          />
-        )}
-        <Dialog fullScreen open TransitionComponent={Transition}>
+      {isMuted ? null : (
+        <audio
+          // ref={this.myRef}
+          // style={{ visibility: 'hidden' }}
+          id={bgmUrl}
+          autoPlay
+          loop
+          src={bgmUrl || defaultBgmUrl}
+          controls
+        />
+      )}
+      <Dialog fullScreen open TransitionComponent={Transition}>
+        <img
+          className={[
+            'volume__controller',
+            !isMuted ? 'quiz__volume--mute' : 'quiz__volume--unmute',
+          ].join(' ')}
+          onClick={toggleMute}
+          alt='img'
+        />
+        <div
+          className='Quiz-home'
+          style={{
+            backgroundColor: 'black',
+            backgroundImage: isQuizEnded
+              ? `url(${Background})`
+              : `linear-gradient(to right, rgba(8,30,47, 0.8), rgba(8,30,47,0.8)),url(${Background})`,
+          }}
+        >
           <img
             className={[
-              'volume__controller',
-              !isMuted ? 'quiz__volume--mute' : 'quiz__volume--unmute',
+              'quiz__background',
+              isQuizEnded ? 'quiz__background--ended' : 'quiz__background--started',
             ].join(' ')}
-            onClick={toggleMute}
             alt='img'
           />
-          <div
-            className='Quiz-home'
-            style={{
-              backgroundColor: 'black',
-              backgroundImage: isQuizEnded
-                ? `url(${Background})`
-                : `linear-gradient(to right, rgba(8,30,47, 0.8), rgba(8,30,47,0.8)),url(${Background})`,
-            }}
-          >
-            <img
-              className={[
-                'quiz__background',
-                isQuizEnded ? 'quiz__background--ended' : 'quiz__background--started',
-              ].join(' ')}
-              alt='img'
-            />
-            <div className='Quiz-lobby-topbar actions-wrapper in-quiz'>
-              {getTopBarContent()}
-            </div>
-            <div
-              className={isQuizStarted ? 'Quiz-play-contentdiv' : 'Quiz-lobby-contentdiv'}
-            >
-              {getContainerContent()}
-            </div>
+          <div className='Quiz-lobby-topbar actions-wrapper in-quiz'>
+            {getTopBarContent()}
           </div>
-          {/* {this.state.showSettingsModal ? this.renderProfileSettings() : ''} */}
-        </Dialog>
-      </div>
+          <div
+            className={isQuizStarted ? 'Quiz-play-contentdiv' : 'Quiz-lobby-contentdiv'}
+          >
+            {getContainerContent()}
+          </div>
+        </div>
+        {/* {this.state.showSettingsModal ? this.renderProfileSettings() : ''} */}
+      </Dialog>
     </>
   );
 }

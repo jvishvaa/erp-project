@@ -266,13 +266,14 @@
 }
 
 .host__quiz--container--withscroll {
-    overflow: scroll;
+    /* overflow: scroll; */
+    overflow: auto;
 }
 
 .lobby__participants {
     width: 100%;
     height: 95%;
-    overflow: scroll;
+    overflow: auto;
 }
 
 .lobby__participants::-webkit-scrollbar-thumb {

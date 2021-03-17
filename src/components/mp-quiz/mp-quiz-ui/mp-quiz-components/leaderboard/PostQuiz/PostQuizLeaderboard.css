@@ -114,7 +114,8 @@
     transform: translate(-50%, -50%);
     width: 90%;
     height: 70%;
-    overflow: scroll;
+    /* overflow: scroll; */
+    overflow: auto;
 }
 
 .postquiz__participants--container::-webkit-scrollbar-thumb{

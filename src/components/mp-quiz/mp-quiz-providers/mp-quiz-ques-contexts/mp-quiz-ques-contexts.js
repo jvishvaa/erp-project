@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
-import { functions } from 'lodash-es';
 import constants from '../mp-quiz-constants';
 import { useFetcher } from '../../mp-quiz-utils';
+import { useQuizEventTriggers } from '../mp-quiz-event-contexts';
 
 const {
   urls: { fetchQuizQpPaper: fetchQuizQpPaperAPIEndpoint, ajaxHeaders, ajaxBase },
@@ -15,11 +15,17 @@ const getTimeToRenderConfig = () => {
   const renderLB = 'render_leader_board';
   const renderMeme = 'render_meme';
   const durationObj = {
-    qOptionDuration: 2500,
-    memeDuration: 5000,
-    lbDuration: 5000,
+    // qOptionDuration: 2500,
+    // memeDuration: 5000,
+    // lbDuration: 5000,
+    // preQuesAnimDuration: 1000,
+    // firstQuesAnimDuration: 4000,
+
+    qOptionDuration: 0,
+    memeDuration: 1000,
+    lbDuration: 1000,
     preQuesAnimDuration: 1000,
-    firstQuesAnimDuration: 4000,
+    firstQuesAnimDuration: 1000,
   };
   const timeToRenderConfig = {
     [renderPreQuesAnim]: {
@@ -168,6 +174,9 @@ export function QuizQuesContextProvider({ children }) {
   const [questionsMetaInfo, setQuestionsMetaInfo] = useState();
   const [currentQuesionId, setCurrentQuesionId] = useState();
   const [readOnly, setReadOnly] = useState(false);
+  const [currentQuesScore, setCurrentQuesScore] = useState();
+
+  const { postQuesReponseTrigger } = useQuizEventTriggers();
 
   const quizQpHookProps = {
     url: `${ajaxBase + fetchQuizQpPaperAPIEndpoint}`,
@@ -281,6 +290,8 @@ export function QuizQuesContextProvider({ children }) {
 
     const unattemptedQuesId = skipToFistNonAttemptedQues(questionsData);
     setCurrentQuesionId(unattemptedQuesId);
+    // setCurrentQuesionId(485); // please handle
+
     setTimeToRender('render_pre_question_anim');
   }
 
@@ -340,7 +351,7 @@ export function QuizQuesContextProvider({ children }) {
       //   return userResponse;
     }
     const startTime = new Date().getTime() / 1000;
-    const updatedUserResponse = { start_time: startTime, ...(questionResponseObj || {}) };
+    const updatedUserResponse = { ...(questionResponseObj || {}), start_time: startTime };
     // eslint-disable-next-line no-use-before-define
     updateQuestionsUserResponse(qId, updatedUserResponse);
     return true;
@@ -351,13 +362,13 @@ export function QuizQuesContextProvider({ children }) {
       return userResponse;
     }
     const startTime = new Date().getTime() / 1000;
-    return { start_time: startTime, ...(userResponse || {}) };
+    return { ...(userResponse || {}), start_time: startTime };
   }
   function generateEndTime(userResponse = {}) {
     const { start_time: startTime } = userResponse || {};
     // second argument is callback
     const endTime = new Date().getTime() / 1000;
-    return { end_time: endTime, duration: endTime - startTime, ...(userResponse || {}) };
+    return { ...(userResponse || {}), end_time: endTime, duration: endTime - startTime };
   }
   function generateIsQuizOver(qId, userResponse) {
     const { [qId]: questionsObj } = questionsDataObj || {};
@@ -366,60 +377,64 @@ export function QuizQuesContextProvider({ children }) {
     } = questionsObj || {};
     return { is_quiz_over: isLastQues, ...(userResponse || {}) };
   }
-  //   function decideScoreAndBonus(questionId, payLoad) {
-  //     const { questionsMap = new Map() } = payLoad;
-  //     /*
-  //       Sort bonusConfigArray by duration in ascending order
-  //       from:[
-  //         {duration: 5, timing_score: 150},
-  //         {duration: 15, timing_score: 50},
-  //         {duration: 10, timing_score: 100}
-  //       ]
-  //       To:[
-  //         {duration: 5, timing_score: 150},
-  //         {duration: 10, timing_score: 100},
-  //         {duration: 15, timing_score: 50}
-  //       ]
-  //     */
-  //     const {
-  //       score_schema: {
-  //         question_score: questionScore = 0,
-  //         timing_configuration: bonusConfigArray = [],
-  //       } = {},
-  //     } = questionsMap.get(questionId) || {};
+  function decideScoreAndBonus(questionId, userResponse) {
+    /*
+        Sort bonusConfigArray by duration in ascending order
+        from:[
+          {duration: 5, timing_score: 150},
+          {duration: 15, timing_score: 50},
+          {duration: 10, timing_score: 100}
+        ]
+        To:[
+          {duration: 5, timing_score: 150},
+          {duration: 10, timing_score: 100},
+          {duration: 15, timing_score: 50}
+        ]
+      */
+    const {
+      score_schema: {
+        question_score: questionScore = 0,
+        timing_configuration: bonusConfigArray = [],
+      } = {},
+    } = questionsDataObj[questionId] || {};
 
-  //     const sortedBonusConfAr = bonusConfigArray
-  //       .map((item) => ({ ...item, duration: Number(item.duration) }))
-  //       .filter((item) => !isNaN(item.duration))
-  //       .sort((a, b) => a.duration - b.duration);
+    const sortedBonusConfAr = bonusConfigArray
+      .map((item) => ({ ...item, duration: Number(item.duration) }))
+      .filter((item) => !Number.isNaN(item.duration))
+      .sort((a, b) => a.duration - b.duration);
 
-  //     payLoad = { ...payLoad, duration: payLoad.end_time - payLoad.start_time };
-  //     const { correct: isAttemptedCorrect, duration: timeTakenToAttempt } = payLoad;
-  //     let scoreObj;
-  //     if (isAttemptedCorrect) {
-  //       let bonusScore = 0;
-  //       let bonusScoreObj = {};
-  //       const bonusAchieved = sortedBonusConfAr.some((item) => {
-  //         let { duration, timing_score: timingScore } = item;
-  //         timingScore = isNaN(Number(timingScore)) ? 0 : Number(timingScore);
-  //         if (timeTakenToAttempt <= duration) {
-  //           bonusScore = timingScore;
-  //           bonusScoreObj = item;
-  //           return true;
-  //         }
-  //       });
-  //       scoreObj = {
-  //         score: questionScore + bonusScore,
-  //         bonus_achieved: bonusAchieved,
-  //         bonus_score_obj: bonusScoreObj,
-  //       };
-  //       /* Setting score to state ie. to update to quiz tobar with animation effect */
-  //       this.setState({ score: questionScore + bonusScore });
-  //     } else {
-  //       scoreObj = { score: 0, bonus_achieved: false };
-  //     }
-  //     return { ...payLoad, ...scoreObj };
-  //   }
+    // userResponse = { ...userResponse, duration: userResponse.end_time - userResponse.start_time };
+    const { correct: isAttemptedCorrect, duration: timeTakenToAttempt } = userResponse;
+    let scoreObj;
+    if (isAttemptedCorrect) {
+      let bonusScore = 0;
+      let bonusScoreObj = {};
+      const bonusAchieved = sortedBonusConfAr.some((item) => {
+        let { duration, timing_score: timingScore } = item;
+        timingScore = Number.isNaN(Number(timingScore)) ? 0 : Number(timingScore);
+        if (timeTakenToAttempt <= duration) {
+          bonusScore = timingScore;
+          bonusScoreObj = item;
+          return true;
+        }
+      });
+      scoreObj = {
+        score: questionScore + bonusScore,
+        bonus_achieved: bonusAchieved,
+        bonus_score_obj: bonusScoreObj,
+      };
+      /* Setting score to state ie. to update to quiz tobar with animation effect */
+      // this.setState({ score: questionScore + bonusScore });
+      setCurrentQuesScore(questionScore + bonusScore);
+    } else {
+      scoreObj = { score: 0, bonus_achieved: false };
+    }
+    return { ...userResponse, ...scoreObj };
+  }
+
+  function postAttemptedResponse(userResponse) {
+    postQuesReponseTrigger(userResponse);
+  }
   /*
     process whether it is completely attempted or not.
   */
@@ -433,10 +448,14 @@ export function QuizQuesContextProvider({ children }) {
     });
   }
   function attemptQuestion(qId, userResponse = {}) {
-    let updatedUserResponse = generateStartTime(userResponse); // just in case start time doesnt exists in response obj
+    const { [qId]: existingUserResponse = {} } = responsesDataObj || {};
+    let updatedUserResponse = generateStartTime({
+      ...(existingUserResponse || {}),
+      ...userResponse,
+    }); // just in case start time doesnt exists in response obj
     updatedUserResponse = generateEndTime(updatedUserResponse);
-    updatedUserResponse = generateIsQuizOver(updatedUserResponse);
-    // updatedUserResponse = decideScoreAndBonus(updatedUserResponse);
+    updatedUserResponse = generateIsQuizOver(qId, updatedUserResponse);
+    updatedUserResponse = decideScoreAndBonus(qId, updatedUserResponse);
     //  update correct or wrong in attemption component
     //  update attemption_status true or false in attemption component
 
@@ -448,6 +467,7 @@ export function QuizQuesContextProvider({ children }) {
       updateQuestionsUserResponse(qId, updatedUserResponse);
       // eslint-disable-next-line no-use-before-define
       onAttemptionCurrentQuesAttemption();
+      postAttemptedResponse(updatedUserResponse);
     }
   }
 
@@ -557,7 +577,6 @@ export function QuizQuesContextProvider({ children }) {
       (questionsDataObj && questionsDataObj[currentQuesionId]) || {};
     return index;
   };
-  console.log(responsesDataObj, 'mk');
   return (
     <QuizQuesContext.Provider
       value={{
@@ -570,6 +589,7 @@ export function QuizQuesContextProvider({ children }) {
         questionsMetaInfo,
 
         currentQuesionId,
+        currentQuesScore,
         controls: {
           nextQues,
           attemptQuestion,

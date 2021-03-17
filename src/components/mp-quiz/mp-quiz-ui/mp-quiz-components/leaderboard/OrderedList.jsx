@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom'
 import StudentRankingDetails from './StudentRankingDetails'
 import PostQuizStudentRankingDetails from './PostQuiz/PostQuizStudentRankingDetails'
 
-export class OrderedList extends Component {
+class OrderedList extends Component {
   constructor () {
     super()
     this.state = {}

@@ -18,10 +18,7 @@ function MpQuizHome(props) {
 
   return (
     <QuizContextHome socketUrl={socketUrl}>
-      <div>
-        <p>MpQuizHome</p>
-        <MpQuiz />
-      </div>
+      <MpQuiz />
     </QuizContextHome>
   );
 }

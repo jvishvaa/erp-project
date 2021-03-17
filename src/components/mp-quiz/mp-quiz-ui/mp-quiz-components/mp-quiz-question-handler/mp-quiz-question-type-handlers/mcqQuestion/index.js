@@ -4,7 +4,8 @@ import OptionsHandler from './options-handler';
 
 export default function McqQuestion(props) {
   const {
-    onAttemptionCurrentQuesAttemption,
+    // onAttemptionCurrentQuesAttemption,
+    setStartTime,
     questionObj: currentQuestionObj,
     attemptQuestion,
     responseObj,
@@ -12,6 +13,10 @@ export default function McqQuestion(props) {
   const { question_answer: questionAnswer } = currentQuestionObj || {};
   const [{ question = 'No content available' }] = questionAnswer || [{}];
 
+  React.useEffect(() => {
+    setStartTime(currentQuestionObj.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <div className='whole-container grow'>
       <div className='question-container'>
@@ -24,7 +29,7 @@ export default function McqQuestion(props) {
           questionObj={currentQuestionObj}
           responseObj={responseObj}
           attemptQuestion={attemptQuestion}
-          onAttemptionCurrentQuesAttemption={onAttemptionCurrentQuesAttemption}
+          // onAttemptionCurrentQuesAttemption={onAttemptionCurrentQuesAttemption}
         />
       </div>
     </div>

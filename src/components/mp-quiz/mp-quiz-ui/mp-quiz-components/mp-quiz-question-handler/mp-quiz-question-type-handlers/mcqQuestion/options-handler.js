@@ -7,7 +7,7 @@ export default function OptionsHandler(props) {
     questionObj: currentQuestionObj,
     responseObj,
     attemptQuestion,
-    onAttemptionCurrentQuesAttemption,
+    // onAttemptionCurrentQuesAttemption,
   } = props || {};
   const {
     answer: attemptedAnswerArray,
@@ -18,7 +18,9 @@ export default function OptionsHandler(props) {
 
   const [attemptedOption] = attemptedAnswerArray || [];
 
-  const [{ answer: answerArray, options, question }] = questionAnswer || [];
+  const [
+    { answer: answerArray = 'answer not found', options = [], question },
+  ] = questionAnswer || [{}];
   const optionsArray = options.map((item) => {
     const [optionContentObj] = Object.values(item || {});
     const [optionLabel] = Object.keys(item || {});
@@ -32,11 +34,12 @@ export default function OptionsHandler(props) {
     if (!isAttempted) {
       // const wasAttemptedCorrectly = evaluate();
       attemptQuestion(questionId, {
+        id: questionId,
         attemption_status: true,
         answer: [optionIdentifier],
         correct: optionIdentifier === correctOption,
       });
-      onAttemptionCurrentQuesAttemption();
+      // onAttemptionCurrentQuesAttemption();
     }
   }
   const correctAnsStyles = {
@@ -64,27 +67,15 @@ export default function OptionsHandler(props) {
           >
             <div
               className='option-inner'
-              //   style={{
-              //     ...(isAttempted
-              //       ? correctAnsOptionIndex === String(index)
-              //         ? correctAnsStyles
-              //         : attemptedOptionIndex === String(index)
-              //         ? wrongAnsStyles
-              //         : { display: 'none' }
-              //       : {}),
-              //     ...(attemptedOptionIndex === String(index)
-              //       ? { border: '3px solid white' }
-              //       : {}),
-              //   }}
               style={{
                 ...(isAttempted
-                  ? correctOption === String(index)
+                  ? correctOption === option.identifier
                     ? correctAnsStyles
-                    : attemptedOption === String(index)
+                    : attemptedOption === option.identifier
                     ? wrongAnsStyles
                     : { display: 'none' }
                   : {}),
-                ...(attemptedOption === String(option.identifier)
+                ...(attemptedOption === option.identifier
                   ? { border: '3px solid white' }
                   : {}),
               }}
