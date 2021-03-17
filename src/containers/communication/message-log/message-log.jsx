@@ -398,7 +398,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
                     id='date-picker-dialog'
                     label='From'
                     className='message_log_date_piker'
-                    format='DD-MM-YYYY'
+                    format='YYYY-MM-DD'
                     value={selectedFromDate}
                     onChange={handleFromDateChange}
                     maxDate={new Date()}
@@ -413,7 +413,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
                     id='date-picker-dialog'
                     label='To'
                     className='message_log_date_piker'
-                    format='DD-MM-YYYY'
+                    format='YYYY-MM-DD'
                     value={selectedToDate}
                     onChange={handleToDateChange}
                     maxDate={new Date()}

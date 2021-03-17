@@ -142,6 +142,10 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
     };
   }, []);
 
+  const handleBackButton = () => {
+    history.push('/homework/teacher');
+  }
+
   return (
     <Layout>
       <div className='add-homework-container'>
@@ -223,6 +227,18 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
               ))}
 
               <Grid container item xs={12} spacing={1}>
+                {/*
+                <Grid item xs={12} md={2}>
+                  <Button
+                      variant='contained'
+                      className='disabled-btn'
+                      onClick={handleBackButton}
+                      fullWidth
+                  >
+                    Back
+                  </Button>
+                </Grid>
+                */}
                 <Grid item xs={12} md={6} className='form-field'>
                   <div className='finish-btn-container'>
                     <Button
