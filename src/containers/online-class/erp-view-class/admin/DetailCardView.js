@@ -15,33 +15,10 @@ import './index.css';
 import {
   AttachFile as AttachFileIcon,
 } from '@material-ui/icons'
-import Modal from '@material-ui/core/Modal';
 
-import { makeStyles } from '@material-ui/core/styles';
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    position: 'absolute',
-    width: 400,
-    backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
-  },
-}));
-function rand() {
-  return Math.round(Math.random() * 20) - 10;
-}
 
-function getModalStyle() {
-  const top = 50 + rand();
-  const left = 50 + rand();
 
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
-  };
-}
+
 const JoinClass = (props) => {
   const fullData = props.fullData;
   const handleClose = props.handleClose;
@@ -393,6 +370,8 @@ const DetailCardView = ({
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const history = useHistory();
+  const { role_details } = JSON.parse(localStorage.getItem('userDetails'));
+
   /*
   useEffect(() => {
     if (fullData) {
