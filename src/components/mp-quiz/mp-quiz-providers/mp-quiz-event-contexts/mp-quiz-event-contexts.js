@@ -99,7 +99,7 @@ export function QuizContextProvider({ children }) {
   function getCurrentPlayerInfo() {
     const { currentUserId } = getUserAndQuizInfoStatus();
     const { data: leaderBoardArray = [] } = leaderboard || {};
-    const tempArray = leaderBoardArray.filter(
+    const tempArray = (leaderBoardArray||[]).filter(
       (playerObj) => String(playerObj.user_id) === String(currentUserId)
     );
     let playerObj = {};

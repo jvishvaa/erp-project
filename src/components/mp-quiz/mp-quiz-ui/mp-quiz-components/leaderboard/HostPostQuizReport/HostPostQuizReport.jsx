@@ -23,7 +23,7 @@ class HostPostQuizReport extends Component {
     }
   }
 
-  fetchQuestions = () => {
+  fetchQuestions = () => { //please handle
     const { onlineClassId } = this.props
     const { token } = JSON.parse(localStorage.getItem('user_profile')).personal_info
     this.setState({ isFetching: true, isFetchFailed: null }, () => {

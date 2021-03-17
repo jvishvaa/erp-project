@@ -381,7 +381,7 @@ export function LobbyParticipantsContainer() {
   } = useQuizContext() || {};
   const [currentUserId, currentPlayerObj] = getCurrentPlayerInfo();
   const { firstName = 'mp-quiz-lobby-utilities.js line:217' } = currentPlayerObj || {};
-  const participantsArray = participants.map((item) => ({
+  const participantsArray = (participants || []).map((item) => ({
     ...item,
     name: item.first_name,
   }));

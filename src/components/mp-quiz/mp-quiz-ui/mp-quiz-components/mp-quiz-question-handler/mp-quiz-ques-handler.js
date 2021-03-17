@@ -1,4 +1,5 @@
 import React from 'react';
+import LinkTag from '@material-ui/core/Link';
 import { useQuizQuesContext } from '../../../mp-quiz-providers';
 import PreQuestionAnim from './pre-question-anim';
 import QuestionContent from './question-content';
@@ -13,7 +14,7 @@ import '../../styles/anim.css';
 function QuestionHandler() {
   const {
     fetchQuizQp,
-    // quizQp,
+    quizQp: { fetch, fetching, fetchFailed, message },
     timeToRenderObj,
     timeToRenderControls: { timeToRender, onAttemptionCurrentQuesAttemption },
   } = useQuizQuesContext();
@@ -30,6 +31,8 @@ function QuestionHandler() {
   } = timeToRenderObj || {};
 
   function getContent() {
+    // debugger
+    console.log(timeToRender, 'timeToRender');
     switch (timeToRender) {
       case renderPreQuesAnim: {
         return <PreQuestionAnim />;
@@ -44,7 +47,22 @@ function QuestionHandler() {
         return <Leaderboard />;
       }
       default: {
-        return <InternalPageStatus loader label='Loading...' />;
+        const labelOnFetchFailure = (
+          <p>
+            Error occured in fetching data&nbsp;
+            {/* <LinkTag component='button' onClick={fetch}> // please handle (to refetch with out query param)
+              <b>Click here to reload_</b>
+            </LinkTag> */}
+          </p>
+        );
+        return (
+          <InternalPageStatus
+            loader={!fetchFailed}
+            label={
+              fetchFailed ? labelOnFetchFailure : fetching ? 'Fetching...' : 'Loading...'
+            }
+          />
+        );
       }
     }
   }

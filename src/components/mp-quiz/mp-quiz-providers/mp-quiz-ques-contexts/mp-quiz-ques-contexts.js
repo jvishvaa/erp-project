@@ -208,6 +208,7 @@ export function QuizQuesContextProvider({ children }) {
         // updateAssessmentDetails(res);
       },
     };
+
     fetchQuizQpHook(hookDataProp);
     return null;
   }

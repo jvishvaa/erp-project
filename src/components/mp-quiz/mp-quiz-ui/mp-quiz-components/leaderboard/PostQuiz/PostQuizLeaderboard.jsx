@@ -63,9 +63,9 @@ class PostQuizLeaderboard extends Component {
         <div style={{ height: isHost ? '90%' : '80%' }}>
           <div className='postquiz__leaderboard--container'>
             <img className='postquiz__playerinfo--background' />
-            {!isHost && <button className='btn__download--results' onClick={() => {
+            {/* {!isHost && <button className='btn__download--results' onClick={() => {
               this.setState({ open: true })
-            }}>Review Questions</button>}
+            }}>Review Questions</button>} please handle */} 
             {
               <Dialog fullScreen open={open} onClose={this.handleClose} TransitionComponent={Transition}>
                 <AppBar>
