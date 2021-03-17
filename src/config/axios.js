@@ -8,6 +8,7 @@ const axiosInstance = axios.create({
   // baseURL: 'http://olvorchidnaigaon.letseduvate.com/qbox',
   // baseURL: 'http://13.234.252.195:443',
   // baseURL: 'http://localhost:8000/qbox',
+  // baseURL:'http://127.0.0.1:8000/qbox'
 });
 
 // ****** enable the following code to attach authorization headers on each request and for logging out when an unauthorize request is send *****//

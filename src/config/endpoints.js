@@ -54,6 +54,7 @@ export default {
     resourceFile: '/erp_user/resource_files/',
     feedback: '/erp_user/onlineclass_attendancecheck/',
     updateTutor: '/erp_user/update_tutor_email/',
+    PreQuiz: '/mp_quiz/online-class-details/'
   },
   masterManagement: {
     subjects: '/erp_user/subjects-list/',

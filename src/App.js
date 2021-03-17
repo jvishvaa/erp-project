@@ -111,6 +111,8 @@ import ErpAdminViewClass from './containers/online-class/erp-view-class/admin'
 import AolLogin from './containers/aol-login';
 import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource'
 import AttachmentPreviewer from './components/attachment-previewer';
+import AssignQP from './containers/online-class/erp-view-class/admin/AssignQP'
+import PreQuiz from './containers/online-class/erp-view-class/admin/PreQuiz'
 
 const theme = createMuiTheme({
   palette: {
@@ -469,6 +471,13 @@ function App() {
                         </Route>
                         <Route exact path='/erp-online-class'>
                           {({ match }) => <ErpAdminViewClass match={match} />}
+                        </Route>
+                        <Route exact path='/erp-online-class/assign/qp'>
+                          {({ match }) => <AssignQP match={match} />}
+                        </Route>
+                        
+                        <Route exact path='/erp-online-class/pre-quiz'>
+                          {({ match }) => <PreQuiz match={match} />}
                         </Route>
                         <Route exact path='/erp-online-class-teacher-view'>
                           {({ match }) => <ErpAdminViewClass match={match} />}

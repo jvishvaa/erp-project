@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useState, useEffect } from 'react';
 import { Grid, Card, Divider, Button, Popover, Typography,Tooltip,IconButton } from '@material-ui/core';
-import { useHistory } from 'react-router-dom';
+import { useHistory ,Route,withRouter} from 'react-router-dom';
 import CloseIcon from '@material-ui/icons/Close';
 import moment from 'moment';
 import Timer from 'react-compound-timer';
@@ -70,40 +70,40 @@ const JoinClass = (props) => {
   const classes = useStyles();
   // getModalStyle is not a pure function, we roll the style only on the first render
   const [modalStyle] = React.useState(getModalStyle);
-  const handleOpenQP = () => {
-    setOpenQP(true);
+  // const handleOpenQP = () => {
+  //   setOpenQP(true);
     
     
-  };
-  useEffect(() => {
-  getQP();
- }, [fullData, handleClose]);
-  const getQP =  () => {
+  // };
+//   useEffect(() => {
+//   getQP();
+//  }, [fullData, handleClose]);
+//   const getQP =  () => {
    
-    axiosInstance
-    .get(
-      `${endpoints.questionPaper.FETCHQP}`,
-      {
-        headers: {
-          'x-api-key': 'vikash@12345#1231',
-        },
-      }
-    )
-    .then((result) => {
-      if (result.data.status_code === 200) {
-        setLoading(false);
-        setQpList(result.data.result);
-        console.log(result.data,"@@@@@@@@2")
-      } else {
-        setLoading(false);
-        setAlert('error', result.data.description);
-      }
-    })
-    .catch((error) => {
-      setLoading(false);
-      setAlert('error', error.message);
-    });
-  };
+//     axiosInstance
+//     .get(
+//       `${endpoints.questionPaper.FETCHQP}`,
+//       {
+//         headers: {
+//           'x-api-key': 'vikash@12345#1231',
+//         },
+//       }
+//     )
+//     .then((result) => {
+//       if (result.data.status_code === 200) {
+//         setLoading(false);
+//         setQpList(result.data.result);
+//         console.log(result.data,"@@@@@@@@2")
+//       } else {
+//         setLoading(false);
+//         setAlert('error', result.data.description);
+//       }
+//     })
+//     .catch((error) => {
+//       setLoading(false);
+//       setAlert('error', error.message);
+//     });
+//   };
 
   const handleCloseQP = () => {
     setOpenQP(false);
@@ -195,14 +195,14 @@ const JoinClass = (props) => {
         });
     }
   }
-  const body = (
-    <div style={modalStyle} className={classes.paper}
+  // const body = (
+  //   <div style={modalStyle} className={classes.paper}
    
-    >
-     hiiiiiiiiiiiiiiii
-     <Button>Assign Question Paper</Button>
-    </div>
-  );
+  //   >
+  //    hiiiiiiiiiiiiiiii
+  //    <Button>Assign Question Paper</Button>
+  //   </div>
+  // );
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
@@ -214,27 +214,46 @@ const JoinClass = (props) => {
         <span className='TeacherFullViewdescreption1'>
           {moment(props.data ? props.data.date : '').format('DD-MM-YYYY')}
         </span>
-        {
-          
-          <Tooltip title='Attach Question Paper'>
+        
+           {/* { window.location.pathname === '/erp-online-class-teacher-view' ? ( */}
+            {
+            <Tooltip title='Attach Question Paper'>
             <IconButton
-            onClick={handleOpenQP}
+            // onClick={handleOpenQP}
+            onClick={() =>
+              history.push({
+                pathname: '/erp-online-class/assign/qp',
+                state: { data: fullData.online_class.id },
+              })}
           
             >
               <AttachFileIcon />
             </IconButton>
           </Tooltip>
-  
-  
+          // ) : (
+          //   ''
+          // )
           }
-           <Modal
-        open={openQP}
-        onClose={()=> handleCloseQP}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-      >
-        {body}
-      </Modal>
+          {
+              <Grid item xs={3}>
+              <Button
+                size='small'
+                color='secondary'
+                fullWidth
+                variant='contained'
+                onClick={() =>
+                  history.push({
+                    pathname: '/erp-online-class/pre-quiz',
+                    state: { data: fullData.online_class.id },
+                  })}
+                
+                className='teacherFullViewSmallButtons'
+              >
+                Quiz
+              </Button>
+            </Grid>
+          }
+         
       </Grid>
 
       {isAccept ? (
@@ -668,4 +687,4 @@ const DetailCardView = ({
   );
 };
 
-export default DetailCardView;
+export default withRouter(DetailCardView);
