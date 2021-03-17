@@ -12,6 +12,8 @@ import moment from 'moment';
 import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 import { isClass } from 'highcharts';
+import { useLocation } from "react-router-dom";
+
 // import './lesson-report.css';
 
 const StyledTabs = withStyles({
@@ -47,7 +49,7 @@ const GeneralDairyFilter = ({
   setPeriodData,
   isTeacher,
   showSubjectDropDown,
-  studentModuleId,
+  // studentModuleId,
   // setCurrentTab,
   setViewMore,
   setViewMoreData,
@@ -101,11 +103,17 @@ const GeneralDairyFilter = ({
   const [page,setPage] = useState(1)
   const [clicked,setClicked] = useState(false)
   const history=useHistory()
+  const [studentModuleId, setStudentModuleId] = useState();
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const location = useLocation();
+
 
   const [filterData, setFilterData] = useState({
     grade: '',
     branch: '',
     subject: '',
+    sectionIds: [],
+    // setSectionDropdown([])
   });
 
   function getDaysAfter(date, amount) {
@@ -122,7 +130,11 @@ const GeneralDairyFilter = ({
     setFilterData({
       grade: '',
       branch: '',
+      sectionIds: [],
+      // setSectionDropdown([])
     });
+    setSectionDropdown([]);
+    setSectionIds([]);
     setPeriodData([]);
     setSectionDropdown([]);
     // setViewMoreData({});
@@ -167,7 +179,7 @@ if(clicked){
     if (value && filterData.branch) {
       // https://erpnew.letseduvate.com/qbox/academic/general-dairy-messages/?branch=5&grades=25&sections=44&page=1&start_date=2021-02-02&end_date=2021-02-08&dairy_type=2
         setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
-        axiosInstance.get(`${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}`)
+        axiosInstance.get(`${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}&module_id=${location.pathname === "/lesson-plan/student-view"?studentModuleId:teacherModuleId}`)
         .then(result => {
           if (result.data.status_code === 200) {
             //console.log(result.data)
@@ -205,13 +217,32 @@ if(clicked){
     }
   };
 
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Diary' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if(location.pathname === "/diary/student" && item.child_name === "Student View") {
+                setStudentModuleId(item?.child_id);
+            } else if(location.pathname === "/diary/teacher" && item.child_name === "Teacher Diary") {
+                setTeacherModuleId(item?.child_id);
+            } 
+          });
+        }
+      });
+    }
+  }, [location.pathname]);
 
   const handleBranch = (event, value) => {
     setFilterData({ ...filterData, branch: '', grade: '', subject: '', chapter: '' });
     // setOverviewSynopsis([]);
     if (value) {
         setFilterData({ ...filterData, branch: value, grade: '', subject: '', chapter: '' });
-        axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=8`)
+        axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=${location.pathname === "/diary/student"?studentModuleId:teacherModuleId}`)
             .then(result => {
                 if (result.data.status_code === 200) {
                     setGradeDropdown(result.data.data);
