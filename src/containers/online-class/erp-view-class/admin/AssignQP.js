@@ -89,7 +89,7 @@ const AssignQP = (props) => {
       })
       .then((result) => {
         if (result.data.status_code === 200) {
-          setQpList(result.data.result.results);
+          setQpList(result.data.result);
             console.log(result.data,"@@@@@@@@2")
 
         } else {
@@ -155,13 +155,16 @@ const handleWordCountChange = (e) => {
                       <Autocomplete
               style={{ width: '100%' }}
               size='small'
+              // onChange={this.handleStatusTwo}
+
               id='grade'
-              className='dropdownIcon'
+              // className='dropdownIcon'
+              required
+              disableClearable
               options={qpList}
             //   value={gradeObj}
               filterSelectedOptions
-              disableClearable
-              getOptionLabel={(option) => option?.paper_name}
+              getOptionLabel={(option) => option?.test_name}
 
               renderInput={(params) => (
                 <TextField

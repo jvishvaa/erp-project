@@ -254,7 +254,7 @@ export default {
     s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
   },
   questionPaper:{
-    FETCHQP:`${baseURLCentral}/assessment/list-question-paper/`,
+    FETCHQP:`${baseURLCentral}/assessment/test-list/`,
   },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',

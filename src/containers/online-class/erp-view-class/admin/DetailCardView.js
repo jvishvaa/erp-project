@@ -66,44 +66,6 @@ const JoinClass = (props) => {
   const currTime = moment(new Date()).format('x');
   const classTimeMilli = new Date(`${props.data.date}T${startTime}`).getTime();
   const diffTime = classTimeMilli - 5 * 60 * 1000;
-  const [openQP, setOpenQP] = React.useState(false);
-  const classes = useStyles();
-  // getModalStyle is not a pure function, we roll the style only on the first render
-  const [modalStyle] = React.useState(getModalStyle);
-  // const handleOpenQP = () => {
-  //   setOpenQP(true);
-    
-    
-  // };
-//   useEffect(() => {
-//   getQP();
-//  }, [fullData, handleClose]);
-//   const getQP =  () => {
-   
-//     axiosInstance
-//     .get(
-//       `${endpoints.questionPaper.FETCHQP}`,
-//       {
-//         headers: {
-//           'x-api-key': 'vikash@12345#1231',
-//         },
-//       }
-//     )
-//     .then((result) => {
-//       if (result.data.status_code === 200) {
-//         setLoading(false);
-//         setQpList(result.data.result);
-//         console.log(result.data,"@@@@@@@@2")
-//       } else {
-//         setLoading(false);
-//         setAlert('error', result.data.description);
-//       }
-//     })
-//     .catch((error) => {
-//       setLoading(false);
-//       setAlert('error', error.message);
-//     });
-//   };
 
   const handleCloseQP = () => {
     setOpenQP(false);
@@ -195,14 +157,6 @@ const JoinClass = (props) => {
         });
     }
   }
-  // const body = (
-  //   <div style={modalStyle} className={classes.paper}
-   
-  //   >
-  //    hiiiiiiiiiiiiiiii
-  //    <Button>Assign Question Paper</Button>
-  //   </div>
-  // );
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
@@ -215,11 +169,10 @@ const JoinClass = (props) => {
           {moment(props.data ? props.data.date : '').format('DD-MM-YYYY')}
         </span>
         
-           {/* { window.location.pathname === '/erp-online-class-teacher-view' ? ( */}
-            {
+           { window.location.pathname === '/erp-online-class-teacher-view' ? (
+            
             <Tooltip title='Attach Question Paper'>
             <IconButton
-            // onClick={handleOpenQP}
             onClick={() =>
               history.push({
                 pathname: '/erp-online-class/assign/qp',
@@ -230,9 +183,9 @@ const JoinClass = (props) => {
               <AttachFileIcon />
             </IconButton>
           </Tooltip>
-          // ) : (
-          //   ''
-          // )
+          ) : (
+            ''
+          )
           }
           {
               <Grid item xs={3}>
@@ -445,7 +398,6 @@ const DetailCardView = ({
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const history = useHistory();
-  // const { role_details } = JSON.parse(localStorage.getItem('userDetails'));
   /*
   useEffect(() => {
     if (fullData) {

@@ -4,7 +4,8 @@ import { withRouter,useHistory } from 'react-router-dom';
 
 import Layout from '../../../Layout'
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import {  TextField, Grid, Button, useTheme} from '@material-ui/core'
+import {  TextField, Grid, Button, useTheme, Typography} from '@material-ui/core'
+import CommonBreadcrumbs from '../../../../components/common-breadcrumbs/breadcrumbs';
 
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -58,7 +59,6 @@ const PreQuiz = (props) => {
   const data = props.location.state.data
   const history = useHistory()
 
-//   const gradeObj=data.grade
   console.log(data,props.location.state.data,"@@@@@@@@@@@@@@@@AssignQP")
   const [wordCount,setWordCount] =useState('');
   const { setAlert } = useContext(AlertNotificationContext);
@@ -69,121 +69,102 @@ const PreQuiz = (props) => {
   const widerWidth = isMobile ? '90%' : '85%'
   const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
 
-  const [qpList, setQpList] = useState([]);
+  const [preQuizInfo, setPreQuizInfo] = useState([]);
 
-  const branchId=roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0]
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
-  console.log(token,"@@@@@@@@@@@@@@@@@@tok")
-//   useEffect(() => {
-//       getPreQuizStatus();
-//      }, []);
-//       const getPreQuizStatus =  () => {
+  useEffect(() => {
+      getPreQuizStatus();
+     }, []);
+      const getPreQuizStatus =  () => {
 
-//         axiosInstance
-//       .get(`${endpoints.onlineClass.PreQuiz}`, {
-//         headers: {
-//           // responseType: 'blob',
-//             Authorization: `Bearer ${token}`,
-//         //   'x-api-key': 'vikash@12345#1231',
-//         },
-//       })
-//       .then((result) => {
-//         if (result.data.status_code === 200) {
-//           setQpList(result.data.result.results);
-//             console.log(result.data,"@@@@@@@@2")
+        axiosInstance
+      .get(`${endpoints.onlineClass.PreQuiz}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setPreQuizInfo(result.data.result);
 
-//         } else {
-//           setAlert('error', result.data.message);
-//         }
-//       })
-//       .catch((error) => {
-//         setAlert('error', error.message);
-//       });
-//       };
+        } else {
+          setAlert('error', result.data.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+      });
+      };
  
  
-      const handleSubmit = (e) => {
-    const chkWordCount=+wordCount
-    const chkNumber = Number.isInteger(chkWordCount)
-      if (!chkNumber){
-        setAlert('error',"please enter a valid word count with integer" );
+const handleSubmit = () =>{
+  const url = `/quiz/start/${preQuizInfo.online_class && preQuizInfo.online_class.id}`
+  let link = document.createElement('a')
+  link.href = url
+  link.target = '_blank'
+  link.click()
+  link.remove()
 
-      }else{
-
-    setLoading(true);
-    let requestData= {}
-      requestData = {
-        "word_count":wordCount || data.word_count,
-        "grade_id":data.grade.id,
-        "wrd_c_con_id":data.id
-      }
-
-    // axiosInstance.put(`${endpoints.blog.WordCountConfig}`, requestData)
-
-    // .then(result=>{
-    // if (result.data.status_code === 200) {
-    //   setLoading(false);
-    //   setAlert('success', result.data.message);
-    //   history.push('/blog/wordcount-config')
-    // } else {        
-    //   setLoading(false);
-    //   setAlert('error', "word config already existing for this grade");
-    // }
-    // }).catch((error)=>{
-    //   setLoading(false);        
-    //   setAlert('error', "word config already existing for this grade");
-    // }) 
 }
-    };
-      
-       
-   
-const handleWordCountChange = (e) => {
-  setWordCount(e.target.value);
-};
-
 
   
 
   return (
+    
    <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-      <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
-        <Grid item xs={12} sm={6}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-</Grid>
-        <Grid item xs={12} sm={6}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-                    {/* <div style={{padding:'30px',border:'1px solid red',width:'100px',height:'60px'}}>hiiiiii</div> */}
-                    </Grid>
-         
-        </Grid>
+      <div className='message_log_wrapper' style={{ backgroundColor: '#F9F9F9' }}>
+            <div
+              className='message_log_breadcrumb_wrapper'
+              style={{ backgroundColor: '#F9F9F9' }}
+            >
+      <CommonBreadcrumbs componentName='Start Quiz' />
+        {preQuizInfo.lobby_info && preQuizInfo.lobby_info.lobby_identifier ? 
+        <div>
+        <Typography style={{marginTop:'100px',marginLeft:'250px'}}>OnlineClass Name : {preQuizInfo.online_class && preQuizInfo.online_class.title}</Typography>
+        {/* <Typography style={{marginTop:'100px',marginLeft:'250px'}}>OnlineClass Name : {preQuizInfo.online_class && preQuizInfo.online_class.title}</Typography> */}
 
-        <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
-        <Grid item xs={12} sm={3}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+         <Grid container spacing={isMobile ? 1 : 5} style={{ width: '95%', margin: '-1.25rem 1.5% 0 1.5%' }}>
+          <Grid item xs={12} sm={3}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
 </Grid>
-        <Grid item xs={12} sm={6}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-                    <div style={{padding:'30px',border:'1px solid red',width:'300px',height:'80px'}}>This onlineclass does not have quiz associated with it.</div>
-                    </Grid>
-         
-        </Grid>
-        {/* <Grid container spacing={isMobile ? 1 : 5} style={{ width: '95%', margin: '-1.25rem 1.5% 0 1.5%' }}>
+
           <Grid item xs={6} sm={2}>
             <Button
               variant='contained'
-              style={{ color: 'white' }}
+              style={{ color: 'white',marginTop:'200px',marginLeft:'150px' }}
               color="primary"
               className="custom_button_master"
               size='medium'
               type='submit'
               onClick={handleSubmit}
-              disabled={!wordCount || !data.word_count}
-            >
-              start
+              >
+              Start Quiz
         </Button>
           </Grid>
-        </Grid> */}
-
+        </Grid> 
+              </div>:
+        <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
+        <Grid item xs={12} sm={3}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+</Grid>
+        <Grid item xs={12} sm={6}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+                    <div style={{fontSize:'16px',fontWeight:'bold',marginLeft:'130px',marginTop:'200px',paddingTop:'30px',padding:'10px'
+                    // ,border:'1px solid red'
+                    ,
+                    width:'520px',height:'80px'}}>
+                      
+                      {preQuizInfo.lobby_info && preQuizInfo.lobby_info.question_paper === "" ? 
+                      'This onlineclass does not have quiz associated with it.'
+                      : preQuizInfo.lobby_info && preQuizInfo.lobby_info.lobby_identifier === ""? 
+                      'Quiz lobby is not created yet. Please wait untill the host creates it'
+                    :''}</div>
+                    </Grid>
+         
+        </Grid>}
        
+
+       </div>
+       </div>
 
       </Layout>
     </>
