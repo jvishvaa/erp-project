@@ -2,6 +2,7 @@ import React from 'react';
 import { useSocket } from '../mp-quiz-providers';
 import MpQuizPlay from './mp-quiz-play';
 import MpQuizSocketStatus from './mp-quiz-socket-status';
+// import QuestionHandlerHome from './mp-quiz-components/mp-quiz-question-handler';
 
 function MpQuiz() {
   const socket = useSocket();
@@ -15,7 +16,7 @@ function MpQuiz() {
           socket.trigger('respond_to_question', {
             event: 'respond_to_question',
             response: {
-              id: 84753,
+              id: 485,
               attempted_ans: 0,
               start_time: 1615371929.024,
               sequence: 0,
@@ -33,6 +34,7 @@ function MpQuiz() {
       </button>
       <MpQuizSocketStatus key={readyState} />
       {readyState === window.WebSocket.OPEN ? <MpQuizPlay key={readyState} /> : null}
+      {/* <QuestionHandlerHome /> */}
     </>
   );
 }

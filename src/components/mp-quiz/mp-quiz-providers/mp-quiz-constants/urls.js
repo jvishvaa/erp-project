@@ -13,6 +13,7 @@ const urls = {
   fetchQuestions: 'fetchQuestions',
   socketEndPoint: 'multiplayer-quiz/<online_class_id>/<user_auth_token>/',
   fetchQuizBgms: 'mp_quiz/mp_music/',
+  fetchQuizQpPaper: 'mp_quiz/mp_questions_list/', // ?question_paper=80
   ajaxHeaders,
   ajaxBase,
   userAuthToken,

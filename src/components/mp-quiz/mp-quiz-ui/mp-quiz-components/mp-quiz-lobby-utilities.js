@@ -6,7 +6,6 @@ import ClearIcon from '@material-ui/icons/Clear';
 import CancelIcon from '@material-ui/icons/Cancel';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
-
 import {
   useQuizContext,
   useQuizEventTriggers,
@@ -25,6 +24,7 @@ import CurrentScore, {
 import StudentDetails from './leaderboard/StudentDetails';
 import PostQuizLeaderboard from './leaderboard/PostQuiz/PostQuizLeaderboard';
 import HostPostQuizReport from './leaderboard/HostPostQuizReport/HostPostQuizReport';
+import QuestionHandlerHome from './mp-quiz-question-handler';
 
 import { FullScreenConstructor } from '../../mp-quiz-utils';
 
@@ -491,9 +491,10 @@ export function JoineeQuizContainerContent() {
         bgms={this.props.bgms}
         isMuted={isMuted}
       /> */}
-      <div>
+      <QuestionHandlerHome />
+      {/* <div>
         <p>Question handler comp comes here</p>
-      </div>
+      </div> */}
     </>
   );
 }

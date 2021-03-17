@@ -30,7 +30,7 @@ export function QuizUtilityContextProvider({ children }) {
     defaultQueryParamObj: {},
     fetchOnLoad: true,
     includeAuthtoken: true,
-    isCentral: true,
+    isCentral: false,
     APIDataKeyName: 'result',
     headers: ajaxHeaders,
   };
