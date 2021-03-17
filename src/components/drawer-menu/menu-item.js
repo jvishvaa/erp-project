@@ -24,6 +24,8 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Role Management', Path: '/role-management' },
     { name: 'View Role', Path: '/role-management' },
     { name: 'Master Management', Path: '/master-management' },
+    { name: 'Branch', Path: '/master-management/branch-table' },
+    { name: 'Branch Acad Mapping', Path: '/master-management/branch-acad-table' },
     { name: 'Subject', Path: '/master-management/subject-table' },
     { name: 'Section', Path: '/master-management/section-table' },
     { name: 'Grade', Path: '/master-management/grade-table' },

@@ -428,7 +428,7 @@ const Layout = ({ children, history }) => {
         history.push('/master-management/branch-table');
         break;
       }
-      case 'Branch Acad': {
+      case 'Branch Acad Mapping': {
         history.push('/master-management/branch-acad-table');
         break;
       }
