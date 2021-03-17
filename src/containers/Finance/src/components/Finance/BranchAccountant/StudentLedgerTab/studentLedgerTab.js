@@ -107,8 +107,8 @@ class StudentLedgerTab extends Component {
     this.state = {
       value: 'one',
       session: {
-        label: '2020-21',
-        value: '2020-21'
+        label: '2021-22',
+        value: '2021-22'
       },
       sessionData: null,
       getData: false,
