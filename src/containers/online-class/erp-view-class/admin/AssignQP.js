@@ -55,11 +55,11 @@ const useStyles = makeStyles((theme) => ({
 
 const AssignQP = (props) => {
   const classes = useStyles()
-  const data = props.location.state.data
+  // const data = props.location.state.data
+  const {location:{state:{data}={}}={}}=props||{}
   const history = useHistory()
 
 //   const gradeObj=data.grade
-  console.log(data,props.location.state.data,"@@@@@@@@@@@@@AssignQP")
   const [wordCount,setWordCount] =useState('');
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false)
