@@ -39,7 +39,7 @@
 }
 
 .session__highlights--title {
-    font-size: 2em;
+    /* font-size: 2em; */
     font-weight: bold;
     text-align: center;
 }
@@ -70,7 +70,8 @@
     top:55%;
     left: 50%;
     transform: translate(-50%, -50%);
-    overflow: scroll;
+    /* overflow: scroll; */
+    overflow: auto;
 }
 
 .hostpostquiz__result--container::-webkit-scrollbar-thumb{
@@ -164,7 +165,7 @@ background: #555;
 
 @media only screen and (max-width: 900px) {
     .session__highlights--title {
-        font-size: 1.5em;
+        /* font-size: 1.5em; */
     }
     
     .session__highlights--subtitle {
@@ -201,7 +202,7 @@ background: #555;
     }
 
     .session__highlights--title {
-        font-size: 1.2em;
+        /* font-size: 1.2em; */
     }
     
     .session__highlights--subtitle {

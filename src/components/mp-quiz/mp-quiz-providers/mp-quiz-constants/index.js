@@ -1,8 +1,8 @@
-import { WebSockectEvents, eventLabels } from './socket-event-contants';
 import urls from './urls';
+import * as socketContants from './socket-event-contants';
 
 const constants = {
-  socketContants: { WebSockectEvents, eventLabels },
+  socketContants,
   urls,
 };
 export default constants;

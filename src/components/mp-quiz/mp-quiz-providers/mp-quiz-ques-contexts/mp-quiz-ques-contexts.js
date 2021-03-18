@@ -6,7 +6,12 @@ import { useFetcher } from '../../mp-quiz-utils';
 import { useQuizEventTriggers } from '../mp-quiz-event-contexts';
 
 const {
-  urls: { fetchQuizQpPaper: fetchQuizQpPaperAPIEndpoint, ajaxHeaders, ajaxBase },
+  urls: {
+    fetchQuizQpPaper: {
+      headers: fetchQuizQpPaperHeaders,
+      endpoint: fetchQuizQpPaperAPIEndpoint,
+    } = {},
+  },
 } = constants || {};
 
 const getTimeToRenderConfig = () => {
@@ -179,14 +184,14 @@ export function QuizQuesContextProvider({ children }) {
   const { postQuesReponseTrigger } = useQuizEventTriggers();
 
   const quizQpHookProps = {
-    url: `${ajaxBase + fetchQuizQpPaperAPIEndpoint}`,
+    url: fetchQuizQpPaperAPIEndpoint,
     dataType: 'object',
     defaultQueryParamObj: {},
     fetchOnLoad: false,
     includeAuthtoken: true,
     isCentral: false,
     APIDataKeyName: 'result',
-    headers: ajaxHeaders,
+    headers: fetchQuizQpPaperHeaders,
   };
   const [quizQp, fetchQuizQpHook] = useFetcher(quizQpHookProps);
 

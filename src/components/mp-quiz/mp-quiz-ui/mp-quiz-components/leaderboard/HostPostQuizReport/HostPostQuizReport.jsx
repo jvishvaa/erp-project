@@ -10,7 +10,15 @@ import './HostPostQuiz.css'
 import {InternalPageStatus}  from '../../../../mp-quiz-utils'
 import { constants } from '../../../../mp-quiz-providers'
 
-const {urls}=constants||{}
+const {
+  urls: {
+    fetchQuizQpPaper: {
+      headers: fetchQuizQpPaperHeaders,
+      endpoint: fetchQuizQpPaperAPIEndpoint,
+    } = {},
+  },
+} = constants || {};
+
 class HostPostQuizReport extends Component {
   constructor () {
     super()
@@ -25,20 +33,17 @@ class HostPostQuizReport extends Component {
 
   fetchQuestions = () => { //please handle
     const { onlineClassId } = this.props
-    const { token } = JSON.parse(localStorage.getItem('user_profile')).personal_info
+    const apiUrl = fetchQuizQpPaperAPIEndpoint+'?question_paper=80&lobby_identifier=907&online_class_id=907 '
     this.setState({ isFetching: true, isFetchFailed: null }, () => {
-      axios.get(`${urls.GetQuizQuestionsWithResponses}?online_class_id=${onlineClassId}`, {
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      })
+      axios.get(apiUrl, fetchQuizQpPaperHeaders)
         .then(res => {
           if (res.status === 200) {
             const { data: { result = {} } = {} } = res
-            this.setState({ questions: result.data, isFetched: true, isFetching: false })
+            this.setState({ questions: (result.questions ||[]), isFetched: true, isFetching: false })
           }
         })
         .catch(err => {
+          debugger
           console.log(err)
           this.setState({ isFetching: false, isFetchFailed: true })
         })
@@ -77,7 +82,7 @@ class HostPostQuizReport extends Component {
               isFetching
                 ? <InternalPageStatus label='Loading leaderboard..' />
                 : isFetched ? <Table>
-                  <TableHead>
+                  {/* <TableHead> */}
                     <TableRow>
                       <TableCell className='quiz__table__cell'>Rank</TableCell>
                       <TableCell className='quiz__table__cell'>Name</TableCell>
@@ -88,8 +93,8 @@ class HostPostQuizReport extends Component {
                         })
                       }
                     </TableRow>
-                  </TableHead>
-                  <TableBody>
+                  {/* </TableHead> */}
+                  {/* <TableBody> */}
                     {
                       leaders && leaders.length
                         ? leaders.map(studentDetails => {
@@ -97,7 +102,7 @@ class HostPostQuizReport extends Component {
                         })
                         : ''
                     }
-                  </TableBody>
+                  {/* </TableBody> */}
                 </Table>
                   : <InternalPageStatus
                     label={

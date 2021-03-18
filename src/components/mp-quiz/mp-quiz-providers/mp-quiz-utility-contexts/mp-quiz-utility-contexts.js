@@ -5,7 +5,12 @@ import constants from '../mp-quiz-constants';
 import { useFetcher } from '../../mp-quiz-utils';
 
 const {
-  urls: { fetchQuizBgms: fetchQuizBgmsAPIEndpoint, ajaxHeaders, ajaxBase },
+  urls: {
+    fetchQuizBgms: {
+      headers: fetchQuizBgmHeaders,
+      endpoint: fetchQuizBgmsAPIEndpoint,
+    } = {},
+  },
 } = constants || {};
 
 const QuizUtilityContext = React.createContext();
@@ -25,14 +30,14 @@ export function QuizUtilityContextProvider({ children }) {
     setMutedTo(!isMuted);
   }
   const bgmsHookProps = {
-    url: ajaxBase + fetchQuizBgmsAPIEndpoint,
+    url: fetchQuizBgmsAPIEndpoint,
     dataType: 'object',
     defaultQueryParamObj: {},
     fetchOnLoad: true,
     includeAuthtoken: true,
     isCentral: false,
     APIDataKeyName: 'result',
-    headers: ajaxHeaders,
+    headers: fetchQuizBgmHeaders,
   };
   const [bgms, fetchBgmsHook] = useFetcher(bgmsHookProps);
 

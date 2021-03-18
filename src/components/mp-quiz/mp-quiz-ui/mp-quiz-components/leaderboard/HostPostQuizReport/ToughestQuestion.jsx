@@ -26,7 +26,9 @@ export class ToughestQuestion extends Component {
   getToughestQuestion = () => {
     const { questions, questionId } = this.props
     const question = questions.find(question => Number(question.id) === Number(questionId))
-    if (question) return this.parseHtml(question.question)
+    const {question_answer:questionAnswer} =question||{}
+    const [{question:questionText='Question has no content'}]=(questionAnswer||[]).length?questionAnswer:[{}]
+    if (question) return this.parseHtml(questionText)
     return <h1>Question not found</h1>
   }
 
