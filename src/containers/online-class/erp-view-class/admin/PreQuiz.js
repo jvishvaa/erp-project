@@ -56,7 +56,8 @@ const useStyles = makeStyles((theme) => ({
 
 const PreQuiz = (props) => {
   const classes = useStyles()
-  const data = props.location.state.data
+  // const data = props.location.state.data
+  const {location:{state:{data}={}}={}}=props||{}
   const history = useHistory()
 
   console.log(data,props.location.state.data,"@@@@@@@@@@@@@@@AssignQP")
