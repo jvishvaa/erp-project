@@ -40,14 +40,14 @@ const commonReducer = (state = initialState, action) => {
     case actionTypes.FETCH_BRANCH_PER_SESSION: {
       const branchPerSessionNew = [...action.payload.branches]
       const multipleBranches = [...action.payload.branches]
-      if (multipleBranches.length) {
-        multipleBranches.unshift({
-          branch: {
-            branch_name: 'All Branches',
-            id: 'all'
-          }
-        })
-      }
+      // if (multipleBranches.length) {
+      //   multipleBranches.unshift({
+      //     branch: {
+      //       branch_name: 'All Branches',
+      //       id: 'all'
+      //     }
+      //   })
+      // }
       return {
         ...state,
         branchPerSession: branchPerSessionNew,
@@ -83,12 +83,12 @@ const commonReducer = (state = initialState, action) => {
     case actionTypes.SECTIONS_PER_GRADE_AS_ADMIN: {
       console.log('===>sections<===', action.payload)
       const a = [...action.payload.data]
-      a.unshift({
-        section: {
-          id: 'all',
-          section_name: 'All Section'
-        }
-      })
+      // a.unshift({
+      //   section: {
+      //     id: 'all',
+      //     section_name: 'All Section'
+      //   }
+      // })
       return {
         ...state,
         sectionsPerGradeAdmin: action.payload.data,
@@ -139,12 +139,12 @@ const commonReducer = (state = initialState, action) => {
       // console.log('----GRade per branch-------------', action.payload)
       const allGrades = [...action.payload.data]
       const multipleGrades = [...action.payload.data]
-      multipleGrades.unshift({
-        grade: {
-          grade: 'All Grades',
-          id: 'all'
-        }
-      })
+      // multipleGrades.unshift({
+      //   grade: {
+      //     grade: 'All Grades',
+      //     id: 'all'
+      //   }
+      // })
       return {
         ...state,
         gradesPerBranch: allGrades,
