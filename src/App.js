@@ -398,7 +398,10 @@ function App() {
                         <Route exact path='/discussion-forum/create'>
                           {({ match }) => <CreateDiscussionForum match={match} />}
                         </Route>
-                        <Route exact path='/circular'>
+                        <Route exact path='/teacher-circular'>
+                          {({ match }) => <CircularList match={match} />}
+                        </Route>
+                        <Route exact path='/student-circular'>
                           {({ match }) => <CircularList match={match} />}
                         </Route>
                         <Route exact path='/create-circular'>
