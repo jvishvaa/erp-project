@@ -1,22 +1,22 @@
 import React from 'react';
-import LinkTag from '@material-ui/core/Link';
-import { useQuizQuesContext } from '../../../mp-quiz-providers';
-import PreQuestionAnim from './pre-question-anim';
-import QuestionContent from './question-content';
-import Meme from './meme';
-import Leaderboard from './leader-board';
+// import LinkTag from '@material-ui/core/Link';
+import { useQuizQuesContext } from '../../../../mp-quiz-providers';
+import PreQuestionAnim from '../mp-quiz-ques-attemption-flow-comp/pre-question-anim';
+import QuestionContent from '../question-content';
+import Meme from '../mp-quiz-ques-attemption-flow-comp/meme';
+import Leaderboard from '../mp-quiz-ques-attemption-flow-comp/leader-board-bwn-questions';
 
-import InternalPageStatus from '../internal-page-status';
+import InternalPageStatus from '../../internal-page-status';
 
-import '../../styles/question_view.css';
-import '../../styles/anim.css';
+import '../../../styles/question_view.css';
+import '../../../styles/anim.css';
 
 function QuestionHandler() {
   const {
     fetchQuizQp,
     quizQp: { fetch, fetching, fetchFailed, message },
     timeToRenderObj,
-    timeToRenderControls: { timeToRender, onAttemptionCurrentQuesAttemption },
+    timeToRenderControls: { timeToRender },
   } = useQuizQuesContext();
 
   React.useEffect(() => {
@@ -31,8 +31,6 @@ function QuestionHandler() {
   } = timeToRenderObj || {};
 
   function getContent() {
-    // debugger
-    console.log(timeToRender, 'timeToRender');
     switch (timeToRender) {
       case renderPreQuesAnim: {
         return <PreQuestionAnim />;
@@ -59,6 +57,7 @@ function QuestionHandler() {
           <InternalPageStatus
             loader={!fetchFailed}
             label={
+              // eslint-disable-next-line no-nested-ternary
               fetchFailed ? labelOnFetchFailure : fetching ? 'Fetching...' : 'Loading...'
             }
           />
@@ -66,11 +65,6 @@ function QuestionHandler() {
       }
     }
   }
-  return (
-    <>
-      <p>{timeToRender}</p>
-      {getContent()}
-    </>
-  );
+  return getContent();
 }
 export default QuestionHandler;

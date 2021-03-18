@@ -1,6 +1,6 @@
 import React from 'react';
 import Timer from 'react-compound-timer';
-import { useQuizQuesContext } from '../../../mp-quiz-providers';
+import { useQuizQuesContext } from '../../../../mp-quiz-providers';
 
 export default function PreQuestionAnim() {
   /*

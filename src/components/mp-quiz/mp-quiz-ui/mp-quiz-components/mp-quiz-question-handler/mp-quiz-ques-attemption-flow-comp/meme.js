@@ -4,7 +4,7 @@ import {
   useQuizContext,
   constants,
   useQuizUitilityContext,
-} from '../../../mp-quiz-providers';
+} from '../../../../mp-quiz-providers';
 
 const {
   socketContants: {

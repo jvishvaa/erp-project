@@ -3,9 +3,9 @@ import {
   useQuizContext,
   constants,
   useQuizUitilityContext,
-} from '../../../mp-quiz-providers';
+} from '../../../../mp-quiz-providers';
 
-import OrderedList from '../leaderboard/OrderedList';
+import OrderedList from '../../leaderboard/OrderedList';
 
 const {
   socketContants: {
