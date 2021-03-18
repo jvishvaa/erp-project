@@ -124,12 +124,12 @@ class TallyReports extends Component {
       })
     }
     changehandlerbranch = (e) => {
-      const allLabel = e.filter(event => {
+      const allLabel = e && e.filter(event => {
         return event.label === 'All Branches'
       })
       let data = null
       let ids = []
-      if (allLabel.length === 1) {
+      if (allLabel && allLabel.length === 1) {
         console.log('All Branch')
         // const allBranches = this.props.branches.map(branch => {
         //   return {
@@ -160,7 +160,7 @@ class TallyReports extends Component {
           this.props.fetchFeeAccounts(data, this.props.alert, this.props.user)
         })
       } else {
-        e.forEach(branch => {
+        e && e.forEach(branch => {
           ids.push(branch.value)
         })
         this.setState({
@@ -183,11 +183,11 @@ class TallyReports extends Component {
       // this.props.fetchFeeAccounts(data, this.props.alert, this.props.user)
     }
     changeFeeAccount = (e) => {
-      const allLabel = e.filter(event => {
+      const allLabel = e && e.filter(event => {
         return event.label === 'All Fee Accounts'
       })
       let ids = []
-      if (allLabel.length === 1) {
+      if (allLabel && allLabel.length === 1) {
         console.log('All Fee Account')
         const allFeeAccs = {
           value: 'all',
@@ -201,7 +201,7 @@ class TallyReports extends Component {
           console.log('-all fee accs ids-----------', this.state.feeAccId)
         })
       } else {
-        e.forEach(fee => {
+        e && e.forEach(fee => {
           ids.push(fee.value)
         })
         this.setState({ feeAccData: e, feeAccId: ids }, () => {
@@ -214,11 +214,11 @@ class TallyReports extends Component {
       this.setState({ trnsId: e.value, trnsData: e })
     }
     changePaymentMode = (e) => {
-      const allLabel = e.filter(event => {
+      const allLabel = e && e.filter(event => {
         return event.label === 'All'
       })
       let ids = []
-      if (allLabel.length === 1) {
+      if (allLabel && allLabel.length === 1) {
         const allPayment = {
           value: 'all',
           label: 'All'
@@ -230,7 +230,7 @@ class TallyReports extends Component {
           console.log('-all payment-----------', this.state.paymentModeData)
         })
       } else {
-        e.forEach(payment => {
+        e && e.forEach(payment => {
           ids.push(payment.value)
         })
         this.setState({ paymentModeId: ids, paymentModeData: e })

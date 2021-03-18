@@ -178,7 +178,7 @@ const TotalFormCount = ({ classes,
     setSelectedBranch(null)
     setShowTable(false)
     // fetchBranches(e.value, alert, user)
-    fetchBranchList(e.value, alert, user)
+    fetchBranchList(e.value, alert, user, moduleId)
   }
 
   const handleBranch = (e) => {

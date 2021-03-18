@@ -136,9 +136,9 @@ class ReceiptBookAdm extends Component {
     }
     changeFeeAccountHandler = (e) => {
       const allLabel = e && e.filter(event => {
-        return event.label === 'All Fee Account'
+        return event && event.label === 'All Fee Account'
       })
-      if (allLabel.length === 1) {
+      if (allLabel && allLabel.length === 1) {
         const allAccounts = {
           value: 'all',
           label: 'All Fee Account'
@@ -152,7 +152,7 @@ class ReceiptBookAdm extends Component {
         })
       } else {
         let ids = []
-        e.forEach(acc => {
+        e && e.forEach(acc => {
           ids.push(acc.value)
         })
         this.setState({
@@ -174,11 +174,11 @@ class ReceiptBookAdm extends Component {
       }
     }
     changePaymentMode = (e) => {
-      const allLabel = e.filter(event => {
-        return event.label === 'All'
+      const allLabel = e && e.filter(event => {
+        return event && event.label === 'All'
       })
       let ids = []
-      if (allLabel.length === 1) {
+      if (allLabel && allLabel.length === 1) {
         const allPayment = {
           value: 'all',
           label: 'All'
@@ -190,7 +190,7 @@ class ReceiptBookAdm extends Component {
           console.log('-all payment-----------', this.state.paymentModeData)
         })
       } else {
-        e.forEach(payment => {
+        e && e.forEach(payment => {
           ids.push(payment.value)
         })
         this.setState({ paymentModeId: ids, paymentModeData: e })
@@ -276,7 +276,7 @@ class ReceiptBookAdm extends Component {
                 isMulti
                 value={this.state.selectedFeeAccount ? this.state.selectedFeeAccount : ''}
                 options={
-                  this.state.selectedFeeAccount.value !== 'all' ? this.props.feeAccounts && this.props.feeAccounts.length
+                  this.state.selectedFeeAccount && this.state.selectedFeeAccount.value !== 'all' ? this.props.feeAccounts && this.props.feeAccounts.length
                     ? this.props.feeAccounts.map((row) => ({
                       value: row.id ? row.id : '',
                       label: row.fee_account_name ? row.fee_account_name : ''
@@ -292,7 +292,7 @@ class ReceiptBookAdm extends Component {
                 isMulti
                 value={this.state.paymentModeData ? this.state.paymentModeData : ''}
                 options={
-                  this.state.paymentModeData.value !== 'all'
+                  this.state.paymentModeData && this.state.paymentModeData.value !== 'all'
                     ? [
                       {
                         value: 'all',

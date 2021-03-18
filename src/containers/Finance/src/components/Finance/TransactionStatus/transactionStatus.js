@@ -41,7 +41,7 @@ const styles = theme => ({
 
 const FEE_TYPE = [
   { id: 1, value: 'Normal Fee' },
-  { id: 3, value: 'Store' },
+  // { id: 3, value: 'Store' },
   { id: 2, value: 'Other Fee' }
 ]
 // let transactionState = null
@@ -189,7 +189,7 @@ class TransactionStatus extends Component {
 
   changePaymentMode = (e) => {
     const allLabel = e && e.filter(event => {
-      return event.label === 'All'
+      return event && event.label === 'All'
     })
     let ids = []
     if (allLabel && allLabel.length === 1) {
@@ -213,7 +213,7 @@ class TransactionStatus extends Component {
 
   feePlanChangeHandler = (e) => {
     const allLabel = e && e.filter(event => {
-      return event.label === 'All Fee Accounts'
+      return event && event.label === 'All Fee Accounts'
     })
     let ids = []
     if (allLabel && allLabel.length === 1) {
@@ -230,7 +230,7 @@ class TransactionStatus extends Component {
         console.log('-all fee accs ids-----------', this.state.feeAccId)
       })
     } else {
-      e.forEach(fee => {
+      e && e.forEach(fee => {
         ids.push(fee.value)
       })
       this.setState({ feeAccData: e, feeAccId: ids }, () => {
