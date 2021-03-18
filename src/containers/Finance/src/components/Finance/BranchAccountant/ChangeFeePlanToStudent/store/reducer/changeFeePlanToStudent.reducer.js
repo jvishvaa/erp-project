@@ -15,12 +15,12 @@ const changeFeePlanReducer = (state = initialState, action) => {
       const newGrades = [...action.payload.data]
       const allGrades = newGrades.map(grades => (grades.grade.id
       ))
-      newGrades.unshift({
-        grade: {
-          grade: 'All Grades',
-          id: allGrades
-        }
-      })
+      // newGrades.unshift({
+      //   grade: {
+      //     grade: 'All Grades',
+      //     id: allGrades
+      //   }
+      // })
       return {
         ...state,
         gradeData: newGrades
