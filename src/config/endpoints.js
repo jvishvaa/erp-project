@@ -255,7 +255,9 @@ export default {
   },
   questionPaper:{
     FETCHQP:`${baseURLCentral}/assessment/test-list/`,
-    QuestionsInQP:'/mp_quiz/mp_questions_list/'
+    QuestionsInQP:'/mp_quiz/mp_questions_list/',
+    AssignQP:'/mp_quiz/'
+    // http://localhost:8000/qbox/mp_quiz/1073/assign-quiz/
   },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',

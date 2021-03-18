@@ -45,7 +45,30 @@ const useStyles = makeStyles((theme) => ({
     padding:'1px',
     marginTop: '-5px',
     marginRight: '20px'
-  }
+  },
+  containerQuestion: {
+    fontWeight: 'bold',
+    fontSize: '1.3rem',
+    marginLeft:'10px'
+  },
+  cardContainer: {
+    width: '98%',
+    minHeight: '100px',
+    border: '1px solid black',
+    margin: 'auto',
+    marginTop: '15px',
+    padding: '8px'
+  },questionOptions: {
+    fontSize: '1rem'
+  },
+  quizAnswer: {
+    display: 'inline-block',
+    marginLeft: '10px'
+  },
+
+
+
+
  
 }));
 
@@ -69,13 +92,12 @@ const AssignQP = (props) => {
   const widerWidth = isMobile ? '90%' : '85%'
   const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
   const JSON5 = require('json5')
-
+  const [selectedQp,setSelectedQp]=useState()
 
   const [qpList, setQpList] = useState([]);
   const [questionData,setQuestionData]=useState([]);
   const branchId=roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0]
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
-  // console.log(token,"@@@@@@@@@@@@@@@@@@tok")
   useEffect(() => {
       getQP();
      }, []);
@@ -84,15 +106,12 @@ const AssignQP = (props) => {
         axios
       .get(`${endpoints.questionPaper.FETCHQP}`, {
         headers: {
-          // responseType: 'blob',
-            // Authorization: `Bearer ${token}`,
           'x-api-key': 'vikash@12345#1231',
         },
       })
       .then((result) => {
         if (result.data.status_code === 200) {
           setQpList(result.data.result);
-            console.log(result.data,"@@@@@@@@2")
 
         } else {
           setAlert('error', result.data.message);
@@ -102,47 +121,38 @@ const AssignQP = (props) => {
         setAlert('error', error.message);
       });
       };
- 
+ console.log(data,"@@@@@@@@@@@@@@@")
  
       const handleSubmit = (e) => {
-    // const chkWordCount=+wordCount
-    // const chkNumber = Number.isInteger(chkWordCount)
-    //   if (!chkNumber){
-    //     setAlert('error',"please enter a valid word count with integer" );
 
-    //   }else{
+    setLoading(true);
+    let requestData= {}
+    
+      requestData = {
+      "quiz_test_paper": 80
+      }
 
-    // setLoading(true);
-    // let requestData= {}
-    //   requestData = {
-    //     "word_count":wordCount || data.word_count,
-    //     "grade_id":data.grade.id,
-    //     "wrd_c_con_id":data.id
-    //   }
-
-    // axiosInstance.put(`${endpoints.blog.WordCountConfig}`, requestData)
-
-    // .then(result=>{
-    // if (result.data.status_code === 200) {
-    //   setLoading(false);
-    //   setAlert('success', result.data.message);
-    //   history.push('/blog/wordcount-config')
-    // } else {        
-    //   setLoading(false);
-    //   setAlert('error', "word config already existing for this grade");
-    // }
-    // }).catch((error)=>{
-    //   setLoading(false);        
-    //   setAlert('error', "word config already existing for this grade");
-    // }) 
-// }
+    axiosInstance.put(`${endpoints.questionPaper.AssignQP}${data}/assign-quiz/`, requestData)
+    .then(result => {
+    if (result.data.status_code === 200) {
+      setLoading(false);
+      setAlert('success', result.data.message);
+      history.push('/erp-online-class')
+    }
+    }).catch((error)=>{
+      setLoading(false);        
+      setAlert('error', "Cant Assign Question Paper");
+    }) 
     };
       
        
   
 
 
-const handleQPSelect = () =>{
+const handleQPSelect = (event,value) =>{
+  if (value){
+    setSelectedQp(value.id)
+  }
   axiosInstance
   .get(`${endpoints.questionPaper.QuestionsInQP}?question_paper=${
     80
@@ -154,7 +164,6 @@ const handleQPSelect = () =>{
   .then((result) => {
     if (result.data.status_code === 200) {
       setQuestionData(result.data.result);
-        console.log(result.data,"@@@@@@@@2")
 
     } else {
       setAlert('error', result.data.message);
@@ -166,52 +175,21 @@ const handleQPSelect = () =>{
 }
 const questionCard = (data, index) => {
   try {
-    let options = JSON5.parse(data.options)
-    if (typeof options === 'string') {
-      try {
-        options = JSON5.parse(options)
-      } catch (err) {
-        options = {}
-      }
-    }
-
-    let answer
-    if (data.answer.startsWith('[')) {
-      let answerObj = JSON5.parse(data.answer)
-      answer = Object.keys(answerObj).map((key, i) => {
-        return (
-          <div key={`${key}-${i}`} className={classes.quizAnswer}>
-            <span>{key} (</span>
-            <div
-              dangerouslySetInnerHTML={{ __html: answerObj[key] }}
-              className={classes.quizMcqAnswer}
-            />
-            <span>)</span>
-          </div>
-        )
-      })
-    } 
-    // else if (data.correct_ans.startsWith('"')) {
-    //   answer = data.correct_ans.substring(1, data.correct_ans.length - 1)
-    // } 
-    else {
-      answer = data.answer
-    }
-
-    const filteredOptions = Object.entries(options).filter(([key, value]) => value !== null)
+    const filteredOptions = Object.entries(data.options).filter(([key, value]) => value !== null)
     return (
       <div className={classes.cardContainer}>
         <Grid container>
-          <Grid item xs={1}>{index + 1}</Grid>
+          <Grid item >{index + 1}</Grid>
           <Grid item xs={11}>
             <div
-              dangerouslySetInnerHTML={{ __html: data.question }}
+              dangerouslySetInnerHTML={{ __html: index+1 && data.question }}
               className={classes.containerQuestion}
             />
           </Grid>
         </Grid>
         <Grid container spacing={2}>
           {filteredOptions.map(([key, value], i) => {
+            let tempValue=Object.values(value)
             return (
               <Grid
                 item
@@ -222,7 +200,7 @@ const questionCard = (data, index) => {
               >
                 <span>{i + 1}.</span>
                 <div
-                  dangerouslySetInnerHTML={{ __html: value }}
+                  dangerouslySetInnerHTML={{ __html: tempValue && tempValue[0].optionValue }}
                   className={classes.quizAnswer}
                 />
               </Grid>
@@ -240,20 +218,15 @@ const questionCard = (data, index) => {
           <Grid item xs={12} md={4}>
             <span>Answer: </span>
             {
-              typeof answer === 'object' ? answer : (
+              typeof data.answer === 'object' ? data.answer : (
                 <div
-                  dangerouslySetInnerHTML={{ __html: answer }}
+                  dangerouslySetInnerHTML={{ __html: data.answer[0] }}
                   className={classes.quizAnswer}
                 />
               )
             }
           </Grid>
-          <Grid item xs={12} md={4}>
-            <span>Question Type:</span>
-            <div className={classes.quizAnswer}>
-              {data.question_type}
-            </div>
-          </Grid>
+         
         </Grid>
       </div>
     )
@@ -261,7 +234,6 @@ const questionCard = (data, index) => {
     return <span>The JSON is not in the proper format. Please Contact Technical Team</span>
   }
 }
-
 
 
   
@@ -279,11 +251,9 @@ const questionCard = (data, index) => {
               onChange={handleQPSelect}
 
               id='grade'
-              // className='dropdownIcon'
               required
               disableClearable
               options={qpList}
-            //   value={gradeObj}
               filterSelectedOptions
               getOptionLabel={(option) => option?.test_name}
 
@@ -300,12 +270,12 @@ const questionCard = (data, index) => {
          
         </Grid>
         <div>
-        {questionData && questionData.question_answer && questionData.question_answer.map((item, index) => {
+        {questionData && questionData.questions &&questionData.questions && questionData.questions.map((item, index) => {
           return (
             <div key={item.id}>
               {
-                item.question &&
-                questionCard(item, index)
+                item.id &&
+                questionCard(item.question_answer[0], index)
               }
             </div>
           )
@@ -316,13 +286,13 @@ const questionCard = (data, index) => {
           <Grid item xs={6} sm={2}>
             <Button
               variant='contained'
-              style={{ color: 'white' }}
+              style={{ color: 'white',marginTop:'30px' }}
               color="primary"
               className="custom_button_master"
               size='medium'
               type='submit'
               onClick={handleSubmit}
-              // disabled={!wordCount || !data.word_count}
+              disabled={!selectedQp}
             >
               Assign
         </Button>

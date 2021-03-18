@@ -141,8 +141,8 @@ const JoinClass = (props) => {
           {moment(props.data ? props.data.date : '').format('DD-MM-YYYY')}
         </span>
         
-           { window.location.pathname === '/erp-online-class-teacher-view' ? (
-            
+           {/* { window.location.pathname === '/erp-online-class-teacher-view' ? ( */}
+            {
             <Tooltip title='Attach Question Paper'>
             <IconButton
             onClick={() =>
@@ -155,9 +155,9 @@ const JoinClass = (props) => {
               <AttachFileIcon />
             </IconButton>
           </Tooltip>
-          ) : (
-            ''
-          )
+          // ) : (
+          //   ''
+          // )
           }
           {
               <Grid item xs={3}>
