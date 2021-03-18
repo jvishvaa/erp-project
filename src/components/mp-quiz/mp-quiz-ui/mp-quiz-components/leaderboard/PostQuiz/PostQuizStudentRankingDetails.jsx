@@ -25,7 +25,7 @@ class PostQuizStudentRankingDetails extends Component {
           { firstName ? this.truncateString(firstName, 10) : 'Unknown' }</div>
         <div className={`${isHost ? 'postquiz__progress--holder--host' : 'postquiz__progress--holder--student'}`}>
           <div className='postquiz__progress--parent'>
-            <div className='postquiz__progress--child' style={{ width: `${percentage}%` }} />
+            <div className='postquiz__progress--child' style={{ width: `${percentage<=100?percentage:100}%` }} />
           </div>
         </div>
         {
