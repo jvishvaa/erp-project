@@ -12,6 +12,7 @@ import {
   constants,
   useQuizUitilityContext,
   useSocket,
+  useQuizQuesContext,
 } from '../../mp-quiz-providers';
 
 import CurrentScore, {
@@ -151,14 +152,12 @@ export function getDurationCounter(props) {
   /*
    * This duration module to be refactored.
    */
-  // let { wb_quiz_details: quizDetails = {} } = this.props
 
-  // const {
-  //   quiz_details: { data: { data: quizDetails = {} } = {} } = {},
-  //   isHost,
-  //   getCurrentPlayerInfo,
-  // } = useQuizContext();
-  const { quizDetails, getCurrentPlayerInfo } = props;
+  const {
+    quizDetails,
+    getCurrentPlayerInfo,
+    timeToRender: timeToRenderFromQuesContext,
+  } = props;
 
   const {
     duration: durationInMin = 0,
@@ -168,12 +167,7 @@ export function getDurationCounter(props) {
   const durationInSec = durationInMin * 60;
   const [currentUserId, currentPlayerObj] = getCurrentPlayerInfo();
   const { joined_at: joinedAt } = currentPlayerObj;
-  // use questions context here // please handle
-  const { __questionData } = props;
-  let {
-    // activeStep: currentQuesionIndex = 0,
-    timeToRender, // please handle
-  } = __questionData || {};
+
   let passedDuration = 0;
   const sagDuration =
     questionAnimDuration + questionOptionduration + lbDuration + memeDuration;
@@ -185,7 +179,7 @@ export function getDurationCounter(props) {
       props.endQuizTrigger();
     }
   };
-
+  let timeToRender;
   // remove below statement to handle indepdent times in next release.
   const isHost = true;
   // logic to run counter equally
@@ -199,7 +193,6 @@ export function getDurationCounter(props) {
     quizStartedAt = joinedAt;
     startImmediately = false;
   }
-  console.log(quizDuration, startedAt, currentUserId);
   if (quizStartedAt !== 'None') {
     try {
       quizStartedAt = new Date(quizStartedAt);
@@ -217,12 +210,11 @@ export function getDurationCounter(props) {
   }
   const timeLeft = quizDuration - passedDuration;
   // const { timerAction } = this.state; Please handle this
-  let timerAction;
   return {
     onZerothChckP,
     startImmediately,
     duration: timeLeft,
-    timerAction,
+    timerAction: undefined,
     startedAt,
     timeToRender,
   };
@@ -265,13 +257,8 @@ export function RenderProfileSettings() {
 }
 
 export function RenderUtilityContent({ showUtilities }) {
-  // const { data: { data: participants = [], status: { success, message } = {} } = {} } =
-  //   quizEventsData[fetchParticipantsLabel] || {};
-
   const { endQuizTrigger } = useQuizEventTriggers();
   const {
-    // isQuizStarted,
-    // isQuizEnded,
     isHost,
     getCurrentPlayerInfo,
     [fetchParticipantsLabel]: { data: { data: participants = [] } = {} } = {},
@@ -280,15 +267,11 @@ export function RenderUtilityContent({ showUtilities }) {
   } = useQuizContext() || {};
   const [currentUserId, currentPlayerObj] = getCurrentPlayerInfo();
   const { total_score: totalScore, rank } = currentPlayerObj || {};
-  const { __questionData } = {};
   const {
-    activeStep: currentQuesionIndex = 0, // please handle
-    total_no_of_questions: totQestionCount = 0,
-  } = quizDetails || {};
-  // const {
-  //   activeStep: currentQuesionIndex = 0,
-  //   questionData: { questionCount: totQestionCount = 0 } = {},
-  // } = __questionData || {};
+    timeToRenderControls: { timeToRender } = {},
+    controls: { currentQuesionIndex = 0 } = {},
+  } = useQuizQuesContext();
+  const { total_no_of_questions: totQestionCount = 0 } = quizDetails || {};
   return (
     <div className='quiz__topbar--container'>
       <ClearOrPauseBtn />
@@ -312,8 +295,8 @@ export function RenderUtilityContent({ showUtilities }) {
                 isHost,
                 getCurrentPlayerInfo,
                 endQuizTrigger,
+                timeToRender,
               })}
-              // timeToRender='render_question' // Please handle: please remove this once question context is set
             />
           </span>
           <span className='quiz__topbar--participantcount'>
