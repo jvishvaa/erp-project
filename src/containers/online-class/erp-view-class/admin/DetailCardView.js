@@ -388,7 +388,7 @@ const DetailCardView = ({
     }
   }, [fullData]);
   */
-  console.log(selectedClassType, '[[[[[[[[[[[[[[[[');
+  console.log(selectedClassType, '[[[[[[[[[[[[[[[');
   useEffect(() => {
     let detailsURL =
       window.location.pathname === '/erp-online-class-student-view'

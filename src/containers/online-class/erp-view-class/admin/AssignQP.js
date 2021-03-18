@@ -59,7 +59,7 @@ const AssignQP = (props) => {
   const history = useHistory()
 
 //   const gradeObj=data.grade
-  console.log(data,props.location.state.data,"@@@@@@@@@@@@@@@@AssignQP")
+  console.log(data,props.location.state.data,"@@@@@@@@@@@@@AssignQP")
   const [wordCount,setWordCount] =useState('');
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false)

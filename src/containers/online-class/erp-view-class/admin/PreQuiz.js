@@ -59,7 +59,7 @@ const PreQuiz = (props) => {
   const data = props.location.state.data
   const history = useHistory()
 
-  console.log(data,props.location.state.data,"@@@@@@@@@@@@@@@@AssignQP")
+  console.log(data,props.location.state.data,"@@@@@@@@@@@@@@@AssignQP")
   const [wordCount,setWordCount] =useState('');
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false)
