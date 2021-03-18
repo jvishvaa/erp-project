@@ -36,7 +36,6 @@ class PostQuizLeaderboard extends Component {
       currentUserId,
       isQuizEnded,
       isHost,
-      onlineClassId='mk' //please handle
     } = this.props
     const currentPlayerLBData = leaderboardData.find(item => item.user_id === currentPlayerObj.user_id) || {}
     return (
@@ -65,7 +64,7 @@ class PostQuizLeaderboard extends Component {
             <img className='postquiz__playerinfo--background' />
             {!isHost && <button className='btn__download--results' onClick={() => {
               this.setState({ open: true })
-            }}>Review Questions</button>} please handle 
+            }}>Review Questions</button>}
             {
               <Dialog fullScreen open={open} onClose={this.handleClose} TransitionComponent={Transition}>
                 <AppBar>
@@ -75,10 +74,10 @@ class PostQuizLeaderboard extends Component {
                     </IconButton>
                   </Toolbar>
                 </AppBar>
-                {
-                  onlineClassId ? <ReviewAnswers onlineClassId={onlineClassId} /> : <p>ReviewAnswers - pass online class id and review ques</p>
-                }
                 
+                 <ReviewAnswers />
+                  {/* : <p>ReviewAnswers - pass online class id and review ques</p> */}
+                                
               </Dialog>
             }
             <div className='postquiz__done--status'>

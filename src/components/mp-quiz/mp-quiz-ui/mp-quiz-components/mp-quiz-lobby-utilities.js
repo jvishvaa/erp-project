@@ -36,6 +36,7 @@ const {
       fetchLeaderboard: fetchLeaderboardLabel,
     },
   },
+  params: { lobby_identifier: lobbyIdentifier } = {},
 } = constants;
 
 export function GetErrorMsgC({ label, showOnlyLabel = false }) {
@@ -462,7 +463,6 @@ export function HostQuizContainerContent() {
           currentPlayerObj={currentPlayerObj}
           isQuizEnded={isQuizEnded}
           isHost={isHost}
-          // onlineClassId={this.props.onlineClassId}
         />
       </div>
     </>
@@ -479,7 +479,6 @@ export function JoineeQuizContainerContent() {
     <>
       <RenderUtilityContent showUtilities />
       {/* <QuestionHandler
-        onlineClassId={this.props.onlineClassId}
         websocket={this.props.websocket}
         {...wbData}
         updateStateToParent={(data = {}) => {
@@ -513,7 +512,6 @@ export function HostAndQuizEnded(props) {
         <h2 className='leaderboard__title--host'>Quiz Ended..</h2>
         <div className='quiz__results--container'>
           <HostPostQuizReport
-            onlineClassId={props.onlineClassId}
             leaders={leaderboardData}
             quizSummary={quizSummary}
           />
@@ -541,7 +539,6 @@ export function JoineeAndQuizHasFinishedOrEnded(props) {
         quizDetails={quizDetails}
         currentPlayerObj={currentPlayerObj}
         isQuizEnded={isQuizEnded}
-        onlineClassId={props.onlineClassId}
       />
     </>
   );
