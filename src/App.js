@@ -110,6 +110,10 @@ import AolLogin from './containers/aol-login';
 import OnlineClassResource from './containers/online-class/online-class-resources/online-class-resource'
 import AttachmentPreviewer from './components/attachment-previewer';
 
+
+
+import MultiplayerQuiz from './components/mp-quiz'
+
 const theme = createMuiTheme({
   palette: {
     primary: {
@@ -467,6 +471,9 @@ function App() {
                         </Route>
                         <Route exact path='/erp-online-resources'>
                           {({ match }) => <OnlineClassResource match={match} />}
+                        </Route>
+                        <Route path='/quiz/:onlineclassId'>
+                          {({match})=><MultiplayerQuiz match={match} />}
                         </Route>
                       </Switch>
                     </DailyDairyStore>
