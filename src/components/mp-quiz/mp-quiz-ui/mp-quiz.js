@@ -5,6 +5,7 @@ import MpQuizSocketStatus from './mp-quiz-components/mp-quiz-socket-status';
 
 function MpQuiz() {
   const socket = useSocket();
+
   const { readyState } = socket || {};
   return (
     <>

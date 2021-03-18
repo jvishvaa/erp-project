@@ -38,27 +38,31 @@ const {
   },
 } = constants;
 
-export function GetErrorMsgC({ label }) {
+export function GetErrorMsgC({ label, showOnlyLabel = false }) {
   return (
-    <div style={{ textAlign: 'center' }}>
-      <h5>Please wait...The connection was interrupted</h5>
-
-      <h6>
-        If you see this error for long, please&nbsp;
-        <LinkTag
-          component='button'
-          // Include a function to auto report
-          // with compoent ws_ state vars route and user.
-          onClick={() => {
-            window.location.reload();
-          }}
-        >
-          <b>Click here to reload_</b>
-        </LinkTag>
-      </h6>
-      <p>
-        <small>{label}</small>
-      </p>
+    <div style={{ textAlign: 'center', width: '90vw', height: '90vh', display: 'flex' }}>
+      {showOnlyLabel ? (
+        <h3 style={{ margin: 'auto' }}>{label}</h3>
+      ) : (
+        <div style={{ margin: 'auto' }}>
+          <h2>{label}</h2>
+          <h5>Please wait...The connection was interrupted</h5>
+          <h6>
+            If you see this error for long, please&nbsp;
+            <LinkTag
+              component='button'
+              onClick={() => {
+                window.location.reload();
+              }}
+            >
+              <b>Click here to reload_</b>
+            </LinkTag>
+          </h6>
+          {/* <p>
+            <small>{label}</small>
+          </p> */}
+        </div>
+      )}
     </div>
   );
 }
@@ -164,8 +168,8 @@ export function getDurationCounter(props) {
     started_at: startedAt,
     total_no_of_questions: totalNoOfQuestions = 0,
   } = quizDetails || {};
-  if(quizDetails){
-    debugger
+  if (quizDetails) {
+    debugger;
   }
   const durationInSec = durationInMin * 60;
   const [currentUserId, currentPlayerObj] = getCurrentPlayerInfo();

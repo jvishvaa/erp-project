@@ -99,7 +99,7 @@ export function QuizContextProvider({ children }) {
   function getCurrentPlayerInfo() {
     const { currentUserId } = getUserAndQuizInfoStatus();
     const { data: leaderBoardArray = [] } = leaderboard || {};
-    const tempArray = (leaderBoardArray||[]).filter(
+    const tempArray = (leaderBoardArray || []).filter(
       (playerObj) => String(playerObj.user_id) === String(currentUserId)
     );
     let playerObj = {};
@@ -110,12 +110,23 @@ export function QuizContextProvider({ children }) {
     }
     return [currentUserId, playerObj];
   }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (removeUser) {
       handleUserRemoval();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [removeUser]);
+  useEffect(() => {
+    if (joinLobby) {
+      const { status: { success, message } = {} } = joinLobby || {};
+      if (!success) {
+        // eslint-disable-next-line no-alert
+        // window.alert(`${message}`);
+      }
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [joinLobby]);
 
   function getUserAndQuizInfoStatus() {
     const { is_started: isQuizStarted, is_ended: isQuizEnded } = quizDetails || {};

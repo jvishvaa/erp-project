@@ -5,7 +5,7 @@ import React from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import { Slide } from '@material-ui/core';
 
-import { useQuizContext, useQuizUitilityContext } from '../mp-quiz-providers';
+import { useQuizContext, constants, useQuizUitilityContext } from '../mp-quiz-providers';
 
 import {
   GetErrorMsgC,
@@ -20,6 +20,20 @@ import {
 import Background from './mp-quiz-components/leaderboard/assets/quiz_background.svg';
 import './styles/home.css';
 
+const {
+  socketContants: {
+    eventLabels: {
+      joinLobby: joinLobbyLabel,
+      // fetchParticipants: fetchParticipantsLabel,
+      // fetchLeaderboard: fetchLeaderboardLabel,
+      // respondToQuestion: respondToQuestionLabel,
+      // startQuiz: startQuizLabel,
+      // endQuiz: endQuizLabel,
+      // removeUser: removeUserLabel,
+    },
+  },
+} = constants;
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction='up' ref={ref} {...props} />;
   // return <Fade direction='in' ref={ref} {...props} />
@@ -28,19 +42,32 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 function MpQuizPlay() {
   const { isMuted, toggleMute, defaultBgmUrl, pickRandomBgm } =
     useQuizUitilityContext() || {};
-  const { isHost, isQuizStarted, isQuizEnded, getCurrentPlayerInfo, userQuizStatus } =
-    useQuizContext() || {};
+  const {
+    isHost,
+    isQuizStarted,
+    isQuizEnded,
+    getCurrentPlayerInfo,
+    userQuizStatus,
+
+    [joinLobbyLabel]: {
+      data: {
+        status: {
+          // success: joinLobbyStatus,
+          message: joinLobbyStatusMessage,
+        } = {},
+      } = {},
+    },
+  } = useQuizContext() || {};
   const bgmUrl = pickRandomBgm('game');
   const getTopBarContent = () => null;
   const getContainerContent = () => {
     const [, currentPlayerObj] = getCurrentPlayerInfo();
     const { has_finished: hasFinished } = currentPlayerObj || {};
-
     if (isHost === undefined) {
       return <GetErrorMsgC label='ref error code (e.u-stat:undefined)' />;
     }
     if (isQuizStarted === undefined) {
-      return <GetErrorMsgC label='ref error code (f.q-stat:undefined)' />;
+      return <GetErrorMsgC showOnlyLabel label={`${joinLobbyStatusMessage}`} />;
     }
     if (isQuizEnded && isHost) {
       return <HostAndQuizEnded />;

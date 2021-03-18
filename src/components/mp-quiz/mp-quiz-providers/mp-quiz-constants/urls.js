@@ -11,7 +11,6 @@ const ajaxHeadersForCentral = { headers: { 'x-api-key': 'vikash@12345#1231' } };
 const genSocketBase = () => {
   const { port: isLocal, host } = new URL(ajaxBaseURL);
   const protocol = isLocal ? 'ws' : 'wss';
-  // const port = isLocal?isLocal:'443'
   return `${protocol}://${host}`;
 };
 const socketBase = genSocketBase();

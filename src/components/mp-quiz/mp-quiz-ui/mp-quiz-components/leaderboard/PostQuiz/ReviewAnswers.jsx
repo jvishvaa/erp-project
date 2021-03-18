@@ -27,8 +27,14 @@ export class ReviewAnswers extends Component {
   }
 
   getQuestions = () => {
+    // const {
+    //   params: { lobby_identifier: lobbyIdentifier, question_paper: questionPaper } = {},
+    // } = constants;
+    // debugger
     // const { onlineClassId } = this.props
     const apiUrl = `${fetchQuizQpPaperAPIEndpoint}?question_paper=80&lobby_identifier=907&online_class_id=907`;
+    // const apiUrl = `${fetchQuizQpPaperAPIEndpoint}?question_paper=${questionPaper}&lobby_identifier=${lobbyIdentifier}&online_class_id=${lobbyIdentifier}`;
+    
     axios
       .get(apiUrl, fetchQuizQpPaperHeaders)
       .then((res) => {

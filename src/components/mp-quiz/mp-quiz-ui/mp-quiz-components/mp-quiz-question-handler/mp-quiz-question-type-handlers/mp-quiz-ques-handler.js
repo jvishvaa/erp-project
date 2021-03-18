@@ -1,11 +1,9 @@
 import React from 'react';
-// import LinkTag from '@material-ui/core/Link';
-import { useQuizQuesContext } from '../../../../mp-quiz-providers';
+import { useQuizQuesContext, constants } from '../../../../mp-quiz-providers';
 import PreQuestionAnim from '../mp-quiz-ques-attemption-flow-comp/pre-question-anim';
 import QuestionContent from '../question-content';
 import Meme from '../mp-quiz-ques-attemption-flow-comp/meme';
 import Leaderboard from '../mp-quiz-ques-attemption-flow-comp/leader-board-bwn-questions';
-
 import { InternalPageStatus } from '../../../../mp-quiz-utils';
 
 import '../../../styles/question_view.css';
@@ -20,9 +18,20 @@ function QuestionHandler() {
   } = useQuizQuesContext();
 
   React.useEffect(() => {
+    const {
+      params: { lobby_identifier: lobbyIdentifier, question_paper: questionPaper } = {},
+    } = constants;
+    debugger;
     const dataProp = {
-      queryParamObj: { question_paper: 80, lobby_identifier: 907, online_class_id: 907 },
+      queryParamObj: {
+        question_paper: questionPaper,
+        lobby_identifier: lobbyIdentifier,
+        online_class_id: lobbyIdentifier,
+      },
     };
+    // const dataProp = {
+    //   queryParamObj: { question_paper: 80, lobby_identifier: 907, online_class_id: 907 },
+    // };
     fetchQuizQp(dataProp);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
