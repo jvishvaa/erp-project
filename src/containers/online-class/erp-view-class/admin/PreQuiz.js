@@ -17,6 +17,7 @@ import axios from 'axios';
 import Loading from '../../../../components/loader/loader';
 
 const socketUrls="ws://localhost:8000/ws/multiplayer-quiz/"
+const eventLabels="Create Lobby"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -111,6 +112,7 @@ const handleSubmit = () =>{
 
 }
 const handleCreateLobby = ()=>{
+  let lobbyUuid =  preQuizInfo && preQuizInfo.lobby_identifier && preQuizInfo.lobby_info.lobby_identifier
   let { MPQUIZ } = socketUrls
 //   const jwtToken = localStorage.getItem('id_token')
 //   const { onlineClassId } = this.state.quizInfo
@@ -135,9 +137,11 @@ const handleCreateLobby = ()=>{
       } = messageFromServer
       if (success) {
         let lobbyId = data
-        this.props.history.push(`/quiz/game/${onlineClassId}/${lobbyUuid}/${lobbyId}/`)
+        // this.props.history.push(`/quiz/game/${on}/${lobbyUuid}/${lobbyId}/`)
         // this.setState({ creatingLobby: false, creationFailed: false })
-        setCreateLobby(flase)
+        getPreQuizStatus()
+        history.push(`/quiz/game/${data}/${lobbyUuid}/${lobbyId}/`)
+        setCreateLobby(false)
       } 
       else {
         setAlert('error', `${statusMessage}`);
@@ -164,7 +168,6 @@ const handleCreateLobby = ()=>{
 //   this.props.alert.error('Failed to create lobby, Please try again.')
 setAlert('error', "Failed to create lobby, Please try again.");
 
-getPreQuizStatus()
   ws.close()
 }
 
