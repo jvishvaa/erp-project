@@ -16,6 +16,7 @@ import axios from 'axios';
 
 import Loading from '../../../../components/loader/loader';
 
+const socketUrls="ws://localhost:8000/ws/multiplayer-quiz/"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,12 +57,9 @@ const useStyles = makeStyles((theme) => ({
 
 const PreQuiz = (props) => {
   const classes = useStyles()
-  // const data = props.location.state.data
   const {location:{state:{data}={}}={}}=props||{}
   const history = useHistory()
 
-  console.log(data,props.location.state.data,"@@@@@@@@@@@@@@@AssignQP")
-  const [wordCount,setWordCount] =useState('');
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false)
   const themeContext = useTheme();
@@ -69,12 +67,12 @@ const PreQuiz = (props) => {
   const wider = isMobile ? '-10px 0px' : '0 0 -1rem 1.5%'
   const widerWidth = isMobile ? '90%' : '85%'
   const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
-
+  const [creatingLobby,setCreateLobby]=useState(false)
+  const[ws,setWs]=useState()
   const [preQuizInfo, setPreQuizInfo] = useState([]);
   const {email}=JSON.parse(localStorage.getItem('userDetails')) || {};
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [isOneOfTheHosts,setIsOneOfTheHosts]=useState(false)
-  console.log(email,"@@@@@@@@@@@@@@email")
   if(email === preQuizInfo && preQuizInfo.tutor_details && preQuizInfo.tutor_details.email ){
     setIsOneOfTheHosts(true)
   }
@@ -113,52 +111,62 @@ const handleSubmit = () =>{
 
 }
 const handleCreateLobby = ()=>{
-//   let { MPQUIZ } = socketUrls
+  let { MPQUIZ } = socketUrls
 //   const jwtToken = localStorage.getItem('id_token')
 //   const { onlineClassId } = this.state.quizInfo
-//   var ws = new window.WebSocket(`${MPQUIZ}${onlineClassId}/${jwtToken}/`)
+  var ws = new window.WebSocket(`${MPQUIZ}${data}/${token}/`)
+  setCreateLobby(true);
 //   this.setState({ creatingLobby: true, creationFailed: false })
 //   // websocket onopen event listener
-//   ws.onopen = () => {
-//     console.log('connected websocket main component')
+  ws.onopen = () => {
+    console.log('connected websocket main component')
+    setWs(ws)
 //     this.setState({ ws: ws })
-//   }
-//   ws.onmessage = evt => {
+  }
+  ws.onmessage = evt => {
 //     // listen to data sent from the websocket server
-//     const messageFromServer = JSON.parse(evt.data)
-//     const { event } = messageFromServer || {}
-//     let { joinLobby } = eventLabels
-//     if (event === joinLobby) {
-//       const {
-//         status: { success, message: statusMessage } = {},
-//         quiz_details: { lobby_uuid: lobbyUuid }
-//       } = messageFromServer
-//       if (success) {
-//         let lobbyId = onlineClassId
-//         this.props.history.push(`/quiz/game/${onlineClassId}/${lobbyUuid}/${lobbyId}/`)
-//         this.setState({ creatingLobby: false, creationFailed: false })
-//       } 
-//       else {
-//         this.props.alert.error(`${statusMessage}`)
+    const messageFromServer = JSON.parse(evt.data)
+    const { event } = messageFromServer || {}
+    let { joinLobby } = eventLabels
+    if (event === joinLobby) {
+      const {
+        status: { success, message: statusMessage } = {},
+        quiz_details: { lobby_uuid: lobbyUuid }
+      } = messageFromServer
+      if (success) {
+        let lobbyId = data
+        this.props.history.push(`/quiz/game/${onlineClassId}/${lobbyUuid}/${lobbyId}/`)
+        // this.setState({ creatingLobby: false, creationFailed: false })
+        setCreateLobby(flase)
+      } 
+      else {
+        setAlert('error', `${statusMessage}`);
+        setCreateLobby(false)
+        // this.props.alert.error(`${statusMessage}`)
 //         this.setState({ creatingLobby: false, creationFailed: true })
-//       }
-//     }
-//     ws.close()
-//   }
-//   ws.onclose = e => {
+      }
+    }
+    ws.close()
+  }
+  ws.onclose = e => {
 //     this.setState({ ws: ws })
-//     console.log(`Socket is closed.`, e.reason)
-//   }
+    setWs(ws)
+    console.log(`Socket is closed.`, e.reason)
+  }
 
 //  // websocket onerror event listener
-//  ws.onerror = err => {
+ ws.onerror = err => {
+   setWs(ws)
 //   this.setState({ ws: ws })
-//   console.error('Socket encountered error: ', err.message, 'Closing socket')
+  console.error('Socket encountered error: ', err.message, 'Closing socket')
+  setCreateLobby(false)
 //   this.setState({ creatingLobby: false, creationFailed: true })
 //   this.props.alert.error('Failed to create lobby, Please try again.')
-//   ws.close()
-// }
-// getPreQuizStatus()
+setAlert('error', "Failed to create lobby, Please try again.");
+
+getPreQuizStatus()
+  ws.close()
+}
 
 }
 

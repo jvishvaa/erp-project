@@ -121,7 +121,6 @@ const AssignQP = (props) => {
         setAlert('error', error.message);
       });
       };
- console.log(data,"@@@@@@@@@@@@@@@")
  
       const handleSubmit = (e) => {
 
