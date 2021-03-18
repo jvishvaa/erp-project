@@ -4,7 +4,7 @@ import axios from 'axios'
 import ReactHTMLParser from 'react-html-parser'
 // import { urls } from '../../../../../urls'
 // import { InternalPageStatus } from '../../../../../ui'
-import InternalPageStatus  from '../../internal-page-status'
+import {InternalPageStatus  }from '../../../../mp-quiz-utils/'
 import { constants } from '../../../../mp-quiz-providers'
 
 const {urls}=constants||{}

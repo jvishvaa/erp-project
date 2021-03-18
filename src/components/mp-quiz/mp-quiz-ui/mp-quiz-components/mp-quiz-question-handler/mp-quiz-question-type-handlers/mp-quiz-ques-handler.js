@@ -6,7 +6,7 @@ import QuestionContent from '../question-content';
 import Meme from '../mp-quiz-ques-attemption-flow-comp/meme';
 import Leaderboard from '../mp-quiz-ques-attemption-flow-comp/leader-board-bwn-questions';
 
-import InternalPageStatus from '../../internal-page-status';
+import { InternalPageStatus } from '../../../../mp-quiz-utils';
 
 import '../../../styles/question_view.css';
 import '../../../styles/anim.css';

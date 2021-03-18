@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuizQuesContext, useQuizUitilityContext } from '../../../mp-quiz-providers';
 import { McqQuestion } from './mp-quiz-question-type-handlers';
-import InternalPageStatus from '../internal-page-status';
+import { InternalPageStatus } from '../../../mp-quiz-utils';
 
 export default function QuestionContent() {
   const {

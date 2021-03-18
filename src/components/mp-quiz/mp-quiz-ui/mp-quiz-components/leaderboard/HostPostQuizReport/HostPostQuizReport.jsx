@@ -7,7 +7,7 @@ import LongestQuestion from './LongestQuestion'
 import ClassAccuracy from './ClassAccuracy'
 import HostPostStudentRankingDetails from './HostPostStudentRankingDetails'
 import './HostPostQuiz.css'
-import InternalPageStatus  from '../../internal-page-status'
+import {InternalPageStatus}  from '../../../../mp-quiz-utils'
 import { constants } from '../../../../mp-quiz-providers'
 
 const {urls}=constants||{}

@@ -1,6 +1,6 @@
 import React from 'react';
-import { useSocket } from '../mp-quiz-providers';
-import InternalPageStatus from './mp-quiz-components/internal-page-status';
+import { useSocket } from '../../mp-quiz-providers';
+import {InternalPageStatus }from '../../mp-quiz-utils';
 
 function MpQuizSocketStatus() {
   const ws = useSocket() || {};

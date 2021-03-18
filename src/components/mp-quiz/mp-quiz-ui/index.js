@@ -23,8 +23,3 @@ function MpQuizHome(props) {
   );
 }
 export default MpQuizHome;
-/*
-    Socket context.
-    quiz events context - trigger and receive - save message data.
-    questions context - fetch quesions - controls - attempt - track
-*/
