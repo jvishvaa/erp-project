@@ -169,11 +169,11 @@ class OtherFeeTotalPaidReports extends Component {
     }
   }
   handleClickGrade = event => {
-    const allLabel = event.filter(event => {
+    const allLabel = event && event.filter(event => {
       return event && event.label === 'All Grades'
     })
     let aMapIds = []
-    if (allLabel.length === 1) {
+    if (allLabel && allLabel.length === 1) {
       const allGrades = {
         value: 'all',
         label: 'All Grades'
@@ -193,7 +193,7 @@ class OtherFeeTotalPaidReports extends Component {
         }
       })
     } else {
-      event.forEach((grdae) => {
+      event && event.forEach((grdae) => {
         aMapIds.push(grdae.value)
       })
       this.setState({
@@ -239,8 +239,8 @@ class OtherFeeTotalPaidReports extends Component {
   }
 
   changeOthrInstallmentsHandler = (e) => {
-    const allLabel = e.filter(event => {
-      return event.label === 'All Installments'
+    const allLabel = e && e.filter(event => {
+      return event && event.label === 'All Installments'
     })
     let instIds = []
     if (allLabel.length === 1) {
@@ -254,7 +254,7 @@ class OtherFeeTotalPaidReports extends Component {
         othrInstallmentIds: allInstIds
       })
     } else {
-      e.forEach(payment => {
+      e && e.forEach(payment => {
         instIds.push(payment.value)
       })
       this.setState({
@@ -266,10 +266,10 @@ class OtherFeeTotalPaidReports extends Component {
 
   changeFeeTypeHandler = (e) => {
     let feeIds = []
-    const allLabel = e.filter(event => {
+    const allLabel = e && e.filter(event => {
       return event.label === 'All Fee Types'
     })
-    if (allLabel.length === 1) {
+    if (allLabel && allLabel.length === 1) {
       const allFeeTypes = {
         value: 'all',
         label: 'All Fee Types'
@@ -303,7 +303,7 @@ class OtherFeeTotalPaidReports extends Component {
         }
       })
     } else {
-      e.forEach(payment => {
+      e && e.forEach(payment => {
         feeIds.push(payment.value)
       })
       this.setState({
@@ -339,10 +339,10 @@ class OtherFeeTotalPaidReports extends Component {
 
   changeOthrFeeTypeHandler = (e) => {
     let feeIds = []
-    const allLabel = e.filter(event => {
-      return event.label === 'All Fee Types'
+    const allLabel = e && e.filter(event => {
+      return event && event.label === 'All Fee Types'
     })
-    if (allLabel.length === 1) {
+    if (allLabel && allLabel.length === 1) {
       const allFeeTypes = {
         value: 'all',
         label: 'All Fee Types'
@@ -376,7 +376,7 @@ class OtherFeeTotalPaidReports extends Component {
         }
       })
     } else {
-      e.forEach(payment => {
+      e && e.forEach(payment => {
         feeIds.push(payment.value)
       })
       this.setState({
@@ -419,8 +419,8 @@ class OtherFeeTotalPaidReports extends Component {
 
   changeFeePlanHandler = (e) => {
     let feeplans = []
-    const allLabel = e.filter(event => {
-      return event.label === 'All Fee Plan'
+    const allLabel = e && e.filter(event => {
+      return event && event.label === 'All Fee Plan'
     })
     if (allLabel.length === 1) {
       const allFeePlans = {
@@ -442,7 +442,7 @@ class OtherFeeTotalPaidReports extends Component {
         }
       })
     } else {
-      e.forEach(fee => {
+      e && e.forEach(fee => {
         feeplans.push(fee.value)
       })
       this.setState({
@@ -668,8 +668,8 @@ class OtherFeeTotalPaidReports extends Component {
                 isMulti
                 id='grade'
                 options={
-                  this.state.valueGrade.value !== 'all' ? this.props.grades
-                    ? this.props.grades.map(grades => ({
+                  this.state.valueGrade && this.state.valueGrade.value !== 'all' ? this.props.grades
+                    ? this.props.grades && this.props.grades.map(grades => ({
                       value: grades.grade ? grades.grade.id : '',
                       label: grades.grade ? grades.grade.grade : ''
                     }))
@@ -743,7 +743,7 @@ class OtherFeeTotalPaidReports extends Component {
                 id='fee_types'
                 value={this.state.selectedOthrFeeTypes ? this.state.selectedOthrFeeTypes : ''}
                 options={
-                  this.props.othrFeetyp && this.state.selectedOthrFeeTypes.value !== 'all' ? this.props.othrFeetyp && this.props.othrFeetyp.length
+                  this.props.othrFeetyp && this.state.selectedOthrFeeTypes && this.state.selectedOthrFeeTypes.value !== 'all' ? this.props.othrFeetyp && this.props.othrFeetyp.length
                     ? this.props.othrFeetyp.map(feeTypes => ({
                       value: feeTypes.id ? feeTypes.id : '',
                       label: feeTypes.fee_type_name ? feeTypes.fee_type_name : ''
@@ -761,8 +761,8 @@ class OtherFeeTotalPaidReports extends Component {
                 isMulti
                 value={this.state.selectedOthrInstallments ? this.state.selectedOthrInstallments : ''}
                 options={
-                  this.state.selectedOthrInstallments.value !== 'all' ? this.props.othrInst && this.props.othrInst.length
-                    ? this.props.othrInst.map(installments => ({
+                  this.state.selectedOthrInstallments && this.state.selectedOthrInstallments.value !== 'all' ? this.props.othrInst && this.props.othrInst.length
+                    ? this.props.othrInst && this.props.othrInst.map(installments => ({
                       value: installments.id ? installments.id : '',
                       label: installments.installment_name ? installments.installment_name : ''
                     }))
