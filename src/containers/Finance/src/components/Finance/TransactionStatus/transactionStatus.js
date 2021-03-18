@@ -41,7 +41,7 @@ const styles = theme => ({
 
 const FEE_TYPE = [
   { id: 1, value: 'Normal Fee' },
-  { id: 3, value: 'Store' },
+  // { id: 3, value: 'Store' },
   { id: 2, value: 'Other Fee' }
 ]
 // let transactionState = null

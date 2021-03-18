@@ -327,7 +327,7 @@ const RegFormList = ({ session,
 
   return (
     <React.Fragment>
-      <Button style={{ width: '40px' }} color='primary' className={classes.btn} onClick={history.goBack}>
+      <Button  color='primary' className={classes.btn} onClick={history.goBack}>
         <ArrowBack /> Back
       </Button>
       <Grid container direction='row' justify='flex-end' spacing={8}>
