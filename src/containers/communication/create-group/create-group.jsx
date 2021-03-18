@@ -116,6 +116,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       const resultOptions = [];
       if (result.status === 200) {
         result.data.data.map((items) => resultOptions.push(items.branch_name));
+        console.log(result.data.data);
         setBranchList(result.data.data);
         setLoading(false);
       } else {
