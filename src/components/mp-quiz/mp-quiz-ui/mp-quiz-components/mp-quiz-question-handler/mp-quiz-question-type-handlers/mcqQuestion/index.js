@@ -9,6 +9,7 @@ export default function McqQuestion(props) {
     questionObj: currentQuestionObj,
     attemptQuestion,
     responseObj,
+    getBgmAudioTag,
   } = props || {};
   const { question_answer: questionAnswer } = currentQuestionObj || {};
   const [{ question = 'No content available' }] = questionAnswer || [{}];
@@ -29,6 +30,7 @@ export default function McqQuestion(props) {
           questionObj={currentQuestionObj}
           responseObj={responseObj}
           attemptQuestion={attemptQuestion}
+          getBgmAudioTag={getBgmAudioTag}
           // onAttemptionCurrentQuesAttemption={onAttemptionCurrentQuesAttemption}
         />
       </div>

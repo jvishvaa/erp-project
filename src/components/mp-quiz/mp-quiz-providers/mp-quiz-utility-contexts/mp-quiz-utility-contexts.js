@@ -56,7 +56,8 @@ export function QuizUtilityContextProvider({ children }) {
     }
   }, []);
   function pickRandomBgm(variant) {
-    const { [variant]: bgmsArray = [] } = bgms || {};
+    const { data: bgmsDataObj } = bgms || {};
+    const { [variant]: bgmsArray = [] } = bgmsDataObj || {};
     if (bgmsArray.length) {
       const item = bgmsArray[Math.floor(Math.random() * bgmsArray.length)];
       const { url: bgmSrc } = item;
@@ -65,10 +66,32 @@ export function QuizUtilityContextProvider({ children }) {
     return false;
   }
 
+  function getBgmAudioTag(variant) {
+    // let { bgms: { [bgmVariant]: bgmsArray = [] } = {}, isMuted } = this.props
+    // let bgmUrl
+    // if (bgmsArray.length) {
+    //   let item = bgmVariant === 'leaderboard' ? bgmsArray[0] : bgmsArray[Math.floor(Math.random() * bgmsArray.length)]
+    //   let { url: bgmSrc } = item
+    //   bgmUrl = bgmSrc
+    // }
+    const bgmUrl = pickRandomBgm(variant);
+    return bgmUrl && !isMuted ? (
+      // eslint-disable-next-line jsx-a11y/media-has-caption
+      <audio
+        key={bgmUrl}
+        src={bgmUrl}
+        id={bgmUrl}
+        autoPlay
+        style={{ visibility: 'hidden' }}
+      />
+    ) : null;
+  }
+
   return (
     <QuizUtilityContext.Provider
       value={{
         isPageReloaded,
+
         isMuted,
         toggleMute,
         bgms,
@@ -76,6 +99,7 @@ export function QuizUtilityContextProvider({ children }) {
           'https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/media/multiplayer_quiz/music/entire_game_tune_2_speed_up_a_little_game.mp3',
         fetchBgms,
         pickRandomBgm,
+        getBgmAudioTag,
 
         openSettingsModal,
         closeSettingsModal,

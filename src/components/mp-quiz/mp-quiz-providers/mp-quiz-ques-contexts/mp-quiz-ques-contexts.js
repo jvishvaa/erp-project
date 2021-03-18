@@ -15,17 +15,17 @@ const getTimeToRenderConfig = () => {
   const renderLB = 'render_leader_board';
   const renderMeme = 'render_meme';
   const durationObj = {
-    // qOptionDuration: 2500,
-    // memeDuration: 5000,
-    // lbDuration: 5000,
-    // preQuesAnimDuration: 1000,
-    // firstQuesAnimDuration: 4000,
-
-    qOptionDuration: 0,
-    memeDuration: 1000,
-    lbDuration: 1000,
+    qOptionDuration: 2500,
+    memeDuration: 5000,
+    lbDuration: 5000,
     preQuesAnimDuration: 1000,
-    firstQuesAnimDuration: 1000,
+    firstQuesAnimDuration: 4000,
+
+    // qOptionDuration: 0,
+    // memeDuration: 1000,
+    // lbDuration: 1000,
+    // preQuesAnimDuration: 1000,
+    // firstQuesAnimDuration: 1000,
   };
   const timeToRenderConfig = {
     [renderPreQuesAnim]: {

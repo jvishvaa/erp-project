@@ -1,5 +1,5 @@
 import React from 'react';
-import { useQuizQuesContext } from '../../../mp-quiz-providers';
+import { useQuizQuesContext, useQuizUitilityContext } from '../../../mp-quiz-providers';
 import { McqQuestion } from './mp-quiz-question-type-handlers';
 import InternalPageStatus from '../internal-page-status';
 
@@ -12,8 +12,9 @@ export default function QuestionContent() {
     quizQp: { isFetching, message, fetchFailed },
     controls: { attemptQuestion, setStartTime },
   } = useQuizQuesContext() || {};
-  const questionsObj = (questionsDataObj && questionsDataObj[currentQuesionId]) || {};
-  const responsesObj = (responsesDataObj && responsesDataObj[currentQuesionId]) || {};
+  const { getBgmAudioTag } = useQuizUitilityContext();
+  const { [currentQuesionId]: questionsObj = {} } = questionsDataObj || {};
+  const { [currentQuesionId]: responsesObj = {} } = responsesDataObj || {};
   if (isFetching) {
     return <InternalPageStatus loader label='Loading questions....' />;
   }
@@ -28,10 +29,11 @@ export default function QuestionContent() {
   if (questionType === 1) {
     return (
       <McqQuestion
-        questionObj={questionsObj}
-        responseObj={responsesObj}
+        questionObj={questionsObj || {}}
+        responseObj={responsesObj || {}}
         attemptQuestion={attemptQuestion}
         setStartTime={setStartTime}
+        getBgmAudioTag={getBgmAudioTag}
         // onAttemptionCurrentQuesAttemption={onAttemptionCurrentQuesAttemption}
       />
     );

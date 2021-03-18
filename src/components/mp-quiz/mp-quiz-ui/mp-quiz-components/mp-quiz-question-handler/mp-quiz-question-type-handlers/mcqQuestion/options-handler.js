@@ -7,6 +7,7 @@ export default function OptionsHandler(props) {
     questionObj: currentQuestionObj,
     responseObj,
     attemptQuestion,
+    getBgmAudioTag = () => {},
     // onAttemptionCurrentQuesAttemption,
   } = props || {};
   const {
@@ -48,10 +49,13 @@ export default function OptionsHandler(props) {
   };
 
   const wrongAnsStyles = { backgroundColor: 'rgb(231,69,70)', border: 'rgb(231,69,70)' };
-  const getBgm = () => {};
   return (
     <Grid container className='options-grid'>
-      {isAttempted ? (isCorrect ? getBgm('right') : getBgm('wrong')) : null}
+      {isAttempted
+        ? isCorrect
+          ? getBgmAudioTag('right')
+          : getBgmAudioTag('wrong')
+        : null}
       {optionsArray.map((option, index) => {
         return (
           <Grid

@@ -3,6 +3,7 @@ import {
   useQuizQuesContext,
   useQuizContext,
   constants,
+  useQuizUitilityContext,
 } from '../../../mp-quiz-providers';
 
 const {
@@ -38,15 +39,17 @@ export default function Meme() {
       updatedAt,
     } = {},
   } = useQuizContext() || {};
+
+  const { getBgmAudioTag } = useQuizUitilityContext();
   const timeNow = new Date().getTime();
   const isLatestMeme = updatedAt - timeNow <= 5000;
   const loaderUrl =
     'https://www.demilked.com/magazine/wp-content/uploads/2016/06/gif-animations-replace-loading-screen-14.gif';
   memeUrl = isLatestMeme ? memeUrl : loaderUrl;
-  const getBgm = () => {};
+
   return (
     <>
-      {getBgm('meme')}
+      {getBgmAudioTag('meme')}
       <div className='whole-container grow'>
         <div style={{ margin: 'auto' }}>
           {isCorrect ? (
