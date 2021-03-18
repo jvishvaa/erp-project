@@ -188,11 +188,11 @@ class TransactionStatus extends Component {
   // }
 
   changePaymentMode = (e) => {
-    const allLabel = e.filter(event => {
-      return event.label === 'All'
+    const allLabel = e && e.filter(event => {
+      return event && event.label === 'All'
     })
     let ids = []
-    if (allLabel.length === 1) {
+    if (allLabel && allLabel.length === 1) {
       const allPayment = {
         value: 'all',
         label: 'All'
@@ -204,7 +204,7 @@ class TransactionStatus extends Component {
         console.log('-all payment-----------', this.state.paymentModeData)
       })
     } else {
-      e.forEach(payment => {
+      e && e.forEach(payment => {
         ids.push(payment.value)
       })
       this.setState({ paymentModeId: ids, paymentModeData: e })
@@ -212,11 +212,11 @@ class TransactionStatus extends Component {
   }
 
   feePlanChangeHandler = (e) => {
-    const allLabel = e.filter(event => {
-      return event.label === 'All Fee Accounts'
+    const allLabel = e && e.filter(event => {
+      return event && event.label === 'All Fee Accounts'
     })
     let ids = []
-    if (allLabel.length === 1) {
+    if (allLabel && allLabel.length === 1) {
       console.log('All Fee Account')
       const allFeeAccs = {
         value: 'all',
@@ -230,7 +230,7 @@ class TransactionStatus extends Component {
         console.log('-all fee accs ids-----------', this.state.feeAccId)
       })
     } else {
-      e.forEach(fee => {
+      e && e.forEach(fee => {
         ids.push(fee.value)
       })
       this.setState({ feeAccData: e, feeAccId: ids }, () => {
