@@ -162,7 +162,7 @@ export const updateTransactionMode = (payload) => {
 export const fetchBranchList = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(`${urls.BranchList}?session_year=${payload.branch}`, {
+    axios.get(`${urls.BranchList}?session_year=${payload.branch}&module_id=${payload.moduleId}`, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }
