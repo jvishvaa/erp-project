@@ -100,10 +100,10 @@ class ReceiptBookAdm extends Component {
     }
     changehandlerbranch = (e) => {
       const allLabel = e && e.filter(event => {
-        return event.label === 'All Branches'
+        return event && event.label === 'All Branches'
       })
       let ids = []
-      if (allLabel.length === 1) {
+      if (allLabel && allLabel.length === 1) {
         const allBranches = {
           value: 'all',
           label: 'All Branches'
@@ -120,7 +120,7 @@ class ReceiptBookAdm extends Component {
           this.props.fetchFeeAccounts(this.state.session, this.state.branchId, this.props.alert, this.props.user)
         })
       } else {
-        e.forEach(payment => {
+        e && e.forEach(payment => {
           ids.push(payment.value)
         })
         this.setState({
@@ -239,7 +239,7 @@ class ReceiptBookAdm extends Component {
               placeholder='Select Branch'
               value={this.state.selectedBranches ? this.state.selectedBranches : ''}
               options={
-                this.state.selectedBranches.value !== 'all' ? this.props.branches.length && this.props.branches
+                this.state.selectedBranches && this.state.selectedBranches.value !== 'all' ? this.props.branches.length && this.props.branches
                   ? this.props.branches.map(branch => ({
                     value: branch.branch ? branch.branch.id : '',
                     label: branch.branch ? branch.branch.branch_name : ''
