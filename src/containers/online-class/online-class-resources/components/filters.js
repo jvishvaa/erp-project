@@ -71,8 +71,10 @@ const Filter = (props) => {
     const [page, setPage] = useState(1);
     const [sectionList, setSectionList] = useState([]);
   const [selectedSection, setSelectedSection] = useState([]);
+  const [secSelectedId, setSecSelectedId] = useState([])
   const [subjectList, setSubjectList] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState([]);
+  const [subSelectedId, setSubSelectedId] = useState([])
 
     const [classTypes, setClassTypes] = useState([
         { id: 0, type: 'Compulsory Class' },
@@ -195,12 +197,12 @@ const Filter = (props) => {
         );
         }else if(selectedCourse.id){
             callApi(
-                `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.id}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&course_id=${selectedCourse.id}&page_number=1&page_size=15`,
+                `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${secSelectedId}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&course_id=${selectedCourse.id}&page_number=1&page_size=15`,
                 'filter'
               );
         }else {
             callApi(
-              `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${selectedSection.id}&subject_id=${selectedSubject.subject__id}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=15`,
+              `${endpoints.aol.classes}?is_aol=0&section_mapping_ids=${secSelectedId}&subject_id=${subSelectedId}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=15`,
               'filter'
             );
           }
@@ -379,6 +381,7 @@ const Filter = (props) => {
                           const ids=value.map((el)=>el)
                           const secId=value.map((el)=>el.section_id)
                           setSelectedSection(ids)
+                          setSecSelectedId(secId)
                           callApi(
                             `${endpoints.academics.subjects}?branch=${selectedBranch.map((el)=>el.id)}&grade=${selectedGrade.map((el)=>el.grade_id)}&section=${secId}&module_id=${selectedModule}`,
                             'subject'
@@ -413,7 +416,9 @@ const Filter = (props) => {
                         setSelectedSubject([])
                         if(value.length){
                           const ids = value.map((el)=>el)
+                          const subId=value.map((el)=>el.subject__id)
                           setSelectedSubject(ids)
+                          setSubSelectedId(subId)
                         }
                         setBatchList([]);
                         setSelectedBatch('');
