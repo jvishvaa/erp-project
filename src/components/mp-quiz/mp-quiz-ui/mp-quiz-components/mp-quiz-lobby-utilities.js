@@ -164,6 +164,9 @@ export function getDurationCounter(props) {
     started_at: startedAt,
     total_no_of_questions: totalNoOfQuestions = 0,
   } = quizDetails || {};
+  if(quizDetails){
+    debugger
+  }
   const durationInSec = durationInMin * 60;
   const [currentUserId, currentPlayerObj] = getCurrentPlayerInfo();
   const { joined_at: joinedAt } = currentPlayerObj;
@@ -193,7 +196,7 @@ export function getDurationCounter(props) {
     quizStartedAt = joinedAt;
     startImmediately = false;
   }
-  if (quizStartedAt !== 'None') {
+  if (quizStartedAt && quizStartedAt !== 'None') {
     try {
       quizStartedAt = new Date(quizStartedAt);
       const epochStartedAt = quizStartedAt.getTime();

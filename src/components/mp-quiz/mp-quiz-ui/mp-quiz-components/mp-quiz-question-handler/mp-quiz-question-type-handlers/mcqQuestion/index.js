@@ -12,7 +12,9 @@ export default function McqQuestion(props) {
     getBgmAudioTag,
   } = props || {};
   const { question_answer: questionAnswer } = currentQuestionObj || {};
-  const [{ question = 'No content available' }] = questionAnswer || [{}];
+  const [{ question = 'No content available' }] = (questionAnswer || []).length
+    ? questionAnswer
+    : [{}];
 
   React.useEffect(() => {
     setStartTime(currentQuestionObj.id);

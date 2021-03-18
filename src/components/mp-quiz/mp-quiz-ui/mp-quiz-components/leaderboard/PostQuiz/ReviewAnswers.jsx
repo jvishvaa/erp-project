@@ -1,49 +1,54 @@
-import React, { Component } from 'react'
-import { Grid } from '@material-ui/core'
-import axios from 'axios'
-import ReactHTMLParser from 'react-html-parser'
-// import { urls } from '../../../../../urls'
-// import { InternalPageStatus } from '../../../../../ui'
-import {InternalPageStatus  }from '../../../../mp-quiz-utils/'
-import { constants } from '../../../../mp-quiz-providers'
+/* eslint-disable no-nested-ternary */
+import React, { Component } from 'react';
+import { Grid } from '@material-ui/core';
+import axios from 'axios';
+import ReactHTMLParser from 'react-html-parser';
+import { InternalPageStatus } from '../../../../mp-quiz-utils';
+import { constants } from '../../../../mp-quiz-providers';
+import './ReviewAnswers.css'
 
-const {urls}=constants||{}
+
+const {
+  urls: {
+    fetchQuizQpPaper: {
+      headers: fetchQuizQpPaperHeaders,
+      endpoint: fetchQuizQpPaperAPIEndpoint,
+    } = {},
+  },
+} = constants || {};
 
 export class ReviewAnswers extends Component {
-  constructor () {
-    super()
+  constructor() {
+    super();
     this.state = {
-      personalInfo: JSON.parse(localStorage.getItem('user_profile')).personal_info,
       loading: true,
-      questions: []
-    }
+      questions: [],
+    };
   }
 
   getQuestions = () => {
-    const { personalInfo } = this.state
-    const { onlineClassId } = this.props
-    const url = `${urls.GetQuizQuestionsWithResponses}?online_class_id=${onlineClassId}`
-    axios.get(url, {
-      headers: {
-        Authorization: 'Bearer ' + personalInfo.token
-      }
-    })
-      .then(res => {
-        const { result: { data = [] } } = res.data
+    // const { onlineClassId } = this.props
+    const apiUrl = `${fetchQuizQpPaperAPIEndpoint}?question_paper=80&lobby_identifier=907&online_class_id=907`;
+    axios
+      .get(apiUrl, fetchQuizQpPaperHeaders)
+      .then((res) => {
+        const {
+          result: { questions :data= [] },
+        } = res.data;
         if (res.status === 200) {
-          this.setState({ loading: false, questions: data })
+          this.setState({ loading: false, questions: data });
         }
       })
-      .catch(err => {
-        console.log(err)
-        this.setState({ loading: false })
-      })
-  }
+      .catch((err) => {
+        console.log(err);
+        this.setState({ loading: false });
+      });
+  };
 
-  componentDidMount () {
+  componentDidMount() {
     this.setState({ loading: true }, () => {
-      this.getQuestions()
-    })
+      this.getQuestions();
+    });
   }
 
   renderQuestion = (question) => {
@@ -53,92 +58,120 @@ export class ReviewAnswers extends Component {
           {ReactHTMLParser(question.replace(/&nbsp;/g, ' '))}
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   convertJSONObjToObj = (jsonStr = this.throwErr(), questionId) => {
-    let parsedStr
+    let parsedStr;
     try {
-      parsedStr = JSON.parse(jsonStr)
+      parsedStr = JSON.parse(jsonStr);
     } catch (e) {
-      parsedStr = 'Incorrect Format'
+      parsedStr = 'Incorrect Format';
     }
-    return parsedStr
-  }
+    return parsedStr;
+  };
 
   convertOptionObjToArr = (optionJson) => {
-    let optionObj = this.convertJSONObjToObj(optionJson)
-    return [...Object.values(optionObj)]
-  }
+    const optionObj = this.convertJSONObjToObj(optionJson);
+    return [...Object.values(optionObj)];
+  };
 
-  getCorrectAnsOptionIndex (optionsArray, correctAnsjson) {
-    let correctAnsObj = this.convertJSONObjToObj(correctAnsjson)
-    let correctAns = Object.keys(correctAnsObj).length ? Object.values(correctAnsObj)[0] : null
-    return optionsArray.indexOf(correctAns)
+  getCorrectAnsOptionIndex(optionsArray, correctAnsjson) {
+    const correctAnsObj = this.convertJSONObjToObj(correctAnsjson);
+    const correctAns = Object.keys(correctAnsObj).length
+      ? Object.values(correctAnsObj)[0]
+      : null;
+    return optionsArray.indexOf(correctAns);
   }
 
   getOptionList = (questionObj) => {
-    let { option, correct_ans: correctAns } = questionObj
-    let { attempted_ans: attemptedAns } = questionObj.response || {}
-    let attemptedOptionIndex = String(attemptedAns)
-    const tempOptionsArr = ['0', '1', '2', '3']
-    let isAttempted = tempOptionsArr.includes(attemptedOptionIndex)
-    const correctAnsStyles = { backgroundColor: 'rgb(98,195,112)', border: '3px solid rgb(98,195,112)' }
-    const wrongAnsStyles = { backgroundColor: 'rgb(231,69,70)', border: 'rgb(231,69,70)' }
-    let correctAnsOptionIndex = String(this.getCorrectAnsOptionIndex(this.convertOptionObjToArr(option), correctAns))
-    return <Grid container className='options-grid-rl options__container--quiz' >
-      {
-        this.convertOptionObjToArr(option).map((option, index) => {
-          return <Grid
-            item
-            xs={12} sm={3} md={3} lg={3}
-            className={`option-rl`}
-          >
-            <div className='option-inner-rl option-inner__border'
-              style={{
-                ...isAttempted
-                  ? correctAnsOptionIndex === String(index)
-                    ? correctAnsStyles
-                    : attemptedOptionIndex === String(index)
+    const { response: responseObj, question_answer: questionAnswer } = questionObj || {};
+    const [{ answer: answerArray = 'answer not found', options = [] }] = (
+      questionAnswer || []
+    ).length
+      ? questionAnswer
+      : [{}];
+
+    const { answer: attemptedAnswerArray, attemption_status: isAttempted } =
+      responseObj || {};
+
+    const [attemptedOption] = attemptedAnswerArray || [];
+
+    const optionsArray = options.map((item) => {
+      const [optionContentObj] = Object.values(item || {});
+      const [optionLabel] = Object.keys(item || {});
+      return { ...optionContentObj, label: optionLabel, identifier: optionLabel };
+    });
+    const [correctOption] = answerArray || [];
+
+    const correctAnsStyles = {
+      backgroundColor: 'rgb(98,195,112)',
+      border: '3px solid rgb(98,195,112)',
+    };
+    const wrongAnsStyles = {
+      backgroundColor: 'rgb(231,69,70)',
+      border: 'rgb(231,69,70)',
+    };
+    // let correctAnsOptionIndex = String(this.getCorrectAnsOptionIndex(this.convertOptionObjToArr(option), correctAns))
+    return (
+      <Grid container className='options-grid-rl options__container--quiz'>
+        {optionsArray.map((option, index) => {
+          return (
+            <Grid className='option-rl' item xs={12} sm={3} md={3} lg={3}>
+              <div
+                className='option-inner-rl option-inner__border'
+                style={{
+                  ...(isAttempted
+                    ? correctOption === option.identifier
+                      ? correctAnsStyles
+                      : attemptedOption === option.identifier
                       ? wrongAnsStyles
                       : { display: 'block' }
-                  : { },
-                ...attemptedOptionIndex === String(index) ? { border: '3px solid white' } : {}
-              }}
-            >
-              <div className='resizeable-text-rl'>
-                <div className='resizeable-rl'>
-                  {ReactHTMLParser(option)}
+                    : {}),
+                  ...(attemptedOption === option.identifier
+                    ? { border: '3px solid white' }
+                    : {}),
+                }}
+              >
+                <div className='resizeable-text-rl'>
+                  <div className='resizeable-rl'>{option.optionValue}</div>
                 </div>
               </div>
-            </div>
-          </Grid>
-        })
-      }
-    </Grid>
-  }
+            </Grid>
+          );
+        })}
+      </Grid>
+    );
+  };
 
-  render () {
-    const { loading, questions } = this.state
+  render() {
+    const { loading, questions } = this.state;
     return (
       <div style={{ marginTop: 100 }}>
-        {
-          loading
-            ? <InternalPageStatus label={'Loading your answers. Please wait!'} />
-            : questions && questions.length
-              ? questions.map((question, index) => {
-                return <div className='review__answers--quiz'>
-                  <h1>{index + 1})</h1>
-                  {this.renderQuestion(question.question)}
-                  {this.getOptionList(question)}
-                </div>
-              })
-              : <InternalPageStatus label={'No questions were found!'} loader={false} />
-        }
-
+        {loading ? (
+          <InternalPageStatus label='Loading your answers. Please wait!' />
+        ) : questions && questions.length ? (
+          questions.map((question, index) => {
+            const { question_answer: questionAnswer } = question || {};
+            const [{ question: questionContent = 'No content available' }] = (
+              questionAnswer || []
+            ).length
+              ? questionAnswer
+              : [{}];
+            return (
+              <div className='review__answers--quiz'>
+                <h1>{`${index + 1}`}</h1>
+                {this.renderQuestion(questionContent)}
+                {this.getOptionList(question)}
+              </div>
+            );
+          })
+        ) : (
+          <InternalPageStatus label='No questions were found!' loader={false} />
+        )}
       </div>
-    )
+    );
   }
 }
 
-export default ReviewAnswers
+export default ReviewAnswers;

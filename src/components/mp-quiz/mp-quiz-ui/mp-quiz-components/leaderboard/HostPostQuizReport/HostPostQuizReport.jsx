@@ -33,7 +33,7 @@ class HostPostQuizReport extends Component {
 
   fetchQuestions = () => { //please handle
     const { onlineClassId } = this.props
-    const apiUrl = fetchQuizQpPaperAPIEndpoint+'?question_paper=80&lobby_identifier=907&online_class_id=907 '
+    const apiUrl = fetchQuizQpPaperAPIEndpoint+'?question_paper=80&lobby_identifier=907&online_class_id=907'
     this.setState({ isFetching: true, isFetchFailed: null }, () => {
       axios.get(apiUrl, fetchQuizQpPaperHeaders)
         .then(res => {
