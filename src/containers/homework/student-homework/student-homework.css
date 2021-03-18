@@ -103,7 +103,7 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin-right: 5px;
+	margin-right: 1rem;
 	font-weight: 600;
 	border: 1px solid #014B7E;
   }
@@ -163,7 +163,7 @@
 }
 .homework_header {
   text-transform: capitalize;
-  width: 250px !important;
+  min-width: 183px;
 }
 .homework_block {
   color: #014b7e;
@@ -330,7 +330,7 @@ font-weight: 600;
 	} */
 	.create_group_filter_container  .date-ranger{
 		margin-bottom: 20px;
-		margin-top: 20px;
+		margin-top: 30px;
 	}
 	.create_group_filter_container .mobile-date-picker{
 		padding-bottom: 20px;
@@ -464,7 +464,7 @@ font-weight: 600;
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		margin-right: 5px;
+		margin-right: 1rem;
 		font-weight: 600;
 		color: #014B7E;
 		font-size: 12px;

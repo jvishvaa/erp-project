@@ -114,6 +114,7 @@ const ViewMoreCard = ({
           <Divider className='messageDivider' />
           <div className='bodyContent'>{viewMoreData.message}</div>
           <div className='bodyTitle'>Media</div>
+          <Divider className='messageDivider' />
           {/* <div className='mediaBody'>xxxxxxxx</div> */}
           <div className='rightHeader'>
           <div className='headerTitle closeIcon'>
@@ -126,7 +127,7 @@ const ViewMoreCard = ({
               {/* <CloseIcon color='primary' /> */}
             </IconButton>
           </div>
-          <div className='headerContent'>
+          {/* <div className='headerContent'> */}
           {/* <IconButton
           //  onClick={handleBulkDownload}
            style={{fontSize:'1.1rem',color:'#ff6b6b', marginLeft: '-344px', marginTop: '-31px'}}
@@ -147,23 +148,24 @@ const ViewMoreCard = ({
               <div className='headerContent'>
                 <IconButton
                   onClick={() => handleBulkDownload(viewMoreData?.documents)}
-                  style={{ fontSize: '1.1rem', color: '#ff6b6b' }}
+                  style={{ fontSize: '1.1rem', color: '#ff6b6b', display: 'flex' }}
                   className='bulkDownloadIconViewMore'
                 >
                   <SvgIcon
                     component={() => (
                       <img
-                        style={{ height: '21px', width: '21px', marginLeft: '-343px' }}
+                      style={{ display: 'flex'}}
+                        // style={{ height: '21px', width: '21px', marginLeft: '-343px' }}
                         src={downloadAll}
                         alt='downloadAll'
                       />
                     )}
                   />
-                  Download
+                  Download Attachments
                 </IconButton>
               </div>
             )}
-          </div>
+          {/* </div> */}
         </div>
         </div>
       </Paper>

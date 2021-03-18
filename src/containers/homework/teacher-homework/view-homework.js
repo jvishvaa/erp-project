@@ -157,7 +157,7 @@ const ViewHomework = withRouter(
                   onClick={onClose}
                   style={{ borderRadius: '10px' }}
                 >
-                  CANCEL
+                  Back
                 </Button>
               </div>
             </div>

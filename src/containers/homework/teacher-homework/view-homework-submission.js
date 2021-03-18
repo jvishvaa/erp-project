@@ -128,17 +128,19 @@ const ViewHomework = withRouter(
       if (!remark) {
         setAlert('error', 'Please provide a remark');
         return;
-      } else if (reqData.remark && reqData.remark.trim() == '') {
+      } else if (reqData.remark && reqData.remark.trim() === '') {
         setAlert('error', 'Please provide a remark');
         return;
       }
       if (!score) {
         setAlert('error', 'Please provide a score');
         return;
-      } else if (reqData.score && reqData.score.trim() == '') {
+      }
+      /*
+      else if (reqData.score && reqData.score.trim() === '') {
         setAlert('error', 'Please provide a score');
         return;
-      }
+      } */
 
       try {
         await finalEvaluationForHomework(homeworkId, reqData);
@@ -159,7 +161,7 @@ const ViewHomework = withRouter(
         if (
           currentQuestion.corrected_submission.length < collatedSubmissionFiles.length
         ) {
-          setAlert('error', 'Please evaluate all the attachments');
+          setAlert('error', `Please evaluate all the attachments ${currentQuestion.corrected_submission.length} < ${collatedSubmissionFiles.length}`);
           return;
         }
       }
@@ -634,7 +636,7 @@ const ViewHomework = withRouter(
                       className='disabled-btn'
                       onClick={onClose}
                     >
-                      Back
+                      Cancel
                     </Button>
                     <Button
                       variant='contained'
