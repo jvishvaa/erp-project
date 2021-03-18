@@ -434,10 +434,10 @@ const AdjustFeeType = ({
               />
             </Grid>
             <Grid item className={classes.item} xs={3}>
-              <Button style={{ marginTop: 23 }} color='primary' disabled={!normalFeePlan || !Object.keys(isChecked).length} variant='outlined' onClick={showModalHandler}>Adjust Fee Types</Button>
+              <Button variant='contained' style={{ marginTop: 23 }} color='primary' disabled={!normalFeePlan || !Object.keys(isChecked).length} onClick={showModalHandler}>Adjust Fee Types</Button>
             </Grid>
             <Grid item className={classes.item} xs={3}>
-              <Button style={{ marginTop: 23 }} color='secondary' variant='outlined' onClick={downloadExcelHandler}>Download Excel</Button>
+              <Button style={{ marginTop: 23 }} color='primary' variant='contained' onClick={downloadExcelHandler}>Download Excel</Button>
             </Grid>
           </React.Fragment>
           : ''}
