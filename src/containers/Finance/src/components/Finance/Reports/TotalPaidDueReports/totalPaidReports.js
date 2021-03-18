@@ -645,7 +645,8 @@ class TotalPaidReports extends Component {
                 isMulti
                 id='grade'
                 options={
-                  this.state.valueGrade && this.state.valueGrade.value !== 'all' ? this.props.grades
+                  // this.state.valueGrade && this.state.valueGrade.value !== 'all' ? this.props.grades
+                  this.props.grades ? this.props.grades
                     ? this.props.grades && this.props.grades.map(grades => ({
                       value: grades.grade ? grades.grade.id : '',
                       label: grades.grade ? grades.grade.grade : ''
@@ -664,8 +665,9 @@ class TotalPaidReports extends Component {
                 id='feePlans'
                 isMulti
                 options={
-                  this.state.selectedFeePlan && this.state.selectedFeePlan.value !== 'all' ? this.props.feePlans && this.props.feePlans.length > 0
-                    ? this.props.feePlans && this.props.feePlans.map((feePlan) => (
+                  // this.state.selectedFeePlan && this.state.selectedFeePlan.value !== 'all' ? this.props.feePlans && this.props.feePlans.length > 0
+                  this.props.feePlans ? this.props.feePlans && this.props.feePlans.length > 0
+                  ? this.props.feePlans && this.props.feePlans.map((feePlan) => (
                       {
                         label: feePlan.fee_plan_name ? feePlan.fee_plan_name : '',
                         value: feePlan.id ? feePlan.id : ''
@@ -684,7 +686,8 @@ class TotalPaidReports extends Component {
                 id='fee_types'
                 value={this.state.selectedFeeTypes ? this.state.selectedFeeTypes : ''}
                 options={
-                  this.props.feeTypes && this.state.selectedFeeTypes && this.state.selectedFeeTypes.value !== 'all' ? this.props.feeTypes && this.props.feeTypes.length
+                  // this.props.feeTypes && this.state.selectedFeeTypes && this.state.selectedFeeTypes.value !== 'all' ? this.props.feeTypes && this.props.feeTypes.length
+                  this.props.feeTypes ? this.props.feeTypes && this.props.feeTypes.length
                     ? this.props.feeTypes.map(feeTypes => ({
                       value: feeTypes.id ? feeTypes.id : '',
                       label: feeTypes.fee_type_name ? feeTypes.fee_type_name : ''
@@ -702,7 +705,8 @@ class TotalPaidReports extends Component {
                 isMulti
                 value={this.state.selectedInstallments ? this.state.selectedInstallments : ''}
                 options={
-                  this.state.selectedInstallments && this.state.selectedInstallments.value !== 'all' ? this.props.installments && this.props.installments.length
+                  // this.state.selectedInstallments && this.state.selectedInstallments.value !== 'all' ? this.props.installments && this.props.installments.length
+                  this.props.installments ? this.props.installments && this.props.installments.length
                     ? this.props.installments && this.props.installments.map(installments => ({
                       value: installments.id ? installments.id : '',
                       label: installments.installment_name ? installments.installment_name : ''
