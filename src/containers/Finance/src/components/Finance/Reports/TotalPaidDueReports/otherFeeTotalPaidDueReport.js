@@ -243,7 +243,7 @@ class OtherFeeTotalPaidReports extends Component {
       return event && event.label === 'All Installments'
     })
     let instIds = []
-    if (allLabel.length === 1) {
+    if (allLabel && allLabel.length === 1) {
       const allInsts = {
         value: 'all',
         label: 'All Installments'
@@ -668,7 +668,8 @@ class OtherFeeTotalPaidReports extends Component {
                 isMulti
                 id='grade'
                 options={
-                  this.state.valueGrade && this.state.valueGrade.value !== 'all' ? this.props.grades
+                  // this.state.valueGrade && this.state.valueGrade.value !== 'all' ? this.props.grades
+                  this.props.grades ? this.props.grades
                     ? this.props.grades && this.props.grades.map(grades => ({
                       value: grades.grade ? grades.grade.id : '',
                       label: grades.grade ? grades.grade.grade : ''
@@ -743,7 +744,8 @@ class OtherFeeTotalPaidReports extends Component {
                 id='fee_types'
                 value={this.state.selectedOthrFeeTypes ? this.state.selectedOthrFeeTypes : ''}
                 options={
-                  this.props.othrFeetyp && this.state.selectedOthrFeeTypes && this.state.selectedOthrFeeTypes.value !== 'all' ? this.props.othrFeetyp && this.props.othrFeetyp.length
+                  // this.props.othrFeetyp && this.state.selectedOthrFeeTypes && this.state.selectedOthrFeeTypes.value !== 'all' ? this.props.othrFeetyp && this.props.othrFeetyp.length
+                  this.props.othrFeetyp ? this.props.othrFeetyp && this.props.othrFeetyp.length
                     ? this.props.othrFeetyp.map(feeTypes => ({
                       value: feeTypes.id ? feeTypes.id : '',
                       label: feeTypes.fee_type_name ? feeTypes.fee_type_name : ''
@@ -761,7 +763,8 @@ class OtherFeeTotalPaidReports extends Component {
                 isMulti
                 value={this.state.selectedOthrInstallments ? this.state.selectedOthrInstallments : ''}
                 options={
-                  this.state.selectedOthrInstallments && this.state.selectedOthrInstallments.value !== 'all' ? this.props.othrInst && this.props.othrInst.length
+                  // this.state.selectedOthrInstallments && this.state.selectedOthrInstallments.value !== 'all' ? this.props.othrInst && this.props.othrInst.length
+                  this.props.othrInst ? this.props.othrInst && this.props.othrInst.length
                     ? this.props.othrInst && this.props.othrInst.map(installments => ({
                       value: installments.id ? installments.id : '',
                       label: installments.installment_name ? installments.installment_name : ''
