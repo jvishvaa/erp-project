@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 // import { Button } from 'semantic-ui-react'
-import { withStyles, Button, CircularProgress } from '@material-ui/core/'
+import { withStyles, Button} from '@material-ui/core/'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import Select from 'react-select'
@@ -9,7 +9,7 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline'
 // import '../../css/staff.css'
 import * as actionTypes from '../store/actions/index'
 import Modal from '../../../ui/Modal/modal'
-// import CircularProgress from '../../../ui/CircularProgress/circularProgress'
+import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 
 import classes from './bank.module.css'
 
@@ -307,12 +307,12 @@ class Bank extends Component {
       <div className={classes.bankContainer}>
         <div>
           {allBankAndAcc}
-          {this.props.dataLoading ? <CircularProgress open /> : null}
         </div>
         <div >
           {assignBank}
         </div>
         {assignFeeAccounts}
+        {this.props.dataLoading ? <CircularProgress open /> : null}
       </div>
     )
   }
