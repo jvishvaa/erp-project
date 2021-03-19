@@ -18,6 +18,7 @@ import {
   fetchSubjects as getSubjects,
 } from '../../redux/actions';
 import { useHistory } from 'react-router-dom';
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
 const BackButton = withStyles({
   root: {
@@ -36,6 +37,34 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
   const [sections, setSections] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const history = useHistory();
+  const [moduleId, setModuleId] = useState();
+
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'User Management' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Create User') {
+              console.log('mod', item.child_id)
+              setModuleId(item.child_id);
+              // setModulePermision(true);
+            } else {
+              // setModulePermision(false);
+            }
+          });
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  }, []);
 
   const formik = useFormik({
     initialValues: {
@@ -111,7 +140,7 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
     setSections([]);
     setSubjects([]);
     if (values?.length > 0) {
-      fetchGrades(acadId, values).then((data) => {
+      fetchGrades(acadId, values, moduleId).then((data) => {
         const transformedData = data
           ? data.map((grade) => ({
               item_id: grade.id,
@@ -128,7 +157,7 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
     setSections([]);
     setSubjects([]);
     if (values?.length > 0) {
-      fetchSections(acadId, branch, values).then((data) => {
+      fetchSections(acadId, branch, values, moduleId).then((data) => {
         const transformedData = data
           ? data.map((section) => ({
               item_id: section.id,
@@ -152,7 +181,7 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
     formik.setFieldValue('section', []);
     if (values?.length > 0) {
       formik.setFieldValue('section', values);
-      getSubjects(acadId, branch, grade, values).then((data) => {
+      getSubjects(acadId, branch, grade, values, moduleId).then((data) => {
         const transformedData = data.map((obj) => ({
           id: obj.subject__id,
           subject_name: obj.subject__subject_name,
