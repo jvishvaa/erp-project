@@ -182,7 +182,7 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
     if (values?.length > 0) {
       formik.setFieldValue('section', values);
       getSubjects(acadId, branch, grade, values, moduleId).then((data) => {
-        const transformedData = data.map((obj) => ({
+        const transformedData = data && data.map((obj) => ({
           id: obj.subject__id,
           subject_name: obj.subject__subject_name,
         }));

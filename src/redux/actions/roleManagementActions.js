@@ -190,7 +190,7 @@ export const fetchGrades = (acadId, branches, moduleId) => {
   // return Promise.resolve([]);
 };
 
-export const fetchSubjects = (acadId, branches, grades, sections) => {
+export const fetchSubjects = (acadId, branches, grades, sections, moduleId) => {
   const branchIds =
     branches && branches.length > 0 ? branches.map((branch) => branch.id).join(',') : '';
   const gradeIds =
@@ -201,7 +201,7 @@ export const fetchSubjects = (acadId, branches, grades, sections) => {
       : '';
   return axios
     .get(
-      `/erp_user/subject/?session_year=${acadId}&branch=${branchIds}&grade=${gradeIds}&section=${sectionIds}`
+      `/erp_user/subject/?session_year=${acadId}&branch=${branchIds}&grade=${gradeIds}&section=${sectionIds}&module_id=${moduleId}`
     )
     .then((response) => {
       if(response.data.status_code===200)
