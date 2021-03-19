@@ -451,11 +451,15 @@ class CreateFeePlan extends Component {
                                   }}
                                   id={row.id} // rajneesh
                                 /> */}
-                                <Link to={{ 
+                                <Link style={{ textDecoration: 'none'}} to={{ 
                                   pathname: '/finance/manage_feeType/', 
                                   state: row.id
                                   }}>
+                                    <div>
+                                    <Button color='primary' variant='contained'>
                                   Manage Fee Type
+                                  </Button>
+                                  </div>
                                 </Link>
                               </TableCell>
                             </TableRow>
