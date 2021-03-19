@@ -253,10 +253,10 @@ class AdminOtherFees extends Component {
           <h3 className={classess.modal__heading}>Are You Sure?</h3>
           <hr />
           <div className={classess.modal__deletebutton}>
-            <Button variant='outlined' color='secondary' onClick={this.deleteInstallHandler}>Delete</Button>
+            <Button variant='contained' color='secondary' onClick={this.deleteInstallHandler}>Delete</Button>
           </div>
           <div className={classess.modal__remainbutton}>
-            <Button variant='outlined' color='primary' onClick={this.deleteModalCloseHandler}>Go Back</Button>
+            <Button variant='contained' color='primary' onClick={this.deleteModalCloseHandler}>Go Back</Button>
           </div>
         </Modal>
       )
