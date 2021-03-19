@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { withStyles, CircularProgress } from '@material-ui/core/'
+import { withStyles } from '@material-ui/core/'
 import Icon from '@material-ui/core/Icon'
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline'
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined'
@@ -13,7 +13,7 @@ import Select from 'react-select'
 import classes from './accountToBranch.module.css'
 import * as actionTypes from '../../store/actions'
 import Modal from '../../../../ui/Modal/modal'
-// import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
+import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import { apiActions } from '../../../../_actions'
 
 const styles = theme => ({
