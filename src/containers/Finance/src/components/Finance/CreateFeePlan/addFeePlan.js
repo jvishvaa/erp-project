@@ -87,7 +87,7 @@ class AddFeePlan extends Component {
 
   yearApplicableHandler = (e) => {
     let aIds = []
-    e.forEach(function (year) {
+    e && e.forEach(function (year) {
       aIds.push(year.value)
     })
     this.setState({ yearApplicableId: aIds })
@@ -98,7 +98,7 @@ class AddFeePlan extends Component {
 
   handleClickGrade = event => {
     let aMapIds = []
-    event.forEach((grdae) => {
+    event && event.forEach((grdae) => {
       aMapIds.push(grdae.value)
     })
     this.setState({ gradeData: aMapIds, valueGrade: event })
@@ -279,7 +279,7 @@ class AddFeePlan extends Component {
               placeholder='Select Year'
               isMulti
               options={
-                this.props.yearApplicable.length > 0
+                this.props.yearApplicable && this.props.yearApplicable.length > 0
                   ? this.props.yearApplicable.map(year => ({
                     value: year.id,
                     label: year.session_year
