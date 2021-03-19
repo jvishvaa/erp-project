@@ -70,7 +70,7 @@ const CreateBranch = ({ setLoading, handleGoBack }) => {
               variant='outlined'
               size='small'
               value={branchCode}
-              inputProps={{ pattern: '^[0-9]+$', maxLength: 5 }}
+              inputProps={{ pattern: '^[0-9]+$', maxLength: 3 }}
               name='branchcode'
               onChange={(e) => setBranchCode(e.target.value)}
               required
