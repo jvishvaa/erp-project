@@ -108,7 +108,7 @@ const CreateClassForm = (props) => {
   } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const fetchBranches = (acadId) => {
-    fetchBranchesForCreateUser(acadId).then((data) => {
+    fetchBranchesForCreateUser(acadId,moduleId).then((data) => {
       const transformedData = data?.map((obj) => ({
         id: obj.id,
         branch_name: obj.branch_name,
@@ -118,7 +118,7 @@ const CreateClassForm = (props) => {
   };
 
   const fetchYears = () => {
-    fetchAcademicYears().then((data) => {
+    fetchAcademicYears(moduleId).then((data) => {
       const transformedData = data?.map((obj) => ({
         id: obj.id,
         session_year: obj.session_year,
@@ -160,9 +160,12 @@ const CreateClassForm = (props) => {
         }
       });
     }
-    // fetchBranches();
-    fetchYears();
   }, []);
+
+  useEffect(() => {
+    if (moduleId)
+      fetchYears();
+  }, [moduleId]);
 
   useEffect(() => {
     if (selectedYear) fetchBranches(selectedYear.id);
@@ -205,7 +208,7 @@ const CreateClassForm = (props) => {
       setAlert('success', 'Successfully created the class');
       dispatch(listGradesCreateClass(onlineClass?.branchIds, moduleId, selectedYear.id));
     }
-  }, [isCreated, moduleId]);
+  }, [isCreated]);
 
   const handleClassType = (event, value) => {
     setSelectedClassType('');
@@ -953,16 +956,16 @@ const CreateClassForm = (props) => {
                       multiple
                       size='small'
                       id='create__class-subject'
-                      options={subjects||[]}
+                      options={subjects || []}
                       // .filter(
                       //   (sub) =>
                       //     selectedSections.findIndex(
                       //       (sec) => sec.section_id === sub.section__id
                       //     ) > -1
                       // )
-                      getOptionLabel={(option) => option?.subject__subject_name||''}
+                      getOptionLabel={(option) => option?.subject__subject_name || ''}
                       filterSelectedOptions
-                      value={selectedSubject||[]}
+                      value={selectedSubject || []}
                       onChange={handleSubject}
                       renderInput={(params) => (
                         <TextField

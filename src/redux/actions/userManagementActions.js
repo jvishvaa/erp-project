@@ -191,9 +191,9 @@ export const editUser = (params) => (dispatch) => {
     });
 };
 
-export const fetchBranchesForCreateUser = (acadId) => {
+export const fetchBranchesForCreateUser = (acadId,moduleId) => {
   return axios
-    .get(`/erp_user/list-all-branch/session_year=${acadId}`)
+    .get(`/erp_user/list-all-branch/?session_year=${acadId}&module_id=${moduleId}`)
     .then((response) => {
       if (response.data.status_code === 200) return response?.data?.data;
       else console.log('','xyzxyz');
@@ -203,9 +203,9 @@ export const fetchBranchesForCreateUser = (acadId) => {
     });
 };
 
-export const fetchAcademicYears = () => {
+export const fetchAcademicYears = (moduleId) => {
   return axios
-    .get('/erp_user/list-academic_year/')
+    .get(`/erp_user/list-academic_year/?module_id=${moduleId}`)
     .then((response) => {
       return response.data.data;
     })

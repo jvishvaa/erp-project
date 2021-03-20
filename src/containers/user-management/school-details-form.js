@@ -18,7 +18,6 @@ import {
   fetchSubjects as getSubjects,
 } from '../../redux/actions';
 import { useHistory } from 'react-router-dom';
-const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
 const BackButton = withStyles({
   root: {
@@ -37,8 +36,8 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
   const [sections, setSections] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const history = useHistory();
-  const [moduleId, setModuleId] = useState();
-
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -50,19 +49,11 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
         ) {
           item.child_module.forEach((item) => {
             if (item.child_name === 'Create User') {
-              console.log('mod', item.child_id)
               setModuleId(item.child_id);
-              // setModulePermision(true);
-            } else {
-              // setModulePermision(false);
             }
           });
-        } else {
-          // setModulePermision(false);
         }
       });
-    } else {
-      // setModulePermision(false);
     }
   }, []);
 
@@ -83,12 +74,8 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
   });
 
   const fetchAcademicYears = () => {
-    getAcademicYears().then((data) => {
+    getAcademicYears(moduleId).then((data) => {
       let transformedData = '';
-      /* let transformedData = {
-        id: '',
-        session_year: ''
-      }; */
       transformedData = data?.map((obj) => ({
         id: obj.id,
         session_year: obj.session_year,
@@ -99,7 +86,7 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
 
   const fetchBranches = (acadId) => {
     if (acadId) {
-      fetchBranchesForCreateUser(acadId).then((data) => {
+      fetchBranchesForCreateUser(acadId, moduleId).then((data) => {
         const transformedData = data?.map((obj) => ({
           id: obj.id,
           branch_name: obj.branch_name,
@@ -119,7 +106,7 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
       section &&
       section.length > 0
     ) {
-      getSubjects(branch, grade, section).then((data) => {
+      getSubjects(branch, grade, section, moduleId).then((data) => {
         const transformedData = data.map((obj) => ({
           id: obj.subject__id,
           subject_name: obj.subject__subject_name,
@@ -136,7 +123,6 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
   };
 
   const handleChangeBranch = (values, acadId) => {
-    console.log(formik.values.branch,'==================');
     setGrades([]);
     setSections([]);
     setSubjects([]);
@@ -183,10 +169,12 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
     if (values?.length > 0) {
       formik.setFieldValue('section', values);
       getSubjects(acadId, branch, grade, values, moduleId).then((data) => {
-        const transformedData = data && data.map((obj) => ({
-          id: obj.subject__id,
-          subject_name: obj.subject__subject_name,
-        }));
+        const transformedData =
+          data &&
+          data.map((obj) => ({
+            id: obj.subject__id,
+            subject_name: obj.subject__subject_name,
+          }));
         setSubjects(transformedData);
         // const filteredSelectedSections = formik.values.section.filter(
         //   (sec) => transformedData.findIndex((data) => data.id === sec.id) > -1
@@ -209,28 +197,30 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
   // };
 
   useEffect(() => {
-    fetchAcademicYears();
-    // if (details.academic_year) {
-    //   fetchBranches(details.academic_year.id);
-    //   if (details.branch) {
-    //     handleChangeBranch(details.branch, details.academic_year.id);
-    //     if (details.grade && details.grade.length > 0) {
-    //       handleChangeGrade(details.grade, details.academic_year.id, details.branch);
-    //       if (details.section && details.section.length > 0) {
-    //         handleChangeSection(
-    //           details.section,
-    //           details.academic_year.id,
-    //           details.branch,
-    //           details.grade
-    //         );
-    //         if (details.subjects && details.subjects.length > 0) {
-    //           formik.setFieldValue('subjects', details.subjects);
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
-  }, []);
+    if (moduleId) {
+      fetchAcademicYears(moduleId);
+      // if (details.academic_year) {
+      //   fetchBranches(details.academic_year.id);
+      //   if (details.branch) {
+      //     handleChangeBranch(details.branch, details.academic_year.id);
+      //     if (details.grade && details.grade.length > 0) {
+      //       handleChangeGrade(details.grade, details.academic_year.id, details.branch);
+      //       if (details.section && details.section.length > 0) {
+      //         handleChangeSection(
+      //           details.section,
+      //           details.academic_year.id,
+      //           details.branch,
+      //           details.grade
+      //         );
+      //         if (details.subjects && details.subjects.length > 0) {
+      //           formik.setFieldValue('subjects', details.subjects);
+      //         }
+      //       }
+      //     }
+      //   }
+      // }
+    }
+  }, [moduleId]);
 
   const classes = useStyles();
 

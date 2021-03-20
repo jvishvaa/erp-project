@@ -40,7 +40,7 @@ const menuIcon = (name) => {
       icon = <AddCircleIcon />;
       break;
     }
-    case 'View & Edit Group': {
+    case 'View&Edit Group': {
       icon = <EditIcon />;
       break;
     }
@@ -52,7 +52,7 @@ const menuIcon = (name) => {
       icon = <SmsIcon />;
       break;
     }
-    case 'SMS & Email Log': {
+    case 'SMS&Email Log': {
       icon = <EmailIcon />;
       break;
     }

@@ -131,13 +131,34 @@ const BranchAcadTable = () => {
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
 
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Master Management' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Branch Acad Mapping') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage + 1);
   };
 
   const handleAcademicYear = (event, value) => {
-    setSearchYear('')
-    setYearDisplay(value)
+    setSearchYear('');
+    setYearDisplay(value);
     if (value) {
       setPage(1);
       setSearchYear(value.id);
@@ -181,15 +202,15 @@ const BranchAcadTable = () => {
           setBranchName('');
           setBranchId('');
           setLoading(false);
-          setAlert('success', result.data.msg||result.data.message);
+          setAlert('success', result.data.msg || result.data.message);
         } else {
           setLoading(false);
-          setAlert('error', result.data.msg||result.data.message);
+          setAlert('error', result.data.msg || result.data.message);
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.response.data.message||error.response.data.msg);
+        setAlert('error', error.response.data.message || error.response.data.msg);
       });
     setOpenDeleteModal(false);
   };
@@ -212,24 +233,23 @@ const BranchAcadTable = () => {
   }, [goBackFlag, page, delFlag]);
 
   useEffect(() => {
-    axiosInstance
-      .get(
-        `${endpoints.masterManagement.academicYear}`
-      )
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setAcademicYearList(result.data?.result?.results);
-        } else {
-          setAlert('error', result.data.message||result.data.msg);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.response.data.message||error.response.data.msg);
-      });
-  }, []);
+    if (moduleId) {
+      axiosInstance
+        .get(`${endpoints.masterManagement.academicYear}?module_id=${moduleId}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setAcademicYearList(result.data?.result?.results);
+          } else {
+            setAlert('error', result.data.message || result.data.msg);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.response.data.message || error.response.data.msg);
+        });
+    }
+  }, [moduleId]);
 
   useEffect(() => {
-
     let url = `${endpoints.masterManagement.branchMappingTable}?page=${page}&page_size=${limit}`;
     if (searchYear) url += `&session_year=${searchYear}`;
     if (searchBranch) url += `&branch_name=${searchBranch}`;
@@ -240,11 +260,11 @@ const BranchAcadTable = () => {
           setTotalCount(result.data.data?.count);
           setBranches(result.data.data?.results);
         } else {
-          setAlert('error', result.data.message||result.data.msg);
+          setAlert('error', result.data.message || result.data.msg);
         }
       })
       .catch((error) => {
-        setAlert('error', error.response.data.message||error.response.data.msg);
+        setAlert('error', error.response.data.message || error.response.data.msg);
       });
   }, [goBackFlag, delFlag, searchYear, searchBranch, page]);
 
@@ -261,8 +281,8 @@ const BranchAcadTable = () => {
                 addFlag && !tableFlag
                   ? 'Add Mapping'
                   : editFlag && !tableFlag
-                    ? 'Edit Mapping'
-                    : null
+                  ? 'Edit Mapping'
+                  : null
               }
             />
           </div>
@@ -270,6 +290,7 @@ const BranchAcadTable = () => {
 
         {!tableFlag && addFlag && !editFlag && (
           <CreateBranchAcad
+            moduleId={moduleId}
             academicYearList={academicYearList}
             setLoading={setLoading}
             handleGoBack={handleGoBack}
@@ -347,81 +368,81 @@ const BranchAcadTable = () => {
 
         <>
           {/* {!isMobile ? ( */}
-            <>
-              {tableFlag && !addFlag && !editFlag && (
-                <Paper className={`${classes.root} common-table`}>
-                  <TableContainer className={classes.container}>
-                    <Table stickyHeader aria-label='sticky table'>
-                      <TableHead className='table-header-row'>
-                        <TableRow>
-                          {columns.map((column) => (
-                            <TableCell
-                              key={column.id}
-                              align={column.align}
-                              style={{ minWidth: column.minWidth }}
-                              className={classes.columnHeader}
-                            >
-                              {column.label}
+          <>
+            {tableFlag && !addFlag && !editFlag && (
+              <Paper className={`${classes.root} common-table`}>
+                <TableContainer className={classes.container}>
+                  <Table stickyHeader aria-label='sticky table'>
+                    <TableHead className='table-header-row'>
+                      <TableRow>
+                        {columns.map((column) => (
+                          <TableCell
+                            key={column.id}
+                            align={column.align}
+                            style={{ minWidth: column.minWidth }}
+                            className={classes.columnHeader}
+                          >
+                            {column.label}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {branches.map((branch, index) => {
+                        return (
+                          <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
+                            <TableCell className={classes.tableCell}>
+                              {branch?.session_year?.session_year}
                             </TableCell>
-                          ))}
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {branches.map((branch, index) => {
-                          return (
-                            <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
-                              <TableCell className={classes.tableCell}>
-                                {branch?.session_year?.session_year}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {branch?.branch?.branch_name}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {branch?.branch?.created_by}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {branch?.branch?.branch_code}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {branch?.branch?.address}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                <IconButton
-                                  onClick={(e) => {
-                                    handleOpenDeleteModal(branch);
-                                  }}
-                                  title='Delete Branch'
-                                >
-                                  <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
-                                </IconButton>
+                            <TableCell className={classes.tableCell}>
+                              {branch?.branch?.branch_name}
+                            </TableCell>
+                            <TableCell className={classes.tableCell}>
+                              {branch?.branch?.created_by}
+                            </TableCell>
+                            <TableCell className={classes.tableCell}>
+                              {branch?.branch?.branch_code}
+                            </TableCell>
+                            <TableCell className={classes.tableCell}>
+                              {branch?.branch?.address}
+                            </TableCell>
+                            <TableCell className={classes.tableCell}>
+                              <IconButton
+                                onClick={(e) => {
+                                  handleOpenDeleteModal(branch);
+                                }}
+                                title='Delete Branch'
+                              >
+                                <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
+                              </IconButton>
 
-                                {/* <IconButton
+                              {/* <IconButton
                                   // onClick={e=>handleEditBranchMapping(subject.subject.id,subject.subject.subject_name,subject.subject.subject_description,subject.subject.is_optional)}
                                   title='Edit Branch'
                                 >
                                   <EditOutlinedIcon style={{ color: '#fe6b6b' }} />
                                 </IconButton> */}
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                  <div className='paginateData'>
-                    <TablePagination
-                      component='div'
-                      count={totalCount}
-                      className='customPagination'
-                      rowsPerPage={limit}
-                      page={page - 1}
-                      onChangePage={handleChangePage}
-                      rowsPerPageOptions={false}
-                    />
-                  </div>
-                </Paper>
-              )}
-            </>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <div className='paginateData'>
+                  <TablePagination
+                    component='div'
+                    count={totalCount}
+                    className='customPagination'
+                    rowsPerPage={limit}
+                    page={page - 1}
+                    onChangePage={handleChangePage}
+                    rowsPerPageOptions={false}
+                  />
+                </div>
+              </Paper>
+            )}
+          </>
           {/* ) : (
               <>
                 <>

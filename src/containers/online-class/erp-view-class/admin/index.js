@@ -77,6 +77,26 @@ const ErpAdminViewClass = ({ history }) => {
     { id: 3, type: 'Parent Class' },
   ]);
   const [selectedClassType, setSelectedClassType] = useState('');
+  const [moduleId, setModuleId] = useState();
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Circular' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Teacher Circular') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
 
   function callApi(api, key) {
     setLoading(true);
@@ -137,14 +157,14 @@ const ErpAdminViewClass = ({ history }) => {
             studentDetails &&
             studentDetails.role_details &&
             studentDetails.role_details.erp_user_id
-          }&page_number=1&page_size=15&class_type=${selectedClassType?.id}`,
+          }&page_number=1&page_size=15&class_type=${selectedClassType?.id}&module_id=${moduleId}`,
           'filter'
         );
       } else {
         callApi(
           `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
             selectedBatch && selectedBatch.id
-          }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${selectedModule}&class_type=1`,
+          }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${moduleId}&class_type=1`,
           'filter'
         );
       }
@@ -197,14 +217,14 @@ const ErpAdminViewClass = ({ history }) => {
           studentDetails &&
           studentDetails.role_details &&
           studentDetails.role_details.erp_user_id
-        }&page_number=${page}&page_size=15`,
+        }&page_number=${page}&page_size=15&module_id=${moduleId}`,
         'filter'
       );
     } else {
       callApi(
         `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
           selectedBatch && selectedBatch.id
-        }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${selectedModule}&class_type=1`,
+        }&start_date=${startDate}&end_date=${endDate}&page_number=${page}&page_size=12&module_id=${moduleId}&class_type=1`,
         'filter'
       );
     }
@@ -263,12 +283,12 @@ const ErpAdminViewClass = ({ history }) => {
     // `https://erpnew.letseduvate.com/qbox/erp_user/teacher_online_class/?page_number=1&page_size=15&class_type=1&is_aol=1&course=97&start_date=2021-02-21&end_date=2021-02-27`
     if (selectedCourse.id) {
       callApi(
-        `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear.id}&section_mapping_ids=${selectedSection.map((el)=>el.id)}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&course_id=${selectedCourse.id}&page_number=1&page_size=15`,
+        `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear.id}&section_mapping_ids=${selectedSection.map((el)=>el.id)}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&course_id=${selectedCourse.id}&page_number=1&page_size=15&module_id=${moduleId}`,
         'filter'
       );
     } else {
       callApi(
-        `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear.id}&section_mapping_ids=${selectedSection.map((el)=>el.id)}&subject_id=${selectedSubject.map((el)=>el.subject__id)}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=15`,
+        `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear.id}&section_mapping_ids=${selectedSection.map((el)=>el.id)}&subject_id=${selectedSubject.map((el)=>el.subject__id)}&class_type=${selectedClassType.id}&start_date=${startDate}&end_date=${endDate}&page_number=1&page_size=15&module_id=${moduleId}`,
         'filter'
       );
     }
@@ -354,7 +374,7 @@ const ErpAdminViewClass = ({ history }) => {
                         setSelectedAcadmeicYear(value)
                         if(value){
                           callApi(
-                            `${endpoints.masterManagement.branchList}?session_year=${value?.id}&module_id=8`,
+                            `${endpoints.masterManagement.branchList}?session_year=${value?.id}&module_id=${moduleId}`,
                             'branchList'
                           );
                         }
@@ -387,7 +407,7 @@ const ErpAdminViewClass = ({ history }) => {
                           const selectedId=value.map((el)=>el.id)
                           setSelectedBranch(ids)
                           callApi(
-                            `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId.toString()}&module_id=8`,
+                            `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
                             'gradeList'
                           );
                         }
@@ -421,7 +441,7 @@ const ErpAdminViewClass = ({ history }) => {
                           const branchId=selectedBranch.map((el)=>el.id)
                           setSelectedGrade(ids)
                           callApi(
-                            `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${selectedModule}`,
+                            `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
                             'section'
                           );
                         }
@@ -469,7 +489,7 @@ const ErpAdminViewClass = ({ history }) => {
                           const secId=value.map((el)=>el.section_id)
                           setSelectedSection(ids)
                           callApi(
-                            `${endpoints.academics.subjects}?branch=${selectedBranch.map((el)=>el.id)}&grade=${selectedGrade.map((el)=>el.grade_id)}&section=${secId}&module_id=${selectedModule}`,
+                            `${endpoints.academics.subjects}?branch=${selectedBranch.map((el)=>el.id)}&grade=${selectedGrade.map((el)=>el.grade_id)}&section=${secId}&module_id=${moduleId}`,
                             'subject'
                           );
                         }
