@@ -346,7 +346,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'SMS&Email Log') {
+            if (item.child_name === 'SMS&Email Log' || item.child_name === 'SMS & Email Log') {
               setModuleId(item.child_id);
               setModulePermision(true);
             } else {
