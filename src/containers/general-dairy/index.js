@@ -85,7 +85,7 @@ const GeneralDairyList = () => {
                 if(location.pathname === "/diary/student" && item.child_name === "Student Diary") {
                     setStudentModuleId(item?.child_id);
                     setShowSubjectDropDown(true)
-                } else if(location.pathname === "/diary/teacher" && item.child_name === "Teacher") {
+                } else if(location.pathname === "/diary/teacher" && item.child_name === "Teacher Diary") {
                     setTeacherModuleId(item?.child_id);
                 } 
               });

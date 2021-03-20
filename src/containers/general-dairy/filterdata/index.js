@@ -13,6 +13,7 @@ import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2'
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 import { isClass } from 'highcharts';
 import { useLocation } from "react-router-dom";
+import { filter } from 'lodash';
 
 // import './lesson-report.css';
 
@@ -104,8 +105,9 @@ const GeneralDairyFilter = ({
   const [clicked,setClicked] = useState(false)
   const history=useHistory()
   const [studentModuleId, setStudentModuleId] = useState();
-  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  // const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const location = useLocation();
+  // const [academicYearDropdown,setAcademicYearDropdown] = useState([])
 
 
   const [filterData, setFilterData] = useState({
@@ -113,9 +115,56 @@ const GeneralDairyFilter = ({
     branch: '',
     subject: '',
     sectionIds: [],
+    sections:[],
+    year:''
     // setSectionDropdown([])
   });
 
+
+
+  const [moduleId, setModuleId] = useState();
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Diary' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item?.child_name === 'Student Diary' && window.location.pathname=== '/diary/student') {
+              setModuleId(item.child_id);
+            }
+            if (item?.child_name === 'Teacher Diary' && window.location.pathname=== '/diary/teacher') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Diary' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if(location.pathname === "/diary/student" && item.child_name === "Student View") {
+                setStudentModuleId(item?.child_id);
+            } else if(location.pathname === "/diary/teacher" && item.child_name === "Teacher Diary") {
+                setTeacherModuleId(item?.child_id);
+            } 
+          });
+        }
+      });
+    }
+  }, [location.pathname]);
   function getDaysAfter(date, amount) {
     // TODO: replace with implementation for your date library
     return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
@@ -131,6 +180,8 @@ const GeneralDairyFilter = ({
       grade: '',
       branch: '',
       sectionIds: [],
+      sections:[],
+      year:''
       // setSectionDropdown([])
     });
     setSectionDropdown([]);
@@ -150,7 +201,7 @@ const GeneralDairyFilter = ({
   const handleActiveTab = (tab) => {
     setActiveTab(tab);
     if (tab === 2 && !isTeacher){
-      axiosInstance.get(`${endpoints.dailyDairy.chapterList}?module_id=${studentModuleId}`)
+      axiosInstance.get(`${endpoints.dailyDairy.chapterList}?module_id=${moduleId}`)
       .then(res => {
         if (res.data.status_code === 200){
           setSubjectDropdown(res.data.result)
@@ -179,7 +230,7 @@ if(clicked){
     if (value && filterData.branch) {
       // https://erpnew.letseduvate.com/qbox/academic/general-dairy-messages/?branch=5&grades=25&sections=44&page=1&start_date=2021-02-02&end_date=2021-02-08&dairy_type=2
         setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
-        axiosInstance.get(`${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}&module_id=${location.pathname === "/lesson-plan/student-view"?studentModuleId:teacherModuleId}`)
+        axiosInstance.get(`${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}&module_id=${moduleId}`)
         .then(result => {
           if (result.data.status_code === 200) {
             //console.log(result.data)
@@ -201,6 +252,22 @@ if(clicked){
     }
 };
 
+   const handleAcademicYear = (event, value) => {
+    setFilterData({ ...filterData, year: '' });
+    if (value) {
+      setFilterData({ ...filterData, year: value });
+      axiosInstance
+        .get(`${endpoints.masterManagement.branchList}?session_year=${value.id}&module_id=${moduleId}`)
+        .then((result) => {
+          if (result?.data?.status_code) {
+            setBranchDropdown(result?.data?.data);
+          } else {
+            setAlert('error', result?.data?.message);
+          }
+        })
+        .catch((error) => setAlert('error', error?.message));
+    }
+  };
 
   const handleSection = (event, value) => {
     sectionId = [];
@@ -211,38 +278,22 @@ if(clicked){
         return el.section_id
       });
       console.log(sectionId);
+      setFilterData({...filterData,sections:value
+      })
       //sectionId = value.map((el) => el.id);
     //   setSubjectIds(ids);
       setSectionIds(ids)
     }
   };
 
-  useEffect(() => {
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'Diary' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if(location.pathname === "/diary/student" && item.child_name === "Student View") {
-                setStudentModuleId(item?.child_id);
-            } else if(location.pathname === "/diary/teacher" && item.child_name === "Teacher Diary") {
-                setTeacherModuleId(item?.child_id);
-            } 
-          });
-        }
-      });
-    }
-  }, [location.pathname]);
+
 
   const handleBranch = (event, value) => {
     setFilterData({ ...filterData, branch: '', grade: '', subject: '', chapter: '' });
     // setOverviewSynopsis([]);
     if (value) {
         setFilterData({ ...filterData, branch: value, grade: '', subject: '', chapter: '' });
-        axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=${location.pathname === "/diary/student"?studentModuleId:teacherModuleId}`)
+        axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=${moduleId}`)
             .then(result => {
                 if (result.data.status_code === 200) {
                     setGradeDropdown(result.data.data);
@@ -289,16 +340,26 @@ if(clicked){
   }
 
     useEffect(() => {
-        axiosInstance.get(`${endpoints.communication.branches}`)
+      axiosInstance.get(`${endpoints.userManagement.academicYear}`)
             .then(result => {
                 if (result.data.status_code === 200) {
-                    setBranchDropdown(result.data.data);
+                    setAcademicYearDropdown(result?.data?.data);
                 } else {
-                    setAlert('error', result.data.message);
+                    setAlert('error', result?.data?.message);
                 }
             }).catch(error => {
-                setBranchDropdown('error', error.message);
+                setAcademicYearDropdown('error', error.message);
             })
+        // axiosInstance.get(`${endpoints.communication.branches}`)
+        //     .then(result => {
+        //         if (result.data.status_code === 200) {
+        //             setBranchDropdown(result.data.data);
+        //         } else {
+        //             setAlert('error', result.data.message);
+        //         }
+        //     }).catch(error => {
+        //         setBranchDropdown('error', error.message);
+        //     })
   }, []);
 
   return (
@@ -308,6 +369,28 @@ if(clicked){
       style={{ width: widerWidth, margin: wider }}
     >
       {isTeacher && (
+        <>
+        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        <Autocomplete
+          style={{ width: '100%' }}
+          size='small'
+          onChange={handleAcademicYear}
+          id='academic-year'
+          className='dropdownIcon'
+          value={filterData?.year}
+          options={academicYearDropdown}
+          getOptionLabel={(option) => option?.session_year}
+          filterSelectedOptions
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant='outlined'
+              label='Academic Year'
+              placeholder='Academic Year'
+            />
+          )}
+        />
+      </Grid>
         <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
             style={{ width: '100%' }}
@@ -329,6 +412,7 @@ if(clicked){
             )}
           />
         </Grid>
+        </>
       )}
       
       {isTeacher && (
@@ -358,7 +442,7 @@ if(clicked){
             onChange={handleSection}
             id='subj'
             className='dropdownIcon'
-            // value={filterData?.subject}
+            value={filterData?.sections}
             options={sectionDropdown}
             getOptionLabel={(option) => option?.section__section_name}
             filterSelectedOptions
