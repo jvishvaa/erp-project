@@ -22,19 +22,18 @@ import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import attachmenticon from '../../../assets/images/attachmenticon.svg';
 import deleteIcon from '../../../assets/images/delete.svg';
-// import './create-circular.css'
 import axios from 'axios';
 import moment from 'moment';
 import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 import { Context } from '../context/CircularStore';
-import { filter } from 'lodash';
+import { filter, result } from 'lodash';
 import Loading from '../../../components/loader/loader';
 
 const CraeteCircular = () => {
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
-  const {circularKey} = useParams();
+  const { circularKey } = useParams();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [loading, setLoading] = useState(false);
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
@@ -63,27 +62,44 @@ const CraeteCircular = () => {
   const [filePath, setFilePath] = useState([]);
   const [filterEvent, setFilterEvent] = useState(false);
 
-  const circularRole = [{name: 'Student Circular', value: 'Student Circular'}];
+  console.log(state, 'eeeeeeeeee');
+  const circularRole = [{ name: 'Student Circular', value: 'Student Circular' }];
 
   const [filterData, setFilterData] = useState({
-    branch: [],
-    grade: [],
-    section: [],
+    branch: '',
+    grade: '',
+    section: '',
     role: '',
-    year:'',
+    year: '',
   });
+  const [moduleId, setModuleId] = useState();
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Circular' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Teacher Circular') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
   const handleClear = () => {
     setFilterData({
-      branch: [],
-      grade: [],
-      section: [],
+      branch: '',
+      grade: '',
+      section: '',
       role: '',
-      year:'',
+      year: '',
     });
-    setTitle('')
-    setDescription('')
-    setFilePath([])
   };
 
   const handleRole = (event, value) => {
@@ -96,42 +112,40 @@ const CraeteCircular = () => {
     setFilterData({ ...filterData, year: '' });
     if (value) {
       setFilterData({ ...filterData, year: value });
-      axiosInstance.get(`${endpoints.masterManagement.branchList}?session_year=${value.id}`)
-      .then((result)=>{
-        if(result?.data?.status_code){
-          setBranchDropdown(result?.data?.data)
-        }
-        else{
-          setAlert('error',result?.data?.message)
-        }
-      }).catch(error=>setAlert('error',error?.message))
+      axiosInstance
+        .get(`${endpoints.masterManagement.branchList}?session_year=${value.id}&module_id=${moduleId}`)
+        .then((result) => {
+          if (result?.data?.status_code) {
+            setBranchDropdown(result?.data?.data);
+          } else {
+            setAlert('error', result?.data?.message);
+          }
+        })
+        .catch((error) => setAlert('error', error?.message));
     }
   };
 
+
   const handleSection = (event, value) => {
-    setFilterData({ ...filterData, section: [] });
-    if (value.length) {
-      const ids=value.map((el)=>el)
-      // const secId=value.map((el)=>el.section_id)
-      setFilterData({ ...filterData, section: ids });
+    setFilterData({ ...filterData, section: '' });
+    if (value) {
+      setFilterData({ ...filterData, section: value });
     }
   };
 
   const handleBranch = (event, value) => {
-    setFilterData({ ...filterData, branch: [], grade: [], subject: [], chapter: '' });
+    setFilterData({ ...filterData, branch: '', grade: '', subject: '', chapter: '' });
     setOverviewSynopsis([]);
-    if (value.length) {
-      const ids = value.map((el)=>el)
-      const selectedId = value.map((el)=>el.id)
+    if (value) {
       setFilterData({
         ...filterData,
-        branch: ids,
-        grade: [],
-        subject: [],
+        branch: value,
+        grade: '',
+        subject: '',
         chapter: '',
       });
       axiosInstance
-        .get(`${endpoints.academics.grades}?session_year=${filterData.year.id}&branch_id=${selectedId.toString()}&module_id=167`)
+        .get(`${endpoints.communication.grades}?branch_id=${value?.id}&module_id=${moduleId}`)
         .then((result) => {
           if (result.data.status_code === 200) {
             setGradeDropdown(result?.data?.data);
@@ -156,26 +170,24 @@ const CraeteCircular = () => {
   };
 
   const handleGrade = (event, value) => {
-    setFilterData({ ...filterData, grade: [], subject: [], chapter: '' });
+    setFilterData({ ...filterData, grade: '', subject: '', chapter: '' });
     setOverviewSynopsis([]);
-    if (value.length && filterData?.branch) {
-      const ids = value.map((el)=>el)
-      const selectedId = value.map((el)=>el.grade_id)
+    if (value && filterData?.branch) {
       setFilterData({
         ...filterData,
-        grade: ids,
-        subject: [],
+        grade: value,
+        subject: '',
         chapter: '',
       });
       axiosInstance
         .get(
-          `${endpoints.academics.sections}?module_id=167&session_year=${filterData?.year?.id}&branch_id=${filterData.branch.map((el)=>el.id)}&grade_id=${selectedId}`
+          `${endpoints.masterManagement.sections}?branch_id=${filterData?.branch?.id}&grade_id=${value?.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
-            setSectionDropdown(result?.data?.data);
+            setSectionDropdown(result.data.data);
           } else {
-            setAlert('error', result?.data?.message);
+            setAlert('error', result.data.message);
             setSectionDropdown([]);
           }
         })
@@ -189,10 +201,16 @@ const CraeteCircular = () => {
     }
   };
 
+  function handleTitle(e){
+      if(e.target.value.split(' ').length <= 20){
+        setTitle(e.target.value)
+      }
+      else{
+        setAlert('warning','Max Word Limit Is 20')
+      }
+  }
   const handleImageChange = (event) => {
-    if (
-      event.target.files[0].name.split('.')[1] === 'csv'
-    ) {
+    if (event.target.files[0].name.split('.')[1] === 'csv') {
       return setAlert('warning', 'Unaccepted File Type');
     }
     setLoading(true);
@@ -222,16 +240,16 @@ const CraeteCircular = () => {
     if (!filterData.year) {
       return setAlert('warning', 'Select Academic Year');
     }
-    if (!filterData.branch.length < 0) {
+    if (!filterData.branch) {
       return setAlert('warning', 'Select Branch');
     }
     if (!filterData.role) {
       return setAlert('warning', 'Select Role');
     }
-    if (!filterData.grade.length<0) {
+    if (filterData.grade.length <= 0) {
       return setAlert('warning', 'Select Grade');
     }
-    if (!filterData.section.length<0) {
+    if (filterData.section.length <= 0) {
       return setAlert('warning', 'Select Section');
     }
     if (filterData.branch && filterData.role && filterData.grade && filterData.section) {
@@ -266,26 +284,31 @@ const CraeteCircular = () => {
     );
   };
 
-  const removeFileHandler = (i) => {
-    // const list = [...filePath];
-    filePath.splice(i, 1);
-    setAlert('success', 'File successfully deleted');
+  const removeFileHandler = (i,file) => {
+    const list = [...filePath];
+    console.log(i,file,"File")
+    setLoading(true)
+    axiosInstance.post(`${endpoints.circular.deleteFile}`,{
+      file_name:`dev/circular_files/${filterData?.branch?.branch_name}/${file}`
+    }).then((result)=>{
+      if (result.data.status_code === 204) {
+        list.splice(i, 1);
+        setFilePath(list);
+        setAlert('success', result.data.message);
+        setLoading(false);
+      }else {
+        setAlert('error', result.data.message);
+        setLoading(false);
+      }
+    }).catch(error => {
+      setAlert('error', error.message);
+      setLoading(false);
+    })
   };
 
   useEffect(() => {
-    // axiosInstance
-    //   .get(`${endpoints.communication.branches}`)
-    //   .then((result) => {
-    //     if (result.data.status_code === 200) {
-    //       setBranchDropdown(result?.data?.data);
-    //     } else {
-    //       setAlert('error', result?.data?.message);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     setBranchDropdown('error', error?.message);
-    //   });
-      axiosInstance.get(`${endpoints.userManagement.academicYear}`)
+    axiosInstance
+      .get(`${endpoints.userManagement.academicYear}`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setAcademicYearDropdown(result?.data?.data);
@@ -311,16 +334,10 @@ const CraeteCircular = () => {
         description: description,
         module_name: filterData.role.value,
         media: filePath,
-        Branch: filterData.branch.map((el)=>el.id),
-        // grades:[54],
-        // grades: filterData.grade.map((g) => g.grade_id),
-        // grades: [filterData?.grade?.id],
-        grades:filterData.grade.map((el)=>el.id),
-        // sections: filterData.section.map((s) => s.id),
-        // sections: [filterData?.section?.id],
-        sections:filterData.section.map((el)=>el.id),
-        // sections:[75]
-        academic_year:filterData?.year?.id,
+        Branch: [filterData?.branch?.id],
+        grades: [filterData?.grade?.grade_id],
+        sections: [filterData?.section?.id],
+        academic_year: filterData?.year?.id,
       })
       .then((result) => {
         if (result?.data?.status_code === 200) {
@@ -328,11 +345,10 @@ const CraeteCircular = () => {
           setDescription('');
 
           setFilterData({
-            branch: [],
-            grade: [],
-            section: [],
+            branch: '',
+            grade: '',
+            section: '',
             role: '',
-            year:''
           });
           setFilePath([]);
           setFilterEvent(false);
@@ -345,45 +361,48 @@ const CraeteCircular = () => {
   };
 
   const handleEdited = () => {
-    if(!filterData.year){
+    if (!filterData.year) {
       return setAlert('warning', 'Select Academic Year');
     }
-    if(!filterData.branch){
+    if (!filterData.branch) {
       return setAlert('warning', 'Select Branch');
     }
-    if(!filterData.role){
+    if (!filterData.role) {
       return setAlert('warning', 'Select Role');
     }
-    if(!filterData.grade){
+    if (!filterData.grade) {
       return setAlert('warning', 'Select Grade');
     }
-    if(!filterData.section){
+    if (!filterData.section) {
       return setAlert('warning', 'Select Section');
     }
-   
+
     axiosInstance
       .put(`${endpoints.circular.updateCircular}`, {
         circular_id: circularKey,
         circular_name: title,
         description: description,
         module_name: filterData.role.value,
+        media:filePath,
+        Branch: [filterData?.branch?.id],
+        grades: [filterData?.grade?.id],
+        sections: [filterData?.section?.id],
+        academic_year: filterData?.year?.id,
       })
       .then((result) => {
         if (result.data.status_code === 200) {
-          // setState({ ...state, isEdit: false });
           setTitle('');
           setDescription('');
           setFilterData({
-            branch: [],
-            grade: [],
-            section: [],
+            branch: '',
+            grade: '',
+            section: '',
             role: '',
-            year:''
           });
           setFilePath([]);
           setFilterEvent(false);
           setAlert('success', result?.data?.message);
-          history.push('/teacher-circular')
+          history.push('/teacher-circular');
         } else {
           setAlert('error', result?.data?.message);
         }
@@ -394,28 +413,29 @@ const CraeteCircular = () => {
   };
 
   //////EDIT USE-EFFECT
-  useEffect(()=>{
-    if(Number(circularKey)){
-   axiosInstance.get(`${endpoints.circular.viewMoreCircularData}?circular_id=${circularKey}`)
-   .then(result=>{
-     console.log(result?.data,'RRRRRRRR')
-     if(result?.data?.status_code === 200){
-       setFilterData({
-         ...filterData,
-         year:result?.data?.result?.academic_year,
-         branch:result?.data?.result?.branches[0],
-         grade:result?.data?.result?.grades[0],
-         section:result?.data?.result?.sections[0],
-         role:circularRole[0]
-       })
-       setTitle(result?.data?.result?.circular_name)
-       setDescription(result?.data?.result?.description)
-       setFilePath(result?.data?.result.media)
-       setFilterEvent(true)
-     }
-   })
+  useEffect(() => {
+    if (Number(circularKey)) {
+      axiosInstance
+        .get(`${endpoints.circular.viewMoreCircularData}?circular_id=${circularKey}`)
+        .then((result) => {
+          console.log(result?.data, 'RRRRRRRR');
+          if (result?.data?.status_code === 200) {
+            setFilterData({
+              ...filterData,
+              year: result?.data?.result?.academic_year,
+              branch: result?.data?.result?.branches[0],
+              grade: result?.data?.result?.grades[0],
+              section: result?.data?.result?.sections[0],
+              role: circularRole[0],
+            });
+            setTitle(result?.data?.result?.circular_name);
+            setDescription(result?.data?.result?.description);
+            setFilePath(result?.data?.result.media);
+            setFilterEvent(true);
+          }
+        });
     }
-  },[])
+  }, []);
 
   return (
     <>
@@ -470,7 +490,6 @@ const CraeteCircular = () => {
             </Grid>
             <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
               <Autocomplete
-                multiple
                 style={{ width: '100%' }}
                 size='small'
                 onChange={handleBranch}
@@ -518,7 +537,6 @@ const CraeteCircular = () => {
               className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
             >
               <Autocomplete
-                multiple
                 style={{ width: '100%' }}
                 size='small'
                 onChange={handleGrade}
@@ -526,7 +544,9 @@ const CraeteCircular = () => {
                 className='dropdownIcon'
                 value={filterData?.grade || ''}
                 options={gradeDropdown}
-                getOptionLabel={(option) => option?.grade__grade_name || option?.grade_name}
+                getOptionLabel={(option) =>
+                  option?.grade__grade_name || option?.grade_name
+                }
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
@@ -540,7 +560,6 @@ const CraeteCircular = () => {
             </Grid>
             <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
               <Autocomplete
-                multiple
                 style={{ width: '100%' }}
                 size='small'
                 onChange={handleSection}
@@ -548,7 +567,9 @@ const CraeteCircular = () => {
                 className='dropdownIcon'
                 value={filterData?.section || ''}
                 options={sectionDropdown}
-                getOptionLabel={(option) => option?.section__section_name || option?.section_name}
+                getOptionLabel={(option) =>
+                  option?.section__section_name || option?.section_name
+                }
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
@@ -567,30 +588,36 @@ const CraeteCircular = () => {
               </Grid>
             )}
             {isMobile && <Grid item xs={3} sm={0} />}
-            <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
-              <Button
-                variant='contained'
-                className='custom_button_master labelColor'
-                size='medium'
-                onClick={handleClear}
-              >
-                CLEAR ALL
-              </Button>
-            </Grid>
-            {isMobile && <Grid item xs={3} sm={0} />}
-            {isMobile && <Grid item xs={3} sm={0} />}
-            <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
-              <Button
-                variant='contained'
-                style={{ color: 'white' }}
-                color='primary'
-                className='custom_button_master'
-                size='medium'
-                onClick={handleFilter}
-              >
-                NEXT
-              </Button>
-            </Grid>
+            {circularKey ? (
+              ''
+            ) : (
+              <>
+                <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+                  <Button
+                    variant='contained'
+                    className='custom_button_master labelColor'
+                    size='medium'
+                    onClick={handleClear}
+                  >
+                    CLEAR ALL
+                  </Button>
+                </Grid>
+                {isMobile && <Grid item xs={3} sm={0} />}
+                {isMobile && <Grid item xs={3} sm={0} />}
+                <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+                  <Button
+                    variant='contained'
+                    style={{ color: 'white' }}
+                    color='primary'
+                    className='custom_button_master'
+                    size='medium'
+                    onClick={handleFilter}
+                  >
+                    NEXT
+                  </Button>
+                </Grid>
+              </>
+            )}
             {isMobile && <Grid item xs={3} sm={0} />}
             {isMobile && <Grid item xs={3} sm={0} />}
             {isMobile && <Grid item xs={3} sm={0} />}
@@ -617,7 +644,8 @@ const CraeteCircular = () => {
                     style={{ width: '100%', marginTop: '1.25rem' }}
                     value={title}
                     variant='outlined'
-                    onChange={(e) => setTitle(e.target.value)}
+                    // onChange={(e) => setTitle(e.target.value)}
+                    onChange={(e)=>handleTitle(e)}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -642,7 +670,7 @@ const CraeteCircular = () => {
                           key={`create_circular_${i}`}
                           file={file}
                           index={i}
-                          onClose={() => removeFileHandler(i)}
+                          onClose={() => removeFileHandler(i,file)}
                         />
                       ))
                     : null}
@@ -682,15 +710,23 @@ const CraeteCircular = () => {
                     Add Document
                   </Button>
                   <small
-                    style={{ color: '#014b7e', fontSize: '16px', marginLeft: '28px',marginTop:'8px' }}
+                    style={{
+                      color: '#014b7e',
+                      fontSize: '16px',
+                      marginLeft: '28px',
+                      marginTop: '8px',
+                    }}
                   >
                     {' '}
                     Accepted files: [jpeg,jpg,png,mp3,mp4,pdf]
                   </small>
-                </div>                
+                </div>
+                <div>
+                </div>
               </div>
             </div>
             <div>
+            {circularKey && <Button   className='submit_button' onClick={()=>history.goBack()}>BACK</Button>}
               <Button
                 onClick={circularKey ? handleEdited : handleSubmit}
                 className='submit_button'
@@ -706,3 +742,4 @@ const CraeteCircular = () => {
 };
 
 export default CraeteCircular;
+
