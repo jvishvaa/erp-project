@@ -69,8 +69,8 @@ class NewRegistration extends Component {
     super(props)
     this.state = {
       academicYearValue: {
-        label: '2019-20',
-        value: '2019-20'
+        label: '2021-22',
+        value: '2021-22'
       },
       searchByValue: {
         label: 'Application No',

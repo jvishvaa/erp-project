@@ -21,6 +21,7 @@ const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol, handleViewHomewo
             key={col.id}
             data={data[col.subject_name]}
             isSelected={isSelected}
+            canUpload={data.canUpload}
             handleClick={(view) => {
               setSelectedCol({
                 date: data.date,
@@ -50,7 +51,7 @@ const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol, handleViewHomewo
             }}
           />
         ) : (
-          <TableCell className='no-wrap-col'>
+          <TableCell className='no-wrap-col' style={{ minWidth: '188px'}}>
             <div>
               <div className='day-icon'>
                 {moment(data.date).format('dddd').split('')[0]}

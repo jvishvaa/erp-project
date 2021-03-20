@@ -1,9 +1,0 @@
-{
-    "version": 3,
-    "mappings": "AAAA,AAAA,aAAa,CAAC,oBAAoB,CAAA;EAChC,MAAM,EAAE,4BAA4B;EACpC,MAAM,EAAE,gBAAgB;EACxB,aAAa,EAAE,GAAG;EAClB,UAAU,EAAE,IAAI;CACjB",
-    "sources": [
-        "award.scss"
-    ],
-    "names": [],
-    "file": "award.css"
-}

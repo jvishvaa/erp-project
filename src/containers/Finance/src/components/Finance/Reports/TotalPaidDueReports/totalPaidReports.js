@@ -140,11 +140,11 @@ class TotalPaidReports extends Component {
     }
   }
   handleClickGrade = event => {
-    const allLabel = event.filter(event => {
-      return event.label === 'All Grades'
+    const allLabel = event && event.filter(event => {
+      return event && event.label === 'All Grades'
     })
     let aMapIds = []
-    if (allLabel.length === 1) {
+    if (allLabel && allLabel.length === 1) {
       const allGrades = {
         value: 'all',
         label: 'All Grades'
@@ -164,7 +164,7 @@ class TotalPaidReports extends Component {
         }
       })
     } else {
-      event.forEach((grdae) => {
+      event && event.forEach((grdae) => {
         aMapIds.push(grdae.value)
       })
       this.setState({
@@ -184,11 +184,11 @@ class TotalPaidReports extends Component {
     }
   }
   changeInstallmentsHandler = (e) => {
-    const allLabel = e.filter(event => {
-      return event.label === 'All Installments'
+    const allLabel = e && e.filter(event => {
+      return event && event.label === 'All Installments'
     })
     let instIds = []
-    if (allLabel.length === 1) {
+    if (allLabel && allLabel.length === 1) {
       const allInsts = {
         value: 'all',
         label: 'All Installments'
@@ -199,7 +199,7 @@ class TotalPaidReports extends Component {
         installmentIds: allInstIds
       })
     } else {
-      e.forEach(payment => {
+      e && e.forEach(payment => {
         instIds.push(payment.value)
       })
       this.setState({
@@ -210,11 +210,11 @@ class TotalPaidReports extends Component {
   }
 
   changeOthrInstallmentsHandler = (e) => {
-    const allLabel = e.filter(event => {
+    const allLabel = e && e.filter(event => {
       return event.label === 'All Installments'
     })
     let instIds = []
-    if (allLabel.length === 1) {
+    if (allLabel && allLabel.length === 1) {
       const allInsts = {
         value: 'all',
         label: 'All Installments'
@@ -225,7 +225,7 @@ class TotalPaidReports extends Component {
         othrInstallmentIds: allInstIds
       })
     } else {
-      e.forEach(payment => {
+      e && e.forEach(payment => {
         instIds.push(payment.value)
       })
       this.setState({
@@ -237,10 +237,10 @@ class TotalPaidReports extends Component {
 
   changeFeeTypeHandler = (e) => {
     let feeIds = []
-    const allLabel = e.filter(event => {
-      return event.label === 'All Fee Types'
+    const allLabel = e && e.filter(event => {
+      return event && event.label === 'All Fee Types'
     })
-    if (allLabel.length === 1) {
+    if (allLabel && allLabel.length === 1) {
       const allFeeTypes = {
         value: 'all',
         label: 'All Fee Types'
@@ -274,7 +274,7 @@ class TotalPaidReports extends Component {
         }
       })
     } else {
-      e.forEach(payment => {
+      e && e.forEach(payment => {
         feeIds.push(payment.value)
       })
       this.setState({
@@ -390,10 +390,10 @@ class TotalPaidReports extends Component {
 
   changeFeePlanHandler = (e) => {
     let feeplans = []
-    const allLabel = e.filter(event => {
-      return event.label === 'All Fee Plan'
+    const allLabel = e && e.filter(event => {
+      return event && event.label === 'All Fee Plan'
     })
-    if (allLabel.length === 1) {
+    if (allLabel && allLabel.length === 1) {
       const allFeePlans = {
         value: 'all',
         label: 'All Fee Plan'
@@ -413,7 +413,7 @@ class TotalPaidReports extends Component {
         }
       })
     } else {
-      e.forEach(fee => {
+      e && e.forEach(fee => {
         feeplans.push(fee.value)
       })
       this.setState({
@@ -645,8 +645,9 @@ class TotalPaidReports extends Component {
                 isMulti
                 id='grade'
                 options={
-                  this.state.valueGrade.value !== 'all' ? this.props.grades
-                    ? this.props.grades.map(grades => ({
+                  // this.state.valueGrade && this.state.valueGrade.value !== 'all' ? this.props.grades
+                  this.props.grades ? this.props.grades
+                    ? this.props.grades && this.props.grades.map(grades => ({
                       value: grades.grade ? grades.grade.id : '',
                       label: grades.grade ? grades.grade.grade : ''
                     }))
@@ -664,8 +665,9 @@ class TotalPaidReports extends Component {
                 id='feePlans'
                 isMulti
                 options={
-                  this.state.selectedFeePlan.value !== 'all' ? this.props.feePlans && this.props.feePlans.length > 0
-                    ? this.props.feePlans.map((feePlan) => (
+                  // this.state.selectedFeePlan && this.state.selectedFeePlan.value !== 'all' ? this.props.feePlans && this.props.feePlans.length > 0
+                  this.props.feePlans ? this.props.feePlans && this.props.feePlans.length > 0
+                  ? this.props.feePlans && this.props.feePlans.map((feePlan) => (
                       {
                         label: feePlan.fee_plan_name ? feePlan.fee_plan_name : '',
                         value: feePlan.id ? feePlan.id : ''
@@ -684,7 +686,8 @@ class TotalPaidReports extends Component {
                 id='fee_types'
                 value={this.state.selectedFeeTypes ? this.state.selectedFeeTypes : ''}
                 options={
-                  this.props.feeTypes && this.state.selectedFeeTypes.value !== 'all' ? this.props.feeTypes && this.props.feeTypes.length
+                  // this.props.feeTypes && this.state.selectedFeeTypes && this.state.selectedFeeTypes.value !== 'all' ? this.props.feeTypes && this.props.feeTypes.length
+                  this.props.feeTypes ? this.props.feeTypes && this.props.feeTypes.length
                     ? this.props.feeTypes.map(feeTypes => ({
                       value: feeTypes.id ? feeTypes.id : '',
                       label: feeTypes.fee_type_name ? feeTypes.fee_type_name : ''
@@ -702,8 +705,9 @@ class TotalPaidReports extends Component {
                 isMulti
                 value={this.state.selectedInstallments ? this.state.selectedInstallments : ''}
                 options={
-                  this.state.selectedInstallments.value !== 'all' ? this.props.installments && this.props.installments.length
-                    ? this.props.installments.map(installments => ({
+                  // this.state.selectedInstallments && this.state.selectedInstallments.value !== 'all' ? this.props.installments && this.props.installments.length
+                  this.props.installments ? this.props.installments && this.props.installments.length
+                    ? this.props.installments && this.props.installments.map(installments => ({
                       value: installments.id ? installments.id : '',
                       label: installments.installment_name ? installments.installment_name : ''
                     }))

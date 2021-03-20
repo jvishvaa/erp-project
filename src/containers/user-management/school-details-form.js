@@ -18,6 +18,7 @@ import {
   fetchSubjects as getSubjects,
 } from '../../redux/actions';
 import { useHistory } from 'react-router-dom';
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
 const BackButton = withStyles({
   root: {
@@ -36,6 +37,34 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
   const [sections, setSections] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const history = useHistory();
+  const [moduleId, setModuleId] = useState();
+
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'User Management' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Create User') {
+              console.log('mod', item.child_id)
+              setModuleId(item.child_id);
+              // setModulePermision(true);
+            } else {
+              // setModulePermision(false);
+            }
+          });
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  }, []);
 
   const formik = useFormik({
     initialValues: {
@@ -107,11 +136,12 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
   };
 
   const handleChangeBranch = (values, acadId) => {
+    console.log(formik.values.branch,'==================');
     setGrades([]);
     setSections([]);
     setSubjects([]);
     if (values?.length > 0) {
-      fetchGrades(acadId, values).then((data) => {
+      fetchGrades(acadId, values, moduleId).then((data) => {
         const transformedData = data
           ? data.map((grade) => ({
               item_id: grade.id,
@@ -128,7 +158,7 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
     setSections([]);
     setSubjects([]);
     if (values?.length > 0) {
-      fetchSections(acadId, branch, values).then((data) => {
+      fetchSections(acadId, branch, values, moduleId).then((data) => {
         const transformedData = data
           ? data.map((section) => ({
               item_id: section.id,
@@ -152,8 +182,8 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
     formik.setFieldValue('section', []);
     if (values?.length > 0) {
       formik.setFieldValue('section', values);
-      getSubjects(acadId, branch, grade, values).then((data) => {
-        const transformedData = data.map((obj) => ({
+      getSubjects(acadId, branch, grade, values, moduleId).then((data) => {
+        const transformedData = data && data.map((obj) => ({
           id: obj.subject__id,
           subject_name: obj.subject__subject_name,
         }));
@@ -180,14 +210,26 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
 
   useEffect(() => {
     fetchAcademicYears();
-    // fetchBranches();
-    // console.log('branches ', details.branch, details.grade);
-    if (details.branch) {
-      handleChangeBranch([details.branch]);
-      if (details.grade && details.grade.length > 0) {
-        handleChangeGrade(details.grade, [details.branch]);
-      }
-    }
+    // if (details.academic_year) {
+    //   fetchBranches(details.academic_year.id);
+    //   if (details.branch) {
+    //     handleChangeBranch(details.branch, details.academic_year.id);
+    //     if (details.grade && details.grade.length > 0) {
+    //       handleChangeGrade(details.grade, details.academic_year.id, details.branch);
+    //       if (details.section && details.section.length > 0) {
+    //         handleChangeSection(
+    //           details.section,
+    //           details.academic_year.id,
+    //           details.branch,
+    //           details.grade
+    //         );
+    //         if (details.subjects && details.subjects.length > 0) {
+    //           formik.setFieldValue('subjects', details.subjects);
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
   }, []);
 
   const classes = useStyles();
@@ -209,8 +251,8 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
               setBranches([]);
               fetchBranches(value?.id);
             }}
-            value={formik.values.academic_year || []}
-            options={academicYears}
+            value={formik.values.academic_year || ''}
+            options={academicYears || []}
             filterSelectedOptions
             getOptionLabel={(option) => option?.session_year || ''}
             renderInput={(params) => (
@@ -238,16 +280,16 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
             id='branch'
             name='branch'
             onChange={(e, value) => {
-              formik.setFieldValue('branch', value);
+              formik.setFieldValue('branch', [value]);
               formik.setFieldValue('grade', []);
               formik.setFieldValue('section', []);
               formik.setFieldValue('subjects', []);
-              handleChangeBranch(value, formik.values.academic_year?.id);
+              handleChangeBranch([value], formik.values.academic_year?.id);
               //   handleChangeBranch(value ? [value] : null);
             }}
-            multiple
-            value={formik.values.branch}
-            options={branches}
+            // multiple
+            value={formik.values.branch[0] || []}
+            options={branches || []}
             filterSelectedOptions
             getOptionLabel={(option) => option.branch_name || ''}
             renderInput={(params) => (
@@ -281,8 +323,8 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
               );
             }}
             multiple
-            value={formik.values.grade}
-            options={grades}
+            value={formik.values.grade || []}
+            options={grades || []}
             filterSelectedOptions
             getOptionLabel={(option) => option.grade_name || ''}
             renderInput={(params) => (
@@ -314,8 +356,8 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
                 formik.values.grade
               );
             }}
-            value={formik.values.section}
-            options={sections}
+            value={formik.values.section || []}
+            options={sections || []}
             multiple
             filterSelectedOptions
             getOptionLabel={(option) => option.section_name || ''}
@@ -348,10 +390,10 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
             onChange={(e, value) => {
               formik.setFieldValue('subjects', value);
             }}
-            value={formik.values.subjects}
+            value={formik.values.subjects || []}
             // limitTags={2}
             multiple
-            options={subjects}
+            options={subjects || []}
             filterSelectedOptions
             getOptionLabel={(option) => option.subject_name || ''}
             renderInput={(params) => (

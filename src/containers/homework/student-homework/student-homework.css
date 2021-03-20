@@ -71,6 +71,7 @@
   }
   .table-date{
 	  display: flex;
+	  width: 130px;
   }
 .create_group_filter_container table  .tb-header tr th{
 	  color: #FF6B6B !important;
@@ -162,6 +163,7 @@
 }
 .homework_header {
   text-transform: capitalize;
+  min-width: 183px;
 }
 .homework_block {
   color: #014b7e;
@@ -328,7 +330,7 @@ font-weight: 600;
 	} */
 	.create_group_filter_container  .date-ranger{
 		margin-bottom: 20px;
-		margin-top: 20px;
+		margin-top: 30px;
 	}
 	.create_group_filter_container .mobile-date-picker{
 		padding-bottom: 20px;

@@ -133,7 +133,7 @@ const ViewMoreDailyDairyCard = ({
             style={{fontSize:'1.1rem',color:'#ff6b6b',paddingLeft:'5%',marginTop:'3%'}}
             className="bulkDownloadIconViewMore"
           >
-            <a  target='_blank' href={`${endpoints.s3}/dev/dairy/ORCHIDS/54/59/2021-02-08 18:21:57.036513_Group 7767.png`}>
+            <a  target='_blank' href={`${endpoints.s3}/${pic}`}>
               <SvgIcon
                 component={() => (
                   <img

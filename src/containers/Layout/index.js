@@ -286,9 +286,6 @@ const Layout = ({ children, history }) => {
     </Menu>
   );
 
-
-  
-
   const handleRouting = (name) => {
     switch (name) {
       case 'Take Class': {
@@ -296,10 +293,9 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'View Class': {
-        if(window.location.host===endpoints?.aolConfirmURL){
+        if (window.location.host === endpoints?.aolConfirmURL) {
           history.push('/online-class/view-class');
-        }
-        else{
+        } else {
           history.push('/erp-online-class');
         }
         break;
@@ -309,19 +305,19 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Attend Online Class': {
-        if(window.location.host===endpoints?.aolConfirmURL){
+        if (window.location.host === endpoints?.aolConfirmURL) {
           history.push('/online-class/attend-class');
-        }else{
+        } else {
           history.push('/erp-online-class-student-view');
         }
         break;
       }
       case 'Teacher View Class': {
-       if(window.location.host===endpoints?.aolConfirmURL){
-        history.push('/online-class/teacher-view-class');
-       }else{
-        history.push('/erp-online-class-teacher-view');
-       }
+        if (window.location.host === endpoints?.aolConfirmURL) {
+          history.push('/online-class/teacher-view-class');
+        } else {
+          history.push('/erp-online-class-teacher-view');
+        }
         break;
       }
       case 'Create Class': {
@@ -362,6 +358,10 @@ const Layout = ({ children, history }) => {
       }
       case 'Add Group': {
         history.push('/communication/addgroup');
+        break;
+      }
+      case 'View Role': {
+        history.push('/role-management');
         break;
       }
       case 'View & Edit Group': {
@@ -424,62 +424,67 @@ const Layout = ({ children, history }) => {
         history.push('/user-management/assign-role');
         break;
       }
-      case 'branch-table': {
+      case 'Branch': {
         history.push('/master-management/branch-table');
         break;
       }
-      case 'branch-acad-table': {
+      case 'Branch Acad Mapping': {
         history.push('/master-management/branch-acad-table');
         break;
       }
-      case 'subject-mapping-table': {
+      case 'Subject Mapping': {
         history.push('/master-management/subject-mapping-table');
         break;
       }
-      case 'subject-table': {
+      case 'Subject': {
         history.push('/master-management/subject-table');
         break;
       }
-      case 'section-mapping-table': {
+      case 'Section Mapping': {
         history.push('/master-management/section-mapping-table');
         break;
       }
-      case 'section-table': {
+      case 'Chapter Creation': {
+        history.push('/master-management/chapter-type-table');
+        break;
+      }
+      case 'Section': {
         history.push('/master-management/section-table');
         break;
       }
-      case 'grade-table': {
+      case 'Grade': {
         history.push('/master-management/grade-table');
         break;
       }
-      case 'academic-year-table': {
+      case 'Academic Year': {
         history.push('/master-management/academic-year-table');
         break;
       }
-      case 'message-type-table': {
+      case 'Message Type': {
         history.push('/master-management/message-type-table');
         break;
       }
-      case 'signature-upload': {
-        history.push('/master-mgmt/signature-upload');
+      case 'Signature Upload': {
+        history.push('/master-management/signature-upload');
         break;
       }
-      case 'course-table': {
+      case 'Course': {
         history.push('/course-list');
         break;
       }
-      case 'course-price': {
+      case 'Course Price': {
         history.push('/course-price');
         break;
       }
-      case 'school-mapping': {
+      case 'Lesson Plan Mapping': {
         history.push('/subject/grade');
         break;
       }
-      case 'role-management': {
-        history.push('/role-management');
-        break;
-      }
+
+      // case 'role-management': {
+      //   history.push('/role-management');
+      //   break;
+      // }
       case 'homework-teacher': {
         history.push('/homework/teacher');
         break;
@@ -566,22 +571,15 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Signature Upload': {
-        history.push('/master-mgmt/signature-upload');
-      }
-      case 'Deposit': {
-        history.push('/finance/DepositTab')
-        break;
-      }
-      case 'Total Forms & Report': {
-        history.push('/finance/TotalFormReport')
+        history.push('/master-management/signature-upload');
         break;
       }
       case 'Teacher Circular': {
-        history.push('/circular');
+        history.push('/teacher-circular');
         break;
       }
       case 'Student Circular': {
-        history.push('/circular');
+        history.push('/student-circular');
         break;
       }
       case 'Normal Fee Type': {

@@ -11,11 +11,13 @@ import StudentHomework from './containers/homework/student-homework/student-home
 import AssignRole from './containers/communication/assign-role/assign-role';
 import RoleManagement from './containers/role-management';
 import store from './redux/store';
+import ChapterTypeTable from './containers/master-management/chapter-type/chapter-type-table'
 import AlertNotificationProvider from './context-api/alert-context/alert-state';
 // import './assets/styles/styles.scss';
 import UserManagement from './containers/user-management';
 import ViewUsers from './containers/user-management/view-users/view-users';
 import Login from './containers/login';
+import Forgot from './containers/Forgot-Password/Forgot';
 import Dashboard from './containers/dashboard';
 import { listSubjects } from './redux/actions/academic-mapping-actions';
 import OnlineclassViewProvider from './containers/online-class/online-class-context/online-class-state';
@@ -321,6 +323,12 @@ function App({ alert }) {
                             <Login match={match} history={history} />
                           )}
                         </Route>
+                        <Route exact path='/forgot'>
+                          {({ match, history }) => (
+                            <Forgot match={match} history={history} />
+                          )}
+                        </Route>
+                   
                         <Route exact path='/aol_login'>
                           {({ match, history }) => (
                             <AolLogin match={match} history={history} />
@@ -437,6 +445,9 @@ function App({ alert }) {
                         </Route>
                         <Route exact path='/online-class/view-class'>
                           {({ match }) => <AOLClassView match={match} />}
+                        </Route>
+                        <Route exact path='/master-management/chapter-type-table'>
+                          {({ match }) => <ChapterTypeTable match={match} />}
                         </Route>
                         <Route exact path='/master-management/branch-table'>
                           {({ match }) => <BranchTable match={match} />}
@@ -580,7 +591,7 @@ function App({ alert }) {
                         <Route exact path='/student-id-card'>
                           {({ match }) => <StudentIdCard match={match} />}
                         </Route>
-                        <Route exact path='/master-mgmt/signature-upload'>
+                        <Route exact path='/master-management/signature-upload'>
                           {({ match }) => <SignatureUpload match={match} />}
                         </Route>
                         <Route exact path='/online-class/attend-class'>

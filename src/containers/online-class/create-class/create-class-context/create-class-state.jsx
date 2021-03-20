@@ -125,11 +125,11 @@ const CreateclassProvider = (props) => {
     dispatch(success([], LIST_TUTOR_EMAILS_SUCCESS));
   };
 
-  const listGradesCreateClass = async (branch, moduleId) => {
+  const listGradesCreateClass = async (branch, moduleId, acadId) => {
     dispatch(request(LIST_GRADE_REQUEST));
     try {
       const { data } = await axiosInstance.get(
-        `${endpoints.masterManagement.gradesDrop}?branch_id=${branch.join(
+        `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branch.join(
           ','
         )}&module_id=${moduleId}`
       );

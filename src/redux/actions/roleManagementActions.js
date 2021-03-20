@@ -169,7 +169,7 @@ export const setCreateRolePermissionsState = (params) => ({
   data: params,
 });
 
-export const fetchGrades = (acadId, branches) => {
+export const fetchGrades = (acadId, branches, moduleId) => {
   const branchIds =
     branches && branches.length > 0 ? branches.map((branch) => branch.id).join(',') : '';
 
@@ -178,7 +178,7 @@ export const fetchGrades = (acadId, branches) => {
   }
 
   return axios
-    .get(`/erp_user/grademapping/?session_year=${acadId}&branch_id=${branchIds}`)
+    .get(`/erp_user/grademapping/?session_year=${acadId}&branch_id=${branchIds}&module_id=${moduleId}`)
     .then((response) => {
       if(response.data.status_code===200)
       return response.data.data;
@@ -190,7 +190,7 @@ export const fetchGrades = (acadId, branches) => {
   // return Promise.resolve([]);
 };
 
-export const fetchSubjects = (acadId, branches, grades, sections) => {
+export const fetchSubjects = (acadId, branches, grades, sections, moduleId) => {
   const branchIds =
     branches && branches.length > 0 ? branches.map((branch) => branch.id).join(',') : '';
   const gradeIds =
@@ -201,7 +201,7 @@ export const fetchSubjects = (acadId, branches, grades, sections) => {
       : '';
   return axios
     .get(
-      `/erp_user/subject/?session_year=${acadId}&branch=${branchIds}&grade=${gradeIds}&section=${sectionIds}`
+      `/erp_user/subject/?session_year=${acadId}&branch=${branchIds}&grade=${gradeIds}&section=${sectionIds}&module_id=${moduleId}`
     )
     .then((response) => {
       if(response.data.status_code===200)
@@ -213,7 +213,7 @@ export const fetchSubjects = (acadId, branches, grades, sections) => {
     });
 };
 
-export const fetchSections = (acadId, branches, grades) => {
+export const fetchSections = (acadId, branches, grades, moduleId) => {
   const branchIds =
     branches && branches.length > 0 ? branches.map((branch) => branch.id).join(',') : '';
   const gradeIds =
@@ -221,7 +221,7 @@ export const fetchSections = (acadId, branches, grades) => {
 
   return axios
     .get(
-      `/erp_user/sectionmapping/?session_year=${acadId}&branch_id=${branchIds}&grade_id=${gradeIds}`
+      `/erp_user/sectionmapping/?session_year=${acadId}&branch_id=${branchIds}&grade_id=${gradeIds}&module_id=${moduleId}`
     )
     .then((response) => {
       if(response.data.status_code===200)

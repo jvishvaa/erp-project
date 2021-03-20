@@ -177,13 +177,13 @@ const QuestionCard = ({
                     </FormHelperText>
                   </FormControl>
                 </Grid>
-                <Grid item md={4}>
+                <Grid item md={6}>
                   <div>
                     <input
                       className='file-upload-input'
                       type='file'
                       name='attachments'
-                      accept='.png, .jpg, .jpeg, .mp3, mp4, .pdf'
+                      accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf'
                       onChange={(e) => {
                         handleFileUpload(e.target.files[0]);
                         // onChange('attachments', Array.from(e.target.files)[]);
@@ -239,9 +239,11 @@ const QuestionCard = ({
                 <Grid item xs={12} className='attachments-grid'>
                   <div className='attachments-list-outer-container'>
                     <div className='prev-btn'>
-                      <IconButton onClick={() => handleScroll('left')}>
-                        <ArrowBackIosIcon />
-                      </IconButton>
+                      {attachmentPreviews.length > 2 && (
+                        <IconButton onClick={() => handleScroll('left')}>
+                          <ArrowBackIosIcon />
+                        </IconButton>
+                      )}
                     </div>
                     <SimpleReactLightbox>
                       <div
@@ -262,7 +264,8 @@ const QuestionCard = ({
                                   fileName={`Attachment-${i + 1}`}
                                   urlPrefix={`${endpoints.s3}/homework`}
                                   index={i}
-                                  actions={['preview', 'download']}
+                                  actions={['preview', 'download','delete']}
+                                  onDelete={removeAttachment}
                                 />
                               </div>
                             ))}
@@ -285,9 +288,11 @@ const QuestionCard = ({
                       </div>
                     </SimpleReactLightbox>
                     <div className='next-btn'>
-                      <IconButton onClick={() => handleScroll('right')}>
-                        <ArrowForwardIosIcon color='primary' />
-                      </IconButton>
+                      {attachmentPreviews.length > 2 && (
+                        <IconButton onClick={() => handleScroll('right')}>
+                          <ArrowForwardIosIcon color='primary' />
+                        </IconButton>
+                      )}
                     </div>
                   </div>
                 </Grid>

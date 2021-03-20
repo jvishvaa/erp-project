@@ -1,10 +1,22 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
+<<<<<<< HEAD
   // baseURL: `${window.location.origin}/qbox`,
   baseURL: 'https://erp.finance.letseduvate.com/qbox',
   // baseURL: 'http://13.234.252.195:443',
   // baseURL: 'http://localhost:8000/qbox',
+=======
+  //  baseURL: `${window.location.origin}/qbox`,
+  // baseURL:'https://revamperp.letseduvate.com/qbox',
+  // baseURL: 'https://erpnew.letseduvate.com/qbox',
+  // baseURL: 'https://aol.letseduvate.com/qbox',
+  // baseURL: 'http://olvorchidnaigaon.letseduvate.com/qbox',
+  // baseURL: 'http://13.234.252.195:443',
+  // baseURL: 'http://192.168.0.96:8000/qbox',
+  // baseURL:'http://192.168.0.96/qbox'
+  baseURL: 'http://localhost:8000/qbox'
+>>>>>>> finance_merge-develop
 });
 
 // ****** enable the following code to attach authorization headers on each request and for logging out when an unauthorize request is send *****//

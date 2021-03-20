@@ -29,6 +29,12 @@
     border: 1px solid #DBDBDB !important;
     border-radius: 15px !important;
   }
+  .message_log_white_wrapper {
+    @media screen and (min-width: 768px) {
+      padding-top: 30px;
+    }
+  }
+
   .message_log_white_wrapper .date-container fieldset{
     border-radius: 10px;
   }
@@ -88,16 +94,21 @@
     }
     .homework_block_wrapper {
       display: flex;
-      width: 100% !important;
+      width: 97% !important;
       padding-bottom: 1%;
-      margin: 20px 0;
+      margin: 20px;
       border: 1px solid #dbdbdb;
       align-items: center;
       padding: 1rem;
       border-radius: 5px;
+      //@media screen and (min-width: 768px) {
+        //margin: 20px !important;
+        //padding: 20px;
+      //}
 
       @media screen and (max-width: 768px) {
-        margin-bottom: 0 !important;
+        //margin-bottom: 0 !important;
+        width: 90% !important;
         justify-content: center;
         border: 0;
       }
@@ -230,6 +241,7 @@
     display: flex;
     justify-content: flex-end;
     margin: 1rem;
+    padding: 10px;
 
     @media screen and (max-width: 768px) {
       justify-content: center;
@@ -328,6 +340,11 @@
   .homework_submit_wrapper {
     border: 1px solid #ff6b6b;
     border-radius: 10px;
+    padding: 20px;
+    @media screen and (max-width: 768px) {
+      margin: 10px;
+      width: 90% !important;
+    }
   }
   .homework_submit_button_wrapper {
     display: flex;
@@ -423,7 +440,7 @@
         width: calc(100% - 90px);
         .attachment {
           flex-shrink: 0;
-          width: 150px;
+          width: 250px;
         }
       }
     }

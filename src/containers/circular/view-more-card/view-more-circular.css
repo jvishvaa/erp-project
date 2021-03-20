@@ -82,6 +82,12 @@
     color: #ff6b6b;
     margin-bottom: 7px;
 }
+.headerTitle_body{
+  font-size: 1.1rem;
+  color: #ff6b6b;
+  margin-bottom: 7px;
+  margin-left: 14px;
+}
 
 .headerContent {
     font-size: 1.1rem;

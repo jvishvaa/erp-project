@@ -15,8 +15,11 @@ import {
   CardContent,
   Typography,
   TextField,
+  withStyles,
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import Rating from '@material-ui/lab/Rating';
+import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import ReceivedIcon from '../../../../assets/images/receivedIcon.svg';
 import SubmittedIcon from '../../../../assets/images/submitedIcon.svg';
@@ -27,6 +30,21 @@ import FemaleRating from '../../../../assets/images/femalerating.svg';
 import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
 import './homework-timeline.css';
+
+const StyledRating = withStyles({
+  icon: {
+    fontSize: '21px',
+  },
+  iconFilled: {
+    color: '#ffb400',
+  },
+  iconHover: {
+    color: '#ffb400',
+  },
+  iconEmpty: {
+    color: '#ffb400',
+  }
+})(Rating);
 
 const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
   const days = ['30 Days', '60 Days', '90 Days'];
@@ -52,9 +70,11 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
       const result = await axiosInstance.get(request);
       if (result.data.status_code === 200) {
         let res = result.data.data;
+        console.log(result.data.data,'nkr1');
+        setTotalHomework(res?.hw_given);
         if (Object.keys(res).length > 0) {
           if (res.subject_rating.length > 0) {
-            setTotalHomework(res?.hw_given);
+            //setTotalHomework(res?.hw_given);
             setSubmittedHomework(res?.hw_submitted);
             setRating(res?.subject_rating);
             setHomeworkTimelineDisplay(true);
@@ -173,8 +193,30 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
                           {subject.subject_name}
                         </span>
                       </span>
-                      <span className="starContainer">
-                        {[...Array(subject.rating)].map((e, i) => (
+                      <span className="starContainer" style={{ marginRight: '10px'}}>
+                        <StyledRating
+                          name="customized-empty"
+                          defaultValue={subject.rating}
+                          precision={0.5}
+                          max={5}
+                          readOnly
+                          /* icon={
+                            <SvgIcon
+                              component={() => (
+                                <img
+                                  style={{
+                                    width: '20px',
+                                    height: '20px',
+                                  }}
+                                  src={Star}
+                                  alt='submitted'
+                                />
+                              )}
+                            />
+                          } */
+                          emptyIcon={<StarBorderIcon fontSize="inherit"/>}
+                        />
+                        {/*[...Array(subject.rating)].map((e, i) => (
                           <SvgIcon
                             component={() => (
                               <img
@@ -187,7 +229,7 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
                               />
                             )}
                           />))
-                        }
+                              */}
                       </span>
                     </div>
                   ))}

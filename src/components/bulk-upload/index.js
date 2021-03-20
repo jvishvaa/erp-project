@@ -189,7 +189,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
 
   const handleFileChange = (event) => {
     const { files } = event.target;
-    const fil = files[0];
+    const fil = files[0]||'';
     if (fil.name.lastIndexOf('.xls') > 0 || fil.name.lastIndexOf('.xlsx') > 0) {
       setFile(fil);
     } else {
@@ -231,12 +231,12 @@ const BulkUpload = ({ onUploadSuccess }) => {
             setUploadFlag(false);
             history.push('/user-management/bulk-upload');
           } else {
-            setAlert('error', result.data.description);
+            setAlert('error', result.data.deion);
             setUploadFlag(false);
           }
         })
         .catch((error) => {
-          // setAlert('error', error.response.data.description);
+          // setAlert('error', error.response.data.deion);
           setUploadFlag(false);
         });
     } else {
@@ -489,7 +489,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
                 {guidelines.map((val, i) => {
                   return (
                     <div style={{ color: '#014b7e', fontSize: '16px', padding: '10px' }}>
-                      {i + 1}.&nbsp;
+                      {i + 1}. 
                       <span style={{ color: '#fe6b6b', fontWeight: '600' }}>
                         {val.name}
                       </span>

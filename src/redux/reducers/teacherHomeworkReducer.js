@@ -9,6 +9,7 @@ const INITIAL_STATE = {
   fetchingSelectedHomeworkDetails: false,
   evaluatedStudents: [],
   submittedStudents: [],
+  unSubmittedStudents: [],
   unevaluatedStudents: [],
   fetchingStudentLists: false,
   submittedHomeworkDetails: [],
@@ -63,6 +64,7 @@ export default function reducer(state = INITIAL_STATE, action) {
         fetchingStudentLists: false,
         evaluatedStudents: action.evaluatedStudents,
         submittedStudents: action.submittedStudents,
+        unSubmittedStudents: action.unSubmittedStudents,
         unevaluatedStudents: action.unevaluatedStudents,
       };
     case teacherHomeworkActions.FETCH_STUDENT_LIST_FOR_TEACHER_HOMEWORK_FAILURE:

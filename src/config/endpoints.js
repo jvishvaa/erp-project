@@ -1,5 +1,5 @@
 // const baseURLCentral = 'http://13.232.30.169/qbox';
-const baseURLCentral ='https://dev.mgmt.letseduvate.com/qbox';
+const baseURLCentral = 'https://dev.mgmt.letseduvate.com/qbox';
 export default {
   auth: {
     login: '/auth/login/',
@@ -58,6 +58,7 @@ export default {
   masterManagement: {
     subjects: '/erp_user/subjects-list/',
     grades: '/erp_user/grades-list/',
+    sectionsTable: '/erp_user/grades-section-list/',
     fetchSectionMap: '/erp_user/section/',
     sectionsTable: '/erp_user/list-section/',
     branchMappingTable: '/erp_user/branch/',
@@ -141,6 +142,9 @@ export default {
     assign: '/academic/school-subjects-mapping/',
     updateAssign: '/academic',
     delete: '/academic',
+    chapter: '/academic/chapters/',
+    ViewChapter: '/academic/chapters/',
+    editChapter: '/academic/',
   },
   lessonPlan: {
     periodData: `${baseURLCentral}/lesson_plan/chapter-period/`,
@@ -209,12 +213,13 @@ export default {
     studentList: '/academic/general-dairy-users/',
     updateDelete: '/academic/',
     SubmitDairy: '/academic/create-dairy/',
+    uploadFile: '/academic/dairy-upload/',
   },
   dailyDairy: {
     createDailyDairy: '/academic/create-dairy/',
     branches: '/academic/chapters/',
     updateDelete: '/academic/',
-    chapterList: '/academic/logged-in-users-subjects/'
+    chapterList: '/academic/logged-in-users-subjects/',
   },
   onlineCourses: {
     createCourse: '/aol/courses/',
@@ -262,6 +267,6 @@ export default {
   },
   s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   deleteFromS3: '/academic/delete-file/',
-  aolConfirmURL:'aol.letseduvate.com', //WARNING: Uncomment this code before pushing  
+  aolConfirmURL: 'aol.letseduvate.com', //WARNING: Uncomment this code before pushing
   // aolConfirmURL:'localhost:3000', //WARNING: Comment this code before pushing
 };

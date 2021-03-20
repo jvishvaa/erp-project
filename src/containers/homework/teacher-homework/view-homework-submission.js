@@ -128,17 +128,19 @@ const ViewHomework = withRouter(
       if (!remark) {
         setAlert('error', 'Please provide a remark');
         return;
-      } else if (reqData.remark && reqData.remark.trim() == '') {
+      } else if (reqData.remark && reqData.remark.trim() === '') {
         setAlert('error', 'Please provide a remark');
         return;
       }
       if (!score) {
         setAlert('error', 'Please provide a score');
         return;
-      } else if (reqData.score && reqData.score.trim() == '') {
+      }
+      /*
+      else if (reqData.score && reqData.score.trim() === '') {
         setAlert('error', 'Please provide a score');
         return;
-      }
+      } */
 
       try {
         await finalEvaluationForHomework(homeworkId, reqData);
@@ -159,7 +161,7 @@ const ViewHomework = withRouter(
         if (
           currentQuestion.corrected_submission.length < collatedSubmissionFiles.length
         ) {
-          setAlert('error', 'Please evaluate all the attachments');
+          setAlert('error', `Please evaluate all the attachments ${currentQuestion.corrected_submission.length} < ${collatedSubmissionFiles.length}`);
           return;
         }
       }
@@ -404,9 +406,11 @@ const ViewHomework = withRouter(
                       </Typography>
                       <div className='attachments-list-outer-container'>
                         <div className='prev-btn'>
-                          <IconButton onClick={() => handleScroll('left')}>
-                            <ArrowBackIosIcon />
-                          </IconButton>
+                          {collatedSubmissionFiles?.length > 2 && (
+                            <IconButton onClick={() => handleScroll('left')}>
+                              <ArrowBackIosIcon />
+                            </IconButton>
+                          )}
                         </div>
                         <SimpleReactLightbox>
                           <div
@@ -461,9 +465,11 @@ const ViewHomework = withRouter(
                           </div>
                         </SimpleReactLightbox>
                         <div className='next-btn'>
-                          <IconButton onClick={() => handleScroll('right')}>
-                            <ArrowForwardIosIcon color='primary' />
-                          </IconButton>
+                          {collatedSubmissionFiles?.length > 2 && (
+                            <IconButton onClick={() => handleScroll('right')}>
+                              <ArrowForwardIosIcon color='primary' />
+                            </IconButton>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -475,9 +481,11 @@ const ViewHomework = withRouter(
                       </Typography>
                       <div className='attachments-list-outer-container'>
                         <div className='prev-btn'>
-                          <IconButton onClick={() => handleScroll('left')}>
-                            <ArrowBackIosIcon />
-                          </IconButton>
+                          {collatedQuestionState.corrected_submission?.length > 2 && (
+                            <IconButton onClick={() => handleScroll('left')}>
+                              <ArrowBackIosIcon />
+                            </IconButton>
+                          )}
                         </div>
                         <SimpleReactLightbox>
                           <div
@@ -529,9 +537,11 @@ const ViewHomework = withRouter(
                           </div>
                         </SimpleReactLightbox>
                         <div className='next-btn'>
-                          <IconButton onClick={() => handleScroll('right')}>
-                            <ArrowForwardIosIcon color='primary' />
-                          </IconButton>
+                          {collatedQuestionState.corrected_submission?.length > 2 && (
+                            <IconButton onClick={() => handleScroll('right')}>
+                              <ArrowForwardIosIcon color='primary' />
+                            </IconButton>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -613,14 +623,14 @@ const ViewHomework = withRouter(
                       onChange={(e) => {
                         setScore(e.target.value);
                       }}
-                      value={score || 0}
+                      value={score || ''}
                     />
                   </FormControl>
                 </div>
               </div>
               <div className='btn-container'>
                 <div className='button-container'>
-                  <div className='cancel-btn'>
+                  <span className='cancel-btn'>
                     <Button
                       variant='contained'
                       className='disabled-btn'
@@ -628,8 +638,17 @@ const ViewHomework = withRouter(
                     >
                       Cancel
                     </Button>
-                  </div>
-                  <div className='done-btn'>
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      onClick={handleFinalEvaluationForHomework}
+                      style={{ marginLeft: '10px'}}
+                    >
+                      EVALUATION DONE
+                    </Button>
+                  </span>
+                  {/*
+                  <span className='done-btn'>
                     <Button
                       variant='contained'
                       color='primary'
@@ -637,7 +656,8 @@ const ViewHomework = withRouter(
                     >
                       EVALUATION DONE
                     </Button>
-                  </div>
+                  </span>
+                  */}
                 </div>
               </div>
             </div>

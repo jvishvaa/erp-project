@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Divider from '@material-ui/core/Divider';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import {
   Grid,
   TextField,
@@ -13,7 +13,6 @@ import {
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-// import download from '../../assets/images/downloadAll.svg';
 import Layout from '../../Layout';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
@@ -23,18 +22,21 @@ import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import attachmenticon from '../../../assets/images/attachmenticon.svg';
 import deleteIcon from '../../../assets/images/delete.svg';
-import './create-circular.css';
+// import './create-circular.css'
 import axios from 'axios';
 import moment from 'moment';
 import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 import { Context } from '../context/CircularStore';
 import { filter } from 'lodash';
+import Loading from '../../../components/loader/loader';
 
 const CraeteCircular = () => {
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
+  const {circularKey} = useParams();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+  const [loading, setLoading] = useState(false);
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
   const history = useHistory();
@@ -50,6 +52,7 @@ const CraeteCircular = () => {
   const [centralGsMappingId, setCentralGsMappingId] = useState();
   const [sectionDropdown, setSectionDropdown] = useState([]);
 
+  // alert(circularKey,'k')
   //context
   const [state, setState] = useContext(Context);
   const { isEdit, editData } = state;
@@ -60,17 +63,18 @@ const CraeteCircular = () => {
   const [filePath, setFilePath] = useState([]);
   const [filterEvent, setFilterEvent] = useState(false);
 
-  console.log(state, 'CCCCC', editData.circular_name);
-
+  console.log(state,'eeeeeeeeee')
   const circularRole = [
-    { name: editData.module_name || 'Student Circular', value: 'Student Circular' },
-    {
-      name:
-        editData.module_name === 'Student Circular'
-          ? 'Teacher Circular'
-          : null || 'Teacher Circular',
-      value: 'Teacher Circular',
-    },
+    // { name: editData.module_name || 'Student Circular', value: 'Student Circular' },
+    // {
+    //   name:
+    //     editData.module_name === 'Student Circular'
+    //       ? 'Teacher Circular'
+    //       : null || 'Teacher Circular',
+    //   value: 'Teacher Circular',
+    // },
+    {name: 'Student Circular', value: 'Student Circular'},
+    // {name:'Teacher Circular',value:'Student Circular'}
   ];
 
   const [filterData, setFilterData] = useState({
@@ -78,15 +82,17 @@ const CraeteCircular = () => {
     grade: '',
     section: '',
     role: '',
+    year:'',
   });
 
   const handleClear = () => {
-    setFilterData((filterData.branch = []));
+    // setFilterData((filterData.branch = []));
     setFilterData({
       branch: '',
       grade: '',
       section: '',
       role: '',
+      year:'',
     });
   };
 
@@ -94,6 +100,12 @@ const CraeteCircular = () => {
     setFilterData({ ...filterData, role: '' });
     if (value) {
       setFilterData({ ...filterData, role: value });
+    }
+  };
+  const handleAcademicYear = (event, value) => {
+    setFilterData({ ...filterData, year: '' });
+    if (value) {
+      setFilterData({ ...filterData, year: value });
     }
   };
 
@@ -116,19 +128,19 @@ const CraeteCircular = () => {
         chapter: '',
       });
       axiosInstance
-        .get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=8`)
+        .get(`${endpoints.communication.grades}?branch_id=${value?.id}&module_id=167`)
         .then((result) => {
           if (result.data.status_code === 200) {
-            setGradeDropdown(result.data.data);
+            setGradeDropdown(result?.data?.data);
           } else {
-            setAlert('error', result.data.message);
+            setAlert('error', result?.data?.message);
             setGradeDropdown([]);
             setSubjectDropdown([]);
             setChapterDropdown([]);
           }
         })
         .catch((error) => {
-          setAlert('error', error.message);
+          setAlert('error', error?.message);
           setGradeDropdown([]);
           setSubjectDropdown([]);
           setChapterDropdown([]);
@@ -143,7 +155,7 @@ const CraeteCircular = () => {
   const handleGrade = (event, value) => {
     setFilterData({ ...filterData, grade: '', subject: '', chapter: '' });
     setOverviewSynopsis([]);
-    if (value && filterData.branch) {
+    if (value && filterData?.branch) {
       setFilterData({
         ...filterData,
         grade: value,
@@ -152,7 +164,7 @@ const CraeteCircular = () => {
       });
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}`
+          `${endpoints.masterManagement.sections}?branch_id=${filterData?.branch?.id}&grade_id=${value?.grade_id}&module_id=167`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -173,6 +185,12 @@ const CraeteCircular = () => {
   };
 
   const handleImageChange = (event) => {
+    if (
+      event.target.files[0].name.split('.')[1] === 'csv'
+    ) {
+      return setAlert('warning', 'Unaccepted File Type');
+    }
+    setLoading(true);
     if (filePath.length < 10) {
       const data = event.target.files[0];
       const fd = new FormData();
@@ -183,8 +201,8 @@ const CraeteCircular = () => {
 
       axiosInstance.post(`${endpoints.circular.fileUpload}`, fd).then((result) => {
         if (result.data.status_code === 200) {
-          console.log(result.data, 'resp');
           setAlert('success', result.data.message);
+          setLoading(false);
           setFilePath([...filePath, result.data.result]);
         } else {
           setAlert('error', result.data.message);
@@ -196,7 +214,10 @@ const CraeteCircular = () => {
   };
 
   const handleFilter = () => {
-    if (filterData.branch.length <= 0) {
+    if (!filterData.year) {
+      return setAlert('warning', 'Select Academic Year');
+    }
+    if (!filterData.branch) {
       return setAlert('warning', 'Select Branch');
     }
     if (!filterData.role) {
@@ -219,7 +240,7 @@ const CraeteCircular = () => {
       <div className='file_row_image'>
         <div className='file_name_container'>File {index + 1}</div>
         <Divider orientation='vertical' className='divider_color' flexItem />
-        <div className='file_close'>
+        <div className='file_closeCircular'>
           <span onClick={onClose}>
             <SvgIcon
               component={() => (
@@ -227,7 +248,6 @@ const CraeteCircular = () => {
                   style={{
                     width: '20px',
                     height: '20px',
-                    // padding: '5px',
                     cursor: 'pointer',
                   }}
                   src={deleteIcon}
@@ -252,17 +272,34 @@ const CraeteCircular = () => {
       .get(`${endpoints.communication.branches}`)
       .then((result) => {
         if (result.data.status_code === 200) {
-          setBranchDropdown(result.data.data);
+          setBranchDropdown(result?.data?.data);
+        } else {
+          setAlert('error', result?.data?.message);
+        }
+      })
+      .catch((error) => {
+        setBranchDropdown('error', error?.message);
+      });
+      axiosInstance.get(`${endpoints.userManagement.academicYear}`)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setAcademicYearDropdown(result?.data?.data);
         } else {
           setAlert('error', result.data.message);
         }
       })
       .catch((error) => {
-        setBranchDropdown('error', error.message);
+        setAlert('error', error.message);
       });
   }, []);
 
   const handleSubmit = () => {
+    if (!title) {
+      return setAlert('warning', 'Title Cannot Be Empty');
+    }
+    if (!description) {
+      return setAlert('warning', 'Description Cannot Be Empty');
+    }
     axiosInstance
       .post(`${endpoints.circular.createCircular}`, {
         circular_name: title,
@@ -272,59 +309,112 @@ const CraeteCircular = () => {
         // Branch: filterData.branch.map(function (b) {
         //   return b.id;
         // }),
-        Branch:[filterData.branch.id],
+        Branch: [filterData?.branch?.id],
         // grades:[54],
         // grades: filterData.grade.map((g) => g.grade_id),
-        grades:[filterData.grade.id],
+        grades: [filterData?.grade?.id],
         // sections: filterData.section.map((s) => s.id),
-        sections:[filterData.section.id]
+        sections: [filterData?.section?.id],
         // sections:[75]
+        academic_year:filterData?.year?.id,
       })
       .then((result) => {
-        if (result.data.status_code === 200) {
+        if (result?.data?.status_code === 200) {
           setTitle('');
           setDescription('');
-          setAlert('success', result.data.message);
+
           setFilterData({
-              branch: '',
-              grade: '',
-              section:'',
-              role:''
+            branch: '',
+            grade: '',
+            section: '',
+            role: '',
           });
-          setFilePath([])
-          setFilterEvent(false)
+          setFilePath([]);
+          setFilterEvent(false);
+          setAlert('success', result?.data?.message);
+          history.goBack();
         } else {
-          setAlert('error', result.data.message);
+          setAlert('error', result?.data?.message || `${result?.data?.description}`);
         }
       });
   };
 
   const handleEdited = () => {
+    if(!filterData.year){
+      return setAlert('warning', 'Select Academic Year');
+    }
+    if(!filterData.branch){
+      return setAlert('warning', 'Select Branch');
+    }
+    if(!filterData.role){
+      return setAlert('warning', 'Select Role');
+    }
+    if(!filterData.grade){
+      return setAlert('warning', 'Select Grade');
+    }
+    if(!filterData.section){
+      return setAlert('warning', 'Select Section');
+    }
+   
     axiosInstance
       .put(`${endpoints.circular.updateCircular}`, {
-        circular_id: editData.id,
+        circular_id: circularKey,
         circular_name: title,
         description: description,
         module_name: filterData.role.value,
       })
       .then((result) => {
         if (result.data.status_code === 200) {
-          setState({ ...state, isEdit: false });
+          // setState({ ...state, isEdit: false });
           setTitle('');
           setDescription('');
-          setAlert('success', result.data.message);
+          setFilterData({
+            branch: '',
+            grade: '',
+            section: '',
+            role: '',
+          });
+          setFilePath([]);
+          setFilterEvent(false);
+          setAlert('success', result?.data?.message);
+          history.push('/teacher-circular')
         } else {
-          setAlert('error', result.data.message);
+          setAlert('error', result?.data?.message);
         }
       })
       .catch((error) => {
-        setAlert('error', error.data.message);
+        setAlert('error', error?.data?.message);
       });
   };
+  console.log(circularRole[0],'===================')
 
-  console.log(filterData, '=====', title, description, filePath);
+  //////EDIT USE-EFFECT
+  useEffect(()=>{
+    if(Number(circularKey)){
+   axiosInstance.get(`${endpoints.circular.viewMoreCircularData}?circular_id=${circularKey}`)
+   .then(result=>{
+     console.log(result?.data,'RRRRRRRR')
+     if(result?.data?.status_code === 200){
+       setFilterData({
+         ...filterData,
+         year:result?.data?.result?.academic_year,
+         branch:result?.data?.result?.branches[0],
+         grade:result?.data?.result?.grades[0],
+         section:result?.data?.result?.sections[0],
+         role:circularRole[0]
+       })
+       setTitle(result?.data?.result?.circular_name)
+       setDescription(result?.data?.result?.description)
+       setFilePath(result?.data?.result.media)
+       setFilterEvent(true)
+     }
+   })
+    }
+  },[])
+
   return (
     <>
+      {loading ? <Loading message='Loading...' /> : null}
       <Layout>
         <div className={isMobile ? 'breadCrumbFilterRow' : null} className='isFilter'>
           <div style={{ width: '95%', margin: '20px auto' }}>
@@ -346,137 +436,160 @@ const CraeteCircular = () => {
             </IconButton>
           </div>
         </div>
-        {isFilter ? (        <Grid
-          container
-          spacing={isMobile ? 3 : 5}
-          style={{ width: widerWidth, margin: wider }}
-        >
-          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onChange={handleBranch}
-              id='grade'
-              className='dropdownIcon'
-              value={filterData?.branch}
-              options={branchDropdown}
-              getOptionLabel={(option) => option?.branch_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Branch'
-                  placeholder='Branch'
-                />
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onChange={handleRole}
-              id='role'
-              className='dropdownIcon'
-              value={filterData?.role}
-              // value={circularRole}
-              options={circularRole}
-              getOptionLabel={(option) => option?.name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Role'
-                  placeholder='Role'
-                />
-              )}
-            />
-          </Grid>
+        {isFilter ? (
           <Grid
-            item
-            xs={12}
-            sm={3}
-            className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
+            container
+            spacing={isMobile ? 3 : 5}
+            style={{ width: widerWidth, margin: wider }}
           >
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onChange={handleGrade}
-              id='grade'
-              className='dropdownIcon'
-              value={filterData?.grade || ''}
-              options={gradeDropdown}
-              getOptionLabel={(option) => option?.grade__grade_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Grade'
-                  placeholder='Grade'
-                />
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onChange={handleSection}
-              id='grade'
-              className='dropdownIcon'
-              value={filterData?.section || ''}
-              options={sectionDropdown}
-              getOptionLabel={(option) => option?.section__section_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Section'
-                  placeholder='Section'
-                />
-              )}
-            />
-          </Grid>
-
-          {!isMobile && (
-            <Grid item xs={12} sm={12}>
-              <Divider />
+            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                onChange={handleAcademicYear}
+                id='grade'
+                className='dropdownIcon'
+                value={filterData?.year}
+                options={academicYearDropdown}
+                getOptionLabel={(option) => option?.session_year}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Academic Year'
+                    placeholder='Academic Year'
+                  />
+                )}
+              />
             </Grid>
-          )}
-          {isMobile && <Grid item xs={3} sm={0} />}
-          <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
-            <Button
-              variant='contained'
-              className='custom_button_master labelColor'
-              size='medium'
-              onClick={handleClear}
+            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                onChange={handleBranch}
+                id='grade'
+                className='dropdownIcon'
+                value={filterData?.branch}
+                options={branchDropdown}
+                getOptionLabel={(option) => option?.branch_name}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Branch'
+                    placeholder='Branch'
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                onChange={handleRole}
+                id='role'
+                className='dropdownIcon'
+                value={filterData?.role}
+                options={circularRole}
+                getOptionLabel={(option) => option?.name}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Role'
+                    placeholder='Role'
+                  />
+                )}
+              />
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={3}
+              className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
             >
-              CLEAR ALL
-            </Button>
-          </Grid>
-          {isMobile && <Grid item xs={3} sm={0} />}
-          {isMobile && <Grid item xs={3} sm={0} />}
-          <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
-            <Button
-              variant='contained'
-              style={{ color: 'white' }}
-              color='primary'
-              className='custom_button_master'
-              size='medium'
-              onClick={handleFilter}
-            >
-              NEXT
-            </Button>
-          </Grid>
-          {isMobile && <Grid item xs={3} sm={0} />}
-          {isMobile && <Grid item xs={3} sm={0} />}
-          {isMobile && <Grid item xs={3} sm={0} />}
-        </Grid>) : ''}
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                onChange={handleGrade}
+                id='grade'
+                className='dropdownIcon'
+                value={filterData?.grade || ''}
+                options={gradeDropdown}
+                getOptionLabel={(option) => option?.grade__grade_name || option?.grade_name}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Grade'
+                    placeholder='Grade'
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                onChange={handleSection}
+                id='grade'
+                className='dropdownIcon'
+                value={filterData?.section || ''}
+                options={sectionDropdown}
+                getOptionLabel={(option) => option?.section__section_name || option?.section_name}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Section'
+                    placeholder='Section'
+                  />
+                )}
+              />
+            </Grid>
 
+            {!isMobile && (
+              <Grid item xs={12} sm={12}>
+                <Divider />
+              </Grid>
+            )}
+            {isMobile && <Grid item xs={3} sm={0} />}
+            <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+              <Button
+                variant='contained'
+                className='custom_button_master labelColor'
+                size='medium'
+                onClick={handleClear}
+              >
+                CLEAR ALL
+              </Button>
+            </Grid>
+            {isMobile && <Grid item xs={3} sm={0} />}
+            {isMobile && <Grid item xs={3} sm={0} />}
+            <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+              <Button
+                variant='contained'
+                style={{ color: 'white' }}
+                color='primary'
+                className='custom_button_master'
+                size='medium'
+                onClick={handleFilter}
+              >
+                NEXT
+              </Button>
+            </Grid>
+            {isMobile && <Grid item xs={3} sm={0} />}
+            {isMobile && <Grid item xs={3} sm={0} />}
+            {isMobile && <Grid item xs={3} sm={0} />}
+          </Grid>
+        ) : (
+          ''
+        )}
 
         {filterEvent ? (
           <div>
@@ -494,7 +607,6 @@ const CraeteCircular = () => {
                     rows='1'
                     color='secondary'
                     style={{ width: '100%', marginTop: '1.25rem' }}
-                    // defaultValue="Default Value"
                     value={title}
                     variant='outlined'
                     onChange={(e) => setTitle(e.target.value)}
@@ -508,19 +620,18 @@ const CraeteCircular = () => {
                     rows='6'
                     color='secondary'
                     style={{ width: '100%' }}
-                    // defaultValue="Default Value"
                     value={description}
                     variant='outlined'
                     onChange={(e) => setDescription(e.target.value)}
                   />
                 </Grid>
               </Grid>
-              <div className='attachmentContainer'>
+              <div className='attchmentContainer'>
                 <div style={{ display: 'flex' }} className='scrollable'>
                   {filePath?.length > 0
                     ? filePath?.map((file, i) => (
                         <FileRow
-                          key={`homework_student_question_attachment_${i}`}
+                          key={`create_circular_${i}`}
                           file={file}
                           index={i}
                           onClose={() => removeFileHandler(i)}
@@ -529,7 +640,7 @@ const CraeteCircular = () => {
                     : null}
                 </div>
 
-                <div className='attachmentButtonContainer'>
+                <div className='attachmentButton_circular'>
                   <Button
                     startIcon={
                       <SvgIcon
@@ -554,6 +665,7 @@ const CraeteCircular = () => {
                   >
                     <input
                       type='file'
+                      accept='.png, .jpg, .jpeg,.mp3,.mp4,.pdf'
                       style={{ display: 'none' }}
                       id='raised-button-file'
                       accept='image/*'
@@ -561,12 +673,18 @@ const CraeteCircular = () => {
                     />
                     Add Document
                   </Button>
-                </div>
+                  <small
+                    style={{ color: '#014b7e', fontSize: '16px', marginLeft: '28px',marginTop:'8px' }}
+                  >
+                    {' '}
+                    Accepted files: [jpeg,jpg,png,mp3,mp4,pdf]
+                  </small>
+                </div>                
               </div>
             </div>
             <div>
               <Button
-                onClick={state.isEdit ? handleEdited : handleSubmit}
+                onClick={circularKey ? handleEdited : handleSubmit}
                 className='submit_button'
               >
                 SUBMIT

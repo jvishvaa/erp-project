@@ -15,12 +15,12 @@ const changeFeePlanReducer = (state = initialState, action) => {
       const newGrades = [...action.payload.data]
       const allGrades = newGrades.map(grades => (grades.grade.id
       ))
-      newGrades.unshift({
-        grade: {
-          grade: 'All Grades',
-          id: allGrades
-        }
-      })
+      // newGrades.unshift({
+      //   grade: {
+      //     grade: 'All Grades',
+      //     id: allGrades
+      //   }
+      // })
       return {
         ...state,
         gradeData: newGrades
@@ -30,12 +30,12 @@ const changeFeePlanReducer = (state = initialState, action) => {
       console.log('===>sections: ', action.payload.data)
       const newSections = [...action.payload.data]
       const allSections = newSections.map(sections => (sections.section.id))
-      newSections.unshift({
-        section: {
-          section_name: 'All Sections',
-          id: allSections
-        }
-      })
+      // newSections.unshift({
+      //   section: {
+      //     section_name: 'All Sections',
+      //     id: allSections
+      //   }
+      // })
       return {
         ...state,
         sectionData: newSections
