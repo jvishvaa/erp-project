@@ -239,7 +239,8 @@ class ReceiptBookAdm extends Component {
               placeholder='Select Branch'
               value={this.state.selectedBranches ? this.state.selectedBranches : ''}
               options={
-                this.state.selectedBranches && this.state.selectedBranches.value !== 'all' ? this.props.branches.length && this.props.branches
+                // this.state.selectedBranches && this.state.selectedBranches.value !== 'all' ? this.props.branches.length && this.props.branches
+                this.props.branches ? this.props.branches && this.props.branches.length && this.props.branches
                   ? this.props.branches.map(branch => ({
                     value: branch.branch ? branch.branch.id : '',
                     label: branch.branch ? branch.branch.branch_name : ''
@@ -276,7 +277,8 @@ class ReceiptBookAdm extends Component {
                 isMulti
                 value={this.state.selectedFeeAccount ? this.state.selectedFeeAccount : ''}
                 options={
-                  this.state.selectedFeeAccount && this.state.selectedFeeAccount.value !== 'all' ? this.props.feeAccounts && this.props.feeAccounts.length
+                  // this.state.selectedFeeAccount && this.state.selectedFeeAccount.value !== 'all' ? this.props.feeAccounts && this.props.feeAccounts.length
+                  this.props.feeAccounts ? this.props.feeAccounts && this.props.feeAccounts.length
                     ? this.props.feeAccounts.map((row) => ({
                       value: row.id ? row.id : '',
                       label: row.fee_account_name ? row.fee_account_name : ''
@@ -292,8 +294,10 @@ class ReceiptBookAdm extends Component {
                 isMulti
                 value={this.state.paymentModeData ? this.state.paymentModeData : ''}
                 options={
-                  this.state.paymentModeData && this.state.paymentModeData.value !== 'all'
-                    ? [
+                  // this.state.paymentModeData && this.state.paymentModeData.value !== 'all'
+                  // this.state.paymentModeData
+                  //   ? 
+                    [
                       {
                         value: 'all',
                         label: 'All'
@@ -318,7 +322,8 @@ class ReceiptBookAdm extends Component {
                         value: 4,
                         label: 'Credit/Debit Card Swipe'
                       }
-                    ] : []
+                    ] 
+                    // : []
                 }
                 onChange={this.changePaymentMode}
               />
