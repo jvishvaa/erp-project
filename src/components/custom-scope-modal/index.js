@@ -127,6 +127,27 @@ const CustomScopeModal = ({
   const [subjects, setSubjects] = useState([]);
   const classes = useStyles();
 
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState();
+
+  useEffect(() => {
+    if (NavData && NavData?.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Role Management' &&
+          item.child_module &&
+          item.child_module?.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'View Role') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
   const onCustomScopeChange = (scope, value) => {
     console.log('custon scope before passing ', scope, value);
     onChange(scope, value);
@@ -149,7 +170,7 @@ const CustomScopeModal = ({
     setSections([]);
     setSubjects([]);
     if (acadId > 0) {
-      getBranches(acadId).then((data) => {
+      getBranches(acadId,moduleId).then((data) => {
         const transformedData = data?.map((obj) => ({
           id: obj.id,
           branch_name: obj.branch_name,
@@ -164,7 +185,7 @@ const CustomScopeModal = ({
     setGrades([]);
     setSections([]);
     setSubjects([]);
-    getGrades(acadId, branches).then((data) => {
+    getGrades(acadId, branches,moduleId).then((data) => {
       const transformedData = data
         ? data.map((grade) => ({
             item_id: grade.id,
@@ -186,7 +207,7 @@ const CustomScopeModal = ({
       custom_section: customScope.custom_section,
       custom_subject: customScope.custom_subject,
     };
-    getSections(acadId, customScope.custom_branch, grades).then((data) => {
+    getSections(acadId, customScope.custom_branch, grades,moduleId).then((data) => {
       const transformedData = data
         ? data.map((section) => ({
             item_id: section.id,
@@ -228,7 +249,7 @@ const CustomScopeModal = ({
     setSubjects([]);
     const customScopeObject = JSON.parse(JSON.stringify(customScopeObj));
     if (branches && branches.length > 0 && grades && grades.length > 0) {
-      getSubjects(acadId, branches, grades, customScopeObj.custom_section).then(
+      getSubjects(acadId, branches, grades, customScopeObj.custom_section,moduleId).then(
         (data) => {
           const transformedData = data
             ? data.map((subject) => ({
