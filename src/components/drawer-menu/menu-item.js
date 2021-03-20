@@ -54,7 +54,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Assessment', Path: '/assessment' },
     { name: 'Communication', Path: '/communication' },
     { name: 'Add Group', Path: '/communication/addgroup' },
-    { name: 'View & Edit Group', Path: '/communication/viewgroup' },
+    { name: 'View&Edit Group', Path: '/communication/viewgroup' },
     { name: 'Send Message', Path: '/communication/sendmessage' },
     { name: 'Add SMS Credit', Path: '/communication/smscredit' },
     { name: 'SMS & Email Log', Path: '/communication/messageLog' },
@@ -71,7 +71,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'ID Cards', Path: '/student-id-card' },
     { name: 'Student Strength', Path: '/student-strength' },
     { name: 'Teacher Circular', Path: '/teacher-circular' },
-    { name: 'Student Circular', Path: '/studnet-circular' },
+    { name: 'Student Circular', Path: '/student-circular' },
   ];
   // const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {

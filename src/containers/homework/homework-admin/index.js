@@ -154,15 +154,27 @@ const HomeworkAdmin = () => {
   const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
   const [branchList, setBranchList] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState([]);
-  // else if((mandatorySubjects.length+optionalSubjects.length+otherSubjects.length)!==(rowData.subject_data.length)){
-  //   setAlert('error','A subject should be either mandatory, optional or other but can\'t be empty')
-  // }else if(mandatorySubjects.length===0 && rowData.subject_data.length>=3){
-  //   setAlert('error','Atleast one subject should be mandatory')
-  // }else if(optionalSubjects.length===0 && rowData.subject_data.length>=3){
-  //   setAlert('error','Atleast one subject should be optional')
-  // }else if(otherSubjects.length===0 && rowData.subject_data.length>=3){
-  //   setAlert('error','Atleast one subject should be other than mandatory and optional')
-  // }
+
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Homework' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Configuration') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
 
   function callApi(api, key) {
     setLoading(true);
@@ -195,13 +207,14 @@ const HomeworkAdmin = () => {
   }
 
   useEffect(() => {
-    callApi(`${endpoints.userManagement.academicYear}`, 'academicYearList');
-    // callApi(`${endpoints.academics.branches}`,'branchList');
-    //   callApi(
-    //       `${endpoints.academics.grades}?branch_id=${selectedBranch.id}&module_id=15`,
-    //       'gradeList'
-    //   );
-  }, []);
+    if (moduleId) {
+      callApi(
+        `${endpoints.userManagement.academicYear}?module_id=${moduleId}`,
+        'academicYearList'
+      );
+    }
+  }, [moduleId]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -421,6 +434,54 @@ const HomeworkAdmin = () => {
     setRowData({ ...rowData, hw_ration: list });
   };
 
+  const handleYear = (event, value) => {
+    setSectionDisplay([]);
+    setOtherSubjects([]);
+    setMandatorySubjects([]);
+    setOptionalSubjects([]);
+    setPrior('');
+    setPost('');
+    setRatingData([]);
+    setGradeDisplay([]);
+    setBranchList([]);
+    setGrades([]);
+    setSections([]);
+    setSearchGrade('');
+    setSearchSection('');
+    setSelectedBranch([]);
+    setSelectedAcadmeicYear(value);
+    if (value) {
+      callApi(
+        `${endpoints.masterManagement.branchList}?session_year=${value?.id}&module_id=${moduleId}`,
+        'branchList'
+      );
+    }
+  };
+
+  const handleBranch = (event, value) => {
+    setSectionDisplay([]);
+    setOtherSubjects([]);
+    setMandatorySubjects([]);
+    setOptionalSubjects([]);
+    setPrior('');
+    setGrades([]);
+    setSections([]);
+    setPost('');
+    setRatingData([]);
+    setGradeDisplay([]);
+    setSearchGrade('');
+    setSearchSection('');
+    setSelectedBranch([]);
+    if (value) {
+      setSelectedBranch(value);
+      // endpoints.masterManagement.gradesDrop
+      callApi(
+        `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${value.id}&module_id=${moduleId}`,
+        'gradeList'
+      );
+    }
+  };
+
   const handleGrade = (event, value) => {
     setSectionDisplay([]);
     setSections([]);
@@ -438,12 +499,7 @@ const HomeworkAdmin = () => {
       setGradeDisplay(value);
       axiosInstance
         .get(
-          // `${endpoints.masterManagement.sections}?branch=${selectedBranch.map((el)=>el.id)}&grade_id=${value.id}`
-          `${endpoints.academics.sections}?session_year=${
-            selectedAcademicYear.id
-          }&branch_id=${selectedBranch.map((el) => el.id)}&grade_id=${
-            value.grade_id
-          }&module_id=8`
+          `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.id}&grade_id=${value.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -507,7 +563,7 @@ const HomeworkAdmin = () => {
           if (result.data.status_code === 200) {
             let len = result.data.result[0].subject_data.length;
             if (len > 0) {
-              debugger
+              debugger;
               let lenhw = result.data.result[0].hw_ration.length;
               if (lenhw > 0) setRatingData(result.data.result[0].hw_ration);
               else
@@ -564,15 +620,7 @@ const HomeworkAdmin = () => {
             <Autocomplete
               style={{ width: '100%' }}
               size='small'
-              onChange={(event, value) => {
-                setSelectedAcadmeicYear(value);
-                if (value) {
-                  callApi(
-                    `${endpoints.masterManagement.branchList}?session_year=${value?.id}&module_id=8`,
-                    'branchList'
-                  );
-                }
-              }}
+              onChange={handleYear}
               id='branch_id'
               className='dropdownIcon'
               value={selectedAcademicYear || ''}
@@ -591,24 +639,9 @@ const HomeworkAdmin = () => {
           </Grid>
           <Grid item xs={12} sm={3}>
             <Autocomplete
-              multiple
               style={{ width: '100%' }}
               size='small'
-              onChange={(event, value) => {
-                setSelectedBranch([]);
-                if (value.length) {
-                  const ids = value.map((el) => el);
-                  const selectedId = value.map((el) => el.id);
-                  setSelectedBranch(ids);
-                  // endpoints.masterManagement.gradesDrop
-                  callApi(
-                    `${endpoints.academics.grades}?session_year=${
-                      selectedAcademicYear.id
-                    }&branch_id=${selectedId.toString()}&module_id=8`,
-                    'gradeList'
-                  );
-                }
-              }}
+              onChange={handleBranch}
               id='branch_id'
               className='dropdownIcon'
               value={selectedBranch || ''}

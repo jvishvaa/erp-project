@@ -118,6 +118,27 @@ const SectionTable = () => {
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
 
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Master Management' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Section Mapping') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage + 1);
   };
@@ -187,24 +208,26 @@ const SectionTable = () => {
   }, [page, delFlag, goBackFlag]);
 
   useEffect(() => {
-    axiosInstance
-      .get(`${endpoints.masterManagement.academicYear}`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setAcademicYearList(result.data?.result?.results);
-        } else {
-          setAlert('error', result.data.message || result.data.msg);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.response.data.message || error.response.data.msg);
-      });
-  }, []);
+    if (moduleId) {
+      axiosInstance
+        .get(`${endpoints.masterManagement.academicYear}?module_id=${moduleId}`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setAcademicYearList(result.data?.result?.results);
+          } else {
+            setAlert('error', result.data.message || result.data.msg);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.response.data.message || error.response.data.msg);
+        });
+    }
+  }, [moduleId]);
 
   useEffect(() => {
     let url = `${endpoints.masterManagement.sectionMappingTable}?page=${page}&page_size=${limit}`;
     if (searchSection) url += `&section_name=${searchSection}`;
-    if(searchYear)url += `&session_year=${searchYear}`;
+    if (searchYear) url += `&session_year=${searchYear}`;
     // if(searchGrade)url += `&grade_name=${searchGrade}`;
     // if(searchBranch)url += `&branch_name=${searchBranch}`;
 
@@ -224,8 +247,8 @@ const SectionTable = () => {
   }, [delFlag, goBackFlag, page, searchSection, searchYear]);
 
   const handleAcademicYear = (event, value) => {
-    setSearchYear('')
-    setYearDisplay(value)
+    setSearchYear('');
+    setYearDisplay(value);
     if (value) {
       setPage(1);
       setSearchYear(value.id);
@@ -253,7 +276,11 @@ const SectionTable = () => {
         </div>
 
         {!tableFlag && addFlag && !editFlag && (
-          <CreateSectionMapping setLoading={setLoading} handleGoBack={handleGoBack} />
+          <CreateSectionMapping
+            moduleId={moduleId}
+            setLoading={setLoading}
+            handleGoBack={handleGoBack}
+          />
         )}
 
         {!tableFlag && !addFlag && editFlag && (
@@ -290,9 +317,9 @@ const SectionTable = () => {
                 onChange={handleAcademicYear}
                 style={{ width: '100%' }}
                 id='session-year'
-                options={academicYearList||[]}
-                value={yearDisplay||''}
-                getOptionLabel={(option) => option?.session_year||''}
+                options={academicYearList || []}
+                value={yearDisplay || ''}
+                getOptionLabel={(option) => option?.session_year || ''}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
@@ -437,9 +464,7 @@ const SectionTable = () => {
             Delete Section
           </DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              {`Confirm Delete Section Mapping`}
-            </DialogContentText>
+            <DialogContentText>{`Confirm Delete Section Mapping`}</DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDeleteModal} className='labelColor cancelButton'>

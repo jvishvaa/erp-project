@@ -126,6 +126,27 @@ const BulkUpload = ({ onUploadSuccess }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const fileRef = useRef();
 
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'User Management' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Create User') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
   const guidelines = [
     {
       name: '',
@@ -175,7 +196,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
 
   const getYears = async () => {
     try {
-      const data = await axios.get('erp_user/list-academic_year/');
+      const data = await axios.get(`erp_user/list-academic_year/?module_id=${moduleId}`);
       if (data.data.status_code === 200) setYearList(data.data.data);
       else setYearList([]);
     } catch (error) {
@@ -184,12 +205,12 @@ const BulkUpload = ({ onUploadSuccess }) => {
   };
 
   useEffect(() => {
-    getYears();
-  }, []);
+    if (moduleId) getYears();
+  }, [moduleId]);
 
   const handleFileChange = (event) => {
     const { files } = event.target;
-    const fil = files[0]||'';
+    const fil = files[0] || '';
     if (fil.name.lastIndexOf('.xls') > 0 || fil.name.lastIndexOf('.xlsx') > 0) {
       setFile(fil);
     } else {
@@ -259,7 +280,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
     setBranch(null);
     if (data?.id) {
       axiosInstance
-        .get(`erp_user/list-all-branch/?session_year=${data?.id}`)
+        .get(`erp_user/list-all-branch/?session_year=${data?.id}&module_id=${moduleId}`)
         .then((result) => {
           if (result.data.status_code === 200) setBranchList(result.data.data);
           else console.log('');
@@ -281,7 +302,9 @@ const BulkUpload = ({ onUploadSuccess }) => {
     setBranchDisplay(data);
     if (data?.id > 0 && year > 0) {
       axiosInstance
-        .get(`${endpoints.academics.grades}?session_year=${year}&branch_id=${data?.id}`)
+        .get(
+          `${endpoints.academics.grades}?session_year=${year}&branch_id=${data?.id}&module_id=${moduleId}`
+        )
         .then((result) => {
           if (result.status === 200) {
             setGrades(result.data.data);
@@ -306,7 +329,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
       setSectionDisp('');
       axiosInstance
         .get(
-          `${endpoints.academics.sections}?session_year=${year}&branch_id=${branch}&grade_id=${value.grade_id}`
+          `${endpoints.academics.sections}?session_year=${year}&branch_id=${branch}&grade_id=${value.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -344,7 +367,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
       setSubjects([]);
       axiosInstance
         .get(
-          `${endpoints.academics.subjects}?session_year=${year}&branch=${branch}&grade=${searchGradeId}&section=${value.section_id}`
+          `${endpoints.academics.subjects}?session_year=${year}&branch=${branch}&grade=${searchGradeId}&section=${value.section_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {

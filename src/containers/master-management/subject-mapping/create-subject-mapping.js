@@ -7,7 +7,7 @@ import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import { set } from 'lodash';
 
-const CreateSubjectMapping = ({ setLoading, handleGoBack }) => {
+const CreateSubjectMapping = ({ moduleId, setLoading, handleGoBack }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -56,26 +56,28 @@ const CreateSubjectMapping = ({ setLoading, handleGoBack }) => {
   };
 
   useEffect(() => {
-    let url = `${endpoints.masterManagement.academicYear}`;
-    axiosInstance
-      .get(url)
-      .then((result) => {
-        if (result.data?.status_code > 199 && result.data?.status_code < 300) {
-          setDropDown({
-            sessionDrop: result.data?.result?.results,
-            branchDrop: [],
-            gradeDrop: [],
-            sectionDrop: [],
-            subjectDrop: [],
-          });
-        } else {
-          setAlert('error', result.data?.message || result.data?.msg);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.response?.data?.message || error.response?.data?.msg);
-      });
-  }, []);
+    if (moduleId) {
+      let url = `${endpoints.masterManagement.academicYear}?module_id=${moduleId}`;
+      axiosInstance
+        .get(url)
+        .then((result) => {
+          if (result.data?.status_code > 199 && result.data?.status_code < 300) {
+            setDropDown({
+              sessionDrop: result.data?.result?.results,
+              branchDrop: [],
+              gradeDrop: [],
+              sectionDrop: [],
+              subjectDrop: [],
+            });
+          } else {
+            setAlert('error', result.data?.message || result.data?.msg);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.response?.data?.message || error.response?.data?.msg);
+        });
+    }
+  }, [moduleId]);
 
   const handleAcademicYear = (event, value) => {
     setFilterData({
@@ -102,7 +104,7 @@ const CreateSubjectMapping = ({ setLoading, handleGoBack }) => {
       });
       let ids = value.map(({ id }) => id);
       axiosInstance
-        .get(`${endpoints.academics.branches}?session_year=${ids}`)
+        .get(`${endpoints.academics.branches}?session_year=${ids}&module_id=${moduleId}`)
         .then((result) => {
           if (result.data.status_code > 199 && result.data.status_code < 300) {
             setDropDown({
@@ -148,7 +150,7 @@ const CreateSubjectMapping = ({ setLoading, handleGoBack }) => {
       let sessionIds = filterData.session?.map(({ id }) => id);
       axiosInstance
         .get(
-          `${endpoints.masterManagement.gradesDrop}?session_year=${sessionIds}&branch_id=${ids}`
+          `${endpoints.masterManagement.gradesDrop}?session_year=${sessionIds}&branch_id=${ids}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code > 199 && result.data.status_code < 300) {
@@ -192,7 +194,7 @@ const CreateSubjectMapping = ({ setLoading, handleGoBack }) => {
       let branchIds = filterData.branch?.map(({ id }) => id);
       axiosInstance
         .get(
-          `${endpoints.masterManagement.listSectionMap}?session_year=${sessionIds}&branch_id=${branchIds}&grade_id=${ids}`
+          `${endpoints.masterManagement.listSectionMap}?session_year=${sessionIds}&branch_id=${branchIds}&grade_id=${ids}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code > 199 && result.data.status_code < 300) {
@@ -233,7 +235,7 @@ const CreateSubjectMapping = ({ setLoading, handleGoBack }) => {
       let gradeIds = filterData.section?.map(({ grade_id }) => grade_id);
       axiosInstance
         .get(
-          `${endpoints.masterManagement.subjects}?session_year=${sessionIds}&branch_id=${branchIds}&grade_id=${gradeIds}&section_id=${ids}`
+          `${endpoints.masterManagement.subjects}?session_year=${sessionIds}&branch_id=${branchIds}&grade_id=${gradeIds}&section_id=${ids}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code > 199 && result.data.status_code < 300) {
@@ -300,9 +302,9 @@ const CreateSubjectMapping = ({ setLoading, handleGoBack }) => {
               style={{ width: '100%' }}
               id='branch'
               name='branch'
-              options={dropDown?.branchDrop||[]}
-              value={filterData?.branch||''}
-              getOptionLabel={(option) => option?.branch_name||''}
+              options={dropDown?.branchDrop || []}
+              value={filterData?.branch || ''}
+              getOptionLabel={(option) => option?.branch_name || ''}
               filterSelectedOptions
               renderInput={(params) => (
                 <TextField
@@ -324,9 +326,9 @@ const CreateSubjectMapping = ({ setLoading, handleGoBack }) => {
               style={{ width: '100%' }}
               id='grade'
               name='grade'
-              options={dropDown?.gradeDrop||[]}
-              value={filterData?.grade||''}
-              getOptionLabel={(option) => option?.grade_name||''}
+              options={dropDown?.gradeDrop || []}
+              value={filterData?.grade || ''}
+              getOptionLabel={(option) => option?.grade_name || ''}
               filterSelectedOptions
               renderInput={(params) => (
                 <TextField
@@ -348,9 +350,9 @@ const CreateSubjectMapping = ({ setLoading, handleGoBack }) => {
               style={{ width: '100%' }}
               id='section'
               name='section'
-              options={dropDown?.sectionDrop||[]}
-              value={filterData?.section||''}
-              getOptionLabel={(option) => option?.section_name||''}
+              options={dropDown?.sectionDrop || []}
+              value={filterData?.section || ''}
+              getOptionLabel={(option) => option?.section_name || ''}
               filterSelectedOptions
               renderInput={(params) => (
                 <TextField
@@ -372,9 +374,9 @@ const CreateSubjectMapping = ({ setLoading, handleGoBack }) => {
               style={{ width: '100%' }}
               id='subject'
               name='subject'
-              options={dropDown?.subjectDrop||[]}
-              value={filterData?.subject||''}
-              getOptionLabel={(option) => option?.subject_name||''}
+              options={dropDown?.subjectDrop || []}
+              value={filterData?.subject || ''}
+              getOptionLabel={(option) => option?.subject_name || ''}
               filterSelectedOptions
               renderInput={(params) => (
                 <TextField

@@ -6,7 +6,7 @@ import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
-const CreateBranchAcad = ({ setLoading, handleGoBack, academicYearList }) => {
+const CreateBranchAcad = ({ moduleId, setLoading, handleGoBack, academicYearList }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [branch, setBranch] = useState([]);
   const [branchList, setBranchList] = useState([]);
@@ -16,8 +16,8 @@ const CreateBranchAcad = ({ setLoading, handleGoBack, academicYearList }) => {
 
 
   useEffect(() => {
-
-    let url=`${endpoints.masterManagement.branchList}`;
+    if(moduleId) {
+    let url=`${endpoints.masterManagement.branchList}?module_id=${moduleId}`;
     axiosInstance
       .get(url)
       .then((result) => {
@@ -31,7 +31,8 @@ const CreateBranchAcad = ({ setLoading, handleGoBack, academicYearList }) => {
       .catch((error) => {
         setAlert('error', error.response.data.message||error.response.data.msg);
       });
-  }, []);
+    }
+  }, [moduleId]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

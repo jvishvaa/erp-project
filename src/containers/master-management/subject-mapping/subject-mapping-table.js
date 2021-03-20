@@ -126,6 +126,27 @@ const SubjectMappingTable = () => {
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
 
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Master Management' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Subject Mapping') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage + 1);
   };
@@ -177,7 +198,7 @@ const SubjectMappingTable = () => {
     setOpenDeleteModal(false);
   };
 
-  const handleOpenDeleteModal = (id,name) => {
+  const handleOpenDeleteModal = (id, name) => {
     setSubjectId(id);
     setSubjectName(name);
     setOpenDeleteModal(true);
@@ -201,7 +222,7 @@ const SubjectMappingTable = () => {
       .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
-          setTotalCount(result.data?.data?.count)
+          setTotalCount(result.data?.data?.count);
           setSubjects(result.data?.data?.results);
         } else {
           setAlert('error', result.data?.msg || result.data?.message);
@@ -233,7 +254,11 @@ const SubjectMappingTable = () => {
         </div>
 
         {!tableFlag && addFlag && !editFlag && (
-          <CreateSubjectMapping setLoading={setLoading} handleGoBack={handleGoBack} />
+          <CreateSubjectMapping
+            moduleId={moduleId}
+            setLoading={setLoading}
+            handleGoBack={handleGoBack}
+          />
         )}
         {!tableFlag && !addFlag && editFlag && (
           <EditSubjectMapping
@@ -288,103 +313,103 @@ const SubjectMappingTable = () => {
 
         <>
           {/* {!isMobile ? ( */}
-            <>
-              {tableFlag && !addFlag && !editFlag && (
-                <Paper className={`${classes.root} common-table`}>
-                  <TableContainer className={classes.container}>
-                    <Table stickyHeader aria-label='sticky table'>
-                      <TableHead className='table-header-row'>
-                        <TableRow>
-                          {columns.map((column) => (
-                            <TableCell
-                              key={column.id}
-                              align={column.align}
-                              style={{ minWidth: column.minWidth }}
-                              className={classes.columnHeader}
-                            >
-                              {column.label}
-                            </TableCell>
-                          ))}
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {subjects.map((subject, index) => {
-                          const {
-                            created_by,
-                            id,
-                            subject: { subject_name, subject_description, is_optional },
-                            section_mapping: {
-                              grade: { grade_name },
-                              section: {section_name},
-                              acad_session: {
-                                branch: { branch_name },
-                                session_year: { session_year },
-                              },
+          <>
+            {tableFlag && !addFlag && !editFlag && (
+              <Paper className={`${classes.root} common-table`}>
+                <TableContainer className={classes.container}>
+                  <Table stickyHeader aria-label='sticky table'>
+                    <TableHead className='table-header-row'>
+                      <TableRow>
+                        {columns.map((column) => (
+                          <TableCell
+                            key={column.id}
+                            align={column.align}
+                            style={{ minWidth: column.minWidth }}
+                            className={classes.columnHeader}
+                          >
+                            {column.label}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {subjects.map((subject, index) => {
+                        const {
+                          created_by,
+                          id,
+                          subject: { subject_name, subject_description, is_optional },
+                          section_mapping: {
+                            grade: { grade_name },
+                            section: { section_name },
+                            acad_session: {
+                              branch: { branch_name },
+                              session_year: { session_year },
                             },
-                          } = subject;
-                          return (
-                            <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
-                              <TableCell className={classes.tableCell}>
-                                {session_year}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {branch_name}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {grade_name}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {section_name}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {subject_name}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {created_by}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {subject_description}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {is_optional ? 'Yes' : 'No'}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                <IconButton
-                                  onClick={(e) => {
-                                    handleOpenDeleteModal(id, subject_name);
-                                  }}
-                                  title='Delete Subject Mapping'
-                                >
-                                  <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
-                                </IconButton>
+                          },
+                        } = subject;
+                        return (
+                          <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
+                            <TableCell className={classes.tableCell}>
+                              {session_year}
+                            </TableCell>
+                            <TableCell className={classes.tableCell}>
+                              {branch_name}
+                            </TableCell>
+                            <TableCell className={classes.tableCell}>
+                              {grade_name}
+                            </TableCell>
+                            <TableCell className={classes.tableCell}>
+                              {section_name}
+                            </TableCell>
+                            <TableCell className={classes.tableCell}>
+                              {subject_name}
+                            </TableCell>
+                            <TableCell className={classes.tableCell}>
+                              {created_by}
+                            </TableCell>
+                            <TableCell className={classes.tableCell}>
+                              {subject_description}
+                            </TableCell>
+                            <TableCell className={classes.tableCell}>
+                              {is_optional ? 'Yes' : 'No'}
+                            </TableCell>
+                            <TableCell className={classes.tableCell}>
+                              <IconButton
+                                onClick={(e) => {
+                                  handleOpenDeleteModal(id, subject_name);
+                                }}
+                                title='Delete Subject Mapping'
+                              >
+                                <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
+                              </IconButton>
 
-                                {/* <IconButton
+                              {/* <IconButton
                                   onClick={e => handleEditSubjectMapping(subject.subject.id, subject.subject.subject_name, subject.subject.subject_description, subject.subject.is_optional)}
                                   title='Edit Subject'
                                 >
                                   <EditOutlinedIcon style={{ color: '#fe6b6b' }} />
                                 </IconButton> */}
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                  <div className='paginateData'>
-                    <TablePagination
-                      component='div'
-                      count={totalCount}
-                      className='customPagination'
-                      rowsPerPage={limit}
-                      page={page - 1}
-                      onChangePage={handleChangePage}
-                      rowsPerPageOptions={false}
-                    />
-                  </div>
-                </Paper>
-              )}
-            </>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <div className='paginateData'>
+                  <TablePagination
+                    component='div'
+                    count={totalCount}
+                    className='customPagination'
+                    rowsPerPage={limit}
+                    page={page - 1}
+                    onChangePage={handleChangePage}
+                    rowsPerPageOptions={false}
+                  />
+                </div>
+              </Paper>
+            )}
+          </>
           {/* ) : (
             <>
               <>
@@ -426,9 +451,7 @@ const SubjectMappingTable = () => {
             Delete Subject
           </DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              {`Confirm Delete Subject Mapping`}
-            </DialogContentText>
+            <DialogContentText>{`Confirm Delete Subject Mapping`}</DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDeleteModal} className='labelColor cancelButton'>

@@ -366,7 +366,7 @@ const Layout = ({ children, history }) => {
         history.push('/role-management');
         break;
       }
-      case 'View & Edit Group': {
+      case 'View&Edit Group': {
         history.push('/communication/viewgroup');
         break;
       }
