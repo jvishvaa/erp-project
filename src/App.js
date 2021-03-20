@@ -17,6 +17,7 @@ import './assets/styles/styles.scss';
 import UserManagement from './containers/user-management';
 import ViewUsers from './containers/user-management/view-users/view-users';
 import Login from './containers/login';
+import Forgot from './containers/Forgot-Password/Forgot';
 import Dashboard from './containers/dashboard';
 import { listSubjects } from './redux/actions/academic-mapping-actions';
 import OnlineclassViewProvider from './containers/online-class/online-class-context/online-class-state';
@@ -199,6 +200,12 @@ function App() {
                             <Login match={match} history={history} />
                           )}
                         </Route>
+                        <Route exact path='/forgot'>
+                          {({ match, history }) => (
+                            <Forgot match={match} history={history} />
+                          )}
+                        </Route>
+                   
                         <Route exact path='/aol_login'>
                           {({ match, history }) => (
                             <AolLogin match={match} history={history} />
@@ -464,7 +471,7 @@ function App() {
                         <Route exact path='/student-id-card'>
                           {({ match }) => <StudentIdCard match={match} />}
                         </Route>
-                        <Route exact path='/master-mgmt/signature-upload'>
+                        <Route exact path='/master-management/signature-upload'>
                           {({ match }) => <SignatureUpload match={match} />}
                         </Route>
                         <Route exact path='/online-class/attend-class'>

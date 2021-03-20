@@ -80,19 +80,32 @@ const CreateChapterType = ({setLoading,handleGoBack, details, onSubmit,setCentra
                 setAlert('error', error.message);
             })
 
-        axios.get(`${endpoints.lessonPlan.academicYearList}`, {
-            headers: {
-                'x-api-key': 'vikash@12345#1231',
-            }
-        }).then(result => {
-            if (result.data.status_code === 200) {
-                setAcademicYearDropdown(result.data.result.results);
-            } else {
-                setAlert('error', result.data.message);
-            }
-        }).catch(error => {
-            setAlert('error', error.message);
-        })
+            axiosInstance
+            .get(endpoints.userManagement.academicYear)
+            .then((result) => {
+              if (result.status === 200) {
+                setAcademicYear(result.data.data)
+              } else {
+                setAlert('error', result.data.message)
+              }
+            })
+            .catch((error) => {
+              setAlert('error', error.message)
+            })
+
+        // axios.get(`${endpoints.lessonPlan.academicYearList}`, {
+        //     headers: {
+        //         'x-api-key': 'vikash@12345#1231',
+        //     }
+        // }).then(result => {
+        //     if (result.data.status_code === 200) {
+        //         setAcademicYearDropdown(result.data.result.results);
+        //     } else {
+        //         setAlert('error', result.data.message);
+        //     }
+        // }).catch(error => {
+        //     setAlert('error', error.message);
+        // })
 
         axios.get(`${endpoints.lessonPlan.volumeList}`, {
             headers: {
@@ -378,7 +391,7 @@ const CreateChapterType = ({setLoading,handleGoBack, details, onSubmit,setCentra
         <div style={{ width: '95%', margin: '20px auto'}}>
           <Grid container>
         <Grid item xs={12} sm={4} className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
-                <Autocomplete
+                {/* <Autocomplete
                     style={{ width: '100%' }}
                     size='small'
                     onChange={handleAcademicYear}
@@ -396,7 +409,24 @@ const CreateChapterType = ({setLoading,handleGoBack, details, onSubmit,setCentra
                             placeholder='Academic Year'
                         />
                     )}
-                />
+                /> */}
+          <Autocomplete
+                size='small'
+                style={{ width: '100%' }}
+                onChange={handleAcademicYear}
+                id='year'
+                options={academicYear}
+                getOptionLabel={(option) => option?.session_year}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Academic Year'
+                    placeholder='Academic Year'
+                  />
+                )}
+              />
             </Grid>
             <Grid item xs={12} sm={4} className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
                 <Autocomplete
@@ -491,7 +521,7 @@ const CreateChapterType = ({setLoading,handleGoBack, details, onSubmit,setCentra
               style={{ width: '100%', marginTop: '-10px' }}
               variant='outlined'
               size='small'
-              placeholder='Ex: Attendance List'
+              // placeholder='Ex: Attendance List'
               value={categoryName}
               inputProps={{maxLength:40}}
               name='categoryname'
