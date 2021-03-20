@@ -62,6 +62,9 @@ const BulkUpload = () => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
+  const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
+  const widerWidth = isMobile ? '98%' : '95%';
+
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
 
@@ -83,29 +86,6 @@ const BulkUpload = () => {
     }
   }, []);
 
-  const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
-  const widerWidth = isMobile ? '98%' : '95%';
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage + 1);
-  };
-
-  const handleBranch = (event, value) => {
-    setSearchBranch('');
-    if (value) {
-      setPage(1);
-      setSearchBranch(value.id);
-    }
-  };
-
-  const handleAcademicYear = (event, value) => {
-    setSearchAcademicYear('');
-    if (value) {
-      setPage(1);
-      setSearchAcademicYear(value.id);
-    }
-  };
-
   useEffect(() => {
     setLoading(true);
     setTimeout(() => {
@@ -116,22 +96,9 @@ const BulkUpload = () => {
   useEffect(() => {
     if (moduleId) {
       axiosInstance
-        .get(`${endpoints.academics.branches}?module_id=${moduleId}`)
-        .then((result) => {
-          if (result.status === 200) {
-            setBranches(result.data.data);
-          } else {
-            setAlert('error', result.data.message);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error.message);
-        });
-
-      axiosInstance
         .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
         .then((result) => {
-          if (result.status === 200) {
+          if (result.data.status_code === 200) {
             setAcademicYear(result.data.data);
           } else {
             setAlert('error', result.data.message);
@@ -163,6 +130,40 @@ const BulkUpload = () => {
       });
   }, [page, searchAcademicYear, searchBranch]);
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage + 1);
+  };
+
+  const handleBranch = (event, value) => {
+    setSearchBranch('');
+    if (value) {
+      setPage(1);
+      setSearchBranch(value.id);
+    }
+  };
+
+  const handleAcademicYear = (event, value) => {
+    setSearchAcademicYear('');
+    setSearchBranch('');
+    setBranches([]);
+    if (value) {
+      setPage(1);
+      setSearchAcademicYear(value.id);
+      axiosInstance
+        .get(`${endpoints.masterManagement.branchList}?session_year=${value?.id}&module_id=${moduleId}`)
+        .then((result) => {
+          if (result.data?.status_code === 200) {
+            setBranches(result.data?.data);
+          } else {
+            setAlert('error', result.data?.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+    }
+  };
+
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
@@ -181,27 +182,6 @@ const BulkUpload = () => {
           spacing={isMobile ? 3 : 5}
           style={{ width: widerWidth, margin: wider }}
         >
-          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-            <Box className={classes.centerInMobile}>
-              <Autocomplete
-                size='small'
-                style={{ width: '100%' }}
-                onChange={handleBranch}
-                id='branch'
-                options={branches}
-                getOptionLabel={(option) => option?.branch_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Branch'
-                    placeholder='Branch'
-                  />
-                )}
-              />
-            </Box>
-          </Grid>
           <Grid item xs={12} sm={3} style={isMobile ? { margin: '0 0 20px 0' } : {}}>
             <Box className={classes.centerInMobile}>
               <Autocomplete
@@ -209,8 +189,8 @@ const BulkUpload = () => {
                 style={{ width: '100%' }}
                 onChange={handleAcademicYear}
                 id='year'
-                options={academicYear}
-                getOptionLabel={(option) => option?.session_year}
+                options={academicYear || []}
+                getOptionLabel={(option) => option?.session_year || ''}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
@@ -218,6 +198,27 @@ const BulkUpload = () => {
                     variant='outlined'
                     label='Academic Year'
                     placeholder='Academic Year'
+                  />
+                )}
+              />
+            </Box>
+          </Grid>
+          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+            <Box className={classes.centerInMobile}>
+              <Autocomplete
+                size='small'
+                style={{ width: '100%' }}
+                onChange={handleBranch}
+                id='branch'
+                options={branches || []}
+                getOptionLabel={(option) => option?.branch_name || ''}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Branch'
+                    placeholder='Branch'
                   />
                 )}
               />
