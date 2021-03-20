@@ -64,9 +64,10 @@ const MessageLog = withRouter(({ history, ...props }) => {
   const [messageRows, setMessageRows] = useState([]);
   const [userLogs, setUserLogs] = useState([]);
   const [tempUserLogs, setTempUserLogs] = useState([0,1]);
-
+  const [academicYears, setAcademicYears] = useState([]);
   const [branchList, setBranchList] = useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [selectedAcademic, setSelectedAcademic] = useState([]);
   const [selectedBranches, setSelectedBranches] = useState([]);
   const [smsTypeList, setSmsTypeList] = useState([]);
   const [selectedSmsType, setSelectedSmsType] = useState([]);
@@ -91,17 +92,51 @@ const MessageLog = withRouter(({ history, ...props }) => {
     setSelectedToDate(value);
   };
 
-  const getBranchApi = async () => {
-    try {
-      const result = await axiosInstance.get(endpoints.communication.branches);
-      if (result.status === 200) {
-        setBranchList(result.data.data);
+  const getAcademicApi = async () => {
+    axiosInstance.get('/erp_user/list-academic_year/')
+    .then((res) => {
+      console.log(res.data);
+
+      if (res.data.status_code === 200) {
+        setAcademicYears(res.data.data);
+        setLoading(false);
       } else {
-        setAlert('error', result.data.message);
+        setAlert('error', res.data.message);
+        setLoading(false);
       }
-    } catch (error) {
+    })
+    .catch((error) => { 
+      console.log(error);
       setAlert('error', error.message);
-    }
+      setLoading(false);
+    })
+  };
+
+  const getBranchApi = async () => {
+    axiosInstance.get(`${endpoints.masterManagement.branchList}?session_year=${selectedAcademic?.id}`).then((res) => {
+      console.log(res.data);
+      if (res.data.status_code === 200) {
+        setBranchList(res.data.data);
+        setLoading(false);
+      } else {
+        setAlert('error', res.data.message);
+        setLoading(false);
+      }
+    })
+    .catch((error) => {
+      setAlert('error', error.message);
+      setLoading(false);
+    })
+    // try {
+    //   const result = await axiosInstance.get(endpoints.communication.branches);
+    //   if (result.status === 200) {
+    //     setBranchList(result.data.data);
+    //   } else {
+    //     setAlert('error', result.data.message);
+    //   }
+    // } catch (error) {
+    //   setAlert('error', error.message);
+    // }
   };
 
   const getSmsTypeApi = async () => {
@@ -130,15 +165,33 @@ const MessageLog = withRouter(({ history, ...props }) => {
       setSelectedSmsType([]);
     }
   };
+
+  const handleAcademicYears = (event, value) => {
+    if (value) {
+      setSelectedAcademic(value);
+    } else {
+      setSelectedAcademic('');
+    }
+  };
+
   const handleBranch = (event, value) => {
     if (value.length) {
-      setMessageCurrentPageno(1);
       const ids = value.map((el) => el);
       setSelectedBranches(ids);
     } else {
       setSelectedBranches([]);
     }
   };
+
+  // const handleBranch = (event, value) => {
+  //   if (value.length) {
+  //     setMessageCurrentPageno(1);
+  //     const ids = value.map((el) => el);
+  //     setSelectedBranches(ids);
+  //   } else {
+  //     setSelectedBranches([]);
+  //   }
+  // };
 
   const getMessages = async () => {
     let getMessagesUrl = `${endpoints.communication.getMessages}?page=${messageCurrentPageno}&page_size=15&module_id=${moduleId}`;
@@ -279,9 +332,11 @@ const MessageLog = withRouter(({ history, ...props }) => {
   };
 
   useEffect(() => {
+    getAcademicApi();
     if (!branchList.length) {
-      getBranchApi();
-      getSmsTypeApi();
+      //getAcademicApi();
+      //getBranchApi();
+      //getSmsTypeApi();
     }
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -306,17 +361,33 @@ const MessageLog = withRouter(({ history, ...props }) => {
       setModulePermision(false);
     }
   }, []);
+
+  useEffect(() => {
+    if(selectedAcademic?.id){
+      setBranchList([]);
+      getBranchApi();
+    }
+  },[selectedAcademic]);
+
+  useEffect(() => {
+    if(selectedBranches.length > 0){
+      getSmsTypeApi();
+    }
+  },[selectedBranches]);
+
   useEffect(() => {
     if (clearAll) {
       setClearAll(false);
     }
     if (moduleId) getMessages();
   }, [messageCurrentPageno, isEmail, clearAll, moduleId]);
+
   useEffect(() => {
     if (usersCurrentPageno > 1) {
       getUserDatails();
     }
   }, [usersCurrentPageno]);
+
   useEffect(() => {
     if (
       selectedBranches.length ||
@@ -341,7 +412,32 @@ const MessageLog = withRouter(({ history, ...props }) => {
           </div>
           <div className='create_group_filter_container'>
             <Grid container className='message_log_container' spacing={5}>
-              <Grid xs={12} lg={6} item>
+              <Grid xs={12} lg={4} className='create_group_items' item>
+                <div>
+                  <div className='create_group_branch_wrapper'>
+                    <Autocomplete
+                      size='small'
+                      onChange={handleAcademicYears}
+                      value={selectedAcademic}
+                      id='academic_year'
+                      className='create_group_branch'
+                      options={academicYears}
+                      getOptionLabel={(option) => option?.session_year}
+                      filterSelectedOptions
+                      renderInput={(params) => (
+                        <TextField
+                          className='message_log-textfield'
+                          {...params}
+                          variant='outlined'
+                          label='Academic Years'
+                          placeholder='Academic Years'
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+              </Grid>
+              <Grid xs={12} lg={4} item>
                 <Autocomplete
                   multiple
                   size='small'
@@ -363,7 +459,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
                   )}
                 />
               </Grid>
-              <Grid xs={12} lg={6} item>
+              <Grid xs={12} lg={4} item>
                 <Autocomplete
                   multiple
                   size='small'
