@@ -591,7 +591,7 @@ function App({ alert }) {
                         <Route exact path='/student-id-card'>
                           {({ match }) => <StudentIdCard match={match} />}
                         </Route>
-                        <Route exact path='/master-mgmt/signature-upload'>
+                        <Route exact path='/master-management/signature-upload'>
                           {({ match }) => <SignatureUpload match={match} />}
                         </Route>
                         <Route exact path='/online-class/attend-class'>
