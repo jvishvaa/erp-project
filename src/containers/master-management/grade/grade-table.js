@@ -169,11 +169,11 @@ const GradeTable = () => {
             setTotalCount(result.data.result.count);
             setGrades(result.data.result.results);
         } else {
-          setAlert('error', result.data.msg||result.data.message);
+          setAlert('error', result?.data?.msg||result?.data?.message);
         }
       })
       .catch((error) => {
-        setAlert('error', error.response.data.message||error.response.data.msg);
+        setAlert('error', error?.response?.data.message||error?.response?.data.msg);
       });
   }, [delFlag, goBackFlag, page, searchGrade]);
 
@@ -255,13 +255,13 @@ const GradeTable = () => {
                     return (
                       <TableRow hover grade='checkbox' tabIndex={-1} key={index}>
                         <TableCell className={classes.tableCell}>
-                          {grade.grade_name}
+                          {grade?.grade_name}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
-                          {grade.grade_type}
+                          {grade?.grade_type}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
-                          {grade.created_by ? grade.created_by : ''}
+                          {grade?.created_by||''}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
 
