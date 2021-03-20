@@ -166,7 +166,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
   };
 
   const getAcademicApi = async () => {
-    axiosInstance.get('/erp_user/list-academic_year/')
+    axiosInstance.get(`/erp_user/list-academic_year/?module_id=${moduleId}`)
     .then((res) => {
       console.log(res.data);
 
@@ -186,7 +186,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
   };
 
   const getBranchApi = async () => {
-    axiosInstance.get(`${endpoints.masterManagement.branchList}?session_year=${selectedAcademic?.id}`).then((res) => {
+    axiosInstance.get(`${endpoints.masterManagement.branchList}?session_year=${selectedAcademic?.id}&module_id=${moduleId}`).then((res) => {
       console.log(res.data);
       if (res.data.status_code === 200) {
         setBranchList(res.data.data);
