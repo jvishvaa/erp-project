@@ -290,11 +290,10 @@ const HomeworkAdmin = () => {
     } else if (mandatorySubjects.length > 5 || mandatorySubjects.length === 0) {
       setAlert('error', 'Number of mandatory subjects must lie between 1 and 5');
     } else if (clear) {
-      //debugger;
       setLoading(true);
       axiosInstance
         .post(endpoints.homework.createConfig, {
-          branch: role_details.branch[0],
+          branch: selectedBranch.id||'',
           grade: searchGrade,
           section: searchSection,
           subject_config: {
@@ -495,7 +494,7 @@ const HomeworkAdmin = () => {
     setSearchGrade('');
     setSearchSection('');
     if (value) {
-      setSearchGrade(value?.id);
+      setSearchGrade(value?.grade_id);
       setGradeDisplay(value);
       axiosInstance
         .get(
@@ -556,14 +555,13 @@ const HomeworkAdmin = () => {
 
   useEffect(() => {
     if (searchGrade && searchSection) {
-      let request = `${endpoints.homework.completeData}?branch=${role_details.branch[0]}&grade=${searchGrade}&section=${searchSection}`;
+      let request = `${endpoints.homework.completeData}?branch=${selectedBranch.id}&grade=${searchGrade}&section=${searchSection}`;
       axiosInstance
         .get(request)
         .then((result) => {
           if (result.data.status_code === 200) {
             let len = result.data.result[0].subject_data.length;
             if (len > 0) {
-              debugger;
               let lenhw = result.data.result[0].hw_ration.length;
               if (lenhw > 0) setRatingData(result.data.result[0].hw_ration);
               else
