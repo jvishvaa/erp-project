@@ -32,12 +32,12 @@ let moduleId = null
 if (NavData && NavData.length) {
   NavData.forEach((item) => {
     if (
-      item.parent_modules === 'Approval/Requests' &&
+      item.parent_modules === 'Approvals/Requests' &&
       item.child_module &&
       item.child_module.length > 0
     ) {
       item.child_module.forEach((item) => {
-        if (item.child_name === 'Fee Pay Requests') {
+        if (item.child_name === 'Fee Pay Request') {
           // setModuleId(item.child_id);
           // setModulePermision(true);
           // this.setState({
