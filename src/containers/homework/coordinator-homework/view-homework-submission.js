@@ -264,6 +264,10 @@ const ViewHomework = withRouter(
       }
     };
 
+    const handleCollatedQuestionState = (field, value) => {
+      setCollatedQuestionState((prev) => ({ ...prev, [field]: value }));
+    };
+
     useEffect(() => {
       fetchHomeworkDetails();
     }, []);
@@ -521,6 +525,49 @@ const ViewHomework = withRouter(
                       </div>
                     </div>
                   )}
+                  <div
+                    className='comments-remarks-container'
+                    style={{ display: 'flex', width: '95%', margin: '0 auto' }}
+                  >
+                    <div className='item comment'>
+                      <FormControl variant='outlined' fullWidth size='small'>
+                        <InputLabel htmlFor='component-outlined'>Comments</InputLabel>
+                        <OutlinedInput
+                          id='comments'
+                          name='comments'
+                          inputProps={{ maxLength: 150 }}
+                          multiline
+                          rows={3}
+                          rowsMax={4}
+                          label='Comments'
+                          value={collatedQuestionState?.comments || ''}
+                          onChange={(e) => {
+                            handleCollatedQuestionState('comments', e.target.value);
+                          }}
+                          autoFocus
+                        />
+                      </FormControl>
+                    </div>
+                    <div className='item'>
+                      <FormControl variant='outlined' fullWidth size='small'>
+                        <InputLabel htmlFor='component-outlined'>Remarks</InputLabel>
+                        <OutlinedInput
+                          id='remarks'
+                          name='remarks'
+                          inputProps={{ maxLength: 150 }}
+                          multiline
+                          rows={3}
+                          rowsMax={4}
+                          label='Remarks'
+                          value={collatedQuestionState?.remarks || ''}
+                          onChange={(e) => {
+                            handleCollatedQuestionState('remarks', e.target.value);
+                          }}
+                          autoFocus
+                        />
+                      </FormControl>
+                    </div>
+                  </div>
                   <div className='evaluate-answer-btn-container'>
                     <Button variant='contained' color='primary' onClick={evaluateAnswer}>
                       SAVE

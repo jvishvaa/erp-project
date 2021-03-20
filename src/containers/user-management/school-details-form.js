@@ -136,6 +136,7 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
   };
 
   const handleChangeBranch = (values, acadId) => {
+    console.log(formik.values.branch,'==================');
     setGrades([]);
     setSections([]);
     setSubjects([]);
@@ -279,15 +280,15 @@ const SchoolDetailsForm = ({ details, onSubmit, isEdit }) => {
             id='branch'
             name='branch'
             onChange={(e, value) => {
-              formik.setFieldValue('branch', value);
+              formik.setFieldValue('branch', [value]);
               formik.setFieldValue('grade', []);
               formik.setFieldValue('section', []);
               formik.setFieldValue('subjects', []);
-              handleChangeBranch(value, formik.values.academic_year?.id);
+              handleChangeBranch([value], formik.values.academic_year?.id);
               //   handleChangeBranch(value ? [value] : null);
             }}
-            multiple
-            value={formik.values.branch || []}
+            // multiple
+            value={formik.values.branch[0] || []}
             options={branches || []}
             filterSelectedOptions
             getOptionLabel={(option) => option.branch_name || ''}

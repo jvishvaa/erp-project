@@ -112,6 +112,16 @@
     display: flex;
     justify-content:space-between;
 }
+.download {
+  /* font-size: 1rem;
+  font-weight: 600;
+  color: #014b7e;
+  margin:10px 0px 0px 20px; */
+  display: flex;
+  justify-content:space-between;
+  font-size:1.1rem;
+  color:#ff6b6b;
+}
 .totalPeriod{
   font-size: 1rem;
   font-weight: 500;

@@ -47,7 +47,7 @@ const HomeworkRow = ({ data, cols, selectedCol, setSelectedCol, handleViewHomewo
             }}
           />
         ) : (
-          <TableCell className='no-wrap-col' style={{width: '250px !important'}}>
+          <TableCell className='no-wrap-col' style={{ minWidth: '188px'}}>
             <div>
               <div className='day-icon'>
                 {moment(data.date).format('dddd').split('')[0]}
