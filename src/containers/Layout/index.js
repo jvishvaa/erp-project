@@ -776,7 +776,7 @@ const Layout = ({ children, history }) => {
                 history.push('/finance/Student/IncomeTaxCertificate')
                   break;
                 }
-              case 'Fee Pay Requests': {
+              case 'Fee Pay Request': {
                 history.push('/finance/Approval/Requests/FeePaymentRequests')
                   break;
                 }
