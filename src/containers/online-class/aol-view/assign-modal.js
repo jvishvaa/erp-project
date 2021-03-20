@@ -319,7 +319,3 @@ const AssignModal = ({ openAssignModal, setOpenAssignModal, teacherDropdown, ass
 }
 
 export default AssignModal;
-
-
-
-

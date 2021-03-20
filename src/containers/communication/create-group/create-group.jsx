@@ -53,7 +53,8 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [selectedRoles, setSelectedRoles] = useState([]);
-  const [selectedBranch, setSelectedBranch] = useState(null);
+  const [selectedAcademic, setSelectedAcademic] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState([]);
   const [selectedGrades, setSelectedGrades] = useState([]);
   const [selectedSections, setSelectedSections] = useState([]);
   const [groupName, setGroupName] = useState('');
@@ -67,6 +68,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   const [grade, setGrade] = useState([]);
   const [section, setSection] = useState([]);
   const [roleList, setRoleList] = useState([]);
+  const [academicYears, setAcademicYears] = useState([]);
   const [branchList, setBranchList] = useState([]);
   const [gradeList, setGradeList] = useState([]);
   const [sectionList, setSectionList] = useState([]);
@@ -105,34 +107,71 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     }
   };
 
-  const getBranchApi = async () => {
-    try {
-      setLoading(true);
-      const result = await axiosInstance.get(endpoints.communication.branches, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const resultOptions = [];
-      if (result.status === 200) {
-        result.data.data.map((items) => resultOptions.push(items.branch_name));
-        setBranchList(result.data.data);
+  const getAcademicApi = async () => {
+    axiosInstance.get(`/erp_user/list-academic_year/?module_id=${moduleId}`)
+    .then((res) => {
+      console.log(res.data);
+
+      if (res.data.status_code === 200) {
+        setAcademicYears(res.data.data);
         setLoading(false);
       } else {
-        setAlert('error', result.data.message);
+        setAlert('error', res.data.message);
         setLoading(false);
       }
-    } catch (error) {
+    })
+    .catch((error) => { 
+      console.log(error);
       setAlert('error', error.message);
       setLoading(false);
-    }
+    })
+  };
+
+  const getBranchApi = async () => {
+    axiosInstance.get(`${endpoints.masterManagement.branchList}?session_year=${selectedAcademic?.id}&module_id=${moduleId}`).then((res) => {
+      console.log(res.data);
+      if (res.data.status_code === 200) {
+        setBranchList(res.data.data);
+        setLoading(false);
+      } else {
+        setAlert('error', res.data.message);
+        setLoading(false);
+      }
+    })
+    .catch((error) => {
+      setAlert('error', error.message);
+      setLoading(false);
+    })
+    // try {
+    //   setLoading(true);
+    //   const result = await axiosInstance.get(endpoints.communication.branches, {
+    //     headers: {
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   });
+    //   const resultOptions = [];
+    //   if (result.status === 200) {
+    //     result.data.data.map((items) => resultOptions.push(items.branch_name));
+    //     console.log(result.data.data, 'mlbranch');
+    //     setBranchList(result.data.data);
+    //     setLoading(false);
+    //   } else {
+    //     setAlert('error', result.data.message);
+    //     setLoading(false);
+    //   }
+    // } catch (error) {
+    //   setAlert('error', error.message);
+    //   setLoading(false);
+    // }
   };
 
   const getGradeApi = async () => {
     try {
       setLoading(true);
+      const branchsId = [];
+      selectedBranch.length > 0 && selectedBranch.map((branchs) => branchsId.push(branchs?.id));
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?branch_id=${selectedBranch.id}&module_id=${moduleId}`,
+        `${endpoints.communication.grades}?branch_id=${branchsId.toString()}&module_id=${moduleId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -160,6 +199,8 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   const getSectionApi = async () => {
     try {
       setLoading(true);
+      const branchsId = [];
+      selectedBranch.length > 0 && selectedBranch.map((branchs) => branchsId.push(branchs?.id));
       const gradesId = [];
       gradeList
         .filter((item) => selectedGrades.includes(item['grade__grade_name']))
@@ -167,9 +208,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
           gradesId.push(items.grade_id);
         });
       const result = await axiosInstance.get(
-        `${endpoints.communication.sections}?branch_id=${
-          selectedBranch.id
-        }&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
+        `${endpoints.communication.sections}?branch_id=${branchsId.toString()}&grade_id=${gradesId.toString()}&module_id=${moduleId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -203,6 +242,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
 
   const displayUsersList = async () => {
     const rolesId = [];
+    const branchsId = [];
     const gradesId = [];
     const sectionsId = [];
     setNext(true);
@@ -213,13 +253,17 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     if (edit) {
       getUserListUrl = `${endpoints.communication.editGroup}${preSelectedGroupId}/retrieve-update-group/?page=${pageno}&page_size=15&module_id=${moduleId}`;
     }
-    if (selectedRoles.length && !selectedRoles.includes('All')) {
-      roleList
-        .filter((item) => selectedRoles.includes(item['role_name']))
+    if (selectedBranch.length && !selectedRoles.includes('All')) {
+      selectedBranch.map((branchs) => branchsId.push(branchs?.id));
+    }
+    if (selectedGrades.length && !selectedGrades.includes('All')) {
+      gradeList
+        .filter((item) => selectedGrades.includes(item['grade__grade_name']))
         .forEach((items) => {
-          rolesId.push(items.id);
+          gradesId.push(items.grade_id);
         });
     }
+
     if (selectedGrades.length && !selectedGrades.includes('All')) {
       gradeList
         .filter((item) => selectedGrades.includes(item['grade__grade_name']))
@@ -238,7 +282,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       getUserListUrl += `&role=${rolesId.toString()}`;
     }
     if (selectedBranch) {
-      getUserListUrl += `&branch=${selectedBranch.id}`;
+      getUserListUrl += `&branch=${branchsId.toString()}`;
     }
     if (gradesId.length && !selectedGrades.includes('All')) {
       getUserListUrl += `&grade=${gradesId.toString()}`;
@@ -533,13 +577,23 @@ const CreateGroup = withRouter(({ history, ...props }) => {
     }
   };
 
-  const handleBranch = (event, value) => {
+  const handleAcademicYears = (event, value) => {
     if (value) {
-      setSelectedBranch(value);
+      setSelectedAcademic(value);
     } else {
-      setSelectedBranch();
+      setSelectedAcademic('');
     }
   };
+
+  const handleBranch = (event, value) => {
+    if (value.length) {
+      const ids = value.map((el) => el);
+      setSelectedBranch(ids);
+    } else {
+      setSelectedBranch([]);
+    }
+  };
+
   const handleEditCancel = () => {
     setSelectedUsers([]);
     setSelectedRoles([]);
@@ -608,7 +662,8 @@ const CreateGroup = withRouter(({ history, ...props }) => {
 
   useEffect(() => {
     getRoleApi();
-    getBranchApi();
+    getAcademicApi();
+    //getBranchApi();
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
@@ -647,11 +702,22 @@ const CreateGroup = withRouter(({ history, ...props }) => {
   }, []);
 
   useEffect(() => {
-    if (selectedBranch) {
+    if(selectedAcademic){
+      setSelectedBranch([]);
       setGrade([]);
+      setSelectedGrades([]);
+      getBranchApi();
+    }
+  }, [selectedAcademic]);
+
+  useEffect(() => {
+    if (selectedBranch.length > 0) {
+      setGrade([]);
+      setSelectedGrades([]);
       getGradeApi();
     }
   }, [selectedBranch]);
+
   useEffect(() => {
     if (selectedGrades.length && gradeList.length) {
       // setSelectedSections([]);
@@ -662,6 +728,7 @@ const CreateGroup = withRouter(({ history, ...props }) => {
       }
     }
   }, [gradeList, selectedGrades]);
+
   useEffect(() => {
     if (next && groupName && selectedRoles) {
       displayUsersList();
@@ -743,11 +810,37 @@ const CreateGroup = withRouter(({ history, ...props }) => {
               {selectedRoles.length && !selectedRoles.includes('All') ? (
                 <div className='create_group_filter_container'>
                   <Grid container className='create_group_container' spacing={5}>
+                  <Grid xs={12} lg={4} className='create_group_items' item>
+                      <div>
+                        <div className='create_group_branch_wrapper'>
+                          <Autocomplete
+                            size='small'
+                            onChange={handleAcademicYears}
+                            value={selectedAcademic}
+                            id='academic_year'
+                            className='create_group_branch'
+                            options={academicYears}
+                            getOptionLabel={(option) => option?.session_year}
+                            filterSelectedOptions
+                            renderInput={(params) => (
+                              <TextField
+                                className='message_log-textfield'
+                                {...params}
+                                variant='outlined'
+                                label='Academic Years'
+                                placeholder='Academic Years'
+                              />
+                            )}
+                          />
+                        </div>
+                      </div>
+                    </Grid>
                     <Grid xs={12} lg={4} className='create_group_items' item>
                       <div>
                         <div className='create_group_branch_wrapper'>
                           <Autocomplete
                             size='small'
+                            multiple
                             onChange={handleBranch}
                             value={selectedBranch}
                             id='message_log-branch'

@@ -17,6 +17,9 @@
 .message_log_table .MuiTableCell-head {
   background-color: white;
 }
+.create_group_filter_container {
+  margin-top: 30px;
+}
 .message_log_table_wrapper {
   border: 1px solid #ff6b6b;
 }
